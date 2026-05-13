@@ -36,7 +36,13 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 5 },
 
   // ── CALIDAD ──
-  { area: 'CALIDAD', seccion: 'A. CALIDAD 1ER TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22 },
+  {
+    area: 'CALIDAD',
+    seccion: 'A. CALIDAD 1ER TURNO',
+    puesto: 'OPERADOR DE ACABADOS GP-12',
+    plantilla_autorizada: 22,
+    urgente: true,
+  },
   { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INGENIERO DE CALIDAD', plantilla_autorizada: 2 },
@@ -46,14 +52,11 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: 'CALIDAD',
     seccion: 'CALIDAD ADMTVO',
     puesto: 'INSPECTOR DE CALIDAD',
-    plantilla_autorizada: 15,
-    urgente: true,
-    notas: 'Vacantes críticas para auditorías en curso.',
+    plantilla_autorizada: 15
   },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'AUXILIAR DE CALIDAD', plantilla_autorizada: 1 },
   { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'METRÓLOGO', plantilla_autorizada: 13 },
   { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'AUXILIAR DE METROLOGÍA', plantilla_autorizada: 4 },
-  { area: 'CALIDAD', seccion: 'RESIDENTES DE CALIDAD', puesto: 'RESIDENTE', plantilla_autorizada: 3 },
 
   // ── GERENCIA ──
   { area: 'GERENCIA', seccion: 'GERENCIA', puesto: 'GERENTE DE PLANTA', plantilla_autorizada: 1 },
@@ -67,21 +70,25 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR ADMINISTRATIVO DE MANTENIMIENTO', plantilla_autorizada: 1 },
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO ESPECIALISTA DE MANTENIMIENTO', plantilla_autorizada: 1 },
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TECNICO DE MANTENIMIENTO DE EDIFICIOS', plantilla_autorizada: 1 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR DE MANTENIMIENTO', plantilla_autorizada: 2 },
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO DE MANTENIMIENTO', plantilla_autorizada: 8 },
   {
     area: 'MANTENIMIENTO',
     seccion: 'MANTENIMIENTO',
-    puesto: 'TÉCNICO DE MANTENIMIENTO',
-    plantilla_autorizada: 8,
+    puesto: 'AUXILIAR DE MANTENIMIENTO',
+    plantilla_autorizada: 2,
     urgente: true,
-    backup: 2,
-    notas: 'Back-up por cobertura 24/7 y atención a turno nocturno.',
   },
 
   // ── TALLER DE MOLDES ──
   { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'JEFE DE TALLER DE MOLDES', plantilla_autorizada: 1 },
   { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'AUXILIAR ADMINISTRATIVO DE TALLER DE MOLDES', plantilla_autorizada: 1 },
-  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'TÉCNICO DE MOLDES', plantilla_autorizada: 13 },
+  {
+    area: 'TALLER DE MOLDES',
+    seccion: 'MOLDES',
+    puesto: 'TÉCNICO DE MOLDES',
+    plantilla_autorizada: 13,
+    urgente: true,
+  },
 
   // ── PRODUCCIÓN 1ER TURNO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
@@ -96,7 +103,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'PRODUCCIÓN 1ER. TURNO',
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
-    backup: 2,
+    backup: 5,
+    urgente: true,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -112,7 +120,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'PRODUCCIÓN 2o. TURNO',
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
-    backup: 2,
+    backup: 5,
+    urgente: true,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -127,7 +136,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'PRODUCCIÓN 3ER. TURNO',
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
-    backup: 2,
+    backup: 5,
+    urgente: true,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -143,7 +153,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'PRODUCCIÓN 4o. TURNO',
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
-    backup: 2,
+    backup: 5,
+    urgente: true,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -153,7 +164,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'INGENIERO DE PROCESO', plantilla_autorizada: 4 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'PLANEADOR DE PRODUCCIÓN', plantilla_autorizada: 1 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'SUPERVISOR DE PRODUCCIÓN', plantilla_autorizada: 14 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'PRACTICANTE DE PRODUCCIÓN', plantilla_autorizada: 1 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'ASISTENTE DE PRODUCCIÓN', plantilla_autorizada: 2 },
 
   // ── PRODUCCIÓN MONTAJE ──
