@@ -110,6 +110,65 @@
   /* ── Transitions ── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+
+  /* ── Color scheme hint (form controls + scrollbars adapt) ── */
+  color-scheme: light;
+}
+
+/* ========================================
+   DARK THEME
+   Activated via [data-theme="dark"] on <html> (set by useTheme).
+   Tokens swap; all components remain unchanged because they consume
+   semantic tokens, not raw colors.
+   ======================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ── Surface (cream → ink) ── */
+  --color-canvas: #181715;
+  --color-surface-soft: #1f1e1b;
+  --color-surface-card: #252320;
+  --color-surface-cream-strong: #2e2c29;
+  --color-surface-dark: #0e0d0c;
+  --color-surface-dark-elevated: #1a1917;
+  --color-surface-dark-soft: #141312;
+  --color-hairline: #2e2c29;
+  --color-hairline-soft: #26241f;
+
+  /* ── Text (ink → cream) ── */
+  --color-ink: #faf9f5;
+  --color-body-strong: #ebe6d8;
+  --color-body: #c8c3b8;
+  --color-muted: #a09d96;
+  --color-muted-soft: #7a7770;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #faf9f5;
+  --color-on-dark-soft: #a09d96;
+
+  /* ── Brand: slight lift so coral stays readable on dark ── */
+  --color-primary: #d88a6e;
+  --color-primary-active: #cc785c;
+  --color-primary-disabled: #4a3a32;
+
+  /* ── Channel values (flip ink/canvas for tinted utilities) ── */
+  --color-primary-rgb: 216 138 110;
+  --color-ink-rgb: 250 249 245;
+  --color-canvas-rgb: 24 23 21;
+
+  /* ── Derived tints / overlays ── */
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.28);
+  --color-modal-scrim: rgb(0 0 0 / 0.7);
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.10);
+  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.22);
+  --color-success-tint: rgb(var(--color-success-rgb) / 0.16);
+  --color-error-tint: rgb(var(--color-error-rgb) / 0.16);
+  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.85);
+
+  /* ── Shadows: stronger on dark backgrounds ── */
+  --shadow-subtle: 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 2px 12px rgb(0 0 0 / 0.35);
+  --shadow-elevated: 0 16px 40px rgb(0 0 0 / 0.55);
 }
 
 /* ========================================
@@ -137,6 +196,14 @@ body {
   color: var(--color-body);
   background-color: var(--color-canvas);
   min-height: 100vh;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+/* Prevent transition flash on initial theme application */
+.theme-init * {
+  transition: none !important;
 }
 
 h1, h2, h3, h4 {

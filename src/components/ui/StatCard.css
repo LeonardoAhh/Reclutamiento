@@ -18,6 +18,12 @@
   background: var(--color-surface-dark);
 }
 
+/* In dark mode the "dark" hero card lifts above canvas instead of going even darker */
+[data-theme="dark"] .stat-card--dark {
+  background: var(--color-surface-cream-strong);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
 .stat-card:hover {
   box-shadow: var(--shadow-card);
   transform: translateY(-1px);
