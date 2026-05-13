@@ -1,6 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ClipboardList, Pencil, Trash2, AlertCircle } from 'lucide-react';
-import type { VacancyRequest, VacancyStatus, VacancyPriority } from '@/lib/types';
+import {
+  ClipboardList,
+  Pencil,
+  Trash2,
+  AlertCircle,
+  History,
+  ArrowRight,
+} from 'lucide-react';
+import type {
+  VacancyRequest,
+  VacancyStatus,
+  VacancyPriority,
+  VacancyStatusHistoryEntry,
+} from '@/lib/types';
 import {
   VACANCY_STATUSES,
   VACANCY_STATUS_LABEL,
@@ -20,6 +32,8 @@ interface VacancyModalProps {
   isOpen: boolean;
   mode: Mode;
   vacancy?: VacancyRequest | null;
+  /** Historial de cambios de status, más reciente primero. */
+  history?: VacancyStatusHistoryEntry[];
   onClose: () => void;
   onSave?: (
     payload: Omit<VacancyRequest, 'id' | 'created_at' | 'updated_at'>,
@@ -93,6 +107,7 @@ export function VacancyModal({
   isOpen,
   mode,
   vacancy,
+  history,
   onClose,
   onSave,
   onDelete,
@@ -475,6 +490,53 @@ export function VacancyModal({
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {isEdit && history && history.length > 0 && (
+          <div className="vac-timeline" aria-label="Historial de cambios">
+            <h3 className="vac-timeline__title">
+              <History size={14} aria-hidden="true" />
+              Historial de cambios
+            </h3>
+            <ol className="vac-timeline__list">
+              {history.map((h) => (
+                <li key={h.id ?? `${h.changed_at}-${h.to_status}`} className="vac-timeline__entry">
+                  <div className="vac-timeline__transition">
+                    {h.from_status ? (
+                      <>
+                        <span className="vac-timeline__status">
+                          {VACANCY_STATUS_LABEL[h.from_status]}
+                        </span>
+                        <ArrowRight size={11} aria-hidden="true" />
+                      </>
+                    ) : null}
+                    <span className="vac-timeline__status vac-timeline__status--to">
+                      {VACANCY_STATUS_LABEL[h.to_status]}
+                    </span>
+                  </div>
+                  <div className="vac-timeline__meta">
+                    <time dateTime={h.changed_at ?? ''}>
+                      {h.changed_at
+                        ? new Date(h.changed_at).toLocaleString('es-MX', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
+                        : '—'}
+                    </time>
+                    {h.changed_by && (
+                      <span className="vac-timeline__by">· {h.changed_by}</span>
+                    )}
+                  </div>
+                  {h.reason && (
+                    <div className="vac-timeline__reason">{h.reason}</div>
+                  )}
+                </li>
+              ))}
+            </ol>
           </div>
         )}
 

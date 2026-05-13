@@ -77,6 +77,7 @@ export function Vacantes() {
     updateVacancy,
     setVacancyStatus,
     deleteVacancy,
+    getHistoryFor,
   } = useVacancyRequests();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -487,6 +488,7 @@ export function Vacantes() {
         isOpen={modalMode !== null}
         mode={modalMode === 'edit' ? 'edit' : modalMode === 'delete' ? 'delete' : 'add'}
         vacancy={selected}
+        history={selected?.id ? getHistoryFor(selected.id) : undefined}
         onClose={closeModal}
         onSave={handleSave}
         onDelete={deleteVacancy}

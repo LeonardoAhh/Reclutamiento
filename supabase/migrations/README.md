@@ -29,6 +29,7 @@ supabase db push
 | `001_pipeline_schema.sql` | Tablas `candidates`, `candidate_notes`, `vacancy_requests`, `vacancy_status_history` + triggers de auditoría y `updated_at`. | PR B |
 | `002_candidates_employee_link.sql` | Columna `employee_num` en `candidates` para linkear al empleado generado tras "Contratar". | PR F |
 | `003_vacancy_sla.sql` | Columnas `dias_sla`, `excluida_indicador`, `motivo_exclusion` en `vacancy_requests` para tracking de SLA y exclusión de KPI. | PR G |
+| `004_vacancy_audit_app_managed.sql` | Reduce el trigger `vacancy_requests_log_status` a sólo `INSERT` para que la app maneje los `UPDATE` con contexto (`changed_by`, `reason`). | PR H |
 
 ## RLS
 
