@@ -413,9 +413,15 @@ function DepartmentCard({
   comments,
 }: DepartmentCardProps) {
   const hasVacancies = dept.vacantes > 0;
+  const hasUrgentes = dept.urgentes > 0;
+  const hasAlert = hasVacancies || hasUrgentes;
+
+  const cardClass = ['dept-card', hasAlert ? 'dept-card--alert' : '']
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <div className="dept-card" data-area={dept.area}>
+    <div className={cardClass} data-area={dept.area}>
       <button
         className="dept-card__header"
         onClick={onToggle}
@@ -424,19 +430,6 @@ function DepartmentCard({
       >
         <div className="dept-card__header-left">
           <h3 className="dept-card__title">{dept.area}</h3>
-          <div className="dept-card__meta">
-            {dept.urgentes > 0 && (
-              <Badge variant="error">
-                <AlertCircle size={12} aria-hidden="true" />
-                URGEN {dept.urgentes}
-              </Badge>
-            )}
-            {hasVacancies && (
-              <Badge variant="error">
-                {dept.vacantes} vacante{dept.vacantes > 1 ? 's' : ''}
-              </Badge>
-            )}
-          </div>
         </div>
         <div className="dept-card__header-right">
           <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
@@ -502,7 +495,7 @@ function DepartmentCard({
                             {pos.urgentes > 0 && (
                               <Badge variant="error">
                                 <AlertCircle size={11} aria-hidden="true" />
-                                URGEN {pos.urgentes}
+                                URGENTE {pos.urgentes}
                               </Badge>
                             )}
                             {pos.excedente_critico > 0 && (
