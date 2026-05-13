@@ -112,3 +112,114 @@ export interface DepartmentCoverage {
   /** Suma de contrataciones urgentes pendientes a través de todos los puestos. */
   urgentes: number;
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Pipeline de candidatos (tabla `candidates` + `candidate_notes`)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+export const CANDIDATE_STATUSES = [
+  'aplico',
+  'revision',
+  'entrevista_1',
+  'entrevista_2',
+  'oferta',
+  'contratado',
+  'rechazado',
+] as const;
+
+export type CandidateStatus = (typeof CANDIDATE_STATUSES)[number];
+
+/** Labels en español para UI. */
+export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
+  aplico: 'Aplicó',
+  revision: 'Revisión',
+  entrevista_1: 'Entrevista 1',
+  entrevista_2: 'Entrevista 2',
+  oferta: 'Oferta',
+  contratado: 'Contratado',
+  rechazado: 'Rechazado',
+};
+
+export interface Candidate {
+  id?: string;
+  nombre: string;
+  telefono?: string | null;
+  email?: string | null;
+  cv_url?: string | null;
+  source?: string | null;
+  puesto: string;
+  area: string;
+  seccion?: string | null;
+  status: CandidateStatus;
+  reclutador?: string | null;
+  fecha_aplicacion?: string;
+  notas?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CandidateNote {
+  id?: string;
+  candidate_id: string;
+  autor?: string | null;
+  texto: string;
+  created_at?: string;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Vacancy lifecycle (tabla `vacancy_requests` + `vacancy_status_history`)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+export const VACANCY_STATUSES = [
+  'abierta',
+  'en_proceso',
+  'pausa',
+  'cubierta',
+  'cancelada',
+] as const;
+
+export type VacancyStatus = (typeof VACANCY_STATUSES)[number];
+
+export const VACANCY_STATUS_LABEL: Record<VacancyStatus, string> = {
+  abierta: 'Abierta',
+  en_proceso: 'En proceso',
+  pausa: 'Pausa',
+  cubierta: 'Cubierta',
+  cancelada: 'Cancelada',
+};
+
+export const VACANCY_PRIORITIES = ['alta', 'media', 'baja'] as const;
+export type VacancyPriority = (typeof VACANCY_PRIORITIES)[number];
+
+export const VACANCY_PRIORITY_LABEL: Record<VacancyPriority, string> = {
+  alta: 'Alta',
+  media: 'Media',
+  baja: 'Baja',
+};
+
+export interface VacancyRequest {
+  id?: string;
+  puesto: string;
+  area: string;
+  seccion?: string | null;
+  fecha_apertura?: string;
+  fecha_objetivo?: string | null;
+  fecha_cubierta?: string | null;
+  reclutador_asignado?: string | null;
+  fuente_planeada?: string | null;
+  status: VacancyStatus;
+  prioridad: VacancyPriority;
+  justificacion?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface VacancyStatusHistoryEntry {
+  id?: string;
+  vacancy_id: string;
+  from_status?: VacancyStatus | null;
+  to_status: VacancyStatus;
+  changed_by?: string | null;
+  reason?: string | null;
+  changed_at?: string;
+}
