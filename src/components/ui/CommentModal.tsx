@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { X, MessageSquarePlus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { MessageSquarePlus, MessageSquare } from 'lucide-react';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
+import { Modal } from './Modal';
 import './CommentModal.css';
 
 interface CommentModalProps {
@@ -11,8 +12,10 @@ interface CommentModalProps {
   puesto: string;
   existingComments: PositionComment[];
   onClose: () => void;
-  onSave: (comment: PositionComment) => void;
+  onSave: (comment: PositionComment) => void | Promise<unknown>;
 }
+
+const MAX_LEN = 280;
 
 export function CommentModal({
   isOpen,
@@ -25,104 +28,114 @@ export function CommentModal({
 }: CommentModalProps) {
   const [tipo, setTipo] = useState<PositionComment['tipo']>('proceso_activo');
   const [comentario, setComentario] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setTipo('proceso_activo');
+      setComentario('');
+      setSubmitting(false);
+    }
+  }, [isOpen, puesto]);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!comentario.trim()) return;
-
-    onSave({
-      area,
-      seccion,
-      puesto,
-      comentario: comentario.trim(),
-      tipo,
-      fecha: new Date().toISOString(),
-    });
-
-    setComentario('');
-    setTipo('proceso_activo');
+    const trimmed = comentario.trim();
+    if (!trimmed || submitting) return;
+    try {
+      setSubmitting(true);
+      await onSave({
+        area,
+        seccion,
+        puesto,
+        comentario: trimmed,
+        tipo,
+        fecha: new Date().toISOString(),
+      });
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
   }
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-header__info">
-            <h3>{puesto}</h3>
-            <span className="modal-header__area">{area}</span>
-          </div>
-          <button
-            id="btn-close-comment-modal"
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Cerrar"
-          >
-            <X size={20} />
-          </button>
-        </div>
+  const sorted = [...existingComments].sort(
+    (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+  );
 
-        {/* Existing comments */}
-        {existingComments.length > 0 && (
-          <div className="modal-comments-list">
-            <span className="modal-section-label">Comentarios existentes</span>
-            {existingComments.map((c, i) => (
-              <div key={i} className="comment-item">
-                <span
-                  className="comment-item__type"
-                  data-type={c.tipo}
-                >
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      icon={<MessageSquare size={20} className="color-primary" aria-hidden="true" />}
+      title={puesto || 'Comentario'}
+      subtitle={`${area}${seccion ? ` · ${seccion}` : ''}`}
+    >
+      {sorted.length > 0 && (
+        <div className="modal-comments-list">
+          <span className="modal-section-label">Comentarios existentes</span>
+          {sorted.map((c, i) => (
+            <article key={c.id ?? `${c.fecha}-${i}`} className="comment-item">
+              <header className="comment-item__head">
+                <span className="comment-item__type" data-type={c.tipo}>
                   {COMMENT_TYPE_LABELS[c.tipo]}
                 </span>
-                <p className="comment-item__text">{c.comentario}</p>
                 <span className="comment-item__date">
-                  {new Date(c.fecha).toLocaleDateString('es-MX')}
+                  {new Date(c.fecha).toLocaleDateString('es-MX', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </span>
-              </div>
+              </header>
+              <p className="comment-item__text">{c.comentario}</p>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <form className="modal-form" onSubmit={handleSubmit} noValidate>
+        <span className="modal-section-label">Nuevo comentario</span>
+
+        <div className="form-group">
+          <label htmlFor="comment-type">Tipo</label>
+          <select
+            id="comment-type"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value as PositionComment['tipo'])}
+          >
+            {Object.entries(COMMENT_TYPE_LABELS).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
             ))}
-          </div>
-        )}
+          </select>
+        </div>
 
-        {/* New comment form */}
-        <form className="modal-form" onSubmit={handleSubmit}>
-          <span className="modal-section-label">Nuevo comentario</span>
+        <div className="form-group">
+          <label htmlFor="comment-text">Comentario</label>
+          <textarea
+            id="comment-text"
+            value={comentario}
+            onChange={(e) => setComentario(e.target.value.slice(0, MAX_LEN))}
+            placeholder="Ej. Candidato en segunda entrevista, pendiente referencias…"
+            rows={4}
+            required
+          />
+          <span className="char-counter">{comentario.length}/{MAX_LEN}</span>
+        </div>
 
-          <div className="modal-form__field">
-            <label htmlFor="comment-type">Tipo</label>
-            <select
-              id="comment-type"
-              value={tipo}
-              onChange={(e) => setTipo(e.target.value as PositionComment['tipo'])}
-            >
-              {Object.entries(COMMENT_TYPE_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="modal-form__field">
-            <label htmlFor="comment-text">Comentario</label>
-            <textarea
-              id="comment-text"
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
-              placeholder="Ej: Candidato en segunda entrevista, pendiente referencias..."
-              rows={3}
-            />
-          </div>
-
+        <div className="modal-form__actions">
+          <button type="button" className="btn-secondary" onClick={onClose} disabled={submitting}>
+            Cancelar
+          </button>
           <button
-            id="btn-save-comment"
             type="submit"
             className="btn-primary"
-            disabled={!comentario.trim()}
+            disabled={!comentario.trim() || submitting}
           >
-            <MessageSquarePlus size={16} />
-            Guardar Comentario
+            <MessageSquarePlus size={16} aria-hidden="true" />
+            {submitting ? 'Guardando…' : 'Guardar comentario'}
           </button>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Modal>
   );
 }
