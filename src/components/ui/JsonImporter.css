@@ -7,48 +7,22 @@
   flex-wrap: wrap;
 }
 
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 10px 20px;
-  height: 40px;
-  background: var(--color-canvas);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-  cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.btn-secondary:hover {
-  background: var(--color-surface-soft);
-  border-color: var(--color-muted-soft);
-}
-
-.btn-secondary:active {
-  background: var(--color-surface-card);
-}
-
 .json-importer__status {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-weight: 500;
-  padding: 4px 12px;
+  padding: var(--spacing-xxs) var(--spacing-md);
   border-radius: var(--rounded-pill);
 }
 
 .json-importer__status--success {
-  background: rgba(93, 184, 114, 0.12);
+  background: var(--color-success-tint);
   color: var(--color-success);
 }
 
 .json-importer__status--error {
-  background: rgba(198, 69, 69, 0.12);
+  background: var(--color-error-tint);
   color: var(--color-error);
 }

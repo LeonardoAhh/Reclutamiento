@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { X, UserPlus, Trash2, AlertCircle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { Modal } from './Modal';
 import './EmployeeModal.css';
 
 interface EmployeeModalProps {
@@ -9,12 +10,17 @@ interface EmployeeModalProps {
   mode: 'add' | 'delete';
   employee?: Employee | null;
   onClose: () => void;
-  onSave?: (emp: Employee) => void;
-  onDelete?: (num_empleado: string) => void;
+  onSave?: (emp: Employee) => Promise<{ ok: boolean; message?: string }> | void;
+  onDelete?: (num_empleado: string) => Promise<{ ok: boolean; message?: string }> | void;
 }
 
-export function EmployeeModal({ isOpen, mode, employee, onClose, onSave, onDelete }: EmployeeModalProps) {
-  const [formData, setFormData] = useState<Partial<Employee>>({
+type FormState = Pick<
+  Employee,
+  'num_empleado' | 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso'
+>;
+
+function emptyForm(): FormState {
+  return {
     num_empleado: '',
     nombre: '',
     area: '',
@@ -22,153 +28,265 @@ export function EmployeeModal({ isOpen, mode, employee, onClose, onSave, onDelet
     puesto: '',
     categoria: 'N/A',
     turno: '1',
-    fecha_ingreso: new Date().toLocaleDateString('es-MX'),
-  });
+    fecha_ingreso: new Date().toISOString().slice(0, 10),
+  };
+}
 
-  // Extract unique areas and their sections/puestos from constants
-  const areas = Array.from(new Set(PLANTILLA_AUTORIZADA.map(p => p.area)));
-  
-  const sectionsForArea = Array.from(
-    new Set(PLANTILLA_AUTORIZADA.filter(p => p.area === formData.area).map(p => p.seccion))
+export function EmployeeModal({
+  isOpen,
+  mode,
+  employee,
+  onClose,
+  onSave,
+  onDelete,
+}: EmployeeModalProps) {
+  const [form, setForm] = useState<FormState>(() => emptyForm());
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Unique options derived from the authorized headcount table
+  const areas = useMemo(
+    () => Array.from(new Set(PLANTILLA_AUTORIZADA.map((p) => p.area))),
+    []
   );
-
-  const puestosForSection = Array.from(
-    new Set(PLANTILLA_AUTORIZADA.filter(p => p.area === formData.area && p.seccion === formData.seccion).map(p => p.puesto))
+  const sectionsForArea = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          PLANTILLA_AUTORIZADA.filter((p) => p.area === form.area).map((p) => p.seccion)
+        )
+      ),
+    [form.area]
+  );
+  const puestosForSection = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          PLANTILLA_AUTORIZADA.filter(
+            (p) => p.area === form.area && p.seccion === form.seccion
+          ).map((p) => p.puesto)
+        )
+      ),
+    [form.area, form.seccion]
   );
 
   useEffect(() => {
-    if (employee && mode === 'delete') {
-      setFormData(employee);
-    } else if (mode === 'add') {
-      setFormData({
-        num_empleado: '',
-        nombre: '',
-        area: areas[0] || '',
-        seccion: '',
-        puesto: '',
-        categoria: 'N/A',
-        turno: '1',
-        fecha_ingreso: new Date().toLocaleDateString('es-MX'),
+    if (!isOpen) return;
+    setErrorMsg(null);
+    setSubmitting(false);
+
+    if (mode === 'delete' && employee) {
+      setForm({
+        num_empleado: employee.num_empleado,
+        nombre: employee.nombre,
+        area: employee.area,
+        seccion: employee.seccion,
+        puesto: employee.puesto,
+        categoria: employee.categoria,
+        turno: employee.turno,
+        fecha_ingreso: employee.fecha_ingreso,
       });
+    } else {
+      setForm(emptyForm());
     }
   }, [isOpen, mode, employee]);
 
-  if (!isOpen) return null;
+  const isAddValid =
+    form.num_empleado.trim().length > 0 &&
+    form.nombre.trim().length > 0 &&
+    form.area.length > 0 &&
+    form.seccion.length > 0 &&
+    form.puesto.length > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (mode === 'add' && onSave) {
-      onSave(formData as Employee);
-    } else if (mode === 'delete' && onDelete && formData.num_empleado) {
-      onDelete(formData.num_empleado);
+    if (submitting) return;
+    setErrorMsg(null);
+
+    try {
+      setSubmitting(true);
+      if (mode === 'add' && onSave) {
+        const result = await onSave({ ...form });
+        if (result && result.ok === false) {
+          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          return;
+        }
+        onClose();
+      } else if (mode === 'delete' && onDelete && form.num_empleado) {
+        const result = await onDelete(form.num_empleado);
+        if (result && result.ok === false) {
+          setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          return;
+        }
+        onClose();
+      }
+    } finally {
+      setSubmitting(false);
     }
-  };
+  }
+
+  const isAdd = mode === 'add';
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content employee-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="modal-header">
-          <div className="modal-title">
-            {mode === 'add' ? <UserPlus size={20} /> : <Trash2 size={20} className="color-error" />}
-            <h2>{mode === 'add' ? 'Nuevo Empleado' : 'Eliminar Empleado'}</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="employee-modal"
+      icon={
+        isAdd ? (
+          <UserPlus size={20} className="color-primary" aria-hidden="true" />
+        ) : (
+          <Trash2 size={20} className="color-error" aria-hidden="true" />
+        )
+      }
+      title={isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado'}
+      subtitle={isAdd ? 'Registro manual' : 'Acción irreversible'}
+    >
+      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+        {isAdd ? (
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="emp-num">Número de Empleado</label>
+              <input
+                id="emp-num"
+                type="text"
+                inputMode="numeric"
+                required
+                value={form.num_empleado}
+                onChange={(e) => setForm({ ...form, num_empleado: e.target.value.trim() })}
+                placeholder="Ej. 1234"
+                autoComplete="off"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-name">Nombre Completo</label>
+              <input
+                id="emp-name"
+                type="text"
+                required
+                value={form.nombre}
+                onChange={(e) => setForm({ ...form, nombre: e.target.value.toUpperCase() })}
+                placeholder="APELLIDOS NOMBRE"
+                autoComplete="off"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-area">Área</label>
+              <select
+                id="emp-area"
+                required
+                value={form.area}
+                onChange={(e) =>
+                  setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
+                }
+              >
+                <option value="">Seleccione área…</option>
+                {areas.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-seccion">Sección</label>
+              <select
+                id="emp-seccion"
+                required
+                value={form.seccion}
+                onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+                disabled={!form.area}
+              >
+                <option value="">Seleccione sección…</option>
+                {sectionsForArea.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-puesto">Puesto</label>
+              <select
+                id="emp-puesto"
+                required
+                value={form.puesto}
+                onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+                disabled={!form.seccion}
+              >
+                <option value="">Seleccione puesto…</option>
+                {puestosForSection.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-turno">Turno</label>
+              <select
+                id="emp-turno"
+                value={form.turno}
+                onChange={(e) => setForm({ ...form, turno: e.target.value })}
+              >
+                <option value="0">Administrativo (0)</option>
+                <option value="1">1er Turno</option>
+                <option value="2">2do Turno</option>
+                <option value="3">3er Turno</option>
+                <option value="4">4to Turno</option>
+                <option value="5">5to Turno</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="emp-fecha">Fecha de Ingreso</label>
+              <input
+                id="emp-fecha"
+                type="date"
+                value={form.fecha_ingreso}
+                onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+              />
+            </div>
           </div>
-          <button className="btn-icon" onClick={onClose} aria-label="Cerrar">
-            <X size={20} />
+        ) : (
+          <div className="delete-warning">
+            <div className="delete-warning__icon" aria-hidden="true">
+              <AlertCircle size={32} />
+            </div>
+            <p className="delete-warning__title">
+              ¿Eliminar a{' '}
+              <span className="delete-warning__name">{form.nombre || 'este empleado'}</span>?
+            </p>
+            <dl className="delete-warning__meta">
+              <div className="delete-warning__meta-row">
+                <dt>Núm.</dt>
+                <dd>{form.num_empleado || '—'}</dd>
+              </div>
+              <div className="delete-warning__meta-row">
+                <dt>Puesto</dt>
+                <dd>{form.puesto || '—'}</dd>
+              </div>
+              <div className="delete-warning__meta-row">
+                <dt>Área</dt>
+                <dd>{form.area || '—'}</dd>
+              </div>
+            </dl>
+            <p className="delete-warning__sub">Esta acción no se puede deshacer.</p>
+          </div>
+        )}
+
+        {errorMsg && (
+          <p className="form-error" role="alert">{errorMsg}</p>
+        )}
+
+        <footer className="modal-footer">
+          <button type="button" className="btn-secondary" onClick={onClose} disabled={submitting}>
+            Cancelar
           </button>
-        </header>
-
-        <form onSubmit={handleSubmit} className="modal-body">
-          {mode === 'delete' ? (
-            <div className="delete-warning">
-              <AlertCircle size={48} className="color-error" />
-              <p>¿Estás seguro de que deseas eliminar a <strong>{formData.nombre}</strong>?</p>
-              <p className="delete-meta">Num. Empleado: {formData.num_empleado} | {formData.puesto}</p>
-              <p className="delete-sub">Esta acción no se puede deshacer.</p>
-            </div>
+          {isAdd ? (
+            <button type="submit" className="btn-primary" disabled={!isAddValid || submitting}>
+              {submitting ? 'Guardando…' : 'Guardar empleado'}
+            </button>
           ) : (
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Número de Empleado</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.num_empleado}
-                  onChange={(e) => setFormData({ ...formData, num_empleado: e.target.value })}
-                  placeholder="Ej: 1234"
-                />
-              </div>
-              <div className="form-group">
-                <label>Nombre Completo</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value.toUpperCase() })}
-                  placeholder="APELLIDOS NOMBRE"
-                />
-              </div>
-              <div className="form-group">
-                <label>Área</label>
-                <select
-                  required
-                  value={formData.area}
-                  onChange={(e) => setFormData({ ...formData, area: e.target.value, seccion: '', puesto: '' })}
-                >
-                  <option value="">Seleccione Área...</option>
-                  {areas.map(a => <option key={a} value={a}>{a}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Sección</label>
-                <select
-                  required
-                  value={formData.seccion}
-                  onChange={(e) => setFormData({ ...formData, seccion: e.target.value, puesto: '' })}
-                  disabled={!formData.area}
-                >
-                  <option value="">Seleccione Sección...</option>
-                  {sectionsForArea.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Puesto</label>
-                <select
-                  required
-                  value={formData.puesto}
-                  onChange={(e) => setFormData({ ...formData, puesto: e.target.value })}
-                  disabled={!formData.seccion}
-                >
-                  <option value="">Seleccione Puesto...</option>
-                  {puestosForSection.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Turno</label>
-                <select
-                  value={formData.turno}
-                  onChange={(e) => setFormData({ ...formData, turno: e.target.value })}
-                >
-                  <option value="0">Administrativo (0)</option>
-                  <option value="1">1er Turno</option>
-                  <option value="2">2do Turno</option>
-                  <option value="3">3er Turno</option>
-                  <option value="4">4to Turno</option>
-                  <option value="5">5to Turno</option>
-                </select>
-              </div>
-            </div>
+            <button type="submit" className="btn-danger" disabled={submitting}>
+              {submitting ? 'Eliminando…' : 'Eliminar'}
+            </button>
           )}
-
-          <footer className="modal-footer">
-            <button type="button" className="btn-text" onClick={onClose}>
-              Cancelar
-            </button>
-            <button type="submit" className={mode === 'add' ? 'btn-primary' : 'btn-primary btn-danger'}>
-              {mode === 'add' ? 'Guardar Empleado' : 'Eliminar'}
-            </button>
-          </footer>
-        </form>
-      </div>
-    </div>
+        </footer>
+      </form>
+    </Modal>
   );
 }

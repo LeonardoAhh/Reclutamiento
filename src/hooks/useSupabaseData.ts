@@ -7,9 +7,6 @@ const STORAGE_KEYS = {
   comments: 'reclutamiento_comments',
 };
 
-/**
- * Load from localStorage
- */
 function loadLocal<T>(key: string, fallback: T): T {
   try {
     const stored = localStorage.getItem(key);
@@ -19,9 +16,6 @@ function loadLocal<T>(key: string, fallback: T): T {
   }
 }
 
-/**
- * Save to localStorage
- */
 function saveLocal<T>(key: string, data: T): void {
   try {
     localStorage.setItem(key, JSON.stringify(data));
@@ -31,7 +25,7 @@ function saveLocal<T>(key: string, data: T): void {
 }
 
 /**
- * Check if Supabase is properly configured with valid-looking credentials
+ * Validate Supabase credentials look real before issuing requests.
  */
 function checkSupabaseConfig(): boolean {
   const url = import.meta.env.VITE_SUPABASE_URL || '';
@@ -43,10 +37,11 @@ function checkSupabaseConfig(): boolean {
   );
 }
 
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 /**
- * Hook for fetching employees and comments.
- * Tries Supabase first, falls back to localStorage.
- * Single fetch on mount — no excessive reads.
+ * Hook for fetching and mutating employees + comments.
+ * Tries Supabase first, falls back to localStorage so the app stays usable offline.
  */
 export function useSupabaseData() {
   const [employees, setEmployees] = useState<Employee[]>(() =>
@@ -57,10 +52,10 @@ export function useSupabaseData() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
   const isConfigured = checkSupabaseConfig();
 
-  // Fetch from Supabase on mount (if configured)
   useEffect(() => {
     if (!isConfigured) {
       setLoading(false);
@@ -90,7 +85,6 @@ export function useSupabaseData() {
         const msg = err instanceof Error ? err.message : String(err);
         console.warn('Supabase fetch failed, using localStorage:', msg);
         setError(msg);
-        // localStorage data already loaded via useState initializer
       } finally {
         setLoading(false);
       }
@@ -99,44 +93,117 @@ export function useSupabaseData() {
     fetchData();
   }, [isConfigured]);
 
-  // Upsert employees (JSON import)
+  function flashSaved() {
+    setSaveStatus('saved');
+    window.setTimeout(() => setSaveStatus('idle'), 1500);
+  }
+
+  /** Replace the whole employees table from a JSON import. */
   const upsertEmployees = useCallback(async (data: Employee[]) => {
     setEmployees(data);
     saveLocal(STORAGE_KEYS.employees, data);
 
-    if (!isConfigured) return;
+    if (!isConfigured) {
+      flashSaved();
+      return;
+    }
 
     try {
-      // Delete all existing to ensure dropped employees (resignations) are removed
+      setSaveStatus('saving');
       await supabase.from('empleados').delete().not('num_empleado', 'is', null);
-
-      // Insert fresh data
-      const { error: err } = await supabase
-        .from('empleados')
-        .insert(data);
-
+      const { error: err } = await supabase.from('empleados').insert(data);
       if (err) throw err;
+      flashSaved();
     } catch (err) {
       console.warn('Supabase upsert failed, data saved locally:', err);
+      setSaveStatus('error');
     }
   }, [isConfigured]);
 
-  // Add comment
+  /** Insert a single employee (used by the "Nuevo Empleado" modal). */
+  const addSingleEmployee = useCallback(async (emp: Employee): Promise<{ ok: boolean; message?: string }> => {
+    // Prevent duplicates by num_empleado
+    const exists = employees.some(e => e.num_empleado === emp.num_empleado);
+    if (exists) {
+      return { ok: false, message: `Ya existe un empleado con número ${emp.num_empleado}.` };
+    }
+
+    const updated = [...employees, emp];
+    setEmployees(updated);
+    saveLocal(STORAGE_KEYS.employees, updated);
+
+    if (!isConfigured) {
+      flashSaved();
+      return { ok: true };
+    }
+
+    try {
+      setSaveStatus('saving');
+      const { error: err } = await supabase.from('empleados').insert(emp);
+      if (err) throw err;
+      flashSaved();
+      return { ok: true };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn('Supabase insert failed, employee saved locally:', message);
+      setSaveStatus('error');
+      return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+    }
+  }, [isConfigured, employees]);
+
+  /** Remove an employee by num_empleado. */
+  const deleteEmployee = useCallback(async (num_empleado: string): Promise<{ ok: boolean; message?: string }> => {
+    const updated = employees.filter(e => e.num_empleado !== num_empleado);
+    if (updated.length === employees.length) {
+      return { ok: false, message: 'Empleado no encontrado.' };
+    }
+
+    setEmployees(updated);
+    saveLocal(STORAGE_KEYS.employees, updated);
+
+    if (!isConfigured) {
+      flashSaved();
+      return { ok: true };
+    }
+
+    try {
+      setSaveStatus('saving');
+      const { error: err } = await supabase
+        .from('empleados')
+        .delete()
+        .eq('num_empleado', num_empleado);
+      if (err) throw err;
+      flashSaved();
+      return { ok: true };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn('Supabase delete failed, removed locally:', message);
+      setSaveStatus('error');
+      return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
+    }
+  }, [isConfigured, employees]);
+
+  /** Append a new comment for a position. */
   const addComment = useCallback(async (comment: PositionComment) => {
     const updated = [...comments, comment];
     setComments(updated);
     saveLocal(STORAGE_KEYS.comments, updated);
 
-    if (!isConfigured) return;
+    if (!isConfigured) {
+      flashSaved();
+      return;
+    }
 
     try {
+      setSaveStatus('saving');
       const { error: err } = await supabase
         .from('comentarios_reclutamiento')
         .insert(comment);
-
       if (err) throw err;
+      flashSaved();
     } catch (err) {
       console.warn('Supabase insert failed, comment saved locally:', err);
+      setSaveStatus('error');
     }
   }, [isConfigured, comments]);
 
@@ -146,7 +213,10 @@ export function useSupabaseData() {
     loading,
     error,
     isConfigured,
+    saveStatus,
     upsertEmployees,
+    addSingleEmployee,
+    deleteEmployee,
     addComment,
   };
 }

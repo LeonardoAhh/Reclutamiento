@@ -8,11 +8,12 @@
 }
 
 .coverage-bar__label {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   font-family: var(--font-body);
   min-width: 42px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .coverage-bar__track {

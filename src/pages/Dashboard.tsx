@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Users,
   UserCheck,
@@ -9,12 +9,15 @@ import {
   MessageSquare,
   Search,
   Filter,
+  UserPlus as UserPlusIcon,
+  Trash2,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
+import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -23,9 +26,12 @@ import {
 } from '@/lib/utils';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { EmployeeModal } from '@/components/ui/EmployeeModal';
-import { UserPlus as UserPlusIcon } from 'lucide-react';
-import type { Employee, EmployeeRaw, PositionComment, DepartmentCoverage } from '@/lib/types';
+import type {
+  Employee,
+  EmployeeRaw,
+  PositionComment,
+  DepartmentCoverage,
+} from '@/lib/types';
 import './Dashboard.css';
 
 export function Dashboard() {
@@ -34,6 +40,7 @@ export function Dashboard() {
     comments,
     loading,
     isConfigured,
+    saveStatus,
     upsertEmployees,
     addComment,
     addSingleEmployee,
@@ -43,18 +50,16 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
   const [expandedDepts, setExpandedDepts] = useState<Set<string>>(new Set());
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
+  const [commentTarget, setCommentTarget] = useState<{
     area: string;
     seccion: string;
     puesto: string;
-  }>({ isOpen: false, area: '', seccion: '', puesto: '' });
+  } | null>(null);
 
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<'add' | 'delete' | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
-  // Calculate coverage data
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments),
     [employees, comments]
@@ -65,7 +70,6 @@ export function Dashboard() {
     [positionCoverage]
   );
 
-  // Totals for KPI cards
   const totals = useMemo(() => {
     const autorizada = departmentCoverage.reduce((s, d) => s + d.plantilla_autorizada, 0);
     const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
@@ -74,14 +78,11 @@ export function Dashboard() {
     return { autorizada, real, vacantes, cobertura };
   }, [departmentCoverage]);
 
-  // Filter departments
   const filteredDepts = useMemo(() => {
     let result = departmentCoverage;
-
     if (filterArea) {
       result = result.filter((d) => d.area === filterArea);
     }
-
     if (searchTerm) {
       const term = searchTerm.toUpperCase();
       result = result
@@ -96,62 +97,52 @@ export function Dashboard() {
         }))
         .filter((dept) => dept.puestos.length > 0);
     }
-
     return result;
   }, [departmentCoverage, filterArea, searchTerm]);
 
-  // Find exact employees based on search term
   const matchingEmployees = useMemo(() => {
     if (!searchTerm || searchTerm.length < 2) return [];
     const term = searchTerm.toUpperCase();
-    return employees.filter(e =>
-      e.nombre.toUpperCase().includes(term) ||
-      e.num_empleado.includes(term)
-    ).slice(0, 5); // Show top 5 matches
+    return employees
+      .filter(
+        (e) =>
+          e.nombre.toUpperCase().includes(term) ||
+          e.num_empleado.includes(term)
+      )
+      .slice(0, 5);
   }, [employees, searchTerm]);
 
-  // Unique areas for filter dropdown
   const areas = useMemo(
     () => departmentCoverage.map((d) => d.area),
     [departmentCoverage]
   );
 
-  // Import handler
   function handleImport(rawData: EmployeeRaw[]) {
     const transformed = rawData.map((r) => transformEmployeeData(r) as Employee);
     upsertEmployees(transformed);
   }
 
-  // Toggle department expansion
   function toggleDept(area: string) {
     setExpandedDepts((prev) => {
       const next = new Set(prev);
-      if (next.has(area)) {
-        next.delete(area);
-      } else {
-        next.add(area);
-      }
+      next.has(area) ? next.delete(area) : next.add(area);
       return next;
     });
   }
 
-  // Expand all
   function expandAll() {
     setExpandedDepts(new Set(areas));
   }
 
-  // Collapse all
   function collapseAll() {
     setExpandedDepts(new Set());
   }
 
-  // Save comment
   function handleSaveComment(comment: PositionComment) {
     addComment(comment);
-    setModalState({ isOpen: false, area: '', seccion: '', puesto: '' });
+    setCommentTarget(null);
   }
 
-  // Get badge variant from coverage percentage
   function getCoverageBadge(pct: number) {
     if (pct >= 100) return 'success' as const;
     if (pct >= 75) return 'teal' as const;
@@ -159,17 +150,21 @@ export function Dashboard() {
     return 'error' as const;
   }
 
-  // Handle saving new employee
-  function handleSaveEmployee(emp: Employee) {
-    addSingleEmployee(emp);
-    setEmpModalMode(null);
+  async function handleSaveEmployee(emp: Employee) {
+    return addSingleEmployee(emp);
   }
 
-  // Handle deleting employee
-  function handleDeleteEmployee(num_empleado: string) {
-    deleteEmployee(num_empleado);
-    setEmpModalMode(null);
-    setSearchTerm(''); // Clear search to hide dropdown
+  async function handleDeleteEmployee(num_empleado: string) {
+    const result = await deleteEmployee(num_empleado);
+    if (result.ok) {
+      setSearchTerm('');
+    }
+    return result;
+  }
+
+  function openDeleteFor(emp: Employee) {
+    setSelectedEmployee(emp);
+    setEmpModalMode('delete');
   }
 
   if (loading) {
@@ -178,12 +173,15 @@ export function Dashboard() {
         <section className="dashboard__hero" id="dashboard-hero">
           <div className="dashboard__hero-content">
             <h1>Control de Plantilla</h1>
-            <p className="dashboard__hero-sub">Cargando datos...</p>
+            <p className="dashboard__hero-sub">Cargando datos…</p>
           </div>
         </section>
       </main>
     );
   }
+
+  const showSearchDropdown =
+    matchingEmployees.length > 0 && empModalMode === null;
 
   return (
     <main className="dashboard container" id="dashboard-main">
@@ -195,15 +193,22 @@ export function Dashboard() {
             <Badge variant={isConfigured ? 'success' : 'amber'}>
               {isConfigured ? 'Conectado a base de datos' : 'Sin conexión'}
             </Badge>
+            {saveStatus === 'saving' && <Badge variant="teal">Guardando…</Badge>}
+            {saveStatus === 'saved' && <Badge variant="success">Guardado</Badge>}
+            {saveStatus === 'error' && <Badge variant="error">Error al guardar</Badge>}
           </div>
         </div>
         <div className="dashboard__hero-actions">
           <button
+            type="button"
             className="btn-primary"
-            onClick={() => { setSelectedEmployee(null); setEmpModalMode('add'); }}
+            onClick={() => {
+              setSelectedEmployee(null);
+              setEmpModalMode('add');
+            }}
           >
-            <UserPlusIcon size={16} />
-            Nuevo Empleado
+            <UserPlusIcon size={16} aria-hidden="true" />
+            Nuevo empleado
           </button>
           <JsonImporter onImport={handleImport} />
         </div>
@@ -244,37 +249,52 @@ export function Dashboard() {
 
       {/* ── Search & Filter ── */}
       <section className="dashboard__controls" id="dashboard-controls">
-        <div className="dashboard__search" style={{ position: 'relative' }}>
-          <Search size={16} className="dashboard__search-icon" />
+        <div className="dashboard__search">
+          <Search size={16} className="dashboard__search-icon" aria-hidden="true" />
+          <label htmlFor="search-input" className="sr-only">
+            Buscar empleado, puesto o sección
+          </label>
           <input
             id="search-input"
             type="text"
-            placeholder="Buscar empleado, puesto, sección..."
+            placeholder="Buscar empleado, puesto, sección…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="dashboard__search-input"
             autoComplete="off"
+            aria-haspopup="listbox"
+            aria-expanded={showSearchDropdown}
           />
-          {matchingEmployees.length > 0 && (
-            <div className="dashboard__search-dropdown">
-              {matchingEmployees.map(emp => (
-                <button
-                  key={emp.num_empleado}
-                  className="search-dropdown-item"
-                  onClick={() => {
-                    setSelectedEmployee(emp);
-                    setEmpModalMode('delete');
-                  }}
-                >
-                  <span className="emp-name">{emp.nombre}</span>
-                  <span className="emp-meta">{emp.puesto} | #{emp.num_empleado}</span>
-                </button>
+          {showSearchDropdown && (
+            <div className="dashboard__search-dropdown" role="listbox">
+              <div className="search-dropdown__head">Empleados encontrados</div>
+              {matchingEmployees.map((emp) => (
+                <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
+                  <div className="search-dropdown-item__info">
+                    <span className="emp-name">{emp.nombre}</span>
+                    <span className="emp-meta">
+                      {emp.puesto} · #{emp.num_empleado}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="search-dropdown-item__delete"
+                    onClick={() => openDeleteFor(emp)}
+                    aria-label={`Eliminar a ${emp.nombre}`}
+                    title="Eliminar empleado"
+                  >
+                    <Trash2 size={14} aria-hidden="true" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
         </div>
         <div className="dashboard__filter">
-          <Filter size={16} />
+          <Filter size={16} aria-hidden="true" />
+          <label htmlFor="filter-area" className="sr-only">
+            Filtrar por área
+          </label>
           <select
             id="filter-area"
             value={filterArea}
@@ -290,14 +310,16 @@ export function Dashboard() {
         <div className="dashboard__expand-controls">
           <button
             id="btn-expand-all"
+            type="button"
             className="btn-text"
             onClick={expandAll}
           >
             Expandir todo
           </button>
-          <span className="dashboard__separator">|</span>
+          <span className="dashboard__separator" aria-hidden="true">|</span>
           <button
             id="btn-collapse-all"
+            type="button"
             className="btn-text"
             onClick={collapseAll}
           >
@@ -312,7 +334,7 @@ export function Dashboard() {
           <div className="dashboard__empty" id="dashboard-empty">
             <Users size={48} strokeWidth={1} />
             <h3>Sin datos cargados</h3>
-            <p>Importa un archivo JSON con datos de empleados para comenzar.</p>
+            <p>Importa un archivo JSON o crea un empleado para comenzar.</p>
           </div>
         )}
 
@@ -324,14 +346,14 @@ export function Dashboard() {
           </div>
         )}
 
-        {filteredDepts.map((dept: DepartmentCoverage) => (
+        {filteredDepts.map((dept) => (
           <DepartmentCard
             key={dept.area}
             dept={dept}
             isExpanded={expandedDepts.has(dept.area)}
             onToggle={() => toggleDept(dept.area)}
-            onOpenComment={(area: string, seccion: string, puesto: string) =>
-              setModalState({ isOpen: true, area, seccion, puesto })
+            onOpenComment={(area, seccion, puesto) =>
+              setCommentTarget({ area, seccion, puesto })
             }
             getCoverageBadge={getCoverageBadge}
             comments={comments}
@@ -341,24 +363,25 @@ export function Dashboard() {
 
       {/* ── Comment Modal ── */}
       <CommentModal
-        isOpen={modalState.isOpen}
-        area={modalState.area}
-        seccion={modalState.seccion}
-        puesto={modalState.puesto}
+        isOpen={commentTarget !== null}
+        area={commentTarget?.area ?? ''}
+        seccion={commentTarget?.seccion ?? ''}
+        puesto={commentTarget?.puesto ?? ''}
         existingComments={comments.filter(
           (c) =>
-            c.area === modalState.area &&
-            c.seccion === modalState.seccion &&
-            c.puesto === modalState.puesto
+            commentTarget !== null &&
+            c.area === commentTarget.area &&
+            c.seccion === commentTarget.seccion &&
+            c.puesto === commentTarget.puesto
         )}
-        onClose={() => setModalState({ isOpen: false, area: '', seccion: '', puesto: '' })}
+        onClose={() => setCommentTarget(null)}
         onSave={handleSaveComment}
       />
 
       {/* ── Employee Modal (Add / Delete) ── */}
       <EmployeeModal
         isOpen={empModalMode !== null}
-        mode={empModalMode || 'add'}
+        mode={empModalMode ?? 'add'}
         employee={selectedEmployee}
         onClose={() => setEmpModalMode(null)}
         onSave={handleSaveEmployee}
@@ -395,6 +418,7 @@ function DepartmentCard({
         className="dept-card__header"
         onClick={onToggle}
         aria-expanded={isExpanded}
+        type="button"
       >
         <div className="dept-card__header-left">
           <h3 className="dept-card__title">{dept.area}</h3>
@@ -403,7 +427,9 @@ function DepartmentCard({
               {dept.porcentaje_cobertura}%
             </Badge>
             {hasVacancies && (
-              <Badge variant="error">{dept.vacantes} vacante{dept.vacantes > 1 ? 's' : ''}</Badge>
+              <Badge variant="error">
+                {dept.vacantes} vacante{dept.vacantes > 1 ? 's' : ''}
+              </Badge>
             )}
           </div>
         </div>
@@ -429,25 +455,31 @@ function DepartmentCard({
             <table className="dept-card__table">
               <thead>
                 <tr>
-                  <th>Puesto</th>
-                  <th>Sección</th>
-                  <th className="text-center">Autorizada</th>
-                  <th className="text-center">Real</th>
-                  <th className="text-center">Vacantes</th>
-                  <th>Cobertura</th>
-                  <th className="text-center">Estado</th>
-                  <th></th>
+                  <th scope="col">Puesto</th>
+                  <th scope="col">Sección</th>
+                  <th scope="col" className="text-center">Autorizada</th>
+                  <th scope="col" className="text-center">Real</th>
+                  <th scope="col" className="text-center">Vacantes</th>
+                  <th scope="col">Cobertura</th>
+                  <th scope="col" className="text-center">Estado</th>
+                  <th scope="col" aria-label="Acciones" />
                 </tr>
               </thead>
               <tbody>
                 {dept.puestos.map((pos) => {
                   const posComments = comments.filter(
-                    (c) => c.area === pos.area && c.seccion === pos.seccion && c.puesto === pos.puesto
+                    (c) =>
+                      c.area === pos.area &&
+                      c.seccion === pos.seccion &&
+                      c.puesto === pos.puesto
                   );
                   const latestComment = posComments[posComments.length - 1];
 
                   return (
-                    <tr key={`${pos.area}-${pos.seccion}-${pos.puesto}`} className={pos.vacantes > 0 ? 'row--has-vacancy' : ''}>
+                    <tr
+                      key={`${pos.area}-${pos.seccion}-${pos.puesto}`}
+                      className={pos.vacantes > 0 ? 'row--has-vacancy' : ''}
+                    >
                       <td className="cell-puesto">{pos.puesto}</td>
                       <td className="cell-seccion">{pos.seccion}</td>
                       <td className="text-center">{pos.plantilla_autorizada}</td>
@@ -489,12 +521,13 @@ function DepartmentCard({
                       </td>
                       <td>
                         <button
+                          type="button"
                           className="btn-icon"
                           onClick={() => onOpenComment(pos.area, pos.seccion, pos.puesto)}
                           title="Agregar comentario"
                           aria-label={`Comentario para ${pos.puesto}`}
                         >
-                          <MessageSquare size={16} />
+                          <MessageSquare size={16} aria-hidden="true" />
                           {posComments.length > 0 && (
                             <span className="btn-icon__count">{posComments.length}</span>
                           )}
