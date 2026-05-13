@@ -3,6 +3,7 @@ import { UserPlus, Pencil, Trash2, AlertCircle } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import './CandidateModal.css';
 
@@ -47,7 +48,7 @@ function emptyForm(): FormState {
     reclutador: '',
     source: '',
     cv_url: '',
-    fecha_aplicacion: new Date().toISOString().slice(0, 10),
+    fecha_aplicacion: localTodayIso(),
     notas: '',
   };
 }
@@ -64,7 +65,9 @@ function fromCandidate(c: Candidate): FormState {
     reclutador: c.reclutador ?? '',
     source: c.source ?? '',
     cv_url: c.cv_url ?? '',
-    fecha_aplicacion: (c.fecha_aplicacion ?? new Date().toISOString()).slice(0, 10),
+    fecha_aplicacion: c.fecha_aplicacion
+      ? isoToLocalDateString(c.fecha_aplicacion)
+      : localTodayIso(),
     notas: c.notas ?? '',
   };
 }
@@ -148,7 +151,8 @@ export function CandidateModal({
           reclutador: form.reclutador.trim() || null,
           source: form.source.trim() || null,
           cv_url: form.cv_url.trim() || null,
-          fecha_aplicacion: new Date(form.fecha_aplicacion).toISOString(),
+          fecha_aplicacion:
+            localDateToIso(form.fecha_aplicacion) ?? new Date().toISOString(),
           notas: form.notas.trim() || null,
         };
         const result = await onSave(payload, candidate?.id);

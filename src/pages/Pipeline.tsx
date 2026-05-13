@@ -31,6 +31,7 @@ import { useCandidates } from '@/hooks/useCandidates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
+import { formatShortDate } from '@/lib/dates';
 import './Pipeline.css';
 
 type ViewMode = 'table' | 'kanban';
@@ -47,18 +48,7 @@ const ACTIVE_STATUSES: ReadonlyArray<CandidateStatus> = [
   'oferta',
 ];
 
-function formatDate(iso?: string): string {
-  if (!iso) return '—';
-  try {
-    return new Date(iso).toLocaleDateString('es-MX', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    });
-  } catch {
-    return '—';
-  }
-}
+const formatDate = formatShortDate;
 
 export function Pipeline() {
   const {

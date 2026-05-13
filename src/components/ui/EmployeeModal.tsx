@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
 import './EmployeeModal.css';
 
@@ -28,7 +29,7 @@ function emptyForm(): FormState {
     puesto: '',
     categoria: 'N/A',
     turno: '1',
-    fecha_ingreso: new Date().toISOString().slice(0, 10),
+    fecha_ingreso: localTodayIso(),
   };
 }
 
