@@ -11,12 +11,20 @@ import {
   Search,
   Table2,
   LayoutGrid,
+  StickyNote,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
+import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
+import {
+  CandidateFilters,
+  EMPTY_FILTERS,
+  type FilterState,
+} from '@/components/pipeline/CandidateFilters';
 import { useCandidates } from '@/hooks/useCandidates';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus } from '@/lib/types';
@@ -24,6 +32,7 @@ import './Pipeline.css';
 
 type ViewMode = 'table' | 'kanban';
 const VIEW_STORAGE_KEY = 'pipeline_view_mode';
+const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
@@ -51,6 +60,7 @@ function formatDate(iso?: string): string {
 export function Pipeline() {
   const {
     candidates,
+    notes,
     loading,
     isConfigured,
     saveStatus,
@@ -58,11 +68,13 @@ export function Pipeline() {
     updateCandidate,
     setCandidateStatus,
     deleteCandidate,
+    addCandidateNote,
   } = useCandidates();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
+  const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const stored = localStorage.getItem(VIEW_STORAGE_KEY);
@@ -71,6 +83,18 @@ export function Pipeline() {
       return 'table';
     }
   });
+  const [filters, setFilters] = useState<FilterState>(() => {
+    try {
+      const stored = localStorage.getItem(FILTERS_STORAGE_KEY);
+      if (!stored) return EMPTY_FILTERS;
+      return { ...EMPTY_FILTERS, ...(JSON.parse(stored) as Partial<FilterState>) };
+    } catch {
+      return EMPTY_FILTERS;
+    }
+  });
+  const [showFilters, setShowFilters] = useState(
+    () => Object.values(filters).some((v) => v !== '')
+  );
 
   function changeView(next: ViewMode) {
     setViewMode(next);
@@ -80,6 +104,23 @@ export function Pipeline() {
       // localStorage unavailable; ignore.
     }
   }
+
+  function changeFilters(next: FilterState) {
+    setFilters(next);
+    try {
+      localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // localStorage unavailable; ignore.
+    }
+  }
+
+  function resetFilters() {
+    changeFilters(EMPTY_FILTERS);
+  }
+
+  const activeFiltersCount = (
+    Object.keys(filters) as Array<keyof FilterState>
+  ).filter((k) => filters[k] !== '').length;
 
   const totals = useMemo(() => {
     const total = candidates.length;
@@ -91,15 +132,49 @@ export function Pipeline() {
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    if (!q) return candidates;
+    const desde = filters.fechaDesde ? new Date(filters.fechaDesde).getTime() : null;
+    const hasta = filters.fechaHasta
+      ? new Date(`${filters.fechaHasta}T23:59:59`).getTime()
+      : null;
+
     return candidates.filter((c) => {
-      const haystack = [c.nombre, c.puesto, c.area, c.reclutador, c.source, c.email]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return haystack.includes(q);
+      if (filters.area && c.area !== filters.area) return false;
+      if (filters.puesto && c.puesto !== filters.puesto) return false;
+      if (filters.estado && c.status !== filters.estado) return false;
+      if (filters.reclutador && (c.reclutador ?? '') !== filters.reclutador) return false;
+      if (filters.source && (c.source ?? '') !== filters.source) return false;
+
+      if (desde || hasta) {
+        const ts = c.fecha_aplicacion ? new Date(c.fecha_aplicacion).getTime() : NaN;
+        if (Number.isNaN(ts)) return false;
+        if (desde && ts < desde) return false;
+        if (hasta && ts > hasta) return false;
+      }
+
+      if (q) {
+        const haystack = [c.nombre, c.puesto, c.area, c.reclutador, c.source, c.email]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+
+      return true;
     });
-  }, [candidates, searchTerm]);
+  }, [candidates, searchTerm, filters]);
+
+  const notesCountByCandidate = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const n of notes) {
+      if (!n.candidate_id) continue;
+      map.set(n.candidate_id, (map.get(n.candidate_id) ?? 0) + 1);
+    }
+    return map;
+  }, [notes]);
+
+  function notesCount(c: Candidate): number {
+    return c.id ? notesCountByCandidate.get(c.id) ?? 0 : 0;
+  }
 
   function openAdd() {
     setSelected(null);
@@ -230,6 +305,22 @@ export function Pipeline() {
         <span className="pipeline__count">
           {filtered.length} de {candidates.length}
         </span>
+        <button
+          type="button"
+          className={`btn-secondary pipeline__filter-btn${showFilters ? ' pipeline__filter-btn--active' : ''}`}
+          onClick={() => setShowFilters((v) => !v)}
+          aria-expanded={showFilters}
+          aria-controls="pipeline-filters"
+          title="Filtros avanzados"
+        >
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          Filtros
+          {activeFiltersCount > 0 && (
+            <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
+              {activeFiltersCount}
+            </span>
+          )}
+        </button>
         <div className="pipeline__view-toggle" role="tablist" aria-label="Cambiar vista">
           <button
             type="button"
@@ -256,6 +347,18 @@ export function Pipeline() {
         </div>
       </section>
 
+      {/* ── Filtros avanzados ── */}
+      {showFilters && (
+        <div id="pipeline-filters">
+          <CandidateFilters
+            candidates={candidates}
+            value={filters}
+            onChange={changeFilters}
+            onReset={resetFilters}
+          />
+        </div>
+      )}
+
       {/* ── Vista (tabla o kanban) ── */}
       {filtered.length === 0 ? (
         <section className="pipeline__empty">
@@ -274,22 +377,37 @@ export function Pipeline() {
           ) : (
             <>
               <h2>Sin resultados</h2>
-              <p>Ningún candidato coincide con la búsqueda actual.</p>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => setSearchTerm('')}
-              >
-                Limpiar búsqueda
-              </button>
+              <p>Ningún candidato coincide con la búsqueda o los filtros actuales.</p>
+              <div className="pipeline__empty-actions">
+                {searchTerm && (
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setSearchTerm('')}
+                  >
+                    Limpiar búsqueda
+                  </button>
+                )}
+                {activeFiltersCount > 0 && (
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={resetFilters}
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
+              </div>
             </>
           )}
         </section>
       ) : viewMode === 'kanban' ? (
         <PipelineKanban
           candidates={filtered}
+          notesCount={notesCount}
           onEdit={openEdit}
           onDelete={openDelete}
+          onNotes={(c) => setNotesTarget(c)}
           onStatusChange={(c, status) => handleStatusChange(c, status)}
         />
       ) : (
@@ -368,6 +486,18 @@ export function Pipeline() {
                     <button
                       type="button"
                       className="pipeline__icon-btn"
+                      onClick={() => setNotesTarget(c)}
+                      aria-label={`Notas de ${c.nombre}`}
+                      title={`Notas (${notesCount(c)})`}
+                    >
+                      <StickyNote size={16} aria-hidden="true" />
+                      {notesCount(c) > 0 && (
+                        <span className="pipeline__icon-badge">{notesCount(c)}</span>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="pipeline__icon-btn"
                       onClick={() => openEdit(c)}
                       aria-label={`Editar a ${c.nombre}`}
                       title="Editar"
@@ -391,7 +521,7 @@ export function Pipeline() {
         </section>
       )}
 
-      {/* ── Modal ── */}
+      {/* ── Modales ── */}
       <CandidateModal
         isOpen={modalMode !== null}
         mode={modalMode ?? 'add'}
@@ -399,6 +529,14 @@ export function Pipeline() {
         onClose={closeModal}
         onSave={handleSave}
         onDelete={deleteCandidate}
+      />
+
+      <CandidateNotesModal
+        isOpen={notesTarget !== null}
+        candidate={notesTarget}
+        notes={notes}
+        onClose={() => setNotesTarget(null)}
+        onSave={addCandidateNote}
       />
     </main>
   );

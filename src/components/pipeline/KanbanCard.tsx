@@ -1,12 +1,14 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Pencil, Trash2 } from 'lucide-react';
+import { GripVertical, Pencil, Trash2, StickyNote } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
 
 interface KanbanCardProps {
   candidate: Candidate;
+  notesCount?: number;
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
+  onNotes?: (c: Candidate) => void;
 }
 
 function formatShortDate(iso?: string): string {
@@ -21,7 +23,13 @@ function formatShortDate(iso?: string): string {
   }
 }
 
-export function KanbanCard({ candidate, onEdit, onDelete }: KanbanCardProps) {
+export function KanbanCard({
+  candidate,
+  notesCount = 0,
+  onEdit,
+  onDelete,
+  onNotes,
+}: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: candidate.id ?? candidate.nombre });
 
@@ -76,6 +84,20 @@ export function KanbanCard({ candidate, onEdit, onDelete }: KanbanCardProps) {
         </dl>
 
         <footer className="kanban-card__actions">
+          {onNotes && (
+            <button
+              type="button"
+              className="kanban-card__action-btn"
+              onClick={() => onNotes(candidate)}
+              aria-label={`Notas de ${candidate.nombre}`}
+              title={`Notas (${notesCount})`}
+            >
+              <StickyNote size={14} aria-hidden="true" />
+              {notesCount > 0 && (
+                <span className="kanban-card__action-badge">{notesCount}</span>
+              )}
+            </button>
+          )}
           <button
             type="button"
             className="kanban-card__action-btn"

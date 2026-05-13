@@ -14,15 +14,19 @@ import './PipelineKanban.css';
 
 interface PipelineKanbanProps {
   candidates: Candidate[];
+  notesCount?: (c: Candidate) => number;
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
+  onNotes?: (c: Candidate) => void;
   onStatusChange: (candidate: Candidate, status: CandidateStatus) => void;
 }
 
 export function PipelineKanban({
   candidates,
+  notesCount,
   onEdit,
   onDelete,
+  onNotes,
   onStatusChange,
 }: PipelineKanbanProps) {
   const sensors = useSensors(
@@ -66,8 +70,10 @@ export function PipelineKanban({
             key={status}
             status={status}
             candidates={byStatus[status]}
+            notesCount={notesCount}
             onEdit={onEdit}
             onDelete={onDelete}
+            onNotes={onNotes}
           />
         ))}
       </div>
