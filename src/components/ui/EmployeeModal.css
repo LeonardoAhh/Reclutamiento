@@ -1,0 +1,53 @@
+/* EmployeeModal — add/delete employee (shared modal styles in global.css) */
+
+.employee-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+/* Prevent selects from overflowing modal */
+.employee-modal .form-group select {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+/* ── Delete confirmation ── */
+
+.delete-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+  gap: var(--spacing-md);
+}
+
+.delete-warning strong {
+  color: var(--color-ink);
+}
+
+.delete-meta {
+  font-weight: 500;
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  font-size: 14px;
+}
+
+.delete-sub {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+/* ── Danger button variant ── */
+
+.btn-danger {
+  background-color: var(--color-error);
+  color: var(--color-on-primary);
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+}

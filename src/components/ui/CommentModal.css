@@ -1,0 +1,137 @@
+/* CommentModal — comment-specific styles (shared modal in global.css) */
+
+/* ── Comments list ── */
+
+.modal-comments-list {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-section-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-muted-soft);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-md);
+}
+
+.comment-item__type {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.comment-item__type[data-type="proceso_activo"] {
+  color: var(--color-accent-amber);
+}
+
+.comment-item__type[data-type="entrevista"] {
+  color: var(--color-accent-teal);
+}
+
+.comment-item__type[data-type="entrega_documentos"] {
+  color: var(--color-primary);
+}
+
+.comment-item__type[data-type="otro"] {
+  color: var(--color-muted);
+}
+
+.comment-item__text {
+  font-size: 14px;
+  color: var(--color-body);
+  line-height: 1.5;
+}
+
+.comment-item__date {
+  font-size: 12px;
+  color: var(--color-muted-soft);
+}
+
+/* ── Form ── */
+
+.modal-form {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.modal-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.modal-form__field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.modal-form__field select,
+.modal-form__field textarea {
+  padding: 10px 14px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  font-size: 16px;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition: border-color var(--transition-fast);
+  resize: vertical;
+}
+
+.modal-form__field select:focus,
+.modal-form__field textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(204, 120, 92, 0.15);
+}
+
+/* ── Primary button (shared via .btn-primary in Dashboard too) ── */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 12px 20px;
+  height: 40px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--rounded-md);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-active);
+}
+
+.btn-primary:active {
+  background: var(--color-primary-active);
+}
+
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  color: var(--color-muted-soft);
+  cursor: not-allowed;
+}
