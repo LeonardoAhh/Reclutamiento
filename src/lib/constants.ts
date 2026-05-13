@@ -9,8 +9,10 @@ import type { AuthorizedPosition } from './types';
  * ─────────────────────────────────────────────────────────────────────
  * FLAGS OPCIONALES POR PUESTO (configurables aquí, sin tocar código):
  *
- *   urgente: true     → muestra badge "URGENTE" rojo en el dashboard.
- *                       Úsalo para puestos de alta prioridad de reclutamiento.
+ *   urgentes: N       → N contrataciones urgentes pendientes (independiente
+ *                       de las vacantes — puede contar contra el back-up).
+ *                       El dashboard muestra badge rojo "URGEN N" cuando N > 0
+ *                       y suma todas las urgentes del departamento en el header.
  *
  *   backup: N         → permite N excedentes intencionales (back-up de plantilla).
  *                       El dashboard mostrará "+N BACK-UP" en verde-teal cuando
@@ -23,7 +25,8 @@ import type { AuthorizedPosition } from './types';
  * Ejemplo:
  *   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO',
  *     puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32,
- *     backup: 2, notas: 'Buffer ante ausentismo y rotación.' }
+ *     backup: 2, urgentes: 1,
+ *     notas: 'Buffer ante ausentismo. 1 contratación urgente.' }
  * ─────────────────────────────────────────────────────────────────────
  */
 export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
@@ -41,7 +44,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'A. CALIDAD 1ER TURNO',
     puesto: 'OPERADOR DE ACABADOS GP-12',
     plantilla_autorizada: 22,
-    urgente: true,
+    urgentes: 1,
   },
   { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
@@ -76,7 +79,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'MANTENIMIENTO',
     puesto: 'AUXILIAR DE MANTENIMIENTO',
     plantilla_autorizada: 2,
-    urgente: true,
+    urgentes: 1,
   },
 
   // ── TALLER DE MOLDES ──
@@ -87,7 +90,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'MOLDES',
     puesto: 'TÉCNICO DE MOLDES',
     plantilla_autorizada: 13,
-    urgente: true,
+    urgentes: 1,
   },
 
   // ── PRODUCCIÓN 1ER TURNO ──
@@ -104,7 +107,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgente: true,
+    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -121,7 +124,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgente: true,
+    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -137,7 +140,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgente: true,
+    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -154,7 +157,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgente: true,
+    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 

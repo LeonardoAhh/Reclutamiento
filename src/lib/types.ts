@@ -33,8 +33,13 @@ export interface EmployeeRaw {
  * Configurable in `src/lib/constants.ts`.
  */
 export interface PositionConfig {
-  /** Marca el puesto como urgente (badge rojo de alta prioridad). */
-  urgente?: boolean;
+  /**
+   * Número de contrataciones urgentes pendientes para este puesto.
+   * El badge "URGEN N" se muestra cuando N > 0. Es independiente de las
+   * vacantes — puede usarse para cubrir back-up (excedentes intencionales)
+   * o vacantes regulares; lo que importa es la prioridad de reclutamiento.
+   */
+  urgentes?: number;
   /**
    * Excedentes intencionales que se mantienen como respaldo de plantilla.
    * Si `plantilla_real - plantilla_autorizada <= backup`, el excedente se
@@ -83,7 +88,7 @@ export interface PositionCoverage {
   porcentaje_cobertura: number;
   comentarios: PositionComment[];
   /** Flags propagados desde la PLANTILLA_AUTORIZADA. */
-  urgente: boolean;
+  urgentes: number;
   backup: number;
   notas?: string;
   /** Excedente total: real - autorizada (>= 0). */
@@ -104,6 +109,6 @@ export interface DepartmentCoverage {
   vacantes: number;
   porcentaje_cobertura: number;
   puestos: PositionCoverage[];
-  /** Cuántos puestos del departamento están marcados como urgentes. */
+  /** Suma de contrataciones urgentes pendientes a través de todos los puestos. */
   urgentes: number;
 }

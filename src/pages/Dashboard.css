@@ -186,6 +186,19 @@
   border-color: var(--color-hairline-soft);
 }
 
+/* Alert state: tint sutil + acento rojo a la izquierda cuando el depto
+   tiene vacantes o urgentes pendientes. No reemplaza badges internos,
+   solo señala el estado al ver la card colapsada. */
+.dept-card--alert {
+  background: color-mix(in srgb, var(--color-error) 6%, var(--color-canvas));
+  border-color: color-mix(in srgb, var(--color-error) 24%, var(--color-hairline));
+  box-shadow: inset 3px 0 0 var(--color-error);
+}
+
+.dept-card--alert:hover {
+  border-color: color-mix(in srgb, var(--color-error) 42%, var(--color-hairline));
+}
+
 .dept-card__header {
   display: flex;
   align-items: center;
