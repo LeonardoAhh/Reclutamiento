@@ -9,15 +9,21 @@ import {
   Trash2,
   ExternalLink,
   Search,
+  Table2,
+  LayoutGrid,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
+import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
 import { useCandidates } from '@/hooks/useCandidates';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import './Pipeline.css';
+
+type ViewMode = 'table' | 'kanban';
+const VIEW_STORAGE_KEY = 'pipeline_view_mode';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
@@ -57,6 +63,23 @@ export function Pipeline() {
   const [searchTerm, setSearchTerm] = useState('');
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const stored = localStorage.getItem(VIEW_STORAGE_KEY);
+      return stored === 'kanban' ? 'kanban' : 'table';
+    } catch {
+      return 'table';
+    }
+  });
+
+  function changeView(next: ViewMode) {
+    setViewMode(next);
+    try {
+      localStorage.setItem(VIEW_STORAGE_KEY, next);
+    } catch {
+      // localStorage unavailable; ignore.
+    }
+  }
 
   const totals = useMemo(() => {
     const total = candidates.length;
@@ -207,9 +230,33 @@ export function Pipeline() {
         <span className="pipeline__count">
           {filtered.length} de {candidates.length}
         </span>
+        <div className="pipeline__view-toggle" role="tablist" aria-label="Cambiar vista">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === 'table'}
+            className={`pipeline__view-btn${viewMode === 'table' ? ' pipeline__view-btn--active' : ''}`}
+            onClick={() => changeView('table')}
+            title="Vista de tabla"
+          >
+            <Table2 size={16} aria-hidden="true" />
+            <span>Tabla</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === 'kanban'}
+            className={`pipeline__view-btn${viewMode === 'kanban' ? ' pipeline__view-btn--active' : ''}`}
+            onClick={() => changeView('kanban')}
+            title="Vista kanban"
+          >
+            <LayoutGrid size={16} aria-hidden="true" />
+            <span>Kanban</span>
+          </button>
+        </div>
       </section>
 
-      {/* ── Table ── */}
+      {/* ── Vista (tabla o kanban) ── */}
       {filtered.length === 0 ? (
         <section className="pipeline__empty">
           {candidates.length === 0 ? (
@@ -238,6 +285,13 @@ export function Pipeline() {
             </>
           )}
         </section>
+      ) : viewMode === 'kanban' ? (
+        <PipelineKanban
+          candidates={filtered}
+          onEdit={openEdit}
+          onDelete={openDelete}
+          onStatusChange={(c, status) => handleStatusChange(c, status)}
+        />
       ) : (
         <section className="pipeline__table-wrap" aria-label="Tabla de candidatos">
           <table className="pipeline__table">
