@@ -201,6 +201,17 @@ export function useCandidates() {
     [updateCandidate]
   );
 
+  /**
+   * Marca al candidato como ya convertido en empleado: status -> 'contratado'
+   * y guarda el `employee_num` resultante. Idempotente — si ya tiene
+   * employee_num devuelve ok sin escribir de nuevo.
+   */
+  const markCandidateHired = useCallback(
+    (id: string, employee_num: string) =>
+      updateCandidate(id, { status: 'contratado', employee_num }),
+    [updateCandidate]
+  );
+
   const deleteCandidate = useCallback(
     async (id: string): Promise<{ ok: boolean; message?: string }> => {
       const updated = candidates.filter((c) => c.id !== id);
@@ -289,6 +300,7 @@ export function useCandidates() {
     addCandidate,
     updateCandidate,
     setCandidateStatus,
+    markCandidateHired,
     deleteCandidate,
     addCandidateNote,
   };

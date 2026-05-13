@@ -27,6 +27,7 @@ supabase db push
 | Archivo | Qué crea | PR asociado |
 |---|---|---|
 | `001_pipeline_schema.sql` | Tablas `candidates`, `candidate_notes`, `vacancy_requests`, `vacancy_status_history` + triggers de auditoría y `updated_at`. | PR B |
+| `002_candidates_employee_link.sql` | Columna `employee_num` en `candidates` para linkear al empleado generado tras "Contratar". | PR F |
 
 ## RLS
 

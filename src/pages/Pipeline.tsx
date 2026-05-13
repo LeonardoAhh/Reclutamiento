@@ -13,11 +13,13 @@ import {
   LayoutGrid,
   StickyNote,
   SlidersHorizontal,
+  BadgeCheck,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
+import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
 import {
@@ -26,8 +28,9 @@ import {
   type FilterState,
 } from '@/components/pipeline/CandidateFilters';
 import { useCandidates } from '@/hooks/useCandidates';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
-import type { Candidate, CandidateStatus } from '@/lib/types';
+import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import './Pipeline.css';
 
 type ViewMode = 'table' | 'kanban';
@@ -67,14 +70,18 @@ export function Pipeline() {
     addCandidate,
     updateCandidate,
     setCandidateStatus,
+    markCandidateHired,
     deleteCandidate,
     addCandidateNote,
   } = useCandidates();
+
+  const { addSingleEmployee } = useSupabaseData();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
+  const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const stored = localStorage.getItem(VIEW_STORAGE_KEY);
@@ -209,6 +216,33 @@ export function Pipeline() {
   async function handleStatusChange(c: Candidate, status: CandidateStatus) {
     if (!c.id || c.status === status) return;
     await setCandidateStatus(c.id, status);
+  }
+
+  function openHire(c: Candidate) {
+    setHireTarget(c);
+  }
+
+  async function handleHire(input: {
+    employee: Employee;
+    candidateId: string;
+  }): Promise<{ ok: boolean; message?: string }> {
+    const empResult = await addSingleEmployee(input.employee);
+    if (!empResult.ok) {
+      return empResult;
+    }
+    const candResult = await markCandidateHired(
+      input.candidateId,
+      input.employee.num_empleado
+    );
+    if (!candResult.ok) {
+      return {
+        ok: false,
+        message:
+          candResult.message ??
+          'Empleado creado, pero no se pudo actualizar el candidato.',
+      };
+    }
+    return { ok: true };
   }
 
   if (loading) {
@@ -408,6 +442,7 @@ export function Pipeline() {
           onEdit={openEdit}
           onDelete={openDelete}
           onNotes={(c) => setNotesTarget(c)}
+          onHire={openHire}
           onStatusChange={(c, status) => handleStatusChange(c, status)}
         />
       ) : (
@@ -483,6 +518,27 @@ export function Pipeline() {
                     )}
                   </td>
                   <td className="pipeline__cell-actions">
+                    {c.status === 'contratado' && !c.employee_num && (
+                      <button
+                        type="button"
+                        className="pipeline__icon-btn pipeline__icon-btn--primary"
+                        onClick={() => openHire(c)}
+                        aria-label={`Contratar a ${c.nombre}`}
+                        title="Contratar (crear empleado)"
+                      >
+                        <BadgeCheck size={16} aria-hidden="true" />
+                      </button>
+                    )}
+                    {c.employee_num && (
+                      <span
+                        className="pipeline__hired-tag"
+                        title={`Empleado #${c.employee_num}`}
+                        aria-label={`Empleado #${c.employee_num}`}
+                      >
+                        <BadgeCheck size={12} aria-hidden="true" />
+                        #{c.employee_num}
+                      </span>
+                    )}
                     <button
                       type="button"
                       className="pipeline__icon-btn"
@@ -537,6 +593,13 @@ export function Pipeline() {
         notes={notes}
         onClose={() => setNotesTarget(null)}
         onSave={addCandidateNote}
+      />
+
+      <HireCandidateModal
+        isOpen={hireTarget !== null}
+        candidate={hireTarget}
+        onClose={() => setHireTarget(null)}
+        onConfirm={handleHire}
       />
     </main>
   );

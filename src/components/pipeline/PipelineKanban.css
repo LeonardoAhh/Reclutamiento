@@ -271,6 +271,37 @@
   border-color: var(--color-error);
 }
 
+/* Primary variant for the "Contratar" CTA inside a kanban card. */
+.kanban-card__action-btn--primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-tint, var(--color-canvas));
+}
+
+.kanban-card__action-btn--primary:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+/* Inline pill shown in the card header when the candidate is already an
+   employee. Mirrors `.pipeline__hired-tag` in Pipeline.css. */
+.kanban-card__hired-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  padding: 0 6px;
+  height: 18px;
+  border-radius: var(--rounded-pill);
+  background: var(--color-success-tint, var(--color-surface-soft));
+  color: var(--color-accent-teal, var(--color-success));
+  border: 1px solid var(--color-hairline-soft);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .kanban-card__action-btn {
   position: relative;
 }

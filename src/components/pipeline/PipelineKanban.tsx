@@ -18,6 +18,7 @@ interface PipelineKanbanProps {
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
   onNotes?: (c: Candidate) => void;
+  onHire?: (c: Candidate) => void;
   onStatusChange: (candidate: Candidate, status: CandidateStatus) => void;
 }
 
@@ -27,6 +28,7 @@ export function PipelineKanban({
   onEdit,
   onDelete,
   onNotes,
+  onHire,
   onStatusChange,
 }: PipelineKanbanProps) {
   const sensors = useSensors(
@@ -74,6 +76,7 @@ export function PipelineKanban({
             onEdit={onEdit}
             onDelete={onDelete}
             onNotes={onNotes}
+            onHire={onHire}
           />
         ))}
       </div>
