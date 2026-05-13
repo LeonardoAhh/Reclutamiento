@@ -29,9 +29,27 @@ export interface EmployeeRaw {
 }
 
 /**
+ * Optional flags that can be attached to an authorized position.
+ * Configurable in `src/lib/constants.ts`.
+ */
+export interface PositionConfig {
+  /** Marca el puesto como urgente (badge rojo de alta prioridad). */
+  urgente?: boolean;
+  /**
+   * Excedentes intencionales que se mantienen como respaldo de plantilla.
+   * Si `plantilla_real - plantilla_autorizada <= backup`, el excedente se
+   * etiqueta como "BACK-UP" (no como problema). Lo que exceda este buffer
+   * se reporta como excedente real.
+   */
+  backup?: number;
+  /** Nota interna opcional explicando el back-up o la urgencia. */
+  notas?: string;
+}
+
+/**
  * Authorized headcount definition per position
  */
-export interface AuthorizedPosition {
+export interface AuthorizedPosition extends PositionConfig {
   area: string;
   seccion: string;
   puesto: string;
@@ -64,6 +82,16 @@ export interface PositionCoverage {
   vacantes: number;
   porcentaje_cobertura: number;
   comentarios: PositionComment[];
+  /** Flags propagados desde la PLANTILLA_AUTORIZADA. */
+  urgente: boolean;
+  backup: number;
+  notas?: string;
+  /** Excedente total: real - autorizada (>= 0). */
+  excedente: number;
+  /** Porción del excedente cubierta por el buffer `backup`. */
+  excedente_backup: number;
+  /** Excedente real fuera del buffer — requiere atención. */
+  excedente_critico: number;
 }
 
 /**
@@ -76,4 +104,6 @@ export interface DepartmentCoverage {
   vacantes: number;
   porcentaje_cobertura: number;
   puestos: PositionCoverage[];
+  /** Cuántos puestos del departamento están marcados como urgentes. */
+  urgentes: number;
 }

@@ -92,6 +92,11 @@ export function calculatePositionCoverage(
       ? Math.round((real / pos.plantilla_autorizada) * 100)
       : 0;
 
+    const excedente = Math.max(0, real - pos.plantilla_autorizada);
+    const backup = pos.backup ?? 0;
+    const excedenteBackup = Math.min(excedente, backup);
+    const excedenteCritico = Math.max(0, excedente - backup);
+
     const posComments = comments.filter(
       (c) =>
         matchesText(c.area, pos.area) &&
@@ -108,6 +113,12 @@ export function calculatePositionCoverage(
       vacantes,
       porcentaje_cobertura: porcentaje,
       comentarios: posComments,
+      urgente: pos.urgente ?? false,
+      backup,
+      notas: pos.notas,
+      excedente,
+      excedente_backup: excedenteBackup,
+      excedente_critico: excedenteCritico,
     };
   });
 }
@@ -134,6 +145,8 @@ export function calculateDepartmentCoverage(
       ? Math.round((totalReal / totalAutorizada) * 100)
       : 0;
 
+    const urgentes = puestos.filter((p) => p.urgente).length;
+
     return {
       area,
       plantilla_autorizada: totalAutorizada,
@@ -141,6 +154,7 @@ export function calculateDepartmentCoverage(
       vacantes: totalVacantes,
       porcentaje_cobertura: porcentaje,
       puestos,
+      urgentes,
     };
   });
 }
