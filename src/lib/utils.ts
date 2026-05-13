@@ -130,7 +130,7 @@ export function calculatePositionCoverage(
       vacantes,
       porcentaje_cobertura: porcentaje,
       comentarios: posComments,
-      urgente: pos.urgente ?? false,
+      urgentes: Math.max(0, pos.urgentes ?? 0),
       backup,
       notas: pos.notas,
       excedente,
@@ -162,7 +162,7 @@ export function calculateDepartmentCoverage(
       ? Math.round((totalReal / totalAutorizada) * 100)
       : 0;
 
-    const urgentes = puestos.filter((p) => p.urgente).length;
+    const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
 
     return {
       area,

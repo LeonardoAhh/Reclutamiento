@@ -428,7 +428,7 @@ function DepartmentCard({
             {dept.urgentes > 0 && (
               <Badge variant="error">
                 <AlertCircle size={12} aria-hidden="true" />
-                {dept.urgentes} urgente{dept.urgentes > 1 ? 's' : ''}
+                URGEN {dept.urgentes}
               </Badge>
             )}
             {hasVacancies && (
@@ -485,7 +485,7 @@ function DepartmentCard({
 
                   const rowClass = [
                     pos.vacantes > 0 ? 'row--has-vacancy' : '',
-                    pos.urgente ? 'row--urgent' : '',
+                    pos.urgentes > 0 ? 'row--urgent' : '',
                   ]
                     .filter(Boolean)
                     .join(' ');
@@ -499,10 +499,10 @@ function DepartmentCard({
                         <div className="cell-puesto__inner">
                           <span className="cell-puesto__name">{pos.puesto}</span>
                           <div className="cell-puesto__flags">
-                            {pos.urgente && (
+                            {pos.urgentes > 0 && (
                               <Badge variant="error">
                                 <AlertCircle size={11} aria-hidden="true" />
-                                Urgente
+                                URGEN {pos.urgentes}
                               </Badge>
                             )}
                             {pos.excedente_critico > 0 && (
