@@ -215,9 +215,35 @@ export interface VacancyRequest {
   status: VacancyStatus;
   prioridad: VacancyPriority;
   justificacion?: string | null;
+  /**
+   * SLA en dias para cubrir la vacante. Default 10. PR G.
+   */
+  dias_sla?: number | null;
+  /**
+   * Si true, la vacante NO cuenta en los KPIs de SLA / time-to-fill.
+   * Util cuando el responsable del area no le dio seguimiento, la vacante
+   * fue pausada por gerencia, o el recurso fue reasignado. PR G.
+   */
+  excluida_indicador?: boolean | null;
+  /**
+   * Razon por la que la vacante esta excluida del indicador. PR G.
+   */
+  motivo_exclusion?: string | null;
   created_at?: string;
   updated_at?: string;
 }
+
+/** Motivos comunes para excluir una vacante del indicador (KPI). */
+export const VACANCY_EXCLUSION_REASONS = [
+  'Sin seguimiento del área',
+  'Pausada por gerencia',
+  'Recurso reasignado',
+  'Cancelada por presupuesto',
+  'Otro',
+] as const;
+
+/** Default SLA en dias para cubrir una vacante recien aperturada. */
+export const DEFAULT_VACANCY_SLA_DAYS = 10;
 
 export interface VacancyStatusHistoryEntry {
   id?: string;

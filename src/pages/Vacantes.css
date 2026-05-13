@@ -1,0 +1,137 @@
+/* Vacantes.css — overrides / additions on top of Pipeline.css */
+
+/* Una columna mas en la KPI strip (5 cards). */
+.vacantes__kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 1100px) {
+  .vacantes__kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .vacantes__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Fila excluida: opacidad reducida + texto en tono gris. */
+.vacantes__row--excluded {
+  opacity: 0.6;
+}
+
+/* Fila vencida: borde izquierdo rojo para que salte a la vista en la tabla. */
+.vacantes__row--overdue td:first-child {
+  box-shadow: inset 3px 0 0 0 var(--color-error);
+}
+
+/* Tag de "Excluida: motivo" debajo del nombre del puesto en la tabla. */
+.vacantes__excluded-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 1px 6px;
+  border-radius: var(--rounded-pill);
+  font-size: 11px;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  border: 1px dashed var(--color-hairline);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cell del SLA: pill con icono + dias/sla. */
+.vacantes__sla {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--type-body-sm-size, 14px);
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--rounded-pill);
+  background: var(--color-surface-soft);
+  color: var(--color-body);
+  white-space: nowrap;
+}
+
+.vacantes__sla--ok {
+  color: var(--color-body);
+}
+
+.vacantes__sla--warning {
+  background: var(--color-warning-tint, var(--color-surface-soft));
+  color: var(--color-warning, var(--color-accent-amber, #b35a00));
+}
+
+.vacantes__sla--overdue {
+  background: var(--color-error-tint, var(--color-surface-soft));
+  color: var(--color-error);
+}
+
+.vacantes__sla--done {
+  background: var(--color-success-tint, var(--color-surface-soft));
+  color: var(--color-accent-teal, var(--color-success));
+}
+
+.vacantes__sla--cancel,
+.vacantes__sla--excluded {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* Form: pareja "excluir + motivo" en el modal de vacante. */
+.vac-exclusion {
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.vac-exclusion__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: var(--type-body-sm-size, 14px);
+  color: var(--color-body);
+  font-weight: 400;
+}
+
+.vac-exclusion__toggle input[type='checkbox'] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+}
+
+.vac-exclusion__toggle small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.vac-exclusion__reason {
+  margin-top: var(--spacing-sm);
+  padding-left: 28px;
+}
+
+.vac-exclusion__reason label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-bottom: 4px;
+}
+
+.vac-exclusion__reason input {
+  width: 100%;
+}

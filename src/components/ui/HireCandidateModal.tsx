@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, Employee } from '@/lib/types';
+import { localTodayIso } from '@/lib/dates';
 import './EmployeeModal.css';
 
 interface HireCandidateModalProps {
@@ -20,7 +21,7 @@ type FormState = Pick<
 >;
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localTodayIso();
 }
 
 function emptyForm(): FormState {
