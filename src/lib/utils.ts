@@ -51,25 +51,40 @@ function matchesText(empVal: string, constVal: string): boolean {
 }
 
 /**
- * Check if employee puesto matches a constant puesto.
- * Handles compound puestos and minor differences like "GERENTE" vs "GERENCIA"
+ * Apply synonym rules so equivalent puestos resolve to the same canonical form.
+ * Keep this list short: every entry can mask a real mismatch, so only add
+ * pairs that we know are interchangeable in the real plantilla data.
+ */
+function canonicalPuesto(puesto: string): string {
+  return puesto.replace(/\bGERENCIA\b/g, 'GERENTE');
+}
+
+/**
+ * Strict puesto matching: an employee puesto matches a constant puesto only when
+ * they normalize (accent-stripped, category-letter-stripped, synonym-applied) to
+ * the exact same string. Substring fallbacks are intentionally avoided because
+ * puestos like "TÉCNICO DE MANTENIMIENTO" would otherwise leak into
+ * "TÉCNICO DE MANTENIMIENTO DE EDIFICIOS" and inflate the headcount.
  */
 function matchesPuesto(empPuesto: string, constPuesto: string): boolean {
   if (!empPuesto) return false;
-  const normalizedConst = normalizePuesto(constPuesto);
-  const parts = empPuesto.split('/').map((p) => normalizePuesto(p));
-  
-  return parts.some((part) => {
-    if (part === normalizedConst) return true;
-    if (part.includes(normalizedConst) || normalizedConst.includes(part)) return true;
-    
-    // Fuzzy matching for GERENTE / GERENCIA
-    const partGerente = part.replace('GERENCIA', 'GERENTE');
-    const constGerente = normalizedConst.replace('GERENCIA', 'GERENTE');
-    if (partGerente === constGerente) return true;
-    
-    return false;
-  });
+  const target = canonicalPuesto(normalizePuesto(constPuesto));
+  const parts = empPuesto.split('/').map((p) => canonicalPuesto(normalizePuesto(p)));
+  return parts.some((part) => part === target);
+}
+
+/**
+ * Drop duplicate employees by `num_empleado` keeping the most recent entry.
+ * Defensive guard so stale records cached from Supabase don't inflate counts.
+ */
+function dedupeEmployees(employees: Employee[]): Employee[] {
+  const byNum = new Map<string, Employee>();
+  for (const emp of employees) {
+    const key = (emp.num_empleado ?? '').trim();
+    if (!key) continue;
+    byNum.set(key, emp);
+  }
+  return Array.from(byNum.values());
 }
 
 /**
@@ -79,8 +94,10 @@ export function calculatePositionCoverage(
   employees: Employee[],
   comments: PositionComment[]
 ): PositionCoverage[] {
+  const uniqueEmployees = dedupeEmployees(employees);
+
   return PLANTILLA_AUTORIZADA.map((pos) => {
-    const real = employees.filter(
+    const real = uniqueEmployees.filter(
       (emp) =>
         matchesText(emp.area, pos.area) &&
         matchesText(emp.seccion, pos.seccion) &&
