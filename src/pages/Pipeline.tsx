@@ -29,6 +29,7 @@ import {
 } from '@/components/pipeline/CandidateFilters';
 import { useCandidates } from '@/hooks/useCandidates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatShortDate } from '@/lib/dates';
@@ -66,6 +67,7 @@ export function Pipeline() {
   } = useCandidates();
 
   const { addSingleEmployee } = useSupabaseData();
+  const { coverVacancyForEmployee } = useVacancyRequests();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [modalMode, setModalMode] = useState<ModalMode>(null);
@@ -232,6 +234,10 @@ export function Pipeline() {
           'Empleado creado, pero no se pudo actualizar el candidato.',
       };
     }
+    // Cierra automáticamente la vacante abierta que coincida con el puesto.
+    await coverVacancyForEmployee(input.employee, {
+      source: `candidato:${input.candidateId}`,
+    });
     return { ok: true };
   }
 

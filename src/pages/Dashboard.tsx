@@ -28,6 +28,7 @@ import {
 } from '@/lib/utils';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import type {
   Employee,
   EmployeeRaw,
@@ -48,6 +49,8 @@ export function Dashboard() {
     addSingleEmployee,
     deleteEmployee,
   } = useSupabaseData();
+
+  const { coverVacancyForEmployee } = useVacancyRequests();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
@@ -119,9 +122,16 @@ export function Dashboard() {
     [departmentCoverage]
   );
 
-  function handleImport(rawData: EmployeeRaw[]) {
+  async function handleImport(rawData: EmployeeRaw[]) {
     const transformed = rawData.map((r) => transformEmployeeData(r) as Employee);
-    upsertEmployees(transformed);
+    // Identifica los empleados realmente nuevos (no presentes antes del upsert)
+    // para correr el auto-cover únicamente sobre ellos.
+    const previousNums = new Set(employees.map((e) => e.num_empleado));
+    const incoming = transformed.filter((e) => !previousNums.has(e.num_empleado));
+    await upsertEmployees(transformed);
+    for (const emp of incoming) {
+      await coverVacancyForEmployee(emp, { source: 'json-import' });
+    }
   }
 
   function toggleDept(area: string) {
@@ -153,7 +163,11 @@ export function Dashboard() {
   }
 
   async function handleSaveEmployee(emp: Employee) {
-    return addSingleEmployee(emp);
+    const result = await addSingleEmployee(emp);
+    if (result.ok) {
+      await coverVacancyForEmployee(emp, { source: 'dashboard-add' });
+    }
+    return result;
   }
 
   async function handleDeleteEmployee(num_empleado: string) {
