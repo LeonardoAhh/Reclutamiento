@@ -11,6 +11,8 @@ import {
   Filter,
   UserPlus as UserPlusIcon,
   Trash2,
+  AlertCircle,
+  Shield,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { CoverageBar } from '@/components/ui/CoverageBar';
@@ -423,6 +425,12 @@ function DepartmentCard({
         <div className="dept-card__header-left">
           <h3 className="dept-card__title">{dept.area}</h3>
           <div className="dept-card__meta">
+            {dept.urgentes > 0 && (
+              <Badge variant="error">
+                <AlertCircle size={12} aria-hidden="true" />
+                {dept.urgentes} urgente{dept.urgentes > 1 ? 's' : ''}
+              </Badge>
+            )}
             {hasVacancies && (
               <Badge variant="error">
                 {dept.vacantes} vacante{dept.vacantes > 1 ? 's' : ''}
@@ -475,14 +483,51 @@ function DepartmentCard({
                   );
                   const latestComment = posComments[posComments.length - 1];
 
+                  const rowClass = [
+                    pos.vacantes > 0 ? 'row--has-vacancy' : '',
+                    pos.urgente ? 'row--urgent' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ');
+
                   return (
                     <tr
                       key={`${pos.area}-${pos.seccion}-${pos.puesto}`}
-                      className={pos.vacantes > 0 ? 'row--has-vacancy' : ''}
+                      className={rowClass}
                     >
-                      <td className="cell-puesto">{pos.puesto}</td>
+                      <td className="cell-puesto">
+                        <div className="cell-puesto__inner">
+                          <span className="cell-puesto__name">{pos.puesto}</span>
+                          <div className="cell-puesto__flags">
+                            {pos.urgente && (
+                              <Badge variant="error">
+                                <AlertCircle size={11} aria-hidden="true" />
+                                Urgente
+                              </Badge>
+                            )}
+                            {pos.excedente_critico > 0 && (
+                              <Badge variant="amber">
+                                +{pos.excedente_critico} excede
+                              </Badge>
+                            )}
+                            {pos.excedente_backup > 0 && (
+                              <Badge variant="teal">
+                                <Shield size={11} aria-hidden="true" />
+                                +{pos.excedente_backup} back-up
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </td>
                       <td className="cell-seccion">{pos.seccion}</td>
-                      <td className="text-center">{pos.plantilla_autorizada}</td>
+                      <td className="text-center">
+                        {pos.plantilla_autorizada}
+                        {pos.backup > 0 && (
+                          <span className="cell-backup-hint" title={pos.notas ?? 'Buffer de back-up autorizado'}>
+                            {' '}+{pos.backup}
+                          </span>
+                        )}
+                      </td>
                       <td className="text-center font-strong">{pos.plantilla_real}</td>
                       <td className="text-center">
                         {pos.vacantes > 0 ? (

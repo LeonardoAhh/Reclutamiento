@@ -2,8 +2,29 @@ import type { AuthorizedPosition } from './types';
 
 /**
  * PLANTILLA AUTORIZADA — Números inamovibles
+ *
  * Cada entrada define el headcount aprobado por puesto/área/sección.
  * Modificar solo con autorización de Dirección.
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ * FLAGS OPCIONALES POR PUESTO (configurables aquí, sin tocar código):
+ *
+ *   urgente: true     → muestra badge "URGENTE" rojo en el dashboard.
+ *                       Úsalo para puestos de alta prioridad de reclutamiento.
+ *
+ *   backup: N         → permite N excedentes intencionales (back-up de plantilla).
+ *                       El dashboard mostrará "+N BACK-UP" en verde-teal cuando
+ *                       la plantilla real exceda lo autorizado, hasta este número.
+ *                       Si el excedente supera N, lo que sobre se etiqueta como
+ *                       "EXCEDE" en rojo.
+ *
+ *   notas: "texto"    → nota interna explicando el back-up o la urgencia.
+ *
+ * Ejemplo:
+ *   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO',
+ *     puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32,
+ *     backup: 2, notas: 'Buffer ante ausentismo y rotación.' }
+ * ─────────────────────────────────────────────────────────────────────
  */
 export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   // ── ALMACÉN ──
@@ -21,7 +42,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INGENIERO DE CALIDAD', plantilla_autorizada: 2 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'SUPERVISOR DE ACABADOS - GP12', plantilla_autorizada: 2 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INSPECTOR RECIBO', plantilla_autorizada: 1 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INSPECTOR DE CALIDAD', plantilla_autorizada: 15 },
+  {
+    area: 'CALIDAD',
+    seccion: 'CALIDAD ADMTVO',
+    puesto: 'INSPECTOR DE CALIDAD',
+    plantilla_autorizada: 15,
+    urgente: true,
+    notas: 'Vacantes críticas para auditorías en curso.',
+  },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'AUXILIAR DE CALIDAD', plantilla_autorizada: 1 },
   { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'METRÓLOGO', plantilla_autorizada: 13 },
   { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'AUXILIAR DE METROLOGÍA', plantilla_autorizada: 4 },
@@ -40,7 +68,15 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO ESPECIALISTA DE MANTENIMIENTO', plantilla_autorizada: 1 },
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TECNICO DE MANTENIMIENTO DE EDIFICIOS', plantilla_autorizada: 1 },
   { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR DE MANTENIMIENTO', plantilla_autorizada: 2 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO DE MANTENIMIENTO', plantilla_autorizada: 8 },
+  {
+    area: 'MANTENIMIENTO',
+    seccion: 'MANTENIMIENTO',
+    puesto: 'TÉCNICO DE MANTENIMIENTO',
+    plantilla_autorizada: 8,
+    urgente: true,
+    backup: 2,
+    notas: 'Back-up por cobertura 24/7 y atención a turno nocturno.',
+  },
 
   // ── TALLER DE MOLDES ──
   { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'JEFE DE TALLER DE MOLDES', plantilla_autorizada: 1 },
@@ -55,7 +91,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 2 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR SCRAP', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 1ER. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 2,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+  },
 
   // ── PRODUCCIÓN 2o TURNO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
@@ -64,7 +107,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 2o. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 2,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+  },
 
   // ── PRODUCCIÓN 3ER TURNO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
@@ -72,7 +122,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 3ER. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 2,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+  },
 
   // ── PRODUCCIÓN 4o TURNO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
@@ -81,7 +138,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 4o. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 2,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+  },
 
   // ── PRODUCCIÓN ADMTVO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'GERENTE DE PRODUCCION', plantilla_autorizada: 1 },
