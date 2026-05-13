@@ -10,6 +10,7 @@ interface KanbanColumnProps {
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
   onNotes?: (c: Candidate) => void;
+  onHire?: (c: Candidate) => void;
 }
 
 const TONE_BY_STATUS: Record<CandidateStatus, string> = {
@@ -29,6 +30,7 @@ export function KanbanColumn({
   onEdit,
   onDelete,
   onNotes,
+  onHire,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: `col-${status}` });
 
@@ -57,6 +59,7 @@ export function KanbanColumn({
               onEdit={onEdit}
               onDelete={onDelete}
               onNotes={onNotes}
+              onHire={onHire}
             />
           ))
         )}

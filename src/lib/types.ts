@@ -154,6 +154,11 @@ export interface Candidate {
   reclutador?: string | null;
   fecha_aplicacion?: string;
   notas?: string | null;
+  /**
+   * Num. de empleado generado al convertir al candidato en empleado.
+   * Null mientras no se haya hecho la conversion. PR F.
+   */
+  employee_num?: string | null;
   created_at?: string;
   updated_at?: string;
 }

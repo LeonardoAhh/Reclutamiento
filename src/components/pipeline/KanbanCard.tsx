@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Pencil, Trash2, StickyNote } from 'lucide-react';
+import { GripVertical, Pencil, Trash2, StickyNote, BadgeCheck } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
 
 interface KanbanCardProps {
@@ -9,6 +9,7 @@ interface KanbanCardProps {
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
   onNotes?: (c: Candidate) => void;
+  onHire?: (c: Candidate) => void;
 }
 
 function formatShortDate(iso?: string): string {
@@ -29,6 +30,7 @@ export function KanbanCard({
   onEdit,
   onDelete,
   onNotes,
+  onHire,
 }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: candidate.id ?? candidate.nombre });
@@ -60,6 +62,16 @@ export function KanbanCard({
       <div className="kanban-card__body">
         <header className="kanban-card__head">
           <h3 className="kanban-card__name">{candidate.nombre}</h3>
+          {candidate.employee_num && (
+            <span
+              className="kanban-card__hired-tag"
+              title={`Empleado #${candidate.employee_num}`}
+              aria-label={`Empleado #${candidate.employee_num}`}
+            >
+              <BadgeCheck size={11} aria-hidden="true" />
+              #{candidate.employee_num}
+            </span>
+          )}
         </header>
         <p className="kanban-card__puesto">{candidate.puesto}</p>
         <p className="kanban-card__area">{candidate.area}</p>
@@ -84,6 +96,17 @@ export function KanbanCard({
         </dl>
 
         <footer className="kanban-card__actions">
+          {onHire && candidate.status === 'contratado' && !candidate.employee_num && (
+            <button
+              type="button"
+              className="kanban-card__action-btn kanban-card__action-btn--primary"
+              onClick={() => onHire(candidate)}
+              aria-label={`Contratar a ${candidate.nombre}`}
+              title="Contratar (crear empleado)"
+            >
+              <BadgeCheck size={14} aria-hidden="true" />
+            </button>
+          )}
           {onNotes && (
             <button
               type="button"
