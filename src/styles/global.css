@@ -11,14 +11,20 @@
   --color-accent-teal: #5db8a6;
   --color-accent-amber: #e8a55a;
 
-  /* ── Surface ── */
+  /* ── Surface ──
+   * Las superficies van en dirección a `ink` desde `canvas`:
+   * canvas -> soft -> card -> cream-strong -> contrast (la más separada).
+   * `contrast` es la superficie de alto contraste (KPI hero card,
+   * dark island en light mode, surface profunda en dark mode). */
   --color-canvas: #faf9f5;
   --color-surface-soft: #f5f0e8;
   --color-surface-card: #efe9de;
   --color-surface-cream-strong: #e8e0d2;
-  --color-surface-dark: #181715;
-  --color-surface-dark-elevated: #252320;
-  --color-surface-dark-soft: #1f1e1b;
+  --color-surface-contrast: #181715;
+  --color-surface-contrast-elevated: #252320;
+  /* Aliases legacy (deprecados) — borrar tras siguiente release. */
+  --color-surface-dark: var(--color-surface-contrast);
+  --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
   --color-hairline: #e6dfd8;
   --color-hairline-soft: #ebe6df;
 
@@ -85,6 +91,12 @@
   --type-body-md-line: 1.5;
   --type-body-md-tracking: 0;
 
+  /* body-sm: cuerpo secundario / metadatos (intermedio entre body-md y caption) */
+  --type-body-sm-size: 14px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 1.5;
+  --type-body-sm-tracking: 0;
+
   /* body-strong: texto enfatizado (peso medio) */
   --type-body-strong-size: 16px;
   --type-body-strong-weight: 500;
@@ -115,25 +127,13 @@
   --type-caption-md-line: 2;
   --type-caption-md-tracking: 0;
 
-  /* ── Backwards-compat font-size aliases para componentes que aún
-   * usan `--fs-*` directamente. Mapeados al nuevo scale. ── */
-  --fs-2xs: 12px;
-  --fs-xs: 12px;
-  --fs-sm: 14px;
-  --fs-md: 14px;
-  --fs-base: 14px;
-  --fs-lg: 16px;
-  --fs-xl: 16px;
-  --fs-2xl: 16px;
-  --fs-3xl: 38px;
-  --fs-4xl: 38px;
-  --fs-hero: 38px;
-
-  /* ── Letter spacing ── */
+  /* ── Letter spacing ──
+   * En monospace casi todo va a 0. `--tracking-wider` es la excepción
+   * para labels en uppercase, donde el ojo necesita un poco de aire. */
   --tracking-tight: 0;
   --tracking-snug: 0;
   --tracking-wide: 0;
-  --tracking-wider: 0;
+  --tracking-wider: 0.06em;
 
   /* ── Control sizing (consistent button + input height) ── */
   --control-height: 40px;
@@ -188,9 +188,11 @@
   --color-surface-soft: #1f1e1b;
   --color-surface-card: #252320;
   --color-surface-cream-strong: #2e2c29;
-  --color-surface-dark: #0e0d0c;
-  --color-surface-dark-elevated: #1a1917;
-  --color-surface-dark-soft: #141312;
+  --color-surface-contrast: #0e0d0c;
+  --color-surface-contrast-elevated: #1a1917;
+  /* Aliases legacy (deprecados) — borrar tras siguiente release. */
+  --color-surface-dark: var(--color-surface-contrast);
+  --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
   --color-hairline: #2e2c29;
   --color-hairline-soft: #26241f;
 
@@ -349,6 +351,14 @@ strong, b {
   letter-spacing: var(--type-body-md-tracking);
 }
 
+.type-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
 .type-body-strong {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -431,7 +441,7 @@ strong, b {
 }
 
 .form-group label {
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   color: var(--color-muted);
 }
@@ -443,7 +453,7 @@ strong, b {
   padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   background: var(--color-canvas);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -468,7 +478,7 @@ strong, b {
 }
 
 .form-error {
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   color: var(--color-error);
   margin-top: var(--spacing-xxs);
 }
@@ -538,14 +548,14 @@ strong, b {
 
 .modal-header__info h3 {
   font-family: var(--font-display);
-  font-size: var(--fs-2xl);
+  font-size: var(--type-heading-md-size);
   font-weight: 400;
   color: var(--color-ink);
   line-height: 1.3;
 }
 
 .modal-header__area {
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   color: var(--color-muted);
   text-transform: uppercase;
@@ -599,7 +609,7 @@ strong, b {
 
 .modal-title h2 {
   font-family: var(--font-display);
-  font-size: var(--fs-2xl);
+  font-size: var(--type-heading-md-size);
   font-weight: 400;
   color: var(--color-ink);
   line-height: 1.3;
@@ -609,7 +619,7 @@ strong, b {
 .modal-title__sub {
   display: block;
   font-family: var(--font-body);
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   color: var(--color-muted);
   text-transform: uppercase;
@@ -676,7 +686,7 @@ strong, b {
   height: var(--control-height);
   padding: 0 var(--spacing-lg);
   font-family: var(--font-body);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   border-radius: var(--rounded-md);
   border: 1px solid transparent;
@@ -735,9 +745,13 @@ strong, b {
   color: var(--color-on-primary);
 }
 .btn-danger:hover {
+  /* Hex fallback antes del color-mix: un botón destructivo no puede fallar
+     visualmente en Safari < 16.2 / Firefox < 113 / browsers sin color-mix. */
+  background: #b23e3e;
   background: color-mix(in srgb, var(--color-error) 90%, black);
 }
 .btn-danger:active {
+  background: #9e3737;
   background: color-mix(in srgb, var(--color-error) 80%, black);
 }
 
@@ -755,7 +769,7 @@ strong, b {
   border: none;
   color: var(--color-primary);
   font-family: var(--font-body);
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   padding: var(--spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-sm);
@@ -812,7 +826,7 @@ strong, b {
   border-radius: var(--rounded-pill);
   background: var(--color-primary);
   color: var(--color-on-primary);
-  font-size: var(--fs-2xs);
+  font-size: var(--type-caption-md-size);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -860,11 +874,11 @@ strong, b {
 
 @media (max-width: 768px) {
   h2 {
-    font-size: var(--fs-3xl);
+    font-size: var(--type-display-xl-size);
   }
 
   h3 {
-    font-size: var(--fs-2xl);
+    font-size: var(--type-heading-md-size);
   }
 
   .container {

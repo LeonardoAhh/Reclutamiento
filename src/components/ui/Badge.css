@@ -7,7 +7,7 @@
   padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-pill);
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
