@@ -423,9 +423,6 @@ function DepartmentCard({
         <div className="dept-card__header-left">
           <h3 className="dept-card__title">{dept.area}</h3>
           <div className="dept-card__meta">
-            <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
-              {dept.porcentaje_cobertura}%
-            </Badge>
             {hasVacancies && (
               <Badge variant="error">
                 {dept.vacantes} vacante{dept.vacantes > 1 ? 's' : ''}
@@ -434,6 +431,9 @@ function DepartmentCard({
           </div>
         </div>
         <div className="dept-card__header-right">
+          <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
+            {dept.porcentaje_cobertura}%
+          </Badge>
           <div className="dept-card__summary">
             <span className="dept-card__summary-item">
               <strong>{dept.plantilla_real}</strong> / {dept.plantilla_autorizada}

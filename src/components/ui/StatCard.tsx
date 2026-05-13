@@ -27,7 +27,7 @@ export function StatCard({
       </div>
       <div className="stat-card__content">
         <span className="stat-card__label">{label}</span>
-        <span className="stat-card__value" style={{ color: accentColor }}>
+        <span className="stat-card__value">
           {value}
         </span>
         {subtitle && (

@@ -6,7 +6,8 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--spacing-lg);
-  padding: var(--spacing-xxl) 0 var(--spacing-xl);
+  padding: var(--spacing-lg) 0 var(--spacing-lg);
+  /* ← 24/24 en vez de 48/32 */
   flex-wrap: wrap;
 }
 
@@ -160,10 +161,16 @@
 
 /* ── Department Cards ── */
 .dashboard__departments {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
+  align-items: start;
+  /* alturas independientes por celda */
   padding-bottom: var(--spacing-xxl);
+}
+
+.dept-card:has(.dept-card__body) {
+  grid-column: 1 / -1;
 }
 
 .dept-card {
@@ -335,6 +342,7 @@
     opacity: 0;
     max-height: 0;
   }
+
   to {
     opacity: 1;
     max-height: 2000px;
@@ -460,7 +468,7 @@
     width: 100%;
   }
 
-  .dashboard__hero-actions > *,
+  .dashboard__hero-actions>*,
   .dashboard__hero-actions .json-importer {
     flex: 1 1 auto;
   }
