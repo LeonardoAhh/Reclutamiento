@@ -11,7 +11,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   padding: var(--spacing-xxs) var(--spacing-md);
   border-radius: var(--rounded-pill);

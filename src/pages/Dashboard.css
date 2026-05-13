@@ -19,7 +19,7 @@
 
 .dashboard__hero h1 {
   font-family: var(--font-display);
-  font-size: var(--fs-hero);
+  font-size: var(--type-display-xl-size);
   font-weight: 400;
   letter-spacing: -1px;
   color: var(--color-ink);
@@ -27,7 +27,7 @@
 }
 
 .dashboard__hero-sub {
-  font-size: var(--fs-lg);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   max-width: 480px;
 }
@@ -85,7 +85,7 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   background: var(--color-canvas);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -114,7 +114,7 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   background: var(--color-canvas);
   cursor: pointer;
@@ -134,7 +134,7 @@
 
 .dashboard__separator {
   color: var(--color-hairline);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
 }
 
 /* ── Empty State ── */
@@ -227,7 +227,7 @@
 
 .dept-card__title {
   font-family: var(--font-display);
-  font-size: var(--fs-2xl);
+  font-size: var(--type-heading-md-size);
   font-weight: 400;
   letter-spacing: var(--tracking-snug);
   color: var(--color-ink);
@@ -250,7 +250,7 @@
 }
 
 .dept-card__summary {
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   color: var(--color-body);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -276,7 +276,7 @@
 .dept-card__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
 }
 
 .dept-card__table thead {
@@ -286,7 +286,7 @@
 .dept-card__table th {
   padding: var(--spacing-sm) var(--spacing-md);
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
@@ -351,19 +351,19 @@
   align-items: center;
   gap: 4px;
   padding: 2px var(--spacing-xs);
-  font-size: var(--fs-2xs);
+  font-size: var(--type-caption-md-size);
 }
 
 .cell-backup-hint {
   color: var(--color-accent-teal);
   font-weight: 600;
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   cursor: help;
 }
 
 .cell-seccion {
   color: var(--color-muted);
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
 }
 
 .vacancy-count {
@@ -376,7 +376,7 @@
   background: var(--color-vacancy-chip-bg);
   color: var(--color-error);
   font-weight: 600;
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   font-variant-numeric: tabular-nums;
 }
 
@@ -415,7 +415,7 @@
 
 .search-dropdown__head {
   padding: var(--spacing-xs) var(--spacing-md);
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
@@ -461,7 +461,7 @@
 .emp-name {
   font-weight: 500;
   color: var(--color-ink);
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -469,7 +469,7 @@
 }
 
 .emp-meta {
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   color: var(--color-muted);
 }
 
@@ -553,7 +553,7 @@
   .dept-card__table th,
   .dept-card__table td {
     padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--fs-md);
+    font-size: var(--type-caption-md-size);
   }
 
   .cell-puesto {

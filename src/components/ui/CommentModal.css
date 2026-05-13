@@ -9,7 +9,7 @@
 }
 
 .modal-section-label {
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
@@ -35,7 +35,7 @@
 }
 
 .comment-item__type {
-  font-size: var(--fs-xs);
+  font-size: var(--type-caption-md-size);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
@@ -47,20 +47,20 @@
 .comment-item__type[data-type="otro"]            { color: var(--color-muted); }
 
 .comment-item__text {
-  font-size: var(--fs-base);
+  font-size: var(--type-caption-md-size);
   color: var(--color-body);
   line-height: 1.5;
   word-break: break-word;
 }
 
 .comment-item__date {
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   color: var(--color-muted-soft);
   white-space: nowrap;
 }
 
 .comment-empty {
-  font-size: var(--fs-md);
+  font-size: var(--type-caption-md-size);
   color: var(--color-muted-soft);
   font-style: italic;
 }
@@ -80,7 +80,7 @@
 }
 
 .char-counter {
-  font-size: var(--fs-sm);
+  font-size: var(--type-caption-md-size);
   color: var(--color-muted-soft);
   text-align: right;
 }
