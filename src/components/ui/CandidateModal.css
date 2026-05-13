@@ -1,0 +1,32 @@
+/* CandidateModal — add/edit/delete candidate */
+
+.candidate-modal {
+  max-width: 640px;
+}
+
+.candidate-modal .form-group select,
+.candidate-modal .form-group input,
+.candidate-modal .form-group textarea {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+.candidate-modal .form-group textarea {
+  resize: vertical;
+  min-height: 84px;
+  font-family: var(--font-body);
+}
+
+.candidate-modal .form-group--span-2 {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .candidate-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .candidate-modal .form-group--span-2 {
+    grid-column: auto;
+  }
+}
