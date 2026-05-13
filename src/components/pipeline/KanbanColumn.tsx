@@ -6,8 +6,10 @@ import { KanbanCard } from './KanbanCard';
 interface KanbanColumnProps {
   status: CandidateStatus;
   candidates: Candidate[];
+  notesCount?: (c: Candidate) => number;
   onEdit: (c: Candidate) => void;
   onDelete: (c: Candidate) => void;
+  onNotes?: (c: Candidate) => void;
 }
 
 const TONE_BY_STATUS: Record<CandidateStatus, string> = {
@@ -23,8 +25,10 @@ const TONE_BY_STATUS: Record<CandidateStatus, string> = {
 export function KanbanColumn({
   status,
   candidates,
+  notesCount,
   onEdit,
   onDelete,
+  onNotes,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: `col-${status}` });
 
@@ -49,8 +53,10 @@ export function KanbanColumn({
             <KanbanCard
               key={c.id ?? c.nombre}
               candidate={c}
+              notesCount={notesCount ? notesCount(c) : 0}
               onEdit={onEdit}
               onDelete={onDelete}
+              onNotes={onNotes}
             />
           ))
         )}
