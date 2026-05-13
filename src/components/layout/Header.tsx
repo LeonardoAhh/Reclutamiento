@@ -1,5 +1,12 @@
+import { NavLink } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Header.css';
+
+const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
+  { to: '/', label: 'Dashboard', end: true },
+  { to: '/pipeline', label: 'Pipeline' },
+  { to: '/vacantes', label: 'Vacantes' },
+];
 
 export function Header() {
   return (
@@ -10,9 +17,21 @@ export function Header() {
           <span className="app-header__title">Reclutamiento</span>
         </div>
         <nav className="app-header__nav" aria-label="Navegación principal">
-          <span className="app-header__nav-item app-header__nav-item--active">
-            Dashboard
-          </span>
+          <ul className="app-header__nav-list">
+            {NAV_ITEMS.map(({ to, label, end }) => (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    `app-header__nav-item${isActive ? ' app-header__nav-item--active' : ''}`
+                  }
+                >
+                  {label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
           <ThemeToggle />
         </nav>
       </div>
