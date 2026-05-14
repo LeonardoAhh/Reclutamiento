@@ -155,6 +155,29 @@
   color: var(--color-on-primary);
 }
 
+.area-detail-modal__tab-incapacidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--rounded-pill);
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
+  color: var(--color-accent-amber);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__stat-value--amber {
+  color: var(--color-accent-amber);
+}
+
+.area-detail-modal__stat-label svg {
+  vertical-align: -1px;
+  margin-right: 2px;
+}
+
 /* ── Tab panel ── */
 .area-detail-modal__panel {
   /* Toma toda la altura sobrante del modal y delega el scroll al wrapper

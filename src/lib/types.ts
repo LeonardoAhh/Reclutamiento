@@ -12,6 +12,10 @@ export interface Employee {
   categoria: string;
   turno: string;
   fecha_ingreso: string;
+  /** True si el empleado está actualmente en incapacidad médica. */
+  en_incapacidad?: boolean;
+  /** Fecha estimada de regreso (ISO `YYYY-MM-DD`) o null si indefinida. */
+  incapacidad_hasta?: string | null;
 }
 
 /**

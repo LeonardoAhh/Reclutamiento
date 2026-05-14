@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
+  HeartPulse,
   MessageSquare,
   Shield,
 } from 'lucide-react';
@@ -19,6 +20,10 @@ interface AreaDetailModalProps {
   onClose: () => void;
   onOpenComment: (area: string, seccion: string, puesto: string) => void;
   getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
+  /** Mapa sección -> # empleados en incapacidad dentro del área activa. */
+  incapacidadPorSeccion?: Map<string, number> | null;
+  /** Total de empleados en incapacidad para el área activa. */
+  incapacidadAreaTotal?: number;
 }
 
 const ALL_TAB = '__all__';
@@ -30,6 +35,8 @@ export function AreaDetailModal({
   onClose,
   onOpenComment,
   getCoverageBadge,
+  incapacidadPorSeccion = null,
+  incapacidadAreaTotal = 0,
 }: AreaDetailModalProps) {
   const tablistRef = useRef<HTMLDivElement>(null);
 
@@ -100,11 +107,17 @@ export function AreaDetailModal({
   if (!dept) return null;
 
   const tabs = [
-    { id: ALL_TAB, label: 'Todas', count: dept.puestos.length },
+    {
+      id: ALL_TAB,
+      label: 'Todas',
+      count: dept.puestos.length,
+      incapacidad: incapacidadAreaTotal,
+    },
     ...secciones.map((s) => ({
       id: s,
       label: s,
       count: dept.puestos.filter((p) => p.seccion === s).length,
+      incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
     })),
   ];
 
@@ -154,6 +167,20 @@ export function AreaDetailModal({
               <span className="area-detail-modal__stat-label">Urgentes</span>
             </span>
           )}
+          {((activeTab === ALL_TAB && incapacidadAreaTotal > 0) ||
+            (activeTab !== ALL_TAB &&
+              (incapacidadPorSeccion?.get(activeTab) ?? 0) > 0)) && (
+            <span className="area-detail-modal__stat">
+              <span className="area-detail-modal__stat-value area-detail-modal__stat-value--amber">
+                {activeTab === ALL_TAB
+                  ? incapacidadAreaTotal
+                  : incapacidadPorSeccion?.get(activeTab) ?? 0}
+              </span>
+              <span className="area-detail-modal__stat-label">
+                <HeartPulse size={10} aria-hidden="true" /> Incapacidad
+              </span>
+            </span>
+          )}
         </div>
         <div className="area-detail-modal__summary-cobertura">
           <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
@@ -195,6 +222,16 @@ export function AreaDetailModal({
                 <span className="area-detail-modal__tab-count" aria-hidden="true">
                   {t.count}
                 </span>
+                {t.incapacidad > 0 && (
+                  <span
+                    className="area-detail-modal__tab-incapacidad"
+                    aria-label={`${t.incapacidad} en incapacidad`}
+                    title={`${t.incapacidad} en incapacidad`}
+                  >
+                    <HeartPulse size={11} aria-hidden="true" />
+                    {t.incapacidad}
+                  </span>
+                )}
               </button>
             );
           })}

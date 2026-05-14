@@ -5,6 +5,7 @@ import {
   UserX,
   TrendingUp,
   ChevronRight,
+  HeartPulse,
   Search,
   Filter,
   UserPlus as UserPlusIcon,
@@ -17,6 +18,7 @@ import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
 import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
+import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -42,6 +44,7 @@ export function Dashboard() {
     addComment,
     addSingleEmployee,
     deleteEmployee,
+    updateEmployeeIncapacidad,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -58,6 +61,7 @@ export function Dashboard() {
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<'add' | 'delete' | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments),
@@ -116,12 +120,36 @@ export function Dashboard() {
     [departmentCoverage]
   );
 
+  // Conteos de empleados en incapacidad por área y por área+sección.
+  const { incapacidadPorArea, incapacidadPorAreaSeccion } = useMemo(() => {
+    const porArea = new Map<string, number>();
+    const porAreaSeccion = new Map<string, Map<string, number>>();
+    for (const e of employees) {
+      if (!e.en_incapacidad) continue;
+      porArea.set(e.area, (porArea.get(e.area) ?? 0) + 1);
+      const inner = porAreaSeccion.get(e.area) ?? new Map<string, number>();
+      inner.set(e.seccion, (inner.get(e.seccion) ?? 0) + 1);
+      porAreaSeccion.set(e.area, inner);
+    }
+    return { incapacidadPorArea: porArea, incapacidadPorAreaSeccion: porAreaSeccion };
+  }, [employees]);
+
   async function handleImport(rawData: EmployeeRaw[]) {
-    const transformed = rawData.map((r) => transformEmployeeData(r) as Employee);
-    // Identifica los empleados realmente nuevos (no presentes antes del upsert)
-    // para correr el auto-cover únicamente sobre ellos.
-    const previousNums = new Set(employees.map((e) => e.num_empleado));
-    const incoming = transformed.filter((e) => !previousNums.has(e.num_empleado));
+    // Preserva en_incapacidad / incapacidad_hasta para empleados que ya existían,
+    // de modo que un re-import del JSON no borre el estado de incapacidad.
+    const prevByNum = new Map(employees.map((e) => [e.num_empleado, e]));
+    const transformed = rawData.map((r) => {
+      const base = transformEmployeeData(r) as Employee;
+      const prev = prevByNum.get(base.num_empleado);
+      return prev
+        ? {
+            ...base,
+            en_incapacidad: prev.en_incapacidad ?? false,
+            incapacidad_hasta: prev.incapacidad_hasta ?? null,
+          }
+        : base;
+    });
+    const incoming = transformed.filter((e) => !prevByNum.has(e.num_empleado));
     await upsertEmployees(transformed);
     for (const emp of incoming) {
       await coverVacancyForEmployee(emp, { source: 'json-import' });
@@ -257,20 +285,44 @@ export function Dashboard() {
               {matchingEmployees.map((emp) => (
                 <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
                   <div className="search-dropdown-item__info">
-                    <span className="emp-name">{emp.nombre}</span>
+                    <span className="emp-name">
+                      {emp.nombre}
+                      {emp.en_incapacidad && (
+                        <Badge variant="amber">
+                          <HeartPulse size={11} aria-hidden="true" />
+                          INCAPACIDAD
+                        </Badge>
+                      )}
+                    </span>
                     <span className="emp-meta">
                       {emp.puesto} · #{emp.num_empleado}
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    className="search-dropdown-item__delete"
-                    onClick={() => openDeleteFor(emp)}
-                    aria-label={`Eliminar a ${emp.nombre}`}
-                    title="Eliminar empleado"
-                  >
-                    <Trash2 size={14} aria-hidden="true" />
-                  </button>
+                  <div className="search-dropdown-item__actions">
+                    <button
+                      type="button"
+                      className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? ' is-active' : ''}`}
+                      onClick={() => setIncapacidadTarget(emp)}
+                      aria-label={`Marcar incapacidad de ${emp.nombre}`}
+                      aria-pressed={Boolean(emp.en_incapacidad)}
+                      title={
+                        emp.en_incapacidad
+                          ? 'Editar / quitar incapacidad'
+                          : 'Marcar en incapacidad'
+                      }
+                    >
+                      <HeartPulse size={14} aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      className="search-dropdown-item__delete"
+                      onClick={() => openDeleteFor(emp)}
+                      aria-label={`Eliminar a ${emp.nombre}`}
+                      title="Eliminar empleado"
+                    >
+                      <Trash2 size={14} aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -319,6 +371,7 @@ export function Dashboard() {
             dept={dept}
             onOpen={() => setActiveArea(dept.area)}
             getCoverageBadge={getCoverageBadge}
+            incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
           />
         ))}
       </section>
@@ -333,6 +386,20 @@ export function Dashboard() {
           setCommentTarget({ area, seccion, puesto })
         }
         getCoverageBadge={getCoverageBadge}
+        incapacidadPorSeccion={
+          activeArea ? incapacidadPorAreaSeccion.get(activeArea) ?? null : null
+        }
+        incapacidadAreaTotal={
+          activeArea ? incapacidadPorArea.get(activeArea) ?? 0 : 0
+        }
+      />
+
+      {/* ── Incapacidad Modal ── */}
+      <IncapacidadModal
+        isOpen={incapacidadTarget !== null}
+        employee={incapacidadTarget}
+        onClose={() => setIncapacidadTarget(null)}
+        onSave={updateEmployeeIncapacidad}
       />
 
       {/* ── Comment Modal ── */}
@@ -371,12 +438,14 @@ interface DepartmentCardProps {
   dept: DepartmentCoverage;
   onOpen: () => void;
   getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
+  incapacidadCount: number;
 }
 
 function DepartmentCard({
   dept,
   onOpen,
   getCoverageBadge,
+  incapacidadCount,
 }: DepartmentCardProps) {
   const hasVacancies = dept.vacantes > 0;
   const hasUrgentes = dept.urgentes > 0;
@@ -397,6 +466,12 @@ function DepartmentCard({
       >
         <div className="dept-card__header-left">
           <h3 className="dept-card__title">{dept.area}</h3>
+          {incapacidadCount > 0 && (
+            <Badge variant="amber">
+              <HeartPulse size={11} aria-hidden="true" />
+              {incapacidadCount} en incapacidad
+            </Badge>
+          )}
         </div>
         <div className="dept-card__header-right">
           <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>

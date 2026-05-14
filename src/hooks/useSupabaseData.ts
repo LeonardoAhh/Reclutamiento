@@ -183,6 +183,52 @@ export function useSupabaseData() {
     }
   }, [isConfigured, employees]);
 
+  /** Update incapacidad fields for a single employee. */
+  const updateEmployeeIncapacidad = useCallback(
+    async (
+      num_empleado: string,
+      en_incapacidad: boolean,
+      incapacidad_hasta: string | null
+    ): Promise<{ ok: boolean; message?: string }> => {
+      const idx = employees.findIndex((e) => e.num_empleado === num_empleado);
+      if (idx < 0) return { ok: false, message: 'Empleado no encontrado.' };
+
+      const updated = employees.slice();
+      updated[idx] = {
+        ...updated[idx],
+        en_incapacidad,
+        incapacidad_hasta: en_incapacidad ? incapacidad_hasta : null,
+      };
+      setEmployees(updated);
+      saveLocal(STORAGE_KEYS.employees, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('empleados')
+          .update({
+            en_incapacidad,
+            incapacidad_hasta: en_incapacidad ? incapacidad_hasta : null,
+          })
+          .eq('num_empleado', num_empleado);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn('Supabase update incapacidad failed, saved locally:', message);
+        setSaveStatus('error');
+        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+      }
+    },
+    [isConfigured, employees]
+  );
+
   /** Append a new comment for a position. */
   const addComment = useCallback(async (comment: PositionComment) => {
     const updated = [...comments, comment];
@@ -217,6 +263,7 @@ export function useSupabaseData() {
     upsertEmployees,
     addSingleEmployee,
     deleteEmployee,
+    updateEmployeeIncapacidad,
     addComment,
   };
 }
