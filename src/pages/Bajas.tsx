@@ -32,12 +32,10 @@ export function Bajas() {
     importBajas,
     dataSource,
     isConfigured,
-    error,
     retrySync,
     saveStatus,
     marcarCubierta,
     desmarcarCubierta,
-    clearBajas,
   } = useBajas();
 
   const [year, setYear] = useState<number>(currentYear);
