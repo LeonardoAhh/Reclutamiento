@@ -22,6 +22,29 @@ function saveLocal<T>(key: string, data: T): void {
   }
 }
 
+/**
+ * Convierte cualquier valor de error (Error nativo, PostgrestError, objeto
+ * libre, string) a un mensaje legible. Sin esto, los errores de PostgREST
+ * (que son objetos planos) se renderizaban como `[object Object]`.
+ */
+function errorMessage(err: unknown): string {
+  if (err == null) return 'Error desconocido';
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    const e = err as Record<string, unknown>;
+    const parts = [e.message, e.details, e.hint, e.code]
+      .filter((v): v is string => typeof v === 'string' && v.length > 0);
+    if (parts.length > 0) return parts.join(' · ');
+    try {
+      return JSON.stringify(err);
+    } catch {
+      return String(err);
+    }
+  }
+  return String(err);
+}
+
 function checkSupabaseConfig(): boolean {
   const url = import.meta.env.VITE_SUPABASE_URL || '';
   const key = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -89,8 +112,8 @@ export function useBajas() {
         setError(null);
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase upsert bajas failed:', message);
+        const message = errorMessage(err);
+        console.warn('Supabase upsert bajas failed:', message, err);
         setSaveStatus('error');
         setError(message);
         return { ok: false, message };
@@ -139,8 +162,8 @@ export function useBajas() {
         setError(null);
       } catch (err) {
         if (cancelled) return;
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase fetch bajas failed, using localStorage:', msg);
+        const msg = errorMessage(err);
+        console.warn('Supabase fetch bajas failed, using localStorage:', msg, err);
         setError(msg);
         setDataSource(bajasRef.current.length > 0 ? 'local' : 'unknown');
       } finally {

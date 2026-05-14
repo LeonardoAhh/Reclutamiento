@@ -86,8 +86,8 @@ export function Bajas() {
           <CloudOff size={16} aria-hidden="true" />
           <div className="bajas__banner-body">
             <strong>Datos solo en este navegador.</strong>{' '}
-            Falta correr <code>supabase/migrations/007_bajas.sql</code> o revisar las políticas RLS
-            de la tabla <code>bajas</code> para que persistan al refrescar.
+            Corre <code>007_bajas.sql</code> y <code>008_bajas_rls.sql</code> en Supabase para que persistan.
+            Si ya los corriste, revisa las políticas RLS de <code>bajas</code>.
             {error && <span className="bajas__banner-detail"> ({error})</span>}
           </div>
           <button
