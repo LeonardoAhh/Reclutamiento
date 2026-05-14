@@ -1,7 +1,42 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
+import { parseDdMmYyyy } from '@/lib/dates';
 import type { Baja, Employee, PositionComment } from '@/lib/types';
+
+/**
+ * Normaliza una fecha al formato ISO `YYYY-MM-DD` que las columnas `date`
+ * de Postgres aceptan. Hace passthrough si ya es ISO; convierte
+ * `dd/mm/yyyy` y `dd-mm-yyyy`. Si no se reconoce, devuelve `null` para
+ * dejar que Postgres rechace con un error claro (mejor que mandar basura).
+ *
+ * Necesario porque parte de los datos viejos en Supabase / localStorage
+ * llegaron en `dd/mm/yyyy` (importaciones Excel viejas), y los
+ * `<input type="date">` siempre devuelven ISO — al construir un payload
+ * para `bajas.insert` quedaban formatos mezclados.
+ */
+function normalizeIsoDate(
+  input: string | null | undefined
+): string | null {
+  if (input == null) return null;
+  const parsed = parseDdMmYyyy(input);
+  return parsed;
+}
+
+/**
+ * Variante que recibe un Employee y devuelve uno nuevo con `fecha_ingreso`
+ * normalizado a ISO. Útil al construir payloads de insert/upsert.
+ */
+function withNormalizedDates(emp: Employee): Employee {
+  return {
+    ...emp,
+    fecha_ingreso: normalizeIsoDate(emp.fecha_ingreso) ?? emp.fecha_ingreso,
+    incapacidad_hasta:
+      emp.incapacidad_hasta == null
+        ? emp.incapacidad_hasta
+        : (normalizeIsoDate(emp.incapacidad_hasta) ?? emp.incapacidad_hasta),
+  };
+}
 
 const STORAGE_KEYS = {
   employees: 'reclutamiento_employees',
@@ -118,7 +153,9 @@ export function useSupabaseData() {
     try {
       setSaveStatus('saving');
       await supabase.from('empleados').delete().not('num_empleado', 'is', null);
-      const { error: err } = await supabase.from('empleados').insert(data);
+      const { error: err } = await supabase
+        .from('empleados')
+        .insert(data.map(withNormalizedDates));
       if (err) throw err;
       flashSaved();
     } catch (err) {
@@ -146,7 +183,9 @@ export function useSupabaseData() {
 
     try {
       setSaveStatus('saving');
-      const { error: err } = await supabase.from('empleados').insert(emp);
+      const { error: err } = await supabase
+        .from('empleados')
+        .insert(withNormalizedDates(emp));
       if (err) throw err;
       flashSaved();
       return { ok: true };
@@ -190,14 +229,20 @@ export function useSupabaseData() {
       // y, en paralelo, mantenerlo en localStorage para que `/bajas` lo
       // muestre aunque aún no haya re-fetcheado el servidor.
       if (bajaData) {
+        // Normaliza fechas antes del insert. Postgres `date` rechaza
+        // `dd/mm/yyyy` con `22008` aunque el formulario sí mande ISO,
+        // porque `fecha_ingreso` viene del row del empleado que pudo
+        // haberse capturado en formato latino en una importación vieja.
+        const fechaIngreso = normalizeIsoDate(emp.fecha_ingreso);
+        const fechaBaja = normalizeIsoDate(bajaData.fecha_baja);
         const nuevaBaja: Baja = {
           num_empleado: emp.num_empleado,
           nombre: emp.nombre,
           area: emp.area,
           seccion: emp.seccion,
           puesto: emp.puesto,
-          fecha_ingreso: emp.fecha_ingreso,
-          fecha_baja: bajaData.fecha_baja,
+          fecha_ingreso: fechaIngreso ?? emp.fecha_ingreso,
+          fecha_baja: fechaBaja ?? bajaData.fecha_baja,
           tipo_baja: bajaData.tipo_baja,
           motivo_baja: bajaData.motivo_baja,
           cubierta_manual: false,
@@ -336,11 +381,15 @@ export function useSupabaseData() {
 
       try {
         setSaveStatus('saving');
+        const normalizedHasta =
+          en_incapacidad && incapacidad_hasta
+            ? (normalizeIsoDate(incapacidad_hasta) ?? incapacidad_hasta)
+            : null;
         const { error: err } = await supabase
           .from('empleados')
           .update({
             en_incapacidad,
-            incapacidad_hasta: en_incapacidad ? incapacidad_hasta : null,
+            incapacidad_hasta: normalizedHasta,
           })
           .eq('num_empleado', num_empleado);
         if (err) throw err;
