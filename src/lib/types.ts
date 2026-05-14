@@ -19,6 +19,39 @@ export interface Employee {
 }
 
 /**
+ * Empleado dado de baja. Vive en su propia tabla `bajas` para no perder el
+ * histórico cuando el empleado deja de existir en `empleados`.
+ */
+export interface Baja {
+  id?: string;
+  num_empleado: string;
+  nombre: string;
+  area: string;
+  seccion: string;
+  puesto: string;
+  /** `YYYY-MM-DD` */
+  fecha_ingreso: string;
+  /** `YYYY-MM-DD` */
+  fecha_baja: string;
+  tipo_baja: string;
+  motivo_baja: string;
+}
+
+/** Forma cruda del JSON de bajas (claves con espacios al final permitidas). */
+export interface BajaRaw {
+  'Num Empleado'?: string;
+  Nombre?: string;
+  Area?: string;
+  Seccion?: string;
+  Puesto?: string;
+  'Fecha Ingreso'?: string;
+  'Fecha Baja'?: string;
+  'Tipo de Baja'?: string;
+  'Motivo de Baja'?: string;
+  [key: string]: string | undefined;
+}
+
+/**
  * Raw JSON shape from the import file
  */
 export interface EmployeeRaw {

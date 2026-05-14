@@ -76,6 +76,46 @@ export function formatShortDate(iso: string | null | undefined): string {
 }
 
 /**
+ * Parse a date in `DD/MM/YYYY` (or `DD-MM-YYYY`) into ISO `YYYY-MM-DD`.
+ * Returns `null` for empty / unrecognized input. Already-ISO inputs pass through.
+ */
+export function parseDdMmYyyy(input: string | null | undefined): string | null {
+  if (!input) return null;
+  const trimmed = String(input).trim();
+  if (!trimmed) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  const m = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/.exec(trimmed);
+  if (!m) return null;
+  const dd = m[1].padStart(2, '0');
+  const mm = m[2].padStart(2, '0');
+  return `${m[3]}-${mm}-${dd}`;
+}
+
+/** Extract `YYYY-MM` month key from a `YYYY-MM-DD` string. */
+export function monthKey(isoDate: string | null | undefined): string {
+  if (!isoDate) return '';
+  return String(isoDate).slice(0, 7);
+}
+
+/** Build a sequential list of `YYYY-MM` keys for a given year (Jan..Dec). */
+export function monthsOfYear(year: number): string[] {
+  return Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, '0')}`);
+}
+
+/**
+ * Localized month label (es-MX), e.g. `Ene 2026`. Robust to non-month-keys.
+ */
+export function formatMonthLabel(monthKeyStr: string): string {
+  const m = /^(\d{4})-(\d{2})$/.exec(monthKeyStr);
+  if (!m) return monthKeyStr;
+  const year = Number(m[1]);
+  const month = Number(m[2]) - 1;
+  const d = new Date(year, month, 1);
+  const label = d.toLocaleDateString('es-MX', { month: 'short' });
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)} ${year}`;
+}
+
+/**
  * Count whole days between `from` and `to` (defaults to "now"), using local
  * timezone. Returns a non-negative integer; negative deltas clamp to 0.
  */
