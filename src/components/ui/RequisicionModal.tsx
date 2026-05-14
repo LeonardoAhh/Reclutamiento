@@ -110,12 +110,7 @@ interface RequisicionDocProps {
 }
 
 const LEYENDA_RESPONSABILIDAD =
-  'Yo acepto que el personal que estoy solicitando es indispensable ocupando el ' +
-  '100% de su rendimiento y no estoy desperdiciando recursos innecesarios. ' +
-  'Yo seré responsable por No llegar a los objetivos del puesto que estoy ' +
-  'solicitando. Soy Jefe y estoy avalando mi capacidad para detectar las ' +
-  'necesidades de cada puesto, así como para incrementar o disminuir la ' +
-  'plantilla según las necesidades.';
+  'Yo acepto que el personal que estoy solicitando es indispensable ocupando el 100% de su rendimiento y no estoy desperdiciando recursos innecesarios. Yo seré responsable por No llegar a los objetivos del puesto que estoy solicitando. Soy Jefe y estoy avalando mi capacidad para detectar las necesidades de cada puesto, así como para incrementar o disminuir la plantilla según las necesidades.';
 
 function RequisicionDoc({
   baja,
@@ -140,7 +135,6 @@ function RequisicionDoc({
           className="requisicion-doc__section"
           aria-label="Empleado a cubrir"
         >
-          <h4 className="requisicion-doc__section-title">Empleado a cubrir</h4>
           <div className="requisicion-doc__grid">
             <Field label="Nombre" value={baja.nombre} span={2} />
             <Field label="Núm. empleado" value={baja.num_empleado} />
@@ -153,11 +147,6 @@ function RequisicionDoc({
               value={baja.fecha_baja ? formatShortDate(baja.fecha_baja) : null}
             />
             <Field label="Tipo de baja" value={baja.tipo_baja || null} />
-            <Field
-              label="Motivo de baja"
-              value={baja.motivo_baja || null}
-              span={3}
-            />
           </div>
         </section>
 
@@ -174,7 +163,6 @@ function RequisicionDoc({
             <BlankField label="Sueldo propuesto" />
             <CheckboxField label="Bono" options={['Sí', 'No']} />
             <BlankField label="Monto del bono" />
-            <BlankField label="Tipo de contratación" />
           </div>
         </section>
 
@@ -184,9 +172,6 @@ function RequisicionDoc({
         >
           <h4 className="requisicion-doc__section-title">
             Conocimientos técnicos del puesto
-            <span className="requisicion-doc__section-hint">
-              (llenar a mano)
-            </span>
           </h4>
           <div className="requisicion-doc__grid">
             <BlankField label="Habilidades requeridas" span={3} lines={3} />
@@ -217,8 +202,8 @@ function RequisicionDoc({
           className="requisicion-doc__signatures"
           aria-label="Firmas de autorización"
         >
-          <SignatureSlot label="Jefe inmediato (solicita)" />
-          <SignatureSlot label="Reclutador (recibe)" />
+          <SignatureSlot label="Jefe inmediato" />
+          <SignatureSlot label="Reclutador" />
           <SignatureSlot label="Jefe de Recursos Humanos" />
         </section>
 
@@ -242,9 +227,6 @@ function RequisicionDoc({
         >
           <h4 className="requisicion-doc__section-title">
             Candidato propuesto
-            <span className="requisicion-doc__section-hint">
-              (llenar a mano por reclutamiento)
-            </span>
           </h4>
           <div className="requisicion-doc__grid">
             <BlankField label="Nombre completo" span={3} />
