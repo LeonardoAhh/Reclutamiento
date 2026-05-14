@@ -262,75 +262,73 @@
   text-align: right;
 }
 
-/* ── Impresión ──
- * Oculta absolutamente todo excepto la "hoja" del modal. Quitamos el
- * scroll-lock implícito, fijamos fondo blanco y reseteamos sombras/bordes
- * para que el papel quede limpio. */
+/* ── Portal de impresión ──
+ * En pantalla, el portal `#requisicion-print-root` está oculto: solo se
+ * usa la vista previa dentro del modal. En `@media print`, se invierte
+ * la visibilidad: todo el `body` se oculta con `display: none` (no
+ * `visibility: hidden`, que conserva el layout y genera hojas en blanco)
+ * y solo el portal queda visible, posicionado en el origen de la página.
+ */
+#requisicion-print-root {
+  display: none;
+}
+
 @media print {
+  /* Fondo blanco neutro, sin restos del tema oscuro. */
   html,
   body {
     background: #fff !important;
     color: #000 !important;
   }
 
-  body * {
-    visibility: hidden !important;
-  }
-
-  .modal-overlay,
-  .modal-overlay * {
-    visibility: hidden !important;
-  }
-
-  .modal-overlay .requisicion-doc,
-  .modal-overlay .requisicion-doc * {
-    visibility: visible !important;
-  }
-
-  .modal-overlay {
-    position: static !important;
-    background: transparent !important;
-    inset: auto !important;
-    display: block !important;
-    padding: 0 !important;
-  }
-
-  .modal-content.requisicion-modal {
-    box-shadow: none !important;
-    border: none !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    max-height: none !important;
-    background: #fff !important;
-  }
-
-  .modal-content.requisicion-modal .modal-header,
-  .modal-content.requisicion-modal .requisicion-modal__footer {
+  /* Oculta TODO lo demás (incluyendo el modal de preview, sidebars, etc.)
+     usando `display: none` para que no reserven hojas vacías. */
+  body > * {
     display: none !important;
   }
 
-  .requisicion-modal__body {
-    padding: 0 !important;
-    background: #fff !important;
-    overflow: visible !important;
+  /* Reactiva únicamente el portal de impresión. */
+  body > #requisicion-print-root {
+    display: block !important;
+    position: static !important;
   }
 
-  .requisicion-doc {
-    position: absolute;
-    top: 0;
-    left: 0;
+  #requisicion-print-root .requisicion-doc {
     width: 100%;
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    padding: 16mm 14mm !important;
+    padding: 12mm 14mm !important;
     background: #fff !important;
+    color: #000 !important;
+    /* Reduce padding interno entre secciones para caber en una hoja. */
+    gap: var(--spacing-md);
   }
 
-  .requisicion-doc__field-value,
-  .requisicion-doc__field--blank .requisicion-doc__field-blank,
-  .requisicion-doc__sig-line {
+  /* Evita cortes de página dentro de cualquier bloque del formato. */
+  #requisicion-print-root .requisicion-doc__head,
+  #requisicion-print-root .requisicion-doc__section,
+  #requisicion-print-root .requisicion-doc__signatures,
+  #requisicion-print-root .requisicion-doc__field,
+  #requisicion-print-root .requisicion-doc__sig {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Forza color de las líneas a negro real (evita gris claro en impresoras
+     que no respetan `color-adjust: exact`). */
+  #requisicion-print-root .requisicion-doc__field-value,
+  #requisicion-print-root .requisicion-doc__field--blank .requisicion-doc__field-blank,
+  #requisicion-print-root .requisicion-doc__sig-line {
     border-bottom-color: #000 !important;
+  }
+
+  /* Pide a la impresora que respete fondos/colores definidos (para tintes
+     muy ligeros si se agregan en el futuro). */
+  #requisicion-print-root,
+  #requisicion-print-root * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   @page {
