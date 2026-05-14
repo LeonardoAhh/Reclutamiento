@@ -254,3 +254,17 @@ export interface VacancyStatusHistoryEntry {
   reason?: string | null;
   changed_at?: string;
 }
+
+
+export const CANDIDATE_SOURCES = [
+  'LinkedIn',
+  'Indeed',
+  'OCC',
+  'Computrabajo',
+  'Referido',
+  'Walk-in',
+  'Facebook',
+  'TikTok Jobs',
+  'Bolsa de trabajo',
+  'Computrabajo',
+] as const;

@@ -6,6 +6,7 @@ import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import './CandidateModal.css';
+import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -182,14 +183,14 @@ export function CandidateModal({
   const title = isDelete
     ? 'Eliminar candidato'
     : isEdit
-    ? 'Editar candidato'
-    : 'Nuevo candidato';
+      ? 'Editar candidato'
+      : 'Nuevo candidato';
 
   const subtitle = isDelete
     ? 'Acción irreversible'
     : isEdit
-    ? 'Actualizar datos del pipeline'
-    : 'Registrar en el pipeline';
+      ? 'Actualizar datos del pipeline'
+      : 'Registrar en el pipeline';
 
   return (
     <Modal
@@ -351,13 +352,7 @@ export function CandidateModal({
                 list="cand-source-suggestions"
               />
               <datalist id="cand-source-suggestions">
-                <option value="LinkedIn" />
-                <option value="Indeed" />
-                <option value="OCC" />
-                <option value="Referido" />
-                <option value="Walk-in" />
-                <option value="Facebook" />
-                <option value="Bolsa de trabajo" />
+                {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
               </datalist>
             </div>
             <div className="form-group">

@@ -25,6 +25,7 @@ import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import './CandidateModal.css';
+import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -229,14 +230,14 @@ export function VacancyModal({
   const title = isDelete
     ? 'Eliminar vacante'
     : isEdit
-    ? 'Editar vacante'
-    : 'Nueva vacante';
+      ? 'Editar vacante'
+      : 'Nueva vacante';
 
   const subtitle = isDelete
     ? 'Acción irreversible'
     : isEdit
-    ? 'Ciclo de vida y prioridad'
-    : 'Abrir solicitud de cobertura';
+      ? 'Ciclo de vida y prioridad'
+      : 'Abrir solicitud de cobertura';
 
   return (
     <Modal
@@ -385,13 +386,7 @@ export function VacancyModal({
                 list="vac-fuente-suggestions"
               />
               <datalist id="vac-fuente-suggestions">
-                <option value="LinkedIn" />
-                <option value="Indeed" />
-                <option value="OCC" />
-                <option value="Referido" />
-                <option value="Walk-in" />
-                <option value="Facebook" />
-                <option value="Bolsa de trabajo" />
+                {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
               </datalist>
             </div>
             <div className="form-group">
@@ -519,12 +514,12 @@ export function VacancyModal({
                     <time dateTime={h.changed_at ?? ''}>
                       {h.changed_at
                         ? new Date(h.changed_at).toLocaleString('es-MX', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
                         : '—'}
                     </time>
                     {h.changed_by && (
