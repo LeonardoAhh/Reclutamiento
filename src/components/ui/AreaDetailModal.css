@@ -1,0 +1,194 @@
+/* AreaDetailModal — wider modal with tabbed sections inside an area */
+
+.modal-content.area-detail-modal {
+  /* Adapta el ancho a las tablas internas; el alto se rige por --max-height
+     y un scroll interno para que el modal se ajuste al contenido. */
+  max-width: min(1080px, 96vw);
+  display: flex;
+  flex-direction: column;
+}
+
+.area-detail-modal__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  flex-wrap: wrap;
+}
+
+.area-detail-modal__summary-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.area-detail-modal__stat {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.1;
+}
+
+.area-detail-modal__stat-value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__stat-value--error {
+  color: var(--color-error);
+}
+
+.area-detail-modal__stat-sep {
+  color: var(--color-muted-soft);
+  font-weight: 400;
+  margin: 0 2px;
+}
+
+.area-detail-modal__stat-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.area-detail-modal__summary-cobertura {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 200px;
+  flex: 0 1 280px;
+}
+
+.area-detail-modal__bar {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* ── Tabs ── */
+.area-detail-modal__tabs {
+  display: flex;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  background: var(--color-canvas);
+}
+
+.area-detail-modal__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: 36px;
+  padding: 0 var(--spacing-md);
+  border-radius: var(--rounded-md) var(--rounded-md) 0 0;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  letter-spacing: var(--tracking-snug);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.area-detail-modal__tab:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.area-detail-modal__tab:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.area-detail-modal__tab.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  background: var(--color-surface-soft);
+}
+
+.area-detail-modal__tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 0 6px;
+  height: 18px;
+  border-radius: var(--rounded-pill);
+  background: var(--color-hairline);
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__tab.is-active .area-detail-modal__tab-count {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ── Tab panel ── */
+.area-detail-modal__panel {
+  /* Permite que el contenido determine el alto del modal hasta su máximo;
+     internamente la tabla puede hacer scroll horizontal en pantallas chicas. */
+  padding: 0;
+}
+
+.area-detail-modal__table-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.area-detail-modal__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .area-detail-modal__summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .area-detail-modal__summary-cobertura {
+    width: 100%;
+  }
+  .area-detail-modal__tab {
+    padding: 0 var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content.area-detail-modal {
+    max-width: 100%;
+    max-height: 92vh;
+  }
+  .area-detail-modal__summary-stats {
+    gap: var(--spacing-md);
+  }
+  .area-detail-modal__stat-value {
+    font-size: var(--type-body-md-size);
+  }
+  .area-detail-modal__table-wrapper {
+    max-height: 55vh;
+  }
+}

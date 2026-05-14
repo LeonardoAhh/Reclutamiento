@@ -126,17 +126,6 @@
   box-shadow: var(--shadow-focus);
 }
 
-.dashboard__expand-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.dashboard__separator {
-  color: var(--color-hairline);
-  font-size: var(--type-caption-md-size);
-}
-
 /* ── Empty State ── */
 .dashboard__empty {
   display: flex;
@@ -165,12 +154,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
   align-items: start;
-  /* alturas independientes por celda */
   padding-bottom: var(--spacing-xxl);
-}
-
-.dept-card:has(.dept-card__body) {
-  grid-column: 1 / -1;
 }
 
 .dept-card {
@@ -211,6 +195,10 @@
   cursor: pointer;
   text-align: left;
   color: var(--color-ink);
+}
+
+.dept-card__header:hover {
+  background: var(--color-surface-soft);
 }
 
 .dept-card__header:focus-visible {
@@ -261,13 +249,7 @@
   color: var(--color-ink);
 }
 
-/* ── Department Table ── */
-.dept-card__body {
-  border-top: 1px solid var(--color-hairline-soft);
-  background: var(--color-surface-soft);
-  animation: slideDown 300ms ease;
-}
-
+/* ── Department Table (compartido con AreaDetailModal) ── */
 .dept-card__table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -384,19 +366,6 @@
   color: var(--color-muted-soft);
 }
 
-/* ── Animations ── */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-  }
-
-  to {
-    opacity: 1;
-    max-height: 2000px;
-  }
-}
-
 /* ── Search Dropdown ── */
 .dashboard__search-dropdown {
   position: absolute;
@@ -503,6 +472,10 @@
   .dashboard__kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .dashboard__departments {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
@@ -533,10 +506,6 @@
   .dashboard__filter,
   .dashboard__filter-select {
     width: 100%;
-  }
-
-  .dashboard__expand-controls {
-    justify-content: center;
   }
 
   .dept-card__header {
