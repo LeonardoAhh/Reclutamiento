@@ -126,6 +126,27 @@ export interface AuthorizedPosition extends PositionConfig {
 }
 
 /**
+ * Catálogo de habilidades requeridas por puesto. Se usa para pre-llenar el
+ * bloque "Habilidades requeridas" de la requisición. La búsqueda usa la
+ * tripleta (área, sección, puesto) como clave compuesta, con normalización
+ * de acentos y sufijo de turno (A/B/C/D) — igual que la lookup de bono.
+ *
+ * Si un puesto no tiene entrada aquí, la requisición deja el bloque en
+ * blanco para captura manual del reclutador.
+ */
+export interface PuestoHabilidades {
+  area: string;
+  seccion: string;
+  puesto: string;
+  /** Conocimientos técnicos, sistemas, herramientas. */
+  habilidades?: string;
+  /** Nivel académico mínimo o deseable. */
+  escolaridad?: string;
+  /** Experiencia mínima requerida. */
+  experiencia?: string;
+}
+
+/**
  * Comment/note for a position's recruitment process
  */
 export interface PositionComment {

@@ -1,4 +1,4 @@
-import type { AuthorizedPosition } from './types';
+import type { AuthorizedPosition, PuestoHabilidades } from './types';
 
 /**
  * PLANTILLA AUTORIZADA — Números inamovibles
@@ -214,6 +214,33 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
 
   // ── COMERCIAL ──
   { area: 'COMERCIAL', seccion: 'VENTAS', puesto: 'GERENCIA COMERCIAL', plantilla_autorizada: 1 },
+];
+
+/**
+ * HABILIDADES POR PUESTO — Catálogo editable
+ *
+ * Pre-llena el bloque "Habilidades requeridas" de la requisición.
+ * Búsqueda por (área, sección, puesto) con normalización de acentos y
+ * sufijo de turno (A/B/C/D).
+ *
+ * Campos opcionales por entrada:
+ *   habilidades  → conocimientos técnicos, sistemas, herramientas.
+ *   escolaridad  → nivel académico mínimo o deseable.
+ *   experiencia  → experiencia mínima requerida.
+ *
+ * Si un puesto no aparece aquí, la requisición deja el bloque en blanco
+ * para captura manual.
+ */
+export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
+  {
+    area: 'RECURSOS HUMANOS',
+    seccion: 'RECURSOS HUMANOS',
+    puesto: 'ANALISTA DE RECLUTAMIENTO',
+    habilidades:
+      'CONOCIMIENTO EN DC-1, DC-2, DC-3, DC-4, SIRCE, EXCEL, STPS.',
+    escolaridad: 'LIC. EN ADMINISTRACIÓN O AFÍN.',
+    experiencia: '2 AÑOS MÍN.',
+  },
 ];
 
 /**
