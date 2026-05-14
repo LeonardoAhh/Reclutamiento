@@ -92,6 +92,56 @@
   background: var(--color-primary-hover);
 }
 
+/* ── User chip + logout ─────────────────────────────────────────────── */
+.app-header__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-full);
+}
+
+.app-header__user-name {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: 500;
+  color: var(--color-body-strong);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-header__logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--rounded-full);
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.app-header__logout:hover:not(:disabled),
+.app-header__logout:focus-visible {
+  color: var(--color-error);
+  background: var(--color-canvas);
+  outline: none;
+}
+
+.app-header__logout:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 640px) {
   .app-header__nav-list {
     padding: 2px;
@@ -101,5 +151,8 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     letter-spacing: 0;
     text-transform: none;
+  }
+  .app-header__user-name {
+    display: none;
   }
 }
