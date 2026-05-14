@@ -1,11 +1,20 @@
 /* AreaDetailModal — wider modal with tabbed sections inside an area */
 
 .modal-content.area-detail-modal {
-  /* Adapta el ancho a las tablas internas; el alto se rige por --max-height
-     y un scroll interno para que el modal se ajuste al contenido. */
+  /* Adapta el ancho a las tablas internas. El modal define un alto máximo
+     y delega el scroll al panel interno; header/summary/tabs quedan
+     anclados y nunca se comprimen ni se cortan. */
   max-width: min(1080px, 96vw);
+  max-height: min(88vh, 820px);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-content.area-detail-modal > .modal-header,
+.modal-content.area-detail-modal > .area-detail-modal__summary,
+.modal-content.area-detail-modal > .area-detail-modal__tabs {
+  flex: 0 0 auto;
 }
 
 .area-detail-modal__summary {
@@ -74,16 +83,20 @@
 /* ── Tabs ── */
 .area-detail-modal__tabs {
   display: flex;
+  align-items: center;
   gap: var(--spacing-xxs);
   padding: var(--spacing-xs) var(--spacing-md);
   border-bottom: 1px solid var(--color-hairline);
   overflow-x: auto;
+  overflow-y: hidden;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   -webkit-overflow-scrolling: touch;
   background: var(--color-canvas);
 }
 
 .area-detail-modal__tab {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -144,14 +157,20 @@
 
 /* ── Tab panel ── */
 .area-detail-modal__panel {
-  /* Permite que el contenido determine el alto del modal hasta su máximo;
-     internamente la tabla puede hacer scroll horizontal en pantallas chicas. */
+  /* Toma toda la altura sobrante del modal y delega el scroll al wrapper
+     interno para que tabs y header sigan anclados arriba. */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 0;
 }
 
 .area-detail-modal__table-wrapper {
-  max-height: 60vh;
-  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .area-detail-modal__empty {
@@ -187,8 +206,5 @@
   }
   .area-detail-modal__stat-value {
     font-size: var(--type-body-md-size);
-  }
-  .area-detail-modal__table-wrapper {
-    max-height: 55vh;
   }
 }
