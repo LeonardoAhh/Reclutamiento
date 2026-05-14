@@ -44,7 +44,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'A. CALIDAD 1ER TURNO',
     puesto: 'OPERADOR DE ACABADOS GP-12',
     plantilla_autorizada: 22,
-    urgentes: 1,
   },
   { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
@@ -79,7 +78,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'MANTENIMIENTO',
     puesto: 'AUXILIAR DE MANTENIMIENTO',
     plantilla_autorizada: 2,
-    urgentes: 1,
   },
 
   // ── TALLER DE MOLDES ──
@@ -90,7 +88,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'MOLDES',
     puesto: 'TÉCNICO DE MOLDES',
     plantilla_autorizada: 13,
-    urgentes: 1,
   },
 
   // ── PRODUCCIÓN 1ER TURNO ──
@@ -107,7 +104,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -124,7 +120,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -140,7 +135,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
@@ -157,7 +151,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
     backup: 5,
-    urgentes: 1,
     notas: 'Back-up por ausentismo y rotación del turno.',
   },
 
