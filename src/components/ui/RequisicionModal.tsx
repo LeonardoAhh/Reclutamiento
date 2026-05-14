@@ -5,20 +5,27 @@ import { Modal } from './Modal';
 import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { formatShortDate } from '@/lib/dates';
+import { normalizePuesto, normalizeString } from '@/lib/utils';
 import './RequisicionModal.css';
 
 /**
  * Busca la configuración del puesto en la PLANTILLA_AUTORIZADA usando la
- * tripleta (área, sección, puesto) como clave compuesta. Devuelve
- * `undefined` si la baja no corresponde a un puesto autorizado conocido
- * — en cuyo caso la requisición cae a captura manual.
+ * tripleta (área, sección, puesto) como clave compuesta. La búsqueda
+ * normaliza acentos y elimina el sufijo de turno (A/B/C/D) que las bajas
+ * traen pegado al puesto (`"OPERADOR DE MÁQUINA D"` → `"OPERADOR DE
+ * MÁQUINA"`). Devuelve `undefined` si la baja no corresponde a un puesto
+ * autorizado conocido — en cuyo caso la requisición cae a captura manual.
  */
 function findPuestoConfig(baja: Baja): AuthorizedPosition | undefined {
+  const targetArea = normalizeString(baja.area ?? '');
+  const targetSeccion = normalizeString(baja.seccion ?? '');
+  const targetPuesto = normalizePuesto(baja.puesto ?? '');
+
   return PLANTILLA_AUTORIZADA.find(
     (p) =>
-      p.area === baja.area &&
-      p.seccion === baja.seccion &&
-      p.puesto === baja.puesto
+      normalizeString(p.area) === targetArea &&
+      normalizeString(p.seccion) === targetSeccion &&
+      normalizePuesto(p.puesto) === targetPuesto
   );
 }
 
@@ -201,24 +208,24 @@ function RequisicionDoc({
         </section>
 
         <section
-          className="requisicion-doc__section"
-          aria-label="Recepción en reclutamiento"
+          className="requisicion-doc__section requisicion-doc__section--leyenda"
+          aria-label="Responsabilidad del jefe"
         >
-          <h4 className="requisicion-doc__section-title">
-            Recepción en Reclutamiento
-          </h4>
-          <div className="requisicion-doc__grid">
-            <BlankField label="Recibido por" span={2} />
-            <BlankField label="Fecha de recepción" />
+          <div className="requisicion-doc__leyenda-header">
+            <h4 className="requisicion-doc__section-title requisicion-doc__section-title--leyenda">
+              Responsabilidad del jefe
+            </h4>
+            <div className="requisicion-doc__leyenda-fecha">
+              <BlankField label="Fecha de recepción" />
+            </div>
           </div>
+          <p
+            className="requisicion-doc__leyenda"
+            aria-label="Leyenda de responsabilidad"
+          >
+            {LEYENDA_RESPONSABILIDAD}
+          </p>
         </section>
-
-        <p
-          className="requisicion-doc__leyenda"
-          aria-label="Leyenda de responsabilidad"
-        >
-          {LEYENDA_RESPONSABILIDAD}
-        </p>
 
         <section
           className="requisicion-doc__signatures"
@@ -392,6 +399,10 @@ function SalarioBonoFields({ baja }: { baja: Baja }) {
       ) : (
         <BlankField label="Monto del bono" />
       )}
+      <CheckboxField
+        label="Tipo de reclutamiento"
+        options={['Reclutamiento', 'Desarrollo interno']}
+      />
     </>
   );
 }
