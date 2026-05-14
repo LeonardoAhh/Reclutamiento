@@ -7,11 +7,22 @@ import { supabase } from './supabase';
 export const AUTH_EMAIL_DOMAIN = 'reclutamiento.local';
 
 /**
- * Convierte un nombre de usuario en el email sintético que Supabase Auth
- * espera. Hace `trim().toLowerCase()` para evitar variantes accidentales.
+ * Convierte lo que el usuario escribió en el campo "Usuario" al email que
+ * Supabase Auth espera para `signInWithPassword`.
+ *
+ * - Si lo escrito contiene `@`, se trata como email real y se usa tal cual
+ *   (solo trim + lowercase). Permite que cuentas creadas en el Dashboard
+ *   con su email real puedan loguearse.
+ * - Si NO contiene `@`, se considera username corto y se le añade el
+ *   dominio sintético `@reclutamiento.local`.
+ *
+ * Esto hace que el form acepte tanto `leonardo` como `leonardo@empresa.com`
+ * sin que el usuario se preocupe por el dominio sintético.
  */
-export function usernameToEmail(username: string): string {
-  return `${username.trim().toLowerCase()}@${AUTH_EMAIL_DOMAIN}`;
+export function usernameToEmail(input: string): string {
+  const v = input.trim().toLowerCase();
+  if (v.includes('@')) return v;
+  return `${v}@${AUTH_EMAIL_DOMAIN}`;
 }
 
 /**
