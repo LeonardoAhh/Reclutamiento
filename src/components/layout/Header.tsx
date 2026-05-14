@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { UserMenu } from './UserMenu';
 import './Header.css';
 
@@ -34,7 +33,6 @@ export function Header() {
             ))}
           </ul>
           <div className="app-header__actions">
-            <ThemeToggle />
             <UserMenu />
           </div>
         </nav>

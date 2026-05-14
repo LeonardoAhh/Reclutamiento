@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
 
 /**
@@ -12,6 +13,7 @@ import './UserMenu.css';
  */
 export function UserMenu() {
   const { username, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -90,12 +92,37 @@ export function UserMenu() {
           <button
             type="button"
             className="user-menu__item"
+            onClick={toggleTheme}
+            role="menuitemradio"
+            aria-checked={theme === 'dark'}
+            aria-label={
+              theme === 'dark'
+                ? 'Cambiar a tema claro'
+                : 'Cambiar a tema oscuro'
+            }
+          >
+            {theme === 'dark' ? (
+              <Sun size={14} aria-hidden="true" />
+            ) : (
+              <Moon size={14} aria-hidden="true" />
+            )}
+            <span className="user-menu__item-label">Tema</span>
+            <span className="user-menu__item-meta">
+              {theme === 'dark' ? 'Oscuro' : 'Claro'}
+            </span>
+          </button>
+          <div className="user-menu__divider" role="separator" />
+          <button
+            type="button"
+            className="user-menu__item user-menu__item--danger"
             onClick={handleSignOut}
             disabled={signingOut}
             role="menuitem"
           >
             <LogOut size={14} aria-hidden="true" />
-            {signingOut ? 'Cerrando…' : 'Cerrar sesión'}
+            <span className="user-menu__item-label">
+              {signingOut ? 'Cerrando…' : 'Cerrar sesión'}
+            </span>
           </button>
         </div>
       )}
