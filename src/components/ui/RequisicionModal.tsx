@@ -2,8 +2,13 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, FileText } from 'lucide-react';
 import { Modal } from './Modal';
-import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
-import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import type {
+  AuthorizedPosition,
+  Baja,
+  Employee,
+  PuestoHabilidades,
+} from '@/lib/types';
+import { HABILIDADES_PUESTOS, PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { formatShortDate } from '@/lib/dates';
 import { normalizePuesto, normalizeString } from '@/lib/utils';
 import './RequisicionModal.css';
@@ -26,6 +31,25 @@ function findPuestoConfig(baja: Baja): AuthorizedPosition | undefined {
       normalizeString(p.area) === targetArea &&
       normalizeString(p.seccion) === targetSeccion &&
       normalizePuesto(p.puesto) === targetPuesto
+  );
+}
+
+/**
+ * Busca las habilidades requeridas del puesto en el catálogo
+ * `HABILIDADES_PUESTOS`, usando la misma normalización que el lookup de
+ * bono (acentos + sufijo de turno). Si no hay entrada para el puesto,
+ * devuelve `undefined` y la requisición deja el bloque en blanco.
+ */
+function findHabilidades(baja: Baja): PuestoHabilidades | undefined {
+  const targetArea = normalizeString(baja.area ?? '');
+  const targetSeccion = normalizeString(baja.seccion ?? '');
+  const targetPuesto = normalizePuesto(baja.puesto ?? '');
+
+  return HABILIDADES_PUESTOS.find(
+    (h) =>
+      normalizeString(h.area) === targetArea &&
+      normalizeString(h.seccion) === targetSeccion &&
+      normalizePuesto(h.puesto) === targetPuesto
   );
 }
 
@@ -203,7 +227,7 @@ function RequisicionDoc({
             Conocimientos técnicos del puesto
           </h4>
           <div className="requisicion-doc__grid">
-            <BlankField label="Habilidades requeridas" span={3} lines={3} />
+            <HabilidadesField baja={baja} />
           </div>
         </section>
 
@@ -404,6 +428,50 @@ function SalarioBonoFields({ baja }: { baja: Baja }) {
         options={['Reclutamiento', 'Desarrollo interno']}
       />
     </>
+  );
+}
+
+/**
+ * Renderiza el bloque "Habilidades requeridas" del puesto.
+ *
+ * Si el puesto tiene entrada en `HABILIDADES_PUESTOS`, se muestra como
+ * lista de definición (Habilidades / Escolaridad / Experiencia). Si no,
+ * cae al BlankField clásico de 3 líneas para captura manual.
+ */
+function HabilidadesField({ baja }: { baja: Baja }) {
+  const hab = findHabilidades(baja);
+
+  if (!hab) {
+    return <BlankField label="Habilidades requeridas" span={3} lines={3} />;
+  }
+
+  return (
+    <div
+      className="requisicion-doc__field requisicion-doc__field--habilidades"
+      data-span={3}
+    >
+      <span className="requisicion-doc__field-label">Habilidades requeridas</span>
+      <dl className="requisicion-doc__habilidades">
+        {hab.habilidades && (
+          <>
+            <dt>Habilidades</dt>
+            <dd>{hab.habilidades}</dd>
+          </>
+        )}
+        {hab.escolaridad && (
+          <>
+            <dt>Escolaridad</dt>
+            <dd>{hab.escolaridad}</dd>
+          </>
+        )}
+        {hab.experiencia && (
+          <>
+            <dt>Experiencia</dt>
+            <dd>{hab.experiencia}</dd>
+          </>
+        )}
+      </dl>
+    </div>
   );
 }
 
