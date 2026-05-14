@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { formatSupabaseError } from '@/lib/errors';
 import type {
   Employee,
   VacancyRequest,
@@ -101,8 +102,8 @@ export function useVacancyRequests() {
         saveLocal(STORAGE_KEYS.vacancies, vacData);
         saveLocal(STORAGE_KEYS.history, histData);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg);
+        const msg = formatSupabaseError(err);
+        console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg, err);
         setError(msg);
       } finally {
         setLoading(false);
@@ -179,10 +180,10 @@ export function useVacancyRequests() {
         flashSaved();
         return { ok: true, vacancy: saved };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase insert vacancy failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase insert vacancy failed, saved locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, vacancy: draft, message: 'Guardado local. Sincronización pendiente.' };
+        return { ok: true, vacancy: draft, message: `Guardado local. Sincronización pendiente: ${message}` };
       }
     },
     [vacancies, isConfigured]
@@ -229,8 +230,8 @@ export function useVacancyRequests() {
           });
         if (err) throw err;
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase insert status history failed:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase insert status history failed:', message, err);
       }
     },
     [isConfigured]
@@ -291,8 +292,8 @@ export function useVacancyRequests() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase update vacancy failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase update vacancy failed, saved locally:', message, err);
         await persistHistory();
         setSaveStatus('error');
         return { ok: true, message: 'Actualizado local. Sincronización pendiente.' };
@@ -380,10 +381,10 @@ export function useVacancyRequests() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase delete vacancy failed, removed locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase delete vacancy failed, removed locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
+        return { ok: true, message: `Eliminado local. Sincronización pendiente: ${message}` };
       }
     },
     [vacancies, history, isConfigured]

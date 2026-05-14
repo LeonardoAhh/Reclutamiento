@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { formatSupabaseError } from '@/lib/errors';
 import type {
   Candidate,
   CandidateNote,
@@ -97,8 +98,8 @@ export function useCandidates() {
         saveLocal(STORAGE_KEYS.candidates, candData);
         saveLocal(STORAGE_KEYS.candidateNotes, notesData);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase candidates fetch failed, using localStorage:', msg);
+        const msg = formatSupabaseError(err);
+        console.warn('Supabase candidates fetch failed, using localStorage:', msg, err);
         setError(msg);
       } finally {
         setLoading(false);
@@ -148,10 +149,10 @@ export function useCandidates() {
         flashSaved();
         return { ok: true, candidate: saved };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase insert candidate failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase insert candidate failed, saved locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, candidate: draft, message: 'Guardado local. Sincronización pendiente.' };
+        return { ok: true, candidate: draft, message: `Guardado local. Sincronización pendiente: ${message}` };
       }
     },
     [candidates, isConfigured]
@@ -187,10 +188,10 @@ export function useCandidates() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase update candidate failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase update candidate failed, saved locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, message: 'Actualizado local. Sincronización pendiente.' };
+        return { ok: true, message: `Actualizado local. Sincronización pendiente: ${message}` };
       }
     },
     [candidates, isConfigured]
@@ -241,10 +242,10 @@ export function useCandidates() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase delete candidate failed, removed locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase delete candidate failed, removed locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
+        return { ok: true, message: `Eliminado local. Sincronización pendiente: ${message}` };
       }
     },
     [candidates, notes, isConfigured]
@@ -281,10 +282,10 @@ export function useCandidates() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase insert candidate note failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase insert candidate note failed, saved locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+        return { ok: true, message: `Guardado local. Sincronización pendiente: ${message}` };
       }
     },
     [notes, isConfigured]

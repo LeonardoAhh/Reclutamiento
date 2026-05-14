@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import { supabase } from './supabase';
+import { formatSupabaseError } from './errors';
 import { PLANTILLA_AUTORIZADA } from './constants';
 import { normalizePuesto, normalizeString } from './utils';
 import type { AuthorizedPosition, CustomPosition } from './types';
@@ -142,8 +143,8 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
         setCustomPositions(rows);
         saveLocal(rows);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn('custom_positions fetch failed, using localStorage:', msg);
+        const msg = formatSupabaseError(err);
+        console.warn('custom_positions fetch failed, using localStorage:', msg, err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -220,8 +221,8 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
         saveLocal(replaced);
         return { ok: true, isNew: true, position: toAuthorized(saved) };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('custom_positions insert failed, kept locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('custom_positions insert failed, kept locally:', message, err);
         return {
           ok: true,
           isNew: true,
