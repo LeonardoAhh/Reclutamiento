@@ -35,6 +35,16 @@ export interface Baja {
   fecha_baja: string;
   tipo_baja: string;
   motivo_baja: string;
+  /**
+   * Marca explícita del usuario indicando que la vacante se cubrió (ej. por
+   * promoción interna o transferencia). Si está en `true`, la baja cuenta
+   * como cubierta en el reporte sin importar si hubo un hire externo.
+   */
+  cubierta_manual?: boolean;
+  /** Fecha (YYYY-MM-DD) en que se cubrió manualmente la vacante. */
+  cubierta_fecha?: string | null;
+  /** Nota libre: “promovido X”, “transferido de Almacén”, etc. */
+  cubierta_nota?: string | null;
 }
 
 /** Forma cruda del JSON de bajas (claves con espacios al final permitidas). */

@@ -368,15 +368,45 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  /* Mismo alto entre columnas para que la vista quede pareja. */
-  max-height: 640px;
 }
 
+/* Mantenemos cada tabla scrolleable internamente, pero con mucho más alto
+   visible (~80vh) para que se vean varias decenas de filas sin saturar la
+   página. */
 .bajas__table-section .bajas__table-wrapper,
 .bajas__detail-section .bajas__table-wrapper {
   flex: 1 1 auto;
   min-height: 0;
+  max-height: 80vh;
   overflow: auto;
+}
+
+.bajas__row-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  font-size: var(--type-caption-md-size);
+  font-family: var(--font-body);
+  font-weight: 500;
+  background: var(--color-surface-soft);
+  color: var(--color-body-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 120ms, border-color 120ms;
+}
+
+.bajas__row-action:hover {
+  background: rgb(var(--color-success-rgb) / 0.12);
+  border-color: rgb(var(--color-success-rgb) / 0.4);
+  color: var(--color-success);
+}
+
+.bajas__row-action:focus-visible {
+  outline: 2px solid var(--color-focus, var(--color-success));
+  outline-offset: 2px;
 }
 
 .bajas__table-wrapper {
