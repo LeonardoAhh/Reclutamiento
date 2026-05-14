@@ -235,7 +235,7 @@ export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
   {
     area: 'RECURSOS HUMANOS',
     seccion: 'RECURSOS HUMANOS',
-    puesto: 'ANALISTA DE RECLUTAMIENTO',
+    puesto: 'ANALISTA DE CAPACITACIÓN',
     habilidades:
       'CONOCIMIENTO EN DC-1, DC-2, DC-3, DC-4, SIRCE, EXCEL, STPS.',
     escolaridad: 'LIC. EN ADMINISTRACIÓN O AFÍN.',
