@@ -5,6 +5,7 @@ import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
+import { Bajas } from '@/pages/Bajas';
 import { Login } from '@/pages/Login';
 
 /**
@@ -52,6 +53,14 @@ function App() {
         element={
           <ProtectedShell>
             <Vacantes />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/bajas"
+        element={
+          <ProtectedShell>
+            <Bajas />
           </ProtectedShell>
         }
       />
