@@ -4,7 +4,7 @@ import './Header.css';
 
 const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
   { to: '/', label: 'Dashboard', end: true },
-  { to: '/pipeline', label: 'Pipeline' },
+  { to: '/pipeline', label: 'Candidatos' },
   { to: '/vacantes', label: 'Vacantes' },
 ];
 

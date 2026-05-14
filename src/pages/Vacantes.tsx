@@ -247,14 +247,6 @@ export function Vacantes() {
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
           <h1>Vacantes</h1>
-          <div className="pipeline__hero-status">
-            <Badge variant={isConfigured ? 'success' : 'amber'}>
-              {isConfigured ? 'Conectado a base de datos' : 'Modo local'}
-            </Badge>
-            {saveStatus === 'saving' && <Badge variant="teal">Guardando…</Badge>}
-            {saveStatus === 'saved' && <Badge variant="success">Guardado</Badge>}
-            {saveStatus === 'error' && <Badge variant="error">Error al guardar</Badge>}
-          </div>
         </div>
         <div className="pipeline__hero-actions">
           <button

@@ -66,7 +66,6 @@ export function JsonImporter({ onImport }: JsonImporterProps) {
         onClick={() => fileRef.current?.click()}
       >
         <Upload size={16} />
-        Importar JSON
       </button>
 
       {status !== 'idle' && (

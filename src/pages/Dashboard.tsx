@@ -205,14 +205,6 @@ export function Dashboard() {
       <section className="dashboard__hero" id="dashboard-hero">
         <div className="dashboard__hero-content">
           <h1>Control de Plantilla</h1>
-          <div className="dashboard__hero-status">
-            <Badge variant={isConfigured ? 'success' : 'amber'}>
-              {isConfigured ? 'Conectado a base de datos' : 'Sin conexión'}
-            </Badge>
-            {saveStatus === 'saving' && <Badge variant="teal">Guardando…</Badge>}
-            {saveStatus === 'saved' && <Badge variant="success">Guardado</Badge>}
-            {saveStatus === 'error' && <Badge variant="error">Error al guardar</Badge>}
-          </div>
         </div>
         <div className="dashboard__hero-actions">
           <button
