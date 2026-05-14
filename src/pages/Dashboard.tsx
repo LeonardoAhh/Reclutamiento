@@ -176,8 +176,17 @@ export function Dashboard() {
     return result;
   }
 
-  async function handleDeleteEmployee(num_empleado: string) {
-    const result = await deleteEmployee(num_empleado);
+  /**
+   * Recibe `bajaData` desde el modal de baja y se lo reenvía al hook,
+   * para que se inserte el registro correspondiente en la tabla `bajas`
+   * (y se refleje en `/bajas`). Antes se ignoraba el argumento extra y la
+   * baja nunca se persistía.
+   */
+  async function handleDeleteEmployee(
+    num_empleado: string,
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+  ) {
+    const result = await deleteEmployee(num_empleado, bajaData);
     if (result.ok) {
       setSearchTerm('');
     }
