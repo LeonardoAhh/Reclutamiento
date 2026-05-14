@@ -16,7 +16,6 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
-import { Badge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
@@ -56,8 +55,6 @@ export function Pipeline() {
     candidates,
     notes,
     loading,
-    isConfigured,
-    saveStatus,
     addCandidate,
     updateCandidate,
     setCandidateStatus,

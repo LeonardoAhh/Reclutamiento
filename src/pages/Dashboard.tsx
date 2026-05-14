@@ -42,8 +42,6 @@ export function Dashboard() {
     employees,
     comments,
     loading,
-    isConfigured,
-    saveStatus,
     upsertEmployees,
     addComment,
     addSingleEmployee,
