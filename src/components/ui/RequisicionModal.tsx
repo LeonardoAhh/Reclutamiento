@@ -2,9 +2,33 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, FileText } from 'lucide-react';
 import { Modal } from './Modal';
-import type { Baja, Employee } from '@/lib/types';
+import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
+import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { formatShortDate } from '@/lib/dates';
 import './RequisicionModal.css';
+
+/**
+ * Busca la configuración del puesto en la PLANTILLA_AUTORIZADA usando la
+ * tripleta (área, sección, puesto) como clave compuesta. Devuelve
+ * `undefined` si la baja no corresponde a un puesto autorizado conocido
+ * — en cuyo caso la requisición cae a captura manual.
+ */
+function findPuestoConfig(baja: Baja): AuthorizedPosition | undefined {
+  return PLANTILLA_AUTORIZADA.find(
+    (p) =>
+      p.area === baja.area &&
+      p.seccion === baja.seccion &&
+      p.puesto === baja.puesto
+  );
+}
+
+/** Formateador MXN sin decimales (los montos de bono/sueldo son enteros). */
+const MXN_FORMATTER = new Intl.NumberFormat('es-MX', {
+  style: 'currency',
+  currency: 'MXN',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
 
 interface RequisicionModalProps {
   isOpen: boolean;
@@ -160,9 +184,7 @@ function RequisicionDoc({
           <div className="requisicion-doc__grid">
             <Field label="Departamento solicitante" value={baja.area} />
             <Field label="Sección solicitante" value={baja.seccion} />
-            <BlankField label="Sueldo propuesto" />
-            <CheckboxField label="Bono" options={['Sí', 'No']} />
-            <BlankField label="Monto del bono" />
+            <SalarioBonoFields baja={baja} />
           </div>
         </section>
 
@@ -339,6 +361,38 @@ function SignatureSlot({ label }: { label: string }) {
       <span className="requisicion-doc__sig-line" aria-hidden="true" />
       <span className="requisicion-doc__sig-label">{label}</span>
     </div>
+  );
+}
+
+/**
+ * Renderiza los campos de Sueldo / Bono / Monto del bono.
+ * Si la baja corresponde a un puesto con configuración en la PLANTILLA,
+ * pre-llena los valores; si no, los deja en blanco para captura manual.
+ */
+function SalarioBonoFields({ baja }: { baja: Baja }) {
+  const cfg = findPuestoConfig(baja);
+
+  return (
+    <>
+      {cfg?.sueldo != null ? (
+        <Field label="Sueldo propuesto" value={MXN_FORMATTER.format(cfg.sueldo)} />
+      ) : (
+        <BlankField label="Sueldo propuesto" />
+      )}
+      {cfg?.bono != null ? (
+        <Field label="Bono" value={cfg.bono ? 'Sí' : 'No'} />
+      ) : (
+        <CheckboxField label="Bono" options={['Sí', 'No']} />
+      )}
+      {cfg?.bono && cfg.bono_monto != null ? (
+        <Field
+          label="Monto del bono"
+          value={MXN_FORMATTER.format(cfg.bono_monto)}
+        />
+      ) : (
+        <BlankField label="Monto del bono" />
+      )}
+    </>
   );
 }
 
