@@ -143,10 +143,10 @@ export function Dashboard() {
       const prev = prevByNum.get(base.num_empleado);
       return prev
         ? {
-            ...base,
-            en_incapacidad: prev.en_incapacidad ?? false,
-            incapacidad_hasta: prev.incapacidad_hasta ?? null,
-          }
+          ...base,
+          en_incapacidad: prev.en_incapacidad ?? false,
+          incapacidad_hasta: prev.incapacidad_hasta ?? null,
+        }
         : base;
     });
     const incoming = transformed.filter((e) => !prevByNum.has(e.num_empleado));
@@ -220,9 +220,9 @@ export function Dashboard() {
               setSelectedEmployee(null);
               setEmpModalMode('add');
             }}
+            title="Nuevo empleado"
           >
             <UserPlusIcon size={16} aria-hidden="true" />
-            Nuevo empleado
           </button>
           <JsonImporter onImport={handleImport} />
         </div>

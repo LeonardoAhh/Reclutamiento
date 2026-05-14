@@ -37,6 +37,7 @@ export function Bajas() {
     saveStatus,
     marcarCubierta,
     desmarcarCubierta,
+    clearBajas,
   } = useBajas();
 
   const [year, setYear] = useState<number>(currentYear);
@@ -88,10 +89,6 @@ export function Bajas() {
       <section className="bajas__hero">
         <div>
           <h1 className="bajas__title">Ingresos vs Bajas</h1>
-          <p className="bajas__subtitle">
-            Comparativa mes a mes. Las bajas con <strong>“Solo Inducción”</strong> se
-            muestran pero no se contabilizan en totales ni cobertura.
-          </p>
         </div>
         <div className="bajas__hero-actions">
           <BajasImporter onImport={importBajas} />
@@ -103,18 +100,15 @@ export function Bajas() {
           <CloudOff size={16} aria-hidden="true" />
           <div className="bajas__banner-body">
             <strong>Datos solo en este navegador.</strong>{' '}
-            Corre <code>007_bajas.sql</code> y <code>008_bajas_rls.sql</code> en Supabase para que persistan.
-            Si ya los corriste, revisa las políticas RLS de <code>bajas</code>.
-            {error && <span className="bajas__banner-detail"> ({error})</span>}
           </div>
           <button
             type="button"
             className="bajas__banner-action"
             onClick={() => void retrySync()}
             disabled={saveStatus === 'saving'}
+            title="Reintentar sync"
           >
             <RefreshCw size={14} aria-hidden="true" />
-            <span>Reintentar sync</span>
           </button>
         </div>
       )}
@@ -122,7 +116,7 @@ export function Bajas() {
         <div className="bajas__banner bajas__banner--info" role="status">
           <CloudOff size={16} aria-hidden="true" />
           <div className="bajas__banner-body">
-            Supabase no configurado. Los datos viven solo en este navegador.
+            Nube no configurada. Los datos viven solo en este navegador.
           </div>
         </div>
       )}
@@ -194,7 +188,7 @@ export function Bajas() {
           label="Cobertura"
           value={`${totals.coverturaPct}%`}
           icon={<ShieldCheck size={20} aria-hidden="true" />}
-          subtitle={`${totals.cubiertas10d}/${totals.bajas} cubiertas (≤10d ó manual)`}
+          subtitle={`${totals.cubiertas10d}/${totals.bajas} cubiertas`}
           accentColor="var(--color-accent-teal)"
         />
         <StatCard
@@ -202,7 +196,6 @@ export function Bajas() {
           label="Solo Inducción"
           value={totals.soloInduccion}
           icon={<Users size={20} aria-hidden="true" />}
-          subtitle="No contabilizadas"
           accentColor="var(--color-muted)"
         />
       </section>
@@ -257,170 +250,188 @@ export function Bajas() {
       </section>
 
       <div className="bajas__grid">
-      <section className="bajas__table-section" aria-label="Por puesto">
-        <header className="bajas__section-head">
-          <h2>Por puesto</h2>
-          <span className="bajas__section-meta">
-            {byPuesto.length} puesto{byPuesto.length === 1 ? '' : 's'} con movimiento
-          </span>
-        </header>
-        {byPuesto.length === 0 ? (
-          <div className="bajas__empty">
-            <p>Sin movimiento para los filtros aplicados.</p>
-          </div>
-        ) : (
-          <div className="bajas__table-wrapper">
-            <table className="bajas__table">
-              <thead>
-                <tr>
-                  <th scope="col">Puesto</th>
-                  <th scope="col">Área</th>
-                  <th scope="col" className="text-center">Bajas</th>
-                  <th scope="col" className="text-center">Ingresos</th>
-                  <th scope="col" className="text-center">Cubiertas</th>
-                  <th scope="col" className="text-center">Solo Ind.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {byPuesto.map((row) => {
-                  const pct =
-                    row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
-                  return (
-                    <tr key={`${row.area}-${row.puesto}`}>
-                      <td className="bajas__cell-puesto">{row.puesto}</td>
-                      <td className="bajas__cell-area">{row.area}</td>
-                      <td className="text-center">{row.bajas}</td>
-                      <td className="text-center">{row.ingresos}</td>
-                      <td className="text-center">
-                        {row.bajas > 0 ? (
-                          <span className="bajas__cobertura-pct" data-pct={pct}>
-                            {row.cubiertas10d} ({pct}%)
-                          </span>
-                        ) : (
-                          <span className="bajas__muted">—</span>
-                        )}
-                      </td>
-                      <td className="text-center">
-                        {row.soloInduccion > 0 ? (
-                          <Badge variant="default">{row.soloInduccion}</Badge>
-                        ) : (
-                          <span className="bajas__muted">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+        <section className="bajas__table-section" aria-label="Por puesto">
+          <header className="bajas__section-head">
+            <h2>Por puesto</h2>
+            <span className="bajas__section-meta">
+              {byPuesto.length} puesto{byPuesto.length === 1 ? '' : 's'} con movimiento
+            </span>
+          </header>
+          {byPuesto.length === 0 ? (
+            <div className="bajas__empty">
+              <p>Sin movimiento para los filtros aplicados.</p>
+            </div>
+          ) : (
+            <div className="bajas__table-wrapper">
+              <table className="bajas__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Puesto</th>
+                    <th scope="col">Área</th>
+                    <th scope="col" className="text-center">Bajas</th>
+                    <th scope="col" className="text-center">Ingresos</th>
+                    <th scope="col" className="text-center">Cubiertas</th>
+                    <th scope="col" className="text-center">Solo Ind.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {byPuesto.map((row) => {
+                    const pct =
+                      row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
+                    return (
+                      <tr key={`${row.area}-${row.puesto}`}>
+                        <td className="bajas__cell-puesto">{row.puesto}</td>
+                        <td className="bajas__cell-area">{row.area}</td>
+                        <td className="text-center">{row.bajas}</td>
+                        <td className="text-center">{row.ingresos}</td>
+                        <td className="text-center">
+                          {row.bajas > 0 ? (
+                            <span className="bajas__cobertura-pct" data-pct={pct}>
+                              {row.cubiertas10d} ({pct}%)
+                            </span>
+                          ) : (
+                            <span className="bajas__muted">—</span>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          {row.soloInduccion > 0 ? (
+                            <Badge variant="default">{row.soloInduccion}</Badge>
+                          ) : (
+                            <span className="bajas__muted">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-      <section className="bajas__detail-section" aria-label="Detalle de bajas">
-        <header className="bajas__section-head">
-          <h2>Detalle de bajas {year}</h2>
-          <span className="bajas__section-meta">
-            {bajasConCobertura.length} registro{bajasConCobertura.length === 1 ? '' : 's'}
-          </span>
-        </header>
-        {bajasConCobertura.length === 0 ? (
-          <div className="bajas__empty">
-            <p>
-              {loading
-                ? 'Cargando bajas…'
-                : bajas.length === 0
-                ? 'Importa un JSON de bajas para empezar.'
-                : 'Sin bajas para los filtros aplicados.'}
-            </p>
-          </div>
-        ) : (
-          <div className="bajas__table-wrapper">
-            <table className="bajas__table">
-              <thead>
-                <tr>
-                  <th scope="col">Empleado</th>
-                  <th scope="col">Puesto</th>
-                  <th scope="col">Área · Sección</th>
-                  <th scope="col">Fecha baja</th>
-                  <th scope="col">Tipo / Motivo</th>
-                  <th scope="col" className="text-center">Cobertura</th>
-                  <th scope="col" className="text-center">Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bajasConCobertura.map((b) => {
-                  const rowClass = [
-                    b.soloInduccion ? 'bajas__row--solo' : '',
-                    !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ');
-                  return (
-                    <tr key={`${b.num_empleado}-${b.fecha_baja}`} className={rowClass}>
-                      <td>
-                        <div className="bajas__cell-emp">
-                          <span className="bajas__cell-name">{b.nombre}</span>
-                          <span className="bajas__cell-meta">#{b.num_empleado}</span>
-                        </div>
-                      </td>
-                      <td>{b.puesto}</td>
-                      <td>
-                        <span className="bajas__cell-meta">
-                          {b.area} · {b.seccion}
-                        </span>
-                      </td>
-                      <td>{formatShortDate(b.fecha_baja)}</td>
-                      <td>
-                        <div className="bajas__cell-motivo">
-                          <span>{b.tipo_baja || '—'}</span>
-                          <span className="bajas__cell-meta">{b.motivo_baja || '—'}</span>
-                        </div>
-                      </td>
-                      <td className="text-center">
-                        {b.soloInduccion ? (
-                          <Badge variant="default">
-                            <AlertCircle size={11} aria-hidden="true" /> Solo Inducción
-                          </Badge>
-                        ) : b.cubiertaPor === 'manual' ? (
-                          <span title={b.cubierta_nota ?? undefined}>
-                            <Badge variant="success">
-                              <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
-                              {b.coberturaDias != null ? ` · ${b.coberturaDias}d` : ''}
-                            </Badge>
+        <section className="bajas__detail-section" aria-label="Detalle de bajas">
+          <header className="bajas__section-head">
+            <h2>Detalle de bajas {year}</h2>
+            <span className="bajas__section-meta">
+              {bajasConCobertura.length} registro{bajasConCobertura.length === 1 ? '' : 's'}
+            </span>
+          </header>
+          {bajasConCobertura.length === 0 ? (
+            <div className="bajas__empty">
+              <p>
+                {loading
+                  ? 'Cargando bajas…'
+                  : bajas.length === 0
+                    ? 'Importa un JSON de bajas para empezar.'
+                    : 'Sin bajas para los filtros aplicados.'}
+              </p>
+            </div>
+          ) : (
+            <div className="bajas__table-wrapper">
+              <table className="bajas__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Empleado</th>
+                    <th scope="col">Puesto</th>
+                    <th scope="col">Área · Sección</th>
+                    <th scope="col">Fecha baja</th>
+                    <th scope="col">Tipo / Motivo</th>
+                    <th scope="col" className="text-center">Cobertura</th>
+                    <th scope="col">Cubre vacante</th>
+                    <th scope="col" className="text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bajasConCobertura.map((b) => {
+                    const rowClass = [
+                      b.soloInduccion ? 'bajas__row--solo' : '',
+                      !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ');
+                    return (
+                      <tr key={`${b.num_empleado}-${b.fecha_baja}`} className={rowClass}>
+                        <td>
+                          <div className="bajas__cell-emp">
+                            <span className="bajas__cell-name">{b.nombre}</span>
+                            <span className="bajas__cell-meta">#{b.num_empleado}</span>
+                          </div>
+                        </td>
+                        <td>{b.puesto}</td>
+                        <td>
+                          <span className="bajas__cell-meta">
+                            {b.area} · {b.seccion}
                           </span>
-                        ) : b.cubiertaEn10d ? (
-                          <Badge variant="success">
-                            ≤10d · {b.coberturaDias}d
-                          </Badge>
-                        ) : b.coberturaDias !== null ? (
-                          <Badge variant="amber">{b.coberturaDias}d</Badge>
-                        ) : (
-                          <Badge variant="error">No cubierta</Badge>
-                        )}
-                      </td>
-                      <td className="text-center">
-                        {b.soloInduccion ? (
-                          <span className="bajas__muted">—</span>
-                        ) : (
-                          <button
-                            type="button"
-                            className="bajas__row-action"
-                            onClick={() => setCubrirTarget(b)}
-                            title={b.cubierta_manual ? 'Editar cobertura' : 'Marcar como cubierta'}
-                          >
-                            <CheckCircle2 size={14} aria-hidden="true" />
-                            <span>{b.cubierta_manual ? 'Editar' : 'Cubrir'}</span>
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+                        </td>
+                        <td>{formatShortDate(b.fecha_baja)}</td>
+                        <td>
+                          <div className="bajas__cell-motivo">
+                            <span>{b.tipo_baja || '—'}</span>
+                            <span className="bajas__cell-meta">{b.motivo_baja || '—'}</span>
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          {b.soloInduccion ? (
+                            <Badge variant="default">
+                              <AlertCircle size={11} aria-hidden="true" /> Solo Inducción
+                            </Badge>
+                          ) : b.cubiertaPor === 'manual' ? (
+                            <span title={b.cubierta_nota ?? undefined}>
+                              <Badge variant="success">
+                                <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
+                                {b.coberturaDias != null ? ` · ${b.coberturaDias}d` : ''}
+                              </Badge>
+                            </span>
+                          ) : b.cubiertaEn10d ? (
+                            <Badge variant="success">
+                              ≤10d · {b.coberturaDias}d
+                            </Badge>
+                          ) : b.coberturaDias !== null ? (
+                            <Badge variant="amber">{b.coberturaDias}d</Badge>
+                          ) : (
+                            <Badge variant="error">No cubierta</Badge>
+                          )}
+                        </td>
+                        {/* Quién cubre la vacante */}
+                        <td>
+                          {b.soloInduccion ? (
+                            <span className="bajas__muted">—</span>
+                          ) : b.coberturaEmpleado ? (
+                            <div className="bajas__cell-emp">
+                              <span className="bajas__cell-name">{b.coberturaEmpleado.nombre}</span>
+                              <span className="bajas__cell-meta">#{b.coberturaEmpleado.num_empleado}</span>
+                            </div>
+                          ) : b.cubiertaPor === 'manual' && b.cubierta_nota ? (
+                            <div className="bajas__cell-emp">
+                              <span className="bajas__cell-name">{b.cubierta_nota}</span>
+                              <span className="bajas__cell-meta">Manual</span>
+                            </div>
+                          ) : (
+                            <span className="bajas__muted">—</span>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          {b.soloInduccion ? (
+                            <span className="bajas__muted">—</span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="bajas__row-action"
+                              onClick={() => setCubrirTarget(b)}
+                              title={b.cubierta_manual ? 'Editar cobertura' : 'Marcar como cubierta'}
+                            >
+                              <CheckCircle2 size={16} aria-hidden="true" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
       </div>
 
       <CubrirVacanteModal

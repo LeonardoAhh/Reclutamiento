@@ -253,8 +253,7 @@ export function Vacantes() {
             aria-label="Nueva vacante"
             title="Nueva vacante"
           >
-            <Plus size={18} aria-hidden="true" />
-            Nueva vacante
+            <Plus size={16} aria-hidden="true" />
           </button>
         </div>
       </section>
@@ -327,7 +326,6 @@ export function Vacantes() {
           title="Filtros avanzados"
         >
           <SlidersHorizontal size={16} aria-hidden="true" />
-          Filtros
           {activeFiltersCount > 0 && (
             <span
               className="pipeline__filter-pill"
@@ -367,9 +365,8 @@ export function Vacantes() {
               : 'Prueba cambiando los filtros o el texto de búsqueda.'}
           </p>
           <div className="pipeline__empty-actions">
-            <button type="button" className="btn-primary" onClick={openAdd}>
+            <button type="button" className="btn-primary" onClick={openAdd} title="Nueva vacante">
               <Plus size={16} aria-hidden="true" />
-              Nueva vacante
             </button>
           </div>
         </section>

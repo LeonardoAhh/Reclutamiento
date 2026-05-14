@@ -266,8 +266,7 @@ export function Pipeline() {
             aria-label="Nuevo candidato"
             title="Nuevo candidato"
           >
-            <UserPlus size={18} aria-hidden="true" />
-            Nuevo candidato
+            <UserPlus size={16} aria-hidden="true" />
           </button>
         </div>
       </section>
@@ -333,7 +332,7 @@ export function Pipeline() {
           title="Filtros avanzados"
         >
           <SlidersHorizontal size={16} aria-hidden="true" />
-          Filtros
+
           {activeFiltersCount > 0 && (
             <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
               {activeFiltersCount}
@@ -341,28 +340,26 @@ export function Pipeline() {
           )}
         </button>
         <div className="pipeline__view-toggle" role="tablist" aria-label="Cambiar vista">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={viewMode === 'table'}
-            className={`pipeline__view-btn${viewMode === 'table' ? ' pipeline__view-btn--active' : ''}`}
-            onClick={() => changeView('table')}
-            title="Vista de tabla"
-          >
-            <Table2 size={16} aria-hidden="true" />
-            <span>Tabla</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={viewMode === 'kanban'}
-            className={`pipeline__view-btn${viewMode === 'kanban' ? ' pipeline__view-btn--active' : ''}`}
-            onClick={() => changeView('kanban')}
-            title="Vista kanban"
-          >
-            <LayoutGrid size={16} aria-hidden="true" />
-            <span>Kanban</span>
-          </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === 'table'}
+              className={`pipeline__view-btn${viewMode === 'table' ? ' pipeline__view-btn--active' : ''}`}
+              onClick={() => changeView('table')}
+              title="Vista de tabla"
+            >
+              <Table2 size={16} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === 'kanban'}
+              className={`pipeline__view-btn${viewMode === 'kanban' ? ' pipeline__view-btn--active' : ''}`}
+              onClick={() => changeView('kanban')}
+              title="Vista kanban"
+            >
+              <LayoutGrid size={16} aria-hidden="true" />
+            </button>
         </div>
       </section>
 
@@ -388,10 +385,9 @@ export function Pipeline() {
                 Empieza agregando tu primer candidato al pipeline. Llena el formulario
                 con datos de contacto, puesto al que aplica y su etapa actual.
               </p>
-              <button type="button" className="btn-primary" onClick={openAdd}>
-                <UserPlus size={18} aria-hidden="true" />
-                Agregar primer candidato
-              </button>
+                <button type="button" className="btn-primary" onClick={openAdd} title="Agregar primer candidato">
+                  <UserPlus size={16} aria-hidden="true" />
+                </button>
             </>
           ) : (
             <>
@@ -399,22 +395,24 @@ export function Pipeline() {
               <p>Ningún candidato coincide con la búsqueda o los filtros actuales.</p>
               <div className="pipeline__empty-actions">
                 {searchTerm && (
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={() => setSearchTerm('')}
-                  >
-                    Limpiar búsqueda
-                  </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => setSearchTerm('')}
+                      title="Limpiar búsqueda"
+                    >
+                      <UserX size={16} aria-hidden="true" />
+                    </button>
                 )}
                 {activeFiltersCount > 0 && (
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={resetFilters}
-                  >
-                    Limpiar filtros
-                  </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={resetFilters}
+                      title="Limpiar filtros"
+                    >
+                      <SlidersHorizontal size={16} aria-hidden="true" />
+                    </button>
                 )}
               </div>
             </>

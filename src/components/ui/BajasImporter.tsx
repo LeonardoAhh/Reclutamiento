@@ -79,9 +79,9 @@ export function BajasImporter({ onImport }: BajasImporterProps) {
         className="btn-secondary"
         onClick={() => fileRef.current?.click()}
         title="Importar bajas (JSON)"
+        aria-label="Importar bajas"
       >
-        <Upload size={16} aria-hidden="true" />
-        <span>Importar bajas</span>
+        <Upload size={18} aria-hidden="true" />
       </button>
 
       {status !== 'idle' && (

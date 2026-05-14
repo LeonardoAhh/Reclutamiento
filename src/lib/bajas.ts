@@ -81,6 +81,11 @@ export interface BajaWithCobertura extends Baja {
   cubiertaPor: 'auto' | 'manual' | null;
   /** `true` si la baja no se cuenta (`SOLO INDUCCIÓN`). */
   soloInduccion: boolean;
+  /**
+   * Empleado que cubre la vacante (auto-matching).
+   * `null` si no aplica, SOLO INDUCCIÓN, o cobertura manual (usar `cubierta_nota`).
+   */
+  coberturaEmpleado: { nombre: string; num_empleado: string } | null;
 }
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -99,6 +104,8 @@ interface IngresoCandidate {
   /** Versión del puesto sin categoría final (A/B/C/D). */
   puestoNorm: string;
   area: string;
+  nombre: string;
+  num_empleado: string;
   /** marca para matching greedy. */
   used: boolean;
 }
@@ -128,7 +135,8 @@ export function computeMonthlyComparison(
   };
 } {
   const yearStr = String(year);
-  const monthList = monthsOfYear(year);
+  // Solo consideramos de mayo (05) en adelante
+  const monthList = monthsOfYear(year).filter(m => m >= `${yearStr}-05`);
 
   // El filtro de puesto se compara **normalizado** (sin categoría final),
   // así una selección de "OPERADOR DE MÁQUINA" agrupa A/B/C/D.
@@ -144,7 +152,7 @@ export function computeMonthlyComparison(
   const ingresosCandidates: IngresoCandidate[] = [];
   for (const e of empleados) {
     const iso = parseDdMmYyyy(e.fecha_ingreso) ?? e.fecha_ingreso;
-    if (!iso || !iso.startsWith(yearStr) || !matchesFilters(e.area, e.puesto)) {
+    if (!iso || !iso.startsWith(yearStr) || iso < `${yearStr}-05-01` || !matchesFilters(e.area, e.puesto)) {
       continue;
     }
     ingresosCandidates.push({
@@ -152,6 +160,8 @@ export function computeMonthlyComparison(
       puesto: e.puesto,
       puestoNorm: normalizePuesto(e.puesto),
       area: e.area,
+      nombre: e.nombre,
+      num_empleado: e.num_empleado,
       used: false,
     });
   }
@@ -160,7 +170,7 @@ export function computeMonthlyComparison(
 
   // Bajas del año (filtradas), también ordenadas asc por fecha_baja.
   const bajasYear = bajas
-    .filter((b) => b.fecha_baja.startsWith(yearStr) && matchesFilters(b.area, b.puesto))
+    .filter((b) => b.fecha_baja.startsWith(yearStr) && b.fecha_baja >= `${yearStr}-05-01` && matchesFilters(b.area, b.puesto))
     .slice()
     .sort((a, b) => (a.fecha_baja < b.fecha_baja ? -1 : a.fecha_baja > b.fecha_baja ? 1 : 0));
 
@@ -176,6 +186,7 @@ export function computeMonthlyComparison(
         cubiertaEn10d: false,
         cubiertaPor: null,
         soloInduccion: true,
+        coberturaEmpleado: null,
       };
     }
 
@@ -190,6 +201,7 @@ export function computeMonthlyComparison(
         cubiertaEn10d: true,
         cubiertaPor: 'manual',
         soloInduccion: false,
+        coberturaEmpleado: null, // manual → ver cubierta_nota
       };
     }
 
@@ -209,13 +221,15 @@ export function computeMonthlyComparison(
       }
     }
     if (bestIdx >= 0 && bestDelta <= COVER_WINDOW_DAYS) {
-      ingresosCandidates[bestIdx].used = true;
+      const matched = ingresosCandidates[bestIdx];
+      matched.used = true;
       return {
         ...b,
         coberturaDias: bestDelta,
         cubiertaEn10d: true,
         cubiertaPor: 'auto',
         soloInduccion: false,
+        coberturaEmpleado: { nombre: matched.nombre, num_empleado: matched.num_empleado },
       };
     }
     return {
@@ -224,6 +238,7 @@ export function computeMonthlyComparison(
       cubiertaEn10d: false,
       cubiertaPor: null,
       soloInduccion: false,
+      coberturaEmpleado: null,
     };
   });
 

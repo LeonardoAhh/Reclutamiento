@@ -306,6 +306,24 @@ export function useBajas() {
     [isConfigured]
   );
 
+  const clearBajas = useCallback(async () => {
+    setBajas([]);
+    saveLocal(STORAGE_KEY, []);
+    setDataSource('unknown');
+    if (isConfigured) {
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase.from('bajas').delete().neq('num_empleado', 'NO_EXISTE_000');
+        if (err) throw err;
+        flashSaved();
+      } catch (err) {
+        console.warn('Supabase delete all failed:', err);
+        setSaveStatus('error');
+        setError(errorMessage(err));
+      }
+    }
+  }, [isConfigured]);
+
   return {
     bajas,
     loading,
@@ -317,5 +335,6 @@ export function useBajas() {
     retrySync,
     marcarCubierta,
     desmarcarCubierta,
+    clearBajas,
   };
 }
