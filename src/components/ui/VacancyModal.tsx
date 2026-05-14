@@ -458,9 +458,6 @@ export function VacancyModal({
                 />
                 <span>
                   <strong>Excluir del indicador</strong>{' '}
-                  <small>
-                    (no cuenta en SLA / time-to-fill — p. ej. sin seguimiento del área)
-                  </small>
                 </span>
               </label>
               {form.excluida_indicador && (
