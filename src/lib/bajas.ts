@@ -12,6 +12,18 @@ export function isSoloInduccion(b: Pick<Baja, 'tipo_baja' | 'motivo_baja'>): boo
 }
 
 /**
+ * Normaliza el nombre de un puesto removiendo la letra de categoría final
+ * (A/B/C/D). Eso permite tratar “OPERADOR DE MÁQUINA D” y “OPERADOR DE
+ * MÁQUINA C” como el mismo puesto para fines de cobertura.
+ */
+export function normalizePuesto(puesto: string | null | undefined): string {
+  const raw = String(puesto ?? '').trim();
+  if (!raw) return '';
+  // Reemplaza “ espacios + letra A-D + fin”. Tolerante a casing y espacios.
+  return raw.replace(/\s+[A-D]\s*$/i, '').trim().toUpperCase();
+}
+
+/**
  * Transforma una fila cruda del JSON de bajas a `Baja`. Tolera claves con
  * espacios al final (`"Tipo de Baja "`, `"Motivo de Baja "`) y fechas en
  * formato `DD/MM/YYYY`.
@@ -59,12 +71,14 @@ export interface PuestoBreakdownRow {
 export interface BajaWithCobertura extends Baja {
   /**
    * `null` cuando es SOLO INDUCCIÓN (no aplica) o cuando no se encontró match;
-   * `number` = días entre `fecha_baja` y la `fecha_ingreso` del empleado que
-   * cubrió esa baja (puede ser > 10 si se acepta cobertura tardía).
+   * `number` = días entre `fecha_baja` y la `fecha_ingreso` (auto) o
+   * `cubierta_fecha` (manual) que cubrió la baja.
    */
   coberturaDias: number | null;
-  /** `true` si la baja fue cubierta en ≤10 días por un ingreso del mismo puesto. */
+  /** `true` si la baja cuenta como cubierta (auto en ≤10d ó marcada manual). */
   cubiertaEn10d: boolean;
+  /** Cubierta automáticamente por un ingreso, manualmente por el usuario, o no cubierta. */
+  cubiertaPor: 'auto' | 'manual' | null;
   /** `true` si la baja no se cuenta (`SOLO INDUCCIÓN`). */
   soloInduccion: boolean;
 }
@@ -82,6 +96,8 @@ function diffDays(fromIso: string, toIso: string): number {
 interface IngresoCandidate {
   fecha: string; // YYYY-MM-DD
   puesto: string;
+  /** Versión del puesto sin categoría final (A/B/C/D). */
+  puestoNorm: string;
   area: string;
   /** marca para matching greedy. */
   used: boolean;
@@ -114,13 +130,17 @@ export function computeMonthlyComparison(
   const yearStr = String(year);
   const monthList = monthsOfYear(year);
 
+  // El filtro de puesto se compara **normalizado** (sin categoría final),
+  // así una selección de "OPERADOR DE MÁQUINA" agrupa A/B/C/D.
+  const puestoFilterNorm = filters?.puesto ? normalizePuesto(filters.puesto) : null;
   const matchesFilters = (area: string, puesto: string) => {
     if (filters?.area && area !== filters.area) return false;
-    if (filters?.puesto && puesto !== filters.puesto) return false;
+    if (puestoFilterNorm && normalizePuesto(puesto) !== puestoFilterNorm) return false;
     return true;
   };
 
   // Normaliza ingresos desde empleados activos: usa fecha_ingreso como ISO.
+  // Guardamos también `puestoNorm` (sin categoría final) para el matching.
   const ingresosCandidates: IngresoCandidate[] = [];
   for (const e of empleados) {
     const iso = parseDdMmYyyy(e.fecha_ingreso) ?? e.fecha_ingreso;
@@ -130,6 +150,7 @@ export function computeMonthlyComparison(
     ingresosCandidates.push({
       fecha: iso,
       puesto: e.puesto,
+      puestoNorm: normalizePuesto(e.puesto),
       area: e.area,
       used: false,
     });
@@ -143,20 +164,42 @@ export function computeMonthlyComparison(
     .slice()
     .sort((a, b) => (a.fecha_baja < b.fecha_baja ? -1 : a.fecha_baja > b.fecha_baja ? 1 : 0));
 
-  // Matching greedy 1-a-1: para cada baja contabilizable, busca el primer
-  // ingreso disponible con mismo área+puesto cuya fecha caiga en
-  // (fecha_baja, fecha_baja + 10d].
+  // Matching greedy 1-a-1 por **puesto normalizado** (ignora categoría final
+  // A/B/C/D). Las bajas marcadas como `cubierta_manual` saltan el matching y
+  // se contabilizan como cubiertas por el usuario.
   const bajasConCobertura: BajaWithCobertura[] = bajasYear.map((b) => {
     const solo = isSoloInduccion(b);
     if (solo) {
-      return { ...b, coberturaDias: null, cubiertaEn10d: false, soloInduccion: true };
+      return {
+        ...b,
+        coberturaDias: null,
+        cubiertaEn10d: false,
+        cubiertaPor: null,
+        soloInduccion: true,
+      };
     }
+
+    if (b.cubierta_manual) {
+      const delta =
+        b.cubierta_fecha && b.fecha_baja
+          ? Math.max(0, diffDays(b.fecha_baja, b.cubierta_fecha))
+          : null;
+      return {
+        ...b,
+        coberturaDias: delta,
+        cubiertaEn10d: true,
+        cubiertaPor: 'manual',
+        soloInduccion: false,
+      };
+    }
+
+    const puestoNormB = normalizePuesto(b.puesto);
     let bestIdx = -1;
     let bestDelta = Number.POSITIVE_INFINITY;
     for (let i = 0; i < ingresosCandidates.length; i++) {
       const c = ingresosCandidates[i];
       if (c.used) continue;
-      if (c.area !== b.area || c.puesto !== b.puesto) continue;
+      if (c.area !== b.area || c.puestoNorm !== puestoNormB) continue;
       if (c.fecha < b.fecha_baja) continue; // ingresos previos no cubren
       const delta = diffDays(b.fecha_baja, c.fecha);
       if (delta < bestDelta) {
@@ -171,6 +214,7 @@ export function computeMonthlyComparison(
         ...b,
         coberturaDias: bestDelta,
         cubiertaEn10d: true,
+        cubiertaPor: 'auto',
         soloInduccion: false,
       };
     }
@@ -178,6 +222,7 @@ export function computeMonthlyComparison(
       ...b,
       coberturaDias: bestIdx >= 0 ? bestDelta : null,
       cubiertaEn10d: false,
+      cubiertaPor: null,
       soloInduccion: false,
     };
   });
@@ -208,17 +253,19 @@ export function computeMonthlyComparison(
     }
   }
 
-  // Agregados por (area, puesto). Restringe ingresos a los que matchean
-  // los filtros activos.
-  const puestoKey = (area: string, puesto: string) => `${area}\u0000${puesto}`;
+  // Agregados por (area, puesto normalizado). Esto colapsa las variantes
+  // A/B/C/D en una sola fila para que el reporte refleje la "familia" de
+  // puestos como pidió el usuario.
+  const puestoKey = (area: string, puestoNorm: string) => `${area}\u0000${puestoNorm}`;
   const puestoMap = new Map<string, PuestoBreakdownRow>();
   const getOrCreate = (area: string, puesto: string): PuestoBreakdownRow => {
-    const k = puestoKey(area, puesto);
+    const norm = normalizePuesto(puesto);
+    const k = puestoKey(area, norm);
     const existing = puestoMap.get(k);
     if (existing) return existing;
     const fresh: PuestoBreakdownRow = {
       area,
-      puesto,
+      puesto: norm || puesto,
       bajas: 0,
       ingresos: 0,
       cubiertas10d: 0,

@@ -229,6 +229,83 @@ export function useBajas() {
     if (res.ok) setDataSource('remote');
   }, [pushToSupabase]);
 
+  /**
+   * Marca una baja (por `num_empleado`) como cubierta manualmente. Si
+   * `fecha` se omite, usa la fecha actual. Actualiza estado, localStorage y
+   * Supabase (best-effort). Si Supabase falla, el cambio persiste en local.
+   */
+  const marcarCubierta = useCallback(
+    async (numEmpleado: string, fecha: string, nota?: string | null): Promise<{ ok: boolean }> => {
+      const next = bajasRef.current.map((b) =>
+        b.num_empleado === numEmpleado
+          ? {
+              ...b,
+              cubierta_manual: true,
+              cubierta_fecha: fecha || new Date().toISOString().slice(0, 10),
+              cubierta_nota: nota?.trim() || null,
+            }
+          : b
+      );
+      setBajas(next);
+      saveLocal(STORAGE_KEY, next);
+      if (!isConfigured) return { ok: true };
+      const target = next.find((b) => b.num_empleado === numEmpleado);
+      if (!target) return { ok: false };
+      try {
+        setSaveStatus('saving');
+        const { id: _omit, ...rest } = target;
+        void _omit;
+        const { error: err } = await supabase
+          .from('bajas')
+          .upsert([rest], { onConflict: 'num_empleado' });
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = errorMessage(err);
+        console.warn('Supabase upsert (cubierta) failed:', message, err);
+        setSaveStatus('error');
+        setError(message);
+        return { ok: false };
+      }
+    },
+    [isConfigured]
+  );
+
+  /** Quita la marca de cubierta manual de una baja. */
+  const desmarcarCubierta = useCallback(
+    async (numEmpleado: string): Promise<{ ok: boolean }> => {
+      const next = bajasRef.current.map((b) =>
+        b.num_empleado === numEmpleado
+          ? { ...b, cubierta_manual: false, cubierta_fecha: null, cubierta_nota: null }
+          : b
+      );
+      setBajas(next);
+      saveLocal(STORAGE_KEY, next);
+      if (!isConfigured) return { ok: true };
+      const target = next.find((b) => b.num_empleado === numEmpleado);
+      if (!target) return { ok: false };
+      try {
+        setSaveStatus('saving');
+        const { id: _omit, ...rest } = target;
+        void _omit;
+        const { error: err } = await supabase
+          .from('bajas')
+          .upsert([rest], { onConflict: 'num_empleado' });
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = errorMessage(err);
+        console.warn('Supabase upsert (desmarcar cubierta) failed:', message, err);
+        setSaveStatus('error');
+        setError(message);
+        return { ok: false };
+      }
+    },
+    [isConfigured]
+  );
+
   return {
     bajas,
     loading,
@@ -238,5 +315,7 @@ export function useBajas() {
     dataSource,
     importBajas,
     retrySync,
+    marcarCubierta,
+    desmarcarCubierta,
   };
 }

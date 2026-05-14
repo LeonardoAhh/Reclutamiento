@@ -8,13 +8,16 @@ import {
   AlertCircle,
   CloudOff,
   RefreshCw,
+  CheckCircle2,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
+import { CubrirVacanteModal } from '@/components/ui/CubrirVacanteModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
-import { computeMonthlyComparison } from '@/lib/bajas';
+import { computeMonthlyComparison, normalizePuesto } from '@/lib/bajas';
+import type { Baja } from '@/lib/types';
 import { formatMonthLabel, formatShortDate } from '@/lib/dates';
 import './Bajas.css';
 
@@ -23,12 +26,23 @@ const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
 export function Bajas() {
   const { employees } = useSupabaseData();
-  const { bajas, loading, importBajas, dataSource, isConfigured, error, retrySync, saveStatus } =
-    useBajas();
+  const {
+    bajas,
+    loading,
+    importBajas,
+    dataSource,
+    isConfigured,
+    error,
+    retrySync,
+    saveStatus,
+    marcarCubierta,
+    desmarcarCubierta,
+  } = useBajas();
 
   const [year, setYear] = useState<number>(currentYear);
   const [areaFilter, setAreaFilter] = useState<string>('');
   const [puestoFilter, setPuestoFilter] = useState<string>('');
+  const [cubrirTarget, setCubrirTarget] = useState<Baja | null>(null);
 
   const areas = useMemo(() => {
     const set = new Set<string>();
@@ -37,12 +51,15 @@ export function Bajas() {
     return Array.from(set).sort();
   }, [employees, bajas]);
 
+  // Dropdown de puesto usa la versión normalizada (sin categoría A/B/C/D)
+  // para que una sola opción agrupe todas las variantes. Coherente con la
+  // lógica de cobertura.
   const puestosForArea = useMemo(() => {
     const set = new Set<string>();
     const matches = (a: string) => !areaFilter || a === areaFilter;
-    for (const e of employees) if (matches(e.area)) set.add(e.puesto);
-    for (const b of bajas) if (matches(b.area)) set.add(b.puesto);
-    return Array.from(set).sort();
+    for (const e of employees) if (matches(e.area)) set.add(normalizePuesto(e.puesto));
+    for (const b of bajas) if (matches(b.area)) set.add(normalizePuesto(b.puesto));
+    return Array.from(set).filter(Boolean).sort();
   }, [employees, bajas, areaFilter]);
 
   const comparison = useMemo(
@@ -174,10 +191,10 @@ export function Bajas() {
         />
         <StatCard
           id="kpi-cobertura"
-          label="Cobertura ≤10 días"
+          label="Cobertura"
           value={`${totals.coverturaPct}%`}
           icon={<ShieldCheck size={20} aria-hidden="true" />}
-          subtitle={`${totals.cubiertas10d}/${totals.bajas} bajas cubiertas`}
+          subtitle={`${totals.cubiertas10d}/${totals.bajas} cubiertas (≤10d ó manual)`}
           accentColor="var(--color-accent-teal)"
         />
         <StatCard
@@ -260,7 +277,7 @@ export function Bajas() {
                   <th scope="col">Área</th>
                   <th scope="col" className="text-center">Bajas</th>
                   <th scope="col" className="text-center">Ingresos</th>
-                  <th scope="col" className="text-center">Cubiertas ≤10d</th>
+                  <th scope="col" className="text-center">Cubiertas</th>
                   <th scope="col" className="text-center">Solo Ind.</th>
                 </tr>
               </thead>
@@ -327,6 +344,7 @@ export function Bajas() {
                   <th scope="col">Fecha baja</th>
                   <th scope="col">Tipo / Motivo</th>
                   <th scope="col" className="text-center">Cobertura</th>
+                  <th scope="col" className="text-center">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,6 +381,13 @@ export function Bajas() {
                           <Badge variant="default">
                             <AlertCircle size={11} aria-hidden="true" /> Solo Inducción
                           </Badge>
+                        ) : b.cubiertaPor === 'manual' ? (
+                          <span title={b.cubierta_nota ?? undefined}>
+                            <Badge variant="success">
+                              <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
+                              {b.coberturaDias != null ? ` · ${b.coberturaDias}d` : ''}
+                            </Badge>
+                          </span>
                         ) : b.cubiertaEn10d ? (
                           <Badge variant="success">
                             ≤10d · {b.coberturaDias}d
@@ -371,6 +396,21 @@ export function Bajas() {
                           <Badge variant="amber">{b.coberturaDias}d</Badge>
                         ) : (
                           <Badge variant="error">No cubierta</Badge>
+                        )}
+                      </td>
+                      <td className="text-center">
+                        {b.soloInduccion ? (
+                          <span className="bajas__muted">—</span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="bajas__row-action"
+                            onClick={() => setCubrirTarget(b)}
+                            title={b.cubierta_manual ? 'Editar cobertura' : 'Marcar como cubierta'}
+                          >
+                            <CheckCircle2 size={14} aria-hidden="true" />
+                            <span>{b.cubierta_manual ? 'Editar' : 'Cubrir'}</span>
+                          </button>
                         )}
                       </td>
                     </tr>
@@ -382,6 +422,14 @@ export function Bajas() {
         )}
       </section>
       </div>
+
+      <CubrirVacanteModal
+        isOpen={cubrirTarget !== null}
+        baja={cubrirTarget}
+        onClose={() => setCubrirTarget(null)}
+        onSave={async (n, f, note) => marcarCubierta(n, f, note)}
+        onClear={async (n) => desmarcarCubierta(n)}
+      />
     </main>
   );
 }
