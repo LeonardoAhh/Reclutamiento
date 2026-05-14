@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import type { Employee, PositionComment } from '@/lib/types';
+import type { Baja, Employee, PositionComment } from '@/lib/types';
 
 const STORAGE_KEYS = {
   employees: 'reclutamiento_employees',
   comments: 'reclutamiento_comments',
+  /**
+   * Mismo key que usa `useBajas`. Lo mantenemos en sync desde aquí cuando
+   * se da de baja un empleado, para que `/bajas` lo vea aunque aún no
+   * haya re-fetcheado Supabase.
+   */
+  bajas: 'reclutamiento_bajas',
 };
 
 function loadLocal<T>(key: string, fallback: T): T {
@@ -174,8 +180,10 @@ export function useSupabaseData() {
       setSaveStatus('saving');
 
       // Si se proporcionan datos de baja, crear el registro en Supabase
+      // y, en paralelo, mantenerlo en localStorage para que `/bajas` lo
+      // muestre aunque aún no haya re-fetcheado el servidor.
       if (bajaData) {
-        const { error: bajaErr } = await supabase.from('bajas').insert({
+        const nuevaBaja: Baja = {
           num_empleado: emp.num_empleado,
           nombre: emp.nombre,
           area: emp.area,
@@ -185,8 +193,23 @@ export function useSupabaseData() {
           fecha_baja: bajaData.fecha_baja,
           tipo_baja: bajaData.tipo_baja,
           motivo_baja: bajaData.motivo_baja,
-        });
-        
+          cubierta_manual: false,
+          cubierta_fecha: null,
+          cubierta_nota: null,
+        };
+
+        // Update local cache primero: dedupe por num_empleado para no
+        // duplicar si por alguna razón ya existía una baja previa.
+        const existingBajas = loadLocal<Baja[]>(STORAGE_KEYS.bajas, []);
+        const dedup = existingBajas.filter(
+          (b) => b.num_empleado !== nuevaBaja.num_empleado
+        );
+        saveLocal(STORAGE_KEYS.bajas, [...dedup, nuevaBaja]);
+
+        const { error: bajaErr } = await supabase
+          .from('bajas')
+          .insert(nuevaBaja);
+
         if (bajaErr) {
           throw bajaErr;
         }
