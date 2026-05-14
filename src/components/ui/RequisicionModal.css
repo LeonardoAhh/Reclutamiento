@@ -1,0 +1,340 @@
+/* RequisicionModal — formato de requisición de personal imprimible.
+ *
+ * Layout: dos secciones en grid de 3 columnas (datos del empleado saliente
+ * y del candidato propuesto), seguidas por la zona de firmas. En print, el
+ * modal queda oculto y solo se imprime la "hoja" blanca a tamaño completo.
+ */
+
+.modal-content.requisicion-modal {
+  max-width: 880px;
+  width: 100%;
+}
+
+.requisicion-modal__body {
+  background: var(--color-surface-soft);
+}
+
+.requisicion-modal__footer {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.requisicion-modal__btn-label {
+  margin-left: var(--spacing-xxs);
+}
+
+/* ── La "hoja" ── */
+.requisicion-doc {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-subtle);
+  padding: var(--spacing-xl);
+  color: var(--color-body-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Encabezado ── */
+.requisicion-doc__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: var(--spacing-md);
+}
+
+.requisicion-doc__head-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.requisicion-doc__eyebrow {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.requisicion-doc__head-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__head-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.requisicion-doc__head-meta dt {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__head-meta dd {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+  font-weight: 500;
+}
+
+.requisicion-doc__code {
+  font-family: var(--font-code);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Secciones ── */
+.requisicion-doc__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.requisicion-doc__section-title {
+  font-family: var(--font-display);
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+  padding-bottom: var(--spacing-xxs);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__section-hint {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 400;
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.requisicion-doc__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm) var(--spacing-md);
+}
+
+@media (max-width: 720px) {
+  .requisicion-doc__grid {
+    grid-template-columns: 1fr;
+  }
+  .requisicion-doc__field[data-span="2"],
+  .requisicion-doc__field[data-span="3"] {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 721px) {
+  .requisicion-doc__field[data-span="2"] {
+    grid-column: span 2;
+  }
+  .requisicion-doc__field[data-span="3"] {
+    grid-column: span 3;
+  }
+}
+
+.requisicion-doc__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.requisicion-doc__field-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__field-value {
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+  font-weight: 500;
+  padding: var(--spacing-xxs) 0;
+  border-bottom: 1px solid var(--color-hairline);
+  min-height: calc(var(--type-body-md-size) * var(--type-body-md-line));
+  word-break: break-word;
+}
+
+/* Slots en blanco para captura manual. La línea inferior funciona como la
+   "raya" donde el reclutador escribe a mano. */
+.requisicion-doc__field--blank .requisicion-doc__field-blank {
+  display: block;
+  border-bottom: 1px solid var(--color-ink);
+  width: 100%;
+}
+
+.requisicion-doc__field--blank[data-lines="1"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 1.8);
+}
+
+.requisicion-doc__field--blank[data-lines="2"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 3.6);
+  background-image: linear-gradient(
+    transparent calc(50% - 1px),
+    var(--color-hairline) 50%,
+    transparent calc(50% + 1px)
+  );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.requisicion-doc__field--blank[data-lines="3"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 5.4);
+  background-image:
+    linear-gradient(
+      transparent calc(33% - 1px),
+      var(--color-hairline) 33%,
+      transparent calc(33% + 1px)
+    ),
+    linear-gradient(
+      transparent calc(66% - 1px),
+      var(--color-hairline) 66%,
+      transparent calc(66% + 1px)
+    );
+}
+
+/* ── Firmas ── */
+.requisicion-doc__signatures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+@media (max-width: 720px) {
+  .requisicion-doc__signatures {
+    grid-template-columns: 1fr;
+  }
+}
+
+.requisicion-doc__sig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.requisicion-doc__sig-line {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--color-ink);
+  height: calc(var(--type-body-md-size) * 2.2);
+}
+
+.requisicion-doc__sig-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+/* ── Pie ── */
+.requisicion-doc__foot {
+  border-top: 1px solid var(--color-hairline-soft);
+  padding-top: var(--spacing-sm);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-align: right;
+}
+
+/* ── Impresión ──
+ * Oculta absolutamente todo excepto la "hoja" del modal. Quitamos el
+ * scroll-lock implícito, fijamos fondo blanco y reseteamos sombras/bordes
+ * para que el papel quede limpio. */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .modal-overlay,
+  .modal-overlay * {
+    visibility: hidden !important;
+  }
+
+  .modal-overlay .requisicion-doc,
+  .modal-overlay .requisicion-doc * {
+    visibility: visible !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: transparent !important;
+    inset: auto !important;
+    display: block !important;
+    padding: 0 !important;
+  }
+
+  .modal-content.requisicion-modal {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    background: #fff !important;
+  }
+
+  .modal-content.requisicion-modal .modal-header,
+  .modal-content.requisicion-modal .requisicion-modal__footer {
+    display: none !important;
+  }
+
+  .requisicion-modal__body {
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+  }
+
+  .requisicion-doc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 16mm 14mm !important;
+    background: #fff !important;
+  }
+
+  .requisicion-doc__field-value,
+  .requisicion-doc__field--blank .requisicion-doc__field-blank,
+  .requisicion-doc__sig-line {
+    border-bottom-color: #000 !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}

@@ -402,6 +402,24 @@
   outline-offset: 2px;
 }
 
+/* Variante para generar requisición — usa el coral primary para diferenciarla
+   de la acción "marcar cubierta" (verde). */
+.bajas__row-action--req:hover {
+  background: rgb(var(--color-primary-rgb) / 0.12);
+  border-color: rgb(var(--color-primary-rgb) / 0.4);
+  color: var(--color-primary);
+}
+
+.bajas__row-action--req:focus-visible {
+  outline-color: var(--color-primary);
+}
+
+.bajas__row-action-label {
+  font-family: var(--font-code);
+  font-size: var(--type-caption-md-size);
+  letter-spacing: var(--tracking-wide);
+}
+
 .bajas__table-wrapper {
   overflow-x: auto;
 }
