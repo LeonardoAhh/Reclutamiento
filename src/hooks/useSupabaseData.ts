@@ -231,6 +231,68 @@ export function useSupabaseData() {
     }
   }, [isConfigured, employees]);
 
+  /**
+   * Promueve a un empleado a otro puesto (cambia area/seccion/puesto). El
+   * `fecha_ingreso` y los demás datos personales se conservan; solo se mueve
+   * la asignación de plantilla. La cobertura del puesto origen se recalcula
+   * automáticamente (queda una vacante) y el llamador puede cerrar vacantes
+   * abiertas del puesto destino vía `coverVacancyForEmployee`.
+   */
+  const promoteEmployee = useCallback(
+    async (
+      num_empleado: string,
+      target: { area: string; seccion: string; puesto: string }
+    ): Promise<{ ok: boolean; message?: string }> => {
+      const idx = employees.findIndex((e) => e.num_empleado === num_empleado);
+      if (idx < 0) return { ok: false, message: 'Empleado no encontrado.' };
+
+      const current = employees[idx];
+      const area = target.area.trim();
+      const seccion = target.seccion.trim();
+      const puesto = target.puesto.trim();
+      if (!area || !seccion || !puesto) {
+        return { ok: false, message: 'Área, sección y puesto son requeridos.' };
+      }
+      if (
+        current.area === area &&
+        current.seccion === seccion &&
+        current.puesto === puesto
+      ) {
+        return {
+          ok: false,
+          message: 'El empleado ya ocupa ese puesto.',
+        };
+      }
+
+      const updated = employees.slice();
+      updated[idx] = { ...current, area, seccion, puesto };
+      setEmployees(updated);
+      saveLocal(STORAGE_KEYS.employees, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('empleados')
+          .update({ area, seccion, puesto })
+          .eq('num_empleado', num_empleado);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn('Supabase promote failed, saved locally:', message);
+        setSaveStatus('error');
+        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+      }
+    },
+    [employees, isConfigured]
+  );
+
   /** Update incapacidad fields for a single employee. */
   const updateEmployeeIncapacidad = useCallback(
     async (
@@ -312,6 +374,7 @@ export function useSupabaseData() {
     addSingleEmployee,
     deleteEmployee,
     updateEmployeeIncapacidad,
+    promoteEmployee,
     addComment,
   };
 }

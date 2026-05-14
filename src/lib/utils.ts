@@ -1,4 +1,11 @@
-import type { Employee, EmployeeRaw, PositionCoverage, DepartmentCoverage, PositionComment } from './types';
+import type {
+  AuthorizedPosition,
+  Employee,
+  EmployeeRaw,
+  PositionCoverage,
+  DepartmentCoverage,
+  PositionComment,
+} from './types';
 import { PLANTILLA_AUTORIZADA } from './constants';
 
 /**
@@ -88,15 +95,21 @@ function dedupeEmployees(employees: Employee[]): Employee[] {
 }
 
 /**
- * Calculate coverage per position using constants + employee data
+ * Calculate coverage per position using constants + employee data.
+ *
+ * Acepta una lista opcional de puestos (`positions`) que combina la
+ * `PLANTILLA_AUTORIZADA` estática con los puestos creados desde la UI
+ * (custom_positions). Si no se pasa, cae a la lista estática para mantener
+ * compatibilidad con llamadores legacy.
  */
 export function calculatePositionCoverage(
   employees: Employee[],
-  comments: PositionComment[]
+  comments: PositionComment[],
+  positions: AuthorizedPosition[] = PLANTILLA_AUTORIZADA
 ): PositionCoverage[] {
   const uniqueEmployees = dedupeEmployees(employees);
 
-  return PLANTILLA_AUTORIZADA.map((pos) => {
+  return positions.map((pos) => {
     const real = uniqueEmployees.filter(
       (emp) =>
         matchesText(emp.area, pos.area) &&

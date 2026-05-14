@@ -8,7 +8,8 @@ import type {
   Employee,
   PuestoHabilidades,
 } from '@/lib/types';
-import { HABILIDADES_PUESTOS, PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { HABILIDADES_PUESTOS } from '@/lib/constants';
+import { usePositions } from '@/lib/positions';
 import { formatShortDate } from '@/lib/dates';
 import { normalizePuesto, normalizeString } from '@/lib/utils';
 import './RequisicionModal.css';
@@ -21,12 +22,15 @@ import './RequisicionModal.css';
  * MÁQUINA"`). Devuelve `undefined` si la baja no corresponde a un puesto
  * autorizado conocido — en cuyo caso la requisición cae a captura manual.
  */
-function findPuestoConfig(baja: Baja): AuthorizedPosition | undefined {
+function findPuestoConfig(
+  baja: Baja,
+  positions: AuthorizedPosition[]
+): AuthorizedPosition | undefined {
   const targetArea = normalizeString(baja.area ?? '');
   const targetSeccion = normalizeString(baja.seccion ?? '');
   const targetPuesto = normalizePuesto(baja.puesto ?? '');
 
-  return PLANTILLA_AUTORIZADA.find(
+  return positions.find(
     (p) =>
       normalizeString(p.area) === targetArea &&
       normalizeString(p.seccion) === targetSeccion &&
@@ -401,7 +405,8 @@ function SignatureSlot({ label }: { label: string }) {
  * pre-llena los valores; si no, los deja en blanco para captura manual.
  */
 function SalarioBonoFields({ baja }: { baja: Baja }) {
-  const cfg = findPuestoConfig(baja);
+  const { positions } = usePositions();
+  const cfg = findPuestoConfig(baja, positions);
 
   return (
     <>

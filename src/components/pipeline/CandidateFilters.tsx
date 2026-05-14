@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { X } from 'lucide-react';
-import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { usePositions } from '@/lib/positions';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import './CandidateFilters.css';
@@ -46,22 +46,23 @@ export function CandidateFilters({
   onChange,
   onReset,
 }: CandidateFiltersProps) {
+  const { positions } = usePositions();
   const areas = useMemo(
     () =>
-      Array.from(new Set(PLANTILLA_AUTORIZADA.map((p) => p.area))).sort((a, b) =>
+      Array.from(new Set(positions.map((p) => p.area))).sort((a, b) =>
         a.localeCompare(b, 'es')
       ),
-    []
+    [positions]
   );
 
   const puestos = useMemo(() => {
     const base = value.area
-      ? PLANTILLA_AUTORIZADA.filter((p) => p.area === value.area)
-      : PLANTILLA_AUTORIZADA;
+      ? positions.filter((p) => p.area === value.area)
+      : positions;
     return Array.from(new Set(base.map((p) => p.puesto))).sort((a, b) =>
       a.localeCompare(b, 'es')
     );
-  }, [value.area]);
+  }, [positions, value.area]);
 
   const reclutadores = useMemo(
     () => unique(candidates.map((c) => c.reclutador)),
