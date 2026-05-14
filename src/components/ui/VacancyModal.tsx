@@ -21,7 +21,7 @@ import {
   VACANCY_EXCLUSION_REASONS,
   DEFAULT_VACANCY_SLA_DAYS,
 } from '@/lib/types';
-import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { usePositions } from '@/lib/positions';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import './CandidateModal.css';
@@ -117,29 +117,30 @@ export function VacancyModal({
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const { positions } = usePositions();
   const areas = useMemo(
-    () => Array.from(new Set(PLANTILLA_AUTORIZADA.map((p) => p.area))),
-    []
+    () => Array.from(new Set(positions.map((p) => p.area))),
+    [positions]
   );
   const sectionsForArea = useMemo(
     () =>
       Array.from(
         new Set(
-          PLANTILLA_AUTORIZADA.filter((p) => p.area === form.area).map((p) => p.seccion)
+          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
         )
       ),
-    [form.area]
+    [positions, form.area]
   );
   const puestosForSection = useMemo(
     () =>
       Array.from(
         new Set(
-          PLANTILLA_AUTORIZADA.filter(
+          positions.filter(
             (p) => p.area === form.area && p.seccion === form.seccion
           ).map((p) => p.puesto)
         )
       ),
-    [form.area, form.seccion]
+    [positions, form.area, form.seccion]
   );
 
   useEffect(() => {

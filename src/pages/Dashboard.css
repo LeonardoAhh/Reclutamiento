@@ -450,6 +450,7 @@
   flex-shrink: 0;
 }
 
+.search-dropdown-item__promote,
 .search-dropdown-item__incapacidad,
 .search-dropdown-item__delete {
   display: inline-flex;
@@ -486,6 +487,17 @@
 
 .search-dropdown-item__incapacidad.is-active {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent-amber) 30%, transparent);
+}
+
+.search-dropdown-item:hover .search-dropdown-item__promote,
+.search-dropdown-item:focus-visible .search-dropdown-item__promote {
+  color: var(--color-primary);
+}
+
+.search-dropdown-item__promote:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-hairline));
+  color: var(--color-primary);
 }
 
 /* ── Responsive ── */

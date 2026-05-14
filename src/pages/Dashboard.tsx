@@ -10,6 +10,7 @@ import {
   Filter,
   UserPlus as UserPlusIcon,
   Trash2,
+  ArrowUpCircle,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { CoverageBar } from '@/components/ui/CoverageBar';
@@ -19,6 +20,7 @@ import { JsonImporter } from '@/components/ui/JsonImporter';
 import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
+import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -27,6 +29,7 @@ import {
 } from '@/lib/utils';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
+import { usePositions } from '@/lib/positions';
 import type {
   Employee,
   EmployeeRaw,
@@ -45,9 +48,11 @@ export function Dashboard() {
     addSingleEmployee,
     deleteEmployee,
     updateEmployeeIncapacidad,
+    promoteEmployee,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
+  const { positions, createPosition } = usePositions();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
@@ -62,10 +67,11 @@ export function Dashboard() {
   const [empModalMode, setEmpModalMode] = useState<'add' | 'delete' | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
+  const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
 
   const positionCoverage = useMemo(
-    () => calculatePositionCoverage(employees, comments),
-    [employees, comments]
+    () => calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions]
   );
 
   const departmentCoverage = useMemo(
@@ -198,6 +204,26 @@ export function Dashboard() {
     setEmpModalMode('delete');
   }
 
+  function openPromoteFor(emp: Employee) {
+    setPromoteTarget(emp);
+  }
+
+  async function handlePromote(
+    emp: Employee,
+    target: { area: string; seccion: string; puesto: string }
+  ): Promise<{ ok: boolean; message?: string }> {
+    const result = await promoteEmployee(emp.num_empleado, target);
+    if (result.ok) {
+      // Si la promoción cubre una vacante abierta del nuevo puesto, ciérrala.
+      await coverVacancyForEmployee(
+        { ...emp, ...target },
+        { source: 'dashboard-promote' }
+      );
+      setSearchTerm('');
+    }
+    return result;
+  }
+
   if (loading) {
     return (
       <main className="dashboard container" id="dashboard-main">
@@ -212,7 +238,9 @@ export function Dashboard() {
   }
 
   const showSearchDropdown =
-    matchingEmployees.length > 0 && empModalMode === null;
+    matchingEmployees.length > 0 &&
+    empModalMode === null &&
+    promoteTarget === null;
 
   return (
     <main className="dashboard container" id="dashboard-main">
@@ -308,6 +336,15 @@ export function Dashboard() {
                     </span>
                   </div>
                   <div className="search-dropdown-item__actions">
+                    <button
+                      type="button"
+                      className="search-dropdown-item__promote"
+                      onClick={() => openPromoteFor(emp)}
+                      aria-label={`Promover a ${emp.nombre}`}
+                      title="Promover a otro puesto"
+                    >
+                      <ArrowUpCircle size={14} aria-hidden="true" />
+                    </button>
                     <button
                       type="button"
                       className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? ' is-active' : ''}`}
@@ -436,6 +473,15 @@ export function Dashboard() {
         onClose={() => setEmpModalMode(null)}
         onSave={handleSaveEmployee}
         onDelete={handleDeleteEmployee}
+      />
+
+      {/* ── Promote Employee Modal ── */}
+      <PromoteEmployeeModal
+        isOpen={promoteTarget !== null}
+        employee={promoteTarget}
+        onClose={() => setPromoteTarget(null)}
+        onPromote={handlePromote}
+        onCreatePosition={createPosition}
       />
     </main>
   );

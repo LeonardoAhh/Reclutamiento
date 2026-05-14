@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
+import { PositionsProvider } from '@/lib/positions';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
@@ -15,8 +16,10 @@ import { Login } from '@/pages/Login';
 function ProtectedShell({ children }: { children: ReactNode }) {
   return (
     <AuthGuard>
-      <Header />
-      {children}
+      <PositionsProvider>
+        <Header />
+        {children}
+      </PositionsProvider>
     </AuthGuard>
   );
 }

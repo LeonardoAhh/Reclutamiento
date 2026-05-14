@@ -126,6 +126,24 @@ export interface AuthorizedPosition extends PositionConfig {
 }
 
 /**
+ * Puesto creado en tiempo de ejecución desde la UI (ej. al promover a un
+ * empleado a un puesto que aún no aparece en `PLANTILLA_AUTORIZADA`). Se
+ * persiste en la tabla `custom_positions` de Supabase y se fusiona con la
+ * lista estática para alimentar selectores en Dashboard, Vacantes,
+ * Pipeline y formularios relacionados.
+ */
+export interface CustomPosition {
+  id?: string;
+  area: string;
+  seccion: string;
+  puesto: string;
+  plantilla_autorizada: number;
+  notas?: string | null;
+  created_by?: string | null;
+  created_at?: string;
+}
+
+/**
  * Catálogo de habilidades requeridas por puesto. Se usa para pre-llenar el
  * bloque "Habilidades requeridas" de la requisición. La búsqueda usa la
  * tripleta (área, sección, puesto) como clave compuesta, con normalización
