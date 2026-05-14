@@ -144,7 +144,7 @@ function RequisicionDoc({
         aria-label="Datos del empleado a reemplazar"
       >
         <h4 className="requisicion-doc__section-title">
-          Empleado a reemplazar
+          Empleado a cubrir
         </h4>
         <div className="requisicion-doc__grid">
           <Field label="Nombre" value={baja.nombre} span={2} />
@@ -197,12 +197,12 @@ function RequisicionDoc({
       >
         <SignatureSlot label="Reclutador" />
         <SignatureSlot label="Jefe inmediato" />
-        <SignatureSlot label="Gerencia de RH" />
+        <SignatureSlot label="Jefe de Recursos Humanos" />
       </section>
 
       <footer className="requisicion-doc__foot">
         <span>
-          Documento generado para control interno · Código {codigo ?? '—'}
+          Control interno · Código {codigo ?? '—'}
         </span>
       </footer>
     </article>
