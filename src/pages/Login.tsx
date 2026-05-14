@@ -54,17 +54,16 @@ export function Login() {
 
       <section className="login__card" aria-labelledby="login-title">
         <header className="login__header">
-          <p className="login__eyebrow">Sistema</p>
+          <p className="login__eyebrow">VIÑOPLASTIC QRO</p>
           <h1 id="login-title" className="login__title">
             Reclutamiento
           </h1>
-          <p className="login__subtitle">Control de plantilla y candidatos</p>
         </header>
 
         <form className="login__form" onSubmit={handleSubmit} noValidate>
           <div className="login__field">
             <label htmlFor="login-username" className="login__label">
-              Usuario o correo
+              Correo
             </label>
             <input
               id="login-username"
@@ -140,12 +139,6 @@ export function Login() {
             )}
           </button>
         </form>
-
-        <footer className="login__footer">
-          <p>
-            ¿Sin acceso? Pide a tu administrador que te cree una cuenta.
-          </p>
-        </footer>
       </section>
     </main>
   );
