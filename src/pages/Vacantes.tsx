@@ -269,7 +269,7 @@ export function Vacantes() {
         />
         <StatCard
           id="stat-vac-sla"
-          label="En SLA"
+          label="En tiempo"
           value={totals.enSla}
           icon={<CheckCircle2 size={20} />}
           accentColor="var(--color-accent-teal)"
@@ -381,7 +381,7 @@ export function Vacantes() {
                 <th scope="col">Reclutador</th>
                 <th scope="col">Fuente</th>
                 <th scope="col">Apertura</th>
-                <th scope="col">SLA</th>
+                <th scope="col">Tiempo</th>
                 <th scope="col" className="pipeline__th--actions">
                   Acciones
                 </th>

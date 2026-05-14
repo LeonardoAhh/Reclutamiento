@@ -7,7 +7,6 @@ import {
   UserPlus,
   Pencil,
   Trash2,
-  ExternalLink,
   Search,
   Table2,
   LayoutGrid,
@@ -382,8 +381,7 @@ export function Pipeline() {
             <>
               <h2>Aún no hay candidatos</h2>
               <p>
-                Empieza agregando tu primer candidato al pipeline. Llena el formulario
-                con datos de contacto, puesto al que aplica y su etapa actual.
+                Empieza agregando tu primer candidato a la base de datos de reclutamiento.
               </p>
               <button type="button" className="btn-primary" onClick={openAdd} title="Agregar primer candidato">
                 <UserPlus size={16} aria-hidden="true" />
@@ -439,7 +437,6 @@ export function Pipeline() {
                 <th scope="col">Reclutador</th>
                 <th scope="col">Fuente</th>
                 <th scope="col">Aplicó</th>
-                <th scope="col" className="pipeline__th--actions">CV</th>
                 <th scope="col" className="pipeline__th--actions">Acciones</th>
               </tr>
             </thead>
@@ -484,22 +481,6 @@ export function Pipeline() {
                   <td>{c.reclutador || '—'}</td>
                   <td>{c.source || '—'}</td>
                   <td>{formatDate(c.fecha_aplicacion)}</td>
-                  <td className="pipeline__cell-cv">
-                    {c.cv_url ? (
-                      <a
-                        href={c.cv_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="pipeline__icon-btn"
-                        title="Abrir CV"
-                        aria-label={`Abrir CV de ${c.nombre}`}
-                      >
-                        <ExternalLink size={16} aria-hidden="true" />
-                      </a>
-                    ) : (
-                      <span className="pipeline__muted" aria-hidden="true">—</span>
-                    )}
-                  </td>
                   <td className="pipeline__cell-actions">
                     {c.status === 'contratado' && !c.employee_num && (
                       <button

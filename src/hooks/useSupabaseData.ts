@@ -152,12 +152,16 @@ export function useSupabaseData() {
   }, [isConfigured, employees]);
 
   /** Remove an employee by num_empleado. */
-  const deleteEmployee = useCallback(async (num_empleado: string): Promise<{ ok: boolean; message?: string }> => {
-    const updated = employees.filter(e => e.num_empleado !== num_empleado);
-    if (updated.length === employees.length) {
+  const deleteEmployee = useCallback(async (
+    num_empleado: string,
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+  ): Promise<{ ok: boolean; message?: string }> => {
+    const emp = employees.find(e => e.num_empleado === num_empleado);
+    if (!emp) {
       return { ok: false, message: 'Empleado no encontrado.' };
     }
 
+    const updated = employees.filter(e => e.num_empleado !== num_empleado);
     setEmployees(updated);
     saveLocal(STORAGE_KEYS.employees, updated);
 
@@ -168,11 +172,32 @@ export function useSupabaseData() {
 
     try {
       setSaveStatus('saving');
+
+      // Si se proporcionan datos de baja, crear el registro en Supabase
+      if (bajaData) {
+        const { error: bajaErr } = await supabase.from('bajas').insert({
+          num_empleado: emp.num_empleado,
+          nombre: emp.nombre,
+          area: emp.area,
+          seccion: emp.seccion,
+          puesto: emp.puesto,
+          fecha_ingreso: emp.fecha_ingreso,
+          fecha_baja: bajaData.fecha_baja,
+          tipo_baja: bajaData.tipo_baja,
+          motivo_baja: bajaData.motivo_baja,
+        });
+        
+        if (bajaErr) {
+          throw bajaErr;
+        }
+      }
+
       const { error: err } = await supabase
         .from('empleados')
         .delete()
         .eq('num_empleado', num_empleado);
       if (err) throw err;
+
       flashSaved();
       return { ok: true };
     } catch (err) {

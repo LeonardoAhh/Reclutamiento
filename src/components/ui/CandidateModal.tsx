@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UserPlus, Pencil, Trash2, AlertCircle } from 'lucide-react';
+import { UserPlus, Pencil, Trash2 } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
@@ -187,10 +187,10 @@ export function CandidateModal({
       : 'Nuevo candidato';
 
   const subtitle = isDelete
-    ? 'Acción irreversible'
+    ? 'Eliminar Candidato'
     : isEdit
-      ? 'Actualizar datos del pipeline'
-      : 'Registrar en el pipeline';
+      ? 'Actualizar Candidato'
+      : 'Registrar Candidato';
 
   return (
     <Modal
@@ -204,9 +204,6 @@ export function CandidateModal({
       <form onSubmit={handleSubmit} className="modal-body" noValidate>
         {isDelete ? (
           <div className="delete-warning">
-            <div className="delete-warning__icon" aria-hidden="true">
-              <AlertCircle size={32} />
-            </div>
             <p className="delete-warning__title">
               ¿Eliminar a{' '}
               <span className="delete-warning__name">{form.nombre || 'este candidato'}</span>?
@@ -226,7 +223,7 @@ export function CandidateModal({
               </div>
             </dl>
             <p className="delete-warning__sub">
-              Esta acción no se puede deshacer. Las notas asociadas también se eliminan.
+              Esta acción no se puede deshacer.
             </p>
           </div>
         ) : (
@@ -336,7 +333,7 @@ export function CandidateModal({
                 type="text"
                 value={form.reclutador}
                 onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
-                placeholder="Quién lo está moviendo"
+                placeholder="Quién lleva el proceso"
                 autoComplete="off"
               />
             </div>
@@ -365,24 +362,13 @@ export function CandidateModal({
               />
             </div>
             <div className="form-group form-group--span-2">
-              <label htmlFor="cand-cv">URL del CV</label>
-              <input
-                id="cand-cv"
-                type="url"
-                value={form.cv_url}
-                onChange={(e) => setForm({ ...form, cv_url: e.target.value })}
-                placeholder="https://drive.google.com/…"
-                autoComplete="off"
-              />
-            </div>
-            <div className="form-group form-group--span-2">
               <label htmlFor="cand-notas">Notas rápidas</label>
               <textarea
                 id="cand-notas"
                 rows={3}
                 value={form.notas}
                 onChange={(e) => setForm({ ...form, notas: e.target.value })}
-                placeholder="Resumen corto. Las notas largas van en el panel del candidato."
+                placeholder="Notas rápidas"
               />
             </div>
           </div>
@@ -411,7 +397,7 @@ export function CandidateModal({
               className="btn-primary"
               disabled={!isFormValid || submitting}
             >
-              {submitting ? 'Guardando…' : isAdd ? 'Guardar candidato' : 'Guardar cambios'}
+              {submitting ? 'Guardando…' : isAdd ? 'Guardar' : 'Guardar'}
             </button>
           )}
         </footer>
