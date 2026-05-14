@@ -96,6 +96,23 @@ export interface PositionConfig {
   backup?: number;
   /** Nota interna opcional explicando el back-up o la urgencia. */
   notas?: string;
+  /**
+   * Sueldo base mensual del puesto, en MXN. Si se define, la requisición
+   * lo pre-llena automáticamente; si se omite, queda en blanco para
+   * captura manual del reclutador.
+   */
+  sueldo?: number;
+  /**
+   * Si el puesto tiene bono asociado. Si se define, la requisición
+   * muestra "Sí" / "No" como valor pre-llenado en lugar de las casillas
+   * en blanco para marcar a mano.
+   */
+  bono?: boolean;
+  /**
+   * Monto del bono mensual, en MXN. Solo aplica cuando `bono === true`.
+   * Si se define, la requisición lo pre-llena automáticamente.
+   */
+  bono_monto?: number;
 }
 
 /**

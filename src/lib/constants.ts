@@ -22,6 +22,16 @@ import type { AuthorizedPosition } from './types';
  *
  *   notas: "texto"    → nota interna explicando el back-up o la urgencia.
  *
+ *   sueldo: N         → sueldo base mensual del puesto, en MXN. La requisición
+ *                       lo pre-llena automáticamente; si se omite, queda en
+ *                       blanco para captura manual del reclutador.
+ *
+ *   bono: true|false  → si el puesto tiene bono asociado. La requisición
+ *                       muestra "Sí" / "No" en lugar de casillas vacías.
+ *
+ *   bono_monto: N     → monto del bono mensual en MXN (solo si bono = true).
+ *                       La requisición lo pre-llena automáticamente.
+ *
  * Ejemplo:
  *   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO',
  *     puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32,
@@ -34,9 +44,9 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'JEFE DE ALMACÉN', plantilla_autorizada: 1 },
   { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'CHOFER', plantilla_autorizada: 1 },
   { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR ADMINISTRATIVO DE ALMACÉN', plantilla_autorizada: 2 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 7 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'ALMACENISTA DE MATERIA PRIMA', plantilla_autorizada: 1 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 5 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 7, bono: true, bono_monto: 280 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'ALMACENISTA DE MATERIA PRIMA', plantilla_autorizada: 1, bono: true, bono_monto: 280 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 5, bono: true, bono_monto: 280 },
 
   // ── CALIDAD ──
   {
@@ -44,8 +54,10 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'A. CALIDAD 1ER TURNO',
     puesto: 'OPERADOR DE ACABADOS GP-12',
     plantilla_autorizada: 22,
+    bono: true,
+    bono_monto: 480,
   },
-  { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22 },
+  { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22, bono: true, bono_monto: 480 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INGENIERO DE CALIDAD', plantilla_autorizada: 2 },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'SUPERVISOR DE ACABADOS - GP12', plantilla_autorizada: 2 },
@@ -88,16 +100,18 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'MOLDES',
     puesto: 'TÉCNICO DE MOLDES',
     plantilla_autorizada: 13,
+    bono: true,
+    bono_monto: 280,
   },
 
   // ── PRODUCCIÓN 1ER TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR SCRAP', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR SCRAP', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
   {
     area: 'PRODUCCIÓN',
     seccion: 'PRODUCCIÓN 1ER. TURNO',
@@ -105,15 +119,17 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     plantilla_autorizada: 32,
     backup: 5,
     notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 480,
   },
 
   // ── PRODUCCIÓN 2o TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
   {
     area: 'PRODUCCIÓN',
     seccion: 'PRODUCCIÓN 2o. TURNO',
@@ -121,14 +137,16 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     plantilla_autorizada: 32,
     backup: 5,
     notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 480,
   },
 
   // ── PRODUCCIÓN 3ER TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
   {
     area: 'PRODUCCIÓN',
     seccion: 'PRODUCCIÓN 3ER. TURNO',
@@ -136,15 +154,17 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     plantilla_autorizada: 32,
     backup: 5,
     notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 480,
   },
 
   // ── PRODUCCIÓN 4o TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 480 },
   {
     area: 'PRODUCCIÓN',
     seccion: 'PRODUCCIÓN 4o. TURNO',
@@ -152,6 +172,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     plantilla_autorizada: 32,
     backup: 5,
     notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 480,
   },
 
   // ── PRODUCCIÓN ADMTVO ──
