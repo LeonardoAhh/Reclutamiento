@@ -88,7 +88,7 @@ export function Bajas() {
     <main className="bajas container" id="page-bajas">
       <section className="bajas__hero">
         <div>
-          <h1 className="bajas__title">Ingresos vs Bajas</h1>
+          <h1 className="bajas__title">Rotación y Retención</h1>
         </div>
         <div className="bajas__hero-actions">
           <BajasImporter onImport={importBajas} />
