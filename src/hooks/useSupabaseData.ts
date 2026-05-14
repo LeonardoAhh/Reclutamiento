@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { formatSupabaseError } from '@/lib/errors';
 import type { Baja, Employee, PositionComment } from '@/lib/types';
 
 const STORAGE_KEYS = {
@@ -88,8 +89,8 @@ export function useSupabaseData() {
         saveLocal(STORAGE_KEYS.employees, empData);
         saveLocal(STORAGE_KEYS.comments, commData);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase fetch failed, using localStorage:', msg);
+        const msg = formatSupabaseError(err);
+        console.warn('Supabase fetch failed, using localStorage:', msg, err);
         setError(msg);
       } finally {
         setLoading(false);
@@ -121,7 +122,7 @@ export function useSupabaseData() {
       if (err) throw err;
       flashSaved();
     } catch (err) {
-      console.warn('Supabase upsert failed, data saved locally:', err);
+      console.warn('Supabase upsert failed, data saved locally:', formatSupabaseError(err), err);
       setSaveStatus('error');
     }
   }, [isConfigured]);
@@ -150,10 +151,16 @@ export function useSupabaseData() {
       flashSaved();
       return { ok: true };
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.warn('Supabase insert failed, employee saved locally:', message);
+      const message = formatSupabaseError(err);
+      console.warn('Supabase insert failed, reverting local insert:', message, err);
+      // Revertir el optimistic update: si Supabase rechazó el insert (RLS,
+      // unique violation, sesión expirada), no podemos dejar el empleado en
+      // el state local porque desaparecería al refrescar desde Supabase y
+      // confundiría al usuario.
+      setEmployees(employees);
+      saveLocal(STORAGE_KEYS.employees, employees);
       setSaveStatus('error');
-      return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+      return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
     }
   }, [isConfigured, employees]);
 
@@ -224,10 +231,16 @@ export function useSupabaseData() {
       flashSaved();
       return { ok: true };
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.warn('Supabase delete failed, removed locally:', message);
+      const message = formatSupabaseError(err);
+      console.warn('Supabase delete failed, reverting local delete:', message, err);
+      // Revertir el optimistic delete: Supabase rechazó el delete (RLS,
+      // FK, sesión expirada, unique violation en `bajas`, etc). Si dejamos
+      // el empleado fuera del state local, reaparecería al refrescar y el
+      // usuario creería que se borró cuando no.
+      setEmployees(employees);
+      saveLocal(STORAGE_KEYS.employees, employees);
       setSaveStatus('error');
-      return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
+      return { ok: false, message: `No se pudo eliminar en Supabase: ${message}` };
     }
   }, [isConfigured, employees]);
 
@@ -284,10 +297,14 @@ export function useSupabaseData() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase promote failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase promote failed, reverting local change:', message, err);
+        // Revertir el optimistic update para que el puesto del empleado
+        // siga reflejando lo que Supabase realmente tiene.
+        setEmployees(employees);
+        saveLocal(STORAGE_KEYS.employees, employees);
         setSaveStatus('error');
-        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+        return { ok: false, message: `No se pudo promover en Supabase: ${message}` };
       }
     },
     [employees, isConfigured]
@@ -330,10 +347,12 @@ export function useSupabaseData() {
         flashSaved();
         return { ok: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn('Supabase update incapacidad failed, saved locally:', message);
+        const message = formatSupabaseError(err);
+        console.warn('Supabase update incapacidad failed, reverting local change:', message, err);
+        setEmployees(employees);
+        saveLocal(STORAGE_KEYS.employees, employees);
         setSaveStatus('error');
-        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+        return { ok: false, message: `No se pudo actualizar en Supabase: ${message}` };
       }
     },
     [isConfigured, employees]
@@ -358,7 +377,11 @@ export function useSupabaseData() {
       if (err) throw err;
       flashSaved();
     } catch (err) {
-      console.warn('Supabase insert failed, comment saved locally:', err);
+      console.warn(
+        'Supabase insert failed, comment saved locally:',
+        formatSupabaseError(err),
+        err
+      );
       setSaveStatus('error');
     }
   }, [isConfigured, comments]);

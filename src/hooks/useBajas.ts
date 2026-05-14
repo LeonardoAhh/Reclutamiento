@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { formatSupabaseError } from '@/lib/errors';
 import type { Baja, BajaRaw } from '@/lib/types';
 import { transformBajaData } from '@/lib/bajas';
 
@@ -26,24 +27,10 @@ function saveLocal<T>(key: string, data: T): void {
  * Convierte cualquier valor de error (Error nativo, PostgrestError, objeto
  * libre, string) a un mensaje legible. Sin esto, los errores de PostgREST
  * (que son objetos planos) se renderizaban como `[object Object]`.
+ *
+ * Alias del util compartido para mantener llamadas locales sin refactor.
  */
-function errorMessage(err: unknown): string {
-  if (err == null) return 'Error desconocido';
-  if (typeof err === 'string') return err;
-  if (err instanceof Error) return err.message;
-  if (typeof err === 'object') {
-    const e = err as Record<string, unknown>;
-    const parts = [e.message, e.details, e.hint, e.code]
-      .filter((v): v is string => typeof v === 'string' && v.length > 0);
-    if (parts.length > 0) return parts.join(' · ');
-    try {
-      return JSON.stringify(err);
-    } catch {
-      return String(err);
-    }
-  }
-  return String(err);
-}
+const errorMessage = formatSupabaseError;
 
 function checkSupabaseConfig(): boolean {
   const url = import.meta.env.VITE_SUPABASE_URL || '';
