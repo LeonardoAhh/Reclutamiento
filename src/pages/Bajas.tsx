@@ -6,6 +6,8 @@ import {
   ShieldCheck,
   Filter,
   AlertCircle,
+  CloudOff,
+  RefreshCw,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
@@ -21,7 +23,8 @@ const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
 export function Bajas() {
   const { employees } = useSupabaseData();
-  const { bajas, loading, importBajas } = useBajas();
+  const { bajas, loading, importBajas, dataSource, isConfigured, error, retrySync, saveStatus } =
+    useBajas();
 
   const [year, setYear] = useState<number>(currentYear);
   const [areaFilter, setAreaFilter] = useState<string>('');
@@ -77,6 +80,35 @@ export function Bajas() {
           <BajasImporter onImport={importBajas} />
         </div>
       </section>
+
+      {isConfigured && dataSource === 'local' && bajas.length > 0 && (
+        <div className="bajas__banner bajas__banner--warn" role="status">
+          <CloudOff size={16} aria-hidden="true" />
+          <div className="bajas__banner-body">
+            <strong>Datos solo en este navegador.</strong>{' '}
+            Falta correr <code>supabase/migrations/007_bajas.sql</code> o revisar las políticas RLS
+            de la tabla <code>bajas</code> para que persistan al refrescar.
+            {error && <span className="bajas__banner-detail"> ({error})</span>}
+          </div>
+          <button
+            type="button"
+            className="bajas__banner-action"
+            onClick={() => void retrySync()}
+            disabled={saveStatus === 'saving'}
+          >
+            <RefreshCw size={14} aria-hidden="true" />
+            <span>Reintentar sync</span>
+          </button>
+        </div>
+      )}
+      {!isConfigured && bajas.length > 0 && (
+        <div className="bajas__banner bajas__banner--info" role="status">
+          <CloudOff size={16} aria-hidden="true" />
+          <div className="bajas__banner-body">
+            Supabase no configurado. Los datos viven solo en este navegador.
+          </div>
+        </div>
+      )}
 
       <section className="bajas__filters" aria-label="Filtros">
         <label className="bajas__filter">
@@ -207,6 +239,7 @@ export function Bajas() {
         </div>
       </section>
 
+      <div className="bajas__grid">
       <section className="bajas__table-section" aria-label="Por puesto">
         <header className="bajas__section-head">
           <h2>Por puesto</h2>
@@ -348,6 +381,7 @@ export function Bajas() {
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }
