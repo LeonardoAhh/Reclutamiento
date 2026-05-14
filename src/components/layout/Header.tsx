@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { useAuth } from '@/hooks/useAuth';
+import { UserMenu } from './UserMenu';
 import './Header.css';
 
 const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
@@ -12,19 +10,6 @@ const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
 ];
 
 export function Header() {
-  const { username, signOut } = useAuth();
-  const [signingOut, setSigningOut] = useState(false);
-
-  async function handleSignOut() {
-    if (signingOut) return;
-    setSigningOut(true);
-    try {
-      await signOut();
-    } finally {
-      setSigningOut(false);
-    }
-  }
-
   return (
     <header className="app-header" id="main-header">
       <div className="app-header__inner container">
@@ -48,24 +33,10 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <ThemeToggle />
-          {username && (
-            <div className="app-header__user" aria-label="Sesión activa">
-              <span className="app-header__user-name" title={username}>
-                {username}
-              </span>
-              <button
-                type="button"
-                className="app-header__logout"
-                onClick={handleSignOut}
-                disabled={signingOut}
-                aria-label="Cerrar sesión"
-                title="Cerrar sesión"
-              >
-                <LogOut size={16} aria-hidden="true" />
-              </button>
-            </div>
-          )}
+          <div className="app-header__actions">
+            <ThemeToggle />
+            <UserMenu />
+          </div>
         </nav>
       </div>
     </header>
