@@ -13,7 +13,6 @@ import {
   Plus,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
-import { Badge } from '@/components/ui/Badge';
 import { VacancyModal } from '@/components/ui/VacancyModal';
 import {
   VacancyStatusBadge,
@@ -71,8 +70,6 @@ export function Vacantes() {
   const {
     vacancies,
     loading,
-    isConfigured,
-    saveStatus,
     addVacancy,
     updateVacancy,
     setVacancyStatus,
