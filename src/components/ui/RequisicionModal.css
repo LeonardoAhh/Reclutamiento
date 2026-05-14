@@ -258,6 +258,14 @@
   color: var(--color-body-strong);
 }
 
+/* "Tipo de reclutamiento": opciones largas → apiladas en columna.
+   El selector usa el aria-label = label del campo, así no afecta a Bono Sí/No. */
+.requisicion-doc__checkbox-row[aria-label="Tipo de reclutamiento"] {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
 /* ── Bloque "Responsabilidad del jefe" ── */
 .requisicion-doc__section--leyenda {
   gap: var(--spacing-xs);
