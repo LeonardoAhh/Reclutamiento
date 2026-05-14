@@ -64,7 +64,7 @@ export function Login() {
         <form className="login__form" onSubmit={handleSubmit} noValidate>
           <div className="login__field">
             <label htmlFor="login-username" className="login__label">
-              Usuario
+              Usuario o correo
             </label>
             <input
               id="login-username"
