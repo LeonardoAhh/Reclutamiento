@@ -1,20 +1,62 @@
+import type { ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
+import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
+import { Login } from '@/pages/Login';
+
+/**
+ * Shell con Header + página protegida. El Header sólo se monta dentro del
+ * área autenticada para que el login se sienta como una pantalla aparte.
+ */
+function ProtectedShell({ children }: { children: ReactNode }) {
+  return (
+    <AuthGuard>
+      <Header />
+      {children}
+    </AuthGuard>
+  );
+}
 
 function App() {
   return (
-    <>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/pipeline" element={<Pipeline />} />
-        <Route path="/vacantes" element={<Vacantes />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <RedirectIfAuthed>
+            <Login />
+          </RedirectIfAuthed>
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <ProtectedShell>
+            <Dashboard />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/pipeline"
+        element={
+          <ProtectedShell>
+            <Pipeline />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/vacantes"
+        element={
+          <ProtectedShell>
+            <Vacantes />
+          </ProtectedShell>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
