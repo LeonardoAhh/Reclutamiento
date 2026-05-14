@@ -109,6 +109,14 @@ interface RequisicionDocProps {
   issuedDate: string;
 }
 
+const LEYENDA_RESPONSABILIDAD =
+  'Yo acepto que el personal que estoy solicitando es indispensable ocupando el ' +
+  '100% de su rendimiento y no estoy desperdiciando recursos innecesarios. ' +
+  'Yo seré responsable por No llegar a los objetivos del puesto que estoy ' +
+  'solicitando. Soy Jefe y estoy avalando mi capacidad para detectar las ' +
+  'necesidades de cada puesto, así como para incrementar o disminuir la ' +
+  'plantilla según las necesidades.';
+
 function RequisicionDoc({
   baja,
   turno,
@@ -116,96 +124,192 @@ function RequisicionDoc({
   issuedDate,
 }: RequisicionDocProps) {
   return (
-    <article
+    <div
       className="requisicion-doc"
+      role="document"
       aria-label="Formato de requisición de personal"
     >
-      <header className="requisicion-doc__head">
-        <div className="requisicion-doc__head-left">
-          <span className="requisicion-doc__eyebrow">
-            Formato de reclutamiento
-          </span>
-          <h3 className="requisicion-doc__title">Requisición de Personal</h3>
-        </div>
-        <dl className="requisicion-doc__head-meta">
-          <div>
-            <dt>Código</dt>
-            <dd className="requisicion-doc__code">{codigo ?? '—'}</dd>
+      {/* ── HOJA 1 — Requisición ─────────────────────────────────────── */}
+      <article
+        className="requisicion-doc__page requisicion-doc__page--first"
+        aria-label="Hoja 1: requisición"
+      >
+        <DocHeader codigo={codigo} issuedDate={issuedDate} />
+
+        <section
+          className="requisicion-doc__section"
+          aria-label="Empleado a cubrir"
+        >
+          <h4 className="requisicion-doc__section-title">Empleado a cubrir</h4>
+          <div className="requisicion-doc__grid">
+            <Field label="Nombre" value={baja.nombre} span={2} />
+            <Field label="Núm. empleado" value={baja.num_empleado} />
+            <Field label="Puesto" value={baja.puesto} />
+            <Field label="Departamento (Área)" value={baja.area} />
+            <Field label="Sección" value={baja.seccion} />
+            <Field label="Turno" value={turno} />
+            <Field
+              label="Fecha de baja"
+              value={baja.fecha_baja ? formatShortDate(baja.fecha_baja) : null}
+            />
+            <Field label="Tipo de baja" value={baja.tipo_baja || null} />
+            <Field
+              label="Motivo de baja"
+              value={baja.motivo_baja || null}
+              span={3}
+            />
           </div>
-          <div>
-            <dt>Fecha emisión</dt>
-            <dd>{formatShortDate(issuedDate)}</dd>
+        </section>
+
+        <section
+          className="requisicion-doc__section"
+          aria-label="Datos de la solicitud"
+        >
+          <h4 className="requisicion-doc__section-title">
+            Datos de la solicitud
+          </h4>
+          <div className="requisicion-doc__grid">
+            <Field label="Departamento solicitante" value={baja.area} />
+            <Field label="Sección solicitante" value={baja.seccion} />
+            <BlankField label="Sueldo propuesto" />
+            <CheckboxField label="Bono" options={['Sí', 'No']} />
+            <BlankField label="Monto del bono" />
+            <BlankField label="Tipo de contratación" />
           </div>
-        </dl>
-      </header>
+        </section>
 
-      <section
-        className="requisicion-doc__section"
-        aria-label="Datos del empleado a reemplazar"
-      >
-        <h4 className="requisicion-doc__section-title">
-          Empleado a cubrir
-        </h4>
-        <div className="requisicion-doc__grid">
-          <Field label="Nombre" value={baja.nombre} span={2} />
-          <Field label="Núm. empleado" value={baja.num_empleado} />
-          <Field label="Puesto" value={baja.puesto} />
-          <Field label="Departamento (Área)" value={baja.area} />
-          <Field label="Sección" value={baja.seccion} />
-          <Field label="Turno" value={turno} />
-          <Field
-            label="Fecha de baja"
-            value={baja.fecha_baja ? formatShortDate(baja.fecha_baja) : null}
-          />
-          <Field label="Tipo de baja" value={baja.tipo_baja || null} />
-          <Field
-            label="Motivo de baja"
-            value={baja.motivo_baja || null}
-            span={3}
-          />
-        </div>
-      </section>
+        <section
+          className="requisicion-doc__section"
+          aria-label="Conocimientos técnicos requeridos"
+        >
+          <h4 className="requisicion-doc__section-title">
+            Conocimientos técnicos del puesto
+            <span className="requisicion-doc__section-hint">
+              (llenar a mano)
+            </span>
+          </h4>
+          <div className="requisicion-doc__grid">
+            <BlankField label="Habilidades requeridas" span={3} lines={3} />
+          </div>
+        </section>
 
-      <section
-        className="requisicion-doc__section"
-        aria-label="Datos del candidato propuesto"
-      >
-        <h4 className="requisicion-doc__section-title">
-          Candidato propuesto
-          <span className="requisicion-doc__section-hint">
-            (llenar a mano)
+        <section
+          className="requisicion-doc__section"
+          aria-label="Recepción en reclutamiento"
+        >
+          <h4 className="requisicion-doc__section-title">
+            Recepción en Reclutamiento
+          </h4>
+          <div className="requisicion-doc__grid">
+            <BlankField label="Recibido por" span={2} />
+            <BlankField label="Fecha de recepción" />
+          </div>
+        </section>
+
+        <p
+          className="requisicion-doc__leyenda"
+          aria-label="Leyenda de responsabilidad"
+        >
+          {LEYENDA_RESPONSABILIDAD}
+        </p>
+
+        <section
+          className="requisicion-doc__signatures"
+          aria-label="Firmas de autorización"
+        >
+          <SignatureSlot label="Jefe inmediato (solicita)" />
+          <SignatureSlot label="Reclutador (recibe)" />
+          <SignatureSlot label="Jefe de Recursos Humanos" />
+        </section>
+
+        <footer className="requisicion-doc__foot">
+          <span>
+            Hoja 1 de 2 · Control interno · Código {codigo ?? '—'}
           </span>
-        </h4>
-        <div className="requisicion-doc__grid">
-          <BlankField label="Nombre completo" span={3} />
-          <BlankField label="Núm. empleado asignado" />
-          <BlankField label="Edad" />
-          <BlankField label="Escolaridad" />
-          <BlankField label="Teléfono" />
-          <BlankField label="Fuente de reclutamiento" />
-          <BlankField label="Experiencia previa" span={3} />
-          <BlankField label="Fecha de entrevista" />
-          <BlankField label="Fecha probable de ingreso" />
-          <BlankField label="Turno asignado" />
-          <BlankField label="Observaciones" span={3} lines={2} />
-        </div>
-      </section>
+        </footer>
+      </article>
 
-      <section
-        className="requisicion-doc__signatures"
-        aria-label="Firmas de autorización"
+      {/* ── HOJA 2 — Candidato propuesto ─────────────────────────────── */}
+      <article
+        className="requisicion-doc__page requisicion-doc__page--second"
+        aria-label="Hoja 2: candidato propuesto"
       >
-        <SignatureSlot label="Reclutador" />
-        <SignatureSlot label="Jefe inmediato" />
-        <SignatureSlot label="Jefe de Recursos Humanos" />
-      </section>
+        <DocHeader codigo={codigo} issuedDate={issuedDate} subtitle="Hoja 2" />
 
-      <footer className="requisicion-doc__foot">
-        <span>
-          Control interno · Código {codigo ?? '—'}
+        <section
+          className="requisicion-doc__section"
+          aria-label="Datos del candidato propuesto"
+        >
+          <h4 className="requisicion-doc__section-title">
+            Candidato propuesto
+            <span className="requisicion-doc__section-hint">
+              (llenar a mano por reclutamiento)
+            </span>
+          </h4>
+          <div className="requisicion-doc__grid">
+            <BlankField label="Nombre completo" span={3} />
+            <BlankField label="Núm. empleado asignado" />
+            <BlankField label="Edad" />
+            <BlankField label="Estado civil" />
+            <BlankField label="Escolaridad" />
+            <BlankField label="Teléfono" />
+            <BlankField label="Correo electrónico" />
+            <BlankField label="Fuente de reclutamiento" span={2} />
+            <BlankField label="Sueldo acordado" />
+            <BlankField label="Experiencia previa" span={3} lines={2} />
+            <BlankField label="Fecha de entrevista" />
+            <BlankField label="Fecha probable de ingreso" />
+            <BlankField label="Turno asignado" />
+            <BlankField label="Observaciones" span={3} lines={3} />
+          </div>
+        </section>
+
+        <section
+          className="requisicion-doc__signatures"
+          aria-label="Firmas de cierre"
+        >
+          <SignatureSlot label="Candidato" />
+          <SignatureSlot label="Reclutador" />
+          <SignatureSlot label="Jefe de Recursos Humanos" />
+        </section>
+
+        <footer className="requisicion-doc__foot">
+          <span>
+            Hoja 2 de 2 · Control interno · Código {codigo ?? '—'}
+          </span>
+        </footer>
+      </article>
+    </div>
+  );
+}
+
+interface DocHeaderProps {
+  codigo: string | null;
+  issuedDate: string;
+  subtitle?: string;
+}
+
+function DocHeader({ codigo, issuedDate, subtitle }: DocHeaderProps) {
+  return (
+    <header className="requisicion-doc__head">
+      <div className="requisicion-doc__head-left">
+        <span className="requisicion-doc__eyebrow">
+          Formato de reclutamiento
+          {subtitle ? ` · ${subtitle}` : ''}
         </span>
-      </footer>
-    </article>
+        <h3 className="requisicion-doc__title">Requisición de Personal</h3>
+      </div>
+      <dl className="requisicion-doc__head-meta">
+        <div>
+          <dt>Código</dt>
+          <dd className="requisicion-doc__code">{codigo ?? '—'}</dd>
+        </div>
+        <div>
+          <dt>Fecha emisión</dt>
+          <dd>{formatShortDate(issuedDate)}</dd>
+        </div>
+      </dl>
+    </header>
   );
 }
 
@@ -252,6 +356,38 @@ function SignatureSlot({ label }: { label: string }) {
     <div className="requisicion-doc__sig">
       <span className="requisicion-doc__sig-line" aria-hidden="true" />
       <span className="requisicion-doc__sig-label">{label}</span>
+    </div>
+  );
+}
+
+interface CheckboxFieldProps {
+  label: string;
+  options: string[];
+  span?: 1 | 2 | 3;
+}
+
+function CheckboxField({ label, options, span = 1 }: CheckboxFieldProps) {
+  return (
+    <div
+      className="requisicion-doc__field requisicion-doc__field--checkbox"
+      data-span={span}
+    >
+      <span className="requisicion-doc__field-label">{label}</span>
+      <span
+        className="requisicion-doc__checkbox-row"
+        role="group"
+        aria-label={label}
+      >
+        {options.map((opt) => (
+          <span key={opt} className="requisicion-doc__checkbox">
+            <span
+              className="requisicion-doc__checkbox-box"
+              aria-hidden="true"
+            />
+            <span className="requisicion-doc__checkbox-text">{opt}</span>
+          </span>
+        ))}
+      </span>
     </div>
   );
 }

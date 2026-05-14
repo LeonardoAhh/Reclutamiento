@@ -1,8 +1,14 @@
 /* RequisicionModal — formato de requisición de personal imprimible.
  *
- * Layout: dos secciones en grid de 3 columnas (datos del empleado saliente
- * y del candidato propuesto), seguidas por la zona de firmas. En print, el
- * modal queda oculto y solo se imprime la "hoja" blanca a tamaño completo.
+ * Layout: dos hojas A4 verticales.
+ *   - Hoja 1: encabezado + datos de la baja + datos de la solicitud
+ *             (sueldo / bono / conocimientos) + recepción reclutamiento
+ *             + leyenda ghost + firmas.
+ *   - Hoja 2: candidato propuesto (llenado a mano) + firmas de cierre.
+ *
+ * En `@media print` el modal queda oculto y solo se imprime el portal:
+ * cada `<article>` con clase `.requisicion-doc__page` corresponde a una
+ * hoja real (`page-break-after: always` salvo la última).
  */
 
 .modal-content.requisicion-modal {
@@ -22,8 +28,15 @@
   margin-left: var(--spacing-xxs);
 }
 
-/* ── La "hoja" ── */
+/* ── Documento (contenedor de hojas) ── */
 .requisicion-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── La "hoja" ── */
+.requisicion-doc__page {
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -218,6 +231,48 @@
     );
 }
 
+/* ── Bono Sí / No (casillas) ── */
+.requisicion-doc__field--checkbox .requisicion-doc__checkbox-row {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-xxs) 0;
+  min-height: calc(var(--type-body-md-size) * var(--type-body-md-line));
+}
+
+.requisicion-doc__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+.requisicion-doc__checkbox-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.requisicion-doc__checkbox-text {
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+}
+
+/* ── Leyenda "ghost" (declaración de responsabilidad) ── */
+.requisicion-doc__leyenda {
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-muted);
+  opacity: 0.55;
+  text-align: justify;
+  border-left: 2px solid var(--color-hairline-soft);
+}
+
 /* ── Firmas ── */
 .requisicion-doc__signatures {
   display: grid;
@@ -251,6 +306,7 @@
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
+  text-align: center;
 }
 
 /* ── Pie ── */
@@ -267,33 +323,37 @@
  * usa la vista previa dentro del modal. En `@media print`, se invierte
  * la visibilidad: todo el `body` se oculta con `display: none` (no
  * `visibility: hidden`, que conserva el layout y genera hojas en blanco)
- * y solo el portal queda visible, posicionado en el origen de la página.
+ * y solo el portal queda visible.
  */
 #requisicion-print-root {
   display: none;
 }
 
 @media print {
-  /* Fondo blanco neutro, sin restos del tema oscuro. */
   html,
   body {
     background: #fff !important;
     color: #000 !important;
   }
 
-  /* Oculta TODO lo demás (incluyendo el modal de preview, sidebars, etc.)
-     usando `display: none` para que no reserven hojas vacías. */
   body > * {
     display: none !important;
   }
 
-  /* Reactiva únicamente el portal de impresión. */
   body > #requisicion-print-root {
     display: block !important;
     position: static !important;
   }
 
+  /* El contenedor `.requisicion-doc` deja de ser visible como caja;
+     solo agrupa las hojas. */
   #requisicion-print-root .requisicion-doc {
+    display: block;
+    gap: 0;
+  }
+
+  /* Cada `.requisicion-doc__page` ES una hoja A4. */
+  #requisicion-print-root .requisicion-doc__page {
     width: 100%;
     border: none !important;
     box-shadow: none !important;
@@ -301,8 +361,16 @@
     padding: 12mm 14mm !important;
     background: #fff !important;
     color: #000 !important;
-    /* Reduce padding interno entre secciones para caber en una hoja. */
     gap: var(--spacing-md);
+    /* Cada hoja ocupa una página propia; salto duro entre hojas. */
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* La última hoja no necesita salto extra (evita hoja en blanco final). */
+  #requisicion-print-root .requisicion-doc__page:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
 
   /* Evita cortes de página dentro de cualquier bloque del formato. */
@@ -310,21 +378,29 @@
   #requisicion-print-root .requisicion-doc__section,
   #requisicion-print-root .requisicion-doc__signatures,
   #requisicion-print-root .requisicion-doc__field,
-  #requisicion-print-root .requisicion-doc__sig {
+  #requisicion-print-root .requisicion-doc__sig,
+  #requisicion-print-root .requisicion-doc__leyenda {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  /* Forza color de las líneas a negro real (evita gris claro en impresoras
-     que no respetan `color-adjust: exact`). */
+  /* Forza color de las líneas a negro real. */
   #requisicion-print-root .requisicion-doc__field-value,
   #requisicion-print-root .requisicion-doc__field--blank .requisicion-doc__field-blank,
-  #requisicion-print-root .requisicion-doc__sig-line {
-    border-bottom-color: #000 !important;
+  #requisicion-print-root .requisicion-doc__sig-line,
+  #requisicion-print-root .requisicion-doc__checkbox-box {
+    border-color: #000 !important;
   }
 
-  /* Pide a la impresora que respete fondos/colores definidos (para tintes
-     muy ligeros si se agregan en el futuro). */
+  /* Leyenda: mantiene el estilo "ghost" en impresión pero asegura que se
+     vea (gris claro real, no transparente al 0). */
+  #requisicion-print-root .requisicion-doc__leyenda {
+    color: #555 !important;
+    opacity: 0.65 !important;
+    border-left-color: #999 !important;
+  }
+
+  /* Pide a la impresora que respete fondos/colores definidos. */
   #requisicion-print-root,
   #requisicion-print-root * {
     -webkit-print-color-adjust: exact !important;
