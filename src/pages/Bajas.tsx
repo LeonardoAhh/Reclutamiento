@@ -9,14 +9,17 @@ import {
   CloudOff,
   RefreshCw,
   CheckCircle2,
+  FileText,
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { CubrirVacanteModal } from '@/components/ui/CubrirVacanteModal';
+import { RequisicionModal } from '@/components/ui/RequisicionModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
 import { computeMonthlyComparison, normalizePuesto } from '@/lib/bajas';
+import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
 import { formatMonthLabel, formatShortDate } from '@/lib/dates';
 import './Bajas.css';
@@ -42,6 +45,11 @@ export function Bajas() {
   const [areaFilter, setAreaFilter] = useState<string>('');
   const [puestoFilter, setPuestoFilter] = useState<string>('');
   const [cubrirTarget, setCubrirTarget] = useState<Baja | null>(null);
+  const [requisicionTarget, setRequisicionTarget] = useState<Baja | null>(null);
+
+  // Códigos VAC-NN derivados de todas las bajas conocidas. Determinístico:
+  // sirve igual en modo online y offline, y se conserva entre re-renders.
+  const requisicionCodes = useMemo(() => buildRequisicionCodes(bajas), [bajas]);
 
   const areas = useMemo(() => {
     const set = new Set<string>();
@@ -337,6 +345,7 @@ export function Bajas() {
                     <th scope="col" className="text-center">Cobertura</th>
                     <th scope="col">Cubre vacante</th>
                     <th scope="col" className="text-center">Acción</th>
+                    <th scope="col" className="text-center">Requisición</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -422,6 +431,23 @@ export function Bajas() {
                             </button>
                           )}
                         </td>
+                        <td className="text-center">
+                          {b.soloInduccion ? (
+                            <span className="bajas__muted">—</span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="bajas__row-action bajas__row-action--req"
+                              onClick={() => setRequisicionTarget(b)}
+                              title={`Generar requisición ${requisicionCodes.get(bajaKey(b)) ?? ''}`.trim()}
+                            >
+                              <FileText size={14} aria-hidden="true" />
+                              <span className="bajas__row-action-label">
+                                {requisicionCodes.get(bajaKey(b)) ?? 'VAC'}
+                              </span>
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
@@ -438,6 +464,18 @@ export function Bajas() {
         onClose={() => setCubrirTarget(null)}
         onSave={async (n, f, note) => marcarCubierta(n, f, note)}
         onClear={async (n) => desmarcarCubierta(n)}
+      />
+
+      <RequisicionModal
+        isOpen={requisicionTarget !== null}
+        baja={requisicionTarget}
+        employees={employees}
+        codigo={
+          requisicionTarget
+            ? requisicionCodes.get(bajaKey(requisicionTarget)) ?? null
+            : null
+        }
+        onClose={() => setRequisicionTarget(null)}
       />
     </main>
   );
