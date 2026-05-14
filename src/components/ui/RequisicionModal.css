@@ -258,6 +258,38 @@
   color: var(--color-body-strong);
 }
 
+/* ── Bloque "Responsabilidad del jefe" ── */
+.requisicion-doc__section--leyenda {
+  gap: var(--spacing-xs);
+}
+
+/* Encabezado de la sección: título a la izquierda y "Fecha de recepción"
+   alineada a la derecha como pie/registro del bloque. */
+.requisicion-doc__leyenda-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__section-title--leyenda {
+  flex: 1 1 auto;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* La "Fecha de recepción" se renderiza como un BlankField estrecho,
+   alineado con la línea base del título. */
+.requisicion-doc__leyenda-fecha {
+  flex: 0 0 200px;
+  min-width: 160px;
+}
+
+.requisicion-doc__leyenda-fecha .requisicion-doc__field {
+  gap: 2px;
+}
+
 /* ── Leyenda "ghost" (declaración de responsabilidad) ── */
 .requisicion-doc__leyenda {
   margin: 0;
