@@ -26,7 +26,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatShortDate } from '@/lib/dates';
+import { formatShortDate, startOfDayMxMs, endOfDayMxMs } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
 import './Pipeline.css';
@@ -156,10 +156,9 @@ export function Pipeline() {
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    const desde = filters.fechaDesde ? new Date(filters.fechaDesde).getTime() : null;
-    const hasta = filters.fechaHasta
-      ? new Date(`${filters.fechaHasta}T23:59:59`).getTime()
-      : null;
+    // Filtros de rango anclados a TZ MX para evitar desfases del visor.
+    const desde = startOfDayMxMs(filters.fechaDesde);
+    const hasta = endOfDayMxMs(filters.fechaHasta);
 
     return candidates.filter((c) => {
       if (filters.area && c.area !== filters.area) return false;

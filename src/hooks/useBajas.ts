@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import type { Baja, BajaRaw } from '@/lib/types';
 import { transformBajaData } from '@/lib/bajas';
+import { localTodayIso } from '@/lib/dates';
 
 const STORAGE_KEY = 'reclutamiento_bajas';
 
@@ -228,7 +229,7 @@ export function useBajas() {
           ? {
               ...b,
               cubierta_manual: true,
-              cubierta_fecha: fecha || new Date().toISOString().slice(0, 10),
+              cubierta_fecha: fecha || localTodayIso(),
               cubierta_nota: nota?.trim() || null,
             }
           : b

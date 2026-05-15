@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { HeartPulse, AlertCircle } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Employee } from '@/lib/types';
+import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
 
 interface IncapacidadModalProps {
@@ -105,7 +106,7 @@ export function IncapacidadModal({
             value={hasta}
             onChange={(e) => setHasta(e.target.value)}
             disabled={!enIncapacidad}
-            min={new Date().toISOString().slice(0, 10)}
+            min={localTodayIso()}
           />
         </div>
 

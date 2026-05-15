@@ -10,7 +10,7 @@ import type {
 } from '@/lib/types';
 import { HABILIDADES_PUESTOS } from '@/lib/constants';
 import { usePositions } from '@/lib/positions';
-import { formatShortDate } from '@/lib/dates';
+import { formatShortDate, localTodayIso } from '@/lib/dates';
 import { normalizePuesto, normalizeString } from '@/lib/utils';
 import './RequisicionModal.css';
 
@@ -111,7 +111,7 @@ export function RequisicionModal({
   const turno =
     employees.find((e) => e.num_empleado === baja.num_empleado)?.turno ?? null;
 
-  const issuedDate = new Date().toISOString().slice(0, 10);
+  const issuedDate = localTodayIso();
 
   function handlePrint() {
     window.print();

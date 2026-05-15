@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AlertOctagon, Download, Loader2, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Employee } from '@/lib/types';
+import { formatMxStamp } from '@/lib/dates';
 import './PurgeEmployeesModal.css';
 
 interface PurgeEmployeesModalProps {
@@ -50,15 +51,10 @@ export function PurgeEmployeesModal({
   const wordMatches = typedWord === CONFIRM_WORD;
   const canConfirm = backupDownloaded && wordMatches && !isPurging && !success;
 
-  const backupFileName = useMemo(() => {
-    const now = new Date();
-    const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(
-      now.getDate()
-    ).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(
-      now.getMinutes()
-    ).padStart(2, '0')}`;
-    return `empleados-backup-${stamp}.json`;
-  }, []);
+  const backupFileName = useMemo(
+    () => `empleados-backup-${formatMxStamp()}.json`,
+    []
+  );
 
   const handleDownloadBackup = () => {
     const payload = {

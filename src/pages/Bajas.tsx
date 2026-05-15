@@ -16,10 +16,10 @@ import { useBajas } from '@/hooks/useBajas';
 import { computeMonthlyComparison, normalizePuesto } from '@/lib/bajas';
 import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
-import { formatMonthLabel, formatShortDate } from '@/lib/dates';
+import { formatMonthLabel, formatShortDate, currentYearMx } from '@/lib/dates';
 import './Bajas.css';
 
-const currentYear = new Date().getFullYear();
+const currentYear = currentYearMx();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
 export function Bajas() {
