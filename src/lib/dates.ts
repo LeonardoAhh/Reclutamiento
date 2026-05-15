@@ -222,13 +222,18 @@ export function isoWeekOf(input: Date | string): IsoWeekRange {
   const date = new Date(Date.UTC(yMx, mMx - 1, dMx, 12, 0, 0));
   const dayIdx = (date.getUTCDay() + 6) % 7;
 
+  // Anclamos los bordes a medianoche MX (= 06:00 UTC) para que la semana
+  // ISO se calcule respecto al calendario local mexicano. Si los bordes
+  // quedaran en 00:00 UTC, al renderizarlos en TZ MX el lunes se "vería"
+  // como domingo (off-by-one).
   const start = new Date(date);
   start.setUTCDate(date.getUTCDate() - dayIdx);
-  start.setUTCHours(0, 0, 0, 0);
+  start.setUTCHours(6, 0, 0, 0);
 
+  // Fin = siguiente lunes 05:59:59.999 UTC = domingo 23:59:59.999 MX.
   const end = new Date(start);
-  end.setUTCDate(start.getUTCDate() + 6);
-  end.setUTCHours(23, 59, 59, 999);
+  end.setUTCDate(start.getUTCDate() + 7);
+  end.setUTCHours(5, 59, 59, 999);
 
   const thursday = new Date(start);
   thursday.setUTCDate(start.getUTCDate() + 3);
@@ -239,7 +244,7 @@ export function isoWeekOf(input: Date | string): IsoWeekRange {
   const jan4DayIdx = (jan4.getUTCDay() + 6) % 7;
   const week1Monday = new Date(jan4);
   week1Monday.setUTCDate(jan4.getUTCDate() - jan4DayIdx);
-  week1Monday.setUTCHours(0, 0, 0, 0);
+  week1Monday.setUTCHours(6, 0, 0, 0);
 
   const diffMs = thursday.getTime() - week1Monday.getTime();
   const week = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7)) + 1;
