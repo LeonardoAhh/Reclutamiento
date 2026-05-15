@@ -117,13 +117,22 @@ export function calculatePositionCoverage(
         matchesPuesto(emp.puesto, pos.puesto)
     ).length;
 
-    const vacantes = Math.max(0, pos.plantilla_autorizada - real);
-    const porcentaje = pos.plantilla_autorizada > 0
-      ? Math.round((real / pos.plantilla_autorizada) * 100)
+    const backup = pos.backup ?? 0;
+    /*
+     * `plantilla_objetivo` es el target operativo: la suma de la plantilla
+     * autorizada más el buffer de back-up definido para el puesto. Es el
+     * denominador de la cobertura y la base de las vacantes — si un puesto
+     * no tiene back-up declarado, el objetivo iguala la autorizada y el
+     * cálculo se comporta exactamente como antes.
+     */
+    const objetivo = pos.plantilla_autorizada + backup;
+
+    const vacantes = Math.max(0, objetivo - real);
+    const porcentaje = objetivo > 0
+      ? Math.round((real / objetivo) * 100)
       : 0;
 
     const excedente = Math.max(0, real - pos.plantilla_autorizada);
-    const backup = pos.backup ?? 0;
     const excedenteBackup = Math.min(excedente, backup);
     const excedenteCritico = Math.max(0, excedente - backup);
 
@@ -139,6 +148,7 @@ export function calculatePositionCoverage(
       seccion: pos.seccion,
       puesto: pos.puesto,
       plantilla_autorizada: pos.plantilla_autorizada,
+      plantilla_objetivo: objetivo,
       plantilla_real: real,
       vacantes,
       porcentaje_cobertura: porcentaje,
@@ -169,10 +179,11 @@ export function calculateDepartmentCoverage(
 
   return Array.from(grouped.entries()).map(([area, puestos]) => {
     const totalAutorizada = puestos.reduce((sum, p) => sum + p.plantilla_autorizada, 0);
+    const totalObjetivo = puestos.reduce((sum, p) => sum + p.plantilla_objetivo, 0);
     const totalReal = puestos.reduce((sum, p) => sum + p.plantilla_real, 0);
     const totalVacantes = puestos.reduce((sum, p) => sum + p.vacantes, 0);
-    const porcentaje = totalAutorizada > 0
-      ? Math.round((totalReal / totalAutorizada) * 100)
+    const porcentaje = totalObjetivo > 0
+      ? Math.round((totalReal / totalObjetivo) * 100)
       : 0;
 
     const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
@@ -180,6 +191,7 @@ export function calculateDepartmentCoverage(
     return {
       area,
       plantilla_autorizada: totalAutorizada,
+      plantilla_objetivo: totalObjetivo,
       plantilla_real: totalReal,
       vacantes: totalVacantes,
       porcentaje_cobertura: porcentaje,
