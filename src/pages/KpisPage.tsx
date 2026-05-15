@@ -159,9 +159,12 @@ export function KpisPage() {
     const positionCoverage = calculatePositionCoverage(employees, comments, positions);
     const departmentCoverage = calculateDepartmentCoverage(positionCoverage);
     const autorizada = departmentCoverage.reduce((s, d) => s + d.plantilla_autorizada, 0);
+    const objetivo = departmentCoverage.reduce((s, d) => s + d.plantilla_objetivo, 0);
     const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
     const vacantes = departmentCoverage.reduce((s, d) => s + d.vacantes, 0);
-    const cobertura = autorizada > 0 ? Math.round((real / autorizada) * 100) : 0;
+    // Cobertura global = real / (autorizada + backup). El backup cuenta como
+    // parte del objetivo cuando está definido en PLANTILLA_AUTORIZADA.
+    const cobertura = objetivo > 0 ? Math.round((real / objetivo) * 100) : 0;
     return { autorizada, real, vacantes, cobertura };
   }, [employees, comments, positions]);
 

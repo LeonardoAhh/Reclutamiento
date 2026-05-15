@@ -186,6 +186,12 @@ export interface PositionCoverage {
   seccion: string;
   puesto: string;
   plantilla_autorizada: number;
+  /**
+   * Plantilla objetivo total: `plantilla_autorizada + backup`. Es el
+   * denominador del % de cobertura y la base para el conteo de vacantes.
+   * Para puestos sin backup definido, `plantilla_objetivo === plantilla_autorizada`.
+   */
+  plantilla_objetivo: number;
   plantilla_real: number;
   vacantes: number;
   porcentaje_cobertura: number;
@@ -208,6 +214,8 @@ export interface PositionCoverage {
 export interface DepartmentCoverage {
   area: string;
   plantilla_autorizada: number;
+  /** Suma de `plantilla_objetivo` (autorizada + backup) de todos los puestos del área. */
+  plantilla_objetivo: number;
   plantilla_real: number;
   vacantes: number;
   porcentaje_cobertura: number;
