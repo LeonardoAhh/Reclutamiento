@@ -142,10 +142,25 @@ export function endOfDayMxMs(input: string | null | undefined): number | null {
 /**
  * Formato compacto para tablas (`13/05/25`), en TZ MX. Robusto a
  * entradas vacías / inválidas.
+ *
+ * Para entradas date-only (`YYYY-MM-DD` o `DD/MM/YYYY` del JSON / Excel),
+ * el día se ancla a mediodía-MX antes de renderizar. Esto evita el
+ * off-by-one clásico: `new Date('2026-05-15')` se interpreta como UTC
+ * midnight, y al renderizar en TZ MX (UTC−6) caería el 14/05/26.
  */
 export function formatShortDate(iso: string | null | undefined): string {
   if (!iso) return '—';
-  const d = new Date(iso);
+  const trimmed = String(iso).trim();
+  if (!trimmed) return '—';
+
+  // Si la entrada es date-only (sin info de hora/zona), anclamos a
+  // mediodía MX. Cualquier otra cosa (ISO con `T`/`Z`/offset) se parsea
+  // tal cual: ya trae zona y `toLocaleDateString` resuelve el día.
+  const dateOnly = parseDdMmYyyy(trimmed);
+  const d = dateOnly
+    ? new Date(`${dateOnly}T12:00:00${MX_UTC_OFFSET}`)
+    : new Date(trimmed);
+
   if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleDateString('es-MX', {
     day: '2-digit',

@@ -15,8 +15,15 @@ interface KanbanCardProps {
 
 function formatShortDate(iso?: string): string {
   if (!iso) return '—';
+  const trimmed = String(iso).trim();
+  if (!trimmed) return '—';
+  // Date-only (`YYYY-MM-DD`) se ancla a mediodía-MX para evitar
+  // off-by-one al renderizar en TZ MX. ISOs con hora/zona pasan tal cual.
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.test(trimmed);
   try {
-    return new Date(iso).toLocaleDateString('es-MX', {
+    const d = dateOnly ? new Date(`${trimmed}T12:00:00-06:00`) : new Date(trimmed);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('es-MX', {
       day: '2-digit',
       month: 'short',
       timeZone: TZ_MX,
