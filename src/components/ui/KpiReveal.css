@@ -16,8 +16,8 @@
   display: block;
   border-radius: var(--rounded-lg);
   transition: filter var(--transition-base), opacity var(--transition-base);
-  filter: blur(10px);
-  opacity: 0.75;
+  filter: blur(30px);
+  opacity: 2;
   pointer-events: none;
   user-select: none;
 }
