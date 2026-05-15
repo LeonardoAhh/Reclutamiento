@@ -34,6 +34,7 @@ import {
 import { computeMonthlyComparison } from '@/lib/bajas';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type {
+  Baja,
   Candidate,
   CandidateStatus,
   VacancyRequest,
@@ -111,6 +112,13 @@ export function KpisPage() {
         .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek))
         .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))),
     [employees, currentWeek]
+  );
+  const weeklyBajas: Baja[] = useMemo(
+    () =>
+      bajas
+        .filter((b) => isInIsoWeek(b.fecha_baja, currentWeek))
+        .sort((a, b) => a.fecha_baja.localeCompare(b.fecha_baja)),
+    [bajas, currentWeek]
   );
 
   /* ── Vacantes (5) ──────────────────────────────────────────── */
@@ -432,6 +440,7 @@ export function KpisPage() {
         range={currentWeek}
         rangeLabel={currentWeekLabel}
         hires={weeklyHires}
+        bajas={weeklyBajas}
       />
     </main>
   );
