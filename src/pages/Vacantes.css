@@ -1,24 +1,5 @@
 /* Vacantes.css — overrides / additions on top of Pipeline.css */
 
-/* Una columna mas en la KPI strip (5 cards). */
-.vacantes__kpis {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--spacing-md);
-}
-
-@media (max-width: 1100px) {
-  .vacantes__kpis {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .vacantes__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 /* Fila excluida: opacidad reducida + texto en tono gris. */
 .vacantes__row--excluded {
   opacity: 0.6;

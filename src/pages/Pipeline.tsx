@@ -1,10 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
-  Users,
-  UserCheck,
-  UserX,
-  Activity,
   UserPlus,
+  UserX,
   Pencil,
   Trash2,
   Search,
@@ -14,7 +11,6 @@ import {
   SlidersHorizontal,
   BadgeCheck,
 } from 'lucide-react';
-import { StatCard } from '@/components/ui/StatCard';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
@@ -38,14 +34,6 @@ const VIEW_STORAGE_KEY = 'pipeline_view_mode';
 const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
-
-const ACTIVE_STATUSES: ReadonlyArray<CandidateStatus> = [
-  'aplico',
-  'revision',
-  'entrevista_1',
-  'entrevista_2',
-  'oferta',
-];
 
 const formatDate = formatShortDate;
 
@@ -116,14 +104,6 @@ export function Pipeline() {
   const activeFiltersCount = (
     Object.keys(filters) as Array<keyof FilterState>
   ).filter((k) => filters[k] !== '').length;
-
-  const totals = useMemo(() => {
-    const total = candidates.length;
-    const enProceso = candidates.filter((c) => ACTIVE_STATUSES.includes(c.status)).length;
-    const contratados = candidates.filter((c) => c.status === 'contratado').length;
-    const rechazados = candidates.filter((c) => c.status === 'rechazado').length;
-    return { total, enProceso, contratados, rechazados };
-  }, [candidates]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -268,38 +248,6 @@ export function Pipeline() {
             <UserPlus size={16} aria-hidden="true" />
           </button>
         </div>
-      </section>
-
-      {/* ── Stats ── */}
-      <section className="pipeline__kpis">
-        <StatCard
-          id="stat-pipeline-total"
-          label="Total"
-          value={totals.total}
-          icon={<Users size={20} />}
-          accentColor="var(--color-ink)"
-        />
-        <StatCard
-          id="stat-pipeline-activo"
-          label="En proceso"
-          value={totals.enProceso}
-          icon={<Activity size={20} />}
-          accentColor="var(--color-primary)"
-        />
-        <StatCard
-          id="stat-pipeline-contratado"
-          label="Contratados"
-          value={totals.contratados}
-          icon={<UserCheck size={20} />}
-          accentColor="var(--color-accent-teal)"
-        />
-        <StatCard
-          id="stat-pipeline-rechazado"
-          label="Rechazados"
-          value={totals.rechazados}
-          icon={<UserX size={20} />}
-          accentColor="var(--color-error)"
-        />
       </section>
 
       {/* ── Search ── */}

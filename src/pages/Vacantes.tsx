@@ -4,7 +4,6 @@ import {
   Activity,
   AlertTriangle,
   CheckCircle2,
-  Timer,
   Pencil,
   Trash2,
   Search,
@@ -12,7 +11,6 @@ import {
   EyeOff,
   Plus,
 } from 'lucide-react';
-import { StatCard } from '@/components/ui/StatCard';
 import { VacancyModal } from '@/components/ui/VacancyModal';
 import {
   VacancyStatusBadge,
@@ -37,9 +35,6 @@ import './Vacantes.css';
 const FILTERS_STORAGE_KEY = 'vacantes_filters_v1';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
-
-/** Estados que cuentan como "abierta" para efectos del KPI. */
-const OPEN_STATUSES: ReadonlyArray<VacancyStatus> = ['abierta', 'en_proceso', 'pausa'];
 
 interface VacancyMetrics {
   diasAbierta: number;
@@ -118,37 +113,6 @@ export function Vacantes() {
     () => vacancies.map((v) => ({ vacancy: v, metrics: computeMetrics(v) })),
     [vacancies]
   );
-
-  const totals = useMemo(() => {
-    let abiertas = 0;
-    let enSla = 0;
-    let vencidas = 0;
-    let cubiertas = 0;
-    let ttfSum = 0;
-    let ttfCount = 0;
-    let excluidas = 0;
-
-    for (const { vacancy: v, metrics: m } of enriched) {
-      if (v.excluida_indicador) {
-        excluidas += 1;
-        continue; // NO entra en ninguno de los demás indicadores
-      }
-      if (OPEN_STATUSES.includes(v.status)) {
-        abiertas += 1;
-        if (m.vencida) vencidas += 1;
-        else enSla += 1;
-      } else if (v.status === 'cubierta') {
-        cubiertas += 1;
-        if (v.fecha_apertura && v.fecha_cubierta) {
-          ttfSum += daysBetween(v.fecha_apertura, v.fecha_cubierta);
-          ttfCount += 1;
-        }
-      }
-    }
-
-    const ttfPromedio = ttfCount > 0 ? Math.round(ttfSum / ttfCount) : 0;
-    return { abiertas, enSla, vencidas, cubiertas, ttfPromedio, excluidas };
-  }, [enriched]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -256,45 +220,6 @@ export function Vacantes() {
             <Plus size={16} aria-hidden="true" />
           </button>
         </div>
-      </section>
-
-      {/* ── KPIs ── */}
-      <section className="pipeline__kpis vacantes__kpis">
-        <StatCard
-          id="stat-vac-abiertas"
-          label="Abiertas"
-          value={totals.abiertas}
-          icon={<ClipboardList size={20} />}
-          accentColor="var(--color-primary)"
-        />
-        <StatCard
-          id="stat-vac-sla"
-          label="En tiempo"
-          value={totals.enSla}
-          icon={<CheckCircle2 size={20} />}
-          accentColor="var(--color-accent-teal)"
-        />
-        <StatCard
-          id="stat-vac-vencidas"
-          label="Vencidas"
-          value={totals.vencidas}
-          icon={<AlertTriangle size={20} />}
-          accentColor="var(--color-error)"
-        />
-        <StatCard
-          id="stat-vac-ttf"
-          label="TTF prom. (días)"
-          value={totals.ttfPromedio}
-          icon={<Timer size={20} />}
-          accentColor="var(--color-ink)"
-        />
-        <StatCard
-          id="stat-vac-excluidas"
-          label="Excluidas KPI"
-          value={totals.excluidas}
-          icon={<EyeOff size={20} />}
-          accentColor="var(--color-muted)"
-        />
       </section>
 
       {/* ── Search ── */}

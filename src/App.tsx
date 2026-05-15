@@ -7,6 +7,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
+import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 
 /**
@@ -64,6 +65,14 @@ function App() {
         element={
           <ProtectedShell>
             <Bajas />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/kpis"
+        element={
+          <ProtectedShell>
+            <KpisPage />
           </ProtectedShell>
         }
       />

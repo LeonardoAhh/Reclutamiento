@@ -1,9 +1,5 @@
 import { useMemo, useState } from 'react';
 import {
-  Users,
-  UserMinus,
-  UserPlus,
-  ShieldCheck,
   Filter,
   AlertCircle,
   CloudOff,
@@ -11,7 +7,6 @@ import {
   CheckCircle2,
   FileText,
 } from 'lucide-react';
-import { StatCard } from '@/components/ui/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { CubrirVacanteModal } from '@/components/ui/CubrirVacanteModal';
@@ -78,7 +73,7 @@ export function Bajas() {
     [bajas, employees, year, areaFilter, puestoFilter]
   );
 
-  const { months, byPuesto, bajasConCobertura, totals } = comparison;
+  const { months, byPuesto, bajasConCobertura } = comparison;
 
   // Para el chart: alto relativo según el máximo de bajas+ingresos del año.
   const chartMax = useMemo(() => {
@@ -172,38 +167,6 @@ export function Bajas() {
             ))}
           </select>
         </label>
-      </section>
-
-      <section className="bajas__kpis" aria-label="KPIs">
-        <StatCard
-          id="kpi-bajas"
-          label="Bajas"
-          value={totals.bajas}
-          icon={<UserMinus size={20} aria-hidden="true" />}
-          accentColor="var(--color-error)"
-        />
-        <StatCard
-          id="kpi-ingresos"
-          label="Ingresos"
-          value={totals.ingresos}
-          icon={<UserPlus size={20} aria-hidden="true" />}
-          accentColor="var(--color-success)"
-        />
-        <StatCard
-          id="kpi-cobertura"
-          label="Cobertura"
-          value={`${totals.coverturaPct}%`}
-          icon={<ShieldCheck size={20} aria-hidden="true" />}
-          subtitle={`${totals.cubiertas10d}/${totals.bajas} cubiertas`}
-          accentColor="var(--color-accent-teal)"
-        />
-        <StatCard
-          id="kpi-solo-induccion"
-          label="Solo Inducción"
-          value={totals.soloInduccion}
-          icon={<Users size={20} aria-hidden="true" />}
-          accentColor="var(--color-muted)"
-        />
       </section>
 
       <section className="bajas__chart-section" aria-label="Bajas vs ingresos por mes">

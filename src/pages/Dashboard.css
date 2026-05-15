@@ -46,14 +46,6 @@
   flex-wrap: wrap;
 }
 
-/* ── KPI Cards ── */
-.dashboard__kpis {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
 /* ── Search & Filter Controls ── */
 .dashboard__controls {
   display: flex;
@@ -502,10 +494,6 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .dashboard__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .dashboard__departments {
     grid-template-columns: 1fr;
   }
@@ -525,10 +513,6 @@
   .dashboard__hero-actions>*,
   .dashboard__hero-actions .json-importer {
     flex: 1 1 auto;
-  }
-
-  .dashboard__kpis {
-    grid-template-columns: 1fr;
   }
 
   .dashboard__controls {

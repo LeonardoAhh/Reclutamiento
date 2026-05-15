@@ -166,26 +166,6 @@
   cursor: not-allowed;
 }
 
-/* ── KPI strip ── */
-.bajas__kpis {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
-@media (max-width: 900px) {
-  .bajas__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .bajas__kpis {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* ── Section heads ── */
 .bajas__section-head {
   display: flex;

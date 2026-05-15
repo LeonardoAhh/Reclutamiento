@@ -48,13 +48,7 @@
   flex-shrink: 0;
 }
 
-/* ── KPI strip ── */
-.pipeline__kpis {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
+
 
 /* ── Controls (search + count) ── */
 .pipeline__controls {
@@ -432,21 +426,12 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1024px) {
-  .pipeline__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   .pipeline__hero {
     align-items: flex-start;
   }
   .pipeline__hero h1 {
     font-size: 28px;
-  }
-  .pipeline__kpis {
-    grid-template-columns: 1fr;
   }
   .pipeline__table {
     font-size: var(--type-caption-md-size);
