@@ -1,7 +1,7 @@
 /* WeeklyHiresModal — detalle de empleados con fecha_ingreso en la semana ISO actual. */
 
-.weekly-hires-modal .modal-content {
-  width: min(720px, 96vw);
+.modal-content.weekly-hires-modal {
+  max-width: min(900px, 96vw);
   max-height: 90vh;
 }
 
@@ -33,7 +33,7 @@
   min-width: 0;
 }
 
-.weekly-hires-modal__stat + .weekly-hires-modal__stat {
+.weekly-hires-modal__stat+.weekly-hires-modal__stat {
   border-left: 1px solid var(--color-hairline);
   padding-left: var(--spacing-md);
 }
@@ -60,7 +60,8 @@
   .weekly-hires-modal__summary {
     grid-template-columns: 1fr;
   }
-  .weekly-hires-modal__stat + .weekly-hires-modal__stat {
+
+  .weekly-hires-modal__stat+.weekly-hires-modal__stat {
     border-left: 0;
     border-top: 1px solid var(--color-hairline);
     padding-left: 0;
