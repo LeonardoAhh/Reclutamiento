@@ -228,12 +228,18 @@ export interface DepartmentCoverage {
  * Pipeline de candidatos (tabla `candidates` + `candidate_notes`)
  * ──────────────────────────────────────────────────────────────────────── */
 
+/**
+ * Status activos del pipeline de candidatos. El flujo se simplificó a 4
+ * etapas: Entrevista 1, Entrevista 2 (procesos en curso), y los terminales
+ * Contratado / Rechazado.
+ *
+ * La data histórica pudo guardar valores ya retirados (`aplico`,
+ * `revision`, `oferta`). Esos se normalizan al leer mediante
+ * `normalizeCandidateStatus` — nunca se exponen al resto de la app.
+ */
 export const CANDIDATE_STATUSES = [
-  'aplico',
-  'revision',
   'entrevista_1',
   'entrevista_2',
-  'oferta',
   'contratado',
   'rechazado',
 ] as const;
@@ -242,14 +248,34 @@ export type CandidateStatus = (typeof CANDIDATE_STATUSES)[number];
 
 /** Labels en español para UI. */
 export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
-  aplico: 'Aplicó',
-  revision: 'Revisión',
   entrevista_1: 'Entrevista 1',
   entrevista_2: 'Entrevista 2',
-  oferta: 'Oferta',
   contratado: 'Contratado',
   rechazado: 'Rechazado',
 };
+
+/**
+ * Mapa de status legados → status actuales. Solo se usa al leer data
+ * persistida (Supabase / localStorage) para tolerar registros viejos.
+ */
+const LEGACY_CANDIDATE_STATUS_MAP: Record<string, CandidateStatus> = {
+  aplico: 'entrevista_1',
+  revision: 'entrevista_1',
+  oferta: 'entrevista_2',
+};
+
+/**
+ * Normaliza cualquier valor de status crudo (incluyendo legados) al
+ * conjunto actual de 4 status. Si el valor no es reconocible, regresa
+ * 'entrevista_1' como fallback seguro — nunca lanza.
+ */
+export function normalizeCandidateStatus(raw: unknown): CandidateStatus {
+  const value = String(raw ?? '').trim().toLowerCase();
+  if ((CANDIDATE_STATUSES as readonly string[]).includes(value)) {
+    return value as CandidateStatus;
+  }
+  return LEGACY_CANDIDATE_STATUS_MAP[value] ?? 'entrevista_1';
+}
 
 export interface Candidate {
   id?: string;

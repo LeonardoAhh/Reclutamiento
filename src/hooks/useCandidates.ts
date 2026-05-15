@@ -6,7 +6,18 @@ import type {
   CandidateNote,
   CandidateStatus,
 } from '@/lib/types';
+import { normalizeCandidateStatus } from '@/lib/types';
 import type { SaveStatus } from './useSupabaseData';
+
+/**
+ * Normaliza una fila cruda de candidato (Supabase o localStorage) al
+ * shape actual. Solo toca `status` para reemplazar valores legados
+ * (`aplico`, `revision`, `oferta`) por los 4 vigentes; los demas
+ * campos se respetan tal cual.
+ */
+function normalizeCandidate(raw: Candidate): Candidate {
+  return { ...raw, status: normalizeCandidateStatus(raw.status) };
+}
 
 const STORAGE_KEYS = {
   candidates: 'reclutamiento_candidates',
@@ -20,6 +31,11 @@ function loadLocal<T>(key: string, fallback: T): T {
   } catch {
     return fallback;
   }
+}
+
+function loadLocalCandidates(): Candidate[] {
+  const raw = loadLocal<Candidate[]>(STORAGE_KEYS.candidates, []);
+  return raw.map(normalizeCandidate);
 }
 
 function saveLocal<T>(key: string, data: T): void {
@@ -56,7 +72,7 @@ function localId(): string {
  */
 export function useCandidates() {
   const [candidates, setCandidates] = useState<Candidate[]>(() =>
-    loadLocal(STORAGE_KEYS.candidates, [])
+    loadLocalCandidates()
   );
   const [notes, setNotes] = useState<CandidateNote[]>(() =>
     loadLocal(STORAGE_KEYS.candidateNotes, [])
@@ -90,7 +106,9 @@ export function useCandidates() {
         if (candResult.error) throw candResult.error;
         if (notesResult.error) throw notesResult.error;
 
-        const candData = (candResult.data ?? []) as Candidate[];
+        const candData = ((candResult.data ?? []) as Candidate[]).map(
+          normalizeCandidate
+        );
         const notesData = (notesResult.data ?? []) as CandidateNote[];
 
         setCandidates(candData);

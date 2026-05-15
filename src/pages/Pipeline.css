@@ -48,7 +48,109 @@
   flex-shrink: 0;
 }
 
+/* ── KPIs por reclutador (hero secundario) ── */
+.pipeline__recruiters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
 
+@media (max-width: 720px) {
+  .pipeline__recruiters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pipeline__recruiter-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.pipeline__recruiter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.pipeline__recruiter-name {
+  font-family: var(--font-display);
+  font-size: var(--type-display-md-size, 1.25rem);
+  font-weight: var(--type-display-md-weight, 600);
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+}
+
+.pipeline__recruiter-total {
+  font-size: var(--type-body-sm-size, 0.85rem);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.pipeline__recruiter-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xs);
+  margin: 0;
+}
+
+.pipeline__recruiter-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt, rgba(0, 0, 0, 0.03));
+  border-left: 3px solid var(--color-muted-soft, #d1d5db);
+}
+
+.pipeline__recruiter-stat dt {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.pipeline__recruiter-stat dd {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__recruiter-pct {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__recruiter-count {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* Variantes por tipo de estado: barra lateral de color para lectura rapida. */
+.pipeline__recruiter-stat--citados {
+  border-left-color: var(--color-accent-amber, #f59e0b);
+}
+
+.pipeline__recruiter-stat--contratados {
+  border-left-color: var(--color-accent-teal, #14b8a6);
+}
+
+.pipeline__recruiter-stat--rechazados {
+  border-left-color: var(--color-accent-coral, #f43f5e);
+}
 
 /* ── Controls (search + count) ── */
 .pipeline__controls {

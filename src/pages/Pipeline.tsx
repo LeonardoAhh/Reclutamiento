@@ -27,6 +27,8 @@ import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatShortDate } from '@/lib/dates';
+import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
+import { normalizeString } from '@/lib/utils';
 import './Pipeline.css';
 
 type ViewMode = 'table' | 'kanban';
@@ -36,6 +38,25 @@ const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
 const formatDate = formatShortDate;
+
+/**
+ * Status que cuentan como "citado" para el hero de reclutadores. Tras
+ * la simplificacion del pipeline a 4 etapas, citar = estar en Entrevista 1
+ * o Entrevista 2. Contratado y Rechazado son terminales y se cuentan
+ * aparte.
+ */
+const CITADO_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
+  'entrevista_1',
+  'entrevista_2',
+]);
+
+type RecruiterStats = {
+  name: string;
+  total: number;
+  citados: number;
+  contratados: number;
+  rechazados: number;
+};
 
 export function Pipeline() {
   const {
@@ -104,6 +125,34 @@ export function Pipeline() {
   const activeFiltersCount = (
     Object.keys(filters) as Array<keyof FilterState>
   ).filter((k) => filters[k] !== '').length;
+
+  /**
+   * KPIs por reclutador activo. Cuenta candidatos cuyo `reclutador`
+   * normalizado (mayusculas + sin acentos) coincide con uno de los
+   * nombres canonicos en RECLUTADORES_ACTIVOS. Otros nombres se
+   * descartan tanto del numerador como del denominador.
+   */
+  const recruiterStats = useMemo<RecruiterStats[]>(() => {
+    const empty = (name: string): RecruiterStats => ({
+      name,
+      total: 0,
+      citados: 0,
+      contratados: 0,
+      rechazados: 0,
+    });
+    const acc = new Map<string, RecruiterStats>();
+    for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
+    for (const c of candidates) {
+      const norm = normalizeString(c.reclutador ?? '');
+      const bucket = acc.get(norm);
+      if (!bucket) continue;
+      bucket.total += 1;
+      if (c.status === 'contratado') bucket.contratados += 1;
+      else if (c.status === 'rechazado') bucket.rechazados += 1;
+      else if (CITADO_STATUSES.has(c.status)) bucket.citados += 1;
+    }
+    return Array.from(acc.values());
+  }, [candidates]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -248,6 +297,65 @@ export function Pipeline() {
             <UserPlus size={16} aria-hidden="true" />
           </button>
         </div>
+      </section>
+
+      {/* ── KPIs por reclutador ── */}
+      <section
+        className="pipeline__recruiters"
+        aria-label="KPIs por reclutador"
+      >
+        {recruiterStats.map((r) => {
+          const pct = (n: number) =>
+            r.total === 0 ? 0 : Math.round((n / r.total) * 100);
+          return (
+            <article key={r.name} className="pipeline__recruiter-card">
+              <header className="pipeline__recruiter-head">
+                <h2 className="pipeline__recruiter-name">{r.name}</h2>
+                <span
+                  className="pipeline__recruiter-total"
+                  title="Total de candidatos asignados (denominador)"
+                >
+                  {r.total} candidato{r.total === 1 ? '' : 's'}
+                </span>
+              </header>
+              <dl className="pipeline__recruiter-stats">
+                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--citados">
+                  <dt>Citados</dt>
+                  <dd>
+                    <span className="pipeline__recruiter-pct">
+                      {pct(r.citados)}%
+                    </span>
+                    <span className="pipeline__recruiter-count">
+                      ({r.citados})
+                    </span>
+                  </dd>
+                </div>
+                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--contratados">
+                  <dt>Contratados</dt>
+                  <dd>
+                    <span className="pipeline__recruiter-pct">
+                      {pct(r.contratados)}%
+                    </span>
+                    <span className="pipeline__recruiter-count">
+                      ({r.contratados})
+                    </span>
+                  </dd>
+                </div>
+                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--rechazados">
+                  <dt>Rechazados</dt>
+                  <dd>
+                    <span className="pipeline__recruiter-pct">
+                      {pct(r.rechazados)}%
+                    </span>
+                    <span className="pipeline__recruiter-count">
+                      ({r.rechazados})
+                    </span>
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          );
+        })}
       </section>
 
       {/* ── Search ── */}

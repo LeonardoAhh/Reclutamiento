@@ -14,11 +14,8 @@ interface KanbanColumnProps {
 }
 
 const TONE_BY_STATUS: Record<CandidateStatus, string> = {
-  aplico: 'neutral',
-  revision: 'neutral',
   entrevista_1: 'amber',
   entrevista_2: 'amber',
-  oferta: 'coral',
   contratado: 'success',
   rechazado: 'error',
 };
