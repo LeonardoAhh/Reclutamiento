@@ -44,6 +44,7 @@ import {
   formatIsoWeekRange,
   isInIsoWeek,
   isoWeekOf,
+  currentYearMx,
 } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
 import './KpisPage.css';
@@ -174,7 +175,7 @@ export function KpisPage() {
 
   /* ── Bajas (4) ─────────────────────────────────────────────── */
   const bajasTotals = useMemo(() => {
-    const year = new Date().getFullYear();
+    const year = currentYearMx();
     const { totals } = computeMonthlyComparison(bajas, employees, year);
     return totals;
   }, [bajas, employees]);

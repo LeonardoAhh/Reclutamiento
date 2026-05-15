@@ -92,8 +92,10 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const COVER_WINDOW_DAYS = 10;
 
 function diffDays(fromIso: string, toIso: string): number {
-  const a = new Date(`${fromIso}T12:00:00`);
-  const b = new Date(`${toIso}T12:00:00`);
+  // Anclar a mediodía en TZ MX (UTC-6 fijo en Querétaro) para que la
+  // diferencia entera de días no se vea afectada por la zona del visor.
+  const a = new Date(`${fromIso}T12:00:00-06:00`);
+  const b = new Date(`${toIso}T12:00:00-06:00`);
   if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return Number.POSITIVE_INFINITY;
   return Math.round((b.getTime() - a.getTime()) / MS_PER_DAY);
 }

@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Pencil, Trash2, StickyNote, BadgeCheck } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
+import { TZ_MX } from '@/lib/dates';
 
 interface KanbanCardProps {
   candidate: Candidate;
@@ -18,6 +19,7 @@ function formatShortDate(iso?: string): string {
     return new Date(iso).toLocaleDateString('es-MX', {
       day: '2-digit',
       month: 'short',
+      timeZone: TZ_MX,
     });
   } catch {
     return '—';

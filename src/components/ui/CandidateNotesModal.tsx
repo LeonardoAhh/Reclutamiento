@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { StickyNote, MessageSquarePlus } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, CandidateNote } from '@/lib/types';
+import { TZ_MX } from '@/lib/dates';
 import './CommentModal.css';
 
 interface CandidateNotesModalProps {
@@ -89,6 +90,7 @@ export function CandidateNotesModal({
                         day: '2-digit',
                         month: 'short',
                         year: 'numeric',
+                        timeZone: TZ_MX,
                       })
                     : ''}
                 </span>

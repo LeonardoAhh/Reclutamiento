@@ -22,7 +22,12 @@ import {
   DEFAULT_VACANCY_SLA_DAYS,
 } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
-import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
+import {
+  localTodayIso,
+  localDateToIso,
+  isoToLocalDateString,
+  TZ_MX,
+} from '@/lib/dates';
 import { Modal } from './Modal';
 import './CandidateModal.css';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -517,6 +522,7 @@ export function VacancyModal({
                           year: '2-digit',
                           hour: '2-digit',
                           minute: '2-digit',
+                          timeZone: TZ_MX,
                         })
                         : '—'}
                     </time>

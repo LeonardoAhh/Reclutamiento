@@ -28,7 +28,12 @@ import {
   DEFAULT_VACANCY_SLA_DAYS,
 } from '@/lib/types';
 import type { VacancyRequest, VacancyStatus } from '@/lib/types';
-import { formatShortDate, daysBetween } from '@/lib/dates';
+import {
+  formatShortDate,
+  daysBetween,
+  startOfDayMxMs,
+  endOfDayMxMs,
+} from '@/lib/dates';
 import './Pipeline.css';
 import './Vacantes.css';
 
@@ -116,10 +121,9 @@ export function Vacantes() {
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    const desde = filters.fechaDesde ? new Date(filters.fechaDesde).getTime() : null;
-    const hasta = filters.fechaHasta
-      ? new Date(`${filters.fechaHasta}T23:59:59`).getTime()
-      : null;
+    // Filtros de rango anclados a TZ MX para evitar desfases del visor.
+    const desde = startOfDayMxMs(filters.fechaDesde);
+    const hasta = endOfDayMxMs(filters.fechaHasta);
 
     return enriched.filter(({ vacancy: v }) => {
       if (filters.area && v.area !== filters.area) return false;

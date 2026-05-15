@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Baja } from '@/lib/types';
+import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
 
 interface CubrirVacanteModalProps {
@@ -30,7 +31,7 @@ export function CubrirVacanteModal({
 
   useEffect(() => {
     if (!isOpen || !baja) return;
-    setFecha(baja.cubierta_fecha || new Date().toISOString().slice(0, 10));
+    setFecha(baja.cubierta_fecha || localTodayIso());
     setNota(baja.cubierta_nota ?? '');
     setErrorMsg(null);
     setSubmitting(false);

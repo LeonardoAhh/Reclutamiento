@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
-import { parseDdMmYyyy } from '@/lib/dates';
+import { parseDdMmYyyy, localTodayIso } from '@/lib/dates';
 import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
 import type { Baja, Employee, PositionComment } from '@/lib/types';
 
@@ -395,7 +395,7 @@ export function useSupabaseData() {
       const target = candidates[0];
       if (!target) return { bajaNum: null };
 
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localTodayIso();
       const note = `Cubierta por promoción de #${meta.num_empleado} (${meta.source}).`;
 
       const updatedBajas = bajas.map((b) =>

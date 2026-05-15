@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MessageSquarePlus, MessageSquare } from 'lucide-react';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
+import { TZ_MX } from '@/lib/dates';
 import { Modal } from './Modal';
 import './CommentModal.css';
 
@@ -84,6 +85,7 @@ export function CommentModal({
                     day: '2-digit',
                     month: 'short',
                     year: 'numeric',
+                    timeZone: TZ_MX,
                   })}
                 </span>
               </header>
