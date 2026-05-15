@@ -1,0 +1,140 @@
+/* WeeklyHiresModal — detalle de empleados con fecha_ingreso en la semana ISO actual. */
+
+.weekly-hires-modal .modal-content {
+  width: min(720px, 96vw);
+  max-height: 90vh;
+}
+
+.weekly-hires-modal__subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.weekly-hires-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.weekly-hires-modal__summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+}
+
+.weekly-hires-modal__big-number {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.weekly-hires-modal__big-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+}
+
+.weekly-hires-modal__empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-xl) 0;
+}
+
+.weekly-hires-modal__section-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.weekly-hires-modal__puesto-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.weekly-hires-modal__puesto-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-card);
+}
+
+.weekly-hires-modal__puesto-name {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.weekly-hires-modal__puesto-area {
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size);
+}
+
+.weekly-hires-modal__puesto-count {
+  font-family: var(--font-display);
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+  color: var(--color-primary);
+}
+
+.weekly-hires-modal__table-wrap {
+  overflow-x: auto;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+}
+
+.weekly-hires-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--type-body-sm-size);
+}
+
+.weekly-hires-modal__table th,
+.weekly-hires-modal__table td {
+  text-align: left;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  vertical-align: top;
+}
+
+.weekly-hires-modal__table thead th {
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  font-size: var(--type-caption-md-size);
+}
+
+.weekly-hires-modal__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.weekly-hires-modal__cell-mono {
+  font-family: var(--font-display);
+  white-space: nowrap;
+}
+
+.weekly-hires-modal__cell-area {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.weekly-hires-modal__cell-seccion {
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size);
+}

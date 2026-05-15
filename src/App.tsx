@@ -40,6 +40,14 @@ function App() {
         path="/"
         element={
           <ProtectedShell>
+            <KpisPage />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedShell>
             <Dashboard />
           </ProtectedShell>
         }
@@ -68,14 +76,7 @@ function App() {
           </ProtectedShell>
         }
       />
-      <Route
-        path="/kpis"
-        element={
-          <ProtectedShell>
-            <KpisPage />
-          </ProtectedShell>
-        }
-      />
+      <Route path="/kpis" element={<Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

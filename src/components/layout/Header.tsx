@@ -3,11 +3,11 @@ import { UserMenu } from './UserMenu';
 import './Header.css';
 
 const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
-  { to: '/', label: 'Dashboard', end: true },
+  { to: '/', label: 'KPIs', end: true },
+  { to: '/dashboard', label: 'Dashboard' },
   { to: '/pipeline', label: 'Candidatos' },
   { to: '/vacantes', label: 'Vacantes' },
   { to: '/bajas', label: 'Bajas' },
-  { to: '/kpis', label: 'KPIs' },
 ];
 
 export function Header() {
