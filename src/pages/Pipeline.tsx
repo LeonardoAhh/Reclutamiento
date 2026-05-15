@@ -487,7 +487,7 @@ export function Pipeline() {
             <thead>
               <tr>
                 <th scope="col">Nombre</th>
-                <th scope="col">Puesto · Área</th>
+                <th scope="col">Puesto · Área · Sección</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Reclutador</th>
                 <th scope="col">Fuente</th>
@@ -511,6 +511,7 @@ export function Pipeline() {
                   <td>
                     <div className="pipeline__puesto">{c.puesto}</div>
                     <div className="pipeline__area">{c.area}</div>
+                    <div className="pipeline__seccion">{c.seccion?.trim() || '—'}</div>
                   </td>
                   <td className="pipeline__cell-status">
                     <CandidateStatusBadge status={c.status} />
