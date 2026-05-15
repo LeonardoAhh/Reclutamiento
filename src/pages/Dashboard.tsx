@@ -47,6 +47,7 @@ export function Dashboard() {
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,
+    coverBajaForPosition,
     purgeAllEmployees,
   } = useSupabaseData();
 
@@ -211,6 +212,15 @@ export function Dashboard() {
         { ...emp, ...target },
         { source: 'dashboard-promote' }
       );
+      // Además, si había una baja abierta del mismo puesto (la que dejó
+      // libre el cupo que estamos llenando), márcala cubierta también.
+      // El auto-match de bajas.ts requiere `empleado.fecha_ingreso >=
+      // baja.fecha_baja` dentro de 10d; una promoción conserva el
+      // `fecha_ingreso` original, así que nunca dispara ese match.
+      await coverBajaForPosition(target, {
+        num_empleado: emp.num_empleado,
+        source: 'dashboard-promote',
+      });
       setSearchTerm('');
     }
     return result;
