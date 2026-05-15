@@ -45,7 +45,7 @@ function emptyForm(): FormState {
     puesto: '',
     area: '',
     seccion: '',
-    status: 'aplico',
+    status: 'entrevista_1',
     reclutador: '',
     source: '',
     cv_url: '',

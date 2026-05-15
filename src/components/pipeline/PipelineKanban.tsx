@@ -38,11 +38,8 @@ export function PipelineKanban({
 
   const byStatus = useMemo(() => {
     const groups: Record<CandidateStatus, Candidate[]> = {
-      aplico: [],
-      revision: [],
       entrevista_1: [],
       entrevista_2: [],
-      oferta: [],
       contratado: [],
       rechazado: [],
     };

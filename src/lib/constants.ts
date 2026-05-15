@@ -233,6 +233,23 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
  * Si un puesto no aparece aquí, la requisición deja el bloque en blanco
  * para captura manual.
  */
+/**
+ * RECLUTADORES_ACTIVOS — Nombres canonicos de las personas del area de
+ * reclutamiento cuyos KPIs se muestran en el hero de la pagina de
+ * candidatos.
+ *
+ * El campo `reclutador` de un candidato es texto libre; cualquier nombre
+ * fuera de esta lista se ignora en el conteo del hero (no se grafica y
+ * no se cuenta en el denominador). Para agregar / quitar gente, edita
+ * esta lista. El match es case-insensitive y tolerante a acentos
+ * (via normalizeString).
+ */
+export const RECLUTADORES_ACTIVOS = [
+  'ALEXANDRA',
+  'DANIELA',
+  'LEONARDO',
+] as const;
+
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
   {
     area: 'RECURSOS HUMANOS',

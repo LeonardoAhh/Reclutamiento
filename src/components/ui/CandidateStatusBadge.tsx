@@ -6,11 +6,8 @@ const VARIANT: Record<
   CandidateStatus,
   'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
 > = {
-  aplico: 'default',
-  revision: 'default',
   entrevista_1: 'amber',
   entrevista_2: 'amber',
-  oferta: 'coral',
   contratado: 'success',
   rechazado: 'error',
 };

@@ -50,11 +50,8 @@ import './KpisPage.css';
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
 const ACTIVE_CANDIDATE_STATUSES: ReadonlyArray<CandidateStatus> = [
-  'aplico',
-  'revision',
   'entrevista_1',
   'entrevista_2',
-  'oferta',
 ];
 
 const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
