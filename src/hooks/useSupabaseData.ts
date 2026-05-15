@@ -435,6 +435,50 @@ export function useSupabaseData() {
     }
   }, [isConfigured, comments]);
 
+  /**
+   * Destructivo: borra TODOS los empleados de Supabase y limpia el caché
+   * local. Pensado para el botón de "Borrar plantilla" del Dashboard. El
+   * caller es responsable de pedir doble confirmación + descarga del JSON
+   * de respaldo antes de invocar esta función.
+   *
+   * Devuelve `{ ok, count, message }` para que el modal pueda mostrar
+   * cuántos registros se eliminaron o la causa del fallo (ej. RLS).
+   */
+  const purgeAllEmployees = useCallback(async (): Promise<{
+    ok: boolean;
+    count: number;
+    message?: string;
+  }> => {
+    const previousCount = employees.length;
+
+    if (!isConfigured) {
+      setEmployees([]);
+      saveLocal(STORAGE_KEYS.employees, [] as Employee[]);
+      flashSaved();
+      return { ok: true, count: previousCount };
+    }
+
+    try {
+      setSaveStatus('saving');
+
+      const { error: err } = await supabase
+        .from('empleados')
+        .delete()
+        .not('num_empleado', 'is', null);
+      if (err) throw err;
+
+      setEmployees([]);
+      saveLocal(STORAGE_KEYS.employees, [] as Employee[]);
+      flashSaved();
+      return { ok: true, count: previousCount };
+    } catch (err) {
+      const message = formatSupabaseError(err);
+      console.warn('Supabase purge failed:', message, err);
+      setSaveStatus('error');
+      return { ok: false, count: 0, message };
+    }
+  }, [employees, isConfigured]);
+
   return {
     employees,
     comments,
@@ -448,5 +492,6 @@ export function useSupabaseData() {
     updateEmployeeIncapacidad,
     promoteEmployee,
     addComment,
+    purgeAllEmployees,
   };
 }
