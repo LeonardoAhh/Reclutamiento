@@ -116,6 +116,95 @@ export function formatMonthLabel(monthKeyStr: string): string {
 }
 
 /**
+ * ISO 8601 week descriptor for a given local date.
+ *
+ *   - `year`: ISO week-numbering year (may differ from calendar year for
+ *             the first/last few days of a year).
+ *   - `week`: 1..53.
+ *   - `start`: Monday 00:00 local of that week.
+ *   - `end`:   Sunday 23:59:59.999 local of that week.
+ *
+ * Implementation uses the standard "Thursday rule":
+ *   Move the input date to the Thursday of the same ISO week, then take that
+ *   year as the ISO year and compute the offset from Jan 4 (which is always
+ *   in week 1 by definition).
+ */
+export interface IsoWeekRange {
+  year: number;
+  week: number;
+  start: Date;
+  end: Date;
+}
+
+export function isoWeekOf(input: Date | string): IsoWeekRange {
+  const src = typeof input === 'string' ? new Date(input) : input;
+  // Anchor to local midnight to avoid TZ creep.
+  const date = new Date(src.getFullYear(), src.getMonth(), src.getDate());
+  // Mon..Sun -> 0..6 with Mon=0.
+  const dayIdx = (date.getDay() + 6) % 7;
+
+  const start = new Date(date);
+  start.setDate(date.getDate() - dayIdx);
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  end.setHours(23, 59, 59, 999);
+
+  const thursday = new Date(start);
+  thursday.setDate(start.getDate() + 3);
+  const year = thursday.getFullYear();
+
+  // Jan 4 is always in ISO week 1.
+  const jan4 = new Date(year, 0, 4);
+  const jan4DayIdx = (jan4.getDay() + 6) % 7;
+  const week1Monday = new Date(jan4);
+  week1Monday.setDate(jan4.getDate() - jan4DayIdx);
+
+  const diffMs = thursday.getTime() - week1Monday.getTime();
+  const week = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7)) + 1;
+
+  return { year, week, start, end };
+}
+
+/**
+ * Returns `true` if `isoDate` (in `YYYY-MM-DD` or any parseable form) falls
+ * inside the inclusive `[start, end]` window of `range`. Empty / invalid
+ * inputs return `false`.
+ */
+export function isInIsoWeek(
+  isoDate: string | null | undefined,
+  range: IsoWeekRange
+): boolean {
+  if (!isoDate) return false;
+  const normalized = parseDdMmYyyy(isoDate) ?? String(isoDate).slice(0, 10);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(normalized);
+  if (!m) return false;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  if (Number.isNaN(d.getTime())) return false;
+  return d.getTime() >= range.start.getTime() && d.getTime() <= range.end.getTime();
+}
+
+/**
+ * Compact human-readable week range for the KPIs UI. Examples (es-MX):
+ *   "11-17 may"      -> Mon and Sun in the same month.
+ *   "30 abr - 6 may" -> spans two months.
+ */
+export function formatIsoWeekRange(range: IsoWeekRange): string {
+  const startDay = range.start.getDate();
+  const endDay = range.end.getDate();
+  const startMonth = range.start
+    .toLocaleDateString('es-MX', { month: 'short' })
+    .replace('.', '');
+  const endMonth = range.end
+    .toLocaleDateString('es-MX', { month: 'short' })
+    .replace('.', '');
+  if (range.start.getMonth() === range.end.getMonth()) {
+    return `${startDay}-${endDay} ${startMonth}`;
+  }
+  return `${startDay} ${startMonth} - ${endDay} ${endMonth}`;
+}
+
+/**
  * Count whole days between `from` and `to` (defaults to "now"), using local
  * timezone. Returns a non-negative integer; negative deltas clamp to 0.
  */

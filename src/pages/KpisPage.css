@@ -80,3 +80,37 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* Botón de detalle (solo visible cuando la card está revelada). Frena la
+   propagación para que el click no re-oculte la card. */
+.kpis-page__detail-btn {
+  position: absolute;
+  left: var(--spacing-md);
+  bottom: var(--spacing-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: background 120ms ease, color 120ms ease, box-shadow 120ms ease;
+  z-index: 2;
+}
+
+.kpis-page__detail-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-surface-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.kpis-page__detail-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

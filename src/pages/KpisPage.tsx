@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
   BadgeCheck,
+  CalendarPlus,
   CheckCircle2,
   ClipboardList,
+  Eye,
   EyeOff,
   ShieldCheck,
   Timer,
@@ -17,6 +19,7 @@ import {
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
+import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -34,7 +37,13 @@ import type {
   VacancyRequest,
   VacancyStatus,
 } from '@/lib/types';
-import { daysBetween } from '@/lib/dates';
+import {
+  daysBetween,
+  formatIsoWeekRange,
+  isInIsoWeek,
+  isoWeekOf,
+} from '@/lib/dates';
+import type { Employee } from '@/lib/types';
 import './KpisPage.css';
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
@@ -87,6 +96,21 @@ export function KpisPage() {
   const { positions } = usePositions();
 
   const reveal = useKpiReveal();
+  const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
+
+  /* ── Semana ISO actual + ingresos en ese rango ──────────── */
+  const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
+  const currentWeekLabel = useMemo(
+    () => formatIsoWeekRange(currentWeek),
+    [currentWeek]
+  );
+  const weeklyHires: Employee[] = useMemo(
+    () =>
+      employees
+        .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek))
+        .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))),
+    [employees, currentWeek]
+  );
 
   /* ── Vacantes (5) ──────────────────────────────────────────── */
   const vacancyTotals = useMemo(() => {
@@ -293,8 +317,26 @@ export function KpisPage() {
         accentColor: 'var(--color-muted)',
         origin: 'Bajas',
       },
+      // Card semanal (18) — con botón para abrir modal de detalle.
+      {
+        id: 'kpi-ingresos-semana',
+        label: 'Ingresos esta semana',
+        value: weeklyHires.length,
+        subtitle: `Sem ${currentWeek.week} · ${currentWeekLabel}`,
+        icon: <CalendarPlus size={20} aria-hidden="true" />,
+        accentColor: 'var(--color-primary)',
+        origin: 'Bajas',
+      },
     ],
-    [vacancyTotals, candidateTotals, dashboardTotals, bajasTotals]
+    [
+      vacancyTotals,
+      candidateTotals,
+      dashboardTotals,
+      bajasTotals,
+      weeklyHires,
+      currentWeek,
+      currentWeekLabel,
+    ]
   );
 
   const revealedCount = cards.filter((c) => reveal.isRevealed(c.id)).length;
@@ -322,30 +364,57 @@ export function KpisPage() {
       </section>
 
       <section className="kpis-page__grid" aria-label="KPIs consolidados">
-        {cards.map((card) => (
-          <KpiReveal
-            key={card.id}
-            id={card.id}
-            label={card.label}
-            revealed={reveal.isRevealed(card.id)}
-            onReveal={() => reveal.reveal(card.id)}
-            onHide={() => reveal.hide(card.id)}
-          >
-            <div className="kpis-page__card">
-              <span className="kpis-page__origin">{card.origin}</span>
-              <StatCard
-                id={card.id}
-                label={card.label}
-                value={card.value}
-                subtitle={card.subtitle}
-                icon={card.icon}
-                accentColor={card.accentColor}
-                variant={card.variant}
-              />
-            </div>
-          </KpiReveal>
-        ))}
+        {cards.map((card) => {
+          const revealed = reveal.isRevealed(card.id);
+          const hasModal = card.id === 'kpi-ingresos-semana';
+          return (
+            <KpiReveal
+              key={card.id}
+              id={card.id}
+              label={card.label}
+              revealed={revealed}
+              onReveal={() => reveal.reveal(card.id)}
+              onHide={() => reveal.hide(card.id)}
+            >
+              <div className="kpis-page__card">
+                <span className="kpis-page__origin">{card.origin}</span>
+                <StatCard
+                  id={card.id}
+                  label={card.label}
+                  value={card.value}
+                  subtitle={card.subtitle}
+                  icon={card.icon}
+                  accentColor={card.accentColor}
+                  variant={card.variant}
+                />
+                {hasModal && revealed && (
+                  <button
+                    type="button"
+                    className="kpis-page__detail-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setWeeklyModalOpen(true);
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    aria-label="Ver puestos contratados esta semana"
+                  >
+                    <Eye size={14} aria-hidden="true" />
+                    Ver puestos
+                  </button>
+                )}
+              </div>
+            </KpiReveal>
+          );
+        })}
       </section>
+
+      <WeeklyHiresModal
+        isOpen={weeklyModalOpen}
+        onClose={() => setWeeklyModalOpen(false)}
+        range={currentWeek}
+        rangeLabel={currentWeekLabel}
+        hires={weeklyHires}
+      />
     </main>
   );
 }
