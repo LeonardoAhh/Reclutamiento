@@ -38,6 +38,27 @@
   gap: var(--spacing-xs);
 }
 
+.dashboard__danger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-sm);
+  border: 1px solid color-mix(in srgb, var(--color-danger, #b91c1c) 35%, transparent);
+  background: transparent;
+  color: var(--color-danger, #b91c1c);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.dashboard__danger-btn:hover,
+.dashboard__danger-btn:focus-visible {
+  background: var(--color-danger, #b91c1c);
+  color: white;
+  outline: none;
+}
+
 .dashboard__hero-actions {
   display: flex;
   align-items: center;

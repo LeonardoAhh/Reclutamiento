@@ -8,6 +8,7 @@ import {
   UserPlus as UserPlusIcon,
   Trash2,
   ArrowUpCircle,
+  AlertOctagon,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
@@ -17,6 +18,7 @@ import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
+import { PurgeEmployeesModal } from '@/components/ui/PurgeEmployeesModal';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -45,6 +47,7 @@ export function Dashboard() {
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,
+    purgeAllEmployees,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -64,6 +67,7 @@ export function Dashboard() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
+  const [purgeModalOpen, setPurgeModalOpen] = useState(false);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -250,6 +254,15 @@ export function Dashboard() {
             <UserPlusIcon size={16} aria-hidden="true" />
           </button>
           <JsonImporter onImport={handleImport} />
+          <button
+            type="button"
+            className="dashboard__danger-btn"
+            onClick={() => setPurgeModalOpen(true)}
+            title="Borrar plantilla completa"
+            aria-label="Borrar toda la plantilla de empleados"
+          >
+            <AlertOctagon size={16} aria-hidden="true" />
+          </button>
         </div>
       </section>
 
@@ -437,6 +450,14 @@ export function Dashboard() {
         onClose={() => setPromoteTarget(null)}
         onPromote={handlePromote}
         onCreatePosition={createPosition}
+      />
+
+      {/* ── Purge Employees Modal (Danger Zone) ── */}
+      <PurgeEmployeesModal
+        isOpen={purgeModalOpen}
+        onClose={() => setPurgeModalOpen(false)}
+        employees={employees}
+        onConfirm={purgeAllEmployees}
       />
     </main>
   );
