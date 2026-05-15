@@ -1,9 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
   Users,
-  UserCheck,
-  UserX,
-  TrendingUp,
   ChevronRight,
   HeartPulse,
   Search,
@@ -12,7 +9,6 @@ import {
   Trash2,
   ArrowUpCircle,
 } from 'lucide-react';
-import { StatCard } from '@/components/ui/StatCard';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
@@ -78,14 +74,6 @@ export function Dashboard() {
     () => calculateDepartmentCoverage(positionCoverage),
     [positionCoverage]
   );
-
-  const totals = useMemo(() => {
-    const autorizada = departmentCoverage.reduce((s, d) => s + d.plantilla_autorizada, 0);
-    const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
-    const vacantes = departmentCoverage.reduce((s, d) => s + d.vacantes, 0);
-    const cobertura = autorizada > 0 ? Math.round((real / autorizada) * 100) : 0;
-    return { autorizada, real, vacantes, cobertura };
-  }, [departmentCoverage]);
 
   const filteredDepts = useMemo(() => {
     let result = departmentCoverage;
@@ -263,39 +251,6 @@ export function Dashboard() {
           </button>
           <JsonImporter onImport={handleImport} />
         </div>
-      </section>
-
-      {/* ── KPI Cards ── */}
-      <section className="dashboard__kpis" id="dashboard-kpis">
-        <StatCard
-          id="stat-autorizada"
-          label="Plantilla Autorizada"
-          value={totals.autorizada}
-          icon={<Users size={20} />}
-          accentColor="var(--color-ink)"
-        />
-        <StatCard
-          id="stat-real"
-          label="Plantilla Real"
-          value={totals.real}
-          icon={<UserCheck size={20} />}
-          accentColor="var(--color-accent-teal)"
-        />
-        <StatCard
-          id="stat-vacantes"
-          label="Vacantes"
-          value={totals.vacantes}
-          icon={<UserX size={20} />}
-          accentColor="var(--color-error)"
-        />
-        <StatCard
-          id="stat-cobertura"
-          label="% Cobertura Global"
-          value={`${totals.cobertura}%`}
-          icon={<TrendingUp size={20} />}
-          accentColor={getCoverageColor(totals.cobertura)}
-          variant="dark"
-        />
       </section>
 
       {/* ── Search & Filter ── */}

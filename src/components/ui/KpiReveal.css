@@ -1,0 +1,61 @@
+/* KpiReveal — wrapper around any KPI card with a blur-until-click reveal. */
+
+.kpi-reveal {
+  position: relative;
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  outline: none;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.kpi-reveal:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.kpi-reveal__inner {
+  display: block;
+  border-radius: var(--rounded-lg);
+  transition: filter var(--transition-base), opacity var(--transition-base);
+  filter: blur(10px);
+  opacity: 0.75;
+  pointer-events: none;
+  user-select: none;
+}
+
+.kpi-reveal--revealed .kpi-reveal__inner {
+  filter: blur(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hint badge sobre la card en blur — desaparece al revelar. */
+.kpi-reveal__hint {
+  position: absolute;
+  inset: auto var(--spacing-md) var(--spacing-md) auto;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-on-dark);
+  background: var(--color-surface-contrast);
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-pill);
+  box-shadow: var(--shadow-card);
+  pointer-events: none;
+}
+
+[data-theme="dark"] .kpi-reveal__hint {
+  background: var(--color-primary);
+  color: var(--color-on-dark);
+}
+
+/* Cuando está revelada elevamos sutilmente al hover, como el StatCard normal. */
+.kpi-reveal--revealed:hover {
+  transform: translateY(-1px);
+}
+
+/* No revelado: hover insinúa que es clickable sin quitar el blur. */
+.kpi-reveal:not(.kpi-reveal--revealed):hover .kpi-reveal__inner {
+  opacity: 0.9;
+}
