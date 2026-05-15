@@ -399,9 +399,7 @@ export const CANDIDATE_SOURCES = [
   'OCC',
   'Computrabajo',
   'Referido',
-  'Walk-in',
   'Facebook',
-  'TikTok Jobs',
-  'Bolsa de trabajo',
-  'Computrabajo',
+  'Pauta',
+  'Volanteo',
 ] as const;
