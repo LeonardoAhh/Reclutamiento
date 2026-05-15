@@ -28,19 +28,18 @@
   pointer-events: auto;
 }
 
-/* Hint badge sobre la card en blur — desaparece al revelar. */
+/* Hint icon sobre la card en blur — desaparece al revelar. */
 .kpi-reveal__hint {
   position: absolute;
   inset: auto var(--spacing-md) var(--spacing-md) auto;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   color: var(--color-on-dark);
   background: var(--color-surface-contrast);
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-pill);
+  border-radius: 999px;
   box-shadow: var(--shadow-card);
   pointer-events: none;
 }
