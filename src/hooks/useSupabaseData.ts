@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import { parseDdMmYyyy } from '@/lib/dates';
+import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
 import type { Baja, Employee, PositionComment } from '@/lib/types';
 
 /**
@@ -355,6 +356,84 @@ export function useSupabaseData() {
     [employees, isConfigured]
   );
 
+  /**
+   * Marca como cubierta la baja abierta más antigua que coincida con el
+   * `area` + `puesto` normalizado (sin sufijo de turno A/B/C/D) de la
+   * posición indicada. Pensado para cerrar la baja automáticamente cuando
+   * una promoción llena el puesto que esa baja dejó abierto.
+   *
+   * Ignora bajas marcadas SOLO INDUCCIÓN (no contabilizables) y bajas ya
+   * marcadas `cubierta_manual`. El "más antigua" es por `fecha_baja` ASC
+   * para mantener consistencia con la asignación FIFO de vacantes.
+   *
+   * Devuelve `{ bajaNum }` con el `num_empleado` de la baja que se cerró,
+   * o `null` si no hubo match. Side-effect: actualiza `reclutamiento_bajas`
+   * en localStorage para que `/bajas` lo vea inmediatamente, y hace upsert
+   * en Supabase best-effort.
+   */
+  const coverBajaForPosition = useCallback(
+    async (
+      position: { area: string; seccion: string; puesto: string },
+      meta: { num_empleado: string; source: string }
+    ): Promise<{ bajaNum: string | null }> => {
+      const bajas = loadLocal<Baja[]>(STORAGE_KEYS.bajas, []);
+      const puestoNorm = normalizePuesto(position.puesto);
+      const areaTrim = (position.area ?? '').trim();
+
+      const candidates = bajas
+        .filter(
+          (b) =>
+            !b.cubierta_manual &&
+            !isSoloInduccion(b) &&
+            (b.area ?? '').trim() === areaTrim &&
+            normalizePuesto(b.puesto) === puestoNorm
+        )
+        .sort((a, b) =>
+          a.fecha_baja < b.fecha_baja ? -1 : a.fecha_baja > b.fecha_baja ? 1 : 0
+        );
+
+      const target = candidates[0];
+      if (!target) return { bajaNum: null };
+
+      const today = new Date().toISOString().slice(0, 10);
+      const note = `Cubierta por promoción de #${meta.num_empleado} (${meta.source}).`;
+
+      const updatedBajas = bajas.map((b) =>
+        b.num_empleado === target.num_empleado
+          ? {
+              ...b,
+              cubierta_manual: true,
+              cubierta_fecha: today,
+              cubierta_nota: note,
+            }
+          : b
+      );
+      saveLocal(STORAGE_KEYS.bajas, updatedBajas);
+
+      if (!isConfigured) return { bajaNum: target.num_empleado };
+
+      try {
+        const updatedBaja = updatedBajas.find(
+          (b) => b.num_empleado === target.num_empleado
+        )!;
+        const { id: _omit, ...rest } = updatedBaja;
+        void _omit;
+        const { error: err } = await supabase
+          .from('bajas')
+          .upsert([rest], { onConflict: 'num_empleado' });
+        if (err) throw err;
+      } catch (err) {
+        console.warn(
+          'Supabase upsert baja cubierta (promoción) failed:',
+          formatSupabaseError(err),
+          err
+        );
+      }
+      return { bajaNum: target.num_empleado };
+    },
+    [isConfigured]
+  );
+
   /** Update incapacidad fields for a single employee. */
   const updateEmployeeIncapacidad = useCallback(
     async (
@@ -491,6 +570,7 @@ export function useSupabaseData() {
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,
+    coverBajaForPosition,
     addComment,
     purgeAllEmployees,
   };
