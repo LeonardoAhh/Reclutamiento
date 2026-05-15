@@ -20,6 +20,7 @@ import {
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
+import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -33,6 +34,7 @@ import {
 import { computeMonthlyComparison } from '@/lib/bajas';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type {
+  Candidate,
   CandidateStatus,
   VacancyRequest,
   VacancyStatus,
@@ -97,6 +99,7 @@ export function KpisPage() {
 
   const reveal = useKpiReveal();
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
+  const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
 
   /* ── Semana ISO actual + ingresos en ese rango ──────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
@@ -146,13 +149,17 @@ export function KpisPage() {
   }, [vacancies]);
 
   /* ── Candidatos (4) ────────────────────────────────────────── */
+  const candidatesInProcess: Candidate[] = useMemo(
+    () => candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.includes(c.status)),
+    [candidates]
+  );
   const candidateTotals = useMemo(() => {
     const total = candidates.length;
-    const enProceso = candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.includes(c.status)).length;
+    const enProceso = candidatesInProcess.length;
     const contratados = candidates.filter((c) => c.status === 'contratado').length;
     const rechazados = candidates.filter((c) => c.status === 'rechazado').length;
     return { total, enProceso, contratados, rechazados };
-  }, [candidates]);
+  }, [candidates, candidatesInProcess]);
 
   /* ── Dashboard (4) ─────────────────────────────────────────── */
   const dashboardTotals = useMemo(() => {
@@ -366,7 +373,9 @@ export function KpisPage() {
       <section className="kpis-page__grid" aria-label="KPIs consolidados">
         {cards.map((card) => {
           const revealed = reveal.isRevealed(card.id);
-          const hasModal = card.id === 'kpi-ingresos-semana';
+          const isWeeklyCard = card.id === 'kpi-ingresos-semana';
+          const isInProcessCard = card.id === 'stat-pipeline-activo';
+          const hasModal = isWeeklyCard || isInProcessCard;
           return (
             <KpiReveal
               key={card.id}
@@ -393,10 +402,15 @@ export function KpisPage() {
                     className="kpis-page__detail-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setWeeklyModalOpen(true);
+                      if (isWeeklyCard) setWeeklyModalOpen(true);
+                      else if (isInProcessCard) setCandidatesModalOpen(true);
                     }}
                     onKeyDown={(e) => e.stopPropagation()}
-                    aria-label="Ver puestos contratados esta semana"
+                    aria-label={
+                      isWeeklyCard
+                        ? 'Ver puestos contratados esta semana'
+                        : 'Ver puestos en proceso del pipeline'
+                    }
                   >
                     <Eye size={14} aria-hidden="true" />
                     Ver puestos
@@ -407,6 +421,12 @@ export function KpisPage() {
           );
         })}
       </section>
+
+      <CandidatesInProcessModal
+        isOpen={candidatesModalOpen}
+        onClose={() => setCandidatesModalOpen(false)}
+        candidates={candidatesInProcess}
+      />
 
       <WeeklyHiresModal
         isOpen={weeklyModalOpen}
