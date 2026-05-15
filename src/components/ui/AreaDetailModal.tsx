@@ -9,14 +9,40 @@ import { Modal } from './Modal';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
+import { normalizePuesto } from '@/lib/bajas';
 import { getCoverageColor } from '@/lib/utils';
-import type { DepartmentCoverage, PositionComment } from '@/lib/types';
+import type {
+  Candidate,
+  CandidateStatus,
+  DepartmentCoverage,
+  PositionComment,
+} from '@/lib/types';
 import './AreaDetailModal.css';
+
+/**
+ * Status que cuentan como "candidato activo" para mostrar el badge de
+ * EN PROCESO en el detalle de área. Se excluyen los estados terminales
+ * `contratado` y `rechazado`: el primero ya se reflejó como ingreso, el
+ * segundo no aporta progreso al puesto.
+ */
+const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
+  'aplico',
+  'revision',
+  'entrevista_1',
+  'entrevista_2',
+  'oferta',
+]);
 
 interface AreaDetailModalProps {
   isOpen: boolean;
   dept: DepartmentCoverage | null;
   comments: PositionComment[];
+  /**
+   * Pipeline completo (todas las áreas). Se filtra internamente al área
+   * abierta y se cuentan los candidatos activos por (puesto normalizado +
+   * sección) para mostrar el badge "EN PROCESO (N)" en el row.
+   */
+  candidates?: Candidate[];
   onClose: () => void;
   onOpenComment: (area: string, seccion: string, puesto: string) => void;
   getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
@@ -32,6 +58,7 @@ export function AreaDetailModal({
   isOpen,
   dept,
   comments,
+  candidates = [],
   onClose,
   onOpenComment,
   getCoverageBadge,
@@ -65,6 +92,48 @@ export function AreaDetailModal({
     if (activeTab === ALL_TAB) return dept.puestos;
     return dept.puestos.filter((p) => p.seccion === activeTab);
   }, [dept, activeTab]);
+
+  /**
+   * Cuenta candidatos activos del área por (sección, puesto normalizado).
+   * - `area` debe coincidir con el del depto abierto.
+   * - `puesto` se compara normalizado (sin sufijo de turno A/B/C/D y sin
+   *   acentos), igual que en `bajas` / `requisicion`.
+   * - Si el candidato no tiene `seccion`, cuenta para TODAS las secciones
+   *   del puesto en esa área (caso común: pipeline captura puesto+área
+   *   pero no asigna turno hasta contratar).
+   */
+  const candidatesByPuesto = useMemo(() => {
+    const map = new Map<string, number>();
+    if (!dept) return map;
+    const deptArea = (dept.area ?? '').trim();
+
+    const incr = (seccion: string, puestoNorm: string) => {
+      const key = `${seccion}\u0000${puestoNorm}`;
+      map.set(key, (map.get(key) ?? 0) + 1);
+    };
+
+    for (const c of candidates) {
+      if (!ACTIVE_CANDIDATE_STATUSES.has(c.status)) continue;
+      if ((c.area ?? '').trim() !== deptArea) continue;
+      const puestoNorm = normalizePuesto(c.puesto);
+      if (!puestoNorm) continue;
+      const cSeccion = (c.seccion ?? '').trim();
+      if (cSeccion) {
+        incr(cSeccion, puestoNorm);
+      } else {
+        // Sin sección -> contribuye a todas las secciones del depto donde
+        // ese puesto esté autorizado. Así, un candidato genérico para
+        // OPERADOR DE ACABADOS GP-12 / CALIDAD aparece como "EN PROCESO"
+        // en cada turno (1ER / 2DO / 3ER / 4TO).
+        for (const p of dept.puestos) {
+          if (normalizePuesto(p.puesto) === puestoNorm) {
+            incr(p.seccion, puestoNorm);
+          }
+        }
+      }
+    }
+    return map;
+  }, [dept, candidates]);
 
   const seccionTotals = useMemo(() => {
     const map = new Map<
@@ -339,25 +408,45 @@ export function AreaDetailModal({
                         />
                       </td>
                       <td className="text-center">
-                        {latestComment ? (
-                          <Badge
-                            variant={
-                              latestComment.tipo === 'proceso_activo'
-                                ? 'amber'
-                                : latestComment.tipo === 'entrevista'
-                                  ? 'teal'
-                                  : latestComment.tipo === 'entrega_documentos'
-                                    ? 'coral'
-                                    : 'default'
-                            }
-                          >
-                            {COMMENT_TYPE_LABELS[latestComment.tipo]}
-                          </Badge>
-                        ) : pos.vacantes > 0 ? (
-                          <Badge variant="error">Sin proceso</Badge>
-                        ) : (
-                          <span className="no-vacancy">—</span>
-                        )}
+                        {(() => {
+                          // Cuenta de candidatos activos del row.
+                          const activeCount =
+                            candidatesByPuesto.get(
+                              `${pos.seccion}\u0000${normalizePuesto(pos.puesto)}`
+                            ) ?? 0;
+
+                          if (latestComment) {
+                            return (
+                              <Badge
+                                variant={
+                                  latestComment.tipo === 'proceso_activo'
+                                    ? 'amber'
+                                    : latestComment.tipo === 'entrevista'
+                                      ? 'teal'
+                                      : latestComment.tipo === 'entrega_documentos'
+                                        ? 'coral'
+                                        : 'default'
+                                }
+                              >
+                                {COMMENT_TYPE_LABELS[latestComment.tipo]}
+                              </Badge>
+                            );
+                          }
+                          if (pos.vacantes > 0 && activeCount > 0) {
+                            // Hay vacante abierta y candidatos en pipeline activos:
+                            // el puesto SÍ está en proceso aunque no haya
+                            // comentario manual capturado.
+                            return (
+                              <Badge variant="teal">
+                                EN PROCESO ({activeCount})
+                              </Badge>
+                            );
+                          }
+                          if (pos.vacantes > 0) {
+                            return <Badge variant="error">Sin proceso</Badge>;
+                          }
+                          return <span className="no-vacancy">—</span>;
+                        })()}
                       </td>
                       <td>
                         <button

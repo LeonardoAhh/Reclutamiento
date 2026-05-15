@@ -27,6 +27,7 @@ import {
 } from '@/lib/utils';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
+import { useCandidates } from '@/hooks/useCandidates';
 import { usePositions } from '@/lib/positions';
 import type {
   Employee,
@@ -53,6 +54,10 @@ export function Dashboard() {
 
   const { coverVacancyForEmployee } = useVacancyRequests();
   const { positions, createPosition } = usePositions();
+  // Pipeline completo. Se pasa a `AreaDetailModal` para contar candidatos
+  // activos por (área, sección, puesto) y reflejar "EN PROCESO (N)" en el
+  // detalle de área en lugar de "Sin proceso" cuando hay procesos reales.
+  const { candidates } = useCandidates();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
@@ -405,6 +410,7 @@ export function Dashboard() {
         isOpen={activeArea !== null}
         dept={filteredDepts.find((d) => d.area === activeArea) ?? null}
         comments={comments}
+        candidates={candidates}
         onClose={() => setActiveArea(null)}
         onOpenComment={(area, seccion, puesto) =>
           setCommentTarget({ area, seccion, puesto })
