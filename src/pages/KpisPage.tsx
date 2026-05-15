@@ -175,6 +175,25 @@ export function KpisPage() {
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(
     () => [
+
+      // Card semanal (18) — con botón para abrir modal de detalle.
+      {
+        id: 'kpi-ingresos-semana',
+        label: 'Ingresos esta semana',
+        value: weeklyHires.length,
+        icon: <CalendarPlus size={20} aria-hidden="true" />,
+        accentColor: 'var(--color-primary)',
+        origin: 'Bajas',
+      },
+      {
+        id: 'stat-pipeline-activo',
+        label: 'En proceso',
+        value: candidateTotals.enProceso,
+        icon: <Activity size={20} aria-hidden="true" />,
+        accentColor: 'var(--color-primary)',
+        origin: 'Candidatos',
+      },
+
       // Vacantes (1-5)
       {
         id: 'stat-vac-abiertas',
@@ -223,14 +242,6 @@ export function KpisPage() {
         value: candidateTotals.total,
         icon: <Users size={20} aria-hidden="true" />,
         accentColor: 'var(--color-ink)',
-        origin: 'Candidatos',
-      },
-      {
-        id: 'stat-pipeline-activo',
-        label: 'En proceso',
-        value: candidateTotals.enProceso,
-        icon: <Activity size={20} aria-hidden="true" />,
-        accentColor: 'var(--color-primary)',
         origin: 'Candidatos',
       },
       {
@@ -304,7 +315,6 @@ export function KpisPage() {
         id: 'kpi-cobertura',
         label: 'Cobertura',
         value: `${bajasTotals.coverturaPct}%`,
-        subtitle: `${bajasTotals.cubiertas10d}/${bajasTotals.bajas} cubiertas`,
         icon: <ShieldCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Bajas',
@@ -315,16 +325,6 @@ export function KpisPage() {
         value: bajasTotals.soloInduccion,
         icon: <BadgeCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-muted)',
-        origin: 'Bajas',
-      },
-      // Card semanal (18) — con botón para abrir modal de detalle.
-      {
-        id: 'kpi-ingresos-semana',
-        label: 'Ingresos esta semana',
-        value: weeklyHires.length,
-        subtitle: `Sem ${currentWeek.week} · ${currentWeekLabel}`,
-        icon: <CalendarPlus size={20} aria-hidden="true" />,
-        accentColor: 'var(--color-primary)',
         origin: 'Bajas',
       },
     ],
@@ -346,9 +346,6 @@ export function KpisPage() {
       <section className="kpis-page__hero">
         <div>
           <h1 className="kpis-page__title">Indicadores</h1>
-          <p className="kpis-page__subtitle">
-            Click sobre cualquier card para mostrar el valor. {revealedCount} de {cards.length} visibles.
-          </p>
         </div>
         <div className="kpis-page__hero-actions">
           <button
