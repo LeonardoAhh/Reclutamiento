@@ -44,23 +44,60 @@ export interface CreateUserResult {
 export async function createUser(
   input: CreateUserInput
 ): Promise<CreateUserResult> {
+  // Forzamos refresh / lectura de la session activa. Si el JWT ya expiró,
+  // `getSession` lo renueva con el refresh token; si la sesión murió de plano
+  // devuelve null y abortamos con mensaje claro (en lugar de mandar un POST
+  // con JWT inválido que el gateway de Supabase rechaza con 401 críptico).
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (!accessToken) {
+    return {
+      ok: false,
+      message:
+        'Tu sesión expiró. Cierra sesión y vuelve a iniciar para continuar.',
+    };
+  }
+
   const { data, error } = await supabase.functions.invoke('create-user', {
     body: input,
+    // Pasamos el JWT explícito por si el cliente interno del SDK trae uno
+    // stale en memoria distinto al de localStorage.
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   if (error) {
-    // `FunctionsHttpError` trae `context.response` con el body de error real
-    // que devolvió la función. Intentamos parsearlo para mostrar el mensaje
-    // específico en lugar de "non-2xx status code".
-    const ctx = (error as { context?: { response?: Response } }).context;
-    if (ctx?.response) {
+    // `FunctionsHttpError` trae el Response directamente en `error.context`
+    // (NO en `error.context.response`). Lo parseamos para mostrar el mensaje
+    // real que devolvió la edge function en lugar del genérico
+    // "Edge Function returned a non-2xx status code" del SDK.
+    const ctx = (error as { context?: unknown }).context;
+    if (ctx && typeof ctx === 'object' && 'json' in ctx) {
+      const resp = ctx as Response;
+      // Caso especial: 401 del gateway de Supabase (NO de nuestro código).
+      // Pasa cuando el JWT ya no es válido para el proyecto. Traducimos a
+      // un mensaje accionable.
+      if (resp.status === 401) {
+        return {
+          ok: false,
+          message:
+            'Sesión rechazada por Supabase (401). Cierra sesión y vuelve a iniciar.',
+        };
+      }
       try {
-        const parsed = await ctx.response.clone().json();
+        const parsed = (await resp.clone().json()) as {
+          message?: string;
+        } | null;
         if (parsed && typeof parsed.message === 'string') {
           return { ok: false, message: parsed.message };
         }
       } catch {
-        /* fallthrough */
+        // El body no era JSON; intentamos como texto plano.
+        try {
+          const text = await resp.clone().text();
+          if (text) return { ok: false, message: text };
+        } catch {
+          /* fallthrough */
+        }
       }
     }
     return { ok: false, message: error.message };
