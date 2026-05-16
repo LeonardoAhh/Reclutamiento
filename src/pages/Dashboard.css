@@ -38,25 +38,20 @@
   gap: var(--spacing-xs);
 }
 
-.dashboard__danger-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--rounded-sm);
-  border: 1px solid color-mix(in srgb, var(--color-danger, #b91c1c) 35%, transparent);
-  background: transparent;
-  color: var(--color-danger, #b91c1c);
-  cursor: pointer;
-  transition: background var(--transition-base), color var(--transition-base);
+/* ── Botón "Resumen de vacantes" (abre VacancyReportModal) ───────────── */
+.dashboard__report-btn {
+  gap: var(--spacing-xs);
 }
 
-.dashboard__danger-btn:hover,
-.dashboard__danger-btn:focus-visible {
-  background: var(--color-danger, #b91c1c);
-  color: white;
-  outline: none;
+.dashboard__report-btn-label {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  /* En mobile escondemos el label; queda como botón-icono compacto. */
+  .dashboard__report-btn-label {
+    display: none;
+  }
 }
 
 .dashboard__hero-actions {
