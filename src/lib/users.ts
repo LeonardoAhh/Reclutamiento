@@ -44,8 +44,25 @@ export interface CreateUserResult {
 export async function createUser(
   input: CreateUserInput
 ): Promise<CreateUserResult> {
+  // Forzamos refresh / lectura de la session activa. Si el JWT ya expiró,
+  // `getSession` lo renueva con el refresh token; si la sesión murió de plano
+  // devuelve null y abortamos con mensaje claro (en lugar de mandar un POST
+  // con JWT inválido que el gateway de Supabase rechaza con 401 críptico).
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (!accessToken) {
+    return {
+      ok: false,
+      message:
+        'Tu sesión expiró. Cierra sesión y vuelve a iniciar para continuar.',
+    };
+  }
+
   const { data, error } = await supabase.functions.invoke('create-user', {
     body: input,
+    // Pasamos el JWT explícito por si el cliente interno del SDK trae uno
+    // stale en memoria distinto al de localStorage.
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   if (error) {
@@ -56,6 +73,16 @@ export async function createUser(
     const ctx = (error as { context?: unknown }).context;
     if (ctx && typeof ctx === 'object' && 'json' in ctx) {
       const resp = ctx as Response;
+      // Caso especial: 401 del gateway de Supabase (NO de nuestro código).
+      // Pasa cuando el JWT ya no es válido para el proyecto. Traducimos a
+      // un mensaje accionable.
+      if (resp.status === 401) {
+        return {
+          ok: false,
+          message:
+            'Sesión rechazada por Supabase (401). Cierra sesión y vuelve a iniciar.',
+        };
+      }
       try {
         const parsed = (await resp.clone().json()) as {
           message?: string;
