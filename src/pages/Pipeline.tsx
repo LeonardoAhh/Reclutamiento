@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   UserPlus,
   UserX,
@@ -10,9 +11,11 @@ import {
   StickyNote,
   SlidersHorizontal,
   BadgeCheck,
+  ClipboardList,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
+import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
@@ -79,6 +82,7 @@ export function Pipeline() {
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const stored = localStorage.getItem(VIEW_STORAGE_KEY);
@@ -286,6 +290,18 @@ export function Pipeline() {
           <h1>Candidatos</h1>
         </div>
         <div className="pipeline__hero-actions">
+          <motion.button
+            type="button"
+            className="btn-secondary pipeline__report-btn"
+            onClick={() => setReportOpen(true)}
+            aria-label="Abrir resumen de candidatos"
+            title="Resumen de candidatos para WhatsApp"
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <ClipboardList size={16} aria-hidden="true" />
+            <span className="pipeline__report-btn-label">Resumen</span>
+          </motion.button>
           <button
             type="button"
             className="btn-primary"
@@ -620,6 +636,13 @@ export function Pipeline() {
         candidate={hireTarget}
         onClose={() => setHireTarget(null)}
         onConfirm={handleHire}
+      />
+
+      {/* ── Candidate Report Modal (WhatsApp-ready) ── */}
+      <CandidateReportModal
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+        candidates={candidates}
       />
     </main>
   );

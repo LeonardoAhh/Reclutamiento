@@ -48,6 +48,22 @@
   flex-shrink: 0;
 }
 
+/* ── Botón "Resumen de candidatos" (abre CandidateReportModal) ── */
+.pipeline__report-btn {
+  gap: var(--spacing-xs);
+}
+
+.pipeline__report-btn-label {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  /* En mobile escondemos el label; queda como botón-icono compacto. */
+  .pipeline__report-btn-label {
+    display: none;
+  }
+}
+
 /* ── KPIs por reclutador (hero secundario) ── */
 .pipeline__recruiters {
   display: grid;
