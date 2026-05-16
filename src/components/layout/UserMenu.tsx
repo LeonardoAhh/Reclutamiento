@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut, Moon, Sun } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronDown, LogOut, Moon, Settings as SettingsIcon, Sun } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
@@ -12,9 +13,11 @@ import './UserMenu.css';
  * Se cierra al hacer click fuera o presionar Escape.
  */
 export function UserMenu() {
-  const { username, signOut } = useAuth();
+  const { username, signOut, profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const isAdmin = profile?.role === 'admin';
   const [signingOut, setSigningOut] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
@@ -111,6 +114,23 @@ export function UserMenu() {
               {theme === 'dark' ? 'Oscuro' : 'Claro'}
             </span>
           </button>
+          {isAdmin && (
+            <>
+              <div className="user-menu__divider" role="separator" />
+              <button
+                type="button"
+                className="user-menu__item"
+                onClick={() => {
+                  setOpen(false);
+                  navigate('/settings');
+                }}
+                role="menuitem"
+              >
+                <SettingsIcon size={14} aria-hidden="true" />
+                <span className="user-menu__item-label">Configuración</span>
+              </button>
+            </>
+          )}
           <div className="user-menu__divider" role="separator" />
           <button
             type="button"

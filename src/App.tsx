@@ -9,6 +9,7 @@ import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
+import { Settings } from '@/pages/Settings';
 
 /**
  * Shell con Header + página protegida. El Header sólo se monta dentro del
@@ -73,6 +74,14 @@ function App() {
         element={
           <ProtectedShell>
             <Bajas />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedShell>
+            <Settings />
           </ProtectedShell>
         }
       />
