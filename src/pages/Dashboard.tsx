@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   Users,
   ChevronRight,
@@ -8,7 +9,7 @@ import {
   UserPlus as UserPlusIcon,
   Trash2,
   ArrowUpCircle,
-  AlertOctagon,
+  ClipboardList,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
@@ -18,7 +19,7 @@ import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
-import { PurgeEmployeesModal } from '@/components/ui/PurgeEmployeesModal';
+import { VacancyReportModal } from '@/components/ui/VacancyReportModal';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -49,7 +50,6 @@ export function Dashboard() {
     updateEmployeeIncapacidad,
     promoteEmployee,
     coverBajaForPosition,
-    purgeAllEmployees,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -73,7 +73,7 @@ export function Dashboard() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
-  const [purgeModalOpen, setPurgeModalOpen] = useState(false);
+  const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -269,15 +269,18 @@ export function Dashboard() {
             <UserPlusIcon size={16} aria-hidden="true" />
           </button>
           <JsonImporter onImport={handleImport} />
-          <button
+          <motion.button
             type="button"
-            className="dashboard__danger-btn"
-            onClick={() => setPurgeModalOpen(true)}
-            title="Borrar plantilla completa"
-            aria-label="Borrar toda la plantilla de empleados"
+            className="btn-secondary dashboard__report-btn"
+            onClick={() => setVacancyReportOpen(true)}
+            title="Resumen de vacantes para WhatsApp"
+            aria-label="Abrir resumen de vacantes"
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.97 }}
           >
-            <AlertOctagon size={16} aria-hidden="true" />
-          </button>
+            <ClipboardList size={16} aria-hidden="true" />
+            <span className="dashboard__report-btn-label">Resumen</span>
+          </motion.button>
         </div>
       </section>
 
@@ -468,12 +471,11 @@ export function Dashboard() {
         onCreatePosition={createPosition}
       />
 
-      {/* ── Purge Employees Modal (Danger Zone) ── */}
-      <PurgeEmployeesModal
-        isOpen={purgeModalOpen}
-        onClose={() => setPurgeModalOpen(false)}
-        employees={employees}
-        onConfirm={purgeAllEmployees}
+      {/* ── Vacancy Report Modal (WhatsApp-ready) ── */}
+      <VacancyReportModal
+        isOpen={vacancyReportOpen}
+        onClose={() => setVacancyReportOpen(false)}
+        positions={positionCoverage}
       />
     </main>
   );
