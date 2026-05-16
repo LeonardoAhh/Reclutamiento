@@ -49,18 +49,28 @@ export async function createUser(
   });
 
   if (error) {
-    // `FunctionsHttpError` trae `context.response` con el body de error real
-    // que devolvió la función. Intentamos parsearlo para mostrar el mensaje
-    // específico en lugar de "non-2xx status code".
-    const ctx = (error as { context?: { response?: Response } }).context;
-    if (ctx?.response) {
+    // `FunctionsHttpError` trae el Response directamente en `error.context`
+    // (NO en `error.context.response`). Lo parseamos para mostrar el mensaje
+    // real que devolvió la edge function en lugar del genérico
+    // "Edge Function returned a non-2xx status code" del SDK.
+    const ctx = (error as { context?: unknown }).context;
+    if (ctx && typeof ctx === 'object' && 'json' in ctx) {
+      const resp = ctx as Response;
       try {
-        const parsed = await ctx.response.clone().json();
+        const parsed = (await resp.clone().json()) as {
+          message?: string;
+        } | null;
         if (parsed && typeof parsed.message === 'string') {
           return { ok: false, message: parsed.message };
         }
       } catch {
-        /* fallthrough */
+        // El body no era JSON; intentamos como texto plano.
+        try {
+          const text = await resp.clone().text();
+          if (text) return { ok: false, message: text };
+        } catch {
+          /* fallthrough */
+        }
       }
     }
     return { ok: false, message: error.message };
