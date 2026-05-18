@@ -1,0 +1,144 @@
+/* RecruitmentHero — welcome greeting + animated recruitment pipeline mock */
+
+.recruitment-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  background: var(--color-surface-card);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline);
+  text-align: center;
+}
+
+/* ── Greeting ──────────────────────────────────────────────── */
+
+.recruitment-hero__greeting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.recruitment-hero__welcome {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  letter-spacing: var(--type-display-xl-tracking);
+  line-height: var(--type-display-xl-line);
+  color: var(--color-ink);
+}
+
+.recruitment-hero__name {
+  color: var(--color-primary);
+}
+
+.recruitment-hero__tagline {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-muted);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+/* ── Pipeline stages ───────────────────────────────────────── */
+
+.recruitment-hero__pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  width: 100%;
+  max-width: 700px;
+}
+
+.recruitment-hero__stage-group {
+  display: flex;
+  align-items: center;
+}
+
+.recruitment-hero__connector {
+  width: 32px;
+  height: 2px;
+  background: var(--color-hairline);
+  flex-shrink: 0;
+}
+
+.recruitment-hero__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: default;
+}
+
+.recruitment-hero__icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--rounded-full);
+  background: var(--color-canvas);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.recruitment-hero__stage:hover .recruitment-hero__icon-ring {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.recruitment-hero__stage-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-body-strong);
+  white-space: nowrap;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .recruitment-hero {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .recruitment-hero__welcome {
+    font-size: var(--type-heading-md-size);
+  }
+
+  .recruitment-hero__connector {
+    width: 16px;
+  }
+
+  .recruitment-hero__icon-ring {
+    width: 40px;
+    height: 40px;
+  }
+
+  .recruitment-hero__stage-label {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 420px) {
+  .recruitment-hero__pipeline {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+  }
+
+  .recruitment-hero__connector {
+    display: none;
+  }
+
+  .recruitment-hero__stage-group {
+    flex-direction: column;
+  }
+}
