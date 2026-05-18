@@ -3,6 +3,7 @@ import {
   Activity,
   AlertTriangle,
   BadgeCheck,
+  CalendarCheck,
   CalendarPlus,
   CheckCircle2,
   ClipboardList,
@@ -46,6 +47,7 @@ import {
   isInIsoWeek,
   isoWeekOf,
   currentYearMx,
+  localTodayIso,
 } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
 import './KpisPage.css';
@@ -183,18 +185,26 @@ export function KpisPage() {
     return { abiertas, enSla, vencidas, ttfPromedio, excluidas };
   }, [vacancies]);
 
-  /* ── Candidatos (4) ────────────────────────────────────────── */
+  /* ── Candidatos (5) ────────────────────────────────────────── */
   const candidatesInProcess: Candidate[] = useMemo(
     () => candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.includes(c.status)),
     [candidates]
   );
+  // "Citados hoy" — candidatos con `fecha_cita` igual a la fecha civil de hoy
+  // en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD anclado a Querétaro,
+  // y la columna se persiste como `date` (sin TZ) → comparación lexical exacta.
+  const candidatesCitadosHoy: Candidate[] = useMemo(() => {
+    const today = localTodayIso();
+    return candidates.filter((c) => (c.fecha_cita ?? '') === today);
+  }, [candidates]);
   const candidateTotals = useMemo(() => {
     const total = candidates.length;
     const enProceso = candidatesInProcess.length;
+    const citadosHoy = candidatesCitadosHoy.length;
     const contratados = candidates.filter((c) => c.status === 'contratado').length;
     const rechazados = candidates.filter((c) => c.status === 'rechazado').length;
-    return { total, enProceso, contratados, rechazados };
-  }, [candidates, candidatesInProcess]);
+    return { total, enProceso, citadosHoy, contratados, rechazados };
+  }, [candidates, candidatesInProcess, candidatesCitadosHoy]);
 
   /* ── Dashboard (4) ─────────────────────────────────────────── */
   const dashboardTotals = useMemo(() => {
@@ -236,6 +246,16 @@ export function KpisPage() {
         value: candidateTotals.enProceso,
         icon: <Activity size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
+        origin: 'Candidatos',
+      },
+      // Citados hoy — cuenta candidatos con `fecha_cita = hoy (TZ MX)`.
+      // Aparece junto a "En proceso" porque es info accionable del día.
+      {
+        id: 'stat-pipeline-citados-hoy',
+        label: 'Citados hoy',
+        value: candidateTotals.citadosHoy,
+        icon: <CalendarCheck size={20} aria-hidden="true" />,
+        accentColor: 'var(--color-accent-teal)',
         origin: 'Candidatos',
       },
 

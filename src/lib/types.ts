@@ -290,6 +290,12 @@ export interface Candidate {
   status: CandidateStatus;
   reclutador?: string | null;
   fecha_aplicacion?: string;
+  /**
+   * Fecha civil (YYYY-MM-DD, TZ MX) en la que el candidato está citado
+   * para entrevista / siguiente paso. Null = sin cita programada.
+   * Se persiste como `date` en Supabase para evitar drift de timezone.
+   */
+  fecha_cita?: string | null;
   notas?: string | null;
   /**
    * Num. de empleado generado al convertir al candidato en empleado.

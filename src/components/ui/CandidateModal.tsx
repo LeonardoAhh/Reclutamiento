@@ -34,6 +34,7 @@ interface FormState {
   source: string;
   cv_url: string;
   fecha_aplicacion: string;
+  fecha_cita: string;
   notas: string;
 }
 
@@ -50,6 +51,7 @@ function emptyForm(): FormState {
     source: '',
     cv_url: '',
     fecha_aplicacion: localTodayIso(),
+    fecha_cita: '',
     notas: '',
   };
 }
@@ -69,6 +71,7 @@ function fromCandidate(c: Candidate): FormState {
     fecha_aplicacion: c.fecha_aplicacion
       ? isoToLocalDateString(c.fecha_aplicacion)
       : localTodayIso(),
+    fecha_cita: c.fecha_cita ?? '',
     notas: c.notas ?? '',
   };
 }
@@ -155,6 +158,9 @@ export function CandidateModal({
           cv_url: form.cv_url.trim() || null,
           fecha_aplicacion:
             localDateToIso(form.fecha_aplicacion) ?? new Date().toISOString(),
+          // `fecha_cita` se guarda como date (YYYY-MM-DD) — el <input type="date">
+          // ya entrega ese formato. Vacío = sin cita programada (null).
+          fecha_cita: form.fecha_cita ? form.fecha_cita : null,
           notas: form.notas.trim() || null,
         };
         const result = await onSave(payload, candidate?.id);
@@ -361,6 +367,16 @@ export function CandidateModal({
                 value={form.fecha_aplicacion}
                 onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
               />
+            </div>
+            <div className="form-group">
+              <label htmlFor="cand-fecha-cita">Fecha de cita</label>
+              <input
+                id="cand-fecha-cita"
+                type="date"
+                value={form.fecha_cita}
+                onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
+              />
+              <small className="form-hint">Cuándo está citado para entrevista (opcional).</small>
             </div>
             <div className="form-group form-group--span-2">
               <label htmlFor="cand-notas">Notas rápidas</label>

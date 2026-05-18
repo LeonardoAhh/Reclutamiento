@@ -22,6 +22,14 @@
   grid-column: 1 / -1;
 }
 
+.candidate-modal .form-group .form-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+}
+
 @media (max-width: 600px) {
   .candidate-modal .form-grid {
     grid-template-columns: 1fr;
