@@ -17,11 +17,12 @@
   gap: var(--spacing-lg);
 }
 
-/* ── Comparativo de dos semanas ───────────────────────────────────── */
-.weekly-hires-modal__compare {
+/* ── Resumen semanal (tabs + card activa) ─────────────────────────── */
+.weekly-hires-modal__overview {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
   gap: var(--spacing-md);
+  align-items: stretch;
 }
 
 .weekly-hires-modal__compare-col {
@@ -38,6 +39,21 @@
   background: var(--color-surface-card);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.weekly-hires-modal__compare-foot {
+  margin: var(--spacing-xs) 0 0;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+@media (max-width: 640px) {
+  .weekly-hires-modal__overview {
+    grid-template-columns: 1fr;
+  }
 }
 
 .weekly-hires-modal__compare-head {
@@ -57,6 +73,9 @@
 .weekly-hires-modal__compare-range {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
 }
 
 .weekly-hires-modal__compare-stats {
@@ -119,15 +138,16 @@
   color: var(--color-muted);
 }
 
-/* ── Tabs ──────────────────────────────────────────────────────────── */
+/* ── Tabs verticales (izquierda del overview) ─────────────────────── */
 .weekly-hires-modal__tabs {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-xxs);
   padding: var(--spacing-xxs);
   border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
-  align-self: flex-start;
+  align-self: stretch;
 }
 
 .weekly-hires-modal__tab {
@@ -141,6 +161,7 @@
   font-size: var(--type-body-sm-size);
   font-weight: 500;
   cursor: pointer;
+  text-align: left;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
@@ -154,13 +175,16 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.weekly-hires-modal__range-caption {
-  margin: calc(var(--spacing-sm) * -1) 0 0;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--color-muted);
-  font-size: var(--type-caption-md-size);
+.weekly-hires-modal__tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .weekly-hires-modal__tabs {
+    flex-direction: row;
+    align-self: flex-start;
+  }
 }
 
 /* ── Sections ──────────────────────────────────────────────────────── */
