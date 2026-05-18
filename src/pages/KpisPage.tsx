@@ -94,8 +94,9 @@ interface KpiDescriptor {
 }
 
 export function KpisPage() {
-  const { profile, username } = useAuth();
-  const displayName = profile?.display_name || username || 'Usuario';
+const { profile, username } = useAuth();
+const rawName = profile?.display_name || username || 'Usuario';
+const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   const { employees, comments } = useSupabaseData();
   const { vacancies } = useVacancyRequests();
   const { candidates } = useCandidates();

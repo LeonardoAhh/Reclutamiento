@@ -1,144 +1,245 @@
-/* RecruitmentHero — welcome greeting + animated recruitment pipeline mock */
+/* RecruitmentHero — ghost redesign */
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&display=swap");
 
-.recruitment-hero {
+/* ── Root ─────────────────────────────────────────────────── */
+.rh {
+  --rh-font: "Syne", var(--font-body, sans-serif);
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xl);
-  padding: var(--spacing-xxl) var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
-  background: var(--color-surface-card);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xxl) var(--spacing-xl);
   border-radius: var(--rounded-lg);
   border: 1px solid var(--color-hairline);
-  text-align: center;
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--rh-font);
 }
 
-/* ── Greeting ──────────────────────────────────────────────── */
+/* ── Grid texture ─────────────────────────────────────────── */
+.rh__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--color-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-hairline) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.35;
+  pointer-events: none;
+}
 
-.recruitment-hero__greeting {
+/* ── Greeting ─────────────────────────────────────────────── */
+.rh__greeting {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  position: relative;
 }
 
-.recruitment-hero__welcome {
+.rh__label {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-display-xl-size);
-  font-weight: var(--type-display-xl-weight);
-  letter-spacing: var(--type-display-xl-tracking);
-  line-height: var(--type-display-xl-line);
-  color: var(--color-ink);
-}
-
-.recruitment-hero__name {
-  color: var(--color-primary);
-}
-
-.recruitment-hero__tagline {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-muted);
-  letter-spacing: var(--tracking-wider);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-}
-
-/* ── Pipeline stages ───────────────────────────────────────── */
-
-.recruitment-hero__pipeline {
+  color: var(--color-muted);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0;
-  width: 100%;
-  max-width: 700px;
+  gap: 8px;
 }
 
-.recruitment-hero__stage-group {
-  display: flex;
-  align-items: center;
-}
-
-.recruitment-hero__connector {
-  width: 32px;
-  height: 2px;
-  background: var(--color-hairline);
+.rh__label::before {
+  content: "";
+  width: 16px;
+  height: 1px;
+  background: currentColor;
   flex-shrink: 0;
 }
 
-.recruitment-hero__stage {
+.rh__welcome {
+  margin: 0;
+  font-size: var(--type-display-xl-size, 36px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.rh__name {
+  display: inline-block;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 4px;
+  padding: 0 10px;
+  font-weight: 400;
+  font-size: 0.88em;
+  vertical-align: middle;
+  position: relative;
+  top: -3px;
+  letter-spacing: 0;
+}
+
+/* ── Divider ──────────────────────────────────────────────── */
+.rh__divider {
+  height: 1px;
+  background: var(--color-hairline);
+  position: relative;
+}
+
+/* ── Pipeline ─────────────────────────────────────────────── */
+.rh__pipeline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+
+.rh__stage-group {
+  display: flex;
+  align-items: center;
+}
+
+.rh__connector {
+  width: 28px;
+  height: 1px;
+  background: var(--color-hairline);
+  flex-shrink: 0;
+  margin-bottom: calc(var(--spacing-xs) + 20px); /* aligns with icon center */
+}
+
+.rh__stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 6px;
   cursor: default;
+  position: relative;
 }
 
-.recruitment-hero__icon-ring {
+.rh__num {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  line-height: 1;
+}
+
+.rh__icon-ring {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: var(--rounded-full);
-  background: var(--color-canvas);
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  transition: background 180ms ease, color 180ms ease;
+  border: 1px solid var(--color-hairline);
+  background: transparent;
+  color: var(--color-muted);
+  transition:
+    border-color 200ms ease,
+    color 200ms ease,
+    background 200ms ease;
 }
 
-.recruitment-hero__stage:hover .recruitment-hero__icon-ring {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+.rh__stage:hover .rh__icon-ring {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 5%, transparent);
 }
 
-.recruitment-hero__stage-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
+.rh__stage:hover .rh__num {
+  color: var(--color-ink);
+}
+
+.rh__stage-label {
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-body-strong);
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  white-space: nowrap;
+  transition: color 200ms ease;
+}
+
+.rh__stage:hover .rh__stage-label {
+  color: var(--color-ink);
+}
+
+/* ── Footer / progress ────────────────────────────────────── */
+.rh__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.rh__progress {
+  flex: 1;
+  height: 1px;
+  background: var(--color-hairline);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.rh__progress-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--color-ink);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: rh-fill-in 0.6s 1.4s ease forwards;
+}
+
+@keyframes rh-fill-in {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.rh__progress-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
   white-space: nowrap;
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
-
+/* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .recruitment-hero {
+  .rh {
     padding: var(--spacing-xl) var(--spacing-md);
   }
 
-  .recruitment-hero__welcome {
-    font-size: var(--type-heading-md-size);
+  .rh__welcome {
+    font-size: var(--type-heading-md-size, 24px);
   }
 
-  .recruitment-hero__connector {
-    width: 16px;
+  .rh__connector {
+    width: 14px;
   }
 
-  .recruitment-hero__icon-ring {
-    width: 40px;
-    height: 40px;
+  .rh__icon-ring {
+    width: 38px;
+    height: 38px;
   }
 
-  .recruitment-hero__stage-label {
-    font-size: 11px;
+  .rh__stage-label {
+    font-size: 10px;
   }
 }
 
 @media (max-width: 420px) {
-  .recruitment-hero__pipeline {
+  .rh__pipeline {
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
     justify-content: center;
+    gap: var(--spacing-sm);
   }
 
-  .recruitment-hero__connector {
+  .rh__connector {
     display: none;
   }
 
-  .recruitment-hero__stage-group {
+  .rh__stage-group {
     flex-direction: column;
+    align-items: center;
   }
 }

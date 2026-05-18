@@ -19,17 +19,16 @@ const STAGES = [
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.4 },
   },
 };
 
 const stageVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.9 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { type: 'spring' as const, stiffness: 260, damping: 22 },
+    transition: { type: 'spring' as const, stiffness: 280, damping: 24 },
   },
 };
 
@@ -37,7 +36,7 @@ const connectorVariants = {
   hidden: { scaleX: 0 },
   visible: {
     scaleX: 1,
-    transition: { duration: 0.4, ease: 'easeOut' as const },
+    transition: { duration: 0.35, ease: 'easeOut' as const },
   },
 };
 
@@ -47,25 +46,30 @@ interface RecruitmentHeroProps {
 
 export function RecruitmentHero({ displayName }: RecruitmentHeroProps) {
   return (
-    <section className="recruitment-hero" aria-label="Bienvenida">
+    <section className="rh" aria-label="Bienvenida">
+
+      {/* Background grid */}
+      <div className="rh__grid" aria-hidden="true" />
+
       {/* Greeting */}
       <motion.div
-        className="recruitment-hero__greeting"
-        initial={{ opacity: 0, y: -12 }}
+        className="rh__greeting"
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <h2 className="recruitment-hero__welcome">
-          Bienvenido, <span className="recruitment-hero__name">{displayName}</span>
+        <p className="rh__label">Reclutamiento y selección de personal</p>
+        <h2 className="rh__welcome">
+          Bienvenido,{' '}
+          <span className="rh__name">{displayName}</span>
         </h2>
-        <p className="recruitment-hero__tagline">
-          Reclutamiento y Selección de Personal
-        </p>
       </motion.div>
+
+      <div className="rh__divider" />
 
       {/* Animated pipeline stages */}
       <motion.div
-        className="recruitment-hero__pipeline"
+        className="rh__pipeline"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -73,29 +77,44 @@ export function RecruitmentHero({ displayName }: RecruitmentHeroProps) {
         {STAGES.map((stage, i) => {
           const Icon = stage.icon;
           return (
-            <div className="recruitment-hero__stage-group" key={stage.label}>
+            <div className="rh__stage-group" key={stage.label}>
               {i > 0 && (
                 <motion.div
-                  className="recruitment-hero__connector"
+                  className="rh__connector"
                   variants={connectorVariants}
                   style={{ originX: 0 }}
                 />
               )}
               <motion.div
-                className="recruitment-hero__stage"
+                className="rh__stage"
                 variants={stageVariants}
-                whileHover={{ scale: 1.08, y: -4 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+                whileHover={{ y: -3 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 20 }}
               >
-                <div className="recruitment-hero__icon-ring">
-                  <Icon size={22} aria-hidden="true" />
+                <div className="rh__num">0{i + 1}</div>
+                <div className="rh__icon-ring">
+                  <Icon size={20} aria-hidden="true" />
                 </div>
-                <span className="recruitment-hero__stage-label">{stage.label}</span>
+                <span className="rh__stage-label">{stage.label}</span>
               </motion.div>
             </div>
           );
         })}
       </motion.div>
+
+      {/* Progress bar */}
+      <motion.div
+        className="rh__footer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.4 }}
+      >
+        <div className="rh__progress">
+          <div className="rh__progress-fill" />
+        </div>
+        <span className="rh__progress-label">5 etapas</span>
+      </motion.div>
+
     </section>
   );
 }
