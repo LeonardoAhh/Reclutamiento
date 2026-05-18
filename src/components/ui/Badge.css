@@ -1,0 +1,50 @@
+/* Badge — pill labels following Design.md */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-pill);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.badge svg {
+  flex-shrink: 0;
+}
+
+.badge--default {
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+}
+
+.badge--coral {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.badge--teal {
+  background: var(--color-accent-teal);
+  color: var(--color-on-primary);
+}
+
+.badge--amber {
+  background: var(--color-accent-amber);
+  color: var(--color-ink);
+}
+
+.badge--success {
+  background: var(--color-success);
+  color: var(--color-on-primary);
+}
+
+.badge--error {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+}

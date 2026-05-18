@@ -1,0 +1,174 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   UserMenu — dropdown ghost del usuario logueado.
+   Trigger: pill ghost con avatar inicial + chevron.
+   Dropdown: card flotante, hairline rounded, sin shadow agresiva.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.user-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+/* ── Trigger ─────────────────────────────────────────────────────────── */
+.user-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rounded-full);
+  cursor: pointer;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.user-menu__trigger:hover,
+.user-menu__trigger[aria-expanded='true'] {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+  color: var(--color-ink);
+}
+
+.user-menu__trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.user-menu__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  color: var(--color-on-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.user-menu__chevron {
+  transition: transform 0.15s ease;
+  color: var(--color-muted);
+}
+
+.user-menu__chevron--open {
+  transform: rotate(180deg);
+}
+
+.user-menu__trigger:hover .user-menu__chevron,
+.user-menu__trigger[aria-expanded='true'] .user-menu__chevron {
+  color: var(--color-ink);
+}
+
+/* ── Dropdown ────────────────────────────────────────────────────────── */
+.user-menu__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  padding: 8px;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 200;
+  animation: user-menu-in 0.12s ease-out;
+}
+
+@keyframes user-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-menu__header {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-menu__label {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider, 0.06em);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.user-menu__name {
+  margin: 0;
+  font-size: var(--type-body-md-size, 14px);
+  font-weight: 500;
+  color: var(--color-ink);
+  word-break: break-all;
+}
+
+.user-menu__divider {
+  height: 1px;
+  background: var(--color-hairline);
+  margin: 2px 0;
+}
+
+.user-menu__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size, 14px);
+  color: var(--color-body);
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.user-menu__item-label {
+  flex: 1 1 auto;
+}
+
+.user-menu__item-meta {
+  flex: 0 0 auto;
+  font-size: var(--type-caption-md-size, 12px);
+  color: var(--color-muted);
+}
+
+.user-menu__item:hover:not(:disabled),
+.user-menu__item:focus-visible {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  outline: none;
+}
+
+.user-menu__item:hover .user-menu__item-meta {
+  color: var(--color-ink);
+}
+
+.user-menu__item--danger:hover:not(:disabled),
+.user-menu__item--danger:focus-visible {
+  color: var(--color-error);
+  background: var(--color-error-tint, rgba(198, 69, 69, 0.08));
+}
+
+.user-menu__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

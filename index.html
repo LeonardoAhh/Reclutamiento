@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dashboard de Reclutamiento - Control de plantilla autorizada, vacantes y cobertura por puesto y departamento" />
+    <meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#181715" media="(prefers-color-scheme: dark)" />
+    <title>Reclutamiento - Dashboard</title>
+    <!-- Tipografía: Berkeley Mono (proprietaria) con fallback al monospace
+         nativo del sistema. Si subes los .woff2 a public/fonts/, agrega un
+         <style>@font-face{...}</style> aquí y la fuente cargará. -->
+    <script>
+      // Apply theme before paint to avoid FOUC.
+      (function () {
+        try {
+          var stored = localStorage.getItem('reclutamiento_theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = (stored === 'light' || stored === 'dark') ? stored : (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.classList.add('theme-init');
+          window.requestAnimationFrame(function () {
+            document.documentElement.classList.remove('theme-init');
+          });
+        } catch (e) { /* localStorage unavailable */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

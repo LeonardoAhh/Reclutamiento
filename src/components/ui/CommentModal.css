@@ -1,0 +1,86 @@
+/* CommentModal — comment-specific styles (shared modal in global.css) */
+
+.modal-comments-list {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-section-label {
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted-soft);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline-soft);
+}
+
+.comment-item__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.comment-item__type {
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.comment-item__type[data-type="proceso_activo"] { color: var(--color-accent-amber); }
+.comment-item__type[data-type="entrevista"]      { color: var(--color-accent-teal); }
+.comment-item__type[data-type="entrega_documentos"] { color: var(--color-primary); }
+.comment-item__type[data-type="otro"]            { color: var(--color-muted); }
+
+.comment-item__text {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-body);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.comment-item__date {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted-soft);
+  white-space: nowrap;
+}
+
+.comment-empty {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted-soft);
+  font-style: italic;
+}
+
+/* Form footer for CommentModal */
+.modal-form {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.modal-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.char-counter {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted-soft);
+  text-align: right;
+}

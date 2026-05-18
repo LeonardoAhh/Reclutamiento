@@ -1,0 +1,521 @@
+/* RequisicionModal — formato de requisición de personal imprimible.
+ *
+ * Layout: dos hojas A4 verticales.
+ *   - Hoja 1: encabezado + datos de la baja + datos de la solicitud
+ *             (sueldo / bono / conocimientos) + recepción reclutamiento
+ *             + leyenda ghost + firmas.
+ *   - Hoja 2: candidato propuesto (llenado a mano) + firmas de cierre.
+ *
+ * En `@media print` el modal queda oculto y solo se imprime el portal:
+ * cada `<article>` con clase `.requisicion-doc__page` corresponde a una
+ * hoja real (`page-break-after: always` salvo la última).
+ */
+
+.modal-content.requisicion-modal {
+  max-width: 880px;
+  width: 100%;
+}
+
+.requisicion-modal__body {
+  background: var(--color-surface-soft);
+}
+
+.requisicion-modal__footer {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.requisicion-modal__btn-label {
+  margin-left: var(--spacing-xxs);
+}
+
+/* ── Documento (contenedor de hojas) ── */
+.requisicion-doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── La "hoja" ── */
+.requisicion-doc__page {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-subtle);
+  padding: var(--spacing-xl);
+  color: var(--color-body-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Encabezado ── */
+.requisicion-doc__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: var(--spacing-md);
+}
+
+.requisicion-doc__head-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.requisicion-doc__eyebrow {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.requisicion-doc__head-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__head-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.requisicion-doc__head-meta dt {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__head-meta dd {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+  font-weight: 500;
+}
+
+.requisicion-doc__code {
+  font-family: var(--font-code);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Secciones ── */
+.requisicion-doc__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.requisicion-doc__section-title {
+  font-family: var(--font-display);
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+  padding-bottom: var(--spacing-xxs);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__section-hint {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 400;
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.requisicion-doc__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm) var(--spacing-md);
+}
+
+@media (max-width: 720px) {
+  .requisicion-doc__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .requisicion-doc__field[data-span="2"],
+  .requisicion-doc__field[data-span="3"] {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 721px) {
+  .requisicion-doc__field[data-span="2"] {
+    grid-column: span 2;
+  }
+
+  .requisicion-doc__field[data-span="3"] {
+    grid-column: span 3;
+  }
+}
+
+.requisicion-doc__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.requisicion-doc__field-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.requisicion-doc__field-value {
+  display: block;
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+  font-weight: 500;
+  padding: var(--spacing-xxs) 0;
+  border-bottom: 1px solid var(--color-hairline);
+  min-height: calc(var(--type-body-md-size) * var(--type-body-md-line));
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  line-height: 1.25;
+}
+
+/* Slots en blanco para captura manual. La línea inferior funciona como la
+   "raya" donde el reclutador escribe a mano. */
+.requisicion-doc__field--blank .requisicion-doc__field-blank {
+  display: block;
+  border-bottom: 1px solid var(--color-ink);
+  width: 100%;
+}
+
+.requisicion-doc__field--blank[data-lines="1"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 1.8);
+}
+
+.requisicion-doc__field--blank[data-lines="2"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 3.6);
+  background-image: linear-gradient(transparent calc(50% - 1px),
+      var(--color-hairline) 50%,
+      transparent calc(50% + 1px));
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.requisicion-doc__field--blank[data-lines="3"] .requisicion-doc__field-blank {
+  height: calc(var(--type-body-md-size) * 5.4);
+  background-image:
+    linear-gradient(transparent calc(33% - 1px),
+      var(--color-hairline) 33%,
+      transparent calc(33% + 1px)),
+    linear-gradient(transparent calc(66% - 1px),
+      var(--color-hairline) 66%,
+      transparent calc(66% + 1px));
+}
+
+/* ── Bono Sí / No (casillas) ── */
+.requisicion-doc__field--checkbox .requisicion-doc__checkbox-row {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-xxs) 0;
+  min-height: calc(var(--type-body-md-size) * var(--type-body-md-line));
+}
+
+.requisicion-doc__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+.requisicion-doc__checkbox-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.requisicion-doc__checkbox-text {
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+}
+
+/* "Tipo de reclutamiento": opciones largas → apiladas en columna.
+   El selector usa el aria-label = label del campo, así no afecta a Bono Sí/No. */
+.requisicion-doc__checkbox-row[aria-label="Tipo de reclutamiento"] {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
+/* ── Bloque "Habilidades requeridas" pre-llenado ── */
+.requisicion-doc__habilidades {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: var(--spacing-md);
+  row-gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.requisicion-doc__habilidades dt {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.requisicion-doc__habilidades dd {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+  font-weight: 500;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* ── Bloque "Responsabilidad del jefe" ── */
+.requisicion-doc__section--leyenda {
+  gap: var(--spacing-xs);
+}
+
+/* Encabezado de la sección: título a la izquierda y "Fecha de recepción"
+   alineada a la derecha como pie/registro del bloque. */
+.requisicion-doc__leyenda-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.requisicion-doc__section-title--leyenda {
+  flex: 1 1 auto;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* La "Fecha de recepción" se renderiza como un BlankField estrecho,
+   alineado con la línea base del título. */
+.requisicion-doc__leyenda-fecha {
+  flex: 0 0 200px;
+  min-width: 160px;
+}
+
+.requisicion-doc__leyenda-fecha .requisicion-doc__field {
+  gap: 2px;
+}
+
+/* ── Leyenda "ghost" (declaración de responsabilidad) ── */
+.requisicion-doc__leyenda {
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-muted);
+  opacity: 0.55;
+  text-align: justify;
+  border-left: 2px solid var(--color-hairline-soft);
+}
+
+/* ── Firmas ── */
+.requisicion-doc__signatures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+@media (max-width: 720px) {
+  .requisicion-doc__signatures {
+    grid-template-columns: 1fr;
+  }
+}
+
+.requisicion-doc__sig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.requisicion-doc__sig-line {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--color-ink);
+  height: calc(var(--type-body-md-size) * 2.2);
+}
+
+.requisicion-doc__sig-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  text-align: center;
+}
+
+/* ── Pie ── */
+.requisicion-doc__foot {
+  border-top: 1px solid var(--color-hairline-soft);
+  padding-top: var(--spacing-sm);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-align: right;
+}
+
+/* ── Portal de impresión ──
+ * En pantalla, el portal `#requisicion-print-root` está oculto: solo se
+ * usa la vista previa dentro del modal. En `@media print`, se invierte
+ * la visibilidad: todo el `body` se oculta con `display: none` (no
+ * `visibility: hidden`, que conserva el layout y genera hojas en blanco)
+ * y solo el portal queda visible.
+ */
+#requisicion-print-root {
+  display: none;
+}
+
+@media print {
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  body>* {
+    display: none !important;
+  }
+
+  body>#requisicion-print-root {
+    display: block !important;
+    position: static !important;
+  }
+
+  /* El contenedor `.requisicion-doc` deja de ser visible como caja;
+     solo agrupa las hojas. */
+  #requisicion-print-root .requisicion-doc {
+    display: block;
+    gap: 0;
+  }
+
+  /* Cada `.requisicion-doc__page` ES una hoja A4. */
+  #requisicion-print-root .requisicion-doc__page {
+    width: 100%;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 8mm 12mm !important;
+    background: #fff !important;
+    color: #000 !important;
+    gap: var(--spacing-sm);
+    /* Cada hoja ocupa una página propia; salto duro entre hojas. */
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* La última hoja no necesita salto extra (evita hoja en blanco final). */
+  #requisicion-print-root .requisicion-doc__page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* Evita cortes de página dentro de cualquier bloque del formato. */
+  #requisicion-print-root .requisicion-doc__head,
+  #requisicion-print-root .requisicion-doc__section,
+  #requisicion-print-root .requisicion-doc__signatures,
+  #requisicion-print-root .requisicion-doc__field,
+  #requisicion-print-root .requisicion-doc__sig,
+  #requisicion-print-root .requisicion-doc__leyenda {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Forza color de las líneas a negro real. */
+  #requisicion-print-root .requisicion-doc__field-value,
+  #requisicion-print-root .requisicion-doc__field--blank .requisicion-doc__field-blank,
+  #requisicion-print-root .requisicion-doc__sig-line,
+  #requisicion-print-root .requisicion-doc__checkbox-box {
+    border-color: #000 !important;
+  }
+
+  /* Leyenda: mantiene el estilo "ghost" en impresión pero asegura que se
+     vea (gris claro real, no transparente al 0). */
+  #requisicion-print-root .requisicion-doc__leyenda {
+    color: #555 !important;
+    opacity: 0.65 !important;
+    border-left-color: #999 !important;
+  }
+
+  /* Pide a la impresora que respete fondos/colores definidos. */
+  #requisicion-print-root,
+  #requisicion-print-root * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Aprieta firmas, leyenda y pie para que la hoja 1 quepa en una sola página. */
+  #requisicion-print-root .requisicion-doc__leyenda {
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+    font-size: calc(var(--type-caption-md-size) * 0.9);
+    line-height: 1.35;
+  }
+
+  #requisicion-print-root .requisicion-doc__signatures {
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+  }
+
+  #requisicion-print-root .requisicion-doc__sig-line {
+    height: calc(var(--type-body-md-size) * 1.6);
+  }
+
+  #requisicion-print-root .requisicion-doc__foot {
+    padding-top: var(--spacing-xs);
+  }
+
+  #requisicion-print-root .requisicion-doc__section {
+    gap: var(--spacing-xs);
+  }
+
+  #requisicion-print-root .requisicion-doc__field--blank[data-lines="3"] .requisicion-doc__field-blank {
+    height: calc(var(--type-body-md-size) * 4.2);
+  }
+
+  /* En print, valores con texto largo se comprimen para evitar wraps feos. */
+  #requisicion-print-root .requisicion-doc__field-value {
+    font-size: calc(var(--type-body-md-size) * 0.92);
+    line-height: 1.2;
+  }
+
+  #requisicion-print-root .requisicion-doc__field-label {
+    font-size: calc(var(--type-caption-md-size) * 0.9);
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}

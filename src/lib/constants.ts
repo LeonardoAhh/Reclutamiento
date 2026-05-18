@@ -1,0 +1,283 @@
+import type { AuthorizedPosition, PuestoHabilidades } from './types';
+
+/**
+ * PLANTILLA AUTORIZADA — Números inamovibles
+ *
+ * Cada entrada define el headcount aprobado por puesto/área/sección.
+ * Modificar solo con autorización de Dirección.
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ * FLAGS OPCIONALES POR PUESTO (configurables aquí, sin tocar código):
+ *
+ *   urgentes: N       → N contrataciones urgentes pendientes (independiente
+ *                       de las vacantes — puede contar contra el back-up).
+ *                       El dashboard muestra badge rojo "URGEN N" cuando N > 0
+ *                       y suma todas las urgentes del departamento en el header.
+ *
+ *   backup: N         → permite N excedentes intencionales (back-up de plantilla).
+ *                       El dashboard mostrará "+N BACK-UP" en verde-teal cuando
+ *                       la plantilla real exceda lo autorizado, hasta este número.
+ *                       Si el excedente supera N, lo que sobre se etiqueta como
+ *                       "EXCEDE" en rojo.
+ *
+ *   notas: "texto"    → nota interna explicando el back-up o la urgencia.
+ *
+ *   sueldo: N         → sueldo base mensual del puesto, en MXN. La requisición
+ *                       lo pre-llena automáticamente; si se omite, queda en
+ *                       blanco para captura manual del reclutador.
+ *
+ *   bono: true|false  → si el puesto tiene bono asociado. La requisición
+ *                       muestra "Sí" / "No" en lugar de casillas vacías.
+ *
+ *   bono_monto: N     → monto del bono mensual en MXN (solo si bono = true).
+ *                       La requisición lo pre-llena automáticamente.
+ *
+ * Ejemplo:
+ *   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO',
+ *     puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32,
+ *     backup: 2, urgentes: 1,
+ *     notas: 'Buffer ante ausentismo. 1 contratación urgente.' }
+ * ─────────────────────────────────────────────────────────────────────
+ */
+export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
+  // ── ALMACÉN ──
+  { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'JEFE DE ALMACÉN', plantilla_autorizada: 1 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'CHOFER', plantilla_autorizada: 1 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR ADMINISTRATIVO DE ALMACÉN', plantilla_autorizada: 2 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 7, bono: true, bono_monto: 345 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'ALMACENISTA DE MATERIA PRIMA', plantilla_autorizada: 1, bono: true, bono_monto: 345 },
+  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 5, bono: true, bono_monto: 345 },
+
+  // ── CALIDAD ──
+  {
+    area: 'CALIDAD',
+    seccion: 'A. CALIDAD 1ER TURNO',
+    puesto: 'OPERADOR DE ACABADOS GP-12',
+    plantilla_autorizada: 22,
+    bono: true,
+    bono_monto: 619,
+    backup: 2,
+  },
+  { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22, bono: true, bono_monto: 619, backup: 2 },
+  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
+  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INGENIERO DE CALIDAD', plantilla_autorizada: 2 },
+  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'SUPERVISOR DE ACABADOS - GP12', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INSPECTOR RECIBO', plantilla_autorizada: 1 },
+  {
+    area: 'CALIDAD',
+    seccion: 'CALIDAD ADMTVO',
+    puesto: 'INSPECTOR DE CALIDAD',
+    plantilla_autorizada: 15
+  },
+  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'AUXILIAR DE CALIDAD', plantilla_autorizada: 1 },
+  { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'METRÓLOGO', plantilla_autorizada: 13 },
+  { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'AUXILIAR DE METROLOGÍA', plantilla_autorizada: 4 },
+
+  // ── GERENCIA ──
+  { area: 'GERENCIA', seccion: 'GERENCIA', puesto: 'GERENTE DE PLANTA', plantilla_autorizada: 1 },
+
+  // ── LOGISTICA ──
+  { area: 'LOGISTICA', seccion: 'LOGISTICA', puesto: 'JEFE DE LOGISTICA', plantilla_autorizada: 1 },
+  { area: 'LOGISTICA', seccion: 'LOGISTICA', puesto: 'SUPERVISOR DE LOGISTICA', plantilla_autorizada: 1 },
+
+  // ── MANTENIMIENTO ──
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'JEFE DE MANTENIMIENTO', plantilla_autorizada: 1 },
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR ADMINISTRATIVO DE MANTENIMIENTO', plantilla_autorizada: 1 },
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO ESPECIALISTA DE MANTENIMIENTO', plantilla_autorizada: 1 },
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TECNICO DE MANTENIMIENTO DE EDIFICIOS', plantilla_autorizada: 1, bono: true, bono_monto: 345 },
+  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO DE MANTENIMIENTO', plantilla_autorizada: 8, bono: true, bono_monto: 345 },
+  {
+    area: 'MANTENIMIENTO',
+    seccion: 'MANTENIMIENTO',
+    puesto: 'AUXILIAR DE MANTENIMIENTO',
+    plantilla_autorizada: 2,
+    bono: true, bono_monto: 619,
+  },
+
+  // ── TALLER DE MOLDES ──
+  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'JEFE DE TALLER DE MOLDES', plantilla_autorizada: 1 },
+  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'AUXILIAR ADMINISTRATIVO DE TALLER DE MOLDES', plantilla_autorizada: 1 },
+  {
+    area: 'TALLER DE MOLDES',
+    seccion: 'MOLDES',
+    puesto: 'TÉCNICO DE MOLDES',
+    plantilla_autorizada: 13,
+    bono: true,
+    bono_monto: 345,
+  },
+
+  // ── PRODUCCIÓN 1ER TURNO ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR SCRAP', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 1ER. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 619,
+  },
+
+  // ── PRODUCCIÓN 2o TURNO ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 2o. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 619,
+  },
+
+  // ── PRODUCCIÓN 3ER TURNO ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 3ER. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 619,
+  },
+
+  // ── PRODUCCIÓN 4o TURNO ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
+  {
+    area: 'PRODUCCIÓN',
+    seccion: 'PRODUCCIÓN 4o. TURNO',
+    puesto: 'OPERADOR DE MÁQUINA',
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: 'Back-up por ausentismo y rotación del turno.',
+    bono: true,
+    bono_monto: 619,
+  },
+
+  // ── PRODUCCIÓN ADMTVO ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'GERENTE DE PRODUCCION', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'JEFE DE PROCESO', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'INGENIERO DE PROCESO', plantilla_autorizada: 4 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'PLANEADOR DE PRODUCCIÓN', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'SUPERVISOR DE PRODUCCIÓN', plantilla_autorizada: 14 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'ASISTENTE DE PRODUCCIÓN', plantilla_autorizada: 2 },
+
+  // ── PRODUCCIÓN MONTAJE ──
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'SUPERVISOR DE MONTAJE DE MOLDES', plantilla_autorizada: 1 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'MONTADOR DE MOLDES', plantilla_autorizada: 7, bono: true, bono_monto: 345 },
+
+  // ── PROYECTOS ──
+  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'LIDER DE PROYECTOS', plantilla_autorizada: 3 },
+  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'LIDER DE COTIZACIONES', plantilla_autorizada: 1 },
+  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'INGENIERO DE PROYECTOS', plantilla_autorizada: 4 },
+  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'AUXILIAR DE PROYECTOS', plantilla_autorizada: 1 },
+
+  // ── RECURSOS HUMANOS ──
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'JEFE DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'COORDINADOR DE RECLUTAMIENTO Y SELECCIÓN', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE SEGURIDAD E HIGIENE', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE CAPACITACIÓN', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE RECLUTAMIENTO Y SELECCIÓN', plantilla_autorizada: 2 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ASISTENTE DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
+  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'AUXILIAR DE LIMPIEZA', plantilla_autorizada: 4, bono: true, bono_monto: 668 },
+
+  // ── SGI ──
+  { area: 'SGI', seccion: 'SGI', puesto: 'COORDINADOR DE SGI', plantilla_autorizada: 1 },
+  { area: 'SGI', seccion: 'SGI', puesto: 'AUXILIAR DEL SGI', plantilla_autorizada: 1 },
+
+  // ── SISTEMAS ──
+  { area: 'SISTEMAS', seccion: 'SISTEMAS', puesto: 'COORDINADOR DE RPS', plantilla_autorizada: 1 },
+  { area: 'SISTEMAS', seccion: 'SISTEMAS', puesto: 'AUXILIAR PROGRAMADOR', plantilla_autorizada: 1 },
+
+  // ── COMERCIAL ──
+  { area: 'COMERCIAL', seccion: 'VENTAS', puesto: 'GERENCIA COMERCIAL', plantilla_autorizada: 1 },
+];
+
+/**
+ * HABILIDADES POR PUESTO — Catálogo editable
+ *
+ * Pre-llena el bloque "Habilidades requeridas" de la requisición.
+ * Búsqueda por (área, sección, puesto) con normalización de acentos y
+ * sufijo de turno (A/B/C/D).
+ *
+ * Campos opcionales por entrada:
+ *   habilidades  → conocimientos técnicos, sistemas, herramientas.
+ *   escolaridad  → nivel académico mínimo o deseable.
+ *   experiencia  → experiencia mínima requerida.
+ *
+ * Si un puesto no aparece aquí, la requisición deja el bloque en blanco
+ * para captura manual.
+ */
+/**
+ * RECLUTADORES_ACTIVOS — Nombres canonicos de las personas del area de
+ * reclutamiento cuyos KPIs se muestran en el hero de la pagina de
+ * candidatos.
+ *
+ * El campo `reclutador` de un candidato es texto libre; cualquier nombre
+ * fuera de esta lista se ignora en el conteo del hero (no se grafica y
+ * no se cuenta en el denominador). Para agregar / quitar gente, edita
+ * esta lista. El match es case-insensitive y tolerante a acentos
+ * (via normalizeString).
+ */
+export const RECLUTADORES_ACTIVOS = [
+  'ALEXANDRA',
+  'DANIELA',
+  'LEONARDO',
+] as const;
+
+export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
+  {
+    area: 'RECURSOS HUMANOS',
+    seccion: 'RECURSOS HUMANOS',
+    puesto: 'ANALISTA DE CAPACITACIÓN',
+    habilidades:
+      'CONOCIMIENTO EN DC-1, DC-2, DC-3, DC-4, SIRCE, EXCEL, STPS.',
+    escolaridad: 'LIC. EN ADMINISTRACIÓN O AFÍN.',
+    experiencia: '2 AÑOS MÍN.',
+  },
+];
+
+/**
+ * Comment type labels for display
+ */
+export const COMMENT_TYPE_LABELS: Record<string, string> = {
+  proceso_activo: 'Proceso Activo',
+  entrevista: 'En Entrevista',
+  entrega_documentos: 'Entrega de Documentos',
+  otro: 'Otro',
+};
+
+/**
+ * Comment type colors using design tokens
+ */
+export const COMMENT_TYPE_COLORS: Record<string, string> = {
+  proceso_activo: 'var(--color-accent-amber)',
+  entrevista: 'var(--color-accent-teal)',
+  entrega_documentos: 'var(--color-primary)',
+  otro: 'var(--color-muted)',
+};
