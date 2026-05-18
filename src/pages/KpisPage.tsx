@@ -100,11 +100,21 @@ export function KpisPage() {
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
 
-  /* ── Semana ISO actual + ingresos en ese rango ──────────── */
+  /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
   const currentWeekLabel = useMemo(
     () => formatIsoWeekRange(currentWeek),
     [currentWeek]
+  );
+  // Restamos 24h al inicio de la semana actual para caer en cualquier
+  // día válido de la semana anterior; isoWeekOf normaliza el rango.
+  const previousWeek = useMemo(
+    () => isoWeekOf(new Date(currentWeek.start.getTime() - 24 * 60 * 60 * 1000)),
+    [currentWeek]
+  );
+  const previousWeekLabel = useMemo(
+    () => formatIsoWeekRange(previousWeek),
+    [previousWeek]
   );
   const weeklyHires: Employee[] = useMemo(
     () =>
@@ -120,6 +130,25 @@ export function KpisPage() {
         .sort((a, b) => a.fecha_baja.localeCompare(b.fecha_baja)),
     [bajas, currentWeek]
   );
+  const previousWeekHires: Employee[] = useMemo(
+    () =>
+      employees
+        .filter((e) => isInIsoWeek(e.fecha_ingreso, previousWeek))
+        .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))),
+    [employees, previousWeek]
+  );
+  const previousWeekBajas: Baja[] = useMemo(
+    () =>
+      bajas
+        .filter((b) => isInIsoWeek(b.fecha_baja, previousWeek))
+        .sort((a, b) => a.fecha_baja.localeCompare(b.fecha_baja)),
+    [bajas, previousWeek]
+  );
+  const weeklyHiresSubtitle = useMemo(() => {
+    const diff = weeklyHires.length - previousWeekHires.length;
+    const sign = diff > 0 ? '+' : '';
+    return `Sem. ${previousWeek.week}: ${previousWeekHires.length} (${sign}${diff})`;
+  }, [weeklyHires.length, previousWeekHires.length, previousWeek.week]);
 
   /* ── Vacantes (5) ──────────────────────────────────────────── */
   const vacancyTotals = useMemo(() => {
@@ -197,6 +226,7 @@ export function KpisPage() {
         id: 'kpi-ingresos-semana',
         label: 'Ingresos esta semana',
         value: weeklyHires.length,
+        subtitle: weeklyHiresSubtitle,
         icon: <CalendarPlus size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
         origin: 'Bajas',
@@ -350,6 +380,7 @@ export function KpisPage() {
       dashboardTotals,
       bajasTotals,
       weeklyHires,
+      weeklyHiresSubtitle,
       currentWeek,
       currentWeekLabel,
     ]
@@ -441,6 +472,10 @@ export function KpisPage() {
         rangeLabel={currentWeekLabel}
         hires={weeklyHires}
         bajas={weeklyBajas}
+        previousRange={previousWeek}
+        previousRangeLabel={previousWeekLabel}
+        previousHires={previousWeekHires}
+        previousBajas={previousWeekBajas}
       />
     </main>
   );
