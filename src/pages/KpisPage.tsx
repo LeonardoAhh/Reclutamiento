@@ -226,7 +226,6 @@ export function KpisPage() {
         id: 'kpi-ingresos-semana',
         label: 'Ingresos esta semana',
         value: weeklyHires.length,
-        subtitle: weeklyHiresSubtitle,
         icon: <CalendarPlus size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
         origin: 'Bajas',
