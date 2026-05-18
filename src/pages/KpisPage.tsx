@@ -263,8 +263,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
         accentColor: 'var(--color-primary)',
         origin: 'Candidatos',
       },
-
-
       // Vacantes (1-5)
       {
         id: 'stat-vac-abiertas',
@@ -429,7 +427,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
             disabled={revealedCount === 0}
             title="Volver a ocultar todas las cards"
           >
-            Ocultar todo
+            Incognito
           </button>
         </div>
       </section>
@@ -477,7 +475,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
                     }
                   >
                     <Eye size={14} aria-hidden="true" />
-                    Ver puestos
+                    Detalle
                   </button>
                 )}
               </div>
