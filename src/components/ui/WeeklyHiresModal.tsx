@@ -87,6 +87,8 @@ export function WeeklyHiresModal({
 
   const grouped = groupByPuesto(selectedHires);
   const empty = selectedHires.length === 0 && selectedBajas.length === 0;
+  const isCurrentTab = activeTab === 'current';
+  const otherWeekNumber = isCurrentTab ? previousRange.week : range.week;
 
   return (
     <Modal
@@ -104,97 +106,98 @@ export function WeeklyHiresModal({
     >
       <div className="modal-body weekly-hires-modal__body">
         <section
-          className="weekly-hires-modal__compare"
-          aria-label="Comparativo de semanas"
+          className="weekly-hires-modal__overview"
+          aria-label="Resumen semanal"
         >
-          <article className="weekly-hires-modal__compare-col">
-            <header className="weekly-hires-modal__compare-head">
-              <span className="weekly-hires-modal__compare-week">
-                Semana {previousRange.week}
-              </span>
-              <span className="weekly-hires-modal__compare-range">
-                {previousRangeLabel}
-              </span>
-            </header>
-            <dl className="weekly-hires-modal__compare-stats">
-              <div className="weekly-hires-modal__compare-stat">
-                <dt>Ingresos</dt>
-                <dd>{previousHires.length}</dd>
-              </div>
-              <div className="weekly-hires-modal__compare-stat">
-                <dt>Bajas</dt>
-                <dd className="weekly-hires-modal__compare-stat--bajas">
-                  {previousBajas.length}
-                </dd>
-              </div>
-            </dl>
-          </article>
+          <div
+            className="weekly-hires-modal__tabs"
+            role="tablist"
+            aria-label="Seleccionar semana"
+            aria-orientation="vertical"
+          >
+            <button
+              type="button"
+              role="tab"
+              id="weekly-hires-tab-current"
+              aria-selected={isCurrentTab}
+              aria-controls="weekly-hires-panel"
+              className={`weekly-hires-modal__tab ${
+                isCurrentTab ? 'weekly-hires-modal__tab--active' : ''
+              }`}
+              onClick={() => setActiveTab('current')}
+            >
+              Semana {range.week}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="weekly-hires-tab-previous"
+              aria-selected={!isCurrentTab}
+              aria-controls="weekly-hires-panel"
+              className={`weekly-hires-modal__tab ${
+                !isCurrentTab ? 'weekly-hires-modal__tab--active' : ''
+              }`}
+              onClick={() => setActiveTab('previous')}
+            >
+              Semana {previousRange.week}
+            </button>
+          </div>
 
-          <article className="weekly-hires-modal__compare-col weekly-hires-modal__compare-col--current">
+          <article
+            id="weekly-hires-panel"
+            role="tabpanel"
+            aria-labelledby={
+              isCurrentTab
+                ? 'weekly-hires-tab-current'
+                : 'weekly-hires-tab-previous'
+            }
+            className="weekly-hires-modal__compare-col weekly-hires-modal__compare-col--current"
+          >
             <header className="weekly-hires-modal__compare-head">
               <span className="weekly-hires-modal__compare-week">
-                Semana {range.week}
+                Semana {selectedRange.week}
               </span>
               <span className="weekly-hires-modal__compare-range">
-                {rangeLabel}
+                <CalendarRange size={14} aria-hidden="true" />
+                {selectedLabel} {selectedRange.year}
               </span>
             </header>
             <dl className="weekly-hires-modal__compare-stats">
               <div className="weekly-hires-modal__compare-stat">
                 <dt>Ingresos</dt>
                 <dd>
-                  {hires.length}
-                  <Delta current={hires.length} previous={previousHires.length} />
+                  {selectedHires.length}
+                  <Delta
+                    current={selectedHires.length}
+                    previous={
+                      isCurrentTab
+                        ? previousHires.length
+                        : hires.length
+                    }
+                  />
                 </dd>
               </div>
               <div className="weekly-hires-modal__compare-stat">
                 <dt>Bajas</dt>
                 <dd className="weekly-hires-modal__compare-stat--bajas">
-                  {bajas.length}
+                  {selectedBajas.length}
                   <Delta
-                    current={bajas.length}
-                    previous={previousBajas.length}
+                    current={selectedBajas.length}
+                    previous={
+                      isCurrentTab
+                        ? previousBajas.length
+                        : bajas.length
+                    }
                     invert
                   />
                 </dd>
               </div>
             </dl>
+            <p className="weekly-hires-modal__compare-foot">
+              <span aria-hidden="true">↕</span> vs Semana {otherWeekNumber}
+            </p>
           </article>
         </section>
-
-        <div
-          className="weekly-hires-modal__tabs"
-          role="tablist"
-          aria-label="Detalle por semana"
-        >
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'current'}
-            className={`weekly-hires-modal__tab ${
-              activeTab === 'current' ? 'weekly-hires-modal__tab--active' : ''
-            }`}
-            onClick={() => setActiveTab('current')}
-          >
-            Semana {range.week}
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'previous'}
-            className={`weekly-hires-modal__tab ${
-              activeTab === 'previous' ? 'weekly-hires-modal__tab--active' : ''
-            }`}
-            onClick={() => setActiveTab('previous')}
-          >
-            Semana {previousRange.week}
-          </button>
-        </div>
-
-        <p className="weekly-hires-modal__range-caption">
-          <CalendarRange size={14} aria-hidden="true" />
-          {selectedLabel} {selectedRange.year}
-        </p>
 
         {empty ? (
           <p className="weekly-hires-modal__empty">
