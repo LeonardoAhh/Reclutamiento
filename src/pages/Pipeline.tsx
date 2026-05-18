@@ -507,7 +507,7 @@ export function Pipeline() {
                 <th scope="col">Estado</th>
                 <th scope="col">Reclutador</th>
                 <th scope="col">Fuente</th>
-                <th scope="col">Aplicó</th>
+                <th scope="col">Aplicó · Citado</th>
                 <th scope="col" className="pipeline__th--actions">Acciones</th>
               </tr>
             </thead>
@@ -552,7 +552,14 @@ export function Pipeline() {
                   </td>
                   <td>{c.reclutador || '—'}</td>
                   <td>{c.source || '—'}</td>
-                  <td>{formatDate(c.fecha_aplicacion)}</td>
+                  <td className="pipeline__cell-dates">
+                    <div className="pipeline__cell-dates-primary">
+                      {formatDate(c.fecha_aplicacion)}
+                    </div>
+                    <div className="pipeline__cell-dates-secondary">
+                      {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
+                    </div>
+                  </td>
                   <td className="pipeline__cell-actions">
                     {c.status === 'contratado' && !c.employee_num && (
                       <button
