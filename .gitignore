@@ -34,3 +34,4 @@ coverage/
 
 # Local-only NodeJS helper folder (binary)
 NODE JS/
+Node/
