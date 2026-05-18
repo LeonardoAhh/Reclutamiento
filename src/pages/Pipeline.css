@@ -386,6 +386,24 @@
   min-width: 200px;
 }
 
+/* Celda apilada Aplicó · Citado: fecha de aplicación arriba (principal),
+   fecha de cita debajo en variante muted. Mismo patrón visual que el bloque
+   Puesto · Área · Sección. */
+.pipeline__cell-dates {
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.pipeline__cell-dates-primary {
+  color: var(--color-ink);
+}
+
+.pipeline__cell-dates-secondary {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
 .pipeline__name {
   font-weight: 500;
   color: var(--color-ink);
