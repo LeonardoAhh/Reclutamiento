@@ -202,7 +202,9 @@
   font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   background: var(--color-canvas);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .pipeline__search-input:focus {
@@ -273,7 +275,9 @@
   font-weight: 500;
   color: var(--color-muted);
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .pipeline__view-btn + .pipeline__view-btn {
@@ -481,7 +485,8 @@
   color: var(--color-body);
   cursor: pointer;
   margin-left: var(--spacing-xxs);
-  transition: background var(--transition-fast),
+  transition:
+    background var(--transition-fast),
     border-color var(--transition-fast),
     color var(--transition-fast);
 }
@@ -582,5 +587,75 @@
   .pipeline__table td,
   .pipeline__table th {
     padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+/* ── Variante B: card rows ── */
+.pipeline__card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pipeline__ccard {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr 140px 80px auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-left: 3px solid transparent;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pipeline__ccard:hover {
+  background: var(--color-surface-soft);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.pipeline__ccard--entrevista_1 {
+  border-left-color: var(--color-accent-amber, #f59e0b);
+}
+.pipeline__ccard--entrevista_2 {
+  border-left-color: var(--color-accent-teal, #14b8a6);
+}
+.pipeline__ccard--contratado {
+  border-left-color: #22c55e;
+}
+.pipeline__ccard--rechazado {
+  border-left-color: var(--color-accent-coral, #f43f5e);
+}
+
+.pipeline__ccard-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface-alt, rgba(0, 0, 0, 0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+.pipeline__ccard-status-col {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .pipeline__ccard {
+    grid-template-columns: 36px 1fr 120px auto;
+    grid-template-rows: auto auto;
+  }
+  .pipeline__ccard-puesto-col,
+  .pipeline__ccard-dates-col {
+    display: none;
   }
 }

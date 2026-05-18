@@ -498,125 +498,124 @@ export function Pipeline() {
           onStatusChange={(c, status) => handleStatusChange(c, status)}
         />
       ) : (
-        <section className="pipeline__table-wrap" aria-label="Tabla de candidatos">
-          <table className="pipeline__table">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Puesto · Área · Sección</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Reclutador</th>
-                <th scope="col">Fuente</th>
-                <th scope="col">Aplicó · Citado</th>
-                <th scope="col" className="pipeline__th--actions">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((c) => (
-                <tr key={c.id ?? c.nombre + c.fecha_aplicacion}>
-                  <td className="pipeline__cell-name">
-                    <div className="pipeline__name">{c.nombre}</div>
-                    {c.email || c.telefono ? (
-                      <div className="pipeline__contact">
-                        {c.email && <span>{c.email}</span>}
-                        {c.email && c.telefono && <span aria-hidden="true"> · </span>}
-                        {c.telefono && <span>{c.telefono}</span>}
-                      </div>
-                    ) : null}
-                  </td>
-                  <td>
-                    <div className="pipeline__puesto">{c.puesto}</div>
-                    <div className="pipeline__area">{c.area}</div>
-                    <div className="pipeline__seccion">{c.seccion?.trim() || '—'}</div>
-                  </td>
-                  <td className="pipeline__cell-status">
-                    <CandidateStatusBadge status={c.status} />
-                    <label className="sr-only" htmlFor={`status-${c.id}`}>
-                      Cambiar estado de {c.nombre}
-                    </label>
-                    <select
-                      id={`status-${c.id}`}
-                      className="pipeline__status-select"
-                      value={c.status}
-                      onChange={(e) =>
-                        handleStatusChange(c, e.target.value as CandidateStatus)
-                      }
-                      aria-label={`Cambiar estado de ${c.nombre}`}
+        <section
+          className="pipeline__card-list"
+          aria-label="Lista de candidatos"
+        >
+          {filtered.map((c) => {
+            const initials = c.nombre
+              .split(' ')
+              .slice(0, 2)
+              .map((w) => w[0])
+              .join('');
+            return (
+              <article
+                key={c.id ?? c.nombre + c.fecha_aplicacion}
+                className={`pipeline__ccard pipeline__ccard--${c.status}`}
+              >
+                <div
+                  className="pipeline__ccard-avatar"
+                  aria-hidden="true"
+                >
+                  {initials}
+                </div>
+                <div className="pipeline__ccard-name-col">
+                  <div className="pipeline__name">{c.nombre}</div>
+                  <div className="pipeline__contact">
+                    {c.telefono || c.email || '—'}
+                  </div>
+                </div>
+                <div className="pipeline__ccard-puesto-col">
+                  <div className="pipeline__puesto">{c.puesto}</div>
+                  <div className="pipeline__area">
+                    {c.area}
+                    {c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}
+                  </div>
+                </div>
+                <div className="pipeline__cell-status pipeline__ccard-status-col">
+                  <CandidateStatusBadge status={c.status} />
+                  <label className="sr-only" htmlFor={`status-${c.id}`}>
+                    Cambiar estado de {c.nombre}
+                  </label>
+                  <select
+                    id={`status-${c.id}`}
+                    className="pipeline__status-select"
+                    value={c.status}
+                    onChange={(e) =>
+                      handleStatusChange(c, e.target.value as CandidateStatus)
+                    }
+                    aria-label={`Cambiar estado de ${c.nombre}`}
+                  >
+                    {CANDIDATE_STATUSES.map((s) => (
+                      <option key={s} value={s}>
+                        {CANDIDATE_STATUS_LABEL[s]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="pipeline__ccard-dates-col pipeline__cell-dates">
+                  <div className="pipeline__cell-dates-primary">
+                    {formatDate(c.fecha_aplicacion)}
+                  </div>
+                  <div className="pipeline__cell-dates-secondary">
+                    {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
+                  </div>
+                </div>
+                <div className="pipeline__cell-actions pipeline__ccard-actions-col">
+                  {c.status === 'contratado' && !c.employee_num && (
+                    <button
+                      type="button"
+                      className="pipeline__icon-btn pipeline__icon-btn--primary"
+                      onClick={() => openHire(c)}
+                      aria-label={`Contratar a ${c.nombre}`}
+                      title="Contratar (crear empleado)"
                     >
-                      {CANDIDATE_STATUSES.map((s) => (
-                        <option key={s} value={s}>
-                          {CANDIDATE_STATUS_LABEL[s]}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>{c.reclutador || '—'}</td>
-                  <td>{c.source || '—'}</td>
-                  <td className="pipeline__cell-dates">
-                    <div className="pipeline__cell-dates-primary">
-                      {formatDate(c.fecha_aplicacion)}
-                    </div>
-                    <div className="pipeline__cell-dates-secondary">
-                      {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
-                    </div>
-                  </td>
-                  <td className="pipeline__cell-actions">
-                    {c.status === 'contratado' && !c.employee_num && (
-                      <button
-                        type="button"
-                        className="pipeline__icon-btn pipeline__icon-btn--primary"
-                        onClick={() => openHire(c)}
-                        aria-label={`Contratar a ${c.nombre}`}
-                        title="Contratar (crear empleado)"
-                      >
-                        <BadgeCheck size={16} aria-hidden="true" />
-                      </button>
+                      <BadgeCheck size={16} aria-hidden="true" />
+                    </button>
+                  )}
+                  {c.employee_num && (
+                    <span
+                      className="pipeline__hired-tag"
+                      title={`Empleado #${c.employee_num}`}
+                    >
+                      <BadgeCheck size={12} aria-hidden="true" />
+                      #{c.employee_num}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    className="pipeline__icon-btn"
+                    onClick={() => setNotesTarget(c)}
+                    aria-label={`Notas de ${c.nombre}`}
+                    title={`Notas (${notesCount(c)})`}
+                  >
+                    <StickyNote size={16} aria-hidden="true" />
+                    {notesCount(c) > 0 && (
+                      <span className="pipeline__icon-badge">{notesCount(c)}</span>
                     )}
-                    {c.employee_num && (
-                      <span
-                        className="pipeline__hired-tag"
-                        title={`Empleado #${c.employee_num}`}
-                        aria-label={`Empleado #${c.employee_num}`}
-                      >
-                        <BadgeCheck size={12} aria-hidden="true" />
-                        #{c.employee_num}
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      className="pipeline__icon-btn"
-                      onClick={() => setNotesTarget(c)}
-                      aria-label={`Notas de ${c.nombre}`}
-                      title={`Notas (${notesCount(c)})`}
-                    >
-                      <StickyNote size={16} aria-hidden="true" />
-                      {notesCount(c) > 0 && (
-                        <span className="pipeline__icon-badge">{notesCount(c)}</span>
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      className="pipeline__icon-btn"
-                      onClick={() => openEdit(c)}
-                      aria-label={`Editar a ${c.nombre}`}
-                      title="Editar"
-                    >
-                      <Pencil size={16} aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      className="pipeline__icon-btn pipeline__icon-btn--danger"
-                      onClick={() => openDelete(c)}
-                      aria-label={`Eliminar a ${c.nombre}`}
-                      title="Eliminar"
-                    >
-                      <Trash2 size={16} aria-hidden="true" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </button>
+                  <button
+                    type="button"
+                    className="pipeline__icon-btn"
+                    onClick={() => openEdit(c)}
+                    aria-label={`Editar a ${c.nombre}`}
+                    title="Editar"
+                  >
+                    <Pencil size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="pipeline__icon-btn pipeline__icon-btn--danger"
+                    onClick={() => openDelete(c)}
+                    aria-label={`Eliminar a ${c.nombre}`}
+                    title="Eliminar"
+                  >
+                    <Trash2 size={16} aria-hidden="true" />
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </section>
       )}
 
