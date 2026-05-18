@@ -9,7 +9,9 @@ import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
-import { Settings } from '@/pages/Settings';
+// NOTE: Settings page deshabilitada temporalmente — ni ruta ni botón.
+// Cuando se retome, restaurar import + ruta + item en UserMenu.
+// import { Settings } from '@/pages/Settings';
 
 /**
  * Shell con Header + página protegida. El Header sólo se monta dentro del
@@ -77,15 +79,8 @@ function App() {
           </ProtectedShell>
         }
       />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedShell>
-            <Settings />
-          </ProtectedShell>
-        }
-      />
       <Route path="/kpis" element={<Navigate to="/" replace />} />
+      {/* /settings deshabilitada: cualquier navegación cae al fallback. */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
