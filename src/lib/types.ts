@@ -112,6 +112,33 @@ export interface TransporteAssignment {
 }
 
 /**
+ * Forma cruda del JSON de asignación de turnos. `Turno` contiene una
+ * **clave de horario** (1, 2, 3, …, 38) que luego se mapea al turno real
+ * (1–5) vía `CLAVE_HORARIO_TO_TURNO`. Acepta llaves con/sin espacios y
+ * variantes en mayúsculas.
+ */
+export interface TurnoAssignmentRaw {
+  'Num Empleado'?: string | number;
+  'num_empleado'?: string | number;
+  'Turno'?: string | number;
+  'turno'?: string | number;
+  'Clave de Horario'?: string | number;
+  'CLAVE DE HORARIO'?: string | number;
+  [key: string]: string | number | undefined;
+}
+
+/**
+ * Forma normalizada de una asignación de turno lista para `UPDATE
+ * empleados SET turno = ? WHERE num_empleado = ?`. `turno` queda en el
+ * valor crudo (clave de horario) tal cual viene del JSON — el mapeo
+ * a turno final solo se aplica al renderizar el dashboard.
+ */
+export interface TurnoAssignment {
+  num_empleado: string;
+  turno: string;
+}
+
+/**
  * Optional flags that can be attached to an authorized position.
  * Configurable in `src/lib/constants.ts`.
  */
