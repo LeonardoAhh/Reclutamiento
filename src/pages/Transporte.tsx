@@ -5,6 +5,7 @@ import { TransporteImporter } from '@/components/transporte/TransporteImporter';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
   getRutaCapacidad,
+  mapClaveHorarioToTurno,
   TRANSPORTE_NA,
   TRANSPORTE_RUTAS,
   TRANSPORTE_TURNOS,
@@ -384,7 +385,12 @@ function EmployeesTable({ employees }: { employees: Employee[] }) {
                   {emp.area} · {emp.seccion}
                 </div>
               </td>
-              <td>{turnoLabel(emp.turno)}</td>
+              <td>
+                <div>{turnoLabel(mapClaveHorarioToTurno(emp.turno))}</div>
+                {emp.turno && mapClaveHorarioToTurno(emp.turno) !== emp.turno && (
+                  <div className="transporte__td-sub">clave {emp.turno}</div>
+                )}
+              </td>
               <td>
                 <div>{emp.ruta}</div>
                 <div className="transporte__td-sub">{emp.parada ?? '—'}</div>

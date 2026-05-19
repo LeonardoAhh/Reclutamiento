@@ -95,14 +95,54 @@ export const TRANSPORTE_PARADAS = [
 export type TransporteParada = (typeof TRANSPORTE_PARADAS)[number];
 
 /**
- * Turnos canónicos: 1, 2, 3, 4. Cualquier otro valor que aparezca en datos
- * históricos (por ej. `0`, `Mixto`) se renderiza como "extra" al final del
- * breakdown del dashboard pero NO es una opción seleccionable en el alta
- * de empleados.
+ * Turnos canónicos: 1, 2, 3, 4, 5. Cualquier otro valor que aparezca en
+ * datos históricos se renderiza como "extra" al final del breakdown del
+ * dashboard pero NO es una opción seleccionable en el alta de empleados.
  */
-export const TRANSPORTE_TURNOS = ['1', '2', '3', '4'] as const;
+export const TRANSPORTE_TURNOS = ['1', '2', '3', '4', '5'] as const;
 
 export type TransporteTurno = (typeof TRANSPORTE_TURNOS)[number];
+
+/**
+ * `empleados.turno` en Supabase guarda una **clave de horario** (no el
+ * turno final). Este mapa traduce cada clave al turno (1–5) que se muestra
+ * en el dashboard de transporte. Fuente: catálogo provisto por RH.
+ *
+ * Si llega una clave fuera de este mapa, `mapClaveHorarioToTurno` devuelve
+ * el valor crudo en lugar de tirar — así el dashboard sigue mostrando datos
+ * viejos sin perderlos, aunque queden agrupados aparte como "extras".
+ */
+export const CLAVE_HORARIO_TO_TURNO: Readonly<Record<string, TransporteTurno>> = {
+  '1': '1',
+  '26': '1',
+  '35': '1',
+  '38': '1',
+  '2': '2',
+  '6': '2',
+  '13': '2',
+  '30': '2',
+  '31': '2',
+  '32': '2',
+  '36': '2',
+  '3': '3',
+  '16': '3',
+  '4': '4',
+  '5': '5',
+  '8': '5',
+  '33': '5',
+};
+
+/**
+ * Mapea una clave de horario al turno (1–5). Si la clave no está en el
+ * catálogo, devuelve el valor original sin alterarlo (defensivo). Acepta
+ * strings tanto sin trim como con espacios alrededor.
+ */
+export function mapClaveHorarioToTurno(value: string | null | undefined): string {
+  if (value == null) return '';
+  const key = String(value).trim();
+  if (!key) return '';
+  return CLAVE_HORARIO_TO_TURNO[key] ?? key;
+}
 
 /**
  * Normaliza el nombre de una ruta para comparaciones tolerantes a espacios
