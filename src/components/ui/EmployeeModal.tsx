@@ -3,6 +3,11 @@ import { UserPlus, Trash2 } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
+import {
+  TRANSPORTE_NA,
+  TRANSPORTE_PARADAS,
+  TRANSPORTE_RUTAS,
+} from '@/lib/transporte-routes';
 import { Modal } from './Modal';
 import './EmployeeModal.css';
 
@@ -18,7 +23,16 @@ interface EmployeeModalProps {
 type FormState = Pick<
   Employee,
   'num_empleado' | 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso'
->;
+> & {
+  /**
+   * `''` = sin asignar (se persiste como `null`).
+   * `'N/A'` = empleado no toma transporte.
+   * Cualquier otro valor debe pertenecer a `TRANSPORTE_RUTAS`.
+   */
+  ruta: string;
+  /** Mismo convenio que `ruta`. Forzado a `N/A` cuando `ruta === 'N/A'`. */
+  parada: string;
+};
 
 function emptyForm(): FormState {
   return {
@@ -30,6 +44,8 @@ function emptyForm(): FormState {
     categoria: 'N/A',
     turno: '1',
     fecha_ingreso: localTodayIso(),
+    ruta: '',
+    parada: '',
   };
 }
 
@@ -92,6 +108,8 @@ export function EmployeeModal({
         categoria: employee.categoria,
         turno: employee.turno,
         fecha_ingreso: employee.fecha_ingreso,
+        ruta: employee.ruta ?? '',
+        parada: employee.parada ?? '',
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
@@ -123,7 +141,13 @@ export function EmployeeModal({
     try {
       setSubmitting(true);
       if (mode === 'add' && onSave) {
-        const result = await onSave({ ...form });
+        // `ruta`/`parada` vacíos = null en Supabase (sin asignar).
+        const payload: Employee = {
+          ...form,
+          ruta: form.ruta ? form.ruta : null,
+          parada: form.parada ? form.parada : null,
+        };
+        const result = await onSave(payload);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo guardar.');
           return;
@@ -256,6 +280,50 @@ export function EmployeeModal({
                   value={form.fecha_ingreso}
                   onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
                 />
+              </div>
+              <div className="form-group">
+                <label htmlFor="emp-ruta">Ruta</label>
+                <select
+                  id="emp-ruta"
+                  value={form.ruta}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Si elige N/A, la parada también queda N/A (no aplica).
+                    // Si elige vacío, parada también se limpia para evitar
+                    // dejar paradas huérfanas en el registro.
+                    if (value === TRANSPORTE_NA) {
+                      setForm({ ...form, ruta: value, parada: TRANSPORTE_NA });
+                    } else if (value === '') {
+                      setForm({ ...form, ruta: '', parada: '' });
+                    } else {
+                      // Si venía de N/A y elige ruta real, limpia parada para
+                      // que el usuario seleccione una válida.
+                      const nextParada =
+                        form.parada === TRANSPORTE_NA ? '' : form.parada;
+                      setForm({ ...form, ruta: value, parada: nextParada });
+                    }
+                  }}
+                >
+                  <option value="">Sin asignar</option>
+                  <option value={TRANSPORTE_NA}>N/A — no toma transporte</option>
+                  {TRANSPORTE_RUTAS.map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="emp-parada">Parada</label>
+                <select
+                  id="emp-parada"
+                  value={form.parada}
+                  onChange={(e) => setForm({ ...form, parada: e.target.value })}
+                  disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
+                >
+                  <option value="">Sin asignar</option>
+                  {TRANSPORTE_PARADAS.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </>

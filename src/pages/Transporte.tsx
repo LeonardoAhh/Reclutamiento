@@ -5,6 +5,7 @@ import { useTransporteCapacidades } from '@/hooks/useTransporteCapacidades';
 import { TransporteImporter } from '@/components/transporte/TransporteImporter';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
+  TRANSPORTE_NA,
   TRANSPORTE_RUTAS,
   TRANSPORTE_TURNOS,
   turnoLabel,
@@ -35,24 +36,34 @@ export function Transporte() {
     [employees]
   );
 
-  // Stats globales del header.
+  // Stats globales del header. Distinguimos tres estados de empleados:
+  //   - `conRuta`: tienen una ruta real del catálogo (consumen capacidad).
+  //   - `naRuta`: declarados explícitamente como `N/A` (no toman transporte).
+  //   - `sinAsignar`: campo `ruta` null (pendiente de captura).
   const stats = useMemo(() => {
     let conRuta = 0;
+    let naRuta = 0;
     for (const emp of employees) {
-      if (emp.ruta) conRuta += 1;
+      if (!emp.ruta) continue;
+      if (emp.ruta === TRANSPORTE_NA) naRuta += 1;
+      else conRuta += 1;
     }
     return {
       total: employees.length,
       conRuta,
-      sinRuta: employees.length - conRuta,
+      naRuta,
+      sinAsignar: employees.length - conRuta - naRuta,
       rutasActivas: routes.filter((r) => r.total > 0).length,
     };
   }, [employees, routes]);
 
   // Empleados visibles bajo la barra de búsqueda. Solo muestra los que ya
-  // tienen ruta — la página es de gestión de transporte, no de plantilla.
+  // tienen ruta real — N/A y sin asignar no aparecen en esta tabla
+  // (la página es de gestión de transporte real, no de plantilla completa).
   const filteredEmployees = useMemo(() => {
-    const withRuta = employees.filter((e) => e.ruta);
+    const withRuta = employees.filter(
+      (e) => e.ruta && e.ruta !== TRANSPORTE_NA
+    );
     const q = search.trim().toLowerCase();
     if (!q) return withRuta;
     return withRuta.filter((e) => {
@@ -120,8 +131,14 @@ export function Transporte() {
         />
         <StatTile
           icon={<Users size={16} aria-hidden="true" />}
-          label="Sin ruta"
-          value={stats.sinRuta}
+          label="N/A"
+          value={stats.naRuta}
+          muted
+        />
+        <StatTile
+          icon={<Users size={16} aria-hidden="true" />}
+          label="Sin asignar"
+          value={stats.sinAsignar}
           muted
         />
         <StatTile

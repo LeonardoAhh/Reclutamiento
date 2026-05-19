@@ -1,4 +1,9 @@
-import { matchRuta } from './transporte-routes';
+import {
+  isNaMarker,
+  matchParada,
+  matchRuta,
+  TRANSPORTE_NA,
+} from './transporte-routes';
 import type {
   Employee,
   TransporteAssignment,
@@ -61,8 +66,8 @@ export function normalizeTransporteRow(
   // la fila como inválida para que el preview la muestre y el usuario sepa
   // que está escribiendo una ruta no registrada (evita typos que rompan
   // el dashboard de capacidad).
-  const canonical = matchRuta(ruta!);
-  if (!canonical) {
+  const canonicalRuta = matchRuta(ruta!);
+  if (!canonicalRuta) {
     return {
       assignment: null,
       error: `Ruta no reconocida: “${ruta}”`,
@@ -70,11 +75,29 @@ export function normalizeTransporteRow(
     };
   }
 
+  // Si la ruta es N/A (opt-out), forzamos la parada también a N/A para
+  // mantener la invariante en datos: si no toma transporte, la parada no
+  // es relevante. Si llega `N/A` en parada solo, lo canonicalizamos.
+  let canonicalParada: string;
+  if (canonicalRuta === TRANSPORTE_NA) {
+    canonicalParada = TRANSPORTE_NA;
+  } else if (isNaMarker(parada!)) {
+    // Inconsistencia: parada `N/A` con ruta real. Lo flagueamos.
+    return {
+      assignment: null,
+      error: `Parada "N/A" no aplica si la ruta es ${canonicalRuta}`,
+      raw: row,
+    };
+  } else {
+    const matched = matchParada(parada!);
+    canonicalParada = matched ?? parada!;
+  }
+
   return {
     assignment: {
       num_empleado: num!,
-      ruta: canonical,
-      parada: parada!,
+      ruta: canonicalRuta,
+      parada: canonicalParada,
     },
     error: null,
     raw: row,
@@ -186,6 +209,10 @@ export function buildRouteCapacity(
 
   for (const emp of employees) {
     if (!emp.ruta) continue;
+    // Excluimos opt-outs declarados (`N/A`) del dashboard de capacidad: esos
+    // empleados existen pero NO consumen plazas. Se cuentan aparte en stats
+    // globales.
+    if (emp.ruta === TRANSPORTE_NA) continue;
     const ruta = emp.ruta;
     const parada = emp.parada ?? 'Sin parada';
     const turno = (emp.turno ?? '').trim() || '—';

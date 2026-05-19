@@ -21,6 +21,53 @@ export const TRANSPORTE_RUTAS = [
 export type TransporteRuta = (typeof TRANSPORTE_RUTAS)[number];
 
 /**
+ * Marcador especial para empleados que NO toman transporte (opt-out
+ * explícito vs. no asignado todavía). Se almacena literal `N/A` tanto en
+ * `empleados.ruta` como en `empleados.parada`. El dashboard de capacidad
+ * lo excluye del conteo de cualquier ruta y lo reporta aparte en stats.
+ */
+export const TRANSPORTE_NA = 'N/A';
+
+/**
+ * Catálogo de paradas oficiales. Incluye `N/A` para empleados sin
+ * transporte. Si el JSON trae una parada fuera del catálogo, el importer
+ * la acepta (a diferencia de la ruta) pero la registra como advertencia
+ * en el preview — las paradas tienden a tener variantes nuevas cuando se
+ * abre una zona y no queremos bloquear cargas legítimas.
+ */
+export const TRANSPORTE_PARADAS = [
+  'AV. DE LA LUZ',
+  'AV. PEDREGAL',
+  'BUENAVISTA',
+  'COREA',
+  'FRACC. MONTENEGRO',
+  'HDA SANTA ROSA',
+  'LA BARRETA',
+  'LA LUZ',
+  'LA MONJA',
+  'MONTENEGRO',
+  'OBRERA',
+  'OJO DE AGUA',
+  'PASEOS QUERETARO',
+  'PEÑAFLOR',
+  'PIE DE LA CUESTA',
+  'PLAZA DEL SOL',
+  'PROL. BERNARDO QUINTANA',
+  'PUERTO AGUIRRE',
+  'PUERTO CARROZA',
+  'RINCON OJO DE AGUA',
+  'SALITRE',
+  'SAN ISIDRO',
+  'SAN JOSE ITURBIDE',
+  'SANTA CATARINA',
+  'SANTA ROSA',
+  'TLALOC',
+  TRANSPORTE_NA,
+] as const;
+
+export type TransporteParada = (typeof TRANSPORTE_PARADAS)[number];
+
+/**
  * Turnos canónicos. Se alinea con el `<select>` de `EmployeeModal` para que
  * el dashboard de transporte muestre las mismas categorías que el módulo
  * de empleados. `0` aparece en algunos registros administrativos viejos y
@@ -43,14 +90,40 @@ const RUTAS_BY_NORM = new Map(
   TRANSPORTE_RUTAS.map((r) => [normalizeRuta(r), r] as const)
 );
 
+const PARADAS_BY_NORM = new Map(
+  TRANSPORTE_PARADAS.map((p) => [normalizeRuta(p), p] as const)
+);
+
+/**
+ * Detecta cualquier variante de `N/A` (`n/a`, `na`, `NA`, `n.a.`) para
+ * normalizar al marcador canónico. No clasifica como N/A valores vacíos.
+ */
+export function isNaMarker(value: string): boolean {
+  const v = value.trim().toUpperCase().replace(/\./g, '');
+  return v === 'N/A' || v === 'NA';
+}
+
 /**
  * Devuelve la ruta canónica que corresponde a `value`, o `null` si no hay
- * match en el catálogo. Útil para el importer: si una fila trae
+ * match en el catálogo. `N/A` se acepta como ruta válida (marcador de
+ * "no toma transporte"). Útil para el importer: si una fila trae
  * `"r1-queretaro-pie de la cuesta"` con minúsculas, encuentra la versión
  * oficial sin romper la asignación.
  */
-export function matchRuta(value: string): TransporteRuta | null {
+export function matchRuta(value: string): TransporteRuta | typeof TRANSPORTE_NA | null {
+  if (isNaMarker(value)) return TRANSPORTE_NA;
   return RUTAS_BY_NORM.get(normalizeRuta(value)) ?? null;
+}
+
+/**
+ * Devuelve la parada canónica del catálogo o `null` si no encuentra match.
+ * A diferencia de `matchRuta`, el importer no rechaza paradas fuera del
+ * catálogo; este helper solo se usa para canonicalizar (corregir
+ * capitalización / espacios) y advertir.
+ */
+export function matchParada(value: string): TransporteParada | null {
+  if (isNaMarker(value)) return TRANSPORTE_NA;
+  return PARADAS_BY_NORM.get(normalizeRuta(value)) ?? null;
 }
 
 /**
