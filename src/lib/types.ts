@@ -16,6 +16,15 @@ export interface Employee {
   en_incapacidad?: boolean;
   /** Fecha estimada de regreso (ISO `YYYY-MM-DD`) o null si indefinida. */
   incapacidad_hasta?: string | null;
+  /**
+   * Ruta de transporte asignada. Null/undefined = sin asignación. Texto libre
+   * (suele venir del JSON de RH como nombre/clave de la ruta).
+   */
+  ruta?: string | null;
+  /**
+   * Parada dentro de la ruta. Null/undefined si no hay asignación.
+   */
+  parada?: string | null;
 }
 
 /**
@@ -73,6 +82,33 @@ export interface EmployeeRaw {
   "Categoria": string;
   "Turno": string;
   "Fecha Ingreso": string;
+}
+
+/**
+ * Forma cruda del JSON de asignaciones de transporte. El usuario sube un
+ * array con un objeto por empleado; cada objeto trae el número de empleado
+ * (puede llegar como número o como string desde Excel) y los textos de ruta
+ * y parada. Para mantener el contrato lo más laxo posible se aceptan llaves
+ * con o sin espacio al final, y mayúsculas / minúsculas comunes.
+ */
+export interface TransporteAssignmentRaw {
+  'Num Empleado'?: string | number;
+  'num_empleado'?: string | number;
+  'Ruta'?: string;
+  'ruta'?: string;
+  'Parada'?: string;
+  'parada'?: string;
+  [key: string]: string | number | undefined;
+}
+
+/**
+ * Forma normalizada de una asignación de transporte lista para aplicar a
+ * Supabase. `ruta` y `parada` se trimean; `num_empleado` siempre es string.
+ */
+export interface TransporteAssignment {
+  num_empleado: string;
+  ruta: string;
+  parada: string;
 }
 
 /**

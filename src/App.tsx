@@ -7,6 +7,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
+import { Transporte } from '@/pages/Transporte';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 // NOTE: Settings page deshabilitada temporalmente — ni ruta ni botón.
@@ -76,6 +77,14 @@ function App() {
         element={
           <ProtectedShell>
             <Bajas />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/transporte"
+        element={
+          <ProtectedShell>
+            <Transporte />
           </ProtectedShell>
         }
       />
