@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Bus, Search, Upload, Users, Route as RouteIcon, X } from 'lucide-react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { useTransporteCapacidades } from '@/hooks/useTransporteCapacidades';
 import { TransporteImporter } from '@/components/transporte/TransporteImporter';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
+  getRutaCapacidad,
   TRANSPORTE_NA,
   TRANSPORTE_RUTAS,
   TRANSPORTE_TURNOS,
@@ -15,16 +15,15 @@ import type { Employee } from '@/lib/types';
 import './Transporte.css';
 
 /**
- * /transporte — control de capacidad por ruta + turno.
+ * /transporte — control de capacidad por ruta.
  *
  * Reusa la tabla `empleados` extendida con `ruta` y `parada` (migración 014).
- * No crea tablas nuevas. El cupo por ruta+turno vive en localStorage (ver
- * `useTransporteCapacidades`) y se puede migrar a Supabase más adelante sin
- * cambiar la API de los componentes.
+ * No crea tablas nuevas. La capacidad por ruta es **fija** (definida en
+ * `RUTA_CAPACIDAD` del catálogo) y se comparte entre los 4 turnos: la barra
+ * muestra ocupación total vs cupo, y el breakdown por turno es informativo.
  */
 export function Transporte() {
   const { employees, loading, assignTransporte } = useSupabaseData();
-  const { capacidades, setCupo } = useTransporteCapacidades();
   const [search, setSearch] = useState('');
   const [importerOpen, setImporterOpen] = useState(false);
 
@@ -103,7 +102,7 @@ export function Transporte() {
         <div className="transporte__hero-content">
           <h1>Transporte</h1>
           <p className="transporte__hero-sub">
-            Asignación de rutas y paradas por empleado. Capacidad por turno.
+            Asignación de rutas y paradas por empleado. Capacidad fija por ruta.
           </p>
         </div>
         <div className="transporte__hero-actions">
@@ -155,19 +154,13 @@ export function Transporte() {
         <header className="transporte__section-head">
           <h2>Capacidad por ruta</h2>
           <p className="transporte__section-sub">
-            Edita el cupo por turno para ver cuántas plazas siguen disponibles.
+            Cupo total compartido entre los 4 turnos. Cuando se llena la ruta,
+            no se puede asignar a más personal.
           </p>
         </header>
         <div className="transporte__route-grid">
           {routes.map((route) => (
-            <RouteCard
-              key={route.ruta}
-              route={route}
-              cupos={capacidades[route.ruta] ?? {}}
-              onCupoChange={(turno, value) =>
-                setCupo(route.ruta, turno, value)
-              }
-            />
+            <RouteCard key={route.ruta} route={route} />
           ))}
         </div>
       </section>
@@ -248,105 +241,99 @@ function StatTile({ icon, label, value, muted = false }: StatTileProps) {
 
 interface RouteCardProps {
   route: RouteCapacity;
-  cupos: Record<string, number | null>;
-  onCupoChange: (turno: string, value: number | null) => void;
 }
 
-function RouteCard({ route, cupos, onCupoChange }: RouteCardProps) {
-  // Combina turnos canónicos + los que aparecen en datos. Mantiene el orden
-  // de TRANSPORTE_TURNOS primero, después cualquier extra alfabético.
-  const turnoOrder = useMemo(() => {
-    const present = new Set(route.turnos.map((t) => t.turno));
-    const order: string[] = [];
+function RouteCard({ route }: RouteCardProps) {
+  // Mantiene el orden canónico de turnos (1–4) y mueve al final cualquier
+  // valor inesperado que haya quedado en datos históricos.
+  const turnoBreakdown = useMemo(() => {
+    const byTurno = new Map(route.turnos.map((t) => [t.turno, t.total] as const));
+    const ordered: Array<{ turno: string; total: number }> = [];
     for (const t of TRANSPORTE_TURNOS) {
-      if (present.has(t)) order.push(t);
+      ordered.push({ turno: t, total: byTurno.get(t) ?? 0 });
     }
-    for (const { turno } of route.turnos) {
-      if (!order.includes(turno)) order.push(turno);
+    for (const { turno, total } of route.turnos) {
+      if (!(TRANSPORTE_TURNOS as ReadonlyArray<string>).includes(turno)) {
+        ordered.push({ turno, total });
+      }
     }
-    return order;
+    return ordered;
   }, [route.turnos]);
 
-  const totalCupo = turnoOrder.reduce(
-    (sum, t) => sum + (cupos[t] ?? 0),
-    0
-  );
+  const capacidad = getRutaCapacidad(route.ruta);
+  const occupied = route.total;
+  const available =
+    capacidad != null ? Math.max(capacidad - occupied, 0) : null;
+  const overflow =
+    capacidad != null && occupied > capacidad ? occupied - capacidad : 0;
+  const percent =
+    capacidad != null && capacidad > 0
+      ? Math.min((occupied / capacidad) * 100, 100)
+      : 0;
+  const overCapacity = overflow > 0;
+  const status: 'libre' | 'lleno' | 'sobre' =
+    overCapacity ? 'sobre' : available === 0 ? 'lleno' : 'libre';
 
   return (
-    <article className="transporte__route" data-empty={route.total === 0}>
+    <article
+      className={`transporte__route transporte__route--${status}`}
+      data-empty={occupied === 0}
+    >
       <header className="transporte__route-head">
         <span className="transporte__route-code">{rutaShortCode(route.ruta)}</span>
         <h3 className="transporte__route-name">{route.ruta}</h3>
         <span
           className="transporte__route-total"
-          aria-label={`${route.total} empleados asignados`}
+          aria-label={
+            capacidad != null
+              ? `${occupied} de ${capacidad} asientos ocupados`
+              : `${occupied} empleados asignados`
+          }
         >
-          {route.total}
+          <strong>{occupied}</strong>
+          {capacidad != null && (
+            <span className="transporte__route-cap">/ {capacidad}</span>
+          )}
         </span>
       </header>
 
-      <ul className="transporte__turnos">
-        {turnoOrder.map((turno) => {
-          const occupied =
-            route.turnos.find((t) => t.turno === turno)?.total ?? 0;
-          const cupo = cupos[turno] ?? null;
-          const available =
-            cupo != null ? Math.max(cupo - occupied, 0) : null;
-          const percent =
-            cupo != null && cupo > 0
-              ? Math.min((occupied / cupo) * 100, 100)
-              : null;
-          const overCapacity = cupo != null && occupied > cupo;
-          return (
-            <li
-              key={turno}
-              className={`transporte__turno${overCapacity ? ' transporte__turno--over' : ''}`}
-            >
-              <div className="transporte__turno-head">
-                <span className="transporte__turno-label">
-                  {turnoLabel(turno)}
-                </span>
-                <span className="transporte__turno-count">
-                  <strong>{occupied}</strong>
-                  <span aria-hidden="true">/</span>
-                  <CupoInput
-                    value={cupo}
-                    onChange={(next) => onCupoChange(turno, next)}
-                    ariaLabel={`Cupo del turno ${turnoLabel(turno)}`}
-                  />
-                </span>
-              </div>
-              <div
-                className="transporte__bar"
-                role="progressbar"
-                aria-valuenow={occupied}
-                aria-valuemin={0}
-                aria-valuemax={cupo ?? undefined}
-                aria-label={`Ocupación turno ${turnoLabel(turno)}`}
-              >
-                <div
-                  className="transporte__bar-fill"
-                  style={{
-                    width: percent != null ? `${percent}%` : '0%',
-                  }}
-                />
-              </div>
-              <p className="transporte__turno-foot">
-                {cupo == null ? (
-                  <span className="transporte__turno-hint">Define cupo</span>
-                ) : overCapacity ? (
-                  <span className="transporte__turno-over-msg">
-                    {occupied - cupo} sobre el cupo
-                  </span>
-                ) : (
-                  <span>
-                    {available} disponible{available === 1 ? '' : 's'}
-                  </span>
-                )}
-              </p>
-            </li>
-          );
-        })}
+      <div
+        className="transporte__bar"
+        role="progressbar"
+        aria-valuenow={occupied}
+        aria-valuemin={0}
+        aria-valuemax={capacidad ?? undefined}
+        aria-label="Ocupación total de la ruta"
+      >
+        <div
+          className="transporte__bar-fill"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <p className="transporte__route-foot">
+        {capacidad == null ? (
+          <span className="transporte__turno-hint">
+            Ruta fuera del catálogo
+          </span>
+        ) : overCapacity ? (
+          <span className="transporte__turno-over-msg">
+            {overflow} sobre el cupo
+          </span>
+        ) : (
+          <span>
+            {available} asiento{available === 1 ? '' : 's'} disponible
+            {available === 1 ? '' : 's'}
+          </span>
+        )}
+      </p>
+
+      <ul className="transporte__turnos" aria-label="Distribución por turno">
+        {turnoBreakdown.map(({ turno, total }) => (
+          <li key={turno} className="transporte__turno">
+            <span className="transporte__turno-label">{turnoLabel(turno)}</span>
+            <span className="transporte__turno-count">{total}</span>
+          </li>
+        ))}
       </ul>
 
       {route.paradas.length > 0 && (
@@ -362,47 +349,7 @@ function RouteCard({ route, cupos, onCupoChange }: RouteCardProps) {
           </ul>
         </details>
       )}
-
-      {totalCupo > 0 && (
-        <footer className="transporte__route-foot">
-          <span>Cupo total:</span>
-          <strong>
-            {route.total}/{totalCupo}
-          </strong>
-        </footer>
-      )}
     </article>
-  );
-}
-
-interface CupoInputProps {
-  value: number | null;
-  onChange: (next: number | null) => void;
-  ariaLabel: string;
-}
-
-function CupoInput({ value, onChange, ariaLabel }: CupoInputProps) {
-  return (
-    <input
-      type="number"
-      min={0}
-      step={1}
-      value={value ?? ''}
-      onChange={(e) => {
-        const raw = e.target.value;
-        if (raw === '') {
-          onChange(null);
-          return;
-        }
-        const n = Number(raw);
-        if (Number.isFinite(n) && n >= 0) {
-          onChange(Math.floor(n));
-        }
-      }}
-      className="transporte__cupo-input"
-      placeholder="—"
-      aria-label={ariaLabel}
-    />
   );
 }
 

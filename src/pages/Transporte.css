@@ -208,100 +208,25 @@
 }
 
 .transporte__route-total {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-ink);
-}
-
-/* Turno breakdown */
-
-.transporte__turnos {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.transporte__turno {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-sm);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-}
-
-.transporte__turno--over {
-  border-color: rgb(var(--color-error-rgb) / 0.4);
-  background: var(--color-error-tint);
-}
-
-.transporte__turno-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-}
-
-.transporte__turno-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-muted);
-  font-weight: 600;
-}
-
-.transporte__turno-count {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--spacing-xxs);
+  gap: 2px;
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   color: var(--color-ink);
+  white-space: nowrap;
 }
 
-.transporte__turno-count strong {
-  font-size: 16px;
+.transporte__route-total strong {
+  font-size: 22px;
   font-weight: 700;
 }
 
-.transporte__cupo-input {
-  width: 56px;
-  height: 24px;
-  padding: 0 var(--spacing-xs);
-  text-align: right;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  font-family: var(--font-code);
-  font-size: var(--type-body-sm-size);
-  font-variant-numeric: tabular-nums;
-  appearance: textfield;
-  -moz-appearance: textfield;
-  transition: border-color var(--transition-base);
-}
-
-.transporte__cupo-input::-webkit-outer-spin-button,
-.transporte__cupo-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.transporte__cupo-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-focus-ring);
-}
+/* Capacity bar (total per route) */
 
 .transporte__bar {
   position: relative;
-  height: 4px;
+  height: 6px;
   border-radius: var(--rounded-pill);
   background: var(--color-hairline-soft);
   overflow: hidden;
@@ -316,12 +241,20 @@
   transition: width var(--transition-base);
 }
 
-.transporte__turno--over .transporte__bar-fill {
+.transporte__route--lleno .transporte__bar-fill {
+  background: var(--color-warning, var(--color-primary));
+}
+
+.transporte__route--sobre .transporte__bar-fill {
   background: var(--color-error);
 }
 
-.transporte__turno-foot {
-  font-size: 11px;
+.transporte__route--sobre {
+  border-color: rgb(var(--color-error-rgb) / 0.4);
+}
+
+.transporte__route-foot {
+  font-size: 12px;
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -333,6 +266,44 @@
 .transporte__turno-over-msg {
   color: var(--color-error);
   font-weight: 600;
+}
+
+/* Turno breakdown (read-only chips) */
+
+.transporte__turnos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.transporte__turno {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+.transporte__turno-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.transporte__turno-count {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
 }
 
 /* Paradas collapsible */
@@ -389,21 +360,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-.transporte__route-foot {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing-xs);
-  padding-top: var(--spacing-xs);
-  border-top: 1px dashed var(--color-hairline);
-  font-size: 12px;
-  color: var(--color-muted);
-}
-
-.transporte__route-foot strong {
+.transporte__route-cap {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  color: var(--color-ink);
+  color: var(--color-muted);
+  font-weight: 500;
+  margin-left: 2px;
 }
 
 /* ── Search ────────────────────────────────────────────── */

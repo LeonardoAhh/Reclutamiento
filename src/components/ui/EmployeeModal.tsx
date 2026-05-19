@@ -269,7 +269,6 @@ export function EmployeeModal({
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
-                  <option value="Mixto">Mixto</option>
                 </select>
               </div>
               <div className="form-group">
