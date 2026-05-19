@@ -247,3 +247,15 @@ export const TURNO_DIAS: Readonly<Record<TransporteTurno, ReadonlyArray<Transpor
   '4': ['dom', 'lun', 'mar', 'mie', 'jue'],
   '5': [],
 };
+
+/**
+ * Horario base por turno. T4 varía según el día (sigue el horario de T1, T2
+ * o T3) — se representa con el override por día abajo.
+ */
+export const TURNO_HORARIO: Readonly<Record<TransporteTurno, string>> = {
+  '1': '6:00 - 14:00',
+  '2': '14:00 - 22:00',
+  '3': '22:00 - 6:00',
+  '4': 'variable',
+  '5': '',
+};
