@@ -6,9 +6,11 @@ import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
   getRutaCapacidad,
   mapClaveHorarioToTurno,
+  TRANSPORTE_DIAS,
   TRANSPORTE_NA,
   TRANSPORTE_RUTAS,
   TRANSPORTE_TURNOS,
+  TURNO_DIAS,
   turnoLabel,
   rutaShortCode,
 } from '@/lib/transporte-routes';
@@ -250,6 +252,24 @@ function RouteCard({ route }: RouteCardProps) {
     return turnoBreakdown.filter(({ total }) => total > capacidad);
   }, [turnoBreakdown, capacidad]);
 
+  // Distribución diaria: por cada día L→D suma los turnos activos según
+  // TURNO_DIAS. cupo/día = capacidad × #turnos activos ese día; ocupados/día
+  // = suma de empleados en turnos activos. T5 queda fuera (sin calendario).
+  const diaBreakdown = useMemo(() => {
+    const occByTurno = new Map(turnoBreakdown.map((t) => [t.turno, t.total] as const));
+    return TRANSPORTE_DIAS.map(({ key, label }) => {
+      let occ = 0;
+      let cupoDia = 0;
+      for (const t of TRANSPORTE_TURNOS) {
+        const dias = TURNO_DIAS[t];
+        if (!dias.includes(key)) continue;
+        occ += occByTurno.get(t) ?? 0;
+        if (capacidad != null) cupoDia += capacidad;
+      }
+      return { key, label, occ, cupo: capacidad == null ? null : cupoDia };
+    });
+  }, [turnoBreakdown, capacidad]);
+
   // Asientos disponibles sumando solo los turnos canónicos (T1–T5). No
   // contamos los extras históricos porque no representan corridas activas.
   const availableCanonical = useMemo(() => {
@@ -301,6 +321,25 @@ function RouteCard({ route }: RouteCardProps) {
           </span>
         )}
       </p>
+
+      <ul className="transporte__dias" aria-label="Cupo por día">
+        {diaBreakdown.map(({ key, label, occ, cupo }) => {
+          const diaSobre = cupo != null && occ > cupo;
+          return (
+            <li
+              key={key}
+              className={`transporte__dia${diaSobre ? ' transporte__dia--over' : ''}`}
+              title={cupo != null ? `${occ} de ${cupo}` : undefined}
+            >
+              <span className="transporte__dia-label">{label}</span>
+              <span className="transporte__dia-count">
+                {occ}
+                {cupo != null && <span className="transporte__dia-cupo">/{cupo}</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
 
       <ul className="transporte__turnos" aria-label="Distribución por turno">
         {turnoBreakdown.map(({ turno, total }) => {

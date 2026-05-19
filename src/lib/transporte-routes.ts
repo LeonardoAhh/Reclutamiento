@@ -215,3 +215,35 @@ export function turnoLabel(value: string): string {
   if (/^\d+$/.test(v)) return `T${v}`;
   return v;
 }
+
+/**
+ * Días de la semana en orden lunes→domingo. Cada índice mapea a una clave
+ * estable (`lun`, `mar`, …) y a una etiqueta corta para chips.
+ */
+export const TRANSPORTE_DIAS = [
+  { key: 'lun', label: 'L' },
+  { key: 'mar', label: 'M' },
+  { key: 'mie', label: 'X' },
+  { key: 'jue', label: 'J' },
+  { key: 'vie', label: 'V' },
+  { key: 'sab', label: 'S' },
+  { key: 'dom', label: 'D' },
+] as const;
+
+export type TransporteDia = (typeof TRANSPORTE_DIAS)[number]['key'];
+
+/**
+ * Turnos que opera cada día (calendario de cuadrillas):
+ *   T1: lunes a sábado
+ *   T2: miércoles a domingo
+ *   T3: viernes a martes
+ *   T4: domingo, lunes-martes, miércoles-jueves
+ *   T5: no documentado todavía (omitido del cálculo por día)
+ */
+export const TURNO_DIAS: Readonly<Record<TransporteTurno, ReadonlyArray<TransporteDia>>> = {
+  '1': ['lun', 'mar', 'mie', 'jue', 'vie', 'sab'],
+  '2': ['mie', 'jue', 'vie', 'sab', 'dom'],
+  '3': ['vie', 'sab', 'dom', 'lun', 'mar'],
+  '4': ['dom', 'lun', 'mar', 'mie', 'jue'],
+  '5': [],
+};

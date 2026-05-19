@@ -243,6 +243,60 @@
   font-weight: 600;
 }
 
+/* Día breakdown (lunes→domingo, mismo lenguaje visual que los turno chips) */
+
+.transporte__dias {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-xxs);
+}
+
+.transporte__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) 2px;
+  border-radius: var(--rounded-sm);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+.transporte__dia--over {
+  border-color: rgb(var(--color-error-rgb) / 0.5);
+  background: var(--color-error-tint);
+}
+
+.transporte__dia--over .transporte__dia-label,
+.transporte__dia--over .transporte__dia-count {
+  color: var(--color-error);
+}
+
+.transporte__dia-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.transporte__dia-count {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+.transporte__dia-cupo {
+  font-weight: 500;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
 /* Turno breakdown (read-only chips) */
 
 .transporte__turnos {
