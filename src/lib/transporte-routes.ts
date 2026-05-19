@@ -21,6 +21,33 @@ export const TRANSPORTE_RUTAS = [
 export type TransporteRuta = (typeof TRANSPORTE_RUTAS)[number];
 
 /**
+ * Capacidad máxima por ruta (asientos disponibles considerando los 4 turnos
+ * combinados). El cupo es **fijo y compartido** entre todos los turnos: si
+ * un turno se llena, los demás siguen disponibles hasta que el total de la
+ * ruta llegue a este número.
+ *
+ * Fuente: catálogo provisto por RH. Si más adelante hay que ajustar un cupo,
+ * se modifica acá (no requiere migración ni cambio de UI).
+ */
+export const RUTA_CAPACIDAD: Readonly<Record<TransporteRuta, number>> = {
+  'R1- QUERETARO- PIE DE LA CUESTA': 21,
+  'R2- SAN JOSE ITURBIDE': 21,
+  'R3- SAN JOSE ITURBIDE 2': 14,
+  'R4-SANTA ROSA': 21,
+  'R5- QUERETARO-AV. DE LA LUZ': 21,
+  'R6- AV. DE LA LUZ - PASEOS QUERETARO': 21,
+};
+
+/**
+ * Devuelve la capacidad declarada para una ruta del catálogo. Para rutas
+ * fuera del catálogo (datos huérfanos viejos) devuelve `null` para que el
+ * dashboard pueda renderizarlas sin barra de progreso.
+ */
+export function getRutaCapacidad(ruta: string): number | null {
+  return RUTA_CAPACIDAD[ruta as TransporteRuta] ?? null;
+}
+
+/**
  * Marcador especial para empleados que NO toman transporte (opt-out
  * explícito vs. no asignado todavía). Se almacena literal `N/A` tanto en
  * `empleados.ruta` como en `empleados.parada`. El dashboard de capacidad
@@ -68,14 +95,54 @@ export const TRANSPORTE_PARADAS = [
 export type TransporteParada = (typeof TRANSPORTE_PARADAS)[number];
 
 /**
- * Turnos canónicos. Se alinea con el `<select>` de `EmployeeModal` para que
- * el dashboard de transporte muestre las mismas categorías que el módulo
- * de empleados. `0` aparece en algunos registros administrativos viejos y
- * se incluye al final para que no se pierda.
+ * Turnos canónicos: 1, 2, 3, 4, 5. Cualquier otro valor que aparezca en
+ * datos históricos se renderiza como "extra" al final del breakdown del
+ * dashboard pero NO es una opción seleccionable en el alta de empleados.
  */
-export const TRANSPORTE_TURNOS = ['1', '2', '3', '4', 'Mixto', '0'] as const;
+export const TRANSPORTE_TURNOS = ['1', '2', '3', '4', '5'] as const;
 
 export type TransporteTurno = (typeof TRANSPORTE_TURNOS)[number];
+
+/**
+ * `empleados.turno` en Supabase guarda una **clave de horario** (no el
+ * turno final). Este mapa traduce cada clave al turno (1–5) que se muestra
+ * en el dashboard de transporte. Fuente: catálogo provisto por RH.
+ *
+ * Si llega una clave fuera de este mapa, `mapClaveHorarioToTurno` devuelve
+ * el valor crudo en lugar de tirar — así el dashboard sigue mostrando datos
+ * viejos sin perderlos, aunque queden agrupados aparte como "extras".
+ */
+export const CLAVE_HORARIO_TO_TURNO: Readonly<Record<string, TransporteTurno>> = {
+  '1': '1',
+  '26': '1',
+  '35': '1',
+  '38': '1',
+  '2': '2',
+  '6': '2',
+  '13': '2',
+  '30': '2',
+  '31': '2',
+  '32': '2',
+  '36': '2',
+  '3': '3',
+  '16': '3',
+  '4': '4',
+  '5': '5',
+  '8': '5',
+  '33': '5',
+};
+
+/**
+ * Mapea una clave de horario al turno (1–5). Si la clave no está en el
+ * catálogo, devuelve el valor original sin alterarlo (defensivo). Acepta
+ * strings tanto sin trim como con espacios alrededor.
+ */
+export function mapClaveHorarioToTurno(value: string | null | undefined): string {
+  if (value == null) return '';
+  const key = String(value).trim();
+  if (!key) return '';
+  return CLAVE_HORARIO_TO_TURNO[key] ?? key;
+}
 
 /**
  * Normaliza el nombre de una ruta para comparaciones tolerantes a espacios
@@ -142,7 +209,6 @@ export function rutaShortCode(value: string): string {
 export function turnoLabel(value: string): string {
   const v = value.trim();
   if (!v) return '—';
-  if (v === 'Mixto') return 'Mixto';
   if (/^\d+$/.test(v)) return `T${v}`;
   return v;
 }

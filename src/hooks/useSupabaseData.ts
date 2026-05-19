@@ -8,6 +8,7 @@ import type {
   Employee,
   PositionComment,
   TransporteAssignment,
+  TurnoAssignment,
 } from '@/lib/types';
 
 /**
@@ -708,6 +709,134 @@ export function useSupabaseData() {
     [employees, isConfigured]
   );
 
+  /**
+   * Aplica un lote de asignaciones de turno (clave de horario) sobre
+   * `empleados` existentes, casando por `num_empleado`. Mismo patrón
+   * que `assignTransporte`: updates en paralelo, optimistic local update,
+   * revert por registro fallido. NO crea empleados nuevos.
+   */
+  const assignTurnos = useCallback(
+    async (
+      assignments: TurnoAssignment[]
+    ): Promise<{
+      ok: boolean;
+      updated: number;
+      skipped: string[];
+      failed: Array<{ num_empleado: string; message: string }>;
+    }> => {
+      const knownNums = new Set(employees.map((e) => e.num_empleado));
+      const skipped: string[] = [];
+      const applicable: TurnoAssignment[] = [];
+      for (const a of assignments) {
+        if (knownNums.has(a.num_empleado)) {
+          applicable.push(a);
+        } else {
+          skipped.push(a.num_empleado);
+        }
+      }
+
+      const indexByNum = new Map(
+        employees.map((e, idx) => [e.num_empleado, idx] as const)
+      );
+      const updatedLocal = employees.slice();
+      for (const a of applicable) {
+        const idx = indexByNum.get(a.num_empleado);
+        if (idx == null) continue;
+        updatedLocal[idx] = { ...updatedLocal[idx], turno: a.turno };
+      }
+      setEmployees(updatedLocal);
+      saveLocal(STORAGE_KEYS.employees, updatedLocal);
+
+      if (!isConfigured) {
+        flashSaved();
+        return {
+          ok: true,
+          updated: applicable.length,
+          skipped,
+          failed: [],
+        };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const results = await Promise.allSettled(
+          applicable.map((a) =>
+            supabase
+              .from('empleados')
+              .update({ turno: a.turno })
+              .eq('num_empleado', a.num_empleado)
+          )
+        );
+
+        const failed: Array<{ num_empleado: string; message: string }> = [];
+        let succeeded = 0;
+        results.forEach((r, i) => {
+          const num = applicable[i].num_empleado;
+          if (r.status === 'rejected') {
+            failed.push({
+              num_empleado: num,
+              message: formatSupabaseError(r.reason),
+            });
+          } else if (r.value.error) {
+            failed.push({
+              num_empleado: num,
+              message: formatSupabaseError(r.value.error),
+            });
+          } else {
+            succeeded += 1;
+          }
+        });
+
+        if (failed.length > 0) {
+          const failedSet = new Set(failed.map((f) => f.num_empleado));
+          const reverted = updatedLocal.map((emp) =>
+            failedSet.has(emp.num_empleado)
+              ? {
+                  ...emp,
+                  turno:
+                    employees.find(
+                      (e) => e.num_empleado === emp.num_empleado
+                    )?.turno ?? '',
+                }
+              : emp
+          );
+          setEmployees(reverted);
+          saveLocal(STORAGE_KEYS.employees, reverted);
+          setSaveStatus('error');
+        } else {
+          flashSaved();
+        }
+
+        return {
+          ok: failed.length === 0,
+          updated: succeeded,
+          skipped,
+          failed,
+        };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn(
+          'Supabase assignTurnos failed, reverting local change:',
+          message,
+          err
+        );
+        setEmployees(employees);
+        saveLocal(STORAGE_KEYS.employees, employees);
+        setSaveStatus('error');
+        return {
+          ok: false,
+          updated: 0,
+          skipped,
+          failed: applicable.map((a) => ({
+            num_empleado: a.num_empleado,
+            message,
+          })),
+        };
+      }
+    },
+    [employees, isConfigured]
+  );
+
   return {
     employees,
     comments,
@@ -724,5 +853,6 @@ export function useSupabaseData() {
     addComment,
     purgeAllEmployees,
     assignTransporte,
+    assignTurnos,
   };
 }

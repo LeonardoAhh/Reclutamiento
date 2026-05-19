@@ -10,11 +10,13 @@ import {
   Trash2,
   ArrowUpCircle,
   ClipboardList,
+  Clock,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
+import { TurnosImporter } from '@/components/turnos/TurnosImporter';
 import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
@@ -50,6 +52,7 @@ export function Dashboard() {
     updateEmployeeIncapacidad,
     promoteEmployee,
     coverBajaForPosition,
+    assignTurnos,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -74,6 +77,7 @@ export function Dashboard() {
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
+  const [turnosImporterOpen, setTurnosImporterOpen] = useState(false);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -269,6 +273,18 @@ export function Dashboard() {
             <UserPlusIcon size={16} aria-hidden="true" />
           </button>
           <JsonImporter onImport={handleImport} />
+          <motion.button
+            type="button"
+            className="btn-secondary dashboard__report-btn"
+            onClick={() => setTurnosImporterOpen(true)}
+            title="Importar turnos por clave de horario"
+            aria-label="Importar turnos"
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Clock size={16} aria-hidden="true" />
+            <span className="dashboard__report-btn-label">Turnos</span>
+          </motion.button>
           <motion.button
             type="button"
             className="btn-secondary dashboard__report-btn"
@@ -476,6 +492,14 @@ export function Dashboard() {
         isOpen={vacancyReportOpen}
         onClose={() => setVacancyReportOpen(false)}
         positions={positionCoverage}
+      />
+
+      {/* ── Turnos Importer (clave de horario por num_empleado) ── */}
+      <TurnosImporter
+        isOpen={turnosImporterOpen}
+        onClose={() => setTurnosImporterOpen(false)}
+        employees={employees}
+        onConfirm={assignTurnos}
       />
     </main>
   );

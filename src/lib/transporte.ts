@@ -1,5 +1,6 @@
 import {
   isNaMarker,
+  mapClaveHorarioToTurno,
   matchParada,
   matchRuta,
   TRANSPORTE_NA,
@@ -215,7 +216,10 @@ export function buildRouteCapacity(
     if (emp.ruta === TRANSPORTE_NA) continue;
     const ruta = emp.ruta;
     const parada = emp.parada ?? 'Sin parada';
-    const turno = (emp.turno ?? '').trim() || '—';
+    // `empleados.turno` guarda la clave de horario (no el turno final).
+    // Mapeamos a turno 1–5 vía catálogo para que el breakdown agrupe
+    // empleados del mismo turno aunque tengan claves distintas.
+    const turno = mapClaveHorarioToTurno(emp.turno) || '—';
 
     let paradas = paradasByRuta.get(ruta);
     if (!paradas) {
