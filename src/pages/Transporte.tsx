@@ -11,6 +11,7 @@ import {
   TRANSPORTE_RUTAS,
   TRANSPORTE_TURNOS,
   TURNO_DIAS,
+  TURNO_HORARIO,
   turnoLabel,
   rutaShortCode,
 } from '@/lib/transporte-routes';
@@ -149,6 +150,20 @@ export function Transporte() {
       </section>
 
       <section
+        className="transporte__matrix-section"
+        aria-label="Capacidad por turno y día"
+      >
+        <header className="transporte__section-head">
+          <h2>Cupo por turno y día</h2>
+        </header>
+        <div className="transporte__matrix-grid">
+          {routes.map((route) => (
+            <RouteMatrix key={route.ruta} route={route} />
+          ))}
+        </div>
+      </section>
+
+      <section
         className="transporte__list"
         aria-label="Empleados con ruta asignada"
       >
@@ -252,24 +267,6 @@ function RouteCard({ route }: RouteCardProps) {
     return turnoBreakdown.filter(({ total }) => total > capacidad);
   }, [turnoBreakdown, capacidad]);
 
-  // Distribución diaria: por cada día L→D suma los turnos activos según
-  // TURNO_DIAS. cupo/día = capacidad × #turnos activos ese día; ocupados/día
-  // = suma de empleados en turnos activos. T5 queda fuera (sin calendario).
-  const diaBreakdown = useMemo(() => {
-    const occByTurno = new Map(turnoBreakdown.map((t) => [t.turno, t.total] as const));
-    return TRANSPORTE_DIAS.map(({ key, label }) => {
-      let occ = 0;
-      let cupoDia = 0;
-      for (const t of TRANSPORTE_TURNOS) {
-        const dias = TURNO_DIAS[t];
-        if (!dias.includes(key)) continue;
-        occ += occByTurno.get(t) ?? 0;
-        if (capacidad != null) cupoDia += capacidad;
-      }
-      return { key, label, occ, cupo: capacidad == null ? null : cupoDia };
-    });
-  }, [turnoBreakdown, capacidad]);
-
   // Asientos disponibles sumando solo los turnos canónicos (T1–T5). No
   // contamos los extras históricos porque no representan corridas activas.
   const availableCanonical = useMemo(() => {
@@ -322,25 +319,6 @@ function RouteCard({ route }: RouteCardProps) {
         )}
       </p>
 
-      <ul className="transporte__dias" aria-label="Cupo por día">
-        {diaBreakdown.map(({ key, label, occ, cupo }) => {
-          const diaSobre = cupo != null && occ > cupo;
-          return (
-            <li
-              key={key}
-              className={`transporte__dia${diaSobre ? ' transporte__dia--over' : ''}`}
-              title={cupo != null ? `${occ} de ${cupo}` : undefined}
-            >
-              <span className="transporte__dia-label">{label}</span>
-              <span className="transporte__dia-count">
-                {occ}
-                {cupo != null && <span className="transporte__dia-cupo">/{cupo}</span>}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-
       <ul className="transporte__turnos" aria-label="Distribución por turno">
         {turnoBreakdown.map(({ turno, total }) => {
           const turnoSobre = capacidad != null && total > capacidad;
@@ -374,6 +352,86 @@ function RouteCard({ route }: RouteCardProps) {
           </ul>
         </details>
       )}
+    </article>
+  );
+}
+
+interface RouteMatrixProps {
+  route: RouteCapacity;
+}
+
+/**
+ * Matriz turno × día por ruta. Filas T1–T4 (T5 sin calendario documentado),
+ * columnas L→D. Cada celda muestra `ocupados/cupo` cuando el turno corre ese
+ * día, o `—` cuando no.
+ */
+function RouteMatrix({ route }: RouteMatrixProps) {
+  const capacidad = getRutaCapacidad(route.ruta);
+  const occByTurno = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const t of route.turnos) m.set(t.turno, t.total);
+    return m;
+  }, [route.turnos]);
+
+  const turnosMostrar = ['1', '2', '3', '4'] as const;
+
+  return (
+    <article className="transporte__matrix">
+      <header className="transporte__matrix-head">
+        <span className="transporte__route-code">{rutaShortCode(route.ruta)}</span>
+        <h3 className="transporte__matrix-name">{route.ruta}</h3>
+      </header>
+      <table className="transporte__matrix-table">
+        <thead>
+          <tr>
+            <th scope="col" aria-label="Turno"></th>
+            {TRANSPORTE_DIAS.map(({ key, label }) => (
+              <th key={key} scope="col">
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {turnosMostrar.map((t) => {
+            const occ = occByTurno.get(t) ?? 0;
+            const dias = TURNO_DIAS[t];
+            const horario = TURNO_HORARIO[t];
+            return (
+              <tr key={t}>
+                <th scope="row" className="transporte__matrix-row-label">
+                  <span className="transporte__matrix-turno">T{t}</span>
+                  {horario && t !== '4' && (
+                    <span className="transporte__matrix-horario">{horario}</span>
+                  )}
+                </th>
+                {TRANSPORTE_DIAS.map(({ key }) => {
+                  const activo = dias.includes(key);
+                  if (!activo) {
+                    return (
+                      <td key={key} className="transporte__matrix-cell transporte__matrix-cell--off">
+                        —
+                      </td>
+                    );
+                  }
+                  const sobre = capacidad != null && occ > capacidad;
+                  return (
+                    <td
+                      key={key}
+                      className={`transporte__matrix-cell${sobre ? ' transporte__matrix-cell--over' : ''}`}
+                    >
+                      <span className="transporte__matrix-occ">{occ}</span>
+                      {capacidad != null && (
+                        <span className="transporte__matrix-cap">/{capacidad}</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </article>
   );
 }

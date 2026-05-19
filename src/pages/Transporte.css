@@ -243,58 +243,123 @@
   font-weight: 600;
 }
 
-/* Día breakdown (lunes→domingo, mismo lenguaje visual que los turno chips) */
+/* Matriz turno × día (sección independiente, una por ruta) */
 
-.transporte__dias {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.transporte__matrix-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--spacing-xxs);
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: var(--spacing-md);
 }
 
-.transporte__dia {
+.transporte__matrix {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-xs) 2px;
-  border-radius: var(--rounded-sm);
-  background: var(--color-canvas);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
 }
 
-.transporte__dia--over {
-  border-color: rgb(var(--color-error-rgb) / 0.5);
-  background: var(--color-error-tint);
+.transporte__matrix-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.transporte__dia--over .transporte__dia-label,
-.transporte__dia--over .transporte__dia-count {
+.transporte__matrix-name {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.3;
+  letter-spacing: 0.2px;
+  word-break: break-word;
+}
+
+.transporte__matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  font-size: var(--type-body-sm-size);
+}
+
+.transporte__matrix-table thead th {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.transporte__matrix-row-label {
+  text-align: left;
+  padding: 6px 8px;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.transporte__matrix-turno {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 0.3px;
+}
+
+.transporte__matrix-horario {
+  font-size: 10px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+}
+
+.transporte__matrix-cell {
+  padding: 6px 4px;
+  text-align: center;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.transporte__matrix-cell--off {
+  color: var(--color-muted-soft);
+  background: transparent;
+  border-style: dashed;
+}
+
+.transporte__matrix-cell--over {
+  border-color: rgb(var(--color-error-rgb) / 0.5);
+  background: var(--color-error-tint);
   color: var(--color-error);
 }
 
-.transporte__dia-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-muted);
-  font-weight: 600;
-}
-
-.transporte__dia-count {
+.transporte__matrix-occ {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
   color: var(--color-ink);
 }
 
-.transporte__dia-cupo {
-  font-weight: 500;
-  color: var(--color-muted);
+.transporte__matrix-cell--over .transporte__matrix-occ {
+  color: var(--color-error);
+}
+
+.transporte__matrix-cap {
   font-size: 11px;
+  color: var(--color-muted);
+  font-weight: 500;
 }
 
 /* Turno breakdown (read-only chips) */
