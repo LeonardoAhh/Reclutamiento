@@ -102,9 +102,6 @@ export function Transporte() {
       <header className="transporte__hero">
         <div className="transporte__hero-content">
           <h1>Transporte</h1>
-          <p className="transporte__hero-sub">
-            Asignación de rutas y paradas por empleado. Cupo fijo por turno.
-          </p>
         </div>
         <div className="transporte__hero-actions">
           <button
@@ -113,7 +110,6 @@ export function Transporte() {
             onClick={() => setImporterOpen(true)}
           >
             <Upload size={16} aria-hidden="true" />
-            <span>Importar JSON</span>
           </button>
         </div>
       </header>
@@ -130,18 +126,6 @@ export function Transporte() {
           value={stats.conRuta}
         />
         <StatTile
-          icon={<Users size={16} aria-hidden="true" />}
-          label="N/A"
-          value={stats.naRuta}
-          muted
-        />
-        <StatTile
-          icon={<Users size={16} aria-hidden="true" />}
-          label="Sin asignar"
-          value={stats.sinAsignar}
-          muted
-        />
-        <StatTile
           icon={<RouteIcon size={16} aria-hidden="true" />}
           label="Rutas activas"
           value={stats.rutasActivas}
@@ -154,10 +138,6 @@ export function Transporte() {
       >
         <header className="transporte__section-head">
           <h2>Capacidad por ruta</h2>
-          <p className="transporte__section-sub">
-            Cada turno corre por separado, así que el cupo aplica por turno.
-            Si un turno se rebasa, su chip se marca en rojo.
-          </p>
         </header>
         <div className="transporte__route-grid">
           {routes.map((route) => (
@@ -173,9 +153,6 @@ export function Transporte() {
         <header className="transporte__section-head transporte__section-head--with-search">
           <div>
             <h2>Empleados asignados</h2>
-            <p className="transporte__section-sub">
-              {filteredEmployees.length} de {stats.conRuta} con ruta
-            </p>
           </div>
           <div className="transporte__search">
             <Search
@@ -321,9 +298,6 @@ function RouteCard({ route }: RouteCardProps) {
           </span>
         ) : (
           <span>
-            {availableCanonical} asiento
-            {availableCanonical === 1 ? '' : 's'} disponible
-            {availableCanonical === 1 ? '' : 's'} (cupo {capacidad}/turno)
           </span>
         )}
       </p>

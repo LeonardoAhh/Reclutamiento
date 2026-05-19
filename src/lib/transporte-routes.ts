@@ -114,6 +114,9 @@ export type TransporteTurno = (typeof TRANSPORTE_TURNOS)[number];
  */
 export const CLAVE_HORARIO_TO_TURNO: Readonly<Record<string, TransporteTurno>> = {
   '1': '1',
+  '0': '5',
+  '27': '4',
+  '7': '2',
   '26': '1',
   '35': '1',
   '38': '1',
