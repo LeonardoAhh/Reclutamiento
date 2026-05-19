@@ -3,7 +3,12 @@ import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import { parseDdMmYyyy, localTodayIso } from '@/lib/dates';
 import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
-import type { Baja, Employee, PositionComment } from '@/lib/types';
+import type {
+  Baja,
+  Employee,
+  PositionComment,
+  TransporteAssignment,
+} from '@/lib/types';
 
 /**
  * Normaliza una fecha al formato ISO `YYYY-MM-DD` que las columnas `date`
@@ -558,6 +563,151 @@ export function useSupabaseData() {
     }
   }, [employees, isConfigured]);
 
+  /**
+   * Aplica un lote de asignaciones de transporte (ruta + parada) sobre
+   * `empleados` existentes, casando por `num_empleado`. No crea empleados:
+   * los registros del JSON que no existan en la plantilla actual se
+   * reportan como `skipped` y deben revisarse en el preview antes de
+   * confirmar.
+   *
+   * Updates se ejecutan en paralelo (Promise.allSettled) para que un fallo
+   * aislado no aborte el resto del lote. Devuelve un resumen con la cuenta
+   * de éxitos, fallos y números de empleado afectados, así el caller puede
+   * decidir si refrescar la lista o mostrar un toast con el detalle.
+   */
+  const assignTransporte = useCallback(
+    async (
+      assignments: TransporteAssignment[]
+    ): Promise<{
+      ok: boolean;
+      updated: number;
+      skipped: string[];
+      failed: Array<{ num_empleado: string; message: string }>;
+    }> => {
+      const knownNums = new Set(employees.map((e) => e.num_empleado));
+      const skipped: string[] = [];
+      const applicable: TransporteAssignment[] = [];
+      for (const a of assignments) {
+        if (knownNums.has(a.num_empleado)) {
+          applicable.push(a);
+        } else {
+          skipped.push(a.num_empleado);
+        }
+      }
+
+      // Optimistic local update so la UI refleja la asignación al instante.
+      // Si Supabase falla para algún registro, lo revertimos individualmente
+      // más abajo (no toda la operación) — así no perdemos los éxitos.
+      const indexByNum = new Map(
+        employees.map((e, idx) => [e.num_empleado, idx] as const)
+      );
+      const updatedLocal = employees.slice();
+      for (const a of applicable) {
+        const idx = indexByNum.get(a.num_empleado);
+        if (idx == null) continue;
+        updatedLocal[idx] = {
+          ...updatedLocal[idx],
+          ruta: a.ruta,
+          parada: a.parada,
+        };
+      }
+      setEmployees(updatedLocal);
+      saveLocal(STORAGE_KEYS.employees, updatedLocal);
+
+      if (!isConfigured) {
+        flashSaved();
+        return {
+          ok: true,
+          updated: applicable.length,
+          skipped,
+          failed: [],
+        };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const results = await Promise.allSettled(
+          applicable.map((a) =>
+            supabase
+              .from('empleados')
+              .update({ ruta: a.ruta, parada: a.parada })
+              .eq('num_empleado', a.num_empleado)
+          )
+        );
+
+        const failed: Array<{ num_empleado: string; message: string }> = [];
+        let succeeded = 0;
+        results.forEach((r, i) => {
+          const num = applicable[i].num_empleado;
+          if (r.status === 'rejected') {
+            failed.push({
+              num_empleado: num,
+              message: formatSupabaseError(r.reason),
+            });
+          } else if (r.value.error) {
+            failed.push({
+              num_empleado: num,
+              message: formatSupabaseError(r.value.error),
+            });
+          } else {
+            succeeded += 1;
+          }
+        });
+
+        // Revertimos en el state local los fallidos para que el row vuelva
+        // a verse "sin ruta" como antes del intento.
+        if (failed.length > 0) {
+          const failedSet = new Set(failed.map((f) => f.num_empleado));
+          const reverted = updatedLocal.map((emp) =>
+            failedSet.has(emp.num_empleado)
+              ? {
+                  ...emp,
+                  ruta: employees.find(
+                    (e) => e.num_empleado === emp.num_empleado
+                  )?.ruta ?? null,
+                  parada: employees.find(
+                    (e) => e.num_empleado === emp.num_empleado
+                  )?.parada ?? null,
+                }
+              : emp
+          );
+          setEmployees(reverted);
+          saveLocal(STORAGE_KEYS.employees, reverted);
+          setSaveStatus('error');
+        } else {
+          flashSaved();
+        }
+
+        return {
+          ok: failed.length === 0,
+          updated: succeeded,
+          skipped,
+          failed,
+        };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn(
+          'Supabase assignTransporte failed, reverting local change:',
+          message,
+          err
+        );
+        setEmployees(employees);
+        saveLocal(STORAGE_KEYS.employees, employees);
+        setSaveStatus('error');
+        return {
+          ok: false,
+          updated: 0,
+          skipped,
+          failed: applicable.map((a) => ({
+            num_empleado: a.num_empleado,
+            message,
+          })),
+        };
+      }
+    },
+    [employees, isConfigured]
+  );
+
   return {
     employees,
     comments,
@@ -573,5 +723,6 @@ export function useSupabaseData() {
     coverBajaForPosition,
     addComment,
     purgeAllEmployees,
+    assignTransporte,
   };
 }

@@ -8,6 +8,7 @@ const NAV_ITEMS: ReadonlyArray<{ to: string; label: string; end?: boolean }> = [
   { to: '/pipeline', label: 'Candidatos' },
   { to: '/vacantes', label: 'Vacantes' },
   { to: '/bajas', label: 'Bajas' },
+  { to: '/transporte', label: 'Transporte' },
 ];
 
 export function Header() {
