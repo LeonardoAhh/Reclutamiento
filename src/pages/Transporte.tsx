@@ -103,7 +103,7 @@ export function Transporte() {
         <div className="transporte__hero-content">
           <h1>Transporte</h1>
           <p className="transporte__hero-sub">
-            Asignación de rutas y paradas por empleado. Capacidad fija por ruta.
+            Asignación de rutas y paradas por empleado. Cupo fijo por turno.
           </p>
         </div>
         <div className="transporte__hero-actions">
@@ -155,8 +155,8 @@ export function Transporte() {
         <header className="transporte__section-head">
           <h2>Capacidad por ruta</h2>
           <p className="transporte__section-sub">
-            Cupo total compartido entre los 4 turnos. Cuando se llena la ruta,
-            no se puede asignar a más personal.
+            Cada turno corre por separado, así que el cupo aplica por turno.
+            Si un turno se rebasa, su chip se marca en rojo.
           </p>
         </header>
         <div className="transporte__route-grid">
@@ -245,8 +245,10 @@ interface RouteCardProps {
 }
 
 function RouteCard({ route }: RouteCardProps) {
-  // Mantiene el orden canónico de turnos (1–4) y mueve al final cualquier
-  // valor inesperado que haya quedado en datos históricos.
+  // Mantiene el orden canónico de turnos (1–5) y mueve al final cualquier
+  // valor inesperado que haya quedado en datos históricos. Cada turno se
+  // compara individualmente contra el cupo de la ruta (el cupo aplica por
+  // turno, no compartido entre turnos).
   const turnoBreakdown = useMemo(() => {
     const byTurno = new Map(route.turnos.map((t) => [t.turno, t.total] as const));
     const ordered: Array<{ turno: string; total: number }> = [];
@@ -263,17 +265,32 @@ function RouteCard({ route }: RouteCardProps) {
 
   const capacidad = getRutaCapacidad(route.ruta);
   const occupied = route.total;
-  const available =
-    capacidad != null ? Math.max(capacidad - occupied, 0) : null;
-  const overflow =
-    capacidad != null && occupied > capacidad ? occupied - capacidad : 0;
-  const percent =
-    capacidad != null && capacidad > 0
-      ? Math.min((occupied / capacidad) * 100, 100)
-      : 0;
-  const overCapacity = overflow > 0;
-  const status: 'libre' | 'lleno' | 'sobre' =
-    overCapacity ? 'sobre' : available === 0 ? 'lleno' : 'libre';
+
+  // Turnos que rebasan el cupo individual. Solo aplica si la ruta está en
+  // el catálogo (capacidad != null).
+  const turnosSobre = useMemo(() => {
+    if (capacidad == null) return [] as Array<{ turno: string; total: number }>;
+    return turnoBreakdown.filter(({ total }) => total > capacidad);
+  }, [turnoBreakdown, capacidad]);
+
+  // Asientos disponibles sumando solo los turnos canónicos (T1–T5). No
+  // contamos los extras históricos porque no representan corridas activas.
+  const availableCanonical = useMemo(() => {
+    if (capacidad == null) return null;
+    let total = 0;
+    for (const t of TRANSPORTE_TURNOS) {
+      const occ = turnoBreakdown.find((x) => x.turno === t)?.total ?? 0;
+      total += Math.max(capacidad - occ, 0);
+    }
+    return total;
+  }, [turnoBreakdown, capacidad]);
+
+  const overCapacity = turnosSobre.length > 0;
+  const status: 'libre' | 'lleno' | 'sobre' = overCapacity
+    ? 'sobre'
+    : availableCanonical === 0
+      ? 'lleno'
+      : 'libre';
 
   return (
     <article
@@ -285,32 +302,12 @@ function RouteCard({ route }: RouteCardProps) {
         <h3 className="transporte__route-name">{route.ruta}</h3>
         <span
           className="transporte__route-total"
-          aria-label={
-            capacidad != null
-              ? `${occupied} de ${capacidad} asientos ocupados`
-              : `${occupied} empleados asignados`
-          }
+          aria-label={`${occupied} empleados asignados a la ruta`}
         >
           <strong>{occupied}</strong>
-          {capacidad != null && (
-            <span className="transporte__route-cap">/ {capacidad}</span>
-          )}
         </span>
       </header>
 
-      <div
-        className="transporte__bar"
-        role="progressbar"
-        aria-valuenow={occupied}
-        aria-valuemin={0}
-        aria-valuemax={capacidad ?? undefined}
-        aria-label="Ocupación total de la ruta"
-      >
-        <div
-          className="transporte__bar-fill"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
       <p className="transporte__route-foot">
         {capacidad == null ? (
           <span className="transporte__turno-hint">
@@ -318,23 +315,37 @@ function RouteCard({ route }: RouteCardProps) {
           </span>
         ) : overCapacity ? (
           <span className="transporte__turno-over-msg">
-            {overflow} sobre el cupo
+            {turnosSobre.length} turno
+            {turnosSobre.length === 1 ? '' : 's'} sobre el cupo:{' '}
+            {turnosSobre.map((t) => turnoLabel(t.turno)).join(', ')}
           </span>
         ) : (
           <span>
-            {available} asiento{available === 1 ? '' : 's'} disponible
-            {available === 1 ? '' : 's'}
+            {availableCanonical} asiento
+            {availableCanonical === 1 ? '' : 's'} disponible
+            {availableCanonical === 1 ? '' : 's'} (cupo {capacidad}/turno)
           </span>
         )}
       </p>
 
       <ul className="transporte__turnos" aria-label="Distribución por turno">
-        {turnoBreakdown.map(({ turno, total }) => (
-          <li key={turno} className="transporte__turno">
-            <span className="transporte__turno-label">{turnoLabel(turno)}</span>
-            <span className="transporte__turno-count">{total}</span>
-          </li>
-        ))}
+        {turnoBreakdown.map(({ turno, total }) => {
+          const turnoSobre = capacidad != null && total > capacidad;
+          return (
+            <li
+              key={turno}
+              className={`transporte__turno${turnoSobre ? ' transporte__turno--over' : ''}`}
+              title={
+                capacidad != null
+                  ? `${total} de ${capacidad} asientos en turno ${turno}`
+                  : undefined
+              }
+            >
+              <span className="transporte__turno-label">{turnoLabel(turno)}</span>
+              <span className="transporte__turno-count">{total}</span>
+            </li>
+          );
+        })}
       </ul>
 
       {route.paradas.length > 0 && (

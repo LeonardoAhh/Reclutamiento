@@ -222,32 +222,7 @@
   font-weight: 700;
 }
 
-/* Capacity bar (total per route) */
-
-.transporte__bar {
-  position: relative;
-  height: 6px;
-  border-radius: var(--rounded-pill);
-  background: var(--color-hairline-soft);
-  overflow: hidden;
-}
-
-.transporte__bar-fill {
-  position: absolute;
-  inset: 0;
-  width: 0%;
-  background: var(--color-primary);
-  border-radius: inherit;
-  transition: width var(--transition-base);
-}
-
-.transporte__route--lleno .transporte__bar-fill {
-  background: var(--color-warning, var(--color-primary));
-}
-
-.transporte__route--sobre .transporte__bar-fill {
-  background: var(--color-error);
-}
+/* Route status (cupo per-turno: rojo si algún chip excede) */
 
 .transporte__route--sobre {
   border-color: rgb(var(--color-error-rgb) / 0.4);
@@ -288,6 +263,16 @@
   border-radius: var(--rounded-sm);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
+}
+
+.transporte__turno--over {
+  border-color: rgb(var(--color-error-rgb) / 0.5);
+  background: var(--color-error-tint);
+}
+
+.transporte__turno--over .transporte__turno-label,
+.transporte__turno--over .transporte__turno-count {
+  color: var(--color-error);
 }
 
 .transporte__turno-label {
@@ -358,14 +343,6 @@
   font-family: var(--font-code);
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
-}
-
-.transporte__route-cap {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-muted);
-  font-weight: 500;
-  margin-left: 2px;
 }
 
 /* ── Search ────────────────────────────────────────────── */
