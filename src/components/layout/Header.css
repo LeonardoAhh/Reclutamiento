@@ -4,7 +4,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 64px;
+  height: calc(64px + var(--safe-area-top));
+  padding-top: var(--safe-area-top);
   background: var(--color-header-glass);
   border-bottom: 1px solid var(--color-hairline);
   backdrop-filter: blur(12px);
@@ -15,7 +16,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100%;
+  height: 64px;
+  gap: var(--spacing-sm);
 }
 
 .app-header__brand {
@@ -102,13 +104,43 @@
   border-left: 1px solid var(--color-hairline-soft);
 }
 
-@media (max-width: 640px) {
+/* ── Tablet/mobile: nav scrolls horizontally so todos los enlaces siguen
+   accesibles aun cuando el header se aprieta. ── */
+@media (max-width: 768px) {
+  .app-header__nav {
+    gap: var(--spacing-xs);
+    min-width: 0;
+  }
+
+  .app-header__nav-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-header__nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
   .app-header__nav-item {
     padding: var(--spacing-xs) var(--spacing-sm);
     letter-spacing: 0;
     text-transform: none;
+    white-space: nowrap;
   }
+
   .app-header__actions {
     padding-left: var(--spacing-xs);
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header__title {
+    font-size: var(--type-caption-md-size);
   }
 }

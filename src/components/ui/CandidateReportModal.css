@@ -54,7 +54,7 @@
 }
 
 .candidate-report-modal__big-number--success {
-  color: var(--color-success, #22c55e);
+  color: var(--color-success);
 }
 
 .candidate-report-modal__big-number--muted {
@@ -212,12 +212,12 @@
 }
 
 .candidate-report-modal__badge--e1 {
-  background: var(--color-accent-amber-tint, rgb(232 165 90 / 0.18));
+  background: rgb(var(--color-accent-amber-rgb) / 0.18);
   color: var(--color-accent-amber);
 }
 
 .candidate-report-modal__badge--e2 {
-  background: var(--color-accent-teal-tint, rgb(93 184 166 / 0.18));
+  background: rgb(var(--color-accent-teal-rgb) / 0.18);
   color: var(--color-accent-teal);
 }
 
@@ -232,8 +232,8 @@
 }
 
 .candidate-report-modal__badge--hired {
-  background: rgb(34 197 94 / 0.18);
-  color: var(--color-success, #22c55e);
+  background: var(--color-success-tint);
+  color: var(--color-success);
 }
 
 .candidate-report-modal__contratados {
@@ -326,9 +326,9 @@
   border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
   color: var(--color-ink);
-  font-family: var(--font-mono, var(--font-display));
+  font-family: var(--font-code);
   font-size: var(--type-body-sm-size);
-  line-height: 1.5;
+  line-height: var(--type-body-sm-line);
   white-space: pre-wrap;
   word-break: break-word;
   max-height: 220px;
