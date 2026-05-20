@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/hooks/useAuth';
 import '@/styles/global.css';
 import App from './App';
+import { registerServiceWorker } from './pwa';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,3 +15,5 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+registerServiceWorker();

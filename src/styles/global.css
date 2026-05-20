@@ -47,6 +47,8 @@
   --color-primary-rgb: 204 120 92;
   --color-error-rgb: 198 69 69;
   --color-success-rgb: 93 184 114;
+  --color-accent-teal-rgb: 93 184 166;
+  --color-accent-amber-rgb: 232 165 90;
   --color-ink-rgb: 20 20 19;
   --color-canvas-rgb: 250 249 245;
 
@@ -139,6 +141,17 @@
   --control-height: 40px;
   --control-padding-x: var(--spacing-md);
   --control-padding-y: 10px;
+
+  /* ── Safe-area (notch/home-indicator support en PWA standalone) ── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* ── Container width tokens ── */
+  --container-max: 1200px;
+  --container-padding: var(--spacing-lg);
+  --container-padding-mobile: var(--spacing-md);
 
   /* ── Spacing ── */
   --spacing-xxs: 4px;
@@ -399,9 +412,18 @@ strong, b {
    ======================================== */
 
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+  padding: 0 var(--container-padding);
+  padding-left: max(var(--container-padding), var(--safe-area-left));
+  padding-right: max(var(--container-padding), var(--safe-area-right));
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: max(var(--container-padding-mobile), var(--safe-area-left));
+    padding-right: max(var(--container-padding-mobile), var(--safe-area-right));
+  }
 }
 
 .text-muted {
@@ -879,9 +901,5 @@ strong, b {
 
   h3 {
     font-size: var(--type-heading-md-size);
-  }
-
-  .container {
-    padding: 0 var(--spacing-md);
   }
 }

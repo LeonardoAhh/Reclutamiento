@@ -3,11 +3,12 @@
 .kanban {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 280px;
+  grid-auto-columns: minmax(260px, 320px);
   gap: var(--spacing-md);
   overflow-x: auto;
   padding-bottom: var(--spacing-md);
   scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 
 .kanban-col {
@@ -216,7 +217,7 @@
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
-  font-size: 11px;
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -275,7 +276,7 @@
 .kanban-card__action-btn--primary {
   color: var(--color-primary);
   border-color: var(--color-primary);
-  background: var(--color-primary-tint, var(--color-canvas));
+  background: var(--color-surface-soft);
 }
 
 .kanban-card__action-btn--primary:hover {
@@ -289,15 +290,15 @@
 .kanban-card__hired-tag {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--spacing-xxs);
   margin-left: auto;
-  padding: 0 6px;
+  padding: 0 var(--spacing-xs);
   height: 18px;
   border-radius: var(--rounded-pill);
-  background: var(--color-success-tint, var(--color-surface-soft));
-  color: var(--color-accent-teal, var(--color-success));
+  background: var(--color-success-tint);
+  color: var(--color-accent-teal);
   border: 1px solid var(--color-hairline-soft);
-  font-size: 11px;
+  font-size: var(--type-caption-md-size);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -312,24 +313,36 @@
   right: -4px;
   min-width: 14px;
   height: 14px;
-  padding: 0 4px;
+  padding: 0 var(--spacing-xxs);
   border-radius: var(--rounded-pill);
   background: var(--color-primary);
   color: var(--color-on-primary);
-  font-size: 10px;
+  font-size: var(--type-caption-md-size);
   font-weight: 700;
   line-height: 14px;
   text-align: center;
 }
 
-/* ── Responsive: stack columns on small viewports ── */
+/* ── Responsive ── */
+/* Tablet: columnas levemente más angostas, scroll horizontal con snap */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .kanban {
+    grid-auto-columns: minmax(240px, 1fr);
+  }
+}
+
+/* Mobile: stack columns en vertical, full width */
 @media (max-width: 640px) {
   .kanban {
     grid-auto-flow: row;
     grid-auto-columns: auto;
     grid-template-columns: 1fr;
+    scroll-snap-type: none;
   }
   .kanban-col {
     max-height: none;
+  }
+  .kanban-col__body {
+    max-height: 60vh;
   }
 }
