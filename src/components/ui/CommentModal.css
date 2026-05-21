@@ -84,3 +84,32 @@
   color: var(--color-muted-soft);
   text-align: right;
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   CandidateNotesModal — ajustes específicos cuando el modal corre
+   en modo full-screen mobile (clase `modal-fullscreen-mobile`).
+   El comportamiento de pantalla completa lo aporta global.css.
+   Aquí garantizamos safe-area lateral en la lista y formulario, y
+   espacio inferior para no quedar tapados por el bottom tab bar.
+   ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .candidate-notes-modal .modal-comments-list,
+  .candidate-notes-modal .modal-form {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
+
+  .candidate-notes-modal .modal-form {
+    padding-bottom: calc(
+      var(--spacing-lg) + var(--safe-area-bottom) + var(--tab-bar-height, 0px)
+    );
+  }
+
+  .candidate-notes-modal .modal-form__actions {
+    flex-wrap: wrap;
+  }
+
+  .candidate-notes-modal .modal-form__actions > button {
+    flex: 1 1 auto;
+  }
+}
