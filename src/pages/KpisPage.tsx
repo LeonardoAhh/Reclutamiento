@@ -436,7 +436,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
         className="kpis-page__grid"
         aria-label="KPIs consolidados"
       >
-        {cards.map((card) => {
+        {cards.map((card, index) => {
           const revealed = reveal.isRevealed(card.id);
           const isWeeklyCard = card.id === 'kpi-ingresos-semana';
           const isInProcessCard = card.id === 'stat-pipeline-activo';
@@ -449,6 +449,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
               revealed={revealed}
               onReveal={() => reveal.reveal(card.id)}
               onHide={() => reveal.hide(card.id)}
+              style={{ '--kpi-stack-i': index } as React.CSSProperties}
             >
               <div className="kpis-page__card">
                 <span className="kpis-page__origin">{card.origin}</span>

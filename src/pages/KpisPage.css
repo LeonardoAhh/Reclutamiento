@@ -2,10 +2,13 @@
    KpisPage — pantalla única que consolida los 17 KPIs.
 
    Mobile-first:
-     base (320px+)  → stack vertical (una card por fila, scroll Y nativo de
-                       la página). Sin carrusel: lectura lineal, mejor a11y.
-     768px+         → grid 3 columnas, hero en row
-     1200px+        → grid 4 columnas
+     base (320px+)  → sticky stacking cards. Cada KpiReveal hace `position:
+                       sticky` con `top` escalonado por `--kpi-stack-i` (peek
+                       de cards previas). Scroll-driven animation
+                       (`animation-timeline: view()`) encoge la card mientras
+                       la siguiente la cubre. Sin JS.
+     768px+         → grid 3 columnas, posición estática, sin animación.
+     1200px+        → grid 4 columnas.
    ───────────────────────────────────────────────────────────────────────── */
 
 .kpis-page {
@@ -48,15 +51,40 @@
 }
 
 /* ── Grid de KPIs ───────────────────────────────────────────────────── */
-/* Mobile (<768px): stack vertical. Una card por fila, la página scrollea Y. */
+/* Mobile (<768px): sticky stacking cards. */
 .kpis-page__grid {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  padding-bottom: var(--spacing-xl);
 }
 
+/* Cada card es sticky; `top` escalonado por su índice (`--kpi-stack-i`)
+   para que las previas asomen por arriba a medida que la siguiente las cubre. */
 .kpis-page__grid > .kpi-reveal {
   width: 100%;
+  position: sticky;
+  top: calc(var(--spacing-md) + var(--kpi-stack-i, 0) * var(--kpi-stack-step, 8px));
+  transform-origin: top center;
+  will-change: transform;
+}
+
+/* Scroll-driven scale-down: encoge la card mientras sale (queda cubierta
+   por la siguiente sticky). Progressive enhancement: navegadores sin
+   `animation-timeline` mantienen el sticky stack sin animación. */
+@supports (animation-timeline: view()) {
+  .kpis-page__grid > .kpi-reveal {
+    animation: kpi-stack-shrink linear both;
+    animation-timeline: view();
+    animation-range: exit -20% exit 60%;
+  }
+}
+
+@keyframes kpi-stack-shrink {
+  to {
+    transform: scale(0.92);
+    opacity: 0.88;
+  }
 }
 
 /* ── Card wrapper ───────────────────────────────────────────────────── */
@@ -143,10 +171,18 @@
   .kpis-page__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-bottom: 0;
   }
 
+  /* Desktop: layout estático, sin sticky stack ni scroll-driven animation. */
   .kpis-page__grid > .kpi-reveal {
     width: auto;
+    position: static;
+    top: auto;
+    animation: none;
+    transform: none;
+    opacity: 1;
+    will-change: auto;
   }
 }
 
@@ -168,5 +204,7 @@
 @media (prefers-reduced-motion: reduce) {
   .kpis-page__grid > .kpi-reveal {
     transition: none;
+    animation: none;
+    transform: none;
   }
 }
