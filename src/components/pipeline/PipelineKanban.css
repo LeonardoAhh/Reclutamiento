@@ -345,4 +345,16 @@
   .kanban-col__body {
     max-height: 60vh;
   }
+  .kanban-card__action-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Touch pointers (móviles, tablets) — touch targets mínimos 44×44. */
+@media (pointer: coarse) {
+  .kanban-card__action-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

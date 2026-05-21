@@ -1,0 +1,68 @@
+/* PWAStatus — toasts/banners no bloqueantes para offline + SW update. */
+
+.pwa-status {
+  position: fixed;
+  left: max(var(--spacing-md), var(--safe-area-left));
+  right: max(var(--spacing-md), var(--safe-area-right));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-elevated);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  z-index: 1100;
+  max-width: min(560px, 96vw);
+  margin: 0 auto;
+}
+
+.pwa-status--offline {
+  top: calc(64px + var(--safe-area-top) + var(--spacing-sm));
+  background: var(--color-vacancy-tint);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.pwa-status--update {
+  bottom: calc(var(--safe-area-bottom) + var(--spacing-md));
+  background: var(--color-surface-soft);
+}
+
+.pwa-status__action {
+  margin-left: auto;
+}
+
+.pwa-status__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.pwa-status__dismiss:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+}
+
+.pwa-status__dismiss:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+@media (max-width: 480px) {
+  .pwa-status {
+    font-size: var(--type-caption-md-size);
+    padding: var(--spacing-xs);
+  }
+}

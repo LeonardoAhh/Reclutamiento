@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
+import { PWAStatus } from '@/components/ui/PWAStatus';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { Dashboard } from '@/pages/Dashboard';
@@ -31,7 +32,9 @@ function ProtectedShell({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <Routes>
+    <>
+      <PWAStatus />
+      <Routes>
       <Route
         path="/login"
         element={
@@ -91,7 +94,8 @@ function App() {
       <Route path="/kpis" element={<Navigate to="/" replace />} />
       {/* /settings deshabilitada: cualquier navegación cae al fallback. */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      </Routes>
+    </>
   );
 }
 
