@@ -208,7 +208,7 @@ export function AreaDetailModal({
       title={dept.area}
       subtitle="Detalle por sección"
       onClose={onClose}
-      className="area-detail-modal"
+      className="area-detail-modal modal-fullscreen-mobile"
       labelledById="area-detail-title"
     >
       <div className="area-detail-modal__summary" aria-hidden={false}>

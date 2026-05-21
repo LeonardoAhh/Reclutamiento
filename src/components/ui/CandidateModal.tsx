@@ -203,7 +203,7 @@ export function CandidateModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidate-modal"
+      className="candidate-modal modal-fullscreen-mobile"
       icon={icon}
       title={title}
       subtitle={subtitle}

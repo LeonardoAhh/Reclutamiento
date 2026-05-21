@@ -681,6 +681,71 @@ strong, b {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Modal — utilidad "inside" full-screen en mobile.
+   Aplicar añadiendo la clase `modal-fullscreen-mobile` al className del
+   componente <Modal>. En desktop/tablet (≥768px) el modal sigue centrado
+   con su tamaño habitual; en mobile (≤767px) ocupa toda la pantalla
+   sin border-radius, simulando una página "dentro" de la app.
+   Preserva accesibilidad (focus trap + Esc + scroll lock) — sólo cambia
+   el tratamiento visual.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .modal-overlay:has(> .modal-content.modal-fullscreen-mobile) {
+    padding: 0;
+    align-items: stretch;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .modal-content.modal-fullscreen-mobile {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    /* dvh respeta la UI dinámica del navegador (barras de iOS/Android). */
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    animation: modalFullscreenMobileIn var(--transition-base);
+  }
+
+  /* Safe-area top en el header para que el notch no tape el título. */
+  .modal-content.modal-fullscreen-mobile > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
+
+  /* Body con safe-area inferior + espacio para el bottom tab bar de la PWA
+     (mantiene los botones de acción accesibles encima de la barra). */
+  .modal-content.modal-fullscreen-mobile > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(
+      var(--spacing-lg) + var(--safe-area-bottom) + var(--tab-bar-height, 0px)
+    );
+  }
+}
+
+@keyframes modalFullscreenMobileIn {
+  from {
+    opacity: 0;
+    transform: translateX(6%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content.modal-fullscreen-mobile {
+    animation: none;
+  }
+}
+
 /* ── Modal animations ── */
 @keyframes fadeIn {
   from { opacity: 0; }
