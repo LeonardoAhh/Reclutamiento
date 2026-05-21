@@ -178,12 +178,12 @@
 }
 
 .vacancy-report-modal__badge--active {
-  background: var(--color-error-tint, rgb(var(--color-error-rgb, 224 76 76) / 0.12));
+  background: color-mix(in srgb, var(--color-error) 12%, var(--color-canvas));
   color: var(--color-error);
 }
 
 .vacancy-report-modal__badge--backup {
-  background: var(--color-accent-amber-tint, rgb(232 165 90 / 0.18));
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
   color: var(--color-accent-amber);
 }
 
@@ -246,4 +246,35 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Mobile (≤767px): el reporte en mobile sólo expone el preview del
+   mensaje y los CTAs (copiar / abrir WhatsApp). Los stats y el desglose
+   por área son contexto más relevante en desktop — en mobile satura
+   sin aportar valor sobre el preview, que ya contiene la información.
+   ────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .vacancy-report-modal__summary,
+  .vacancy-report-modal__groups {
+    display: none;
+  }
+
+  /* El preview queda como primer elemento: quitar el separador superior
+     y dar más alto al área scroll del mensaje (toma el espacio que antes
+     ocupaban los stats + groups). */
+  .vacancy-report-modal__preview {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .vacancy-report-modal__preview-text {
+    max-height: 55dvh;
+  }
+
+  /* Acciones de ancho completo para alcance del pulgar. */
+  .vacancy-report-modal__footer > .vacancy-report-modal__action {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
 }
