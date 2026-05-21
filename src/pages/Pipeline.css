@@ -674,26 +674,27 @@
   flex-wrap: wrap;
 }
 
-/* ── Responsive card-list breakpoints ── */
-@media (max-width: 1024px) {
-  /* tablet: hide dates column, keep status visible inline */
-  .pipeline__ccard {
-    grid-template-columns: 40px minmax(160px, 1.4fr) minmax(140px, 1fr) minmax(140px, 200px) auto;
-  }
-  .pipeline__ccard-dates-col {
-    display: none;
-  }
+/* ── Responsive card-list breakpoints ──
+   En tablet preferimos un layout basado en `grid-template-areas` con la
+   columna de nombre auto-apilando puesto/área debajo via flex column. Eso
+   evita depender de subgrid (poco soportado) y soporta nombres largos sin
+   romper el resto del row. */
+
+/* Sub-stack dentro de la columna name: nombre arriba, puesto debajo. */
+.pipeline__ccard-name-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-@media (max-width: 768px) {
-  /* tablet small: 2 cols (avatar+name|status), puesto/dates ocultos.
-     Actions wrap a la siguiente línea (full width). */
+@media (max-width: 1024px) {
+  /* Tablet: oculta dates-col, baja puesto/área bajo el nombre. */
   .pipeline__ccard {
-    grid-template-columns: 40px minmax(0, 1fr) minmax(140px, auto);
+    grid-template-columns: 40px minmax(0, 1.4fr) minmax(140px, 200px) auto;
     grid-template-areas:
-      "avatar name status"
-      "actions actions actions";
-    row-gap: var(--spacing-xs);
+      "avatar name status actions";
+    column-gap: var(--spacing-sm);
   }
   .pipeline__ccard-avatar {
     grid-area: avatar;
@@ -706,16 +707,43 @@
   }
   .pipeline__ccard-actions-col {
     grid-area: actions;
+  }
+  .pipeline__ccard-puesto-col,
+  .pipeline__ccard-dates-col {
+    display: none;
+  }
+  /* Mostrar puesto debajo del nombre como segunda línea (sin layout shift). */
+  .pipeline__ccard-name-col::after {
+    content: attr(data-puesto-area);
+    font-size: var(--type-caption-md-size);
+    color: var(--color-muted);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Tablet small: 3 cols (avatar | name+puesto | status); actions saltan
+     a una segunda fila full-width. */
+  .pipeline__ccard {
+    grid-template-columns: 40px minmax(0, 1fr) minmax(120px, auto);
+    grid-template-areas:
+      "avatar name status"
+      "actions actions actions";
+    row-gap: var(--spacing-xs);
+  }
+  .pipeline__ccard-actions-col {
     justify-content: flex-start;
     padding-top: var(--spacing-xs);
     border-top: 1px dashed var(--color-hairline-soft);
   }
-  .pipeline__ccard-puesto-col {
-    display: none;
-  }
 }
 
 @media (max-width: 480px) {
+  /* Mobile: name + avatar arriba, status full-width, actions full-width.
+     Botones se agrandan a 44×44 (Apple HIG touch target). */
   .pipeline__ccard {
     grid-template-columns: 36px minmax(0, 1fr);
     grid-template-areas:
@@ -729,6 +757,19 @@
     min-height: 28px;
   }
   .pipeline__icon-btn {
+    width: 44px;
+    height: 44px;
     margin-left: 0;
+  }
+  .pipeline__ccard-actions-col {
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Cualquier puntero coarse (touch) recibe el mismo tamao mínimo. */
+@media (pointer: coarse) {
+  .pipeline__icon-btn {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

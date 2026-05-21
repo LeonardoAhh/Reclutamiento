@@ -519,7 +519,10 @@ export function Pipeline() {
                 >
                   {initials}
                 </div>
-                <div className="pipeline__ccard-name-col">
+                <div
+                  className="pipeline__ccard-name-col"
+                  data-puesto-area={`${c.puesto} · ${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`}
+                >
                   <div className="pipeline__name">{c.nombre}</div>
                   <div className="pipeline__contact">
                     {c.telefono || c.email || '—'}
