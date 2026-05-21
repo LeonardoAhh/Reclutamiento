@@ -11,7 +11,7 @@ import {
   EyeOff,
   Plus,
 } from 'lucide-react';
-import { VacancyModal } from '@/components/ui/VacancyModal';
+import { VacancySheet } from '@/components/ui/VacancySheet';
 import {
   VacancyStatusBadge,
   VacancyPriorityBadge,
@@ -39,7 +39,7 @@ import './Vacantes.css';
 
 const FILTERS_STORAGE_KEY = 'vacantes_filters_v1';
 
-type ModalMode = 'add' | 'edit' | 'delete' | null;
+type SheetMode = 'add' | 'edit' | 'delete' | null;
 
 interface VacancyMetrics {
   diasAbierta: number;
@@ -78,7 +78,7 @@ export function Vacantes() {
   } = useVacancyRequests();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [modalMode, setModalMode] = useState<ModalMode>(null);
+  const [sheetMode, setSheetMode] = useState<SheetMode>(null);
   const [selected, setSelected] = useState<VacancyRequest | null>(null);
   const [filters, setFilters] = useState<VacancyFilterState>(() => {
     try {
@@ -162,21 +162,21 @@ export function Vacantes() {
 
   function openAdd() {
     setSelected(null);
-    setModalMode('add');
+    setSheetMode('add');
   }
 
   function openEdit(v: VacancyRequest) {
     setSelected(v);
-    setModalMode('edit');
+    setSheetMode('edit');
   }
 
   function openDelete(v: VacancyRequest) {
     setSelected(v);
-    setModalMode('delete');
+    setSheetMode('delete');
   }
 
-  function closeModal() {
-    setModalMode(null);
+  function closeSheet() {
+    setSheetMode(null);
     setSelected(null);
   }
 
@@ -277,7 +277,7 @@ export function Vacantes() {
         </section>
       )}
 
-      {/* ── Tabla ── */}
+      {/* ── Lista de vacantes (mobile-first cards / desktop table) ── */}
       {filtered.length === 0 ? (
         <section className="pipeline__empty">
           <div className="pipeline__empty-icon" aria-hidden="true">
@@ -300,111 +300,141 @@ export function Vacantes() {
           </div>
         </section>
       ) : (
-        <section className="pipeline__table-wrap" aria-label="Tabla de vacantes">
-          <table className="pipeline__table">
-            <thead>
-              <tr>
-                <th scope="col">Puesto · Área</th>
-                <th scope="col">Status</th>
-                <th scope="col">Prior.</th>
-                <th scope="col">Reclutador</th>
-                <th scope="col">Fuente</th>
-                <th scope="col">Apertura</th>
-                <th scope="col">Tiempo</th>
-                <th scope="col" className="pipeline__th--actions">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(({ vacancy: v, metrics: m }) => {
-                const excluded = !!v.excluida_indicador;
-                const rowCls = [
-                  excluded ? 'vacantes__row--excluded' : '',
-                  m.vencida && !excluded ? 'vacantes__row--overdue' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
-                return (
-                  <tr key={v.id ?? `${v.puesto}-${v.fecha_apertura}`} className={rowCls}>
-                    <td>
-                      <div className="pipeline__puesto">{v.puesto}</div>
-                      <div className="pipeline__area">
-                        {v.area}
-                        {v.seccion ? ` · ${v.seccion}` : ''}
-                      </div>
-                      {excluded && (
-                        <div className="vacantes__excluded-tag" title={v.motivo_exclusion ?? ''}>
-                          <EyeOff size={11} aria-hidden="true" />
-                          Excluida: {v.motivo_exclusion || 'sin motivo'}
+        <>
+          {/* Mobile: tarjetas verticales. */}
+          <section
+            className="vacantes__cards"
+            aria-label="Lista de vacantes"
+          >
+            {filtered.map(({ vacancy: v, metrics: m }) => (
+              <VacancyCard
+                key={v.id ?? `${v.puesto}-${v.fecha_apertura}`}
+                vacancy={v}
+                metrics={m}
+                onEdit={() => openEdit(v)}
+                onDelete={() => openDelete(v)}
+                onStatusChange={(status) => handleStatusChange(v, status)}
+              />
+            ))}
+          </section>
+
+          {/* Desktop: tabla densa. */}
+          <section
+            className="pipeline__table-wrap vacantes__table"
+            aria-label="Tabla de vacantes"
+          >
+            <table className="pipeline__table">
+              <thead>
+                <tr>
+                  <th scope="col">Puesto · Área</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Prior.</th>
+                  <th scope="col">Reclutador</th>
+                  <th scope="col">Fuente</th>
+                  <th scope="col">Apertura</th>
+                  <th scope="col">Tiempo</th>
+                  <th scope="col" className="pipeline__th--actions">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(({ vacancy: v, metrics: m }) => {
+                  const excluded = !!v.excluida_indicador;
+                  const rowCls = [
+                    excluded ? 'vacantes__row--excluded' : '',
+                    m.vencida && !excluded ? 'vacantes__row--overdue' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ');
+                  return (
+                    <tr key={v.id ?? `${v.puesto}-${v.fecha_apertura}`} className={rowCls}>
+                      <td>
+                        <div className="pipeline__puesto">{v.puesto}</div>
+                        <div className="pipeline__area">
+                          {v.area}
+                          {v.seccion ? ` · ${v.seccion}` : ''}
                         </div>
-                      )}
-                    </td>
-                    <td className="pipeline__cell-status">
-                      <VacancyStatusBadge status={v.status} />
-                      <label className="sr-only" htmlFor={`vstatus-${v.id}`}>
-                        Cambiar status de la vacante de {v.puesto}
-                      </label>
-                      <select
-                        id={`vstatus-${v.id}`}
-                        className="pipeline__status-select"
-                        value={v.status}
-                        onChange={(e) =>
-                          handleStatusChange(v, e.target.value as VacancyStatus)
-                        }
-                        aria-label={`Cambiar status de la vacante de ${v.puesto}`}
-                      >
-                        {VACANCY_STATUSES.map((s) => (
-                          <option key={s} value={s}>
-                            {VACANCY_STATUS_LABEL[s]}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      <VacancyPriorityBadge priority={v.prioridad} />
-                    </td>
-                    <td>{v.reclutador_asignado || '—'}</td>
-                    <td>{v.fuente_planeada || '—'}</td>
-                    <td>{formatShortDate(v.fecha_apertura)}</td>
-                    <td>
-                      <SlaCell metrics={m} status={v.status} excluded={excluded} />
-                    </td>
-                    <td className="pipeline__cell-actions">
-                      <button
-                        type="button"
-                        className="pipeline__icon-btn"
-                        onClick={() => openEdit(v)}
-                        aria-label={`Editar vacante de ${v.puesto}`}
-                        title="Editar"
-                      >
-                        <Pencil size={16} aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        className="pipeline__icon-btn pipeline__icon-btn--danger"
-                        onClick={() => openDelete(v)}
-                        aria-label={`Eliminar vacante de ${v.puesto}`}
-                        title="Eliminar"
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
+                        {excluded && (
+                          <div
+                            className="vacantes__excluded-tag"
+                            title={v.motivo_exclusion ?? ''}
+                          >
+                            <EyeOff size={11} aria-hidden="true" />
+                            Excluida: {v.motivo_exclusion || 'sin motivo'}
+                          </div>
+                        )}
+                      </td>
+                      <td className="pipeline__cell-status">
+                        <VacancyStatusBadge status={v.status} />
+                        <label className="sr-only" htmlFor={`vstatus-${v.id}`}>
+                          Cambiar status de la vacante de {v.puesto}
+                        </label>
+                        <select
+                          id={`vstatus-${v.id}`}
+                          className="pipeline__status-select"
+                          value={v.status}
+                          onChange={(e) =>
+                            handleStatusChange(v, e.target.value as VacancyStatus)
+                          }
+                          aria-label={`Cambiar status de la vacante de ${v.puesto}`}
+                        >
+                          {VACANCY_STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                              {VACANCY_STATUS_LABEL[s]}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <VacancyPriorityBadge priority={v.prioridad} />
+                      </td>
+                      <td>{v.reclutador_asignado || '—'}</td>
+                      <td>{v.fuente_planeada || '—'}</td>
+                      <td>{formatShortDate(v.fecha_apertura)}</td>
+                      <td>
+                        <SlaCell
+                          metrics={m}
+                          status={v.status}
+                          excluded={excluded}
+                        />
+                      </td>
+                      <td className="pipeline__cell-actions">
+                        <button
+                          type="button"
+                          className="pipeline__icon-btn"
+                          onClick={() => openEdit(v)}
+                          aria-label={`Editar vacante de ${v.puesto}`}
+                          title="Editar"
+                        >
+                          <Pencil size={16} aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          className="pipeline__icon-btn pipeline__icon-btn--danger"
+                          onClick={() => openDelete(v)}
+                          aria-label={`Eliminar vacante de ${v.puesto}`}
+                          title="Eliminar"
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </section>
+        </>
       )}
 
-      {/* ── Modal add/edit/delete ── */}
-      <VacancyModal
-        isOpen={modalMode !== null}
-        mode={modalMode === 'edit' ? 'edit' : modalMode === 'delete' ? 'delete' : 'add'}
+      {/* ── Sheet add/edit/delete ── */}
+      <VacancySheet
+        isOpen={sheetMode !== null}
+        mode={sheetMode === 'edit' ? 'edit' : sheetMode === 'delete' ? 'delete' : 'add'}
         vacancy={selected}
         history={selected?.id ? getHistoryFor(selected.id) : undefined}
-        onClose={closeModal}
+        onClose={closeSheet}
         onSave={handleSave}
         onDelete={deleteVacancy}
       />
@@ -466,5 +496,122 @@ function SlaCell({
       <Activity size={12} aria-hidden="true" />
       {metrics.diasAbierta}/{metrics.sla}
     </span>
+  );
+}
+
+/**
+ * Tarjeta de vacante para vista mobile. Renderiza la misma información que
+ * una fila de la tabla pero apilada verticalmente, con áreas de toque amplias
+ * para edit/delete y un select-overlay sobre el badge de status para cambio
+ * inline. Visible sólo por debajo del breakpoint de tabla (ver Vacantes.css).
+ */
+function VacancyCard({
+  vacancy: v,
+  metrics: m,
+  onEdit,
+  onDelete,
+  onStatusChange,
+}: {
+  vacancy: VacancyRequest;
+  metrics: VacancyMetrics;
+  onEdit: () => void;
+  onDelete: () => void;
+  onStatusChange: (status: VacancyStatus) => void;
+}) {
+  const excluded = !!v.excluida_indicador;
+  const overdue = m.vencida && !excluded;
+  const cardCls = [
+    'vacantes__card',
+    excluded ? 'vacantes__card--excluded' : '',
+    overdue ? 'vacantes__card--overdue' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <article className={cardCls} aria-label={`Vacante de ${v.puesto}`}>
+      <header className="vacantes__card-head">
+        <div className="vacantes__card-title">
+          <div className="pipeline__puesto">{v.puesto}</div>
+          <div className="pipeline__area">
+            {v.area}
+            {v.seccion ? ` · ${v.seccion}` : ''}
+          </div>
+          {excluded && (
+            <div
+              className="vacantes__excluded-tag"
+              title={v.motivo_exclusion ?? ''}
+            >
+              <EyeOff size={11} aria-hidden="true" />
+              Excluida: {v.motivo_exclusion || 'sin motivo'}
+            </div>
+          )}
+        </div>
+        <VacancyPriorityBadge priority={v.prioridad} />
+      </header>
+
+      <dl className="vacantes__card-meta">
+        <div className="vacantes__card-meta-row">
+          <dt>Reclutador</dt>
+          <dd>{v.reclutador_asignado || '—'}</dd>
+        </div>
+        <div className="vacantes__card-meta-row">
+          <dt>Fuente</dt>
+          <dd>{v.fuente_planeada || '—'}</dd>
+        </div>
+        <div className="vacantes__card-meta-row">
+          <dt>Apertura</dt>
+          <dd>{formatShortDate(v.fecha_apertura)}</dd>
+        </div>
+        <div className="vacantes__card-meta-row">
+          <dt>Tiempo</dt>
+          <dd>
+            <SlaCell metrics={m} status={v.status} excluded={excluded} />
+          </dd>
+        </div>
+      </dl>
+
+      <footer className="vacantes__card-actions">
+        <div className="vacantes__card-status pipeline__cell-status">
+          <VacancyStatusBadge status={v.status} />
+          <label className="sr-only" htmlFor={`vstatus-card-${v.id}`}>
+            Cambiar status de la vacante de {v.puesto}
+          </label>
+          <select
+            id={`vstatus-card-${v.id}`}
+            className="pipeline__status-select"
+            value={v.status}
+            onChange={(e) => onStatusChange(e.target.value as VacancyStatus)}
+            aria-label={`Cambiar status de la vacante de ${v.puesto}`}
+          >
+            {VACANCY_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {VACANCY_STATUS_LABEL[s]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="vacantes__card-buttons">
+          <button
+            type="button"
+            className="pipeline__icon-btn"
+            onClick={onEdit}
+            aria-label={`Editar vacante de ${v.puesto}`}
+            title="Editar"
+          >
+            <Pencil size={16} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="pipeline__icon-btn pipeline__icon-btn--danger"
+            onClick={onDelete}
+            aria-label={`Eliminar vacante de ${v.puesto}`}
+            title="Eliminar"
+          >
+            <Trash2 size={16} aria-hidden="true" />
+          </button>
+        </div>
+      </footer>
+    </article>
   );
 }
