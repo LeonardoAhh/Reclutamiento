@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
-import { Modal } from './Modal';
+import { Sheet } from './Sheet';
 import type { Baja } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
 
-interface CubrirVacanteModalProps {
+interface CubrirVacanteSheetProps {
   isOpen: boolean;
   baja: Baja | null;
   onClose: () => void;
@@ -17,13 +17,13 @@ interface CubrirVacanteModalProps {
   onClear?: (num_empleado: string) => Promise<{ ok: boolean; message?: string }>;
 }
 
-export function CubrirVacanteModal({
+export function CubrirVacanteSheet({
   isOpen,
   baja,
   onClose,
   onSave,
   onClear,
-}: CubrirVacanteModalProps) {
+}: CubrirVacanteSheetProps) {
   const [fecha, setFecha] = useState<string>('');
   const [nota, setNota] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
@@ -79,10 +79,12 @@ export function CubrirVacanteModal({
   const isMarcada = Boolean(baja.cubierta_manual);
 
   return (
-    <Modal
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
-      className="incapacidad-modal"
+      className="cubrir-vacante-sheet"
+      side="right"
+      width="sm"
       icon={
         <CheckCircle2
           size={20}
@@ -93,7 +95,8 @@ export function CubrirVacanteModal({
       title={isMarcada ? 'Cobertura de vacante' : 'Marcar vacante como cubierta'}
       subtitle={`${baja.nombre} · #${baja.num_empleado}`}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+      <form onSubmit={handleSubmit} className="cubrir-vacante-sheet__form" noValidate>
+        <div className="sheet__body">
         <div className="incapacidad-modal__meta">
           <span>
             <strong>{baja.puesto}</strong>
@@ -136,17 +139,17 @@ export function CubrirVacanteModal({
           </div>
         )}
 
-        <div className="modal-footer">
+        </div>
+        <footer className="sheet__footer cubrir-vacante-sheet__footer">
           {isMarcada && onClear && (
             <button
               type="button"
-              className="btn-secondary"
+              className="btn-secondary cubrir-vacante-sheet__clear"
               onClick={handleClear}
               disabled={submitting}
-              style={{ marginRight: 'auto' }}
             >
               <Trash2 size={14} aria-hidden="true" />
-              <span style={{ marginLeft: 4 }}>Quitar cobertura</span>
+              <span>Quitar cobertura</span>
             </button>
           )}
           <button
@@ -160,8 +163,8 @@ export function CubrirVacanteModal({
           <button type="submit" className="btn-primary" disabled={submitting}>
             {submitting ? 'Guardando…' : isMarcada ? 'Actualizar' : 'Marcar cubierta'}
           </button>
-        </div>
+        </footer>
       </form>
-    </Modal>
+    </Sheet>
   );
 }

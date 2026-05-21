@@ -3,7 +3,7 @@ import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
-import './EmployeeModal.css';
+import './EmployeeSheet.css';
 
 interface HireCandidateModalProps {
   isOpen: boolean;

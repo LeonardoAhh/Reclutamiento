@@ -1,4 +1,4 @@
-/* RequisicionModal — formato de requisición de personal imprimible.
+/* RequisicionSheet — formato de requisición de personal imprimible.
  *
  * Layout: dos hojas A4 verticales.
  *   - Hoja 1: encabezado + datos de la baja + datos de la solicitud
@@ -6,25 +6,23 @@
  *             + leyenda ghost + firmas.
  *   - Hoja 2: candidato propuesto (llenado a mano) + firmas de cierre.
  *
- * En `@media print` el modal queda oculto y solo se imprime el portal:
+ * En `@media print` el sheet queda oculto y solo se imprime el portal:
  * cada `<article>` con clase `.requisicion-doc__page` corresponde a una
  * hoja real (`page-break-after: always` salvo la última).
+ *
+ * Tokens-only: todos los colores, fuentes, spacing, radios y sombras
+ * provienen de variables (--color-*, --type-*, --spacing-*, --rounded-*).
  */
 
-.modal-content.requisicion-modal {
-  max-width: 880px;
-  width: 100%;
-}
-
-.requisicion-modal__body {
+.requisicion-sheet__body {
   background: var(--color-surface-soft);
 }
 
-.requisicion-modal__footer {
+.requisicion-sheet__footer {
   border-top: 1px solid var(--color-hairline);
 }
 
-.requisicion-modal__btn-label {
+.requisicion-sheet__btn-label {
   margin-left: var(--spacing-xxs);
 }
 

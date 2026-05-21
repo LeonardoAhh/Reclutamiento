@@ -1,14 +1,46 @@
-/* EmployeeModal — add/delete employee (shared modal styles in global.css) */
+/* EmployeeSheet — add/delete employee. Tokens-only.
+   Includes shared `.delete-warning__*` y `.hire-hint` reutilizados por
+   otros componentes (VacancySheet, CandidateModal, HireCandidateModal).
+   Conserva `.modal-content.employee-modal` para que `HireCandidateModal`
+   (basado todavía en `Modal`) mantenga su ancho compacto. */
 
-.employee-modal {
+.modal-content.employee-modal {
   max-width: 560px;
 }
 
-/* Prevent selects from overflowing modal */
-.employee-modal .form-group select {
+/* ── Layout interno del Sheet ── */
+.employee-sheet__form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Grid mobile-first: 1 columna por defecto, 2 columnas en ≥768px. */
+.employee-sheet .form-grid {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+.employee-sheet .form-group--span-2 {
+  grid-column: 1 / -1;
+}
+
+.employee-sheet__baja-grid {
+  margin-top: var(--spacing-lg);
+}
+
+/* Selects: ancho fluido, sin overflow. */
+.employee-sheet .form-group select {
   width: 100%;
   min-width: 0;
   text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .employee-sheet .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ── Delete confirmation ── */

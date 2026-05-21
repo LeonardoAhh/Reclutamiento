@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, FileText } from 'lucide-react';
-import { Modal } from './Modal';
+import { Sheet } from './Sheet';
 import type {
   AuthorizedPosition,
   Baja,
@@ -12,7 +12,7 @@ import { HABILIDADES_PUESTOS } from '@/lib/constants';
 import { usePositions } from '@/lib/positions';
 import { formatShortDate, localTodayIso } from '@/lib/dates';
 import { normalizePuesto, normalizeString } from '@/lib/utils';
-import './RequisicionModal.css';
+import './RequisicionSheet.css';
 
 /**
  * Busca la configuración del puesto en la PLANTILLA_AUTORIZADA usando la
@@ -65,7 +65,7 @@ const MXN_FORMATTER = new Intl.NumberFormat('es-MX', {
   maximumFractionDigits: 0,
 });
 
-interface RequisicionModalProps {
+interface RequisicionSheetProps {
   isOpen: boolean;
   baja: Baja | null;
   /** Empleados activos: se busca el turno por `num_empleado`. */
@@ -87,13 +87,13 @@ interface RequisicionModalProps {
  *    sobre la cadena de ancestros del modal y elimina el desbordamiento
  *    al sacar el documento de cualquier contenedor con scroll.
  */
-export function RequisicionModal({
+export function RequisicionSheet({
   isOpen,
   baja,
   employees,
   codigo,
   onClose,
-}: RequisicionModalProps) {
+}: RequisicionSheetProps) {
   // Mientras el modal esté abierto, marcamos `<html>` para que las reglas
   // de print sepan que existe un nodo imprimible montado. Útil para
   // depurar y para reforzar la regla "ocultar todo menos el portal".
@@ -128,27 +128,28 @@ export function RequisicionModal({
 
   return (
     <>
-      <Modal
+      <Sheet
         isOpen={isOpen}
         onClose={onClose}
-        className="requisicion-modal"
-        labelledById="requisicion-modal-title"
+        className="requisicion-sheet"
+        side="right"
+        width="lg"
         icon={<FileText size={20} aria-hidden="true" />}
         title="Requisición de Personal"
         subtitle={codigo ?? '—'}
       >
-        <div className="modal-body requisicion-modal__body">{doc}</div>
+        <div className="sheet__body requisicion-sheet__body">{doc}</div>
 
-        <div className="modal-footer requisicion-modal__footer">
+        <footer className="sheet__footer requisicion-sheet__footer">
           <button type="button" className="btn-secondary" onClick={onClose}>
             Cerrar
           </button>
           <button type="button" className="btn-primary" onClick={handlePrint}>
             <Printer size={14} aria-hidden="true" />
-            <span className="requisicion-modal__btn-label">Imprimir</span>
+            <span className="requisicion-sheet__btn-label">Imprimir</span>
           </button>
-        </div>
-      </Modal>
+        </footer>
+      </Sheet>
 
       {isOpen &&
         createPortal(

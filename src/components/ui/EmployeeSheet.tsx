@@ -8,16 +8,19 @@ import {
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
-import { Modal } from './Modal';
-import './EmployeeModal.css';
+import { Sheet } from './Sheet';
+import './EmployeeSheet.css';
 
-interface EmployeeModalProps {
+interface EmployeeSheetProps {
   isOpen: boolean;
   mode: 'add' | 'delete';
   employee?: Employee | null;
   onClose: () => void;
   onSave?: (emp: Employee) => Promise<{ ok: boolean; message?: string }> | void;
-  onDelete?: (num_empleado: string, bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }) => Promise<{ ok: boolean; message?: string }> | void;
+  onDelete?: (
+    num_empleado: string,
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+  ) => Promise<{ ok: boolean; message?: string }> | void;
 }
 
 type FormState = Pick<
@@ -49,14 +52,14 @@ function emptyForm(): FormState {
   };
 }
 
-export function EmployeeModal({
+export function EmployeeSheet({
   isOpen,
   mode,
   employee,
   onClose,
   onSave,
   onDelete,
-}: EmployeeModalProps) {
+}: EmployeeSheetProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -169,10 +172,12 @@ export function EmployeeModal({
   const isAdd = mode === 'add';
 
   return (
-    <Modal
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
-      className="employee-modal"
+      className="employee-sheet"
+      side="right"
+      width={isAdd ? 'md' : 'sm'}
       icon={
         isAdd ? (
           <UserPlus size={20} className="color-primary" aria-hidden="true" />
@@ -183,7 +188,8 @@ export function EmployeeModal({
       title={isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado'}
       subtitle={isAdd ? 'Alta de Empleado' : 'Baja de Empleado'}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+      <form onSubmit={handleSubmit} className="employee-sheet__form" noValidate>
+        <div className="sheet__body">
         {isAdd ? (
           <>
             <div className="form-grid">
@@ -350,7 +356,7 @@ export function EmployeeModal({
               <p className="delete-warning__sub">El empleado será eliminado de la plantilla activa y enviado a la tabla de Bajas.</p>
             </div>
 
-            <div className="form-grid" style={{ marginTop: 'var(--spacing-lg)' }}>
+            <div className="form-grid employee-sheet__baja-grid">
               <div className="form-group">
                 <label htmlFor="baja-fecha">Fecha de Baja</label>
                 <input
@@ -376,7 +382,7 @@ export function EmployeeModal({
                   <option value="Solo Inducción">Solo Inducción</option>
                 </select>
               </div>
-              <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <div className="form-group form-group--span-2">
                 <label htmlFor="baja-motivo">Motivo de Baja</label>
                 <input
                   id="baja-motivo"
@@ -396,21 +402,35 @@ export function EmployeeModal({
           <p className="form-error" role="alert">{errorMsg}</p>
         )}
 
-        <footer className="modal-footer">
-          <button type="button" className="btn-secondary" onClick={onClose} disabled={submitting}>
+        </div>
+        <footer className="sheet__footer">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onClose}
+            disabled={submitting}
+          >
             Cancelar
           </button>
           {isAdd ? (
-            <button type="submit" className="btn-primary" disabled={!isAddValid || submitting}>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={!isAddValid || submitting}
+            >
               {submitting ? 'Guardando…' : 'Guardar empleado'}
             </button>
           ) : (
-            <button type="submit" className="btn-danger" disabled={!isDeleteValid || submitting}>
+            <button
+              type="submit"
+              className="btn-danger"
+              disabled={!isDeleteValid || submitting}
+            >
               {submitting ? 'Registrando baja…' : 'Registrar Baja'}
             </button>
           )}
         </footer>
       </form>
-    </Modal>
+    </Sheet>
   );
 }
