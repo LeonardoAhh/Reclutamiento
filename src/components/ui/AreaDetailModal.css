@@ -1,24 +1,25 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   AreaDetailModal — wider modal with tabbed sections inside an area.
+   AreaDetailSheet — detail con tabs por sección dentro de un área.
 
-   En desktop/tablet (≥ 768px) se comporta como modal centrado.
-   En mobile (≤ 767px) se transforma en un "inside" full-screen: ocupa
-   toda la viewport, sin border-radius, sin scrim padding, animación
-   slide-in horizontal. La X de cierre actúa como "back" visual.
+   Mobile-first: usa el componente Sheet (bottom sheet en mobile,
+   drawer derecho ancho en desktop) para cohesión con EmployeeSheet,
+   RequisicionSheet, CubrirVacanteSheet. Tokens-only, sin hardcodes.
+
+   - Mobile (≤767px): Sheet sube desde abajo (Sheet.css base), ocupa
+     hasta 92dvh; tabs scrollables horizontal; summary stack vertical.
+   - Desktop (≥768px): override del ancho del drawer derecho para
+     acomodar la tabla con muchas columnas (96vw, máx. 1080px).
    ───────────────────────────────────────────────────────────────────────── */
 
-.modal-content.area-detail-modal {
-  max-width: min(1080px, 96vw);
-  max-height: min(88vh, 820px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+.sheet.area-detail-sheet > .area-detail-modal__summary,
+.sheet.area-detail-sheet > .area-detail-modal__tabs {
+  flex: 0 0 auto;
 }
 
-.modal-content.area-detail-modal > .modal-header,
-.modal-content.area-detail-modal > .area-detail-modal__summary,
-.modal-content.area-detail-modal > .area-detail-modal__tabs {
-  flex: 0 0 auto;
+@media (min-width: 768px) {
+  .sheet.area-detail-sheet.sheet--right {
+    width: min(96vw, 1080px);
+  }
 }
 
 .area-detail-modal__summary {
@@ -187,7 +188,7 @@
 
 /* ── Tab panel ── */
 .area-detail-modal__panel {
-  /* Toma toda la altura sobrante del modal y delega el scroll al wrapper
+  /* Toma toda la altura sobrante del Sheet y delega el scroll al wrapper
      interno para que tabs y header sigan anclados arriba. */
   flex: 1 1 auto;
   min-height: 0;
@@ -214,10 +215,9 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────
-   Mobile (≤767px): el comportamiento full-screen "inside" lo aporta la
-   clase utilitaria `.modal-fullscreen-mobile` definida en global.css.
-   Aquí sólo aplicamos ajustes específicos del AreaDetail (stack del
-   summary, padding lateral de tabs, espacio inferior del table wrapper).
+   Mobile (≤767px): el Sheet ya provee bottom-sheet con safe-area-bottom
+   y padding lateral en header. Aquí sólo ajustamos summary y tabs para
+   stack vertical + safe-area lateral, y un colchón al final del panel.
    ─────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
   /* Tabs scrollan junto al summary; conservan safe-area lateral. */
@@ -250,11 +250,10 @@
     font-size: var(--type-body-md-size);
   }
 
-  /* El panel respira hasta el final con safe-area-bottom + espacio para
-     el bottom tab bar (la tab bar mide --tab-bar-height). */
+  /* Colchón al final del panel: el Sheet ya añade safe-area-bottom a
+     nivel de superficie; aquí sólo evitamos que la última fila quede
+     pegada al borde inferior. */
   .area-detail-modal__table-wrapper {
-    padding-bottom: calc(
-      var(--tab-bar-height, 64px) + var(--safe-area-bottom) + var(--spacing-md)
-    );
+    padding-bottom: var(--spacing-md);
   }
 }

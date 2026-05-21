@@ -5,7 +5,7 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Modal } from './Modal';
+import { Sheet } from './Sheet';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
@@ -203,13 +203,14 @@ export function AreaDetailModal({
         };
 
   return (
-    <Modal
+    <Sheet
       isOpen={isOpen}
       title={dept.area}
       subtitle="Detalle por sección"
       onClose={onClose}
-      className="area-detail-modal modal-fullscreen-mobile"
-      labelledById="area-detail-title"
+      className="area-detail-sheet"
+      side="right"
+      width="lg"
     >
       <div className="area-detail-modal__summary" aria-hidden={false}>
         <div className="area-detail-modal__summary-stats">
@@ -471,6 +472,6 @@ export function AreaDetailModal({
           </div>
         )}
       </div>
-    </Modal>
+    </Sheet>
   );
 }
