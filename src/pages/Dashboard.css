@@ -78,8 +78,13 @@
 
 .dashboard__search {
   position: relative;
-  flex: 1 1 260px;
+  /* En column direction (base/mobile) NO usamos flex-basis: 260px porque
+     aplica al eje principal (altura) e infla el container a 260px de alto,
+     dejando el input al top y el search-icon flotando en el medio.
+     En row direction (≥768px) sí queremos flex-basis 260px (ver más abajo). */
+  flex: 0 0 auto;
   min-width: 0;
+  width: 100%;
 }
 
 .dashboard__search-icon {
@@ -565,6 +570,12 @@
   .dashboard__controls {
     flex-direction: row;
     align-items: center;
+  }
+
+  /* En row direction el search vuelve a su tamaño flexible original. */
+  .dashboard__search {
+    flex: 1 1 260px;
+    width: auto;
   }
 
   .dashboard__filter,
