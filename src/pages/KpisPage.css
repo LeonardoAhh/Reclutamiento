@@ -14,15 +14,27 @@
 .kpis-page {
   padding-top: var(--spacing-lg);
   padding-bottom: var(--spacing-xxl);
+  /* Altura aproximada del hero apilado en mobile (título + botón Incognito
+     + gap). Usado para offsetear el `top` sticky de cada card de modo que
+     se acomoden debajo del hero fijo. Ajustable sin tocar JS. */
+  --kpi-hero-h: 6.5rem;
 }
 
 /* ── Hero (título + acciones) ───────────────────────────────────────── */
+/* Mobile: hero pegado al top mientras las cards se apilan debajo. */
 .kpis-page__hero {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--color-canvas);
+  padding-block: var(--spacing-sm);
+  margin-inline: calc(-1 * var(--container-padding-mobile, var(--spacing-md)));
+  padding-inline: var(--container-padding-mobile, var(--spacing-md));
 }
 
 .kpis-page__title {
@@ -60,13 +72,15 @@
 }
 
 /* Cada card es sticky; `top` escalonado por su índice (`--kpi-stack-i`)
-   para que las previas asomen por arriba a medida que la siguiente las cubre. */
+   y offset por la altura del hero sticky (`--kpi-hero-h`) para que las
+   previas asomen por arriba a medida que la siguiente las cubre. */
 .kpis-page__grid > .kpi-reveal {
   width: 100%;
   position: sticky;
-  top: calc(var(--spacing-md) + var(--kpi-stack-i, 0) * var(--kpi-stack-step, 8px));
+  top: calc(var(--kpi-hero-h) + var(--spacing-sm) + var(--kpi-stack-i, 0) * var(--kpi-stack-step, 8px));
   transform-origin: top center;
   will-change: transform;
+  z-index: 1;
 }
 
 /* Scroll-driven scale-down: encoge la card mientras sale (queda cubierta
@@ -151,12 +165,20 @@
     padding-top: var(--spacing-xl);
   }
 
+  /* Desktop: el hero vuelve a ser un encabezado normal (sin sticky). */
   .kpis-page__hero {
     flex-direction: row;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
     margin-bottom: var(--spacing-xl);
+    position: static;
+    top: auto;
+    z-index: auto;
+    background: transparent;
+    padding-block: 0;
+    margin-inline: 0;
+    padding-inline: 0;
   }
 
   .kpis-page__title {
