@@ -1,9 +1,13 @@
-/* AreaDetailModal — wider modal with tabbed sections inside an area */
+/* ─────────────────────────────────────────────────────────────────────────
+   AreaDetailModal — wider modal with tabbed sections inside an area.
+
+   En desktop/tablet (≥ 768px) se comporta como modal centrado.
+   En mobile (≤ 767px) se transforma en un "inside" full-screen: ocupa
+   toda la viewport, sin border-radius, sin scrim padding, animación
+   slide-in horizontal. La X de cierre actúa como "back" visual.
+   ───────────────────────────────────────────────────────────────────────── */
 
 .modal-content.area-detail-modal {
-  /* Adapta el ancho a las tablas internas. El modal define un alto máximo
-     y delega el scroll al panel interno; header/summary/tabs quedan
-     anclados y nunca se comprimen ni se cortan. */
   max-width: min(1080px, 96vw);
   max-height: min(88vh, 820px);
   display: flex;
@@ -38,7 +42,7 @@
 .area-detail-modal__stat {
   display: inline-flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--spacing-xxs);
   line-height: 1.1;
 }
 
@@ -57,10 +61,11 @@
 .area-detail-modal__stat-sep {
   color: var(--color-muted-soft);
   font-weight: 400;
-  margin: 0 2px;
+  margin: 0 var(--spacing-xxs);
 }
 
 .area-detail-modal__stat-label {
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
   text-transform: uppercase;
@@ -100,8 +105,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  height: 36px;
-  padding: 0 var(--spacing-md);
+  min-height: 44px;
+  padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--rounded-md) var(--rounded-md) 0 0;
   border: none;
   background: transparent;
@@ -140,11 +145,12 @@
   align-items: center;
   justify-content: center;
   min-width: 22px;
-  padding: 0 6px;
+  padding: 0 var(--spacing-xs);
   height: 18px;
   border-radius: var(--rounded-pill);
   background: var(--color-hairline);
   color: var(--color-muted);
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -158,12 +164,13 @@
 .area-detail-modal__tab-incapacidad {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xxs);
   height: 18px;
-  padding: 0 6px;
+  padding: 0 var(--spacing-xs);
   border-radius: var(--rounded-pill);
   background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
   color: var(--color-accent-amber);
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -175,7 +182,7 @@
 
 .area-detail-modal__stat-label svg {
   vertical-align: -1px;
-  margin-right: 2px;
+  margin-right: var(--spacing-xxs);
 }
 
 /* ── Tab panel ── */
@@ -202,32 +209,98 @@
   justify-content: center;
   padding: var(--spacing-xl);
   color: var(--color-muted-soft);
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
+/* ─────────────────────────────────────────────────────────────────────
+   Mobile "inside" (full-screen sheet): ≤ 767px
+   ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* El overlay se vuelve transparente y sin padding — la sheet ocupa todo. */
+  .modal-overlay:has(> .modal-content.area-detail-modal) {
+    padding: 0;
+    align-items: stretch;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .modal-content.area-detail-modal {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    /* Slide-in horizontal para sensación de "navegación" entre pantallas. */
+    animation: area-detail-slide-in var(--transition-base);
+  }
+
+  /* Safe-area en el header (notch). El .modal-header viene del estilo
+     global; aquí extendemos el padding para respetar el inset top. El
+     header ya está anclado por el flex column del contenedor (no scrolla). */
+  .modal-content.area-detail-modal > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    background: var(--color-canvas);
+  }
+
+  /* Tabs scrollan junto al summary; conservan safe-area lateral. */
+  .area-detail-modal__tabs {
+    padding-left: max(var(--spacing-md), var(--safe-area-left));
+    padding-right: max(var(--spacing-md), var(--safe-area-right));
+  }
+
+  /* Summary: stats stack para evitar overflow horizontal. */
   .area-detail-modal__summary {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-md);
+    padding-left: max(var(--spacing-md), var(--safe-area-left));
+    padding-right: max(var(--spacing-md), var(--safe-area-right));
   }
+
   .area-detail-modal__summary-cobertura {
     width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
   }
-  .area-detail-modal__tab {
-    padding: 0 var(--spacing-sm);
+
+  .area-detail-modal__summary-stats {
+    gap: var(--spacing-md);
+    width: 100%;
+  }
+
+  .area-detail-modal__stat-value {
+    font-size: var(--type-body-md-size);
+  }
+
+  /* El panel respira hasta el final con safe-area-bottom + espacio para
+     el bottom tab bar (la tab bar mide --tab-bar-height). */
+  .area-detail-modal__table-wrapper {
+    padding-bottom: calc(
+      var(--tab-bar-height, 64px) + var(--safe-area-bottom) + var(--spacing-md)
+    );
   }
 }
 
-@media (max-width: 480px) {
+@keyframes area-detail-slide-in {
+  from {
+    transform: translateX(8%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Respeta el prefers-reduced-motion del usuario. */
+@media (prefers-reduced-motion: reduce) {
   .modal-content.area-detail-modal {
-    max-width: 100%;
-    max-height: 92vh;
-  }
-  .area-detail-modal__summary-stats {
-    gap: var(--spacing-md);
-  }
-  .area-detail-modal__stat-value {
-    font-size: var(--type-body-md-size);
+    animation: none;
   }
 }
