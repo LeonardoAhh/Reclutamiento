@@ -153,6 +153,9 @@
   --container-padding: var(--spacing-lg);
   --container-padding-mobile: var(--spacing-md);
 
+  /* ── Bottom tab-bar (mobile/PWA) ── */
+  --tab-bar-height: 64px;
+
   /* ── Spacing ── */
   --spacing-xxs: 4px;
   --spacing-xs: 8px;
@@ -274,6 +277,14 @@ body {
   transition:
     background-color var(--transition-base),
     color var(--transition-base);
+}
+
+/* En mobile/PWA el bottom tab-bar ocupa espacio fijo. El body recibe
+   padding-bottom para que el último contenido no quede tapado. */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom));
+  }
 }
 
 /* Prevent transition flash on initial theme application */

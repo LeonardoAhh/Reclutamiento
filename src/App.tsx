@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
+import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
@@ -25,6 +26,7 @@ function ProtectedShell({ children }: { children: ReactNode }) {
       <PositionsProvider>
         <Header />
         {children}
+        <BottomTabBar />
       </PositionsProvider>
     </AuthGuard>
   );
