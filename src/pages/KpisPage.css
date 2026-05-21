@@ -2,14 +2,10 @@
    KpisPage — pantalla única que consolida los 17 KPIs.
 
    Mobile-first:
-     base (320px+)  → carrusel horizontal scroll-snap; card centrada se
-                       expande (scale + sombra), vecinas en peek.
+     base (320px+)  → stack vertical (una card por fila, scroll Y nativo de
+                       la página). Sin carrusel: lectura lineal, mejor a11y.
      768px+         → grid 3 columnas, hero en row
      1200px+        → grid 4 columnas
-
-   El carrusel mobile usa `scroll-snap-type: x mandatory` puro CSS — sin
-   librerías de gestos. La card "activa" se detecta vía
-   `useActiveSnapItem` (IntersectionObserver) y se marca con `is-active`.
    ───────────────────────────────────────────────────────────────────────── */
 
 .kpis-page {
@@ -51,51 +47,16 @@
   width: 100%;
 }
 
-/* ── Grid / Carrusel de KPIs ────────────────────────────────────────── */
-/* Mobile (<768px): carrusel horizontal scroll-snap.
-   - `flex` + `overflow-x: auto` para deslizar.
-   - `scroll-snap-type: x mandatory` para anclar al centro.
-   - `scroll-padding-inline` deja peek de la card vecina.
-   - El usuario también puede tabular y la card activa será la enfocada
-     porque al recibir foco el navegador hace `scroll-into-view`. */
+/* ── Grid de KPIs ───────────────────────────────────────────────────── */
+/* Mobile (<768px): stack vertical. Una card por fila, la página scrollea Y. */
 .kpis-page__grid {
   display: flex;
-  flex-wrap: nowrap;
+  flex-direction: column;
   gap: var(--spacing-md);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-lg);
-  margin: 0 calc(-1 * var(--spacing-md));
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-.kpis-page__grid::-webkit-scrollbar {
-  display: none;
-}
-
-/* Cada `KpiReveal` (root del item) controla el snap + transición. */
 .kpis-page__grid > .kpi-reveal {
-  flex: 0 0 82%;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  transform-origin: center center;
-  transition:
-    transform var(--transition-base),
-    opacity var(--transition-base);
-  transform: scale(0.94);
-  opacity: 0.72;
-}
-
-.kpis-page__grid > .kpi-reveal.is-active {
-  transform: scale(1);
-  opacity: 1;
-}
-
-/* La card visual interior recibe la sombra elevada cuando es la activa. */
-.kpis-page__grid > .kpi-reveal.is-active .stat-card {
-  box-shadow: var(--shadow-card);
+  width: 100%;
 }
 
 /* ── Card wrapper ───────────────────────────────────────────────────── */
@@ -156,16 +117,7 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Tablet landscape phone (≥ 560px) ────────────────────────────────
-   Reduce el ancho de la card activa y deja peek más amplio: la pantalla
-   da espacio para mostrar ~1.6 cards. */
-@media (min-width: 560px) {
-  .kpis-page__grid > .kpi-reveal {
-    flex-basis: 64%;
-  }
-}
-
-/* ── Tablet portrait (≥ 768px) — vuelve a grid clásico ──────────────── */
+/* ── Tablet portrait (≥ 768px) — grid clásico ───────────────────────── */
 @media (min-width: 768px) {
   .kpis-page {
     padding-top: var(--spacing-xl);
@@ -191,23 +143,10 @@
   .kpis-page__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    overflow: visible;
-    scroll-snap-type: none;
-    padding: 0;
-    margin: 0;
   }
 
-  /* En desktop ya no hay carrusel: anula scale/opacity para que se vean
-     todas las cards al 100%. */
   .kpis-page__grid > .kpi-reveal {
-    flex: initial;
-    transform: none;
-    opacity: 1;
-    scroll-snap-align: none;
-  }
-
-  .kpis-page__grid > .kpi-reveal.is-active .stat-card {
-    box-shadow: none;
+    width: auto;
   }
 }
 
@@ -227,12 +166,7 @@
 
 /* ── Reduced motion ─────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .kpis-page__grid {
-    scroll-behavior: auto;
-  }
   .kpis-page__grid > .kpi-reveal {
     transition: none;
-    transform: none;
-    opacity: 1;
   }
 }

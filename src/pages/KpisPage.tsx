@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { RecruitmentHero } from '@/components/ui/RecruitmentHero';
 import {
@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
-import { useActiveSnapItem } from '@/hooks/useActiveSnapItem';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -107,13 +106,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   const reveal = useKpiReveal();
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
-
-  // Carrusel mobile: el contenedor es scroll-snap horizontal y el hook
-  // marca como activa la card más visible. En desktop el contenedor es
-  // un grid normal y el `activeId` queda en `null` (los estilos de
-  // expansión sólo aplican bajo media query mobile, así que es inocuo).
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  const activeCardId = useActiveSnapItem(carouselRef, '[data-snap-id]');
 
   /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
@@ -441,7 +433,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
       </section>
 
       <section
-        ref={carouselRef}
         className="kpis-page__grid"
         aria-label="KPIs consolidados"
       >
@@ -450,7 +441,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
           const isWeeklyCard = card.id === 'kpi-ingresos-semana';
           const isInProcessCard = card.id === 'stat-pipeline-activo';
           const hasModal = isWeeklyCard || isInProcessCard;
-          const isActive = activeCardId === card.id;
           return (
             <KpiReveal
               key={card.id}
@@ -459,8 +449,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
               revealed={revealed}
               onReveal={() => reveal.reveal(card.id)}
               onHide={() => reveal.hide(card.id)}
-              data-snap-id={card.id}
-              className={isActive ? 'is-active' : undefined}
             >
               <div className="kpis-page__card">
                 <span className="kpis-page__origin">{card.origin}</span>
