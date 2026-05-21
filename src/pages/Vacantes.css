@@ -1,4 +1,127 @@
-/* Vacantes.css — overrides / additions on top of Pipeline.css */
+/* Vacantes.css — overrides / additions on top of Pipeline.css.
+   Mobile-first: por defecto la lista se renderiza como tarjetas; la tabla
+   sólo aparece en viewports ≥768px (var(--vacantes-bp-table)). Todos los
+   tokens (color, tipografía, spacing, radios) provienen de --color-*,
+   --type-*, --spacing-*, --rounded-*. */
+
+/* ───────────────────────────────────────────────────────────
+   Mobile cards (default)
+   ─────────────────────────────────────────────────────────── */
+.vacantes__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.vacantes__table {
+  display: none;
+}
+
+.vacantes__card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  border-left: 3px solid transparent;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.vacantes__card:hover {
+  background: var(--color-surface-soft);
+  box-shadow: var(--shadow-card);
+}
+
+.vacantes__card--excluded {
+  opacity: 0.6;
+}
+
+.vacantes__card--overdue {
+  border-left-color: var(--color-error);
+}
+
+.vacantes__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.vacantes__card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.vacantes__card-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-xs) var(--spacing-md);
+  margin: 0;
+}
+
+.vacantes__card-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vacantes__card-meta-row dt {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  font-weight: 500;
+}
+
+.vacantes__card-meta-row dd {
+  margin: 0;
+  font-size: var(--type-body-sm-size);
+  color: var(--color-body-strong);
+  overflow-wrap: anywhere;
+}
+
+.vacantes__card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px dashed var(--color-hairline-soft);
+}
+
+.vacantes__card-status {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: inline-flex;
+}
+
+.vacantes__card-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+/* ───────────────────────────────────────────────────────────
+   Desktop: muestra la tabla, oculta los cards.
+   ─────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .vacantes__cards {
+    display: none;
+  }
+  .vacantes__table {
+    display: block;
+  }
+}
 
 /* Fila excluida: opacidad reducida + texto en tono gris. */
 .vacantes__row--excluded {
@@ -190,4 +313,32 @@
   background: var(--color-surface);
   border-radius: var(--rounded-sm);
   border-left: 2px solid var(--color-accent-teal, var(--color-primary));
+}
+
+/* ───────────────────────────────────────────────────────────
+   VacancySheet — layout interno del formulario.
+   El <form> es flex column para que el body crezca y haga scroll,
+   manteniendo el footer anclado en la parte inferior del Sheet.
+   ─────────────────────────────────────────────────────────── */
+.vacancy-sheet__form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Grid 1 columna por defecto (mobile-first); 2 columnas en desktop. */
+.vacancy-sheet .form-grid {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+.vacancy-sheet .form-group--span-2 {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .vacancy-sheet .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }

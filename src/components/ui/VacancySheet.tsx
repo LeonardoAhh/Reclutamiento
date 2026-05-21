@@ -28,13 +28,12 @@ import {
   isoToLocalDateString,
   TZ_MX,
 } from '@/lib/dates';
-import { Modal } from './Modal';
-import './CandidateModal.css';
+import { Sheet } from './Sheet';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
 
-interface VacancyModalProps {
+interface VacancySheetProps {
   isOpen: boolean;
   mode: Mode;
   vacancy?: VacancyRequest | null;
@@ -109,7 +108,7 @@ function fromVacancy(v: VacancyRequest): FormState {
   };
 }
 
-export function VacancyModal({
+export function VacancySheet({
   isOpen,
   mode,
   vacancy,
@@ -117,7 +116,7 @@ export function VacancyModal({
   onClose,
   onSave,
   onDelete,
-}: VacancyModalProps) {
+}: VacancySheetProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -246,15 +245,18 @@ export function VacancyModal({
       : 'Abrir solicitud de cobertura';
 
   return (
-    <Modal
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
-      className="candidate-modal"
+      className="vacancy-sheet"
+      side="right"
+      width={isDelete ? 'sm' : 'md'}
       icon={icon}
       title={title}
       subtitle={subtitle}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+      <form onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
+        <div className="sheet__body">
         {isDelete ? (
           <div className="delete-warning">
             <div className="delete-warning__icon" aria-hidden="true">
@@ -545,7 +547,8 @@ export function VacancyModal({
           </p>
         )}
 
-        <footer className="modal-footer">
+        </div>
+        <footer className="sheet__footer">
           <button
             type="button"
             className="btn-secondary"
@@ -569,6 +572,6 @@ export function VacancyModal({
           )}
         </footer>
       </form>
-    </Modal>
+    </Sheet>
   );
 }
