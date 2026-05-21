@@ -75,6 +75,10 @@ interface KpiRevealProps {
   onReveal: () => void;
   onHide: () => void;
   children: React.ReactNode;
+  /** Clase extra (e.g. `is-active` para resaltar la card centrada del carrusel). */
+  className?: string;
+  /** Identificador usado por `useActiveSnapItem` para detectar la card activa. */
+  'data-snap-id'?: string;
 }
 
 export function KpiReveal({
@@ -84,6 +88,8 @@ export function KpiReveal({
   onReveal,
   onHide,
   children,
+  className,
+  'data-snap-id': dataSnapId,
 }: KpiRevealProps) {
   function handleClick() {
     if (revealed) onHide();
@@ -97,9 +103,17 @@ export function KpiReveal({
     }
   }
 
+  const classes = [
+    'kpi-reveal',
+    revealed ? 'kpi-reveal--revealed' : '',
+    className ?? '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div
-      className={`kpi-reveal${revealed ? ' kpi-reveal--revealed' : ''}`}
+      className={classes}
       role="button"
       tabIndex={0}
       aria-pressed={revealed}
@@ -109,6 +123,7 @@ export function KpiReveal({
           : `Mostrar KPI ${label}`
       }
       data-kpi-id={id}
+      data-snap-id={dataSnapId}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
