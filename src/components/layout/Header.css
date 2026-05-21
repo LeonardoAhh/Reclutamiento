@@ -104,9 +104,10 @@
   border-left: 1px solid var(--color-hairline-soft);
 }
 
-/* ── Tablet/mobile: nav scrolls horizontally so todos los enlaces siguen
-   accesibles aun cuando el header se aprieta. ── */
-@media (max-width: 768px) {
+/* ── Tablet (≥768px sigue top-nav). En mobile el nav-list se oculta
+   porque el BottomTabBar cubre la navegación principal. El header queda
+   limpio: brand a la izquierda + avatar a la derecha. ── */
+@media (max-width: 1024px) and (min-width: 768px) {
   .app-header__nav {
     gap: var(--spacing-xs);
     min-width: 0;
@@ -132,15 +133,29 @@
     text-transform: none;
     white-space: nowrap;
   }
+}
+
+@media (max-width: 767px) {
+  /* Header mobile: brand + avatar (nav delegado al BottomTabBar). */
+  .app-header__nav-list {
+    display: none;
+  }
 
   .app-header__actions {
-    padding-left: var(--spacing-xs);
+    padding-left: 0;
+    border-left: none;
     flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .app-header__nav {
+    width: auto;
+    gap: 0;
   }
 }
 
 @media (max-width: 480px) {
   .app-header__title {
-    font-size: var(--type-caption-md-size);
+    font-size: var(--type-body-md-size);
   }
 }

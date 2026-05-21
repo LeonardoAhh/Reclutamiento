@@ -32,6 +32,16 @@
   background: var(--color-surface-soft);
 }
 
+/* En mobile el bottom tab-bar ocupa el footer del viewport.
+   El toast de actualización se sube para no quedar tapado. */
+@media (max-width: 767px) {
+  .pwa-status--update {
+    bottom: calc(
+      var(--tab-bar-height) + var(--safe-area-bottom) + var(--spacing-sm)
+    );
+  }
+}
+
 .pwa-status__action {
   margin-left: auto;
 }
