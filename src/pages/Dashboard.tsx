@@ -17,7 +17,7 @@ import { Badge } from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
 import { TurnosImporter } from '@/components/turnos/TurnosImporter';
-import { EmployeeModal } from '@/components/ui/EmployeeModal';
+import { EmployeeSheet } from '@/components/ui/EmployeeSheet';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
@@ -468,8 +468,8 @@ export function Dashboard() {
         onSave={handleSaveComment}
       />
 
-      {/* ── Employee Modal (Add / Delete) ── */}
-      <EmployeeModal
+      {/* ── Employee Sheet (Add / Delete) ── */}
+      <EmployeeSheet
         isOpen={empModalMode !== null}
         mode={empModalMode ?? 'add'}
         employee={selectedEmployee}

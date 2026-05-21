@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
-import { CubrirVacanteModal } from '@/components/ui/CubrirVacanteModal';
-import { RequisicionModal } from '@/components/ui/RequisicionModal';
+import { CubrirVacanteSheet } from '@/components/ui/CubrirVacanteSheet';
+import { RequisicionSheet } from '@/components/ui/RequisicionSheet';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
 import { computeMonthlyComparison, normalizePuesto } from '@/lib/bajas';
@@ -421,7 +421,7 @@ export function Bajas() {
         </section>
       </div>
 
-      <CubrirVacanteModal
+      <CubrirVacanteSheet
         isOpen={cubrirTarget !== null}
         baja={cubrirTarget}
         onClose={() => setCubrirTarget(null)}
@@ -429,7 +429,7 @@ export function Bajas() {
         onClear={async (n) => desmarcarCubierta(n)}
       />
 
-      <RequisicionModal
+      <RequisicionSheet
         isOpen={requisicionTarget !== null}
         baja={requisicionTarget}
         employees={employees}
