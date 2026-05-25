@@ -6,8 +6,11 @@
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
   border-radius: var(--rounded-lg);
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
   min-height: 132px;
+  border: 3px solid var(--color-hairline);
 }
 
 .stat-card--cream {
@@ -15,7 +18,7 @@
 }
 
 .stat-card--dark {
-  background: var(--color-surface-contrast);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 /* In dark mode the "dark" hero card lifts above canvas instead of going even darker */
@@ -42,7 +45,11 @@
 }
 
 .stat-card--dark .stat-card__icon {
-  background: color-mix(in srgb, currentColor 22%, var(--color-surface-contrast-elevated));
+  background: color-mix(
+    in srgb,
+    currentColor 22%,
+    var(--color-surface-contrast-elevated)
+  );
 }
 
 /* ── Content ── */
