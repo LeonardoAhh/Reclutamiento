@@ -205,7 +205,7 @@ export function Login() {
 
             <motion.div className="login__footer-note" {...fadeUp(0.65)}>
               <CheckCircle size={14} />
-              <span>Ambiente seguro · Datos cifrados · Acceso restringido</span>
+              <span>Reclutamiento y Selección de Personal</span>
             </motion.div>
           </form>
         </motion.section>
