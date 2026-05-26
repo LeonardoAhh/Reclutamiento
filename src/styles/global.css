@@ -67,9 +67,15 @@
    * con un `@font-face` antes del :root y la fuente cargará automáticamente.
    * Mientras tanto, los fallbacks del sistema (SF Mono / Cascadia Code /
    * Menlo / Consolas) hacen el trabajo. */
-  --font-display: 'Berkeley Mono', ui-monospace, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  --font-body: 'Berkeley Mono', ui-monospace, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  --font-code: 'Berkeley Mono', ui-monospace, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  --font-display:
+    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  --font-body:
+    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  --font-code:
+    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
 
   /* ── Type scale (escala plana monoespacio).
    * Cada variante define size/weight/line-height/letter-spacing.
@@ -235,7 +241,7 @@
   /* ── Derived tints / overlays ── */
   --color-focus-ring: rgb(var(--color-primary-rgb) / 0.28);
   --color-modal-scrim: rgb(0 0 0 / 0.7);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.10);
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.1);
   --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.22);
   --color-success-tint: rgb(var(--color-success-rgb) / 0.16);
   --color-error-tint: rgb(var(--color-error-rgb) / 0.16);
@@ -292,7 +298,10 @@ body {
   transition: none !important;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
   color: var(--color-ink);
 }
@@ -304,7 +313,9 @@ h1 {
   letter-spacing: var(--type-display-xl-tracking);
 }
 
-h2, h3, h4 {
+h2,
+h3,
+h4 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
@@ -334,14 +345,17 @@ button {
   background: none;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
 }
 
-strong, b {
+strong,
+b {
   font-weight: var(--type-body-strong-weight);
 }
 
@@ -489,7 +503,9 @@ strong, b {
   font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   background: var(--color-canvas);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .form-group input:focus,
@@ -605,7 +621,10 @@ strong, b {
   color: var(--color-muted);
   border: 1px solid var(--color-hairline);
   background: var(--color-canvas);
-  transition: color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -748,8 +767,12 @@ strong, b {
 
 /* ── Modal animations ── */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -763,11 +786,21 @@ strong, b {
   }
 }
 
-.color-error { color: var(--color-error); }
-.color-success { color: var(--color-success); }
-.color-amber { color: var(--color-accent-amber); }
-.color-teal { color: var(--color-accent-teal); }
-.color-primary { color: var(--color-primary); }
+.color-error {
+  color: var(--color-error);
+}
+.color-success {
+  color: var(--color-success);
+}
+.color-amber {
+  color: var(--color-accent-amber);
+}
+.color-teal {
+  color: var(--color-accent-teal);
+}
+.color-primary {
+  color: var(--color-primary);
+}
 
 /* ========================================
    BUTTONS (shared system)
@@ -942,6 +975,16 @@ strong, b {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+:root {
+  --color-surface-glass: rgba(255, 255, 255, 0.6);
+  --rounded-xl: 1.5rem;
+  --type-display-lg-size: 2rem;
+  --type-caption-sm-size: 0.75rem;
+  --spacing-xxl: 2.5rem;
+  --color-primary-tint: #e9eef5;
+  --color-primary-hover: #2c4b6e; /* ejemplo */
 }
 
 /* ========================================
