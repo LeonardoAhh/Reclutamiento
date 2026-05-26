@@ -1,5 +1,5 @@
 import { useState, type FormEvent, useId } from 'react';
-import { Eye, EyeOff, ArrowRight, Loader2, Users, HelpCircle, KeyRound, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Loader2, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
