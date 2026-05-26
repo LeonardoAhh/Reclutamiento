@@ -24,6 +24,7 @@ import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
+import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -56,8 +57,9 @@ import './KpisPage.css';
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
 const ACTIVE_CANDIDATE_STATUSES: ReadonlyArray<CandidateStatus> = [
-  'entrevista_1',
-  'entrevista_2',
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
 ];
 
 const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
@@ -106,6 +108,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   const reveal = useKpiReveal();
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
+  const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
 
   /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
@@ -192,7 +195,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
 
   /* ── Candidatos (5) ────────────────────────────────────────── */
   const candidatesInProcess: Candidate[] = useMemo(
-    () => candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.includes(c.status)),
+    () => candidates.filter((c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos'),
     [candidates]
   );
   // "Citados hoy" — candidatos con `fecha_cita` igual a la fecha civil de hoy
@@ -204,7 +207,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   }, [candidates]);
   const candidateTotals = useMemo(() => {
     const total = candidates.length;
-    const enProceso = candidatesInProcess.length;
+    const enProceso = candidates.filter((c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos').length;
     const citadosHoy = candidatesCitadosHoy.length;
     const contratados = candidates.filter((c) => c.status === 'contratado').length;
     const rechazados = candidates.filter((c) => c.status === 'rechazado').length;
@@ -440,7 +443,8 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
           const revealed = reveal.isRevealed(card.id);
           const isWeeklyCard = card.id === 'kpi-ingresos-semana';
           const isInProcessCard = card.id === 'stat-pipeline-activo';
-          const hasModal = isWeeklyCard || isInProcessCard;
+          const isCitedTodayCard = card.id === 'stat-pipeline-citados-hoy';
+          const hasModal = isWeeklyCard || isInProcessCard || isCitedTodayCard;
           return (
             <KpiReveal
               key={card.id}
@@ -470,11 +474,14 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
                       e.stopPropagation();
                       if (isWeeklyCard) setWeeklyModalOpen(true);
                       else if (isInProcessCard) setCandidatesModalOpen(true);
+                      else if (card.id === 'stat-pipeline-citados-hoy') setCitedTodayModalOpen(true);
                     }}
                     onKeyDown={(e) => e.stopPropagation()}
                     aria-label={
                       isWeeklyCard
                         ? 'Ver puestos contratados esta semana'
+                        : card.id === 'stat-pipeline-citados-hoy'
+                        ? 'Ver candidatos citados hoy'
                         : 'Ver puestos en proceso del pipeline'
                     }
                   >
@@ -492,6 +499,12 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
         isOpen={candidatesModalOpen}
         onClose={() => setCandidatesModalOpen(false)}
         candidates={candidatesInProcess}
+      />
+
+      <CandidatesCitedTodayModal
+        isOpen={citedTodayModalOpen}
+        onClose={() => setCitedTodayModalOpen(false)}
+        candidates={candidatesCitadosHoy}
       />
 
       <WeeklyHiresModal

@@ -49,8 +49,9 @@ const formatDate = formatShortDate;
  * aparte.
  */
 const CITADO_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
-  'entrevista_1',
-  'entrevista_2',
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
 ]);
 
 type RecruiterStats = {

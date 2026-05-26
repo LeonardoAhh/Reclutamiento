@@ -632,10 +632,10 @@
   box-shadow: var(--shadow-card);
 }
 
-.pipeline__ccard--entrevista_1 {
+.pipeline__ccard--entrevista {
   border-left-color: var(--color-accent-amber);
 }
-.pipeline__ccard--entrevista_2 {
+.pipeline__ccard--entrega_documentos {
   border-left-color: var(--color-accent-teal);
 }
 .pipeline__ccard--contratado {

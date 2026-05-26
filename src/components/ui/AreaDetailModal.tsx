@@ -26,8 +26,9 @@ import './AreaDetailModal.css';
  * segundo no aporta progreso al puesto.
  */
 const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
-  'entrevista_1',
-  'entrevista_2',
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
 ]);
 
 interface AreaDetailModalProps {

@@ -19,8 +19,9 @@ interface CandidateReportModalProps {
  *  Contratado / Rechazado son terminales y no aparecen en este resumen.
  */
 const ACTIVE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
-  'entrevista_1',
-  'entrevista_2',
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
 ]);
 
 const SIN_ASIGNAR = 'Sin asignar';
@@ -32,6 +33,7 @@ interface PuestoRow {
   puesto: string;
   e1: number;
   e2: number;
+  fd: number;
   total: number;
 }
 
@@ -57,6 +59,7 @@ interface RecruiterRow {
   name: string;
   e1: number;
   e2: number;
+  fd: number;
   total: number;
 }
 
@@ -90,8 +93,9 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
       };
       rowMap.set(key, row);
     }
-    if (c.status === 'entrevista_1') row.e1 += 1;
-    else if (c.status === 'entrevista_2') row.e2 += 1;
+    if (c.status === 'entrevista') row.e1 += 1;
+    else if (c.status === 'entrega_documentos') row.e2 += 1;
+    else if (c.status === 'faltan_documentos') row.fd += 1;
     row.total += 1;
   }
 
@@ -147,7 +151,7 @@ function buildContratadoGroups(contratados: Candidate[]): ContratadoAreaGroup[] 
 }
 
 function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
-  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, total: 0 });
+  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, total: 0 });
   const acc = new Map<string, RecruiterRow>();
   for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
   acc.set(SIN_ASIGNAR, empty(SIN_ASIGNAR));
@@ -156,8 +160,9 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
     const norm = normalizeString(c.reclutador ?? '');
     const key = acc.has(norm) ? norm : SIN_ASIGNAR;
     const bucket = acc.get(key)!;
-    if (c.status === 'entrevista_1') bucket.e1 += 1;
-    else if (c.status === 'entrevista_2') bucket.e2 += 1;
+    if (c.status === 'entrevista') bucket.e1 += 1;
+    else if (c.status === 'entrega_documentos') bucket.e2 += 1;
+    else if (c.status === 'faltan_documentos') bucket.fd += 1;
     bucket.total += 1;
   }
 
@@ -194,8 +199,9 @@ function buildWhatsappMessage(
           ? `${r.seccion} · ${r.turno}`
           : r.seccion;
         const detalle: string[] = [];
-        if (r.e1 > 0) detalle.push(`E1: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`E2: ${r.e2}`);
+        if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
+        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
+        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
         lines.push(`• ${seccionConTurno} — ${r.puesto}`);
         lines.push(`   ${r.total} (${detalle.join(' · ')})`);
       }
@@ -208,8 +214,9 @@ function buildWhatsappMessage(
     lines.push('*Por reclutador*');
     for (const r of activeRecruiters) {
       const detalle: string[] = [];
-      if (r.e1 > 0) detalle.push(`E1: ${r.e1}`);
-      if (r.e2 > 0) detalle.push(`E2: ${r.e2}`);
+      if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
+      if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
+      if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
       lines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
     }
   }

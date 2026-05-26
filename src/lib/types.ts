@@ -301,8 +301,9 @@ export interface DepartmentCoverage {
  * `normalizeCandidateStatus` — nunca se exponen al resto de la app.
  */
 export const CANDIDATE_STATUSES = [
-  'entrevista_1',
-  'entrevista_2',
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
   'contratado',
   'rechazado',
 ] as const;
@@ -311,8 +312,9 @@ export type CandidateStatus = (typeof CANDIDATE_STATUSES)[number];
 
 /** Labels en español para UI. */
 export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
-  entrevista_1: 'Entrevista 1',
-  entrevista_2: 'Entrevista 2',
+  entrevista: 'Entrevista',
+  entrega_documentos: 'Entrega de documentos',
+  faltan_documentos: 'Faltan documentos',
   contratado: 'Contratado',
   rechazado: 'Rechazado',
 };
@@ -322,9 +324,9 @@ export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
  * persistida (Supabase / localStorage) para tolerar registros viejos.
  */
 const LEGACY_CANDIDATE_STATUS_MAP: Record<string, CandidateStatus> = {
-  aplico: 'entrevista_1',
-  revision: 'entrevista_1',
-  oferta: 'entrevista_2',
+  aplico: 'entrevista',
+  revision: 'entrevista',
+  oferta: 'entrega_documentos',
 };
 
 /**
@@ -337,7 +339,7 @@ export function normalizeCandidateStatus(raw: unknown): CandidateStatus {
   if ((CANDIDATE_STATUSES as readonly string[]).includes(value)) {
     return value as CandidateStatus;
   }
-  return LEGACY_CANDIDATE_STATUS_MAP[value] ?? 'entrevista_1';
+  return LEGACY_CANDIDATE_STATUS_MAP[value] ?? 'entrevista';
 }
 
 export interface Candidate {

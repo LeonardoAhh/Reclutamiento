@@ -111,9 +111,40 @@ export function useCandidates() {
         );
         const notesData = (notesResult.data ?? []) as CandidateNote[];
 
-        setCandidates(candData);
+        // Merge fetched candidates with locally saved candidates to preserve
+        // local edits that haven't synced to Supabase yet. We prefer the row
+        // with the newer `updated_at` timestamp.
+        const localSaved = loadLocalCandidates();
+        const fetchedById = new Map<string | undefined, Candidate>();
+        for (const f of candData) fetchedById.set(f.id, f);
+
+        const mergedMap = new Map<string | undefined, Candidate>(fetchedById);
+        for (const l of localSaved) {
+          const id = l.id;
+          const fetched = fetchedById.get(id);
+          if (!fetched) {
+            // local-only row (e.g., created offline) — keep it
+            mergedMap.set(id, l);
+            continue;
+          }
+          // If local has a newer updated_at, prefer local (unsynced change).
+          const localUpdated = l.updated_at ? new Date(l.updated_at).getTime() : 0;
+          const fetchedUpdated = fetched.updated_at ? new Date(fetched.updated_at).getTime() : 0;
+          if (localUpdated > fetchedUpdated) mergedMap.set(id, l);
+          else mergedMap.set(id, fetched);
+        }
+
+        // Convert merged map to array and sort by created_at desc to match
+        // the previous behavior.
+        const merged = Array.from(mergedMap.values()).sort((a, b) => {
+          const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return tb - ta;
+        });
+
+        setCandidates(merged);
         setNotes(notesData);
-        saveLocal(STORAGE_KEYS.candidates, candData);
+        saveLocal(STORAGE_KEYS.candidates, merged);
         saveLocal(STORAGE_KEYS.candidateNotes, notesData);
       } catch (err) {
         const msg = formatSupabaseError(err);
