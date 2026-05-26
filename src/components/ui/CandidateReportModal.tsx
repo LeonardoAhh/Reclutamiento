@@ -89,13 +89,19 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
         puesto,
         e1: 0,
         e2: 0,
+        fd: 0,
         total: 0,
       };
       rowMap.set(key, row);
     }
-    if (c.status === 'entrevista') row.e1 += 1;
-    else if (c.status === 'entrega_documentos') row.e2 += 1;
-    else if (c.status === 'faltan_documentos') row.fd += 1;
+    // At this point, row is guaranteed to exist
+    if (c.status === 'entrevista') {
+      row.e1 += 1;
+    } else if (c.status === 'entrega_documentos') {
+      row.e2 += 1;
+    } else if (c.status === 'faltan_documentos') {
+      row.fd += 1;
+    }
     row.total += 1;
   }
 
@@ -129,6 +135,8 @@ function buildContratadoGroups(contratados: Candidate[]): ContratadoAreaGroup[] 
       row = { area, puesto, count: 0 };
       rowMap.set(key, row);
     }
+    
+    // At this point, row is guaranteed to exist
     row.count += 1;
   }
 

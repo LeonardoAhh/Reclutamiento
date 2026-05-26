@@ -40,7 +40,6 @@ import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type {
   Baja,
   Candidate,
-  CandidateStatus,
   VacancyRequest,
   VacancyStatus,
 } from '@/lib/types';
@@ -56,11 +55,6 @@ import type { Employee } from '@/lib/types';
 import './KpisPage.css';
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
-const ACTIVE_CANDIDATE_STATUSES: ReadonlyArray<CandidateStatus> = [
-  'entrevista',
-  'entrega_documentos',
-  'faltan_documentos',
-];
 
 const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
   'abierta',
