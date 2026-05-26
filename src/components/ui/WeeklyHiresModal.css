@@ -162,7 +162,7 @@
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .weekly-hires-modal__tab:hover {
@@ -176,8 +176,8 @@
 }
 
 .weekly-hires-modal__tab:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 @media (max-width: 640px) {
@@ -288,12 +288,6 @@
 }
 
 /* ── Responsive ────────────────────────────────────────────────────── */
-@media (max-width: 720px) {
-  .weekly-hires-modal__compare {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 480px) {
   .weekly-hires-modal__compare-stats {
     grid-template-columns: 1fr 1fr;

@@ -52,7 +52,7 @@ export function CandidatesInProcessModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidates-in-process-modal"
+      className="candidates-in-process-modal modal-fullscreen-mobile"
       icon={<Activity size={20} aria-hidden="true" />}
       title="Candidatos en proceso"
       subtitle="Puestos activos en el pipeline"
