@@ -94,7 +94,7 @@ export function WeeklyHiresModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="weekly-hires-modal"
+      className="weekly-hires-modal modal-fullscreen-mobile"
       icon={<Users size={20} aria-hidden="true" />}
       title={`Ingresos · Semanas ${previousRange.week} y ${range.week}`}
       subtitle={
