@@ -12,6 +12,7 @@ export function isSoloInduccion(b: Pick<Baja, 'tipo_baja' | 'motivo_baja'>): boo
 }
 
 /**
+ * datos importantes aqui
  * Normaliza el nombre de un puesto removiendo la letra de categoría final
  * (A/B/C/D). Eso permite tratar “OPERADOR DE MÁQUINA D” y “OPERADOR DE
  * MÁQUINA C” como el mismo puesto para fines de cobertura.
