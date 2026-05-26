@@ -1,9 +1,8 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Rediseño Login Editorial — Dos columnas, floating labels, glassmorphism
-   Mobile-first, variables CSS, accesibilidad total.
+   Login – Rediseño editorial con dos columnas, floating labels
+   Todas las variables CSS provienen de tu :root – sin hardcodes.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ── Layout raíz (grid de dos columnas en desktop) ─────────────────── */
 .login {
   position: relative;
   min-height: 100vh;
@@ -29,7 +28,7 @@
   align-items: center;
 }
 
-/* ── Fondo decorativo mejorado ──────────────────────────────────────── */
+/* ── Fondos decorativos ─────────────────────────────────────────────── */
 .login__bg {
   position: fixed;
   inset: 0;
@@ -47,7 +46,6 @@
   );
   background-size: 32px 32px;
   opacity: 0.5;
-  transition: opacity 0.3s ease;
 }
 
 .login__bg-wave {
@@ -58,11 +56,10 @@
   height: 80%;
   background: radial-gradient(
     ellipse at 30% 40%,
-    var(--color-primary-tint) 0%,
+    rgb(var(--color-primary-rgb) / 0.15) 0%,
     transparent 70%
   );
   filter: blur(80px);
-  opacity: 0.3;
   border-radius: 50%;
 }
 
@@ -76,7 +73,7 @@
   );
 }
 
-/* ── ThemeToggle reposicionado ─────────────────────────────────────── */
+/* ── ThemeToggle ───────────────────────────────────────────────────── */
 .login__theme-toggle {
   position: fixed;
   top: max(var(--spacing-md), var(--safe-area-top));
@@ -108,12 +105,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: var(--color-surface);
+  background: var(--color-surface-soft);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-pill);
   width: fit-content;
   border: 1px solid var(--color-hairline);
-  backdrop-filter: blur(2px);
 }
 
 .login__brand-icon {
@@ -122,7 +118,7 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: var(--color-primary-tint);
+  background: rgb(var(--color-primary-rgb) / 0.12);
   color: var(--color-primary);
   border-radius: var(--rounded-sm);
 }
@@ -149,11 +145,10 @@
 .login__hero-title em {
   font-style: italic;
   font-weight: 500;
-  color: var(--color-primary);
   background: linear-gradient(
     135deg,
     var(--color-primary),
-    var(--color-primary-hover)
+    var(--color-primary-active)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -217,25 +212,23 @@
   margin: 0;
 }
 
-/* ── Columna derecha (card formulario) ─────────────────────────────── */
+/* ── Tarjeta derecha (glassmorphism usando tus colores) ─────────────── */
 .login__card {
   position: relative;
   width: 100%;
   max-width: 460px;
   margin: 0 auto;
-  background: var(--color-surface-glass);
+  background: rgba(var(--color-canvas-rgb), 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xl);
+  border-radius: var(--rounded-lg);
   padding: var(--spacing-xl) var(--spacing-lg);
-  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-  transition:
-    box-shadow 0.3s ease,
-    transform 0.2s;
+  box-shadow: 0 20px 35px -12px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
 .login__card:hover {
-  box-shadow: 0 25px 40px -14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 25px 40px -14px rgb(0 0 0 / 0.15);
 }
 
 .login__accent {
@@ -255,7 +248,7 @@
 
 .login__title {
   font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
+  font-size: var(--type-display-xl-size);
   font-weight: 600;
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--color-ink);
@@ -267,13 +260,7 @@
   margin: 0;
 }
 
-/* ── Floating Labels + inputs modernos ─────────────────────────────── */
-.login__form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
+/* ── Floating labels ────────────────────────────────────────────────── */
 .login__field {
   position: relative;
 }
@@ -298,10 +285,6 @@
 
 .login__input:focus {
   border-bottom-color: var(--color-primary);
-}
-
-.login__input:focus-visible {
-  outline: none;
 }
 
 .login__label {
@@ -337,7 +320,6 @@
   width: 100%;
 }
 
-/* Botón de visibilidad */
 .login__visibility {
   position: absolute;
   right: 0;
@@ -348,18 +330,17 @@
   cursor: pointer;
   color: var(--color-muted);
   transition: color 0.2s;
+  min-width: 44px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
 }
 
 .login__visibility:hover {
   color: var(--color-ink);
 }
 
-/* Enlaces de ayuda */
 .login__helpers {
   display: flex;
   justify-content: space-between;
@@ -382,20 +363,18 @@
   text-decoration: underline;
 }
 
-/* Mensaje de error */
 .login__error {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-md);
-  background: var(--color-error-tint);
+  background: rgb(var(--color-error-rgb) / 0.12);
   color: var(--color-error);
   font-size: var(--type-body-sm-size);
   border-left: 3px solid var(--color-error);
 }
 
-/* Botón submit con gradiente y efecto shine */
 .login__submit {
   margin-top: var(--spacing-sm);
   width: 100%;
@@ -406,7 +385,7 @@
   background: linear-gradient(
     105deg,
     var(--color-primary) 0%,
-    var(--color-primary-hover) 100%
+    var(--color-primary-active) 100%
   );
   color: var(--color-on-primary);
   font-family: var(--font-body);
@@ -449,16 +428,15 @@
 }
 
 .login__spinner {
-  animation: spin 0.7s linear infinite;
+  animation: login-spin 0.7s linear infinite;
 }
 
-@keyframes spin {
+@keyframes login-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* Nota de seguridad final */
 .login__footer-note {
   display: flex;
   align-items: center;
@@ -471,44 +449,28 @@
   margin-top: var(--spacing-sm);
 }
 
-/* ── Responsive: tablet y desktop (dos columnas) ───────────────────── */
+/* ── Responsive ─────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
   .login__container {
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-xl);
   }
-
   .login__hero {
     padding-right: var(--spacing-xl);
   }
-
   .login__card {
     max-width: 100%;
   }
-
   .login__bg-grid {
     background-size: 42px 42px;
   }
 }
 
-/* Ajustes para pantallas muy grandes */
-@media (min-width: 1200px) {
-  .login__hero {
-    gap: var(--spacing-xl);
-  }
-
-  .login__card {
-    padding: var(--spacing-xxl) var(--spacing-xl);
-  }
-}
-
-/* ── Mobile first: correcciones para pantallas pequeñas ────────────── */
 @media (max-width: 767px) {
   .login__hero {
     text-align: center;
     align-items: center;
   }
-
   .login__hero-accent {
     left: 50%;
     transform: translateX(-50%);
@@ -516,21 +478,18 @@
     height: 3px;
     top: -10px;
   }
-
   .login__hero-description {
     max-width: 100%;
   }
-
   .login__hero-stats {
     justify-content: center;
   }
-
   .login__hero-quote {
     text-align: left;
   }
 }
 
-/* ── Accesibilidad y touch ──────────────────────────────────────────── */
+/* ── Accesibilidad y touch ─────────────────────────────────────────── */
 @media (pointer: coarse) {
   .login__visibility,
   .login__submit,

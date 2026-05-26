@@ -977,16 +977,6 @@ b {
   border: 0;
 }
 
-:root {
-  --color-surface-glass: rgba(255, 255, 255, 0.6);
-  --rounded-xl: 1.5rem;
-  --type-display-lg-size: 2rem;
-  --type-caption-sm-size: 0.75rem;
-  --spacing-xxl: 2.5rem;
-  --color-primary-tint: #e9eef5;
-  --color-primary-hover: #2c4b6e; /* ejemplo */
-}
-
 /* ========================================
    SCROLLBAR
    ======================================== */
