@@ -1,53 +1,135 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Login — ghost style, theme-aware, mobile-first.
-   Card flotante con hairline rounded, sin shadows agresivas. Inputs estilo
-   "underline ghost" (solo border-bottom) que se elevan al focus.
+   Login — editorial RRHH. Estética corporativa refinada: tipografía
+   asimétrica, acento lateral, grid sutil de fondo, ghost inputs.
 
-   Breakpoints (mobile-first):
-     base (320px+)  → card full-width, paddings compactos, safe-area
-     480px+         → card max-width 380px
-     640px+         → paddings holgados, card centrada
+   Filosofía:
+   · Sin colores ni fuentes hardcodeadas — todo via CSS variables.
+   · Mobile-first (320 → 480 → 640).
+   · Animaciones delegadas a Framer Motion; CSS solo maneja transiciones
+     de estado (focus, disabled, hover de inputs).
+   · Accesibilidad: :focus-visible, roles, aria-busy, min 44px touch.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* ── Layout raíz ────────────────────────────────────────────────────── */
 .login {
+  position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding:
-    max(var(--spacing-md), var(--safe-area-top))
+  padding: max(var(--spacing-md), var(--safe-area-top))
     max(var(--spacing-md), var(--safe-area-right))
     max(var(--spacing-md), var(--safe-area-bottom))
     max(var(--spacing-md), var(--safe-area-left));
   background: var(--color-canvas);
-  position: relative;
+  overflow: hidden;
 }
 
+/* ── Fondo decorativo ───────────────────────────────────────────────── */
+.login__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/*
+  Grid de puntos usando gradiente radial — sin imagen externa.
+  El color usa la variable --color-hairline para ser theme-aware.
+*/
+.login__bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    var(--color-hairline) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  opacity: 0.6;
+}
+
+/*
+  Viñeta suave que oscurece las esquinas y focaliza la card.
+  Usamos canvas con alfa para ser theme-neutral.
+*/
+.login__bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 50%,
+    transparent 40%,
+    var(--color-canvas) 100%
+  );
+}
+
+/* ── ThemeToggle posición ────────────────────────────────────────────── */
 .login__theme-toggle {
   position: absolute;
   top: max(var(--spacing-md), var(--safe-area-top));
   right: max(var(--spacing-md), var(--safe-area-right));
-  z-index: 1;
+  z-index: 2;
 }
 
+/* ── Card principal ─────────────────────────────────────────────────── */
 .login__card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 100%;
   padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
-  background: transparent;
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+
+  /* Sombra sutil para flotación */
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 4px 16px rgb(0 0 0 / 0.06),
+    0 12px 40px rgb(0 0 0 / 0.06);
+}
+
+/* Acento lateral izquierdo — barra delgada de color primario */
+.login__accent {
+  position: absolute;
+  top: var(--spacing-lg);
+  bottom: var(--spacing-lg);
+  left: 0;
+  width: 3px;
+  border-radius: 0 var(--rounded-pill) var(--rounded-pill) 0;
+  background: var(--color-primary);
+  opacity: 0.85;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────── */
 .login__header {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-xs);
   text-align: left;
+  padding-left: var(--spacing-sm);
+}
+
+/* Fila de marca: icono + eyebrow */
+.login__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.login__brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--rounded-sm);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .login__eyebrow {
@@ -60,20 +142,32 @@
   color: var(--color-muted);
 }
 
+/*
+  Título editorial: tamaño display con itálica en la segunda línea
+  para romper el ritmo y crear jerarquía visual.
+*/
 .login__title {
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--type-display-xl-size);
   font-weight: var(--type-display-xl-weight);
-  line-height: 1.1;
+  line-height: 1.05;
   color: var(--color-ink);
+  letter-spacing: var(--tracking-tight);
+}
+
+.login__title-em {
+  font-style: italic;
+  font-weight: calc(var(--type-display-xl-weight) - 100);
+  color: var(--color-primary);
 }
 
 .login__subtitle {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
   color: var(--color-muted);
+  line-height: 1.5;
 }
 
 /* ── Form ───────────────────────────────────────────────────────────── */
@@ -81,6 +175,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  padding-left: var(--spacing-sm);
 }
 
 .login__field {
@@ -98,10 +193,7 @@
   color: var(--color-muted);
 }
 
-.login__input-wrap {
-  position: relative;
-}
-
+/* Input ghost — solo border-bottom, eleva al focus */
 .login__input {
   width: 100%;
   background: transparent;
@@ -115,7 +207,8 @@
   transition:
     border-color var(--transition-base),
     color var(--transition-base);
-  border-radius: 0;
+  border-radius: 0; /* resetear en Safari */
+  -webkit-appearance: none;
 }
 
 .login__input::placeholder {
@@ -124,18 +217,24 @@
 
 .login__input:focus,
 .login__input:focus-visible {
-  border-bottom-color: var(--color-ink);
+  border-bottom-color: var(--color-primary);
 }
 
 .login__input:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* Input con icono de visibilidad: padding derecho para no solapar */
+.login__input-wrap {
+  position: relative;
 }
 
 .login__input-wrap .login__input {
   padding-right: var(--spacing-xl);
 }
 
+/* Botón ojo — touch target 44×44 */
 .login__visibility {
   position: absolute;
   right: 0;
@@ -155,26 +254,45 @@
   min-height: 44px;
 }
 
-.login__visibility:hover:not(:disabled),
-.login__visibility:focus-visible {
+.login__visibility:hover:not(:disabled) {
   color: var(--color-ink);
-  outline: none;
 }
 
 .login__visibility:focus-visible {
-  box-shadow: var(--shadow-focus);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+  color: var(--color-ink);
 }
 
-/* ── Submit ─────────────────────────────────────────────────────────── */
+.login__visibility:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Error ──────────────────────────────────────────────────────────── */
+.login__error {
+  margin: 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-error-tint);
+  color: var(--color-error);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: 1.45;
+  border: 1px solid rgb(var(--color-error-rgb) / 0.3);
+  overflow: hidden; /* necesario para la animación de height */
+}
+
+/* ── Botón submit ────────────────────────────────────────────────────── */
 .login__submit {
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
   width: 100%;
   min-height: 44px;
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--rounded-pill);
-  border: 1px solid var(--color-ink);
-  background: var(--color-ink);
-  color: var(--color-on-dark);
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: 600;
@@ -184,23 +302,20 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
+
+  /* Solo opacity y background en CSS; scale/translateY via Framer Motion */
   transition:
-    transform var(--transition-fast),
     background var(--transition-base),
     opacity var(--transition-base);
 }
 
 .login__submit:hover:not(:disabled) {
-  background: var(--color-body-strong);
-}
-
-.login__submit:active:not(:disabled) {
-  transform: translateY(1px);
+  background: var(--color-primary-hover);
 }
 
 .login__submit:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .login__submit:disabled {
@@ -208,40 +323,38 @@
   cursor: not-allowed;
 }
 
+/* Spinner de carga */
 .login__spinner {
-  animation: login-spin 0.8s linear infinite;
+  animation: login-spin 0.75s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes login-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-/* ── Error message ──────────────────────────────────────────────────── */
-.login__error {
-  margin: 0;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-md);
-  background: var(--color-error-tint);
-  color: var(--color-error);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  border: 1px solid rgb(var(--color-error-rgb) / 0.35);
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Footer ─────────────────────────────────────────────────────────── */
 .login__footer {
-  text-align: center;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
+  padding-left: var(--spacing-sm);
+  text-align: left;
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-md);
 }
 
 .login__footer p {
   margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  letter-spacing: var(--tracking-wide);
 }
 
-/* ── Splash mientras carga la session inicial ───────────────────────── */
+/* ── Splash de carga de sesión inicial ──────────────────────────────── */
 .auth-splash {
   min-height: 100vh;
   min-height: 100dvh;
@@ -257,27 +370,33 @@
   height: var(--spacing-xs);
   border-radius: var(--rounded-pill);
   background: var(--color-muted);
-  margin: 0 var(--spacing-xxs);
   animation: auth-bounce 1.2s ease-in-out infinite both;
 }
 
 .auth-splash__dot:nth-child(2) {
   animation-delay: 0.15s;
 }
-
 .auth-splash__dot:nth-child(3) {
   animation-delay: 0.3s;
 }
 
 @keyframes auth-bounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-  40%           { transform: scale(1);   opacity: 1;   }
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-/* ── Mobile L / phone landscape (≥ 480px) ───────────────────────────── */
+/* ── 480px — Mobile L / landscape ──────────────────────────────────── */
 @media (min-width: 480px) {
   .login__card {
-    max-width: 380px;
+    max-width: 400px;
     padding: var(--spacing-xxl) var(--spacing-xl) var(--spacing-xl);
   }
 
@@ -285,23 +404,50 @@
     top: max(var(--spacing-lg), var(--safe-area-top));
     right: max(var(--spacing-lg), var(--safe-area-right));
   }
+
+  .login__bg-grid {
+    background-size: 36px 36px;
+  }
 }
 
-/* ── Tablet+ (≥ 640px) ──────────────────────────────────────────────── */
+/* ── 640px — Tablet+ ─────────────────────────────────────────────────── */
 @media (min-width: 640px) {
   .login {
-    padding:
-      max(var(--spacing-lg), var(--safe-area-top))
+    padding: max(var(--spacing-lg), var(--safe-area-top))
       max(var(--spacing-lg), var(--safe-area-right))
       max(var(--spacing-lg), var(--safe-area-bottom))
       max(var(--spacing-lg), var(--safe-area-left));
   }
+
+  .login__card {
+    max-width: 420px;
+  }
+
+  .login__title {
+    font-size: var(--type-display-xxl-size, var(--type-display-xl-size));
+  }
 }
 
-/* ── Touch-only refinement ──────────────────────────────────────────── */
+/* ── Touch — target mínimo garantizado ──────────────────────────────── */
 @media (pointer: coarse) {
   .login__visibility {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  .login__submit {
+    min-height: 48px;
+  }
+}
+
+/* ── Reduced motion — desactivar grid animado si lo hubiera ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  .login__spinner {
+    animation: none;
+  }
+
+  .auth-splash__dot {
+    animation: none;
+    opacity: 0.6;
   }
 }
