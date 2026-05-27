@@ -1,52 +1,158 @@
-/* PWAStatus — toasts/banners no bloqueantes para offline + SW update. */
+/* ================================================================
+   PWAStatus — Redesigned update + offline banners.
+   Uses design-system tokens for cohesion. Responsive from 320px up.
+   ================================================================ */
 
-.pwa-status {
+/* ── Shared base ── */
+.pwa-banner {
   position: fixed;
-  left: max(var(--spacing-md), var(--safe-area-left));
-  right: max(var(--spacing-md), var(--safe-area-right));
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-  box-shadow: var(--shadow-elevated);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
   z-index: 1100;
-  max-width: min(560px, 96vw);
-  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
 }
 
-.pwa-status--offline {
-  top: calc(64px + var(--safe-area-top) + var(--spacing-sm));
-  background: var(--color-vacancy-tint);
-  color: var(--color-error);
-  border-color: var(--color-error);
+/* ── Offline (top bar, full-width) ── */
+.pwa-banner--offline {
+  top: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  padding-top: calc(var(--spacing-xs) + var(--safe-area-top));
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  font-weight: var(--type-body-strong-weight);
 }
 
-.pwa-status--update {
-  bottom: calc(var(--safe-area-bottom) + var(--spacing-md));
-  background: var(--color-surface-soft);
+.pwa-banner--offline .pwa-banner__icon {
+  flex-shrink: 0;
 }
 
-/* En mobile el bottom tab-bar ocupa el footer del viewport.
-   El toast de actualización se sube para no quedar tapado. */
+/* ── Update banner (bottom card) ── */
+.pwa-banner--update {
+  bottom: calc(var(--safe-area-bottom) + var(--spacing-lg));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(460px, calc(100vw - var(--spacing-md) * 2));
+  overflow: hidden;
+  padding: var(--spacing-md) var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-contrast);
+  color: var(--color-on-dark);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Mobile: lift above bottom tab-bar */
 @media (max-width: 767px) {
-  .pwa-status--update {
+  .pwa-banner--update {
     bottom: calc(
       var(--tab-bar-height) + var(--safe-area-bottom) + var(--spacing-sm)
     );
   }
 }
 
-.pwa-status__action {
-  margin-left: auto;
+/* ── Icon wrapper (circle badge) ── */
+.pwa-banner__icon-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-full);
+  background: rgb(var(--color-primary-rgb) / 0.2);
+  color: var(--color-on-dark);
 }
 
-.pwa-status__dismiss {
+/* ── Icon animations ── */
+@keyframes pwa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pwa-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pwa-banner__icon--spin {
+  animation: pwa-spin 1s linear infinite;
+}
+
+.pwa-banner__icon--pulse {
+  animation: pwa-pulse 2s ease-in-out infinite;
+}
+
+/* ── Body (title + description) ── */
+.pwa-banner__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pwa-banner__title {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-on-dark);
+}
+
+.pwa-banner__desc {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-on-dark-soft);
+}
+
+/* ── Actions ── */
+.pwa-banner__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.pwa-banner__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  border: none;
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  white-space: nowrap;
+}
+
+.pwa-banner__btn:active {
+  transform: scale(0.96);
+}
+
+.pwa-banner__btn--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.pwa-banner__btn--primary:hover {
+  background: var(--color-primary-active);
+}
+
+/* ── Dismiss ── */
+.pwa-banner__dismiss {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -54,25 +160,65 @@
   height: 28px;
   border: none;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-on-dark-soft);
   border-radius: var(--rounded-sm);
   cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.pwa-status__dismiss:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-card);
+.pwa-banner__dismiss:hover {
+  color: var(--color-on-dark);
+  background: var(--color-surface-contrast-elevated);
 }
 
-.pwa-status__dismiss:focus-visible {
+.pwa-banner__dismiss:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
 }
 
-@media (max-width: 480px) {
-  .pwa-status {
-    font-size: var(--type-caption-md-size);
-    padding: var(--spacing-xs);
+/* ── Progress bar ── */
+.pwa-banner__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgb(var(--color-primary-rgb) / 0.15);
+  overflow: hidden;
+}
+
+@keyframes pwa-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.pwa-banner__progress-bar {
+  width: 40%;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--rounded-pill);
+  animation: pwa-progress 1.2s ease-in-out infinite;
+}
+
+/* ── Small screens: stack layout ── */
+@media (max-width: 380px) {
+  .pwa-banner--update {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .pwa-banner__body {
+    flex-basis: calc(100% - 36px - var(--spacing-sm));
+  }
+
+  .pwa-banner__actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
