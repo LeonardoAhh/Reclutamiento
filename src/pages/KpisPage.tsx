@@ -40,7 +40,6 @@ import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type {
   Baja,
   Candidate,
-  CandidateStatus,
   VacancyRequest,
   VacancyStatus,
 } from '@/lib/types';
@@ -62,17 +61,6 @@ const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
   'en_proceso',
   'pausa',
 ];
-
-/**
- * Status no terminales del pipeline. Un candidato en cualquiera de estos
- * sigue activo (no contratado, no rechazado). Se usa tanto para el KPI
- * "En proceso" como para acotar "Citados hoy" y "Total".
- */
-const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
-  'entrevista',
-  'entrega_documentos',
-  'faltan_documentos',
-]);
 
 interface VacancyMetrics {
   vencida: boolean;
@@ -200,23 +188,26 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   }, [vacancies]);
 
   /* ── Candidatos (5) ────────────────────────────────────────── */
-  // Pipeline activo = candidatos en cualquier status no terminal
-  // (entrevista, entrega_documentos, faltan_documentos). Antes solo se
-  // contaban los 2 últimos y los que están en entrevista quedaban fuera
-  // del KPI aunque sí son procesos en curso.
+  // "En proceso" — candidatos en etapa de documentación (post-entrevista,
+  // pre-contratado). Los que están en `entrevista` se reportan aparte en
+  // "Citados hoy" cuando tienen cita en el día; sin cita no aparecen en
+  // ningún KPI del header (siguen visibles en `/pipeline`).
   const candidatesInProcess: Candidate[] = useMemo(
-    () => candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.has(c.status)),
+    () => candidates.filter(
+      (c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos'
+    ),
     [candidates]
   );
-  // "Citados hoy" — candidatos activos con `fecha_cita` igual a la fecha
-  // civil de hoy en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD anclado
-  // a Querétaro, y la columna se persiste como `date` (sin TZ) → comparación
-  // lexical exacta. Se filtra por status activo para no contar contratados
-  // ni rechazados con citas viejas o futuras que coincidan con hoy.
+  // "Citados hoy" — candidatos en `entrevista` con `fecha_cita` igual a la
+  // fecha civil de hoy en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD
+  // anclado a Querétaro, y la columna se persiste como `date` (sin TZ) →
+  // comparación lexical exacta. El status restringe a etapa de entrevista
+  // para no contar contratados/rechazados ni candidatos en documentación
+  // cuya cita coincida con hoy — esos viven en "En proceso".
   const candidatesCitadosHoy: Candidate[] = useMemo(() => {
     const today = localTodayIso();
     return candidates.filter(
-      (c) => (c.fecha_cita ?? '') === today && ACTIVE_CANDIDATE_STATUSES.has(c.status)
+      (c) => c.status === 'entrevista' && (c.fecha_cita ?? '') === today
     );
   }, [candidates]);
   const candidateTotals = useMemo(() => {
