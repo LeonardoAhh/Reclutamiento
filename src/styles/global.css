@@ -5,9 +5,10 @@
 
 :root {
   /* ── Brand & Accent ── */
-  --color-primary: #cc785c;
-  --color-primary-active: #a9583e;
-  --color-primary-disabled: #e6dfd8;
+  /* ── Brand & Accent ── */
+  --color-primary: #1a2670;
+  --color-primary-active: #131b54;
+  --color-primary-disabled: #d8dce8;
   --color-accent-teal: #5db8a6;
   --color-accent-amber: #e8a55a;
 
@@ -44,7 +45,7 @@
   --color-error: #c64545;
 
   /* ── Channel values (for tinted backgrounds / focus rings) ── */
-  --color-primary-rgb: 204 120 92;
+  --color-primary-rgb: 26 38 112;
   --color-error-rgb: 198 69 69;
   --color-success-rgb: 93 184 114;
   --color-accent-teal-rgb: 93 184 166;
@@ -228,13 +229,13 @@
   --color-on-dark: #faf9f5;
   --color-on-dark-soft: #a09d96;
 
-  /* ── Brand: slight lift so coral stays readable on dark ── */
-  --color-primary: #d88a6e;
-  --color-primary-active: #cc785c;
-  --color-primary-disabled: #4a3a32;
+  /* ── Brand: slight lift so azul stays readable on dark ── */
+  --color-primary: #4a5db8;
+  --color-primary-active: #1a2670;
+  --color-primary-disabled: #2a3050;
 
   /* ── Channel values (flip ink/canvas for tinted utilities) ── */
-  --color-primary-rgb: 216 138 110;
+  --color-primary-rgb: 74 93 184;
   --color-ink-rgb: 250 249 245;
   --color-canvas-rgb: 24 23 21;
 
