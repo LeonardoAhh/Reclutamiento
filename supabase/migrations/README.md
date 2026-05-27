@@ -31,6 +31,7 @@ supabase db push
 | `003_vacancy_sla.sql` | Columnas `dias_sla`, `excluida_indicador`, `motivo_exclusion` en `vacancy_requests` para tracking de SLA y exclusión de KPI. | PR G |
 | `004_vacancy_audit_app_managed.sql` | Reduce el trigger `vacancy_requests_log_status` a sólo `INSERT` para que la app maneje los `UPDATE` con contexto (`changed_by`, `reason`). | PR H |
 | `005_auth_profiles.sql` | Tabla `profiles` (1:1 con `auth.users`), trigger `on_auth_user_created`, y endurecimiento de RLS en todas las tablas existentes (`anon` → `authenticated`). Auth login con usuario+password vía email sintético `${usuario}@reclutamiento.local`. | PR I |
+| `015_candidates_status_v2.sql` | Reemplaza el CHECK legacy de `candidates.status` por los 5 status vigentes (`entrevista`, `entrega_documentos`, `faltan_documentos`, `contratado`, `rechazado`) + backfill de filas viejas + cambio de DEFAULT a `entrevista`. Sin esto, los INSERT/UPDATE del pipeline fallaban en silencio y los KPIs divergían entre devices. | — |
 
 ## RLS
 
