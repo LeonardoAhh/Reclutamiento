@@ -275,7 +275,7 @@ export function Pipeline() {
       <main className="pipeline container">
         <section className="pipeline__hero">
           <div>
-            <h1>Pipeline de candidatos</h1>
+            <h1>Candidatos</h1>
             <p className="pipeline__hero-sub">Cargando candidatos…</p>
           </div>
         </section>

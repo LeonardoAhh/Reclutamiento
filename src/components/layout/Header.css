@@ -1,83 +1,121 @@
-/* Header — top-nav following Design.md: 64px tall, cream canvas, editorial brand */
+/* ─────────────────────────────────────────────
+   App Header — rediseño minimalista.
+   56px de altura lógica (–8px vs. anterior).
+   Sin uppercase forzado, sin letter-spacing
+   editorial en el nav; jerarquía por peso y color.
+───────────────────────────────────────────── */
 
 .app-header {
+  --_h: 56px;
+
+  /* Posicionamiento */
   position: sticky;
   top: 0;
   z-index: 100;
-  height: calc(64px + var(--safe-area-top));
+
+  /* Box model */
+  height: calc(var(--_h) + var(--safe-area-top));
   padding-top: var(--safe-area-top);
+
+  /* Visual */
   background: var(--color-header-glass);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: 0.5px solid var(--color-hairline);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .app-header__inner {
-  display: flex;
+  /* Display */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  gap: var(--spacing-sm);
-}
 
-.app-header__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.app-header__mark {
-  font-family: var(--font-display);
-  font-size: var(--type-body-md-size);
-  color: var(--color-ink);
-  line-height: 1;
-  opacity: 0.6;
-}
-
-.app-header__title {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: 500;
-  color: var(--color-ink);
-  letter-spacing: var(--tracking-snug);
-}
-
-.app-header__nav {
-  display: flex;
-  align-items: center;
+  /* Box model — reutiliza --_h del padre */
+  height: var(--_h);
   gap: var(--spacing-md);
 }
 
-/* ── Nav items (ghost style, sin pills coral) ────────────────────────── */
-.app-header__nav-list {
-  list-style: none;
+/* ── Brand ───────────────────────────────────── */
+.app-header__brand {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--spacing-xs);
+  justify-self: start;
+}
+
+/* Punto decorativo: ancla visual sin logotipo */
+.app-header__brand-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--rounded-full);
+  background: var(--color-ink);
+  opacity: 0.2;
+  flex-shrink: 0;
+}
+
+.app-header__title {
+  /* Tipografía */
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+
+  /* Visual */
+  color: var(--color-ink);
+}
+
+/* ── Nav ─────────────────────────────────────── */
+.app-header__nav {
+  /* Centrado en la celda media del grid */
+  justify-self: center;
+}
+
+.app-header__nav-list {
+  /* Display */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+
+  /* Reset */
+  list-style: none;
   margin: 0;
   padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
 }
 
+/* ── Nav item ────────────────────────────────── */
 .app-header__nav-item {
+  /* Tipografía — sin uppercase, sin tracking forzado */
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  color: var(--color-muted);
-  cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-full);
+  font-size: var(--type-body-sm-size);
+  font-weight: 400;
   text-decoration: none;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  transition: color var(--transition-fast), background var(--transition-fast);
+
+  /* Box model */
+  padding: var(--spacing-xs) var(--spacing-sm);
+
+  /* Visual */
+  color: var(--color-muted);
+  border-radius: var(--rounded-md);
+
+  /* Interacción */
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.app-header__nav-item:hover {
+.app-header__nav-item:hover,
+.app-header__nav-item--active {
   color: var(--color-ink);
   background: var(--color-surface-soft);
+}
+
+.app-header__nav-item--active {
+  font-weight: 500;
+}
+
+.app-header__nav-item--active:hover {
+  background: var(--color-surface-card);
 }
 
 .app-header__nav-item:focus-visible {
@@ -85,32 +123,31 @@
   box-shadow: var(--shadow-focus);
 }
 
-.app-header__nav-item--active {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
-}
-
-.app-header__nav-item--active:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-card);
-}
-
-/* ── Acciones (theme toggle + user menu) ─────────────────────────────── */
+/* ── Acciones ────────────────────────────────── */
 .app-header__actions {
-  display: inline-flex;
+  /* Empuja el UserMenu a la derecha */
+  display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--spacing-xs);
-  padding-left: var(--spacing-sm);
-  border-left: 1px solid var(--color-hairline-soft);
+  justify-self: end;
 }
 
-/* ── Tablet (≥768px sigue top-nav). En mobile el nav-list se oculta
-   porque el BottomTabBar cubre la navegación principal. El header queda
-   limpio: brand a la izquierda + avatar a la derecha. ── */
+/* ─────────────────────────────────────────────
+   Tablet (768px – 1024px)
+   Nav visible, comprimido en scroll horizontal.
+───────────────────────────────────────────── */
 @media (max-width: 1024px) and (min-width: 768px) {
+  .app-header__inner {
+    /* Vuelve a flex para que el nav scroll no rompa el grid */
+    display: flex;
+    justify-content: space-between;
+  }
+
   .app-header__nav {
-    gap: var(--spacing-xs);
+    flex: 1;
     min-width: 0;
+    overflow: hidden;
   }
 
   .app-header__nav-list {
@@ -121,6 +158,8 @@
     -ms-overflow-style: none;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    padding-inline: var(--spacing-xs);
+    scroll-padding-inline: var(--spacing-xs);
   }
 
   .app-header__nav-list::-webkit-scrollbar {
@@ -128,34 +167,33 @@
   }
 
   .app-header__nav-item {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    letter-spacing: 0;
-    text-transform: none;
     white-space: nowrap;
   }
 }
 
+/* ─────────────────────────────────────────────
+   Mobile (<768px)
+   Nav delegado al BottomTabBar.
+   Header: brand centro, avatar derecha.
+───────────────────────────────────────────── */
 @media (max-width: 767px) {
-  /* Header mobile: brand + avatar (nav delegado al BottomTabBar). */
-  .app-header__nav-list {
+  .app-header__inner {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .app-header__nav {
     display: none;
   }
 
   .app-header__actions {
-    padding-left: 0;
-    border-left: none;
-    flex-shrink: 0;
-    margin-left: auto;
-  }
-
-  .app-header__nav {
-    width: auto;
-    gap: 0;
+    justify-content: flex-end;
   }
 }
 
+/* ── Mobile pequeño (<480px) ─────────────────── */
 @media (max-width: 480px) {
   .app-header__title {
-    font-size: var(--type-body-md-size);
+    font-size: var(--type-caption-md-size);
   }
 }

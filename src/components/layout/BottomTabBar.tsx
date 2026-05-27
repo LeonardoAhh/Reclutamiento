@@ -7,7 +7,6 @@ import {
   MoreHorizontal,
   Briefcase,
   UserMinus,
-  Bus,
   X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -29,7 +28,6 @@ const PRIMARY_TABS: ReadonlyArray<TabItem> = [
 const OVERFLOW_TABS: ReadonlyArray<TabItem> = [
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
   { to: '/bajas', label: 'Bajas', icon: UserMinus },
-  { to: '/transporte', label: 'Transporte', icon: Bus },
 ];
 
 /**

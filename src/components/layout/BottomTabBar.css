@@ -1,58 +1,86 @@
-/* BottomTabBar — tab bar inferior para mobile/PWA.
-   Sólo visible en ≤767px. En desktop/tablet el top-nav cubre la navegación. */
+/* ─────────────────────────────────────────────
+   BottomTabBar
+   Solo visible en ≤767px. Desktop/tablet usan
+   el top-nav. z-index: 90 (bajo el header: 100).
+───────────────────────────────────────────── */
 
+/* ── Oculto por defecto; mobile lo activa ── */
 .bottom-tab-bar {
   display: none;
 }
 
 @media (max-width: 767px) {
   .bottom-tab-bar {
+    /* Posicionamiento */
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 90;
+
+    /* Display */
     display: block;
+
+    /* Box model — safe areas por padding, no por margin */
+    padding-bottom: var(--safe-area-bottom);
+    padding-left: var(--safe-area-left);
+    padding-right: var(--safe-area-right);
+
+    /* Visual */
     background: var(--color-header-glass);
     border-top: 1px solid var(--color-hairline);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding-bottom: var(--safe-area-bottom);
-    padding-left: var(--safe-area-left);
-    padding-right: var(--safe-area-right);
   }
 
+  /* ── Lista de tabs ─────────────────────── */
   .bottom-tab-bar__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    /* Display */
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+
+    /* Box model */
     height: var(--tab-bar-height);
+    margin: 0;
+    padding: 0;
+
+    /* Reset */
+    list-style: none;
   }
 
+  /* ── Item (celda de la grid) ───────────── */
   .bottom-tab-bar__item {
     display: flex;
     align-items: stretch;
     justify-content: stretch;
   }
 
+  /* ── Link / botón de cada tab ──────────── */
   .bottom-tab-bar__link {
+    /* Display */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: var(--spacing-2xs);    /* antes: 2px hardcodeado */
     width: 100%;
-    min-height: 44px;
+
+    /* Box model */
+    min-height: 44px;           /* touch target mínimo WCAG */
     padding: var(--spacing-xs) var(--spacing-xxs);
-    background: transparent;
-    border: none;
-    color: var(--color-muted);
+
+    /* Tipografía */
     font-family: var(--font-body);
     font-size: var(--type-caption-md-size);
     font-weight: 500;
     text-decoration: none;
+
+    /* Visual */
+    color: var(--color-muted);
+    background: transparent;
+    border: none;
+
+    /* Interacción */
     cursor: pointer;
     transition:
       color var(--transition-fast),
@@ -69,30 +97,41 @@
     border-radius: var(--rounded-sm);
   }
 
+  /* Estado activo: color primario + línea superior */
   .bottom-tab-bar__link--active {
-    color: var(--color-primary);
     position: relative;
+    color: var(--color-primary);
   }
 
   .bottom-tab-bar__link--active::before {
     content: '';
+
+    /* Posicionamiento */
     position: absolute;
     top: 0;
     left: 25%;
     right: 25%;
+
+    /* Box model */
     height: 2px;
+
+    /* Visual */
     background: var(--color-primary);
     border-radius: 0 0 var(--rounded-pill) var(--rounded-pill);
   }
 
+  /* ── Subcomponentes del link ───────────── */
   .bottom-tab-bar__icon {
     flex-shrink: 0;
   }
 
   .bottom-tab-bar__label {
+    /* Tipografía */
     font-size: 11px;
     letter-spacing: var(--tracking-snug);
     line-height: 1;
+
+    /* Overflow */
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -100,64 +139,117 @@
   }
 }
 
-/* ── Bottom sheet (overflow "Más") ────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   Bottom Sheet (overflow "Más")
+   z-index: 1000 — por encima de todo.
+   Animaciones definidas una sola vez aquí.
+───────────────────────────────────────────── */
+
+/* ── Keyframes ────────────────────────────── */
+@keyframes btm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes btm-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ── Overlay / scrim ──────────────────────── */
 .bottom-sheet-overlay {
+  /* Posicionamiento */
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: var(--color-modal-scrim);
+
+  /* Display */
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  animation: fadeIn 200ms ease;
+
+  /* Visual */
+  background: var(--color-modal-scrim);
+
+  /* Animación */
+  animation: btm-fade-in 200ms ease;
 }
 
+/* ── Sheet ────────────────────────────────── */
 .bottom-sheet {
+  /* Box model */
   width: 100%;
   max-width: 600px;
+  padding-bottom: max(var(--spacing-md), var(--safe-area-bottom));
+
+  /* Visual */
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-bottom: none;
   border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
-  padding-bottom: max(var(--spacing-md), var(--safe-area-bottom));
   box-shadow: var(--shadow-elevated);
-  animation: slideUp 280ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Animación */
+  animation: btm-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* ── Handle (drag indicator) ──────────────── */
 .bottom-sheet__handle {
+  /* Box model */
   width: 36px;
   height: 4px;
+  margin: var(--spacing-xs) auto var(--spacing-sm);
+
+  /* Visual */
   background: var(--color-hairline);
   border-radius: var(--rounded-pill);
-  margin: var(--spacing-xs) auto var(--spacing-sm);
 }
 
+/* ── Header ───────────────────────────────── */
 .bottom-sheet__header {
+  /* Display */
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  /* Box model */
   padding: 0 var(--spacing-lg) var(--spacing-sm);
+
+  /* Visual */
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
 .bottom-sheet__title {
+  /* Tipografía */
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: 500;
-  color: var(--color-ink);
+
+  /* Box model */
   margin: 0;
+
+  /* Visual */
+  color: var(--color-ink);
 }
 
+/* ── Botón cierre ─────────────────────────── */
 .bottom-sheet__close {
-  width: 36px;
-  height: 36px;
+  /* Display */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--rounded-full);
+
+  /* Box model */
+  width: 36px;
+  height: 36px;
+
+  /* Visual */
+  color: var(--color-muted);
   background: transparent;
   border: 1px solid var(--color-hairline);
-  color: var(--color-muted);
+  border-radius: var(--rounded-full);
+
+  /* Interacción */
   cursor: pointer;
   transition:
     color var(--transition-fast),
@@ -174,28 +266,46 @@
   box-shadow: var(--shadow-focus);
 }
 
+/* ── Lista de ítems ───────────────────────── */
 .bottom-sheet__list {
-  list-style: none;
-  margin: 0;
-  padding: var(--spacing-sm);
+  /* Display */
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-2xs);    /* antes: --spacing-xxs (token inconsistente) */
+
+  /* Box model */
+  margin: 0;
+  padding: var(--spacing-sm);
+
+  /* Reset */
+  list-style: none;
 }
 
+/* ── Ítem ─────────────────────────────────── */
 .bottom-sheet__item {
+  /* Display */
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+
+  /* Box model */
   min-height: 52px;
-  border-radius: var(--rounded-md);
-  color: var(--color-ink);
+  padding: var(--spacing-md);
+
+  /* Tipografía */
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: 500;
   text-decoration: none;
-  transition: background var(--transition-fast), color var(--transition-fast);
+
+  /* Visual */
+  color: var(--color-ink);
+  border-radius: var(--rounded-md);
+
+  /* Interacción */
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
 }
 
 .bottom-sheet__item:hover {
@@ -212,11 +322,13 @@
   background: var(--color-surface-soft);
 }
 
+/* ── Subcomponentes del ítem ──────────────── */
 .bottom-sheet__item-icon {
   flex-shrink: 0;
   color: var(--color-muted);
 }
 
+/* Herencia de color: el ícono sigue al padre --active */
 .bottom-sheet__item--active .bottom-sheet__item-icon {
   color: var(--color-primary);
 }

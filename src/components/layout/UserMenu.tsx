@@ -1,36 +1,44 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
 
 /**
- * Dropdown ghost que reemplaza el chip de usuario + botón de logout
- * standalone. Trigger: círculo con inicial + chevron. Al abrir muestra el
- * username completo y un botón "Cerrar sesión" alineado a la izquierda.
+ * Dropdown de sesión. Trigger: avatar inicial + chevron.
+ * Se cierra con click fuera o Escape; el foco regresa
+ * al trigger para mantener el flujo de teclado.
  *
- * Se cierra al hacer click fuera o presionar Escape.
+ * TODO(admin): restaurar ítem "Configuración" cuando
+ * /settings esté disponible; gatearlo por isAdmin.
  */
 export function UserMenu() {
   const { username, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]             = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootRef    = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Click outside + Escape para cerrar.
+  /* close como ref para que handleSignOut no necesite
+     redeclararse cuando cambia el estado open. */
+  const closeRef = useRef(() => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  });
+
+  /* ── Cierre por click fuera y Escape ─────── */
   useEffect(() => {
     if (!open) return;
 
-    function onPointer(e: PointerEvent) {
-      if (!rootRef.current) return;
-      if (!rootRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false);
-    }
+    const close = closeRef.current;
+
+    const onPointer = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) close();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
 
     document.addEventListener('pointerdown', onPointer);
     document.addEventListener('keydown', onKey);
@@ -40,24 +48,28 @@ export function UserMenu() {
     };
   }, [open]);
 
-  async function handleSignOut() {
+  const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
     try {
       await signOut();
     } finally {
       setSigningOut(false);
-      setOpen(false);
+      closeRef.current();
     }
-  }
+  }, [signingOut, signOut]);
+  /* Sin dependencia de close: closeRef es estable entre renders. */
 
   if (!username) return null;
 
-  const initial = username.charAt(0).toUpperCase() || '·';
+  const initial = username.charAt(0).toUpperCase();
 
   return (
     <div className="user-menu" ref={rootRef}>
+
+      {/* ── Trigger ──────────────────────────── */}
       <button
+        ref={triggerRef}
         type="button"
         className="user-menu__trigger"
         onClick={() => setOpen((o) => !o)}
@@ -70,12 +82,13 @@ export function UserMenu() {
           {initial}
         </span>
         <ChevronDown
-          size={14}
+          size={12}
           aria-hidden="true"
           className={`user-menu__chevron${open ? ' user-menu__chevron--open' : ''}`}
         />
       </button>
 
+      {/* ── Dropdown ─────────────────────────── */}
       {open && (
         <div
           className="user-menu__dropdown"
@@ -88,7 +101,9 @@ export function UserMenu() {
               {username}
             </p>
           </div>
+
           <div className="user-menu__divider" role="separator" />
+
           <button
             type="button"
             className="user-menu__item"
@@ -96,26 +111,21 @@ export function UserMenu() {
             role="menuitemradio"
             aria-checked={theme === 'dark'}
             aria-label={
-              theme === 'dark'
-                ? 'Cambiar a tema claro'
-                : 'Cambiar a tema oscuro'
+              theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
             }
           >
-            {theme === 'dark' ? (
-              <Sun size={14} aria-hidden="true" />
-            ) : (
-              <Moon size={14} aria-hidden="true" />
-            )}
+            {theme === 'dark'
+              ? <Sun  size={13} aria-hidden="true" />
+              : <Moon size={13} aria-hidden="true" />
+            }
             <span className="user-menu__item-label">Tema</span>
             <span className="user-menu__item-meta">
               {theme === 'dark' ? 'Oscuro' : 'Claro'}
             </span>
           </button>
-          {/* Item "Configuración" deshabilitado temporalmente.
-              Cuando se retome el acceso al panel admin, restaurar el botón
-              gateado por `isAdmin` (profile?.role === 'admin') y la ruta
-              /settings en App.tsx. */}
+
           <div className="user-menu__divider" role="separator" />
+
           <button
             type="button"
             className="user-menu__item user-menu__item--danger"
@@ -123,7 +133,7 @@ export function UserMenu() {
             disabled={signingOut}
             role="menuitem"
           >
-            <LogOut size={14} aria-hidden="true" />
+            <LogOut size={13} aria-hidden="true" />
             <span className="user-menu__item-label">
               {signingOut ? 'Cerrando…' : 'Cerrar sesión'}
             </span>
