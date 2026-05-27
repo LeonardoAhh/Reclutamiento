@@ -172,6 +172,7 @@ export function useCandidates() {
         created_at: nowIso(),
         updated_at: nowIso(),
       };
+      const previous = candidates;
       const updated = [draft, ...candidates];
       setCandidates(updated);
       saveLocal(STORAGE_KEYS.candidates, updated);
@@ -199,9 +200,13 @@ export function useCandidates() {
         return { ok: true, candidate: saved };
       } catch (err) {
         const message = formatSupabaseError(err);
-        console.warn('Supabase insert candidate failed, saved locally:', message, err);
+        console.warn('Supabase insert candidate failed, reverting local insert:', message, err);
+        // Revertir el optimistic update: sin esto, la fila persistia solo en
+        // localStorage y los KPIs divergian entre devices al refrescar.
+        setCandidates(previous);
+        saveLocal(STORAGE_KEYS.candidates, previous);
         setSaveStatus('error');
-        return { ok: true, candidate: draft, message: `Guardado local. Sincronización pendiente: ${message}` };
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
       }
     },
     [candidates, isConfigured]
@@ -212,6 +217,7 @@ export function useCandidates() {
       const target = candidates.find((c) => c.id === id);
       if (!target) return { ok: false, message: 'Candidato no encontrado.' };
 
+      const previous = candidates;
       const merged: Candidate = { ...target, ...patch, updated_at: nowIso() };
       const updated = candidates.map((c) => (c.id === id ? merged : c));
       setCandidates(updated);
@@ -238,9 +244,11 @@ export function useCandidates() {
         return { ok: true };
       } catch (err) {
         const message = formatSupabaseError(err);
-        console.warn('Supabase update candidate failed, saved locally:', message, err);
+        console.warn('Supabase update candidate failed, reverting local update:', message, err);
+        setCandidates(previous);
+        saveLocal(STORAGE_KEYS.candidates, previous);
         setSaveStatus('error');
-        return { ok: true, message: `Actualizado local. Sincronización pendiente: ${message}` };
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
       }
     },
     [candidates, isConfigured]
@@ -264,6 +272,8 @@ export function useCandidates() {
 
   const deleteCandidate = useCallback(
     async (id: string): Promise<{ ok: boolean; message?: string }> => {
+      const previousCandidates = candidates;
+      const previousNotes = notes;
       const updated = candidates.filter((c) => c.id !== id);
       if (updated.length === candidates.length) {
         return { ok: false, message: 'Candidato no encontrado.' };
@@ -292,9 +302,13 @@ export function useCandidates() {
         return { ok: true };
       } catch (err) {
         const message = formatSupabaseError(err);
-        console.warn('Supabase delete candidate failed, removed locally:', message, err);
+        console.warn('Supabase delete candidate failed, reverting local delete:', message, err);
+        setCandidates(previousCandidates);
+        saveLocal(STORAGE_KEYS.candidates, previousCandidates);
+        setNotes(previousNotes);
+        saveLocal(STORAGE_KEYS.candidateNotes, previousNotes);
         setSaveStatus('error');
-        return { ok: true, message: `Eliminado local. Sincronización pendiente: ${message}` };
+        return { ok: false, message: `No se pudo eliminar en Supabase: ${message}` };
       }
     },
     [candidates, notes, isConfigured]
@@ -307,6 +321,7 @@ export function useCandidates() {
         id: localId(),
         created_at: nowIso(),
       };
+      const previousNotes = notes;
       const updated = [draft, ...notes];
       setNotes(updated);
       saveLocal(STORAGE_KEYS.candidateNotes, updated);
@@ -332,9 +347,11 @@ export function useCandidates() {
         return { ok: true };
       } catch (err) {
         const message = formatSupabaseError(err);
-        console.warn('Supabase insert candidate note failed, saved locally:', message, err);
+        console.warn('Supabase insert candidate note failed, reverting local insert:', message, err);
+        setNotes(previousNotes);
+        saveLocal(STORAGE_KEYS.candidateNotes, previousNotes);
         setSaveStatus('error');
-        return { ok: true, message: `Guardado local. Sincronización pendiente: ${message}` };
+        return { ok: false, message: `No se pudo guardar la nota en Supabase: ${message}` };
       }
     },
     [notes, isConfigured]

@@ -40,6 +40,7 @@ import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type {
   Baja,
   Candidate,
+  CandidateStatus,
   VacancyRequest,
   VacancyStatus,
 } from '@/lib/types';
@@ -61,6 +62,17 @@ const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
   'en_proceso',
   'pausa',
 ];
+
+/**
+ * Status no terminales del pipeline. Un candidato en cualquiera de estos
+ * sigue activo (no contratado, no rechazado). Se usa tanto para el KPI
+ * "En proceso" como para acotar "Citados hoy" y "Total".
+ */
+const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
+  'entrevista',
+  'entrega_documentos',
+  'faltan_documentos',
+]);
 
 interface VacancyMetrics {
   vencida: boolean;
@@ -188,20 +200,32 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   }, [vacancies]);
 
   /* ── Candidatos (5) ────────────────────────────────────────── */
+  // Pipeline activo = candidatos en cualquier status no terminal
+  // (entrevista, entrega_documentos, faltan_documentos). Antes solo se
+  // contaban los 2 últimos y los que están en entrevista quedaban fuera
+  // del KPI aunque sí son procesos en curso.
   const candidatesInProcess: Candidate[] = useMemo(
-    () => candidates.filter((c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos'),
+    () => candidates.filter((c) => ACTIVE_CANDIDATE_STATUSES.has(c.status)),
     [candidates]
   );
-  // "Citados hoy" — candidatos con `fecha_cita` igual a la fecha civil de hoy
-  // en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD anclado a Querétaro,
-  // y la columna se persiste como `date` (sin TZ) → comparación lexical exacta.
+  // "Citados hoy" — candidatos activos con `fecha_cita` igual a la fecha
+  // civil de hoy en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD anclado
+  // a Querétaro, y la columna se persiste como `date` (sin TZ) → comparación
+  // lexical exacta. Se filtra por status activo para no contar contratados
+  // ni rechazados con citas viejas o futuras que coincidan con hoy.
   const candidatesCitadosHoy: Candidate[] = useMemo(() => {
     const today = localTodayIso();
-    return candidates.filter((c) => (c.fecha_cita ?? '') === today);
+    return candidates.filter(
+      (c) => (c.fecha_cita ?? '') === today && ACTIVE_CANDIDATE_STATUSES.has(c.status)
+    );
   }, [candidates]);
   const candidateTotals = useMemo(() => {
+    // "Total histórico" = todos los candidatos jamás registrados, incluyendo
+    // terminales (contratados + rechazados). El label en la card se renombró
+    // para que el usuario sepa que es un acumulado de por vida, no el
+    // pipeline activo (ese es `enProceso`).
     const total = candidates.length;
-    const enProceso = candidates.filter((c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos').length;
+    const enProceso = candidatesInProcess.length;
     const citadosHoy = candidatesCitadosHoy.length;
     const contratados = candidates.filter((c) => c.status === 'contratado').length;
     const rechazados = candidates.filter((c) => c.status === 'rechazado').length;
@@ -304,7 +328,7 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
       // Candidatos (6-9)
       {
         id: 'stat-pipeline-total',
-        label: 'Total',
+        label: 'Total histórico',
         value: candidateTotals.total,
         icon: <Users size={20} aria-hidden="true" />,
         accentColor: 'var(--color-ink)',
