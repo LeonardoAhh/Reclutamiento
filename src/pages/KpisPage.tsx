@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { RecruitmentHero } from '@/components/ui/RecruitmentHero';
 import {
   Activity,
   AlertTriangle,
@@ -90,9 +89,7 @@ interface KpiDescriptor {
 }
 
 export function KpisPage() {
-const { profile, username } = useAuth();
-const rawName = profile?.display_name || username || 'Usuario';
-const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+const { } = useAuth();
   const { employees, comments } = useSupabaseData();
   const { vacancies } = useVacancyRequests();
   const { candidates } = useCandidates();
@@ -425,7 +422,6 @@ const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
 
   return (
     <main className="kpis-page container" id="page-kpis">
-      <RecruitmentHero displayName={displayName} />
 
       <section className="kpis-page__hero">
         <div>
