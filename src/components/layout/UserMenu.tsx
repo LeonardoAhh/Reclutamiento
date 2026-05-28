@@ -98,7 +98,7 @@ export function UserMenu() {
           aria-label="Menú de sesión"
         >
           <div className="user-menu__header">
-            <p className="user-menu__label">Sesión activa</p>
+            <p className="user-menu__label">Active session</p>
             <p className="user-menu__name" title={username}>
               {username}
             </p>
@@ -116,7 +116,7 @@ export function UserMenu() {
             role="menuitem"
           >
             <Users size={13} aria-hidden="true" />
-            <span className="user-menu__item-label">Empleados</span>
+            <span className="user-menu__item-label">Employees</span>
           </button>
 
           <div className="user-menu__divider" role="separator" />
@@ -128,16 +128,16 @@ export function UserMenu() {
             role="menuitemradio"
             aria-checked={theme === 'dark'}
             aria-label={
-              theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+              theme === 'dark' ? 'Change to light theme' : 'Switch to dark theme'
             }
           >
             {theme === 'dark'
               ? <Sun  size={13} aria-hidden="true" />
               : <Moon size={13} aria-hidden="true" />
             }
-            <span className="user-menu__item-label">Tema</span>
+            <span className="user-menu__item-label">Theme</span>
             <span className="user-menu__item-meta">
-              {theme === 'dark' ? 'Oscuro' : 'Claro'}
+              {theme === 'dark' ? 'dark' : 'light'}
             </span>
           </button>
 
@@ -152,7 +152,7 @@ export function UserMenu() {
           >
             <LogOut size={13} aria-hidden="true" />
             <span className="user-menu__item-label">
-              {signingOut ? 'Cerrando…' : 'Cerrar sesión'}
+              {signingOut ? 'Closing…' : 'Sign out'}
             </span>
           </button>
         </div>
