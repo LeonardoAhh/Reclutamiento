@@ -33,7 +33,61 @@ interface EmployeeActionHandlers {
   onIncapacidad: (emp: Employee) => void;
 }
 
-/** Tabla de empleados de un departamento. Compartida por PC y móvil. */
+/** Lista de tarjetas de empleados (móvil). Acciones siempre visibles. */
+function EmployeeCards({
+  empleados,
+  handlers,
+}: {
+  empleados: Employee[];
+  handlers: EmployeeActionHandlers;
+}) {
+  return (
+    <ul className="empleados__card-list" role="list">
+      {empleados.map((emp) => (
+        <li
+          key={emp.id ?? emp.num_empleado}
+          className={`empleados__card${
+            emp.en_incapacidad ? ' empleados__card--incapacidad' : ''
+          }`}
+        >
+          <div className="empleados__card-main">
+            <div className="empleados__card-top">
+              <span className="empleados__cell-num">{emp.num_empleado}</span>
+              <span className="empleados__name">{emp.nombre}</span>
+            </div>
+            <span className="empleados__puesto">
+              {emp.puesto}
+              {emp.seccion ? ` · ${emp.seccion}` : ''}
+            </span>
+            {emp.en_incapacidad && (
+              <span
+                className="empleados__incapacidad-tag"
+                title={
+                  emp.incapacidad_hasta
+                    ? `Incapacidad hasta ${formatShortDate(
+                        emp.incapacidad_hasta
+                      )}`
+                    : 'En incapacidad médica'
+                }
+              >
+                <HeartPulse size={11} aria-hidden="true" />
+                Incapacidad
+              </span>
+            )}
+          </div>
+          <EmployeeRowActions
+            employee={emp}
+            onEdit={handlers.onEdit}
+            onDelete={handlers.onDelete}
+            onIncapacidad={handlers.onIncapacidad}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Tabla de empleados de un departamento (PC). */
 function EmployeeTable({
   empleados,
   handlers,
@@ -364,7 +418,7 @@ export function Empleados() {
                 </h2>
                 {expanded && (
                   <div id={panelId} className="empleados__acc-panel">
-                    <EmployeeTable
+                    <EmployeeCards
                       empleados={group.empleados}
                       handlers={handlers}
                     />
