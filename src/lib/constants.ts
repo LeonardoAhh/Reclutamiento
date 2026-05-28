@@ -67,7 +67,9 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: 'CALIDAD',
     seccion: 'CALIDAD ADMTVO',
     puesto: 'INSPECTOR DE CALIDAD',
-    plantilla_autorizada: 15
+    plantilla_autorizada: 15,
+    notas: 'Backup autorizado 1 y 1 extra por maternidad de 4040 SOFIA.',
+    backup: 2,
   },
   { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'AUXILIAR DE CALIDAD', plantilla_autorizada: 1 },
   { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'METRÓLOGO', plantilla_autorizada: 13 },
