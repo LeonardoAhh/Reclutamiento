@@ -75,6 +75,8 @@ interface KpiRevealProps {
   onReveal: () => void;
   onHide: () => void;
   children: React.ReactNode;
+  /** Card siempre visible (sin blur). */
+  alwaysVisible?: boolean;
   /** Clase extra. */
   className?: string;
   /** Identificador usado por `useActiveSnapItem` para detectar la card activa. */
@@ -90,16 +92,21 @@ export function KpiReveal({
   onReveal,
   onHide,
   children,
+  alwaysVisible = false,
   className,
   'data-snap-id': dataSnapId,
   style,
 }: KpiRevealProps) {
+  const effectiveRevealed = alwaysVisible || revealed;
+
   function handleClick() {
+    if (alwaysVisible) return;
     if (revealed) onHide();
     else onReveal();
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (alwaysVisible) return;
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleClick();
@@ -108,7 +115,8 @@ export function KpiReveal({
 
   const classes = [
     'kpi-reveal',
-    revealed ? 'kpi-reveal--revealed' : '',
+    effectiveRevealed ? 'kpi-reveal--revealed' : '',
+    alwaysVisible ? 'kpi-reveal--always' : '',
     className ?? '',
   ]
     .filter(Boolean)
@@ -118,11 +126,13 @@ export function KpiReveal({
     <div
       className={classes}
       style={style}
-      role="button"
-      tabIndex={0}
-      aria-pressed={revealed}
+      role={alwaysVisible ? undefined : 'button'}
+      tabIndex={alwaysVisible ? undefined : 0}
+      aria-pressed={alwaysVisible ? undefined : revealed}
       aria-label={
-        revealed
+        alwaysVisible
+          ? undefined
+          : revealed
           ? `Ocultar KPI ${label}`
           : `Mostrar KPI ${label}`
       }
@@ -132,7 +142,7 @@ export function KpiReveal({
       onKeyDown={handleKeyDown}
     >
       <div className="kpi-reveal__inner">{children}</div>
-      {!revealed && (
+      {!effectiveRevealed && (
         <span className="kpi-reveal__hint" aria-hidden="true">
           <Eye size={16} aria-hidden="true" />
         </span>

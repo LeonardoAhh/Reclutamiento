@@ -108,24 +108,10 @@
   flex-direction: column;
 }
 
-.kpis-page__origin {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-md);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--color-muted-soft);
-  pointer-events: none;
-  z-index: 1;
-}
-
 /* Botón de detalle (visible cuando la card está revelada). */
 .kpis-page__detail-btn {
   position: absolute;
-  left: var(--spacing-md);
+  right: var(--spacing-md);
   bottom: var(--spacing-md);
   display: inline-flex;
   align-items: center;

@@ -33,8 +33,8 @@ export function CandidatesCitedTodayModal({
       onClose={onClose}
       className="candidates-cited-today-modal modal-fullscreen-mobile"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
-      title="Citados hoy"
-      subtitle="Detalle de candidatos citados"
+      title="Cited personnel"
+      subtitle="Details of candidates citeds"
     >
       <div className="modal-body candidates-cited-today-modal__body">
         <header className="candidates-cited-today-modal__summary">
@@ -42,13 +42,13 @@ export function CandidatesCitedTodayModal({
             {candidates.length}
           </div>
           <p className="candidates-cited-today-modal__big-label">
-            {candidates.length === 1 ? 'candidato citado' : 'candidatos citados'}
+            {candidates.length === 1 ? 'Candidate' : 'Candidates'}
           </p>
         </header>
 
         {candidates.length === 0 ? (
           <p className="candidates-cited-today-modal__empty">
-            No hay candidatos citados hoy.
+            No cited candidates today.
           </p>
         ) : (
           <div className="candidates-cited-today-modal__groups">
@@ -56,7 +56,7 @@ export function CandidatesCitedTodayModal({
               <section
                 key={area}
                 className="candidates-cited-today-modal__area"
-                aria-label={`Área ${area}`}
+                aria-label={`Area ${area}`}
               >
                 <h3 className="candidates-cited-today-modal__area-title">
                   {area} <span className="candidates-cited-today-modal__area-count">({items.length})</span>

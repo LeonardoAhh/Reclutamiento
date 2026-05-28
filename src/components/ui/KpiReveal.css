@@ -2,10 +2,15 @@
   position: relative;
   border-radius: var(--rounded-lg);
   cursor: pointer;
-  outline: none; /* reemplazado por :focus-visible abajo */
+  outline: none;
   transition:
     box-shadow var(--transition-base),
     transform var(--transition-base);
+}
+
+/* Always-visible cards don't act as buttons */
+.kpi-reveal--always {
+  cursor: default;
 }
 
 .kpi-reveal:focus-visible {
@@ -18,7 +23,7 @@
   transition:
     filter var(--transition-base),
     opacity var(--transition-base),
-    visibility var(--transition-base); /* ← para que el fade funcione */
+    visibility var(--transition-base);
   will-change: filter, opacity;
   filter: blur(30px);
   opacity: 0;
@@ -48,11 +53,11 @@
   border-radius: 999px;
   box-shadow: var(--shadow-card);
   pointer-events: none;
-  transition: opacity var(--transition-base); /* ← para ocultar suavemente */
+  transition: opacity var(--transition-base);
 }
 
 .kpi-reveal--revealed .kpi-reveal__hint {
-  opacity: 0; /* ← se oculta al revelar */
+  opacity: 0;
 }
 
 [data-theme="dark"] .kpi-reveal__hint {
@@ -65,10 +70,10 @@
 }
 
 .kpi-reveal:not(.kpi-reveal--revealed):hover .kpi-reveal__inner {
-  filter: blur(22px); /* ← feedback visual real */
+  filter: blur(22px);
   opacity: 0.6;
 }
 
 .kpi-reveal:not(.kpi-reveal--revealed):hover {
-  transform: scale(1.01); /* ← insinúa interactividad */
+  transform: scale(1.01);
 }

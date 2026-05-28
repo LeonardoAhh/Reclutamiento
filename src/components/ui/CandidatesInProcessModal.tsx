@@ -54,8 +54,8 @@ export function CandidatesInProcessModal({
       onClose={onClose}
       className="candidates-in-process-modal modal-fullscreen-mobile"
       icon={<Activity size={20} aria-hidden="true" />}
-      title="Candidatos en proceso"
-      subtitle="Puestos activos en el pipeline"
+      title="Candidates in process"
+      subtitle="Active staff on candidate page"
     >
       <div className="modal-body candidates-in-process-modal__body">
         <header className="candidates-in-process-modal__summary">
@@ -63,13 +63,13 @@ export function CandidatesInProcessModal({
             {candidates.length}
           </div>
           <p className="candidates-in-process-modal__big-label">
-            {candidates.length === 1 ? 'candidato activo' : 'candidatos activos'}
+            {candidates.length === 1 ? 'Processes' : 'Processes'}
           </p>
         </header>
 
         {candidates.length === 0 ? (
           <p className="candidates-in-process-modal__empty">
-            No hay candidatos activos en el pipeline.
+            No candidates in process.
           </p>
         ) : (
           <section
@@ -77,7 +77,7 @@ export function CandidatesInProcessModal({
             aria-label="Resumen por puesto y sección"
           >
             <h3 className="candidates-in-process-modal__section-title">
-              Puestos en proceso
+              Positions with processes  
             </h3>
             <ul className="candidates-in-process-modal__puesto-list">
               {grouped.map((g) => (

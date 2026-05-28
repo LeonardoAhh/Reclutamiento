@@ -1,24 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  Activity,
-  AlertTriangle,
-  BadgeCheck,
-  CalendarCheck,
-  CalendarPlus,
-  CheckCircle2,
-  ClipboardList,
-  Eye,
-  EyeOff,
-  ShieldCheck,
-  Timer,
-  TrendingUp,
-  UserCheck,
-  UserMinus,
-  UserPlus,
-  Users,
-  UserX,
-} from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
@@ -61,6 +43,13 @@ const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
   'pausa',
 ];
 
+/** IDs de cards que siempre se muestran sin blur. */
+const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
+  'kpi-ingresos-semana',
+  'stat-pipeline-citados-hoy',
+  'stat-pipeline-activo',
+]);
+
 interface VacancyMetrics {
   vencida: boolean;
 }
@@ -81,10 +70,8 @@ interface KpiDescriptor {
   label: string;
   value: string | number;
   subtitle?: string;
-  icon: React.ReactNode;
   accentColor: string;
   variant?: 'cream' | 'dark';
-  /** Página de origen — mostrada como overline para que el usuario sepa el contexto. */
   origin: string;
 }
 
@@ -107,8 +94,6 @@ const { } = useAuth();
     () => formatIsoWeekRange(currentWeek),
     [currentWeek]
   );
-  // Restamos 24h al inicio de la semana actual para caer en cualquier
-  // día válido de la semana anterior; isoWeekOf normaliza el rango.
   const previousWeek = useMemo(
     () => isoWeekOf(new Date(currentWeek.start.getTime() - 24 * 60 * 60 * 1000)),
     [currentWeek]
@@ -185,22 +170,12 @@ const { } = useAuth();
   }, [vacancies]);
 
   /* ── Candidatos (5) ────────────────────────────────────────── */
-  // "En proceso" — candidatos en etapa de documentación (post-entrevista,
-  // pre-contratado). Los que están en `entrevista` se reportan aparte en
-  // "Citados hoy" cuando tienen cita en el día; sin cita no aparecen en
-  // ningún KPI del header (siguen visibles en `/pipeline`).
   const candidatesInProcess: Candidate[] = useMemo(
     () => candidates.filter(
       (c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos'
     ),
     [candidates]
   );
-  // "Citados hoy" — candidatos en `entrevista` con `fecha_cita` igual a la
-  // fecha civil de hoy en TZ MX. `localTodayIso()` ya devuelve YYYY-MM-DD
-  // anclado a Querétaro, y la columna se persiste como `date` (sin TZ) →
-  // comparación lexical exacta. El status restringe a etapa de entrevista
-  // para no contar contratados/rechazados ni candidatos en documentación
-  // cuya cita coincida con hoy — esos viven en "En proceso".
   const candidatesCitadosHoy: Candidate[] = useMemo(() => {
     const today = localTodayIso();
     return candidates.filter(
@@ -208,10 +183,6 @@ const { } = useAuth();
     );
   }, [candidates]);
   const candidateTotals = useMemo(() => {
-    // "Total histórico" = todos los candidatos jamás registrados, incluyendo
-    // terminales (contratados + rechazados). El label en la card se renombró
-    // para que el usuario sepa que es un acumulado de por vida, no el
-    // pipeline activo (ese es `enProceso`).
     const total = candidates.length;
     const enProceso = candidatesInProcess.length;
     const citadosHoy = candidatesCitadosHoy.length;
@@ -228,8 +199,6 @@ const { } = useAuth();
     const objetivo = departmentCoverage.reduce((s, d) => s + d.plantilla_objetivo, 0);
     const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
     const vacantes = departmentCoverage.reduce((s, d) => s + d.vacantes, 0);
-    // Cobertura global = real / (autorizada + backup). El backup cuenta como
-    // parte del objetivo cuando está definido en PLANTILLA_AUTORIZADA.
     const cobertura = objetivo > 0 ? Math.round((real / objetivo) * 100) : 0;
     return { autorizada, real, vacantes, cobertura };
   }, [employees, comments, positions]);
@@ -244,23 +213,17 @@ const { } = useAuth();
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(
     () => [
-
-      // Card semanal (18) — con botón para abrir modal de detalle.
       {
         id: 'kpi-ingresos-semana',
-        label: 'Ingresos esta semana',
+        label: 'Ingresos',
         value: weeklyHires.length,
-        icon: <CalendarPlus size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
         origin: 'Bajas',
       },
-      // Citados hoy — cuenta candidatos con `fecha_cita = hoy (TZ MX)`.
-      // Aparece junto a "En proceso" porque es info accionable del día.
       {
         id: 'stat-pipeline-citados-hoy',
         label: 'Citados hoy',
         value: candidateTotals.citadosHoy,
-        icon: <CalendarCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Candidatos',
       },
@@ -268,16 +231,13 @@ const { } = useAuth();
         id: 'stat-pipeline-activo',
         label: 'En proceso',
         value: candidateTotals.enProceso,
-        icon: <Activity size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
         origin: 'Candidatos',
       },
-      // Vacantes (1-5)
       {
         id: 'stat-vac-abiertas',
         label: 'Abiertas',
         value: vacancyTotals.abiertas,
-        icon: <ClipboardList size={20} aria-hidden="true" />,
         accentColor: 'var(--color-primary)',
         origin: 'Vacantes',
       },
@@ -285,7 +245,6 @@ const { } = useAuth();
         id: 'stat-vac-sla',
         label: 'En tiempo',
         value: vacancyTotals.enSla,
-        icon: <CheckCircle2 size={20} aria-hidden="true" />,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Vacantes',
       },
@@ -293,7 +252,6 @@ const { } = useAuth();
         id: 'stat-vac-vencidas',
         label: 'Vencidas',
         value: vacancyTotals.vencidas,
-        icon: <AlertTriangle size={20} aria-hidden="true" />,
         accentColor: 'var(--color-error)',
         origin: 'Vacantes',
       },
@@ -301,7 +259,6 @@ const { } = useAuth();
         id: 'stat-vac-ttf',
         label: 'TTF prom. (días)',
         value: vacancyTotals.ttfPromedio,
-        icon: <Timer size={20} aria-hidden="true" />,
         accentColor: 'var(--color-ink)',
         origin: 'Vacantes',
       },
@@ -309,16 +266,13 @@ const { } = useAuth();
         id: 'stat-vac-excluidas',
         label: 'Excluidas KPI',
         value: vacancyTotals.excluidas,
-        icon: <EyeOff size={20} aria-hidden="true" />,
         accentColor: 'var(--color-muted)',
         origin: 'Vacantes',
       },
-      // Candidatos (6-9)
       {
         id: 'stat-pipeline-total',
         label: 'Total histórico',
         value: candidateTotals.total,
-        icon: <Users size={20} aria-hidden="true" />,
         accentColor: 'var(--color-ink)',
         origin: 'Candidatos',
       },
@@ -326,7 +280,6 @@ const { } = useAuth();
         id: 'stat-pipeline-contratado',
         label: 'Contratados',
         value: candidateTotals.contratados,
-        icon: <UserCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Candidatos',
       },
@@ -334,16 +287,13 @@ const { } = useAuth();
         id: 'stat-pipeline-rechazado',
         label: 'Rechazados',
         value: candidateTotals.rechazados,
-        icon: <UserX size={20} aria-hidden="true" />,
         accentColor: 'var(--color-error)',
         origin: 'Candidatos',
       },
-      // Dashboard (10-13)
       {
         id: 'stat-autorizada',
         label: 'Plantilla Autorizada',
         value: dashboardTotals.autorizada,
-        icon: <Users size={20} aria-hidden="true" />,
         accentColor: 'var(--color-ink)',
         origin: 'Dashboard',
       },
@@ -351,7 +301,6 @@ const { } = useAuth();
         id: 'stat-real',
         label: 'Plantilla Real',
         value: dashboardTotals.real,
-        icon: <UserCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Dashboard',
       },
@@ -359,7 +308,6 @@ const { } = useAuth();
         id: 'stat-vacantes',
         label: 'Vacantes',
         value: dashboardTotals.vacantes,
-        icon: <UserX size={20} aria-hidden="true" />,
         accentColor: 'var(--color-error)',
         origin: 'Dashboard',
       },
@@ -367,17 +315,21 @@ const { } = useAuth();
         id: 'stat-cobertura',
         label: '% Cobertura Global',
         value: `${dashboardTotals.cobertura}%`,
-        icon: <TrendingUp size={20} aria-hidden="true" />,
         accentColor: getCoverageColor(dashboardTotals.cobertura),
         variant: 'dark',
         origin: 'Dashboard',
       },
-      // Bajas (14-17)
+      {
+        id: 'kpi-cobertura',
+        label: 'Cobertura',
+        value: `${bajasTotals.coverturaPct}%`,
+        accentColor: 'var(--color-accent-teal)',
+        origin: 'Bajas',
+      },
       {
         id: 'kpi-bajas',
         label: 'Bajas',
         value: bajasTotals.bajas,
-        icon: <UserMinus size={20} aria-hidden="true" />,
         accentColor: 'var(--color-error)',
         origin: 'Bajas',
       },
@@ -385,23 +337,13 @@ const { } = useAuth();
         id: 'kpi-ingresos',
         label: 'Ingresos',
         value: bajasTotals.ingresos,
-        icon: <UserPlus size={20} aria-hidden="true" />,
         accentColor: 'var(--color-success)',
-        origin: 'Bajas',
-      },
-      {
-        id: 'kpi-cobertura',
-        label: 'Cobertura',
-        value: `${bajasTotals.coverturaPct}%`,
-        icon: <ShieldCheck size={20} aria-hidden="true" />,
-        accentColor: 'var(--color-accent-teal)',
         origin: 'Bajas',
       },
       {
         id: 'kpi-solo-induccion',
         label: 'Solo Inducción',
         value: bajasTotals.soloInduccion,
-        icon: <BadgeCheck size={20} aria-hidden="true" />,
         accentColor: 'var(--color-muted)',
         origin: 'Bajas',
       },
@@ -445,7 +387,8 @@ const { } = useAuth();
         aria-label="KPIs consolidados"
       >
         {cards.map((card, index) => {
-          const revealed = reveal.isRevealed(card.id);
+          const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
+          const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
           const isWeeklyCard = card.id === 'kpi-ingresos-semana';
           const isInProcessCard = card.id === 'stat-pipeline-activo';
           const isCitedTodayCard = card.id === 'stat-pipeline-citados-hoy';
@@ -456,18 +399,17 @@ const { } = useAuth();
               id={card.id}
               label={card.label}
               revealed={revealed}
+              alwaysVisible={isAlwaysVisible}
               onReveal={() => reveal.reveal(card.id)}
               onHide={() => reveal.hide(card.id)}
               style={{ '--kpi-stack-i': index } as React.CSSProperties}
             >
               <div className="kpis-page__card">
-                <span className="kpis-page__origin">{card.origin}</span>
                 <StatCard
                   id={card.id}
                   label={card.label}
                   value={card.value}
                   subtitle={card.subtitle}
-                  icon={card.icon}
                   accentColor={card.accentColor}
                   variant={card.variant}
                 />
