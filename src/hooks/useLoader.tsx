@@ -60,7 +60,7 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
 
   const flash = useCallback(
     (opts?: LoaderOptions & { duration?: number }) => {
-      const { duration = 650, ...rest } = opts ?? {};
+      const { duration = 850, ...rest } = opts ?? {};
       clearTimer();
       setState(rest);
       timer.current = window.setTimeout(() => {

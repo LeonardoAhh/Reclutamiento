@@ -26,14 +26,14 @@
 
 /* Velo decorativo radial detrás del mark. */
 .loader-overlay::before {
-  content: '';
+  content: "";
   position: absolute;
   width: min(60vmin, 420px);
   height: min(60vmin, 420px);
   border-radius: var(--rounded-full);
   background: radial-gradient(
     circle,
-    rgb(var(--color-primary-rgb) / 0.10),
+    rgb(var(--color-primary-rgb) / 0.1),
     transparent 68%
   );
   pointer-events: none;
@@ -64,7 +64,7 @@
   border: 2px solid transparent;
   border-top-color: var(--color-primary);
   border-right-color: var(--color-accent-teal);
-  animation: loader-spin 1.05s linear infinite;
+  animation: loader-spin 2.5s linear infinite;
 }
 
 /* Núcleo central pulsante con gradiente de marca. */
@@ -78,15 +78,15 @@
     var(--color-accent-teal) 55%,
     var(--color-accent-amber)
   );
-  box-shadow: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.10);
-  animation: loader-core 1.4s ease-in-out infinite;
+  box-shadow: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.1);
+  animation: loader-core 2.5s ease-in-out infinite;
 }
 
 /* Triada de orbes que giran alrededor del núcleo. */
 .loader-mark__orbit {
   position: absolute;
   inset: 0;
-  animation: loader-spin 2.4s linear infinite;
+  animation: loader-spin 3.5s linear infinite;
 }
 .loader-mark__orbit-dot {
   position: absolute;
@@ -133,11 +133,20 @@
 
 /* ── Keyframes ─────────────────────────────────────────── */
 @keyframes loader-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes loader-core {
-  0%, 100% { transform: scale(0.82); opacity: 0.85; }
-  50%      { transform: scale(1);    opacity: 1; }
+  0%,
+  100% {
+    transform: scale(0.82);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -150,9 +159,21 @@
 
 /* Responsivo: encoge el mark en pantallas chicas. */
 @media (max-width: 480px) {
-  .loader-mark { width: 60px; height: 60px; }
-  .loader-mark__core { width: 22px; height: 22px; }
-  .loader-mark__orbit-dot--a { transform: rotate(0deg)   translate(29px); }
-  .loader-mark__orbit-dot--b { transform: rotate(120deg) translate(29px); }
-  .loader-mark__orbit-dot--c { transform: rotate(240deg) translate(29px); }
+  .loader-mark {
+    width: 60px;
+    height: 60px;
+  }
+  .loader-mark__core {
+    width: 22px;
+    height: 22px;
+  }
+  .loader-mark__orbit-dot--a {
+    transform: rotate(0deg) translate(29px);
+  }
+  .loader-mark__orbit-dot--b {
+    transform: rotate(120deg) translate(29px);
+  }
+  .loader-mark__orbit-dot--c {
+    transform: rotate(240deg) translate(29px);
+  }
 }

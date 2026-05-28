@@ -62,7 +62,7 @@ export function UserMenu() {
       setSigningOut(false);
       closeRef.current();
       // El overlay cubre el redirect a /login y se cierra tras la transición.
-      window.setTimeout(hide, 700);
+      window.setTimeout(hide, 1000);
     }
   }, [signingOut, signOut, show, hide]);
   /* Sin dependencia de close: closeRef es estable entre renders. */

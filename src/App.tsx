@@ -51,7 +51,7 @@ function RouteTransitionLoader() {
     if (prev === null || prev === location.pathname) return;
     if (prev === '/login' || location.pathname === '/login') return;
 
-    flash({ tone: 'route', duration: 520 });
+    flash({ tone: 'route', duration: 820 });
   }, [location.pathname, flash]);
 
   return null;

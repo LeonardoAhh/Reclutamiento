@@ -44,7 +44,7 @@ export function Login() {
     }
 
     // Éxito: el splash cubre la transición login → panel y se cierra solo.
-    flash({ title: 'Entrando…', hint: 'Reclutamiento', duration: 1100 });
+    flash({ title: 'Entrando…', hint: 'Reclutamiento', duration: 3000 });
   };
 
   return (
