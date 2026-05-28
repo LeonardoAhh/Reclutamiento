@@ -1,0 +1,158 @@
+/* LoaderOverlay — splash de carga global, independiente del Skeleton.
+   Cohesivo con el lenguaje "Industrial Bloom": triada de orbes en colores de
+   marca girando sobre un núcleo pulsante. Entrada/salida vía framer-motion;
+   el giro/pulso continuo es CSS para no depender del ciclo de render. */
+
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg, 24px);
+  background: rgb(var(--color-canvas-rgb) / 0.78);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* Variante ligera para cambios de página: menos opaca, sin tanto blur. */
+.loader-overlay--route {
+  background: rgb(var(--color-canvas-rgb) / 0.55);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
+}
+
+/* Velo decorativo radial detrás del mark. */
+.loader-overlay::before {
+  content: '';
+  position: absolute;
+  width: min(60vmin, 420px);
+  height: min(60vmin, 420px);
+  border-radius: var(--rounded-full);
+  background: radial-gradient(
+    circle,
+    rgb(var(--color-primary-rgb) / 0.10),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+/* ── Mark ──────────────────────────────────────────────── */
+.loader-mark {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+}
+
+/* Anillo perimetral suave. */
+.loader-mark__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rounded-full);
+  border: 2px solid rgb(var(--color-primary-rgb) / 0.14);
+}
+
+/* Arco de progreso que gira sobre el anillo. */
+.loader-mark__arc {
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--rounded-full);
+  border: 2px solid transparent;
+  border-top-color: var(--color-primary);
+  border-right-color: var(--color-accent-teal);
+  animation: loader-spin 1.05s linear infinite;
+}
+
+/* Núcleo central pulsante con gradiente de marca. */
+.loader-mark__core {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--rounded-full);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-accent-teal) 55%,
+    var(--color-accent-amber)
+  );
+  box-shadow: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.10);
+  animation: loader-core 1.4s ease-in-out infinite;
+}
+
+/* Triada de orbes que giran alrededor del núcleo. */
+.loader-mark__orbit {
+  position: absolute;
+  inset: 0;
+  animation: loader-spin 2.4s linear infinite;
+}
+.loader-mark__orbit-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: var(--rounded-full);
+}
+.loader-mark__orbit-dot--a {
+  background: var(--color-primary);
+  transform: rotate(0deg) translate(36px);
+}
+.loader-mark__orbit-dot--b {
+  background: var(--color-accent-teal);
+  transform: rotate(120deg) translate(36px);
+}
+.loader-mark__orbit-dot--c {
+  background: var(--color-accent-amber);
+  transform: rotate(240deg) translate(36px);
+}
+
+/* ── Texto ─────────────────────────────────────────────── */
+.loader-overlay__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.loader-overlay__title {
+  font-size: var(--type-body-sm-size, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+}
+.loader-overlay__hint {
+  font-size: var(--type-caption-md-size, 0.75rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--color-primary-rgb) / 0.55);
+}
+
+/* ── Keyframes ─────────────────────────────────────────── */
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes loader-core {
+  0%, 100% { transform: scale(0.82); opacity: 0.85; }
+  50%      { transform: scale(1);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-mark__arc,
+  .loader-mark__orbit,
+  .loader-mark__core {
+    animation: none;
+  }
+}
+
+/* Responsivo: encoge el mark en pantallas chicas. */
+@media (max-width: 480px) {
+  .loader-mark { width: 60px; height: 60px; }
+  .loader-mark__core { width: 22px; height: 22px; }
+  .loader-mark__orbit-dot--a { transform: rotate(0deg)   translate(29px); }
+  .loader-mark__orbit-dot--b { transform: rotate(120deg) translate(29px); }
+  .loader-mark__orbit-dot--c { transform: rotate(240deg) translate(29px); }
+}
