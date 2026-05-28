@@ -4,6 +4,8 @@ import { EditEmployeeSheet } from '@/components/ui/EditEmployeeSheet';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { SkeletonTable, SkeletonCardList } from '@/components/ui/PageSkeletons';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatShortDate } from '@/lib/dates';
@@ -289,9 +291,31 @@ export function Empleados() {
         <section className="empleados__hero">
           <div>
             <h1 className="empleados__title">Empleados</h1>
-            <p className="empleados__sub">Cargando empleados…</p>
+            <Skeleton variant="text" width={180} />
           </div>
+          <Skeleton width="100%" height={40} radius="var(--rounded-md)" />
         </section>
+        {isDesktop ? (
+          <div className="empleados__layout">
+            <nav className="empleados__rail" aria-hidden="true">
+              <div className="empleados__rail-list">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    height={34}
+                    radius="var(--rounded-md)"
+                    style={{ margin: '2px 0' }}
+                  />
+                ))}
+              </div>
+            </nav>
+            <section className="empleados__detail">
+              <SkeletonTable rows={8} columns={['18%', '40%', '30%', '10%']} />
+            </section>
+          </div>
+        ) : (
+          <SkeletonCardList items={6} />
+        )}
       </main>
     );
   }

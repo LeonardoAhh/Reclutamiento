@@ -24,6 +24,7 @@ import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
 import { VacancyReportModal } from '@/components/ui/VacancyReportModal';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -260,8 +261,20 @@ export function Dashboard() {
         <section className="dashboard__hero" id="dashboard-hero">
           <div className="dashboard__hero-content">
             <h1>Dashboard</h1>
-            <p className="dashboard__hero-sub">Cargando dashboard...</p>
           </div>
+        </section>
+        <section className="dashboard__controls">
+          <Skeleton
+            height={40}
+            radius="var(--rounded-md)"
+            style={{ flex: '1 1 260px' }}
+          />
+          <Skeleton height={40} width={140} radius="var(--rounded-md)" />
+        </section>
+        <section className="dashboard__departments">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} height={150} radius="var(--rounded-lg)" />
+          ))}
         </section>
       </main>
     );
