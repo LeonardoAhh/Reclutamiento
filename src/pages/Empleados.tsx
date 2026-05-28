@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
-import { Users, Search, HeartPulse, CloudOff } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Users, Search, HeartPulse, CloudOff, ChevronDown } from 'lucide-react';
 import { EditEmployeeSheet } from '@/components/ui/EditEmployeeSheet';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatShortDate } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
 import './Empleados.css';
@@ -26,6 +27,80 @@ interface DepartmentGroup {
   empleados: Employee[];
 }
 
+interface EmployeeActionHandlers {
+  onEdit: (emp: Employee) => void;
+  onDelete: (emp: Employee) => void;
+  onIncapacidad: (emp: Employee) => void;
+}
+
+/** Tabla de empleados de un departamento. Compartida por PC y móvil. */
+function EmployeeTable({
+  empleados,
+  handlers,
+}: {
+  empleados: Employee[];
+  handlers: EmployeeActionHandlers;
+}) {
+  return (
+    <div className="empleados__table-wrapper">
+      <table className="empleados__table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Puesto</th>
+            <th scope="col" className="empleados__col-actions">
+              <span className="sr-only">Acciones</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {empleados.map((emp) => (
+            <tr
+              key={emp.id ?? emp.num_empleado}
+              className={emp.en_incapacidad ? 'empleados__row--incapacidad' : ''}
+            >
+              <td className="empleados__cell-num">{emp.num_empleado}</td>
+              <td>
+                <span className="empleados__name">{emp.nombre}</span>
+                {emp.en_incapacidad && (
+                  <span
+                    className="empleados__incapacidad-tag"
+                    title={
+                      emp.incapacidad_hasta
+                        ? `Incapacidad hasta ${formatShortDate(
+                            emp.incapacidad_hasta
+                          )}`
+                        : 'En incapacidad médica'
+                    }
+                  >
+                    <HeartPulse size={11} aria-hidden="true" />
+                    Incapacidad
+                  </span>
+                )}
+              </td>
+              <td>
+                <span className="empleados__puesto">{emp.puesto}</span>
+                {emp.seccion && (
+                  <span className="empleados__seccion">{emp.seccion}</span>
+                )}
+              </td>
+              <td className="empleados__col-actions">
+                <EmployeeRowActions
+                  employee={emp}
+                  onEdit={handlers.onEdit}
+                  onDelete={handlers.onDelete}
+                  onIncapacidad={handlers.onIncapacidad}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function Empleados() {
   const {
     employees,
@@ -36,10 +111,17 @@ export function Empleados() {
     updateEmployeeIncapacidad,
   } = useSupabaseData();
 
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
   const [searchTerm, setSearchTerm] = useState('');
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Employee | null>(null);
+
+  // Departamento activo (master-detail en PC).
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  // Departamentos expandidos (accordion en móvil).
+  const [expandedAreas, setExpandedAreas] = useState<Set<string>>(new Set());
 
   // Agrupa por departamento (área); cada grupo ordenado por número de
   // empleado; departamentos ordenados alfabéticamente.
@@ -79,6 +161,36 @@ export function Empleados() {
     [groups]
   );
 
+  // Mantiene un departamento válido seleccionado en PC. Cuando hay búsqueda,
+  // salta al primer grupo con coincidencias.
+  useEffect(() => {
+    if (groups.length === 0) {
+      setSelectedArea(null);
+      return;
+    }
+    const term = searchTerm.trim();
+    if (term) {
+      setSelectedArea(groups[0].area);
+      return;
+    }
+    setSelectedArea((prev) =>
+      prev && groups.some((g) => g.area === prev) ? prev : groups[0].area
+    );
+  }, [groups, searchTerm]);
+
+  // En móvil, una búsqueda activa expande automáticamente los resultados.
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      setExpandedAreas(new Set(groups.map((g) => g.area)));
+    }
+  }, [searchTerm, groups]);
+
+  const handlers: EmployeeActionHandlers = {
+    onEdit: setEditTarget,
+    onDelete: setDeleteTarget,
+    onIncapacidad: setIncapacidadTarget,
+  };
+
   async function handleUpdateEmployee(
     num_empleado: string,
     fields: Partial<
@@ -102,6 +214,20 @@ export function Empleados() {
   async function handleDeleteEmployee(num_empleado: string) {
     return deleteEmployee(num_empleado);
   }
+
+  function toggleArea(area: string) {
+    setExpandedAreas((prev) => {
+      const next = new Set(prev);
+      if (next.has(area)) next.delete(area);
+      else next.add(area);
+      return next;
+    });
+  }
+
+  const activeGroup = useMemo(
+    () => groups.find((g) => g.area === selectedArea) ?? null,
+    [groups, selectedArea]
+  );
 
   if (loading) {
     return (
@@ -158,85 +284,95 @@ export function Empleados() {
               : 'Ningún empleado coincide con la búsqueda.'}
           </p>
         </div>
-      ) : (
-        <div className="empleados__grid">
-          {groups.map((group) => (
-            <section
-              key={group.area}
-              className="empleados__dept"
-              aria-label={`Departamento ${group.area}`}
-            >
-              <header className="empleados__dept-head">
-                <h2 className="empleados__dept-name">{group.area}</h2>
-                <span className="empleados__dept-count">
-                  {group.empleados.length}
-                </span>
-              </header>
+      ) : isDesktop ? (
+        /* ── PC: master-detail ── */
+        <div className="empleados__layout">
+          <nav className="empleados__rail" aria-label="Departamentos">
+            <ul className="empleados__rail-list" role="list">
+              {groups.map((group) => (
+                <li key={group.area}>
+                  <button
+                    type="button"
+                    className={`empleados__rail-item${
+                      group.area === selectedArea
+                        ? ' empleados__rail-item--active'
+                        : ''
+                    }`}
+                    onClick={() => setSelectedArea(group.area)}
+                    aria-current={group.area === selectedArea}
+                  >
+                    <span className="empleados__rail-name">{group.area}</span>
+                    <span className="empleados__rail-count">
+                      {group.empleados.length}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-              <div className="empleados__table-wrapper">
-                <table className="empleados__table">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Puesto</th>
-                      <th scope="col" className="empleados__col-actions">
-                        <span className="sr-only">Acciones</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.empleados.map((emp) => (
-                      <tr
-                        key={emp.id ?? emp.num_empleado}
-                        className={
-                          emp.en_incapacidad ? 'empleados__row--incapacidad' : ''
-                        }
-                      >
-                        <td className="empleados__cell-num">
-                          {emp.num_empleado}
-                        </td>
-                        <td>
-                          <span className="empleados__name">{emp.nombre}</span>
-                          {emp.en_incapacidad && (
-                            <span
-                              className="empleados__incapacidad-tag"
-                              title={
-                                emp.incapacidad_hasta
-                                  ? `Incapacidad hasta ${formatShortDate(
-                                      emp.incapacidad_hasta
-                                    )}`
-                                  : 'En incapacidad médica'
-                              }
-                            >
-                              <HeartPulse size={11} aria-hidden="true" />
-                              Incapacidad
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <span className="empleados__puesto">{emp.puesto}</span>
-                          {emp.seccion && (
-                            <span className="empleados__seccion">
-                              {emp.seccion}
-                            </span>
-                          )}
-                        </td>
-                        <td className="empleados__col-actions">
-                          <EmployeeRowActions
-                            employee={emp}
-                            onEdit={setEditTarget}
-                            onDelete={setDeleteTarget}
-                            onIncapacidad={setIncapacidadTarget}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          ))}
+          <section className="empleados__detail" aria-live="polite">
+            {activeGroup && (
+              <>
+                <header className="empleados__detail-head">
+                  <h2 className="empleados__detail-name">{activeGroup.area}</h2>
+                  <span className="empleados__detail-count">
+                    {activeGroup.empleados.length}{' '}
+                    {activeGroup.empleados.length === 1
+                      ? 'empleado'
+                      : 'empleados'}
+                  </span>
+                </header>
+                <div className="empleados__detail-body">
+                  <EmployeeTable
+                    empleados={activeGroup.empleados}
+                    handlers={handlers}
+                  />
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+      ) : (
+        /* ── Móvil: accordion ── */
+        <div className="empleados__accordion">
+          {groups.map((group) => {
+            const expanded = expandedAreas.has(group.area);
+            const panelId = `empleados-panel-${group.area}`;
+            return (
+              <section key={group.area} className="empleados__acc-item">
+                <h2 className="empleados__acc-heading">
+                  <button
+                    type="button"
+                    className="empleados__acc-trigger"
+                    onClick={() => toggleArea(group.area)}
+                    aria-expanded={expanded}
+                    aria-controls={panelId}
+                  >
+                    <span className="empleados__acc-name">{group.area}</span>
+                    <span className="empleados__acc-count">
+                      {group.empleados.length}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      aria-hidden="true"
+                      className={`empleados__acc-chevron${
+                        expanded ? ' empleados__acc-chevron--open' : ''
+                      }`}
+                    />
+                  </button>
+                </h2>
+                {expanded && (
+                  <div id={panelId} className="empleados__acc-panel">
+                    <EmployeeTable
+                      empleados={group.empleados}
+                      handlers={handlers}
+                    />
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
 

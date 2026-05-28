@@ -99,51 +99,9 @@
   font-size: var(--type-body-md-size);
 }
 
-/* ── Grid de departamentos: 2 columnas ── */
-.empleados__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-lg);
-  align-items: start;
-}
-
-@media (max-width: 880px) {
-  .empleados__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* ── Tarjeta de departamento ── */
-.empleados__dept {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  overflow: hidden;
-}
-
-.empleados__dept-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-soft);
-  border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.empleados__dept-name {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: 600;
-  color: var(--color-ink);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-}
-
-.empleados__dept-count {
+/* ── Conteo pill (compartido por rail/detalle/accordion) ── */
+.empleados__rail-count,
+.empleados__acc-count {
   flex-shrink: 0;
   min-width: 24px;
   padding: 2px var(--spacing-xs);
@@ -153,6 +111,183 @@
   color: var(--color-on-dark);
   background: var(--color-ink);
   border-radius: var(--rounded-pill);
+}
+
+/* ─────────────────────────────────────────────
+   PC — Master / detail
+───────────────────────────────────────────── */
+.empleados__layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+/* Rail de departamentos: sticky, scroll propio. */
+.empleados__rail {
+  position: sticky;
+  top: calc(var(--header-height, 56px) + var(--spacing-md));
+  max-height: calc(100vh - var(--header-height, 56px) - var(--spacing-xl));
+  overflow-y: auto;
+  padding: var(--spacing-xs);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.empleados__rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empleados__rail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  text-align: left;
+  color: var(--color-body);
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.empleados__rail-item:hover,
+.empleados__rail-item:focus-visible {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+  outline: none;
+}
+
+.empleados__rail-item--active {
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  font-weight: 600;
+}
+
+.empleados__rail-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Panel de detalle. */
+.empleados__detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+}
+
+.empleados__detail-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.empleados__detail-name {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.empleados__detail-count {
+  flex-shrink: 0;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.empleados__detail-body {
+  max-height: calc(100vh - var(--header-height, 56px) - 160px);
+  overflow-y: auto;
+}
+
+/* ─────────────────────────────────────────────
+   Móvil — Accordion
+───────────────────────────────────────────── */
+.empleados__accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.empleados__acc-item {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+}
+
+.empleados__acc-heading {
+  margin: 0;
+}
+
+.empleados__acc-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.empleados__acc-trigger:hover,
+.empleados__acc-trigger:focus-visible {
+  background: var(--color-surface-card);
+  outline: none;
+}
+
+.empleados__acc-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.empleados__acc-chevron {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform var(--transition-fast);
+}
+
+.empleados__acc-chevron--open {
+  transform: rotate(180deg);
+}
+
+.empleados__acc-panel {
+  border-top: 1px solid var(--color-hairline-soft);
 }
 
 /* ── Tabla ── */
