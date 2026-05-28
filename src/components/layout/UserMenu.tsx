@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut, Moon, Sun } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronDown, LogOut, Moon, Sun, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
@@ -15,6 +16,7 @@ import './UserMenu.css';
 export function UserMenu() {
   const { username, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [open, setOpen]             = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const rootRef    = useRef<HTMLDivElement>(null);
@@ -101,6 +103,21 @@ export function UserMenu() {
               {username}
             </p>
           </div>
+
+          <div className="user-menu__divider" role="separator" />
+
+          <button
+            type="button"
+            className="user-menu__item"
+            onClick={() => {
+              closeRef.current();
+              navigate('/empleados');
+            }}
+            role="menuitem"
+          >
+            <Users size={13} aria-hidden="true" />
+            <span className="user-menu__item-label">Empleados</span>
+          </button>
 
           <div className="user-menu__divider" role="separator" />
 
