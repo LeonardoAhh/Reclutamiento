@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, LogOut, Moon, Sun, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLoader } from '@/hooks/useLoader';
 import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
 
@@ -15,6 +16,7 @@ import './UserMenu.css';
  */
 export function UserMenu() {
   const { username, signOut } = useAuth();
+  const { show, hide } = useLoader();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [open, setOpen]             = useState(false);
@@ -53,13 +55,16 @@ export function UserMenu() {
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
+    show({ title: 'Cerrando sesión…', hint: 'Reclutamiento' });
     try {
       await signOut();
     } finally {
       setSigningOut(false);
       closeRef.current();
+      // El overlay cubre el redirect a /login y se cierra tras la transición.
+      window.setTimeout(hide, 700);
     }
-  }, [signingOut, signOut]);
+  }, [signingOut, signOut, show, hide]);
   /* Sin dependencia de close: closeRef es estable entre renders. */
 
   if (!username) return null;

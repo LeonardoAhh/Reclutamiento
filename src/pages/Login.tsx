@@ -2,6 +2,7 @@ import { useState, type FormEvent, useId } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
+import { useLoader } from '@/hooks/useLoader';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Login.css';
 
@@ -14,6 +15,7 @@ const fadeUp = (delay = 0) => ({
 
 export function Login() {
   const { signIn } = useAuth();
+  const { flash } = useLoader();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -34,11 +36,15 @@ export function Login() {
 
     setSubmitting(true);
     const result = await signIn(u, password);
-    setSubmitting(false);
 
     if (!result.ok) {
+      setSubmitting(false);
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
+      return;
     }
+
+    // Éxito: el splash cubre la transición login → panel y se cierra solo.
+    flash({ title: 'Entrando…', hint: 'Reclutamiento', duration: 1100 });
   };
 
   return (

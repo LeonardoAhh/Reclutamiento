@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { LoaderOverlay } from '@/components/ui/LoaderOverlay';
 
 /**
  * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
@@ -15,13 +16,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   if (loading) {
-    return (
-      <div className="auth-splash" role="status" aria-live="polite">
-        <span className="auth-splash__dot" aria-hidden="true" />
-        <span className="auth-splash__dot" aria-hidden="true" />
-        <span className="auth-splash__dot" aria-hidden="true" />
-      </div>
-    );
+    return <LoaderOverlay hint="Reclutamiento" />;
   }
 
   if (!session) {
@@ -43,13 +38,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const from = (location.state as { from?: string } | null)?.from ?? '/';
 
   if (loading) {
-    return (
-      <div className="auth-splash" role="status" aria-live="polite">
-        <span className="auth-splash__dot" aria-hidden="true" />
-        <span className="auth-splash__dot" aria-hidden="true" />
-        <span className="auth-splash__dot" aria-hidden="true" />
-      </div>
-    );
+    return <LoaderOverlay hint="Reclutamiento" />;
   }
 
   if (session) {
