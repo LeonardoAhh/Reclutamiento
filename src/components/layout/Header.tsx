@@ -7,11 +7,11 @@ const NAV_ITEMS: ReadonlyArray<{
   label: string;
   end?: boolean;
 }> = [
-  { to: '/',          label: 'KPIs',       end: true },
+  { to: '/',          label: 'Indicators',       end: true },
   { to: '/dashboard', label: 'Dashboard' },
-  { to: '/pipeline',  label: 'Candidatos' },
-  { to: '/vacantes',  label: 'Vacantes' },
-  { to: '/bajas',     label: 'Bajas' },
+  { to: '/pipeline',  label: 'Candidates' },
+  { to: '/vacantes',  label: 'Vacancies' },
+  { to: '/bajas',     label: 'Downsizing' },
 ];
 
 export function Header() {
@@ -22,7 +22,7 @@ export function Header() {
         {/* Brand */}
         <div className="app-header__brand" aria-hidden="true">
           <span className="app-header__brand-dot" />
-          <span className="app-header__title">Reclutamiento</span>
+          <span className="app-header__brand-text">Recruitment</span>
         </div>
 
         {/* Nav principal */}

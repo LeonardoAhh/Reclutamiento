@@ -275,8 +275,8 @@ export function Pipeline() {
       <main className="pipeline container">
         <section className="pipeline__hero">
           <div>
-            <h1>Candidatos</h1>
-            <p className="pipeline__hero-sub">Cargando candidatos…</p>
+            <h1>Candidates</h1>
+            <p className="pipeline__hero-sub">Loading candidates…</p>
           </div>
         </section>
       </main>
@@ -288,20 +288,19 @@ export function Pipeline() {
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
-          <h1>Candidatos</h1>
+          <h1>Candidates</h1>
         </div>
         <div className="pipeline__hero-actions">
           <motion.button
             type="button"
             className="btn-secondary pipeline__report-btn"
             onClick={() => setReportOpen(true)}
-            aria-label="Abrir resumen de candidatos"
-            title="Resumen de candidatos para WhatsApp"
+            aria-label="Open candidate summary"
+            title="Candidate summary for WhatsApp"
             whileHover={{ y: -1 }}
             whileTap={{ scale: 0.97 }}
           >
             <ClipboardList size={16} aria-hidden="true" />
-            <span className="pipeline__report-btn-label">Resumen</span>
           </motion.button>
           <button
             type="button"

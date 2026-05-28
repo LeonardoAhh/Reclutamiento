@@ -89,7 +89,7 @@ export function Bajas() {
     <main className="bajas container" id="page-bajas">
       <section className="bajas__hero">
         <div>
-          <h1 className="bajas__title">Rotación y Retención</h1>
+          <h1 className="bajas__title">Downsizing</h1>
         </div>
         <div className="bajas__hero-actions">
           <BajasImporter onImport={importBajas} />
@@ -117,7 +117,7 @@ export function Bajas() {
         <div className="bajas__banner bajas__banner--info" role="status">
           <CloudOff size={16} aria-hidden="true" />
           <div className="bajas__banner-body">
-            Nube no configurada. Los datos viven solo en este navegador.
+            Almacenamiento no configurado. Los datos viven solo en este navegador.
           </div>
         </div>
       )}

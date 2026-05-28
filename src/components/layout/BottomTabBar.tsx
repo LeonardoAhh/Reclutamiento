@@ -21,13 +21,13 @@ type TabItem = {
 
 const PRIMARY_TABS: ReadonlyArray<TabItem> = [
   { to: '/', label: 'KPIs', icon: BarChart3, end: true },
-  { to: '/pipeline', label: 'Candidatos', icon: Users },
+  { to: '/pipeline', label: 'Candidates', icon: Users },
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
 ];
 
 const OVERFLOW_TABS: ReadonlyArray<TabItem> = [
-  { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/bajas', label: 'Bajas', icon: UserMinus },
+  { to: '/vacantes', label: 'Vacancies', icon: Briefcase },
+  { to: '/bajas', label: 'Downsizing', icon: UserMinus },
 ];
 
 /**

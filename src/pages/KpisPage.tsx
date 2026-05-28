@@ -425,7 +425,7 @@ const { } = useAuth();
 
       <section className="kpis-page__hero">
         <div>
-          <h1 className="kpis-page__title">Indicadores</h1>
+          <h1 className="kpis-page__title">Recruitment Report</h1>
         </div>
         <div className="kpis-page__hero-actions">
           <button

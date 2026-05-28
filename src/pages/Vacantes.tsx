@@ -198,8 +198,8 @@ export function Vacantes() {
       <main className="pipeline container">
         <section className="pipeline__hero">
           <div>
-            <h1>Vacantes</h1>
-            <p className="pipeline__hero-sub">Cargando vacantes…</p>
+            <h1>Vacancies</h1>
+            <p className="pipeline__hero-sub">Loading vacancies…</p>
           </div>
         </section>
       </main>
@@ -211,7 +211,7 @@ export function Vacantes() {
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
-          <h1>Vacantes</h1>
+          <h1>Vacancies</h1>
         </div>
         <div className="pipeline__hero-actions">
           <button
@@ -231,12 +231,12 @@ export function Vacantes() {
         <div className="pipeline__search">
           <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
           <label htmlFor="vac-search" className="sr-only">
-            Buscar vacante
+            Search vacancy
           </label>
           <input
             id="vac-search"
             type="text"
-            placeholder="Buscar por puesto, área, reclutador, fuente, motivo…"
+            placeholder="Search by position, department, recruiter, source, reason…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pipeline__search-input"
@@ -252,7 +252,7 @@ export function Vacantes() {
           onClick={() => setShowFilters((v) => !v)}
           aria-expanded={showFilters}
           aria-controls="vac-filters"
-          title="Filtros avanzados"
+          title="Advanced filters"
         >
           <SlidersHorizontal size={16} aria-hidden="true" />
           {activeFiltersCount > 0 && (

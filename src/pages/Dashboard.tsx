@@ -240,8 +240,8 @@ export function Dashboard() {
       <main className="dashboard container" id="dashboard-main">
         <section className="dashboard__hero" id="dashboard-hero">
           <div className="dashboard__hero-content">
-            <h1>Control de Plantilla</h1>
-            <p className="dashboard__hero-sub">Cargando datos…</p>
+            <h1>Dashboard</h1>
+            <p className="dashboard__hero-sub">Cargando dashboard...</p>
           </div>
         </section>
       </main>
@@ -258,7 +258,7 @@ export function Dashboard() {
       {/* ── Hero Band ── */}
       <section className="dashboard__hero" id="dashboard-hero">
         <div className="dashboard__hero-content">
-          <h1>Control de Plantilla</h1>
+          <h1>Dashboard</h1>
         </div>
         <div className="dashboard__hero-actions">
           <button
@@ -272,7 +272,10 @@ export function Dashboard() {
           >
             <UserPlusIcon size={16} aria-hidden="true" />
           </button>
-          <JsonImporter onImport={handleImport} />
+          {/* Oculto, pero presente */}
+  <span style={{ display: 'none' }}>
+    <JsonImporter onImport={handleImport} />
+  </span>
           <motion.button
             type="button"
             className="btn-secondary dashboard__report-btn"
@@ -283,7 +286,6 @@ export function Dashboard() {
             whileTap={{ scale: 0.97 }}
           >
             <Clock size={16} aria-hidden="true" />
-            <span className="dashboard__report-btn-label">Turnos</span>
           </motion.button>
           <motion.button
             type="button"
@@ -295,7 +297,6 @@ export function Dashboard() {
             whileTap={{ scale: 0.97 }}
           >
             <ClipboardList size={16} aria-hidden="true" />
-            <span className="dashboard__report-btn-label">Resumen</span>
           </motion.button>
         </div>
       </section>
@@ -310,7 +311,7 @@ export function Dashboard() {
           <input
             id="search-input"
             type="text"
-            placeholder="Buscar empleado, puesto, sección…"
+            placeholder="Shearch employee, position, or section"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="dashboard__search-input"
@@ -320,7 +321,7 @@ export function Dashboard() {
           />
           {showSearchDropdown && (
             <div className="dashboard__search-dropdown" role="listbox">
-              <div className="search-dropdown__head">Empleados encontrados</div>
+              <div className="search-dropdown__head">Employees Found</div>
               {matchingEmployees.map((emp) => (
                 <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
                   <div className="search-dropdown-item__info">
@@ -379,7 +380,7 @@ export function Dashboard() {
         <div className="dashboard__filter">
           <Filter size={16} aria-hidden="true" />
           <label htmlFor="filter-area" className="sr-only">
-            Filtrar por área
+            Filter by department area
           </label>
           <select
             id="filter-area"
@@ -387,7 +388,7 @@ export function Dashboard() {
             onChange={(e) => setFilterArea(e.target.value)}
             className="dashboard__filter-select"
           >
-            <option value="">Todas las áreas</option>
+            <option value="">Filter</option>
             {areas.map((a) => (
               <option key={a} value={a}>{a}</option>
             ))}
