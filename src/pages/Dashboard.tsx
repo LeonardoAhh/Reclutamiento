@@ -9,6 +9,7 @@ import {
   UserPlus as UserPlusIcon,
   Trash2,
   ArrowUpCircle,
+  Pencil,
   ClipboardList,
   Clock,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
 import { TurnosImporter } from '@/components/turnos/TurnosImporter';
 import { EmployeeSheet } from '@/components/ui/EmployeeSheet';
+import { EditEmployeeSheet } from '@/components/ui/EditEmployeeSheet';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
@@ -48,6 +50,7 @@ export function Dashboard() {
     upsertEmployees,
     addComment,
     addSingleEmployee,
+    updateEmployee,
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,
@@ -76,6 +79,7 @@ export function Dashboard() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
+  const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
   const [turnosImporterOpen, setTurnosImporterOpen] = useState(false);
 
@@ -206,6 +210,21 @@ export function Dashboard() {
     setEmpModalMode('delete');
   }
 
+  function openEditFor(emp: Employee) {
+    setEditTarget(emp);
+  }
+
+  async function handleUpdateEmployee(
+    num_empleado: string,
+    fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada'>>
+  ) {
+    const result = await updateEmployee(num_empleado, fields);
+    if (result.ok) {
+      setSearchTerm('');
+    }
+    return result;
+  }
+
   function openPromoteFor(emp: Employee) {
     setPromoteTarget(emp);
   }
@@ -251,7 +270,8 @@ export function Dashboard() {
   const showSearchDropdown =
     matchingEmployees.length > 0 &&
     empModalMode === null &&
-    promoteTarget === null;
+    promoteTarget === null &&
+    editTarget === null;
 
   return (
     <main className="dashboard container" id="dashboard-main">
@@ -339,6 +359,15 @@ export function Dashboard() {
                     </span>
                   </div>
                   <div className="search-dropdown-item__actions">
+                    <button
+                      type="button"
+                      className="search-dropdown-item__edit"
+                      onClick={() => openEditFor(emp)}
+                      aria-label={`Editar a ${emp.nombre}`}
+                      title="Editar empleado"
+                    >
+                      <Pencil size={14} aria-hidden="true" />
+                    </button>
                     <button
                       type="button"
                       className="search-dropdown-item__promote"
@@ -477,6 +506,14 @@ export function Dashboard() {
         onClose={() => setEmpModalMode(null)}
         onSave={handleSaveEmployee}
         onDelete={handleDeleteEmployee}
+      />
+
+      {/* ── Edit Employee (Modal on PC, Sheet on mobile) ── */}
+      <EditEmployeeSheet
+        isOpen={editTarget !== null}
+        employee={editTarget}
+        onClose={() => setEditTarget(null)}
+        onSave={handleUpdateEmployee}
       />
 
       {/* ── Promote Employee Modal ── */}

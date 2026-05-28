@@ -482,6 +482,7 @@
   flex-shrink: 0;
 }
 
+.search-dropdown-item__edit,
 .search-dropdown-item__promote,
 .search-dropdown-item__incapacidad,
 .search-dropdown-item__delete {
@@ -522,6 +523,17 @@
 
 .search-dropdown-item__incapacidad.is-active {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent-amber) 30%, transparent);
+}
+
+.search-dropdown-item:hover .search-dropdown-item__edit,
+.search-dropdown-item:focus-visible .search-dropdown-item__edit {
+  color: var(--color-accent-teal);
+}
+
+.search-dropdown-item__edit:hover {
+  background: color-mix(in srgb, var(--color-accent-teal) 12%, var(--color-canvas));
+  border-color: color-mix(in srgb, var(--color-accent-teal) 40%, var(--color-hairline));
+  color: var(--color-accent-teal);
 }
 
 .search-dropdown-item:hover .search-dropdown-item__promote,
@@ -612,6 +624,7 @@
 
 /* ── Touch-only refinement ──────────────────────────────────────────── */
 @media (pointer: coarse) {
+  .search-dropdown-item__edit,
   .search-dropdown-item__promote,
   .search-dropdown-item__incapacidad,
   .search-dropdown-item__delete {
