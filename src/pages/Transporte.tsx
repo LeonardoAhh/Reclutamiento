@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Bus, Search, Upload, Users, Route as RouteIcon, X } from 'lucide-react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { TransporteImporter } from '@/components/transporte/TransporteImporter';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
@@ -93,9 +95,23 @@ export function Transporte() {
         <header className="transporte__hero">
           <div className="transporte__hero-content">
             <h1>Transporte</h1>
-            <p className="transporte__hero-sub">Cargando empleados…</p>
           </div>
         </header>
+        <section className="transporte__stats" aria-hidden="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} height={72} radius="var(--rounded-lg)" />
+          ))}
+        </section>
+        <section className="transporte__capacity">
+          <div className="transporte__route-grid">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} height={130} radius="var(--rounded-lg)" />
+            ))}
+          </div>
+        </section>
+        <section className="transporte__list">
+          <SkeletonTable rows={8} columns={['22%', '34%', '24%', '20%']} />
+        </section>
       </main>
     );
   }

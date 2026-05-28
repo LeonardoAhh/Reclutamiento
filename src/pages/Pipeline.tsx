@@ -18,6 +18,8 @@ import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
 import {
   CandidateFilters,
@@ -276,9 +278,24 @@ export function Pipeline() {
         <section className="pipeline__hero">
           <div>
             <h1>Candidates</h1>
-            <p className="pipeline__hero-sub">Loading candidates…</p>
           </div>
         </section>
+        <section className="pipeline__recruiters" aria-hidden="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} height={120} radius="var(--rounded-lg)" />
+          ))}
+        </section>
+        <section className="pipeline__controls">
+          <Skeleton
+            height={40}
+            radius="var(--rounded-md)"
+            style={{ flex: '1 1 260px' }}
+          />
+        </section>
+        <SkeletonTable
+          rows={8}
+          columns={['26%', '22%', '20%', '18%', '14%']}
+        />
       </main>
     );
   }

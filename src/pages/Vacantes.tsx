@@ -12,6 +12,8 @@ import {
   Plus,
 } from 'lucide-react';
 import { VacancySheet } from '@/components/ui/VacancySheet';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import {
   VacancyStatusBadge,
   VacancyPriorityBadge,
@@ -199,9 +201,19 @@ export function Vacantes() {
         <section className="pipeline__hero">
           <div>
             <h1>Vacancies</h1>
-            <p className="pipeline__hero-sub">Loading vacancies…</p>
           </div>
         </section>
+        <section className="pipeline__controls">
+          <Skeleton
+            height={40}
+            radius="var(--rounded-md)"
+            style={{ flex: '1 1 260px' }}
+          />
+        </section>
+        <SkeletonTable
+          rows={8}
+          columns={['28%', '22%', '20%', '16%', '14%']}
+        />
       </main>
     );
   }

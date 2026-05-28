@@ -11,6 +11,7 @@ import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
 import { useBajas } from '@/hooks/useBajas';
 import { usePositions } from '@/lib/positions';
+import { KpiGridSkeleton } from '@/components/ui/PageSkeletons';
 import {
   calculatePositionCoverage,
   calculateDepartmentCoverage,
@@ -77,11 +78,18 @@ interface KpiDescriptor {
 
 export function KpisPage() {
 const { } = useAuth();
-  const { employees, comments } = useSupabaseData();
-  const { vacancies } = useVacancyRequests();
-  const { candidates } = useCandidates();
-  const { bajas } = useBajas();
-  const { positions } = usePositions();
+  const { employees, comments, loading: employeesLoading } = useSupabaseData();
+  const { vacancies, loading: vacanciesLoading } = useVacancyRequests();
+  const { candidates, loading: candidatesLoading } = useCandidates();
+  const { bajas, loading: bajasLoading } = useBajas();
+  const { positions, loading: positionsLoading } = usePositions();
+
+  const loading =
+    employeesLoading ||
+    vacanciesLoading ||
+    candidatesLoading ||
+    bajasLoading ||
+    positionsLoading;
 
   const reveal = useKpiReveal();
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
@@ -361,6 +369,24 @@ const { } = useAuth();
   );
 
   const revealedCount = cards.filter((c) => reveal.isRevealed(c.id)).length;
+
+  if (loading) {
+    return (
+      <main className="kpis-page container" id="page-kpis">
+        <section className="kpis-page__hero">
+          <div>
+            <h1 className="kpis-page__title">Recruitment Report</h1>
+          </div>
+          <div className="kpis-page__hero-actions">
+            <button type="button" className="btn-secondary" disabled>
+              Incognito
+            </button>
+          </div>
+        </section>
+        <KpiGridSkeleton count={cards.length} />
+      </main>
+    );
+  }
 
   return (
     <main className="kpis-page container" id="page-kpis">
