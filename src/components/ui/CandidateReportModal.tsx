@@ -22,6 +22,7 @@ const ACTIVE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
   'entrevista',
   'entrega_documentos',
   'faltan_documentos',
+  'feedback_pendiente',
 ]);
 
 const SIN_ASIGNAR = 'Sin asignar';
@@ -34,6 +35,7 @@ interface PuestoRow {
   e1: number;
   e2: number;
   fd: number;
+  fp: number;
   total: number;
 }
 
@@ -60,6 +62,7 @@ interface RecruiterRow {
   e1: number;
   e2: number;
   fd: number;
+  fp: number;
   total: number;
 }
 
@@ -90,6 +93,7 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
         e1: 0,
         e2: 0,
         fd: 0,
+        fp: 0,
         total: 0,
       };
       rowMap.set(key, row);
@@ -101,6 +105,8 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
       row.e2 += 1;
     } else if (c.status === 'faltan_documentos') {
       row.fd += 1;
+    } else if (c.status === 'feedback_pendiente') {
+      row.fp += 1;
     }
     row.total += 1;
   }
@@ -159,7 +165,7 @@ function buildContratadoGroups(contratados: Candidate[]): ContratadoAreaGroup[] 
 }
 
 function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
-  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, total: 0 });
+  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, fp: 0, total: 0 });
   const acc = new Map<string, RecruiterRow>();
   for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
   acc.set(SIN_ASIGNAR, empty(SIN_ASIGNAR));
@@ -171,6 +177,7 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
     if (c.status === 'entrevista') bucket.e1 += 1;
     else if (c.status === 'entrega_documentos') bucket.e2 += 1;
     else if (c.status === 'faltan_documentos') bucket.fd += 1;
+    else if (c.status === 'feedback_pendiente') bucket.fp += 1;
     bucket.total += 1;
   }
 
@@ -210,6 +217,7 @@ function buildWhatsappMessage(
         if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
         if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
         if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
+        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
         lines.push(`• ${seccionConTurno} — ${r.puesto}`);
         lines.push(`   ${r.total} (${detalle.join(' · ')})`);
       }
@@ -225,6 +233,7 @@ function buildWhatsappMessage(
       if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
       if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
       if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
+      if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
       lines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
     }
   }
@@ -436,6 +445,11 @@ export function CandidateReportModal({
                               E2: {row.e2}
                             </span>
                           )}
+                          {row.fp > 0 && (
+                            <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
+                              FP: {row.fp}
+                            </span>
+                          )}
                           <span className="candidate-report-modal__badge candidate-report-modal__badge--total">
                             {row.total}
                           </span>
@@ -474,6 +488,11 @@ export function CandidateReportModal({
                       {r.e2 > 0 && (
                         <span className="candidate-report-modal__badge candidate-report-modal__badge--e2">
                           E2: {r.e2}
+                        </span>
+                      )}
+                      {r.fp > 0 && (
+                        <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
+                          FP: {r.fp}
                         </span>
                       )}
                       <span

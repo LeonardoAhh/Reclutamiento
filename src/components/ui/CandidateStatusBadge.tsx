@@ -9,6 +9,7 @@ const VARIANT: Record<
   entrevista: 'amber',
   entrega_documentos: 'amber',
   faltan_documentos: 'amber',
+  feedback_pendiente: 'coral',
   contratado: 'success',
   rechazado: 'error',
 };

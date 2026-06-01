@@ -180,7 +180,7 @@ const { } = useAuth();
   /* ── Candidatos (5) ────────────────────────────────────────── */
   const candidatesInProcess: Candidate[] = useMemo(
     () => candidates.filter(
-      (c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos'
+      (c) => c.status === 'entrega_documentos' || c.status === 'faltan_documentos' || c.status === 'feedback_pendiente'
     ),
     [candidates]
   );
@@ -237,7 +237,7 @@ const { } = useAuth();
       },
       {
         id: 'stat-pipeline-activo',
-        label: 'En proceso',
+        label: 'Pendientes de confirmación',
         value: candidateTotals.enProceso,
         accentColor: 'var(--color-primary)',
         origin: 'Candidatos',

@@ -638,6 +638,9 @@
 .pipeline__ccard--entrega_documentos {
   border-left-color: var(--color-accent-teal);
 }
+.pipeline__ccard--feedback_pendiente {
+  border-left-color: var(--color-primary);
+}
 .pipeline__ccard--contratado {
   border-left-color: var(--color-success);
 }

@@ -54,6 +54,7 @@ const CITADO_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
   'entrevista',
   'entrega_documentos',
   'faltan_documentos',
+  'feedback_pendiente',
 ]);
 
 type RecruiterStats = {

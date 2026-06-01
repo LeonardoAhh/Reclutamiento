@@ -29,6 +29,7 @@ const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<Candidat
   'entrevista',
   'entrega_documentos',
   'faltan_documentos',
+  'feedback_pendiente',
 ]);
 
 interface AreaDetailModalProps {

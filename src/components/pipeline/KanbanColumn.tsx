@@ -17,6 +17,7 @@ const TONE_BY_STATUS: Record<CandidateStatus, string> = {
   entrevista: 'amber',
   entrega_documentos: 'amber',
   faltan_documentos: 'amber',
+  feedback_pendiente: 'coral',
   contratado: 'success',
   rechazado: 'error',
 };
