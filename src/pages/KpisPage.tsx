@@ -237,7 +237,7 @@ const { } = useAuth();
       },
       {
         id: 'stat-pipeline-activo',
-        label: 'Pendientes de confirmación',
+        label: 'Candidatos en proceso',
         value: candidateTotals.enProceso,
         accentColor: 'var(--color-primary)',
         origin: 'Candidatos',
