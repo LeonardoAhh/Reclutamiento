@@ -363,6 +363,13 @@ export interface Candidate {
    * Se persiste como `date` en Supabase para evitar drift de timezone.
    */
   fecha_cita?: string | null;
+  /**
+   * Fecha civil (YYYY-MM-DD, TZ MX) en la que el candidato fue contratado
+   * (status -> 'contratado'). Coincide con `empleados.fecha_ingreso` del
+   * empleado generado en el hire. Null mientras no se contrate. Fuente del
+   * filtro "contratados de la semana" en el reporte de WhatsApp.
+   */
+  fecha_contratacion?: string | null;
   notas?: string | null;
   /**
    * Num. de empleado generado al convertir al candidato en empleado.

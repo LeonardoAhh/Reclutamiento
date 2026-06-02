@@ -451,6 +451,26 @@
   background: var(--color-success-tint);
 }
 
+/* ── Tabla compacta (detalle master-detail) ── */
+.bajas__row--clickable {
+  cursor: pointer;
+}
+
+.bajas__row--clickable:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.bajas__cell-chevron {
+  color: var(--color-muted);
+  width: 1px;
+  white-space: nowrap;
+}
+
+.bajas__row--clickable:hover .bajas__cell-chevron {
+  color: var(--color-primary);
+}
+
 .bajas__cell-emp,
 .bajas__cell-motivo {
   display: flex;
