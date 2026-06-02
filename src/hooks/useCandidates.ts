@@ -7,6 +7,7 @@ import type {
   CandidateStatus,
 } from '@/lib/types';
 import { normalizeCandidateStatus } from '@/lib/types';
+import { localTodayIso } from '@/lib/dates';
 import type { SaveStatus } from './useSupabaseData';
 
 /**
@@ -255,18 +256,34 @@ export function useCandidates() {
   );
 
   const setCandidateStatus = useCallback(
-    (id: string, status: CandidateStatus) => updateCandidate(id, { status }),
-    [updateCandidate]
+    (id: string, status: CandidateStatus) => {
+      const patch: Partial<Candidate> = { status };
+      // Al pasar a 'contratado' sin fecha previa, sellamos la fecha de hoy
+      // (TZ MX) para que el reporte pueda filtrar "contratados de la semana".
+      if (status === 'contratado') {
+        const target = candidates.find((c) => c.id === id);
+        if (target && !target.fecha_contratacion) {
+          patch.fecha_contratacion = localTodayIso();
+        }
+      }
+      return updateCandidate(id, patch);
+    },
+    [candidates, updateCandidate]
   );
 
   /**
    * Marca al candidato como ya convertido en empleado: status -> 'contratado'
-   * y guarda el `employee_num` resultante. Idempotente — si ya tiene
-   * employee_num devuelve ok sin escribir de nuevo.
+   * y guarda el `employee_num` resultante. `fechaContratacion` viene del hire
+   * (= fecha_ingreso del empleado); si no se pasa, usa hoy en TZ MX.
+   * Idempotente — si ya tiene employee_num devuelve ok sin escribir de nuevo.
    */
   const markCandidateHired = useCallback(
-    (id: string, employee_num: string) =>
-      updateCandidate(id, { status: 'contratado', employee_num }),
+    (id: string, employee_num: string, fechaContratacion?: string) =>
+      updateCandidate(id, {
+        status: 'contratado',
+        employee_num,
+        fecha_contratacion: fechaContratacion || localTodayIso(),
+      }),
     [updateCandidate]
   );
 

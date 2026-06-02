@@ -1,11 +1,9 @@
 import { useMemo, useState } from 'react';
 import {
   Filter,
-  AlertCircle,
   CloudOff,
   RefreshCw,
-  CheckCircle2,
-  FileText,
+  ChevronRight,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
@@ -13,9 +11,17 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { CubrirVacanteSheet } from '@/components/ui/CubrirVacanteSheet';
 import { RequisicionSheet } from '@/components/ui/RequisicionSheet';
+import {
+  BajaDetailSheet,
+  BajaCoberturaBadge,
+} from '@/components/ui/BajaDetailSheet';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
-import { computeMonthlyComparison, normalizePuesto } from '@/lib/bajas';
+import {
+  computeMonthlyComparison,
+  normalizePuesto,
+  type BajaWithCobertura,
+} from '@/lib/bajas';
 import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
 import { formatMonthLabel, formatShortDate, currentYearMx } from '@/lib/dates';
@@ -43,6 +49,7 @@ export function Bajas() {
   const [puestoFilter, setPuestoFilter] = useState<string>('');
   const [cubrirTarget, setCubrirTarget] = useState<Baja | null>(null);
   const [requisicionTarget, setRequisicionTarget] = useState<Baja | null>(null);
+  const [detalleTarget, setDetalleTarget] = useState<BajaWithCobertura | null>(null);
 
   // Códigos VAC-NN derivados de todas las bajas conocidas. Determinístico:
   // sirve igual en modo online y offline, y se conserva entre re-renders.
@@ -323,119 +330,51 @@ export function Bajas() {
             </div>
           ) : (
             <div className="bajas__table-wrapper">
-              <table className="bajas__table">
+              <table className="bajas__table bajas__table--compact">
                 <thead>
                   <tr>
                     <th scope="col">Empleado</th>
-                    <th scope="col">Puesto</th>
-                    <th scope="col">Área · Sección</th>
                     <th scope="col">Fecha baja</th>
-                    <th scope="col">Tipo / Motivo</th>
-                    <th scope="col" className="text-center">Cobertura</th>
-                    <th scope="col">Cubre vacante</th>
-                    <th scope="col" className="text-center">Acción</th>
-                    <th scope="col" className="text-center">Requisición</th>
+                    <th scope="col">Cobertura</th>
+                    <th scope="col" aria-label="Ver detalle" />
                   </tr>
                 </thead>
                 <tbody>
                   {bajasConCobertura.map((b) => {
                     const rowClass = [
+                      'bajas__row--clickable',
                       b.soloInduccion ? 'bajas__row--solo' : '',
                       !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
                     ]
                       .filter(Boolean)
                       .join(' ');
                     return (
-                      <tr key={`${b.num_empleado}-${b.fecha_baja}`} className={rowClass}>
+                      <tr
+                        key={`${b.num_empleado}-${b.fecha_baja}`}
+                        className={rowClass}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`Ver detalle de baja de ${b.nombre}`}
+                        onClick={() => setDetalleTarget(b)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setDetalleTarget(b);
+                          }
+                        }}
+                      >
                         <td>
                           <div className="bajas__cell-emp">
                             <span className="bajas__cell-name">{b.nombre}</span>
-                            <span className="bajas__cell-meta">#{b.num_empleado}</span>
+                            <span className="bajas__cell-meta">
+                              #{b.num_empleado} · {b.puesto}
+                            </span>
                           </div>
-                        </td>
-                        <td>{b.puesto}</td>
-                        <td>
-                          <span className="bajas__cell-meta">
-                            {b.area} · {b.seccion}
-                          </span>
                         </td>
                         <td>{formatShortDate(b.fecha_baja)}</td>
-                        <td>
-                          <div className="bajas__cell-motivo">
-                            <span>{b.tipo_baja || '—'}</span>
-                            <span className="bajas__cell-meta">{b.motivo_baja || '—'}</span>
-                          </div>
-                        </td>
-                        <td className="text-center">
-                          {b.soloInduccion ? (
-                            <Badge variant="default">
-                              <AlertCircle size={11} aria-hidden="true" /> Solo Inducción
-                            </Badge>
-                          ) : b.cubiertaPor === 'manual' ? (
-                            <span title={b.cubierta_nota ?? undefined}>
-                              <Badge variant="success">
-                                <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
-                                {b.coberturaDias != null ? ` · ${b.coberturaDias}d` : ''}
-                              </Badge>
-                            </span>
-                          ) : b.cubiertaEn10d ? (
-                            <Badge variant="success">
-                              ≤10d · {b.coberturaDias}d
-                            </Badge>
-                          ) : b.coberturaDias !== null ? (
-                            <Badge variant="amber">{b.coberturaDias}d</Badge>
-                          ) : (
-                            <Badge variant="error">No cubierta</Badge>
-                          )}
-                        </td>
-                        {/* Quién cubre la vacante */}
-                        <td>
-                          {b.soloInduccion ? (
-                            <span className="bajas__muted">—</span>
-                          ) : b.coberturaEmpleado ? (
-                            <div className="bajas__cell-emp">
-                              <span className="bajas__cell-name">{b.coberturaEmpleado.nombre}</span>
-                              <span className="bajas__cell-meta">#{b.coberturaEmpleado.num_empleado}</span>
-                            </div>
-                          ) : b.cubiertaPor === 'manual' && b.cubierta_nota ? (
-                            <div className="bajas__cell-emp">
-                              <span className="bajas__cell-name">{b.cubierta_nota}</span>
-                              <span className="bajas__cell-meta">Manual</span>
-                            </div>
-                          ) : (
-                            <span className="bajas__muted">—</span>
-                          )}
-                        </td>
-                        <td className="text-center">
-                          {b.soloInduccion ? (
-                            <span className="bajas__muted">—</span>
-                          ) : (
-                            <button
-                              type="button"
-                              className="bajas__row-action"
-                              onClick={() => setCubrirTarget(b)}
-                              title={b.cubierta_manual ? 'Editar cobertura' : 'Marcar como cubierta'}
-                            >
-                              <CheckCircle2 size={16} aria-hidden="true" />
-                            </button>
-                          )}
-                        </td>
-                        <td className="text-center">
-                          {b.soloInduccion ? (
-                            <span className="bajas__muted">—</span>
-                          ) : (
-                            <button
-                              type="button"
-                              className="bajas__row-action bajas__row-action--req"
-                              onClick={() => setRequisicionTarget(b)}
-                              title={`Generar requisición ${requisicionCodes.get(bajaKey(b)) ?? ''}`.trim()}
-                            >
-                              <FileText size={14} aria-hidden="true" />
-                              <span className="bajas__row-action-label">
-                                {requisicionCodes.get(bajaKey(b)) ?? 'VAC'}
-                              </span>
-                            </button>
-                          )}
+                        <td><BajaCoberturaBadge baja={b} /></td>
+                        <td className="text-center bajas__cell-chevron">
+                          <ChevronRight size={16} aria-hidden="true" />
                         </td>
                       </tr>
                     );
@@ -446,6 +385,23 @@ export function Bajas() {
           )}
         </section>
       </div>
+
+      <BajaDetailSheet
+        isOpen={detalleTarget !== null}
+        baja={detalleTarget}
+        requisicionCode={
+          detalleTarget ? requisicionCodes.get(bajaKey(detalleTarget)) ?? null : null
+        }
+        onClose={() => setDetalleTarget(null)}
+        onCubrir={(b) => {
+          setDetalleTarget(null);
+          setCubrirTarget(b);
+        }}
+        onRequisicion={(b) => {
+          setDetalleTarget(null);
+          setRequisicionTarget(b);
+        }}
+      />
 
       <CubrirVacanteSheet
         isOpen={cubrirTarget !== null}

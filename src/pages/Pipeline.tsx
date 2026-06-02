@@ -256,7 +256,8 @@ export function Pipeline() {
     }
     const candResult = await markCandidateHired(
       input.candidateId,
-      input.employee.num_empleado
+      input.employee.num_empleado,
+      input.employee.fecha_ingreso
     );
     if (!candResult.ok) {
       return {

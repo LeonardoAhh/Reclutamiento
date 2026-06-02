@@ -1,0 +1,54 @@
+/* BajaDetailSheet — detalle de una baja en panel lateral (master-detail).
+   Tokens del design system; sin valores hardcoded. */
+
+.baja-detail-sheet__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.baja-detail-sheet__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: 0;
+}
+
+.baja-detail-sheet__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.baja-detail-sheet__field dt {
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.baja-detail-sheet__field dd {
+  margin: 0;
+  color: var(--color-body-strong);
+}
+
+.baja-detail-sheet__tipo {
+  display: block;
+  font-weight: 600;
+}
+
+.baja-detail-sheet__motivo {
+  display: block;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.baja-detail-sheet__muted {
+  color: var(--color-muted);
+}
+
+.baja-detail-sheet__footer {
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
