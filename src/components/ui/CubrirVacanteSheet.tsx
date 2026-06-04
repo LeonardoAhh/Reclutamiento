@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
 import { Sheet } from './Sheet';
+import { Modal } from './Modal';
 import type { Baja } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
@@ -15,6 +16,8 @@ interface CubrirVacanteSheetProps {
     nota: string | null
   ) => Promise<{ ok: boolean; message?: string }>;
   onClear?: (num_empleado: string) => Promise<{ ok: boolean; message?: string }>;
+  /** Si true, usa Modal en lugar de Sheet (para PC) */
+  useModal?: boolean;
 }
 
 export function CubrirVacanteSheet({
@@ -23,6 +26,7 @@ export function CubrirVacanteSheet({
   onClose,
   onSave,
   onClear,
+  useModal = false,
 }: CubrirVacanteSheetProps) {
   const [fecha, setFecha] = useState<string>('');
   const [nota, setNota] = useState<string>('');
@@ -78,6 +82,122 @@ export function CubrirVacanteSheet({
 
   const isMarcada = Boolean(baja.cubierta_manual);
 
+  const formContent = (
+    <div className={useModal ? "modal-body" : "sheet__body"}>
+      <div className="incapacidad-modal__meta">
+        <span>
+          <strong>{baja.puesto}</strong>
+        </span>
+        <span className="incapacidad-modal__meta-sub">
+          {baja.area} · {baja.seccion} · baja: {baja.fecha_baja}
+        </span>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cubierta-fecha">Fecha en que se cubrió</label>
+        <input
+          id="cubierta-fecha"
+          type="date"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
+          min={baja.fecha_baja || undefined}
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cubierta-nota">
+          Nota <span className="incapacidad-modal__optional">(opcional)</span>
+        </label>
+        <input
+          id="cubierta-nota"
+          type="text"
+          value={nota}
+          onChange={(e) => setNota(e.target.value)}
+          placeholder="Ej. Promoción interna, transferencia de almacén…"
+          maxLength={240}
+        />
+      </div>
+
+      {errorMsg && (
+        <div className="incapacidad-modal__error" role="alert">
+          <AlertCircle size={14} aria-hidden="true" />
+          {errorMsg}
+        </div>
+      )}
+    </div>
+  );
+
+  const footerButtons = !useModal ? (
+    <footer className="sheet__footer cubrir-vacante-sheet__footer">
+      {isMarcada && onClear && (
+        <button
+          type="button"
+          className="btn-secondary cubrir-vacante-sheet__clear"
+          onClick={handleClear}
+          disabled={submitting}
+        >
+          <Trash2 size={14} aria-hidden="true" />
+          <span>Quitar cobertura</span>
+        </button>
+      )}
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      <button type="submit" className="btn-primary" disabled={submitting}>
+        {submitting ? 'Guardando…' : isMarcada ? 'Actualizar' : 'Marcar cubierta'}
+      </button>
+    </footer>
+  ) : null;
+
+  const headerActions = useModal ? (
+    <>
+      {isMarcada && onClear && (
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={handleClear}
+          disabled={submitting}
+        >
+          <Trash2 size={14} aria-hidden="true" />
+          <span>Quitar cobertura</span>
+        </button>
+      )}
+      <button type="submit" className="btn-primary" disabled={submitting} form="cubrir-vacante-form">
+        {submitting ? 'Guardando…' : isMarcada ? 'Actualizar' : 'Marcar cubierta'}
+      </button>
+    </>
+  ) : null;
+
+  if (useModal) {
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        className="cubrir-vacante-sheet"
+        icon={
+          <CheckCircle2
+            size={20}
+            className="incapacidad-modal__icon"
+            aria-hidden="true"
+          />
+        }
+        title={isMarcada ? 'Cobertura de vacante' : 'Marcar vacante como cubierta'}
+        subtitle={`${baja.nombre} · #${baja.num_empleado}`}
+        headerActions={headerActions}
+      >
+        <form id="cubrir-vacante-form" onSubmit={handleSubmit} className="cubrir-vacante-sheet__form" noValidate>
+          {formContent}
+        </form>
+      </Modal>
+    );
+  }
+
   return (
     <Sheet
       isOpen={isOpen}
@@ -96,74 +216,8 @@ export function CubrirVacanteSheet({
       subtitle={`${baja.nombre} · #${baja.num_empleado}`}
     >
       <form onSubmit={handleSubmit} className="cubrir-vacante-sheet__form" noValidate>
-        <div className="sheet__body">
-        <div className="incapacidad-modal__meta">
-          <span>
-            <strong>{baja.puesto}</strong>
-          </span>
-          <span className="incapacidad-modal__meta-sub">
-            {baja.area} · {baja.seccion} · baja: {baja.fecha_baja}
-          </span>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="cubierta-fecha">Fecha en que se cubrió</label>
-          <input
-            id="cubierta-fecha"
-            type="date"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            min={baja.fecha_baja || undefined}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="cubierta-nota">
-            Nota <span className="incapacidad-modal__optional">(opcional)</span>
-          </label>
-          <input
-            id="cubierta-nota"
-            type="text"
-            value={nota}
-            onChange={(e) => setNota(e.target.value)}
-            placeholder="Ej. Promoción interna, transferencia de almacén…"
-            maxLength={240}
-          />
-        </div>
-
-        {errorMsg && (
-          <div className="incapacidad-modal__error" role="alert">
-            <AlertCircle size={14} aria-hidden="true" />
-            {errorMsg}
-          </div>
-        )}
-
-        </div>
-        <footer className="sheet__footer cubrir-vacante-sheet__footer">
-          {isMarcada && onClear && (
-            <button
-              type="button"
-              className="btn-secondary cubrir-vacante-sheet__clear"
-              onClick={handleClear}
-              disabled={submitting}
-            >
-              <Trash2 size={14} aria-hidden="true" />
-              <span>Quitar cobertura</span>
-            </button>
-          )}
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Guardando…' : isMarcada ? 'Actualizar' : 'Marcar cubierta'}
-          </button>
-        </footer>
+        {formContent}
+        {footerButtons}
       </form>
     </Sheet>
   );

@@ -38,6 +38,8 @@ export interface Baja {
   area: string;
   seccion: string;
   puesto: string;
+  /** Turno del empleado al momento de la baja */
+  turno?: string;
   /** `YYYY-MM-DD` */
   fecha_ingreso: string;
   /** `YYYY-MM-DD` */
@@ -63,6 +65,7 @@ export interface BajaRaw {
   Area?: string;
   Seccion?: string;
   Puesto?: string;
+  Turno?: string;
   'Fecha Ingreso'?: string;
   'Fecha Baja'?: string;
   'Tipo de Baja'?: string;
@@ -208,7 +211,7 @@ export interface CustomPosition {
 
 /**
  * Catálogo de habilidades requeridas por puesto. Se usa para pre-llenar el
- * bloque "Habilidades requeridas" de la requisición. La búsqueda usa la
+ * bloque "Conocimientos técnicos del puesto" de la requisición. La búsqueda usa la
  * tripleta (área, sección, puesto) como clave compuesta, con normalización
  * de acentos y sufijo de turno (A/B/C/D) — igual que la lookup de bono.
  *
@@ -219,8 +222,10 @@ export interface PuestoHabilidades {
   area: string;
   seccion: string;
   puesto: string;
+  /** Competencias blandas y habilidades interpersonales. */
+  competencias?: string;
   /** Conocimientos técnicos, sistemas, herramientas. */
-  habilidades?: string;
+  conocimientos_tecnicos?: string;
   /** Nivel académico mínimo o deseable. */
   escolaridad?: string;
   /** Experiencia mínima requerida. */
@@ -459,8 +464,8 @@ export const VACANCY_EXCLUSION_REASONS = [
   'Otro',
 ] as const;
 
-/** Default SLA en dias para cubrir una vacante recien aperturada. */
-export const DEFAULT_VACANCY_SLA_DAYS = 10;
+/** Default SLA en dias hábiles para cubrir una vacante recién aperturada (lunes a viernes, excluyendo festivos). */
+export const DEFAULT_VACANCY_SLA_DAYS = 12;
 
 export interface VacancyStatusHistoryEntry {
   id?: string;

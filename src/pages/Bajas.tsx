@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
+import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { CubrirVacanteSheet } from '@/components/ui/CubrirVacanteSheet';
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/BajaDetailSheet';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import {
   computeMonthlyComparison,
   normalizePuesto,
@@ -42,7 +44,11 @@ export function Bajas() {
     saveStatus,
     marcarCubierta,
     desmarcarCubierta,
+    updateTurnosOnly,
+    applyTurnosUpdate,
   } = useBajas();
+
+  const isMobile = useIsMobile();
 
   const [year, setYear] = useState<number>(currentYear);
   const [areaFilter, setAreaFilter] = useState<string>('');
@@ -124,8 +130,9 @@ export function Bajas() {
         <div>
           <h1 className="bajas__title">Downsizing</h1>
         </div>
-        <div className="bajas__hero-actions">
+        <div className="bajas__hero-actions" style={{ display: 'none' }}>
           <BajasImporter onImport={importBajas} />
+          <TurnosUpdater onPreview={updateTurnosOnly} onApply={applyTurnosUpdate} />
         </div>
       </section>
 
@@ -401,6 +408,7 @@ export function Bajas() {
           setDetalleTarget(null);
           setRequisicionTarget(b);
         }}
+        useModal={!isMobile}
       />
 
       <CubrirVacanteSheet
@@ -409,6 +417,7 @@ export function Bajas() {
         onClose={() => setCubrirTarget(null)}
         onSave={async (n, f, note) => marcarCubierta(n, f, note)}
         onClear={async (n) => desmarcarCubierta(n)}
+        useModal={!isMobile}
       />
 
       <RequisicionSheet
@@ -421,6 +430,7 @@ export function Bajas() {
             : null
         }
         onClose={() => setRequisicionTarget(null)}
+        useModal={!isMobile}
       />
     </main>
   );

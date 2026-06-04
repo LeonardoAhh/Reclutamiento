@@ -10,6 +10,8 @@ interface ModalProps {
   children: React.ReactNode;
   className?: string;
   labelledById?: string;
+  /** Botones de acción que se mostrarán en el header antes del botón de cerrar */
+  headerActions?: React.ReactNode;
 }
 
 /**
@@ -28,6 +30,7 @@ export function Modal({
   children,
   className = '',
   labelledById = 'modal-title',
+  headerActions,
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -104,14 +107,17 @@ export function Modal({
               {subtitle && <span className="modal-title__sub">{subtitle}</span>}
             </div>
           </div>
-          <button
-            type="button"
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Cerrar"
-          >
-            <X size={18} aria-hidden="true" />
-          </button>
+          <div className="modal-header-actions">
+            {headerActions}
+            <button
+              type="button"
+              className="modal-close"
+              onClick={onClose}
+              aria-label="Cerrar"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
         </header>
         {children}
       </div>

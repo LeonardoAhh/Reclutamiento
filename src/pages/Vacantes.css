@@ -342,3 +342,8 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Modal más ancho para add/edit */
+.modal-content.vacancy-sheet--wide {
+  max-width: 920px;
+}

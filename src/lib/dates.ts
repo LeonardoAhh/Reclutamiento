@@ -69,6 +69,27 @@ export function localTodayIso(): string {
 }
 
 /**
+ * Suma o resta días a una fecha ISO `YYYY-MM-DD` y devuelve el resultado
+ * como `YYYY-MM-DD` en TZ MX. Si la fecha de entrada es inválida, devuelve null.
+ */
+export function addDaysToIso(isoDate: string | null | undefined, days: number): string | null {
+  if (!isoDate) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(isoDate).trim().slice(0, 10));
+  if (!match) return null;
+  
+  // Crear fecha en TZ MX anclada a mediodía
+  const d = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
+  if (Number.isNaN(d.getTime())) return null;
+  
+  // Sumar días (en milisegundos)
+  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+  
+  // Extraer partes en TZ MX
+  const { year, month, day } = mxDateParts(d);
+  return `${year}-${pad2(month)}-${pad2(day)}`;
+}
+
+/**
  * Año calendario actual en TZ MX. Usar en lugar de
  * `new Date().getFullYear()` cuando el visor pueda estar en otra zona.
  */
@@ -322,4 +343,147 @@ export function daysBetween(
   const diffMs = end.getTime() - start.getTime();
   if (diffMs <= 0) return 0;
   return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Días festivos de México (formato YYYY-MM-DD).
+ * Solo incluye fechas fijas y los días festivos más comunes.
+ * Nota: Algunos días festivos son móviles (como el tercer lunes de marzo para el natalicio de Benito Juárez).
+ */
+const MEXICO_HOLIDAYS: Set<string> = new Set([
+  // 2024
+  '2024-01-01', // Año Nuevo
+  '2024-02-05', // Día de la Constitución (primer lunes de febrero)
+  '2024-03-18', // Natalicio de Benito Juárez (tercer lunes de marzo)
+  '2024-05-01', // Día del Trabajo
+  '2024-09-16', // Día de la Independencia
+  '2024-11-18', // Día de la Revolución (tercer lunes de noviembre)
+  '2024-12-25', // Navidad
+  
+  // 2025
+  '2025-01-01', // Año Nuevo
+  '2025-02-03', // Día de la Constitución (primer lunes de febrero)
+  '2025-03-17', // Natalicio de Benito Juárez (tercer lunes de marzo)
+  '2025-05-01', // Día del Trabajo
+  '2025-09-16', // Día de la Independencia
+  '2025-11-17', // Día de la Revolución (tercer lunes de noviembre)
+  '2025-12-25', // Navidad
+  
+  // 2026
+  '2026-01-01', // Año Nuevo
+  '2026-02-02', // Día de la Constitución (primer lunes de febrero)
+  '2026-03-16', // Natalicio de Benito Juárez (tercer lunes de marzo)
+  '2026-05-01', // Día del Trabajo
+  '2026-09-16', // Día de la Independencia
+  '2026-11-16', // Día de la Revolución (tercer lunes de noviembre)
+  '2026-12-25', // Navidad
+  
+  // 2027
+  '2027-01-01', // Año Nuevo
+  '2027-02-01', // Día de la Constitución (primer lunes de febrero)
+  '2027-03-15', // Natalicio de Benito Juárez (tercer lunes de marzo)
+  '2027-05-01', // Día del Trabajo
+  '2027-09-16', // Día de la Independencia
+  '2027-11-15', // Día de la Revolución (tercer lunes de noviembre)
+  '2027-12-25', // Navidad
+]);
+
+/**
+ * Verifica si una fecha es día hábil (lunes a viernes, excluyendo festivos).
+ * @param date Fecha a verificar
+ * @returns true si es día hábil, false si es fin de semana o festivo
+ */
+export function isBusinessDay(date: Date | string): boolean {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  if (Number.isNaN(d.getTime())) return false;
+  
+  // Obtener el día de la semana en TZ MX
+  const { year, month, day } = mxDateParts(d);
+  const dayOfWeek = new Date(`${year}-${pad2(month)}-${pad2(day)}T12:00:00${MX_UTC_OFFSET}`).getDay();
+  
+  // 0 = domingo, 6 = sábado
+  if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+  
+  // Verificar si es festivo
+  const dateKey = `${year}-${pad2(month)}-${pad2(day)}`;
+  if (MEXICO_HOLIDAYS.has(dateKey)) return false;
+  
+  return true;
+}
+
+/**
+ * Agrega días hábiles a una fecha (excluyendo fines de semana y festivos).
+ * 
+ * @param startDate Fecha de inicio (en formato YYYY-MM-DD o Date)
+ * @param businessDays Número de días hábiles a agregar
+ * @returns Fecha resultante en formato YYYY-MM-DD, o null si la entrada es inválida
+ */
+export function addBusinessDays(
+  startDate: string | Date | null | undefined,
+  businessDays: number
+): string | null {
+  if (!startDate || businessDays < 0) return null;
+  
+  const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
+  if (Number.isNaN(start.getTime())) return null;
+  
+  // Normalizar a medianoche en TZ MX
+  const startParts = mxDateParts(start);
+  const current = new Date(`${startParts.year}-${pad2(startParts.month)}-${pad2(startParts.day)}T12:00:00${MX_UTC_OFFSET}`);
+  
+  let daysAdded = 0;
+  
+  // Iterar hasta agregar la cantidad de días hábiles solicitada
+  while (daysAdded < businessDays) {
+    current.setTime(current.getTime() + 24 * 60 * 60 * 1000);
+    if (isBusinessDay(current)) {
+      daysAdded++;
+    }
+  }
+  
+  // Retornar en formato YYYY-MM-DD
+  const resultParts = mxDateParts(current);
+  return `${resultParts.year}-${pad2(resultParts.month)}-${pad2(resultParts.day)}`;
+}
+
+/**
+ * Calcula días hábiles entre dos fechas (excluyendo fines de semana y festivos).
+ * Solo cuenta lunes a viernes, excluyendo sábados, domingos y días festivos oficiales.
+ * 
+ * @param from Fecha de inicio (incluida si es día hábil)
+ * @param to Fecha de fin (incluida si es día hábil), por defecto hoy
+ * @returns Número de días hábiles entre las fechas
+ */
+export function businessDaysBetween(
+  from: string | Date | null | undefined,
+  to: string | Date | null | undefined = new Date()
+): number {
+  if (!from || !to) return 0;
+  
+  const start = typeof from === 'string' ? new Date(from) : from;
+  const end = typeof to === 'string' ? new Date(to) : to;
+  
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return 0;
+  
+  // Normalizar a medianoche en TZ MX para comparación correcta
+  const startParts = mxDateParts(start);
+  const endParts = mxDateParts(end);
+  
+  const startDate = new Date(`${startParts.year}-${pad2(startParts.month)}-${pad2(startParts.day)}T00:00:00${MX_UTC_OFFSET}`);
+  const endDate = new Date(`${endParts.year}-${pad2(endParts.month)}-${pad2(endParts.day)}T00:00:00${MX_UTC_OFFSET}`);
+  
+  if (endDate.getTime() < startDate.getTime()) return 0;
+  
+  let count = 0;
+  const current = new Date(startDate);
+  
+  // Iterar día por día contando solo días hábiles
+  while (current.getTime() <= endDate.getTime()) {
+    if (isBusinessDay(current)) {
+      count++;
+    }
+    current.setTime(current.getTime() + 24 * 60 * 60 * 1000);
+  }
+  
+  return count;
 }

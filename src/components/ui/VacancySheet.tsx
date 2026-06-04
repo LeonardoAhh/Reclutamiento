@@ -26,9 +26,12 @@ import {
   localTodayIso,
   localDateToIso,
   isoToLocalDateString,
+  addBusinessDays,
   TZ_MX,
 } from '@/lib/dates';
 import { Sheet } from './Sheet';
+import { Modal } from './Modal';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
@@ -102,7 +105,7 @@ function fromVacancy(v: VacancyRequest): FormState {
     fecha_objetivo: isoToLocalDateString(v.fecha_objetivo),
     fecha_cubierta: isoToLocalDateString(v.fecha_cubierta),
     justificacion: v.justificacion ?? '',
-    dias_sla: typeof v.dias_sla === 'number' ? v.dias_sla : DEFAULT_VACANCY_SLA_DAYS,
+    dias_sla: DEFAULT_VACANCY_SLA_DAYS, // Siempre usar el SLA por defecto (12 días hábiles)
     excluida_indicador: !!v.excluida_indicador,
     motivo_exclusion: v.motivo_exclusion ?? '',
   };
@@ -120,6 +123,8 @@ export function VacancySheet({
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const isMobile = useIsMobile();
+  const useModal = !isMobile;
 
   const { positions } = usePositions();
   const areas = useMemo(
@@ -153,6 +158,16 @@ export function VacancySheet({
     setSubmitting(false);
     setForm(vacancy ? fromVacancy(vacancy) : emptyForm());
   }, [isOpen, vacancy, mode]);
+
+  // Calcular fecha objetivo automáticamente cuando cambia la fecha de apertura
+  useEffect(() => {
+    if (form.fecha_apertura && form.dias_sla > 0) {
+      const fechaObjetivo = addBusinessDays(form.fecha_apertura, form.dias_sla);
+      if (fechaObjetivo && fechaObjetivo !== form.fecha_objetivo) {
+        setForm((prev) => ({ ...prev, fecha_objetivo: fechaObjetivo }));
+      }
+    }
+  }, [form.fecha_apertura, form.dias_sla]);
 
   const isFormValid =
     form.area.length > 0 && form.puesto.length > 0 && form.status.length > 0;
@@ -244,6 +259,362 @@ export function VacancySheet({
       ? 'Ciclo de vida y prioridad'
       : 'Abrir solicitud de cobertura';
 
+  const formContent = (
+    <>
+      {isDelete ? (
+        <div className="delete-warning">
+          <div className="delete-warning__icon" aria-hidden="true">
+            <AlertCircle size={32} />
+          </div>
+          <p className="delete-warning__title">
+            ¿Eliminar vacante de{' '}
+            <span className="delete-warning__name">{form.puesto || 'este puesto'}</span>?
+          </p>
+          <dl className="delete-warning__meta">
+            <div className="delete-warning__meta-row">
+              <dt>Área</dt>
+              <dd>{form.area || '—'}</dd>
+            </div>
+            <div className="delete-warning__meta-row">
+              <dt>Status</dt>
+              <dd>{VACANCY_STATUS_LABEL[form.status]}</dd>
+            </div>
+            <div className="delete-warning__meta-row">
+              <dt>Prioridad</dt>
+              <dd>{VACANCY_PRIORITY_LABEL[form.prioridad]}</dd>
+            </div>
+          </dl>
+          <p className="delete-warning__sub">
+            Se borra el historial de cambios de status asociado.
+          </p>
+        </div>
+      ) : (
+        <div className="form-grid">
+          <div className="form-group">
+            <label htmlFor="vac-area">Área *</label>
+            <select
+              id="vac-area"
+              required
+              value={form.area}
+              onChange={(e) =>
+                setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
+              }
+            >
+              <option value="">Seleccione área…</option>
+              {areas.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-seccion">Sección</label>
+            <select
+              id="vac-seccion"
+              value={form.seccion}
+              onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+              disabled={!form.area}
+            >
+              <option value="">Seleccione sección…</option>
+              {sectionsForArea.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group form-group--span-2">
+            <label htmlFor="vac-puesto">Puesto *</label>
+            <select
+              id="vac-puesto"
+              required
+              value={form.puesto}
+              onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+              disabled={!form.seccion}
+            >
+              <option value="">Seleccione puesto…</option>
+              {puestosForSection.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-status">Status</label>
+            <select
+              id="vac-status"
+              value={form.status}
+              onChange={(e) =>
+                setForm({ ...form, status: e.target.value as VacancyStatus })
+              }
+            >
+              {VACANCY_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {VACANCY_STATUS_LABEL[s]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-prioridad">Prioridad</label>
+            <select
+              id="vac-prioridad"
+              value={form.prioridad}
+              onChange={(e) =>
+                setForm({ ...form, prioridad: e.target.value as VacancyPriority })
+              }
+            >
+              {VACANCY_PRIORITIES.map((p) => (
+                <option key={p} value={p}>
+                  {VACANCY_PRIORITY_LABEL[p]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-reclutador">Reclutador asignado</label>
+            <input
+              id="vac-reclutador"
+              type="text"
+              value={form.reclutador_asignado}
+              onChange={(e) =>
+                setForm({ ...form, reclutador_asignado: e.target.value })
+              }
+              placeholder="Quién la lleva"
+              autoComplete="off"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-fuente">Fuente planeada</label>
+            <input
+              id="vac-fuente"
+              type="text"
+              value={form.fuente_planeada}
+              onChange={(e) => setForm({ ...form, fuente_planeada: e.target.value })}
+              placeholder="LinkedIn · Bolsa · Referidos…"
+              autoComplete="off"
+              list="vac-fuente-suggestions"
+            />
+            <datalist id="vac-fuente-suggestions">
+              {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
+            </datalist>
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-apertura">Fecha de apertura</label>
+            <input
+              id="vac-apertura"
+              type="date"
+              value={form.fecha_apertura}
+              onChange={(e) => setForm({ ...form, fecha_apertura: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-sla">SLA (días hábiles)</label>
+            <input
+              id="vac-sla"
+              type="number"
+              min={1}
+              max={365}
+              step={1}
+              value={form.dias_sla}
+              disabled
+              readOnly
+              title="Días hábiles para cubrir la vacante (lunes a viernes, excluyendo festivos)"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="vac-objetivo">Fecha objetivo (calculada)</label>
+            <input
+              id="vac-objetivo"
+              type="date"
+              value={form.fecha_objetivo}
+              disabled
+              readOnly
+              title="Se calcula automáticamente: Fecha de apertura + SLA días hábiles"
+            />
+          </div>
+          {form.status === 'cubierta' && (
+            <div className="form-group">
+              <label htmlFor="vac-cubierta">Fecha cubierta</label>
+              <input
+                id="vac-cubierta"
+                type="date"
+                value={form.fecha_cubierta || todayIso()}
+                onChange={(e) => setForm({ ...form, fecha_cubierta: e.target.value })}
+              />
+            </div>
+          )}
+          <div className="form-group form-group--span-2">
+            <label htmlFor="vac-justificacion">Justificación</label>
+            <textarea
+              id="vac-justificacion"
+              value={form.justificacion}
+              onChange={(e) => setForm({ ...form, justificacion: e.target.value })}
+              placeholder="Por qué se abre la vacante (rotación, expansión, etc.)"
+            />
+          </div>
+
+          <div className="form-group form-group--span-2 vac-exclusion">
+            <label className="vac-exclusion__toggle">
+              <input
+                type="checkbox"
+                checked={form.excluida_indicador}
+                onChange={(e) =>
+                  setForm({ ...form, excluida_indicador: e.target.checked })
+                }
+              />
+              <span>
+                <strong>Excluir del indicador</strong>{' '}
+              </span>
+            </label>
+            {form.excluida_indicador && (
+              <div className="vac-exclusion__reason">
+                <label htmlFor="vac-motivo">Motivo</label>
+                <input
+                  id="vac-motivo"
+                  type="text"
+                  list="vac-motivo-suggestions"
+                  value={form.motivo_exclusion}
+                  onChange={(e) =>
+                    setForm({ ...form, motivo_exclusion: e.target.value })
+                  }
+                  placeholder="Sin seguimiento del área"
+                  autoComplete="off"
+                />
+                <datalist id="vac-motivo-suggestions">
+                  {VACANCY_EXCLUSION_REASONS.map((r) => (
+                    <option key={r} value={r} />
+                  ))}
+                </datalist>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isEdit && history && history.length > 0 && (
+        <div className="vac-timeline" aria-label="Historial de cambios">
+          <h3 className="vac-timeline__title">
+            <History size={14} aria-hidden="true" />
+            Historial de cambios
+          </h3>
+          <ol className="vac-timeline__list">
+            {history.map((h) => (
+              <li key={h.id ?? `${h.changed_at}-${h.to_status}`} className="vac-timeline__entry">
+                <div className="vac-timeline__transition">
+                  {h.from_status ? (
+                    <>
+                      <span className="vac-timeline__status">
+                        {VACANCY_STATUS_LABEL[h.from_status]}
+                      </span>
+                      <ArrowRight size={11} aria-hidden="true" />
+                    </>
+                  ) : null}
+                  <span className="vac-timeline__status vac-timeline__status--to">
+                    {VACANCY_STATUS_LABEL[h.to_status]}
+                  </span>
+                </div>
+                <div className="vac-timeline__meta">
+                  <time dateTime={h.changed_at ?? ''}>
+                    {h.changed_at
+                      ? new Date(h.changed_at).toLocaleString('es-MX', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: TZ_MX,
+                      })
+                      : '—'}
+                  </time>
+                  {h.changed_by && (
+                    <span className="vac-timeline__by">· {h.changed_by}</span>
+                  )}
+                </div>
+                {h.reason && (
+                  <div className="vac-timeline__reason">{h.reason}</div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {errorMsg && (
+        <p className="form-error" role="alert">
+          {errorMsg}
+        </p>
+      )}
+    </>
+  );
+
+  const footerButtons = !useModal ? (
+    <footer className="sheet__footer">
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      {isDelete ? (
+        <button type="submit" className="btn-danger" disabled={submitting}>
+          {submitting ? 'Eliminando…' : 'Eliminar'}
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={!isFormValid || submitting}
+        >
+          {submitting ? 'Guardando…' : isAdd ? 'Crear vacante' : 'Guardar cambios'}
+        </button>
+      )}
+    </footer>
+  ) : null;
+
+  const headerActions = useModal ? (
+    <>
+      {isDelete ? (
+        <button type="submit" className="btn-danger" disabled={submitting} form="vacancy-form">
+          {submitting ? 'Eliminando…' : 'Eliminar'}
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={!isFormValid || submitting}
+          form="vacancy-form"
+        >
+          {submitting ? 'Guardando…' : isAdd ? 'Crear vacante' : 'Guardar cambios'}
+        </button>
+      )}
+    </>
+  ) : null;
+
+  if (useModal) {
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        icon={icon}
+        title={title}
+        subtitle={subtitle}
+        className={`vacancy-sheet${!isDelete ? ' vacancy-sheet--wide' : ''}`}
+        headerActions={headerActions}
+      >
+        <form id="vacancy-form" onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
+          <div className="modal-body">
+            {formContent}
+          </div>
+        </form>
+      </Modal>
+    );
+  }
+
   return (
     <Sheet
       isOpen={isOpen}
@@ -257,320 +628,9 @@ export function VacancySheet({
     >
       <form onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
         <div className="sheet__body">
-        {isDelete ? (
-          <div className="delete-warning">
-            <div className="delete-warning__icon" aria-hidden="true">
-              <AlertCircle size={32} />
-            </div>
-            <p className="delete-warning__title">
-              ¿Eliminar vacante de{' '}
-              <span className="delete-warning__name">{form.puesto || 'este puesto'}</span>?
-            </p>
-            <dl className="delete-warning__meta">
-              <div className="delete-warning__meta-row">
-                <dt>Área</dt>
-                <dd>{form.area || '—'}</dd>
-              </div>
-              <div className="delete-warning__meta-row">
-                <dt>Status</dt>
-                <dd>{VACANCY_STATUS_LABEL[form.status]}</dd>
-              </div>
-              <div className="delete-warning__meta-row">
-                <dt>Prioridad</dt>
-                <dd>{VACANCY_PRIORITY_LABEL[form.prioridad]}</dd>
-              </div>
-            </dl>
-            <p className="delete-warning__sub">
-              Se borra el historial de cambios de status asociado.
-            </p>
-          </div>
-        ) : (
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="vac-area">Área *</label>
-              <select
-                id="vac-area"
-                required
-                value={form.area}
-                onChange={(e) =>
-                  setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-                }
-              >
-                <option value="">Seleccione área…</option>
-                {areas.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-seccion">Sección</label>
-              <select
-                id="vac-seccion"
-                value={form.seccion}
-                onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
-                disabled={!form.area}
-              >
-                <option value="">Seleccione sección…</option>
-                {sectionsForArea.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group form-group--span-2">
-              <label htmlFor="vac-puesto">Puesto *</label>
-              <select
-                id="vac-puesto"
-                required
-                value={form.puesto}
-                onChange={(e) => setForm({ ...form, puesto: e.target.value })}
-                disabled={!form.seccion}
-              >
-                <option value="">Seleccione puesto…</option>
-                {puestosForSection.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-status">Status</label>
-              <select
-                id="vac-status"
-                value={form.status}
-                onChange={(e) =>
-                  setForm({ ...form, status: e.target.value as VacancyStatus })
-                }
-              >
-                {VACANCY_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {VACANCY_STATUS_LABEL[s]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-prioridad">Prioridad</label>
-              <select
-                id="vac-prioridad"
-                value={form.prioridad}
-                onChange={(e) =>
-                  setForm({ ...form, prioridad: e.target.value as VacancyPriority })
-                }
-              >
-                {VACANCY_PRIORITIES.map((p) => (
-                  <option key={p} value={p}>
-                    {VACANCY_PRIORITY_LABEL[p]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-reclutador">Reclutador asignado</label>
-              <input
-                id="vac-reclutador"
-                type="text"
-                value={form.reclutador_asignado}
-                onChange={(e) =>
-                  setForm({ ...form, reclutador_asignado: e.target.value })
-                }
-                placeholder="Quién la lleva"
-                autoComplete="off"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-fuente">Fuente planeada</label>
-              <input
-                id="vac-fuente"
-                type="text"
-                value={form.fuente_planeada}
-                onChange={(e) => setForm({ ...form, fuente_planeada: e.target.value })}
-                placeholder="LinkedIn · Bolsa · Referidos…"
-                autoComplete="off"
-                list="vac-fuente-suggestions"
-              />
-              <datalist id="vac-fuente-suggestions">
-                {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
-              </datalist>
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-apertura">Fecha de apertura</label>
-              <input
-                id="vac-apertura"
-                type="date"
-                value={form.fecha_apertura}
-                onChange={(e) => setForm({ ...form, fecha_apertura: e.target.value })}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="vac-objetivo">Fecha objetivo</label>
-              <input
-                id="vac-objetivo"
-                type="date"
-                value={form.fecha_objetivo}
-                onChange={(e) => setForm({ ...form, fecha_objetivo: e.target.value })}
-              />
-            </div>
-            {form.status === 'cubierta' && (
-              <div className="form-group form-group--span-2">
-                <label htmlFor="vac-cubierta">Fecha cubierta</label>
-                <input
-                  id="vac-cubierta"
-                  type="date"
-                  value={form.fecha_cubierta || todayIso()}
-                  onChange={(e) => setForm({ ...form, fecha_cubierta: e.target.value })}
-                />
-              </div>
-            )}
-            <div className="form-group">
-              <label htmlFor="vac-sla">SLA (días)</label>
-              <input
-                id="vac-sla"
-                type="number"
-                min={1}
-                max={365}
-                step={1}
-                value={form.dias_sla}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    dias_sla: e.target.value === ''
-                      ? DEFAULT_VACANCY_SLA_DAYS
-                      : Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-            <div className="form-group form-group--span-2">
-              <label htmlFor="vac-justificacion">Justificación</label>
-              <textarea
-                id="vac-justificacion"
-                value={form.justificacion}
-                onChange={(e) => setForm({ ...form, justificacion: e.target.value })}
-                placeholder="Por qué se abre la vacante (rotación, expansión, etc.)"
-              />
-            </div>
-
-            <div className="form-group form-group--span-2 vac-exclusion">
-              <label className="vac-exclusion__toggle">
-                <input
-                  type="checkbox"
-                  checked={form.excluida_indicador}
-                  onChange={(e) =>
-                    setForm({ ...form, excluida_indicador: e.target.checked })
-                  }
-                />
-                <span>
-                  <strong>Excluir del indicador</strong>{' '}
-                </span>
-              </label>
-              {form.excluida_indicador && (
-                <div className="vac-exclusion__reason">
-                  <label htmlFor="vac-motivo">Motivo</label>
-                  <input
-                    id="vac-motivo"
-                    type="text"
-                    list="vac-motivo-suggestions"
-                    value={form.motivo_exclusion}
-                    onChange={(e) =>
-                      setForm({ ...form, motivo_exclusion: e.target.value })
-                    }
-                    placeholder="Sin seguimiento del área"
-                    autoComplete="off"
-                  />
-                  <datalist id="vac-motivo-suggestions">
-                    {VACANCY_EXCLUSION_REASONS.map((r) => (
-                      <option key={r} value={r} />
-                    ))}
-                  </datalist>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {isEdit && history && history.length > 0 && (
-          <div className="vac-timeline" aria-label="Historial de cambios">
-            <h3 className="vac-timeline__title">
-              <History size={14} aria-hidden="true" />
-              Historial de cambios
-            </h3>
-            <ol className="vac-timeline__list">
-              {history.map((h) => (
-                <li key={h.id ?? `${h.changed_at}-${h.to_status}`} className="vac-timeline__entry">
-                  <div className="vac-timeline__transition">
-                    {h.from_status ? (
-                      <>
-                        <span className="vac-timeline__status">
-                          {VACANCY_STATUS_LABEL[h.from_status]}
-                        </span>
-                        <ArrowRight size={11} aria-hidden="true" />
-                      </>
-                    ) : null}
-                    <span className="vac-timeline__status vac-timeline__status--to">
-                      {VACANCY_STATUS_LABEL[h.to_status]}
-                    </span>
-                  </div>
-                  <div className="vac-timeline__meta">
-                    <time dateTime={h.changed_at ?? ''}>
-                      {h.changed_at
-                        ? new Date(h.changed_at).toLocaleString('es-MX', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          timeZone: TZ_MX,
-                        })
-                        : '—'}
-                    </time>
-                    {h.changed_by && (
-                      <span className="vac-timeline__by">· {h.changed_by}</span>
-                    )}
-                  </div>
-                  {h.reason && (
-                    <div className="vac-timeline__reason">{h.reason}</div>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        {errorMsg && (
-          <p className="form-error" role="alert">
-            {errorMsg}
-          </p>
-        )}
-
+          {formContent}
         </div>
-        <footer className="sheet__footer">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          {isDelete ? (
-            <button type="submit" className="btn-danger" disabled={submitting}>
-              {submitting ? 'Eliminando…' : 'Eliminar'}
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={!isFormValid || submitting}
-            >
-              {submitting ? 'Guardando…' : isAdd ? 'Crear vacante' : 'Guardar cambios'}
-            </button>
-          )}
-        </footer>
+        {footerButtons}
       </form>
     </Sheet>
   );

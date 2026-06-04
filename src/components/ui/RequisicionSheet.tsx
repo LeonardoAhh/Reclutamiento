@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, FileText } from 'lucide-react';
 import { Sheet } from './Sheet';
+import { Modal } from './Modal';
 import type {
   AuthorizedPosition,
   Baja,
@@ -10,7 +11,7 @@ import type {
 } from '@/lib/types';
 import { HABILIDADES_PUESTOS } from '@/lib/constants';
 import { usePositions } from '@/lib/positions';
-import { formatShortDate, localTodayIso } from '@/lib/dates';
+import { formatShortDate, localTodayIso, addDaysToIso } from '@/lib/dates';
 import { normalizePuesto, normalizeString } from '@/lib/utils';
 import './RequisicionSheet.css';
 
@@ -73,6 +74,8 @@ interface RequisicionSheetProps {
   /** Código de registro `VAC-NN` precomputado por la página padre. */
   codigo: string | null;
   onClose: () => void;
+  /** Si true, usa Modal en lugar de Sheet (para PC) */
+  useModal?: boolean;
 }
 
 /**
@@ -93,6 +96,7 @@ export function RequisicionSheet({
   employees,
   codigo,
   onClose,
+  useModal = false,
 }: RequisicionSheetProps) {
   // Mientras el modal esté abierto, marcamos `<html>` para que las reglas
   // de print sepan que existe un nodo imprimible montado. Útil para
@@ -108,10 +112,14 @@ export function RequisicionSheet({
 
   if (!baja) return null;
 
+  // Prioridad: turno guardado en la baja (histórico) o buscar en empleados activos
   const turno =
-    employees.find((e) => e.num_empleado === baja.num_empleado)?.turno ?? null;
+    baja.turno ??
+    employees.find((e) => e.num_empleado === baja.num_empleado)?.turno ??
+    null;
 
-  const issuedDate = localTodayIso();
+  // Fecha de emisión: 1 día después de la fecha de baja
+  const issuedDate = addDaysToIso(baja.fecha_baja, 1) ?? localTodayIso();
 
   function handlePrint() {
     window.print();
@@ -126,6 +134,51 @@ export function RequisicionSheet({
     />
   );
 
+  const footer = !useModal ? (
+    <footer className="sheet__footer requisicion-sheet__footer">
+      <button type="button" className="btn-secondary" onClick={onClose}>
+        Cerrar
+      </button>
+      <button type="button" className="btn-primary" onClick={handlePrint}>
+        <Printer size={14} aria-hidden="true" />
+        <span className="requisicion-sheet__btn-label">Imprimir</span>
+      </button>
+    </footer>
+  ) : null;
+
+  const headerActions = useModal ? (
+    <button type="button" className="btn-primary" onClick={handlePrint}>
+      <Printer size={14} aria-hidden="true" />
+      <span className="requisicion-sheet__btn-label">Imprimir</span>
+    </button>
+  ) : null;
+
+  if (useModal) {
+    return (
+      <>
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          className="requisicion-sheet"
+          icon={<FileText size={20} aria-hidden="true" />}
+          title="Requisición de Personal"
+          subtitle={codigo ?? '—'}
+          headerActions={headerActions}
+        >
+          <div className="modal-body requisicion-sheet__body">{doc}</div>
+        </Modal>
+
+        {isOpen &&
+          createPortal(
+            <div id="requisicion-print-root" aria-hidden="true">
+              {doc}
+            </div>,
+            document.body
+          )}
+      </>
+    );
+  }
+
   return (
     <>
       <Sheet
@@ -139,16 +192,7 @@ export function RequisicionSheet({
         subtitle={codigo ?? '—'}
       >
         <div className="sheet__body requisicion-sheet__body">{doc}</div>
-
-        <footer className="sheet__footer requisicion-sheet__footer">
-          <button type="button" className="btn-secondary" onClick={onClose}>
-            Cerrar
-          </button>
-          <button type="button" className="btn-primary" onClick={handlePrint}>
-            <Printer size={14} aria-hidden="true" />
-            <span className="requisicion-sheet__btn-label">Imprimir</span>
-          </button>
-        </footer>
+        {footer}
       </Sheet>
 
       {isOpen &&
@@ -438,46 +482,83 @@ function SalarioBonoFields({ baja }: { baja: Baja }) {
 }
 
 /**
- * Renderiza el bloque "Habilidades requeridas" del puesto.
+ * Renderiza el bloque "Conocimientos técnicos del puesto" con campos
+ * en grid: Competencias (1 col), Conocimientos Técnicos (2 cols),
+ * Escolaridad (1 col), y Experiencia (2 cols, solo si tiene contenido).
  *
- * Si el puesto tiene entrada en `HABILIDADES_PUESTOS`, se muestra como
- * lista de definición (Habilidades / Escolaridad / Experiencia). Si no,
- * cae al BlankField clásico de 3 líneas para captura manual.
+ * Si el puesto tiene entrada en `HABILIDADES_PUESTOS`, se muestran los
+ * valores correspondientes. Si no, cae a campos en blanco para captura manual.
  */
 function HabilidadesField({ baja }: { baja: Baja }) {
   const hab = findHabilidades(baja);
 
   if (!hab) {
-    return <BlankField label="Habilidades requeridas" span={3} lines={3} />;
+    return (
+      <>
+        <BlankField label="Competencias" span={1} lines={3} />
+        <BlankField label="Conocimientos Técnicos requeridos" span={2} lines={3} />
+        <BlankField label="Escolaridad" span={1} lines={1} />
+        <BlankField label="Experiencia" span={2} lines={2} />
+      </>
+    );
   }
 
   return (
-    <div
-      className="requisicion-doc__field requisicion-doc__field--habilidades"
-      data-span={3}
-    >
-      <span className="requisicion-doc__field-label">Habilidades requeridas</span>
-      <dl className="requisicion-doc__habilidades">
-        {hab.habilidades && (
-          <>
-            <dt>Habilidades</dt>
-            <dd>{hab.habilidades}</dd>
-          </>
-        )}
-        {hab.escolaridad && (
-          <>
-            <dt>Escolaridad</dt>
-            <dd>{hab.escolaridad}</dd>
-          </>
-        )}
-        {hab.experiencia && (
-          <>
-            <dt>Experiencia</dt>
-            <dd>{hab.experiencia}</dd>
-          </>
-        )}
-      </dl>
-    </div>
+    <>
+      {/* Competencias - 1 columna */}
+      {hab.competencias ? (
+        <div
+          className="requisicion-doc__field requisicion-doc__field--habilidades"
+          data-span={1}
+        >
+          <span className="requisicion-doc__field-label">Competencias</span>
+          <p className="requisicion-doc__field-value-text">{hab.competencias}</p>
+        </div>
+      ) : (
+        <BlankField label="Competencias" span={1} lines={3} />
+      )}
+
+      {/* Conocimientos Técnicos - 2 columnas */}
+      {hab.conocimientos_tecnicos ? (
+        <div
+          className="requisicion-doc__field requisicion-doc__field--habilidades"
+          data-span={2}
+        >
+          <span className="requisicion-doc__field-label">
+            Conocimientos Técnicos requeridos
+          </span>
+          <p className="requisicion-doc__field-value-text">
+            {hab.conocimientos_tecnicos}
+          </p>
+        </div>
+      ) : (
+        <BlankField label="Conocimientos Técnicos requeridos" span={2} lines={3} />
+      )}
+
+      {/* Escolaridad - 1 columna */}
+      {hab.escolaridad ? (
+        <div
+          className="requisicion-doc__field"
+          data-span={1}
+        >
+          <span className="requisicion-doc__field-label">Escolaridad</span>
+          <span className="requisicion-doc__field-value">{hab.escolaridad}</span>
+        </div>
+      ) : (
+        <BlankField label="Escolaridad" span={1} lines={1} />
+      )}
+
+      {/* Experiencia - 2 columnas (solo se muestra si tiene contenido) */}
+      {hab.experiencia && hab.experiencia.trim() !== '' && (
+        <div
+          className="requisicion-doc__field requisicion-doc__field--habilidades"
+          data-span={2}
+        >
+          <span className="requisicion-doc__field-label">Experiencia</span>
+          <p className="requisicion-doc__field-value-text">{hab.experiencia}</p>
+        </div>
+      )}
+    </>
   );
 }
 

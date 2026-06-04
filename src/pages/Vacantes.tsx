@@ -32,7 +32,7 @@ import {
 import type { VacancyRequest, VacancyStatus } from '@/lib/types';
 import {
   formatShortDate,
-  daysBetween,
+  businessDaysBetween,
   startOfDayMxMs,
   endOfDayMxMs,
 } from '@/lib/dates';
@@ -55,7 +55,7 @@ function computeMetrics(v: VacancyRequest): VacancyMetrics {
   const sla = typeof v.dias_sla === 'number' ? v.dias_sla : DEFAULT_VACANCY_SLA_DAYS;
   const end =
     v.status === 'cubierta' && v.fecha_cubierta ? v.fecha_cubierta : new Date();
-  const diasAbierta = v.fecha_apertura ? daysBetween(v.fecha_apertura, end) : 0;
+  const diasAbierta = v.fecha_apertura ? businessDaysBetween(v.fecha_apertura, end) : 0;
   const vencida =
     v.status !== 'cubierta' &&
     v.status !== 'cancelada' &&
@@ -344,7 +344,7 @@ export function Vacantes() {
                   <th scope="col">Reclutador</th>
                   <th scope="col">Fuente</th>
                   <th scope="col">Apertura</th>
-                  <th scope="col">Tiempo</th>
+                  <th scope="col" title="Días hábiles (lun-vie, sin festivos)">Tiempo</th>
                   <th scope="col" className="pipeline__th--actions">
                     Acciones
                   </th>
@@ -474,14 +474,14 @@ function SlaCell({
 }) {
   if (excluded) {
     return (
-      <span className="vacantes__sla vacantes__sla--excluded" title="Excluida del indicador">
+      <span className="vacantes__sla vacantes__sla--excluded" title="Excluida del indicador (días hábiles)">
         {metrics.diasAbierta}/{metrics.sla}
       </span>
     );
   }
   if (status === 'cubierta') {
     return (
-      <span className="vacantes__sla vacantes__sla--done" title="Vacante cubierta">
+      <span className="vacantes__sla vacantes__sla--done" title="Vacante cubierta (días hábiles)">
         <CheckCircle2 size={12} aria-hidden="true" />
         {metrics.diasAbierta}/{metrics.sla}
       </span>
@@ -492,7 +492,7 @@ function SlaCell({
   }
   if (metrics.vencida) {
     return (
-      <span className="vacantes__sla vacantes__sla--overdue" title="SLA vencido">
+      <span className="vacantes__sla vacantes__sla--overdue" title="SLA vencido (días hábiles)">
         <AlertTriangle size={12} aria-hidden="true" />
         {metrics.diasAbierta}/{metrics.sla}
       </span>
@@ -504,7 +504,7 @@ function SlaCell({
       ? 'vacantes__sla vacantes__sla--warning'
       : 'vacantes__sla vacantes__sla--ok';
   return (
-    <span className={cls} title={`${remaining} día(s) restante(s)`}>
+    <span className={cls} title={`${remaining} día(s) hábil(es) restante(s)`}>
       <Activity size={12} aria-hidden="true" />
       {metrics.diasAbierta}/{metrics.sla}
     </span>

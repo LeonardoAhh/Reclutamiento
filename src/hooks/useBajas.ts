@@ -180,9 +180,20 @@ export function useBajas() {
       for (const b of transformed) byNum.set(b.num_empleado, b);
       const incoming = Array.from(byNum.values());
 
-      // Merge con lo existente: incoming pisa al previo.
+      // Merge con lo existente: incoming pisa los datos del empleado EXCEPTO
+      // los campos de cobertura manual (cubierta_manual, cubierta_fecha, cubierta_nota)
+      // que deben preservarse si ya existen.
       const prevByNum = new Map(bajasRef.current.map((b) => [b.num_empleado, b]));
-      for (const b of incoming) prevByNum.set(b.num_empleado, b);
+      for (const b of incoming) {
+        const prev = prevByNum.get(b.num_empleado);
+        prevByNum.set(b.num_empleado, {
+          ...b,
+          // Preservar campos de cobertura manual si existen
+          cubierta_manual: prev?.cubierta_manual ?? b.cubierta_manual,
+          cubierta_fecha: prev?.cubierta_fecha ?? b.cubierta_fecha,
+          cubierta_nota: prev?.cubierta_nota ?? b.cubierta_nota,
+        });
+      }
       const merged = Array.from(prevByNum.values());
 
       setBajas(merged);
@@ -312,6 +323,104 @@ export function useBajas() {
     }
   }, [isConfigured]);
 
+  /**
+   * Actualiza SOLO el campo turno de las bajas existentes usando el
+   * num_empleado como clave. No modifica ningún otro campo.
+   * Devuelve preview de los cambios que se aplicarían.
+   */
+  const updateTurnosOnly = useCallback(
+    async (
+      raw: BajaRaw[]
+    ): Promise<{
+      ok: boolean;
+      preview: Array<{ num_empleado: string; nombre: string; turno_anterior: string | undefined; turno_nuevo: string }>;
+      updated: number;
+      notFound: number;
+    }> => {
+      const turnosMap = new Map<string, string>();
+      
+      // Extraer solo num_empleado y turno del archivo
+      for (const item of raw) {
+        const numEmpleado = (item['Num Empleado'] ?? '').trim();
+        const turno = (item['Turno'] ?? '').trim();
+        if (numEmpleado && turno) {
+          turnosMap.set(numEmpleado, turno);
+        }
+      }
+
+      const preview: Array<{
+        num_empleado: string;
+        nombre: string;
+        turno_anterior: string | undefined;
+        turno_nuevo: string;
+      }> = [];
+      let updated = 0;
+      let notFound = 0;
+
+      // Generar preview de cambios
+      for (const [numEmpleado, turnoNuevo] of turnosMap) {
+        const baja = bajasRef.current.find((b) => b.num_empleado === numEmpleado);
+        if (baja) {
+          preview.push({
+            num_empleado: numEmpleado,
+            nombre: baja.nombre,
+            turno_anterior: baja.turno,
+            turno_nuevo: turnoNuevo,
+          });
+          updated++;
+        } else {
+          notFound++;
+        }
+      }
+
+      return { ok: true, preview, updated, notFound };
+    },
+    []
+  );
+
+  /**
+   * Aplica los cambios de turno después de la confirmación del usuario.
+   */
+  const applyTurnosUpdate = useCallback(
+    async (raw: BajaRaw[]): Promise<{ ok: boolean; updated: number }> => {
+      const turnosMap = new Map<string, string>();
+      
+      for (const item of raw) {
+        const numEmpleado = (item['Num Empleado'] ?? '').trim();
+        const turno = (item['Turno'] ?? '').trim();
+        if (numEmpleado && turno) {
+          turnosMap.set(numEmpleado, turno);
+        }
+      }
+
+      let updated = 0;
+      const next = bajasRef.current.map((b) => {
+        const turnoNuevo = turnosMap.get(b.num_empleado);
+        if (turnoNuevo !== undefined) {
+          updated++;
+          return { ...b, turno: turnoNuevo };
+        }
+        return b;
+      });
+
+      setBajas(next);
+      saveLocal(STORAGE_KEY, next);
+
+      if (!isConfigured) {
+        return { ok: true, updated };
+      }
+
+      const res = await pushToSupabase(next);
+      if (res.ok) {
+        setDataSource('remote');
+        return { ok: true, updated };
+      }
+      setDataSource('local');
+      return { ok: true, updated };
+    },
+    [isConfigured, pushToSupabase]
+  );
+
   return {
     bajas,
     loading,
@@ -324,5 +433,7 @@ export function useBajas() {
     marcarCubierta,
     desmarcarCubierta,
     clearBajas,
+    updateTurnosOnly,
+    applyTurnosUpdate,
   };
 }

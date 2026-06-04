@@ -86,3 +86,9 @@
 .cubrir-vacante-sheet__clear > span {
   margin-left: var(--spacing-xxs);
 }
+
+@media (max-width: 640px) {
+  .modal-header-actions .cubrir-vacante-sheet__clear > span {
+    display: none;
+  }
+}

@@ -43,6 +43,7 @@ export function transformBajaData(raw: BajaRaw): Baja {
     area: getField('Area').trim(),
     seccion: getField('Seccion').trim(),
     puesto: getField('Puesto').trim(),
+    turno: getField('Turno').trim() || undefined,
     fecha_ingreso: parseDdMmYyyy(getField('Fecha Ingreso')) ?? '',
     fecha_baja: parseDdMmYyyy(getField('Fecha Baja')) ?? '',
     tipo_baja: getField('Tipo de Baja').trim(),
@@ -90,7 +91,7 @@ export interface BajaWithCobertura extends Baja {
 }
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
-const COVER_WINDOW_DAYS = 10;
+const COVER_WINDOW_DAYS = 12;
 
 function diffDays(fromIso: string, toIso: string): number {
   // Anclar a mediodía en TZ MX (UTC-6 fijo en Querétaro) para que la
