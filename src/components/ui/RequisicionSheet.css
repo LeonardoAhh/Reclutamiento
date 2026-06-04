@@ -389,6 +389,15 @@
   gap: var(--spacing-xs);
 }
 
+.requisicion-doc__sig-title {
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  text-align: center;
+}
+
 .requisicion-doc__sig-line {
   display: block;
   width: 100%;

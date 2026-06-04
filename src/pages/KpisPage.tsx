@@ -6,6 +6,7 @@ import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
 import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
+import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -26,7 +27,7 @@ import type {
   VacancyStatus,
 } from '@/lib/types';
 import {
-  daysBetween,
+  businessDaysBetween,
   formatIsoWeekRange,
   isInIsoWeek,
   isoWeekOf,
@@ -58,7 +59,7 @@ interface VacancyMetrics {
 function computeVacancyMetrics(v: VacancyRequest): VacancyMetrics {
   const sla = typeof v.dias_sla === 'number' ? v.dias_sla : DEFAULT_VACANCY_SLA_DAYS;
   const end = v.status === 'cubierta' && v.fecha_cubierta ? v.fecha_cubierta : new Date();
-  const diasAbierta = v.fecha_apertura ? daysBetween(v.fecha_apertura, end) : 0;
+  const diasAbierta = v.fecha_apertura ? businessDaysBetween(v.fecha_apertura, end) : 0;
   const vencida =
     v.status !== 'cubierta' &&
     v.status !== 'cancelada' &&
@@ -95,6 +96,7 @@ const { } = useAuth();
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
+  const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
 
   /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
@@ -167,7 +169,7 @@ const { } = useAuth();
       } else if (v.status === 'cubierta') {
         cubiertas += 1;
         if (v.fecha_apertura && v.fecha_cubierta) {
-          ttfSum += daysBetween(v.fecha_apertura, v.fecha_cubierta);
+          ttfSum += businessDaysBetween(v.fecha_apertura, v.fecha_cubierta);
           ttfCount += 1;
         }
       }
@@ -418,7 +420,8 @@ const { } = useAuth();
           const isWeeklyCard = card.id === 'kpi-ingresos-semana';
           const isInProcessCard = card.id === 'stat-pipeline-activo';
           const isCitedTodayCard = card.id === 'stat-pipeline-citados-hoy';
-          const hasModal = isWeeklyCard || isInProcessCard || isCitedTodayCard;
+          const isTtfCard = card.id === 'stat-vac-ttf';
+          const hasModal = isWeeklyCard || isInProcessCard || isCitedTodayCard || isTtfCard;
           return (
             <KpiReveal
               key={card.id}
@@ -447,14 +450,17 @@ const { } = useAuth();
                       e.stopPropagation();
                       if (isWeeklyCard) setWeeklyModalOpen(true);
                       else if (isInProcessCard) setCandidatesModalOpen(true);
-                      else if (card.id === 'stat-pipeline-citados-hoy') setCitedTodayModalOpen(true);
+                      else if (isCitedTodayCard) setCitedTodayModalOpen(true);
+                      else if (isTtfCard) setTtfHistoryModalOpen(true);
                     }}
                     onKeyDown={(e) => e.stopPropagation()}
                     aria-label={
                       isWeeklyCard
                         ? 'Ver puestos contratados esta semana'
-                        : card.id === 'stat-pipeline-citados-hoy'
+                        : isCitedTodayCard
                         ? 'Ver candidatos citados hoy'
+                        : isTtfCard
+                        ? 'Ver histórico mensual de TTF'
                         : 'Ver puestos en proceso del pipeline'
                     }
                   >
@@ -478,6 +484,12 @@ const { } = useAuth();
         isOpen={citedTodayModalOpen}
         onClose={() => setCitedTodayModalOpen(false)}
         candidates={candidatesCitadosHoy}
+      />
+
+      <TtfHistoryModal
+        isOpen={ttfHistoryModalOpen}
+        onClose={() => setTtfHistoryModalOpen(false)}
+        vacancies={vacancies}
       />
 
       <WeeklyHiresModal

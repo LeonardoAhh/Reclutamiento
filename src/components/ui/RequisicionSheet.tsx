@@ -264,7 +264,10 @@ function RequisicionDoc({
           <div className="requisicion-doc__grid">
             <Field label="Departamento solicitante" value={baja.area} />
             <Field label="Sección solicitante" value={baja.seccion} />
-            <SalarioBonoFields baja={baja} />
+            <CheckboxField
+              label="Tipo de reclutamiento"
+              options={['Reclutamiento', 'Desarrollo interno']}
+            />
           </div>
         </section>
 
@@ -321,7 +324,7 @@ function RequisicionDoc({
         className="requisicion-doc__page requisicion-doc__page--second"
         aria-label="Hoja 2: candidato propuesto"
       >
-        <DocHeader codigo={codigo} issuedDate={issuedDate} subtitle="Hoja 2" />
+        <DocHeader codigo={codigo} issuedDate={issuedDate} />
 
         <section
           className="requisicion-doc__section"
@@ -339,12 +342,23 @@ function RequisicionDoc({
             <BlankField label="Teléfono" />
             <BlankField label="Correo electrónico" />
             <BlankField label="Fuente de reclutamiento" span={2} />
-            <BlankField label="Sueldo acordado" />
             <BlankField label="Experiencia previa" span={3} lines={2} />
             <BlankField label="Fecha de entrevista" />
             <BlankField label="Fecha probable de ingreso" />
             <BlankField label="Turno asignado" />
             <BlankField label="Observaciones" span={3} lines={3} />
+          </div>
+        </section>
+
+        <section
+          className="requisicion-doc__section"
+          aria-label="Condiciones del puesto"
+        >
+          <h4 className="requisicion-doc__section-title">
+            Condiciones del puesto
+          </h4>
+          <div className="requisicion-doc__grid">
+            <SalarioBonoFields baja={baja} />
           </div>
         </section>
 
@@ -438,8 +452,9 @@ function BlankField({ label, span = 1, lines = 1 }: BlankFieldProps) {
 function SignatureSlot({ label }: { label: string }) {
   return (
     <div className="requisicion-doc__sig">
+      <span className="requisicion-doc__sig-title" aria-hidden="true">FIRMA</span>
       <span className="requisicion-doc__sig-line" aria-hidden="true" />
-      <span className="requisicion-doc__sig-label">{label}</span>
+      <span className="requisicion-doc__sig-label">{label.toUpperCase()}</span>
     </div>
   );
 }
@@ -460,23 +475,23 @@ function SalarioBonoFields({ baja }: { baja: Baja }) {
       ) : (
         <BlankField label="Sueldo propuesto" />
       )}
-      {cfg?.bono != null ? (
-        <Field label="Bono" value={cfg.bono ? 'Sí' : 'No'} />
+      {cfg?.bono === true ? (
+        <Field label="Bono" value="Sí" />
+      ) : cfg?.bono === false ? (
+        <Field label="Bono" value="No Aplica" />
       ) : (
         <CheckboxField label="Bono" options={['Sí', 'No']} />
       )}
-      {cfg?.bono && cfg.bono_monto != null ? (
+      {cfg?.bono === true && cfg.bono_monto != null ? (
         <Field
           label="Monto del bono"
           value={MXN_FORMATTER.format(cfg.bono_monto)}
         />
+      ) : cfg?.bono === false ? (
+        <Field label="Monto del bono" value="No Aplica" />
       ) : (
         <BlankField label="Monto del bono" />
       )}
-      <CheckboxField
-        label="Tipo de reclutamiento"
-        options={['Reclutamiento', 'Desarrollo interno']}
-      />
     </>
   );
 }
