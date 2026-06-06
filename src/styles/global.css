@@ -56,7 +56,6 @@
   --color-accent-amber: #b45309;
   --color-accent-amber-rgb: 180 83 9;
 
-
   /* ── Channel values (para tints/overlays con rgb()) ─────────────────── */
   --color-primary-rgb: 26 38 112;
   --color-error-rgb: 207 45 86;
@@ -268,7 +267,6 @@
   --color-accent-teal-rgb: 45 212 191;
   --color-accent-amber: #fbbf24;
   --color-accent-amber-rgb: 251 191 36;
-
 
   /* Derived */
   --color-focus-ring: rgb(var(--color-primary-rgb) / 0.28);
@@ -870,8 +868,6 @@ code:not(pre code) {
   align-items: center;
   justify-content: center;
 }
-
-
 
 /* ========================================
    CARDS
