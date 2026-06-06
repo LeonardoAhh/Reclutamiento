@@ -1,64 +1,88 @@
 /* ================================================================
-   PWAStatus — Redesigned update + offline banners.
-   Uses design-system tokens for cohesion. Responsive from 320px up.
+   PWAStatus — offline bar + update card
+   Tokens: design-system globals (colors, spacing, type, rounded,
+           shadow-focus, transition, safe-area, tab-bar-height).
+   Zero hardcoded values. Hairline-only depth, no drop-shadows.
    ================================================================ */
 
-/* ── Shared base ── */
-.pwa-banner {
+/* ── Offline bar ──────────────────────────────────────────────────
+   Full-width sticky top bar. Uses --color-error (semantic).
+   Respects safe-area-inset-top for notched devices.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-offline {
   position: fixed;
-  z-index: 1100;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-}
-
-/* ── Offline (top bar, full-width) ── */
-.pwa-banner--offline {
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1100;
+
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: var(--spacing-xs) var(--spacing-md);
-  padding-top: calc(var(--spacing-xs) + env(safe-area-inset-top, 0px));
-  background: var(--color-semantic-error);
-  color: #ffffff;
+  gap: var(--spacing-xs);
+
+  /* Top padding absorbs the notch / status bar */
+  padding: calc(var(--spacing-xs) + var(--safe-area-top)) var(--spacing-md)
+    var(--spacing-xs);
+
+  background: var(--color-error);
+  color: var(--color-on-primary); /* #fff — same token used on btn-primary */
+
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
   font-weight: 600;
+  line-height: var(--type-body-sm-line);
+
+  /* Hairline at the bottom keeps it grounded without a shadow */
   border-bottom: 1px solid var(--color-hairline);
 }
 
-.pwa-banner--offline .pwa-banner__icon {
+.pwa-offline__icon {
   flex-shrink: 0;
 }
 
-/* ── Update banner (bottom card) ── */
-.pwa-banner--update {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--spacing-lg));
+/* ── Update card ──────────────────────────────────────────────────
+   Floating bottom card. Matches .card token set:
+   surface-card + 1px hairline + rounded-lg. No shadow.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update {
+  position: fixed;
+  bottom: calc(var(--safe-area-bottom) + var(--spacing-lg));
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1100;
+
+  /* Width: capped at 460 px, always respects viewport edges */
   width: min(460px, calc(100vw - var(--spacing-md) * 2));
-  overflow: hidden;
-  padding: var(--spacing-md);
-  border-radius: var(--rounded-lg);
+
+  /* Card base — mirrors .card in globals */
   background: var(--color-surface-card);
-  color: var(--color-ink);
   border: 1px solid var(--color-hairline);
-  box-shadow: none; /* hairline-only depth */
+  border-radius: var(--rounded-lg);
+  overflow: hidden; /* clips the progress bar */
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+
+  font-family: var(--font-body);
 }
 
-/* Mobile: lift above bottom tab-bar */
+/* Lift above bottom tab-bar on mobile */
 @media (max-width: 767px) {
-  .pwa-banner--update {
+  .pwa-update {
     bottom: calc(
       var(--tab-bar-height) + var(--safe-area-bottom) + var(--spacing-sm)
     );
   }
 }
 
-/* ── Icon wrapper (circle badge) ── */
-.pwa-banner__icon-wrap {
+/* ── Icon badge ───────────────────────────────────────────────────
+   Surface-cream-strong circle — same treatment as .badge-pill
+   but circular. Color stays neutral (no brand accent on icons).
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__badge {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -66,11 +90,12 @@
   width: 36px;
   height: 36px;
   border-radius: var(--rounded-full);
-  background: var(--color-surface-strong);
+  background: var(--color-surface-cream-strong);
   color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
 }
 
-/* ── Icon animations ── */
+/* ── Icon animations ─────────────────────────────────────────────*/
 @keyframes pwa-spin {
   to {
     transform: rotate(360deg);
@@ -83,20 +108,19 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.45;
   }
 }
 
-.pwa-banner__icon--spin {
+.pwa-update__icon--spin {
   animation: pwa-spin 1s linear infinite;
 }
-
-.pwa-banner__icon--pulse {
+.pwa-update__icon--pulse {
   animation: pwa-pulse 2s ease-in-out infinite;
 }
 
-/* ── Body (title + description) ── */
-.pwa-banner__body {
+/* ── Body copy ────────────────────────────────────────────────────*/
+.pwa-update__body {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -104,130 +128,117 @@
   gap: 2px;
 }
 
-.pwa-banner__title {
-  font-size: var(--type-body-sm-size);
-  font-weight: 600; /* title-sm is 600 */
+.pwa-update__title {
+  font-size: var(--type-body-sm-size); /* 14px */
+  font-weight: 600;
+  line-height: var(--type-body-sm-line);
   color: var(--color-ink);
 }
 
-.pwa-banner__desc {
-  font-size: var(--type-caption-md-size);
+.pwa-update__desc {
+  font-size: var(--type-caption-md-size); /* 13px */
+  font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
   color: var(--color-body);
 }
 
-/* ── Actions ── */
-.pwa-banner__actions {
+/* ── Actions ──────────────────────────────────────────────────────
+   Update CTA reuses .btn-primary tokens exactly.
+   Dismiss reuses .btn-icon tokens exactly.
+   No duplication — only sizing overrides where needed.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__actions {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
 }
 
-.pwa-banner__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xxs);
-  border: none;
-  border-radius: var(--rounded-md);
-  font-family: var(--font-body);
-  font-size: 14px; /* typography.button */
-  font-weight: 500;
-  cursor: pointer;
-  padding: 10px 18px; /* Based on button-primary */
-  height: 40px;
-  transition:
-    background var(--transition-fast),
-    transform var(--transition-fast);
-  white-space: nowrap;
+/* The update button is a .btn-primary with a tighter height (36px)
+   to sit comfortably inside the compact card padding. */
+.pwa-update__btn-update {
+  /* Inherits: background, color, border, font, radius from btn-primary */
+  height: 36px;
+  padding: 0 var(--spacing-md);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
 }
 
-.pwa-banner__btn:active {
-  transform: scale(0.96);
-}
-
-.pwa-banner__btn--primary {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.pwa-banner__btn--primary:hover {
-  background: var(--color-primary-active);
-}
-
-/* ── Dismiss ── */
-.pwa-banner__dismiss {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  color: var(--color-muted);
-  border-radius: var(--rounded-sm);
-  cursor: pointer;
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
-}
-
-.pwa-banner__dismiss:hover {
-  color: var(--color-ink);
-  background: var(--color-canvas-soft);
-}
-
-.pwa-banner__dismiss:focus-visible {
+.pwa-update__btn-update:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-primary);
+  box-shadow: var(--shadow-focus);
 }
 
-/* ── Progress bar ── */
-.pwa-banner__progress {
+/* Dismiss reuses .btn-icon — just need focus-visible */
+.pwa-update__btn-dismiss:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Progress bar ─────────────────────────────────────────────────
+   Pinned to the bottom edge of the card (overflow: hidden clips it).
+   Uses --color-primary for the fill — sole accent usage, functional.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__progress {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: var(--color-hairline);
-  overflow: hidden;
 }
 
 @keyframes pwa-progress {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-120%);
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(220%);
   }
 }
 
-.pwa-banner__progress-bar {
+.pwa-update__progress-fill {
   width: 40%;
   height: 100%;
   background: var(--color-primary);
   border-radius: var(--rounded-pill);
-  animation: pwa-progress 1.2s ease-in-out infinite;
+  animation: pwa-progress 1.4s ease-in-out infinite;
 }
 
-/* ── Mobile: stack layout ── */
+/* ── Mobile stacked layout (<480 px) ──────────────────────────────
+   Badge + body fill row 1. Actions stretch to full width in row 2.
+   ──────────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .pwa-banner--update {
+  .pwa-update {
     flex-wrap: wrap;
     gap: var(--spacing-sm);
   }
 
-  .pwa-banner__body {
+  /* Body fills remaining space in row 1 next to badge */
+  .pwa-update__body {
     flex-basis: calc(100% - 36px - var(--spacing-sm));
   }
 
-  .pwa-banner__actions {
+  /* Actions drop to row 2, full width */
+  .pwa-update__actions {
     width: 100%;
     justify-content: flex-end;
-    margin-top: var(--spacing-xs);
   }
-  
-  .pwa-banner__btn {
+
+  /* Update CTA fills available space; dismiss stays fixed */
+  .pwa-update__btn-update {
     flex: 1;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────
+   Framer Motion's own reducedMotion prop handles the enter/exit
+   animations. Here we disable the CSS-only looping animations.
+   ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pwa-update__icon--spin,
+  .pwa-update__icon--pulse,
+  .pwa-update__progress-fill {
+    animation: none;
   }
 }

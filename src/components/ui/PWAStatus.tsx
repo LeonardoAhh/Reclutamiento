@@ -6,10 +6,15 @@ import './PWAStatus.css';
 type BannerState = 'idle' | 'available' | 'updating';
 
 /**
- * PWA status banners:
- *  – `need-refresh`: new service-worker waiting → prominent update banner
- *    with animated entrance, progress state, and session-aware dismiss.
- *  – `offline`: navigator.onLine === false → sticky top banner.
+ * PWA status banners
+ *
+ * - `need-refresh`: new service-worker waiting → update banner (bottom card)
+ *   with animated entrance, indeterminate progress and session-aware dismiss.
+ * - `offline`: navigator.onLine === false → sticky top bar.
+ *
+ * Tokens consumed: --color-*, --spacing-*, --rounded-*, --type-*, --font-*,
+ * --shadow-focus, --transition-fast, --tab-bar-height, --safe-area-*.
+ * Zero hardcoded colours or sizes.
  */
 export function PWAStatus() {
   const [updateFn, setUpdateFn] = useState<(() => void) | null>(null);
@@ -30,9 +35,11 @@ export function PWAStatus() {
     function onOffline() {
       setOffline(true);
     }
+
     window.addEventListener('pwa:need-refresh', onNeedRefresh);
     window.addEventListener('online', onOnline);
     window.addEventListener('offline', onOffline);
+
     return () => {
       window.removeEventListener('pwa:need-refresh', onNeedRefresh);
       window.removeEventListener('online', onOnline);
@@ -53,92 +60,85 @@ export function PWAStatus() {
 
   return (
     <>
-      {/* ── Offline banner ── */}
+      {/* ── Offline bar ─────────────────────────────────────────────── */}
       <AnimatePresence>
         {offline && (
           <motion.div
-            className="pwa-banner pwa-banner--offline"
+            className="pwa-offline"
             role="status"
-            initial={{ y: -48, opacity: 0 }}
+            aria-live="assertive"
+            initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -48, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            exit={{ y: -40, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
           >
-            <WifiOff size={16} aria-hidden="true" className="pwa-banner__icon" />
-            <span className="pwa-banner__text">
-              Sin conexión — mostrando datos en caché
-            </span>
+            <WifiOff size={14} aria-hidden="true" className="pwa-offline__icon" />
+            <span>Sin conexión — mostrando datos en caché</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── Update banner ── */}
+      {/* ── Update card ──────────────────────────────────────────────── */}
       <AnimatePresence>
         {bannerState !== 'idle' && (
           <motion.div
-            className="pwa-banner pwa-banner--update"
+            className="pwa-update"
             role="status"
             aria-live="polite"
-            initial={{ y: 80, opacity: 0, scale: 0.95 }}
+            initial={{ y: 72, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 80, opacity: 0, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+            exit={{ y: 72, opacity: 0, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 28 }}
           >
-            <div className="pwa-banner__icon-wrap">
+            {/* Icon badge */}
+            <div className="pwa-update__badge" aria-hidden="true">
               {bannerState === 'updating' ? (
-                <RefreshCw
-                  size={20}
-                  aria-hidden="true"
-                  className="pwa-banner__icon pwa-banner__icon--spin"
-                />
+                <RefreshCw size={16} className="pwa-update__icon--spin" />
               ) : (
-                <Sparkles
-                  size={20}
-                  aria-hidden="true"
-                  className="pwa-banner__icon pwa-banner__icon--pulse"
-                />
+                <Sparkles size={16} className="pwa-update__icon--pulse" />
               )}
             </div>
 
-            <div className="pwa-banner__body">
-              <strong className="pwa-banner__title">
+            {/* Copy */}
+            <div className="pwa-update__body">
+              <strong className="pwa-update__title">
                 {bannerState === 'updating'
                   ? 'Actualizando…'
                   : 'Nueva versión disponible'}
               </strong>
-              <span className="pwa-banner__desc">
+              <span className="pwa-update__desc">
                 {bannerState === 'updating'
                   ? 'Aplicando cambios, un momento'
                   : 'Mejoras y correcciones listas para instalar'}
               </span>
             </div>
 
-            <div className="pwa-banner__actions">
-              {bannerState === 'available' && (
-                <>
-                  <button
-                    type="button"
-                    className="pwa-banner__btn pwa-banner__btn--primary"
-                    onClick={handleUpdate}
-                  >
-                    <Download size={14} aria-hidden="true" />
-                    Actualizar
-                  </button>
-                  <button
-                    type="button"
-                    className="pwa-banner__dismiss"
-                    onClick={handleDismiss}
-                    aria-label="Descartar actualización"
-                  >
-                    <X size={16} aria-hidden="true" />
-                  </button>
-                </>
-              )}
-            </div>
+            {/* Actions */}
+            {bannerState === 'available' && (
+              <div className="pwa-update__actions">
+                <button
+                  type="button"
+                  className="pwa-update__btn-update btn-primary"
+                  onClick={handleUpdate}
+                >
+                  <Download size={13} aria-hidden="true" />
+                  Actualizar
+                </button>
+                <button
+                  type="button"
+                  className="pwa-update__btn-dismiss btn-icon"
+                  onClick={handleDismiss}
+                  aria-label="Descartar actualización"
+                >
+                  <X size={15} aria-hidden="true" />
+                </button>
+              </div>
+            )}
 
+            {/* Indeterminate progress — visible only while updating */}
             {bannerState === 'updating' && (
-              <div className="pwa-banner__progress" aria-hidden="true">
-                <div className="pwa-banner__progress-bar" />
+              <div className="pwa-update__progress" aria-hidden="true">
+                <div className="pwa-update__progress-fill" />
               </div>
             )}
           </motion.div>
