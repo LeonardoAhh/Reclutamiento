@@ -15,6 +15,10 @@ function getInitialTheme(): Theme {
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
   root.setAttribute('data-theme', theme);
+  const meta = document.getElementById('theme-color-meta');
+  if (meta) {
+    meta.setAttribute('content', theme === 'dark' ? '#1c1b16' : '#f7f6f2');
+  }
 }
 
 /**
