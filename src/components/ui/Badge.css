@@ -1,18 +1,19 @@
-/* Badge — pill labels following Design.md */
+/* Badge — pill labels following desing.md */
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  padding: 4px 10px;
   border-radius: var(--rounded-pill);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wider);
+  font-size: var(--type-caption-up-size); /* 11px */
+  font-weight: var(--type-caption-up-weight); /* 600 */
+  letter-spacing: var(--type-caption-up-tracking); /* 0.08em */
   text-transform: uppercase;
   white-space: nowrap;
   line-height: 1.4;
+  border: none;
 }
 
 .badge svg {
@@ -20,7 +21,7 @@
 }
 
 .badge--default {
-  background: var(--color-surface-card);
+  background: var(--color-surface-cream-strong);
   color: var(--color-ink);
 }
 
@@ -36,7 +37,7 @@
 
 .badge--amber {
   background: var(--color-accent-amber);
-  color: var(--color-ink);
+  color: var(--color-on-primary);
 }
 
 .badge--success {
@@ -48,3 +49,13 @@
   background: var(--color-error);
   color: var(--color-on-primary);
 }
+
+/* Adjustments for dark theme theme-specific text contrast */
+[data-theme="dark"] .badge--teal {
+  color: var(--color-ink);
+}
+
+[data-theme="dark"] .badge--amber {
+  color: var(--color-ink);
+}
+

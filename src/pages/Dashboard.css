@@ -200,7 +200,6 @@
 .dept-card--alert {
   background: color-mix(in srgb, var(--color-error) 6%, var(--color-canvas));
   border-color: color-mix(in srgb, var(--color-error) 24%, var(--color-hairline));
-  box-shadow: inset 3px 0 0 var(--color-error);
 }
 
 .dept-card--alert:hover {

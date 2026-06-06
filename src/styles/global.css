@@ -1,169 +1,181 @@
 /* ========================================
-   DESIGN TOKENS — Based on Design.md
-   Cream canvas + Coral accent + Dark navy
+   DESIGN TOKENS — Cursor-inspired system
+   Warm cream canvas · Monospace type · Single accent · Hairline depth
    ======================================== */
 
 :root {
-  /* ── Brand & Accent ── */
-  /* ── Brand & Accent ── */
+  /* ── Brand & Accent ─────────────────────────────────────────────────────
+   * Un solo color de acción. Se usa exclusivamente en CTAs primarios,
+   * indicadores de estado activo y focus rings. Nunca decorativamente. */
   --color-primary: #1a2670;
   --color-primary-active: #131b54;
-  --color-primary-disabled: #d8dce8;
-  --color-accent-teal: #5db8a6;
-  --color-accent-amber: #e8a55a;
+  --color-primary-disabled: #c8cde6;
 
-  /* ── Surface ──
-   * Las superficies van en dirección a `ink` desde `canvas`:
-   * canvas -> soft -> card -> cream-strong -> contrast (la más separada).
-   * `contrast` es la superficie de alto contraste (KPI hero card,
-   * dark island en light mode, surface profunda en dark mode). */
-  --color-canvas: #faf9f5;
-  --color-surface-soft: #f5f0e8;
-  --color-surface-card: #efe9de;
-  --color-surface-cream-strong: #e8e0d2;
-  --color-surface-contrast: #181715;
-  --color-surface-contrast-elevated: #252320;
-  /* Aliases legacy (deprecados) — borrar tras siguiente release. */
+  /* ── Surface ─────────────────────────────────────────────────────────────
+   * Cinco niveles desde canvas (fondo) hasta contrast (isla oscura).
+   * La jerarquía visual se construye SÓLO con estas superficies +
+   * hairlines; no hay sombras elevadas. */
+  --color-canvas: #f7f6f2; /* Warm cream — piso de página    */
+  --color-surface-soft: #f0ede6; /* Hover rows, hover states leves  */
+  --color-surface-card: #ffffff; /* Cards — leve contraste vs canvas*/
+  --color-surface-cream-strong: #e6e3db; /* Badges, tags, separadores       */
+  --color-surface-contrast: #26251e; /* Isla oscura / KPI hero          */
+  --color-surface-contrast-elevated: #312f27; /* Hover sobre la isla oscura   */
+
+  /* Aliases legacy — mantener hasta próxima release. */
   --color-surface-dark: var(--color-surface-contrast);
   --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
-  --color-hairline: #e6dfd8;
-  --color-hairline-soft: #ebe6df;
 
-  /* ── Text ── */
-  --color-ink: #141413;
-  --color-body-strong: #252523;
-  --color-body: #3d3d3a;
-  --color-muted: #6c6a64;
-  --color-muted-soft: #8e8b82;
+  /* ── Hairlines ───────────────────────────────────────────────────────────
+   * Toda la profundidad del sistema viene de líneas de 1px.
+   * Sin sombras, sin elevation layers extra. */
+  --color-hairline: #e6e3db;
+  --color-hairline-soft: #ede9e1;
+  --color-hairline-strong: #cfccc4;
+
+  /* ── Text ────────────────────────────────────────────────────────────────
+   * Warm near-black (no puro negro). Escala de 5 niveles de énfasis. */
+  --color-ink: #26251e; /* Display, body énfasis máximo     */
+  --color-body-strong: #26251e; /* Mismo que ink                    */
+  --color-body: #5a5852; /* Cuerpo de texto corrido          */
+  --color-muted: #807d72; /* Sub-titles, labels               */
+  --color-muted-soft: #a09c92; /* Disabled, placeholders           */
   --color-on-primary: #ffffff;
-  --color-on-dark: #faf9f5;
-  --color-on-dark-soft: #a09d96;
+  --color-on-dark: #f7f6f2;
+  --color-on-dark-soft: #a09c92;
 
-  /* ── Semantic ── */
-  --color-success: #5db872;
-  --color-warning: #d4a017;
-  --color-error: #c64545;
+  /* ── Semantic ────────────────────────────────────────────────────────────
+   * Sólo para validación, alertas y estados funcionales. */
+  --color-success: #1f8a65;
+  --color-warning: #ba7517;
+  --color-error: #cf2d56;
 
-  /* ── Channel values (for tinted backgrounds / focus rings) ── */
+  /* Accent Colors (teal & amber) used across the application */
+  --color-accent-teal: #0f766e;
+  --color-accent-teal-rgb: 15 118 110;
+  --color-accent-amber: #b45309;
+  --color-accent-amber-rgb: 180 83 9;
+
+
+  /* ── Channel values (para tints/overlays con rgb()) ─────────────────── */
   --color-primary-rgb: 26 38 112;
-  --color-error-rgb: 198 69 69;
-  --color-success-rgb: 93 184 114;
-  --color-accent-teal-rgb: 93 184 166;
-  --color-accent-amber-rgb: 232 165 90;
-  --color-ink-rgb: 20 20 19;
-  --color-canvas-rgb: 250 249 245;
+  --color-error-rgb: 207 45 86;
+  --color-success-rgb: 31 138 101;
+  --color-ink-rgb: 38 37 30;
+  --color-canvas-rgb: 247 246 242;
 
-  /* ── Derived tints / overlays ── */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.18);
-  --color-modal-scrim: rgb(var(--color-ink-rgb) / 0.5);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.04);
+  /* ── Derived overlays ───────────────────────────────────────────────────*/
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.16);
+  --color-modal-scrim: rgb(var(--color-ink-rgb) / 0.45);
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
   --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
-  --color-success-tint: rgb(var(--color-success-rgb) / 0.12);
-  --color-error-tint: rgb(var(--color-error-rgb) / 0.12);
+  --color-success-tint: rgb(var(--color-success-rgb) / 0.1);
+  --color-error-tint: rgb(var(--color-error-rgb) / 0.1);
   --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
 
-  /* ── Typography ──
-   * Tipografía full monoespacio estilo Stripe API docs / Berkeley.
-   * Si subes los `.woff2` de Berkeley Mono a `public/fonts/`, agrégalos
-   * con un `@font-face` antes del :root y la fuente cargará automáticamente.
-   * Mientras tanto, los fallbacks del sistema (SF Mono / Cascadia Code /
-   * Menlo / Consolas) hacen el trabajo. */
+  /* ── Typography ──────────────────────────────────────────────────────────
+   * Sistema full monoespacio. Berkeley Mono si está disponible en /public/fonts/;
+   * si no, los fallbacks de sistema (SF Mono → Cascadia → Menlo → Consolas)
+   * mantienen el look editorial con tracking homogéneo.
+   *
+   * Principio clave: el peso display se queda en 400. Voz de revista,
+   * nunca tech-bombástica. El énfasis viene del tamaño, no del bold. */
   --font-display:
-    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
-    monospace;
+    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
   --font-body:
-    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
-    monospace;
+    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
   --font-code:
-    "Berkeley Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
-    monospace;
+    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
 
-  /* ── Type scale (escala plana monoespacio).
-   * Cada variante define size/weight/line-height/letter-spacing.
-   * Usa las clases `.type-{variant}` o aplica los tokens individualmente. */
+  /* ── Escala tipográfica ──────────────────────────────────────────────────
+   * Cada token agrupa size + weight + line-height + letter-spacing.
+   * Nota de tracking: en monospace casi todo va en 0. --tracking-wider es
+   * la excepción para labels en uppercase. */
 
-  /* display-xl: hero del dashboard + números KPI */
-  --type-display-xl-size: 38px;
-  --type-display-xl-weight: 700;
-  --type-display-xl-line: 1.5;
-  --type-display-xl-tracking: 0;
+  /* display-xl — hero KPI / número grande */
+  --type-display-xl-size: 36px;
+  --type-display-xl-weight: 400; /* Voz revista: 400, no 700         */
+  --type-display-xl-line: 1.2;
+  --type-display-xl-tracking: -0.5px; /* Leve negativo en tamaños grandes  */
 
-  /* heading-md: títulos secundarios (dept-card, modal, tabla) */
-  --type-heading-md-size: 16px;
-  --type-heading-md-weight: 700;
-  --type-heading-md-line: 1.5;
+  /* display-lg — section heads */
+  --type-display-lg-size: 26px;
+  --type-display-lg-weight: 400;
+  --type-display-lg-line: 1.25;
+  --type-display-lg-tracking: -0.32px;
+
+  /* heading-md — títulos de card, modal, tabla */
+  --type-heading-md-size: 18px;
+  --type-heading-md-weight: 500; /* 500 máximo en subheadings         */
+  --type-heading-md-line: 1.4;
   --type-heading-md-tracking: 0;
 
-  /* body-md: texto normal */
+  /* heading-sm — labels de lista, nombres en rows */
+  --type-heading-sm-size: 16px;
+  --type-heading-sm-weight: 500;
+  --type-heading-sm-line: 1.4;
+  --type-heading-sm-tracking: 0;
+
+  /* body-md — texto corrido */
   --type-body-md-size: 16px;
   --type-body-md-weight: 400;
   --type-body-md-line: 1.5;
   --type-body-md-tracking: 0;
 
-  /* body-sm: cuerpo secundario / metadatos (intermedio entre body-md y caption) */
+  /* body-sm — metadatos, texto secundario */
   --type-body-sm-size: 14px;
   --type-body-sm-weight: 400;
   --type-body-sm-line: 1.5;
   --type-body-sm-tracking: 0;
 
-  /* body-strong: texto enfatizado (peso medio) */
+  /* body-strong — énfasis inline */
   --type-body-strong-size: 16px;
   --type-body-strong-weight: 500;
   --type-body-strong-line: 1.5;
   --type-body-strong-tracking: 0;
 
-  /* body-tight: datos densos sin interlineado (números en celdas) */
+  /* body-tight — números en celdas */
   --type-body-tight-size: 16px;
   --type-body-tight-weight: 500;
   --type-body-tight-line: 1;
   --type-body-tight-tracking: 0;
 
-  /* link-md: enlaces inline */
-  --type-link-md-size: 16px;
-  --type-link-md-weight: 400;
-  --type-link-md-line: 1.5;
-  --type-link-md-tracking: 0;
-
-  /* button-md: botones (alta altura de línea = padding visual interno) */
-  --type-button-md-size: 16px;
-  --type-button-md-weight: 500;
-  --type-button-md-line: 2;
-  --type-button-md-tracking: 0;
-
-  /* caption-md: labels, badges, helpers */
-  --type-caption-md-size: 14px;
+  /* caption-md — labels, badges, helpers */
+  --type-caption-md-size: 13px;
   --type-caption-md-weight: 400;
-  --type-caption-md-line: 2;
+  --type-caption-md-line: 1.4;
   --type-caption-md-tracking: 0;
 
-  /* ── Letter spacing ──
-   * En monospace casi todo va a 0. `--tracking-wider` es la excepción
-   * para labels en uppercase, donde el ojo necesita un poco de aire. */
+  /* caption-uppercase — section labels, pill labels (único caso uppercase) */
+  --type-caption-up-size: 11px;
+  --type-caption-up-weight: 600;
+  --type-caption-up-line: 1.4;
+  --type-caption-up-tracking: 0.08em;
+
+  /* button — labels de CTA */
+  --type-button-size: 14px;
+  --type-button-weight: 500;
+  --type-button-line: 1;
+  --type-button-tracking: 0;
+
+  /* link */
+  --type-link-size: 16px;
+  --type-link-weight: 400;
+  --type-link-line: 1.5;
+
+  /* ── Tracking aliases ────────────────────────────────────────────────── */
   --tracking-tight: 0;
   --tracking-snug: 0;
   --tracking-wide: 0;
-  --tracking-wider: 0.06em;
+  --tracking-wider: 0.08em; /* Uppercase labels únicamente          */
 
-  /* ── Control sizing (consistent button + input height) ── */
+  /* ── Control sizing ──────────────────────────────────────────────────── */
   --control-height: 40px;
+  --control-height-lg: 44px;
   --control-padding-x: var(--spacing-md);
   --control-padding-y: 10px;
 
-  /* ── Safe-area (notch/home-indicator support en PWA standalone) ── */
-  --safe-area-top: env(safe-area-inset-top, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-left: env(safe-area-inset-left, 0px);
-
-  /* ── Container width tokens ── */
-  --container-max: 1200px;
-  --container-padding: var(--spacing-lg);
-  --container-padding-mobile: var(--spacing-md);
-
-  /* ── Bottom tab-bar (mobile/PWA) ── */
-  --tab-bar-height: 64px;
-
-  /* ── Spacing ── */
+  /* ── Spacing — base 4px ──────────────────────────────────────────────── */
   --spacing-xxs: 4px;
   --spacing-xs: 8px;
   --spacing-sm: 12px;
@@ -171,87 +183,101 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
-  --spacing-section: 96px;
+  --spacing-section: 80px;
 
-  /* ── Border Radius ── */
+  /* ── Border radius ───────────────────────────────────────────────────── */
   --rounded-xs: 4px;
   --rounded-sm: 6px;
-  --rounded-md: 8px;
-  --rounded-lg: 12px;
-  --rounded-xl: 16px;
-  --rounded-pill: 9999px;
-  --rounded-full: 50%;
+  --rounded-md: 8px; /* Inputs, buttons — developer CTA radius  */
+  --rounded-lg: 12px; /* Cards, modales, IDE panes                */
+  --rounded-xl: 16px; /* Feature cards grandes (uso esporádico)   */
+  --rounded-pill: 9999px; /* Timeline pills, badges                   */
+  --rounded-full: 50%; /* Avatars                                  */
 
-  /* ── Shadows ── */
-  --shadow-subtle: 0 1px 3px rgb(var(--color-ink-rgb) / 0.08);
-  --shadow-card: 0 2px 8px rgb(var(--color-ink-rgb) / 0.06);
-  --shadow-elevated: 0 12px 32px rgb(var(--color-ink-rgb) / 0.12);
+  /* ── Shadows ─────────────────────────────────────────────────────────────
+   * Sistema hairline-only. La profundidad viene de borders + contraste
+   * ink-on-cream, no de drop-shadows.
+   * --shadow-focus es la ÚNICA excepción: es un focus ring, no elevación. */
   --shadow-focus: 0 0 0 3px var(--color-focus-ring);
 
-  /* ── Transitions ── */
+  /* ── Transitions ──────────────────────────────────────────────────────── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
 
-  /* ── Color scheme hint (form controls + scrollbars adapt) ── */
+  /* ── Container ────────────────────────────────────────────────────────── */
+  --container-max: 1200px;
+  --container-padding: var(--spacing-lg);
+  --container-padding-mobile: var(--spacing-md);
+
+  /* ── PWA / safe-area ──────────────────────────────────────────────────── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --tab-bar-height: 64px;
+
   color-scheme: light;
 }
 
 /* ========================================
    DARK THEME
-   Activated via [data-theme="dark"] on <html> (set by useTheme).
-   Tokens swap; all components remain unchanged because they consume
-   semantic tokens, not raw colors.
+   [data-theme="dark"] en <html> (seteado por useTheme).
+   Los tokens se invierten; todos los componentes permanecen
+   sin cambios porque consumen tokens semánticos.
    ======================================== */
 
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* ── Surface (cream → ink) ── */
-  --color-canvas: #181715;
-  --color-surface-soft: #1f1e1b;
-  --color-surface-card: #252320;
-  --color-surface-cream-strong: #2e2c29;
-  --color-surface-contrast: #0e0d0c;
-  --color-surface-contrast-elevated: #1a1917;
-  /* Aliases legacy (deprecados) — borrar tras siguiente release. */
+  /* Surface: cream → ink */
+  --color-canvas: #1c1b16;
+  --color-surface-soft: #222119;
+  --color-surface-card: #26251e;
+  --color-surface-cream-strong: #302e25;
+  --color-surface-contrast: #f7f6f2;
+  --color-surface-contrast-elevated: #ede9e1;
+
   --color-surface-dark: var(--color-surface-contrast);
   --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
-  --color-hairline: #2e2c29;
-  --color-hairline-soft: #26241f;
 
-  /* ── Text (ink → cream) ── */
-  --color-ink: #faf9f5;
-  --color-body-strong: #ebe6d8;
-  --color-body: #c8c3b8;
-  --color-muted: #a09d96;
-  --color-muted-soft: #7a7770;
-  --color-on-primary: #ffffff;
-  --color-on-dark: #faf9f5;
-  --color-on-dark-soft: #a09d96;
+  --color-hairline: #302e25;
+  --color-hairline-soft: #282720;
+  --color-hairline-strong: #3d3b30;
 
-  /* ── Brand: slight lift so azul stays readable on dark ── */
+  /* Text: ink → cream */
+  --color-ink: #f7f6f2;
+  --color-body-strong: #ede9e1;
+  --color-body: #a09c92;
+  --color-muted: #807d72;
+  --color-muted-soft: #5f5d55;
+  --color-on-dark: #f7f6f2;
+  --color-on-dark-soft: #a09c92;
+
+  /* Brand: se levanta levemente para mantener legibilidad sobre oscuro */
   --color-primary: #4a5db8;
   --color-primary-active: #1a2670;
   --color-primary-disabled: #2a3050;
 
-  /* ── Channel values (flip ink/canvas for tinted utilities) ── */
+  /* Channel values flip */
   --color-primary-rgb: 74 93 184;
-  --color-ink-rgb: 250 249 245;
-  --color-canvas-rgb: 24 23 21;
+  --color-ink-rgb: 247 246 242;
+  --color-canvas-rgb: 28 27 22;
 
-  /* ── Derived tints / overlays ── */
+  /* Accent Colors (teal & amber) dark theme values */
+  --color-accent-teal: #2dd4bf;
+  --color-accent-teal-rgb: 45 212 191;
+  --color-accent-amber: #fbbf24;
+  --color-accent-amber-rgb: 251 191 36;
+
+
+  /* Derived */
   --color-focus-ring: rgb(var(--color-primary-rgb) / 0.28);
-  --color-modal-scrim: rgb(0 0 0 / 0.7);
+  --color-modal-scrim: rgb(0 0 0 / 0.65);
   --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.1);
   --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.22);
-  --color-success-tint: rgb(var(--color-success-rgb) / 0.16);
-  --color-error-tint: rgb(var(--color-error-rgb) / 0.16);
-  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.85);
-
-  /* ── Shadows: stronger on dark backgrounds ── */
-  --shadow-subtle: 0 1px 3px rgb(0 0 0 / 0.4);
-  --shadow-card: 0 2px 12px rgb(0 0 0 / 0.35);
-  --shadow-elevated: 0 16px 40px rgb(0 0 0 / 0.55);
+  --color-success-tint: rgb(var(--color-success-rgb) / 0.14);
+  --color-error-tint: rgb(var(--color-error-rgb) / 0.14);
+  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.88);
 }
 
 /* ========================================
@@ -286,25 +312,24 @@ body {
     color var(--transition-base);
 }
 
-/* En mobile/PWA el bottom tab-bar ocupa espacio fijo. El body recibe
-   padding-bottom para que el último contenido no quede tapado. */
 @media (max-width: 767px) {
   body {
     padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom));
   }
 }
 
-/* Prevent transition flash on initial theme application */
 .theme-init * {
   transition: none !important;
 }
 
+/* ── Headings ── */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-display);
   color: var(--color-ink);
+  font-weight: 400; /* Peso editorial — nunca bold en display */
 }
 
 h1 {
@@ -314,21 +339,36 @@ h1 {
   letter-spacing: var(--type-display-xl-tracking);
 }
 
-h2,
-h3,
-h4 {
+h2 {
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+h3 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+}
+
+h4 {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
 }
 
 a {
   color: var(--color-primary);
   text-decoration: none;
-  font-size: var(--type-link-md-size);
-  font-weight: var(--type-link-md-weight);
-  line-height: var(--type-link-md-line);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  line-height: var(--type-link-line);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-active);
 }
 
 a:active {
@@ -337,10 +377,10 @@ a:active {
 
 button {
   font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
   cursor: pointer;
   border: none;
   background: none;
@@ -358,12 +398,34 @@ select {
 strong,
 b {
   font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+pre {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--color-surface-cream-strong);
+  color: var(--color-ink);
+  padding: 2px 6px;
+  border-radius: var(--rounded-xs);
+  font-size: 13px;
 }
 
 /* ========================================
    TYPE UTILITY CLASSES
-   Aplica cualquier variante directamente:
-     <span className="type-caption-md">Label</span>
    ======================================== */
 
 .type-display-xl {
@@ -374,12 +436,26 @@ b {
   letter-spacing: var(--type-display-xl-tracking);
 }
 
+.type-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
 .type-heading-md {
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.type-heading-sm {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
 }
 
 .type-body-md {
@@ -387,7 +463,6 @@ b {
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .type-body-sm {
@@ -395,7 +470,6 @@ b {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
 }
 
 .type-body-strong {
@@ -412,25 +486,37 @@ b {
   line-height: var(--type-body-tight-line);
 }
 
-.type-link-md {
-  font-family: var(--font-body);
-  font-size: var(--type-link-md-size);
-  font-weight: var(--type-link-md-weight);
-  line-height: var(--type-link-md-line);
-}
-
-.type-button-md {
-  font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-}
-
 .type-caption-md {
   font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   font-weight: var(--type-caption-md-weight);
   line-height: var(--type-caption-md-line);
+}
+
+.type-caption-up {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.type-button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+}
+
+/* Alias de retrocompatibilidad */
+.type-link-md {
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+}
+.type-button-md {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
 }
 
 /* ========================================
@@ -440,7 +526,6 @@ b {
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 var(--container-padding);
   padding-left: max(var(--container-padding), var(--safe-area-left));
   padding-right: max(var(--container-padding), var(--safe-area-right));
 }
@@ -452,34 +537,56 @@ b {
   }
 }
 
-.text-muted {
-  color: var(--color-muted);
-}
-
-.text-muted-soft {
-  color: var(--color-muted-soft);
-}
-
+/* Color text helpers */
 .text-ink {
   color: var(--color-ink);
 }
-
+.text-body {
+  color: var(--color-body);
+}
 .text-body-strong {
   color: var(--color-body-strong);
 }
+.text-muted {
+  color: var(--color-muted);
+}
+.text-muted-soft {
+  color: var(--color-muted-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-success {
+  color: var(--color-success);
+}
+.text-warning {
+  color: var(--color-warning);
+}
+.text-error {
+  color: var(--color-error);
+}
 
-/* ── Section rhythm divider ── */
+/* Section divider — hairline pura, sin sombras */
 .section-divider {
   border: none;
   border-top: 1px solid var(--color-hairline-soft);
   margin: 0;
 }
 
-/* ── Form grid (2-col responsive) ── */
+/* ========================================
+   FORM SYSTEM
+   ======================================== */
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-group {
@@ -489,8 +596,10 @@ b {
 }
 
 .form-group label {
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
   color: var(--color-muted);
 }
 
@@ -498,15 +607,35 @@ b {
 .form-group select,
 .form-group textarea {
   width: 100%;
+  height: var(--control-height);
   padding: var(--control-padding-y) var(--control-padding-x);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-md);
-  font-size: var(--type-caption-md-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-ink);
-  background: var(--color-canvas);
+  background: var(--color-surface-card);
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: 88px;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-muted-soft);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: var(--color-muted);
 }
 
 .form-group input:focus,
@@ -517,14 +646,17 @@ b {
   box-shadow: var(--shadow-focus);
 }
 
-.form-group textarea {
-  min-height: 88px;
-  resize: vertical;
-}
-
 .form-group input:invalid:not(:placeholder-shown),
 .form-group select:invalid:not(:focus) {
   border-color: var(--color-error);
+}
+
+.form-group select:disabled,
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
 }
 
 .form-error {
@@ -533,22 +665,252 @@ b {
   margin-top: var(--spacing-xxs);
 }
 
-.form-group select:disabled {
-  opacity: 0.5;
+/* ========================================
+   BUTTONS
+   Jerarquía: primary > secondary > ghost > text > icon
+   Sin sombras — la profundidad viene del color y los borders.
+   ======================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  height: var(--control-height);
+  padding: 0 var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  border-radius: var(--rounded-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-danger:focus-visible,
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Primary — único botón con color sólido de acción */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn-primary:active {
+  background: var(--color-primary-active);
+}
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  border-color: var(--color-primary-disabled);
+  color: var(--color-muted-soft);
   cursor: not-allowed;
 }
 
-.form-group input:disabled {
-  opacity: 0.5;
+/* Download / ink-dark — para CTAs de descarga estilo "Download for macOS" */
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  height: var(--control-height-lg);
+  padding: 0 20px;
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  border-radius: var(--rounded-md);
+  border: 1px solid transparent;
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.btn-download:hover {
+  background: var(--color-body-strong);
+}
+.btn-download:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Secondary — surface card + hairline */
+.btn-secondary {
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+}
+.btn-secondary:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-muted);
+}
+.btn-secondary:active {
+  background: var(--color-surface-cream-strong);
+}
+.btn-secondary:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+.btn-danger:hover {
+  background: #b3264b;
+  background: color-mix(in srgb, var(--color-error) 88%, black);
+}
+.btn-danger:active {
+  background: #9e2143;
+  background: color-mix(in srgb, var(--color-error) 78%, black);
+}
+
+/* Ghost — transparente, sólo texto */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* Text link style button */
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.btn-text:hover {
+  color: var(--color-primary-active);
+}
+.btn-text:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Icon button */
+.btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+.btn-icon:hover {
+  color: var(--color-ink);
+  border-color: var(--color-muted);
   background: var(--color-surface-soft);
 }
-
-.form-group input::placeholder {
-  color: var(--color-muted-soft);
+.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.btn-icon--danger:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
 }
 
-/* ── Modal shared layout ── */
+.btn-icon__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--spacing-xxs);
+  border-radius: var(--rounded-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* ========================================
+   CARDS
+   Border 1px + color surface-card. Sin sombra.
+   ======================================== */
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+}
+
+.card--soft {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+/* Card inverted — isla oscura (KPI hero, featured pricing) */
+.card--contrast {
+  background: var(--color-surface-contrast);
+  border-color: transparent;
+  color: var(--color-on-dark);
+}
+
+.card--contrast h1,
+.card--contrast h2,
+.card--contrast h3,
+.card--contrast h4 {
+  color: var(--color-on-dark);
+}
+
+.card--contrast .text-muted {
+  color: var(--color-on-dark-soft);
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
 
 .modal-overlay {
   position: fixed;
@@ -573,8 +935,7 @@ b {
   max-height: min(85vh, 760px);
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: var(--shadow-elevated);
-  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 480px) {
@@ -607,14 +968,12 @@ b {
   .modal-header {
     flex-wrap: wrap;
   }
-  
   .modal-header-actions {
     order: 3;
     width: 100%;
     margin-top: var(--spacing-sm);
     justify-content: flex-end;
   }
-  
   .modal-title {
     flex: 1;
     min-width: 0;
@@ -628,44 +987,40 @@ b {
 }
 
 .modal-header__info h3 {
-  font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
-  font-weight: 400;
+  font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
   line-height: 1.3;
 }
 
 .modal-header__area {
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  color: var(--color-muted);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
 }
 
 .modal-close {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   color: var(--color-muted);
-  border: 1px solid var(--color-hairline);
-  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-surface-card);
   transition:
     color var(--transition-fast),
-    background var(--transition-fast),
-    box-shadow var(--transition-fast);
+    background var(--transition-fast);
   flex-shrink: 0;
   cursor: pointer;
 }
-
 .modal-close:hover {
   color: var(--color-ink);
   background: var(--color-surface-soft);
 }
-
 .modal-close:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
@@ -692,9 +1047,8 @@ b {
 }
 
 .modal-title h2 {
-  font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
-  font-weight: 400;
+  font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
   line-height: 1.3;
   word-break: break-word;
@@ -702,12 +1056,11 @@ b {
 
 .modal-title__sub {
   display: block;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  color: var(--color-muted);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
   margin-top: var(--spacing-xxs);
 }
 
@@ -716,8 +1069,7 @@ b {
   justify-content: flex-end;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
-  padding-top: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-top: 1px solid var(--color-hairline-soft);
   flex-wrap: wrap;
 }
@@ -733,15 +1085,7 @@ b {
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Modal — utilidad "inside" full-screen en mobile.
-   Aplicar añadiendo la clase `modal-fullscreen-mobile` al className del
-   componente <Modal>. En desktop/tablet (≥768px) el modal sigue centrado
-   con su tamaño habitual; en mobile (≤767px) ocupa toda la pantalla
-   sin border-radius, simulando una página "dentro" de la app.
-   Preserva accesibilidad (focus trap + Esc + scroll lock) — sólo cambia
-   el tratamiento visual.
-   ───────────────────────────────────────────────────────────────────────── */
+/* Fullscreen mobile modal */
 @media (max-width: 767px) {
   .modal-overlay:has(> .modal-content.modal-fullscreen-mobile) {
     padding: 0;
@@ -749,29 +1093,21 @@ b {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-
   .modal-content.modal-fullscreen-mobile {
     width: 100vw;
     max-width: 100%;
     height: 100vh;
-    /* dvh respeta la UI dinámica del navegador (barras de iOS/Android). */
     height: 100dvh;
     max-height: 100dvh;
     border: none;
     border-radius: 0;
-    box-shadow: none;
     animation: modalFullscreenMobileIn var(--transition-base);
   }
-
-  /* Safe-area top en el header para que el notch no tape el título. */
   .modal-content.modal-fullscreen-mobile > .modal-header {
     padding-top: max(var(--spacing-lg), var(--safe-area-top));
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
   }
-
-  /* Body con safe-area inferior + espacio para el bottom tab bar de la PWA
-     (mantiene los botones de acción accesibles encima de la barra). */
   .modal-content.modal-fullscreen-mobile > .modal-body {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
@@ -798,7 +1134,7 @@ b {
   }
 }
 
-/* ── Modal animations ── */
+/* ── Keyframes compartidos ── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -811,7 +1147,7 @@ b {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -819,185 +1155,29 @@ b {
   }
 }
 
-.color-error {
-  color: var(--color-error);
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-.color-success {
-  color: var(--color-success);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.color-amber {
-  color: var(--color-accent-amber);
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
 }
-.color-teal {
-  color: var(--color-accent-teal);
-}
-.color-primary {
-  color: var(--color-primary);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-soft);
 }
 
 /* ========================================
-   BUTTONS (shared system)
+   ACCESSIBILITY
    ======================================== */
 
-.btn-primary,
-.btn-secondary,
-.btn-danger,
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  height: var(--control-height);
-  padding: 0 var(--spacing-lg);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  border-radius: var(--rounded-md);
-  border: 1px solid transparent;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible,
-.btn-danger:focus-visible,
-.btn-ghost:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.btn-primary {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-.btn-primary:hover {
-  background: var(--color-primary-active);
-}
-.btn-primary:active {
-  background: var(--color-primary-active);
-}
-.btn-primary:disabled {
-  background: var(--color-primary-disabled);
-  color: var(--color-muted-soft);
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: var(--color-canvas);
-  color: var(--color-ink);
-  border-color: var(--color-hairline);
-}
-.btn-secondary:hover {
-  background: var(--color-surface-soft);
-  border-color: var(--color-muted-soft);
-}
-.btn-secondary:active {
-  background: var(--color-surface-card);
-}
-.btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-danger {
-  background: var(--color-error);
-  color: var(--color-on-primary);
-}
-.btn-danger:hover {
-  /* Hex fallback antes del color-mix: un botón destructivo no puede fallar
-     visualmente en Safari < 16.2 / Firefox < 113 / browsers sin color-mix. */
-  background: #b23e3e;
-  background: color-mix(in srgb, var(--color-error) 90%, black);
-}
-.btn-danger:active {
-  background: #9e3737;
-  background: color-mix(in srgb, var(--color-error) 80%, black);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--color-muted);
-}
-.btn-ghost:hover {
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-}
-
-.btn-text {
-  background: none;
-  border: none;
-  color: var(--color-primary);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  padding: var(--spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  cursor: pointer;
-  transition: color var(--transition-fast);
-}
-.btn-text:hover {
-  color: var(--color-primary-active);
-}
-.btn-text:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.btn-icon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--rounded-full);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  color: var(--color-muted);
-  cursor: pointer;
-  transition:
-    color var(--transition-fast),
-    border-color var(--transition-fast),
-    background var(--transition-fast);
-}
-.btn-icon:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background: var(--color-surface-soft);
-}
-.btn-icon:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.btn-icon--danger:hover {
-  color: var(--color-error);
-  border-color: var(--color-error);
-}
-
-.btn-icon__count {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 var(--spacing-xxs);
-  border-radius: var(--rounded-pill);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Visually hidden (a11y) */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1011,37 +1191,18 @@ b {
 }
 
 /* ========================================
-   SCROLLBAR
+   COLOR TEXT ALIASES (retrocompatibilidad)
    ======================================== */
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.color-error {
+  color: var(--color-error);
 }
-
-::-webkit-scrollbar-track {
-  background: var(--color-surface-soft);
+.color-success {
+  color: var(--color-success);
 }
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-hairline);
-  border-radius: var(--rounded-pill);
+.color-amber {
+  color: var(--color-warning);
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted-soft);
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-
-@media (max-width: 768px) {
-  h2 {
-    font-size: var(--type-display-xl-size);
-  }
-
-  h3 {
-    font-size: var(--type-heading-md-size);
-  }
+.color-primary {
+  color: var(--color-primary);
 }

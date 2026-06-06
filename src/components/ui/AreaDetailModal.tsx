@@ -6,8 +6,10 @@ import {
   Shield,
 } from 'lucide-react';
 import { Sheet } from './Sheet';
+import { Modal } from './Modal';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { normalizePuesto } from '@/lib/bajas';
 import { getCoverageColor } from '@/lib/utils';
@@ -65,6 +67,8 @@ export function AreaDetailModal({
   incapacidadAreaTotal = 0,
 }: AreaDetailModalProps) {
   const tablistRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
 
   const secciones = useMemo(() => {
     if (!dept) return [] as string[];
@@ -204,16 +208,10 @@ export function AreaDetailModal({
           urgentes: 0,
         };
 
-  return (
-    <Sheet
-      isOpen={isOpen}
-      title={dept.area}
-      subtitle="Detalle por sección"
-      onClose={onClose}
-      className="area-detail-sheet"
-      side="right"
-      width="lg"
-    >
+  const useModal = !isMobile;
+
+  const modalContent = (
+    <>
       <div className="area-detail-modal__summary" aria-hidden={false}>
         <div className="area-detail-modal__summary-stats">
           <span className="area-detail-modal__stat">
@@ -474,6 +472,36 @@ export function AreaDetailModal({
           </div>
         )}
       </div>
+    </>
+  );
+
+  if (useModal) {
+    return (
+      <Modal
+        isOpen={isOpen}
+        title={dept.area}
+        subtitle="Detalle por sección"
+        onClose={onClose}
+        className="area-detail-modal"
+      >
+        <div className="modal-body area-detail-modal-body">
+          {modalContent}
+        </div>
+      </Modal>
+    );
+  }
+
+  return (
+    <Sheet
+      isOpen={isOpen}
+      title={dept.area}
+      subtitle="Detalle por sección"
+      onClose={onClose}
+      className="area-detail-sheet"
+      side="right"
+      width="lg"
+    >
+      {modalContent}
     </Sheet>
   );
 }

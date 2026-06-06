@@ -257,3 +257,27 @@
     padding-bottom: var(--spacing-md);
   }
 }
+
+/* ───────────────────────────────────────────────────────────
+   Desktop: Modal overrides (para ver detalle de departamento)
+   ─────────────────────────────────────────────────────────── */
+.modal-content.area-detail-modal {
+  max-width: min(96vw, 1080px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content.area-detail-modal > .modal-body.area-detail-modal-body {
+  padding: 0; /* Permite que el summary, tabs y panel vayan de orilla a orilla */
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.area-detail-modal-body > .area-detail-modal__summary,
+.area-detail-modal-body > .area-detail-modal__tabs {
+  flex: 0 0 auto;
+}
+
