@@ -231,7 +231,7 @@ const { } = useAuth();
   const heroChartData = useMemo<DailyKpiData[]>(() => {
     const days: DailyKpiData[] = [];
     const fmtDay = new Intl.DateTimeFormat('es-MX', { weekday: 'short', day: 'numeric', timeZone: 'America/Mexico_City' });
-    
+
     const y = currentWeek.start.getUTCFullYear();
     const m = String(currentWeek.start.getUTCMonth() + 1).padStart(2, '0');
     const d = String(currentWeek.start.getUTCDate()).padStart(2, '0');
@@ -244,7 +244,7 @@ const { } = useAuth();
       dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
 
       const realEmpleadosActuales = employees.filter(e => String(e.fecha_ingreso).localeCompare(currentDayIso) <= 0);
-      const realBajasHistoricas = bajas.filter(b => 
+      const realBajasHistoricas = bajas.filter(b =>
         String(b.fecha_ingreso).localeCompare(currentDayIso) <= 0 &&
         String(b.fecha_baja).localeCompare(currentDayIso) > 0
       ).map(b => ({
@@ -255,7 +255,7 @@ const { } = useAuth();
 
       const mockEmployeesForDay = [...realEmpleadosActuales, ...realBajasHistoricas];
       const coverageForDay = calculatePositionCoverage(mockEmployeesForDay, comments, positions);
-      
+
       let vacantesPlantilla = 0;
       let vacantesBackup = 0;
       let realTotal = 0;
@@ -482,9 +482,9 @@ const { } = useAuth();
       </section>
 
       <section className="kpis-page__chart-section">
-        <KpiHeroChart 
-          data={heroChartData} 
-          variant="presentation" 
+        <KpiHeroChart
+          data={heroChartData}
+          variant="presentation"
           onClick={() => setMissingModalOpen(true)}
         />
       </section>
