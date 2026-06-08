@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { CalendarRange, Users } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Baja, Employee } from '@/lib/types';
@@ -84,6 +84,14 @@ export function WeeklyHiresModal({
   const selectedLabel = activeTab === 'current' ? rangeLabel : previousRangeLabel;
   const selectedHires = activeTab === 'current' ? hires : previousHires;
   const selectedBajas = activeTab === 'current' ? bajas : previousBajas;
+
+  const sortedHiresForTable = useMemo(() => {
+    return [...selectedHires].sort((a, b) => {
+      const cmpArea = (a.area || '').localeCompare(b.area || '');
+      if (cmpArea !== 0) return cmpArea;
+      return (a.seccion || '').localeCompare(b.seccion || '');
+    });
+  }, [selectedHires]);
 
   const grouped = groupByPuesto(selectedHires);
   const empty = selectedHires.length === 0 && selectedBajas.length === 0;
@@ -254,7 +262,7 @@ export function WeeklyHiresModal({
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedHires.map((e) => (
+                      {sortedHiresForTable.map((e) => (
                         <tr key={e.num_empleado}>
                           <td className="weekly-hires-modal__cell-mono">
                             {e.num_empleado}
