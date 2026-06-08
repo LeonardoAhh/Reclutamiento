@@ -1,20 +1,18 @@
 /**
  * KpiHeroChart.tsx
- * Gráfica compuesta (Área + Línea) para el dashboard de KPIs de Reclutamiento.
+ * Gráfica compuesta (Barras Agrupadas + Línea) para el dashboard de KPIs de Reclutamiento.
+ * Rediseño ejecutivo — modo claro/blanco, legible en proyector y Teams.
+ *
  * Muestra vacantes plantilla, vacantes backup y cobertura % por día de la semana.
+ * Incluye zona crítica visual (<90%), tarjetas de resumen por día y KPIs destacados.
  *
  * Dependencias: recharts
- * Tokens requeridos en el sistema de diseño:
- *   --color-canvas, --color-surface-card, --color-hairline,
- *   --color-ink, --color-muted, --color-primary,
- *   --color-error, --color-accent-amber,
- *   --radius-md
  */
 
 import { useMemo, useId } from 'react';
 import {
   ResponsiveContainer,
-  Area,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -30,35 +28,40 @@ import {
 // ─────────────────────────────────────────────
 
 export interface DailyKpiData {
-  /** Abreviación del día: "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom" */
   day: string;
-  /** Fecha en formato ISO 8601, ej: "2025-01-13" */
   dateIso: string;
-  /** Número de vacantes activas en plantilla principal */
   vacantesPlantilla: number;
-  /** Número de vacantes activas como respaldo */
   vacantesBackup: number;
-  /** Porcentaje de cobertura de personal (0–100+) */
   cobertura: number;
 }
 
 interface KpiHeroChartProps {
   data: DailyKpiData[];
-  /** Altura del chart en px. Default: 320 */
   height?: number;
-  /** Etiqueta accesible para lectores de pantalla */
   ariaLabel?: string;
-  /** Variante visual para diferentes contextos de visualización */
   variant?: 'default' | 'presentation';
-  /** Handler opcional al hacer click en la gráfica */
   onClick?: () => void;
 }
 
 // ─────────────────────────────────────────────
-// Constantes de presentación (sin colores hardcodeados)
+// Paleta dinámica basada en Tokens CSS
+// Recharts soporta variables CSS nativas en fill y stroke
 // ─────────────────────────────────────────────
 
-// (El tamaño base de fuentes y trazos ahora se calcula dinámicamente)
+const PALETTE = {
+  red: 'var(--color-error)',
+  amber: 'var(--color-accent-amber)',
+  ink: 'var(--color-ink)',
+  alertFill: 'var(--color-vacancy-tint)',
+  grid: 'var(--color-hairline)',
+  axis: 'var(--color-muted)',
+  border: 'var(--color-hairline-strong)',
+  surface: 'var(--color-canvas)',
+  surfaceCard: 'var(--color-surface-card)',
+  surfaceSoft: 'var(--color-surface-soft)',
+  textPrimary: 'var(--color-ink)',
+  textMuted: 'var(--color-muted)',
+};
 
 // ─────────────────────────────────────────────
 // Tooltip personalizado
@@ -75,38 +78,38 @@ interface CustomTooltipInternalProps extends TooltipProps<number, string> {
   active?: boolean;
   payload?: CustomTooltipPayloadItem[];
   label?: string;
+  presentation?: boolean;
 }
 
-function CustomTooltip({ active, payload, label }: CustomTooltipInternalProps) {
+function CustomTooltip({ active, payload, label, presentation }: CustomTooltipInternalProps) {
   if (!active || !payload?.length) return null;
+
+  const baseFontSize = presentation ? 16 : 13;
 
   return (
     <div
       role="tooltip"
       style={{
-        backgroundColor: 'var(--color-surface-card)',
-        border: '1px solid var(--color-hairline)',
-        borderRadius: 'var(--radius-md, 8px)',
-        boxShadow: '0 4px 16px var(--color-shadow-soft, color-mix(in srgb, var(--color-ink) 8%, transparent))',
-        padding: '10px 14px',
-        fontFamily: 'inherit',
-        minWidth: 160,
+        backgroundColor: PALETTE.surfaceCard,
+        border: `1px solid ${PALETTE.border}`,
+        borderRadius: 'var(--rounded-lg)',
+        padding: presentation ? '14px 18px' : '10px 14px',
+        fontFamily: 'var(--font-body)',
+        minWidth: presentation ? 200 : 170,
       }}
     >
-      {/* Día */}
       <p
         style={{
           margin: '0 0 8px',
-          fontSize: 'inherit',
-          fontWeight: 600,
-          color: 'var(--color-ink)',
-          letterSpacing: '0.02em',
+          fontSize: presentation ? 15 : 12,
+          fontWeight: 600, // caption-uppercase styling
+          color: PALETTE.textPrimary,
+          letterSpacing: 'var(--type-caption-up-tracking)',
+          textTransform: 'uppercase',
         }}
       >
         {label}
       </p>
-
-      {/* Filas de datos */}
       {payload.map((entry) => {
         const isPercent = entry.dataKey === 'cobertura';
         const valor = isPercent
@@ -117,30 +120,28 @@ function CustomTooltip({ active, payload, label }: CustomTooltipInternalProps) {
           <p
             key={entry.dataKey}
             style={{
-              margin: '4px 0 0',
-              fontSize: 'inherit',
-              color: 'var(--color-muted)',
+              margin: '5px 0 0',
+              fontSize: baseFontSize,
+              color: PALETTE.textMuted,
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 8,
+              fontWeight: 400,
             }}
           >
-            {/* Indicador de color accesible */}
             <span
               aria-hidden="true"
               style={{
                 display: 'inline-block',
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
+                width: isPercent ? 14 : 10,
+                height: isPercent ? 3 : 10,
+                borderRadius: isPercent ? 2 : 3,
                 backgroundColor: entry.color,
                 flexShrink: 0,
               }}
             />
-            <span style={{ color: 'var(--color-ink-secondary, var(--color-muted))' }}>
-              {entry.name}:
-            </span>{' '}
-            <strong style={{ color: 'var(--color-ink)', fontWeight: 600 }}>{valor}</strong>
+            <span style={{ color: PALETTE.textMuted }}>{entry.name}:</span>{' '}
+            <strong style={{ color: PALETTE.textPrimary, fontWeight: 500 }}>{valor}</strong>
           </p>
         );
       })}
@@ -158,12 +159,25 @@ interface LegendPayloadItem {
   dataKey?: string;
 }
 
-interface CustomLegendProps {
-  payload?: LegendPayloadItem[];
+// ─────────────────────────────────────────────
+// Leyenda personalizada
+// ─────────────────────────────────────────────
+
+interface LegendPayloadItem {
+  value: string;
+  color: string;
+  dataKey?: string;
 }
 
-function CustomLegend({ payload }: CustomLegendProps) {
+interface CustomLegendProps {
+  payload?: LegendPayloadItem[];
+  presentation?: boolean;
+}
+
+function CustomLegend({ payload, presentation }: CustomLegendProps) {
   if (!payload?.length) return null;
+
+  const fontSize = presentation ? 15 : 13;
 
   return (
     <ul
@@ -171,38 +185,46 @@ function CustomLegend({ payload }: CustomLegendProps) {
       style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '8px 20px',
+        gap: presentation ? '8px 28px' : '6px 20px',
         listStyle: 'none',
-        margin: '16px 0 0',
+        margin: presentation ? '0 0 20px' : '0 0 12px',
         padding: 0,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
       }}
     >
-      {payload.map((entry) => (
-        <li
-          key={entry.dataKey ?? entry.value}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 'inherit',
-            color: 'var(--color-muted)',
-          }}
-        >
-          <span
-            aria-hidden="true"
+      {payload.map((entry) => {
+        const isLine = entry.dataKey === 'cobertura';
+        return (
+          <li
+            key={entry.dataKey ?? entry.value}
             style={{
-              display: 'inline-block',
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              backgroundColor: entry.color,
-              flexShrink: 0,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 7,
+              fontSize,
+              fontWeight: 400,
+              color: PALETTE.textMuted,
+              padding: presentation ? '5px 14px' : '4px 10px',
+              background: PALETTE.surfaceSoft,
+              borderRadius: 'var(--rounded-pill)',
+              border: `1px solid ${PALETTE.border}`,
             }}
-          />
-          {entry.value}
-        </li>
-      ))}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'inline-block',
+                width: isLine ? 16 : 10,
+                height: isLine ? 3 : 10,
+                borderRadius: isLine ? 2 : 3,
+                backgroundColor: entry.color,
+                flexShrink: 0,
+              }}
+            />
+            {entry.value}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -211,14 +233,203 @@ function CustomLegend({ payload }: CustomLegendProps) {
 // Formateadores de ejes
 // ─────────────────────────────────────────────
 
-/** Formatea valores del eje Y izquierdo como enteros */
 function formatYLeft(value: number): string {
   return Number.isInteger(value) ? value.toString() : '';
 }
 
-/** Formatea valores del eje Y derecho como porcentaje */
 function formatYRight(value: number): string {
   return `${value}%`;
+}
+
+// ─────────────────────────────────────────────
+// Tarjetas de resumen por día
+// ─────────────────────────────────────────────
+
+interface DayCardProps {
+  data: DailyKpiData;
+  presentation: boolean;
+}
+
+function DayCard({ data, presentation }: DayCardProps) {
+  const isCritical = data.cobertura < 90;
+  const hasAlta = data.vacantesPlantilla > 10 || data.vacantesBackup > 12;
+  const fontSize = presentation ? 16 : 13;
+  const numFontSize = presentation ? 18 : 16;
+  const padding = presentation ? '12px 10px' : '8px 6px';
+
+  return (
+    <div
+      style={{
+        background: isCritical ? PALETTE.alertFill : PALETTE.surfaceCard,
+        border: `1px solid ${isCritical ? PALETTE.red : PALETTE.border}`,
+        borderRadius: 'var(--rounded-lg)',
+        padding,
+        textAlign: 'center',
+        transition: 'border-color var(--transition-fast)',
+      }}
+    >
+      <p
+        style={{
+          fontSize: presentation ? 13 : 11,
+          fontWeight: 600,
+          color: PALETTE.textMuted,
+          margin: '0 0 4px',
+          textTransform: 'uppercase',
+          letterSpacing: 'var(--type-caption-up-tracking)',
+        }}
+      >
+        {data.day}
+      </p>
+      <p
+        style={{
+          fontSize: numFontSize,
+          fontWeight: 500,
+          margin: '0 0 3px',
+          color: isCritical ? PALETTE.red : PALETTE.ink,
+          lineHeight: 1,
+        }}
+      >
+        {data.cobertura.toFixed(1)}%
+      </p>
+      <p
+        style={{
+          fontSize: fontSize,
+          margin: 0,
+          fontWeight: 400,
+          color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
+        }}
+      >
+        {data.vacantesPlantilla}+{data.vacantesBackup} vac.
+      </p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Header con KPIs destacados
+// ─────────────────────────────────────────────
+
+// ─────────────────────────────────────────────
+// Header con KPIs destacados
+// ─────────────────────────────────────────────
+
+interface ChartHeaderProps {
+  data: DailyKpiData[];
+  presentation: boolean;
+}
+
+function ChartHeader({ data, presentation }: ChartHeaderProps) {
+  if (!data.length) return null;
+
+  const avgCobertura = data.reduce((s, d) => s + d.cobertura, 0) / data.length;
+  // Se eliminó la constante maxVacantes
+  const minCobertura = Math.min(...data.map((d) => d.cobertura));
+  const isCriticalWeek = minCobertura < 90;
+
+  const labelFontSize = presentation ? 12 : 11;
+  const numFontSize = presentation ? 30 : 26;
+  const headerFontSize = presentation ? 26 : 18;
+  const subFontSize = presentation ? 14 : 11;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: presentation ? 24 : 16,
+        flexWrap: 'wrap',
+        gap: 12,
+      }}
+    >
+      {/* Título */}
+      <div>
+        <p
+          style={{
+            fontSize: subFontSize,
+            textTransform: 'uppercase',
+            letterSpacing: 'var(--type-caption-up-tracking)',
+            color: PALETTE.textMuted,
+            margin: '0 0 4px',
+            fontWeight: 600,
+          }}
+        >
+          {data[0]?.dateIso ?? ''} — {data[data.length - 1]?.dateIso ?? ''}
+        </p>
+        <h2
+          style={{
+            fontSize: headerFontSize,
+            fontWeight: 400,
+            margin: 0,
+            color: PALETTE.textPrimary,
+            letterSpacing: 'var(--type-display-lg-tracking)',
+          }}
+        >
+          Detalle de Vacantes y Procesos.
+        </h2>
+      </div>
+
+      {/* KPIs destacados */}
+      <div style={{ display: 'flex', gap: presentation ? 28 : 20, alignItems: 'flex-start' }}>
+        <div style={{ textAlign: 'right' }}>
+          <p
+            style={{
+              fontSize: labelFontSize,
+              color: PALETTE.textMuted,
+              margin: '0 0 2px',
+              textTransform: 'uppercase',
+              letterSpacing: 'var(--type-caption-up-tracking)',
+              fontWeight: 600,
+            }}
+          >
+            Cobertura prom.
+          </p>
+          <p style={{ fontSize: numFontSize, fontWeight: 400, margin: 0, color: PALETTE.ink }}>
+            {avgCobertura.toFixed(1)}%
+          </p>
+        </div>
+
+        {/* Se eliminó el bloque y separador de Vacantes pico */}
+
+        {isCriticalWeek && (
+          <>
+            <div
+              style={{
+                width: 1,
+                height: presentation ? 48 : 36,
+                background: PALETTE.border,
+                alignSelf: 'center',
+              }}
+            />
+            <div style={{ textAlign: 'right' }}>
+              <p
+                style={{
+                  fontSize: labelFontSize,
+                  color: PALETTE.red,
+                  margin: '0 0 2px',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--type-caption-up-tracking)',
+                  fontWeight: 600,
+                }}
+              >
+                Mín. cobertura
+              </p>
+              <p
+                style={{
+                  fontSize: numFontSize,
+                  fontWeight: 400,
+                  margin: 0,
+                  color: PALETTE.red,
+                }}
+              >
+                {minCobertura.toFixed(1)}%
+              </p>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ─────────────────────────────────────────────
@@ -236,9 +447,10 @@ function ChartEmpty() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
-        color: 'var(--color-muted)',
+        gap: 10,
+        color: PALETTE.textMuted,
         fontSize: 14,
+        fontWeight: 400,
       }}
     >
       <svg
@@ -271,28 +483,26 @@ export function KpiHeroChart({
   variant = 'default',
   onClick,
 }: KpiHeroChartProps) {
-  // ID único para el elemento descriptivo del chart (accesibilidad)
   const descId = useId();
 
   const presentation = variant === 'presentation';
 
-  const chartHeight = height ?? (presentation ? 540 : 320);
+  // ── Tamaños según variante ──────────────────
+  const chartHeight = height ?? (presentation ? 420 : 280);
+  const TICK_FONT_SIZE = presentation ? 15 : 13;
+  const Y_LEFT_WIDTH = presentation ? 48 : 32;
+  const Y_RIGHT_WIDTH = presentation ? 58 : 40;
+  const DOT_ACTIVE_RADIUS = presentation ? 10 : 6;
+  const DOT_REST_RADIUS = presentation ? 6 : 3;
+  const LINE_STROKE_WIDTH = presentation ? 4 : 2.5;
+  const BAR_RADIUS = presentation ? 6 : 4;
+  const MARGIN = {
+    top: presentation ? 24 : 16,
+    right: presentation ? 20 : 8,
+    left: presentation ? 8 : 0,
+    bottom: presentation ? 20 : 8,
+  };
 
-  const TICK_FONT_SIZE = presentation ? 18 : 12;
-
-  const DOT_ACTIVE_RADIUS = presentation ? 11 : 6;
-  const DOT_REST_RADIUS = presentation ? 7 : 4;
-
-  const LINE_STROKE_WIDTH = presentation ? 5 : 3;
-  const AREA_STROKE_WIDTH = presentation ? 3 : 2;
-
-  const AREA_FILL_OPACITY = presentation ? 0.32 : 0.12;
-
-  /**
-   * Normaliza los datos de entrada:
-   * - Filtra registros con propiedades numéricas inválidas
-   * - Redondea cobertura a 1 decimal para evitar ruido visual en los ejes
-   */
   const chartData = useMemo<DailyKpiData[]>(() => {
     return data
       .filter((d) => {
@@ -307,12 +517,17 @@ export function KpiHeroChart({
       })
       .map((d) => ({
         ...d,
-        // Redondear a 1 decimal para evitar flotantes largos en ticks
         cobertura: Math.round(d.cobertura * 10) / 10,
       }));
   }, [data]);
 
   const isEmpty = chartData.length === 0;
+
+  const coberturaMin = isEmpty
+    ? 0
+    : Math.min(...chartData.map((d) => d.cobertura));
+  const yRightMin = Math.floor(Math.min(coberturaMin, 90) / 10) * 10;
+  const yRightMax = 110;
 
   return (
     <figure
@@ -320,23 +535,31 @@ export function KpiHeroChart({
       aria-describedby={descId}
       style={{
         width: '100%',
-        height: chartHeight,
-        margin: 'var(--space-6, 24px) 0',
+        margin: 'var(--spacing-lg) 0',
         display: 'block',
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
+        background: PALETTE.surface,
+        borderRadius: presentation ? 'var(--rounded-xl)' : 'var(--rounded-lg)',
+        border: `1px solid ${PALETTE.border}`,
+        padding: presentation ? '28px 32px 24px' : '20px 20px 16px',
+        boxSizing: 'border-box',
+        fontFamily: 'var(--font-body)', // Herencia segura del font system global
       }}
       onClick={onClick}
-      role={onClick ? "button" : "img"}
+      role={onClick ? 'button' : 'img'}
       tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      } : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
     >
-      {/* Descripción accesible oculta visualmente */}
       <figcaption
         id={descId}
         style={{
@@ -348,158 +571,182 @@ export function KpiHeroChart({
           whiteSpace: 'nowrap',
         }}
       >
-        {ariaLabel}. {isEmpty
+        {ariaLabel}.{' '}
+        {isEmpty
           ? 'No hay datos disponibles.'
           : `Semana del ${chartData[0]?.dateIso ?? ''} al ${chartData[chartData.length - 1]?.dateIso ?? ''}.`}
       </figcaption>
 
       {isEmpty ? (
-        <ChartEmpty />
+        <div style={{ height: chartHeight }}>
+          <ChartEmpty />
+        </div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={chartData}
-            margin={{
-              top: presentation ? 32 : 20,
-              right: presentation ? 24 : 12,
-              left: presentation ? 12 : 0,
-              bottom: presentation ? 24 : 12,
+        <>
+          <ChartHeader data={chartData} presentation={presentation} />
+
+          <CustomLegend
+            presentation={presentation}
+            payload={[
+              { value: 'Vacantes Plantilla', color: PALETTE.red, dataKey: 'vacantesPlantilla' },
+              { value: 'Vacantes Backup', color: PALETTE.amber, dataKey: 'vacantesBackup' },
+              { value: 'Cobertura %', color: PALETTE.ink, dataKey: 'cobertura' },
+            ]}
+          />
+
+          <div
+            style={{
+              background: PALETTE.surfaceCard,
+              borderRadius: 'var(--rounded-lg)',
+              border: `1px solid ${PALETTE.border}`,
+              padding: presentation ? '20px 16px 12px' : '12px 8px 8px',
             }}
-            role="img"
-            aria-label={ariaLabel}
           >
-            {/* Cuadrícula horizontal únicamente, sin contaminación visual vertical */}
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="var(--color-hairline)"
-              strokeOpacity={0.8}
-            />
+            <ResponsiveContainer width="100%" height={chartHeight}>
+              <ComposedChart
+                              data={chartData}
+                              margin={MARGIN}
+                              role="img"
+                              aria-label={ariaLabel}
+                              barCategoryGap="28%"
+                              barGap={presentation ? 6 : 3}
+                            >
+                              {/* Se eliminó la zona y línea de Umbral crítico */}
 
-            {/* Eje X: días de la semana */}
-            <XAxis
-              dataKey="day"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: 'var(--color-muted)',
-                fontSize: TICK_FONT_SIZE,
-                fontWeight: presentation ? 600 : 400,
-                fontFamily: 'inherit',
-              }}
-              dy={presentation ? 14 : 10}
-            />
+                              <CartesianGrid
+                                strokeDasharray="4 4"
+                                vertical={false}
+                                stroke={PALETTE.grid}
+                                strokeOpacity={1}
+                              />
 
-            {/* Eje Y izquierdo: conteo de vacantes */}
-            <YAxis
-              yAxisId="left"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: 'var(--color-muted)',
-                fontSize: TICK_FONT_SIZE,
-                fontWeight: presentation ? 600 : 400,
-                fontFamily: 'inherit',
-              }}
-              tickFormatter={formatYLeft}
-              width={presentation ? 55 : 32}
-              allowDecimals={false}
-            />
+                              <XAxis
+                                dataKey="day"
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                  fill: PALETTE.axis,
+                                  fontSize: TICK_FONT_SIZE,
+                                  fontWeight: 400,
+                                  fontFamily: 'inherit',
+                                }}
+                                dy={presentation ? 12 : 8}
+                              />
 
-            {/* Eje Y derecho: porcentaje de cobertura */}
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: 'var(--color-muted)',
-                fontSize: TICK_FONT_SIZE,
-                fontWeight: presentation ? 600 : 400,
-                fontFamily: 'inherit',
-              }}
-              tickFormatter={formatYRight}
-              width={presentation ? 65 : 40}
-              domain={[0, (dataMax: number) => Math.max(100, Math.ceil(dataMax / 10) * 10)]}
-            />
+                              <YAxis
+                                yAxisId="left"
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                  fill: PALETTE.axis,
+                                  fontSize: TICK_FONT_SIZE,
+                                  fontWeight: 400,
+                                  fontFamily: 'inherit',
+                                }}
+                                tickFormatter={formatYLeft}
+                                width={Y_LEFT_WIDTH}
+                                allowDecimals={false}
+                              />
 
-            {/* Tooltip con componente personalizado */}
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{
-                stroke: 'var(--color-hairline)',
-                strokeWidth: presentation ? 2 : 1,
-                strokeDasharray: '3 3',
-              }}
-            />
+                              <YAxis
+                                yAxisId="right"
+                                orientation="right"
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                  fill: PALETTE.ink,
+                                  fontSize: TICK_FONT_SIZE,
+                                  fontWeight: 500,
+                                  fontFamily: 'inherit',
+                                }}
+                                tickFormatter={formatYRight}
+                                width={Y_RIGHT_WIDTH}
+                                domain={[yRightMin, yRightMax]}
+                              />
 
-            {/* Leyenda con componente personalizado */}
-            <Legend
-              verticalAlign="top"
-              align="center"
-              height={presentation ? 50 : 36}
-              content={<CustomLegend />}
-            />
+                              <Tooltip
+                                content={<CustomTooltip presentation={presentation} />}
+                                cursor={{
+                                  fill: PALETTE.surfaceSoft,
+                                  radius: 6,
+                                }}
+                              />
 
-            {/* ── Área: Vacantes Plantilla ── */}
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="vacantesPlantilla"
-              name="Vacantes Plantilla"
-              stackId="vacantes"
-              stroke="var(--color-error)"
-              fill="var(--color-error)"
-              fillOpacity={AREA_FILL_OPACITY}
-              strokeWidth={AREA_STROKE_WIDTH}
-              activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0 }}
-              dot={false}
-              isAnimationActive
-              animationDuration={600}
-              animationEasing="ease-out"
-            />
+                              <Legend content={() => null} />
 
-            {/* ── Área: Vacantes Backup ── */}
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="vacantesBackup"
-              name="Vacantes Backup"
-              stackId="vacantes"
-              stroke="var(--color-accent-amber)"
-              fill="var(--color-accent-amber)"
-              fillOpacity={AREA_FILL_OPACITY}
-              strokeWidth={AREA_STROKE_WIDTH}
-              activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0 }}
-              dot={false}
-              isAnimationActive
-              animationDuration={600}
-              animationEasing="ease-out"
-              animationBegin={100}
-            />
+                              <Bar
+                                yAxisId="left"
+                                dataKey="vacantesPlantilla"
+                                name="Vacantes Plantilla"
+                                fill={PALETTE.red}
+                                fillOpacity={0.85}
+                                radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
+                                isAnimationActive
+                                animationDuration={600}
+                                animationEasing="ease-out"
+                              />
 
-            {/* ── Línea: Cobertura % ── */}
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="cobertura"
-              name="Cobertura %"
-              stroke="var(--color-primary)"
-              strokeWidth={LINE_STROKE_WIDTH}
-              dot={{
-                r: DOT_REST_RADIUS,
-                fill: 'var(--color-canvas)',
-                stroke: 'var(--color-primary)',
-                strokeWidth: presentation ? 3 : 2,
-              }}
-              activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0 }}
-              isAnimationActive
-              animationDuration={800}
-              animationEasing="ease-out"
-              animationBegin={200}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
+                              <Bar
+                                yAxisId="left"
+                                dataKey="vacantesBackup"
+                                name="Vacantes Backup"
+                                fill={PALETTE.amber}
+                                fillOpacity={0.85}
+                                radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
+                                isAnimationActive
+                                animationDuration={600}
+                                animationEasing="ease-out"
+                                animationBegin={100}
+                              />
+
+                              <Line
+                                yAxisId="right"
+                                type="monotone"
+                                dataKey="cobertura"
+                                name="Cobertura %"
+                                stroke={PALETTE.ink}
+                                strokeWidth={LINE_STROKE_WIDTH}
+                                dot={{
+                                  r: DOT_REST_RADIUS,
+                                  fill: PALETTE.surfaceCard,
+                                  stroke: PALETTE.ink,
+                                  strokeWidth: presentation ? 2.5 : 2,
+                                }}
+                                activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0, fill: PALETTE.ink }}
+                                isAnimationActive
+                                animationDuration={800}
+                                animationEasing="ease-out"
+                                animationBegin={200}
+                              />
+                            </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${chartData.length}, 1fr)`,
+              gap: presentation ? 12 : 8,
+              marginTop: presentation ? 16 : 10,
+            }}
+          >
+            {chartData.map((d) => (
+              <DayCard key={d.dateIso} data={d} presentation={presentation} />
+            ))}
+          </div>
+
+          <p
+            style={{
+              fontSize: presentation ? 13 : 11,
+              color: PALETTE.textMuted,
+              margin: `${presentation ? 14 : 10}px 0 0`,
+              textAlign: 'right',
+              fontWeight: 400,
+            }}
+          >
+            KPI Reclutamiento
+          </p>
+        </>
       )}
     </figure>
   );

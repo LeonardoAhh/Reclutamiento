@@ -301,14 +301,14 @@ const { } = useAuth();
       },
       {
         id: 'stat-pipeline-citados-hoy',
-        label: 'Citados hoy',
+        label: 'Procesos hoy',
         value: candidateTotals.citadosHoy,
         accentColor: 'var(--color-accent-teal)',
         origin: 'Candidatos',
       },
       {
         id: 'stat-pipeline-activo',
-        label: 'Candidatos en proceso',
+        label: 'Procesos',
         value: candidateTotals.enProceso,
         accentColor: 'var(--color-primary)',
         origin: 'Candidatos',
