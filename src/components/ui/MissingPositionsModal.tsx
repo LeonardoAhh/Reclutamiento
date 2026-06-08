@@ -54,11 +54,15 @@ export function MissingPositionsModal({
   const processStatsMap = useMemo(() => {
     const stats: Record<string, ProcessStats> = {};
 
-    const normalizePuesto = (p: string) => (p || '').trim().toLowerCase();
+    const normalizeKey = (p: string, s: string) => {
+      const puesto = (p || '').trim().toLowerCase();
+      const seccion = (s || '').trim().toLowerCase();
+      return `${puesto}||${seccion}`;
+    };
 
     // Contar candidatos activos
     candidates.forEach((c) => {
-      const key = normalizePuesto(c.puesto);
+      const key = normalizeKey(c.puesto, c.seccion || '');
       if (!stats[key]) stats[key] = { candidates: 0 };
       stats[key].candidates += 1;
     });
@@ -138,7 +142,9 @@ export function MissingPositionsModal({
                 <tbody>
                   {missingPositions.map((pos) => {
                     const normalizedPuesto = (pos.puesto || '').trim().toLowerCase();
-                    const processes = processStatsMap[normalizedPuesto] || { candidates: 0 };
+                    const normalizedSeccion = (pos.seccion || '').trim().toLowerCase();
+                    const processKey = `${normalizedPuesto}||${normalizedSeccion}`;
+                    const processes = processStatsMap[processKey] || { candidates: 0 };
                     const totalProcesses = processes.candidates;
 
                     const faltanPlantilla = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
