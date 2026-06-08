@@ -142,7 +142,7 @@ export function MissingPositionsModal({
                           {totalProcesses > 0 ? (
                             <div className="missing-positions-modal__processes">
                               {processes.vacancies > 0 && (
-                                <Badge variant="info">
+                                <Badge variant="teal">
                                   {processes.vacancies} Requisicion{processes.vacancies !== 1 ? 'es' : ''}
                                 </Badge>
                               )}
