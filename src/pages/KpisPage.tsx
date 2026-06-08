@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Eye } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
+import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
 import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
@@ -33,6 +34,7 @@ import {
   isoWeekOf,
   currentYearMx,
   localTodayIso,
+  addDaysToIso,
 } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
 import './KpisPage.css';
@@ -220,6 +222,68 @@ const { } = useAuth();
     return totals;
   }, [bajas, employees]);
 
+  /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
+  const heroChartData = useMemo<DailyKpiData[]>(() => {
+    const days: DailyKpiData[] = [];
+    const fmtDay = new Intl.DateTimeFormat('es-MX', { weekday: 'short', day: 'numeric', timeZone: 'America/Mexico_City' });
+    
+    const y = currentWeek.start.getUTCFullYear();
+    const m = String(currentWeek.start.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(currentWeek.start.getUTCDate()).padStart(2, '0');
+    const startIso = `${y}-${m}-${d}`;
+
+    for (let i = 0; i < 7; i++) {
+      const currentDayIso = addDaysToIso(startIso, i) || '';
+      const currentDayDate = new Date(`${currentDayIso}T12:00:00-06:00`);
+      let dayName = fmtDay.format(currentDayDate).replace(',', '');
+      dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+
+      const realEmpleadosActuales = employees.filter(e => String(e.fecha_ingreso).localeCompare(currentDayIso) <= 0);
+      const realBajasHistoricas = bajas.filter(b => 
+        String(b.fecha_ingreso).localeCompare(currentDayIso) <= 0 &&
+        String(b.fecha_baja).localeCompare(currentDayIso) > 0
+      ).map(b => ({
+        ...b,
+        turno: b.turno || '1',
+        categoria: ''
+      } as Employee));
+
+      const mockEmployeesForDay = [...realEmpleadosActuales, ...realBajasHistoricas];
+      const coverageForDay = calculatePositionCoverage(mockEmployeesForDay, comments, positions);
+      
+      let vacantesPlantilla = 0;
+      let vacantesBackup = 0;
+      let realTotal = 0;
+      let objetivoGlobal = 0;
+
+      for (const pos of coverageForDay) {
+        realTotal += pos.plantilla_real;
+        objetivoGlobal += pos.plantilla_objetivo;
+        if (pos.plantilla_real < pos.plantilla_autorizada) {
+          vacantesPlantilla += (pos.plantilla_autorizada - pos.plantilla_real);
+          vacantesBackup += pos.backup;
+        } else {
+          vacantesBackup += Math.max(0, pos.plantilla_objetivo - pos.plantilla_real);
+        }
+      }
+
+      const cobertura = objetivoGlobal > 0 ? Math.round((realTotal / objetivoGlobal) * 100) : 0;
+
+      days.push({
+        day: dayName,
+        dateIso: currentDayIso,
+        vacantesPlantilla,
+        vacantesBackup,
+        cobertura
+      });
+
+      // Stop projecting past today if needed, but showing flat lines for the rest of the week is standard
+      // unless we want to hide future days completely. We'll show up to Sunday to see the whole week frame.
+    }
+
+    return days;
+  }, [currentWeek.start, employees, bajas, positions, comments]);
+
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(
     () => [
@@ -378,6 +442,7 @@ const { } = useAuth();
         <section className="kpis-page__hero">
           <div>
             <h1 className="kpis-page__title">Recruitment Report</h1>
+            <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
           </div>
           <div className="kpis-page__hero-actions">
             <button type="button" className="btn-secondary" disabled>
@@ -396,6 +461,7 @@ const { } = useAuth();
       <section className="kpis-page__hero">
         <div>
           <h1 className="kpis-page__title">Recruitment Report</h1>
+          <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
         </div>
         <div className="kpis-page__hero-actions">
           <button
@@ -408,6 +474,10 @@ const { } = useAuth();
             Incognito
           </button>
         </div>
+      </section>
+
+      <section className="kpis-page__chart-section">
+        <KpiHeroChart data={heroChartData} variant="presentation" />
       </section>
 
       <section
