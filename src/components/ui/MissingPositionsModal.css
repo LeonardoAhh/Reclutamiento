@@ -1,36 +1,36 @@
 /* MissingPositionsModal — tabla de posiciones con falta de personal y conteo de procesos activos */
 
-.modal-content.missing-positions-modal {
-  width: min(1024px, 96vw);
-  max-width: 1024px;
+.missing-positions-modal {
+  width: min(1400px, 96vw);
+  max-width: 1400px;
   max-height: 90vh;
 }
 
 .missing-positions-modal__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg, 24px);
+  gap: var(--spacing-lg, 1.5rem);
 }
 
 .missing-positions-modal__summary {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-xl, 32px);
-  padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
-  border-radius: var(--rounded-lg, 12px);
+  gap: var(--spacing-xl, 2rem);
+  padding: var(--spacing-md, 1rem) var(--spacing-lg, 1.5rem);
+  border-radius: var(--rounded-lg, 0.75rem);
   background: var(--color-surface-soft);
 }
 
 .missing-positions-modal__summary-group {
   display: flex;
   align-items: baseline;
-  gap: var(--spacing-md, 16px);
+  gap: var(--spacing-md, 1rem);
 }
 
 .missing-positions-modal__summary-divider {
-  width: 1px;
-  height: 32px;
+  width: var(--border-width, 1px);
+  height: var(--spacing-xl, 2rem);
   background: var(--color-hairline);
 }
 
@@ -64,22 +64,28 @@
 .missing-positions-modal__empty {
   text-align: center;
   color: var(--color-muted);
-  padding: var(--spacing-xl, 32px) 0;
+  padding: var(--spacing-xl, 2rem) 0;
 }
 
 .missing-positions-modal__section-title {
   font-family: var(--font-display, inherit);
   font-size: var(--type-heading-md-size, 1.25rem);
   font-weight: var(--type-heading-md-weight, 600);
-  margin: 0 0 var(--spacing-md, 16px);
+  margin: 0 0 var(--spacing-md, 1rem);
   color: var(--color-ink);
 }
 
 .missing-positions-modal__table-container {
   overflow-x: auto;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md, 8px);
+  border: var(--border-width, 1px) solid var(--color-hairline);
+  border-radius: var(--rounded-md, 0.5rem);
   background: var(--color-surface-card);
+}
+
+/* Mejora de accesibilidad para la navegación por teclado */
+.missing-positions-modal__table-container:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #005fcc);
+  outline-offset: -2px;
 }
 
 .missing-positions-modal__table {
@@ -89,20 +95,21 @@
 }
 
 .missing-positions-modal__table th {
-  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px);
+  padding: var(--spacing-sm, 0.75rem) var(--spacing-md, 1rem);
   background: var(--color-surface-soft);
   color: var(--color-muted);
   font-weight: 500;
   font-size: var(--type-caption-md-size, 0.875rem);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width, 1px) solid var(--color-hairline);
   white-space: nowrap;
 }
 
 .missing-positions-modal__table td {
-  padding: var(--spacing-md, 16px);
-  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-md, 1rem);
+  border-bottom: var(--border-width, 1px) solid var(--color-hairline);
   color: var(--color-ink);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .missing-positions-modal__table tbody tr:last-child td {
@@ -112,7 +119,7 @@
 .missing-positions-modal__puesto-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs, 4px);
+  gap: var(--spacing-xxs, 0.25rem);
 }
 
 .missing-positions-modal__puesto-name {
@@ -133,22 +140,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 var(--spacing-xs, 8px);
-  border-radius: var(--rounded-full, 999px);
+  min-width: 1.75rem; /* Reemplazado 28px */
+  height: 1.75rem; /* Reemplazado 28px */
+  padding: 0 var(--spacing-xs, 0.5rem);
+  border-radius: var(--rounded-full, 9999px);
   font-family: var(--font-display, inherit);
   font-weight: 700;
   font-size: var(--type-body-sm-size, 0.875rem);
 }
 
 .missing-positions-modal__count-badge--error {
-  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
   color: var(--color-error);
 }
 
 .missing-positions-modal__count-badge--warning {
-  background: color-mix(in srgb, var(--color-accent-amber) 10%, transparent);
+  background: color-mix(in srgb, var(--color-accent-amber) 15%, transparent);
   color: var(--color-accent-amber);
 }
 
@@ -164,7 +171,7 @@
 .missing-positions-modal__processes {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-xs, 8px);
+  gap: var(--spacing-xs, 0.5rem);
 }
 
 .missing-positions-modal__no-processes {

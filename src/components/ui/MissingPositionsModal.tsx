@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
@@ -12,47 +13,58 @@ interface MissingPositionsModalProps {
   candidates: Candidate[];
 }
 
+// Interfaz interna para el diccionario de procesos
+interface ProcessStats {
+  candidates: number;
+}
+
 export function MissingPositionsModal({
   isOpen,
   onClose,
   coverage,
-  vacancies,
   candidates,
 }: MissingPositionsModalProps) {
-  // Puestos que hacen falta (donde hay vacantes según el cálculo de cobertura)
-  const missingPositions = coverage
-    .filter((pos) => pos.vacantes > 0)
-    .sort((a, b) => 
-      a.area.localeCompare(b.area) || 
-      (a.seccion || '').localeCompare(b.seccion || '') || 
-      a.puesto.localeCompare(b.puesto)
-    );
 
-  // Procesos activos (vacantes abiertas + candidatos en proceso)
-  const activeVacancies = vacancies.filter(
-    (v) => v.status === 'abierta' || v.status === 'en_proceso' || v.status === 'pausa'
-  );
-  
-  const getActiveProcessesCount = (puesto: string) => {
-    // Para simplificar, contamos las requisiciones (vacancies) para este puesto
-    // y los candidatos en proceso para este puesto.
-    const vCount = activeVacancies.filter(
-      (v) => v.puesto.trim().toLowerCase() === puesto.trim().toLowerCase()
-    ).length;
-    const cCount = candidates.filter(
-      (c) => (c.puesto || '').trim().toLowerCase() === puesto.trim().toLowerCase()
-    ).length;
-    
-    return { vacancies: vCount, candidates: cCount };
-  };
+  // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
+  const { missingPositions, totalFaltanPlantilla, totalFaltanBackup } = useMemo(() => {
+    let faltanPlantilla = 0;
+    let faltanBackup = 0;
 
-  let totalFaltanPlantilla = 0;
-  let totalFaltanBackup = 0;
+    const filtered = coverage
+      .filter((pos) => pos.vacantes > 0)
+      .sort((a, b) =>
+        a.area.localeCompare(b.area) ||
+        (a.seccion || '').localeCompare(b.seccion || '') ||
+        a.puesto.localeCompare(b.puesto)
+      );
 
-  missingPositions.forEach((pos) => {
-    totalFaltanPlantilla += Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
-    totalFaltanBackup += Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
-  });
+    filtered.forEach((pos) => {
+      faltanPlantilla += Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
+      faltanBackup += Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
+    });
+
+    return {
+      missingPositions: filtered,
+      totalFaltanPlantilla: faltanPlantilla,
+      totalFaltanBackup: faltanBackup
+    };
+  }, [coverage]);
+
+  // 2. Creamos un diccionario (Hash Map) de procesos activos (O(1) lookup)
+  const processStatsMap = useMemo(() => {
+    const stats: Record<string, ProcessStats> = {};
+
+    const normalizePuesto = (p: string) => (p || '').trim().toLowerCase();
+
+    // Contar candidatos activos
+    candidates.forEach((c) => {
+      const key = normalizePuesto(c.puesto);
+      if (!stats[key]) stats[key] = { candidates: 0 };
+      stats[key].candidates += 1;
+    });
+
+    return stats;
+  }, [candidates]);
 
   return (
     <Modal
@@ -61,9 +73,10 @@ export function MissingPositionsModal({
       className="missing-positions-modal modal-fullscreen-mobile"
       icon={<AlertCircle size={20} aria-hidden="true" />}
       title="Detalle de Vacantes y Procesos"
-      subtitle="Puestos con falta de cobertura y sus procesos activos"
     >
       <div className="modal-body missing-positions-modal__body">
+
+        {/* Encabezado de Totales */}
         <header className="missing-positions-modal__summary">
           <div className="missing-positions-modal__summary-group">
             <div className="missing-positions-modal__big-number">
@@ -73,6 +86,7 @@ export function MissingPositionsModal({
               Vacantes Plantilla
             </p>
           </div>
+
           {totalFaltanBackup > 0 && (
             <>
               <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
@@ -88,6 +102,7 @@ export function MissingPositionsModal({
           )}
         </header>
 
+        {/* Contenido Principal */}
         {missingPositions.length === 0 ? (
           <p className="missing-positions-modal__empty">
             Excelente, no hay puestos con falta de cobertura.
@@ -95,34 +110,45 @@ export function MissingPositionsModal({
         ) : (
           <section
             className="missing-positions-modal__section"
-            aria-label="Resumen de puestos faltantes"
+            aria-labelledby="missing-positions-title"
           >
-            <h3 className="missing-positions-modal__section-title">
+            <h3 id="missing-positions-title" className="missing-positions-modal__section-title">
               Puestos que hacen falta
             </h3>
-            <div className="missing-positions-modal__table-container">
+
+            {/* Contenedor con tabIndex para permitir scroll con teclado (Accesibilidad) */}
+            <div
+              className="missing-positions-modal__table-container"
+              tabIndex={0}
+              role="region"
+              aria-label="Tabla de puestos faltantes"
+            >
               <table className="missing-positions-modal__table">
                 <thead>
                   <tr>
-                    <th>Área</th>
-                    <th>Sección</th>
-                    <th>Puesto</th>
-                    <th>Faltan Plantilla</th>
-                    <th>Faltan Backup</th>
-                    <th>Total Faltan</th>
-                    <th>Procesos Activos</th>
+                    <th scope="col">Área</th>
+                    <th scope="col">Sección</th>
+                    <th scope="col">Puesto</th>
+                    <th scope="col" className="missing-positions-modal__vacantes-cell">Faltan Plantilla</th>
+                    <th scope="col" className="missing-positions-modal__vacantes-cell">Faltan Backup</th>
+                    <th scope="col" className="missing-positions-modal__vacantes-cell">Total Faltan</th>
+                    <th scope="col">Procesos Activos</th>
                   </tr>
                 </thead>
                 <tbody>
                   {missingPositions.map((pos) => {
-                    const processes = getActiveProcessesCount(pos.puesto);
-                    const totalProcesses = processes.vacancies + processes.candidates;
-                    
+                    const normalizedPuesto = (pos.puesto || '').trim().toLowerCase();
+                    const processes = processStatsMap[normalizedPuesto] || { candidates: 0 };
+                    const totalProcesses = processes.candidates;
+
                     const faltanPlantilla = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
                     const faltanBackup = Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
-                    
+
+                    // Clave optimizada y robusta
+                    const rowKey = `${pos.area}-${pos.seccion || 'none'}-${pos.puesto}`;
+
                     return (
-                      <tr key={`${pos.puesto}||${pos.seccion}||${pos.area}`}>
+                      <tr key={rowKey}>
                         <td>
                           <span className="missing-positions-modal__puesto-area">
                             {pos.area}
@@ -144,7 +170,7 @@ export function MissingPositionsModal({
                               {faltanPlantilla}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty">—</span>
+                            <span className="missing-positions-modal__count-empty" aria-label="Cero faltantes en plantilla">—</span>
                           )}
                         </td>
                         <td className="missing-positions-modal__vacantes-cell">
@@ -153,7 +179,7 @@ export function MissingPositionsModal({
                               {faltanBackup}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty">—</span>
+                            <span className="missing-positions-modal__count-empty" aria-label="Cero faltantes en backup">—</span>
                           )}
                         </td>
                         <td className="missing-positions-modal__vacantes-cell">
@@ -164,11 +190,6 @@ export function MissingPositionsModal({
                         <td>
                           {totalProcesses > 0 ? (
                             <div className="missing-positions-modal__processes">
-                              {processes.vacancies > 0 && (
-                                <Badge variant="teal">
-                                  {processes.vacancies} Requisicion{processes.vacancies !== 1 ? 'es' : ''}
-                                </Badge>
-                              )}
                               {processes.candidates > 0 && (
                                 <Badge variant="success">
                                   {processes.candidates} Candidato{processes.candidates !== 1 ? 's' : ''}
