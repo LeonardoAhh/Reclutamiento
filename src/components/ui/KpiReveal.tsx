@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Eye } from 'lucide-react';
 import './KpiReveal.css';
 
 const STORAGE_KEY = 'kpis_revealed_v1';
@@ -142,11 +141,6 @@ export function KpiReveal({
       onKeyDown={handleKeyDown}
     >
       <div className="kpi-reveal__inner">{children}</div>
-      {!effectiveRevealed && (
-        <span className="kpi-reveal__hint" aria-hidden="true">
-          <Eye size={16} aria-hidden="true" />
-        </span>
-      )}
     </div>
   );
 }
