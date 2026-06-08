@@ -185,7 +185,7 @@
   /* Desktop: layout estático, sin sticky stack ni scroll-driven animation. */
   .kpis-page__grid > .kpi-reveal {
     width: auto;
-    position: static;
+    position: relative;
     top: auto;
     animation: none;
     transform: none;
