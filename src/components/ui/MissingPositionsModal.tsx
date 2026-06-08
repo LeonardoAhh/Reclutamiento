@@ -46,6 +46,14 @@ export function MissingPositionsModal({
     return { vacancies: vCount, candidates: cCount };
   };
 
+  let totalFaltanPlantilla = 0;
+  let totalFaltanBackup = 0;
+
+  missingPositions.forEach((pos) => {
+    totalFaltanPlantilla += Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
+    totalFaltanBackup += Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
+  });
+
   return (
     <Modal
       isOpen={isOpen}
@@ -57,12 +65,27 @@ export function MissingPositionsModal({
     >
       <div className="modal-body missing-positions-modal__body">
         <header className="missing-positions-modal__summary">
-          <div className="missing-positions-modal__big-number">
-            {missingPositions.reduce((sum, p) => sum + p.vacantes, 0)}
+          <div className="missing-positions-modal__summary-group">
+            <div className="missing-positions-modal__big-number">
+              {totalFaltanPlantilla}
+            </div>
+            <p className="missing-positions-modal__big-label">
+              Vacantes Plantilla
+            </p>
           </div>
-          <p className="missing-positions-modal__big-label">
-            Vacantes Totales
-          </p>
+          {totalFaltanBackup > 0 && (
+            <>
+              <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
+              <div className="missing-positions-modal__summary-group">
+                <span className="missing-positions-modal__backup-number">
+                  +{totalFaltanBackup}
+                </span>
+                <span className="missing-positions-modal__backup-label">
+                  Vacantes Backup
+                </span>
+              </div>
+            </>
+          )}
         </header>
 
         {missingPositions.length === 0 ? (

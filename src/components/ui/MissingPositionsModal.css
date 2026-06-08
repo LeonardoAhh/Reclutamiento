@@ -14,11 +14,24 @@
 
 .missing-positions-modal__summary {
   display: flex;
-  align-items: baseline;
-  gap: var(--spacing-md, 16px);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xl, 32px);
   padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
   border-radius: var(--rounded-lg, 12px);
   background: var(--color-surface-soft);
+}
+
+.missing-positions-modal__summary-group {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md, 16px);
+}
+
+.missing-positions-modal__summary-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-hairline);
 }
 
 .missing-positions-modal__big-number {
@@ -31,6 +44,19 @@
 
 .missing-positions-modal__big-label {
   margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-lg-size, 1.125rem);
+  font-weight: 500;
+}
+
+.missing-positions-modal__backup-number {
+  font-family: var(--font-display, inherit);
+  font-size: var(--type-heading-lg-size, 1.5rem);
+  font-weight: 600;
+  color: var(--color-accent-amber);
+}
+
+.missing-positions-modal__backup-label {
   color: var(--color-muted);
   font-size: var(--type-body-md-size, 1rem);
 }
