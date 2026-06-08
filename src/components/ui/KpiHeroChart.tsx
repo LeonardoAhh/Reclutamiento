@@ -50,6 +50,8 @@ interface KpiHeroChartProps {
   ariaLabel?: string;
   /** Variante visual para diferentes contextos de visualización */
   variant?: 'default' | 'presentation';
+  /** Handler opcional al hacer click en la gráfica */
+  onClick?: () => void;
 }
 
 // ─────────────────────────────────────────────
@@ -267,6 +269,7 @@ export function KpiHeroChart({
   height,
   ariaLabel = 'Gráfica de vacantes plantilla, vacantes backup y cobertura por día de la semana',
   variant = 'default',
+  onClick,
 }: KpiHeroChartProps) {
   // ID único para el elemento descriptivo del chart (accesibilidad)
   const descId = useId();
@@ -320,7 +323,18 @@ export function KpiHeroChart({
         height: chartHeight,
         margin: 'var(--space-6, 24px) 0',
         display: 'block',
+        cursor: onClick ? 'pointer' : 'default',
+        position: 'relative',
       }}
+      onClick={onClick}
+      role={onClick ? "button" : "img"}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
     >
       {/* Descripción accesible oculta visualmente */}
       <figcaption

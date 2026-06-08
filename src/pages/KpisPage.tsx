@@ -8,6 +8,7 @@ import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
 import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
 import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
 import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
+import { MissingPositionsModal } from '@/components/ui/MissingPositionsModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -99,6 +100,7 @@ const { } = useAuth();
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
   const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
+  const [missingModalOpen, setMissingModalOpen] = useState(false);
 
   /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
@@ -204,16 +206,19 @@ const { } = useAuth();
   }, [candidates, candidatesInProcess, candidatesCitadosHoy]);
 
   /* ── Dashboard (4) ─────────────────────────────────────────── */
+  const currentPositionCoverage = useMemo(() => {
+    return calculatePositionCoverage(employees, comments, positions);
+  }, [employees, comments, positions]);
+
   const dashboardTotals = useMemo(() => {
-    const positionCoverage = calculatePositionCoverage(employees, comments, positions);
-    const departmentCoverage = calculateDepartmentCoverage(positionCoverage);
+    const departmentCoverage = calculateDepartmentCoverage(currentPositionCoverage);
     const autorizada = departmentCoverage.reduce((s, d) => s + d.plantilla_autorizada, 0);
     const objetivo = departmentCoverage.reduce((s, d) => s + d.plantilla_objetivo, 0);
     const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
     const vacantes = departmentCoverage.reduce((s, d) => s + d.vacantes, 0);
     const cobertura = objetivo > 0 ? Math.round((real / objetivo) * 100) : 0;
     return { autorizada, real, vacantes, cobertura };
-  }, [employees, comments, positions]);
+  }, [currentPositionCoverage]);
 
   /* ── Bajas (4) ─────────────────────────────────────────────── */
   const bajasTotals = useMemo(() => {
@@ -477,7 +482,11 @@ const { } = useAuth();
       </section>
 
       <section className="kpis-page__chart-section">
-        <KpiHeroChart data={heroChartData} variant="presentation" />
+        <KpiHeroChart 
+          data={heroChartData} 
+          variant="presentation" 
+          onClick={() => setMissingModalOpen(true)}
+        />
       </section>
 
       <section
@@ -573,6 +582,14 @@ const { } = useAuth();
         previousRangeLabel={previousWeekLabel}
         previousHires={previousWeekHires}
         previousBajas={previousWeekBajas}
+      />
+
+      <MissingPositionsModal
+        isOpen={missingModalOpen}
+        onClose={() => setMissingModalOpen(false)}
+        coverage={currentPositionCoverage}
+        vacancies={vacancies}
+        candidates={candidatesInProcess}
       />
     </main>
   );

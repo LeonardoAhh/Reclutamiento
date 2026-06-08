@@ -1,0 +1,148 @@
+/* MissingPositionsModal — tabla de posiciones con falta de personal y conteo de procesos activos */
+
+.modal-content.missing-positions-modal {
+  width: min(1024px, 96vw);
+  max-width: 1024px;
+  max-height: 90vh;
+}
+
+.missing-positions-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 24px);
+}
+
+.missing-positions-modal__summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md, 16px);
+  padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
+  border-radius: var(--rounded-lg, 12px);
+  background: var(--color-surface-soft);
+}
+
+.missing-positions-modal__big-number {
+  font-family: var(--font-display, inherit);
+  font-size: var(--type-display-xl-size, 3rem);
+  font-weight: var(--type-display-xl-weight, 700);
+  color: var(--color-error);
+  line-height: 1;
+}
+
+.missing-positions-modal__big-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size, 1rem);
+}
+
+.missing-positions-modal__empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-xl, 32px) 0;
+}
+
+.missing-positions-modal__section-title {
+  font-family: var(--font-display, inherit);
+  font-size: var(--type-heading-md-size, 1.25rem);
+  font-weight: var(--type-heading-md-weight, 600);
+  margin: 0 0 var(--spacing-md, 16px);
+  color: var(--color-ink);
+}
+
+.missing-positions-modal__table-container {
+  overflow-x: auto;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md, 8px);
+  background: var(--color-surface-card);
+}
+
+.missing-positions-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.missing-positions-modal__table th {
+  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-weight: 500;
+  font-size: var(--type-caption-md-size, 0.875rem);
+  border-bottom: 1px solid var(--color-hairline);
+  white-space: nowrap;
+}
+
+.missing-positions-modal__table td {
+  padding: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+  vertical-align: middle;
+}
+
+.missing-positions-modal__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.missing-positions-modal__puesto-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs, 4px);
+}
+
+.missing-positions-modal__puesto-name {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.missing-positions-modal__puesto-seccion {
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size, 0.875rem);
+}
+
+.missing-positions-modal__vacantes-cell {
+  text-align: center;
+}
+
+.missing-positions-modal__count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--spacing-xs, 8px);
+  border-radius: var(--rounded-full, 999px);
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  font-size: var(--type-body-sm-size, 0.875rem);
+}
+
+.missing-positions-modal__count-badge--error {
+  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  color: var(--color-error);
+}
+
+.missing-positions-modal__count-badge--warning {
+  background: color-mix(in srgb, var(--color-accent-amber) 10%, transparent);
+  color: var(--color-accent-amber);
+}
+
+.missing-positions-modal__count-badge--total {
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  color: var(--color-ink);
+}
+
+.missing-positions-modal__count-empty {
+  color: var(--color-muted-soft);
+}
+
+.missing-positions-modal__processes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs, 8px);
+}
+
+.missing-positions-modal__no-processes {
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size, 0.875rem);
+  font-style: italic;
+}
