@@ -297,9 +297,11 @@ function DayCard({ data, presentation }: DayCardProps) {
           margin: 0,
           fontWeight: 400,
           color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
+          lineHeight: 1.2,
         }}
       >
-        {data.vacantesPlantilla}+{data.vacantesBackup} vac.
+        <span style={{ display: 'block' }}>{data.vacantesPlantilla} Plantilla</span>
+        <span style={{ display: 'block' }}>+ {data.vacantesBackup} Backup</span>
       </p>
     </div>
   );
