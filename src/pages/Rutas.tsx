@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Map as MapIcon, MapPin, Bus, Users } from 'lucide-react';
+import { Map as MapIcon, MapPin, Bus, Users, CalendarDays } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -133,10 +133,11 @@ function RouteSvg({ paradas, animKey }: RouteSvgProps) {
 interface ShiftBarsProps {
   turnosCount: Record<string, number>;
   total: number;
+  maxCapacityPerShift: Record<string, number>;
   animKey: number;
 }
 
-function ShiftBars({ turnosCount, total, animKey }: ShiftBarsProps) {
+function ShiftBars({ turnosCount, total, maxCapacityPerShift, animKey }: ShiftBarsProps) {
   const entries = Object.entries(turnosCount).sort(([a], [b]) =>
     a.localeCompare(b)
   );
@@ -144,18 +145,77 @@ function ShiftBars({ turnosCount, total, animKey }: ShiftBarsProps) {
   return (
     <div className="shift-bars" key={animKey}>
       {entries.map(([turno, count], i) => {
-        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const assignedCapacity = maxCapacityPerShift[turno];
+        const barMax = assignedCapacity || Math.max(count, 21);
+        const pct = barMax > 0 ? Math.round((count / barMax) * 100) : 0;
+        const isOverCapacity = count > barMax;
+
         return (
           <div
             key={turno}
+            className={`shift-bars__row ${isOverCapacity ? 'shift-bars__row--over' : ''}`}
+            style={{ '--bar-delay': `${i * 0.08}s`, '--bar-pct': `${Math.min(pct, 100)}%` } as React.CSSProperties}
+          >
+            <span className="shift-bars__label type-body-md">Turno {turno}</span>
+            <div className="shift-bars__track" role="progressbar" aria-valuenow={count} aria-valuemin={0} aria-valuemax={barMax} aria-label={`Turno ${turno}`}>
+              <div className="shift-bars__fill" style={isOverCapacity ? { background: 'var(--color-error)' } : undefined} />
+            </div>
+            <span className="shift-bars__count type-body-md" style={isOverCapacity ? { color: 'var(--color-error)', fontWeight: 600 } : undefined}>
+              {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Animated daily capacity bars ─── */
+interface DailyCapacityBarsProps {
+  capacityPerDay: Record<string, number>;
+  animKey: number;
+}
+
+function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) {
+  // Ordered explicitly by week days
+  const DAYS_ORDER = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  
+  // Mapping of which shift is resting on which day
+  const RESTING_SHIFTS: Record<string, string> = {
+    'Lunes': 'T2',
+    'Martes': 'T2',
+    'Miércoles': 'T3',
+    'Jueves': 'T3',
+    'Viernes': 'T4',
+    'Sábado': 'T4',
+    'Domingo': 'T1'
+  };
+  
+  // Find max capacity to scale the bars relative to the peak day
+  const maxCapacity = Math.max(...Object.values(capacityPerDay), 1);
+
+  return (
+    <div className="shift-bars" key={`daily-${animKey}`}>
+      {DAYS_ORDER.map((day, i) => {
+        const count = capacityPerDay[day] || 0;
+        const pct = Math.round((count / maxCapacity) * 100);
+        return (
+          <div
+            key={day}
             className="shift-bars__row"
             style={{ '--bar-delay': `${i * 0.08}s`, '--bar-pct': `${pct}%` } as React.CSSProperties}
           >
-            <span className="shift-bars__label type-body-sm">Turno {turno}</span>
-            <div className="shift-bars__track" role="progressbar" aria-valuenow={count} aria-valuemin={0} aria-valuemax={total} aria-label={`Turno ${turno}`}>
+            <span className="shift-bars__label type-body-md">{day}</span>
+            <div className="shift-bars__track" role="progressbar" aria-valuenow={count} aria-valuemin={0} aria-valuemax={maxCapacity} aria-label={`Capacidad ${day}`}>
               <div className="shift-bars__fill" />
             </div>
-            <span className="shift-bars__count type-body-sm">{count}</span>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '100px', justifyContent: 'flex-end' }}>
+              <span className="ruta-employees-modal__tab-badge" style={{ fontSize: '12px', padding: '4px 8px' }} title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}>
+                Off: {RESTING_SHIFTS[day]}
+              </span>
+              <span className="shift-bars__count type-body-md" style={{ minWidth: 'auto' }}>{count}</span>
+            </div>
           </div>
         );
       })}
@@ -191,11 +251,6 @@ interface RutaDetailProps {
 function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
   return (
     <div className="ruta-detail ruta-detail--enter" key={animKey}>
-      <header className="ruta-detail__header">
-        <h2 className="type-display-lg">{ruta.nombreRuta}</h2>
-        <p className="type-body-md">Información activa de la ruta</p>
-      </header>
-
       <div className="ruta-detail__body">
         {/* Route simulation */}
         <section className="ruta-section">
@@ -228,27 +283,44 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
           </div>
         </section>
 
-        {/* Shift breakdown */}
-        <section className="ruta-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-md)' }}>
-            <h3 className="ruta-section__title type-heading-sm" style={{ marginBottom: 0 }}>
-              <Users size={16} aria-hidden="true" />
+        {/* Dual column grids for charts */}
+        <div className="ruta-detail__grids">
+          {/* Shift Breakdown */}
+          <section className="ruta-section">
+            <h3 className="ruta-section__title type-heading-sm" style={{ display: 'flex', alignItems: 'center' }}>
+              <Users size={16} aria-hidden="true" style={{ marginRight: '8px' }} />
               Desglose por turno
+              <button type="button" className="btn-secondary" onClick={onOpenEmployeesModal} style={{ marginLeft: 'auto', height: '32px', padding: '0 12px', fontSize: '13px' }}>
+                Ver plantilla
+              </button>
             </h3>
-            <button type="button" className="btn-secondary" onClick={onOpenEmployeesModal} style={{ height: '32px', padding: '0 12px', fontSize: '13px' }}>
-              Ver plantilla
-            </button>
-          </div>
-          <div className="ruta-capacity">
-            <span className="ruta-capacity__label type-body-sm">Capacidad total requerida</span>
-            <span className="ruta-capacity__value type-heading-md">{ruta.totalEmpleados} asientos</span>
-          </div>
-          <ShiftBars
-            turnosCount={ruta.turnosCount}
-            total={ruta.totalEmpleados}
-            animKey={animKey}
-          />
-        </section>
+            <div className="ruta-capacity">
+              <span className="ruta-capacity__label type-body-sm">Capacidad total requerida</span>
+              <span className="ruta-capacity__value type-heading-md">{ruta.totalEmpleados} asientos</span>
+            </div>
+            <ShiftBars
+              turnosCount={ruta.turnosCount}
+              total={ruta.totalEmpleados}
+              maxCapacityPerShift={ruta.maxCapacityPerShift}
+              animKey={animKey}
+            />
+          </section>
+
+          {/* Daily capacity breakdown */}
+          <section className="ruta-section">
+            <h3 className="ruta-section__title type-heading-sm">
+              <CalendarDays size={16} aria-hidden="true" />
+              Capacidad por día
+            </h3>
+            <p className="type-body-sm text-muted" style={{ marginBottom: 'var(--spacing-md)' }}>
+              Proyección de asientos requeridos según los días laborables de cada turno.
+            </p>
+            <DailyCapacityBars
+              capacityPerDay={ruta.capacityPerDay}
+              animKey={animKey}
+            />
+          </section>
+        </div>
       </div>
     </div>
   );

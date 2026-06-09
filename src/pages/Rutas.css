@@ -30,7 +30,7 @@
 
 .rutas-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 380px 1fr;
   gap: var(--spacing-lg, 1.5rem);
   align-items: start;
 }
@@ -323,6 +323,22 @@
   padding: var(--spacing-md, 1rem) var(--spacing-lg, 1.5rem);
   border: 0.5px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
   border-radius: var(--radius-lg, 12px);
+  background: var(--color-surface, #fff);
+}
+
+.ruta-detail__grids {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg, 1.5rem);
+  margin-top: var(--spacing-lg, 1.5rem);
+  margin-bottom: var(--spacing-2xl, 3rem);
+}
+
+@media (min-width: 1024px) {
+  .ruta-detail__grids {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
 
 .ruta-section__title {
@@ -461,7 +477,9 @@
 }
 
 .shift-bars__label {
-  width: 58px;
+  min-width: 75px;
+  width: auto;
+  white-space: nowrap;
   flex-shrink: 0;
   color: var(--color-text-secondary);
 }
@@ -494,7 +512,9 @@
 }
 
 .shift-bars__count {
-  width: 30px;
+  min-width: 45px;
+  width: auto;
+  white-space: nowrap;
   text-align: right;
   color: var(--color-text-primary);
   flex-shrink: 0;
