@@ -132,12 +132,11 @@ function RouteSvg({ paradas, animKey }: RouteSvgProps) {
 /* ─── Animated shift bars ─── */
 interface ShiftBarsProps {
   turnosCount: Record<string, number>;
-  total: number;
   maxCapacityPerShift: Record<string, number>;
   animKey: number;
 }
 
-function ShiftBars({ turnosCount, total, maxCapacityPerShift, animKey }: ShiftBarsProps) {
+function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps) {
   const entries = Object.entries(turnosCount).sort(([a], [b]) =>
     a.localeCompare(b)
   );
@@ -300,7 +299,6 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
             </div>
             <ShiftBars
               turnosCount={ruta.turnosCount}
-              total={ruta.totalEmpleados}
               maxCapacityPerShift={ruta.maxCapacityPerShift}
               animKey={animKey}
             />

@@ -1,7 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 
-const DAYS_OF_WEEK = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
 const SHIFT_SCHEDULE: Record<string, string[]> = {
   '1': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
   '2': ['Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
