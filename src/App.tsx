@@ -12,6 +12,7 @@ import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
 import { Empleados } from '@/pages/Empleados';
 import { Transporte } from '@/pages/Transporte';
+import { Rutas } from '@/pages/Rutas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 // NOTE: Settings page deshabilitada temporalmente — ni ruta ni botón.
@@ -124,6 +125,14 @@ function App() {
         element={
           <ProtectedShell>
             <Transporte />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/rutas"
+        element={
+          <ProtectedShell>
+            <Rutas />
           </ProtectedShell>
         }
       />

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, LogOut, Moon, Sun, Users } from 'lucide-react';
+import { ChevronDown, LogOut, Moon, Sun, Users, Map } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
 import { useTheme } from '@/hooks/useTheme';
@@ -122,6 +122,19 @@ export function UserMenu() {
           >
             <Users size={13} aria-hidden="true" />
             <span className="user-menu__item-label">Employees</span>
+          </button>
+
+          <button
+            type="button"
+            className="user-menu__item"
+            onClick={() => {
+              closeRef.current();
+              navigate('/rutas');
+            }}
+            role="menuitem"
+          >
+            <Map size={13} aria-hidden="true" />
+            <span className="user-menu__item-label">Rutas</span>
           </button>
 
           <div className="user-menu__divider" role="separator" />
