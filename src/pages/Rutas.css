@@ -130,11 +130,13 @@
   background: var(--color-surface, #fff);
   cursor: pointer;
   text-align: left;
-  /* Animation 4 – selection slide */
+  /* Animation 4 – selection slide and blur */
   transition:
     transform var(--dur-fade) var(--ease-out),
     background var(--dur-fade) var(--ease-out),
-    border-color var(--dur-fade) var(--ease-out);
+    border-color var(--dur-fade) var(--ease-out),
+    filter var(--dur-fade) var(--ease-out),
+    opacity var(--dur-fade) var(--ease-out);
 }
 
 .ruta-card:hover {
@@ -150,6 +152,18 @@
   background: var(--color-primary-bg, rgba(55, 138, 221, 0.07));
   border-color: var(--color-primary, #378add);
   transform: translateX(4px); /* slide right on selection */
+}
+
+/* Blur unselected cards when one is active */
+.rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active) {
+  filter: blur(1.5px);
+  opacity: 0.6;
+}
+
+.rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active):hover,
+.rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active):focus-visible {
+  filter: blur(0);
+  opacity: 1;
 }
 
 .ruta-card__icon {
