@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UserPlus, Trash2 } from 'lucide-react';
+import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
@@ -285,6 +285,12 @@ export function EmployeeSheet({
                   value={form.fecha_ingreso}
                   onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
                 />
+                {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+                  <p className="color-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', fontSize: '0.85rem' }}>
+                    <AlertCircle size={14} aria-hidden="true" />
+                    Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.
+                  </p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="emp-ruta">Ruta</label>

@@ -31,6 +31,7 @@ import {
   calculateDepartmentCoverage,
   getCoverageColor,
 } from '@/lib/utils';
+import { localTodayIso } from '@/lib/dates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -364,6 +365,11 @@ export function Dashboard() {
                         <Badge variant="amber">
                           <HeartPulse size={11} aria-hidden="true" />
                           INCAPACIDAD
+                        </Badge>
+                      )}
+                      {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+                        <Badge variant="coral">
+                          PRÓXIMO INGRESO
                         </Badge>
                       )}
                     </span>

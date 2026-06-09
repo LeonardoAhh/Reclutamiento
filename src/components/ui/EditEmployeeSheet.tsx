@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pencil, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import {
@@ -7,6 +7,7 @@ import {
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
+import { localTodayIso } from '@/lib/dates';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { Sheet } from './Sheet';
 import { Modal } from './Modal';
@@ -226,6 +227,12 @@ export function EditEmployeeSheet({
                 setForm({ ...form, fecha_ingreso: e.target.value })
               }
             />
+            {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+              <p className="color-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', fontSize: '0.85rem' }}>
+                <AlertCircle size={14} aria-hidden="true" />
+                Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.
+              </p>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-ruta">Ruta</label>

@@ -16,6 +16,7 @@ interface WeeklyHiresModalProps {
   previousRangeLabel: string;
   previousHires: Employee[];
   previousBajas: Baja[];
+  futureHires?: Employee[];
 }
 
 interface PuestoCount {
@@ -77,6 +78,7 @@ export function WeeklyHiresModal({
   previousRangeLabel,
   previousHires,
   previousBajas,
+  futureHires = [],
 }: WeeklyHiresModalProps) {
   const [activeTab, setActiveTab] = useState<WeekTab>('current');
 
@@ -327,6 +329,55 @@ export function WeeklyHiresModal({
                           <td>{b.tipo_baja || '—'}</td>
                           <td className="weekly-hires-modal__cell-mono">
                             {formatShortDate(b.fecha_baja)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {isCurrentTab && futureHires.length > 0 && (
+              <section
+                className="weekly-hires-modal__section"
+                aria-label="Próximos ingresos programados"
+              >
+                <h3 className="weekly-hires-modal__section-title">
+                  Próximos ingresos programados
+                </h3>
+                <p className="weekly-hires-modal__empty" style={{ textAlign: 'left', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                  Estos empleados están agendados para entrar esta semana.
+                </p>
+                <div className="weekly-hires-modal__table-wrap">
+                  <table className="weekly-hires-modal__table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Puesto</th>
+                        <th>Área · Sección</th>
+                        <th>Fecha agendada</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {futureHires.map((e) => (
+                        <tr key={e.num_empleado}>
+                          <td className="weekly-hires-modal__cell-mono">
+                            {e.num_empleado}
+                          </td>
+                          <td>{e.nombre}</td>
+                          <td>{e.puesto}</td>
+                          <td>
+                            <div className="weekly-hires-modal__cell-area">
+                              {e.area}
+                            </div>
+                            <div className="weekly-hires-modal__cell-seccion">
+                              {e.seccion}
+                            </div>
+                          </td>
+                          <td className="weekly-hires-modal__cell-mono color-amber">
+                            {formatShortDate(e.fecha_ingreso)}
                           </td>
                         </tr>
                       ))}

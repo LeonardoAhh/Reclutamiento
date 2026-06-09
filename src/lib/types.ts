@@ -274,6 +274,8 @@ export interface PositionCoverage {
   excedente_backup: number;
   /** Excedente real fuera del buffer — requiere atención. */
   excedente_critico: number;
+  /** Número de empleados con fecha de ingreso en el futuro. */
+  proximos_ingresos: number;
 }
 
 /**
@@ -290,6 +292,8 @@ export interface DepartmentCoverage {
   puestos: PositionCoverage[];
   /** Suma de contrataciones urgentes pendientes a través de todos los puestos. */
   urgentes: number;
+  /** Suma de próximos ingresos a través de todos los puestos. */
+  proximos_ingresos: number;
 }
 
 /* ────────────────────────────────────────────────────────────────────────

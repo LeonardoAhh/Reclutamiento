@@ -7,6 +7,7 @@ import type {
   PositionComment,
 } from './types';
 import { PLANTILLA_AUTORIZADA } from './constants';
+import { localTodayIso } from './dates';
 
 /**
  * Transform raw JSON employee data to normalized DB format
@@ -107,7 +108,11 @@ export function calculatePositionCoverage(
   comments: PositionComment[],
   positions: AuthorizedPosition[] = PLANTILLA_AUTORIZADA
 ): PositionCoverage[] {
-  const uniqueEmployees = dedupeEmployees(employees);
+  const allUniqueEmployees = dedupeEmployees(employees);
+  const today = localTodayIso();
+  const uniqueEmployees = allUniqueEmployees.filter(
+    (emp) => String(emp.fecha_ingreso).localeCompare(today) <= 0
+  );
 
   return positions.map((pos) => {
     const real = uniqueEmployees.filter(
@@ -143,6 +148,14 @@ export function calculatePositionCoverage(
         matchesPuesto(c.puesto, pos.puesto)
     );
 
+    const proximosIngresos = allUniqueEmployees.filter(
+      (emp) =>
+        String(emp.fecha_ingreso).localeCompare(today) > 0 &&
+        matchesText(emp.area, pos.area) &&
+        matchesText(emp.seccion, pos.seccion) &&
+        matchesPuesto(emp.puesto, pos.puesto)
+    ).length;
+
     return {
       area: pos.area,
       seccion: pos.seccion,
@@ -159,6 +172,7 @@ export function calculatePositionCoverage(
       excedente,
       excedente_backup: excedenteBackup,
       excedente_critico: excedenteCritico,
+      proximos_ingresos: proximosIngresos,
     };
   });
 }
@@ -187,6 +201,7 @@ export function calculateDepartmentCoverage(
       : 0;
 
     const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
+    const proximosIngresos = puestos.reduce((sum, p) => sum + p.proximos_ingresos, 0);
 
     return {
       area,
@@ -197,6 +212,7 @@ export function calculateDepartmentCoverage(
       porcentaje_cobertura: porcentaje,
       puestos,
       urgentes,
+      proximos_ingresos: proximosIngresos,
     };
   });
 }

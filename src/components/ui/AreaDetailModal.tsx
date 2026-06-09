@@ -435,13 +435,36 @@ export function AreaDetailModal({
                             // el puesto SÍ está en proceso aunque no haya
                             // comentario manual capturado.
                             return (
-                              <Badge variant="teal">
-                                EN PROCESO ({activeCount})
-                              </Badge>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                                <Badge variant="teal">
+                                  EN PROCESO ({activeCount})
+                                </Badge>
+                                {pos.proximos_ingresos > 0 && (
+                                  <Badge variant="coral">
+                                    PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                                  </Badge>
+                                )}
+                              </div>
                             );
                           }
                           if (pos.vacantes > 0) {
-                            return <Badge variant="error">Sin proceso</Badge>;
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                                <Badge variant="error">Sin proceso</Badge>
+                                {pos.proximos_ingresos > 0 && (
+                                  <Badge variant="coral">
+                                    PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                                  </Badge>
+                                )}
+                              </div>
+                            );
+                          }
+                          if (pos.proximos_ingresos > 0) {
+                            return (
+                              <Badge variant="coral">
+                                PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                              </Badge>
+                            );
                           }
                           return <span className="no-vacancy">—</span>;
                         })()}

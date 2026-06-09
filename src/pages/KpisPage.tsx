@@ -116,13 +116,12 @@ const { } = useAuth();
     () => formatIsoWeekRange(previousWeek),
     [previousWeek]
   );
-  const weeklyHires: Employee[] = useMemo(
-    () =>
-      employees
-        .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek))
-        .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))),
-    [employees, currentWeek]
-  );
+  const weeklyHires: Employee[] = useMemo(() => {
+    const today = localTodayIso();
+    return employees
+        .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek) && String(e.fecha_ingreso).localeCompare(today) <= 0)
+        .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso)));
+  }, [employees, currentWeek]);
   const weeklyBajas: Baja[] = useMemo(
     () =>
       bajas
@@ -144,6 +143,12 @@ const { } = useAuth();
         .sort((a, b) => a.fecha_baja.localeCompare(b.fecha_baja)),
     [bajas, previousWeek]
   );
+  const weeklyFutureHires: Employee[] = useMemo(() => {
+    const today = localTodayIso();
+    return employees
+        .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek) && String(e.fecha_ingreso).localeCompare(today) > 0)
+        .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso)));
+  }, [employees, currentWeek]);
   const weeklyHiresSubtitle = useMemo(() => {
     const diff = weeklyHires.length - previousWeekHires.length;
     const sign = diff > 0 ? '+' : '';
@@ -582,6 +587,7 @@ const { } = useAuth();
         previousRangeLabel={previousWeekLabel}
         previousHires={previousWeekHires}
         previousBajas={previousWeekBajas}
+        futureHires={weeklyFutureHires}
       />
 
       <MissingPositionsModal
