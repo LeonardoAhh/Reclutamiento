@@ -95,6 +95,14 @@ export function WeeklyHiresModal({
     });
   }, [selectedHires]);
 
+  const sortedFutureHires = useMemo(() => {
+    return [...futureHires].sort((a, b) => {
+      const cmpArea = (a.area || '').localeCompare(b.area || '');
+      if (cmpArea !== 0) return cmpArea;
+      return (a.seccion || '').localeCompare(b.seccion || '');
+    });
+  }, [futureHires]);
+
   const grouped = groupByPuesto(selectedHires);
   const empty = selectedHires.length === 0 && selectedBajas.length === 0;
   const isCurrentTab = activeTab === 'current';
@@ -361,7 +369,7 @@ export function WeeklyHiresModal({
                       </tr>
                     </thead>
                     <tbody>
-                      {futureHires.map((e) => (
+                      {sortedFutureHires.map((e) => (
                         <tr key={e.num_empleado}>
                           <td className="weekly-hires-modal__cell-mono">
                             {e.num_empleado}
