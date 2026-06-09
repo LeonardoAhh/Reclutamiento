@@ -22,7 +22,7 @@
 
 .vacancy-report-modal__summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--spacing-md);
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--rounded-lg);
@@ -53,6 +53,10 @@
   color: var(--color-accent-amber);
 }
 
+.vacancy-report-modal__big-number--proximos {
+  color: var(--color-success);
+}
+
 .vacancy-report-modal__big-number--muted {
   color: var(--color-ink);
 }
@@ -65,13 +69,20 @@
 
 @media (max-width: 600px) {
   .vacancy-report-modal__summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   .vacancy-report-modal__stat + .vacancy-report-modal__stat {
-    border-left: 0;
+    border-left: 1px solid var(--color-hairline);
+    padding-left: var(--spacing-md);
+  }
+  .vacancy-report-modal__stat:nth-child(3),
+  .vacancy-report-modal__stat:nth-child(4) {
     border-top: 1px solid var(--color-hairline);
-    padding-left: 0;
     padding-top: var(--spacing-sm);
+  }
+  .vacancy-report-modal__stat:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
   }
 }
 
@@ -185,6 +196,11 @@
 .vacancy-report-modal__badge--backup {
   background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
   color: var(--color-accent-amber);
+}
+
+.vacancy-report-modal__badge--proximos {
+  background: color-mix(in srgb, var(--color-success) 18%, var(--color-canvas));
+  color: var(--color-success);
 }
 
 @media (max-width: 520px) {

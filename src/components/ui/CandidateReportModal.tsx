@@ -4,9 +4,6 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
 import {
   formatShortDate,
-  isoWeekOf,
-  isInIsoWeek,
-  formatIsoWeekRange,
 } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
@@ -44,17 +41,6 @@ interface PuestoRow {
   total: number;
 }
 
-interface ContratadoPuestoRow {
-  area: string;
-  puesto: string;
-  count: number;
-}
-
-interface ContratadoAreaGroup {
-  area: string;
-  rows: ContratadoPuestoRow[];
-  total: number;
-}
 
 interface AreaGroup {
   area: string;
@@ -135,40 +121,6 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
   return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
 }
 
-function buildContratadoGroups(contratados: Candidate[]): ContratadoAreaGroup[] {
-  const rowMap = new Map<string, ContratadoPuestoRow>();
-  for (const c of contratados) {
-    const area = c.area || '—';
-    const puesto = c.puesto || '—';
-    const key = `${area}||${puesto}`;
-    let row = rowMap.get(key);
-    if (!row) {
-      row = { area, puesto, count: 0 };
-      rowMap.set(key, row);
-    }
-    
-    // At this point, row is guaranteed to exist
-    row.count += 1;
-  }
-
-  const rows = Array.from(rowMap.values()).sort((a, b) => {
-    if (a.area !== b.area) return a.area.localeCompare(b.area, 'es');
-    return a.puesto.localeCompare(b.puesto, 'es');
-  });
-
-  const map = new Map<string, ContratadoAreaGroup>();
-  for (const row of rows) {
-    let group = map.get(row.area);
-    if (!group) {
-      group = { area: row.area, rows: [], total: 0 };
-      map.set(row.area, group);
-    }
-    group.rows.push(row);
-    group.total += row.count;
-  }
-  return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
-}
-
 function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
   const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, fp: 0, total: 0 });
   const acc = new Map<string, RecruiterRow>();
@@ -197,22 +149,14 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
 function buildWhatsappMessage(
   groups: AreaGroup[],
   recruiters: RecruiterRow[],
-  contratadoGroups: ContratadoAreaGroup[],
   totalActivos: number,
-  totalContratados: number,
-  contratadosWeekLabel: string | null,
 ): string {
   const fecha = formatShortDate(new Date().toISOString());
-  // Cuando el scope de contratados es "semana", el conteo refleja solo esa
-  // semana; lo aclaramos en el encabezado para que el lector no lo confunda
-  // con el total histórico.
-  const contratadosLabel = contratadosWeekLabel
-    ? `Contratados (sem ${contratadosWeekLabel}): ${totalContratados}`
-    : `Contratados: ${totalContratados}`;
+
   const lines: string[] = [
     `*Resumen de Candidatos* — ${fecha}`,
     '',
-    `Activos: ${totalActivos} · ${contratadosLabel} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)} · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}`,
+    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)} · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}`,
     '',
   ];
 
@@ -250,18 +194,6 @@ function buildWhatsappMessage(
     }
   }
 
-  if (contratadoGroups.length > 0) {
-    lines.push('');
-    lines.push(`*Contratados (${totalContratados})*`);
-    for (const g of contratadoGroups) {
-      lines.push('');
-      lines.push(`_${g.area}_ — ${g.total}`);
-      for (const r of g.rows) {
-        lines.push(`• ${r.puesto} — ${r.count}`);
-      }
-    }
-  }
-
   return lines.join('\n').trim();
 }
 
@@ -287,28 +219,14 @@ export function CandidateReportModal({
   onClose,
   candidates,
 }: CandidateReportModalProps) {
-  // Scope del bloque de contratados: 'all' = histórico, 'week' = semana ISO en
-  // curso (TZ MX) según `fecha_contratacion`. Los activos son un snapshot del
-  // pipeline y no se filtran por fecha.
-  const [scope, setScope] = useState<'all' | 'week'>('all');
-  const week = useMemo(() => isoWeekOf(new Date()), []);
-  const weekLabel = formatIsoWeekRange(week);
-
   const active = useMemo(
     () => candidates.filter((c) => ACTIVE_STATUSES.has(c.status)),
     [candidates],
   );
-  const contratados = useMemo(() => {
-    const all = candidates.filter((c) => c.status === 'contratado');
-    if (scope === 'all') return all;
-    return all.filter((c) => isInIsoWeek(c.fecha_contratacion, week));
-  }, [candidates, scope, week]);
   const groups = useMemo(() => buildPuestoGroups(active), [active]);
   const recruiters = useMemo(() => buildRecruiterRows(active), [active]);
-  const contratadoGroups = useMemo(() => buildContratadoGroups(contratados), [contratados]);
 
   const totalActivos = active.length;
-  const totalContratados = contratados.length;
   const totalPuestos = groups.reduce((sum, g) => sum + g.rows.length, 0);
   const reclutadoresActivos = recruiters.filter((r) => r.total > 0).length;
   const message = useMemo(
@@ -316,12 +234,9 @@ export function CandidateReportModal({
       buildWhatsappMessage(
         groups,
         recruiters,
-        contratadoGroups,
         totalActivos,
-        totalContratados,
-        scope === 'week' ? weekLabel : null,
       ),
-    [groups, recruiters, contratadoGroups, totalActivos, totalContratados, scope, weekLabel],
+    [groups, recruiters, totalActivos],
   );
 
   const [copied, setCopied] = useState(false);
@@ -335,7 +250,6 @@ export function CandidateReportModal({
   useEffect(() => {
     if (!isOpen) {
       setCopied(false);
-      setScope('all');
     }
   }, [isOpen]);
 
@@ -401,15 +315,6 @@ export function CandidateReportModal({
             </p>
           </div>
           <div className="candidate-report-modal__stat">
-            <div className="candidate-report-modal__big-number candidate-report-modal__big-number--success">
-              {totalContratados}
-            </div>
-            <p className="candidate-report-modal__big-label">
-              contratado{totalContratados === 1 ? '' : 's'}
-              {scope === 'week' && <> · semana</>}
-            </p>
-          </div>
-          <div className="candidate-report-modal__stat">
             <div className="candidate-report-modal__big-number candidate-report-modal__big-number--muted">
               {reclutadoresActivos}
             </div>
@@ -418,40 +323,6 @@ export function CandidateReportModal({
             </p>
           </div>
         </motion.header>
-
-        <div
-          className="candidate-report-modal__scope"
-          role="group"
-          aria-label="Alcance de contratados"
-        >
-          <span className="candidate-report-modal__scope-label">Contratados:</span>
-          <div className="candidate-report-modal__scope-toggle">
-            <button
-              type="button"
-              className={`candidate-report-modal__scope-btn ${
-                scope === 'all' ? 'candidate-report-modal__scope-btn--active' : ''
-              }`}
-              onClick={() => setScope('all')}
-              aria-pressed={scope === 'all'}
-            >
-              General
-            </button>
-            <button
-              type="button"
-              className={`candidate-report-modal__scope-btn ${
-                scope === 'week' ? 'candidate-report-modal__scope-btn--active' : ''
-              }`}
-              onClick={() => setScope('week')}
-              aria-pressed={scope === 'week'}
-              title={`Semana en curso (${weekLabel})`}
-            >
-              Semana en curso
-            </button>
-          </div>
-          {scope === 'week' && (
-            <span className="candidate-report-modal__scope-range">{weekLabel}</span>
-          )}
-        </div>
 
         {empty ? (
           <motion.p
@@ -576,54 +447,7 @@ export function CandidateReportModal({
               </ul>
             </motion.section>
 
-            {contratadoGroups.length > 0 && (
-              <motion.section
-                className="candidate-report-modal__contratados"
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                aria-label="Contratados por puesto"
-              >
-                <h3 className="candidate-report-modal__section-title">
-                  Contratados ({totalContratados})
-                  {scope === 'week' && (
-                    <span className="candidate-report-modal__section-note"> · sem {weekLabel}</span>
-                  )}
-                </h3>
-                {contratadoGroups.map((group) => (
-                  <motion.article
-                    key={group.area}
-                    className="candidate-report-modal__group"
-                    variants={itemVariants}
-                  >
-                    <header className="candidate-report-modal__group-header">
-                      <h4 className="candidate-report-modal__group-title">{group.area}</h4>
-                      <span className="candidate-report-modal__group-count">
-                        {group.total} contratado{group.total === 1 ? '' : 's'}
-                      </span>
-                    </header>
-                    <ul className="candidate-report-modal__rows">
-                      {group.rows.map((row) => (
-                        <motion.li
-                          key={`${row.area}|${row.puesto}`}
-                          className="candidate-report-modal__row"
-                          variants={itemVariants}
-                        >
-                          <div className="candidate-report-modal__row-main">
-                            <span className="candidate-report-modal__puesto">{row.puesto}</span>
-                          </div>
-                          <div className="candidate-report-modal__badges">
-                            <span className="candidate-report-modal__badge candidate-report-modal__badge--hired">
-                              {row.count}
-                            </span>
-                          </div>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </motion.article>
-                ))}
-              </motion.section>
-            )}
+
 
             <motion.section
               className="candidate-report-modal__preview"

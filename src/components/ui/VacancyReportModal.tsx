@@ -21,6 +21,7 @@ interface VacancyRow {
   vacantesAutorizada: number;
   vacantesBackup: number;
   totalVacantes: number;
+  proximosIngresos: number;
 }
 
 interface AreaGroup {
@@ -28,6 +29,7 @@ interface AreaGroup {
   rows: VacancyRow[];
   totalVacantes: number;
   totalBackup: number;
+  totalProximosIngresos: number;
 }
 
 /**
@@ -59,7 +61,7 @@ function decomposeVacancies(pos: PositionCoverage): {
 
 function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   const pendientes = positions
-    .filter((p) => p.vacantes > 0)
+    .filter((p) => p.vacantes > 0 || p.proximos_ingresos > 0)
     .map<VacancyRow>((p) => {
       const { vacantesAutorizada, vacantesBackup } = decomposeVacancies(p);
       return {
@@ -70,6 +72,7 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
         vacantesAutorizada,
         vacantesBackup,
         totalVacantes: p.vacantes,
+        proximosIngresos: p.proximos_ingresos,
       };
     })
     .sort((a, b) => {
@@ -82,12 +85,13 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   for (const row of pendientes) {
     let group = map.get(row.area);
     if (!group) {
-      group = { area: row.area, rows: [], totalVacantes: 0, totalBackup: 0 };
+      group = { area: row.area, rows: [], totalVacantes: 0, totalBackup: 0, totalProximosIngresos: 0 };
       map.set(row.area, group);
     }
     group.rows.push(row);
     group.totalVacantes += row.vacantesAutorizada;
     group.totalBackup += row.vacantesBackup;
+    group.totalProximosIngresos += row.proximosIngresos;
   }
   return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
 }
@@ -100,11 +104,17 @@ function buildWhatsappMessage(groups: AreaGroup[]): string {
   const fecha = formatShortDate(new Date().toISOString());
   const totalActivas = groups.reduce((sum, g) => sum + g.totalVacantes, 0);
   const totalBackup = groups.reduce((sum, g) => sum + g.totalBackup, 0);
+  const totalProximos = groups.reduce((sum, g) => sum + g.totalProximosIngresos, 0);
+  
+  const totalVacantes = totalActivas + totalBackup;
+  const vacantesNetas = groups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + Math.max(0, r.totalVacantes - r.proximosIngresos), 0), 0);
 
   const lines: string[] = [
     `*Resumen de Vacantes* — ${fecha}`,
     '',
-    `Total: ${totalActivas + totalBackup} (activas: ${totalActivas} · backup pendiente: ${totalBackup})`,
+    `Total vacantes: ${totalVacantes} (activas: ${totalActivas} · backup: ${totalBackup})`,
+    `Próximos ingresos: ${totalProximos}`,
+    `*Balance estimado: ${vacantesNetas} vacantes*`,
     '',
   ];
 
@@ -123,6 +133,9 @@ function buildWhatsappMessage(groups: AreaGroup[]): string {
       }
       if (r.vacantesBackup > 0) {
         detalle.push(`${r.vacantesBackup} backup`);
+      }
+      if (r.proximosIngresos > 0) {
+        detalle.push(`${r.proximosIngresos} próx. ingreso${r.proximosIngresos === 1 ? '' : 's'}`);
       }
       lines.push(`   ${detalle.join(' · ')}`);
     }
@@ -158,6 +171,7 @@ export function VacancyReportModal({
   const groups = useMemo(() => buildGroups(positions), [positions]);
   const totalActivas = groups.reduce((sum, g) => sum + g.totalVacantes, 0);
   const totalBackup = groups.reduce((sum, g) => sum + g.totalBackup, 0);
+  const totalProximos = groups.reduce((sum, g) => sum + g.totalProximosIngresos, 0);
   const totalPuestos = groups.reduce((sum, g) => sum + g.rows.length, 0);
   const message = useMemo(() => buildWhatsappMessage(groups), [groups]);
   const [copied, setCopied] = useState(false);
@@ -236,6 +250,14 @@ export function VacancyReportModal({
             </p>
           </div>
           <div className="vacancy-report-modal__stat">
+            <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--proximos">
+              {totalProximos}
+            </div>
+            <p className="vacancy-report-modal__big-label">
+              próximo{totalProximos === 1 ? '' : 's'} ingreso{totalProximos === 1 ? '' : 's'}
+            </p>
+          </div>
+          <div className="vacancy-report-modal__stat">
             <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--muted">
               {totalPuestos}
             </div>
@@ -273,6 +295,7 @@ export function VacancyReportModal({
                   <span className="vacancy-report-modal__group-count">
                     {group.totalVacantes} activa{group.totalVacantes === 1 ? '' : 's'}
                     {group.totalBackup > 0 && ` · ${group.totalBackup} backup`}
+                    {group.totalProximosIngresos > 0 && ` · ${group.totalProximosIngresos} próx. ingreso`}
                   </span>
                 </header>
                 <ul className="vacancy-report-modal__rows">
@@ -300,6 +323,11 @@ export function VacancyReportModal({
                         {row.vacantesBackup > 0 && (
                           <span className="vacancy-report-modal__badge vacancy-report-modal__badge--backup">
                             {row.vacantesBackup} backup
+                          </span>
+                        )}
+                        {row.proximosIngresos > 0 && (
+                          <span className="vacancy-report-modal__badge vacancy-report-modal__badge--proximos">
+                            {row.proximosIngresos} próx. ingreso
                           </span>
                         )}
                       </div>
