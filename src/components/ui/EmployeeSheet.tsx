@@ -8,7 +8,7 @@ import {
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
-import { Sheet } from './Sheet';
+import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import './EmployeeSheet.css';
@@ -339,28 +339,153 @@ export function EmployeeSheet({
     <p className="form-error" role="alert">{errorMsg}</p>
   ) : null;
 
-  const useWizard = isAdd && isMobile;
+  const icon = isAdd ? (
+    <UserPlus size={20} className="color-primary" aria-hidden="true" />
+  ) : (
+    <Trash2 size={20} className="color-error" aria-hidden="true" />
+  );
+  const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
+  const subtitle = isAdd ? 'Alta de Empleado' : 'Baja de Empleado';
 
+  const deleteContent = (
+    <div className="delete-flow">
+      <div className="delete-warning">
+        <p className="delete-warning__title">
+          ¿Registrar baja de{' '}
+          <span className="delete-warning__name">{form.nombre || 'este empleado'}</span>?
+        </p>
+        <dl className="delete-warning__meta">
+          <div className="delete-warning__meta-row">
+            <dt>Núm.</dt>
+            <dd>{form.num_empleado || '—'}</dd>
+          </div>
+          <div className="delete-warning__meta-row">
+            <dt>Puesto</dt>
+            <dd>{form.puesto || '—'}</dd>
+          </div>
+          <div className="delete-warning__meta-row">
+            <dt>Área</dt>
+            <dd>{form.area || '—'}</dd>
+          </div>
+        </dl>
+        <p className="delete-warning__sub">El empleado será eliminado de la plantilla activa y enviado a la tabla de Bajas.</p>
+      </div>
+
+      <div className="form-grid employee-sheet__baja-grid">
+        <div className="form-group">
+          <label htmlFor="baja-fecha">Fecha de Baja</label>
+          <input
+            id="baja-fecha"
+            type="date"
+            required
+            value={bajaForm.fecha_baja}
+            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="baja-tipo">Tipo de Baja</label>
+          <select
+            id="baja-tipo"
+            required
+            value={bajaForm.tipo_baja}
+            onChange={(e) => setBajaForm({ ...bajaForm, tipo_baja: e.target.value })}
+          >
+            <option value="Renuncia">Renuncia</option>
+            <option value="Ausentismo">Ausentismo</option>
+            <option value="Rescisión de Contrato">Rescisión de Contrato</option>
+            <option value="Termino de Contrato">Termino de Contrato</option>
+            <option value="Solo Inducción">Solo Inducción</option>
+          </select>
+        </div>
+        <div className="form-group form-group--span-2">
+          <label htmlFor="baja-motivo">Motivo de Baja</label>
+          <input
+            id="baja-motivo"
+            type="text"
+            required
+            placeholder="Especifica el motivo..."
+            value={bajaForm.motivo_baja}
+            onChange={(e) => setBajaForm({ ...bajaForm, motivo_baja: e.target.value })}
+            autoComplete="off"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  const actionButtons = (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      {isAdd ? (
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={!isAddValid || submitting}
+        >
+          {submitting ? 'Guardando…' : 'Guardar empleado'}
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="btn-danger"
+          disabled={!isDeleteValid || submitting}
+        >
+          {submitting ? 'Registrando baja…' : 'Registrar Baja'}
+        </button>
+      )}
+    </>
+  );
+
+  if (!isMobile) {
+    /* ── PC: modal centrado, igual que las demás páginas ── */
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        className="employee-sheet employee-modal"
+        icon={icon}
+        title={title}
+        subtitle={subtitle}
+      >
+        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+          {isAdd ? (
+            <div className="form-grid">
+              {fieldsIdentidad}
+              {fieldsPosicion}
+              {fieldsTransporte}
+            </div>
+          ) : (
+            deleteContent
+          )}
+          {errorNotice}
+          <footer className="modal-footer">{actionButtons}</footer>
+        </form>
+      </Modal>
+    );
+  }
+
+  /* ── Móvil: modal fullscreen (cohesivo con Nuevo Candidato) ── */
   return (
-    <Sheet
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="employee-sheet"
-      side="right"
-      width={isAdd ? 'md' : 'sm'}
-      icon={
-        isAdd ? (
-          <UserPlus size={20} className="color-primary" aria-hidden="true" />
-        ) : (
-          <Trash2 size={20} className="color-error" aria-hidden="true" />
-        )
-      }
-      title={isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado'}
-      subtitle={isAdd ? 'Alta de Empleado' : 'Baja de Empleado'}
+      className={`employee-sheet employee-modal modal-fullscreen-mobile${
+        isAdd ? ' modal-wizard-mobile' : ''
+      }`}
+      icon={icon}
+      title={title}
+      subtitle={subtitle}
     >
-      <form onSubmit={handleSubmit} className="employee-sheet__form" noValidate>
-        {useWizard ? (
-          /* ── Móvil: alta por pasos ── */
+      {isAdd ? (
+        /* Alta por pasos en móvil */
+        <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
           <FormWizard
             onCancel={onClose}
             submitting={submitting}
@@ -393,114 +518,14 @@ export function EmployeeSheet({
               },
             ]}
           />
-        ) : (
-          <>
-            <div className="sheet__body">
-            {isAdd ? (
-              <div className="form-grid">
-                {fieldsIdentidad}
-                {fieldsPosicion}
-                {fieldsTransporte}
-              </div>
-            ) : (
-              <div className="delete-flow">
-                <div className="delete-warning">
-                  <p className="delete-warning__title">
-                    ¿Registrar baja de{' '}
-                    <span className="delete-warning__name">{form.nombre || 'este empleado'}</span>?
-                  </p>
-                  <dl className="delete-warning__meta">
-                    <div className="delete-warning__meta-row">
-                      <dt>Núm.</dt>
-                      <dd>{form.num_empleado || '—'}</dd>
-                    </div>
-                    <div className="delete-warning__meta-row">
-                      <dt>Puesto</dt>
-                      <dd>{form.puesto || '—'}</dd>
-                    </div>
-                    <div className="delete-warning__meta-row">
-                      <dt>Área</dt>
-                      <dd>{form.area || '—'}</dd>
-                    </div>
-                  </dl>
-                  <p className="delete-warning__sub">El empleado será eliminado de la plantilla activa y enviado a la tabla de Bajas.</p>
-                </div>
-
-                <div className="form-grid employee-sheet__baja-grid">
-                  <div className="form-group">
-                    <label htmlFor="baja-fecha">Fecha de Baja</label>
-                    <input
-                      id="baja-fecha"
-                      type="date"
-                      required
-                      value={bajaForm.fecha_baja}
-                      onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="baja-tipo">Tipo de Baja</label>
-                    <select
-                      id="baja-tipo"
-                      required
-                      value={bajaForm.tipo_baja}
-                      onChange={(e) => setBajaForm({ ...bajaForm, tipo_baja: e.target.value })}
-                    >
-                      <option value="Renuncia">Renuncia</option>
-                      <option value="Ausentismo">Ausentismo</option>
-                      <option value="Rescisión de Contrato">Rescisión de Contrato</option>
-                      <option value="Termino de Contrato">Termino de Contrato</option>
-                      <option value="Solo Inducción">Solo Inducción</option>
-                    </select>
-                  </div>
-                  <div className="form-group form-group--span-2">
-                    <label htmlFor="baja-motivo">Motivo de Baja</label>
-                    <input
-                      id="baja-motivo"
-                      type="text"
-                      required
-                      placeholder="Especifica el motivo..."
-                      value={bajaForm.motivo_baja}
-                      onChange={(e) => setBajaForm({ ...bajaForm, motivo_baja: e.target.value })}
-                      autoComplete="off"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {errorNotice}
-
-            </div>
-            <footer className="sheet__footer">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={onClose}
-                disabled={submitting}
-              >
-                Cancelar
-              </button>
-              {isAdd ? (
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={!isAddValid || submitting}
-                >
-                  {submitting ? 'Guardando…' : 'Guardar empleado'}
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="btn-danger"
-                  disabled={!isDeleteValid || submitting}
-                >
-                  {submitting ? 'Registrando baja…' : 'Registrar Baja'}
-                </button>
-              )}
-            </footer>
-          </>
-        )}
-      </form>
-    </Sheet>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+          {deleteContent}
+          {errorNotice}
+          <footer className="modal-footer">{actionButtons}</footer>
+        </form>
+      )}
+    </Modal>
   );
 }

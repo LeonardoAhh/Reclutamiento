@@ -43,22 +43,3 @@
     grid-column: auto;
   }
 }
-
-/* ── Variante wizard (móvil) ──
-   En móvil el alta/edición se hace por pasos (FormWizard). El modal
-   fullscreen pasa a layout de columna: header fijo, cuerpo del wizard
-   scrollable y footer de navegación anclado abajo. */
-@media (max-width: 767px) {
-  .modal-content.candidate-modal--wizard {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .candidate-modal--wizard .candidate-modal__wizard-form {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-}

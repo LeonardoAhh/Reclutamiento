@@ -393,7 +393,7 @@ export function CandidateModal({
       isOpen={isOpen}
       onClose={onClose}
       className={`candidate-modal modal-fullscreen-mobile${
-        useWizard ? ' candidate-modal--wizard' : ''
+        useWizard ? ' modal-wizard-mobile' : ''
       }`}
       icon={icon}
       title={title}
@@ -403,7 +403,7 @@ export function CandidateModal({
         /* ── Móvil: registro por pasos ── */
         <form
           onSubmit={handleSubmit}
-          className="candidate-modal__wizard-form"
+          className="modal-wizard-form"
           noValidate
         >
           <FormWizard

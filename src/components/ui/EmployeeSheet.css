@@ -1,4 +1,6 @@
 /* EmployeeSheet — add/delete employee. Tokens-only.
+   PC: modal centrado (`.employee-modal`). Móvil: modal fullscreen con
+   wizard por pasos (clases genéricas `modal-wizard-mobile`).
    Includes shared `.delete-warning__*` y `.hire-hint` reutilizados por
    otros componentes (VacancySheet, CandidateModal, HireCandidateModal).
    Conserva `.modal-content.employee-modal` para que `HireCandidateModal`
@@ -6,14 +8,6 @@
 
 .modal-content.employee-modal {
   max-width: 560px;
-}
-
-/* ── Layout interno del Sheet ── */
-.employee-sheet__form {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 
 /* Grid mobile-first: 1 columna por defecto, 2 columnas en ≥768px. */

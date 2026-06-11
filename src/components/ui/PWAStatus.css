@@ -48,8 +48,12 @@
 .pwa-update {
   position: fixed;
   bottom: calc(var(--safe-area-bottom) + var(--spacing-lg));
-  left: 50%;
-  transform: translateX(-50%);
+  /* Centrado con left/right + margin auto (NO transform): Framer Motion
+     anima `transform` (y/scale) y pisaría un translateX(-50%) del CSS,
+     dejando la card descentrada y cortada en móvil. */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
   z-index: 1100;
 
   /* Width: capped at 460 px, always respects viewport edges */

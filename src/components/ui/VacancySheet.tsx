@@ -29,7 +29,6 @@ import {
   addBusinessDays,
   TZ_MX,
 } from '@/lib/dates';
-import { Sheet } from './Sheet';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -125,7 +124,6 @@ export function VacancySheet({
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const useModal = !isMobile;
 
   const { positions } = usePositions();
   const areas = useMemo(
@@ -563,7 +561,7 @@ export function VacancySheet({
     </div>
   );
 
-  if (useModal) {
+  if (!isMobile) {
     /* ── PC: modal centrado (diseño actual, sin cambios) ── */
     const headerActions = (
       <>
@@ -613,41 +611,39 @@ export function VacancySheet({
     );
   }
 
-  /* ── Móvil: bottom sheet ── */
+  /* ── Móvil: modal fullscreen (cohesivo con Nuevo Candidato) ── */
   return (
-    <Sheet
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="vacancy-sheet"
-      side="right"
-      width={isDelete ? 'sm' : 'md'}
       icon={icon}
       title={title}
       subtitle={subtitle}
+      className={`vacancy-sheet modal-fullscreen-mobile${
+        !isDelete ? ' modal-wizard-mobile' : ''
+      }`}
     >
-      <form onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
-        {isDelete ? (
-          <>
-            <div className="sheet__body">
-              {deleteContent}
-              {errorNotice}
-            </div>
-            <footer className="sheet__footer">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={onClose}
-                disabled={submitting}
-              >
-                Cancelar
-              </button>
-              <button type="submit" className="btn-danger" disabled={submitting}>
-                {submitting ? 'Eliminando…' : 'Eliminar'}
-              </button>
-            </footer>
-          </>
-        ) : (
-          /* Alta/edición por pasos en móvil */
+      {isDelete ? (
+        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+          {deleteContent}
+          {errorNotice}
+          <footer className="modal-footer">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={onClose}
+              disabled={submitting}
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="btn-danger" disabled={submitting}>
+              {submitting ? 'Eliminando…' : 'Eliminar'}
+            </button>
+          </footer>
+        </form>
+      ) : (
+        /* Alta/edición por pasos en móvil */
+        <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
           <FormWizard
             onCancel={onClose}
             submitting={submitting}
@@ -679,8 +675,8 @@ export function VacancySheet({
               },
             ]}
           />
-        )}
-      </form>
-    </Sheet>
+        </form>
+      )}
+    </Modal>
   );
 }
