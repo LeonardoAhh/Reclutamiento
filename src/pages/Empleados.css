@@ -8,7 +8,10 @@
   padding-bottom: var(--spacing-xxl);
 }
 
-/* ── Hero ── */
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+
 .empleados__hero {
   display: flex;
   align-items: flex-end;
@@ -32,7 +35,10 @@
   color: var(--color-muted);
 }
 
-/* ── Búsqueda ── */
+/* ══════════════════════════════════════════
+   BÚSQUEDA
+══════════════════════════════════════════ */
+
 .empleados__search {
   display: inline-flex;
   align-items: center;
@@ -69,7 +75,10 @@
   font-size: var(--type-body-sm-size);
 }
 
-/* ── Banner offline ── */
+/* ══════════════════════════════════════════
+   BANNER OFFLINE
+══════════════════════════════════════════ */
+
 .empleados__banner {
   display: flex;
   align-items: center;
@@ -83,7 +92,10 @@
   font-size: var(--type-caption-md-size);
 }
 
-/* ── Vacío ── */
+/* ══════════════════════════════════════════
+   VACÍO
+══════════════════════════════════════════ */
+
 .empleados__empty {
   display: flex;
   flex-direction: column;
@@ -99,7 +111,11 @@
   font-size: var(--type-body-md-size);
 }
 
-/* ── Conteo pill (compartido por rail/detalle/accordion) ── */
+/* ══════════════════════════════════════════
+   CONTEO PILL
+   Compartido por rail / accordion
+══════════════════════════════════════════ */
+
 .empleados__rail-count,
 .empleados__acc-count {
   flex-shrink: 0;
@@ -111,19 +127,27 @@
   color: var(--color-on-dark);
   background: var(--color-ink);
   border-radius: var(--rounded-pill);
+  line-height: 1.6;
 }
 
-/* ─────────────────────────────────────────────
-   PC — Master / detail
-───────────────────────────────────────────── */
+/* El pill del rail activo hereda el acento */
+.empleados__rail-item--active .empleados__rail-count {
+  background: var(--color-primary);
+}
+
+/* ══════════════════════════════════════════
+   PC — MASTER / DETAIL
+══════════════════════════════════════════ */
+
 .empleados__layout {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
   gap: var(--spacing-lg);
   align-items: start;
 }
 
-/* Rail de departamentos: sticky, scroll propio. */
+/* ── Rail de departamentos ── */
+
 .empleados__rail {
   position: sticky;
   top: calc(var(--header-height, 56px) + var(--spacing-md));
@@ -133,6 +157,17 @@
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+  /* Scrollbar discreta */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
+.empleados__rail::-webkit-scrollbar {
+  width: 4px;
+}
+.empleados__rail::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
 }
 
 .empleados__rail-list {
@@ -147,7 +182,7 @@
   justify-content: space-between;
   gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 7px var(--spacing-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   text-align: left;
@@ -168,20 +203,26 @@
   outline: none;
 }
 
+.empleados__rail-item:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
 .empleados__rail-item--active {
   color: var(--color-ink);
-  background: var(--color-surface-card);
+  background: rgb(var(--color-primary-rgb) / 0.08);
   font-weight: 600;
 }
 
 .empleados__rail-name {
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Panel de detalle. */
+/* ── Panel de detalle ── */
+
 .empleados__detail {
   display: flex;
   flex-direction: column;
@@ -194,12 +235,13 @@
 
 .empleados__detail-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface-soft);
   border-bottom: 1px solid var(--color-hairline-soft);
+  min-height: 48px;
 }
 
 .empleados__detail-name {
@@ -210,22 +252,39 @@
   color: var(--color-ink);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
+  /* Truncado si el nombre es muy largo */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .empleados__detail-count {
   flex-shrink: 0;
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
+  white-space: nowrap;
 }
 
 .empleados__detail-body {
   max-height: calc(100vh - var(--header-height, 56px) - 160px);
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
 }
 
-/* ─────────────────────────────────────────────
-   Móvil — Accordion
-───────────────────────────────────────────── */
+.empleados__detail-body::-webkit-scrollbar {
+  width: 4px;
+}
+.empleados__detail-body::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
+}
+
+/* ══════════════════════════════════════════
+   MÓVIL — ACCORDION
+══════════════════════════════════════════ */
+
 .empleados__accordion {
   display: flex;
   flex-direction: column;
@@ -255,6 +314,8 @@
   font-family: var(--font-body);
   text-align: left;
   transition: background var(--transition-fast);
+  min-height: 48px; /* tap target cómodo */
+  box-sizing: border-box;
 }
 
 .empleados__acc-trigger:hover,
@@ -263,8 +324,12 @@
   outline: none;
 }
 
+.empleados__acc-trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
 .empleados__acc-name {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -290,10 +355,16 @@
   border-top: 1px solid var(--color-hairline-soft);
 }
 
-/* ── Tarjetas de empleado (móvil) ── */
+/* ══════════════════════════════════════════
+   TARJETAS DE EMPLEADO (móvil)
+══════════════════════════════════════════ */
+
 .empleados__card-list {
   display: flex;
   flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .empleados__card {
@@ -302,6 +373,8 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--color-hairline-soft);
+  min-height: 48px;
+  box-sizing: border-box;
 }
 
 .empleados__card:last-child {
@@ -313,7 +386,7 @@
 }
 
 .empleados__card-main {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -322,25 +395,53 @@
 
 .empleados__card-top {
   display: flex;
-  align-items: baseline;
+  align-items: center; /* centrado vertical limpio */
   gap: var(--spacing-xs);
   min-width: 0;
+  width: 100%;
+}
+
+/* Número: ancho fijo para que nunca empuje el nombre */
+.empleados__card-top .empleados__cell-num {
+  flex-shrink: 0;
+  min-width: 36px; /* cubre hasta 5 dígitos */
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  padding: 1px 5px;
+  text-align: center;
+  line-height: 1.5;
 }
 
 .empleados__card-top .empleados__name {
-  display: inline;
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: block;
+  font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.4;
 }
 
 .empleados__card .empleados__puesto {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Sangría alineada con el nombre (36px badge + gap) */
+  padding-left: calc(36px + var(--spacing-xs));
 }
 
-/* ── Tabla ── */
+/* ══════════════════════════════════════════
+   TABLA (PC)
+══════════════════════════════════════════ */
+
 .empleados__table-wrapper {
   overflow-x: auto;
 }
@@ -360,15 +461,25 @@
 }
 
 .empleados__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-canvas);
   font-size: var(--type-caption-md-size);
   font-weight: 600;
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  /* Separador inferior visible al hacer scroll */
+  box-shadow: 0 1px 0 var(--color-hairline-soft);
 }
 
 .empleados__table tbody tr:last-child td {
   border-bottom: none;
+}
+
+.empleados__table tbody tr {
+  transition: background var(--transition-fast);
 }
 
 .empleados__table tbody tr:hover {
@@ -379,16 +490,36 @@
   background: var(--color-vacancy-tint);
 }
 
+.empleados__row--incapacidad:hover {
+  background: var(--color-vacancy-tint); /* no pierde el tinte al hover */
+  filter: brightness(0.97);
+}
+
+/* ══════════════════════════════════════════
+   CELDA — número de empleado
+══════════════════════════════════════════ */
+
 .empleados__cell-num {
   font-family: var(--font-code);
+  font-size: var(--type-caption-md-size);
   color: var(--color-body-strong);
   white-space: nowrap;
+  /* En tabla: columna angosta */
+  width: 1%;
 }
+
+/* ══════════════════════════════════════════
+   TEXTOS DE EMPLEADO
+══════════════════════════════════════════ */
 
 .empleados__name {
   display: block;
   color: var(--color-ink);
   font-weight: 500;
+  /* Evita desbordamiento en tabla con columna estrecha */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .empleados__puesto {
@@ -403,21 +534,56 @@
   color: var(--color-muted);
 }
 
+/* ══════════════════════════════════════════
+   TAG INCAPACIDAD
+══════════════════════════════════════════ */
+
 .empleados__incapacidad-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   margin-top: 4px;
-  padding: 1px var(--spacing-xs);
+  padding: 2px var(--spacing-xs);
   font-size: 11px;
   font-weight: 500;
   color: var(--color-accent-amber);
   background: rgb(var(--color-accent-amber-rgb) / 0.14);
   border-radius: var(--rounded-pill);
+  white-space: nowrap;
 }
+
+/* ══════════════════════════════════════════
+   COLUMNA ACCIONES
+══════════════════════════════════════════ */
 
 .empleados__col-actions {
   width: 1%;
   white-space: nowrap;
   text-align: right;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — móvil (≤ 767px)
+══════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  .empleados__hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .empleados__search {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Ajuste de padding en cards para pantallas pequeñas */
+  .empleados__card {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .empleados__acc-trigger {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
 }
