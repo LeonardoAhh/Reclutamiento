@@ -1,7 +1,7 @@
   import { useMemo, useState } from 'react';
   import { useAuth } from '@/hooks/useAuth';
   import { useMediaQuery } from '@/hooks/useMediaQuery';
-  import { ChevronDown, Eye } from 'lucide-react';
+  import { Eye } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
   import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
   import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
