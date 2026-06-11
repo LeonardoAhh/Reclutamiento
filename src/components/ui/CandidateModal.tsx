@@ -5,6 +5,8 @@ import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
+import { FormWizard } from './FormWizard';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import './CandidateModal.css';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 
@@ -87,6 +89,7 @@ export function CandidateModal({
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const { positions } = usePositions();
   const areas = useMemo(
@@ -199,246 +202,299 @@ export function CandidateModal({
       ? 'Actualizar Candidato'
       : 'Registrar Candidato';
 
+  /* ── Campos agrupados para componer ambos layouts ────────────────────
+     PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
+
+  const fieldsContacto = (
+    <>
+      <div className="form-group form-group--span-2">
+        <label htmlFor="cand-nombre">Nombre completo</label>
+        <input
+          id="cand-nombre"
+          type="text"
+          required
+          value={form.nombre}
+          onChange={(e) =>
+            setForm({ ...form, nombre: e.target.value.toUpperCase() })
+          }
+          placeholder="APELLIDOS NOMBRE"
+          autoComplete="off"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-telefono">Teléfono</label>
+        <input
+          id="cand-telefono"
+          type="tel"
+          inputMode="tel"
+          value={form.telefono}
+          onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+          placeholder="442 123 4567"
+          autoComplete="off"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-email">Email</label>
+        <input
+          id="cand-email"
+          type="email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          placeholder="candidato@correo.com"
+          autoComplete="off"
+        />
+      </div>
+    </>
+  );
+
+  const fieldsPosicion = (
+    <>
+      <div className="form-group">
+        <label htmlFor="cand-area">Área</label>
+        <select
+          id="cand-area"
+          required
+          value={form.area}
+          onChange={(e) =>
+            setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
+          }
+        >
+          <option value="">Seleccione área…</option>
+          {areas.map((a) => (
+            <option key={a} value={a}>{a}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-seccion">Sección</label>
+        <select
+          id="cand-seccion"
+          value={form.seccion}
+          onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+          disabled={!form.area}
+        >
+          <option value="">Seleccione sección…</option>
+          {sectionsForArea.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group form-group--span-2">
+        <label htmlFor="cand-puesto">Puesto</label>
+        <select
+          id="cand-puesto"
+          required
+          value={form.puesto}
+          onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+          disabled={!form.seccion}
+        >
+          <option value="">Seleccione puesto…</option>
+          {puestosForSection.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+      </div>
+    </>
+  );
+
+  const fieldsProceso = (
+    <>
+      <div className="form-group">
+        <label htmlFor="cand-status">Proceso</label>
+        <select
+          id="cand-status"
+          value={form.status}
+          onChange={(e) =>
+            setForm({ ...form, status: e.target.value as CandidateStatus })
+          }
+        >
+          {CANDIDATE_STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {CANDIDATE_STATUS_LABEL[s]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-reclutador">Reclutador</label>
+        <input
+          id="cand-reclutador"
+          type="text"
+          value={form.reclutador}
+          onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
+          placeholder="Quién lleva el proceso"
+          autoComplete="off"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-source">Fuente</label>
+        <input
+          id="cand-source"
+          type="text"
+          value={form.source}
+          onChange={(e) => setForm({ ...form, source: e.target.value })}
+          placeholder="LinkedIn · Indeed · Referido…"
+          autoComplete="off"
+          list="cand-source-suggestions"
+        />
+        <datalist id="cand-source-suggestions">
+          {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
+        </datalist>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-fecha">Fecha de contacto</label>
+        <input
+          id="cand-fecha"
+          type="date"
+          value={form.fecha_aplicacion}
+          onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
+        />
+      </div>
+
+      {/* Fecha entrevista sola, span-2 para no quedar huérfana */}
+      <div className="form-group form-group--span-2">
+        <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
+        <input
+          id="cand-fecha-cita"
+          type="date"
+          value={form.fecha_cita}
+          onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
+        />
+      </div>
+
+      <div className="form-group form-group--span-2">
+        <label htmlFor="cand-notas">Notas</label>
+        <textarea
+          id="cand-notas"
+          rows={3}
+          value={form.notas}
+          onChange={(e) => setForm({ ...form, notas: e.target.value })}
+          placeholder="Detalles breves"
+        />
+      </div>
+    </>
+  );
+
+  const errorNotice = errorMsg ? (
+    <p className="form-error" role="alert">{errorMsg}</p>
+  ) : null;
+
+  const useWizard = !isDelete && isMobile;
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidate-modal modal-fullscreen-mobile"
+      className={`candidate-modal modal-fullscreen-mobile${
+        useWizard ? ' candidate-modal--wizard' : ''
+      }`}
       icon={icon}
       title={title}
       subtitle={subtitle}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
-        {isDelete ? (
-          <div className="delete-warning">
-            <p className="delete-warning__title">
-              ¿Eliminar a{' '}
-              <span className="delete-warning__name">{form.nombre || 'este candidato'}</span>?
-            </p>
-            <dl className="delete-warning__meta">
-              <div className="delete-warning__meta-row">
-                <dt>Puesto</dt>
-                <dd>{form.puesto || '—'}</dd>
-              </div>
-              <div className="delete-warning__meta-row">
-                <dt>Área</dt>
-                <dd>{form.area || '—'}</dd>
-              </div>
-              <div className="delete-warning__meta-row">
-                <dt>Estado</dt>
-                <dd>{CANDIDATE_STATUS_LABEL[form.status]}</dd>
-              </div>
-            </dl>
-            <p className="delete-warning__sub">
-              Esta acción no se puede deshacer.
-            </p>
-          </div>
-        ) : (
-          <div className="form-grid">
-
-            {/* Fila 1 */}
-            <div className="form-group form-group--span-2">
-              <label htmlFor="cand-nombre">Nombre completo</label>
-              <input
-                id="cand-nombre"
-                type="text"
-                required
-                value={form.nombre}
-                onChange={(e) =>
-                  setForm({ ...form, nombre: e.target.value.toUpperCase() })
-                }
-                placeholder="APELLIDOS NOMBRE"
-                autoComplete="off"
-              />
-            </div>
-
-            {/* Fila 2 */}
-            <div className="form-group">
-              <label htmlFor="cand-telefono">Teléfono</label>
-              <input
-                id="cand-telefono"
-                type="tel"
-                inputMode="tel"
-                value={form.telefono}
-                onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-                placeholder="442 123 4567"
-                autoComplete="off"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="cand-email">Email</label>
-              <input
-                id="cand-email"
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="candidato@correo.com"
-                autoComplete="off"
-              />
-            </div>
-
-            {/* Fila 3 */}
-            <div className="form-group">
-              <label htmlFor="cand-area">Área</label>
-              <select
-                id="cand-area"
-                required
-                value={form.area}
-                onChange={(e) =>
-                  setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-                }
-              >
-                <option value="">Seleccione área…</option>
-                {areas.map((a) => (
-                  <option key={a} value={a}>{a}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="cand-seccion">Sección</label>
-              <select
-                id="cand-seccion"
-                value={form.seccion}
-                onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
-                disabled={!form.area}
-              >
-                <option value="">Seleccione sección…</option>
-                {sectionsForArea.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Fila 4 */}
-            <div className="form-group form-group--span-2">
-              <label htmlFor="cand-puesto">Puesto</label>
-              <select
-                id="cand-puesto"
-                required
-                value={form.puesto}
-                onChange={(e) => setForm({ ...form, puesto: e.target.value })}
-                disabled={!form.seccion}
-              >
-                <option value="">Seleccione puesto…</option>
-                {puestosForSection.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Fila 5 */}
-            <div className="form-group">
-              <label htmlFor="cand-status">Proceso</label>
-              <select
-                id="cand-status"
-                value={form.status}
-                onChange={(e) =>
-                  setForm({ ...form, status: e.target.value as CandidateStatus })
-                }
-              >
-                {CANDIDATE_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {CANDIDATE_STATUS_LABEL[s]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="cand-reclutador">Reclutador</label>
-              <input
-                id="cand-reclutador"
-                type="text"
-                value={form.reclutador}
-                onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
-                placeholder="Quién lleva el proceso"
-                autoComplete="off"
-              />
-            </div>
-
-            {/* Fila 6 */}
-            <div className="form-group">
-              <label htmlFor="cand-source">Fuente</label>
-              <input
-                id="cand-source"
-                type="text"
-                value={form.source}
-                onChange={(e) => setForm({ ...form, source: e.target.value })}
-                placeholder="LinkedIn · Indeed · Referido…"
-                autoComplete="off"
-                list="cand-source-suggestions"
-              />
-              <datalist id="cand-source-suggestions">
-                {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
-              </datalist>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="cand-fecha">Fecha de contacto</label>
-              <input
-                id="cand-fecha"
-                type="date"
-                value={form.fecha_aplicacion}
-                onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
-              />
-            </div>
-
-            {/* Fila 7 — fecha entrevista sola, span-2 para no quedar huérfana */}
-            <div className="form-group form-group--span-2">
-              <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
-              <input
-                id="cand-fecha-cita"
-                type="date"
-                value={form.fecha_cita}
-                onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
-              />
-            </div>
-
-            {/* Fila 8 */}
-            <div className="form-group form-group--span-2">
-              <label htmlFor="cand-notas">Notas</label>
-              <textarea
-                id="cand-notas"
-                rows={3}
-                value={form.notas}
-                onChange={(e) => setForm({ ...form, notas: e.target.value })}
-                placeholder="Detalles breves"
-              />
-            </div>
-
-          </div>
-        )}
-
-        {errorMsg && (
-          <p className="form-error" role="alert">{errorMsg}</p>
-        )}
-
-        <footer className="modal-footer">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
+      {useWizard ? (
+        /* ── Móvil: registro por pasos ── */
+        <form
+          onSubmit={handleSubmit}
+          className="candidate-modal__wizard-form"
+          noValidate
+        >
+          <FormWizard
+            onCancel={onClose}
+            submitting={submitting}
+            submitDisabled={!isFormValid}
+            submitLabel="Guardar"
+            submittingLabel="Guardando…"
+            notice={errorNotice}
+            steps={[
+              {
+                id: 'contacto',
+                title: 'Contacto',
+                isValid: form.nombre.trim().length > 0,
+                content: <div className="form-grid">{fieldsContacto}</div>,
+              },
+              {
+                id: 'posicion',
+                title: 'Posición',
+                isValid: form.area.length > 0 && form.puesto.length > 0,
+                content: <div className="form-grid">{fieldsPosicion}</div>,
+              },
+              {
+                id: 'proceso',
+                title: 'Proceso',
+                content: <div className="form-grid">{fieldsProceso}</div>,
+              },
+            ]}
+          />
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} className="modal-body" noValidate>
           {isDelete ? (
-            <button type="submit" className="btn-danger" disabled={submitting}>
-              {submitting ? 'Eliminando…' : 'Eliminar'}
-            </button>
+            <div className="delete-warning">
+              <p className="delete-warning__title">
+                ¿Eliminar a{' '}
+                <span className="delete-warning__name">{form.nombre || 'este candidato'}</span>?
+              </p>
+              <dl className="delete-warning__meta">
+                <div className="delete-warning__meta-row">
+                  <dt>Puesto</dt>
+                  <dd>{form.puesto || '—'}</dd>
+                </div>
+                <div className="delete-warning__meta-row">
+                  <dt>Área</dt>
+                  <dd>{form.area || '—'}</dd>
+                </div>
+                <div className="delete-warning__meta-row">
+                  <dt>Estado</dt>
+                  <dd>{CANDIDATE_STATUS_LABEL[form.status]}</dd>
+                </div>
+              </dl>
+              <p className="delete-warning__sub">
+                Esta acción no se puede deshacer.
+              </p>
+            </div>
           ) : (
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={!isFormValid || submitting}
-            >
-              {submitting ? 'Guardando…' : isAdd ? 'Guardar' : 'Guardar'}
-            </button>
+            <div className="form-grid">
+              {fieldsContacto}
+              {fieldsPosicion}
+              {fieldsProceso}
+            </div>
           )}
-        </footer>
-      </form>
+
+          {errorNotice}
+
+          <footer className="modal-footer">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={onClose}
+              disabled={submitting}
+            >
+              Cancelar
+            </button>
+            {isDelete ? (
+              <button type="submit" className="btn-danger" disabled={submitting}>
+                {submitting ? 'Eliminando…' : 'Eliminar'}
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={!isFormValid || submitting}
+              >
+                {submitting ? 'Guardando…' : isAdd ? 'Guardar' : 'Guardar'}
+              </button>
+            )}
+          </footer>
+        </form>
+      )}
     </Modal>
   );
 }
