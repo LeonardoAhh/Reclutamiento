@@ -36,3 +36,9 @@ coverage/
 NODE JS/
 Node/
 .blackboxcli/
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
