@@ -102,7 +102,7 @@ export function Modal({
         <header className="modal-header">
           <div className="modal-title">
             {icon}
-            <div>
+            <div className="modal-title__text">
               <h2 id={labelledById}>{title}</h2>
               {subtitle && <span className="modal-title__sub">{subtitle}</span>}
             </div>

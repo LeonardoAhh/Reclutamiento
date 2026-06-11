@@ -1045,6 +1045,7 @@ code:not(pre code) {
   align-items: flex-start;
   gap: var(--spacing-sm);
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .modal-title > svg,
@@ -1053,12 +1054,19 @@ code:not(pre code) {
   margin-top: 2px;
 }
 
+.modal-title > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .modal-title h2 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
   line-height: 1.3;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .modal-title__sub {
