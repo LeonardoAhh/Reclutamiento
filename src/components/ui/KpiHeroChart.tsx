@@ -1,3 +1,4 @@
+
 /**
  * KpiHeroChart.tsx
  * Gráfica compuesta (Barras Agrupadas + Línea) para el dashboard de KPIs de Reclutamiento.
@@ -10,6 +11,7 @@
  */
 
 import { useMemo, useId } from 'react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import {
   ResponsiveContainer,
   Bar,
@@ -102,7 +104,7 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
         style={{
           margin: '0 0 8px',
           fontSize: presentation ? 15 : 12,
-          fontWeight: 600, // caption-uppercase styling
+          fontWeight: 600,
           color: PALETTE.textPrimary,
           letterSpacing: 'var(--type-caption-up-tracking)',
           textTransform: 'uppercase',
@@ -147,16 +149,6 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
       })}
     </div>
   );
-}
-
-// ─────────────────────────────────────────────
-// Leyenda personalizada
-// ─────────────────────────────────────────────
-
-interface LegendPayloadItem {
-  value: string;
-  color: string;
-  dataKey?: string;
 }
 
 // ─────────────────────────────────────────────
@@ -248,14 +240,14 @@ function formatYRight(value: number): string {
 interface DayCardProps {
   data: DailyKpiData;
   presentation: boolean;
+  expanded?: boolean;
 }
 
-function DayCard({ data, presentation }: DayCardProps) {
+function DayCard({ data, presentation, expanded = false }: DayCardProps) {
   const isCritical = data.cobertura < 90;
   const hasAlta = data.vacantesPlantilla > 10 || data.vacantesBackup > 12;
-  const fontSize = presentation ? 16 : 13;
-  const numFontSize = presentation ? 18 : 16;
-  const padding = presentation ? '12px 10px' : '8px 6px';
+  const numFontSize = presentation ? 18 : expanded ? 24 : 14;
+  const padding = presentation ? '12px 10px' : expanded ? '14px 16px' : '6px 4px';
 
   return (
     <div
@@ -266,50 +258,71 @@ function DayCard({ data, presentation }: DayCardProps) {
         padding,
         textAlign: 'center',
         transition: 'border-color var(--transition-fast)',
+        minWidth: 0,
+        overflow: 'hidden',
       }}
     >
+      {/* Día */}
       <p
         style={{
-          fontSize: presentation ? 13 : 11,
+          fontSize: presentation ? 13 : expanded ? 12 : 9,
           fontWeight: 600,
           color: PALETTE.textMuted,
           margin: '0 0 4px',
           textTransform: 'uppercase',
           letterSpacing: 'var(--type-caption-up-tracking)',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
         }}
       >
         {data.day}
       </p>
+
+      {/* % cobertura */}
       <p
         style={{
           fontSize: numFontSize,
           fontWeight: 500,
-          margin: '0 0 3px',
+          margin: '0 0 4px',
           color: isCritical ? PALETTE.red : PALETTE.ink,
           lineHeight: 1,
+          whiteSpace: 'nowrap',
         }}
       >
         {data.cobertura.toFixed(1)}%
       </p>
+
+      {/* ✅ Vacantes: whiteSpace nowrap + textOverflow ellipsis, SIN wordBreak */}
       <p
         style={{
-          fontSize: fontSize,
+          fontSize: presentation ? 13 : expanded ? 12 : 9,
+          margin: '0 0 1px',
+          fontWeight: 400,
+          color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {data.vacantesPlantilla}P
+      </p>
+      <p
+        style={{
+          fontSize: presentation ? 13 : expanded ? 12 : 9,
           margin: 0,
           fontWeight: 400,
           color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
-          lineHeight: 1.2,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
         }}
       >
-        <span style={{ display: 'block' }}>{data.vacantesPlantilla} Plantilla</span>
-        <span style={{ display: 'block' }}>+ {data.vacantesBackup} Backup</span>
+        +{data.vacantesBackup}B
       </p>
     </div>
   );
 }
-
-// ─────────────────────────────────────────────
-// Header con KPIs destacados
-// ─────────────────────────────────────────────
 
 // ─────────────────────────────────────────────
 // Header con KPIs destacados
@@ -324,7 +337,6 @@ function ChartHeader({ data, presentation }: ChartHeaderProps) {
   if (!data.length) return null;
 
   const avgCobertura = data.reduce((s, d) => s + d.cobertura, 0) / data.length;
-  // Se eliminó la constante maxVacantes
   const minCobertura = Math.min(...data.map((d) => d.cobertura));
   const isCriticalWeek = minCobertura < 90;
 
@@ -390,8 +402,6 @@ function ChartHeader({ data, presentation }: ChartHeaderProps) {
             {avgCobertura.toFixed(1)}%
           </p>
         </div>
-
-        {/* Se eliminó el bloque y separador de Vacantes pico */}
 
         {isCriticalWeek && (
           <>
@@ -488,6 +498,7 @@ export function KpiHeroChart({
   const descId = useId();
 
   const presentation = variant === 'presentation';
+  const isMobile = useIsMobile();
 
   // ── Tamaños según variante ──────────────────
   const chartHeight = height ?? (presentation ? 420 : 280);
@@ -525,6 +536,15 @@ export function KpiHeroChart({
 
   const isEmpty = chartData.length === 0;
 
+  // En móvil: mostrar solo la card del día actual (o la última disponible como fallback)
+  const visibleCards = useMemo(() => {
+    if (!isMobile || presentation) return chartData;
+    if (chartData.length === 0) return chartData;
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const todayCard = chartData.find((d) => d.dateIso?.slice(0, 10) === todayIso);
+    return todayCard ? [todayCard] : [chartData[chartData.length - 1]];
+  }, [chartData, isMobile, presentation]);
+
   const coberturaMin = isEmpty
     ? 0
     : Math.min(...chartData.map((d) => d.cobertura));
@@ -544,9 +564,10 @@ export function KpiHeroChart({
         background: PALETTE.surface,
         borderRadius: presentation ? 'var(--rounded-xl)' : 'var(--rounded-lg)',
         border: `1px solid ${PALETTE.border}`,
-        padding: presentation ? '28px 32px 24px' : '20px 20px 16px',
+        padding: presentation ? '28px 32px 24px' : '16px 12px 14px',
         boxSizing: 'border-box',
-        fontFamily: 'var(--font-body)', // Herencia segura del font system global
+        fontFamily: 'var(--font-body)',
+        overflow: 'hidden',
       }}
       onClick={onClick}
       role={onClick ? 'button' : 'img'}
@@ -601,141 +622,147 @@ export function KpiHeroChart({
               background: PALETTE.surfaceCard,
               borderRadius: 'var(--rounded-lg)',
               border: `1px solid ${PALETTE.border}`,
-              padding: presentation ? '20px 16px 12px' : '12px 8px 8px',
+              padding: presentation ? '20px 16px 12px' : '8px 4px 6px',
             }}
           >
             <ResponsiveContainer width="100%" height={chartHeight}>
               <ComposedChart
-                              data={chartData}
-                              margin={MARGIN}
-                              role="img"
-                              aria-label={ariaLabel}
-                              barCategoryGap="28%"
-                              barGap={presentation ? 6 : 3}
-                            >
-                              {/* Se eliminó la zona y línea de Umbral crítico */}
+                data={chartData}
+                margin={MARGIN}
+                role="img"
+                aria-label={ariaLabel}
+                barCategoryGap="28%"
+                barGap={presentation ? 6 : 3}
+              >
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  vertical={false}
+                  stroke={PALETTE.grid}
+                  strokeOpacity={1}
+                />
 
-                              <CartesianGrid
-                                strokeDasharray="4 4"
-                                vertical={false}
-                                stroke={PALETTE.grid}
-                                strokeOpacity={1}
-                              />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fill: PALETTE.axis,
+                    fontSize: TICK_FONT_SIZE,
+                    fontWeight: 400,
+                    fontFamily: 'inherit',
+                  }}
+                  dy={presentation ? 12 : 8}
+                />
 
-                              <XAxis
-                                dataKey="day"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{
-                                  fill: PALETTE.axis,
-                                  fontSize: TICK_FONT_SIZE,
-                                  fontWeight: 400,
-                                  fontFamily: 'inherit',
-                                }}
-                                dy={presentation ? 12 : 8}
-                              />
+                <YAxis
+                  yAxisId="left"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fill: PALETTE.axis,
+                    fontSize: TICK_FONT_SIZE,
+                    fontWeight: 400,
+                    fontFamily: 'inherit',
+                  }}
+                  tickFormatter={formatYLeft}
+                  width={Y_LEFT_WIDTH}
+                  allowDecimals={false}
+                />
 
-                              <YAxis
-                                yAxisId="left"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{
-                                  fill: PALETTE.axis,
-                                  fontSize: TICK_FONT_SIZE,
-                                  fontWeight: 400,
-                                  fontFamily: 'inherit',
-                                }}
-                                tickFormatter={formatYLeft}
-                                width={Y_LEFT_WIDTH}
-                                allowDecimals={false}
-                              />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fill: PALETTE.ink,
+                    fontSize: TICK_FONT_SIZE,
+                    fontWeight: 500,
+                    fontFamily: 'inherit',
+                  }}
+                  tickFormatter={formatYRight}
+                  width={Y_RIGHT_WIDTH}
+                  domain={[yRightMin, yRightMax]}
+                />
 
-                              <YAxis
-                                yAxisId="right"
-                                orientation="right"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{
-                                  fill: PALETTE.ink,
-                                  fontSize: TICK_FONT_SIZE,
-                                  fontWeight: 500,
-                                  fontFamily: 'inherit',
-                                }}
-                                tickFormatter={formatYRight}
-                                width={Y_RIGHT_WIDTH}
-                                domain={[yRightMin, yRightMax]}
-                              />
+                <Tooltip
+                  content={<CustomTooltip presentation={presentation} />}
+                  cursor={{
+                    fill: PALETTE.surfaceSoft,
+                    radius: 6,
+                  }}
+                />
 
-                              <Tooltip
-                                content={<CustomTooltip presentation={presentation} />}
-                                cursor={{
-                                  fill: PALETTE.surfaceSoft,
-                                  radius: 6,
-                                }}
-                              />
+                <Legend content={() => null} />
 
-                              <Legend content={() => null} />
+                <Bar
+                  yAxisId="left"
+                  dataKey="vacantesPlantilla"
+                  name="Vacantes Plantilla"
+                  fill={PALETTE.red}
+                  fillOpacity={0.85}
+                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
+                  isAnimationActive
+                  animationDuration={600}
+                  animationEasing="ease-out"
+                />
 
-                              <Bar
-                                yAxisId="left"
-                                dataKey="vacantesPlantilla"
-                                name="Vacantes Plantilla"
-                                fill={PALETTE.red}
-                                fillOpacity={0.85}
-                                radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
-                                isAnimationActive
-                                animationDuration={600}
-                                animationEasing="ease-out"
-                              />
+                <Bar
+                  yAxisId="left"
+                  dataKey="vacantesBackup"
+                  name="Vacantes Backup"
+                  fill={PALETTE.amber}
+                  fillOpacity={0.85}
+                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
+                  isAnimationActive
+                  animationDuration={600}
+                  animationEasing="ease-out"
+                  animationBegin={100}
+                />
 
-                              <Bar
-                                yAxisId="left"
-                                dataKey="vacantesBackup"
-                                name="Vacantes Backup"
-                                fill={PALETTE.amber}
-                                fillOpacity={0.85}
-                                radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
-                                isAnimationActive
-                                animationDuration={600}
-                                animationEasing="ease-out"
-                                animationBegin={100}
-                              />
-
-                              <Line
-                                yAxisId="right"
-                                type="monotone"
-                                dataKey="cobertura"
-                                name="Cobertura %"
-                                stroke={PALETTE.ink}
-                                strokeWidth={LINE_STROKE_WIDTH}
-                                dot={{
-                                  r: DOT_REST_RADIUS,
-                                  fill: PALETTE.surfaceCard,
-                                  stroke: PALETTE.ink,
-                                  strokeWidth: presentation ? 2.5 : 2,
-                                }}
-                                activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0, fill: PALETTE.ink }}
-                                isAnimationActive
-                                animationDuration={800}
-                                animationEasing="ease-out"
-                                animationBegin={200}
-                              />
-                            </ComposedChart>
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="cobertura"
+                  name="Cobertura %"
+                  stroke={PALETTE.ink}
+                  strokeWidth={LINE_STROKE_WIDTH}
+                  dot={{
+                    r: DOT_REST_RADIUS,
+                    fill: PALETTE.surfaceCard,
+                    stroke: PALETTE.ink,
+                    strokeWidth: presentation ? 2.5 : 2,
+                  }}
+                  activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0, fill: PALETTE.ink }}
+                  isAnimationActive
+                  animationDuration={800}
+                  animationEasing="ease-out"
+                  animationBegin={200}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${chartData.length}, 1fr)`,
-              gap: presentation ? 12 : 8,
-              marginTop: presentation ? 16 : 10,
-            }}
-          >
-            {chartData.map((d) => (
-              <DayCard key={d.dateIso} data={d} presentation={presentation} />
-            ))}
-          </div>
+          {presentation && (
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: `repeat(${visibleCards.length}, minmax(0, 1fr))`,
+                          gap: 12,
+                          marginTop: 16,
+                          width: '100%',
+                          minWidth: 0,
+                        }}
+                      >
+                        {visibleCards.map((d) => (
+                          <DayCard
+                            key={d.dateIso}
+                            data={d}
+                            presentation={presentation}
+                            expanded={false}
+                          />
+                        ))}
+                      </div>
+                    )}
 
           <p
             style={{
