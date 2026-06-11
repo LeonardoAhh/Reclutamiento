@@ -1,40 +1,28 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   KpisPage — pantalla única que consolida los 17 KPIs.
+   KpisPage — pantalla única que consolida los 19 KPIs.
 
-   Mobile-first:
-     base (320px+)  → sticky stacking cards. Cada KpiReveal hace `position:
-                       sticky` con `top` escalonado por `--kpi-stack-i` (peek
-                       de cards previas). Scroll-driven animation
-                       (`animation-timeline: view()`) encoge la card mientras
-                       la siguiente la cubre. Sin JS.
-     768px+         → grid 3 columnas, posición estática, sin animación.
-     1200px+        → grid 4 columnas.
+   Mobile-first (< 768px):
+     - Tabs por grupo (Semana, Vacantes, Candidatos, Plantilla, Bajas) para
+       no saturar la vista: solo se muestran las cards del grupo activo.
+     - Valores visibles directos (sin blur Incognito).
+     - Gráfica semanal en sección secundaria colapsable.
+   768px+  → versión PC: gráfica hero + grid 3 columnas + Incognito/blur.
+   1200px+ → grid 4 columnas.
+   Todos los colores/tipografías provienen de tokens de global.css.
    ───────────────────────────────────────────────────────────────────────── */
 
 .kpis-page {
   padding-top: var(--spacing-lg);
   padding-bottom: var(--spacing-xxl);
-  /* Altura aproximada del hero apilado en mobile (título + botón Incognito
-     + gap). Usado para offsetear el `top` sticky de cada card de modo que
-     se acomoden debajo del hero fijo. Ajustable sin tocar JS. */
-  --kpi-hero-h: 6.5rem;
 }
 
 /* ── Hero (título + acciones) ───────────────────────────────────────── */
-/* Mobile: hero pegado al top mientras las cards se apilan debajo. */
 .kpis-page__hero {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
   margin-bottom: var(--spacing-lg);
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: var(--color-canvas);
-  padding-block: var(--spacing-sm);
-  margin-inline: calc(-1 * var(--container-padding-mobile, var(--spacing-md)));
-  padding-inline: var(--container-padding-mobile, var(--spacing-md));
 }
 
 .kpis-page__title {
@@ -59,56 +47,170 @@
   gap: var(--spacing-sm);
   flex-wrap: wrap;
   flex-shrink: 0;
-  width: 100%;
 }
 
-/* ── Grid de KPIs ───────────────────────────────────────────────────── */
-/* Mobile (<768px): sticky stacking cards. */
-.kpis-page__grid {
+/* ── Tabs por grupo (solo móvil) ────────────────────────────────────── */
+.kpis-page__tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-bottom: var(--spacing-md);
+  /* Sangrado al borde de pantalla para que el scroll horizontal respire. */
+  margin-inline: calc(-1 * var(--container-padding-mobile, var(--spacing-md)));
+  padding-inline: var(--container-padding-mobile, var(--spacing-md));
+  padding-block: var(--spacing-xxs);
+}
+
+.kpis-page__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.kpis-page__tab {
+  flex-shrink: 0;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-pill);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.kpis-page__tab:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.kpis-page__tab--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ── Grid móvil del grupo activo ────────────────────────────────────── */
+.kpis-page__m-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  animation: kpis-panel-in var(--transition-base) both;
+}
+
+@keyframes kpis-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kpis-page__m-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding-bottom: var(--spacing-xl);
 }
 
-/* Cada card es sticky; `top` escalonado por su índice (`--kpi-stack-i`)
-   y offset por la altura del hero sticky (`--kpi-hero-h`) para que las
-   previas asomen por arriba a medida que la siguiente las cubre. */
-.kpis-page__grid > .kpi-reveal {
+.kpis-page__m-card > .stat-card {
+  flex: 1;
+}
+
+/* Botón de detalle compacto (móvil): icono en esquina superior derecha. */
+.kpis-page__m-detail {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  z-index: 2;
+}
+
+.kpis-page__m-detail:active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.kpis-page__m-detail:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Gráfica semanal colapsable (móvil) ─────────────────────────────── */
+.kpis-page__chart-collapse {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.kpis-page__chart-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  position: sticky;
-  top: calc(var(--kpi-hero-h) + var(--spacing-sm) + var(--kpi-stack-i, 0) * var(--kpi-stack-step, 8px));
-  transform-origin: top center;
-  will-change: transform;
-  z-index: 1;
+  min-height: 44px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  transition: background var(--transition-fast);
 }
 
-/* Scroll-driven scale-down: encoge la card mientras sale (queda cubierta
-   por la siguiente sticky). Progressive enhancement: navegadores sin
-   `animation-timeline` mantienen el sticky stack sin animación. */
-@supports (animation-timeline: view()) {
-  .kpis-page__grid > .kpi-reveal {
-    animation: kpi-stack-shrink linear both;
-    animation-timeline: view();
-    animation-range: exit -20% exit 60%;
-  }
+.kpis-page__chart-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
-@keyframes kpi-stack-shrink {
-  to {
-    transform: scale(0.92);
-    opacity: 0.88;
-  }
+.kpis-page__chart-chevron {
+  color: var(--color-muted);
+  transition: transform var(--transition-base);
 }
 
-/* ── Card wrapper ───────────────────────────────────────────────────── */
+.kpis-page__chart-chevron--open {
+  transform: rotate(180deg);
+}
+
+.kpis-page__chart-body {
+  padding: 0 var(--spacing-sm) var(--spacing-sm);
+  animation: kpis-panel-in var(--transition-base) both;
+}
+
+/* ── Card wrapper (PC) ──────────────────────────────────────────────── */
 .kpis-page__card {
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
-/* Botón de detalle (visible cuando la card está revelada). */
+/* Botón de detalle (PC, visible cuando la card está revelada). */
 .kpis-page__detail-btn {
   position: absolute;
   right: var(--spacing-md);
@@ -124,7 +226,7 @@
   color: var(--color-primary);
   font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-weight: var(--type-button-weight);
   cursor: pointer;
   box-shadow: var(--shadow-subtle);
   transition:
@@ -145,52 +247,31 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Tablet portrait (≥ 768px) — grid clásico ───────────────────────── */
+/* ── Grid de KPIs (PC) ──────────────────────────────────────────────── */
+.kpis-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* ── Tablet portrait (≥ 768px) — versión PC ─────────────────────────── */
 @media (min-width: 768px) {
   .kpis-page {
     padding-top: var(--spacing-xl);
   }
 
-  /* Desktop: el hero vuelve a ser un encabezado normal (sin sticky). */
   .kpis-page__hero {
     flex-direction: row;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
-    position: static;
-    top: auto;
-    z-index: auto;
-    background: transparent;
-    padding-block: 0;
-    margin-inline: 0;
-    padding-inline: 0;
   }
 
   .kpis-page__title {
     font-size: var(--type-display-xl-size);
     letter-spacing: var(--tracking-tight);
-  }
-
-  .kpis-page__hero-actions {
-    width: auto;
-  }
-
-  .kpis-page__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding-bottom: 0;
-  }
-
-  /* Desktop: layout estático, sin sticky stack ni scroll-driven animation. */
-  .kpis-page__grid > .kpi-reveal {
-    width: auto;
-    position: relative;
-    top: auto;
-    animation: none;
-    transform: none;
-    opacity: 1;
-    will-change: auto;
   }
 }
 
@@ -201,18 +282,14 @@
   }
 }
 
-/* ── Touch-only refinement ──────────────────────────────────────────── */
-@media (pointer: coarse) {
-  .kpis-page__detail-btn {
-    min-height: 44px;
-  }
-}
-
 /* ── Reduced motion ─────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .kpis-page__grid > .kpi-reveal {
-    transition: none;
+  .kpis-page__m-grid,
+  .kpis-page__chart-body {
     animation: none;
-    transform: none;
+  }
+
+  .kpis-page__chart-chevron {
+    transition: none;
   }
 }

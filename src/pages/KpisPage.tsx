@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Eye } from 'lucide-react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { ChevronDown, Eye } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
 import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
 import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
@@ -55,6 +56,50 @@ const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
   'stat-pipeline-activo',
 ]);
 
+/* ── Agrupación para la vista móvil (tabs) ──────────────────────────
+   En móvil los 19 KPIs se navegan por grupo para no saturar la vista.
+   Solo afecta presentación: los cálculos no cambian. */
+
+const KPI_GROUPS = [
+  { id: 'semana', label: 'Semana' },
+  { id: 'vacantes', label: 'Vacantes' },
+  { id: 'candidatos', label: 'Candidatos' },
+  { id: 'plantilla', label: 'Plantilla' },
+  { id: 'bajas', label: 'Bajas' },
+] as const;
+
+type KpiGroupId = (typeof KPI_GROUPS)[number]['id'];
+
+const CARD_GROUP_BY_ID: Record<string, KpiGroupId> = {
+  'kpi-ingresos-semana': 'semana',
+  'stat-pipeline-citados-hoy': 'semana',
+  'stat-pipeline-activo': 'semana',
+  'stat-vac-abiertas': 'vacantes',
+  'stat-vac-sla': 'vacantes',
+  'stat-vac-vencidas': 'vacantes',
+  'stat-vac-ttf': 'vacantes',
+  'stat-vac-excluidas': 'vacantes',
+  'stat-pipeline-total': 'candidatos',
+  'stat-pipeline-contratado': 'candidatos',
+  'stat-pipeline-rechazado': 'candidatos',
+  'stat-autorizada': 'plantilla',
+  'stat-real': 'plantilla',
+  'stat-vacantes': 'plantilla',
+  'stat-cobertura': 'plantilla',
+  'kpi-cobertura': 'bajas',
+  'kpi-bajas': 'bajas',
+  'kpi-ingresos': 'bajas',
+  'kpi-solo-induccion': 'bajas',
+};
+
+/** Cards que abren un modal de detalle. */
+const MODAL_CARD_IDS: ReadonlySet<string> = new Set([
+  'kpi-ingresos-semana',
+  'stat-pipeline-activo',
+  'stat-pipeline-citados-hoy',
+  'stat-vac-ttf',
+]);
+
 interface VacancyMetrics {
   vencida: boolean;
 }
@@ -96,6 +141,9 @@ const { } = useAuth();
     positionsLoading;
 
   const reveal = useKpiReveal();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [activeGroup, setActiveGroup] = useState<KpiGroupId>('semana');
+  const [chartOpen, setChartOpen] = useState(false);
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
@@ -446,6 +494,19 @@ const { } = useAuth();
 
   const revealedCount = cards.filter((c) => reveal.isRevealed(c.id)).length;
 
+  /* ── Vista móvil: cards del grupo activo ───────────────────── */
+  const mobileCards = useMemo(
+    () => cards.filter((c) => CARD_GROUP_BY_ID[c.id] === activeGroup),
+    [cards, activeGroup]
+  );
+
+  function openCardModal(id: string) {
+    if (id === 'kpi-ingresos-semana') setWeeklyModalOpen(true);
+    else if (id === 'stat-pipeline-activo') setCandidatesModalOpen(true);
+    else if (id === 'stat-pipeline-citados-hoy') setCitedTodayModalOpen(true);
+    else if (id === 'stat-vac-ttf') setTtfHistoryModalOpen(true);
+  }
+
   if (loading) {
     return (
       <main className="kpis-page container" id="page-kpis">
@@ -454,13 +515,15 @@ const { } = useAuth();
             <h1 className="kpis-page__title">Recruitment Report</h1>
             <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
           </div>
-          <div className="kpis-page__hero-actions">
-            <button type="button" className="btn-secondary" disabled>
-              Incognito
-            </button>
-          </div>
+          {isDesktop && (
+            <div className="kpis-page__hero-actions">
+              <button type="button" className="btn-secondary" disabled>
+                Incognito
+              </button>
+            </div>
+          )}
         </section>
-        <KpiGridSkeleton count={cards.length} />
+        <KpiGridSkeleton count={isDesktop ? cards.length : 4} />
       </main>
     );
   }
@@ -473,90 +536,183 @@ const { } = useAuth();
           <h1 className="kpis-page__title">Recruitment Report</h1>
           <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
         </div>
-        <div className="kpis-page__hero-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={reveal.hideAll}
-            disabled={revealedCount === 0}
-            title="Volver a ocultar todas las cards"
-          >
-            Incognito
-          </button>
-        </div>
-      </section>
-
-      <section className="kpis-page__chart-section">
-        <KpiHeroChart
-          data={heroChartData}
-          variant="presentation"
-          onClick={() => setMissingModalOpen(true)}
-        />
-      </section>
-
-      <section
-        className="kpis-page__grid"
-        aria-label="KPIs consolidados"
-      >
-        {cards.map((card, index) => {
-          const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
-          const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
-          const isWeeklyCard = card.id === 'kpi-ingresos-semana';
-          const isInProcessCard = card.id === 'stat-pipeline-activo';
-          const isCitedTodayCard = card.id === 'stat-pipeline-citados-hoy';
-          const isTtfCard = card.id === 'stat-vac-ttf';
-          const hasModal = isWeeklyCard || isInProcessCard || isCitedTodayCard || isTtfCard;
-          return (
-            <KpiReveal
-              key={card.id}
-              id={card.id}
-              label={card.label}
-              revealed={revealed}
-              alwaysVisible={isAlwaysVisible}
-              onReveal={() => reveal.reveal(card.id)}
-              onHide={() => reveal.hide(card.id)}
-              style={{ '--kpi-stack-i': index } as React.CSSProperties}
+        {isDesktop && (
+          <div className="kpis-page__hero-actions">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={reveal.hideAll}
+              disabled={revealedCount === 0}
+              title="Volver a ocultar todas las cards"
             >
-              <div className="kpis-page__card">
-                <StatCard
+              Incognito
+            </button>
+          </div>
+        )}
+      </section>
+
+      {isDesktop ? (
+        <>
+          <section className="kpis-page__chart-section">
+            <KpiHeroChart
+              data={heroChartData}
+              variant="presentation"
+              onClick={() => setMissingModalOpen(true)}
+            />
+          </section>
+
+          <section
+            className="kpis-page__grid"
+            aria-label="KPIs consolidados"
+          >
+            {cards.map((card, index) => {
+              const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
+              const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
+              const isWeeklyCard = card.id === 'kpi-ingresos-semana';
+              const isCitedTodayCard = card.id === 'stat-pipeline-citados-hoy';
+              const isTtfCard = card.id === 'stat-vac-ttf';
+              const hasModal = MODAL_CARD_IDS.has(card.id);
+              return (
+                <KpiReveal
+                  key={card.id}
                   id={card.id}
                   label={card.label}
-                  value={card.value}
-                  subtitle={card.subtitle}
-                  accentColor={card.accentColor}
-                  variant={card.variant}
+                  revealed={revealed}
+                  alwaysVisible={isAlwaysVisible}
+                  onReveal={() => reveal.reveal(card.id)}
+                  onHide={() => reveal.hide(card.id)}
+                  style={{ '--kpi-stack-i': index } as React.CSSProperties}
+                >
+                  <div className="kpis-page__card">
+                    <StatCard
+                      id={card.id}
+                      label={card.label}
+                      value={card.value}
+                      subtitle={card.subtitle}
+                      accentColor={card.accentColor}
+                      variant={card.variant}
+                    />
+                    {hasModal && revealed && (
+                      <button
+                        type="button"
+                        className="kpis-page__detail-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openCardModal(card.id);
+                        }}
+                        onKeyDown={(e) => e.stopPropagation()}
+                        aria-label={
+                          isWeeklyCard
+                            ? 'Ver puestos contratados esta semana'
+                            : isCitedTodayCard
+                            ? 'Ver candidatos citados hoy'
+                            : isTtfCard
+                            ? 'Ver histórico mensual de TTF'
+                            : 'Ver puestos en proceso del pipeline'
+                        }
+                      >
+                        <Eye size={14} aria-hidden="true" />
+                        Detalle
+                      </button>
+                    )}
+                  </div>
+                </KpiReveal>
+              );
+            })}
+          </section>
+        </>
+      ) : (
+        <>
+          <nav
+            className="kpis-page__tabs"
+            aria-label="Grupos de KPIs"
+            data-testid="kpis-mobile-tabs"
+          >
+            {KPI_GROUPS.map((group) => (
+              <button
+                key={group.id}
+                type="button"
+                className={`kpis-page__tab${
+                  activeGroup === group.id ? ' kpis-page__tab--active' : ''
+                }`}
+                aria-pressed={activeGroup === group.id}
+                onClick={() => setActiveGroup(group.id)}
+                data-testid={`kpis-tab-${group.id}`}
+              >
+                {group.label}
+              </button>
+            ))}
+          </nav>
+
+          <section
+            key={activeGroup}
+            className="kpis-page__m-grid"
+            aria-label={`KPIs de ${
+              KPI_GROUPS.find((g) => g.id === activeGroup)?.label ?? activeGroup
+            }`}
+            data-testid="kpis-mobile-grid"
+          >
+            {mobileCards.map((card) => {
+              const hasModal = MODAL_CARD_IDS.has(card.id);
+              return (
+                <div
+                  key={card.id}
+                  className="kpis-page__m-card"
+                  data-testid={`kpis-mobile-card-${card.id}`}
+                >
+                  <StatCard
+                    id={card.id}
+                    label={card.label}
+                    value={card.value}
+                    subtitle={card.subtitle}
+                    accentColor={card.accentColor}
+                    variant={card.variant}
+                  />
+                  {hasModal && (
+                    <button
+                      type="button"
+                      className="kpis-page__m-detail"
+                      onClick={() => openCardModal(card.id)}
+                      aria-label={`Ver detalle de ${card.label}`}
+                      data-testid={`kpis-mobile-detail-${card.id}`}
+                    >
+                      <Eye size={16} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </section>
+
+          <section className="kpis-page__chart-collapse">
+            <button
+              type="button"
+              className="kpis-page__chart-toggle"
+              onClick={() => setChartOpen((open) => !open)}
+              aria-expanded={chartOpen}
+              data-testid="kpis-chart-toggle"
+            >
+              <span>Gráfica semanal</span>
+              <ChevronDown
+                size={18}
+                aria-hidden="true"
+                className={`kpis-page__chart-chevron${
+                  chartOpen ? ' kpis-page__chart-chevron--open' : ''
+                }`}
+              />
+            </button>
+            {chartOpen && (
+              <div className="kpis-page__chart-body" data-testid="kpis-chart-body">
+                <KpiHeroChart
+                  data={heroChartData}
+                  variant="presentation"
+                  onClick={() => setMissingModalOpen(true)}
                 />
-                {hasModal && revealed && (
-                  <button
-                    type="button"
-                    className="kpis-page__detail-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isWeeklyCard) setWeeklyModalOpen(true);
-                      else if (isInProcessCard) setCandidatesModalOpen(true);
-                      else if (isCitedTodayCard) setCitedTodayModalOpen(true);
-                      else if (isTtfCard) setTtfHistoryModalOpen(true);
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    aria-label={
-                      isWeeklyCard
-                        ? 'Ver puestos contratados esta semana'
-                        : isCitedTodayCard
-                        ? 'Ver candidatos citados hoy'
-                        : isTtfCard
-                        ? 'Ver histórico mensual de TTF'
-                        : 'Ver puestos en proceso del pipeline'
-                    }
-                  >
-                    <Eye size={14} aria-hidden="true" />
-                    Detalle
-                  </button>
-                )}
               </div>
-            </KpiReveal>
-          );
-        })}
-      </section>
+            )}
+          </section>
+        </>
+      )}
 
       <CandidatesInProcessModal
         isOpen={candidatesModalOpen}
