@@ -113,10 +113,10 @@ export function Pipeline() {
 
   const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
     const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
-      const groups = new Map<number, { 
-        startWed: Date; 
-        endTue: Date; 
-        total: number; 
+      const groups = new Map<number, {
+        startWed: Date;
+        endTue: Date;
+        total: number;
         contratados: number;
         targetTotal?: number;
         targetContratados?: number;
@@ -182,10 +182,10 @@ export function Pipeline() {
     };
 
     return {
-      // Pauta tiene un objetivo de 25/10. Reclutadoras tienen 20/5 por semana.
-      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA'), 25, 10),
-      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA'), 20, 5),
-      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA'), 20, 5),
+      // Pauta tiene un objetivo de 30/14. Reclutadoras tienen 20/7 por semana.
+      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA'), 30, 14),
+      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA'), 20, 7),
+      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA'), 20, 7),
     };
   }, [candidates]);
 
@@ -775,14 +775,14 @@ export function Pipeline() {
         size="xl"
       >
         <div className="pipeline__modal-body">
-          
+
           {/* ── 1. VISTA GLOBAL: Grid de tarjetas de reclutador ── */}
           {kpiModalOpen === 'global' && (
             <div className="pipeline__modal-grid">
               {recruiterStats.map((r) => {
                 const pct = (n: number) =>
                   r.total === 0 ? 0 : Math.round((n / r.total) * 100);
-                
+
                 return (
                   <article key={r.name} className="pipeline__modal-card">
                     <header className="pipeline__modal-card__head">
@@ -817,16 +817,16 @@ export function Pipeline() {
 
                     {/* Barra de progreso visual */}
                     <div className="pipeline__modal-card__bar">
-                      <div 
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--contratados" 
+                      <div
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--contratados"
                         style={{ width: `${pct(r.contratados)}%` }}
                       />
-                      <div 
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--citados" 
+                      <div
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--citados"
                         style={{ width: `${pct(r.citados)}%` }}
                       />
-                      <div 
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--rechazados" 
+                      <div
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--rechazados"
                         style={{ width: `${pct(r.rechazados)}%` }}
                       />
                     </div>
