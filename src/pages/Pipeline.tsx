@@ -18,6 +18,7 @@ import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
+import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
@@ -31,7 +32,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatShortDate, startOfDayMxMs, endOfDayMxMs } from '@/lib/dates';
+import { formatShortDate, startOfDayMxMs, endOfDayMxMs, isoWeekOf, parseDdMmYyyy } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
 import './Pipeline.css';
@@ -107,6 +108,72 @@ export function Pipeline() {
   const [showFilters, setShowFilters] = useState(
     () => Object.values(filters).some((v) => v !== '')
   );
+
+  const pautaStats = useMemo(() => {
+    const pautaCands = candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA');
+    
+    // Group by Wed-Tue week
+    const groups = new Map<number, { startWed: Date, endTue: Date, total: number, contratados: number }>();
+
+    for (const c of pautaCands) {
+      if (!c.fecha_aplicacion) continue;
+      
+      const trimmed = c.fecha_aplicacion.trim();
+      const dateOnly = parseDdMmYyyy(trimmed);
+      const d = dateOnly
+        ? new Date(`${dateOnly}T12:00:00-06:00`)
+        : new Date(trimmed);
+        
+      if (isNaN(d.getTime())) continue;
+      
+      const day = d.getDay();
+      const diff = day >= 3 ? day - 3 : day + 4;
+      
+      const startWed = new Date(d);
+      startWed.setDate(d.getDate() - diff);
+      startWed.setHours(12, 0, 0, 0);
+      
+      const timeKey = startWed.getTime();
+      
+      if (!groups.has(timeKey)) {
+        const endTue = new Date(startWed);
+        endTue.setDate(startWed.getDate() + 6);
+        groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0 });
+      }
+      
+      const bucket = groups.get(timeKey)!;
+      bucket.total += 1;
+      
+      if (c.status === 'contratado') {
+        bucket.contratados += 1;
+      }
+    }
+
+    const today = new Date();
+    const day = today.getDay();
+    const diffToWed = day >= 3 ? day - 3 : day + 4;
+    
+    const currentWed = new Date(today);
+    currentWed.setDate(today.getDate() - diffToWed);
+    currentWed.setHours(12, 0, 0, 0);
+
+    const prevWed = new Date(currentWed);
+    prevWed.setDate(currentWed.getDate() - 7);
+
+    const nextWed = new Date(currentWed);
+    nextWed.setDate(currentWed.getDate() + 7);
+
+    [prevWed, currentWed, nextWed].forEach(startWed => {
+      const tKey = startWed.getTime();
+      if (!groups.has(tKey)) {
+        const endTue = new Date(startWed);
+        endTue.setDate(startWed.getDate() + 6);
+        groups.set(tKey, { startWed, endTue, total: 0, contratados: 0 });
+      }
+    });
+
+    return Array.from(groups.values()).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
+  }, [candidates]);
 
   function changeView(next: ViewMode) {
     setViewMode(next);
@@ -392,6 +459,42 @@ export function Pipeline() {
         })}
       </section>
 
+      {/* ── KPI Pauta ── */}
+      <section className="pipeline__pauta-kpis" aria-label="KPI Pauta por semana" style={{ display: 'flex', gap: 'var(--spacing-md)', overflowX: 'auto', marginBottom: 'var(--spacing-lg)', paddingBottom: 'var(--spacing-xs)' }}>
+        {pautaStats.map((stat) => {
+          const tueWeek = isoWeekOf(stat.endTue).week;
+          const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
+          const wedStr = fmt.format(stat.startWed);
+          const tueStr = fmt.format(stat.endTue);
+          const label = `Semana ${tueWeek} (${wedStr} - ${tueStr})`;
+
+          return (
+            <article key={stat.startWed.getTime()} className="pipeline__recruiter-card" style={{ minWidth: '320px', flex: '0 0 auto' }}>
+              <header className="pipeline__recruiter-head" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                <h2 className="pipeline__recruiter-name">Pauta</h2>
+                <span className="pipeline__recruiter-total" style={{ whiteSpace: 'normal', fontSize: '12px', textTransform: 'capitalize', color: 'var(--color-muted)' }}>
+                  {label}
+                </span>
+              </header>
+              <dl className="pipeline__recruiter-stats" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                <div className="pipeline__recruiter-stat">
+                  <dt>Candidatos</dt>
+                  <dd>
+                    <span className="pipeline__recruiter-pct">{stat.total}</span>
+                  </dd>
+                </div>
+                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--contratados">
+                  <dt>Contratados</dt>
+                  <dd>
+                    <span className="pipeline__recruiter-pct">{stat.contratados}</span>
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          );
+        })}
+      </section>
+
       {/* ── Search ── */}
       <section className="pipeline__controls">
         <div className="pipeline__search">
@@ -542,7 +645,14 @@ export function Pipeline() {
                   className="pipeline__ccard-name-col"
                   data-puesto-area={`${c.puesto} · ${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`}
                 >
-                  <div className="pipeline__name">{c.nombre}</div>
+                  <div className="pipeline__name">
+                    <span>{c.nombre}</span>
+                    {c.source && (
+                      <span className="pipeline__source-badge" title={`Fuente: ${c.source}`}>
+                        {c.source}
+                      </span>
+                    )}
+                  </div>
                   <div className="pipeline__contact">
                     {c.telefono || c.email || '—'}
                   </div>
@@ -584,17 +694,6 @@ export function Pipeline() {
                   </div>
                 </div>
                 <div className="pipeline__cell-actions pipeline__ccard-actions-col">
-                  {c.status === 'contratado' && !c.employee_num && (
-                    <button
-                      type="button"
-                      className="pipeline__icon-btn pipeline__icon-btn--primary"
-                      onClick={() => openHire(c)}
-                      aria-label={`Contratar a ${c.nombre}`}
-                      title="Contratar (crear empleado)"
-                    >
-                      <BadgeCheck size={16} aria-hidden="true" />
-                    </button>
-                  )}
                   {c.employee_num && (
                     <span
                       className="pipeline__hired-tag"
@@ -604,36 +703,18 @@ export function Pipeline() {
                       #{c.employee_num}
                     </span>
                   )}
-                  <button
-                    type="button"
-                    className="pipeline__icon-btn"
-                    onClick={() => setNotesTarget(c)}
-                    aria-label={`Notas de ${c.nombre}`}
-                    title={`Notas (${notesCount(c)})`}
-                  >
-                    <StickyNote size={16} aria-hidden="true" />
-                    {notesCount(c) > 0 && (
-                      <span className="pipeline__icon-badge">{notesCount(c)}</span>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    className="pipeline__icon-btn"
-                    onClick={() => openEdit(c)}
-                    aria-label={`Editar a ${c.nombre}`}
-                    title="Editar"
-                  >
-                    <Pencil size={16} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="pipeline__icon-btn pipeline__icon-btn--danger"
-                    onClick={() => openDelete(c)}
-                    aria-label={`Eliminar a ${c.nombre}`}
-                    title="Eliminar"
-                  >
-                    <Trash2 size={16} aria-hidden="true" />
-                  </button>
+                  <CandidateRowActions
+                    candidate={c}
+                    notesCount={notesCount(c)}
+                    onEdit={openEdit}
+                    onDelete={openDelete}
+                    onNotes={() => setNotesTarget(c)}
+                    onHire={
+                      c.status === 'contratado' && !c.employee_num
+                        ? () => openHire(c)
+                        : undefined
+                    }
+                  />
                 </div>
               </article>
             );

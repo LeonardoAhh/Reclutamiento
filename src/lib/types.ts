@@ -491,4 +491,6 @@ export const CANDIDATE_SOURCES = [
   'Facebook',
   'Pauta',
   'Volanteo',
+  'Lona',
 ] as const;
+
