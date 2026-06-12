@@ -112,8 +112,17 @@ export function Pipeline() {
   );
 
   const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
-    const getWeeklyStats = (cands: Candidate[]) => {
-      const groups = new Map<number, { startWed: Date; endTue: Date; total: number; contratados: number }>();
+    const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
+      const groups = new Map<number, { 
+        startWed: Date; 
+        endTue: Date; 
+        total: number; 
+        contratados: number;
+        targetTotal?: number;
+        targetContratados?: number;
+        efectividadVolumen?: number;
+        efectividadContratacion?: number;
+      }>();
 
       for (const c of cands) {
         if (!c.fecha_aplicacion) continue;
@@ -133,7 +142,7 @@ export function Pipeline() {
         if (!groups.has(timeKey)) {
           const endTue = new Date(startWed);
           endTue.setDate(startWed.getDate() + 6);
-          groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0 });
+          groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
         }
 
         const bucket = groups.get(timeKey)!;
@@ -160,17 +169,23 @@ export function Pipeline() {
         if (!groups.has(tKey)) {
           const endTue = new Date(startWed);
           endTue.setDate(startWed.getDate() + 6);
-          groups.set(tKey, { startWed, endTue, total: 0, contratados: 0 });
+          groups.set(tKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
         }
       });
 
-      return Array.from(groups.values()).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
+      return Array.from(groups.values()).map(stat => {
+        // Cálculo de efectividad oculto (solo lógico)
+        const efectividadVolumen = stat.targetTotal ? Math.round((stat.total / stat.targetTotal) * 100) : undefined;
+        const efectividadContratacion = stat.targetContratados ? Math.round((stat.contratados / stat.targetContratados) * 100) : undefined;
+        return { ...stat, efectividadVolumen, efectividadContratacion };
+      }).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
     };
 
     return {
-      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA')),
-      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA')),
-      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA')),
+      // Pauta tiene un objetivo de 25/10. Reclutadoras tienen 20/5 por semana.
+      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA'), 25, 10),
+      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA'), 20, 5),
+      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA'), 20, 5),
     };
   }, [candidates]);
 
@@ -837,7 +852,7 @@ export function Pipeline() {
                 const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
                 const wedStr = fmt.format(stat.startWed);
                 const tueStr = fmt.format(stat.endTue);
-                const effectiveness = stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100);
+                const effectiveness = stat.efectividadContratacion ?? (stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100));
 
                 return (
                   <div key={stat.startWed.getTime()} className="pipeline__modal-weeks__row">
