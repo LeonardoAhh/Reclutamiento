@@ -3,12 +3,9 @@ import { motion } from 'framer-motion';
 import {
   UserPlus,
   UserX,
-  Pencil,
-  Trash2,
   Search,
   Table2,
   LayoutGrid,
-  StickyNote,
   SlidersHorizontal,
   BadgeCheck,
   ClipboardList,
@@ -111,39 +108,39 @@ export function Pipeline() {
 
   const pautaStats = useMemo(() => {
     const pautaCands = candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA');
-    
+
     // Group by Wed-Tue week
     const groups = new Map<number, { startWed: Date, endTue: Date, total: number, contratados: number }>();
 
     for (const c of pautaCands) {
       if (!c.fecha_aplicacion) continue;
-      
+
       const trimmed = c.fecha_aplicacion.trim();
       const dateOnly = parseDdMmYyyy(trimmed);
       const d = dateOnly
         ? new Date(`${dateOnly}T12:00:00-06:00`)
         : new Date(trimmed);
-        
+
       if (isNaN(d.getTime())) continue;
-      
+
       const day = d.getDay();
       const diff = day >= 3 ? day - 3 : day + 4;
-      
+
       const startWed = new Date(d);
       startWed.setDate(d.getDate() - diff);
       startWed.setHours(12, 0, 0, 0);
-      
+
       const timeKey = startWed.getTime();
-      
+
       if (!groups.has(timeKey)) {
         const endTue = new Date(startWed);
         endTue.setDate(startWed.getDate() + 6);
         groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0 });
       }
-      
+
       const bucket = groups.get(timeKey)!;
       bucket.total += 1;
-      
+
       if (c.status === 'contratado') {
         bucket.contratados += 1;
       }
@@ -152,7 +149,7 @@ export function Pipeline() {
     const today = new Date();
     const day = today.getDay();
     const diffToWed = day >= 3 ? day - 3 : day + 4;
-    
+
     const currentWed = new Date(today);
     currentWed.setDate(today.getDate() - diffToWed);
     currentWed.setHours(12, 0, 0, 0);
