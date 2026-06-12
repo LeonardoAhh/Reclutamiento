@@ -342,6 +342,7 @@ export function CandidateModal({
           placeholder="LinkedIn · Indeed · Referido…"
           autoComplete="off"
           list="cand-source-suggestions"
+          disabled={isEdit}
         />
         <datalist id="cand-source-suggestions">
           {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}

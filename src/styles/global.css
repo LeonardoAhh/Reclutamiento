@@ -945,6 +945,10 @@ code:not(pre code) {
   animation: slideUp 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.modal-content--xl {
+  max-width: 900px;
+}
+
 @media (max-width: 480px) {
   .modal-overlay {
     padding: var(--spacing-xs);

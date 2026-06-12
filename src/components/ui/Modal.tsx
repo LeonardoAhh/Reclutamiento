@@ -12,6 +12,7 @@ interface ModalProps {
   labelledById?: string;
   /** Botones de acción que se mostrarán en el header antes del botón de cerrar */
   headerActions?: React.ReactNode;
+  size?: 'md' | 'lg' | 'xl';
 }
 
 /**
@@ -31,6 +32,7 @@ export function Modal({
   className = '',
   labelledById = 'modal-title',
   headerActions,
+  size = 'md',
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -93,7 +95,7 @@ export function Modal({
     >
       <div
         ref={contentRef}
-        className={`modal-content ${className}`}
+        className={`modal-content modal-content--${size} ${className}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledById}

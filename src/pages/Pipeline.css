@@ -1,10 +1,17 @@
 /* Pipeline — tabla densa de candidatos.
-   Layout responsive: desktop ≥1024, tablet 641-1023, mobile ≤640.
+   Layout responsive: desktop ≥1280, mid 1025-1279, tablet 641-1024, mobile ≤640.
    Todos los colores, tipografías y radios consumen tokens (--color-*,
    --type-*, --rounded-*, --spacing-*). No hardcodes. */
 
 .pipeline {
   padding-bottom: calc(var(--spacing-xxl) + var(--safe-area-bottom));
+  padding-inline: max(var(--spacing-xl), var(--safe-area-left));
+}
+
+@media (max-width: 768px) {
+  .pipeline {
+    padding-inline: max(var(--spacing-md), var(--safe-area-left));
+  }
 }
 
 /* ── Hero ── */
@@ -62,18 +69,266 @@
 }
 
 @media (max-width: 480px) {
-  /* En mobile escondemos el label; queda como botón-icono compacto. */
   .pipeline__report-btn-label {
     display: none;
   }
 }
 
-/* ── KPIs por reclutador (hero secundario) ── */
-.pipeline__recruiters {
+/* ─────────────────────────────────────────────────────────────────────────
+   LAYOUT PRINCIPAL — two-column sticky sidebar
+   Desktop (≥1280): sidebar fijo 340px, content llena el resto.
+   Mid (1025–1279): sidebar 300px, content llena el resto.
+   ≤1024: colapsa a una sola columna.
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: 320px 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.pipeline__sidebar {
+  position: sticky;
+  top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  min-width: 0;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+}
+
+.pipeline__sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.pipeline__sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pipeline__sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: var(--rounded-pill);
+}
+
+/* ── Sidebar Header ── */
+.pipeline__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0 var(--spacing-xs);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Sidebar Divider ── */
+.pipeline__sidebar-divider {
+  height: 1px;
+  background: var(--color-hairline);
+  margin: var(--spacing-xs) 0;
+}
+
+/* ── Sidebar Section ── */
+.pipeline__sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__sidebar-section__label {
+  padding: 0 var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+}
+
+/* ── KPI Card (Global) ── */
+.pipeline__kpi-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.pipeline__kpi-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-1px);
+}
+
+.pipeline__kpi-card:active {
+  transform: translateY(0);
+}
+
+.pipeline__kpi-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pipeline__kpi-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.pipeline__kpi-card__label {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.pipeline__kpi-card__hint {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.pipeline__kpi-card__arrow {
+  color: var(--color-muted-soft);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.pipeline__kpi-card:hover .pipeline__kpi-card__arrow {
+  transform: translateX(2px);
+  color: var(--color-primary);
+}
+
+/* ── KPI Row List ── */
+.pipeline__kpi-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__kpi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.pipeline__kpi-row:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline);
+}
+
+.pipeline__kpi-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.pipeline__kpi-row__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+}
+
+.pipeline__kpi-row__name {
+  font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.pipeline__kpi-row__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-muted);
+}
+
+.pipeline__kpi-row__value {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  min-width: 24px;
+  text-align: right;
+}
+
+.pipeline__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Mid-desktop: sidebar un poco más angosto */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .pipeline__layout {
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Tablet y abajo: una sola columna, sidebar deja de ser sticky */
+@media (max-width: 1024px) {
+  .pipeline__layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .pipeline__sidebar {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   KPIs por reclutador (tarjetas resumen en el sidebar)
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__recruiters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* En tablet/mobile cuando el sidebar no es sticky, usamos grid horizontal */
+@media (max-width: 1024px) {
+  .pipeline__recruiters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+  }
 }
 
 .pipeline__recruiter-card {
@@ -157,7 +412,7 @@
   color: var(--color-muted);
 }
 
-/* Variantes por tipo de estado: barra lateral de color para lectura rapida. */
+/* Variantes por tipo de estado */
 .pipeline__recruiter-stat--citados {
   border-left-color: var(--color-accent-amber);
 }
@@ -179,7 +434,128 @@
   }
 }
 
-/* ── Controls (search + count) ── */
+/* ─────────────────────────────────────────────────────────────────────────
+   KPIs por Semana (Pauta / Alexandra / Daniela)
+   Dentro del sidebar: un grupo por reclutador con scroll horizontal
+   interno para las tarjetas de semana. El sidebar maneja el scroll
+   vertical global, las tarjetas no se desbordan fuera de él.
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__weekly-kpis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Grupo = título + fila de tarjetas con scroll horizontal */
+.pipeline__weekly-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__weekly-group-title {
+  font-family: var(--font-display);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  padding: 0 var(--spacing-xs);
+}
+
+/* Fila con scroll horizontal para las tarjetas de semana */
+.pipeline__weekly-scroll {
+  display: flex;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-xs);
+  /* Scrollbar discreta */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: var(--rounded-pill);
+}
+
+/* Tarjeta de semana individual: compacta, ancho fijo para que el scroll funcione */
+.pipeline__weekly-card {
+  flex: 0 0 auto;
+  width: 148px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__weekly-card-head {
+  min-width: 0;
+}
+
+.pipeline__weekly-label {
+  display: block;
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: capitalize;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.pipeline__weekly-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xs);
+  margin: 0;
+}
+
+.pipeline__weekly-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  border-left: 2px solid var(--color-muted-soft);
+  min-width: 0;
+}
+
+.pipeline__weekly-stat dt {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.pipeline__weekly-stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__weekly-stat--contratados {
+  border-left-color: var(--color-accent-teal);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Controls (search + count + toggle vista)
+   ───────────────────────────────────────────────────────────────────────── */
 .pipeline__controls {
   display: flex;
   align-items: center;
@@ -324,7 +700,9 @@
   }
 }
 
-/* ── Empty state ── */
+/* ─────────────────────────────────────────────────────────────────────────
+   Empty state
+   ───────────────────────────────────────────────────────────────────────── */
 .pipeline__empty {
   margin-top: var(--spacing-xl);
   padding: var(--spacing-xxl) var(--spacing-xl);
@@ -363,7 +741,9 @@
   }
 }
 
-/* ── Table (legacy, mantenida para referencia) ── */
+/* ─────────────────────────────────────────────────────────────────────────
+   Table (legacy, mantenida para referencia)
+   ───────────────────────────────────────────────────────────────────────── */
 .pipeline__table-wrap {
   overflow-x: auto;
   background: var(--color-surface-card);
@@ -423,9 +803,7 @@
   min-width: 200px;
 }
 
-/* Celda apilada Aplicó · Citado: fecha de aplicación arriba (principal),
-   fecha de cita debajo en variante muted. Mismo patrón visual que el bloque
-   Puesto · Área · Sección. */
+/* Celda apilada Aplicó · Citado */
 .pipeline__cell-dates {
   white-space: nowrap;
   line-height: 1.3;
@@ -488,8 +866,6 @@
   min-width: 0;
 }
 
-/* Overlay select for inline status changes. Looks like just a badge,
-   but the whole cell is the clickable trigger. */
 .pipeline__status-select {
   position: absolute;
   inset: 0;
@@ -549,8 +925,6 @@
   border-color: var(--color-error);
 }
 
-/* Primary variant used for the "Contratar" action — visually loud so it
-   stands out as a positive next step on a candidate row. */
 .pipeline__icon-btn--primary {
   border-color: var(--color-primary);
   color: var(--color-primary);
@@ -563,8 +937,6 @@
   border-color: var(--color-primary);
 }
 
-/* Compact pill shown when a candidate has been converted to an employee:
-   inline tag with the resulting employee number. */
 .pipeline__hired-tag {
   display: inline-flex;
   align-items: center;
@@ -627,7 +999,9 @@
   color: var(--color-muted-soft);
 }
 
-/* ── Variante B: card rows ── */
+/* ─────────────────────────────────────────────────────────────────────────
+   Card-list (vista tabla de candidatos)
+   ───────────────────────────────────────────────────────────────────────── */
 .pipeline__card-list {
   display: flex;
   flex-direction: column;
@@ -636,7 +1010,9 @@
 
 .pipeline__ccard {
   display: grid;
-  grid-template-columns: 40px minmax(160px, 1fr) minmax(160px, 1fr) minmax(140px, 200px) minmax(80px, auto) auto;
+  grid-template-columns:
+    40px minmax(160px, 1fr) minmax(160px, 1fr) minmax(140px, 200px)
+    minmax(80px, auto) auto;
   align-items: center;
   gap: var(--spacing-md);
   background: var(--color-surface-card);
@@ -699,13 +1075,6 @@
   flex-wrap: wrap;
 }
 
-/* ── Responsive card-list breakpoints ──
-   En tablet preferimos un layout basado en `grid-template-areas` con la
-   columna de nombre auto-apilando puesto/área debajo via flex column. Eso
-   evita depender de subgrid (poco soportado) y soporta nombres largos sin
-   romper el resto del row. */
-
-/* Sub-stack dentro de la columna name: nombre arriba, puesto debajo. */
 .pipeline__ccard-name-col {
   display: flex;
   flex-direction: column;
@@ -713,12 +1082,11 @@
   min-width: 0;
 }
 
+/* ── Responsive card-list ── */
 @media (max-width: 1024px) {
-  /* Tablet: oculta dates-col, baja puesto/área bajo el nombre. */
   .pipeline__ccard {
     grid-template-columns: 40px minmax(0, 1.4fr) minmax(140px, 200px) auto;
-    grid-template-areas:
-      "avatar name status actions";
+    grid-template-areas: "avatar name status actions";
     column-gap: var(--spacing-sm);
   }
   .pipeline__ccard-avatar {
@@ -733,11 +1101,12 @@
   .pipeline__ccard-actions-col {
     grid-area: actions;
   }
+
   .pipeline__ccard-puesto-col,
   .pipeline__ccard-dates-col {
     display: none;
   }
-  /* Mostrar puesto debajo del nombre como segunda línea (sin layout shift). */
+
   .pipeline__ccard-name-col::after {
     content: attr(data-puesto-area);
     font-size: var(--type-caption-md-size);
@@ -750,8 +1119,6 @@
 }
 
 @media (max-width: 768px) {
-  /* Tablet small: 3 cols (avatar | name+puesto | status); actions saltan
-     a una segunda fila full-width. */
   .pipeline__ccard {
     grid-template-columns: 40px minmax(0, 1fr) minmax(120px, auto);
     grid-template-areas:
@@ -767,8 +1134,6 @@
 }
 
 @media (max-width: 480px) {
-  /* Mobile: name + avatar arriba, status full-width, actions full-width.
-     Botones se agrandan a 44×44 (Apple HIG touch target). */
   .pipeline__ccard {
     grid-template-columns: 36px minmax(0, 1fr);
     grid-template-areas:
@@ -791,10 +1156,266 @@
   }
 }
 
-/* Cualquier puntero coarse (touch) recibe el mismo tamao mínimo. */
 @media (pointer: coarse) {
   .pipeline__icon-btn {
     min-width: 44px;
     min-height: 44px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   MODAL KPI — Layout sin scroll horizontal
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__modal-body {
+  padding: var(--spacing-lg);
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Grid Global: 3 columnas en desktop, 2 en tablet, 1 en mobile ── */
+.pipeline__modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 1024px) {
+  .pipeline__modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pipeline__modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Card de Reclutador en Modal ── */
+.pipeline__modal-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  transition: box-shadow var(--transition-fast);
+}
+
+.pipeline__modal-card:hover {
+  box-shadow: var(--shadow-card);
+}
+
+.pipeline__modal-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.pipeline__modal-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pipeline__modal-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pipeline__modal-card__name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.pipeline__modal-card__total {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+/* Stats en fila horizontal */
+.pipeline__modal-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.pipeline__modal-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  text-align: center;
+}
+
+.pipeline__modal-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__modal-stat__label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.pipeline__modal-stat__count {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted-soft);
+}
+
+/* Variantes de color */
+.pipeline__modal-stat--citados {
+  border-top: 3px solid var(--color-accent-amber);
+}
+
+.pipeline__modal-stat--contratados {
+  border-top: 3px solid var(--color-accent-teal);
+}
+
+.pipeline__modal-stat--rechazados {
+  border-top: 3px solid var(--color-error);
+}
+
+/* Barra de progreso visual */
+.pipeline__modal-card__bar {
+  display: flex;
+  height: 6px;
+  border-radius: var(--rounded-pill);
+  overflow: hidden;
+  background: var(--color-surface-soft);
+  margin-top: auto;
+}
+
+.pipeline__modal-card__bar-segment {
+  height: 100%;
+  transition: width var(--transition-slow);
+}
+
+.pipeline__modal-card__bar-segment--contratados {
+  background: var(--color-accent-teal);
+}
+
+.pipeline__modal-card__bar-segment--citados {
+  background: var(--color-accent-amber);
+}
+
+.pipeline__modal-card__bar-segment--rechazados {
+  background: var(--color-error);
+}
+
+/* ── Tabla de Semanas (Vista Individual) ── */
+.pipeline__modal-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+}
+
+.pipeline__modal-weeks__header {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 100px 100px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.pipeline__modal-weeks__header--right {
+  text-align: right;
+}
+
+.pipeline__modal-weeks__row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 100px 100px;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  transition: background var(--transition-fast);
+}
+
+.pipeline__modal-weeks__row:last-child {
+  border-bottom: none;
+}
+
+.pipeline__modal-weeks__row:hover {
+  background: var(--color-surface-soft);
+}
+
+.pipeline__modal-weeks__week {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.pipeline__modal-weeks__period {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+.pipeline__modal-weeks__number {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-align: right;
+}
+
+.pipeline__modal-weeks__number--hired {
+  color: var(--color-accent-teal);
+}
+
+.pipeline__modal-weeks__number--pct {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+}
+
+/* Responsive tabla de semanas */
+@media (max-width: 768px) {
+  .pipeline__modal-weeks__header,
+  .pipeline__modal-weeks__row {
+    grid-template-columns: 60px 1fr 70px 70px 60px;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline__modal-weeks__header,
+  .pipeline__modal-weeks__row {
+    grid-template-columns: 50px 1fr 60px 60px 50px;
+    gap: var(--spacing-xs);
+    font-size: var(--type-caption-md-size);
   }
 }

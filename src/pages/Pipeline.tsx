@@ -9,6 +9,9 @@ import {
   SlidersHorizontal,
   BadgeCheck,
   ClipboardList,
+  BarChart3,
+  Users,
+  ChevronRight,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
@@ -18,6 +21,7 @@ import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
+import { Modal } from '@/components/ui/Modal';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
 import {
   CandidateFilters,
@@ -85,6 +89,7 @@ export function Pipeline() {
   const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
+  const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'alexandra' | 'daniela' | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const stored = localStorage.getItem(VIEW_STORAGE_KEY);
@@ -106,70 +111,67 @@ export function Pipeline() {
     () => Object.values(filters).some((v) => v !== '')
   );
 
-  const pautaStats = useMemo(() => {
-    const pautaCands = candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA');
+  const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
+    const getWeeklyStats = (cands: Candidate[]) => {
+      const groups = new Map<number, { startWed: Date; endTue: Date; total: number; contratados: number }>();
 
-    // Group by Wed-Tue week
-    const groups = new Map<number, { startWed: Date, endTue: Date, total: number, contratados: number }>();
+      for (const c of cands) {
+        if (!c.fecha_aplicacion) continue;
+        const trimmed = c.fecha_aplicacion.trim();
+        const dateOnly = parseDdMmYyyy(trimmed);
+        const d = dateOnly ? new Date(`${dateOnly}T12:00:00-06:00`) : new Date(trimmed);
+        if (isNaN(d.getTime())) continue;
 
-    for (const c of pautaCands) {
-      if (!c.fecha_aplicacion) continue;
+        const day = d.getDay();
+        const diffToWed = day >= 3 ? day - 3 : day + 4;
 
-      const trimmed = c.fecha_aplicacion.trim();
-      const dateOnly = parseDdMmYyyy(trimmed);
-      const d = dateOnly
-        ? new Date(`${dateOnly}T12:00:00-06:00`)
-        : new Date(trimmed);
+        const startWed = new Date(d);
+        startWed.setDate(d.getDate() - diffToWed);
+        startWed.setHours(12, 0, 0, 0);
 
-      if (isNaN(d.getTime())) continue;
+        const timeKey = startWed.getTime();
+        if (!groups.has(timeKey)) {
+          const endTue = new Date(startWed);
+          endTue.setDate(startWed.getDate() + 6);
+          groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0 });
+        }
 
-      const day = d.getDay();
-      const diff = day >= 3 ? day - 3 : day + 4;
-
-      const startWed = new Date(d);
-      startWed.setDate(d.getDate() - diff);
-      startWed.setHours(12, 0, 0, 0);
-
-      const timeKey = startWed.getTime();
-
-      if (!groups.has(timeKey)) {
-        const endTue = new Date(startWed);
-        endTue.setDate(startWed.getDate() + 6);
-        groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0 });
+        const bucket = groups.get(timeKey)!;
+        bucket.total += 1;
+        if (c.status === 'contratado') bucket.contratados += 1;
       }
 
-      const bucket = groups.get(timeKey)!;
-      bucket.total += 1;
+      const today = new Date();
+      const day = today.getDay();
+      const diffToWed = day >= 3 ? day - 3 : day + 4;
 
-      if (c.status === 'contratado') {
-        bucket.contratados += 1;
-      }
-    }
+      const currentWed = new Date(today);
+      currentWed.setDate(today.getDate() - diffToWed);
+      currentWed.setHours(12, 0, 0, 0);
 
-    const today = new Date();
-    const day = today.getDay();
-    const diffToWed = day >= 3 ? day - 3 : day + 4;
+      const prevWed = new Date(currentWed);
+      prevWed.setDate(currentWed.getDate() - 7);
 
-    const currentWed = new Date(today);
-    currentWed.setDate(today.getDate() - diffToWed);
-    currentWed.setHours(12, 0, 0, 0);
+      const nextWed = new Date(currentWed);
+      nextWed.setDate(currentWed.getDate() + 7);
 
-    const prevWed = new Date(currentWed);
-    prevWed.setDate(currentWed.getDate() - 7);
+      [prevWed, currentWed, nextWed].forEach(startWed => {
+        const tKey = startWed.getTime();
+        if (!groups.has(tKey)) {
+          const endTue = new Date(startWed);
+          endTue.setDate(startWed.getDate() + 6);
+          groups.set(tKey, { startWed, endTue, total: 0, contratados: 0 });
+        }
+      });
 
-    const nextWed = new Date(currentWed);
-    nextWed.setDate(currentWed.getDate() + 7);
+      return Array.from(groups.values()).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
+    };
 
-    [prevWed, currentWed, nextWed].forEach(startWed => {
-      const tKey = startWed.getTime();
-      if (!groups.has(tKey)) {
-        const endTue = new Date(startWed);
-        endTue.setDate(startWed.getDate() + 6);
-        groups.set(tKey, { startWed, endTue, total: 0, contratados: 0 });
-      }
-    });
-
-    return Array.from(groups.values()).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
+    return {
+      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA')),
+      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA')),
+      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA')),
+    };
   }, [candidates]);
 
   function changeView(next: ViewMode) {
@@ -367,7 +369,7 @@ export function Pipeline() {
   }
 
   return (
-    <main className="pipeline container">
+    <main className="pipeline">
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
@@ -397,359 +399,464 @@ export function Pipeline() {
         </div>
       </section>
 
-      {/* ── KPIs por reclutador ── */}
-      <section
-        className="pipeline__recruiters"
-        aria-label="KPIs por reclutador"
-      >
-        {recruiterStats.map((r) => {
-          const pct = (n: number) =>
-            r.total === 0 ? 0 : Math.round((n / r.total) * 100);
-          return (
-            <article key={r.name} className="pipeline__recruiter-card">
-              <header className="pipeline__recruiter-head">
-                <h2 className="pipeline__recruiter-name">{r.name}</h2>
-                <span
-                  className="pipeline__recruiter-total"
-                  title="Total de candidatos asignados (denominador)"
-                >
-                  {r.total} candidato{r.total === 1 ? '' : 's'}
-                </span>
-              </header>
-              <dl className="pipeline__recruiter-stats">
-                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--citados">
-                  <dt>Citados</dt>
-                  <dd>
-                    <span className="pipeline__recruiter-pct">
-                      {pct(r.citados)}%
-                    </span>
-                    <span className="pipeline__recruiter-count">
-                      ({r.citados})
-                    </span>
-                  </dd>
-                </div>
-                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--contratados">
-                  <dt>Contratados</dt>
-                  <dd>
-                    <span className="pipeline__recruiter-pct">
-                      {pct(r.contratados)}%
-                    </span>
-                    <span className="pipeline__recruiter-count">
-                      ({r.contratados})
-                    </span>
-                  </dd>
-                </div>
-                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--rechazados">
-                  <dt>Rechazados</dt>
-                  <dd>
-                    <span className="pipeline__recruiter-pct">
-                      {pct(r.rechazados)}%
-                    </span>
-                    <span className="pipeline__recruiter-count">
-                      ({r.rechazados})
-                    </span>
-                  </dd>
-                </div>
-              </dl>
-            </article>
-          );
-        })}
-      </section>
+      <div className="pipeline__layout">
+        <aside className="pipeline__sidebar">
+          {/* Header del sidebar */}
+          <div className="pipeline__sidebar-header">
+            <BarChart3 size={18} aria-hidden="true" />
+            <span>Métricas y KPIs</span>
+          </div>
 
-      {/* ── KPI Pauta ── */}
-      <section className="pipeline__pauta-kpis" aria-label="KPI Pauta por semana" style={{ display: 'flex', gap: 'var(--spacing-md)', overflowX: 'auto', marginBottom: 'var(--spacing-lg)', paddingBottom: 'var(--spacing-xs)' }}>
-        {pautaStats.map((stat) => {
-          const tueWeek = isoWeekOf(stat.endTue).week;
-          const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
-          const wedStr = fmt.format(stat.startWed);
-          const tueStr = fmt.format(stat.endTue);
-          const label = `Semana ${tueWeek} (${wedStr} - ${tueStr})`;
-
-          return (
-            <article key={stat.startWed.getTime()} className="pipeline__recruiter-card" style={{ minWidth: '320px', flex: '0 0 auto' }}>
-              <header className="pipeline__recruiter-head" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
-                <h2 className="pipeline__recruiter-name">Pauta</h2>
-                <span className="pipeline__recruiter-total" style={{ whiteSpace: 'normal', fontSize: '12px', textTransform: 'capitalize', color: 'var(--color-muted)' }}>
-                  {label}
-                </span>
-              </header>
-              <dl className="pipeline__recruiter-stats" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-                <div className="pipeline__recruiter-stat">
-                  <dt>Candidatos</dt>
-                  <dd>
-                    <span className="pipeline__recruiter-pct">{stat.total}</span>
-                  </dd>
-                </div>
-                <div className="pipeline__recruiter-stat pipeline__recruiter-stat--contratados">
-                  <dt>Contratados</dt>
-                  <dd>
-                    <span className="pipeline__recruiter-pct">{stat.contratados}</span>
-                  </dd>
-                </div>
-              </dl>
-            </article>
-          );
-        })}
-      </section>
-
-      {/* ── Search ── */}
-      <section className="pipeline__controls">
-        <div className="pipeline__search">
-          <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
-          <label htmlFor="pipeline-search" className="sr-only">
-            Buscar candidato
-          </label>
-          <input
-            id="pipeline-search"
-            type="text"
-            placeholder="Buscar por nombre, puesto, área, reclutador, fuente…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pipeline__search-input"
-            autoComplete="off"
-          />
-        </div>
-        <span className="pipeline__count">
-          {filtered.length} de {candidates.length}
-        </span>
-        <button
-          type="button"
-          className={`btn-secondary pipeline__filter-btn${showFilters ? ' pipeline__filter-btn--active' : ''}`}
-          onClick={() => setShowFilters((v) => !v)}
-          aria-expanded={showFilters}
-          aria-controls="pipeline-filters"
-          title="Filtros avanzados"
-        >
-          <SlidersHorizontal size={16} aria-hidden="true" />
-
-          {activeFiltersCount > 0 && (
-            <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
-              {activeFiltersCount}
-            </span>
-          )}
-        </button>
-        <div className="pipeline__view-toggle" role="tablist" aria-label="Cambiar vista">
+          {/* Card resumen global */}
           <button
             type="button"
-            role="tab"
-            aria-selected={viewMode === 'table'}
-            className={`pipeline__view-btn${viewMode === 'table' ? ' pipeline__view-btn--active' : ''}`}
-            onClick={() => changeView('table')}
-            title="Vista de tabla"
+            className="pipeline__kpi-card pipeline__kpi-card--global"
+            onClick={() => setKpiModalOpen('global')}
           >
-            <Table2 size={16} aria-hidden="true" />
+            <div className="pipeline__kpi-card__icon">
+              <Users size={20} aria-hidden="true" />
+            </div>
+            <div className="pipeline__kpi-card__body">
+              <span className="pipeline__kpi-card__label">Resumen General</span>
+              <span className="pipeline__kpi-card__hint">
+                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} citados
+              </span>
+            </div>
+            <ChevronRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={viewMode === 'kanban'}
-            className={`pipeline__view-btn${viewMode === 'kanban' ? ' pipeline__view-btn--active' : ''}`}
-            onClick={() => changeView('kanban')}
-            title="Vista kanban"
-          >
-            <LayoutGrid size={16} aria-hidden="true" />
-          </button>
-        </div>
-      </section>
 
-      {/* ── Filtros avanzados ── */}
-      {showFilters && (
-        <div id="pipeline-filters">
-          <CandidateFilters
-            candidates={candidates}
-            value={filters}
-            onChange={changeFilters}
-            onReset={resetFilters}
-          />
-        </div>
-      )}
+          {/* Divider */}
+          <div className="pipeline__sidebar-divider" />
 
-      {/* ── Vista (tabla o kanban) ── */}
-      {filtered.length === 0 ? (
-        <section className="pipeline__empty">
-          {candidates.length === 0 ? (
-            <>
-              <h2>Aún no hay candidatos</h2>
-              <p>
-                Empieza agregando tu primer candidato a la base de datos de reclutamiento.
-              </p>
-              <button type="button" className="btn-primary" onClick={openAdd} title="Agregar primer candidato">
-                <UserPlus size={16} aria-hidden="true" />
-              </button>
-            </>
-          ) : (
-            <>
-              <h2>Sin resultados</h2>
-              <p>Ningún candidato coincide con la búsqueda o los filtros actuales.</p>
-              <div className="pipeline__empty-actions">
-                {searchTerm && (
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={() => setSearchTerm('')}
-                    title="Limpiar búsqueda"
-                  >
-                    <UserX size={16} aria-hidden="true" />
-                  </button>
-                )}
-                {activeFiltersCount > 0 && (
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={resetFilters}
-                    title="Limpiar filtros"
-                  >
-                    <SlidersHorizontal size={16} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </section>
-      ) : viewMode === 'kanban' ? (
-        <PipelineKanban
-          candidates={filtered}
-          notesCount={notesCount}
-          onEdit={openEdit}
-          onDelete={openDelete}
-          onNotes={(c) => setNotesTarget(c)}
-          onHire={openHire}
-          onStatusChange={(c, status) => handleStatusChange(c, status)}
-        />
-      ) : (
-        <section
-          className="pipeline__card-list"
-          aria-label="Lista de candidatos"
-        >
-          {filtered.map((c) => {
-            const initials = c.nombre
-              .split(' ')
-              .slice(0, 2)
-              .map((w) => w[0])
-              .join('');
-            return (
-              <article
-                key={c.id ?? c.nombre + c.fecha_aplicacion}
-                className={`pipeline__ccard pipeline__ccard--${c.status}`}
+          {/* Sección: Detalle por Reclutador */}
+          <div className="pipeline__sidebar-section">
+            <span className="pipeline__sidebar-section__label">Detalle por Reclutador</span>
+
+            <div className="pipeline__kpi-list">
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => setKpiModalOpen('pauta')}
               >
-                <div
-                  className="pipeline__ccard-avatar"
-                  aria-hidden="true"
-                >
-                  {initials}
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-accent-amber)' }} />
+                  <span className="pipeline__kpi-row__name">Pauta</span>
                 </div>
-                <div
-                  className="pipeline__ccard-name-col"
-                  data-puesto-area={`${c.puesto} · ${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`}
-                >
-                  <div className="pipeline__name">
-                    <span>{c.nombre}</span>
-                    {c.source && (
-                      <span className="pipeline__source-badge" title={`Fuente: ${c.source}`}>
-                        {c.source}
-                      </span>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {pautaStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => setKpiModalOpen('alexandra')}
+              >
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-accent-teal)' }} />
+                  <span className="pipeline__kpi-row__name">Alexandra</span>
+                </div>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {alexandraStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => setKpiModalOpen('daniela')}
+              >
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-primary)' }} />
+                  <span className="pipeline__kpi-row__name">Daniela</span>
+                </div>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {danielaStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <div className="pipeline__content">
+          {/* ── Search ── */}
+          <section className="pipeline__controls">
+            <div className="pipeline__search">
+              <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
+              <label htmlFor="pipeline-search" className="sr-only">
+                Buscar candidato
+              </label>
+              <input
+                id="pipeline-search"
+                type="text"
+                placeholder="Buscar por nombre, puesto, área, reclutador, fuente…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pipeline__search-input"
+                autoComplete="off"
+              />
+            </div>
+            <span className="pipeline__count">
+              {filtered.length} de {candidates.length}
+            </span>
+            <button
+              type="button"
+              className={`btn-secondary pipeline__filter-btn${showFilters ? ' pipeline__filter-btn--active' : ''}`}
+              onClick={() => setShowFilters((v) => !v)}
+              aria-expanded={showFilters}
+              aria-controls="pipeline-filters"
+              title="Filtros avanzados"
+            >
+              <SlidersHorizontal size={16} aria-hidden="true" />
+              {activeFiltersCount > 0 && (
+                <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
+                  {activeFiltersCount}
+                </span>
+              )}
+            </button>
+            <div className="pipeline__view-toggle" role="tablist" aria-label="Cambiar vista">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'table'}
+                className={`pipeline__view-btn${viewMode === 'table' ? ' pipeline__view-btn--active' : ''}`}
+                onClick={() => changeView('table')}
+                title="Vista de tabla"
+              >
+                <Table2 size={16} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'kanban'}
+                className={`pipeline__view-btn${viewMode === 'kanban' ? ' pipeline__view-btn--active' : ''}`}
+                onClick={() => changeView('kanban')}
+                title="Vista kanban"
+              >
+                <LayoutGrid size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </section>
+
+          {/* ── Filtros avanzados ── */}
+          {showFilters && (
+            <div id="pipeline-filters">
+              <CandidateFilters
+                candidates={candidates}
+                value={filters}
+                onChange={changeFilters}
+                onReset={resetFilters}
+              />
+            </div>
+          )}
+
+          {/* ── Vista (tabla o kanban) ── */}
+          {filtered.length === 0 ? (
+            <section className="pipeline__empty">
+              {candidates.length === 0 ? (
+                <>
+                  <h2>Aún no hay candidatos</h2>
+                  <p>
+                    Empieza agregando tu primer candidato a la base de datos de reclutamiento.
+                  </p>
+                  <button type="button" className="btn-primary" onClick={openAdd} title="Agregar primer candidato">
+                    <UserPlus size={16} aria-hidden="true" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h2>Sin resultados</h2>
+                  <p>Ningún candidato coincide con la búsqueda o los filtros actuales.</p>
+                  <div className="pipeline__empty-actions">
+                    {searchTerm && (
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => setSearchTerm('')}
+                        title="Limpiar búsqueda"
+                      >
+                        <UserX size={16} aria-hidden="true" />
+                      </button>
+                    )}
+                    {activeFiltersCount > 0 && (
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={resetFilters}
+                        title="Limpiar filtros"
+                      >
+                        <SlidersHorizontal size={16} aria-hidden="true" />
+                      </button>
                     )}
                   </div>
-                  <div className="pipeline__contact">
-                    {c.telefono || c.email || '—'}
-                  </div>
-                </div>
-                <div className="pipeline__ccard-puesto-col">
-                  <div className="pipeline__puesto">{c.puesto}</div>
-                  <div className="pipeline__area">
-                    {c.area}
-                    {c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}
-                  </div>
-                </div>
-                <div className="pipeline__cell-status pipeline__ccard-status-col">
-                  <CandidateStatusBadge status={c.status} />
-                  <label className="sr-only" htmlFor={`status-${c.id}`}>
-                    Cambiar estado de {c.nombre}
-                  </label>
-                  <select
-                    id={`status-${c.id}`}
-                    className="pipeline__status-select"
-                    value={c.status}
-                    onChange={(e) =>
-                      handleStatusChange(c, e.target.value as CandidateStatus)
-                    }
-                    aria-label={`Cambiar estado de ${c.nombre}`}
+                </>
+              )}
+            </section>
+          ) : viewMode === 'kanban' ? (
+            <PipelineKanban
+              candidates={filtered}
+              notesCount={notesCount}
+              onEdit={openEdit}
+              onDelete={openDelete}
+              onNotes={(c) => setNotesTarget(c)}
+              onHire={openHire}
+              onStatusChange={(c, status) => handleStatusChange(c, status)}
+            />
+          ) : (
+            <section
+              className="pipeline__card-list"
+              aria-label="Lista de candidatos"
+            >
+              {filtered.map((c) => {
+                const initials = c.nombre
+                  .split(' ')
+                  .slice(0, 2)
+                  .map((w) => w[0])
+                  .join('');
+                return (
+                  <article
+                    key={c.id ?? c.nombre + c.fecha_aplicacion}
+                    className={`pipeline__ccard pipeline__ccard--${c.status}`}
                   >
-                    {CANDIDATE_STATUSES.map((s) => (
-                      <option key={s} value={s}>
-                        {CANDIDATE_STATUS_LABEL[s]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="pipeline__ccard-dates-col pipeline__cell-dates">
-                  <div className="pipeline__cell-dates-primary">
-                    {formatDate(c.fecha_aplicacion)}
-                  </div>
-                  <div className="pipeline__cell-dates-secondary">
-                    {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
-                  </div>
-                </div>
-                <div className="pipeline__cell-actions pipeline__ccard-actions-col">
-                  {c.employee_num && (
-                    <span
-                      className="pipeline__hired-tag"
-                      title={`Empleado #${c.employee_num}`}
+                    <div
+                      className="pipeline__ccard-avatar"
+                      aria-hidden="true"
                     >
-                      <BadgeCheck size={12} aria-hidden="true" />
-                      #{c.employee_num}
+                      {initials}
+                    </div>
+                    <div
+                      className="pipeline__ccard-name-col"
+                      data-puesto-area={`${c.puesto} · ${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`}
+                    >
+                      <div className="pipeline__name">
+                        <span>{c.nombre}</span>
+                        {c.source && (
+                          <span className="pipeline__source-badge" title={`Fuente: ${c.source}`}>
+                            {c.source}
+                          </span>
+                        )}
+                      </div>
+                      <div className="pipeline__contact">
+                        {c.telefono || c.email || '—'}
+                      </div>
+                    </div>
+                    <div className="pipeline__ccard-puesto-col">
+                      <div className="pipeline__puesto">{c.puesto}</div>
+                      <div className="pipeline__area">
+                        {c.area}
+                        {c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}
+                      </div>
+                    </div>
+                    <div className="pipeline__cell-status pipeline__ccard-status-col">
+                      <CandidateStatusBadge status={c.status} />
+                      <label className="sr-only" htmlFor={`status-${c.id}`}>
+                        Cambiar estado de {c.nombre}
+                      </label>
+                      <select
+                        id={`status-${c.id}`}
+                        className="pipeline__status-select"
+                        value={c.status}
+                        onChange={(e) =>
+                          handleStatusChange(c, e.target.value as CandidateStatus)
+                        }
+                        aria-label={`Cambiar estado de ${c.nombre}`}
+                      >
+                        {CANDIDATE_STATUSES.map((s) => (
+                          <option key={s} value={s}>
+                            {CANDIDATE_STATUS_LABEL[s]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="pipeline__ccard-dates-col pipeline__cell-dates">
+                      <div className="pipeline__cell-dates-primary">
+                        {formatDate(c.fecha_aplicacion)}
+                      </div>
+                      <div className="pipeline__cell-dates-secondary">
+                        {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
+                      </div>
+                    </div>
+                    <div className="pipeline__cell-actions pipeline__ccard-actions-col">
+                      {c.employee_num && (
+                        <span
+                          className="pipeline__hired-tag"
+                          title={`Empleado #${c.employee_num}`}
+                        >
+                          <BadgeCheck size={12} aria-hidden="true" />
+                          #{c.employee_num}
+                        </span>
+                      )}
+                      <CandidateRowActions
+                        candidate={c}
+                        notesCount={notesCount(c)}
+                        onEdit={openEdit}
+                        onDelete={openDelete}
+                        onNotes={() => setNotesTarget(c)}
+                        onHire={
+                          c.status === 'contratado' && !c.employee_num
+                            ? () => openHire(c)
+                            : undefined
+                        }
+                      />
+                    </div>
+                  </article>
+                );
+              })}
+            </section>
+          )}
+
+          {/* ── Modales ── */}
+          <CandidateModal
+            isOpen={modalMode !== null}
+            mode={modalMode ?? 'add'}
+            candidate={selected}
+            onClose={closeModal}
+            onSave={handleSave}
+            onDelete={deleteCandidate}
+          />
+
+          <CandidateNotesModal
+            isOpen={notesTarget !== null}
+            candidate={notesTarget}
+            notes={notes}
+            onClose={() => setNotesTarget(null)}
+            onSave={addCandidateNote}
+          />
+
+          <HireCandidateModal
+            isOpen={hireTarget !== null}
+            candidate={hireTarget}
+            onClose={() => setHireTarget(null)}
+            onConfirm={handleHire}
+          />
+
+          {/* ── Candidate Report Modal (WhatsApp-ready) ── */}
+          <CandidateReportModal
+            isOpen={reportOpen}
+            onClose={() => setReportOpen(false)}
+            candidates={candidates}
+          />
+        </div>
+      </div>
+
+      <Modal
+        isOpen={kpiModalOpen !== null}
+        onClose={() => setKpiModalOpen(null)}
+        title={
+          kpiModalOpen === 'global' ? 'Resumen de Reclutadores' :
+          kpiModalOpen === 'pauta' ? 'Detalle Pauta' :
+          kpiModalOpen === 'alexandra' ? 'Detalle Alexandra' :
+          kpiModalOpen === 'daniela' ? 'Detalle Daniela' : ''
+        }
+        size="xl"
+      >
+        <div className="pipeline__modal-body">
+          
+          {/* ── 1. VISTA GLOBAL: Grid de tarjetas de reclutador ── */}
+          {kpiModalOpen === 'global' && (
+            <div className="pipeline__modal-grid">
+              {recruiterStats.map((r) => {
+                const pct = (n: number) =>
+                  r.total === 0 ? 0 : Math.round((n / r.total) * 100);
+                
+                return (
+                  <article key={r.name} className="pipeline__modal-card">
+                    <header className="pipeline__modal-card__head">
+                      <div className="pipeline__modal-card__avatar">
+                        {r.name.slice(0, 2)}
+                      </div>
+                      <div className="pipeline__modal-card__meta">
+                        <h3 className="pipeline__modal-card__name">{r.name}</h3>
+                        <span className="pipeline__modal-card__total">
+                          {r.total} candidato{r.total === 1 ? '' : 's'}
+                        </span>
+                      </div>
+                    </header>
+
+                    <div className="pipeline__modal-card__stats">
+                      <div className="pipeline__modal-stat pipeline__modal-stat--citados">
+                        <span className="pipeline__modal-stat__value">{pct(r.citados)}%</span>
+                        <span className="pipeline__modal-stat__label">Citados</span>
+                        <span className="pipeline__modal-stat__count">({r.citados})</span>
+                      </div>
+                      <div className="pipeline__modal-stat pipeline__modal-stat--contratados">
+                        <span className="pipeline__modal-stat__value">{pct(r.contratados)}%</span>
+                        <span className="pipeline__modal-stat__label">Contratados</span>
+                        <span className="pipeline__modal-stat__count">({r.contratados})</span>
+                      </div>
+                      <div className="pipeline__modal-stat pipeline__modal-stat--rechazados">
+                        <span className="pipeline__modal-stat__value">{pct(r.rechazados)}%</span>
+                        <span className="pipeline__modal-stat__label">Rechazados</span>
+                        <span className="pipeline__modal-stat__count">({r.rechazados})</span>
+                      </div>
+                    </div>
+
+                    {/* Barra de progreso visual */}
+                    <div className="pipeline__modal-card__bar">
+                      <div 
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--contratados" 
+                        style={{ width: `${pct(r.contratados)}%` }}
+                      />
+                      <div 
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--citados" 
+                        style={{ width: `${pct(r.citados)}%` }}
+                      />
+                      <div 
+                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--rechazados" 
+                        style={{ width: `${pct(r.rechazados)}%` }}
+                      />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── 2. VISTA INDIVIDUAL: Tabla de semanas ── */}
+          {kpiModalOpen && kpiModalOpen !== 'global' && (
+            <div className="pipeline__modal-weeks">
+              <div className="pipeline__modal-weeks__header">
+                <span>Semana</span>
+                <span>Período</span>
+                <span className="pipeline__modal-weeks__header--right">Candidatos</span>
+                <span className="pipeline__modal-weeks__header--right">Contratados</span>
+                <span className="pipeline__modal-weeks__header--right">Efectividad</span>
+              </div>
+
+              {(kpiModalOpen === 'pauta' ? pautaStats : kpiModalOpen === 'alexandra' ? alexandraStats : danielaStats).map((stat) => {
+                const tueWeek = isoWeekOf(stat.endTue).week;
+                const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
+                const wedStr = fmt.format(stat.startWed);
+                const tueStr = fmt.format(stat.endTue);
+                const effectiveness = stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100);
+
+                return (
+                  <div key={stat.startWed.getTime()} className="pipeline__modal-weeks__row">
+                    <span className="pipeline__modal-weeks__week">Sem {tueWeek}</span>
+                    <span className="pipeline__modal-weeks__period">{wedStr} – {tueStr}</span>
+                    <span className="pipeline__modal-weeks__number">{stat.total}</span>
+                    <span className="pipeline__modal-weeks__number pipeline__modal-weeks__number--hired">
+                      {stat.contratados}
                     </span>
-                  )}
-                  <CandidateRowActions
-                    candidate={c}
-                    notesCount={notesCount(c)}
-                    onEdit={openEdit}
-                    onDelete={openDelete}
-                    onNotes={() => setNotesTarget(c)}
-                    onHire={
-                      c.status === 'contratado' && !c.employee_num
-                        ? () => openHire(c)
-                        : undefined
-                    }
-                  />
-                </div>
-              </article>
-            );
-          })}
-        </section>
-      )}
-
-      {/* ── Modales ── */}
-      <CandidateModal
-        isOpen={modalMode !== null}
-        mode={modalMode ?? 'add'}
-        candidate={selected}
-        onClose={closeModal}
-        onSave={handleSave}
-        onDelete={deleteCandidate}
-      />
-
-      <CandidateNotesModal
-        isOpen={notesTarget !== null}
-        candidate={notesTarget}
-        notes={notes}
-        onClose={() => setNotesTarget(null)}
-        onSave={addCandidateNote}
-      />
-
-      <HireCandidateModal
-        isOpen={hireTarget !== null}
-        candidate={hireTarget}
-        onClose={() => setHireTarget(null)}
-        onConfirm={handleHire}
-      />
-
-      {/* ── Candidate Report Modal (WhatsApp-ready) ── */}
-      <CandidateReportModal
-        isOpen={reportOpen}
-        onClose={() => setReportOpen(false)}
-        candidates={candidates}
-      />
+                    <span className="pipeline__modal-weeks__number pipeline__modal-weeks__number--pct">
+                      {effectiveness}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </Modal>
     </main>
   );
 }
