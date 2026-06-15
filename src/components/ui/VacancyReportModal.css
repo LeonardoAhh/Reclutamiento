@@ -3,9 +3,11 @@
    en el TSX; aquí solo layout/estilos cohesivos con el resto del sistema.
 */
 
-.modal-content.vacancy-report-modal {
-  max-width: min(820px, 96vw);
-  max-height: 90vh;
+@media (min-width: 768px) {
+  .modal-content.vacancy-report-modal {
+    max-width: min(820px, 96vw);
+    max-height: 90vh;
+  }
 }
 
 .vacancy-report-modal__subtitle {
@@ -271,11 +273,6 @@
    sin aportar valor sobre el preview, que ya contiene la información.
    ────────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
-  .vacancy-report-modal__summary,
-  .vacancy-report-modal__groups {
-    display: none;
-  }
-
   /* El preview queda como primer elemento: quitar el separador superior
      y dar más alto al área scroll del mensaje (toma el espacio que antes
      ocupaban los stats + groups). */

@@ -3,6 +3,7 @@ import { ArrowUpCircle, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
 import { Modal } from './Modal';
+import { CustomSelect } from './CustomSelect';
 import './PromoteEmployeeModal.css';
 
 /* ── Tipos ────────────────────────────────────────────────────────────────── */
@@ -206,16 +207,16 @@ export function PromoteEmployeeModal({
 
   /* ── Handlers de campo ────────────────────────────────────────────────── */
 
-  function handleExistingArea(e: React.ChangeEvent<HTMLSelectElement>) {
-    setExisting({ area: e.target.value, seccion: '', puesto: '' });
+  function handleExistingArea(val: string) {
+    setExisting({ area: val, seccion: '', puesto: '' });
   }
 
-  function handleExistingSeccion(e: React.ChangeEvent<HTMLSelectElement>) {
-    setExisting((prev) => ({ ...prev, seccion: e.target.value, puesto: '' }));
+  function handleExistingSeccion(val: string) {
+    setExisting((prev) => ({ ...prev, seccion: val, puesto: '' }));
   }
 
-  function handleExistingPuesto(e: React.ChangeEvent<HTMLSelectElement>) {
-    setExisting((prev) => ({ ...prev, puesto: e.target.value }));
+  function handleExistingPuesto(val: string) {
+    setExisting((prev) => ({ ...prev, puesto: val }));
   }
 
   function handleDraftField(
@@ -353,9 +354,9 @@ interface ExistingFieldsProps {
   areas: string[];
   sections: string[];
   puestos: string[];
-  onArea: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSeccion: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onPuesto: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onArea: (val: string) => void;
+  onSeccion: (val: string) => void;
+  onPuesto: (val: string) => void;
   isSamePosition: boolean;
 }
 
@@ -374,22 +375,16 @@ function ExistingFields({
       {/* Área */}
       <div className="form-group">
         <label htmlFor="promote-existing-area">Área</label>
-        <select
+        <CustomSelect
           id="promote-existing-area"
-          required
           value={existing.area}
           onChange={onArea}
+          options={areas.map((a) => ({ value: a, label: a }))}
+          placeholder="Seleccione área…"
           aria-describedby={
             existing.area === '' ? 'promote-existing-area-hint' : undefined
           }
-        >
-          <option value="">Seleccione área…</option>
-          {areas.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
+        />
         {existing.area === '' && (
           <span id="promote-existing-area-hint" className="sr-only">
             Seleccione un área para ver las secciones disponibles.
@@ -400,24 +395,17 @@ function ExistingFields({
       {/* Sección */}
       <div className="form-group">
         <label htmlFor="promote-existing-seccion">Sección</label>
-        <select
+        <CustomSelect
           id="promote-existing-seccion"
-          required
           value={existing.seccion}
           onChange={onSeccion}
+          options={sections.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccione sección…"
           disabled={!existing.area}
-          aria-disabled={!existing.area}
           aria-describedby={
             !existing.area ? 'promote-existing-seccion-hint' : undefined
           }
-        >
-          <option value="">Seleccione sección…</option>
-          {sections.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        />
         {!existing.area && (
           <span id="promote-existing-seccion-hint" className="sr-only">
             Primero seleccione un área.
@@ -428,25 +416,17 @@ function ExistingFields({
       {/* Puesto */}
       <div className="form-group" style={{ gridColumn: '1 / -1' }}>
         <label htmlFor="promote-existing-puesto">Nuevo puesto</label>
-        <select
+        <CustomSelect
           id="promote-existing-puesto"
-          required
           value={existing.puesto}
           onChange={onPuesto}
+          options={puestos.map((p) => ({ value: p, label: p }))}
+          placeholder="Seleccione puesto…"
           disabled={!existing.seccion}
-          aria-disabled={!existing.seccion}
-          aria-invalid={isSamePosition || undefined}
           aria-describedby={
             isSamePosition ? 'promote-same-position-error' : undefined
           }
-        >
-          <option value="">Seleccione puesto…</option>
-          {puestos.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
+        />
         {isSamePosition && (
           <span
             id="promote-same-position-error"

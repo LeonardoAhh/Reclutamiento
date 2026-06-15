@@ -62,30 +62,27 @@
 .vacantes__card-meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-xs) var(--spacing-md);
+  gap: var(--spacing-sm);
   margin: 0;
 }
 
-.vacantes__card-meta-row {
+.vacantes__card-info {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.vacantes__card-meta-row dt {
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  font-weight: 500;
-}
-
-.vacantes__card-meta-row dd {
-  margin: 0;
+  align-items: center;
+  gap: var(--spacing-xs);
   font-size: var(--type-body-sm-size);
   color: var(--color-body-strong);
-  overflow-wrap: anywhere;
+}
+
+.vacantes__card-icon {
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.vacantes__card-info-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .vacantes__card-actions {

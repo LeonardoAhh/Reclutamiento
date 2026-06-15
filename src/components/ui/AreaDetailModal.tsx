@@ -320,11 +320,11 @@ export function AreaDetailModal({
               <thead>
                 <tr>
                   <th scope="col">Puesto</th>
-                  {activeTab === ALL_TAB && <th scope="col">Sección</th>}
-                  <th scope="col" className="text-center">Autorizada</th>
-                  <th scope="col" className="text-center">Real</th>
+                  {activeTab === ALL_TAB && <th scope="col" className="hide-on-mobile">Sección</th>}
+                  <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
+                  <th scope="col" className="text-center hide-on-mobile">Real</th>
                   <th scope="col" className="text-center">Vacantes</th>
-                  <th scope="col">Cobertura</th>
+                  <th scope="col" className="hide-on-mobile">Cobertura</th>
                   <th scope="col" className="text-center">Estado</th>
                   <th scope="col" aria-label="Acciones" />
                 </tr>
@@ -376,9 +376,9 @@ export function AreaDetailModal({
                         </div>
                       </td>
                       {activeTab === ALL_TAB && (
-                        <td className="cell-seccion">{pos.seccion}</td>
+                        <td className="cell-seccion hide-on-mobile">{pos.seccion}</td>
                       )}
-                      <td className="text-center">
+                      <td className="text-center hide-on-mobile">
                         {pos.plantilla_autorizada}
                         {pos.backup > 0 && (
                           <span
@@ -389,7 +389,7 @@ export function AreaDetailModal({
                           </span>
                         )}
                       </td>
-                      <td className="text-center font-strong">{pos.plantilla_real}</td>
+                      <td className="text-center font-strong hide-on-mobile">{pos.plantilla_real}</td>
                       <td className="text-center">
                         {pos.vacantes > 0 ? (
                           <span className="vacancy-count">{pos.vacantes}</span>
@@ -397,7 +397,7 @@ export function AreaDetailModal({
                           <span className="no-vacancy">—</span>
                         )}
                       </td>
-                      <td>
+                      <td className="hide-on-mobile">
                         <CoverageBar
                           percentage={pos.porcentaje_cobertura}
                           color={getCoverageColor(pos.porcentaje_cobertura)}
@@ -436,11 +436,11 @@ export function AreaDetailModal({
                             return (
                               <div className="area-detail-modal__badge-stack">
                                 <Badge variant="teal">
-                                  EN PROCESO ({activeCount})
+                                  Proceso ({activeCount})
                                 </Badge>
                                 {pos.proximos_ingresos > 0 && (
                                   <Badge variant="coral">
-                                    PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                                    Ingreso ({pos.proximos_ingresos})
                                   </Badge>
                                 )}
                               </div>
@@ -452,7 +452,7 @@ export function AreaDetailModal({
                                 <Badge variant="error">Sin proceso</Badge>
                                 {pos.proximos_ingresos > 0 && (
                                   <Badge variant="coral">
-                                    PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                                    Ingreso ({pos.proximos_ingresos})
                                   </Badge>
                                 )}
                               </div>
@@ -461,7 +461,7 @@ export function AreaDetailModal({
                           if (pos.proximos_ingresos > 0) {
                             return (
                               <Badge variant="coral">
-                                PRÓXIMO INGRESO ({pos.proximos_ingresos})
+                                Ingreso ({pos.proximos_ingresos})
                               </Badge>
                             );
                           }

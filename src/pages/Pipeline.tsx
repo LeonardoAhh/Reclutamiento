@@ -18,11 +18,11 @@ import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
-import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   CandidateFilters,
   EMPTY_FILTERS,
@@ -672,25 +672,18 @@ export function Pipeline() {
                       </div>
                     </div>
                     <div className="pipeline__cell-status pipeline__ccard-status-col">
-                      <CandidateStatusBadge status={c.status} />
-                      <label className="sr-only" htmlFor={`status-${c.id}`}>
-                        Cambiar estado de {c.nombre}
-                      </label>
-                      <select
+                      <CustomSelect
                         id={`status-${c.id}`}
-                        className="pipeline__status-select"
                         value={c.status}
-                        onChange={(e) =>
-                          handleStatusChange(c, e.target.value as CandidateStatus)
+                        onChange={(val) =>
+                          handleStatusChange(c, val as CandidateStatus)
                         }
+                        options={CANDIDATE_STATUSES.map((s) => ({
+                          value: s,
+                          label: CANDIDATE_STATUS_LABEL[s],
+                        }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
-                      >
-                        {CANDIDATE_STATUSES.map((s) => (
-                          <option key={s} value={s}>
-                            {CANDIDATE_STATUS_LABEL[s]}
-                          </option>
-                        ))}
-                      </select>
+                      />
                     </div>
                     <div className="pipeline__ccard-dates-col pipeline__cell-dates">
                       <div className="pipeline__cell-dates-primary">

@@ -8,6 +8,7 @@ import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import './CandidateModal.css';
+import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
@@ -253,50 +254,37 @@ export function CandidateModal({
     <>
       <div className="form-group">
         <label htmlFor="cand-area">Área</label>
-        <select
+        <CustomSelect
           id="cand-area"
-          required
           value={form.area}
-          onChange={(e) =>
-            setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-          }
-        >
-          <option value="">Seleccione área…</option>
-          {areas.map((a) => (
-            <option key={a} value={a}>{a}</option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+          options={areas.map((a) => ({ value: a, label: a }))}
+          placeholder="Seleccione área…"
+        />
       </div>
 
       <div className="form-group">
         <label htmlFor="cand-seccion">Sección</label>
-        <select
+        <CustomSelect
           id="cand-seccion"
           value={form.seccion}
-          onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccione sección…"
           disabled={!form.area}
-        >
-          <option value="">Seleccione sección…</option>
-          {sectionsForArea.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        />
       </div>
 
       <div className="form-group form-group--span-2">
         <label htmlFor="cand-puesto">Puesto</label>
-        <select
+        <CustomSelect
           id="cand-puesto"
-          required
           value={form.puesto}
-          onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+          onChange={(val) => setForm({ ...form, puesto: val })}
+          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          placeholder="Seleccione puesto…"
           disabled={!form.seccion}
-        >
-          <option value="">Seleccione puesto…</option>
-          {puestosForSection.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+        />
       </div>
     </>
   );
@@ -305,19 +293,12 @@ export function CandidateModal({
     <>
       <div className="form-group">
         <label htmlFor="cand-status">Proceso</label>
-        <select
+        <CustomSelect
           id="cand-status"
           value={form.status}
-          onChange={(e) =>
-            setForm({ ...form, status: e.target.value as CandidateStatus })
-          }
-        >
-          {CANDIDATE_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {CANDIDATE_STATUS_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, status: val as CandidateStatus })}
+          options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: CANDIDATE_STATUS_LABEL[s] }))}
+        />
       </div>
 
       <div className="form-group">

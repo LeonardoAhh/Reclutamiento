@@ -76,13 +76,17 @@
 
 /* ── Content (área que se expande/colapsa) ── */
 .expandable-section__content {
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-base) ease;
+}
+
+.expandable-section__content-wrapper {
   overflow: hidden;
-  transition: max-height var(--transition-base) ease;
 }
 
 .expandable-section--expanded .expandable-section__content {
-  max-height: 5000px; /* Lo suficientemente grande para cualquier contenido */
+  grid-template-rows: 1fr;
 }
 
 .expandable-section__inner {

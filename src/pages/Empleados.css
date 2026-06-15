@@ -356,10 +356,10 @@
 }
 
 /* ══════════════════════════════════════════
-   TARJETAS DE EMPLEADO (móvil)
+   GRID LIST MINIMALISTA (Mobile & PC)
 ══════════════════════════════════════════ */
 
-.empleados__card-list {
+.empleados__grid-list {
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -367,199 +367,75 @@
   padding: 0;
 }
 
-.empleados__card {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
+
+.empleados__grid-item {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: var(--spacing-md);
+  padding: 10px var(--spacing-md);
+  align-items: center;
   border-bottom: 1px solid var(--color-hairline-soft);
   min-height: 48px;
-  box-sizing: border-box;
 }
 
-.empleados__card:last-child {
+.empleados__grid-item:last-child {
   border-bottom: none;
 }
 
-.empleados__card--incapacidad {
+.empleados__grid-item--incapacidad {
   background: var(--color-vacancy-tint);
 }
 
-.empleados__card-main {
-  flex: 1 1 0;
-  min-width: 0;
+.empleados__grid-item .empleados__cell-num {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-align: center;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: 4px;
+  padding: 2px 0;
+  line-height: 1.2;
+}
+
+.empleados__grid-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.empleados__card-top {
-  display: flex;
-  align-items: center; /* centrado vertical limpio */
-  gap: var(--spacing-xs);
   min-width: 0;
-  width: 100%;
 }
 
-/* Número: ancho fijo para que nunca empuje el nombre */
-.empleados__card-top .empleados__cell-num {
-  flex-shrink: 0;
-  min-width: 36px; /* cubre hasta 5 dígitos */
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
-  padding: 1px 5px;
-  text-align: center;
-  line-height: 1.5;
-}
-
-.empleados__card-top .empleados__name {
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
-  font-size: var(--type-body-sm-size);
+.empleados__grid-info .empleados__name {
+  font-size: 12px;
   font-weight: 500;
   color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 1.4;
+  text-transform: capitalize;
 }
 
-.empleados__card .empleados__puesto {
-  font-size: var(--type-caption-md-size);
+.empleados__grid-info .empleados__puesto {
+  font-size: 10px;
   color: var(--color-muted);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  /* Sangría alineada con el nombre (36px badge + gap) */
-  padding-left: calc(36px + var(--spacing-xs));
+  line-height: 1.2;
 }
-
-/* ══════════════════════════════════════════
-   TABLA (PC)
-══════════════════════════════════════════ */
-
-.empleados__table-wrapper {
-  overflow-x: auto;
-}
-
-.empleados__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--type-body-sm-size);
-}
-
-.empleados__table th,
-.empleados__table td {
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: left;
-  border-bottom: 1px solid var(--color-hairline-soft);
-  vertical-align: middle;
-}
-
-.empleados__table th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--color-canvas);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  /* Separador inferior visible al hacer scroll */
-  box-shadow: 0 1px 0 var(--color-hairline-soft);
-}
-
-.empleados__table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.empleados__table tbody tr {
-  transition: background var(--transition-fast);
-}
-
-.empleados__table tbody tr:hover {
-  background: var(--color-surface-soft);
-}
-
-.empleados__row--incapacidad {
-  background: var(--color-vacancy-tint);
-}
-
-.empleados__row--incapacidad:hover {
-  background: var(--color-vacancy-tint); /* no pierde el tinte al hover */
-  filter: brightness(0.97);
-}
-
-/* ══════════════════════════════════════════
-   CELDA — número de empleado
-══════════════════════════════════════════ */
-
-.empleados__cell-num {
-  font-family: var(--font-code);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-body-strong);
-  white-space: nowrap;
-  /* En tabla: columna angosta */
-  width: 1%;
-}
-
-/* ══════════════════════════════════════════
-   TEXTOS DE EMPLEADO
-══════════════════════════════════════════ */
-
-.empleados__name {
-  display: block;
-  color: var(--color-ink);
-  font-weight: 500;
-  /* Evita desbordamiento en tabla con columna estrecha */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.empleados__puesto {
-  display: block;
-  color: var(--color-body);
-}
-
-.empleados__seccion {
-  display: block;
-  margin-top: 2px;
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-}
-
-/* ══════════════════════════════════════════
-   TAG INCAPACIDAD
-══════════════════════════════════════════ */
 
 .empleados__incapacidad-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  background: var(--color-error-soft);
+  color: var(--color-error);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
   margin-top: 4px;
-  padding: 2px var(--spacing-xs);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-accent-amber);
-  background: rgb(var(--color-accent-amber-rgb) / 0.14);
-  border-radius: var(--rounded-pill);
-  white-space: nowrap;
-}
-
-/* ══════════════════════════════════════════
-   COLUMNA ACCIONES
-══════════════════════════════════════════ */
-
-.empleados__col-actions {
-  width: 1%;
-  white-space: nowrap;
-  text-align: right;
+  width: fit-content;
 }
 
 /* ══════════════════════════════════════════

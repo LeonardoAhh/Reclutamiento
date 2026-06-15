@@ -108,84 +108,127 @@ export function WeeklyHiresModal({
   const renderHiresTable = (hiresToRender: Employee[], title?: string) => (
     <div className="weekly-hires-modal__section">
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
-      <div className="weekly-hires-modal__table-wrap">
-        <table className="weekly-hires-modal__table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Puesto</th>
-              <th>Área · Sección</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {hiresToRender.map((e) => (
-              <tr key={e.num_empleado}>
-                <td className="weekly-hires-modal__cell-mono">
-                  {e.num_empleado}
-                </td>
-                <td>{e.nombre}</td>
-                <td>{e.puesto}</td>
-                <td>
-                  <div className="weekly-hires-modal__cell-area">
-                    {e.area}
-                  </div>
-                  <div className="weekly-hires-modal__cell-seccion">
-                    {e.seccion}
-                  </div>
-                </td>
-                <td className="weekly-hires-modal__cell-mono">
-                  {formatShortDate(e.fecha_ingreso)}
-                </td>
+      {isMobile ? (
+        <div className="weekly-hires-modal__mobile-list">
+          {hiresToRender.map((e) => (
+            <div key={e.num_empleado} className="weekly-hires-modal__mobile-card">
+              <div className="weekly-hires-modal__mobile-card-header">
+                <span className="weekly-hires-modal__mobile-name">{e.nombre}</span>
+                <span className="weekly-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
+              </div>
+              <div className="weekly-hires-modal__mobile-card-body">
+                <div className="weekly-hires-modal__mobile-puesto">{e.puesto}</div>
+                <div className="weekly-hires-modal__mobile-area">
+                  {e.area} {e.seccion ? `· ${e.seccion}` : ''}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="weekly-hires-modal__table-wrap">
+          <table className="weekly-hires-modal__table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Puesto</th>
+                <th>Área · Sección</th>
+                <th>Fecha</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {hiresToRender.map((e) => (
+                <tr key={e.num_empleado}>
+                  <td className="weekly-hires-modal__cell-mono">
+                    {e.num_empleado}
+                  </td>
+                  <td>{e.nombre}</td>
+                  <td>{e.puesto}</td>
+                  <td>
+                    <div className="weekly-hires-modal__cell-area">
+                      {e.area}
+                    </div>
+                    <div className="weekly-hires-modal__cell-seccion">
+                      {e.seccion}
+                    </div>
+                  </td>
+                  <td className="weekly-hires-modal__cell-mono">
+                    {formatShortDate(e.fecha_ingreso)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 
   const renderBajasTable = (bajasToRender: Baja[], title?: string) => (
     <div className="weekly-hires-modal__section">
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
-      <div className="weekly-hires-modal__table-wrap">
-        <table className="weekly-hires-modal__table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Puesto</th>
-              <th>Área · Sección</th>
-              <th>Tipo</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bajasToRender.map((b) => (
-              <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
-                <td className="weekly-hires-modal__cell-mono">
-                  {b.num_empleado}
-                </td>
-                <td>{b.nombre}</td>
-                <td>{b.puesto}</td>
-                <td>
-                  <div className="weekly-hires-modal__cell-area">
-                    {b.area}
+      {isMobile ? (
+        <div className="weekly-hires-modal__mobile-list">
+          {bajasToRender.map((b) => (
+            <div key={`${b.num_empleado}-${b.fecha_baja}`} className="weekly-hires-modal__mobile-card">
+              <div className="weekly-hires-modal__mobile-card-header">
+                <span className="weekly-hires-modal__mobile-name">{b.nombre}</span>
+                <span className="weekly-hires-modal__mobile-date">{formatShortDate(b.fecha_baja)}</span>
+              </div>
+              <div className="weekly-hires-modal__mobile-card-body">
+                <div className="weekly-hires-modal__mobile-puesto">{b.puesto}</div>
+                <div className="weekly-hires-modal__mobile-area">
+                  {b.area} {b.seccion ? `· ${b.seccion}` : ''}
+                </div>
+                {b.tipo_baja && (
+                  <div className="weekly-hires-modal__mobile-tipo-baja">
+                    Baja: {b.tipo_baja}
                   </div>
-                  <div className="weekly-hires-modal__cell-seccion">
-                    {b.seccion}
-                  </div>
-                </td>
-                <td>{b.tipo_baja || '—'}</td>
-                <td className="weekly-hires-modal__cell-mono">
-                  {formatShortDate(b.fecha_baja)}
-                </td>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="weekly-hires-modal__table-wrap">
+          <table className="weekly-hires-modal__table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Puesto</th>
+                <th>Área · Sección</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {bajasToRender.map((b) => (
+                <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
+                  <td className="weekly-hires-modal__cell-mono">
+                    {b.num_empleado}
+                  </td>
+                  <td>{b.nombre}</td>
+                  <td>{b.puesto}</td>
+                  <td>
+                    <div className="weekly-hires-modal__cell-area">
+                      {b.area}
+                    </div>
+                    <div className="weekly-hires-modal__cell-seccion">
+                      {b.seccion}
+                    </div>
+                  </td>
+                  <td>{b.tipo_baja || '—'}</td>
+                  <td className="weekly-hires-modal__cell-mono">
+                    {formatShortDate(b.fecha_baja)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 

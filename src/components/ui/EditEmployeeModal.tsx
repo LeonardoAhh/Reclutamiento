@@ -9,6 +9,7 @@ import {
 } from '@/lib/transporte-routes';
 import { localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
+import { CustomSelect } from './CustomSelect';
 import './EditEmployeeModal.css';
 
 interface EditEmployeeModalProps {
@@ -141,8 +142,28 @@ export function EditEmployeeModal({
       subtitle={subtitle}
       className="edit-employee-modal"
       size="lg"
+      footerActions={
+        <>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onClose}
+            disabled={submitting}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="edit-employee-form"
+            className="btn-primary"
+            disabled={!isValid || submitting}
+          >
+            {submitting ? 'Guardando…' : 'Guardar cambios'}
+          </button>
+        </>
+      }
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+      <form id="edit-employee-form" onSubmit={handleSubmit} className="modal-body" noValidate>
         <div className="form-grid">
           <div className="form-group">
             <label htmlFor="edit-emp-name">Nombre Completo</label>
@@ -159,70 +180,49 @@ export function EditEmployeeModal({
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-area">Área</label>
-            <select
+            <CustomSelect
               id="edit-emp-area"
-              required
               value={form.area}
-              onChange={(e) =>
-                setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-              }
-            >
-              <option value="">Seleccione área…</option>
-              {areas.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+              options={areas.map((a) => ({ value: a, label: a }))}
+              placeholder="Seleccione área…"
+            />
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-seccion">Sección</label>
-            <select
+            <CustomSelect
               id="edit-emp-seccion"
-              required
               value={form.seccion}
-              onChange={(e) =>
-                setForm({ ...form, seccion: e.target.value, puesto: '' })
-              }
+              onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+              options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+              placeholder="Seleccione sección…"
               disabled={!form.area}
-            >
-              <option value="">Seleccione sección…</option>
-              {sectionsForArea.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-puesto">Puesto</label>
-            <select
+            <CustomSelect
               id="edit-emp-puesto"
-              required
               value={form.puesto}
-              onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+              onChange={(val) => setForm({ ...form, puesto: val })}
+              options={puestosForSection.map((p) => ({ value: p, label: p }))}
+              placeholder="Seleccione puesto…"
               disabled={!form.seccion}
-            >
-              <option value="">Seleccione puesto…</option>
-              {puestosForSection.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-turno">Turno</label>
-            <select
+            <CustomSelect
               id="edit-emp-turno"
               value={form.turno}
-              onChange={(e) => setForm({ ...form, turno: e.target.value })}
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
+              onChange={(val) => setForm({ ...form, turno: val })}
+              options={[
+                { value: '1', label: '1' },
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4' },
+              ]}
+            />
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-fecha">Fecha de Ingreso</label>
@@ -243,46 +243,36 @@ export function EditEmployeeModal({
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-ruta">Ruta</label>
-            <select
+            <CustomSelect
               id="edit-emp-ruta"
               value={form.ruta}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === TRANSPORTE_NA) {
-                  setForm({ ...form, ruta: value, parada: TRANSPORTE_NA });
-                } else if (value === '') {
+              onChange={(val) => {
+                if (val === TRANSPORTE_NA) {
+                  setForm({ ...form, ruta: val, parada: TRANSPORTE_NA });
+                } else if (val === '') {
                   setForm({ ...form, ruta: '', parada: '' });
                 } else {
-                  const nextParada =
-                    form.parada === TRANSPORTE_NA ? '' : form.parada;
-                  setForm({ ...form, ruta: value, parada: nextParada });
+                  const nextParada = form.parada === TRANSPORTE_NA ? '' : form.parada;
+                  setForm({ ...form, ruta: val, parada: nextParada });
                 }
               }}
-            >
-              <option value="">Sin asignar</option>
-              <option value={TRANSPORTE_NA}>N/A — no toma transporte</option>
-              {TRANSPORTE_RUTAS.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: TRANSPORTE_NA, label: 'N/A — no toma transporte' },
+                ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))
+              ]}
+              placeholder="Sin asignar"
+            />
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-parada">Parada</label>
-            <select
+            <CustomSelect
               id="edit-emp-parada"
               value={form.parada}
-              onChange={(e) => setForm({ ...form, parada: e.target.value })}
+              onChange={(val) => setForm({ ...form, parada: val })}
+              options={TRANSPORTE_PARADAS.map((p) => ({ value: p, label: p }))}
+              placeholder="Sin asignar"
               disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
-            >
-              <option value="">Sin asignar</option>
-              {TRANSPORTE_PARADAS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
 
@@ -292,23 +282,6 @@ export function EditEmployeeModal({
           </p>
         )}
 
-        <footer className="modal-footer">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={!isValid || submitting}
-          >
-            {submitting ? 'Guardando…' : 'Guardar cambios'}
-          </button>
-        </footer>
       </form>
     </Modal>
   );

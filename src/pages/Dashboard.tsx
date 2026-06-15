@@ -23,6 +23,7 @@ import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { VacancyReportModal } from '@/components/ui/VacancyReportModal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
@@ -430,17 +431,14 @@ export function Dashboard() {
           <label htmlFor="filter-area" className="sr-only">
             Filter by department area
           </label>
-          <select
+          <CustomSelect
             id="filter-area"
             value={filterArea}
-            onChange={(e) => setFilterArea(e.target.value)}
+            onChange={setFilterArea}
+            options={areas.map((a) => ({ value: a, label: a }))}
+            placeholder="Filter"
             className="dashboard__filter-select"
-          >
-            <option value="">Filter</option>
-            {areas.map((a) => (
-              <option key={a} value={a}>{a}</option>
-            ))}
-          </select>
+          />
         </div>
       </section>
 

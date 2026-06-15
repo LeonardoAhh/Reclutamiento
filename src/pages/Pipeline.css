@@ -883,6 +883,11 @@
   border-radius: var(--rounded-sm);
 }
 
+.pipeline__cell-status .custom-select {
+  width: 100%;
+}
+
+
 .pipeline__cell-cv,
 .pipeline__cell-actions {
   text-align: right;
@@ -1120,35 +1125,35 @@
 
 @media (max-width: 768px) {
   .pipeline__ccard {
-    grid-template-columns: 40px minmax(0, 1fr) minmax(120px, auto);
+    grid-template-columns: 40px minmax(0, 1fr) auto;
     grid-template-areas:
-      "avatar name status"
-      "actions actions actions";
+      "avatar name actions"
+      ". status status";
     row-gap: var(--spacing-xs);
+    align-items: center;
   }
   .pipeline__ccard-actions-col {
-    justify-content: flex-start;
-    padding-top: var(--spacing-xs);
-    border-top: 1px dashed var(--color-hairline-soft);
+    justify-content: flex-end;
+    padding-top: 0;
+    border-top: none;
   }
 }
 
 @media (max-width: 480px) {
   .pipeline__ccard {
-    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-columns: 36px minmax(0, 1fr) auto;
     grid-template-areas:
-      "avatar name"
-      "status status"
-      "actions actions";
-    padding: var(--spacing-sm);
-    gap: var(--spacing-xs);
+      "avatar name actions"
+      "status status status";
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
   .pipeline__ccard-status-col {
-    min-height: 28px;
+    min-height: unset;
   }
   .pipeline__icon-btn {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     margin-left: 0;
   }
   .pipeline__ccard-actions-col {

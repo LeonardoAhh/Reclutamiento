@@ -10,6 +10,10 @@ import {
   SlidersHorizontal,
   EyeOff,
   Plus,
+  User,
+  Share2,
+  Calendar,
+  Clock,
 } from 'lucide-react';
 import { VacancyModal } from '@/components/ui/VacancyModal';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -18,6 +22,7 @@ import {
   VacancyStatusBadge,
   VacancyPriorityBadge,
 } from '@/components/ui/VacancyStatusBadge';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   VacancyFilters,
   EMPTY_VACANCY_FILTERS,
@@ -562,46 +567,35 @@ function VacancyCard({
         <VacancyPriorityBadge priority={v.prioridad} />
       </header>
 
-      <dl className="vacantes__card-meta">
-        <div className="vacantes__card-meta-row">
-          <dt>Reclutador</dt>
-          <dd>{v.reclutador_asignado || '—'}</dd>
+      <div className="vacantes__card-meta">
+        <div className="vacantes__card-info" title="Reclutador asignado">
+          <User size={14} className="vacantes__card-icon" aria-hidden="true" />
+          <span className="vacantes__card-info-text">{v.reclutador_asignado || 'Sin reclutador'}</span>
         </div>
-        <div className="vacantes__card-meta-row">
-          <dt>Fuente</dt>
-          <dd>{v.fuente_planeada || '—'}</dd>
+        <div className="vacantes__card-info" title="Fuente planeada">
+          <Share2 size={14} className="vacantes__card-icon" aria-hidden="true" />
+          <span className="vacantes__card-info-text">{v.fuente_planeada || 'Sin fuente'}</span>
         </div>
-        <div className="vacantes__card-meta-row">
-          <dt>Apertura</dt>
-          <dd>{formatShortDate(v.fecha_apertura)}</dd>
+        <div className="vacantes__card-info" title="Fecha de apertura">
+          <Calendar size={14} className="vacantes__card-icon" aria-hidden="true" />
+          <span className="vacantes__card-info-text">{formatShortDate(v.fecha_apertura)}</span>
         </div>
-        <div className="vacantes__card-meta-row">
-          <dt>Tiempo</dt>
-          <dd>
-            <SlaCell metrics={m} status={v.status} excluded={excluded} />
-          </dd>
+        <div className="vacantes__card-info" title="Tiempo (SLA)">
+          <Clock size={14} className="vacantes__card-icon" aria-hidden="true" />
+          <SlaCell metrics={m} status={v.status} excluded={excluded} />
         </div>
-      </dl>
+      </div>
 
       <footer className="vacantes__card-actions">
         <div className="vacantes__card-status pipeline__cell-status">
-          <VacancyStatusBadge status={v.status} />
-          <label className="sr-only" htmlFor={`vstatus-card-${v.id}`}>
-            Cambiar status de la vacante de {v.puesto}
-          </label>
-          <select
+          <CustomSelect
             id={`vstatus-card-${v.id}`}
-            className="pipeline__status-select"
             value={v.status}
-            onChange={(e) => onStatusChange(e.target.value as VacancyStatus)}
+            onChange={(val) => onStatusChange(val as VacancyStatus)}
+            options={VACANCY_STATUSES.map(s => ({ value: s, label: VACANCY_STATUS_LABEL[s] }))}
             aria-label={`Cambiar status de la vacante de ${v.puesto}`}
-          >
-            {VACANCY_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {VACANCY_STATUS_LABEL[s]}
-              </option>
-            ))}
-          </select>
+            customTrigger={<VacancyStatusBadge status={v.status} />}
+          />
         </div>
         <div className="vacantes__card-buttons">
           <button

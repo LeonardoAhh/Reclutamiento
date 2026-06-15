@@ -4,6 +4,7 @@ import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
 import { Modal } from './Modal';
+import { CustomSelect } from './CustomSelect';
 import './CommentModal.css';
 
 interface CommentModalProps {
@@ -100,15 +101,12 @@ export function CommentModal({
 
         <div className="form-group">
           <label htmlFor="comment-type">Tipo</label>
-          <select
+          <CustomSelect
             id="comment-type"
             value={tipo}
-            onChange={(e) => setTipo(e.target.value as PositionComment['tipo'])}
-          >
-            {Object.entries(COMMENT_TYPE_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
+            onChange={(val) => setTipo(val as PositionComment['tipo'])}
+            options={Object.entries(COMMENT_TYPE_LABELS).map(([key, label]) => ({ value: key, label }))}
+          />
         </div>
 
         <div className="form-group">

@@ -62,7 +62,9 @@ export function ExpandableSection({
         className="expandable-section__content"
         aria-hidden={!isExpanded}
       >
-        <div className="expandable-section__inner">{children}</div>
+        <div className="expandable-section__content-wrapper">
+          <div className="expandable-section__inner">{children}</div>
+        </div>
       </div>
     </div>
   );

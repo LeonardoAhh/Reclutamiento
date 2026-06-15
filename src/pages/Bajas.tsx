@@ -16,9 +16,9 @@ import {
   BajaDetailSheet,
   BajaCoberturaBadge,
 } from '@/components/ui/BajaDetailSheet';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useBajas } from '@/hooks/useBajas';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import {
   computeMonthlyComparison,
   normalizePuesto,
@@ -48,7 +48,6 @@ export function Bajas() {
     applyTurnosUpdate,
   } = useBajas();
 
-  const isMobile = useIsMobile();
 
   const [year, setYear] = useState<number>(currentYear);
   const [areaFilter, setAreaFilter] = useState<string>('');
@@ -165,47 +164,36 @@ export function Bajas() {
       <section className="bajas__filters" aria-label="Filtros">
         <label className="bajas__filter">
           <span>Año</span>
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
-            {YEAR_OPTIONS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+            value={String(year)}
+            onChange={(val) => setYear(Number(val))}
+            options={YEAR_OPTIONS.map((y) => ({ value: String(y), label: String(y) }))}
+            placeholder="Año"
+          />
         </label>
         <label className="bajas__filter">
           <span>
             <Filter size={14} aria-hidden="true" /> Área
           </span>
-          <select
+          <CustomSelect
             value={areaFilter}
-            onChange={(e) => {
-              setAreaFilter(e.target.value);
+            onChange={(val) => {
+              setAreaFilter(val);
               setPuestoFilter('');
             }}
-          >
-            <option value="">Todas</option>
-            {areas.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
+            options={areas.map((a) => ({ value: a, label: a }))}
+            placeholder="Todas"
+          />
         </label>
         <label className="bajas__filter">
           <span>Puesto</span>
-          <select
+          <CustomSelect
             value={puestoFilter}
-            onChange={(e) => setPuestoFilter(e.target.value)}
+            onChange={setPuestoFilter}
+            options={puestosForArea.map((p) => ({ value: p, label: p }))}
+            placeholder="Todos"
             disabled={puestosForArea.length === 0}
-          >
-            <option value="">Todos</option>
-            {puestosForArea.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+          />
         </label>
       </section>
 
@@ -271,29 +259,28 @@ export function Bajas() {
               <p>Sin movimiento para los filtros aplicados.</p>
             </div>
           ) : (
-            <div className="bajas__table-wrapper">
-              <table className="bajas__table">
-                <thead>
-                  <tr>
-                    <th scope="col">Puesto</th>
-                    <th scope="col">Área</th>
-                    <th scope="col" className="text-center">Bajas</th>
-                    <th scope="col" className="text-center">Ingresos</th>
-                    <th scope="col" className="text-center">Cubiertas</th>
-                    <th scope="col" className="text-center">Solo Ind.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {byPuesto.map((row) => {
-                    const pct =
-                      row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
-                    return (
-                      <tr key={`${row.area}-${row.puesto}`}>
-                        <td className="bajas__cell-puesto">{row.puesto}</td>
-                        <td className="bajas__cell-area">{row.area}</td>
-                        <td className="text-center">{row.bajas}</td>
-                        <td className="text-center">{row.ingresos}</td>
-                        <td className="text-center">
+            <div className="bajas__grid-list">
+              {byPuesto.map((row) => {
+                const pct =
+                  row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
+                return (
+                  <div key={`${row.area}-${row.puesto}`} className="bajas__grid-item">
+                    <div className="bajas__grid-item-main">
+                      <div className="bajas__cell-puesto">{row.puesto}</div>
+                      <div className="bajas__cell-area">{row.area}</div>
+                    </div>
+                    <div className="bajas__grid-item-stats">
+                      <div className="bajas__stat">
+                        <span className="bajas__stat-label">Bajas:</span>
+                        <span className="bajas__stat-value">{row.bajas}</span>
+                      </div>
+                      <div className="bajas__stat">
+                        <span className="bajas__stat-label">Ingresos:</span>
+                        <span className="bajas__stat-value">{row.ingresos}</span>
+                      </div>
+                      <div className="bajas__stat">
+                        <span className="bajas__stat-label">Cubiertas:</span>
+                        <span className="bajas__stat-value">
                           {row.bajas > 0 ? (
                             <span className="bajas__cobertura-pct" data-pct={pct}>
                               {row.cubiertas10d} ({pct}%)
@@ -301,19 +288,22 @@ export function Bajas() {
                           ) : (
                             <span className="bajas__muted">—</span>
                           )}
-                        </td>
-                        <td className="text-center">
+                        </span>
+                      </div>
+                      <div className="bajas__stat">
+                        <span className="bajas__stat-label">Solo Ind.:</span>
+                        <span className="bajas__stat-value">
                           {row.soloInduccion > 0 ? (
                             <Badge variant="default">{row.soloInduccion}</Badge>
                           ) : (
                             <span className="bajas__muted">—</span>
                           )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
@@ -336,58 +326,47 @@ export function Bajas() {
               </p>
             </div>
           ) : (
-            <div className="bajas__table-wrapper">
-              <table className="bajas__table bajas__table--compact">
-                <thead>
-                  <tr>
-                    <th scope="col">Empleado</th>
-                    <th scope="col">Fecha baja</th>
-                    <th scope="col">Cobertura</th>
-                    <th scope="col" aria-label="Ver detalle" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {bajasConCobertura.map((b) => {
-                    const rowClass = [
-                      'bajas__row--clickable',
-                      b.soloInduccion ? 'bajas__row--solo' : '',
-                      !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ');
-                    return (
-                      <tr
-                        key={`${b.num_empleado}-${b.fecha_baja}`}
-                        className={rowClass}
-                        tabIndex={0}
-                        role="button"
-                        aria-label={`Ver detalle de baja de ${b.nombre}`}
-                        onClick={() => setDetalleTarget(b)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setDetalleTarget(b);
-                          }
-                        }}
-                      >
-                        <td>
-                          <div className="bajas__cell-emp">
-                            <span className="bajas__cell-name">{b.nombre}</span>
-                            <span className="bajas__cell-meta">
-                              #{b.num_empleado} · {b.puesto}
-                            </span>
-                          </div>
-                        </td>
-                        <td>{formatShortDate(b.fecha_baja)}</td>
-                        <td><BajaCoberturaBadge baja={b} /></td>
-                        <td className="text-center bajas__cell-chevron">
-                          <ChevronRight size={16} aria-hidden="true" />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="bajas__grid-list bajas__grid-list--scrollable">
+              {bajasConCobertura.map((b) => {
+                const rowClass = [
+                  'bajas__grid-item',
+                  'bajas__grid-item--clickable',
+                  b.soloInduccion ? 'bajas__row--solo' : '',
+                  !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+                return (
+                  <div
+                    key={`${b.num_empleado}-${b.fecha_baja}`}
+                    className={rowClass}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Ver detalle de baja de ${b.nombre}`}
+                    onClick={() => setDetalleTarget(b)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setDetalleTarget(b);
+                      }
+                    }}
+                  >
+                    <div className="bajas__grid-item-main">
+                      <span className="bajas__cell-name">{b.nombre}</span>
+                      <span className="bajas__cell-meta">
+                        #{b.num_empleado} · {b.puesto}
+                      </span>
+                    </div>
+                    <div className="bajas__grid-item-right">
+                      <div className="bajas__grid-item-details">
+                        <span className="bajas__cell-date">{formatShortDate(b.fecha_baja)}</span>
+                        <BajaCoberturaBadge baja={b} />
+                      </div>
+                      <ChevronRight size={16} className="bajas__cell-chevron" aria-hidden="true" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>

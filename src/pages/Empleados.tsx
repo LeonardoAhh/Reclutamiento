@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Users, Search, HeartPulse, CloudOff, ChevronDown } from 'lucide-react';
-import { EditEmployeeSheet } from '@/components/ui/EditEmployeeSheet';
+import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
@@ -35,7 +35,7 @@ interface EmployeeActionHandlers {
   onIncapacidad: (emp: Employee) => void;
 }
 
-/** Lista de tarjetas de empleados (móvil). Acciones siempre visibles. */
+/** Lista de tarjetas de empleados, diseño minimalista grid-first. */
 function EmployeeCards({
   empleados,
   handlers,
@@ -44,35 +44,30 @@ function EmployeeCards({
   handlers: EmployeeActionHandlers;
 }) {
   return (
-    <ul className="empleados__card-list" role="list">
+    <ul className="empleados__grid-list" role="list">
       {empleados.map((emp) => (
         <li
           key={emp.id ?? emp.num_empleado}
-          className={`empleados__card${
-            emp.en_incapacidad ? ' empleados__card--incapacidad' : ''
+          className={`empleados__grid-item${
+            emp.en_incapacidad ? ' empleados__grid-item--incapacidad' : ''
           }`}
         >
-          <div className="empleados__card-main">
-            <div className="empleados__card-top">
-              <span className="empleados__cell-num">{emp.num_empleado}</span>
-              <span className="empleados__name">{emp.nombre}</span>
-            </div>
+          <span className="empleados__cell-num">{emp.num_empleado}</span>
+          <div className="empleados__grid-info">
+            <span className="empleados__name">{emp.nombre}</span>
             <span className="empleados__puesto">
               {emp.puesto}
-              {emp.seccion ? ` · ${emp.seccion}` : ''}
             </span>
             {emp.en_incapacidad && (
               <span
                 className="empleados__incapacidad-tag"
                 title={
                   emp.incapacidad_hasta
-                    ? `Incapacidad hasta ${formatShortDate(
-                        emp.incapacidad_hasta
-                      )}`
+                    ? `Incapacidad hasta ${formatShortDate(emp.incapacidad_hasta)}`
                     : 'En incapacidad médica'
                 }
               >
-                <HeartPulse size={11} aria-hidden="true" />
+                <HeartPulse size={10} aria-hidden="true" />
                 Incapacidad
               </span>
             )}
@@ -89,73 +84,7 @@ function EmployeeCards({
   );
 }
 
-/** Tabla de empleados de un departamento (PC). */
-function EmployeeTable({
-  empleados,
-  handlers,
-}: {
-  empleados: Employee[];
-  handlers: EmployeeActionHandlers;
-}) {
-  return (
-    <div className="empleados__table-wrapper">
-      <table className="empleados__table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Puesto</th>
-            <th scope="col" className="empleados__col-actions">
-              <span className="sr-only">Acciones</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {empleados.map((emp) => (
-            <tr
-              key={emp.id ?? emp.num_empleado}
-              className={emp.en_incapacidad ? 'empleados__row--incapacidad' : ''}
-            >
-              <td className="empleados__cell-num">{emp.num_empleado}</td>
-              <td>
-                <span className="empleados__name">{emp.nombre}</span>
-                {emp.en_incapacidad && (
-                  <span
-                    className="empleados__incapacidad-tag"
-                    title={
-                      emp.incapacidad_hasta
-                        ? `Incapacidad hasta ${formatShortDate(
-                            emp.incapacidad_hasta
-                          )}`
-                        : 'En incapacidad médica'
-                    }
-                  >
-                    <HeartPulse size={11} aria-hidden="true" />
-                    Incapacidad
-                  </span>
-                )}
-              </td>
-              <td>
-                <span className="empleados__puesto">{emp.puesto}</span>
-                {emp.seccion && (
-                  <span className="empleados__seccion">{emp.seccion}</span>
-                )}
-              </td>
-              <td className="empleados__col-actions">
-                <EmployeeRowActions
-                  employee={emp}
-                  onEdit={handlers.onEdit}
-                  onDelete={handlers.onDelete}
-                  onIncapacidad={handlers.onIncapacidad}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+
 
 export function Empleados() {
   const {
@@ -402,7 +331,7 @@ export function Empleados() {
                   </span>
                 </header>
                 <div className="empleados__detail-body">
-                  <EmployeeTable
+                  <EmployeeCards
                     empleados={activeGroup.empleados}
                     handlers={handlers}
                   />
@@ -454,7 +383,7 @@ export function Empleados() {
         </div>
       )}
 
-      <EditEmployeeSheet
+      <EditEmployeeModal
         isOpen={editTarget !== null}
         employee={editTarget}
         onClose={() => setEditTarget(null)}

@@ -3,6 +3,7 @@ import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
+import { CustomSelect } from './CustomSelect';
 import './HireCandidateModal.css';
 
 interface HireCandidateModalProps {
@@ -166,18 +167,19 @@ export function HireCandidateModal({
             </div>
             <div className="form-group">
               <label htmlFor="hire-turno">Turno</label>
-              <select
+              <CustomSelect
                 id="hire-turno"
                 value={form.turno}
-                onChange={(e) => update('turno', e.target.value)}
-              >
-                <option value="0">Administrativo (0)</option>
-                <option value="1">1er Turno</option>
-                <option value="2">2do Turno</option>
-                <option value="3">3er Turno</option>
-                <option value="4">4to Turno</option>
-                <option value="5">5to Turno</option>
-              </select>
+                onChange={(val) => update('turno', val)}
+                options={[
+                  { value: '0', label: 'Administrativo (0)' },
+                  { value: '1', label: '1er Turno' },
+                  { value: '2', label: '2do Turno' },
+                  { value: '3', label: '3er Turno' },
+                  { value: '4', label: '4to Turno' },
+                  { value: '5', label: '5to Turno' },
+                ]}
+              />
             </div>
           </div>
 

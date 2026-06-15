@@ -31,6 +31,7 @@ import {
 } from '@/lib/dates';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
+import { CustomSelect } from './CustomSelect';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import './VacancyModal.css';
@@ -259,54 +260,35 @@ export function VacancyModal({
     <>
       <div className="form-group">
         <label htmlFor="vac-area">Área *</label>
-        <select
+        <CustomSelect
           id="vac-area"
-          required
           value={form.area}
-          onChange={(e) =>
-            setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-          }
-        >
-          <option value="">Seleccione área…</option>
-          {areas.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+          options={areas.map((a) => ({ value: a, label: a }))}
+          placeholder="Seleccione área…"
+        />
       </div>
       <div className="form-group">
         <label htmlFor="vac-seccion">Sección</label>
-        <select
+        <CustomSelect
           id="vac-seccion"
           value={form.seccion}
-          onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccione sección…"
           disabled={!form.area}
-        >
-          <option value="">Seleccione sección…</option>
-          {sectionsForArea.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        />
       </div>
       <div className="form-group form-group--span-2">
         <label htmlFor="vac-puesto">Puesto *</label>
-        <select
+        <CustomSelect
           id="vac-puesto"
-          required
           value={form.puesto}
-          onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+          onChange={(val) => setForm({ ...form, puesto: val })}
+          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          placeholder="Seleccione puesto…"
           disabled={!form.seccion}
-        >
-          <option value="">Seleccione puesto…</option>
-          {puestosForSection.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
+        />
       </div>
     </>
   );
@@ -315,35 +297,21 @@ export function VacancyModal({
     <>
       <div className="form-group">
         <label htmlFor="vac-status">Status</label>
-        <select
+        <CustomSelect
           id="vac-status"
           value={form.status}
-          onChange={(e) =>
-            setForm({ ...form, status: e.target.value as VacancyStatus })
-          }
-        >
-          {VACANCY_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {VACANCY_STATUS_LABEL[s]}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, status: val as VacancyStatus })}
+          options={VACANCY_STATUSES.map((s) => ({ value: s, label: VACANCY_STATUS_LABEL[s] }))}
+        />
       </div>
       <div className="form-group">
         <label htmlFor="vac-prioridad">Prioridad</label>
-        <select
+        <CustomSelect
           id="vac-prioridad"
           value={form.prioridad}
-          onChange={(e) =>
-            setForm({ ...form, prioridad: e.target.value as VacancyPriority })
-          }
-        >
-          {VACANCY_PRIORITIES.map((p) => (
-            <option key={p} value={p}>
-              {VACANCY_PRIORITY_LABEL[p]}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, prioridad: val as VacancyPriority })}
+          options={VACANCY_PRIORITIES.map((p) => ({ value: p, label: VACANCY_PRIORITY_LABEL[p] }))}
+        />
       </div>
       <div className="form-group">
         <label htmlFor="vac-reclutador">Reclutador asignado</label>

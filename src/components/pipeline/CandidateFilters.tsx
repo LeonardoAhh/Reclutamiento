@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { usePositions } from '@/lib/positions';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus } from '@/lib/types';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import './CandidateFilters.css';
 
 export interface FilterState {
@@ -87,77 +88,59 @@ export function CandidateFilters({
       <div className="filters__grid">
         <div className="filters__field">
           <label htmlFor="filter-area">Área</label>
-          <select
+          <CustomSelect
             id="filter-area"
             value={value.area}
-            onChange={(e) => {
-              const nextArea = e.target.value;
-              onChange({ ...value, area: nextArea, puesto: '' });
+            onChange={(val) => {
+              onChange({ ...value, area: val, puesto: '' });
             }}
-          >
-            <option value="">Todas</option>
-            {areas.map((a) => (
-              <option key={a} value={a}>{a}</option>
-            ))}
-          </select>
+            options={areas.map((a) => ({ value: a, label: a }))}
+            placeholder="Todas"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="filter-puesto">Puesto</label>
-          <select
+          <CustomSelect
             id="filter-puesto"
             value={value.puesto}
-            onChange={(e) => update('puesto', e.target.value)}
-          >
-            <option value="">Todos</option>
-            {puestos.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
+            onChange={(val) => update('puesto', val)}
+            options={puestos.map((p) => ({ value: p, label: p }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="filter-estado">Estado</label>
-          <select
+          <CustomSelect
             id="filter-estado"
             value={value.estado}
-            onChange={(e) =>
-              update('estado', (e.target.value as CandidateStatus) || '')
-            }
-          >
-            <option value="">Todos</option>
-            {CANDIDATE_STATUSES.map((s) => (
-              <option key={s} value={s}>{CANDIDATE_STATUS_LABEL[s]}</option>
-            ))}
-          </select>
+            onChange={(val) => update('estado', (val as CandidateStatus) || '')}
+            options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: CANDIDATE_STATUS_LABEL[s] }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="filter-reclutador">Reclutador</label>
-          <select
+          <CustomSelect
             id="filter-reclutador"
             value={value.reclutador}
-            onChange={(e) => update('reclutador', e.target.value)}
-          >
-            <option value="">Todos</option>
-            {reclutadores.map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
+            onChange={(val) => update('reclutador', val)}
+            options={reclutadores.map((r) => ({ value: r, label: r }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="filter-source">Fuente</label>
-          <select
+          <CustomSelect
             id="filter-source"
             value={value.source}
-            onChange={(e) => update('source', e.target.value)}
-          >
-            <option value="">Todas</option>
-            {sources.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+            onChange={(val) => update('source', val)}
+            options={sources.map((s) => ({ value: s, label: s }))}
+            placeholder="Todas"
+          />
         </div>
 
         <div className="filters__field">

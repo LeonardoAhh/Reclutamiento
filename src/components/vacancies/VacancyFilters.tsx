@@ -8,6 +8,7 @@ import {
   VACANCY_PRIORITY_LABEL,
 } from '@/lib/types';
 import type { VacancyRequest, VacancyStatus, VacancyPriority } from '@/lib/types';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import '@/components/pipeline/CandidateFilters.css';
 
 export interface VacancyFilterState {
@@ -90,86 +91,57 @@ export function VacancyFilters({
       <div className="filters__grid">
         <div className="filters__field">
           <label htmlFor="vfilter-area">Área</label>
-          <select
+          <CustomSelect
             id="vfilter-area"
             value={value.area}
-            onChange={(e) =>
-              onChange({ ...value, area: e.target.value, puesto: '' })
-            }
-          >
-            <option value="">Todas</option>
-            {areas.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => onChange({ ...value, area: val, puesto: '' })}
+            options={areas.map((a) => ({ value: a, label: a }))}
+            placeholder="Todas"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="vfilter-puesto">Puesto</label>
-          <select
+          <CustomSelect
             id="vfilter-puesto"
             value={value.puesto}
-            onChange={(e) => update('puesto', e.target.value)}
-          >
-            <option value="">Todos</option>
-            {puestos.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => update('puesto', val)}
+            options={puestos.map((p) => ({ value: p, label: p }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="vfilter-status">Status</label>
-          <select
+          <CustomSelect
             id="vfilter-status"
             value={value.status}
-            onChange={(e) => update('status', (e.target.value as VacancyStatus) || '')}
-          >
-            <option value="">Todos</option>
-            {VACANCY_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {VACANCY_STATUS_LABEL[s]}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => update('status', (val as VacancyStatus) || '')}
+            options={VACANCY_STATUSES.map((s) => ({ value: s, label: VACANCY_STATUS_LABEL[s] }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="vfilter-prioridad">Prioridad</label>
-          <select
+          <CustomSelect
             id="vfilter-prioridad"
             value={value.prioridad}
-            onChange={(e) =>
-              update('prioridad', (e.target.value as VacancyPriority) || '')
-            }
-          >
-            <option value="">Todas</option>
-            {VACANCY_PRIORITIES.map((p) => (
-              <option key={p} value={p}>
-                {VACANCY_PRIORITY_LABEL[p]}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => update('prioridad', (val as VacancyPriority) || '')}
+            options={VACANCY_PRIORITIES.map((p) => ({ value: p, label: VACANCY_PRIORITY_LABEL[p] }))}
+            placeholder="Todas"
+          />
         </div>
 
         <div className="filters__field">
           <label htmlFor="vfilter-reclutador">Reclutador</label>
-          <select
+          <CustomSelect
             id="vfilter-reclutador"
             value={value.reclutador}
-            onChange={(e) => update('reclutador', e.target.value)}
-          >
-            <option value="">Todos</option>
-            {reclutadores.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => update('reclutador', val)}
+            options={reclutadores.map((r) => ({ value: r, label: r }))}
+            placeholder="Todos"
+          />
         </div>
 
         <div className="filters__field">

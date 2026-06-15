@@ -305,7 +305,6 @@ export function CandidateReportModal({
       className="candidate-report-modal"
       icon={<Users size={20} aria-hidden="true" />}
       title="Resumen de candidatos"
-      subtitle="Activos en proceso · por puesto y por reclutador"
       size={isMobile ? 'md' : 'lg'}
       fullscreenMobile={true}
     >

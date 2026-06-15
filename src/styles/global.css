@@ -955,20 +955,31 @@ code:not(pre code) {
     border: none;
     border-radius: 0;
     animation: modalFullscreenIn 250ms ease forwards;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .modal-content.modal-fullscreen-mobile > .modal-header {
     padding-top: max(var(--spacing-lg), var(--safe-area-top));
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    flex-shrink: 0;
   }
 
   .modal-content.modal-fullscreen-mobile > .modal-body {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
-    padding-bottom: calc(
-      var(--spacing-lg) + var(--safe-area-bottom) + var(--tab-bar-height)
-    );
+    padding-bottom: var(--spacing-lg);
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-footer {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+    margin-top: auto;
   }
 }
 

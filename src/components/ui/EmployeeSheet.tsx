@@ -11,6 +11,7 @@ import {
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { CustomSelect } from './CustomSelect';
 import './EmployeeSheet.css';
 
 interface EmployeeSheetProps {
@@ -211,62 +212,49 @@ export function EmployeeSheet({
     <>
       <div className="form-group">
         <label htmlFor="emp-area">Área</label>
-        <select
+        <CustomSelect
           id="emp-area"
-          required
           value={form.area}
-          onChange={(e) =>
-            setForm({ ...form, area: e.target.value, seccion: '', puesto: '' })
-          }
-        >
-          <option value="">Seleccione área…</option>
-          {areas.map((a) => (
-            <option key={a} value={a}>{a}</option>
-          ))}
-        </select>
+          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+          options={areas.map((a) => ({ value: a, label: a }))}
+          placeholder="Seleccione área…"
+        />
       </div>
       <div className="form-group">
         <label htmlFor="emp-seccion">Sección</label>
-        <select
+        <CustomSelect
           id="emp-seccion"
-          required
           value={form.seccion}
-          onChange={(e) => setForm({ ...form, seccion: e.target.value, puesto: '' })}
+          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccione sección…"
           disabled={!form.area}
-        >
-          <option value="">Seleccione sección…</option>
-          {sectionsForArea.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        />
       </div>
       <div className="form-group">
         <label htmlFor="emp-puesto">Puesto</label>
-        <select
+        <CustomSelect
           id="emp-puesto"
-          required
           value={form.puesto}
-          onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+          onChange={(val) => setForm({ ...form, puesto: val })}
+          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          placeholder="Seleccione puesto…"
           disabled={!form.seccion}
-        >
-          <option value="">Seleccione puesto…</option>
-          {puestosForSection.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+        />
       </div>
       <div className="form-group">
         <label htmlFor="emp-turno">Turno</label>
-        <select
+        <CustomSelect
           id="emp-turno"
           value={form.turno}
-          onChange={(e) => setForm({ ...form, turno: e.target.value })}
-        >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
+          onChange={(val) => setForm({ ...form, turno: val })}
+          options={[
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+          ]}
+        />
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
@@ -290,47 +278,36 @@ export function EmployeeSheet({
     <>
       <div className="form-group">
         <label htmlFor="emp-ruta">Ruta</label>
-        <select
+        <CustomSelect
           id="emp-ruta"
           value={form.ruta}
-          onChange={(e) => {
-            const value = e.target.value;
-            // Si elige N/A, la parada también queda N/A (no aplica).
-            // Si elige vacío, parada también se limpia para evitar
-            // dejar paradas huérfanas en el registro.
-            if (value === TRANSPORTE_NA) {
-              setForm({ ...form, ruta: value, parada: TRANSPORTE_NA });
-            } else if (value === '') {
+          onChange={(val) => {
+            if (val === TRANSPORTE_NA) {
+              setForm({ ...form, ruta: val, parada: TRANSPORTE_NA });
+            } else if (val === '') {
               setForm({ ...form, ruta: '', parada: '' });
             } else {
-              // Si venía de N/A y elige ruta real, limpia parada para
-              // que el usuario seleccione una válida.
-              const nextParada =
-                form.parada === TRANSPORTE_NA ? '' : form.parada;
-              setForm({ ...form, ruta: value, parada: nextParada });
+              const nextParada = form.parada === TRANSPORTE_NA ? '' : form.parada;
+              setForm({ ...form, ruta: val, parada: nextParada });
             }
           }}
-        >
-          <option value="">Sin asignar</option>
-          <option value={TRANSPORTE_NA}>N/A — no toma transporte</option>
-          {TRANSPORTE_RUTAS.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
+          options={[
+            { value: TRANSPORTE_NA, label: 'N/A — no toma transporte' },
+            ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))
+          ]}
+          placeholder="Sin asignar"
+        />
       </div>
       <div className="form-group">
         <label htmlFor="emp-parada">Parada</label>
-        <select
+        <CustomSelect
           id="emp-parada"
           value={form.parada}
-          onChange={(e) => setForm({ ...form, parada: e.target.value })}
+          onChange={(val) => setForm({ ...form, parada: val })}
+          options={TRANSPORTE_PARADAS.map((p) => ({ value: p, label: p }))}
+          placeholder="Sin asignar"
           disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
-        >
-          <option value="">Sin asignar</option>
-          {TRANSPORTE_PARADAS.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+        />
       </div>
     </>
   );
@@ -384,18 +361,18 @@ export function EmployeeSheet({
         </div>
         <div className="form-group">
           <label htmlFor="baja-tipo">Tipo de Baja</label>
-          <select
+          <CustomSelect
             id="baja-tipo"
-            required
             value={bajaForm.tipo_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, tipo_baja: e.target.value })}
-          >
-            <option value="Renuncia">Renuncia</option>
-            <option value="Ausentismo">Ausentismo</option>
-            <option value="Rescisión de Contrato">Rescisión de Contrato</option>
-            <option value="Termino de Contrato">Termino de Contrato</option>
-            <option value="Solo Inducción">Solo Inducción</option>
-          </select>
+            onChange={(val) => setBajaForm({ ...bajaForm, tipo_baja: val })}
+            options={[
+              { value: 'Renuncia', label: 'Renuncia' },
+              { value: 'Ausentismo', label: 'Ausentismo' },
+              { value: 'Rescisión de Contrato', label: 'Rescisión de Contrato' },
+              { value: 'Termino de Contrato', label: 'Termino de Contrato' },
+              { value: 'Solo Inducción', label: 'Solo Inducción' },
+            ]}
+          />
         </div>
         <div className="form-group form-group--span-2">
           <label htmlFor="baja-motivo">Motivo de Baja</label>
