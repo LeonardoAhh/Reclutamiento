@@ -43,8 +43,6 @@ function groupByPuesto(hires: Employee[]): PuestoCount[] {
   );
 }
 
-type WeekTab = 'current' | 'previous';
-
 interface DeltaProps {
   current: number;
   previous: number;
@@ -82,21 +80,18 @@ export function WeeklyHiresModal({
   previousBajas,
   futureHires = [],
 }: WeeklyHiresModalProps) {
-  const [activeTab, setActiveTab] = useState<WeekTab>('current');
   const isMobile = useIsMobile();
 
-  const selectedRange = activeTab === 'current' ? range : previousRange;
-  const selectedLabel = activeTab === 'current' ? rangeLabel : previousRangeLabel;
-  const selectedHires = activeTab === 'current' ? hires : previousHires;
-  const selectedBajas = activeTab === 'current' ? bajas : previousBajas;
+  const groupedHires = useMemo(() => groupByPuesto(hires), [hires]);
+  const groupedPreviousHires = useMemo(() => groupByPuesto(previousHires), [previousHires]);
 
-  const sortedHiresForTable = useMemo(() => {
-    return [...selectedHires].sort((a, b) => {
+  const sortedHires = useMemo(() => {
+    return [...hires].sort((a, b) => {
       const cmpArea = (a.area || '').localeCompare(b.area || '');
       if (cmpArea !== 0) return cmpArea;
       return (a.seccion || '').localeCompare(b.seccion || '');
     });
-  }, [selectedHires]);
+  }, [hires]);
 
   const sortedFutureHires = useMemo(() => {
     return [...futureHires].sort((a, b) => {
@@ -106,17 +101,13 @@ export function WeeklyHiresModal({
     });
   }, [futureHires]);
 
-  const grouped = groupByPuesto(selectedHires);
-  const empty = selectedHires.length === 0 && selectedBajas.length === 0;
-  const isCurrentTab = activeTab === 'current';
-  const otherWeekNumber = isCurrentTab ? previousRange.week : range.week;
+  const totalHires = hires.length + previousHires.length;
+  const totalBajas = bajas.length + previousBajas.length;
+  const netMovement = totalHires - totalBajas;
 
   const renderHiresTable = (hiresToRender: Employee[], title?: string) => (
-    <section
-      className="weekly-hires-modal__section"
-      aria-label={title || "Detalle por empleado"}
-    >
-      {title && <h3 className="weekly-hires-modal__section-title">{title}</h3>}
+    <div className="weekly-hires-modal__section">
+      {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       <div className="weekly-hires-modal__table-wrap">
         <table className="weekly-hires-modal__table">
           <thead>
@@ -152,17 +143,12 @@ export function WeeklyHiresModal({
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 
-  const renderBajasTable = () => (
-    <section
-      className="weekly-hires-modal__section"
-      aria-label="Detalle de bajas"
-    >
-      <h3 className="weekly-hires-modal__section-title">
-        Detalle de bajas
-      </h3>
+  const renderBajasTable = (bajasToRender: Baja[], title?: string) => (
+    <div className="weekly-hires-modal__section">
+      {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       <div className="weekly-hires-modal__table-wrap">
         <table className="weekly-hires-modal__table">
           <thead>
@@ -176,7 +162,7 @@ export function WeeklyHiresModal({
             </tr>
           </thead>
           <tbody>
-            {selectedBajas.map((b) => (
+            {bajasToRender.map((b) => (
               <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
                 <td className="weekly-hires-modal__cell-mono">
                   {b.num_empleado}
@@ -200,14 +186,14 @@ export function WeeklyHiresModal({
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="weekly-hires-modal modal-fullscreen-mobile"
+      className="weekly-hires-modal"
       icon={<Users size={20} aria-hidden="true" />}
       title={`Ingresos · Semanas ${previousRange.week} y ${range.week}`}
       subtitle={
@@ -219,187 +205,142 @@ export function WeeklyHiresModal({
       size={isMobile ? 'md' : 'lg'}
     >
       <div className="modal-body weekly-hires-modal__body">
-        <section
-          className="weekly-hires-modal__overview"
-          aria-label="Resumen semanal"
-        >
-          <div
-            className="weekly-hires-modal__tabs"
-            role="tablist"
-            aria-label="Seleccionar semana"
-            aria-orientation="vertical"
-          >
-            <button
-              type="button"
-              role="tab"
-              id="weekly-hires-tab-current"
-              aria-selected={isCurrentTab}
-              aria-controls="weekly-hires-panel"
-              className={`weekly-hires-modal__tab ${
-                isCurrentTab ? 'weekly-hires-modal__tab--active' : ''
-              }`}
-              onClick={() => setActiveTab('current')}
-            >
-              Semana {range.week}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              id="weekly-hires-tab-previous"
-              aria-selected={!isCurrentTab}
-              aria-controls="weekly-hires-panel"
-              className={`weekly-hires-modal__tab ${
-                !isCurrentTab ? 'weekly-hires-modal__tab--active' : ''
-              }`}
-              onClick={() => setActiveTab('previous')}
-            >
-              Semana {previousRange.week}
-            </button>
-          </div>
-
-          <article
-            id="weekly-hires-panel"
-            role="tabpanel"
-            aria-labelledby={
-              isCurrentTab
-                ? 'weekly-hires-tab-current'
-                : 'weekly-hires-tab-previous'
-            }
-            className="weekly-hires-modal__compare-col weekly-hires-modal__compare-col--current"
-          >
-            <header className="weekly-hires-modal__compare-head">
-              <span className="weekly-hires-modal__compare-week">
-                Semana {selectedRange.week}
-              </span>
-              <span className="weekly-hires-modal__compare-range">
-                <CalendarRange size={14} aria-hidden="true" />
-                {selectedLabel} {selectedRange.year}
-              </span>
-            </header>
-            <dl className="weekly-hires-modal__compare-stats">
-              <div className="weekly-hires-modal__compare-stat">
-                <dt>Ingresos</dt>
-                <dd>
-                  {selectedHires.length}
-                  <Delta
-                    current={selectedHires.length}
-                    previous={
-                      isCurrentTab
-                        ? previousHires.length
-                        : hires.length
-                    }
-                  />
-                </dd>
-              </div>
-              <div className="weekly-hires-modal__compare-stat">
-                <dt>Bajas</dt>
-                <dd className="weekly-hires-modal__compare-stat--bajas">
-                  {selectedBajas.length}
-                  <Delta
-                    current={selectedBajas.length}
-                    previous={
-                      isCurrentTab
-                        ? previousBajas.length
-                        : bajas.length
-                    }
-                    invert
-                  />
-                </dd>
-              </div>
-            </dl>
-            <p className="weekly-hires-modal__compare-foot">
-              <span aria-hidden="true">↕</span> vs Semana {otherWeekNumber}
+        {/* Estadísticas principales */}
+        <header className="weekly-hires-modal__summary">
+          <div className="weekly-hires-modal__stat">
+            <div className="weekly-hires-modal__big-number">
+              {totalHires}
+            </div>
+            <p className="weekly-hires-modal__big-label">
+              Ingreso{totalHires === 1 ? '' : 's'}
             </p>
-          </article>
-        </section>
+          </div>
+          <div className="weekly-hires-modal__stat">
+            <div className="weekly-hires-modal__big-number weekly-hires-modal__big-number--bajas">
+              {totalBajas}
+            </div>
+            <p className="weekly-hires-modal__big-label">
+              Baja{totalBajas === 1 ? '' : 's'}
+            </p>
+          </div>
+          {!isMobile && (
+            <div className="weekly-hires-modal__stat">
+              <div className={`weekly-hires-modal__big-number ${netMovement >= 0 ? 'weekly-hires-modal__big-number--positive' : 'weekly-hires-modal__big-number--negative'}`}>
+                {netMovement > 0 ? '+' : ''}{netMovement}
+              </div>
+              <p className="weekly-hires-modal__big-label">
+                Balance neto
+              </p>
+            </div>
+          )}
+        </header>
 
-        {empty ? (
-          <p className="weekly-hires-modal__empty">
-            No hay movimientos registrados en este rango.
-          </p>
-        ) : (
-          <>
-            {selectedHires.length > 0 && (
-              <section
-                className="weekly-hires-modal__section"
-                aria-label="Resumen por puesto"
-              >
-                <h3 className="weekly-hires-modal__section-title">
-                  Puestos contratados
-                </h3>
+        {/* Semana Actual */}
+        <ExpandableSection
+          title={`Semana ${range.week} · ${rangeLabel}`}
+          badge={`${hires.length} ingresos · ${bajas.length} bajas`}
+          variant="card"
+          defaultExpanded
+        >
+          <div className="weekly-hires-modal__week-content">
+            <div className="weekly-hires-modal__week-stats">
+              <div className="weekly-hires-modal__week-stat">
+                <span className="weekly-hires-modal__week-stat-label">Ingresos</span>
+                <span className="weekly-hires-modal__week-stat-value">
+                  {hires.length}
+                  <Delta current={hires.length} previous={previousHires.length} />
+                </span>
+              </div>
+              <div className="weekly-hires-modal__week-stat">
+                <span className="weekly-hires-modal__week-stat-label">Bajas</span>
+                <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
+                  {bajas.length}
+                  <Delta current={bajas.length} previous={previousBajas.length} invert />
+                </span>
+              </div>
+            </div>
+
+            {groupedHires.length > 0 && (
+              <div className="weekly-hires-modal__puestos">
+                <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
                 <ul className="weekly-hires-modal__puesto-list">
-                  {grouped.map((g) => (
-                    <li
-                      key={`${g.area}-${g.puesto}`}
-                      className="weekly-hires-modal__puesto-item"
-                    >
-                      <span className="weekly-hires-modal__puesto-name">
-                        {g.puesto}
-                      </span>
-                      <span className="weekly-hires-modal__puesto-area">
-                        {g.area}
-                      </span>
-                      <span className="weekly-hires-modal__puesto-count">
-                        {g.count}
-                      </span>
+                  {groupedHires.map((g) => (
+                    <li key={`${g.area}-${g.puesto}`} className="weekly-hires-modal__puesto-item">
+                      <span className="weekly-hires-modal__puesto-name">{g.puesto}</span>
+                      <span className="weekly-hires-modal__puesto-area">{g.area}</span>
+                      <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                     </li>
                   ))}
                 </ul>
-              </section>
+              </div>
             )}
 
-            {isMobile && selectedHires.length > 0 ? (
-              <ExpandableSection
-                title="Detalle de ingresos"
-                badge={`${selectedHires.length} empleados`}
-                variant="card"
-              >
-                {renderHiresTable(sortedHiresForTable)}
-              </ExpandableSection>
-            ) : selectedHires.length > 0 ? (
-              renderHiresTable(sortedHiresForTable, "Detalle de ingresos")
-            ) : null}
+            {hires.length > 0 && renderHiresTable(sortedHires, 'Detalle de ingresos')}
+            {bajas.length > 0 && renderBajasTable(bajas, 'Detalle de bajas')}
+          </div>
+        </ExpandableSection>
 
-            {isMobile && selectedBajas.length > 0 ? (
-              <ExpandableSection
-                title="Detalle de bajas"
-                badge={`${selectedBajas.length} bajas`}
-                variant="card"
-              >
-                {renderBajasTable()}
-              </ExpandableSection>
-            ) : selectedBajas.length > 0 ? (
-              renderBajasTable()
-            ) : null}
+        {/* Semana Anterior */}
+        <ExpandableSection
+          title={`Semana ${previousRange.week} · ${previousRangeLabel}`}
+          badge={`${previousHires.length} ingresos · ${previousBajas.length} bajas`}
+          variant="card"
+        >
+          <div className="weekly-hires-modal__week-content">
+            <div className="weekly-hires-modal__week-stats">
+              <div className="weekly-hires-modal__week-stat">
+                <span className="weekly-hires-modal__week-stat-label">Ingresos</span>
+                <span className="weekly-hires-modal__week-stat-value">
+                  {previousHires.length}
+                </span>
+              </div>
+              <div className="weekly-hires-modal__week-stat">
+                <span className="weekly-hires-modal__week-stat-label">Bajas</span>
+                <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
+                  {previousBajas.length}
+                </span>
+              </div>
+            </div>
 
-            {isCurrentTab && futureHires.length > 0 && (
-              isMobile ? (
-                <ExpandableSection
-                  title="Próximos ingresos"
-                  badge={`${futureHires.length} programados`}
-                  variant="card"
-                >
-                  <p className="weekly-hires-modal__future-hint">
-                    Estos empleados están agendados para entrar esta semana.
-                  </p>
-                  {renderHiresTable(sortedFutureHires)}
-                </ExpandableSection>
-              ) : (
-                <section
-                  className="weekly-hires-modal__section"
-                  aria-label="Próximos ingresos programados"
-                >
-                  <h3 className="weekly-hires-modal__section-title">
-                    Próximos ingresos programados
-                  </h3>
-                  <p className="weekly-hires-modal__future-hint">
-                    Estos empleados están agendados para entrar esta semana.
-                  </p>
-                  {renderHiresTable(sortedFutureHires)}
-                </section>
-              )
+            {groupedPreviousHires.length > 0 && (
+              <div className="weekly-hires-modal__puestos">
+                <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
+                <ul className="weekly-hires-modal__puesto-list">
+                  {groupedPreviousHires.map((g) => (
+                    <li key={`${g.area}-${g.puesto}`} className="weekly-hires-modal__puesto-item">
+                      <span className="weekly-hires-modal__puesto-name">{g.puesto}</span>
+                      <span className="weekly-hires-modal__puesto-area">{g.area}</span>
+                      <span className="weekly-hires-modal__puesto-count">{g.count}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
-          </>
+
+            {previousHires.length > 0 && renderHiresTable(
+              [...previousHires].sort((a, b) => {
+                const cmpArea = (a.area || '').localeCompare(b.area || '');
+                if (cmpArea !== 0) return cmpArea;
+                return (a.seccion || '').localeCompare(b.seccion || '');
+              }),
+              'Detalle de ingresos'
+            )}
+            {previousBajas.length > 0 && renderBajasTable(previousBajas, 'Detalle de bajas')}
+          </div>
+        </ExpandableSection>
+
+        {/* Próximos Ingresos */}
+        {futureHires.length > 0 && (
+          <ExpandableSection
+            title="Próximos ingresos programados"
+            badge={`${futureHires.length} empleados`}
+            variant="card"
+          >
+            <p className="weekly-hires-modal__future-hint">
+              Estos empleados están agendados para entrar esta semana.
+            </p>
+            {renderHiresTable(sortedFutureHires)}
+          </ExpandableSection>
         )}
       </div>
     </Modal>
