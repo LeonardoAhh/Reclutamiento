@@ -17,11 +17,11 @@ import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
+import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
-import { Modal } from '@/components/ui/Modal';
 import { PipelineKanban } from '@/components/pipeline/PipelineKanban';
 import {
   CandidateFilters,
@@ -763,115 +763,16 @@ export function Pipeline() {
         </div>
       </div>
 
-      <Modal
+      {/* ── Modals de KPIs de reclutadores ── */}
+      <RecruiterStatsModal
         isOpen={kpiModalOpen !== null}
         onClose={() => setKpiModalOpen(null)}
-        title={
-          kpiModalOpen === 'global' ? 'Resumen de Reclutadores' :
-          kpiModalOpen === 'pauta' ? 'Detalle Pauta' :
-          kpiModalOpen === 'alexandra' ? 'Detalle Alexandra' :
-          kpiModalOpen === 'daniela' ? 'Detalle Daniela' : ''
-        }
-        size="xl"
-      >
-        <div className="pipeline__modal-body">
-
-          {/* ── 1. VISTA GLOBAL: Grid de tarjetas de reclutador ── */}
-          {kpiModalOpen === 'global' && (
-            <div className="pipeline__modal-grid">
-              {recruiterStats.map((r) => {
-                const pct = (n: number) =>
-                  r.total === 0 ? 0 : Math.round((n / r.total) * 100);
-
-                return (
-                  <article key={r.name} className="pipeline__modal-card">
-                    <header className="pipeline__modal-card__head">
-                      <div className="pipeline__modal-card__avatar">
-                        {r.name.slice(0, 2)}
-                      </div>
-                      <div className="pipeline__modal-card__meta">
-                        <h3 className="pipeline__modal-card__name">{r.name}</h3>
-                        <span className="pipeline__modal-card__total">
-                          {r.total} candidato{r.total === 1 ? '' : 's'}
-                        </span>
-                      </div>
-                    </header>
-
-                    <div className="pipeline__modal-card__stats">
-                      <div className="pipeline__modal-stat pipeline__modal-stat--citados">
-                        <span className="pipeline__modal-stat__value">{pct(r.citados)}%</span>
-                        <span className="pipeline__modal-stat__label">Citados</span>
-                        <span className="pipeline__modal-stat__count">({r.citados})</span>
-                      </div>
-                      <div className="pipeline__modal-stat pipeline__modal-stat--contratados">
-                        <span className="pipeline__modal-stat__value">{pct(r.contratados)}%</span>
-                        <span className="pipeline__modal-stat__label">Contratados</span>
-                        <span className="pipeline__modal-stat__count">({r.contratados})</span>
-                      </div>
-                      <div className="pipeline__modal-stat pipeline__modal-stat--rechazados">
-                        <span className="pipeline__modal-stat__value">{pct(r.rechazados)}%</span>
-                        <span className="pipeline__modal-stat__label">Rechazados</span>
-                        <span className="pipeline__modal-stat__count">({r.rechazados})</span>
-                      </div>
-                    </div>
-
-                    {/* Barra de progreso visual */}
-                    <div className="pipeline__modal-card__bar">
-                      <div
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--contratados"
-                        style={{ '--bar-width': `${pct(r.contratados)}%` } as React.CSSProperties}
-                      />
-                      <div
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--citados"
-                        style={{ '--bar-width': `${pct(r.citados)}%` } as React.CSSProperties}
-                      />
-                      <div
-                        className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--rechazados"
-                        style={{ '--bar-width': `${pct(r.rechazados)}%` } as React.CSSProperties}
-                      />
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-
-          {/* ── 2. VISTA INDIVIDUAL: Tabla de semanas ── */}
-          {kpiModalOpen && kpiModalOpen !== 'global' && (
-            <div className="pipeline__modal-weeks">
-              <div className="pipeline__modal-weeks__header">
-                <span>Semana</span>
-                <span>Período</span>
-                <span className="pipeline__modal-weeks__header--right">Candidatos</span>
-                <span className="pipeline__modal-weeks__header--right">Contratados</span>
-                <span className="pipeline__modal-weeks__header--right">Efectividad</span>
-              </div>
-
-              {(kpiModalOpen === 'pauta' ? pautaStats : kpiModalOpen === 'alexandra' ? alexandraStats : danielaStats).map((stat) => {
-                const tueWeek = isoWeekOf(stat.endTue).week;
-                const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
-                const wedStr = fmt.format(stat.startWed);
-                const tueStr = fmt.format(stat.endTue);
-                const effectiveness = stat.efectividadContratacion ?? (stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100));
-
-                return (
-                  <div key={stat.startWed.getTime()} className="pipeline__modal-weeks__row">
-                    <span className="pipeline__modal-weeks__week">Sem {tueWeek}</span>
-                    <span className="pipeline__modal-weeks__period">{wedStr} – {tueStr}</span>
-                    <span className="pipeline__modal-weeks__number">{stat.total}</span>
-                    <span className="pipeline__modal-weeks__number pipeline__modal-weeks__number--hired">
-                      {stat.contratados}
-                    </span>
-                    <span className="pipeline__modal-weeks__number pipeline__modal-weeks__number--pct">
-                      {effectiveness}%
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </Modal>
+        mode={kpiModalOpen}
+        recruiterStats={recruiterStats}
+        pautaStats={pautaStats}
+        alexandraStats={alexandraStats}
+        danielaStats={danielaStats}
+      />
     </main>
   );
 }
