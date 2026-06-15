@@ -282,7 +282,7 @@ function LogoutCinematic({ username }: { username?: string }) {
 }
 
 // ── 5. Main Overlay Wrapper ──────────
-export function LoaderOverlay({ title, hint, tone = 'full' }: LoaderOverlayProps) {
+export function LoaderOverlay({ title, tone = 'full' }: LoaderOverlayProps) {
   return (
     <motion.div
       className={`loader-overlay ${tone === 'route' ? 'loader-overlay--route' : ''}`}
