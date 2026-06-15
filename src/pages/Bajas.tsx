@@ -408,7 +408,6 @@ export function Bajas() {
           setDetalleTarget(null);
           setRequisicionTarget(b);
         }}
-        useModal={!isMobile}
       />
 
       <CubrirVacanteSheet
@@ -417,7 +416,6 @@ export function Bajas() {
         onClose={() => setCubrirTarget(null)}
         onSave={async (n, f, note) => marcarCubierta(n, f, note)}
         onClear={async (n) => desmarcarCubierta(n)}
-        useModal={!isMobile}
       />
 
       <RequisicionSheet
@@ -430,7 +428,6 @@ export function Bajas() {
             : null
         }
         onClose={() => setRequisicionTarget(null)}
-        useModal={!isMobile}
       />
     </main>
   );

@@ -1,5 +1,4 @@
 import { AlertCircle, CheckCircle2, FileText, ClipboardList } from 'lucide-react';
-import { Sheet } from './Sheet';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import type { BajaWithCobertura } from '@/lib/bajas';
@@ -48,12 +47,10 @@ interface BajaDetailSheetProps {
   onCubrir: (baja: BajaWithCobertura) => void;
   /** Abrir el flujo de requisición para esta baja. */
   onRequisicion: (baja: BajaWithCobertura) => void;
-  /** Si true, usa Modal en lugar de Sheet (para PC) */
-  useModal?: boolean;
 }
 
 /**
- * Detalle de una baja en panel lateral o modal (patrón master-detail). La tabla de
+ * Detalle de una baja en modal (patrón master-detail). La tabla de
  * `Bajas` queda compacta (3 columnas) y todo el detalle vive aquí, junto con
  * las acciones de cobertura / requisición.
  */
@@ -64,7 +61,6 @@ export function BajaDetailSheet({
   onClose,
   onCubrir,
   onRequisicion,
-  useModal = false,
 }: BajaDetailSheetProps) {
   if (!baja) return null;
 
@@ -74,75 +70,7 @@ export function BajaDetailSheet({
       ? `${baja.cubierta_nota} · Manual`
       : null;
 
-  const content = (
-    <>
-      <div className={useModal ? "modal-body baja-detail-sheet__body" : "sheet__body baja-detail-sheet__body"}>
-        <dl className="baja-detail-sheet__list">
-          <div className="baja-detail-sheet__field">
-            <dt>Área · Sección</dt>
-            <dd>{baja.area} · {baja.seccion}</dd>
-          </div>
-          <div className="baja-detail-sheet__field">
-            <dt>Fecha de baja</dt>
-            <dd>{formatShortDate(baja.fecha_baja)}</dd>
-          </div>
-          <div className="baja-detail-sheet__field">
-            <dt>Tipo / Motivo</dt>
-            <dd>
-              <span className="baja-detail-sheet__tipo">{baja.tipo_baja || '—'}</span>
-              <span className="baja-detail-sheet__motivo">{baja.motivo_baja || '—'}</span>
-            </dd>
-          </div>
-          <div className="baja-detail-sheet__field">
-            <dt>Cobertura</dt>
-            <dd><BajaCoberturaBadge baja={baja} /></dd>
-          </div>
-          {!baja.soloInduccion && (
-            <div className="baja-detail-sheet__field">
-              <dt>Cubre vacante</dt>
-              <dd>{quienCubre ?? <span className="baja-detail-sheet__muted">—</span>}</dd>
-            </div>
-          )}
-          {requisicionCode && (
-            <div className="baja-detail-sheet__field">
-              <dt>Requisición</dt>
-              <dd>{requisicionCode}</dd>
-            </div>
-          )}
-        </dl>
-      </div>
-
-      {!useModal && (
-        <footer className="sheet__footer baja-detail-sheet__footer">
-          <button type="button" className="btn-secondary" onClick={onClose}>
-            Cerrar
-          </button>
-          {!baja.soloInduccion && (
-            <>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => onRequisicion(baja)}
-              >
-                <FileText size={14} aria-hidden="true" />
-                {requisicionCode ?? 'Requisición'}
-              </button>
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => onCubrir(baja)}
-              >
-                <CheckCircle2 size={14} aria-hidden="true" />
-                {baja.cubierta_manual ? 'Editar cobertura' : 'Marcar cubierta'}
-              </button>
-            </>
-          )}
-        </footer>
-      )}
-    </>
-  );
-
-  const footerActions = useModal && !baja.soloInduccion ? (
+  const footerActions = !baja.soloInduccion ? (
     <>
       <button
         type="button"
@@ -163,34 +91,50 @@ export function BajaDetailSheet({
     </>
   ) : null;
 
-  if (useModal) {
-    return (
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        icon={<ClipboardList size={20} aria-hidden="true" />}
-        title={baja.nombre}
-        subtitle={`#${baja.num_empleado} · ${baja.puesto}`}
-        className="baja-detail-sheet"
-        footerActions={footerActions}
-      >
-        {content}
-      </Modal>
-    );
-  }
-
   return (
-    <Sheet
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="baja-detail-sheet"
-      side="right"
-      width="sm"
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title={baja.nombre}
       subtitle={`#${baja.num_empleado} · ${baja.puesto}`}
+      className="baja-detail-sheet"
+      footerActions={footerActions}
+      fullscreenMobile={true}
     >
-      {content}
-    </Sheet>
+      <dl className="baja-detail-sheet__list">
+        <div className="baja-detail-sheet__field">
+          <dt>Área · Sección</dt>
+          <dd>{baja.area} · {baja.seccion}</dd>
+        </div>
+        <div className="baja-detail-sheet__field">
+          <dt>Fecha de baja</dt>
+          <dd>{formatShortDate(baja.fecha_baja)}</dd>
+        </div>
+        <div className="baja-detail-sheet__field">
+          <dt>Tipo / Motivo</dt>
+          <dd>
+            <span className="baja-detail-sheet__tipo">{baja.tipo_baja || '—'}</span>
+            <span className="baja-detail-sheet__motivo">{baja.motivo_baja || '—'}</span>
+          </dd>
+        </div>
+        <div className="baja-detail-sheet__field">
+          <dt>Cobertura</dt>
+          <dd><BajaCoberturaBadge baja={baja} /></dd>
+        </div>
+        {!baja.soloInduccion && (
+          <div className="baja-detail-sheet__field">
+            <dt>Cubre vacante</dt>
+            <dd>{quienCubre ?? <span className="baja-detail-sheet__muted">—</span>}</dd>
+          </div>
+        )}
+        {requisicionCode && (
+          <div className="baja-detail-sheet__field">
+            <dt>Requisición</dt>
+            <dd>{requisicionCode}</dd>
+          </div>
+        )}
+      </dl>
+    </Modal>
   );
 }
