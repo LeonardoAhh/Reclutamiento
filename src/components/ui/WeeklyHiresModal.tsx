@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { CalendarRange, Users } from 'lucide-react';
 import { Modal } from './Modal';
+import { ExpandableSection } from './ExpandableSection';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Baja, Employee } from '@/lib/types';
 import { formatShortDate, type IsoWeekRange } from '@/lib/dates';
 import './WeeklyHiresModal.css';
@@ -81,6 +83,7 @@ export function WeeklyHiresModal({
   futureHires = [],
 }: WeeklyHiresModalProps) {
   const [activeTab, setActiveTab] = useState<WeekTab>('current');
+  const isMobile = useIsMobile();
 
   const selectedRange = activeTab === 'current' ? range : previousRange;
   const selectedLabel = activeTab === 'current' ? rangeLabel : previousRangeLabel;
@@ -108,6 +111,98 @@ export function WeeklyHiresModal({
   const isCurrentTab = activeTab === 'current';
   const otherWeekNumber = isCurrentTab ? previousRange.week : range.week;
 
+  const renderHiresTable = (hiresToRender: Employee[], title?: string) => (
+    <section
+      className="weekly-hires-modal__section"
+      aria-label={title || "Detalle por empleado"}
+    >
+      {title && <h3 className="weekly-hires-modal__section-title">{title}</h3>}
+      <div className="weekly-hires-modal__table-wrap">
+        <table className="weekly-hires-modal__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Puesto</th>
+              <th>Área · Sección</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hiresToRender.map((e) => (
+              <tr key={e.num_empleado}>
+                <td className="weekly-hires-modal__cell-mono">
+                  {e.num_empleado}
+                </td>
+                <td>{e.nombre}</td>
+                <td>{e.puesto}</td>
+                <td>
+                  <div className="weekly-hires-modal__cell-area">
+                    {e.area}
+                  </div>
+                  <div className="weekly-hires-modal__cell-seccion">
+                    {e.seccion}
+                  </div>
+                </td>
+                <td className="weekly-hires-modal__cell-mono">
+                  {formatShortDate(e.fecha_ingreso)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+
+  const renderBajasTable = () => (
+    <section
+      className="weekly-hires-modal__section"
+      aria-label="Detalle de bajas"
+    >
+      <h3 className="weekly-hires-modal__section-title">
+        Detalle de bajas
+      </h3>
+      <div className="weekly-hires-modal__table-wrap">
+        <table className="weekly-hires-modal__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Puesto</th>
+              <th>Área · Sección</th>
+              <th>Tipo</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedBajas.map((b) => (
+              <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
+                <td className="weekly-hires-modal__cell-mono">
+                  {b.num_empleado}
+                </td>
+                <td>{b.nombre}</td>
+                <td>{b.puesto}</td>
+                <td>
+                  <div className="weekly-hires-modal__cell-area">
+                    {b.area}
+                  </div>
+                  <div className="weekly-hires-modal__cell-seccion">
+                    {b.seccion}
+                  </div>
+                </td>
+                <td>{b.tipo_baja || '—'}</td>
+                <td className="weekly-hires-modal__cell-mono">
+                  {formatShortDate(b.fecha_baja)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -121,6 +216,7 @@ export function WeeklyHiresModal({
           Comparativo semanal {range.year}
         </span>
       }
+      size={isMobile ? 'md' : 'lg'}
     >
       <div className="modal-body weekly-hires-modal__body">
         <section
@@ -252,147 +348,56 @@ export function WeeklyHiresModal({
               </section>
             )}
 
-            {selectedHires.length > 0 && (
-              <section
-                className="weekly-hires-modal__section"
-                aria-label="Detalle por empleado"
+            {isMobile && selectedHires.length > 0 ? (
+              <ExpandableSection
+                title="Detalle de ingresos"
+                badge={`${selectedHires.length} empleados`}
+                variant="card"
               >
-                <h3 className="weekly-hires-modal__section-title">
-                  Detalle de ingresos
-                </h3>
-                <div className="weekly-hires-modal__table-wrap">
-                  <table className="weekly-hires-modal__table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Puesto</th>
-                        <th>Área · Sección</th>
-                        <th>Fecha</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedHiresForTable.map((e) => (
-                        <tr key={e.num_empleado}>
-                          <td className="weekly-hires-modal__cell-mono">
-                            {e.num_empleado}
-                          </td>
-                          <td>{e.nombre}</td>
-                          <td>{e.puesto}</td>
-                          <td>
-                            <div className="weekly-hires-modal__cell-area">
-                              {e.area}
-                            </div>
-                            <div className="weekly-hires-modal__cell-seccion">
-                              {e.seccion}
-                            </div>
-                          </td>
-                          <td className="weekly-hires-modal__cell-mono">
-                            {formatShortDate(e.fecha_ingreso)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )}
+                {renderHiresTable(sortedHiresForTable)}
+              </ExpandableSection>
+            ) : selectedHires.length > 0 ? (
+              renderHiresTable(sortedHiresForTable, "Detalle de ingresos")
+            ) : null}
 
-            {selectedBajas.length > 0 && (
-              <section
-                className="weekly-hires-modal__section"
-                aria-label="Detalle de bajas"
+            {isMobile && selectedBajas.length > 0 ? (
+              <ExpandableSection
+                title="Detalle de bajas"
+                badge={`${selectedBajas.length} bajas`}
+                variant="card"
               >
-                <h3 className="weekly-hires-modal__section-title">
-                  Detalle de bajas
-                </h3>
-                <div className="weekly-hires-modal__table-wrap">
-                  <table className="weekly-hires-modal__table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Puesto</th>
-                        <th>Área · Sección</th>
-                        <th>Tipo</th>
-                        <th>Fecha</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedBajas.map((b) => (
-                        <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
-                          <td className="weekly-hires-modal__cell-mono">
-                            {b.num_empleado}
-                          </td>
-                          <td>{b.nombre}</td>
-                          <td>{b.puesto}</td>
-                          <td>
-                            <div className="weekly-hires-modal__cell-area">
-                              {b.area}
-                            </div>
-                            <div className="weekly-hires-modal__cell-seccion">
-                              {b.seccion}
-                            </div>
-                          </td>
-                          <td>{b.tipo_baja || '—'}</td>
-                          <td className="weekly-hires-modal__cell-mono">
-                            {formatShortDate(b.fecha_baja)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )}
+                {renderBajasTable()}
+              </ExpandableSection>
+            ) : selectedBajas.length > 0 ? (
+              renderBajasTable()
+            ) : null}
 
             {isCurrentTab && futureHires.length > 0 && (
-              <section
-                className="weekly-hires-modal__section"
-                aria-label="Próximos ingresos programados"
-              >
-                <h3 className="weekly-hires-modal__section-title">
-                  Próximos ingresos programados
-                </h3>
-                <p className="weekly-hires-modal__empty" style={{ textAlign: 'left', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                  Estos empleados están agendados para entrar esta semana.
-                </p>
-                <div className="weekly-hires-modal__table-wrap">
-                  <table className="weekly-hires-modal__table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Puesto</th>
-                        <th>Área · Sección</th>
-                        <th>Fecha agendada</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedFutureHires.map((e) => (
-                        <tr key={e.num_empleado}>
-                          <td className="weekly-hires-modal__cell-mono">
-                            {e.num_empleado}
-                          </td>
-                          <td>{e.nombre}</td>
-                          <td>{e.puesto}</td>
-                          <td>
-                            <div className="weekly-hires-modal__cell-area">
-                              {e.area}
-                            </div>
-                            <div className="weekly-hires-modal__cell-seccion">
-                              {e.seccion}
-                            </div>
-                          </td>
-                          <td className="weekly-hires-modal__cell-mono color-amber">
-                            {formatShortDate(e.fecha_ingreso)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
+              isMobile ? (
+                <ExpandableSection
+                  title="Próximos ingresos"
+                  badge={`${futureHires.length} programados`}
+                  variant="card"
+                >
+                  <p className="weekly-hires-modal__future-hint">
+                    Estos empleados están agendados para entrar esta semana.
+                  </p>
+                  {renderHiresTable(sortedFutureHires)}
+                </ExpandableSection>
+              ) : (
+                <section
+                  className="weekly-hires-modal__section"
+                  aria-label="Próximos ingresos programados"
+                >
+                  <h3 className="weekly-hires-modal__section-title">
+                    Próximos ingresos programados
+                  </h3>
+                  <p className="weekly-hires-modal__future-hint">
+                    Estos empleados están agendados para entrar esta semana.
+                  </p>
+                  {renderHiresTable(sortedFutureHires)}
+                </section>
+              )
             )}
           </>
         )}

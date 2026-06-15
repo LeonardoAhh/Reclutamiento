@@ -1,5 +1,7 @@
 import { CalendarCheck } from 'lucide-react';
 import { Modal } from './Modal';
+import { ExpandableSection } from './ExpandableSection';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
 import './CandidatesCitedTodayModal.css';
 
@@ -25,7 +27,25 @@ export function CandidatesCitedTodayModal({
   onClose,
   candidates,
 }: CandidatesCitedTodayModalProps) {
+  const isMobile = useIsMobile();
   const grouped = groupByArea(candidates);
+
+  const renderAreaContent = (items: Candidate[]) => (
+    <ul className="candidates-cited-today-modal__list">
+      {items.map((c) => (
+        <li key={c.id ?? c.nombre} className="candidates-cited-today-modal__item">
+          <div className="candidates-cited-today-modal__main">
+            <span className="candidates-cited-today-modal__name">{c.nombre}</span>
+            <span className="candidates-cited-today-modal__puesto">{c.puesto}</span>
+            <span className="candidates-cited-today-modal__seccion">{c.seccion ?? '—'}</span>
+          </div>
+          <div className="candidates-cited-today-modal__meta">
+            <span className="candidates-cited-today-modal__reclutador">{c.reclutador ?? '—'}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <Modal
@@ -33,8 +53,9 @@ export function CandidatesCitedTodayModal({
       onClose={onClose}
       className="candidates-cited-today-modal modal-fullscreen-mobile"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
-      title="Cited personnel"
-      subtitle="Details of candidates citeds"
+      title="Personal citado"
+      subtitle="Detalle de candidatos citados"
+      size={isMobile ? 'md' : 'lg'}
     >
       <div className="modal-body candidates-cited-today-modal__body">
         <header className="candidates-cited-today-modal__summary">
@@ -42,41 +63,41 @@ export function CandidatesCitedTodayModal({
             {candidates.length}
           </div>
           <p className="candidates-cited-today-modal__big-label">
-            {candidates.length === 1 ? 'Candidate' : 'Candidates'}
+            {candidates.length === 1 ? 'Candidato' : 'Candidatos'}
           </p>
         </header>
 
         {candidates.length === 0 ? (
           <p className="candidates-cited-today-modal__empty">
-            No cited candidates today.
+            No hay candidatos citados hoy.
           </p>
         ) : (
           <div className="candidates-cited-today-modal__groups">
-            {grouped.map(([area, items]) => (
-              <section
-                key={area}
-                className="candidates-cited-today-modal__area"
-                aria-label={`Area ${area}`}
-              >
-                <h3 className="candidates-cited-today-modal__area-title">
-                  {area} <span className="candidates-cited-today-modal__area-count">({items.length})</span>
-                </h3>
-                <ul className="candidates-cited-today-modal__list">
-                  {items.map((c) => (
-                    <li key={c.id ?? c.nombre} className="candidates-cited-today-modal__item">
-                      <div className="candidates-cited-today-modal__main">
-                        <span className="candidates-cited-today-modal__name">{c.nombre}</span>
-                        <span className="candidates-cited-today-modal__puesto">{c.puesto}</span>
-                        <span className="candidates-cited-today-modal__seccion">{c.seccion ?? '—'}</span>
-                      </div>
-                      <div className="candidates-cited-today-modal__meta">
-                        <span className="candidates-cited-today-modal__reclutador">{c.reclutador ?? '—'}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
+            {isMobile ? (
+              grouped.map(([area, items]) => (
+                <ExpandableSection
+                  key={area}
+                  title={area}
+                  badge={`${items.length} candidatos`}
+                  variant="list"
+                >
+                  {renderAreaContent(items)}
+                </ExpandableSection>
+              ))
+            ) : (
+              grouped.map(([area, items]) => (
+                <section
+                  key={area}
+                  className="candidates-cited-today-modal__area"
+                  aria-label={`Area ${area}`}
+                >
+                  <h3 className="candidates-cited-today-modal__area-title">
+                    {area} <span className="candidates-cited-today-modal__area-count">({items.length})</span>
+                  </h3>
+                  {renderAreaContent(items)}
+                </section>
+              ))
+            )}
           </div>
         )}
       </div>

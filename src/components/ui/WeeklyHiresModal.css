@@ -307,3 +307,13 @@
     text-align: center;
   }
 }
+
+/* ── Future hires hint ── */
+.weekly-hires-modal__future-hint {
+  text-align: left;
+  margin-bottom: var(--spacing-md);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-body-sm-line);
+}
+
