@@ -22,8 +22,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
     const filtered = ruta.empleados.filter(
       emp => 
         emp.nombre.toLowerCase().includes(term) || 
-        emp.numeroEmpleado.toLowerCase().includes(term) ||
-        emp.parada.toLowerCase().includes(term)
+        emp.numeroEmpleado.toLowerCase().includes(term)
     );
 
     const grouped: Record<string, typeof ruta.empleados> = {};
@@ -51,12 +50,15 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
 
   if (!ruta) return null;
 
+  // Extraer solo el código de ruta (ejemplo: "R1- QUERETARO..." -> "R1")
+  const routeCode = ruta.nombreRuta.split('-')[0].trim();
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Pasajeros - ${ruta.nombreRuta}`}
-      subtitle={`${ruta.totalEmpleados} empleados asignados`}
+      title={`Pasajeros - ${routeCode}`}
+      subtitle="Empleados por turno"
       icon={<Users size={18} className="text-primary" />}
       className="ruta-employees-modal"
     >
@@ -65,7 +67,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
           <Search size={16} className="ruta-employees-modal__search-icon" />
           <input
             type="text"
-            placeholder="Buscar por nombre, empleado o parada..."
+            placeholder="Buscar por nombre o ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="ruta-employees-modal__input"
@@ -112,8 +114,6 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
                         <tr>
                           <th className="type-caption-md text-muted">ID</th>
                           <th className="type-caption-md text-muted">Nombre</th>
-                          <th className="type-caption-md text-muted">Colonia</th>
-                          <th className="type-caption-md text-muted">Parada</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -121,8 +121,6 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
                           <tr key={emp.numeroEmpleado}>
                             <td className="type-body-sm text-muted-soft">{emp.numeroEmpleado}</td>
                             <td className="type-body-sm text-ink font-medium">{emp.nombre}</td>
-                            <td className="type-body-sm text-muted">{emp.colonia}</td>
-                            <td className="type-body-sm text-muted">{emp.parada}</td>
                           </tr>
                         ))}
                       </tbody>
