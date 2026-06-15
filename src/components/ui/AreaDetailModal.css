@@ -281,3 +281,10 @@
   flex: 0 0 auto;
 }
 
+/* Badge stack for process status */
+.area-detail-modal__badge-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  align-items: center;
+}

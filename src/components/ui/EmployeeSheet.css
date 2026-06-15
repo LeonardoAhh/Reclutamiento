@@ -37,6 +37,16 @@
   }
 }
 
+/* Future date warning */
+.employee-sheet__future-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-warning);
+}
+
 /* ── Delete confirmation ── */
 
 .delete-warning {

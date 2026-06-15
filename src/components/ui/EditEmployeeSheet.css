@@ -29,6 +29,16 @@
   text-overflow: ellipsis;
 }
 
+/* Future date warning */
+.edit-employee__future-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-warning);
+}
+
 /* ── Modal variant (desktop) ── */
 .modal-content.edit-employee-modal {
   max-width: 620px;

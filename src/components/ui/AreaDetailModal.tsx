@@ -5,7 +5,6 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Sheet } from './Sheet';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
@@ -435,7 +434,7 @@ export function AreaDetailModal({
                             // el puesto SÍ está en proceso aunque no haya
                             // comentario manual capturado.
                             return (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                              <div className="area-detail-modal__badge-stack">
                                 <Badge variant="teal">
                                   EN PROCESO ({activeCount})
                                 </Badge>
@@ -449,7 +448,7 @@ export function AreaDetailModal({
                           }
                           if (pos.vacantes > 0) {
                             return (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                              <div className="area-detail-modal__badge-stack">
                                 <Badge variant="error">Sin proceso</Badge>
                                 {pos.proximos_ingresos > 0 && (
                                   <Badge variant="coral">
@@ -515,16 +514,18 @@ export function AreaDetailModal({
   }
 
   return (
-    <Sheet
+    <Modal
       isOpen={isOpen}
       title={dept.area}
       subtitle="Detalle por sección"
       onClose={onClose}
-      className="area-detail-sheet"
-      side="right"
-      width="lg"
+      className="area-detail-modal"
+      size="xl"
+      fullscreenMobile={true}
     >
-      {modalContent}
-    </Sheet>
+      <div className="area-detail-modal-body">
+        {modalContent}
+      </div>
+    </Modal>
   );
 }

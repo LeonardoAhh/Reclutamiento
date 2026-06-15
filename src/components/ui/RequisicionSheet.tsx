@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, FileText } from 'lucide-react';
-import { Sheet } from './Sheet';
 import { Modal } from './Modal';
 import type {
   AuthorizedPosition,
@@ -74,8 +73,6 @@ interface RequisicionSheetProps {
   /** Código de registro `VAC-NN` precomputado por la página padre. */
   codigo: string | null;
   onClose: () => void;
-  /** Si true, usa Modal en lugar de Sheet (para PC) */
-  useModal?: boolean;
 }
 
 /**
@@ -96,7 +93,6 @@ export function RequisicionSheet({
   employees,
   codigo,
   onClose,
-  useModal = false,
 }: RequisicionSheetProps) {
   // Mientras el modal esté abierto, marcamos `<html>` para que las reglas
   // de print sepan que existe un nodo imprimible montado. Útil para
@@ -134,66 +130,28 @@ export function RequisicionSheet({
     />
   );
 
-  const footer = !useModal ? (
-    <footer className="sheet__footer requisicion-sheet__footer">
-      <button type="button" className="btn-secondary" onClick={onClose}>
-        Cerrar
-      </button>
-      <button type="button" className="btn-primary" onClick={handlePrint}>
-        <Printer size={14} aria-hidden="true" />
-        <span className="requisicion-sheet__btn-label">Imprimir</span>
-      </button>
-    </footer>
-  ) : null;
-
-  const footerActions = useModal ? (
+  const footerActions = (
     <button type="button" className="btn-primary" onClick={handlePrint}>
       <Printer size={14} aria-hidden="true" />
       <span className="requisicion-sheet__btn-label">Imprimir</span>
     </button>
-  ) : null;
-
-  if (useModal) {
-    return (
-      <>
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          className="requisicion-sheet"
-          icon={<FileText size={20} aria-hidden="true" />}
-          title="Requisición de Personal"
-          subtitle={codigo ?? '—'}
-          footerActions={footerActions}
-        >
-          <div className="modal-body requisicion-sheet__body">{doc}</div>
-        </Modal>
-
-        {isOpen &&
-          createPortal(
-            <div id="requisicion-print-root" aria-hidden="true">
-              {doc}
-            </div>,
-            document.body
-          )}
-      </>
-    );
-  }
+  );
 
   return (
     <>
-      <Sheet
+      <Modal
         isOpen={isOpen}
         onClose={onClose}
         className="requisicion-sheet"
-        side="right"
-        width="lg"
         icon={<FileText size={20} aria-hidden="true" />}
         title="Requisición de Personal"
         subtitle={codigo ?? '—'}
+        footerActions={footerActions}
+        size="lg"
+        fullscreenMobile={true}
       >
-        <div className="sheet__body requisicion-sheet__body">{doc}</div>
-        {footer}
-      </Sheet>
+        <div className="requisicion-sheet__body">{doc}</div>
+      </Modal>
 
       {isOpen &&
         createPortal(

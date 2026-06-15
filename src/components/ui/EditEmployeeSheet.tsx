@@ -8,8 +8,6 @@ import {
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
 import { localTodayIso } from '@/lib/dates';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { Sheet } from './Sheet';
 import { Modal } from './Modal';
 import './EditEmployeeSheet.css';
 
@@ -37,7 +35,6 @@ export function EditEmployeeSheet({
   onClose,
   onSave,
 }: EditEmployeeSheetProps) {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   const [form, setForm] = useState<FormState>({
     nombre: '',
     area: '',
@@ -228,7 +225,7 @@ export function EditEmployeeSheet({
               }
             />
             {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-              <p className="color-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', fontSize: '0.85rem' }}>
+              <p className="edit-employee__future-warning">
                 <AlertCircle size={14} aria-hidden="true" />
                 Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.
               </p>
@@ -286,7 +283,7 @@ export function EditEmployeeSheet({
         )}
       </div>
 
-      <footer className={isDesktop ? 'modal-footer' : 'sheet__footer'}>
+      <footer className="modal-footer">
         <button
           type="button"
           className="btn-secondary"
@@ -314,33 +311,17 @@ export function EditEmployeeSheet({
     ? `#${employee.num_empleado}`
     : '';
 
-  if (isDesktop) {
-    return (
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        icon={icon}
-        title={title}
-        subtitle={subtitle}
-        className="edit-employee-modal"
-      >
-        {formContent}
-      </Modal>
-    );
-  }
-
   return (
-    <Sheet
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
       icon={icon}
       title={title}
       subtitle={subtitle}
-      className="edit-employee-sheet"
-      side="right"
-      width="md"
+      className="edit-employee-modal"
+      fullscreenMobile={true}
     >
       {formContent}
-    </Sheet>
+    </Modal>
   );
 }

@@ -277,7 +277,7 @@ export function EmployeeSheet({
           onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-          <p className="color-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', fontSize: '0.85rem' }}>
+          <p className="employee-sheet__future-warning">
             <AlertCircle size={14} aria-hidden="true" />
             Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.
           </p>
