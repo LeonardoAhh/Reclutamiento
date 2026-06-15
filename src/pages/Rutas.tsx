@@ -186,26 +186,26 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
 
   return (
     <div className="daily-capacity-list" key={`daily-${animKey}`}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--color-hairline)', color: 'var(--color-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', marginBottom: '8px' }}>
+      <div className="daily-capacity-list__header">
         <span>Día</span>
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <span style={{ width: '70px', textAlign: 'right' }}>Pasajeros</span>
-          <span style={{ width: '70px', textAlign: 'right' }}>Descansa</span>
+        <div className="daily-capacity-list__header-cols">
+          <span className="daily-capacity-list__header-col">Pasajeros</span>
+          <span className="daily-capacity-list__header-col">Descansa</span>
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div className="daily-capacity-list__rows">
         {DAYS_ORDER.map((day) => {
           const count = capacityPerDay[day] || 0;
           return (
-            <div
-              key={day}
-              style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', alignItems: 'center' }}
-            >
-              <span className="type-body-sm">{day}</span>
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <span className="type-body-sm" style={{ width: '70px', textAlign: 'right', fontWeight: 600 }}>{count}</span>
-                <div style={{ width: '70px', textAlign: 'right' }}>
-                  <span className="ruta-employees-modal__tab-badge" title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}>
+            <div key={day} className="daily-capacity-list__row">
+              <span className="daily-capacity-list__day">{day}</span>
+              <div className="daily-capacity-list__cols">
+                <span className="daily-capacity-list__count">{count}</span>
+                <div className="daily-capacity-list__rest">
+                  <span 
+                    className="daily-capacity-list__rest-badge" 
+                    title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
+                  >
                     {RESTING_SHIFTS[day]}
                   </span>
                 </div>
@@ -276,14 +276,13 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
         {/* Dual column grids */}
         <div className="ruta-detail__grids">
           <section className="ruta-section">
-            <h3 className="ruta-section__title type-heading-sm" style={{ display: 'flex', alignItems: 'center' }}>
-              <Users size={16} aria-hidden="true" style={{ marginRight: '8px' }} />
+            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
+              <Users size={16} aria-hidden="true" className="ruta-section__title-icon" />
               Desglose por turno
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn-secondary ruta-section__title-btn"
                 onClick={onOpenEmployeesModal}
-                style={{ marginLeft: 'auto', height: '32px', width: '32px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 title="Ver plantilla"
                 aria-label="Ver plantilla"
               >
@@ -299,8 +298,8 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
           </section>
 
           <section className="ruta-section">
-            <h3 className="ruta-section__title type-heading-sm">
-              <CalendarDays size={16} aria-hidden="true" style={{ marginRight: '8px' }} />
+            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
+              <CalendarDays size={16} aria-hidden="true" className="ruta-section__title-icon" />
               Pasajeros por día
             </h3>
             <DailyCapacityBars

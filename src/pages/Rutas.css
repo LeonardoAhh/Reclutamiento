@@ -667,3 +667,111 @@
     opacity: 0.6;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DAILY CAPACITY LIST
+═══════════════════════════════════════════════════════════ */
+
+.daily-capacity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.daily-capacity-list__header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm);
+}
+
+.daily-capacity-list__header-cols {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.daily-capacity-list__header-col {
+  width: 70px;
+  text-align: right;
+}
+
+.daily-capacity-list__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.daily-capacity-list__row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-xs) 0;
+  align-items: center;
+}
+
+.daily-capacity-list__day {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-ink);
+}
+
+.daily-capacity-list__cols {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.daily-capacity-list__count {
+  width: 70px;
+  text-align: right;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}
+
+.daily-capacity-list__rest {
+  width: 70px;
+  text-align: right;
+}
+
+.daily-capacity-list__rest-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  min-width: 32px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RUTA SECTION TITLE WITH ICON
+═══════════════════════════════════════════════════════════ */
+
+.ruta-section__title-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ruta-section__title-icon {
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.ruta-section__title-btn {
+  margin-left: auto;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
