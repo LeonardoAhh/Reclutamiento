@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { CalendarRange, Users } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';

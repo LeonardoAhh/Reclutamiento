@@ -33,7 +33,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatShortDate, startOfDayMxMs, endOfDayMxMs, isoWeekOf, parseDdMmYyyy } from '@/lib/dates';
+import { formatShortDate, startOfDayMxMs, endOfDayMxMs, parseDdMmYyyy } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
 import './Pipeline.css';
