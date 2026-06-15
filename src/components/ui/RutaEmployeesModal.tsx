@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Users, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { RutaAgrupada } from '@/hooks/useRutas';
 import './RutaEmployeesModal.css';
@@ -66,9 +66,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Pasajeros - ${routeCode}`}
-      subtitle="Empleados por turno"
-      icon={<Users size={18} className="text-primary" />}
+      title={routeCode}
       className="ruta-employees-modal"
     >
       <div className="ruta-employees-modal__content">
@@ -76,7 +74,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
           <Search size={16} className="ruta-employees-modal__search-icon" />
           <input
             type="text"
-            placeholder="Buscar por nombre o ID..."
+            placeholder="Buscar..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="ruta-employees-modal__input"
@@ -102,7 +100,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
                     className={`ruta-employees-modal__tab ${activeTab === turno ? 'ruta-employees-modal__tab--active' : ''}`}
                     onClick={() => setActiveTab(turno)}
                   >
-                    Turno {turno}
+                    T{turno}
                     <span className="ruta-employees-modal__tab-badge">
                       {employeesByShift[turno].length}
                     </span>
