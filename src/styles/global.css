@@ -1,151 +1,146 @@
 /* ========================================
-   DESIGN TOKENS — Cursor-inspired system
-   Warm cream canvas · Monospace type · Single accent · Hairline depth
+   DESIGN TOKENS — Ollama-inspired system
+   Pure white canvas · SF Pro Rounded · Single black accent · Hairline depth
    ======================================== */
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────────────
-   * Un solo color de acción. Se usa exclusivamente en CTAs primarios,
-   * indicadores de estado activo y focus rings. Nunca decorativamente. */
-  --color-primary: #1a2670;
-  --color-primary-active: #131b54;
-  --color-primary-disabled: #c8cde6;
+   * Un solo color de acción: negro puro. Se usa exclusivamente en CTAs
+   * primarios, indicadores de estado activo y focus rings. */
+  --color-primary: #000000;
+  --color-primary-active: #090909;
+  --color-primary-disabled: #e5e5e5;
 
   /* ── Surface ─────────────────────────────────────────────────────────────
-   * Cinco niveles desde canvas (fondo) hasta contrast (isla oscura).
-   * La jerarquía visual se construye SÓLO con estas superficies +
-   * hairlines; no hay sombras elevadas. */
-  --color-canvas: #f7f6f2; /* Warm cream — piso de página    */
-  --color-surface-soft: #f0ede6; /* Hover rows, hover states leves  */
-  --color-surface-card: #ffffff; /* Cards — leve contraste vs canvas*/
-  --color-surface-cream-strong: #e6e3db; /* Badges, tags, separadores       */
-  --color-surface-contrast: #26251e; /* Isla oscura / KPI hero          */
-  --color-surface-contrast-elevated: #312f27; /* Hover sobre la isla oscura   */
-
-  /* Aliases legacy — mantener hasta próxima release. */
-  --color-surface-dark: var(--color-surface-contrast);
-  --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
+   * Sistema minimalista de 3 niveles. La jerarquía visual se construye
+   * SÓLO con estas superficies + hairlines; no hay sombras. */
+  --color-canvas: #ffffff;        /* Blanco puro — piso de página */
+  --color-surface-soft: #fafafa;  /* Install pills, hover states leves */
+  --color-surface-card: #ffffff;  /* Cards — mismo que canvas */
+  --color-surface-dark: #171717;  /* Isla oscura / pricing "Max" tier */
+  --color-surface-dark-elevated: #1f1f1f; /* Hover sobre isla oscura */
 
   /* ── Hairlines ───────────────────────────────────────────────────────────
    * Toda la profundidad del sistema viene de líneas de 1px.
    * Sin sombras, sin elevation layers extra. */
-  --color-hairline: #e6e3db;
-  --color-hairline-soft: #ede9e1;
-  --color-hairline-strong: #cfccc4;
+  --color-hairline: #e5e5e5;
+  --color-hairline-soft: #f0f0f0;
+  --color-hairline-strong: #d4d4d4;
 
   /* ── Text ────────────────────────────────────────────────────────────────
-   * Warm near-black (no puro negro). Escala de 5 niveles de énfasis. */
-  --color-ink: #26251e; /* Display, body énfasis máximo     */
-  --color-body-strong: #26251e; /* Mismo que ink                    */
-  --color-body: #5a5852; /* Cuerpo de texto corrido          */
-  --color-muted: #807d72; /* Sub-titles, labels               */
-  --color-muted-soft: #a09c92; /* Disabled, placeholders           */
+   * Pure black para ink. Escala de grises neutros para énfasis. */
+  --color-ink: #000000;           /* Display, headlines, primary text */
+  --color-body-strong: #000000;   /* Same as ink para strong emphasis */
+  --color-body: #737373;          /* Cuerpo de texto corrido, FAQ answers */
+  --color-charcoal: #525252;      /* List items, disabled states */
+  --color-muted: #a3a3a3;         /* Sub-titles, labels, captions */
+  --color-muted-soft: #d4d4d4;    /* Disabled, placeholders */
   --color-on-primary: #ffffff;
-  --color-on-dark: #f7f6f2;
-  --color-on-dark-soft: #a09c92;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #a3a3a3;
 
   /* ── Semantic ────────────────────────────────────────────────────────────
-   * Sólo para validación, alertas y estados funcionales. */
-  --color-success: #1f8a65;
-  --color-warning: #ba7517;
-  --color-error: #cf2d56;
+   * Para validación, alertas y estados funcionales. */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
-  /* Accent Colors (teal & amber) used across the application */
-  --color-accent-teal: #0f766e;
-  --color-accent-teal-rgb: 15 118 110;
-  --color-accent-amber: #b45309;
-  --color-accent-amber-rgb: 180 83 9;
+  /* Accent Colors (keeping teal & amber for status badges) */
+  --color-accent-teal: #14b8a6;
+  --color-accent-teal-rgb: 20 184 166;
+  --color-accent-amber: #f59e0b;
+  --color-accent-amber-rgb: 245 158 11;
 
   /* ── Channel values (para tints/overlays con rgb()) ─────────────────── */
-  --color-primary-rgb: 26 38 112;
-  --color-error-rgb: 207 45 86;
-  --color-success-rgb: 31 138 101;
-  --color-ink-rgb: 38 37 30;
-  --color-canvas-rgb: 247 246 242;
+  --color-primary-rgb: 0 0 0;
+  --color-error-rgb: 239 68 68;
+  --color-success-rgb: 16 185 129;
+  --color-ink-rgb: 0 0 0;
+  --color-canvas-rgb: 255 255 255;
 
   /* ── Derived overlays ───────────────────────────────────────────────────*/
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.16);
-  --color-modal-scrim: rgb(var(--color-ink-rgb) / 0.45);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
-  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
-  --color-success-tint: rgb(var(--color-success-rgb) / 0.1);
-  --color-error-tint: rgb(var(--color-error-rgb) / 0.1);
-  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
+  --color-focus-ring: rgba(59, 130, 246, 0.5); /* Único azul del sistema */
+  --color-modal-scrim: rgba(0, 0, 0, 0.4);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  --color-success-tint: rgba(16, 185, 129, 0.1);
+  --color-error-tint: rgba(239, 68, 68, 0.1);
+  --color-header-glass: rgba(255, 255, 255, 0.92);
 
   /* ── Typography ──────────────────────────────────────────────────────────
-   * Sistema full monoespacio. Berkeley Mono si está disponible en /public/fonts/;
-   * si no, los fallbacks de sistema (SF Mono → Cascadia → Menlo → Consolas)
-   * mantienen el look editorial con tracking homogéneo.
-   *
-   * Principio clave: el peso display se queda en 400. Voz de revista,
+   * Sistema con SF Pro Rounded para display, system sans para body.
+   * 
+   * Principio clave: el peso display se queda en 400-500. Voz editorial,
    * nunca tech-bombástica. El énfasis viene del tamaño, no del bold. */
-  --font-display:
-    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
-  --font-body:
-    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
-  --font-code:
-    "Berkeley Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+  --font-display: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
   /* ── Escala tipográfica ──────────────────────────────────────────────────
    * Cada token agrupa size + weight + line-height + letter-spacing.
-   * Nota de tracking: en monospace casi todo va en 0. --tracking-wider es
-   * la excepción para labels en uppercase. */
+   * Nota: tracking casi todo en 0, solo negativo en display sizes. */
 
-  /* display-xl — hero KPI / número grande */
+  /* display-xl — hero headline */
   --type-display-xl-size: 36px;
-  --type-display-xl-weight: 400; /* Voz revista: 400, no 700         */
-  --type-display-xl-line: 1.2;
-  --type-display-xl-tracking: -0.5px; /* Leve negativo en tamaños grandes  */
+  --type-display-xl-weight: 500;
+  --type-display-xl-line: 1.11;
+  --type-display-xl-tracking: 0;
 
   /* display-lg — section heads */
-  --type-display-lg-size: 26px;
-  --type-display-lg-weight: 400;
-  --type-display-lg-line: 1.25;
-  --type-display-lg-tracking: -0.32px;
+  --type-display-lg-size: 30px;
+  --type-display-lg-weight: 500;
+  --type-display-lg-line: 1.2;
+  --type-display-lg-tracking: 0;
 
-  /* heading-md — títulos de card, modal, tabla */
-  --type-heading-md-size: 18px;
-  --type-heading-md-weight: 500; /* 500 máximo en subheadings         */
+  /* heading-lg — subsection headlines */
+  --type-heading-lg-size: 24px;
+  --type-heading-lg-weight: 600;
+  --type-heading-lg-line: 1.33;
+  --type-heading-lg-tracking: 0;
+
+  /* heading-md — pricing tier names, card titles */
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 500;
   --type-heading-md-line: 1.4;
   --type-heading-md-tracking: 0;
 
-  /* heading-sm — labels de lista, nombres en rows */
-  --type-heading-sm-size: 16px;
+  /* heading-sm — FAQ questions, in-card subtitle */
+  --type-heading-sm-size: 18px;
   --type-heading-sm-weight: 500;
-  --type-heading-sm-line: 1.4;
+  --type-heading-sm-line: 1.56;
   --type-heading-sm-tracking: 0;
 
-  /* body-md — texto corrido */
+  /* body-md — texto corrido, default body */
   --type-body-md-size: 16px;
   --type-body-md-weight: 400;
   --type-body-md-line: 1.5;
   --type-body-md-tracking: 0;
 
-  /* body-sm — metadatos, texto secundario */
+  /* body-sm — feature bullets, footer links */
   --type-body-sm-size: 14px;
   --type-body-sm-weight: 400;
-  --type-body-sm-line: 1.5;
+  --type-body-sm-line: 1.43;
   --type-body-sm-tracking: 0;
 
-  /* body-strong — énfasis inline */
+  /* body-strong — énfasis inline, nav links */
   --type-body-strong-size: 16px;
   --type-body-strong-weight: 500;
   --type-body-strong-line: 1.5;
   --type-body-strong-tracking: 0;
 
-  /* body-tight — números en celdas */
-  --type-body-tight-size: 16px;
-  --type-body-tight-weight: 500;
-  --type-body-tight-line: 1;
-  --type-body-tight-tracking: 0;
+  /* body-sm-strong — button label, pricing-card eyebrow */
+  --type-body-sm-strong-size: 14px;
+  --type-body-sm-strong-weight: 500;
+  --type-body-sm-strong-line: 1.43;
+  --type-body-sm-strong-tracking: 0;
 
-  /* caption-md — labels, badges, helpers */
-  --type-caption-md-size: 13px;
-  --type-caption-md-weight: 400;
-  --type-caption-md-line: 1.4;
-  --type-caption-md-tracking: 0;
+  /* caption-sm — footer copyright, smallest meta text */
+  --type-caption-sm-size: 12px;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.33;
+  --type-caption-sm-tracking: 0;
 
-  /* caption-uppercase — section labels, pill labels (único caso uppercase) */
+  /* caption-uppercase — section labels (opcional) */
   --type-caption-up-size: 11px;
   --type-caption-up-weight: 600;
   --type-caption-up-line: 1.4;
@@ -157,45 +152,43 @@
   --type-button-line: 1;
   --type-button-tracking: 0;
 
-  /* link */
-  --type-link-size: 16px;
-  --type-link-weight: 400;
-  --type-link-line: 1.5;
+  /* code-md — install-snippet curl line */
+  --type-code-md-size: 16px;
+  --type-code-md-weight: 400;
+  --type-code-md-line: 1.5;
+  --type-code-md-tracking: 0;
 
-  /* ── Tracking aliases ────────────────────────────────────────────────── */
-  --tracking-tight: 0;
-  --tracking-snug: 0;
-  --tracking-wide: 0;
-  --tracking-wider: 0.08em; /* Uppercase labels únicamente          */
+  /* code-sm — terminal output, inline code chips */
+  --type-code-sm-size: 14px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-line: 1.43;
+  --type-code-sm-tracking: 0;
 
   /* ── Control sizing ──────────────────────────────────────────────────── */
-  --control-height: 40px;
-  --control-height-lg: 44px;
-  --control-padding-x: var(--spacing-md);
-  --control-padding-y: 10px;
+  --control-height: 36px;
+  --control-height-lg: 40px;
+  --control-padding-x: 20px;
+  --control-padding-y: 8px;
 
-  /* ── Spacing — base 4px ──────────────────────────────────────────────── */
-  --spacing-xxs: 4px;
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-xxl: 48px;
-  --spacing-section: 80px;
+  /* ── Spacing — base 8px ──────────────────────────────────────────────── */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-section: 88px;
 
   /* ── Border radius ───────────────────────────────────────────────────── */
-  --rounded-xs: 4px;
-  --rounded-sm: 6px;
-  --rounded-md: 8px; /* Inputs, buttons — developer CTA radius  */
-  --rounded-lg: 12px; /* Cards, modales, IDE panes                */
-  --rounded-xl: 16px; /* Feature cards grandes (uso esporádico)   */
-  --rounded-pill: 9999px; /* Timeline pills, badges                   */
-  --rounded-full: 50%; /* Avatars                                  */
+  --rounded-none: 0;
+  --rounded-sm: 6px;   /* Inline code chips, command tags */
+  --rounded-md: 8px;   /* Opcional medio radius (dropdown panels) */
+  --rounded-lg: 12px;  /* Cards, modales, terminal mockup */
+  --rounded-full: 9999px; /* Buttons, pills, inputs, search, traffic lights */
 
   /* ── Shadows ─────────────────────────────────────────────────────────────
-   * Sistema hairline-only. La profundidad viene de borders + contraste
-   * ink-on-cream, no de drop-shadows.
+   * Sistema hairline-only. NO hay drop-shadows.
    * --shadow-focus es la ÚNICA excepción: es un focus ring, no elevación. */
   --shadow-focus: 0 0 0 3px var(--color-focus-ring);
 
@@ -205,8 +198,8 @@
 
   /* ── Container ────────────────────────────────────────────────────────── */
   --container-max: 1200px;
-  --container-padding: var(--spacing-lg);
-  --container-padding-mobile: var(--spacing-md);
+  --container-padding: var(--spacing-xl);
+  --container-padding-mobile: var(--spacing-lg);
 
   /* ── PWA / safe-area ──────────────────────────────────────────────────── */
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -220,62 +213,57 @@
 
 /* ========================================
    DARK THEME
-   [data-theme="dark"] en <html> (seteado por useTheme).
-   Los tokens se invierten; todos los componentes permanecen
-   sin cambios porque consumen tokens semánticos.
+   [data-theme="dark"] en <html>
    ======================================== */
 
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* Surface: cream → ink */
-  --color-canvas: #1c1b16;
-  --color-surface-soft: #222119;
-  --color-surface-card: #26251e;
-  --color-surface-cream-strong: #302e25;
-  --color-surface-contrast: #f7f6f2;
-  --color-surface-contrast-elevated: #ede9e1;
+  /* Surface: white → dark */
+  --color-canvas: #0a0a0a;
+  --color-surface-soft: #171717;
+  --color-surface-card: #0f0f0f;
+  --color-surface-dark: #fafafa;
+  --color-surface-dark-elevated: #ffffff;
 
-  --color-surface-dark: var(--color-surface-contrast);
-  --color-surface-dark-elevated: var(--color-surface-contrast-elevated);
+  --color-hairline: #262626;
+  --color-hairline-soft: #1a1a1a;
+  --color-hairline-strong: #404040;
 
-  --color-hairline: #302e25;
-  --color-hairline-soft: #282720;
-  --color-hairline-strong: #3d3b30;
+  /* Text: black → white */
+  --color-ink: #ffffff;
+  --color-body-strong: #ffffff;
+  --color-body: #a3a3a3;
+  --color-charcoal: #737373;
+  --color-muted: #525252;
+  --color-muted-soft: #404040;
+  --color-on-dark: #000000;
+  --color-on-dark-soft: #525252;
 
-  /* Text: ink → cream */
-  --color-ink: #f7f6f2;
-  --color-body-strong: #ede9e1;
-  --color-body: #a09c92;
-  --color-muted: #807d72;
-  --color-muted-soft: #5f5d55;
-  --color-on-dark: #f7f6f2;
-  --color-on-dark-soft: #a09c92;
-
-  /* Brand: se levanta levemente para mantener legibilidad sobre oscuro */
-  --color-primary: #4a5db8;
-  --color-primary-active: #1a2670;
-  --color-primary-disabled: #2a3050;
+  /* Brand: mantener cerca del blanco */
+  --color-primary: #ffffff;
+  --color-primary-active: #f0f0f0;
+  --color-primary-disabled: #404040;
 
   /* Channel values flip */
-  --color-primary-rgb: 74 93 184;
-  --color-ink-rgb: 247 246 242;
-  --color-canvas-rgb: 28 27 22;
+  --color-primary-rgb: 255 255 255;
+  --color-ink-rgb: 255 255 255;
+  --color-canvas-rgb: 10 10 10;
 
-  /* Accent Colors (teal & amber) dark theme values */
+  /* Accent Colors for dark theme */
   --color-accent-teal: #2dd4bf;
   --color-accent-teal-rgb: 45 212 191;
   --color-accent-amber: #fbbf24;
   --color-accent-amber-rgb: 251 191 36;
 
   /* Derived */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.28);
-  --color-modal-scrim: rgb(0 0 0 / 0.65);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.1);
-  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.22);
-  --color-success-tint: rgb(var(--color-success-rgb) / 0.14);
-  --color-error-tint: rgb(var(--color-error-rgb) / 0.14);
-  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.88);
+  --color-focus-ring: rgba(96, 165, 250, 0.5);
+  --color-modal-scrim: rgba(0, 0, 0, 0.8);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.1);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
+  --color-success-tint: rgba(16, 185, 129, 0.15);
+  --color-error-tint: rgba(239, 68, 68, 0.15);
+  --color-header-glass: rgba(10, 10, 10, 0.88);
 }
 
 /* ========================================
@@ -327,7 +315,7 @@ h3,
 h4 {
   font-family: var(--font-display);
   color: var(--color-ink);
-  font-weight: 400; /* Peso editorial — nunca bold en display */
+  font-weight: 500; /* Editorial weight — no bold pesado */
 }
 
 h1 {
@@ -348,29 +336,27 @@ h3 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 h4 {
   font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-sm-weight);
   line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 a {
   color: var(--color-primary);
-  text-decoration: none;
-  font-size: var(--type-link-size);
-  font-weight: var(--type-link-weight);
-  line-height: var(--type-link-line);
+  text-decoration: underline;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
   transition: color var(--transition-fast);
 }
 
 a:hover {
   color: var(--color-primary-active);
-}
-
-a:active {
-  text-decoration: underline;
 }
 
 button {
@@ -402,24 +388,24 @@ b {
 code,
 pre {
   font-family: var(--font-code);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-line);
 }
 
 pre {
-  background: var(--color-surface-card);
+  background: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   overflow-x: auto;
 }
 
 code:not(pre code) {
-  background: var(--color-surface-cream-strong);
+  background: var(--color-surface-soft);
   color: var(--color-ink);
   padding: 2px 6px;
-  border-radius: var(--rounded-xs);
-  font-size: 13px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-code-sm-size);
 }
 
 /* ========================================
@@ -442,11 +428,20 @@ code:not(pre code) {
   letter-spacing: var(--type-display-lg-tracking);
 }
 
+.type-heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
 .type-heading-md {
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .type-heading-sm {
@@ -454,6 +449,7 @@ code:not(pre code) {
   font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-sm-weight);
   line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .type-body-md {
@@ -461,6 +457,7 @@ code:not(pre code) {
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .type-body-sm {
@@ -468,6 +465,7 @@ code:not(pre code) {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
 .type-body-strong {
@@ -475,20 +473,23 @@ code:not(pre code) {
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
-.type-body-tight {
+.type-body-sm-strong {
   font-family: var(--font-body);
-  font-size: var(--type-body-tight-size);
-  font-weight: var(--type-body-tight-weight);
-  line-height: var(--type-body-tight-line);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
 }
 
-.type-caption-md {
+.type-caption-sm {
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-caption-md-weight);
-  line-height: var(--type-caption-md-line);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
 }
 
 .type-caption-up {
@@ -505,16 +506,7 @@ code:not(pre code) {
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
   line-height: var(--type-button-line);
-}
-
-/* Alias de retrocompatibilidad */
-.type-link-md {
-  font-size: var(--type-link-size);
-  font-weight: var(--type-link-weight);
-}
-.type-button-md {
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
+  letter-spacing: var(--type-button-tracking);
 }
 
 /* ========================================
@@ -545,6 +537,9 @@ code:not(pre code) {
 .text-body-strong {
   color: var(--color-body-strong);
 }
+.text-charcoal {
+  color: var(--color-charcoal);
+}
 .text-muted {
   color: var(--color-muted);
 }
@@ -567,7 +562,7 @@ code:not(pre code) {
 /* Section divider — hairline pura, sin sombras */
 .section-divider {
   border: none;
-  border-top: 1px solid var(--color-hairline-soft);
+  border-top: 1px solid var(--color-hairline);
   margin: 0;
 }
 
@@ -589,7 +584,7 @@ code:not(pre code) {
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
 }
 
 @media (max-width: 480px) {
@@ -601,15 +596,13 @@ code:not(pre code) {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-xs);
 }
 
 .form-group label {
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  color: var(--color-ink);
 }
 
 .form-group input,
@@ -619,11 +612,11 @@ code:not(pre code) {
   height: var(--control-height);
   padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-ink);
-  background: var(--color-surface-card);
+  background: var(--color-canvas);
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -634,17 +627,18 @@ code:not(pre code) {
   height: auto;
   min-height: 88px;
   resize: vertical;
+  border-radius: var(--rounded-lg);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .form-group input:hover,
 .form-group select:hover,
 .form-group textarea:hover {
-  border-color: var(--color-muted);
+  border-color: var(--color-charcoal);
 }
 
 .form-group input:focus,
@@ -663,21 +657,22 @@ code:not(pre code) {
 .form-group select:disabled,
 .form-group input:disabled,
 .form-group textarea:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: not-allowed;
   background: var(--color-surface-soft);
+  color: var(--color-muted);
 }
 
 .form-error {
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-caption-sm-size);
   color: var(--color-error);
   margin-top: var(--spacing-xxs);
 }
 
 /* ========================================
-   BUTTONS
-   Jerarquía: primary > secondary > ghost > text > icon
-   Sin sombras — la profundidad viene del color y los borders.
+   BUTTONS — Ollama style
+   Todos los botones usan rounded-full.
+   Sin sombras — profundidad viene del color y borders.
    ======================================== */
 
 .btn-primary,
@@ -687,14 +682,14 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   height: var(--control-height);
-  padding: 0 var(--spacing-lg);
+  padding: 0 var(--control-padding-x);
   font-family: var(--font-body);
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
   line-height: var(--type-button-line);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -713,7 +708,7 @@ code:not(pre code) {
   box-shadow: var(--shadow-focus);
 }
 
-/* Primary — único botón con color sólido de acción */
+/* Primary — black pill, único CTA con color sólido */
 .btn-primary {
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -729,55 +724,25 @@ code:not(pre code) {
 .btn-primary:disabled {
   background: var(--color-primary-disabled);
   border-color: var(--color-primary-disabled);
-  color: var(--color-muted-soft);
+  color: var(--color-charcoal);
   cursor: not-allowed;
 }
 
-/* Download / ink-dark — para CTAs de descarga estilo "Download for macOS" */
-.btn-download {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  height: var(--control-height-lg);
-  padding: 0 20px;
-  font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-button-line);
-  border-radius: var(--rounded-md);
-  border: 1px solid transparent;
-  background: var(--color-ink);
-  color: var(--color-canvas);
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    background var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-.btn-download:hover {
-  background: var(--color-body-strong);
-}
-.btn-download:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-/* Secondary — surface card + hairline */
+/* Secondary — white surface + hairline */
 .btn-secondary {
-  background: var(--color-surface-card);
+  background: var(--color-canvas);
   color: var(--color-ink);
   border-color: var(--color-hairline-strong);
 }
 .btn-secondary:hover {
   background: var(--color-surface-soft);
-  border-color: var(--color-muted);
+  border-color: var(--color-charcoal);
 }
 .btn-secondary:active {
-  background: var(--color-surface-cream-strong);
+  background: var(--color-hairline);
 }
 .btn-secondary:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -788,18 +753,16 @@ code:not(pre code) {
   border-color: var(--color-error);
 }
 .btn-danger:hover {
-  background: #b3264b;
   background: color-mix(in srgb, var(--color-error) 88%, black);
 }
 .btn-danger:active {
-  background: #9e2143;
   background: color-mix(in srgb, var(--color-error) 78%, black);
 }
 
-/* Ghost — transparente, sólo texto */
+/* Ghost — transparente, solo texto */
 .btn-ghost {
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-charcoal);
   border-color: transparent;
 }
 .btn-ghost:hover {
@@ -811,17 +774,18 @@ code:not(pre code) {
 .btn-text {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-xs);
   background: none;
   border: none;
   color: var(--color-primary);
   font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  padding: var(--spacing-xs);
   border-radius: var(--rounded-sm);
   cursor: pointer;
   transition: color var(--transition-fast);
+  text-decoration: underline;
 }
 .btn-text:hover {
   color: var(--color-primary-active);
@@ -837,12 +801,12 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--rounded-full);
+  background: var(--color-canvas);
   border: 1px solid var(--color-hairline-strong);
-  color: var(--color-muted);
+  color: var(--color-charcoal);
   cursor: pointer;
   transition:
     color var(--transition-fast),
@@ -851,7 +815,7 @@ code:not(pre code) {
 }
 .btn-icon:hover {
   color: var(--color-ink);
-  border-color: var(--color-muted);
+  border-color: var(--color-charcoal);
   background: var(--color-surface-soft);
 }
 .btn-icon:focus-visible {
@@ -867,10 +831,10 @@ code:not(pre code) {
   position: absolute;
   top: -4px;
   right: -4px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 var(--spacing-xxs);
-  border-radius: var(--rounded-pill);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: 10px;
@@ -882,7 +846,7 @@ code:not(pre code) {
 
 /* ========================================
    CARDS
-   Border 1px + color surface-card. Sin sombra.
+   Border 1px + rounded-lg. Sin sombra.
    ======================================== */
 
 .card {
@@ -897,180 +861,115 @@ code:not(pre code) {
   border-color: var(--color-hairline-soft);
 }
 
-/* Card inverted — isla oscura (KPI hero, featured pricing) */
-.card--contrast {
-  background: var(--color-surface-contrast);
+/* Card inverted — isla oscura (KPI hero, featured) */
+.card--dark {
+  background: var(--color-surface-dark);
   border-color: transparent;
   color: var(--color-on-dark);
 }
 
-.card--contrast h1,
-.card--contrast h2,
-.card--contrast h3,
-.card--contrast h4 {
+.card--dark h1,
+.card--dark h2,
+.card--dark h3,
+.card--dark h4 {
   color: var(--color-on-dark);
 }
 
-.card--contrast .text-muted {
+.card--dark .text-muted {
   color: var(--color-on-dark-soft);
 }
 
 /* ========================================
-   MODAL - Rediseño iOS 26 (Spatial Glass)
+   MODAL — Ollama style (NO glass)
    ======================================== */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  /* Puedes mantener tu var(--color-modal-scrim) si es semi-transparente,
-     pero Apple usa un fondo neutro para este efecto. */
-  background: var(--color-modal-scrim, rgba(0, 0, 0, 0.4));
+  background: var(--color-modal-scrim);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-md);
-  animation: fadeIn 300ms ease-out forwards;
-  /* Incrementamos el blur del fondo */
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  padding: var(--spacing-lg);
+  animation: fadeIn 200ms ease-out forwards;
 }
 
 .modal-content {
-  /* =========================================
-     FORZAR TEMA GLASS PARA TODO EL CONTENIDO
-     ========================================= */
-  color-scheme: dark;
-  --color-canvas: transparent;
-  --color-surface-soft: transparent; /* Nada de gris */
-  --color-surface-card: transparent; /* Nada de gris */
-  --color-surface-cream-strong: rgba(255, 255, 255, 0.1);
-  --color-hairline: rgba(255, 255, 255, 0.1);
-  --color-hairline-soft: rgba(255, 255, 255, 0.05);
-  --color-hairline-strong: rgba(255, 255, 255, 0.2);
-  --color-ink: #ffffff;
-  --color-body-strong: rgba(255, 255, 255, 0.9);
-  --color-body: rgba(255, 255, 255, 0.8);
-  --color-muted: rgba(255, 255, 255, 0.6);
-  --color-muted-soft: rgba(255, 255, 255, 0.4);
-
-  /* Semantic colors adjust for dark glass */
-  --color-primary: #818cf8;
-  --color-primary-rgb: 129 140 248;
-
-  --color-error: #ff8a9f;
-  --color-error-rgb: 255 138 159;
-
-  --color-warning: #facc15;
-
-  --color-success: #34d399;
-  --color-success-rgb: 52 211 153;
-
-  --color-accent-amber: #facc15;
-  --color-accent-amber-rgb: 250 204 21;
-
-  --color-accent-teal: #2dd4bf;
-  --color-accent-teal-rgb: 45 212 191;
-
-  /* Derived overlays para dark glass */
-  --color-vacancy-tint: rgba(255, 138, 159, 0.15);
-  --color-vacancy-chip-bg: rgba(255, 138, 159, 0.2);
-  --color-success-tint: rgba(52, 211, 153, 0.15);
-  --color-error-tint: rgba(255, 138, 159, 0.15);
-
-  /* 1. LUZ Y CRISTAL: Gradientes radiales sobre un fondo muy transparente.
-        (Reemplazamos var(--color-canvas) para asegurar la transparencia) */
-  background:
-    radial-gradient(
-      circle at 0% 0%,
-      rgba(0, 122, 255, 0.15) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 100% 100%,
-      rgba(123, 44, 191, 0.15) 0%,
-      transparent 40%
-    ),
-    rgba(30, 30, 35, 0.45);
-
-  /* 2. SATURACIÓN Y BLUR PROFUNDO */
-  backdrop-filter: blur(50px) saturate(180%);
-  -webkit-backdrop-filter: blur(50px) saturate(180%);
-
-  /* 3. BORDES Y VOLUMEN 3D */
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 40px; /* Curvas amplias tipo Apple */
-  box-shadow:
-    0 40px 80px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    inset 0 0 40px rgba(255, 255, 255, 0.05);
-
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
   width: 100%;
-  max-width: 760px;
+  max-width: 640px;
   max-height: min(85vh, 760px);
   overflow-y: auto;
   overflow-x: hidden;
-
-  /* 4. ANIMACIÓN FLUIDA TIPO SPRING */
-  animation: slideUpModal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: slideUpModal 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
   position: relative;
+}
+
+.modal-content--lg {
+  max-width: 760px;
 }
 
 .modal-content--xl {
   max-width: 900px;
 }
 
-/* Scrollbar estilo Glass para el modal */
+/* Scrollbar estilo minimalista */
 .modal-content::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .modal-content::-webkit-scrollbar-track {
   background: transparent;
-  margin: 16px 0; /* Da un poco de respiro arriba y abajo */
 }
 .modal-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
 }
 .modal-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--color-charcoal);
 }
 
-@media (max-width: 480px) {
+/* Mobile: fullscreen para modales grandes, excepto confirmaciones */
+@media (max-width: 767px) {
   .modal-overlay {
-    padding: var(--spacing-xs);
+    padding: 0;
     align-items: flex-end;
   }
+  
+  /* Por defecto en mobile: sheet desde abajo con bordes redondeados arriba */
   .modal-content {
     max-height: 92vh;
-    border-radius: 40px 40px 0 0; /* Mantenemos la curva exagerada arriba */
-    padding-bottom: 24px; /* Espacio para el home indicator */
+    border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    animation: slideUpMobile 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
   }
 
-  /* Indicador de arrastre inferior (estilo iOS) */
-  .modal-content::after {
-    content: "";
-    display: block;
-    width: 48px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    margin: 24px auto 8px auto;
+  /* Modales que deben ser fullscreen en mobile (no confirmaciones) */
+  .modal-content.modal-fullscreen-mobile {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    animation: modalFullscreenIn 250ms ease forwards;
   }
-}
 
-/* =========================================
-   FORZAR SELECTS A TEMA OSCURO EN EL MODAL
-   ========================================= */
-.modal-content select {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
+  .modal-content.modal-fullscreen-mobile > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
 
-.modal-content select option {
-  background-color: #1e1e23 !important; /* Fondo oscuro sólido para la lista nativa */
-  color: #ffffff !important;
+  .modal-content.modal-fullscreen-mobile > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(
+      var(--spacing-lg) + var(--safe-area-bottom) + var(--tab-bar-height)
+    );
+  }
 }
 
 .modal-header {
@@ -1078,68 +977,13 @@ code:not(pre code) {
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-lg);
-  border-bottom: none; /* iOS 26 no usa líneas divisorias duras, el contenido fluye */
-}
-
-.modal-header__info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-}
-
-.modal-header__info h3 {
-  font-size: var(--type-heading-md-size);
-  font-weight: 600; /* Peso Apple estándar para encabezados */
-  color: #ffffff; /* Forzado a blanco para el glass oscuro */
-  line-height: 1.3;
-  letter-spacing: -0.02em; /* Tracking sutilmente más apretado */
-}
-
-.modal-header__area {
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6); /* Gris claro translúcido */
-}
-
-.modal-close {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%; /* Botón completamente circular */
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05); /* Pequeño salto "bouncy" al hacer hover */
-}
-
-.modal-close:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-}
-
-.modal-body {
-  padding: var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .modal-title {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -1150,7 +994,7 @@ code:not(pre code) {
   margin-top: 2px;
 }
 
-.modal-title > div {
+.modal-title__text {
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -1158,30 +1002,57 @@ code:not(pre code) {
 .modal-title h2 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
-  color: #ffffff; /* Forzado a blanco */
+  color: var(--color-ink);
   line-height: 1.3;
-  word-break: normal;
-  overflow-wrap: break-word;
-  hyphens: none;
 }
 
 .modal-title__sub {
   display: block;
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-body);
   margin-top: var(--spacing-xxs);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-canvas);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-top: 1px solid var(--color-hairline-soft);
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-hairline);
   flex-wrap: wrap;
 }
 
@@ -1196,77 +1067,51 @@ code:not(pre code) {
   }
 }
 
-/* Fullscreen mobile modal */
-@media (max-width: 767px) {
-  .modal-overlay:has(> .modal-content.modal-fullscreen-mobile) {
-    padding: 0;
-    align-items: stretch;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-  .modal-content.modal-fullscreen-mobile {
-    width: 100vw;
-    max-width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    max-height: 100dvh;
-    border: none;
-    border-radius: 0;
-    animation: modalFullscreenMobileIn var(--transition-base);
-  }
-  .modal-content.modal-fullscreen-mobile > .modal-header {
-    padding-top: max(var(--spacing-lg), var(--safe-area-top));
-    padding-left: max(var(--spacing-lg), var(--safe-area-left));
-    padding-right: max(var(--spacing-lg), var(--safe-area-right));
-  }
-  .modal-content.modal-fullscreen-mobile > .modal-body {
-    padding-left: max(var(--spacing-lg), var(--safe-area-left));
-    padding-right: max(var(--spacing-lg), var(--safe-area-right));
-    padding-bottom: calc(
-      var(--spacing-lg) + var(--safe-area-bottom) + var(--tab-bar-height, 0px)
-    );
-  }
-}
-
-@keyframes modalFullscreenMobileIn {
-  from {
-    opacity: 0;
-    transform: translateX(6%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .modal-content.modal-fullscreen-mobile {
-    animation: none;
-  }
-}
-
-/* ── Keyframes compartidos ── */
+/* Keyframes */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0px);
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(8px);
   }
 }
 
 @keyframes slideUpModal {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(30px);
-    filter: blur(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFullscreenIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .modal-overlay {
+    animation: none;
   }
 }
 
@@ -1283,10 +1128,10 @@ code:not(pre code) {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-hairline-strong);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted-soft);
+  background: var(--color-charcoal);
 }
 
 /* ========================================
@@ -1305,8 +1150,14 @@ code:not(pre code) {
   border: 0;
 }
 
+/* Focus visible para navegación por teclado */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
 /* ========================================
-   COLOR TEXT ALIASES (retrocompatibilidad)
+   COLOR ALIASES (retrocompatibilidad)
    ======================================== */
 
 .color-error {
@@ -1315,7 +1166,7 @@ code:not(pre code) {
 .color-success {
   color: var(--color-success);
 }
-.color-amber {
+.color-warning {
   color: var(--color-warning);
 }
 .color-primary {

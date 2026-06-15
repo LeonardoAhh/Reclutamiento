@@ -62,6 +62,7 @@ export function DeleteEmployeeConfirmModal({
       isOpen={isOpen}
       onClose={onClose}
       className="delete-employee-modal"
+      fullscreenMobile={false}
       icon={
         <Trash2
           size={20}

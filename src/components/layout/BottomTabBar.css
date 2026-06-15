@@ -62,21 +62,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-2xs);    /* antes: 2px hardcodeado */
+    gap: var(--spacing-xxs);
     width: 100%;
 
     /* Box model */
     min-height: 44px;           /* touch target mínimo WCAG */
-    padding: var(--spacing-xs) var(--spacing-xxs);
+    padding: var(--spacing-sm) var(--spacing-xxs);
 
     /* Tipografía */
     font-family: var(--font-body);
-    font-size: var(--type-caption-md-size);
-    font-weight: 500;
+    font-size: var(--type-caption-sm-size);
+    font-weight: var(--type-body-sm-strong-weight);
     text-decoration: none;
 
     /* Visual */
-    color: var(--color-muted);
+    color: var(--color-body);
     background: transparent;
     border: none;
 
@@ -117,7 +117,7 @@
 
     /* Visual */
     background: var(--color-primary);
-    border-radius: 0 0 var(--rounded-pill) var(--rounded-pill);
+    border-radius: 0 0 var(--rounded-full) var(--rounded-full);
   }
 
   /* ── Subcomponentes del link ───────────── */
@@ -180,14 +180,13 @@
   /* Box model */
   width: 100%;
   max-width: 600px;
-  padding-bottom: max(var(--spacing-md), var(--safe-area-bottom));
+  padding-bottom: max(var(--spacing-lg), var(--safe-area-bottom));
 
   /* Visual */
-  background: var(--color-canvas);
+  background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-bottom: none;
   border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
-  box-shadow: var(--shadow-elevated);
 
   /* Animación */
   animation: btm-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -198,11 +197,11 @@
   /* Box model */
   width: 36px;
   height: 4px;
-  margin: var(--spacing-xs) auto var(--spacing-sm);
+  margin: var(--spacing-sm) auto var(--spacing-md);
 
   /* Visual */
-  background: var(--color-hairline);
-  border-radius: var(--rounded-pill);
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
 }
 
 /* ── Header ───────────────────────────────── */
@@ -223,7 +222,7 @@
   /* Tipografía */
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
-  font-weight: 500;
+  font-weight: var(--type-heading-md-weight);
 
   /* Box model */
   margin: 0;
@@ -240,13 +239,13 @@
   justify-content: center;
 
   /* Box model */
-  width: 36px;
-  height: 36px;
+  width: var(--control-height);
+  height: var(--control-height);
 
   /* Visual */
-  color: var(--color-muted);
+  color: var(--color-charcoal);
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-full);
 
   /* Interacción */
@@ -271,11 +270,11 @@
   /* Display */
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);    /* antes: --spacing-xxs (token inconsistente) */
+  gap: var(--spacing-xs);
 
   /* Box model */
   margin: 0;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
 
   /* Reset */
   list-style: none;
@@ -286,21 +285,21 @@
   /* Display */
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 
   /* Box model */
-  min-height: 52px;
+  min-height: 48px;
   padding: var(--spacing-md);
 
   /* Tipografía */
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
-  font-weight: 500;
+  font-weight: var(--type-body-md-weight);
   text-decoration: none;
 
   /* Visual */
   color: var(--color-ink);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
 
   /* Interacción */
   transition:
@@ -318,19 +317,20 @@
 }
 
 .bottom-sheet__item--active {
-  color: var(--color-primary);
+  color: var(--color-ink);
   background: var(--color-surface-soft);
+  font-weight: var(--type-body-strong-weight);
 }
 
 /* ── Subcomponentes del ítem ──────────────── */
 .bottom-sheet__item-icon {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-charcoal);
 }
 
 /* Herencia de color: el ícono sigue al padre --active */
 .bottom-sheet__item--active .bottom-sheet__item-icon {
-  color: var(--color-primary);
+  color: var(--color-ink);
 }
 
 .bottom-sheet__item-label {

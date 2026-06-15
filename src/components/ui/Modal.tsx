@@ -13,6 +13,8 @@ interface ModalProps {
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
   size?: 'md' | 'lg' | 'xl';
+  /** Si es true, el modal será fullscreen en móvil. Por defecto true, excepto para confirmaciones pequeñas. */
+  fullscreenMobile?: boolean;
 }
 
 /**
@@ -33,6 +35,7 @@ export function Modal({
   labelledById = 'modal-title',
   footerActions,
   size = 'md',
+  fullscreenMobile = true,
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -85,6 +88,15 @@ export function Modal({
 
   if (!isOpen) return null;
 
+  const contentClasses = [
+    'modal-content',
+    `modal-content--${size}`,
+    fullscreenMobile ? 'modal-fullscreen-mobile' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div
       className="modal-overlay"
@@ -95,7 +107,7 @@ export function Modal({
     >
       <div
         ref={contentRef}
-        className={`modal-content modal-content--${size} ${className}`}
+        className={contentClasses}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledById}
