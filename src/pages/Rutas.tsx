@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Map as MapIcon, MapPin, Bus, Users, CalendarDays, ChevronLeft } from 'lucide-react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
