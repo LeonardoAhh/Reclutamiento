@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { mapClaveHorarioToTurno } from '@/lib/transporte-routes';
 
 const SHIFT_SCHEDULE: Record<string, string[]> = {
   '1': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
@@ -63,7 +64,7 @@ function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
   return {
     numeroEmpleado: raw['numero empleado'],
     nombre: raw.nombre,
-    turno: raw.turno,
+    turno: mapClaveHorarioToTurno(raw.turno), // Normalizar clave de horario a turno canónico
     nombreRuta: raw['nombre ruta'],
     colonia: raw.colonia,
     parada: raw.parada,

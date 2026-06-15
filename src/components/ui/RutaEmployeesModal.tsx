@@ -36,7 +36,16 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
   }, [ruta, searchTerm]);
 
   const availableTabs = useMemo(() => {
-    return Object.keys(employeesByShift).sort((a, b) => a.localeCompare(b));
+    const tabs = Object.keys(employeesByShift);
+    // Ordenar tabs numéricamente: 1, 2, 3, 4, 5
+    return tabs.sort((a, b) => {
+      const numA = parseInt(a, 10);
+      const numB = parseInt(b, 10);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      return a.localeCompare(b);
+    });
   }, [employeesByShift]);
 
   useEffect(() => {
