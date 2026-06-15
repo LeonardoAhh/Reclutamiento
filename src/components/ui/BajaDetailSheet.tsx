@@ -142,7 +142,7 @@ export function BajaDetailSheet({
     </>
   );
 
-  const headerActions = useModal && !baja.soloInduccion ? (
+  const footerActions = useModal && !baja.soloInduccion ? (
     <>
       <button
         type="button"
@@ -172,7 +172,7 @@ export function BajaDetailSheet({
         title={baja.nombre}
         subtitle={`#${baja.num_empleado} · ${baja.puesto}`}
         className="baja-detail-sheet"
-        headerActions={headerActions}
+        footerActions={footerActions}
       >
         {content}
       </Modal>

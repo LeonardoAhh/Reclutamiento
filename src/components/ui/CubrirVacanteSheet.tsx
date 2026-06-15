@@ -155,7 +155,7 @@ export function CubrirVacanteSheet({
     </footer>
   ) : null;
 
-  const headerActions = useModal ? (
+  const footerActions = useModal ? (
     <>
       {isMarcada && onClear && (
         <button
@@ -189,7 +189,7 @@ export function CubrirVacanteSheet({
         }
         title={isMarcada ? 'Cobertura de vacante' : 'Marcar vacante como cubierta'}
         subtitle={`${baja.nombre} · #${baja.num_empleado}`}
-        headerActions={headerActions}
+        footerActions={footerActions}
       >
         <form id="cubrir-vacante-form" onSubmit={handleSubmit} className="cubrir-vacante-sheet__form" noValidate>
           {formContent}

@@ -563,7 +563,7 @@ export function VacancySheet({
 
   if (!isMobile) {
     /* ── PC: modal centrado (diseño actual, sin cambios) ── */
-    const headerActions = (
+    const footerActions = (
       <>
         {isDelete ? (
           <button type="submit" className="btn-danger" disabled={submitting} form="vacancy-form">
@@ -590,7 +590,7 @@ export function VacancySheet({
         title={title}
         subtitle={subtitle}
         className={`vacancy-sheet${!isDelete ? ' vacancy-sheet--wide' : ''}`}
-        headerActions={headerActions}
+        footerActions={footerActions}
       >
         <form id="vacancy-form" onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
           <div className="modal-body">

@@ -146,7 +146,7 @@ export function RequisicionSheet({
     </footer>
   ) : null;
 
-  const headerActions = useModal ? (
+  const footerActions = useModal ? (
     <button type="button" className="btn-primary" onClick={handlePrint}>
       <Printer size={14} aria-hidden="true" />
       <span className="requisicion-sheet__btn-label">Imprimir</span>
@@ -163,7 +163,7 @@ export function RequisicionSheet({
           icon={<FileText size={20} aria-hidden="true" />}
           title="Requisición de Personal"
           subtitle={codigo ?? '—'}
-          headerActions={headerActions}
+          footerActions={footerActions}
         >
           <div className="modal-body requisicion-sheet__body">{doc}</div>
         </Modal>

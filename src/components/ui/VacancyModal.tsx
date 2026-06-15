@@ -602,7 +602,7 @@ export function VacancyModal({
     );
   }
 
-  const headerActions = !isDelete ? (
+  const footerActions = !isDelete ? (
     <button
       type="submit"
       className="btn-primary"
@@ -621,7 +621,7 @@ export function VacancyModal({
       title={title}
       subtitle={subtitle}
       className={`vacancy-modal${!isDelete ? ' vacancy-modal--wide' : ''}`}
-      headerActions={headerActions}
+      footerActions={footerActions}
       size={isDelete ? 'md' : 'xl'}
     >
       <form id="vacancy-form" onSubmit={handleSubmit} className="modal-body" noValidate>
