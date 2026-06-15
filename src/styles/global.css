@@ -957,18 +957,18 @@ code:not(pre code) {
   /* Semantic colors adjust for dark glass */
   --color-primary: #818cf8;
   --color-primary-rgb: 129 140 248;
-  
+
   --color-error: #ff8a9f;
   --color-error-rgb: 255 138 159;
-  
+
   --color-warning: #facc15;
-  
+
   --color-success: #34d399;
   --color-success-rgb: 52 211 153;
-  
+
   --color-accent-amber: #facc15;
   --color-accent-amber-rgb: 250 204 21;
-  
+
   --color-accent-teal: #2dd4bf;
   --color-accent-teal-rgb: 45 212 191;
 
@@ -980,21 +980,29 @@ code:not(pre code) {
 
   /* 1. LUZ Y CRISTAL: Gradientes radiales sobre un fondo muy transparente.
         (Reemplazamos var(--color-canvas) para asegurar la transparencia) */
-  background: 
-    radial-gradient(circle at 0% 0%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(123, 44, 191, 0.15) 0%, transparent 40%),
-    rgba(30, 30, 35, 0.45); 
-  
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(0, 122, 255, 0.15) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(123, 44, 191, 0.15) 0%,
+      transparent 40%
+    ),
+    rgba(30, 30, 35, 0.45);
+
   /* 2. SATURACIÓN Y BLUR PROFUNDO */
   backdrop-filter: blur(50px) saturate(180%);
   -webkit-backdrop-filter: blur(50px) saturate(180%);
-  
+
   /* 3. BORDES Y VOLUMEN 3D */
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 40px; /* Curvas amplias tipo Apple */
-  box-shadow: 
-    0 40px 80px rgba(0, 0, 0, 0.5), 
-    inset 0 1px 1px rgba(255, 255, 255, 0.3), 
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
     inset 0 0 40px rgba(255, 255, 255, 0.05);
 
   width: 100%;
@@ -1002,7 +1010,7 @@ code:not(pre code) {
   max-height: min(85vh, 760px);
   overflow-y: auto;
   overflow-x: hidden;
-  
+
   /* 4. ANIMACIÓN FLUIDA TIPO SPRING */
   animation: slideUpModal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   position: relative;
@@ -1038,7 +1046,7 @@ code:not(pre code) {
     border-radius: 40px 40px 0 0; /* Mantenemos la curva exagerada arriba */
     padding-bottom: 24px; /* Espacio para el home indicator */
   }
-  
+
   /* Indicador de arrastre inferior (estilo iOS) */
   .modal-content::after {
     content: "";
@@ -1118,7 +1126,7 @@ code:not(pre code) {
 
 .modal-close:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
 .modal-body {
@@ -1239,18 +1247,24 @@ code:not(pre code) {
 
 /* ── Keyframes compartidos ── */
 @keyframes fadeIn {
-  from { opacity: 0; backdrop-filter: blur(0px); }
-  to { opacity: 1; backdrop-filter: blur(8px); }
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
 }
 
 @keyframes slideUpModal {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: scale(0.9) translateY(30px);
     filter: blur(10px);
   }
-  to { 
-    opacity: 1; 
+  to {
+    opacity: 1;
     transform: scale(1) translateY(0);
     filter: blur(0);
   }
