@@ -74,9 +74,10 @@ export function MissingPositionsModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="missing-positions-modal modal-fullscreen-mobile"
+      className="missing-positions-modal"
       icon={<AlertCircle size={20} aria-hidden="true" />}
       title="Detalle de Vacantes y Procesos"
+      fullscreenMobile={true}
     >
       <div className="modal-body missing-positions-modal__body">
 

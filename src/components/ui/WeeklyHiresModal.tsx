@@ -203,6 +203,7 @@ export function WeeklyHiresModal({
         </span>
       }
       size={isMobile ? 'md' : 'lg'}
+      fullscreenMobile={true}
     >
       <div className="modal-body weekly-hires-modal__body">
         {/* Estadísticas principales */}

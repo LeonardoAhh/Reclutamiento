@@ -71,11 +71,12 @@ export function CandidatesInProcessModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidates-in-process-modal modal-fullscreen-mobile"
+      className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
       title="Candidatos en proceso"
       subtitle="Activos en página de candidatos"
       size={isMobile ? 'md' : 'lg'}
+      fullscreenMobile={true}
     >
       <div className="modal-body candidates-in-process-modal__body">
         <header className="candidates-in-process-modal__summary">

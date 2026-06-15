@@ -307,6 +307,7 @@ export function CandidateReportModal({
       title="Resumen de candidatos"
       subtitle="Activos en proceso · por puesto y por reclutador"
       size={isMobile ? 'md' : 'lg'}
+      fullscreenMobile={true}
     >
       <div className="modal-body candidate-report-modal__body">
         <motion.header

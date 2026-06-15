@@ -244,6 +244,7 @@ export function VacancyReportModal({
       title="Resumen de vacantes"
       subtitle="Puestos con vacantes activas o backup pendiente"
       size={isMobile ? 'md' : 'lg'}
+      fullscreenMobile={true}
     >
       <div className="modal-body vacancy-report-modal__body">
         <motion.header

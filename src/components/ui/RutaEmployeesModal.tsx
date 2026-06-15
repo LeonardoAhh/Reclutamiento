@@ -68,6 +68,7 @@ export function RutaEmployeesModal({ isOpen, onClose, ruta }: RutaEmployeesModal
       onClose={onClose}
       title={routeCode}
       className="ruta-employees-modal"
+      fullscreenMobile={true}
     >
       <div className="ruta-employees-modal__content">
         <div className="ruta-employees-modal__search">

@@ -90,43 +90,23 @@
 .user-menu__dropdown {
   /* Posicionamiento */
   position: absolute;
-  top: calc(100% + var(--spacing-xs));  /* antes: + 8px */
+  top: calc(100% + var(--spacing-xs));
   right: 0;
   z-index: 200;
 
   /* Display */
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);             /* antes: 2px */
+  gap: var(--spacing-xxs);
 
   /* Box model */
   min-width: 220px;
-  padding: var(--spacing-xs);          /* antes: 8px */
+  padding: var(--spacing-sm);
 
-  /* 1. LUZ Y CRISTAL: Gradientes radiales sobre un fondo muy transparente */
-  background: 
-    radial-gradient(circle at 0% 0%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(123, 44, 191, 0.15) 0%, transparent 40%),
-    rgba(30, 30, 35, 0.45);
-    
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--rounded-lg);    /* antes: 14px */
-  
-  /* 2. FORZAR TEXTOS Y ELEMENTOS A BLANCO TRANSLÚCIDO PARA CONTRASTE */
-  --color-ink: #ffffff;
-  --color-body-strong: rgba(255, 255, 255, 0.9);
-  --color-body: rgba(255, 255, 255, 0.8);
-  --color-muted: rgba(255, 255, 255, 0.6);
-  --color-muted-soft: rgba(255, 255, 255, 0.4);
-  --color-surface-soft: rgba(255, 255, 255, 0.05);
-  --color-surface-card: transparent;
-  --color-hairline: rgba(255, 255, 255, 0.1);
-  --color-hairline-soft: rgba(255, 255, 255, 0.05);
-  --color-error: #ff8a9f;
-  --color-error-tint: rgba(255, 138, 159, 0.15);
+  /* Visual - Ollama style: sin glass, sólido */
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
 
   /* Animación */
   animation: user-menu-in var(--transition-fast) ease-out;
@@ -156,20 +136,20 @@
 
 .user-menu__label {
   /* Tipografía */
-  font-size: 11px;                     /* antes: 10px, bajo mínimo */
-  font-weight: 500;                    /* antes: 600 */
-  letter-spacing: var(--tracking-wider);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  letter-spacing: 0;
   text-transform: uppercase;
 
   /* Visual */
-  color: var(--color-muted);
+  color: var(--color-body);
   margin: 0;
 }
 
 .user-menu__name {
   /* Tipografía */
   font-size: var(--type-body-md-size);
-  font-weight: 500;
+  font-weight: var(--type-body-strong-weight);
   word-break: break-all;
 
   /* Visual */
@@ -190,22 +170,23 @@
   /* Display */
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);             /* antes: 8px */
+  gap: var(--spacing-sm);
   width: 100%;
 
   /* Box model */
-  padding: var(--spacing-xs) var(--spacing-sm); /* antes: 8px 10px */
+  padding: var(--spacing-sm) var(--spacing-md);
 
   /* Tipografía */
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   text-align: left;
 
   /* Visual */
-  color: var(--color-body);
+  color: var(--color-ink);
   background: transparent;
   border: none;
-  border-radius: var(--rounded-md);   /* antes: 10px */
+  border-radius: var(--rounded-full);
 
   /* Interacción */
   cursor: pointer;
@@ -222,7 +203,7 @@
 }
 
 .user-menu__item:hover .user-menu__item-meta {
-  color: var(--color-ink);
+  color: var(--color-body);
 }
 
 .user-menu__item:disabled {
@@ -238,10 +219,10 @@
 .user-menu__item-meta {
   /* Tipografía */
   flex: 0 0 auto;
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-sm-size);
 
   /* Visual */
-  color: var(--color-muted);
+  color: var(--color-body);
 }
 
 /* ── Variante danger (logout) ────────────── */

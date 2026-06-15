@@ -51,11 +51,12 @@ export function CandidatesCitedTodayModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidates-cited-today-modal modal-fullscreen-mobile"
+      className="candidates-cited-today-modal"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
       title="Personal citado"
       subtitle="Detalle de candidatos citados"
       size={isMobile ? 'md' : 'lg'}
+      fullscreenMobile={true}
     >
       <div className="modal-body candidates-cited-today-modal__body">
         <header className="candidates-cited-today-modal__summary">
