@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { ClipboardList, Copy, Check, Share2 } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
+import { ExpandableSection } from './ExpandableSection';
 import { formatShortDate } from '@/lib/dates';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import type { PositionCoverage } from '@/lib/types';
 import './VacancyReportModal.css';
 
@@ -15,7 +17,6 @@ interface VacancyReportModalProps {
 interface VacancyRow {
   area: string;
   seccion: string;
-  /** Turno extraído de la sección cuando se puede inferir; vacío si no. */
   turno: string;
   puesto: string;
   vacantesAutorizada: number;
@@ -32,12 +33,6 @@ interface AreaGroup {
   totalProximosIngresos: number;
 }
 
-/**
- * Extrae el turno (1ER / 2DO / 3ER / nocturno, etc.) embebido en el nombre
- * de la sección. Si la sección no contiene patrón de turno, devuelve "".
- *
- * Ej.: "ALMACÉN 1ER TURNO" → "1ER TURNO"; "CALIDAD ADMTVO" → "".
- */
 function extractTurno(seccion: string): string {
   const match = seccion.match(
     /\b(?:1ER|1RA|1ER\.|2DO|2DA|2DO\.|3ER|3RA|3ER\.|4TO|4TA|4TO\.|NOCTURNO|DIURNO|MATUTINO|VESPERTINO)\s*\.?\s*TURNO\b/i,
@@ -49,11 +44,6 @@ function decomposeVacancies(pos: PositionCoverage): {
   vacantesAutorizada: number;
   vacantesBackup: number;
 } {
-  // `pos.vacantes` ya = max(0, plantilla_objetivo - plantilla_real)
-  // y plantilla_objetivo = plantilla_autorizada + backup. Lo descomponemos
-  // en dos cubetas:
-  //   - vacantesAutorizada: faltantes de plantilla autorizada (real < autorizada).
-  //   - vacantesBackup: backup buffer pendiente (real entre autorizada y objetivo).
   const vacantesAutorizada = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
   const vacantesBackup = Math.max(0, pos.vacantes - vacantesAutorizada);
   return { vacantesAutorizada, vacantesBackup };
@@ -96,10 +86,6 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
 }
 
-/**
- * Construye el texto plano listo para enviar por WhatsApp. WhatsApp
- * respeta `*negritas*` y emojis en UTF-8 — sin Markdown extendido.
- */
 function buildWhatsappMessage(groups: AreaGroup[]): string {
   const fecha = formatShortDate(new Date().toISOString());
   const totalActivas = groups.reduce((sum, g) => sum + g.totalVacantes, 0);
@@ -121,8 +107,6 @@ function buildWhatsappMessage(groups: AreaGroup[]): string {
   for (const g of groups) {
     lines.push(`*${g.area}*`);
     for (const r of g.rows) {
-      // Si el turno ya viene dentro del nombre de la sección no lo
-      // repetimos; si no, lo agregamos como pista útil.
       const seccionConTurno = r.turno && !r.seccion.toUpperCase().includes(r.turno)
         ? `${r.seccion} · ${r.turno}`
         : r.seccion;
@@ -145,7 +129,6 @@ function buildWhatsappMessage(groups: AreaGroup[]): string {
   return lines.join('\n').trim();
 }
 
-/** Variants de framer-motion para el listado por área (stagger). */
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
@@ -168,6 +151,7 @@ export function VacancyReportModal({
   onClose,
   positions,
 }: VacancyReportModalProps) {
+  const isMobile = useIsMobile();
   const groups = useMemo(() => buildGroups(positions), [positions]);
   const totalActivas = groups.reduce((sum, g) => sum + g.totalVacantes, 0);
   const totalBackup = groups.reduce((sum, g) => sum + g.totalBackup, 0);
@@ -191,8 +175,6 @@ export function VacancyReportModal({
       await navigator.clipboard.writeText(message);
       setCopied(true);
     } catch {
-      // Fallback: textarea select+execCommand para navegadores sin
-      // permiso de Clipboard API (raro pero defensivo).
       const ta = document.createElement('textarea');
       ta.value = message;
       ta.style.position = 'fixed';
@@ -215,6 +197,44 @@ export function VacancyReportModal({
 
   const empty = groups.length === 0;
 
+  const renderGroupContent = (group: AreaGroup) => (
+    <ul className="vacancy-report-modal__rows">
+      {group.rows.map((row) => (
+        <li
+          key={`${row.area}|${row.seccion}|${row.puesto}`}
+          className="vacancy-report-modal__row"
+        >
+          <div className="vacancy-report-modal__row-main">
+            <span className="vacancy-report-modal__puesto">{row.puesto}</span>
+            <span className="vacancy-report-modal__seccion">
+              {row.seccion}
+              {row.turno && !row.seccion.toUpperCase().includes(row.turno) && (
+                <> · {row.turno}</>
+              )}
+            </span>
+          </div>
+          <div className="vacancy-report-modal__badges">
+            {row.vacantesAutorizada > 0 && (
+              <span className="vacancy-report-modal__badge vacancy-report-modal__badge--active">
+                {row.vacantesAutorizada} activa{row.vacantesAutorizada === 1 ? '' : 's'}
+              </span>
+            )}
+            {row.vacantesBackup > 0 && (
+              <span className="vacancy-report-modal__badge vacancy-report-modal__badge--backup">
+                {row.vacantesBackup} backup
+              </span>
+            )}
+            {row.proximosIngresos > 0 && (
+              <span className="vacancy-report-modal__badge vacancy-report-modal__badge--proximos">
+                {row.proximosIngresos} próx.
+              </span>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -222,11 +242,8 @@ export function VacancyReportModal({
       className="vacancy-report-modal"
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title="Resumen de vacantes"
-      subtitle={
-        <span className="vacancy-report-modal__subtitle">
-          Puestos con vacantes activas o backup pendiente
-        </span>
-      }
+      subtitle="Puestos con vacantes activas o backup pendiente"
+      size={isMobile ? 'md' : 'lg'}
     >
       <div className="modal-body vacancy-report-modal__body">
         <motion.header
@@ -246,25 +263,29 @@ export function VacancyReportModal({
               {totalBackup}
             </div>
             <p className="vacancy-report-modal__big-label">
-              backup{totalBackup === 1 ? '' : 's'} pendiente{totalBackup === 1 ? '' : 's'}
+              backup{totalBackup === 1 ? '' : 's'}
             </p>
           </div>
-          <div className="vacancy-report-modal__stat">
-            <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--proximos">
-              {totalProximos}
-            </div>
-            <p className="vacancy-report-modal__big-label">
-              próximo{totalProximos === 1 ? '' : 's'} ingreso{totalProximos === 1 ? '' : 's'}
-            </p>
-          </div>
-          <div className="vacancy-report-modal__stat">
-            <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--muted">
-              {totalPuestos}
-            </div>
-            <p className="vacancy-report-modal__big-label">
-              puesto{totalPuestos === 1 ? '' : 's'} con pendientes
-            </p>
-          </div>
+          {!isMobile && (
+            <>
+              <div className="vacancy-report-modal__stat">
+                <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--proximos">
+                  {totalProximos}
+                </div>
+                <p className="vacancy-report-modal__big-label">
+                  próx. ingreso{totalProximos === 1 ? '' : 's'}
+                </p>
+              </div>
+              <div className="vacancy-report-modal__stat">
+                <div className="vacancy-report-modal__big-number vacancy-report-modal__big-number--muted">
+                  {totalPuestos}
+                </div>
+                <p className="vacancy-report-modal__big-label">
+                  puesto{totalPuestos === 1 ? '' : 's'}
+                </p>
+              </div>
+            </>
+          )}
         </motion.header>
 
         {empty ? (
@@ -277,79 +298,64 @@ export function VacancyReportModal({
             No hay vacantes activas ni backups pendientes. Plantilla cubierta.
           </motion.p>
         ) : (
-          <motion.section
-            className="vacancy-report-modal__groups"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            aria-label="Detalle de puestos con vacantes"
-          >
-            {groups.map((group) => (
-              <motion.article
-                key={group.area}
-                className="vacancy-report-modal__group"
-                variants={itemVariants}
+          <>
+            {isMobile ? (
+              <section
+                className="vacancy-report-modal__groups vacancy-report-modal__groups--mobile"
+                aria-label="Detalle de puestos con vacantes"
               >
-                <header className="vacancy-report-modal__group-header">
-                  <h3 className="vacancy-report-modal__group-title">{group.area}</h3>
-                  <span className="vacancy-report-modal__group-count">
-                    {group.totalVacantes} activa{group.totalVacantes === 1 ? '' : 's'}
-                    {group.totalBackup > 0 && ` · ${group.totalBackup} backup`}
-                    {group.totalProximosIngresos > 0 && ` · ${group.totalProximosIngresos} próx. ingreso`}
-                  </span>
-                </header>
-                <ul className="vacancy-report-modal__rows">
-                  {group.rows.map((row) => (
-                    <motion.li
-                      key={`${row.area}|${row.seccion}|${row.puesto}`}
-                      className="vacancy-report-modal__row"
-                      variants={itemVariants}
-                    >
-                      <div className="vacancy-report-modal__row-main">
-                        <span className="vacancy-report-modal__puesto">{row.puesto}</span>
-                        <span className="vacancy-report-modal__seccion">
-                          {row.seccion}
-                          {row.turno && !row.seccion.toUpperCase().includes(row.turno) && (
-                            <> · {row.turno}</>
-                          )}
-                        </span>
-                      </div>
-                      <div className="vacancy-report-modal__badges">
-                        {row.vacantesAutorizada > 0 && (
-                          <span className="vacancy-report-modal__badge vacancy-report-modal__badge--active">
-                            {row.vacantesAutorizada} activa{row.vacantesAutorizada === 1 ? '' : 's'}
-                          </span>
-                        )}
-                        {row.vacantesBackup > 0 && (
-                          <span className="vacancy-report-modal__badge vacancy-report-modal__badge--backup">
-                            {row.vacantesBackup} backup
-                          </span>
-                        )}
-                        {row.proximosIngresos > 0 && (
-                          <span className="vacancy-report-modal__badge vacancy-report-modal__badge--proximos">
-                            {row.proximosIngresos} próx. ingreso
-                          </span>
-                        )}
-                      </div>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.article>
-            ))}
-          </motion.section>
-        )}
+                {groups.map((group) => (
+                  <ExpandableSection
+                    key={group.area}
+                    title={group.area}
+                    badge={`${group.totalVacantes + group.totalBackup} total`}
+                    variant="list"
+                  >
+                    {renderGroupContent(group)}
+                  </ExpandableSection>
+                ))}
+              </section>
+            ) : (
+              <motion.section
+                className="vacancy-report-modal__groups"
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                aria-label="Detalle de puestos con vacantes"
+              >
+                {groups.map((group) => (
+                  <motion.article
+                    key={group.area}
+                    className="vacancy-report-modal__group"
+                    variants={itemVariants}
+                  >
+                    <header className="vacancy-report-modal__group-header">
+                      <h3 className="vacancy-report-modal__group-title">{group.area}</h3>
+                      <span className="vacancy-report-modal__group-count">
+                        {group.totalVacantes} activa{group.totalVacantes === 1 ? '' : 's'}
+                        {group.totalBackup > 0 && ` · ${group.totalBackup} backup`}
+                        {group.totalProximosIngresos > 0 && ` · ${group.totalProximosIngresos} próx.`}
+                      </span>
+                    </header>
+                    {renderGroupContent(group)}
+                  </motion.article>
+                ))}
+              </motion.section>
+            )}
 
-        {!empty && (
-          <motion.section
-            className="vacancy-report-modal__preview"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            aria-label="Vista previa del mensaje"
-          >
-            <h4 className="vacancy-report-modal__preview-title">Mensaje para WhatsApp</h4>
-            <pre className="vacancy-report-modal__preview-text">{message}</pre>
-          </motion.section>
+            {!isMobile && (
+              <motion.section
+                className="vacancy-report-modal__preview"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                aria-label="Vista previa del mensaje"
+              >
+                <h4 className="vacancy-report-modal__preview-title">Mensaje para WhatsApp</h4>
+                <pre className="vacancy-report-modal__preview-text">{message}</pre>
+              </motion.section>
+            )}
+          </>
         )}
       </div>
 
@@ -383,7 +389,7 @@ export function VacancyReportModal({
                 transition={{ duration: 0.18 }}
               >
                 <Copy size={16} aria-hidden="true" />
-                Copiar texto
+                {isMobile ? 'Copiar' : 'Copiar texto'}
               </motion.span>
             )}
           </AnimatePresence>
@@ -397,7 +403,7 @@ export function VacancyReportModal({
           whileTap={{ scale: empty ? 1 : 0.97 }}
         >
           <Share2 size={16} aria-hidden="true" />
-          Enviar por WhatsApp
+          {isMobile ? 'WhatsApp' : 'Enviar por WhatsApp'}
         </motion.button>
       </footer>
     </Modal>

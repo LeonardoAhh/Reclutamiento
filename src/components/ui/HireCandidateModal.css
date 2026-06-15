@@ -1,0 +1,46 @@
+/* ========================================
+   HIRE CANDIDATE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.hire-hint {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-body);
+}
+
+.hire-hint code {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption-md-size);
+  padding: 2px var(--spacing-xxs);
+  background: var(--color-surface-cream-strong);
+  border-radius: var(--rounded-xs);
+  color: var(--color-ink);
+}
+
+.hire-hint strong {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}
+
+/* ── Success state icon ── */
+.hire-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 640px) {
+  .hire-hint {
+    padding: var(--spacing-sm);
+    font-size: var(--type-caption-md-size);
+  }
+}

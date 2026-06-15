@@ -3,7 +3,7 @@ import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
-import './EmployeeSheet.css';
+import './HireCandidateModal.css';
 
 interface HireCandidateModalProps {
   isOpen: boolean;
@@ -108,11 +108,7 @@ export function HireCandidateModal({
         <div className="modal-body">
           <div className="delete-warning">
             <div
-              className="delete-warning__icon"
-              style={{
-                background: 'var(--color-success-tint, var(--color-surface-soft))',
-                color: 'var(--color-accent-teal, var(--color-success))',
-              }}
+              className="delete-warning__icon hire-success-icon"
               aria-hidden="true"
             >
               <CheckCircle2 size={32} />

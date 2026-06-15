@@ -819,15 +819,15 @@ export function Pipeline() {
                     <div className="pipeline__modal-card__bar">
                       <div
                         className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--contratados"
-                        style={{ width: `${pct(r.contratados)}%` }}
+                        style={{ '--bar-width': `${pct(r.contratados)}%` } as React.CSSProperties}
                       />
                       <div
                         className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--citados"
-                        style={{ width: `${pct(r.citados)}%` }}
+                        style={{ '--bar-width': `${pct(r.citados)}%` } as React.CSSProperties}
                       />
                       <div
                         className="pipeline__modal-card__bar-segment pipeline__modal-card__bar-segment--rechazados"
-                        style={{ width: `${pct(r.rechazados)}%` }}
+                        style={{ '--bar-width': `${pct(r.rechazados)}%` } as React.CSSProperties}
                       />
                     </div>
                   </article>

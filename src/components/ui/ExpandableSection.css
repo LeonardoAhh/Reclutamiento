@@ -1,0 +1,130 @@
+/* ========================================
+   EXPANDABLE SECTION
+   Componente de accordion sin hardcoding
+   ======================================== */
+
+.expandable-section {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.expandable-section:hover {
+  border-color: var(--color-hairline-strong);
+}
+
+/* ── Trigger (botón que expande/colapsa) ── */
+.expandable-section__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.expandable-section__trigger:hover {
+  background: var(--color-surface-soft);
+}
+
+.expandable-section__trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.expandable-section__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.expandable-section__title {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+}
+
+.expandable-section__badge {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  color: var(--color-muted);
+  padding: 2px var(--spacing-xs);
+  background: var(--color-surface-cream-strong);
+  border-radius: var(--rounded-xs);
+  white-space: nowrap;
+}
+
+.expandable-section__icon {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform var(--transition-base);
+}
+
+.expandable-section--expanded .expandable-section__icon {
+  transform: rotate(180deg);
+}
+
+/* ── Content (área que se expande/colapsa) ── */
+.expandable-section__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-base) ease;
+}
+
+.expandable-section--expanded .expandable-section__content {
+  max-height: 5000px; /* Lo suficientemente grande para cualquier contenido */
+}
+
+.expandable-section__inner {
+  padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+/* ── Variantes ── */
+.expandable-section--card {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+.expandable-section--list {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.expandable-section--list:first-child {
+  border-top: 1px solid var(--color-hairline);
+}
+
+/* ── Mobile optimizations ── */
+@media (max-width: 640px) {
+  .expandable-section__trigger {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .expandable-section__title {
+    font-size: var(--type-body-md-size);
+  }
+  
+  .expandable-section__inner {
+    padding: 0 var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* ── Accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  .expandable-section__content,
+  .expandable-section__icon {
+    transition: none;
+  }
+}

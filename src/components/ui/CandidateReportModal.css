@@ -411,3 +411,30 @@
   color: var(--color-muted);
   font-weight: 500;
 }
+
+/* ── Mobile: recruiter detail (dentro de ExpandableSection) ── */
+.candidate-report-modal__recruiter-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.candidate-report-modal__recruiter-detail p {
+  margin: 0;
+  font-size: var(--type-body-sm-size);
+  color: var(--color-body);
+  padding: var(--spacing-xxs) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.candidate-report-modal__recruiter-detail p:last-child {
+  border-bottom: none;
+}
+
+.candidate-report-modal__groups--mobile,
+.candidate-report-modal__recruiters--mobile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+

@@ -1312,6 +1312,7 @@
 
 .pipeline__modal-card__bar-segment {
   height: 100%;
+  width: var(--bar-width, 0%);
   transition: width var(--transition-slow);
 }
 
