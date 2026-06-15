@@ -18,8 +18,8 @@ import { Badge } from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
 import { TurnosImporter } from '@/components/turnos/TurnosImporter';
-import { EmployeeSheet } from '@/components/ui/EmployeeSheet';
-import { EditEmployeeSheet } from '@/components/ui/EditEmployeeSheet';
+import { EmployeeModal } from '@/components/ui/EmployeeModal';
+import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
@@ -517,8 +517,8 @@ export function Dashboard() {
         onSave={handleSaveComment}
       />
 
-      {/* ── Employee Sheet (Add / Delete) ── */}
-      <EmployeeSheet
+      {/* ── Employee Modal (Add / Delete) ── */}
+      <EmployeeModal
         isOpen={empModalMode !== null}
         mode={empModalMode ?? 'add'}
         employee={selectedEmployee}
@@ -527,8 +527,8 @@ export function Dashboard() {
         onDelete={handleDeleteEmployee}
       />
 
-      {/* ── Edit Employee (Modal on PC, Sheet on mobile) ── */}
-      <EditEmployeeSheet
+      {/* ── Edit Employee Modal ── */}
+      <EditEmployeeModal
         isOpen={editTarget !== null}
         employee={editTarget}
         onClose={() => setEditTarget(null)}

@@ -11,7 +11,7 @@ import {
   EyeOff,
   Plus,
 } from 'lucide-react';
-import { VacancySheet } from '@/components/ui/VacancySheet';
+import { VacancyModal } from '@/components/ui/VacancyModal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import {
@@ -440,8 +440,8 @@ export function Vacantes() {
         </>
       )}
 
-      {/* ── Sheet add/edit/delete ── */}
-      <VacancySheet
+      {/* ── Modal add/edit/delete ── */}
+      <VacancyModal
         isOpen={sheetMode !== null}
         mode={sheetMode === 'edit' ? 'edit' : sheetMode === 'delete' ? 'delete' : 'add'}
         vacancy={selected}
