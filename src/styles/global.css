@@ -242,6 +242,7 @@
 
   /* Brand: mantener cerca del blanco */
   --color-primary: #ffffff;
+  --color-on-primary: #000000;
   --color-primary-active: #f0f0f0;
   --color-primary-disabled: #404040;
 

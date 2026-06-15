@@ -55,16 +55,20 @@ export function UserMenu() {
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
-    show({ title: 'Cerrando sesión…', hint: 'Reclutamiento' });
+    
+    // Parse the username to display only the first part in uppercase
+    const displayName = username ? username.split('@')[0].toUpperCase() : '';
+    show({ tone: 'logout', title: displayName });
+    
     try {
       await signOut();
     } finally {
       setSigningOut(false);
       closeRef.current();
-      // El overlay cubre el redirect a /login y se cierra tras la transición.
-      window.setTimeout(hide, 1000);
+      // El overlay motivacional de logout dura 10 segundos.
+      window.setTimeout(hide, 10000);
     }
-  }, [signingOut, signOut, show, hide]);
+  }, [signingOut, signOut, show, hide, username]);
   /* Sin dependencia de close: closeRef es estable entre renders. */
 
   if (!username) return null;

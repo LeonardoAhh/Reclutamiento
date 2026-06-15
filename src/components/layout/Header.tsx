@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { UserMenu } from './UserMenu';
+import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
 import './Header.css';
 
 const NAV_ITEMS: ReadonlyArray<{
@@ -22,7 +23,7 @@ export function Header() {
         {/* Brand */}
         <div className="app-header__brand" aria-hidden="true">
           <span className="app-header__brand-dot" />
-          <span className="app-header__brand-text">Recruitment</span>
+          <TypewriterTitle className="app-header__brand-text" />
         </div>
 
         {/* Nav principal */}

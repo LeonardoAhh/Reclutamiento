@@ -1,7 +1,8 @@
-/* LoaderOverlay — splash de carga global, independiente del Skeleton.
-   Cohesivo con el lenguaje "Industrial Bloom": triada de orbes en colores de
-   marca girando sobre un núcleo pulsante. Entrada/salida vía framer-motion;
-   el giro/pulso continuo es CSS para no depender del ciclo de render. */
+/* ─────────────────────────────────────────────────────────────────────────
+   LoaderOverlay — Animación de Entrada Cinemática (10 segundos)
+   Diseño opaco, sin blur, garantizando confidencialidad y un look premium.
+   Cohesivo con el modo claro/oscuro usando puramente tokens de CSS.
+   ───────────────────────────────────────────────────────────────────────── */
 
 .loader-overlay {
   position: fixed;
@@ -11,169 +12,118 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-lg, 24px);
-  background: rgb(var(--color-canvas-rgb) / 0.78);
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  /* Fondo 100% sólido y opaco. Se oculta por completo el DOM inferior */
+  background: var(--color-canvas);
+  color: var(--color-ink);
 }
 
-/* Variante ligera para cambios de página: menos opaca, sin tanto blur. */
+/* El loader de route (cuando navegas entre páginas ya logueadas) 
+   es menos intrusivo, con una ligera transparencia pero SIN blur. */
 .loader-overlay--route {
-  background: rgb(var(--color-canvas-rgb) / 0.55);
-  backdrop-filter: blur(8px) saturate(115%);
-  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  background: color-mix(in srgb, var(--color-canvas) 85%, transparent);
 }
 
-/* Velo decorativo radial detrás del mark. */
-.loader-overlay::before {
-  content: "";
-  position: absolute;
-  width: min(60vmin, 420px);
-  height: min(60vmin, 420px);
-  border-radius: var(--rounded-full);
-  background: radial-gradient(
-    circle,
-    rgb(var(--color-primary-rgb) / 0.1),
-    transparent 68%
-  );
-  pointer-events: none;
+/* ── Route Spinner (Carga corta) ────────────────────────────────────────── */
+.loader-route-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ── Mark ──────────────────────────────────────────────── */
-.loader-mark {
+/* ── Cinematic Entrance (10 segundos) ───────────────────────────────────── */
+.loader-cinematic {
   position: relative;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Anillo perimetral suave. */
-.loader-mark__ring {
+.loader-phase {
   position: absolute;
-  inset: 0;
-  border-radius: var(--rounded-full);
-  border: 2px solid rgb(var(--color-primary-rgb) / 0.14);
-}
-
-/* Arco de progreso que gira sobre el anillo. */
-.loader-mark__arc {
-  position: absolute;
-  inset: -2px;
-  border-radius: var(--rounded-full);
-  border: 2px solid transparent;
-  border-top-color: var(--color-primary);
-  border-right-color: var(--color-accent-teal);
-  animation: loader-spin 2.5s linear infinite;
-}
-
-/* Núcleo central pulsante con gradiente de marca. */
-.loader-mark__core {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--rounded-full);
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-accent-teal) 55%,
-    var(--color-accent-amber)
-  );
-  box-shadow: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.1);
-  animation: loader-core 2.5s ease-in-out infinite;
-}
-
-/* Triada de orbes que giran alrededor del núcleo. */
-.loader-mark__orbit {
-  position: absolute;
-  inset: 0;
-  animation: loader-spin 3.5s linear infinite;
-}
-.loader-mark__orbit-dot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: var(--rounded-full);
-}
-.loader-mark__orbit-dot--a {
-  background: var(--color-primary);
-  transform: rotate(0deg) translate(36px);
-}
-.loader-mark__orbit-dot--b {
-  background: var(--color-accent-teal);
-  transform: rotate(120deg) translate(36px);
-}
-.loader-mark__orbit-dot--c {
-  background: var(--color-accent-amber);
-  transform: rotate(240deg) translate(36px);
-}
-
-/* ── Texto ─────────────────────────────────────────────── */
-.loader-overlay__label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: var(--spacing-xl);
+  width: 100%;
+  padding: 0 var(--spacing-lg);
+}
+
+.loader-svg {
+  flex-shrink: 0;
+}
+
+.loader-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  gap: var(--spacing-sm);
 }
-.loader-overlay__title {
-  font-size: var(--type-body-sm-size, 0.875rem);
-  font-weight: 600;
-  letter-spacing: 0.01em;
+
+.loader-text h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: 500;
   color: var(--color-ink);
-}
-.loader-overlay__hint {
-  font-size: var(--type-caption-md-size, 0.75rem);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgb(var(--color-primary-rgb) / 0.55);
+  letter-spacing: var(--type-display-lg-tracking);
 }
 
-/* ── Keyframes ─────────────────────────────────────────── */
-@keyframes loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes loader-core {
-  0%,
-  100% {
-    transform: scale(0.82);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.loader-text p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-muted);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .loader-mark__arc,
-  .loader-mark__orbit,
-  .loader-mark__core {
-    animation: none;
-  }
-}
-
-/* Responsivo: encoge el mark en pantallas chicas. */
+/* Adaptación Mobile-First */
 @media (max-width: 480px) {
-  .loader-mark {
-    width: 60px;
-    height: 60px;
+  .loader-text h2 {
+    font-size: var(--type-heading-lg-size);
   }
-  .loader-mark__core {
-    width: 22px;
-    height: 22px;
+  .loader-text p {
+    font-size: var(--type-body-sm-size);
   }
-  .loader-mark__orbit-dot--a {
-    transform: rotate(0deg) translate(29px);
-  }
-  .loader-mark__orbit-dot--b {
-    transform: rotate(120deg) translate(29px);
-  }
-  .loader-mark__orbit-dot--c {
-    transform: rotate(240deg) translate(29px);
-  }
+}
+
+/* ── Logout Cinematic (5 segundos motivacionales) ──────────────────────── */
+.loader-logout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 max(var(--spacing-2xl), 10vw);
+  max-width: 900px;
+}
+
+.loader-logout-greeting {
+  font-family: var(--font-display);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-primary);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-xl);
+}
+
+.loader-logout-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--color-ink);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-lg);
+  font-style: italic;
+}
+
+.loader-logout-author {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }

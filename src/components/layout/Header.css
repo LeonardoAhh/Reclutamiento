@@ -53,7 +53,7 @@
   flex-shrink: 0;
 }
 
-.app-header__title {
+.app-header__brand-text {
   /* Tipografía */
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

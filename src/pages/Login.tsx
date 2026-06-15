@@ -43,44 +43,48 @@ export function Login() {
       return;
     }
 
-    flash({ title: 'Entrando…', hint: 'Reclutamiento', duration: 3000 });
+    flash({ tone: 'full', duration: 10000 });
   };
 
   return (
     <main className="login" role="main">
 
-      {/* ── Panel izquierdo: placa de identidad ─────────────────────── */}
+      {/* ── Panel izquierdo ───────────────────────────────────────────── */}
       <div className="login__panel" aria-hidden="true">
-        {/* Líneas de registro industriales */}
         <div className="login__panel-grid" />
 
+        {/* TOP — brand pill, anclado arriba (oculto en mobile) */}
         <motion.div
-          className="login__panel-content"
+          className="login__panel-top"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
         >
-          {/* Marca */}
-          <motion.div className="login__brand" {...fadeUp(0.1)}>
+          <div className="login__brand">
             <span className="login__brand-icon">
               <Users size={16} strokeWidth={2} aria-hidden="true" />
             </span>
             <span className="login__eyebrow">Reclutamiento</span>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Wordmark */}
+        {/* BOTTOM — wordmark + tagline + regla, anclados abajo */}
+        <motion.div
+          className="login__panel-bottom"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.9, ease: EASE }}
+        >
           <motion.div className="login__wordmark" {...fadeUp(0.2)}>
             <span className="login__wordmark-main">Viño<br />Plastic</span>
             <span className="login__wordmark-sub">Querétaro</span>
           </motion.div>
 
-          {/* Tagline */}
           <motion.blockquote className="login__tagline" {...fadeUp(0.35)}>
             <span className="login__tagline-year">Est. 1970</span>
             <p>Excelencia en Inyección<br />de Plásticos de Ingeniería.</p>
           </motion.blockquote>
 
-          {/* Divisor inferior */}
           <motion.div
             className="login__panel-rule"
             initial={{ scaleX: 0 }}
@@ -90,10 +94,8 @@ export function Login() {
         </motion.div>
       </div>
 
-      {/* ── Panel derecho: formulario ────────────────────────────────── */}
+      {/* ── Panel derecho — sin cambios ───────────────────────────────── */}
       <div className="login__form-panel">
-
-
 
         <motion.section
           className="login__form-wrap"
@@ -102,7 +104,6 @@ export function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
         >
-          {/* Encabezado del formulario */}
           <header className="login__header">
             <motion.p className="login__header-label" {...fadeUp(0.2)}>
               Acceso al sistema
@@ -112,7 +113,6 @@ export function Login() {
             </motion.h2>
           </header>
 
-          {/* Separador con número de paso */}
           <motion.div
             className="login__sep"
             initial={{ scaleX: 0 }}
@@ -122,7 +122,6 @@ export function Login() {
 
           <form className="login__form" onSubmit={handleSubmit} noValidate>
 
-            {/* Campo correo */}
             <motion.div className="login__field" {...fadeUp(0.35)}>
               <label htmlFor={usernameId} className="login__field-label">
                 Correo electrónico
@@ -146,7 +145,6 @@ export function Login() {
               </div>
             </motion.div>
 
-            {/* Campo contraseña */}
             <motion.div className="login__field" {...fadeUp(0.42)}>
               <label htmlFor={passwordId} className="login__field-label">
                 Contraseña
@@ -179,7 +177,6 @@ export function Login() {
               </div>
             </motion.div>
 
-            {/* Área de error animada */}
             <AnimatePresence mode="wait">
               {error && (
                 <motion.div
@@ -198,7 +195,6 @@ export function Login() {
               )}
             </AnimatePresence>
 
-            {/* Botón submit */}
             <motion.button
               type="submit"
               className="login__submit"
@@ -215,7 +211,7 @@ export function Login() {
                 </>
               ) : (
                 <>
-                  <span>Ingresar al panel</span>
+                  <span>Ingresar</span>
                   <ArrowRight size={16} aria-hidden="true" />
                 </>
               )}
@@ -223,7 +219,6 @@ export function Login() {
 
           </form>
 
-          {/* Footer note */}
           <motion.p className="login__footer-note" {...fadeUp(0.65)}>
             Reclutamiento y Selección de Personal
           </motion.p>

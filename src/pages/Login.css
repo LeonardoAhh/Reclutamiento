@@ -1,10 +1,8 @@
 /* ================================================================
    Login — Rediseño industrial editorial
-   Refactorizado: mejor contraste, responsive cohesivo, micro-interacciones.
-   Consume 100% tokens del design system global.
    ================================================================ */
 
-/* ── Raíz ──────────────────────────────────────────────────────── */
+/* ── Raíz ── */
 .login {
   position: relative;
   min-height: 100vh;
@@ -17,34 +15,30 @@
 }
 
 /* ================================================================
-   PANEL IZQUIERDO — placa oscura (identidad)
-
-   IMPORTANTE: este panel es una "isla oscura" que NO participa
-   en la inversión de tema. Siempre es oscuro en light Y dark.
-   Por eso se usan valores literales (#26251e, #f7f6f2) en lugar
-   de tokens semánticos que se invierten en [data-theme="dark"].
+   PANEL IZQUIERDO
+   Isla oscura inmune al tema. Usa flex column con
+   justify-content: space-between para separar brand (top)
+   de wordmark + tagline (bottom).
    ================================================================ */
 .login__panel {
-  /* Color fijo — inmune al tema */
   --panel-bg: #26251e;
   --panel-text: #f7f6f2;
   --panel-text-soft: #a09c92;
   --panel-hairline: rgba(247, 246, 242, 0.12);
   --panel-brand-border: rgba(247, 246, 242, 0.16);
   --panel-rule: rgba(247, 246, 242, 0.1);
-  /* Acento fijo: azul claro legible sobre oscuro en AMBOS temas */
   --panel-accent: #4a5db8;
 
   position: relative;
   background: var(--panel-bg);
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-between; /* ← brand arriba, wordmark abajo */
   padding: var(--spacing-xxl) var(--spacing-xl);
   border-right: 1px solid var(--panel-hairline);
   overflow: hidden;
 }
 
-/* Retícula industrial — líneas sutiles sobre oscuro */
 .login__panel-grid {
   position: absolute;
   inset: 0;
@@ -66,23 +60,29 @@
   pointer-events: none;
 }
 
-.login__panel-content {
+/* Zona superior — brand pill */
+.login__panel-top {
+  position: relative;
+  z-index: 1;
+}
+
+/* Zona inferior — wordmark + tagline + regla */
+.login__panel-bottom {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
-  width: 100%;
 }
 
-/* ── Marca — pill superior ───────────────────────────────────── */
+/* ── Brand pill ── */
 .login__brand {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xxs) var(--spacing-sm);
   border: 1px solid var(--panel-brand-border);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-full);
   width: fit-content;
 }
 
@@ -92,7 +92,6 @@
   justify-content: center;
   width: 22px;
   height: 22px;
-  /* Fijo: inmune al tema, legible sobre panel oscuro siempre */
   background: rgba(74, 93, 184, 0.22);
   color: var(--panel-accent);
   border-radius: var(--rounded-xs);
@@ -107,7 +106,7 @@
   color: var(--panel-text-soft);
 }
 
-/* ── Wordmark — tipografía editorial ─────────────────────────── */
+/* ── Wordmark ── */
 .login__wordmark {
   display: flex;
   flex-direction: column;
@@ -120,7 +119,6 @@
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.03em;
-  /* Forzado a crema — nunca hereda la inversión del tema */
   color: var(--panel-text);
 }
 
@@ -133,7 +131,7 @@
   color: var(--panel-text-soft);
 }
 
-/* ── Tagline — cita editorial ────────────────────────────────── */
+/* ── Tagline ── */
 .login__tagline {
   margin: 0;
   display: flex;
@@ -149,7 +147,6 @@
   font-weight: var(--type-caption-up-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  /* Fijo: azul claro con contraste suficiente sobre el panel oscuro */
   color: var(--panel-accent);
 }
 
@@ -162,7 +159,6 @@
   color: var(--panel-text-soft);
 }
 
-/* Regla de cierre del panel */
 .login__panel-rule {
   height: 1px;
   background: var(--panel-rule);
@@ -170,7 +166,6 @@
 
 /* ================================================================
    PANEL DERECHO — formulario
-   Este sí responde al tema (canvas claro / canvas oscuro).
    ================================================================ */
 .login__form-panel {
   position: relative;
@@ -178,11 +173,10 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xxl) var(--spacing-xl);
-  padding-top: calc(var(--spacing-xxl) + 52px);
   background: var(--color-canvas);
+  /* Sin padding-top extra — el flex center ya alinea al medio */
 }
 
-/* ThemeToggle — esquina superior derecha */
 .login__theme-toggle {
   position: absolute;
   top: max(var(--spacing-md), var(--safe-area-top));
@@ -198,7 +192,7 @@
   gap: var(--spacing-xl);
 }
 
-/* ── Encabezado ──────────────────────────────────────────────── */
+/* ── Encabezado ── */
 .login__header {
   display: flex;
   flex-direction: column;
@@ -225,7 +219,6 @@
   color: var(--color-ink);
 }
 
-/* Separador hairline animado */
 .login__sep {
   height: 1px;
   background: var(--color-hairline);
@@ -242,14 +235,13 @@
   }
 }
 
-/* ── Formulario ──────────────────────────────────────────────── */
+/* ── Formulario ── */
 .login__form {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-/* Campo con label estática */
 .login__field {
   display: flex;
   flex-direction: column;
@@ -267,26 +259,24 @@
   transition: color var(--transition-fast);
 }
 
-/* Label sube a primario cuando su input tiene foco */
 .login__field:focus-within .login__field-label {
   color: var(--color-primary);
 }
 
-/* Wrapper para el toggle de visibilidad */
 .login__input-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-/* Input */
+/* ── Input — rounded-full, consistente con form system ── */
 .login__input {
   width: 100%;
-  height: var(--control-height); /* 40px */
+  height: var(--control-height-lg); /* 44px — touch target WCAG */
   padding: 0 var(--control-padding-x);
-  background: var(--color-surface-card);
+  background: var(--color-canvas);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full); /* ← corregido de rounded-md */
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   color: var(--color-ink);
@@ -301,7 +291,7 @@
 }
 
 .login__input:hover:not(:disabled) {
-  border-color: var(--color-muted);
+  border-color: var(--color-charcoal);
 }
 
 .login__input:focus {
@@ -316,12 +306,10 @@
   background: var(--color-surface-soft);
 }
 
-/* Espacio a la derecha para el botón de visibilidad */
 .login__input--padded-r {
-  padding-right: calc(var(--control-padding-x) + 38px);
+  padding-right: calc(var(--control-padding-x) + 40px);
 }
 
-/* Botón visibilidad contraseña */
 .login__visibility {
   position: absolute;
   right: var(--spacing-xxs);
@@ -337,7 +325,7 @@
   color: var(--color-ink);
 }
 
-/* ── Error ───────────────────────────────────────────────────── */
+/* ── Error ── */
 .login__error {
   display: flex;
   align-items: flex-start;
@@ -346,7 +334,7 @@
   background: var(--color-error-tint);
   border: 1px solid rgb(var(--color-error-rgb) / 0.2);
   border-left: 3px solid var(--color-error);
-  border-radius: var(--rounded-md);
+  border-radius: 0 var(--rounded-md) var(--rounded-md) 0; /* ← sin rounded en lado del borde */
   color: var(--color-error);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
@@ -371,7 +359,7 @@
   margin-top: 2px;
 }
 
-/* ── Botón submit — 44px WCAG AAA ────────────────────────────── */
+/* ── Submit — rounded-full, consistente con btn-primary ── */
 .login__submit {
   display: inline-flex;
   align-items: center;
@@ -383,7 +371,7 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
   border: 1px solid var(--color-primary);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full); /* ← corregido de rounded-md */
   font-family: var(--font-body);
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
@@ -427,7 +415,6 @@
   transform: translateX(3px);
 }
 
-/* Spinner */
 .login__spinner {
   animation: login-spin 0.75s linear infinite;
 }
@@ -438,11 +425,11 @@
   }
 }
 
-/* ── Footer note ─────────────────────────────────────────────── */
+/* ── Footer ── */
 .login__footer-note {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
   border-top: 1px solid var(--color-hairline-soft);
   padding-top: var(--spacing-md);
@@ -452,44 +439,58 @@
 
 /* ================================================================
    RESPONSIVE — Mobile (<768px)
-   Stack vertical: panel header compacto + formulario abajo.
    ================================================================ */
 @media (max-width: 767px) {
   .login {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
+    min-height: 100dvh;
   }
 
   .login__panel {
+    flex-direction: row; /* ← horizontal en mobile */
+    align-items: center;
+    justify-content: space-between;
     border-right: none;
     border-bottom: 1px solid var(--panel-hairline);
-    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
-    align-items: flex-start;
+    padding: var(--spacing-lg) var(--spacing-md);
   }
 
-  .login__panel-content {
-    gap: var(--spacing-sm);
+  /* En mobile el panel-top (brand) se oculta — queda integrado en bottom */
+  .login__panel-top {
+    display: none;
+  }
+
+  .login__panel-bottom {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-lg);
+    width: 100%;
+  }
+
+  /* Brand pill aparece a la izquierda en mobile */
+  .login__brand {
+    order: -1;
   }
 
   .login__wordmark-main {
-    font-size: clamp(1.8rem, 8vw, 2.4rem);
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
   }
 
   .login__wordmark-sub {
     font-size: 11px;
   }
 
-  /* Ocultar tagline y regla en mobile */
+  /* Tagline y regla se ocultan en mobile */
   .login__tagline,
   .login__panel-rule {
     display: none;
   }
 
-  /* Formulario ocupa el resto */
+  /* Formulario ocupa el resto de la pantalla */
   .login__form-panel {
-    padding: var(--spacing-lg) var(--spacing-md);
-    padding-top: var(--spacing-lg);
     align-items: flex-start;
+    padding: var(--spacing-xl) var(--spacing-md);
     padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
   }
 
@@ -502,16 +503,14 @@
     font-size: clamp(1.7rem, 7vw, 2rem);
   }
 
-  /* ThemeToggle en mobile va sobre el panel oscuro */
   .login__theme-toggle {
     top: max(var(--spacing-sm), var(--safe-area-top));
     right: max(var(--spacing-sm), var(--safe-area-right));
   }
 
-  /* Inputs 44px en mobile — touch target WCAG AAA */
+  /* Input ya tiene 44px — iOS no hace zoom con font-size: 16px */
   .login__input {
-    height: var(--control-height-lg);
-    font-size: 16px; /* evita zoom automático en iOS Safari */
+    font-size: 16px;
   }
 }
 
@@ -533,7 +532,6 @@
 
   .login__form-panel {
     padding: var(--spacing-xxl) var(--spacing-lg);
-    padding-top: calc(var(--spacing-xxl) + 52px);
   }
 
   .login__form-wrap {
@@ -542,7 +540,7 @@
 }
 
 /* ================================================================
-   RESPONSIVE — Pantallas grandes (>1440px)
+   RESPONSIVE — Grande (>1440px)
    ================================================================ */
 @media (min-width: 1440px) {
   .login__wordmark-main {
@@ -555,7 +553,6 @@
 
   .login__form-panel {
     padding: calc(var(--spacing-xxl) * 1.5) calc(var(--spacing-xxl) * 1.25);
-    padding-top: calc(var(--spacing-xxl) * 1.5 + 52px);
   }
 
   .login__form-wrap {
@@ -564,21 +561,21 @@
 }
 
 /* ================================================================
-   ANIMACIONES DE ENTRADA — staggered fade-up al cargar
+   ANIMACIONES
    ================================================================ */
 @media (prefers-reduced-motion: no-preference) {
-  .login__panel-content {
+  .login__panel-bottom {
     animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
   }
-
+  .login__panel-top {
+    animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.08s both;
+  }
   .login__header {
     animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
   }
-
   .login__form {
     animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.18s both;
   }
-
   .login__footer-note {
     animation: fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.26s both;
   }
@@ -615,9 +612,4 @@
   .login__submit svg {
     transition: none;
   }
-}
-
-:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
