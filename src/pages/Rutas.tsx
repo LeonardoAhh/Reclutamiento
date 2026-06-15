@@ -34,16 +34,9 @@ function RutaCard({ ruta, isActive, onClick }: RutaCardProps) {
       onClick={onClick}
       aria-pressed={isActive}
     >
-      <div className="ruta-card__icon" aria-hidden="true">
-        <MapIcon size={20} />
-      </div>
       <div className="ruta-card__content">
-        <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta}</h3>
-        <span className="ruta-card__subtitle type-body-sm">
-          {ruta.totalEmpleados} empleados · {ruta.paradas.length} paradas
-        </span>
+        <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</h3>
       </div>
-      <span className="ruta-card__check" aria-hidden="true">✓</span>
     </button>
   );
 }
@@ -191,43 +184,36 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
     Domingo:   'T1',
   };
 
-  const maxCapacity = Math.max(...Object.values(capacityPerDay), 1);
-
   return (
-    <div className="shift-bars" key={`daily-${animKey}`}>
-      {DAYS_ORDER.map((day, i) => {
-        const count = capacityPerDay[day] || 0;
-        const pct = Math.round((count / maxCapacity) * 100);
-
-        return (
-          <div
-            key={day}
-            className="shift-bars__row"
-            style={{ '--bar-delay': `${i * 0.08}s`, '--bar-pct': `${pct}%` } as React.CSSProperties}
-          >
-            <span className="shift-bars__label type-body-sm">{day}</span>
+    <div className="daily-capacity-list" key={`daily-${animKey}`}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--color-hairline)', color: 'var(--color-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', marginBottom: '8px' }}>
+        <span>Día</span>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <span style={{ width: '70px', textAlign: 'right' }}>Pasajeros</span>
+          <span style={{ width: '70px', textAlign: 'right' }}>Descansa</span>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        {DAYS_ORDER.map((day) => {
+          const count = capacityPerDay[day] || 0;
+          return (
             <div
-              className="shift-bars__track"
-              role="progressbar"
-              aria-valuenow={count}
-              aria-valuemin={0}
-              aria-valuemax={maxCapacity}
-              aria-label={`Capacidad ${day}`}
+              key={day}
+              style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', alignItems: 'center' }}
             >
-              <div className="shift-bars__fill" />
+              <span className="type-body-sm">{day}</span>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <span className="type-body-sm" style={{ width: '70px', textAlign: 'right', fontWeight: 600 }}>{count}</span>
+                <div style={{ width: '70px', textAlign: 'right' }}>
+                  <span className="ruta-employees-modal__tab-badge" title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}>
+                    {RESTING_SHIFTS[day]}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '100px', justifyContent: 'flex-end' }}>
-              <span
-                className="ruta-employees-modal__tab-badge"
-                title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
-              >
-                Off: {RESTING_SHIFTS[day]}
-              </span>
-              <span className="shift-bars__count type-body-sm">{count}</span>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -265,7 +251,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
         <section className="ruta-section">
           <h3 className="ruta-section__title type-heading-sm">
             <MapPin size={16} aria-hidden="true" />
-            Detalle de la ruta
+            {ruta.nombreRuta}
           </h3>
           <RouteSvg paradas={ruta.paradas} animKey={animKey} />
           <div className="ruta-stops">
@@ -273,7 +259,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
               Paradas registradas ({ruta.paradas.length})
             </p>
             <ul className="ruta-stops__list">
-              {ruta.paradas.slice(0, 5).map((parada, i) => (
+              {ruta.paradas.map((parada, i) => (
                 <li
                   key={i}
                   className="ruta-stops__item type-body-sm"
@@ -283,11 +269,6 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
                   {parada}
                 </li>
               ))}
-              {ruta.paradas.length > 5 && (
-                <li className="ruta-stops__more type-body-sm">
-                  + {ruta.paradas.length - 5} paradas más
-                </li>
-              )}
             </ul>
           </div>
         </section>
@@ -302,15 +283,14 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
                 type="button"
                 className="btn-secondary"
                 onClick={onOpenEmployeesModal}
-                style={{ marginLeft: 'auto', height: '32px', padding: '0 12px', fontSize: '13px' }}
+                style={{ marginLeft: 'auto', height: '32px', width: '32px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Ver plantilla"
+                aria-label="Ver plantilla"
               >
-                Ver plantilla
+                <Users size={16} aria-hidden="true" />
               </button>
             </h3>
-            <div className="ruta-capacity">
-              <span className="ruta-capacity__label type-body-sm">Capacidad total requerida</span>
-              <span className="ruta-capacity__value type-heading-md">{ruta.totalEmpleados} asientos</span>
-            </div>
+
             <ShiftBars
               turnosCount={ruta.turnosCount}
               maxCapacityPerShift={ruta.maxCapacityPerShift}
@@ -320,12 +300,9 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
 
           <section className="ruta-section">
             <h3 className="ruta-section__title type-heading-sm">
-              <CalendarDays size={16} aria-hidden="true" />
-              Capacidad por día
+              <CalendarDays size={16} aria-hidden="true" style={{ marginRight: '8px' }} />
+              Pasajeros por día
             </h3>
-            <p className="type-body-sm text-muted" style={{ marginBottom: 'var(--spacing-md)' }}>
-              Proyección de asientos requeridos según los días laborables de cada turno.
-            </p>
             <DailyCapacityBars
               capacityPerDay={ruta.capacityPerDay}
               animKey={animKey}
@@ -378,9 +355,6 @@ export function Rutas() {
     <main className="rutas-page container" id="main-content" tabIndex={-1}>
       <header className="rutas-header">
         <h1 className="type-display-lg">Rutas de transporte</h1>
-        <p className="type-body-md">
-          Visualiza el detalle de cada ruta de transporte de personal.
-        </p>
       </header>
 
       <div className="rutas-layout" data-mobile-view={mobileView}>

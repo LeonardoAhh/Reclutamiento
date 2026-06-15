@@ -916,37 +916,116 @@ code:not(pre code) {
 }
 
 /* ========================================
-   MODAL
+   MODAL - Rediseño iOS 26 (Spatial Glass)
    ======================================== */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: var(--color-modal-scrim);
+  /* Puedes mantener tu var(--color-modal-scrim) si es semi-transparente,
+     pero Apple usa un fondo neutro para este efecto. */
+  background: var(--color-modal-scrim, rgba(0, 0, 0, 0.4));
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-md);
-  animation: fadeIn 200ms ease;
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  animation: fadeIn 300ms ease-out forwards;
+  /* Incrementamos el blur del fondo */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .modal-content {
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  /* =========================================
+     FORZAR TEMA GLASS PARA TODO EL CONTENIDO
+     ========================================= */
+  color-scheme: dark;
+  --color-canvas: transparent;
+  --color-surface-soft: transparent; /* Nada de gris */
+  --color-surface-card: transparent; /* Nada de gris */
+  --color-surface-cream-strong: rgba(255, 255, 255, 0.1);
+  --color-hairline: rgba(255, 255, 255, 0.1);
+  --color-hairline-soft: rgba(255, 255, 255, 0.05);
+  --color-hairline-strong: rgba(255, 255, 255, 0.2);
+  --color-ink: #ffffff;
+  --color-body-strong: rgba(255, 255, 255, 0.9);
+  --color-body: rgba(255, 255, 255, 0.8);
+  --color-muted: rgba(255, 255, 255, 0.6);
+  --color-muted-soft: rgba(255, 255, 255, 0.4);
+
+  /* Semantic colors adjust for dark glass */
+  --color-primary: #818cf8;
+  --color-primary-rgb: 129 140 248;
+  
+  --color-error: #ff8a9f;
+  --color-error-rgb: 255 138 159;
+  
+  --color-warning: #facc15;
+  
+  --color-success: #34d399;
+  --color-success-rgb: 52 211 153;
+  
+  --color-accent-amber: #facc15;
+  --color-accent-amber-rgb: 250 204 21;
+  
+  --color-accent-teal: #2dd4bf;
+  --color-accent-teal-rgb: 45 212 191;
+
+  /* Derived overlays para dark glass */
+  --color-vacancy-tint: rgba(255, 138, 159, 0.15);
+  --color-vacancy-chip-bg: rgba(255, 138, 159, 0.2);
+  --color-success-tint: rgba(52, 211, 153, 0.15);
+  --color-error-tint: rgba(255, 138, 159, 0.15);
+
+  /* 1. LUZ Y CRISTAL: Gradientes radiales sobre un fondo muy transparente.
+        (Reemplazamos var(--color-canvas) para asegurar la transparencia) */
+  background: 
+    radial-gradient(circle at 0% 0%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(123, 44, 191, 0.15) 0%, transparent 40%),
+    rgba(30, 30, 35, 0.45); 
+  
+  /* 2. SATURACIÓN Y BLUR PROFUNDO */
+  backdrop-filter: blur(50px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  
+  /* 3. BORDES Y VOLUMEN 3D */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 40px; /* Curvas amplias tipo Apple */
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.5), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.3), 
+    inset 0 0 40px rgba(255, 255, 255, 0.05);
+
   width: 100%;
   max-width: 760px;
   max-height: min(85vh, 760px);
   overflow-y: auto;
   overflow-x: hidden;
-  animation: slideUp 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 4. ANIMACIÓN FLUIDA TIPO SPRING */
+  animation: slideUpModal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  position: relative;
 }
 
 .modal-content--xl {
   max-width: 900px;
+}
+
+/* Scrollbar estilo Glass para el modal */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 16px 0; /* Da un poco de respiro arriba y abajo */
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 480px) {
@@ -956,8 +1035,34 @@ code:not(pre code) {
   }
   .modal-content {
     max-height: 92vh;
-    border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    border-radius: 40px 40px 0 0; /* Mantenemos la curva exagerada arriba */
+    padding-bottom: 24px; /* Espacio para el home indicator */
   }
+  
+  /* Indicador de arrastre inferior (estilo iOS) */
+  .modal-content::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    margin: 24px auto 8px auto;
+  }
+}
+
+/* =========================================
+   FORZAR SELECTS A TEMA OSCURO EN EL MODAL
+   ========================================= */
+.modal-content select {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-content select option {
+  background-color: #1e1e23 !important; /* Fondo oscuro sólido para la lista nativa */
+  color: #ffffff !important;
 }
 
 .modal-header {
@@ -965,7 +1070,7 @@ code:not(pre code) {
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: none; /* iOS 26 no usa líneas divisorias duras, el contenido fluye */
 }
 
 .modal-header__info {
@@ -976,9 +1081,10 @@ code:not(pre code) {
 
 .modal-header__info h3 {
   font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  color: var(--color-ink);
+  font-weight: 600; /* Peso Apple estándar para encabezados */
+  color: #ffffff; /* Forzado a blanco para el glass oscuro */
   line-height: 1.3;
+  letter-spacing: -0.02em; /* Tracking sutilmente más apretado */
 }
 
 .modal-header__area {
@@ -986,7 +1092,7 @@ code:not(pre code) {
   font-weight: var(--type-caption-up-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.6); /* Gris claro translúcido */
 }
 
 .modal-close {
@@ -995,23 +1101,24 @@ code:not(pre code) {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--rounded-md);
-  color: var(--color-muted);
-  border: 1px solid var(--color-hairline-strong);
-  background: var(--color-surface-card);
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
-  flex-shrink: 0;
+  border-radius: 50%; /* Botón completamente circular */
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
+  transition: all var(--transition-fast, 0.2s ease);
 }
+
 .modal-close:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05); /* Pequeño salto "bouncy" al hacer hover */
 }
+
 .modal-close:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
 }
 
 .modal-body {
@@ -1043,7 +1150,7 @@ code:not(pre code) {
 .modal-title h2 {
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
-  color: var(--color-ink);
+  color: #ffffff; /* Forzado a blanco */
   line-height: 1.3;
   word-break: normal;
   overflow-wrap: break-word;
@@ -1056,7 +1163,7 @@ code:not(pre code) {
   font-weight: var(--type-caption-up-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.6);
   margin-top: var(--spacing-xxs);
 }
 
@@ -1132,22 +1239,20 @@ code:not(pre code) {
 
 /* ── Keyframes compartidos ── */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(8px); }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
+@keyframes slideUpModal {
+  from { 
+    opacity: 0; 
+    transform: scale(0.9) translateY(30px);
+    filter: blur(10px);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0);
+    filter: blur(0);
   }
 }
 

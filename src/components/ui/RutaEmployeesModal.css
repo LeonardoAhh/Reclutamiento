@@ -1,5 +1,5 @@
 .ruta-employees-modal {
-  width: 90vw;
+  width: 100%;
   max-width: 720px;
   max-height: 90vh;
   display: flex;
@@ -24,7 +24,7 @@
 .ruta-employees-modal__search-icon {
   position: absolute;
   left: 12px;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .ruta-employees-modal__input {
@@ -32,10 +32,10 @@
   height: 38px;
   padding-left: 36px;
   padding-right: var(--spacing-sm);
-  border: 1px solid var(--color-hairline-strong);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
-  color: var(--color-ink);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -59,7 +59,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xxs);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: var(--spacing-xxs);
 }
 
@@ -72,7 +72,7 @@
   min-height: 38px;
   border: none;
   background: transparent;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.6);
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
@@ -86,17 +86,17 @@
 }
 
 .ruta-employees-modal__tab:hover {
-  color: var(--color-ink);
+  color: #fff;
 }
 
 .ruta-employees-modal__tab--active {
-  color: var(--color-primary);
+  color: #fff;
   border-bottom-color: var(--color-primary);
 }
 
 .ruta-employees-modal__tab-badge {
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff !important;
   font-size: 12px;
   font-weight: 600;
   padding: 3px 8px;
@@ -119,8 +119,8 @@
 }
 
 .ruta-employees-modal__table-wrapper {
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--rounded-md);
   overflow: hidden;
   overflow-y: auto;
@@ -136,7 +136,7 @@
 .ruta-employees-modal__table th,
 .ruta-employees-modal__table td {
   padding: 10px var(--spacing-sm);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ruta-employees-modal__table th:first-child,
@@ -154,13 +154,27 @@
 }
 
 .ruta-employees-modal__table th {
-  background: var(--color-surface-soft);
-  font-weight: 500;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .ruta-employees-modal__table tbody tr:hover {
-  background: var(--color-surface-soft);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Forzar color de texto blanco sobre clases globales */
+.ruta-employees-modal__table th.text-muted,
+.ruta-employees-modal__table th {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.ruta-employees-modal__table td.text-muted-soft {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.ruta-employees-modal__table td.text-ink,
+.ruta-employees-modal__table td {
+  color: #ffffff !important;
 }
 
 /* Responsive adjustments for mobile */

@@ -103,10 +103,30 @@
   min-width: 220px;
   padding: var(--spacing-xs);          /* antes: 8px */
 
-  /* Visual */
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  /* 1. LUZ Y CRISTAL: Gradientes radiales sobre un fondo muy transparente */
+  background: 
+    radial-gradient(circle at 0% 0%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(123, 44, 191, 0.15) 0%, transparent 40%),
+    rgba(30, 30, 35, 0.45);
+    
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--rounded-lg);    /* antes: 14px */
+  
+  /* 2. FORZAR TEXTOS Y ELEMENTOS A BLANCO TRANSLÚCIDO PARA CONTRASTE */
+  --color-ink: #ffffff;
+  --color-body-strong: rgba(255, 255, 255, 0.9);
+  --color-body: rgba(255, 255, 255, 0.8);
+  --color-muted: rgba(255, 255, 255, 0.6);
+  --color-muted-soft: rgba(255, 255, 255, 0.4);
+  --color-surface-soft: rgba(255, 255, 255, 0.05);
+  --color-surface-card: transparent;
+  --color-hairline: rgba(255, 255, 255, 0.1);
+  --color-hairline-soft: rgba(255, 255, 255, 0.05);
+  --color-error: #ff8a9f;
+  --color-error-tint: rgba(255, 138, 159, 0.15);
 
   /* Animación */
   animation: user-menu-in var(--transition-fast) ease-out;

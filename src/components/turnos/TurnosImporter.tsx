@@ -170,11 +170,6 @@ export function TurnosImporter({
     "Turno": "26"
   }
 ]`}</pre>
-            <p className="transporte-importer__hint">
-              <strong>Turno</strong> es la clave de horario (1, 2, 6, 13, 16,
-              26, 32, 38, …). El dashboard de transporte la traduce al turno
-              final (1–5) vía catálogo.
-            </p>
             <button
               type="button"
               className="btn-primary transporte-importer__pick-btn"
