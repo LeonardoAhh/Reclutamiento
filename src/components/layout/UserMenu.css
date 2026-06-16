@@ -288,3 +288,10 @@
   border-radius: var(--rounded-full);
   background: var(--color-ink);
 }
+
+/* ── Grupos de menú condicionales ─────────── */
+@media (min-width: 768px) {
+  .user-menu__nav-group {
+    display: none;
+  }
+}

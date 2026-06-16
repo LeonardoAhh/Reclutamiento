@@ -487,3 +487,42 @@ export function businessDaysBetween(
   
   return count;
 }
+
+/**
+ * Devuelve la fecha ISO (YYYY-MM-DD) del próximo miércoles en base a `dateIso`.
+ * Si `dateIso` es lunes, martes o miércoles, el próximo ingreso será en esa misma semana.
+ * Si `dateIso` es jueves, viernes, sábado o domingo, el próximo ingreso será el miércoles de la semana siguiente.
+ */
+export function getNextWednesdayIso(dateIso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateIso).slice(0, 10));
+  if (!match) return dateIso;
+  const d = new Date(`${match[0]}T12:00:00-06:00`); // MX_UTC_OFFSET = '-06:00'
+  const dayOfWeek = d.getDay(); // 0 = dom, ..., 3 = mié
+  
+  let daysToAdd = 0;
+  if (dayOfWeek <= 3) {
+    daysToAdd = 3 - dayOfWeek;
+  } else {
+    daysToAdd = 7 - (dayOfWeek - 3);
+  }
+  
+  d.setTime(d.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  
+  // Format YYYY-MM-DD manually instead of using non-exported pad2 from another context if not available,
+  // but we can just use the built in local extraction since we are at 12:00
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Formatea una fecha ISO para las tarjetas de proyección (ej. "Mié 16 Jun").
+ */
+export function formatProjectionDate(dateIso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateIso).slice(0, 10));
+  if (!match) return dateIso;
+  const d = new Date(`${match[0]}T12:00:00-06:00`);
+  let label = d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ_MX }).replace(/\./g, '');
+  return label.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}

@@ -148,17 +148,17 @@ function OnboardingGraphic() {
   );
 }
 
-// ── 3. Secuencia Cinemática de 10 segundos ──────────
+// ── 3. Secuencia Cinemática de 7 segundos ──────────
 function CinematicEntrance() {
   const [phase, setPhase] = useState(0);
 
-  // La secuencia dura 10s en total, dividida en 3 actos.
+  // La secuencia dura 7s en total, dividida en 3 actos (aprox 2.3s cada uno).
   useEffect(() => {
-    // 0s a 3.3s: Atracción
-    const t1 = setTimeout(() => setPhase(1), 3300);
-    // 3.3s a 6.6s: Selección
-    const t2 = setTimeout(() => setPhase(2), 6600);
-    // 6.6s a 10s: Onboarding
+    // 0s a 2.33s: Atracción
+    const t1 = setTimeout(() => setPhase(1), 2333);
+    // 2.33s a 4.66s: Selección
+    const t2 = setTimeout(() => setPhase(2), 4666);
+    // 4.66s a 7s: Onboarding
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
@@ -185,8 +185,9 @@ function CinematicEntrance() {
                <p>
                  <TypewriterTitle 
                    sequences={[{ text: "Cargando base de datos del personal...", deleteAfter: false }]}
-                   typingSpeed={30}
-                   startDelay={400}
+                   typingSpeed={15}
+                   startDelay={300}
+                   autoLoop={false}
                  />
                </p>
              </motion.div>
@@ -200,8 +201,9 @@ function CinematicEntrance() {
                <p>
                  <TypewriterTitle 
                    sequences={[{ text: "Sincronizando candidatos en proceso e ingresos...", deleteAfter: false }]}
-                   typingSpeed={30}
-                   startDelay={400}
+                   typingSpeed={15}
+                   startDelay={300}
+                   autoLoop={false}
                  />
                </p>
              </motion.div>
@@ -215,8 +217,9 @@ function CinematicEntrance() {
                <p>
                  <TypewriterTitle 
                    sequences={[{ text: "Indicadores clave listos para presentar...", deleteAfter: false }]}
-                   typingSpeed={30}
-                   startDelay={400}
+                   typingSpeed={15}
+                   startDelay={300}
+                   autoLoop={false}
                  />
                </p>
              </motion.div>
@@ -227,7 +230,7 @@ function CinematicEntrance() {
   );
 }
 
-// ── 4. Secuencia Cinemática de Salida (10 segundos motivacionales) ──────────
+// ── 4. Secuencia Cinemática de Salida (7 segundos motivacionales) ──────────
 function LogoutCinematic({ username }: { username?: string }) {
   const [quote, setQuote] = useState<Quote | null>(null);
 
@@ -245,7 +248,7 @@ function LogoutCinematic({ username }: { username?: string }) {
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1.02 }}
       exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 10, ease: "easeInOut" }}
+      transition={{ duration: 7, ease: "easeInOut" }}
     >
       {username && (
         <motion.h2
@@ -265,15 +268,16 @@ function LogoutCinematic({ username }: { username?: string }) {
       >
         <TypewriterTitle 
           sequences={[{ text: `"${quote.text}"`, deleteAfter: false }]}
-          typingSpeed={35}
-          startDelay={1500}
+          typingSpeed={15}
+          startDelay={800}
+          autoLoop={false}
         />
       </motion.div>
       <motion.p 
         className="loader-logout-author"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, ease: EASE, delay: 4 }}
+        transition={{ duration: 1.5, ease: EASE, delay: 2.5 }}
       >
         — {quote.author}
       </motion.p>

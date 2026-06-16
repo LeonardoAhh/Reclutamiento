@@ -30,11 +30,11 @@ type NavItem = {
  */
 const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/',          label: 'KPIs',       icon: BarChart3,       exact: true },
-  { to: '/pipeline',  label: 'Candidates', icon: Users },
+  { to: '/pipeline',  label: 'Candidatos', icon: Users },
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
-  { to: '/vacantes',  label: 'Vacancies',  icon: Briefcase },
-  { to: '/bajas',     label: 'Downsizing', icon: UserMinus },
-  { to: '/empleados', label: 'Employees',  icon: Contact },
+  { to: '/vacantes',  label: 'Vacantes',   icon: Briefcase },
+  { to: '/bajas',     label: 'Bajas',      icon: UserMinus },
+  { to: '/empleados', label: 'Empleados',  icon: Contact },
   { to: '/rutas',     label: 'Rutas',      icon: Map },
 ];
 
@@ -104,7 +104,8 @@ export function UserMenu() {
     } finally {
       setSigningOut(false);
       closeRef.current();
-      window.setTimeout(hide, 10000);
+      // El overlay motivacional de logout dura 7 segundos.
+      window.setTimeout(hide, 7000);
     }
   }, [signingOut, signOut, show, hide, username]);
 
@@ -162,7 +163,7 @@ export function UserMenu() {
           data-testid="user-menu-dropdown"
         >
           <div className="user-menu__header">
-            <p className="user-menu__label">Active session</p>
+            <p className="user-menu__label">Sesión activa</p>
             <p className="user-menu__name" title={username}>
               {username}
             </p>
@@ -170,36 +171,38 @@ export function UserMenu() {
 
           <div className="user-menu__divider" role="separator" />
 
-          {/* ── Sección Navegación ─────────── */}
-          <p className="user-menu__section-label" aria-hidden="true">
-            Navigation
-          </p>
-          <ul className="user-menu__list" role="none">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item);
-              return (
-                <li key={item.to} role="none">
-                  <button
-                    type="button"
-                    className={`user-menu__item${active ? ' user-menu__item--active' : ''}`}
-                    onClick={() => navigate(item.to)}
-                    role="menuitem"
-                    aria-current={active ? 'page' : undefined}
-                    data-testid={`user-menu-nav-${item.to.replace('/', '') || 'kpis'}`}
-                  >
-                    <Icon size={14} aria-hidden="true" />
-                    <span className="user-menu__item-label">{item.label}</span>
-                    {active && (
-                      <span className="user-menu__item-dot" aria-hidden="true" />
-                    )}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          {/* ── Sección Navegación (Solo móvil) ─────────── */}
+          <div className="user-menu__nav-group">
+            <p className="user-menu__section-label" aria-hidden="true">
+              Navegación
+            </p>
+            <ul className="user-menu__list" role="none">
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item);
+                return (
+                  <li key={item.to} role="none">
+                    <button
+                      type="button"
+                      className={`user-menu__item${active ? ' user-menu__item--active' : ''}`}
+                      onClick={() => navigate(item.to)}
+                      role="menuitem"
+                      aria-current={active ? 'page' : undefined}
+                      data-testid={`user-menu-nav-${item.to.replace('/', '') || 'kpis'}`}
+                    >
+                      <Icon size={14} aria-hidden="true" />
+                      <span className="user-menu__item-label">{item.label}</span>
+                      {active && (
+                        <span className="user-menu__item-dot" aria-hidden="true" />
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
 
-          <div className="user-menu__divider" role="separator" />
+            <div className="user-menu__divider" role="separator" />
+          </div>
 
           <button
             type="button"
@@ -211,7 +214,7 @@ export function UserMenu() {
           >
             <LogOut size={14} aria-hidden="true" />
             <span className="user-menu__item-label">
-              {signingOut ? 'Closing…' : 'Sign out'}
+              {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
             </span>
           </button>
         </div>

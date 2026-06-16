@@ -37,6 +37,8 @@
     currentYearMx,
     localTodayIso,
     addDaysToIso,
+    getNextWednesdayIso,
+    formatProjectionDate
   } from '@/lib/dates';
   import type { Employee } from '@/lib/types';
   import './KpisPage.css';
@@ -278,6 +280,43 @@
       const { totals } = computeMonthlyComparison(bajas, employees, year);
       return totals;
     }, [bajas, employees]);
+
+    /* ── Proyección Estratégica ─────────────────────────────────────────────── */
+    const todayIso = useMemo(() => localTodayIso(), []);
+    const nextWednesdayIso = useMemo(() => getNextWednesdayIso(todayIso), [todayIso]);
+
+    const projectionTotals = useMemo(() => {
+      let vacantesPlantilla = 0;
+      let vacantesBackup = 0;
+      let realTotal = 0;
+      let objetivoGlobal = 0;
+
+      for (const pos of currentPositionCoverage) {
+        realTotal += pos.plantilla_real;
+        objetivoGlobal += pos.plantilla_objetivo;
+        if (pos.plantilla_real < pos.plantilla_autorizada) {
+          vacantesPlantilla += (pos.plantilla_autorizada - pos.plantilla_real);
+          vacantesBackup += pos.backup;
+        } else {
+          vacantesBackup += Math.max(0, pos.plantilla_objetivo - pos.plantilla_real);
+        }
+      }
+
+      const proximosIngresos = employees.filter(e => {
+        const ing = String(e.fecha_ingreso);
+        return ing > todayIso && ing <= nextWednesdayIso && e.status !== 'baja';
+      }).length;
+
+      const proyectadoReal = realTotal + proximosIngresos;
+      const coberturaProyectada = objetivoGlobal > 0 ? Math.round((proyectadoReal / objetivoGlobal) * 100) : 0;
+
+      return {
+        vacantesPlantilla,
+        vacantesBackup,
+        proximosIngresos,
+        coberturaProyectada
+      };
+    }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso]);
 
     /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
     const heroChartData = useMemo<DailyKpiData[]>(() => {
@@ -557,6 +596,42 @@
                 data={heroChartData}
                 onClick={() => setMissingModalOpen(true)}
               />
+            </section>
+
+            <section className="kpis-page__projection-section" aria-label="Proyección Estratégica">
+               <div className="kpis-page__projection-card">
+                  <header>
+                    <h3 className="projection-title">Estado Actual</h3>
+                    <span className="projection-date">Hoy, {formatProjectionDate(todayIso)}</span>
+                  </header>
+                  <div className="projection-metrics">
+                    <div className="projection-metric">
+                      <span className="projection-value text-error">{projectionTotals.vacantesPlantilla}</span>
+                      <span className="projection-label">Vacantes Plantilla</span>
+                    </div>
+                    <div className="projection-metric">
+                      <span className="projection-value text-warning">{projectionTotals.vacantesBackup}</span>
+                      <span className="projection-label">Vacantes Backup</span>
+                    </div>
+                  </div>
+               </div>
+
+               <div className="kpis-page__projection-card projection-card--future">
+                  <header>
+                    <h3 className="projection-title">Proyección Semanal</h3>
+                    <span className="projection-date">Ingreso: {formatProjectionDate(nextWednesdayIso)}</span>
+                  </header>
+                  <div className="projection-metrics">
+                    <div className="projection-metric">
+                      <span className="projection-value text-success">+{projectionTotals.proximosIngresos}</span>
+                      <span className="projection-label">Próximos Ingresos</span>
+                    </div>
+                    <div className="projection-metric">
+                      <span className="projection-value text-primary">{projectionTotals.coberturaProyectada}%</span>
+                      <span className="projection-label">Avance Proyectado</span>
+                    </div>
+                  </div>
+               </div>
             </section>
 
             <section

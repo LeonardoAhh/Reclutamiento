@@ -43,7 +43,7 @@ export function Login() {
       return;
     }
 
-    flash({ tone: 'full', duration: 10000 });
+    flash({ tone: 'full', duration: 7000 });
   };
 
   return (
