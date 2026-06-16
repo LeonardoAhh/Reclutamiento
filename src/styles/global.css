@@ -355,25 +355,51 @@ body {
 
 /* Stagger por capas: cada una recibe su propio snapshot con delay creciente.
    El resultado: el reveal circular cruza el contenido y, una fracción de
-   segundo después, header y bottom-tab cross-fadean encima → sensación de
-   "el sistema respira" sin orquestar nada desde JS. */
-.app-header { view-transition-name: theme-header; }
-.bottom-tab-bar { view-transition-name: theme-bottom-tab; }
+   segundo después, header/hero/main/tab-bar cross-fadean encima → sensación
+   de "el sistema respira" sin orquestar nada desde JS.
 
+   REGLA CRÍTICA: cada `view-transition-name` debe ser único en el snapshot.
+   Por eso los selectores apuntan a elementos de los que sólo hay UNO
+   montado a la vez (un main por ruta, un hero por página, un dropdown). */
+
+.app-header                 { view-transition-name: theme-header; }
+.bottom-tab-bar             { view-transition-name: theme-bottom-tab; }
+main.container              { view-transition-name: theme-page; }
+.user-menu__dropdown        { view-transition-name: theme-dropdown; }
+
+/* Heroes de cada página (sólo uno montado a la vez, route exclusivo). */
+.kpis-page__hero,
+.dashboard__hero,
+.pipeline__hero,
+.bajas__hero,
+.empleados__hero,
+.transporte__hero,
+.settings__hero             { view-transition-name: theme-page-hero; }
+
+/* Saliente uniforme para todas las capas con nombre. */
 ::view-transition-old(theme-header),
-::view-transition-old(theme-bottom-tab) {
+::view-transition-old(theme-bottom-tab),
+::view-transition-old(theme-page),
+::view-transition-old(theme-page-hero),
+::view-transition-old(theme-dropdown) {
   animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
 }
 
-::view-transition-new(theme-header) {
+/* Entrante: animación común con delays escalonados por capa.
+   El stagger sigue el flujo visual: header → hero → contenido → tab → dropdown. */
+::view-transition-new(theme-header),
+::view-transition-new(theme-bottom-tab),
+::view-transition-new(theme-page),
+::view-transition-new(theme-page-hero),
+::view-transition-new(theme-dropdown) {
   animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
-  animation-delay: var(--duration-theme-stagger);
 }
 
-::view-transition-new(theme-bottom-tab) {
-  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
-  animation-delay: calc(var(--duration-theme-stagger) * 1.5);
-}
+::view-transition-new(theme-header)      { animation-delay: calc(var(--duration-theme-stagger) * 0.7); }
+::view-transition-new(theme-page-hero)   { animation-delay: calc(var(--duration-theme-stagger) * 1.2); }
+::view-transition-new(theme-page)        { animation-delay: calc(var(--duration-theme-stagger) * 1.6); }
+::view-transition-new(theme-bottom-tab)  { animation-delay: calc(var(--duration-theme-stagger) * 1.8); }
+::view-transition-new(theme-dropdown)    { animation-delay: calc(var(--duration-theme-stagger) * 1.0); }
 
 @keyframes theme-layer-in {
   from { opacity: 0; transform: translateY(2px); }
@@ -388,7 +414,13 @@ body {
   ::view-transition-old(theme-header),
   ::view-transition-new(theme-header),
   ::view-transition-old(theme-bottom-tab),
-  ::view-transition-new(theme-bottom-tab) {
+  ::view-transition-new(theme-bottom-tab),
+  ::view-transition-old(theme-page),
+  ::view-transition-new(theme-page),
+  ::view-transition-old(theme-page-hero),
+  ::view-transition-new(theme-page-hero),
+  ::view-transition-old(theme-dropdown),
+  ::view-transition-new(theme-dropdown) {
     animation: none;
   }
 }

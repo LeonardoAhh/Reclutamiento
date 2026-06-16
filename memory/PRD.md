@@ -37,7 +37,7 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - `ThemeToggle.tsx`: calcula el centro del botón con `getBoundingClientRect()` y lo pasa a `toggleTheme(origin)`.
 - `global.css`: tokens nuevos `--ease-apple` (cubic-bezier(0.32, 0.72, 0, 1)), `--duration-theme-out` 220ms, `--duration-theme-in` 320ms, `--duration-theme-stagger` 60ms, `--theme-origin-x/y` (default 50vw/50vh).
 - Pseudo-elementos `::view-transition-old(root)` y `::view-transition-new(root)` animan un `clip-path: circle(0% → 150%)` desde el origen → revela circular tipo Vercel/Linear.
-- `.app-header` y `.bottom-tab-bar` reciben `view-transition-name` propios → cada capa hace cross-fade con `animation-delay` escalonado (60ms y 90ms) → efecto stagger "el sistema respira" sin orquestar nada desde JS.
+- Stagger expandido a todas las capas únicas: `.app-header` (42ms), `.user-menu__dropdown` (60ms), `*__hero` de las 7 páginas con hero (72ms), `main.container` (96ms), `.bottom-tab-bar` (108ms). Cada `view-transition-name` apunta a elementos de los que sólo hay uno montado a la vez → cero colisiones.
 - Graceful degradation: navegadores sin VT API (iOS 17 y anteriores) aplican el tema sin animación; las transiciones CSS de color del body/html siguen funcionando.
 
 ## Pendiente / Backlog
