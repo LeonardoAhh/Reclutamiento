@@ -32,6 +32,14 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - `Header.tsx`: `<ThemeToggle />` colocado antes del `<UserMenu />` dentro de `.app-header__actions` (ya tiene `gap: var(--spacing-xs)`). Visible en mobile y desktop.
 - `tsc -b --noEmit` y `vite build` OK.
 
+### 2026-01 — Transición global de tema (circular reveal + stagger)
+- `useTheme.ts`: ahora envuelve el `applyTheme` en `document.startViewTransition(...)` cuando el navegador soporta View Transitions API (Chrome 111+, Safari 18+) y el usuario no tiene `prefers-reduced-motion`. Acepta `origin: {x, y}` (centro del botón clickeado) y lo escribe en CSS vars `--theme-origin-x/y` antes de iniciar la transición.
+- `ThemeToggle.tsx`: calcula el centro del botón con `getBoundingClientRect()` y lo pasa a `toggleTheme(origin)`.
+- `global.css`: tokens nuevos `--ease-apple` (cubic-bezier(0.32, 0.72, 0, 1)), `--duration-theme-out` 220ms, `--duration-theme-in` 320ms, `--duration-theme-stagger` 60ms, `--theme-origin-x/y` (default 50vw/50vh).
+- Pseudo-elementos `::view-transition-old(root)` y `::view-transition-new(root)` animan un `clip-path: circle(0% → 150%)` desde el origen → revela circular tipo Vercel/Linear.
+- `.app-header` y `.bottom-tab-bar` reciben `view-transition-name` propios → cada capa hace cross-fade con `animation-delay` escalonado (60ms y 90ms) → efecto stagger "el sistema respira" sin orquestar nada desde JS.
+- Graceful degradation: navegadores sin VT API (iOS 17 y anteriores) aplican el tema sin animación; las transiciones CSS de color del body/html siguen funcionando.
+
 ## Pendiente / Backlog
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
 - P2: Extender patrón mobile-first al resto de modales (importers, report modals) si el usuario lo pide.

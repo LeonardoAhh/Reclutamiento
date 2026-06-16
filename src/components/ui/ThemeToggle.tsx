@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 import './ThemeToggle.css';
 
@@ -10,18 +11,26 @@ import './ThemeToggle.css';
  * orbe satélite se mueve sobre el lado oscuro, y todo el emblema rota 180°
  * al alternar el tema (efecto monedita / planeta girando sobre su eje).
  *
- * - Mobile-first, dimensiones por tokens (no hardcode).
- * - role="switch" + aria-checked: semánticamente correcto para toggles binarios.
- * - Respeta prefers-reduced-motion via Framer Motion (no requiere código extra).
+ * Al hacer click, se calcula el centro del botón y se pasa como `origin` al
+ * hook. El hook lo usa para anclar la transición circular (clip-path) del
+ * View Transitions API.
  */
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
 
+  function handleClick(e: ReactMouseEvent<HTMLButtonElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    toggleTheme({
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    });
+  }
+
   return (
     <motion.button
       type="button"
-      onClick={toggleTheme}
+      onClick={handleClick}
       className="theme-toggle"
       data-state={isDark ? 'dark' : 'light'}
       data-testid="theme-toggle"

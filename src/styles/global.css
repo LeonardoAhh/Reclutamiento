@@ -313,6 +313,86 @@ body {
   transition: none !important;
 }
 
+/* ========================================
+   THEME TRANSITION — circular reveal + stagger
+   View Transitions API (Chrome 111+, Safari 18+).
+   En navegadores sin soporte, useTheme aplica el tema sin animación y
+   las transiciones CSS de color (body/html) hacen graceful degradation.
+   ======================================== */
+
+/* Pintamos snapshots; sin esto, ambos animan en cross-fade base. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Saliente: el tema previo cae rápido. */
+::view-transition-old(root) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+  z-index: 1;
+}
+
+/* Entrante: el nuevo tema se descubre con un clip circular desde el toggle. */
+::view-transition-new(root) {
+  animation: theme-reveal var(--duration-theme-in) var(--ease-apple) both;
+  z-index: 2;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+  to {
+    clip-path: circle(150% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+}
+
+@keyframes theme-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0.85; }
+}
+
+/* Stagger por capas: cada una recibe su propio snapshot con delay creciente.
+   El resultado: el reveal circular cruza el contenido y, una fracción de
+   segundo después, header y bottom-tab cross-fadean encima → sensación de
+   "el sistema respira" sin orquestar nada desde JS. */
+.app-header { view-transition-name: theme-header; }
+.bottom-tab-bar { view-transition-name: theme-bottom-tab; }
+
+::view-transition-old(theme-header),
+::view-transition-old(theme-bottom-tab) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+}
+
+::view-transition-new(theme-header) {
+  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
+  animation-delay: var(--duration-theme-stagger);
+}
+
+::view-transition-new(theme-bottom-tab) {
+  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
+  animation-delay: calc(var(--duration-theme-stagger) * 1.5);
+}
+
+@keyframes theme-layer-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Accesibilidad: usuarios con reduce-motion no ven animación.
+   useTheme también detecta esto y aplica el tema sin envolverlo en VT. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(theme-header),
+  ::view-transition-new(theme-header),
+  ::view-transition-old(theme-bottom-tab),
+  ::view-transition-new(theme-bottom-tab) {
+    animation: none;
+  }
+}
+
 /* ── Headings ── */
 h1,
 h2,
