@@ -304,7 +304,7 @@
 
       const proximosIngresos = employees.filter(e => {
         const ing = String(e.fecha_ingreso);
-        return ing > todayIso && ing <= nextWednesdayIso && e.status !== 'baja';
+        return ing > todayIso && ing <= nextWednesdayIso;
       }).length;
 
       const proyectadoReal = realTotal + proximosIngresos;
