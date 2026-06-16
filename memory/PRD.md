@@ -25,6 +25,13 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - `src/hooks/useTheme.ts` y script inline de `index.html`: actualizan `document.documentElement.style.backgroundColor` y el meta `theme-color` con los colores reales del canvas (`#0a0a0a` dark / `#ffffff` light), no con los antiguos `#1c1b16` / `#f7f6f2` que no coincidían.
 - `index.html`: `apple-mobile-web-app-status-bar-style` cambiado a `black-translucent` para que en modo PWA standalone el contenido se extienda bajo la barra de estado y adopte el color del `<html>`.
 
+### 2026-01 — Theme toggle al Header (emblema único + Framer Motion)
+- Se sacó el ítem "Theme" del `UserMenu` dropdown y se eliminó el import de `useTheme`/`Sun`/`Moon` allí.
+- `src/components/ui/ThemeToggle.tsx` reescrito: motion.button con `role="switch"`, `whileHover`/`whileTap` (scale + rotate), emblema SVG "split disc + satellite" que rota 180° por spring al alternar tema. Diseño abstracto, NO usa íconos clásicos de sol/luna.
+- `src/components/ui/ThemeToggle.css` reescrito 100% con tokens (`--control-height`, `--rounded-full`, `--color-ink/canvas/hairline/surface-soft`, `--shadow-focus`, `--transition-fast`). Tap target grande en mobile (`--control-height-lg`). Respeta `prefers-reduced-motion`.
+- `Header.tsx`: `<ThemeToggle />` colocado antes del `<UserMenu />` dentro de `.app-header__actions` (ya tiene `gap: var(--spacing-xs)`). Visible en mobile y desktop.
+- `tsc -b --noEmit` y `vite build` OK.
+
 ## Pendiente / Backlog
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
 - P2: Extender patrón mobile-first al resto de modales (importers, report modals) si el usuario lo pide.

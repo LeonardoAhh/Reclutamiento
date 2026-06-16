@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { UserMenu } from './UserMenu';
 import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Header.css';
 
 const NAV_ITEMS: ReadonlyArray<{
@@ -47,6 +48,7 @@ export function Header() {
 
         {/* Acciones */}
         <div className="app-header__actions">
+          <ThemeToggle />
           <UserMenu />
         </div>
 

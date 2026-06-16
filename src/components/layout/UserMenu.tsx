@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, LogOut, Moon, Sun, Users, Map } from 'lucide-react';
+import { ChevronDown, LogOut, Users, Map } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
-import { useTheme } from '@/hooks/useTheme';
 import './UserMenu.css';
 
 /**
@@ -17,7 +16,6 @@ import './UserMenu.css';
 export function UserMenu() {
   const { username, signOut } = useAuth();
   const { show, hide } = useLoader();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [open, setOpen]             = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -139,28 +137,6 @@ export function UserMenu() {
           >
             <Map size={13} aria-hidden="true" />
             <span className="user-menu__item-label">Rutas</span>
-          </button>
-
-          <div className="user-menu__divider" role="separator" />
-
-          <button
-            type="button"
-            className="user-menu__item"
-            onClick={toggleTheme}
-            role="menuitemradio"
-            aria-checked={theme === 'dark'}
-            aria-label={
-              theme === 'dark' ? 'Change to light theme' : 'Switch to dark theme'
-            }
-          >
-            {theme === 'dark'
-              ? <Sun  size={13} aria-hidden="true" />
-              : <Moon size={13} aria-hidden="true" />
-            }
-            <span className="user-menu__item-label">Theme</span>
-            <span className="user-menu__item-meta">
-              {theme === 'dark' ? 'dark' : 'light'}
-            </span>
           </button>
 
           <div className="user-menu__divider" role="separator" />
