@@ -12,6 +12,7 @@ const VARIANT: Record<
   feedback_pendiente: 'coral',
   contratado: 'success',
   rechazado: 'error',
+  no_asistio: 'error',
 };
 
 interface CandidateStatusBadgeProps {

@@ -20,6 +20,7 @@ const TONE_BY_STATUS: Record<CandidateStatus, string> = {
   feedback_pendiente: 'coral',
   contratado: 'success',
   rechazado: 'error',
+  no_asistio: 'error',
 };
 
 export function KanbanColumn({
