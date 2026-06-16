@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Pencil, Trash2, StickyNote, BadgeCheck } from 'lucide-react';
+import { GripVertical, Pencil, Trash2, StickyNote, BadgeCheck, MessageCircle } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
 
@@ -43,6 +43,13 @@ export function KanbanCard({
 }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: candidate.id ?? candidate.nombre });
+
+  const rawFirstName = candidate.nombre.split(' ')[0] || '';
+  const firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+
+  const rawPuesto = candidate.puesto || '';
+  const puestoLower = rawPuesto.toLowerCase();
+  const puestoMsg = puestoLower ? puestoLower.charAt(0).toUpperCase() + puestoLower.slice(1) : '';
 
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
@@ -116,6 +123,20 @@ export function KanbanCard({
               <BadgeCheck size={14} aria-hidden="true" />
             </button>
           )}
+
+          {candidate.telefono && (
+            <a
+              href={`https://wa.me/52${candidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${firstName}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="kanban-card__action-btn kanban-card__action-btn--wa"
+              aria-label={`Enviar WhatsApp a ${candidate.nombre}`}
+              title="Seguimiento por WhatsApp"
+            >
+              <MessageCircle size={14} aria-hidden="true" />
+            </a>
+          )}
+
           {onNotes && (
             <button
               type="button"

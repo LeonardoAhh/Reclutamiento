@@ -67,12 +67,12 @@ function AttractionGraphic() {
         return (
           <motion.circle
             key={i}
-            cx={startX}
-            cy={startY}
+            cx={String(startX)}
+            cy={String(startY)}
             r="5"
             fill="var(--color-primary)"
             initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], cx: 80, cy: 80 }}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], cx: "80", cy: "80" }}
             transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, delay: i * 0.3, ease: "easeInOut" }}
           />
         );

@@ -75,9 +75,16 @@
   color: var(--color-muted);
 }
 
+.recruiter-stats-modal__card-efectividad {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+
 .recruiter-stats-modal__card-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-sm);
 }
 
@@ -124,6 +131,10 @@
   color: var(--color-error);
 }
 
+.recruiter-stats-modal__stat--no-asistio .recruiter-stats-modal__stat-value {
+  color: var(--color-muted);
+}
+
 /* ── Barra de progreso ── */
 .recruiter-stats-modal__card-bar {
   display: flex;
@@ -150,6 +161,10 @@
 
 .recruiter-stats-modal__card-bar-segment--rechazados {
   background: var(--color-error);
+}
+
+.recruiter-stats-modal__card-bar-segment--no-asistio {
+  background: var(--color-muted);
 }
 
 /* ── Vista Individual: Tabla de semanas ── */

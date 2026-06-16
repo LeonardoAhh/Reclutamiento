@@ -272,6 +272,12 @@
   border-color: var(--color-error);
 }
 
+/* WhatsApp Follow-up button variant */
+.kanban-card__action-btn--wa:hover {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
 /* Primary variant for the "Contratar" CTA inside a kanban card. */
 .kanban-card__action-btn--primary {
   color: var(--color-primary);

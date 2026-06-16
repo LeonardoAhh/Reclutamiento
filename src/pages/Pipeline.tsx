@@ -65,6 +65,7 @@ type RecruiterStats = {
   citados: number;
   contratados: number;
   rechazados: number;
+  no_asistio: number;
 };
 
 export function Pipeline() {
@@ -228,6 +229,7 @@ export function Pipeline() {
       citados: 0,
       contratados: 0,
       rechazados: 0,
+      no_asistio: 0,
     });
     const acc = new Map<string, RecruiterStats>();
     for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
@@ -238,6 +240,7 @@ export function Pipeline() {
       bucket.total += 1;
       if (c.status === 'contratado') bucket.contratados += 1;
       else if (c.status === 'rechazado') bucket.rechazados += 1;
+      else if (c.status === 'no_asistio') bucket.no_asistio += 1;
       else if (CITADO_STATUSES.has(c.status)) bucket.citados += 1;
     }
     return Array.from(acc.values());
@@ -727,6 +730,7 @@ export function Pipeline() {
             isOpen={modalMode !== null}
             mode={modalMode ?? 'add'}
             candidate={selected}
+            candidates={candidates}
             onClose={closeModal}
             onSave={handleSave}
             onDelete={deleteCandidate}

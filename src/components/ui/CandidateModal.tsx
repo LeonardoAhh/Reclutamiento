@@ -10,6 +10,8 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
+import { useAuth } from '@/hooks/useAuth';
+import { ShieldAlert } from 'lucide-react';
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -17,6 +19,7 @@ interface CandidateModalProps {
   isOpen: boolean;
   mode: Mode;
   candidate?: Candidate | null;
+  candidates?: Candidate[];
   onClose: () => void;
   onSave?: (
     payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'>,
@@ -59,6 +62,15 @@ function emptyForm(): FormState {
   };
 }
 
+function formatDateTimeLocal(val: string | null | undefined): string {
+  if (!val) return '';
+  // If it already has a T, return up to minutes
+  if (val.includes('T')) return val.slice(0, 16); 
+  // If it's just a date YYYY-MM-DD, append T12:00
+  if (val.length === 10) return `${val}T12:00`;
+  return val;
+}
+
 function fromCandidate(c: Candidate): FormState {
   return {
     nombre: c.nombre ?? '',
@@ -74,7 +86,7 @@ function fromCandidate(c: Candidate): FormState {
     fecha_aplicacion: c.fecha_aplicacion
       ? isoToLocalDateString(c.fecha_aplicacion)
       : localTodayIso(),
-    fecha_cita: c.fecha_cita ?? '',
+    fecha_cita: formatDateTimeLocal(c.fecha_cita),
     notas: c.notas ?? '',
   };
 }
@@ -83,10 +95,13 @@ export function CandidateModal({
   isOpen,
   mode,
   candidate,
+  candidates = [],
   onClose,
   onSave,
   onDelete,
 }: CandidateModalProps) {
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === 'admin';
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -137,6 +152,43 @@ export function CandidateModal({
 
     try {
       setSubmitting(true);
+
+      if (mode === 'add' || mode === 'edit') {
+        const telDigits = form.telefono.replace(/\D/g, '');
+        if (telDigits && telDigits.length !== 10) {
+          setErrorMsg('El teléfono debe tener exactamente 10 dígitos.');
+          setSubmitting(false);
+          return;
+        }
+
+        // Duplicate check (only check if changed or adding)
+        if (candidates.length > 0) {
+          const isDupPhone = candidates.some(c => 
+            c.id !== candidate?.id && 
+            c.telefono && 
+            c.telefono.replace(/\D/g, '') === telDigits && 
+            telDigits.length === 10
+          );
+          if (isDupPhone) {
+            setErrorMsg('Este número de teléfono ya está registrado en otro candidato.');
+            setSubmitting(false);
+            return;
+          }
+
+          if (form.email.trim()) {
+            const isDupEmail = candidates.some(c => 
+              c.id !== candidate?.id && 
+              c.email && 
+              c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
+            );
+            if (isDupEmail) {
+              setErrorMsg('Este correo electrónico ya está registrado en otro candidato.');
+              setSubmitting(false);
+              return;
+            }
+          }
+        }
+      }
 
       if (mode === 'delete' && onDelete && candidate?.id) {
         const result = await onDelete(candidate.id);
@@ -220,6 +272,7 @@ export function CandidateModal({
           }
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
+          disabled={isEdit}
         />
       </div>
 
@@ -233,6 +286,7 @@ export function CandidateModal({
           onChange={(e) => setForm({ ...form, telefono: e.target.value })}
           placeholder="442 123 4567"
           autoComplete="off"
+          disabled={isEdit}
         />
       </div>
 
@@ -245,6 +299,7 @@ export function CandidateModal({
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           placeholder="candidato@correo.com"
           autoComplete="off"
+          disabled={isEdit}
         />
       </div>
     </>
@@ -260,6 +315,7 @@ export function CandidateModal({
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
+          disabled={isEdit}
         />
       </div>
 
@@ -271,7 +327,7 @@ export function CandidateModal({
           onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
           placeholder="Seleccione sección…"
-          disabled={!form.area}
+          disabled={!form.area || isEdit}
         />
       </div>
 
@@ -283,7 +339,7 @@ export function CandidateModal({
           onChange={(val) => setForm({ ...form, puesto: val })}
           options={puestosForSection.map((p) => ({ value: p, label: p }))}
           placeholder="Seleccione puesto…"
-          disabled={!form.seccion}
+          disabled={!form.seccion || isEdit}
         />
       </div>
     </>
@@ -310,6 +366,7 @@ export function CandidateModal({
           onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
           placeholder="Quién lleva el proceso"
           autoComplete="off"
+          disabled={isEdit}
         />
       </div>
 
@@ -337,17 +394,19 @@ export function CandidateModal({
           type="date"
           value={form.fecha_aplicacion}
           onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
+          disabled={isEdit}
         />
       </div>
 
       {/* Fecha entrevista sola, span-2 para no quedar huérfana */}
       <div className="form-group form-group--span-2">
-        <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
+        <label htmlFor="cand-fecha-cita">Fecha y Hora de entrevista</label>
         <input
           id="cand-fecha-cita"
-          type="date"
+          type="datetime-local"
           value={form.fecha_cita}
           onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
+          disabled={isEdit}
         />
       </div>
 
@@ -359,6 +418,7 @@ export function CandidateModal({
           value={form.notas}
           onChange={(e) => setForm({ ...form, notas: e.target.value })}
           placeholder="Detalles breves"
+          disabled={isEdit}
         />
       </div>
     </>
@@ -366,6 +426,22 @@ export function CandidateModal({
 
   const errorNotice = errorMsg ? (
     <p className="form-error" role="alert">{errorMsg}</p>
+  ) : null;
+
+  const auditNotice = (isAdmin && isEdit && candidate) ? (
+    <div className="form-group form-group--span-2 candidate-modal__audit">
+      <h4><ShieldAlert size={16} aria-hidden="true" /> Auditoría de Sistema</h4>
+      <div className="candidate-modal__audit-grid">
+        <div>
+          <span className="candidate-modal__audit-label">Fecha de Creación:</span>
+          <span>{candidate.created_at ? new Date(candidate.created_at).toLocaleString() : 'N/A'}</span>
+        </div>
+        <div>
+          <span className="candidate-modal__audit-label">Última Modificación:</span>
+          <span>{candidate.updated_at ? new Date(candidate.updated_at).toLocaleString() : 'N/A'}</span>
+        </div>
+      </div>
+    </div>
   ) : null;
 
   const useWizard = !isDelete && isMobile;
@@ -411,7 +487,10 @@ export function CandidateModal({
               {
                 id: 'proceso',
                 title: 'Proceso',
-                content: <div className="form-grid">{fieldsProceso}</div>,
+                content: <div className="form-grid">
+                  {fieldsProceso}
+                  {auditNotice}
+                </div>,
               },
             ]}
           />
@@ -447,6 +526,7 @@ export function CandidateModal({
               {fieldsContacto}
               {fieldsPosicion}
               {fieldsProceso}
+              {auditNotice}
             </div>
           )}
 

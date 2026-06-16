@@ -316,6 +316,7 @@ export const CANDIDATE_STATUSES = [
   'feedback_pendiente',
   'contratado',
   'rechazado',
+  'no_asistio',
 ] as const;
 
 export type CandidateStatus = (typeof CANDIDATE_STATUSES)[number];
@@ -328,6 +329,7 @@ export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
   feedback_pendiente: 'Feedback pendiente',
   contratado: 'Contratado',
   rechazado: 'Rechazado',
+  no_asistio: 'No asistió',
 };
 
 /**

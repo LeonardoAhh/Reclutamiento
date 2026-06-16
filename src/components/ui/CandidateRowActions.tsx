@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MoreVertical, Pencil, Trash2, StickyNote, BadgeCheck } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, StickyNote, BadgeCheck, MessageCircle } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
 import './CandidateRowActions.css';
 
@@ -51,6 +51,13 @@ export function CandidateRowActions({
     action(candidate);
   }
 
+  const rawFirstName = candidate.nombre.split(' ')[0] || '';
+  const firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+
+  const rawPuesto = candidate.puesto || '';
+  const puestoLower = rawPuesto.toLowerCase();
+  const puestoMsg = puestoLower ? puestoLower.charAt(0).toUpperCase() + puestoLower.slice(1) : '';
+
   return (
     <div className="candidate-row-actions" ref={rootRef}>
       <button
@@ -82,6 +89,21 @@ export function CandidateRowActions({
               <BadgeCheck size={14} aria-hidden="true" />
               <span>Contratar</span>
             </button>
+          )}
+
+          {candidate.telefono && (
+            <a
+              href={`https://wa.me/52${candidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${firstName}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="candidate-row-actions__item"
+              role="menuitem"
+              style={{ color: 'var(--color-success)' }}
+              onClick={() => setOpen(false)}
+            >
+              <MessageCircle size={14} aria-hidden="true" />
+              <span>WhatsApp</span>
+            </a>
           )}
 
           <button

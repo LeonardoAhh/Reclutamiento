@@ -81,8 +81,8 @@ export function ThemeToggle() {
           r="1.6"
           className="theme-toggle__satellite"
           animate={{
-            cy: isDark ? 12 : 16,
-            r: isDark ? 1.9 : 1.6,
+            cy: isDark ? "12" : "16",
+            r: isDark ? "1.9" : "1.6",
           }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
         />

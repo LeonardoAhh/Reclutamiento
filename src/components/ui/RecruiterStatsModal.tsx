@@ -21,6 +21,7 @@ interface RecruiterStats {
   citados: number;
   contratados: number;
   rechazados: number;
+  no_asistio: number;
 }
 
 interface RecruiterStatsModalProps {
@@ -158,6 +159,8 @@ export function RecruiterStatsModal({
             {recruiterStats.map((r) => {
               const pct = (n: number) =>
                 r.total === 0 ? 0 : Math.round((n / r.total) * 100);
+              
+              const efectividadAsistencia = r.total === 0 ? 0 : Math.round(((r.total - r.no_asistio) / r.total) * 100);
 
               return (
                 <article key={r.name} className="recruiter-stats-modal__card">
@@ -169,6 +172,9 @@ export function RecruiterStatsModal({
                       <h3 className="recruiter-stats-modal__card-name">{r.name}</h3>
                       <span className="recruiter-stats-modal__card-total">
                         {r.total} candidato{r.total === 1 ? '' : 's'}
+                      </span>
+                      <span className="recruiter-stats-modal__card-efectividad">
+                        {efectividadAsistencia}% Efectividad
                       </span>
                     </div>
                   </header>
@@ -189,6 +195,11 @@ export function RecruiterStatsModal({
                       <span className="recruiter-stats-modal__stat-label">Rechazados</span>
                       <span className="recruiter-stats-modal__stat-count">({r.rechazados})</span>
                     </div>
+                    <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--no-asistio">
+                      <span className="recruiter-stats-modal__stat-value">{pct(r.no_asistio)}%</span>
+                      <span className="recruiter-stats-modal__stat-label">No Asistió</span>
+                      <span className="recruiter-stats-modal__stat-count">({r.no_asistio})</span>
+                    </div>
                   </div>
 
                   <div className="recruiter-stats-modal__card-bar">
@@ -203,6 +214,10 @@ export function RecruiterStatsModal({
                     <div
                       className="recruiter-stats-modal__card-bar-segment recruiter-stats-modal__card-bar-segment--rechazados"
                       style={{ '--bar-width': `${pct(r.rechazados)}%` } as React.CSSProperties}
+                    />
+                    <div
+                      className="recruiter-stats-modal__card-bar-segment recruiter-stats-modal__card-bar-segment--no-asistio"
+                      style={{ '--bar-width': `${pct(r.no_asistio)}%` } as React.CSSProperties}
                     />
                   </div>
                 </article>
