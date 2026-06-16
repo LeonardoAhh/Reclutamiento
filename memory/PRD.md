@@ -32,6 +32,13 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - `Header.tsx`: `<ThemeToggle />` colocado antes del `<UserMenu />` dentro de `.app-header__actions` (ya tiene `gap: var(--spacing-xs)`). Visible en mobile y desktop.
 - `tsc -b --noEmit` y `vite build` OK.
 
+### 2026-01 — Bottom tab bar removida → todos los accesos al UserMenu
+- `src/App.tsx`: removido `<BottomTabBar />` del `ProtectedShell`. Los componentes siguen en `src/components/layout/BottomTabBar.{tsx,css}` para posible restauración futura, simplemente no se montan.
+- `src/components/layout/UserMenu.tsx` reescrito: dropdown consolidado con 7 rutas (KPIs, Candidates, Dashboard, Vacancies, Downsizing, Employees, Rutas) + sign out. Sección "Navigation" con label. Detección de ruta activa via `useLocation` (exacto para `/`, prefijo para el resto). `aria-current="page"` + indicador visual (dot a la derecha + bg tinted + bold) en el item activo. Cierre automático al cambiar pathname. Cada item con `data-testid="user-menu-nav-*"`.
+- `src/components/layout/UserMenu.css`: dropdown más ancho (260–320px) con `max-height: calc(100dvh - var(--spacing-xxl))` y scroll interno + `overscroll-behavior: contain` para que en mobile no scrollee la página detrás. Nuevos estilos `.user-menu__section-label`, `.user-menu__list`, `.user-menu__item--active`, `.user-menu__item-dot`. 100% tokens.
+- `src/styles/global.css`: eliminado el `padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom))` del body en mobile (ahora solo `--safe-area-bottom`); token `--tab-bar-height` queda en 0px porque `PWAStatus.css` y `CommentModal.css` aún lo referencian para offset. Reglas `::view-transition-*(theme-bottom-tab)` removidas (huérfanas).
+- `tsc -b --noEmit` y `vite build` OK.
+
 ### 2026-01 — Transición global de tema (circular reveal + stagger)
 - `useTheme.ts`: ahora envuelve el `applyTheme` en `document.startViewTransition(...)` cuando el navegador soporta View Transitions API (Chrome 111+, Safari 18+) y el usuario no tiene `prefers-reduced-motion`. Acepta `origin: {x, y}` (centro del botón clickeado) y lo escribe en CSS vars `--theme-origin-x/y` antes de iniciar la transición.
 - `ThemeToggle.tsx`: calcula el centro del botón con `getBoundingClientRect()` y lo pasa a `toggleTheme(origin)`.
