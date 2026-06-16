@@ -4,6 +4,7 @@ import { useLoader } from '@/hooks/useLoader';
 import { Header } from '@/components/layout/Header';
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
+import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { Dashboard } from '@/pages/Dashboard';
@@ -62,6 +63,7 @@ function App() {
   return (
     <>
       <PWAStatus />
+      <ThemeTransitionOverlay />
       <RouteTransitionLoader />
       <Routes>
       <Route

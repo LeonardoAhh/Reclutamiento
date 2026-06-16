@@ -70,18 +70,49 @@ export function useTheme() {
       '(prefers-reduced-motion: reduce)',
     ).matches;
 
-    const startVT = (
-      document as Document & { startViewTransition?: StartViewTransition }
-    ).startViewTransition;
-
-    if (reduceMotion || typeof startVT !== 'function') {
+    if (reduceMotion) {
       applyTheme(theme);
       return;
     }
 
-    startVT.call(document, () => {
-      applyTheme(theme);
-    });
+    const root = document.documentElement;
+    const originX =
+      parseFloat(root.style.getPropertyValue('--theme-origin-x')) ||
+      window.innerWidth / 2;
+    const originY =
+      parseFloat(root.style.getPropertyValue('--theme-origin-y')) ||
+      window.innerHeight / 2;
+
+    /* Color de fondo ACTUAL (tema viejo) — lo necesita el overlay fallback
+       para cubrir la pantalla con el color saliente y "drenarlo" hacia el
+       punto del click. */
+    const prevBg =
+      window.getComputedStyle(root).backgroundColor || '#ffffff';
+
+    const startVT = (
+      document as Document & { startViewTransition?: StartViewTransition }
+    ).startViewTransition;
+
+    if (typeof startVT === 'function') {
+      /* Navegadores con View Transitions API: el navegador hace el snapshot
+         y la animación con las reglas CSS `::view-transition-*`. */
+      startVT.call(document, () => {
+        applyTheme(theme);
+      });
+      return;
+    }
+
+    /* Fallback Framer Motion (iOS Safari < 18, Firefox, WebViews viejos):
+       dispatchamos un evento que `ThemeTransitionOverlay` escucha y aplica
+       el tema inmediatamente; el overlay cubre la pantalla con `prevBg`
+       y se contrae a un círculo en (originX, originY), revelando el nuevo
+       tema debajo. */
+    window.dispatchEvent(
+      new CustomEvent('theme:transition', {
+        detail: { x: originX, y: originY, prevBg },
+      }),
+    );
+    applyTheme(theme);
   }, [theme]);
 
   /* ── Sync con cambios del SO sólo si el usuario no eligió manual ───── */
