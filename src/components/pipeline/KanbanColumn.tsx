@@ -8,7 +8,7 @@ interface KanbanColumnProps {
   candidates: Candidate[];
   notesCount?: (c: Candidate) => number;
   onEdit: (c: Candidate) => void;
-  onDelete: (c: Candidate) => void;
+  onDelete?: (c: Candidate) => void;
   onNotes?: (c: Candidate) => void;
   onHire?: (c: Candidate) => void;
 }
