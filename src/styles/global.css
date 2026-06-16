@@ -283,6 +283,10 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* iOS: el safe-area (notch + barra de estado) toma su color del <html>,
+     no del <body>. Sin esto, en tema oscuro la barra superior se ve blanca. */
+  background-color: var(--color-canvas);
+  transition: background-color var(--transition-base);
 }
 
 body {

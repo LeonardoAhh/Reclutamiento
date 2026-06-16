@@ -19,9 +19,10 @@
             content="Dashboard de Reclutamiento — Control de plantilla autorizada, vacantes y cobertura por puesto y departamento"
         />
 
-        <!-- Color de la barra del navegador en Chrome/Edge/Android.
-         Se actualiza dinámicamente por el script de tema (ver abajo). -->
-        <meta name="theme-color" content="#f7f6f2" id="theme-color-meta" />
+        <!-- Color de la barra del navegador en Chrome/Edge/Android y Safari iOS 15+.
+         Debe coincidir con --color-canvas. Se actualiza dinámicamente por el
+         script de tema (ver abajo) y por el hook useTheme. -->
+        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
 
         <!-- =====================================================================
          PWA / INSTALACIÓN EN PANTALLA DE INICIO
@@ -30,9 +31,11 @@
         <!-- Habilita el modo standalone en iOS (oculta barra de Safari) -->
         <meta name="apple-mobile-web-app-capable" content="yes" />
 
-        <!-- "default" respeta la barra de estado del sistema; evita colores
-         forzados que puedan verse mal en modo oscuro. -->
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <!-- "black-translucent" hace que el contenido se extienda por debajo
+         de la barra de estado, permitiendo que el color del <html> (canvas)
+         sea visible en esa zona. Combinado con viewport-fit=cover y el
+         background del <html>, la barra superior adopta el color del tema. -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
         <!-- Nombre que aparece bajo el ícono al guardar en pantalla de inicio -->
         <meta name="apple-mobile-web-app-title" content="Reclutamiento" />
@@ -133,14 +136,20 @@
                 el parpadeo del cambio de colores al cargar la página */
                     document.documentElement.classList.add("theme-init");
 
-                    /* 6. Actualizar el meta theme-color del navegador */
+                    /* 6. Actualizar el meta theme-color del navegador.
+                Debe coincidir con --color-canvas para que iOS pinte la barra
+                de estado del color correcto del tema. */
                     var meta = document.getElementById("theme-color-meta");
                     if (meta) {
                         meta.setAttribute(
                             "content",
-                            theme === "dark" ? "#1c1b16" : "#f7f6f2",
+                            theme === "dark" ? "#0a0a0a" : "#ffffff",
                         );
                     }
+                    /* También fijamos el background del <html> de inmediato
+                para que el safe-area superior en iOS no parpadee en blanco. */
+                    document.documentElement.style.backgroundColor =
+                        theme === "dark" ? "#0a0a0a" : "#ffffff";
 
                     /* 7. Remover la clase de bloqueo en el siguiente frame,
                 una vez que los estilos iniciales ya se aplicaron */

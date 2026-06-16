@@ -15,9 +15,12 @@ function getInitialTheme(): Theme {
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
   root.setAttribute('data-theme', theme);
+  // Mantener el background del <html> alineado con el tema. Esto es lo
+  // que pinta el safe-area (notch / barra de estado) en iOS Safari.
+  root.style.backgroundColor = theme === 'dark' ? '#0a0a0a' : '#ffffff';
   const meta = document.getElementById('theme-color-meta');
   if (meta) {
-    meta.setAttribute('content', theme === 'dark' ? '#1c1b16' : '#f7f6f2');
+    meta.setAttribute('content', theme === 'dark' ? '#0a0a0a' : '#ffffff');
   }
 }
 
