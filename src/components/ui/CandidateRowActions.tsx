@@ -7,7 +7,7 @@ interface CandidateRowActionsProps {
   candidate: Candidate;
   notesCount: number;
   onEdit: (c: Candidate) => void;
-  onDelete: (c: Candidate) => void;
+  onDelete?: (c: Candidate) => void;
   onNotes: (c: Candidate) => void;
   onHire?: (c: Candidate) => void;
 }
@@ -126,17 +126,21 @@ export function CandidateRowActions({
             <span>Editar</span>
           </button>
 
-          <div className="candidate-row-actions__divider" role="separator" />
+          {onDelete && (
+            <>
+              <div className="candidate-row-actions__divider" role="separator" />
 
-          <button
-            type="button"
-            className="candidate-row-actions__item candidate-row-actions__item--danger"
-            role="menuitem"
-            onClick={() => run(onDelete)}
-          >
-            <Trash2 size={14} aria-hidden="true" />
-            <span>Eliminar</span>
-          </button>
+              <button
+                type="button"
+                className="candidate-row-actions__item candidate-row-actions__item--danger"
+                role="menuitem"
+                onClick={() => run(onDelete)}
+              >
+                <Trash2 size={14} aria-hidden="true" />
+                <span>Eliminar</span>
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>

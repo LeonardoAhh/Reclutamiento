@@ -8,7 +8,7 @@ interface KanbanCardProps {
   candidate: Candidate;
   notesCount?: number;
   onEdit: (c: Candidate) => void;
-  onDelete: (c: Candidate) => void;
+  onDelete?: (c: Candidate) => void;
   onNotes?: (c: Candidate) => void;
   onHire?: (c: Candidate) => void;
 }
@@ -160,15 +160,17 @@ export function KanbanCard({
           >
             <Pencil size={14} aria-hidden="true" />
           </button>
-          <button
-            type="button"
-            className="kanban-card__action-btn kanban-card__action-btn--danger"
-            onClick={() => onDelete(candidate)}
-            aria-label={`Eliminar ${candidate.nombre}`}
-            title="Eliminar"
-          >
-            <Trash2 size={14} aria-hidden="true" />
-          </button>
+          {onDelete && (
+            <button
+              type="button"
+              className="kanban-card__action-btn kanban-card__action-btn--danger"
+              onClick={() => onDelete(candidate)}
+              aria-label={`Eliminar ${candidate.nombre}`}
+              title="Eliminar"
+            >
+              <Trash2 size={14} aria-hidden="true" />
+            </button>
+          )}
         </footer>
       </div>
     </article>

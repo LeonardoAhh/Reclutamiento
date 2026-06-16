@@ -28,6 +28,7 @@ import {
   EMPTY_FILTERS,
   type FilterState,
 } from '@/components/pipeline/CandidateFilters';
+import { useAuth } from '@/hooks/useAuth';
 import { useCandidates } from '@/hooks/useCandidates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
@@ -80,6 +81,9 @@ export function Pipeline() {
     deleteCandidate,
     addCandidateNote,
   } = useCandidates();
+
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === 'admin';
 
   const { addSingleEmployee } = useSupabaseData();
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -624,7 +628,7 @@ export function Pipeline() {
               candidates={filtered}
               notesCount={notesCount}
               onEdit={openEdit}
-              onDelete={openDelete}
+              onDelete={isAdmin ? openDelete : undefined}
               onNotes={(c) => setNotesTarget(c)}
               onHire={openHire}
               onStatusChange={(c, status) => handleStatusChange(c, status)}
@@ -710,7 +714,7 @@ export function Pipeline() {
                         candidate={c}
                         notesCount={notesCount(c)}
                         onEdit={openEdit}
-                        onDelete={openDelete}
+                        onDelete={isAdmin ? openDelete : undefined}
                         onNotes={() => setNotesTarget(c)}
                         onHire={
                           c.status === 'contratado' && !c.employee_num
