@@ -29,7 +29,7 @@ function RouteLoader() {
       <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
         <circle cx="20" cy="20" r="16" stroke="var(--color-hairline-strong)" strokeWidth="3" />
         <motion.circle
-          cx="20" cy="20" r="16"
+          cx={20} cy={20} r={16}
           stroke="var(--color-primary)"
           strokeWidth="3"
           strokeLinecap="round"
@@ -52,7 +52,7 @@ function AttractionGraphic() {
     <svg width="160" height="160" viewBox="0 0 160 160" className="loader-svg">
       {/* Central Node */}
       <motion.circle 
-        cx="80" cy="80" r="18" 
+        cx={80} cy={80} r={18} 
         fill="var(--color-primary)" 
         initial={{ scale: 0 }} 
         animate={{ scale: 1 }} 
@@ -67,12 +67,12 @@ function AttractionGraphic() {
         return (
           <motion.circle
             key={i}
-            cx={String(startX)}
-            cy={String(startY)}
-            r="5"
+            cx={startX}
+            cy={startY}
+            r={5}
             fill="var(--color-primary)"
             initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], cx: "80", cy: "80" }}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], cx: 80, cy: 80 }}
             transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, delay: i * 0.3, ease: "easeInOut" }}
           />
         );
@@ -94,7 +94,7 @@ function SelectionGraphic() {
         transition={{ duration: 0.8, ease: EASE }}
       />
       {/* Abstract profile items */}
-      <motion.circle cx="80" cy="65" r="14" fill="var(--color-hairline-strong)" 
+      <motion.circle cx={80} cy={65} r={14} fill="var(--color-hairline-strong)" 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
       <motion.rect x="60" y="95" width="40" height="4" rx="2" fill="var(--color-hairline-strong)" 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} />

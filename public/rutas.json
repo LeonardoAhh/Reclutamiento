@@ -600,14 +600,6 @@
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero empleado": "2756",
-    "nombre": "RAMIREZ ESPINOZA JUAN PABLO",
-    "turno": "31",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SAN ISIDRO",
-    "parada": "PARADA DE CAMIONES"
-  },
-  {
     "numero empleado": "2777",
     "nombre": "ROSAS ALMANZA MARIA ALEJANDRA",
     "turno": "3",
@@ -2096,14 +2088,6 @@
     "parada": "LONCHERIA LILI"
   },
   {
-    "numero empleado": "4195",
-    "nombre": "GALVAN MARTINEZ CLAUDIA VERONICA",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
-  },
-  {
     "numero empleado": "4197",
     "nombre": "CONSTANTINO VELASCO CARMEN ",
     "turno": "30",
@@ -2334,5 +2318,13 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4244",
+    "nombre": "DIAZ PEREZ GENARO",
+    "turno": "3",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
   }
 ]
