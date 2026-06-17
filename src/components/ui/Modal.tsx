@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -96,7 +97,7 @@ export function Modal({
     .filter(Boolean)
     .join(' ');
 
-  return (
+  return createPortal(
     <div
       className="modal-overlay"
       role="presentation"
@@ -135,6 +136,7 @@ export function Modal({
           </footer>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
