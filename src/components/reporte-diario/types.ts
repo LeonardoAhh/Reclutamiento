@@ -34,3 +34,8 @@ export interface EmployeeRef {
     area: string
     turno: string
 }
+
+export interface AreaDetailRow extends EmployeeRef {
+    puesto?: string
+    tipo_incidencia: string
+}

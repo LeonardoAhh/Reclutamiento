@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Link } from "react-router-dom"
 import './ReporteDiario.css';
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
@@ -21,8 +20,6 @@ import {
     Check,
     Database,
     Trash2,
-    Clock,
-    UserX,
     Building2,
     SunMedium,
     User,
@@ -93,7 +90,7 @@ export default function ReporteDiarioContent() {
                 if (errs.length === 0 && parsed.length > 0) {
                     setRows(parsed)
                     setSelectedMes(parsed[0]?.mes ?? "")
-                    setFileName("Autoguardado: Recuperado de sesión")
+                    setFileName("Autoguardado")
                 }
             } catch (err) {
                 // Si falla el parseo, solo ignoramos la caché
@@ -249,6 +246,7 @@ export default function ReporteDiarioContent() {
     const selectedAreaDetailRows = useMemo(() => {
         if (!selectedDay || !selectedArea) return []
 
+        const seen = new Set<string>()
         return selectedRows
             .filter(
                 (row) =>
@@ -256,6 +254,11 @@ export default function ReporteDiarioContent() {
                     ALLOWED_PUESTOS.has(row.puesto || "") &&
                     isIncidence(row.days[selectedDay]),
             )
+            .filter((row) => {
+                if (seen.has(row.numero_empleado)) return false
+                seen.add(row.numero_empleado)
+                return true
+            })
             .map((row, idx) => ({
                 key: `${row.numero_empleado}||${row.area}||${idx}`,
                 numero_empleado: row.numero_empleado,
@@ -494,7 +497,7 @@ export default function ReporteDiarioContent() {
         }
         setRows(parsed)
         setSelectedMes(mes)
-        setFileName(`Guardado: ${formatMes(mes)}`)
+        setFileName(formatMes(mes))
         setErrors([])
     }, [fetchByMes])
 
@@ -572,7 +575,7 @@ export default function ReporteDiarioContent() {
                         <h1 className="reporte-title">Reporte Diario</h1>
                         <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
                         {fileName && hasData && (
-                            <div className="reporte-status-banner" data-testid="reporte-filename">
+                            <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
                                 <FileJson size={16} className="text-primary" aria-hidden="true" />
                                 <span>{fileName}</span>
                                 <button
@@ -590,15 +593,8 @@ export default function ReporteDiarioContent() {
                     </div>
 
                     <div className="reporte-control-group">
-                        <Link to="/retardos" title="Retardos y marcajes" aria-label="Retardos y marcajes" className="reporte-tab-trigger">
-                            <Clock size={16} />
-                        </Link>
-                        <Link to="/reporte-diario/ausentismo" title="Ranking de ausentismo" aria-label="Ranking de ausentismo" className="reporte-tab-trigger" style={{ color: 'var(--color-error)' }}>
-                            <UserX size={16} />
-                        </Link>
                         {hasData && (
                             <>
-                                <span className="reporte-divider-v" aria-hidden="true" />
                                 <button
                                     type="button"
                                     className="reporte-btn-primary"

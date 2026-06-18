@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { Users, TrendingDown, TrendingUp, Filter } from "lucide-react";
-import type { EmployeeRef, AreaStaffSummary } from "./types";
+import { Users, TrendingDown, TrendingUp, Filter, ChevronRight } from "lucide-react";
+import type { AreaDetailRow, AreaStaffSummary } from "./types";
+import { INCIDENCIA_LABELS } from "./constants";
 import { Modal } from "@/components/ui/Modal";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -9,7 +10,7 @@ interface ReporteAreaSummaryProps {
     areas: AreaStaffSummary[];
     selectedArea: string | null;
     onSelectArea: (area: string | null) => void;
-    detailRows: EmployeeRef[];
+    detailRows: AreaDetailRow[];
 }
 
 // ─── Style Maps ────────────────────────────────────────────────────────────────
@@ -338,54 +339,117 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     );
 }
 
-// ─── Subcomponent: Detail Table ────────────────────────────────────────────────
+// ─── Subcomponent: Incidence Badge ─────────────────────────────────────────────
 
-interface DetailTableProps {
-    rows: EmployeeRef[];
+const INC_TONE: Record<string, "error" | "warn" | "info"> = {
+    F: "error", S: "error", I: "error",
+    FJ: "warn", P: "warn", PH: "warn", CT: "warn", TXT: "warn",
+    V: "info",
+};
+
+function IncidenceBadge({ code }: { code: string }) {
+    const tone = INC_TONE[code] ?? "warn";
+    const label = INCIDENCIA_LABELS[code] ?? code;
+    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{label}</span>;
 }
 
-const TABLE_HEADERS = ["# Emp", "Nombre", "Turno", "Depto"] as const;
+// ─── Subcomponent: Detail List (mobile cards + desktop table) ───────────────────
 
-function DetailTable({ rows }: DetailTableProps) {
+interface DetailListProps {
+    rows: AreaDetailRow[];
+}
+
+function DetailList({ rows }: DetailListProps) {
+    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+    const toggle = (key: string) => {
+        setExpanded((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) next.delete(key);
+            else next.add(key);
+            return next;
+        });
+    };
+
+    if (rows.length === 0) {
+        return (
+            <div className="reporte-incidents__empty" style={{ marginTop: "var(--spacing-md)" }}>
+                <p>No hay ausencias registradas para esta área.</p>
+            </div>
+        );
+    }
+
     return (
-        <div style={STYLES.modalTableWrapper}>
-            <table style={STYLES.table}>
-                <thead style={STYLES.thead}>
-                    <tr>
-                        {TABLE_HEADERS.map((header) => (
-                            <th key={header} scope="col" style={STYLES.th}>
-                                {header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody style={STYLES.tbody}>
-                    {rows.length > 0 ? (
-                        rows.map((row) => (
-                            <tr key={row.numero_empleado} style={STYLES.tr}>
-                                <td style={{ ...STYLES.td.base, ...STYLES.td.number }}>
-                                    {row.numero_empleado}
-                                </td>
-                                <td style={{ ...STYLES.td.base, ...STYLES.td.name }}>
-                                    {row.nombre}
-                                </td>
-                                <td style={STYLES.td.base}>
-                                    <span style={STYLES.td.shift}>{row.turno}</span>
-                                </td>
-                                <td style={{ ...STYLES.td.base, ...STYLES.td.dept }}>
-                                    {row.departamento}
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
+        <div style={{ marginTop: "var(--spacing-md)" }}>
+            {/* Desktop table */}
+            <div className="reporte-incidents__table-wrap">
+                <table className="reporte-incidents__table">
+                    <thead>
                         <tr>
-                            <td colSpan={4} style={STYLES.emptyCell}>
-                                No hay ausencias registradas para esta área.
-                            </td>
+                            <th scope="col"># Emp</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Incidencia</th>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Depto</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {rows.map((row) => (
+                            <tr key={row.key}>
+                                <td className="reporte-incidents__td-num">{row.numero_empleado}</td>
+                                <td className="reporte-incidents__td-name">{row.nombre}</td>
+                                <td><IncidenceBadge code={row.tipo_incidencia} /></td>
+                                <td><span className="reporte-chip">{row.turno}</span></td>
+                                <td>{row.departamento}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile cards with inline expand */}
+            <ul className="reporte-incidents__cards" aria-label="Detalle de ausencias por empleado">
+                {rows.map((row) => {
+                    const isOpen = expanded.has(row.key);
+                    const detailId = `area-detail-${row.key}`;
+                    return (
+                        <li key={row.key} className="reporte-incidents__card">
+                            <button
+                                type="button"
+                                className="reporte-incidents__card-summary"
+                                aria-expanded={isOpen}
+                                aria-controls={detailId}
+                                onClick={() => toggle(row.key)}
+                                data-testid={`area-detail-card-${row.key}`}
+                            >
+                                <span className="reporte-incidents__card-main">
+                                    <span className="reporte-incidents__card-name">{row.nombre}</span>
+                                    <span className="reporte-incidents__card-tags">
+                                        <IncidenceBadge code={row.tipo_incidencia} />
+                                    </span>
+                                </span>
+                                <span className="reporte-chip">T{row.turno}</span>
+                                <ChevronRight size={18} className="reporte-incidents__chevron" aria-hidden="true" />
+                            </button>
+
+                            {isOpen && (
+                                <div id={detailId} className="reporte-incidents__card-detail">
+                                    <span className="reporte-incidents__detail-label"># Empleado</span>
+                                    <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
+                                    <span className="reporte-incidents__detail-label">Departamento</span>
+                                    <span className="reporte-incidents__detail-value">{row.departamento}</span>
+                                    {row.puesto && (
+                                        <>
+                                            <span className="reporte-incidents__detail-label">Puesto</span>
+                                            <span className="reporte-incidents__detail-value">{row.puesto}</span>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </li>
+                    );
+                })}
+            </ul>
         </div>
     );
 }
@@ -401,7 +465,7 @@ export default function ReporteAreaSummary({
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const sortedAreas = useMemo(
-        () => [...areas].sort((a, b) => b.personal_incidencia - a.personal_incidencia),
+        () => [...areas].sort((a, b) => a.area.localeCompare(b.area, "es", { sensitivity: "base" })),
         [areas]
     );
 
@@ -462,20 +526,7 @@ export default function ReporteAreaSummary({
                 subtitle={`Mostrando ${detailRows.length} colaboradores ausentes en esta área.`}
                 fullscreenMobile={true}
             >
-                <DetailTable rows={detailRows} />
-
-                <div style={STYLES.modalFooter}>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setIsDetailOpen(false);
-                            onSelectArea(null);
-                        }}
-                        className="btn-secondary"
-                    >
-                        Cerrar
-                    </button>
-                </div>
+                <DetailList rows={detailRows} />
             </Modal>
         </div>
     );

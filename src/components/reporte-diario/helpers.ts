@@ -62,6 +62,10 @@ function normalizeString(value: unknown) {
 export function parseReporteJSON(raw: unknown[]): { rows: ReporteRow[]; errors: string[] } {
     const rows: ReporteRow[] = []
     const errors: string[] = []
+    // Deduplica filas repetidas: algunos exports (Excel/SAP) emiten cada empleado
+    // 2+ veces. Clave por empleado+área+turno; si se repite, fusionamos los días
+    // (rellenando los vacíos) en lugar de contar al empleado dos veces.
+    const seen = new Map<string, ReporteRow>()
 
     raw.forEach((item, index) => {
         if (typeof item !== "object" || item === null) {
@@ -108,7 +112,19 @@ export function parseReporteJSON(raw: unknown[]): { rows: ReporteRow[]; errors: 
             days[key] = normalizeString(value) || ""
         })
 
-        rows.push({ mes, numero_empleado, nombre, departamento, area, puesto, turno, days })
+        const dedupeKey = `${numero_empleado}||${area}||${turno}`
+        const existing = seen.get(dedupeKey)
+        if (existing) {
+            // Fusiona días: rellena los que estén vacíos en la fila ya vista.
+            for (const [k, v] of Object.entries(days)) {
+                if (v && !existing.days[k]) existing.days[k] = v
+            }
+            return
+        }
+
+        const newRow: ReporteRow = { mes, numero_empleado, nombre, departamento, area, puesto, turno, days }
+        seen.set(dedupeKey, newRow)
+        rows.push(newRow)
     })
 
     return { rows, errors }

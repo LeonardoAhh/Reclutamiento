@@ -1,28 +1,7 @@
-import { cn } from "@/lib/utils-shadcn";
 import { useMemo } from "react";
-import { Users, TrendingDown, CalendarX, MapPin } from "lucide-react";
+import { Users, CalendarX, MapPin } from "lucide-react";
 import { isIncidence, formatMes } from "./helpers";
 import type { ReporteRow } from "./types";
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const KPI_TONES = {
-    default: {
-        borderColor: "var(--color-hairline)",
-        iconColor: "var(--color-muted)",
-        valueColor: "var(--color-ink)",
-    },
-    warning: {
-        borderColor: "var(--color-warning)",
-        iconColor: "var(--color-warning)",
-        valueColor: "var(--color-ink)",
-    },
-    destructive: {
-        borderColor: "var(--color-error)",
-        iconColor: "var(--color-error)",
-        valueColor: "var(--color-error)",
-    },
-} as const;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -32,7 +11,7 @@ interface ReporteKpiDashboardProps {
     currentMonth: string;
 }
 
-type KpiTone = keyof typeof KPI_TONES;
+type KpiTone = "default" | "warning" | "destructive";
 
 interface KpiCard {
     label: string;
@@ -41,60 +20,6 @@ interface KpiCard {
     icon: React.ReactNode;
     tone: KpiTone;
 }
-
-// ─── Style Maps ────────────────────────────────────────────────────────────────
-
-const STYLES = {
-    layout: {
-        display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
-        gap: "var(--spacing-lg)",
-    },
-    layoutDesktop: {
-        gridTemplateColumns: "repeat(4, 1fr)",
-    },
-    card: {
-        padding: "var(--spacing-md)",
-        borderRadius: "var(--rounded-lg)",
-        border: "1px solid var(--color-hairline)",
-        background: "var(--color-surface-card)",
-        display: "flex",
-        flexDirection: "column" as const,
-        gap: "var(--spacing-xs)",
-    },
-    cardHeader: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    label: {
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
-        color: "var(--color-muted)",
-        lineHeight: "var(--type-caption-sm-line)",
-    },
-    icon: {
-        opacity: 0.6,
-        display: "flex",
-        alignItems: "center",
-    },
-    value: {
-        fontFamily: "var(--font-display)",
-        fontSize: "var(--type-display-lg-size)",
-        fontWeight: "var(--type-display-lg-weight)",
-        lineHeight: "var(--type-display-lg-line)",
-        letterSpacing: "var(--type-display-lg-tracking)",
-        margin: 0,
-    },
-    sub: {
-        fontSize: "var(--type-caption-sm-size)",
-        color: "var(--color-muted)",
-        lineHeight: "var(--type-caption-sm-line)",
-        margin: 0,
-    },
-} as const;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -176,36 +101,16 @@ function getTone(count: number, thresholds: { warning: number; destructive: numb
 
 // ─── Subcomponent: KpiCard ─────────────────────────────────────────────────────
 
-interface KpiCardProps {
-    card: KpiCard;
-}
-
-function KpiCardItem({ card }: KpiCardProps) {
-    const tone = KPI_TONES[card.tone];
-
-    const cardStyle = {
-        ...STYLES.card,
-        borderColor: tone.borderColor,
-    };
-
-    const iconStyle = {
-        ...STYLES.icon,
-        color: tone.iconColor,
-    };
-
-    const valueStyle = {
-        ...STYLES.value,
-        color: tone.valueColor,
-    };
-
+function KpiCardItem({ card }: { card: KpiCard }) {
+    const toneClass = card.tone !== "default" ? ` reporte-kpi__card--${card.tone}` : "";
     return (
-        <article className="reporte__card" style={cardStyle}>
-            <div style={STYLES.cardHeader}>
-                <span style={STYLES.label}>{card.label}</span>
-                <span style={iconStyle}>{card.icon}</span>
+        <article className={`reporte-kpi__card${toneClass}`} data-testid={`kpi-${card.tone}`}>
+            <div className="reporte-kpi__head">
+                <span className="reporte-kpi__label">{card.label}</span>
+                <span className="reporte-kpi__icon" aria-hidden="true">{card.icon}</span>
             </div>
-            <p style={valueStyle}>{card.value}</p>
-            {card.sub && <p style={STYLES.sub}>{card.sub}</p>}
+            <p className="reporte-kpi__value">{card.value}</p>
+            {card.sub && <p className="reporte-kpi__sub">{card.sub}</p>}
         </article>
     );
 }
@@ -229,39 +134,36 @@ export default function ReporteKpiDashboard({
             label: "Empleados",
             value: kpis.totalEmpleados,
             sub: `en ${formatMes(currentMonth)}`,
-            icon: <Users className="w-5 h-5" />,
+            icon: <Users size={18} />,
             tone: "default",
         },
         {
             label: "Total incidencias",
             value: kpis.totalIncidencias,
             sub: `en ${formatMes(currentMonth)}`,
-            icon: <CalendarX className="w-5 h-5" />,
+            icon: <CalendarX size={18} />,
             tone: kpis.totalIncidencias > 0 ? "warning" : "default",
         },
         {
             label: "Día con más incidencias",
             value: getWorstDayLabel(kpis.worstDay, currentMonth),
             sub: kpis.worstDay
-                ? `${kpis.worstDayCount} incidencias en ${formatMes(currentMonth)}`
+                ? `${kpis.worstDayCount} incidencias`
                 : undefined,
-            icon: <CalendarX className="w-5 h-5" />,
+            icon: <CalendarX size={18} />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
             label: "Área con más incidencias",
             value: kpis.worstArea || "—",
             sub: kpis.worstArea ? `${kpis.worstAreaCount} incidencias` : undefined,
-            icon: <MapPin className="w-5 h-5" />,
+            icon: <MapPin size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
         },
     ];
 
     return (
-        <div
-            className="reporte__layout reporte__layout--quarters"
-            style={STYLES.layout}
-        >
+        <div className="reporte-kpi__grid">
             {cards.map((card) => (
                 <KpiCardItem key={card.label} card={card} />
             ))}

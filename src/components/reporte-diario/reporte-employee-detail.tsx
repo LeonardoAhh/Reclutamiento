@@ -416,16 +416,6 @@ export default function ReporteEmployeeDetail({
                 year={year}
                 month={month}
             />
-
-            <div style={STYLES.modalFooter}>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="btn-secondary"
-                >
-                    Cerrar detalle
-                </button>
-            </div>
         </Modal>
     );
 }

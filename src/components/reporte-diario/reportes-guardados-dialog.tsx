@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils-shadcn";
 import './ReporteDiario.css';
 import { Database, ChevronRight, Calendar, Trash2 } from "lucide-react"
 import { useState } from "react";
@@ -29,24 +28,22 @@ export default function ReportesGuardadosDialog({
 
     return (
         <>
+            {/* Trigger */}
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="reporte-card"
-                style={{
-                    display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between',
-                    padding: 'var(--spacing-md)', cursor: 'pointer', transition: 'all var(--transition-fast)'
-                }}
+                className="reporte-saved__trigger"
+                data-testid="open-saved-reports-btn"
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', textAlign: 'left' }}>
-                    <div style={{ display: 'flex', height: 32, width: 32, flexShrink: 0, alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--rounded-md)', background: 'var(--color-primary-tint)', color: 'var(--color-primary)', transition: 'all var(--transition-fast)' }}>
+                <span className="reporte-saved__trigger-left">
+                    <span className="reporte-saved__trigger-icon">
                         <Database size={16} />
-                    </div>
-                    <p style={{ fontSize: 'var(--type-body-sm-size)', fontWeight: 'var(--type-body-strong-weight)', color: 'var(--color-ink)', margin: 0 }}>
+                    </span>
+                    <span className="reporte-saved__trigger-text">
                         Reportes guardados ({savedSummaries.length})
-                    </p>
-                </div>
-                <ChevronRight size={16} style={{ color: 'var(--color-muted)', flexShrink: 0 }} />
+                    </span>
+                </span>
+                <ChevronRight size={16} className="reporte-saved__trigger-chevron" aria-hidden="true" />
             </button>
 
             <Modal
@@ -57,85 +54,53 @@ export default function ReportesGuardadosDialog({
                 size="lg"
                 fullscreenMobile={true}
             >
-                <div style={{ padding: 'var(--spacing-lg)', maxHeight: '75vh', overflowY: 'auto' }}>
+                <div className="reporte-saved__body">
                     {savedSummaries.length === 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-xl) 0', textAlign: 'center' }}>
-                            <div style={{ display: 'flex', height: 48, width: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--rounded-full)', background: 'var(--color-surface-soft)', marginBottom: 'var(--spacing-md)' }}>
-                                <Database size={20} style={{ color: 'var(--color-muted)', opacity: 0.5 }} />
-                            </div>
-                            <p style={{ fontSize: 'var(--type-body-sm-size)', fontWeight: 'var(--type-body-strong-weight)', color: 'var(--color-muted)', margin: 0 }}>
-                                No hay reportes guardados
-                            </p>
-                            <p style={{ fontSize: 'var(--type-caption-sm-size)', color: 'var(--color-muted)', opacity: 0.7, marginTop: 4, margin: 0 }}>
-                                Guarda un reporte para verlo aquí
-                            </p>
+                        <div className="reporte-saved__empty">
+                            <span className="reporte-saved__empty-icon">
+                                <Database size={20} aria-hidden="true" />
+                            </span>
+                            <p className="reporte-saved__empty-title">No hay reportes guardados</p>
+                            <p className="reporte-saved__empty-sub">Guarda un reporte para verlo aquí.</p>
                         </div>
                     ) : (
-                        <div className="reporte-grid-2">
+                        <ul className="reporte-saved__list" aria-label="Reportes guardados">
                             {savedSummaries.map((s) => (
-                                <div
-                                    key={s.id}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() => { onLoad(s.mes); setIsOpen(false); }}
-                                    onKeyDown={(e) => { if (e.key === "Enter") { onLoad(s.mes); setIsOpen(false); } }}
-                                    className="reporte-card"
-                                    style={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-md)',
-                                        padding: 'var(--spacing-md)', cursor: 'pointer', transition: 'all var(--transition-fast)'
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', minWidth: 0 }}>
-                                        <div style={{ display: 'flex', height: 40, width: 40, flexShrink: 0, alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--rounded-md)', background: 'var(--color-primary-tint)', color: 'var(--color-primary)', transition: 'all var(--transition-fast)' }}>
-                                            <Calendar size={20} />
-                                        </div>
-                                        <div style={{ minWidth: 0 }}>
-                                            <span style={{ fontSize: 'var(--type-body-sm-size)', fontWeight: 'var(--type-body-strong-weight)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-ink)', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                {formatMes(s.mes)}
-                                            </span>
-                                            <span style={{ fontSize: '11px', color: 'var(--color-muted)', marginTop: 2, display: 'block' }}>
-                                                Click para cargar
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexShrink: 0 }}>
-                                        {/* Badge de incidencias */}
-                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-                                            <span style={{
-                                                fontSize: 'var(--type-body-sm-size)', fontWeight: 'var(--type-body-strong-weight)', lineHeight: 1, fontVariantNumeric: 'tabular-nums',
-                                                color: s.total_incidencias > 50 ? 'var(--color-error)' : 'var(--color-ink)'
-                                            }}>
+                                <li key={s.id} className="reporte-saved__item">
+                                    <button
+                                        type="button"
+                                        className="reporte-saved__load"
+                                        onClick={() => { onLoad(s.mes); setIsOpen(false); }}
+                                        data-testid={`load-report-${s.mes}`}
+                                    >
+                                        <span className="reporte-saved__icon">
+                                            <Calendar size={18} aria-hidden="true" />
+                                        </span>
+                                        <span className="reporte-saved__main">
+                                            <span className="reporte-saved__title">{formatMes(s.mes)}</span>
+                                            <span className="reporte-saved__sub">Click para cargar</span>
+                                        </span>
+                                        <span className="reporte-saved__count">
+                                            <span className={`reporte-saved__count-value${s.total_incidencias > 50 ? " reporte-saved__count-value--high" : ""}`}>
                                                 {s.total_incidencias}
                                             </span>
-                                            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: 'var(--type-caption-sm-tracking)', color: 'var(--color-muted)', marginTop: 4 }}>
-                                                incidencias
-                                            </span>
-                                        </div>
+                                            <span className="reporte-saved__count-label">incidencias</span>
+                                        </span>
+                                    </button>
 
-                                        {/* Separador + botón eliminar */}
-                                        <div style={{ height: 32, width: 1, background: 'var(--color-hairline)', margin: '0 4px' }} />
-
-                                        <button
-                                            type="button"
-                                            onClick={(e) => { e.stopPropagation(); onDelete(s.id) }}
-                                            disabled={dbSaving}
-                                            style={{
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                borderRadius: 'var(--rounded-md)', padding: 8, color: 'var(--color-muted)',
-                                                opacity: dbSaving ? 0.5 : 0.4, cursor: dbSaving ? 'not-allowed' : 'pointer',
-                                                transition: 'all var(--transition-fast)', border: 'none', background: 'transparent'
-                                            }}
-                                            aria-label="Eliminar reporte"
-                                            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-error)'; e.currentTarget.style.opacity = '1'; e.currentTarget.style.background = 'var(--color-error-tint)'; }}
-                                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-muted)'; e.currentTarget.style.opacity = '0.4'; e.currentTarget.style.background = 'transparent'; }}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </div>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => { e.stopPropagation(); onDelete(s.id); }}
+                                        disabled={dbSaving}
+                                        className="reporte-saved__delete"
+                                        aria-label={`Eliminar reporte ${formatMes(s.mes)}`}
+                                        data-testid={`delete-report-${s.mes}`}
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                     )}
                 </div>
             </Modal>

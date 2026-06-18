@@ -3,6 +3,20 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 2) — Reporte Diario: pulido mobile-first + Supabase + fixes
+- **Dedup empleados**: el export duplicaba cada empleado (360 reales → 720). `helpers.parseReporteJSON` ahora deduplica por `numero_empleado+área+turno` (fusiona días). Corrige KPIs, calendario, áreas e incidencias.
+- **KPI dashboard** (`reporte-kpi-dashboard.tsx`): pasado a clases (`.reporte-kpi__*`); el inline `repeat(2,1fr)` pisaba la clase y se quedaba en 2 col + valor `display-lg` gigante. Ahora compacto: móvil 2 col, PC 4 col en una fila; valor `heading-md/lg`.
+- **Incident-tabs y Área-detalle**: tabla en PC, tarjetas con expand inline en móvil. El modal de área ahora muestra **tipo de incidencia** (badge color por código) + #emp/depto/puesto al expandir. Áreas ordenadas **A-Z**.
+- **Comparativa mensual** (`reporte-comparison.tsx`): rediseñada de tarjetas gigantes a **tabla compacta** (PC) + tarjetas expand-inline (móvil) — escala bien con 12+ meses.
+- **Reportes guardados** (`reportes-guardados-dialog.tsx`): rediseñado a lista compacta (`.reporte-saved__*`).
+- **Modales**: quitado botón "Cerrar" redundante (queda solo la X) en área, comparación y employee-detail.
+- **Header**: quitados botones Retardos/Ausentismo; agregado botón **"Guardar mes"** (conecta `handleSaveToDb`); chip de archivo truncado.
+- **Spacing de página**: `.reporte-page { padding-block: xl/xxl/section }` — los `py-[var(--spacing-*)]` de Tailwind no se generaban → header y fondo pegados. Corregido.
+- **Tarjetas base**: `.reporte-card`/`.reporte__card` ya no fuerzan `flex-direction:column` (rompía botones en fila).
+- **Supabase**: `019_reportes_diarios.sql` (1 registro por mes = historial, RLS authenticated). Correr en SQL Editor.
+- Validado con `REPORTE JUNIO.json` real (360 emp, 347 inc). `npm run build` (tsc -b + vite) **OK**.
+
+
 ## Decisiones del usuario
 - KPIs móvil: tabs por grupo (Semana, Vacantes, Candidatos, Plantilla, Bajas); gráfica hero colapsable en sección secundaria; sin blur "Incognito" en móvil; PC se queda como está.
 - Modales/forms de creación (Nuevo Empleado, Nueva Vacante, Nuevo Candidato): un diseño en PC (actual) y otro en móvil (wizard por pasos). El usuario prueba en su entorno local (no compartió credenciales Supabase).
