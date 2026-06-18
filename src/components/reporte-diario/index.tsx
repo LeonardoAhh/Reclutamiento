@@ -567,32 +567,49 @@ export default function ReporteDiarioContent() {
 
             {/* ── Header ───────────────────────────────────────────────── */}
             <header className="reporte-card">
-                <div className="reporte-card__header reporte-header__top" style={{ alignItems: 'center' }}>
+                <div className="reporte-header__top">
                     <div className="reporte-title-wrapper">
                         <h1 className="reporte-title">Reporte Diario</h1>
                         <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
                         {fileName && hasData && (
-                            <div className="reporte-status-banner" style={{ alignSelf: 'flex-start', marginTop: 'var(--spacing-xs)' }}>
-                                <FileJson size={16} className="text-primary" />
+                            <div className="reporte-status-banner" data-testid="reporte-filename">
+                                <FileJson size={16} className="text-primary" aria-hidden="true" />
                                 <span>{fileName}</span>
-                                <button onClick={handleClearFile} title="Limpiar archivo actual" style={{background: 'none', border: 'none', cursor: 'pointer', padding: 4}}>
+                                <button
+                                    type="button"
+                                    onClick={handleClearFile}
+                                    title="Limpiar archivo actual"
+                                    aria-label="Limpiar archivo actual"
+                                    className="reporte-iconbtn"
+                                    data-testid="clear-file-btn"
+                                >
                                     <X size={14} />
                                 </button>
                             </div>
                         )}
                     </div>
 
-                    <div className="reporte-control-group" style={{ alignItems: 'center' }}>
-                        <Link to="/retardos" title="Retardos y marcajes" className="reporte-tab-trigger">
+                    <div className="reporte-control-group">
+                        <Link to="/retardos" title="Retardos y marcajes" aria-label="Retardos y marcajes" className="reporte-tab-trigger">
                             <Clock size={16} />
                         </Link>
-                        <Link to="/reporte-diario/ausentismo" title="Ranking de ausentismo" className="reporte-tab-trigger" style={{color: 'var(--color-error)'}}>
+                        <Link to="/reporte-diario/ausentismo" title="Ranking de ausentismo" aria-label="Ranking de ausentismo" className="reporte-tab-trigger" style={{ color: 'var(--color-error)' }}>
                             <UserX size={16} />
                         </Link>
                         {hasData && (
                             <>
-                                <div style={{width: 1, height: 20, backgroundColor: 'var(--color-hairline)', margin: '0 8px'}} />
-                                <span className="reporte-status-banner" style={{ color: 'var(--color-warning)', fontWeight: 'bold' }}>
+                                <span className="reporte-divider-v" aria-hidden="true" />
+                                <button
+                                    type="button"
+                                    className="reporte-btn-primary"
+                                    onClick={handleSaveToDb}
+                                    disabled={dbSaving}
+                                    data-testid="save-report-btn"
+                                >
+                                    <Save size={16} />
+                                    {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
+                                </button>
+                                <span className="reporte-status-banner reporte-status-banner--warn">
                                     {heroKpis.totalIncidencias} incidencias
                                 </span>
                                 <span className="reporte-status-banner">
@@ -631,7 +648,7 @@ export default function ReporteDiarioContent() {
             </div>
 
             {hasData ? (
-                <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)'}}>
+                <div className="reporte-container">
 
             {/* ── KPI Dashboard ─────────────────────────────────────────── */}
             {currentMonth && rows.length > 0 && (
@@ -677,58 +694,58 @@ export default function ReporteDiarioContent() {
             <div className="reporte-card">
                 <div className="reporte-card__header">
                     <h3 className="reporte-card__title">
-                        <Calendar size={20} className="text-primary" />
+                        <Calendar size={20} className="text-primary" aria-hidden="true" />
                         Reporte Diario de Asistencia
                     </h3>
-                </div>
-                <div className="reporte-card__content">
-                    <div className="reporte-flex-between">
-                        <div className="reporte-flex-center">
-                            <Calendar size={16} className="reporte-card__description" />
-                            <p className="reporte-card__title">
+                    <div className="reporte-dayhead">
+                        <div className="reporte-dayhead__title">
+                            <Calendar size={16} style={{ color: 'var(--color-muted)', flexShrink: 0 }} aria-hidden="true" />
+                            <p data-testid="selected-day-title">
                                 {selectedDay ? selectedDateTitle : "Detalle del día"}
                             </p>
                         </div>
-                        <div className="reporte-control-group">
-                            {selectedDay && (
-                                <div className="reporte-control-group" style={{border: '1px solid var(--color-hairline)', borderRadius: 'var(--rounded-md)', padding: 2}}>
+                        {selectedDay && (
+                            <div className="reporte-dayhead__actions">
+                                <div className="reporte-daynav">
                                     <button
                                         type="button"
+                                        className="reporte-daynav__btn"
                                         onClick={() => prevDay && setSelectedDay(prevDay)}
                                         disabled={!prevDay}
-                                        style={{background: 'none', border: 'none', cursor: prevDay ? 'pointer' : 'not-allowed', opacity: prevDay ? 1 : 0.3}}
                                         title="Día anterior"
+                                        aria-label="Día anterior"
+                                        data-testid="prev-day-btn"
                                     >
                                         <ChevronLeft size={16} />
                                     </button>
                                     <button
                                         type="button"
+                                        className="reporte-daynav__btn"
                                         onClick={() => nextDay && setSelectedDay(nextDay)}
                                         disabled={!nextDay}
-                                        style={{background: 'none', border: 'none', cursor: nextDay ? 'pointer' : 'not-allowed', opacity: nextDay ? 1 : 0.3}}
                                         title="Día siguiente"
+                                        aria-label="Día siguiente"
+                                        data-testid="next-day-btn"
                                     >
                                         <ChevronRight size={16} />
                                     </button>
                                 </div>
-                            )}
-                            {selectedDay && (
                                 <button
                                     type="button"
                                     onClick={handleExportPdf}
                                     className="reporte-tab-trigger"
-                                    style={{display: 'flex', alignItems: 'center', gap: 4, border: '1px solid var(--color-hairline)', borderRadius: 'var(--rounded-md)'}}
+                                    data-testid="export-pdf-btn"
                                 >
                                     <Download size={14} />
                                     PDF
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="reporte-card__content">
                     {!selectedDay ? (
-                        <p style={{textAlign: 'center', color: 'var(--color-muted)', padding: '2rem 0'}}>
+                        <p className="reporte-placeholder">
                             Selecciona un día en el calendario.
                         </p>
                     ) : (
@@ -752,20 +769,20 @@ export default function ReporteDiarioContent() {
             </div>
                 </div>
             ) : (
-                <div 
-                    style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                        padding: 'max(4rem, var(--spacing-xl)) var(--spacing-lg)', border: '2px dashed var(--color-hairline)', borderRadius: 'var(--rounded-lg)',
-                        cursor: 'pointer'
-                    }}
+                <div
+                    className="reporte-empty"
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
+                    data-testid="upload-dropzone"
                 >
-                    <CloudUpload size={48} style={{color: 'var(--color-muted)', marginBottom: 'var(--spacing-md)'}} />
+                    <CloudUpload size={48} className="reporte-empty__icon" aria-hidden="true" />
                     <h3 className="reporte-card__title">Sube tu reporte diario</h3>
-                    <p className="reporte-subtitle" style={{marginTop: 'var(--spacing-xs)'}}>
+                    <p className="reporte-subtitle">
                         Arrastra y suelta tu archivo de datos aquí, o haz clic para seleccionarlo.
                     </p>
                 </div>
@@ -773,16 +790,21 @@ export default function ReporteDiarioContent() {
 
             {/* ── Errors ───────────────────────────────────────────────── */}
             {errors.length > 0 && (
-                <div className="reporte-status-banner error" style={{alignItems: 'flex-start'}}>
-                    <AlertCircle size={16} style={{marginTop: 2}} />
-                    <div style={{flex: 1}}>
+                <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
+                    <AlertCircle size={16} aria-hidden="true" />
+                    <div style={{ flex: 1, minWidth: 0 }}>
                         <div className="reporte-flex-between">
                             <strong>Errores de formato</strong>
-                            <button onClick={() => setErrors([])} style={{background: 'none', border: 'none', cursor: 'pointer', color: 'inherit'}}>
+                            <button
+                                type="button"
+                                onClick={() => setErrors([])}
+                                className="reporte-iconbtn"
+                                aria-label="Cerrar errores"
+                            >
                                 <X size={16} />
                             </button>
                         </div>
-                        <ul style={{marginTop: 8, paddingLeft: 16}}>
+                        <ul>
                             {errors.map((err, i) => (
                                 <li key={i}>{err}</li>
                             ))}
@@ -839,16 +861,18 @@ export default function ReporteDiarioContent() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        style={{position: 'fixed', inset: 0, zIndex: 110, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-canvas)', color: 'var(--color-ink)'}}
+                        className="reporte-overlay"
+                        role="status"
+                        aria-live="polite"
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.9, y: 10 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 10 }}
-                            className="reporte-card" style={{padding: 'var(--spacing-2xl)', alignItems: 'center', gap: 'var(--spacing-md)'}}
+                            className="reporte-overlay__card"
                         >
-                            <Loader2 size={40} className="animate-spin" style={{color: 'var(--color-primary)'}} />
-                            <h2 className="reporte-title" style={{fontSize: 'var(--type-heading-md-size)'}}>
+                            <Loader2 size={40} className="animate-spin" style={{ color: 'var(--color-primary)' }} aria-hidden="true" />
+                            <h2 className="reporte-overlay__title">
                                 {processStep === "reading" && "Leyendo archivo..."}
                                 {processStep === "validating" && "Revisando incidencias..."}
                                 {processStep === "generating" && "Construyendo tu tablero..."}
@@ -870,26 +894,29 @@ export default function ReporteDiarioContent() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        style={{position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-canvas)', color: 'var(--color-ink)'}}
+                        className="reporte-overlay"
+                        style={{ zIndex: 50 }}
+                        role="status"
+                        aria-live="polite"
                     >
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="reporte-card" style={{padding: 'var(--spacing-2xl)', alignItems: 'center', gap: 'var(--spacing-md)', minWidth: 320}}
+                            className="reporte-overlay__card"
                         >
                             <AnimatePresence mode="wait">
                                 {saveSuccess ? (
-                                    <motion.div key="success" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} className="reporte-status-banner" style={{background: 'var(--color-success)', color: 'var(--color-canvas)', borderRadius: 'var(--rounded-full)', width: 64, height: 64, justifyContent: 'center'}}>
+                                    <motion.div key="success" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} className="reporte-overlay__badge reporte-overlay__badge--success">
                                         <Check size={32} />
                                     </motion.div>
                                 ) : (
-                                    <motion.div key="saving" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="reporte-status-banner" style={{background: 'var(--color-primary)', color: 'var(--color-canvas)', borderRadius: 'var(--rounded-full)', width: 64, height: 64, justifyContent: 'center'}}>
+                                    <motion.div key="saving" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="reporte-overlay__badge reporte-overlay__badge--primary">
                                         <Loader2 size={32} className="animate-spin" />
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-                            <motion.h2 className="reporte-title" style={{fontSize: 'var(--type-heading-md-size)'}}>
+                            <motion.h2 className="reporte-overlay__title">
                                 {saveSuccess ? "¡Guardado Exitoso!" : "Guardando reporte..."}
                             </motion.h2>
                         </motion.div>
@@ -904,20 +931,20 @@ export default function ReporteDiarioContent() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        style={{position: 'fixed', inset: 0, zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface-soft)', border: '2px dashed var(--color-primary)', margin: 'var(--spacing-md)', borderRadius: 'var(--rounded-xl)'}}
+                        className="reporte-drag"
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.8, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.8, y: 20 }}
-                            style={{display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none'}}
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}
                         >
-                            <FileJson size={64} style={{color: 'var(--color-primary)', marginBottom: 'var(--spacing-lg)'}} />
+                            <FileJson size={64} style={{ color: 'var(--color-primary)', marginBottom: 'var(--spacing-lg)' }} aria-hidden="true" />
                             <h2 className="reporte-card__title">Suelta tu archivo aquí</h2>
-                            <p className="reporte-subtitle" style={{marginTop: 'var(--spacing-xs)'}}>El reporte se generará automáticamente</p>
+                            <p className="reporte-subtitle">El reporte se generará automáticamente</p>
                         </motion.div>
                     </motion.div>
                 )}

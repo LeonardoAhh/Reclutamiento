@@ -65,6 +65,8 @@
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
   --color-success-tint: rgba(16, 185, 129, 0.1);
   --color-error-tint: rgba(239, 68, 68, 0.1);
+  --color-warning-tint: rgba(245, 158, 11, 0.12);
+  --color-primary-tint: rgba(0, 0, 0, 0.05);
   --color-header-glass: rgba(255, 255, 255, 0.92);
 
   /* ── Typography ──────────────────────────────────────────────────────────
@@ -178,6 +180,7 @@
   --spacing-lg: 16px;
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
+  --spacing-2xl: 48px;
   --spacing-section: 88px;
 
   /* ── Border radius ───────────────────────────────────────────────────── */
@@ -266,6 +269,8 @@
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
   --color-success-tint: rgba(16, 185, 129, 0.15);
   --color-error-tint: rgba(239, 68, 68, 0.15);
+  --color-warning-tint: rgba(245, 158, 11, 0.18);
+  --color-primary-tint: rgba(255, 255, 255, 0.08);
   --color-header-glass: rgba(10, 10, 10, 0.88);
 }
 

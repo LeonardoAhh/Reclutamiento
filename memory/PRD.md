@@ -39,15 +39,18 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - `src/styles/global.css`: eliminado el `padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom))` del body en mobile (ahora solo `--safe-area-bottom`); token `--tab-bar-height` queda en 0px porque `PWAStatus.css` y `CommentModal.css` aún lo referencian para offset. Reglas `::view-transition-*(theme-bottom-tab)` removidas (huérfanas).
 - `tsc -b --noEmit` y `vite build` OK.
 
-### 2026-01 — Transición global de tema (circular reveal + stagger)
-- `useTheme.ts`: ahora envuelve el `applyTheme` en `document.startViewTransition(...)` cuando el navegador soporta View Transitions API (Chrome 111+, Safari 18+) y el usuario no tiene `prefers-reduced-motion`. Acepta `origin: {x, y}` (centro del botón clickeado) y lo escribe en CSS vars `--theme-origin-x/y` antes de iniciar la transición.
-- `ThemeToggle.tsx`: calcula el centro del botón con `getBoundingClientRect()` y lo pasa a `toggleTheme(origin)`.
-- `global.css`: tokens nuevos `--ease-apple` (cubic-bezier(0.32, 0.72, 0, 1)), `--duration-theme-out` 220ms, `--duration-theme-in` 320ms, `--duration-theme-stagger` 60ms, `--theme-origin-x/y` (default 50vw/50vh).
-- Pseudo-elementos `::view-transition-old(root)` y `::view-transition-new(root)` animan un `clip-path: circle(0% → 150%)` desde el origen → revela circular tipo Vercel/Linear.
-- Stagger expandido a todas las capas únicas: `.app-header` (42ms), `.user-menu__dropdown` (60ms), `*__hero` de las 7 páginas con hero (72ms), `main.container` (96ms), `.bottom-tab-bar` (108ms). Cada `view-transition-name` apunta a elementos de los que sólo hay uno montado a la vez → cero colisiones.
-- Graceful degradation: navegadores sin VT API (iOS 17 y anteriores) aplican el tema sin animación; las transiciones CSS de color del body/html siguen funcionando.
+### 2026-06-18 — Reporte Diario mobile-first + Supabase historial
+- **`reporte-diario/index.tsx`**: header, barra de día, dropzone vacía, overlays y errores migrados de estilos inline hardcodeados a clases semánticas tokens-only (mobile-first). Header en columna en móvil / fila en PC. Quitados px mágicos (1, 4, 20, padding:2…).
+- **`ReporteDiario.css` reescrito**: fuente única de verdad, mobile-first, 100% tokens. Define todas las clases usadas por `index.tsx` + dialog de guardados, conserva la familia BEM `.reporte__*` de los subcomponentes, y agrega calendario responsive + incident-tabs responsive + botón primario.
+- **Calendario responsive** (`reporte-calendar.tsx` + CSS): el grid 7 columnas usaba inline `repeat(7,1fr)` sin `minmax(0,…)` → en móvil se cortaban días (5,12,19,26 fuera de viewport). Refactor a clases (`reporte-cal__*`) con `repeat(7, minmax(0,1fr))`, sizing escalado por breakpoint (320/480/768), heat-borders como modifiers (`--crit/--warn/--ok`). Verificado sin overflow en 360 y 390px.
+- **Incident-tabs sin saturar en móvil** (`reporte-incident-tabs.tsx`): tabla completa en ≥768px; en móvil tarjetas con **expand inline** (acordeón) — muestra nombre+área+turno y al tocar revela #empleado/depto/área. `aria-expanded`/`aria-controls`, roles tablist/tabpanel.
+- **Tokens agregados** a `global.css`: `--color-warning-tint`, `--color-primary-tint` (light+dark), `--spacing-2xl: 48px` (se usaban sin definir).
+- **Supabase — guardar e historizar**: el hook `useReporteDiario` ya esperaba la tabla `reportes_diarios` pero **no existía migración**. Creada `supabase/migrations/019_reportes_diarios.sql` (1 registro por `mes` UNIQUE → upsert onConflict mes = historial; `data` jsonb + columnas resumen + `uploaded_by` default `auth.uid()` + trigger `updated_at`; RLS permisiva `authenticated`, mismo patrón que `bajas`/`empleados`). README de migraciones actualizado.
+- **Botón "Guardar mes"**: `handleSaveToDb` existía pero **no estaba conectado a ningún botón**. Agregado botón primario en el header (`save-report-btn`, label dinámico "Guardar mes"/"Actualizar mes" según exista el mes). Tras guardar aparece en "Reportes guardados" + "Comparativa mensual".
+- Validado con el JSON real `REPORTE JUNIO.json` (720 empleados, 694 incidencias, días 01–16): parser OK (ignora fila header `mes`, mapea `área` con acento), render móvil+PC correcto, `tsc --noEmit` limpio.
 
 ## Pendiente / Backlog
+- P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
 - P2: Extender patrón mobile-first al resto de modales (importers, report modals) si el usuario lo pide.
 - P2: Revisión responsive de filtros (CandidateFilters, VacancyFilters).

@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils-shadcn";
 import { useState } from "react";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -20,144 +19,28 @@ export interface ReporteCalendarProps {
     onSelectDay: (day: string) => void;
 }
 
-// ─── Token-driven style maps ─────────────────────────────────────────────────
-
-const STYLES = {
-    calendar: {
-        width: "100%",
-        maxWidth: "1000px",
-    },
-    grid: {
-        display: "grid",
-        gridTemplateColumns: "repeat(7, 1fr)",
-        gap: "var(--spacing-xs)",
-    },
-    weekdayHeader: {
-        display: "grid",
-        gridTemplateColumns: "repeat(7, 1fr)",
-        gap: "var(--spacing-xs)",
-        marginBottom: "var(--spacing-sm)",
-    },
-    weekdayCell: {
-        padding: "var(--spacing-sm) 0",
-        textAlign: "center" as const,
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
-        color: "var(--color-muted)",
-        userSelect: "none" as const,
-    },
-    dayCell: {
-        base: {
-            position: "relative" as const,
-            display: "flex",
-            flexDirection: "column" as const,
-            borderRadius: "var(--rounded-md)",
-            border: "1px solid var(--color-hairline)",
-            padding: "var(--spacing-sm)",
-            textAlign: "left" as const,
-            minHeight: "72px",
-            transition: "all var(--transition-fast)",
-            gap: "var(--spacing-xs)",
-        },
-        active: {
-            background: "var(--color-primary)",
-            color: "var(--color-on-primary)",
-            borderColor: "var(--color-primary)",
-        },
-        inactive: {
-            background: "var(--color-surface-card)",
-            color: "var(--color-ink)",
-            borderColor: "var(--color-hairline)",
-        },
-        empty: {
-            background: "var(--color-surface-soft)",
-            opacity: 0.5,
-            cursor: "not-allowed" as const,
-        },
-    },
-    dayNumber: {
-        fontFamily: "var(--font-display)",
-        fontWeight: "var(--type-heading-sm-weight)",
-        fontSize: "var(--type-heading-sm-size)",
-        lineHeight: "var(--type-heading-sm-line)",
-    },
-    holidayBadge: {
-        marginTop: "var(--spacing-xs)",
-        borderRadius: "var(--rounded-sm)",
-        padding: "var(--spacing-xxs) var(--spacing-xs)",
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        whiteSpace: "nowrap" as const,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-    },
-    topRow: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-    },
-    ausBadge: {
-        base: {
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "var(--rounded-md)",
-            fontSize: "var(--type-caption-sm-size)",
-            fontWeight: "var(--type-body-strong-weight)",
-            padding: "var(--spacing-xxs) var(--spacing-xs)",
-            lineHeight: "var(--type-caption-sm-line)",
-        },
-    },
-
-    incidentBadge: {
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: "var(--rounded-md)",
-        fontSize: "var(--type-body-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        padding: "0 var(--spacing-xs)",
-        lineHeight: "1",
-        minWidth: "20px",
-        height: "20px",
-    },
-    emptyIndicator: {
-        fontSize: "var(--type-caption-sm-size)",
-        color: "var(--color-muted)",
-        opacity: 0.5,
-    },
-} as const;
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function getAusentismoColors(ausPct: number, threshold: number, active: boolean) {
-    if (active) return { background: "var(--color-surface-soft)", color: "var(--color-ink)" };
-    if (ausPct > threshold * 2) return { background: "var(--color-error-tint)", color: "var(--color-error)" };
-    if (ausPct > threshold) return { background: "var(--color-warning-tint)", color: "var(--color-warning)" };
-    return { background: "var(--color-success-tint)", color: "var(--color-success)" };
-}
+type HeatLevel = "crit" | "warn" | "ok" | "none";
 
-function getCellHeatColors(ausPct: number | undefined, threshold: number, active: boolean) {
-    if (active || ausPct === undefined) return {};
-    if (ausPct > threshold * 2) return { border: "1px solid var(--color-error)" };
-    if (ausPct > threshold) return { border: "1px solid var(--color-warning)" };
-    return { border: "1px solid var(--color-success)" };
+function getHeatLevel(ausPct: number | undefined, threshold: number): HeatLevel {
+    if (ausPct === undefined) return "none";
+    if (ausPct > threshold * 2) return "crit";
+    if (ausPct > threshold) return "warn";
+    return "ok";
 }
 
 // ─── Subcomponent: Weekday Headers ─────────────────────────────────────────────
 
 function WeekDayHeaders() {
     return (
-        <div style={STYLES.weekdayHeader} role="row">
+        <div className="reporte-cal__weekdays" role="row">
             {WEEK_DAY_NAMES.map((name) => (
                 <div
                     key={name}
                     role="columnheader"
                     aria-label={name}
-                    style={STYLES.weekdayCell}
+                    className="reporte-cal__weekday"
                 >
                     {name}
                 </div>
@@ -190,6 +73,7 @@ function DayCell({
     const hasAus = ausPct !== undefined;
     const dayNumber = parseInt(day, 10);
     const hasData = hasAus || count > 0;
+    const heat = getHeatLevel(ausPct, threshold);
 
     const ariaLabel = [
         `Día ${dayNumber}`,
@@ -201,31 +85,14 @@ function DayCell({
         .filter(Boolean)
         .join(", ");
 
-    const heatColors = getCellHeatColors(ausPct, threshold, active);
-    const ausColors = hasAus ? getAusentismoColors(ausPct, threshold, active) : { background: "", color: "" };
-
-    const cellStyle = {
-        ...STYLES.dayCell.base,
-        ...(active ? STYLES.dayCell.active : STYLES.dayCell.inactive),
-        ...(!hasData ? STYLES.dayCell.empty : {}),
-        ...heatColors,
-        cursor: hasData ? ("pointer" as const) : ("not-allowed" as const),
-    };
-
-    const holidayBadgeStyle = {
-        ...STYLES.holidayBadge,
-        background: active ? "var(--color-surface-soft)" : "var(--color-success-tint)",
-        color: active ? "var(--color-ink)" : "var(--color-success)",
-        border: `1px solid ${active ? "var(--color-hairline)" : "var(--color-success)"}`,
-    };
-
-    const incidentBadgeStyle = {
-        ...STYLES.incidentBadge,
-        background: active ? "var(--color-surface-soft)" : "var(--color-error-tint)",
-        color: active ? "var(--color-ink)" : "var(--color-error)",
-    };
-
-
+    const cellClass = [
+        "reporte-cal__cell",
+        active ? "reporte-cal__cell--active" : "",
+        !hasData ? "reporte-cal__cell--empty" : "",
+        !active && heat !== "none" ? `reporte-cal__cell--${heat}` : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     return (
         <div
@@ -235,6 +102,7 @@ function DayCell({
             aria-pressed={active}
             aria-selected={active}
             aria-disabled={!hasData}
+            className={cellClass}
             onClick={() => {
                 if (hasData) onSelectDay(day);
             }}
@@ -245,25 +113,18 @@ function DayCell({
                     onSelectDay(day);
                 }
             }}
-            style={cellStyle}
         >
-            <div style={STYLES.topRow}>
-                {/* Day number */}
-                <span style={STYLES.dayNumber}>{dayNumber}</span>
-
-                {/* Incident badge */}
+            <div className="reporte-cal__top">
+                <span className="reporte-cal__daynum">{dayNumber}</span>
                 {count > 0 ? (
-                    <span style={incidentBadgeStyle}>{count}</span>
+                    <span className="reporte-cal__count">{count}</span>
                 ) : (
-                    <span aria-hidden="true" style={STYLES.emptyIndicator}>
-                        —
-                    </span>
+                    <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
                 )}
             </div>
 
-            {/* Holiday badge */}
             {holidayLabel && (
-                <span title={holidayLabel} style={holidayBadgeStyle}>
+                <span title={holidayLabel} className="reporte-cal__holiday">
                     {holidayLabel}
                 </span>
             )}
@@ -289,11 +150,11 @@ export default function ReporteCalendar({
         <div
             role="grid"
             aria-label="Calendario de reporte de asistencia"
-            style={STYLES.calendar}
+            className="reporte-cal"
         >
             <WeekDayHeaders />
 
-            <div style={STYLES.grid}>
+            <div className="reporte-cal__grid">
                 {calendarCells.map((day, idx) => {
                     if (!day) {
                         return (
@@ -301,9 +162,7 @@ export default function ReporteCalendar({
                                 key={`empty-${idx}`}
                                 role="gridcell"
                                 aria-hidden="true"
-                                style={{
-                                    minHeight: "var(--spacing-xxl)",
-                                }}
+                                className="reporte-cal__spacer"
                             />
                         );
                     }

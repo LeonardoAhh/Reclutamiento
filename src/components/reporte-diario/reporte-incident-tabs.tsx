@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils-shadcn";
-import { CircleAlert, X } from "lucide-react";
+import { useState } from "react";
+import { CircleAlert, X, ChevronRight } from "lucide-react";
 import { INCIDENT_TABS, INCIDENCIA_LABELS } from "./constants";
 import type { IncidentTab, EmployeeRef } from "./types";
 
@@ -12,172 +12,6 @@ interface ReporteIncidentTabsProps {
     incidentSummary: Record<IncidentTab, EmployeeRef[]>;
 }
 
-// ─── Style Maps ────────────────────────────────────────────────────────────────
-
-const STYLES = {
-    container: {
-        marginTop: "var(--spacing-xl)",
-    },
-    tablist: {
-        display: "flex",
-        flexWrap: "wrap" as const,
-        gap: "var(--spacing-xs)",
-        marginBottom: "var(--spacing-md)",
-    },
-    tab: {
-        base: {
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "var(--spacing-xs)",
-            padding: "var(--spacing-xs) var(--spacing-sm)",
-            borderRadius: "var(--rounded-full)",
-            border: "1px solid var(--color-hairline)",
-            background: "var(--color-surface-card)",
-            color: "var(--color-charcoal)",
-            fontFamily: "var(--font-body)",
-            fontSize: "var(--type-body-sm-size)",
-            fontWeight: "var(--type-body-strong-weight)",
-            lineHeight: "var(--type-body-sm-line)",
-            cursor: "pointer",
-            transition: "all var(--transition-fast)",
-        },
-        active: {
-            background: "var(--color-surface-soft)",
-            color: "var(--color-ink)",
-            borderColor: "var(--color-primary)",
-        },
-    },
-    tabBadge: {
-        base: {
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minWidth: "var(--control-height)",
-            height: "var(--control-height)",
-            borderRadius: "var(--rounded-full)",
-            padding: "0 var(--spacing-xs)",
-            fontSize: "var(--type-caption-sm-size)",
-            fontWeight: "var(--type-body-strong-weight)",
-            lineHeight: "1",
-        },
-    },
-    clearBtn: {
-        marginLeft: "auto",
-    },
-    tableWrapper: {
-        overflowX: "auto" as const,
-        borderRadius: "var(--rounded-lg)",
-        border: "1px solid var(--color-hairline)",
-    },
-    table: {
-        minWidth: "100%",
-        fontSize: "var(--type-body-sm-size)",
-        lineHeight: "var(--type-body-sm-line)",
-        borderCollapse: "collapse" as const,
-    },
-    thead: {
-        background: "var(--color-surface-soft)",
-        borderBottom: "1px solid var(--color-hairline)",
-    },
-    th: {
-        padding: "var(--spacing-sm) var(--spacing-md)",
-        textAlign: "left" as const,
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
-        color: "var(--color-muted)",
-        lineHeight: "var(--type-caption-sm-line)",
-        whiteSpace: "nowrap" as const,
-    },
-    tbody: {
-        background: "var(--color-surface-card)",
-    },
-    tr: {
-        borderBottom: "1px solid var(--color-hairline-soft)",
-        transition: "background var(--transition-fast)",
-    },
-    td: {
-        base: {
-            padding: "var(--spacing-sm) var(--spacing-md)",
-            whiteSpace: "nowrap" as const,
-        },
-        name: {
-            fontWeight: "var(--type-body-strong-weight)",
-            color: "var(--color-ink)",
-        },
-        number: {
-            color: "var(--color-muted)",
-            fontFamily: "var(--font-code)",
-            fontSize: "var(--type-caption-sm-size)",
-        },
-        dept: {
-            color: "var(--color-ink)",
-        },
-        area: {
-            color: "var(--color-ink)",
-        },
-        shift: {
-            display: "inline-flex",
-            borderRadius: "var(--rounded-full)",
-            background: "var(--color-surface-soft)",
-            padding: "var(--spacing-xxs) var(--spacing-sm)",
-            fontSize: "var(--type-caption-sm-size)",
-            fontWeight: "var(--type-body-strong-weight)",
-            lineHeight: "var(--type-caption-sm-line)",
-            color: "var(--color-muted)",
-        },
-    },
-    emptyState: {
-        wrapper: {
-            display: "flex",
-            flexDirection: "column" as const,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "var(--rounded-lg)",
-            border: "1px dashed var(--color-hairline)",
-            background: "var(--color-surface-soft)",
-            padding: "var(--spacing-xl) var(--spacing-lg)",
-            textAlign: "center" as const,
-        },
-        icon: {
-            color: "var(--color-muted)",
-            opacity: 0.3,
-            marginBottom: "var(--spacing-sm)",
-        },
-        text: {
-            fontSize: "var(--type-body-sm-size)",
-            lineHeight: "var(--type-body-sm-line)",
-            color: "var(--color-muted)",
-            margin: 0,
-        },
-    },
-} as const;
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-
-function getTabBadgeStyle(active: boolean, count: number) {
-    if (active) {
-        return {
-            ...STYLES.tabBadge.base,
-            background: "var(--color-primary-tint, rgba(0,0,0,0.1))",
-            color: "var(--color-primary)",
-        };
-    }
-    if (count > 0) {
-        return {
-            ...STYLES.tabBadge.base,
-            background: "var(--color-warning-tint)",
-            color: "var(--color-warning)",
-        };
-    }
-    return {
-        ...STYLES.tabBadge.base,
-        background: "var(--color-surface-soft)",
-        color: "var(--color-muted)",
-    };
-}
-
 // ─── Subcomponent: Tab Button ──────────────────────────────────────────────────
 
 interface TabButtonProps {
@@ -188,12 +22,11 @@ interface TabButtonProps {
 }
 
 function TabButton({ code, count, active, onClick }: TabButtonProps) {
-    const tabStyle = {
-        ...STYLES.tab.base,
-        ...(active ? STYLES.tab.active : {}),
-    };
-
-    const badgeStyle = getTabBadgeStyle(active, count);
+    const badgeClass = active
+        ? "reporte-incidents__tab-badge reporte-incidents__tab-badge--active"
+        : count > 0
+            ? "reporte-incidents__tab-badge reporte-incidents__tab-badge--count"
+            : "reporte-incidents__tab-badge";
 
     return (
         <button
@@ -201,72 +34,38 @@ function TabButton({ code, count, active, onClick }: TabButtonProps) {
             role="tab"
             aria-selected={active}
             onClick={onClick}
-            style={tabStyle}
+            className="reporte-incidents__tab"
+            data-testid={`incident-tab-${code}`}
         >
             {INCIDENCIA_LABELS[code] ?? code}
-            <span style={badgeStyle}>{count}</span>
+            <span className={badgeClass}>{count}</span>
         </button>
     );
 }
 
-// ─── Subcomponent: Clear Button ────────────────────────────────────────────────
-
-interface ClearButtonProps {
-    onClick: () => void;
-}
-
-function ClearButton({ onClick }: ClearButtonProps) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            style={{ ...STYLES.tab.base, ...STYLES.clearBtn }}
-        >
-            <X size={14} />
-            Ocultar tabla
-        </button>
-    );
-}
-
-// ─── Subcomponent: Data Table ──────────────────────────────────────────────────
-
-interface DataTableProps {
-    rows: EmployeeRef[];
-}
+// ─── Subcomponent: Desktop Table ───────────────────────────────────────────────
 
 const TABLE_HEADERS = ["Empleado", "# Empleado", "Departamento", "Área", "Turno"] as const;
 
-function DataTable({ rows }: DataTableProps) {
+function DataTable({ rows }: { rows: EmployeeRef[] }) {
     return (
-        <div style={STYLES.tableWrapper}>
-            <table style={STYLES.table}>
-                <thead style={STYLES.thead}>
+        <div className="reporte-incidents__table-wrap">
+            <table className="reporte-incidents__table">
+                <thead>
                     <tr>
                         {TABLE_HEADERS.map((header) => (
-                            <th key={header} scope="col" style={STYLES.th}>
-                                {header}
-                            </th>
+                            <th key={header} scope="col">{header}</th>
                         ))}
                     </tr>
                 </thead>
-                <tbody style={STYLES.tbody}>
+                <tbody>
                     {rows.map((row) => (
-                        <tr key={row.key} style={STYLES.tr}>
-                            <td style={{ ...STYLES.td.base, ...STYLES.td.name }}>
-                                {row.nombre}
-                            </td>
-                            <td style={{ ...STYLES.td.base, ...STYLES.td.number }}>
-                                {row.numero_empleado}
-                            </td>
-                            <td style={{ ...STYLES.td.base, ...STYLES.td.dept }}>
-                                {row.departamento}
-                            </td>
-                            <td style={{ ...STYLES.td.base, ...STYLES.td.area }}>
-                                {row.area}
-                            </td>
-                            <td style={STYLES.td.base}>
-                                <span style={STYLES.td.shift}>{row.turno}</span>
-                            </td>
+                        <tr key={row.key}>
+                            <td className="reporte-incidents__td-name">{row.nombre}</td>
+                            <td className="reporte-incidents__td-num">{row.numero_empleado}</td>
+                            <td>{row.departamento}</td>
+                            <td>{row.area}</td>
+                            <td><span className="reporte-chip">{row.turno}</span></td>
                         </tr>
                     ))}
                 </tbody>
@@ -275,13 +74,67 @@ function DataTable({ rows }: DataTableProps) {
     );
 }
 
+// ─── Subcomponent: Mobile Cards (inline expand) ────────────────────────────────
+
+function MobileCards({ rows }: { rows: EmployeeRef[] }) {
+    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+    const toggle = (key: string) => {
+        setExpanded((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) next.delete(key);
+            else next.add(key);
+            return next;
+        });
+    };
+
+    return (
+        <ul className="reporte-incidents__cards" aria-label="Listado de incidencias">
+            {rows.map((row) => {
+                const isOpen = expanded.has(row.key);
+                const detailId = `inc-detail-${row.key}`;
+                return (
+                    <li key={row.key} className="reporte-incidents__card">
+                        <button
+                            type="button"
+                            className="reporte-incidents__card-summary"
+                            aria-expanded={isOpen}
+                            aria-controls={detailId}
+                            onClick={() => toggle(row.key)}
+                            data-testid={`incident-card-${row.key}`}
+                        >
+                            <span className="reporte-incidents__card-main">
+                                <span className="reporte-incidents__card-name">{row.nombre}</span>
+                                <span className="reporte-incidents__card-sub">{row.area}</span>
+                            </span>
+                            <span className="reporte-chip">{row.turno}</span>
+                            <ChevronRight size={18} className="reporte-incidents__chevron" aria-hidden="true" />
+                        </button>
+
+                        {isOpen && (
+                            <div id={detailId} className="reporte-incidents__card-detail">
+                                <span className="reporte-incidents__detail-label"># Empleado</span>
+                                <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
+                                <span className="reporte-incidents__detail-label">Departamento</span>
+                                <span className="reporte-incidents__detail-value">{row.departamento}</span>
+                                <span className="reporte-incidents__detail-label">Área</span>
+                                <span className="reporte-incidents__detail-value">{row.area}</span>
+                            </div>
+                        )}
+                    </li>
+                );
+            })}
+        </ul>
+    );
+}
+
 // ─── Subcomponent: Empty State ───────────────────────────────────────────────────
 
 function EmptyState() {
     return (
-        <div style={STYLES.emptyState.wrapper}>
-            <CircleAlert size={24} style={STYLES.emptyState.icon} />
-            <p style={STYLES.emptyState.text}>Sin registros para este criterio.</p>
+        <div className="reporte-incidents__empty">
+            <CircleAlert size={24} aria-hidden="true" />
+            <p>Sin registros para este criterio.</p>
         </div>
     );
 }
@@ -294,32 +147,45 @@ export default function ReporteIncidentTabs({
     dayCounts,
     incidentSummary,
 }: ReporteIncidentTabsProps) {
-    const visibleTabs = INCIDENT_TABS.filter(
-        (code) => (dayCounts[code] ?? 0) > 0
-    );
+    const visibleTabs = INCIDENT_TABS.filter((code) => (dayCounts[code] ?? 0) > 0);
+
+    if (visibleTabs.length === 0) return null;
+
+    const rows = selectedTab !== "" ? incidentSummary[selectedTab] : [];
 
     return (
-        <div style={STYLES.container}>
-            <div role="tablist" style={STYLES.tablist}>
+        <div className="reporte-incidents">
+            <div role="tablist" aria-label="Tipos de incidencia" className="reporte-incidents__tablist">
                 {visibleTabs.map((code) => (
                     <TabButton
                         key={code}
                         code={code}
                         count={dayCounts[code] ?? 0}
                         active={selectedTab === code}
-                        onClick={() => onSelectTab(code)}
+                        onClick={() => onSelectTab(selectedTab === code ? "" : code)}
                     />
                 ))}
 
                 {selectedTab !== "" && (
-                    <ClearButton onClick={() => onSelectTab("")} />
+                    <button
+                        type="button"
+                        onClick={() => onSelectTab("")}
+                        className="reporte-incidents__tab reporte-incidents__clear"
+                        data-testid="incident-clear-btn"
+                    >
+                        <X size={14} aria-hidden="true" />
+                        Ocultar
+                    </button>
                 )}
             </div>
 
             {selectedTab !== "" && (
-                <div role="tabpanel">
-                    {(dayCounts[selectedTab] ?? 0) > 0 ? (
-                        <DataTable rows={incidentSummary[selectedTab]} />
+                <div role="tabpanel" aria-label={`Detalle de ${INCIDENCIA_LABELS[selectedTab] ?? selectedTab}`}>
+                    {rows.length > 0 ? (
+                        <>
+                            <DataTable rows={rows} />
+                            <MobileCards rows={rows} />
+                        </>
                     ) : (
                         <EmptyState />
                     )}
