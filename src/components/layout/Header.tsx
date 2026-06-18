@@ -52,13 +52,12 @@ function NavDropdown({ label, items }: { label: string, items: { to: string, lab
   }, [open]);
 
   return (
-    <li className="app-header__nav-group" onMouseLeave={() => setOpen(false)}>
+    <li className="app-header__nav-group">
       <button 
         ref={triggerRef}
         type="button"
         className={`app-header__nav-item app-header__nav-dropdown-trigger ${open ? 'app-header__nav-dropdown-trigger--open' : ''}`}
         onClick={() => setOpen(!open)}
-        onMouseEnter={() => setOpen(true)}
         aria-haspopup="menu"
         aria-expanded={open}
       >

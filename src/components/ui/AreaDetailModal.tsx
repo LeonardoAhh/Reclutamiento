@@ -82,16 +82,16 @@ export function AreaDetailModal({
     return ordered;
   }, [dept]);
 
-  const [activeTab, setActiveTab] = useState<string>(ALL_TAB);
+  const [activeTab, setActiveTab] = useState<string>(secciones[0] ?? '');
 
-  // Reset to "Todas" each time we open a new area
+  // Cada departamento ya está dividido por secciones, así que no hay tab "Todas":
+  // al abrir un área se selecciona su primera sección.
   useEffect(() => {
-    if (isOpen) setActiveTab(ALL_TAB);
-  }, [isOpen, dept?.area]);
+    if (isOpen) setActiveTab(secciones[0] ?? '');
+  }, [isOpen, dept?.area, secciones]);
 
   const visiblePuestos = useMemo(() => {
     if (!dept) return [];
-    if (activeTab === ALL_TAB) return dept.puestos;
     return dept.puestos.filter((p) => p.seccion === activeTab);
   }, [dept, activeTab]);
 
@@ -183,35 +183,16 @@ export function AreaDetailModal({
     count: dept.puestos.filter((p) => p.seccion === s).length,
     incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
   }));
-  // El tab "Todas" sólo aporta valor con 2+ secciones; con una sola sección
-  // sería idéntico a ésta (repetitivo), por eso se omite.
-  const tabs =
-    secciones.length > 1
-      ? [
-          {
-            id: ALL_TAB,
-            label: 'Todas',
-            count: dept.puestos.length,
-            incapacidad: incapacidadAreaTotal,
-          },
-          ...sectionTabs,
-        ]
-      : sectionTabs;
+  const tabs = sectionTabs;
 
-  const activeTotals =
-    activeTab === ALL_TAB
-      ? {
-          autorizada: dept.plantilla_autorizada,
-          real: dept.plantilla_real,
-          vacantes: dept.vacantes,
-          urgentes: dept.urgentes,
-        }
-      : seccionTotals.get(activeTab) ?? {
-          autorizada: 0,
-          real: 0,
-          vacantes: 0,
-          urgentes: 0,
-        };
+  // El resumen superior es la vista de ÁREA (totales del departamento), coherente
+  // con el título del área y la barra de cobertura. Los tabs sólo filtran la lista.
+  const activeTotals = {
+    autorizada: dept.plantilla_autorizada,
+    real: dept.plantilla_real,
+    vacantes: dept.vacantes,
+    urgentes: dept.urgentes,
+  };
 
   const useModal = !isMobile;
 
@@ -337,14 +318,10 @@ export function AreaDetailModal({
               <span className="area-detail-modal__stat-label">Urgentes</span>
             </span>
           )}
-          {((activeTab === ALL_TAB && incapacidadAreaTotal > 0) ||
-            (activeTab !== ALL_TAB &&
-              (incapacidadPorSeccion?.get(activeTab) ?? 0) > 0)) && (
+          {incapacidadAreaTotal > 0 && (
             <span className="area-detail-modal__stat">
               <span className="area-detail-modal__stat-value area-detail-modal__stat-value--amber">
-                {activeTab === ALL_TAB
-                  ? incapacidadAreaTotal
-                  : incapacidadPorSeccion?.get(activeTab) ?? 0}
+                {incapacidadAreaTotal}
               </span>
               <span className="area-detail-modal__stat-label">
                 <HeartPulse size={10} aria-hidden="true" /> Incapacidad
