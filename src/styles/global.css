@@ -213,6 +213,78 @@
      PWAStatus.css y CommentModal.css aún lo referencian para offset. */
   --tab-bar-height: 0px;
 
+  /* ── Tokens faltantes (definidos para consistencia; antes caían en valores
+     por defecto del navegador). Alias a la escala existente donde aplica. ─── */
+
+  /* Tipografía */
+  --type-caption-md-size: 13px;
+  --type-caption-md-weight: 400;
+  --type-caption-md-line: 1.4;
+  --type-display-md-size: 26px;
+  --type-display-md-weight: 500;
+  --type-body-lg-size: 18px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+
+  /* Pesos y familias */
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-sans: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Tracking */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+
+  /* Radios */
+  --rounded-xs: 4px;
+  --rounded-xl: 16px;
+  --rounded-pill: var(--rounded-full);
+  --radius-sm: var(--rounded-sm);
+  --radius-md: var(--rounded-md);
+  --border-width: 1px;
+
+  /* Espaciado (alias) */
+  --spacing-2xs: 3px;
+  --space-xxs: var(--spacing-xxs);
+  --space-xs: var(--spacing-xs);
+  --space-sm: var(--spacing-sm);
+  --space-md: var(--spacing-md);
+  --space-lg: var(--spacing-lg);
+  --space-xl: var(--spacing-xl);
+
+  /* Colores (alias; se adaptan al dark theme vía las variables base) */
+  --color-amber: var(--color-accent-amber);
+  --color-danger: var(--color-error);
+  --color-error-soft: var(--color-error-tint);
+  --color-border: var(--color-hairline);
+  --color-focus: var(--color-primary);
+  --color-surface: var(--color-surface-card);
+  --color-surface-contrast: var(--color-ink);
+  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-cream-strong: var(--color-surface-soft);
+  --color-text-primary: var(--color-ink);
+  --color-text-tertiary: var(--color-muted);
+
+  /* Sombras: el sistema es hairline-only (sin drop-shadows) → none. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-elevated: none;
+  --shadow-prominent: none;
+
+  /* Layout y movimiento */
+  --header-height: 64px;
+  --transition-slow: 350ms ease;
+  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-theme-in: 300ms;
+  --duration-theme-out: 200ms;
+  --duration-theme-stagger: 60ms;
+
+
   color-scheme: light;
 }
 

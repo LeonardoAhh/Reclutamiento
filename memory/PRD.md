@@ -3,6 +3,13 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 6 cont.) — UX Dashboard + tokens
+- **AreaDetailModal**: eliminado tab "Todas" (default = primera sección); resumen superior **rediseñado** (cobertura hero con % grande + barra redondeada; métricas en tiles con tinte rojo/ámbar). Fix de hueco en móvil (`coverage` pasó de `flex:1 1 240px` a `flex:0 0 auto`).
+- **Header (PC)**: menús de grupo abren **solo con click** (quitado hover open/close que buggeaba la selección).
+- **Transición de ruta**: eliminado `RouteTransitionLoader` (overlay que parpadeaba el navbar al navegar). Login/logout splash intacto.
+- **Tokens faltantes definidos** en `global.css :root`: `--type-caption-md-*`, `--type-display-md-*`, `--type-body-lg-size`, `--text-xs/sm`, `--tracking-*`, `--rounded-xs/xl/pill`, `--radius-sm/md`, `--space-*`, `--spacing-2xs`, alias de color (`--color-danger/amber/border/surface/text-*`...), `--shadow-*` (=none, sistema hairline-only), `--header-height`, `--ease-apple`, `--duration-theme-*`. Los restantes (`--bar-*`, `--item/stop-delay`, `--theme-origin-*`) se inyectan en runtime.
+- `npm run build` OK en todos los cambios.
+
 ## 2026-06-18 (sesión 6) — Fix DEFINITIVO scroll modales móvil (WeeklyHiresModal)
 - **Modal afectado**: `WeeklyHiresModal` ("Ingresos · Semanas X y Y"), que usa `ExpandableSection`.
 - **Causa raíz (verificada con Playwright)**: `.expandable-section` tiene `overflow: hidden`. Como hijo flex del `.modal-body` (flex column con alto fijo), su **tamaño mínimo automático = 0** (regla CSS: flex items con overflow≠visible tienen min-size 0), así que flexbox **APLASTA** las secciones para que quepan en el alto del modal → contenido recortado, el cuerpo nunca desborda → `scrollHeight == clientHeight` → **sin scroll**. (El `min-height:0` de sesiones previas NO lo resolvía; lo empeoraba.)
