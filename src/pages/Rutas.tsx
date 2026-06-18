@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft } from 'lucide-react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -34,9 +34,16 @@ function RutaCard({ ruta, isActive, onClick }: RutaCardProps) {
       onClick={onClick}
       aria-pressed={isActive}
     >
+      <span className="ruta-card__icon" aria-hidden="true">
+        <Bus size={18} />
+      </span>
       <div className="ruta-card__content">
         <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</h3>
+        <span className="ruta-card__subtitle">
+          {ruta.paradas.length} parada{ruta.paradas.length === 1 ? '' : 's'} · {ruta.totalEmpleados} pasajero{ruta.totalEmpleados === 1 ? '' : 's'}
+        </span>
       </div>
+      <ChevronRight size={18} aria-hidden="true" className="ruta-card__chevron" />
     </button>
   );
 }

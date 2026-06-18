@@ -90,7 +90,7 @@
 
 .rutas-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-sm);
   min-width: 0;
   width: 100%;
@@ -98,6 +98,7 @@
 
 @media (min-width: 769px) {
   .rutas-list {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: var(--spacing-md);
   }
 }
@@ -176,17 +177,17 @@
 .ruta-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: var(--spacing-md);
   width: 100%;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   transition:
     transform var(--dur-fade) var(--ease-out),
     background var(--dur-fade) var(--ease-out),
@@ -258,9 +259,9 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
   overflow: hidden;
 }
 
@@ -269,7 +270,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.ruta-card__chevron {
+  margin-left: auto;
+  color: var(--color-muted-soft);
   flex-shrink: 0;
+  transition: color var(--dur-fade) var(--ease-out), transform var(--dur-fade) var(--ease-out);
+}
+
+.ruta-card--active .ruta-card__chevron {
+  color: var(--color-primary);
+  transform: translateX(2px);
 }
 
 .ruta-card__subtitle {
