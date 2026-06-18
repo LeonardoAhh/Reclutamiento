@@ -130,8 +130,11 @@ export function Pipeline() {
       }>();
 
       for (const c of cands) {
-        if (!c.fecha_aplicacion) continue;
-        const range = getPautaWeekRange(c.fecha_aplicacion);
+        // Agrupar por **fecha de entrevista** (`fecha_cita`), no por
+        // fecha de contacto. Una semana de pauta agrupa los candidatos
+        // citados a entrevista entre miércoles y martes (TZ MX).
+        if (!c.fecha_cita) continue;
+        const range = getPautaWeekRange(c.fecha_cita);
         if (!range) continue;
 
         const { startWed, endTue, timeKey } = range;

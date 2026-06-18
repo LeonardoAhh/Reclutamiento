@@ -517,11 +517,21 @@ export function getPautaWeekRange(input: Date | string | null | undefined): Paut
     if (ddmm) {
       isoDay = ddmm;
     } else {
-      // ISO completo con hora/zona → extraemos el día calendario en MX.
-      const d = new Date(trimmed);
-      if (!Number.isNaN(d.getTime())) {
-        const { year, month, day } = mxDateParts(d);
-        isoDay = `${year}-${pad2(month)}-${pad2(day)}`;
+      // Si empieza con `YYYY-MM-DD` (con o sin parte de hora) y NO trae
+      // sufijo de zona (`Z` u offset), la tratamos como **hora local MX**
+      // y nos quedamos solo con la parte de fecha. Esto cubre los valores
+      // de `<input type="datetime-local">` (`2026-05-15T14:30`) que se
+      // guardan sin TZ pero representan hora de Querétaro.
+      const dateOnlyMatch = /^(\d{4}-\d{2}-\d{2})(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)?$/.exec(trimmed);
+      if (dateOnlyMatch) {
+        isoDay = dateOnlyMatch[1];
+      } else {
+        // ISO completo con hora y zona (Z u offset) → extraer día calendario MX.
+        const d = new Date(trimmed);
+        if (!Number.isNaN(d.getTime())) {
+          const { year, month, day } = mxDateParts(d);
+          isoDay = `${year}-${pad2(month)}-${pad2(day)}`;
+        }
       }
     }
   } else if (input instanceof Date && !Number.isNaN(input.getTime())) {
