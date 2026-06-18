@@ -1,6 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { useLoader } from '@/hooks/useLoader';
+import { type ReactNode } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
@@ -38,35 +37,11 @@ function ProtectedShell({ children }: { children: ReactNode }) {
   );
 }
 
-/**
- * Dispara un flash del loader al cambiar de ruta entre páginas protegidas.
- * Se omite la primera carga y cualquier transición desde/hacia /login, que ya
- * manejan su propio splash (entrar / cerrar sesión).
- */
-function RouteTransitionLoader() {
-  const location = useLocation();
-  const { flash } = useLoader();
-  const prevPath = useRef<string | null>(null);
-
-  useEffect(() => {
-    const prev = prevPath.current;
-    prevPath.current = location.pathname;
-
-    if (prev === null || prev === location.pathname) return;
-    if (prev === '/login' || location.pathname === '/login') return;
-
-    flash({ tone: 'route', duration: 820 });
-  }, [location.pathname, flash]);
-
-  return null;
-}
-
 function App() {
   return (
     <>
       <PWAStatus />
       <ThemeTransitionOverlay />
-      <RouteTransitionLoader />
       <Routes>
       <Route
         path="/login"
