@@ -27,30 +27,38 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-lg);
   background: var(--color-surface-soft);
   border-bottom: 1px solid var(--color-hairline-soft);
   flex-wrap: wrap;
 }
 
+/* ── Métricas en tiles ── */
 .area-detail-modal__summary-stats {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
+  align-items: stretch;
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
+  order: 1;
 }
 
 .area-detail-modal__stat {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: var(--spacing-xxs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-width: 84px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
   line-height: 1.1;
+  transition: border-color var(--transition-fast);
 }
 
 .area-detail-modal__stat-value {
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
 }
@@ -62,28 +70,87 @@
 .area-detail-modal__stat-sep {
   color: var(--color-muted-soft);
   font-weight: 400;
-  margin: 0 var(--spacing-xxs);
+  margin: 0 2px;
 }
 
 .area-detail-modal__stat-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-}
-
-.area-detail-modal__summary-cobertura {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  min-width: 200px;
-  flex: 0 1 280px;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  white-space: nowrap;
 }
 
-.area-detail-modal__bar {
-  flex: 1;
-  min-width: 120px;
+/* Variantes de color para métricas críticas */
+.area-detail-modal__stat--error {
+  background: var(--color-error-tint);
+  border-color: rgb(var(--color-error-rgb) / 0.25);
+}
+.area-detail-modal__stat--error .area-detail-modal__stat-value {
+  color: var(--color-error);
+}
+
+.area-detail-modal__stat--amber {
+  background: var(--color-warning-tint);
+  border-color: rgb(var(--color-accent-amber-rgb) / 0.3);
+}
+.area-detail-modal__stat--amber .area-detail-modal__stat-value,
+.area-detail-modal__stat--amber .area-detail-modal__stat-label {
+  color: var(--color-accent-amber);
+}
+
+/* ── Cobertura: hero con porcentaje grande + barra ── */
+.area-detail-modal__coverage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  order: 2;
+  flex: 1 1 240px;
+  min-width: 220px;
+}
+
+.area-detail-modal__coverage-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.area-detail-modal__coverage-pct {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__coverage-pct-sign {
+  font-size: 0.5em;
+  font-weight: 500;
+  margin-left: 2px;
+  opacity: 0.65;
+}
+
+.area-detail-modal__coverage-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+/* La barra de cobertura usa --rounded-pill (sin definir en tokens); aquí
+   garantizamos las esquinas redondeadas dentro de este modal. */
+.area-detail-modal__coverage .coverage-bar__track,
+.area-detail-modal__coverage .coverage-bar__fill {
+  border-radius: var(--rounded-full);
 }
 
 /* ── Tabs ── */
@@ -226,30 +293,31 @@
     padding-right: max(var(--spacing-md), var(--safe-area-right));
   }
 
-  /* Summary: stats stack para evitar overflow horizontal. */
+  /* Summary: cobertura hero arriba, métricas en grid 2 col. */
   .area-detail-modal__summary {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: var(--spacing-md);
-    padding-left: max(var(--spacing-md), var(--safe-area-left));
-    padding-right: max(var(--spacing-md), var(--safe-area-right));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
   }
 
-  .area-detail-modal__summary-cobertura {
+  .area-detail-modal__coverage {
+    order: 1;
     width: 100%;
     min-width: 0;
-    flex: 1 1 auto;
+  }
+
+  .area-detail-modal__coverage-pct {
+    font-size: var(--type-display-xl-size);
   }
 
   .area-detail-modal__summary-stats {
+    order: 2;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
     width: 100%;
-  }
-
-  .area-detail-modal__stat-value {
-    font-size: var(--type-body-md-size);
   }
 
   /* Colchón al final del panel: el Sheet ya añade safe-area-bottom a

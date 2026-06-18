@@ -294,53 +294,59 @@ export function AreaDetailModal({
     );
   };
 
+  const coverageColor = getCoverageColor(dept.porcentaje_cobertura);
+
   const modalContent = (
     <>
       <div className="area-detail-modal__summary" aria-hidden={false}>
+        {/* Métricas del área en tiles */}
         <div className="area-detail-modal__summary-stats">
-          <span className="area-detail-modal__stat">
+          <div className="area-detail-modal__stat">
             <span className="area-detail-modal__stat-value">
               {activeTotals.real}
               <span className="area-detail-modal__stat-sep">/</span>
               {activeTotals.autorizada}
             </span>
-            <span className="area-detail-modal__stat-label">Real / Autorizada</span>
-          </span>
-          <span className="area-detail-modal__stat">
+            <span className="area-detail-modal__stat-label">Real / Aut.</span>
+          </div>
+          <div className="area-detail-modal__stat">
             <span className="area-detail-modal__stat-value">{activeTotals.vacantes}</span>
             <span className="area-detail-modal__stat-label">Vacantes</span>
-          </span>
+          </div>
           {activeTotals.urgentes > 0 && (
-            <span className="area-detail-modal__stat">
-              <span className="area-detail-modal__stat-value area-detail-modal__stat-value--error">
-                {activeTotals.urgentes}
-              </span>
+            <div className="area-detail-modal__stat area-detail-modal__stat--error">
+              <span className="area-detail-modal__stat-value">{activeTotals.urgentes}</span>
               <span className="area-detail-modal__stat-label">Urgentes</span>
-            </span>
+            </div>
           )}
           {incapacidadAreaTotal > 0 && (
-            <span className="area-detail-modal__stat">
-              <span className="area-detail-modal__stat-value area-detail-modal__stat-value--amber">
-                {incapacidadAreaTotal}
-              </span>
+            <div className="area-detail-modal__stat area-detail-modal__stat--amber">
+              <span className="area-detail-modal__stat-value">{incapacidadAreaTotal}</span>
               <span className="area-detail-modal__stat-label">
-                <HeartPulse size={10} aria-hidden="true" /> Incapacidad
+                <HeartPulse size={11} aria-hidden="true" /> Incapacidad
               </span>
-            </span>
+            </div>
           )}
         </div>
-        <div className="area-detail-modal__summary-cobertura">
-          <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
-            {dept.porcentaje_cobertura}%
-          </Badge>
-          <div className="area-detail-modal__bar">
-            <CoverageBar
-              percentage={dept.porcentaje_cobertura}
-              color={getCoverageColor(dept.porcentaje_cobertura)}
-              height={6}
-              showLabel={false}
-            />
+
+        {/* Cobertura — hero con barra de progreso */}
+        <div className="area-detail-modal__coverage">
+          <div className="area-detail-modal__coverage-head">
+            <span
+              className="area-detail-modal__coverage-pct"
+              style={{ color: coverageColor }}
+            >
+              {dept.porcentaje_cobertura}
+              <span className="area-detail-modal__coverage-pct-sign">%</span>
+            </span>
+            <span className="area-detail-modal__coverage-label">Cobertura del área</span>
           </div>
+          <CoverageBar
+            percentage={dept.porcentaje_cobertura}
+            color={coverageColor}
+            height={8}
+            showLabel={false}
+          />
         </div>
       </div>
 
