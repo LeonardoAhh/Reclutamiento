@@ -12,6 +12,7 @@ const NAV_GROUPS = [
     items: [
       { to: '/',          label: 'KPIs', end: true },
       { to: '/dashboard', label: 'Dashboard' },
+      { to: '/reporte-diario', label: 'Reporte Diario' },
     ]
   },
   {

@@ -15,6 +15,7 @@ import { Transporte } from '@/pages/Transporte';
 import { Rutas } from '@/pages/Rutas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
+import { ReporteDiario } from '@/pages/ReporteDiario';
 // NOTE: Settings page deshabilitada temporalmente — ni ruta ni botón.
 // Cuando se retome, restaurar import + ruta + item en UserMenu.
 // import { Settings } from '@/pages/Settings';
@@ -133,6 +134,14 @@ function App() {
         element={
           <ProtectedShell>
             <Rutas />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/reporte-diario"
+        element={
+          <ProtectedShell>
+            <ReporteDiario />
           </ProtectedShell>
         }
       />
