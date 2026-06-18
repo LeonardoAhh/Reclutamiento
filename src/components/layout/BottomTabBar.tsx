@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   BarChart3,
   Users,
@@ -16,6 +17,8 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { useReporteDiario } from '@/hooks/useReporteDiario';
+import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
 import './BottomTabBar.css';
 
 type TabItem = {
@@ -54,9 +57,12 @@ export function BottomTabBar() {
   const navigate = useNavigate();
   const { username, signOut } = useAuth();
   const { show, hide } = useLoader();
+  const { fetchSummaries } = useReporteDiario();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [showReporteBadge, setShowReporteBadge] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const reduceMotion = useReducedMotion();
 
   const isPath = (to: string) =>
     location.pathname === to || location.pathname.startsWith(`${to}/`);
@@ -86,6 +92,57 @@ export function BottomTabBar() {
       triggerRef.current?.focus();
     };
   }, [sheetOpen]);
+
+  /* ── Badge del Menú ──────────────────────────────────────────────
+     Punto indicador cuando hay un reporte cargado que: (a) tiene
+     incidencias para el día de hoy, o (b) aún no está guardado en
+     Supabase. Se calcula desde el cache de sesión del Reporte Diario
+     para mantener la navbar desacoplada de la página. */
+  const recomputeBadge = useCallback(async () => {
+    try {
+      const cached = sessionStorage.getItem('reporteDiarioCache');
+      if (!cached) {
+        setShowReporteBadge(false);
+        return;
+      }
+      const { rows } = parseReporteJSON(JSON.parse(cached));
+      if (!rows.length) {
+        setShowReporteBadge(false);
+        return;
+      }
+      const mes = rows[0].mes;
+
+      // (a) Incidencias del día de hoy (sólo si el reporte es del mes actual).
+      const now = new Date();
+      const todayMes = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      let todayIncidents = 0;
+      if (mes === todayMes) {
+        const dayKey = String(now.getDate()).padStart(2, '0');
+        for (const r of rows) {
+          if (isIncidence(r.days[dayKey])) todayIncidents++;
+        }
+      }
+
+      // (b) ¿Sin guardar en Supabase? (el mes no existe en los resúmenes).
+      const summaries = await fetchSummaries();
+      const isSaved = summaries.some((s) => s.mes === mes);
+
+      setShowReporteBadge(todayIncidents > 0 || !isSaved);
+    } catch {
+      setShowReporteBadge(false);
+    }
+  }, [fetchSummaries]);
+
+  // Recalcular al montar, al cambiar de ruta y cuando el reporte cambie.
+  useEffect(() => {
+    recomputeBadge();
+  }, [recomputeBadge, location.pathname]);
+
+  useEffect(() => {
+    const handler = () => recomputeBadge();
+    window.addEventListener('reporte-diario:changed', handler);
+    return () => window.removeEventListener('reporte-diario:changed', handler);
+  }, [recomputeBadge]);
 
   const handleSignOut = async () => {
     if (signingOut) return;
@@ -118,8 +175,20 @@ export function BottomTabBar() {
                 }
                 data-testid={`bottom-nav-${to.replace('/', '') || 'kpis'}`}
               >
-                <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
-                <span className="bottom-nav__label">{label}</span>
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.span
+                        layoutId="bottom-nav-pill"
+                        className="bottom-nav__pill"
+                        aria-hidden="true"
+                        transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 34 }}
+                      />
+                    )}
+                    <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
+                    <span className="bottom-nav__label">{label}</span>
+                  </>
+                )}
               </NavLink>
             ))}
           </div>
@@ -131,11 +200,14 @@ export function BottomTabBar() {
             aria-expanded={sheetOpen}
             aria-haspopup="dialog"
             aria-controls="bottom-nav-sheet"
-            aria-label="Menú"
+            aria-label={showReporteBadge ? 'Menú (hay novedades)' : 'Menú'}
             onClick={() => setSheetOpen((v) => !v)}
             data-testid="bottom-nav-menu-btn"
           >
             <Menu size={22} aria-hidden="true" className="bottom-nav__icon" />
+            {showReporteBadge && (
+              <span className="bottom-nav__badge" aria-hidden="true" data-testid="bottom-nav-badge" />
+            )}
           </button>
         </div>
       </nav>

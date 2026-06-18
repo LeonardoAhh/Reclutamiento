@@ -46,6 +46,7 @@
   }
 
   .bottom-nav__btn {
+    position: relative;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
@@ -61,9 +62,7 @@
     font-family: var(--font-body);
     text-decoration: none;
     cursor: pointer;
-    transition:
-      color var(--transition-fast),
-      background-color var(--transition-fast);
+    transition: color var(--transition-fast);
   }
 
   .bottom-nav__btn:hover {
@@ -77,11 +76,27 @@
 
   .bottom-nav__btn--active {
     color: var(--color-on-primary);
+  }
+
+  /* Highlight deslizante (framer-motion layoutId). */
+  .bottom-nav__pill {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     background: var(--color-primary);
+    border-radius: var(--rounded-full);
+  }
+
+  /* Contenido por encima del pill. */
+  .bottom-nav__btn .bottom-nav__icon,
+  .bottom-nav__btn .bottom-nav__label {
+    position: relative;
+    z-index: 1;
   }
 
   /* Botón circular de Menú, separado (estilo "FAB" iOS). */
   .bottom-nav__fab {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -112,6 +127,22 @@
   .bottom-nav__fab--active {
     color: var(--color-on-primary);
     background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  /* Punto indicador (badge) en el botón Menú. */
+  .bottom-nav__badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: var(--rounded-full);
+    background: var(--color-error);
+    border: 2px solid var(--color-surface-card);
+  }
+
+  .bottom-nav__fab--active .bottom-nav__badge {
     border-color: var(--color-primary);
   }
 

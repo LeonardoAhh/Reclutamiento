@@ -1090,7 +1090,9 @@ code:not(pre code) {
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
     padding-bottom: var(--spacing-lg);
     flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .modal-content.modal-fullscreen-mobile > .modal-footer {

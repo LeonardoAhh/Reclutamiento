@@ -3,6 +3,13 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 4) — Navbar: badge + pill animado · fix scroll modal
+- **Pill deslizante (iOS)**: el highlight activo de la navbar usa `framer-motion` `layoutId="bottom-nav-pill"` (`.bottom-nav__pill` absoluto detrás del contenido); anima entre KPIs/Candidatos. Respeta `prefers-reduced-motion` (`useReducedMotion`).
+- **Badge (puntito) en el botón Menú**: `.bottom-nav__badge`. `BottomTabBar` lo calcula desacoplado leyendo `sessionStorage["reporteDiarioCache"]` → si el reporte tiene **incidencias del día de hoy** o **no está guardado en Supabase** (mes ausente en `fetchSummaries`). Recalcula al montar, al cambiar de ruta y con el evento `window 'reporte-diario:changed'` que dispara `index.tsx` cuando cambian `rows`/`savedSummaries`.
+- **Fix scroll modales fullscreen móvil** (`global.css`): `.modal-content.modal-fullscreen-mobile > .modal-body` faltaba `min-height: 0` → el body crecía y se recortaba (clásico bug flex) en vez de hacer scroll. Afectaba p.ej. `WeeklyHiresModal`. Añadido `min-height:0` + `-webkit-overflow-scrolling:touch`. Aplica a todos los modales fullscreen.
+- `npm run build` OK.
+
+
 ## 2026-06-18 (sesión 3) — Navbar móvil minimalista (estilo pill iOS)
 - **Bottom navbar móvil** (`BottomTabBar.tsx/.css`, montada en `App.tsx > ProtectedShell`, solo ≤767px): píldora flotante centrada **sólida (sin liquid glass)** con 2 accesos principales (KPIs, Candidatos) — activo = pill relleno en `--color-primary` — + botón circular **Menú** (FAB) que abre un bottom-sheet con el resto (Dashboard, Reporte Diario, Vacantes, Bajas, Empleados, Rutas) + sesión activa + Cerrar sesión. Esc/click-outside/scroll-lock/safe-area, touch ≥44px.
 - `.bottom-nav-spacer` reserva alto al final del scroll para no tapar contenido.

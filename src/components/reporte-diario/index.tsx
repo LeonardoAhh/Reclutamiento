@@ -105,6 +105,12 @@ export default function ReporteDiarioContent() {
         })
     }, [fetchSummaries])
 
+    // Notifica a la navbar (badge del Menú) cuando cambian los datos del
+    // reporte o la lista de meses guardados en Supabase.
+    useEffect(() => {
+        window.dispatchEvent(new CustomEvent("reporte-diario:changed"))
+    }, [rows, savedSummaries])
+
     const months = useMemo(
         () => Array.from(new Set(rows.map((r) => r.mes))).sort(),
         [rows],
