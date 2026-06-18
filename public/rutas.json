@@ -8,14 +8,6 @@
     "parada": "PARADA EN LA IGLESIA"
   },
   {
-    "numero empleado": "54",
-    "nombre": "URIAS SANCHEZ ARMANDO",
-    "turno": "27",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
     "numero empleado": "645",
     "nombre": "PACHECO CORDOBA MA DE LOS ANGELES",
     "turno": "1",
@@ -38,14 +30,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
-  },
-  {
-    "numero empleado": "1106",
-    "nombre": "ANGELES MARCIAL ANALLELI",
-    "turno": "2",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "1369",
@@ -78,14 +62,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "1496",
-    "nombre": "SANCHEZ LOPEZ ELIUD",
-    "turno": "27",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "1526",
@@ -121,7 +97,7 @@
   },
   {
     "numero empleado": "1671",
-    "nombre": "IVAN GUILLERMO AMADOR FRANCO",
+    "nombre": "AMADOR FRANCO IVAN GUILLEERMO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
@@ -150,14 +126,6 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
-    "numero empleado": "1731",
-    "nombre": "NARANJO HERNANDEZ JOSE MANUEL",
-    "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "1757",
@@ -1208,14 +1176,6 @@
     "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
-    "numero empleado": "3772",
-    "nombre": "MORENO ROMERO OSMAR",
-    "turno": "4",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero empleado": "3773",
     "nombre": "PEREZ UGALDE KARLA MARIANA",
     "turno": "1",
@@ -2011,9 +1971,9 @@
     "numero empleado": "4180",
     "nombre": "HERNANDEZ VILLA MARIA FERNANDA",
     "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
+    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "4183",
@@ -2086,14 +2046,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "MONTENEGRO",
     "parada": "LONCHERIA LILI"
-  },
-  {
-    "numero empleado": "4197",
-    "nombre": "CONSTANTINO VELASCO CARMEN ",
-    "turno": "30",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4200",
@@ -2254,22 +2206,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4232",
-    "nombre": "PACHECO BAYLON ALEJANDRA",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
-    "numero empleado": "4237",
-    "nombre": "JIMENEZ GUTIERREZ MARIA CRUZ",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN EL CIDESI "
   },
   {
     "numero empleado": "4238",
