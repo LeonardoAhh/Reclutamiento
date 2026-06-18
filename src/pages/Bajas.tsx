@@ -326,48 +326,49 @@ export function Bajas() {
               </p>
             </div>
           ) : (
-            <div className="bajas__grid-list bajas__grid-list--scrollable">
+            <ul className="bajas__detail-list" role="list">
               {bajasConCobertura.map((b) => {
-                const rowClass = [
-                  'bajas__grid-item',
-                  'bajas__grid-item--clickable',
-                  b.soloInduccion ? 'bajas__row--solo' : '',
-                  !b.soloInduccion && b.cubiertaEn10d ? 'bajas__row--cubierta' : '',
+                const cardClass = [
+                  'bajas__detail-card',
+                  b.soloInduccion ? 'bajas__detail-card--solo' : '',
+                  !b.soloInduccion && b.cubiertaEn10d
+                    ? 'bajas__detail-card--cubierta'
+                    : '',
                 ]
                   .filter(Boolean)
                   .join(' ');
                 return (
-                  <div
-                    key={`${b.num_empleado}-${b.fecha_baja}`}
-                    className={rowClass}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`Ver detalle de baja de ${b.nombre}`}
-                    onClick={() => setDetalleTarget(b)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setDetalleTarget(b);
-                      }
-                    }}
-                  >
-                    <div className="bajas__grid-item-main">
-                      <span className="bajas__cell-name">{b.nombre}</span>
-                      <span className="bajas__cell-meta">
-                        #{b.num_empleado} · {b.puesto}
-                      </span>
-                    </div>
-                    <div className="bajas__grid-item-right">
-                      <div className="bajas__grid-item-details">
-                        <span className="bajas__cell-date">{formatShortDate(b.fecha_baja)}</span>
-                        <BajaCoberturaBadge baja={b} />
+                  <li key={`${b.num_empleado}-${b.fecha_baja}`} role="listitem">
+                    <button
+                      type="button"
+                      className={cardClass}
+                      aria-label={`Ver detalle de baja de ${b.nombre}`}
+                      onClick={() => setDetalleTarget(b)}
+                    >
+                      <div className="bajas__detail-card__body">
+                        <div className="bajas__detail-card__head">
+                          <span className="bajas__detail-card__name">{b.nombre}</span>
+                          <time className="bajas__detail-card__date">
+                            {formatShortDate(b.fecha_baja)}
+                          </time>
+                        </div>
+                        <span className="bajas__detail-card__meta">
+                          #{b.num_empleado} · {b.puesto}
+                        </span>
+                        <div className="bajas__detail-card__status">
+                          <BajaCoberturaBadge baja={b} />
+                        </div>
                       </div>
-                      <ChevronRight size={16} className="bajas__cell-chevron" aria-hidden="true" />
-                    </div>
-                  </div>
+                      <ChevronRight
+                        size={18}
+                        className="bajas__detail-card__chevron"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
         </section>
       </div>

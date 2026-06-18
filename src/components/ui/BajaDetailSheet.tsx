@@ -102,39 +102,44 @@ export function BajaDetailSheet({
       footerActions={footerActions}
       fullscreenMobile={true}
     >
-      <dl className="baja-detail-sheet__list">
-        <div className="baja-detail-sheet__field">
-          <dt>Área · Sección</dt>
-          <dd>{baja.area} · {baja.seccion}</dd>
+      <div className="modal-body baja-detail-sheet__body">
+        <div className="baja-detail-sheet__summary">
+          <span className="baja-detail-sheet__ident">
+            #{baja.num_empleado} · {baja.puesto}
+          </span>
+          <BajaCoberturaBadge baja={baja} />
         </div>
-        <div className="baja-detail-sheet__field">
-          <dt>Fecha de baja</dt>
-          <dd>{formatShortDate(baja.fecha_baja)}</dd>
-        </div>
-        <div className="baja-detail-sheet__field">
-          <dt>Tipo / Motivo</dt>
-          <dd>
-            <span className="baja-detail-sheet__tipo">{baja.tipo_baja || '—'}</span>
-            <span className="baja-detail-sheet__motivo">{baja.motivo_baja || '—'}</span>
-          </dd>
-        </div>
-        <div className="baja-detail-sheet__field">
-          <dt>Cobertura</dt>
-          <dd><BajaCoberturaBadge baja={baja} /></dd>
-        </div>
-        {!baja.soloInduccion && (
+
+        <dl className="baja-detail-sheet__list">
           <div className="baja-detail-sheet__field">
-            <dt>Cubre vacante</dt>
-            <dd>{quienCubre ?? <span className="baja-detail-sheet__muted">—</span>}</dd>
+            <dt>Área · Sección</dt>
+            <dd>{baja.area} · {baja.seccion}</dd>
           </div>
-        )}
-        {requisicionCode && (
           <div className="baja-detail-sheet__field">
-            <dt>Requisición</dt>
-            <dd>{requisicionCode}</dd>
+            <dt>Fecha de baja</dt>
+            <dd>{formatShortDate(baja.fecha_baja)}</dd>
           </div>
-        )}
-      </dl>
+          <div className="baja-detail-sheet__field">
+            <dt>Tipo / Motivo</dt>
+            <dd>
+              <span className="baja-detail-sheet__tipo">{baja.tipo_baja || '—'}</span>
+              <span className="baja-detail-sheet__motivo">{baja.motivo_baja || '—'}</span>
+            </dd>
+          </div>
+          {!baja.soloInduccion && (
+            <div className="baja-detail-sheet__field">
+              <dt>Cubre vacante</dt>
+              <dd>{quienCubre ?? <span className="baja-detail-sheet__muted">—</span>}</dd>
+            </div>
+          )}
+          {requisicionCode && (
+            <div className="baja-detail-sheet__field">
+              <dt>Requisición</dt>
+              <dd className="baja-detail-sheet__code">{requisicionCode}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
     </Modal>
   );
 }

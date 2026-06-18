@@ -559,6 +559,132 @@
   color: var(--color-success);
 }
 
+/* ── Detalle de bajas — lista mobile-first ──
+   Tarjeta por baja: nombre + fecha en la cabecera, meta truncada y badge de
+   cobertura abajo. Una sola columna en móvil; el contenido nunca satura. */
+.bajas__detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 80vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.bajas__detail-list > li {
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.bajas__detail-list > li:last-child {
+  border-bottom: none;
+}
+
+.bajas__detail-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  transition: background-color var(--transition-fast);
+}
+
+.bajas__detail-card:hover {
+  background: var(--color-surface-soft);
+}
+
+.bajas__detail-card:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.bajas__detail-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.bajas__detail-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.bajas__detail-card__name {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-semibold);
+  line-height: var(--type-body-md-line);
+  color: var(--color-body-strong);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bajas__detail-card__date {
+  flex-shrink: 0;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bajas__detail-card__meta {
+  margin: 0;
+  font-size: var(--type-caption-md-size);
+  line-height: var(--type-caption-md-line);
+  color: var(--color-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bajas__detail-card__status {
+  display: flex;
+}
+
+.bajas__detail-card__chevron {
+  flex-shrink: 0;
+  color: var(--color-muted-soft);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.bajas__detail-card:hover .bajas__detail-card__chevron {
+  color: var(--color-primary);
+  transform: translateX(2px);
+}
+
+/* Solo inducción: registro informativo, atenuado. */
+.bajas__detail-card--solo .bajas__detail-card__name,
+.bajas__detail-card--solo .bajas__detail-card__meta {
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+/* Cubierta a tiempo: acento sutil en el borde izquierdo. */
+.bajas__detail-card--cubierta {
+  box-shadow: inset 3px 0 0 var(--color-success);
+}
+
+/* Desktop: una fila más compacta, nombre y meta juntos a la izquierda. */
+@media (min-width: 768px) {
+  .bajas__detail-card__head {
+    align-items: center;
+  }
+}
+
 /* ── Empty state ── */
 .bajas__empty {
   padding: var(--spacing-xl);
