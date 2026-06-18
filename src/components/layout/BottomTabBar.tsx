@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
 import {
   BarChart3,
   Users,
@@ -62,7 +61,6 @@ export function BottomTabBar() {
   const [signingOut, setSigningOut] = useState(false);
   const [showReporteBadge, setShowReporteBadge] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const reduceMotion = useReducedMotion();
 
   const isPath = (to: string) =>
     location.pathname === to || location.pathname.startsWith(`${to}/`);
@@ -178,11 +176,9 @@ export function BottomTabBar() {
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <motion.span
-                        layoutId="bottom-nav-pill"
+                      <span
                         className="bottom-nav__pill"
                         aria-hidden="true"
-                        transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 34 }}
                       />
                     )}
                     <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
