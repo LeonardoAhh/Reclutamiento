@@ -3,6 +3,13 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 3) — Navbar móvil minimalista (estilo pill iOS)
+- **Bottom navbar móvil** (`BottomTabBar.tsx/.css`, montada en `App.tsx > ProtectedShell`, solo ≤767px): píldora flotante centrada **sólida (sin liquid glass)** con 2 accesos principales (KPIs, Candidatos) — activo = pill relleno en `--color-primary` — + botón circular **Menú** (FAB) que abre un bottom-sheet con el resto (Dashboard, Reporte Diario, Vacantes, Bajas, Empleados, Rutas) + sesión activa + Cerrar sesión. Esc/click-outside/scroll-lock/safe-area, touch ≥44px.
+- `.bottom-nav-spacer` reserva alto al final del scroll para no tapar contenido.
+- **UserMenu oculto en móvil** (`UserMenu.css`): la navegación ya vive en la BottomTabBar; en desktop el menú de avatar sigue igual. Header móvil = brand + ThemeToggle.
+- `npm run build` OK.
+
+
 ## 2026-06-18 (sesión 2) — Reporte Diario: pulido mobile-first + Supabase + fixes
 - **Dedup empleados**: el export duplicaba cada empleado (360 reales → 720). `helpers.parseReporteJSON` ahora deduplica por `numero_empleado+área+turno` (fusiona días). Corrige KPIs, calendario, áreas e incidencias.
 - **KPI dashboard** (`reporte-kpi-dashboard.tsx`): pasado a clases (`.reporte-kpi__*`); el inline `repeat(2,1fr)` pisaba la clase y se quedaba en 2 col + valor `display-lg` gigante. Ahora compacto: móvil 2 col, PC 4 col en una fila; valor `heading-md/lg`.

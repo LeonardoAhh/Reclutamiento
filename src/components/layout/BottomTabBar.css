@@ -1,151 +1,148 @@
 /* ─────────────────────────────────────────────
-   BottomTabBar
-   Solo visible en ≤767px. Desktop/tablet usan
-   el top-nav. z-index: 90 (bajo el header: 100).
+   BottomTabBar — navbar inferior minimalista
+   Solo visible en ≤767px. Centrada y flotante.
+   Sin sombras (el sistema usa borde + glass).
+   z-index: 90 (bajo el header: 100).
 ───────────────────────────────────────────── */
 
-/* ── Oculto por defecto; mobile lo activa ── */
-.bottom-tab-bar {
+.bottom-nav {
   display: none;
 }
 
+/* Spacer para que el contenido no quede oculto bajo la barra flotante. */
+.bottom-nav-spacer {
+  height: 0;
+}
+
 @media (max-width: 767px) {
-  .bottom-tab-bar {
-    /* Posicionamiento */
+  .bottom-nav {
     position: fixed;
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: calc(var(--safe-area-bottom) + var(--spacing-md));
     z-index: 90;
-
-    /* Display */
-    display: block;
-
-    /* Box model — safe areas por padding, no por margin */
-    padding-bottom: var(--safe-area-bottom);
-    padding-left: var(--safe-area-left);
-    padding-right: var(--safe-area-right);
-
-    /* Visual */
-    background: var(--color-header-glass);
-    border-top: 1px solid var(--color-hairline);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  /* ── Lista de tabs ─────────────────────── */
-  .bottom-tab-bar__list {
-    /* Display */
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-
-    /* Box model */
-    height: var(--tab-bar-height);
-    margin: 0;
-    padding: 0;
-
-    /* Reset */
-    list-style: none;
-  }
-
-  /* ── Item (celda de la grid) ───────────── */
-  .bottom-tab-bar__item {
     display: flex;
-    align-items: stretch;
-    justify-content: stretch;
+    justify-content: center;
+    padding-inline: var(--spacing-md);
+    pointer-events: none;
   }
 
-  /* ── Link / botón de cada tab ──────────── */
-  .bottom-tab-bar__link {
-    /* Display */
-    display: flex;
+  .bottom-nav__group {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  /* Píldora sólida con las 2 pestañas principales (sin liquid glass). */
+  .bottom-nav__bar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    padding: var(--spacing-xxs);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--rounded-full);
+  }
+
+  .bottom-nav__btn {
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-xxs);
-    width: 100%;
-
-    /* Box model */
-    min-height: 44px;           /* touch target mínimo WCAG */
-    padding: var(--spacing-sm) var(--spacing-xxs);
-
-    /* Tipografía */
-    font-family: var(--font-body);
-    font-size: var(--type-caption-sm-size);
-    font-weight: var(--type-body-sm-strong-weight);
-    text-decoration: none;
-
-    /* Visual */
-    color: var(--color-body);
-    background: transparent;
+    gap: 2px;
+    min-width: 68px;
+    min-height: 52px;
+    padding: var(--spacing-xs) var(--spacing-lg);
     border: none;
-
-    /* Interacción */
+    background: transparent;
+    border-radius: var(--rounded-full);
+    color: var(--color-muted);
+    font-family: var(--font-body);
+    text-decoration: none;
     cursor: pointer;
     transition:
       color var(--transition-fast),
-      background var(--transition-fast);
+      background-color var(--transition-fast);
   }
 
-  .bottom-tab-bar__link:hover {
+  .bottom-nav__btn:hover {
     color: var(--color-ink);
   }
 
-  .bottom-tab-bar__link:focus-visible {
+  .bottom-nav__btn:focus-visible {
     outline: none;
     box-shadow: var(--shadow-focus);
-    border-radius: var(--rounded-sm);
   }
 
-  /* Estado activo: color primario + línea superior */
-  .bottom-tab-bar__link--active {
-    position: relative;
-    color: var(--color-primary);
-  }
-
-  .bottom-tab-bar__link--active::before {
-    content: '';
-
-    /* Posicionamiento */
-    position: absolute;
-    top: 0;
-    left: 25%;
-    right: 25%;
-
-    /* Box model */
-    height: 2px;
-
-    /* Visual */
+  .bottom-nav__btn--active {
+    color: var(--color-on-primary);
     background: var(--color-primary);
-    border-radius: 0 0 var(--rounded-full) var(--rounded-full);
   }
 
-  /* ── Subcomponentes del link ───────────── */
-  .bottom-tab-bar__icon {
+  /* Botón circular de Menú, separado (estilo "FAB" iOS). */
+  .bottom-nav__fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--rounded-full);
+    background: var(--color-surface-card);
+    color: var(--color-charcoal);
+    cursor: pointer;
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .bottom-nav__fab:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-soft);
+  }
+
+  .bottom-nav__fab:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+
+  .bottom-nav__fab--active {
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .bottom-nav__icon {
     flex-shrink: 0;
   }
 
-  .bottom-tab-bar__label {
-    /* Tipografía */
+  .bottom-nav__label {
     font-size: 11px;
-    letter-spacing: var(--tracking-snug);
     line-height: 1;
+    font-weight: var(--type-body-strong-weight);
+  }
 
-    /* Overflow */
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  /* Reserva el alto de la barra flotante al final del scroll. */
+  .bottom-nav-spacer {
+    height: calc(var(--safe-area-bottom) + 96px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav__btn,
+    .bottom-nav__fab {
+      transition: none;
+    }
   }
 }
 
 /* ─────────────────────────────────────────────
-   Bottom Sheet (overflow "Más")
+   Bottom Sheet (menú "Más")
    z-index: 1000 — por encima de todo.
-   Animaciones definidas una sola vez aquí.
 ───────────────────────────────────────────── */
 
-/* ── Keyframes ────────────────────────────── */
 @keyframes btm-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -156,103 +153,91 @@
   to   { transform: translateY(0); }
 }
 
-/* ── Overlay / scrim ──────────────────────── */
 .bottom-sheet-overlay {
-  /* Posicionamiento */
   position: fixed;
   inset: 0;
   z-index: 1000;
-
-  /* Display */
   display: flex;
   align-items: flex-end;
   justify-content: center;
-
-  /* Visual */
   background: var(--color-modal-scrim);
-
-  /* Animación */
   animation: btm-fade-in 200ms ease;
 }
 
-/* ── Sheet ────────────────────────────────── */
 .bottom-sheet {
-  /* Box model */
   width: 100%;
   max-width: 600px;
   padding-bottom: max(var(--spacing-lg), var(--safe-area-bottom));
-
-  /* Visual */
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-bottom: none;
   border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
-
-  /* Animación */
   animation: btm-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* ── Handle (drag indicator) ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .bottom-sheet-overlay,
+  .bottom-sheet {
+    animation: none;
+  }
+}
+
 .bottom-sheet__handle {
-  /* Box model */
   width: 36px;
   height: 4px;
   margin: var(--spacing-sm) auto var(--spacing-md);
-
-  /* Visual */
   background: var(--color-hairline-strong);
   border-radius: var(--rounded-full);
 }
 
-/* ── Header ───────────────────────────────── */
 .bottom-sheet__header {
-  /* Display */
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  /* Box model */
+  gap: var(--spacing-md);
   padding: 0 var(--spacing-lg) var(--spacing-sm);
-
-  /* Visual */
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
-.bottom-sheet__title {
-  /* Tipografía */
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-
-  /* Box model */
-  margin: 0;
-
-  /* Visual */
-  color: var(--color-ink);
+.bottom-sheet__session {
+  min-width: 0;
 }
 
-/* ── Botón cierre ─────────────────────────── */
+.bottom-sheet__session-label {
+  margin: 0;
+  font-size: var(--type-caption-sm-size);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-muted);
+}
+
+.bottom-sheet__session-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bottom-sheet__close {
-  /* Display */
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* Box model */
+  flex-shrink: 0;
   width: var(--control-height);
   height: var(--control-height);
-
-  /* Visual */
   color: var(--color-charcoal);
   background: transparent;
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-full);
-
-  /* Interacción */
   cursor: pointer;
   transition:
     color var(--transition-fast),
-    background var(--transition-fast);
+    background-color var(--transition-fast);
 }
 
 .bottom-sheet__close:hover {
@@ -265,46 +250,35 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Lista de ítems ───────────────────────── */
 .bottom-sheet__list {
-  /* Display */
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-
-  /* Box model */
+  gap: var(--spacing-xxs);
   margin: 0;
-  padding: var(--spacing-md);
-
-  /* Reset */
+  padding: var(--spacing-md) var(--spacing-md) 0;
   list-style: none;
 }
 
-/* ── Ítem ─────────────────────────────────── */
 .bottom-sheet__item {
-  /* Display */
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-
-  /* Box model */
+  width: 100%;
   min-height: 48px;
-  padding: var(--spacing-md);
-
-  /* Tipografía */
+  padding: var(--spacing-sm) var(--spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
+  text-align: left;
   text-decoration: none;
-
-  /* Visual */
   color: var(--color-ink);
-  border-radius: var(--rounded-full);
-
-  /* Interacción */
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
   transition:
     color var(--transition-fast),
-    background var(--transition-fast);
+    background-color var(--transition-fast);
 }
 
 .bottom-sheet__item:hover {
@@ -316,23 +290,57 @@
   box-shadow: var(--shadow-focus);
 }
 
+.bottom-sheet__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .bottom-sheet__item--active {
   color: var(--color-ink);
   background: var(--color-surface-soft);
   font-weight: var(--type-body-strong-weight);
 }
 
-/* ── Subcomponentes del ítem ──────────────── */
+.bottom-sheet__item--danger {
+  color: var(--color-error);
+}
+
+.bottom-sheet__item--danger:hover {
+  background: var(--color-error-tint);
+}
+
 .bottom-sheet__item-icon {
   flex-shrink: 0;
   color: var(--color-charcoal);
 }
 
-/* Herencia de color: el ícono sigue al padre --active */
 .bottom-sheet__item--active .bottom-sheet__item-icon {
   color: var(--color-ink);
 }
 
+.bottom-sheet__item--danger .bottom-sheet__item-icon {
+  color: var(--color-error);
+}
+
 .bottom-sheet__item-label {
   flex: 1;
+  min-width: 0;
+}
+
+.bottom-sheet__item-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.bottom-sheet__divider {
+  height: 1px;
+  margin: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-hairline-soft);
+}
+
+.bottom-sheet__footer {
+  padding: 0 var(--spacing-md);
 }

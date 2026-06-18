@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   BarChart3,
   Users,
+  Menu,
+  X,
   LayoutDashboard,
-  MoreHorizontal,
+  CalendarRange,
   Briefcase,
   UserMinus,
-  X,
+  Contact,
+  Map,
+  LogOut,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useLoader } from '@/hooks/useLoader';
 import './BottomTabBar.css';
 
 type TabItem = {
@@ -19,55 +25,60 @@ type TabItem = {
   end?: boolean;
 };
 
+/** Dos accesos principales, siempre visibles en la barra. */
 const PRIMARY_TABS: ReadonlyArray<TabItem> = [
   { to: '/', label: 'KPIs', icon: BarChart3, end: true },
-  { to: '/pipeline', label: 'Candidates', icon: Users },
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/pipeline', label: 'Candidatos', icon: Users },
 ];
 
-const OVERFLOW_TABS: ReadonlyArray<TabItem> = [
-  { to: '/vacantes', label: 'Vacancies', icon: Briefcase },
-  { to: '/bajas', label: 'Downsizing', icon: UserMinus },
+/** Resto de accesos, dentro del menú desplegable. */
+const MENU_TABS: ReadonlyArray<TabItem> = [
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
+  { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
+  { to: '/bajas', label: 'Bajas', icon: UserMinus },
+  { to: '/empleados', label: 'Empleados', icon: Contact },
+  { to: '/rutas', label: 'Rutas', icon: Map },
 ];
 
 /**
- * Bottom tab bar for mobile/PWA. Hidden on tablet/desktop where the top-nav
- * already covers navegación. Includes a "Más" tab that opens a bottom sheet
- * con los items de menor frecuencia (Vacantes / Bajas / Transporte).
+ * Navbar inferior minimalista para móvil/PWA (≤767px). Centrada, flotante.
+ * 2 accesos principales (KPIs, Candidatos) + botón "Menú" que despliega un
+ * bottom-sheet con el resto de páginas, la sesión activa y cerrar sesión.
  *
- * Patrones aplicados:
- *  - safe-area-inset-bottom para respetar home-indicator.
- *  - touch targets ≥44px (Apple HIG / WCAG 2.5.5).
- *  - sheet con `Esc`, click-outside, focus trap mínimo, body scroll lock.
+ * Patrones: safe-area-inset, touch targets ≥44px, Esc / click-outside,
+ * body scroll-lock y restauración de foco al trigger.
  */
 export function BottomTabBar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { username, signOut } = useAuth();
+  const { show, hide } = useLoader();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const sheetRef = useRef<HTMLDivElement>(null);
+  const [signingOut, setSigningOut] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const overflowActive = OVERFLOW_TABS.some(
-    (t) => location.pathname === t.to || location.pathname.startsWith(`${t.to}/`)
-  );
+  const isPath = (to: string) =>
+    location.pathname === to || location.pathname.startsWith(`${to}/`);
+  const menuActive = MENU_TABS.some((t) => isPath(t.to));
 
-  // Cerrar sheet en cambio de ruta (después de tap en un item).
+  // Cerrar al cambiar de ruta.
   useEffect(() => {
     setSheetOpen(false);
   }, [location.pathname]);
 
-  // Body scroll lock + Esc + focus restore.
+  // Scroll-lock + Esc + restaurar foco.
   useEffect(() => {
     if (!sheetOpen) return;
     const { body } = document;
     const prev = body.style.overflow;
     body.style.overflow = 'hidden';
-
-    function onKey(e: KeyboardEvent) {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
         setSheetOpen(false);
       }
-    }
+    };
     document.addEventListener('keydown', onKey);
     return () => {
       document.removeEventListener('keydown', onKey);
@@ -76,56 +87,57 @@ export function BottomTabBar() {
     };
   }, [sheetOpen]);
 
+  const handleSignOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    const displayName = username ? username.split('@')[0].toUpperCase() : '';
+    show({ tone: 'logout', title: displayName });
+    try {
+      await signOut();
+    } finally {
+      setSigningOut(false);
+      setSheetOpen(false);
+      window.setTimeout(hide, 7000);
+    }
+  };
+
+  if (!username) return null;
+
   return (
     <>
-      <nav
-        className="bottom-tab-bar"
-        aria-label="Navegación inferior"
-      >
-        <ul className="bottom-tab-bar__list">
-          {PRIMARY_TABS.map(({ to, label, icon: Icon, end }) => (
-            <li key={to} className="bottom-tab-bar__item">
+      <nav className="bottom-nav" aria-label="Navegación inferior">
+        <div className="bottom-nav__group">
+          <div className="bottom-nav__bar">
+            {PRIMARY_TABS.map(({ to, label, icon: Icon, end }) => (
               <NavLink
+                key={to}
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `bottom-tab-bar__link${
-                    isActive ? ' bottom-tab-bar__link--active' : ''
-                  }`
+                  `bottom-nav__btn${isActive ? ' bottom-nav__btn--active' : ''}`
                 }
+                data-testid={`bottom-nav-${to.replace('/', '') || 'kpis'}`}
               >
-                <Icon
-                  size={20}
-                  aria-hidden="true"
-                  className="bottom-tab-bar__icon"
-                />
-                <span className="bottom-tab-bar__label">{label}</span>
+                <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
+                <span className="bottom-nav__label">{label}</span>
               </NavLink>
-            </li>
-          ))}
-          <li className="bottom-tab-bar__item">
-            <button
-              ref={triggerRef}
-              type="button"
-              className={`bottom-tab-bar__link${
-                overflowActive || sheetOpen
-                  ? ' bottom-tab-bar__link--active'
-                  : ''
-              }`}
-              aria-expanded={sheetOpen}
-              aria-haspopup="dialog"
-              aria-controls="bottom-tab-more-sheet"
-              onClick={() => setSheetOpen((v) => !v)}
-            >
-              <MoreHorizontal
-                size={20}
-                aria-hidden="true"
-                className="bottom-tab-bar__icon"
-              />
-              <span className="bottom-tab-bar__label">Más</span>
-            </button>
-          </li>
-        </ul>
+            ))}
+          </div>
+
+          <button
+            ref={triggerRef}
+            type="button"
+            className={`bottom-nav__fab${menuActive || sheetOpen ? ' bottom-nav__fab--active' : ''}`}
+            aria-expanded={sheetOpen}
+            aria-haspopup="dialog"
+            aria-controls="bottom-nav-sheet"
+            aria-label="Menú"
+            onClick={() => setSheetOpen((v) => !v)}
+            data-testid="bottom-nav-menu-btn"
+          >
+            <Menu size={22} aria-hidden="true" className="bottom-nav__icon" />
+          </button>
+        </div>
       </nav>
 
       {sheetOpen && (
@@ -137,16 +149,19 @@ export function BottomTabBar() {
           }}
         >
           <div
-            ref={sheetRef}
-            id="bottom-tab-more-sheet"
+            id="bottom-nav-sheet"
             className="bottom-sheet"
             role="dialog"
             aria-modal="true"
-            aria-label="Más secciones"
+            aria-label="Menú de navegación"
           >
             <div className="bottom-sheet__handle" aria-hidden="true" />
+
             <header className="bottom-sheet__header">
-              <h2 className="bottom-sheet__title">Más</h2>
+              <div className="bottom-sheet__session">
+                <p className="bottom-sheet__session-label">Sesión activa</p>
+                <p className="bottom-sheet__session-name" title={username}>{username}</p>
+              </div>
               <button
                 type="button"
                 className="bottom-sheet__close"
@@ -156,27 +171,44 @@ export function BottomTabBar() {
                 <X size={18} aria-hidden="true" />
               </button>
             </header>
+
             <ul className="bottom-sheet__list">
-              {OVERFLOW_TABS.map(({ to, label, icon: Icon }) => (
-                <li key={to}>
-                  <NavLink
-                    to={to}
-                    className={({ isActive }) =>
-                      `bottom-sheet__item${
-                        isActive ? ' bottom-sheet__item--active' : ''
-                      }`
-                    }
-                  >
-                    <Icon
-                      size={20}
-                      aria-hidden="true"
-                      className="bottom-sheet__item-icon"
-                    />
-                    <span className="bottom-sheet__item-label">{label}</span>
-                  </NavLink>
-                </li>
-              ))}
+              {MENU_TABS.map(({ to, label, icon: Icon }) => {
+                const active = isPath(to);
+                return (
+                  <li key={to}>
+                    <button
+                      type="button"
+                      className={`bottom-sheet__item${active ? ' bottom-sheet__item--active' : ''}`}
+                      onClick={() => navigate(to)}
+                      aria-current={active ? 'page' : undefined}
+                      data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
+                    >
+                      <Icon size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
+                      <span className="bottom-sheet__item-label">{label}</span>
+                      {active && <span className="bottom-sheet__item-dot" aria-hidden="true" />}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
+
+            <div className="bottom-sheet__divider" role="separator" />
+
+            <div className="bottom-sheet__footer">
+              <button
+                type="button"
+                className="bottom-sheet__item bottom-sheet__item--danger"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                data-testid="bottom-nav-signout"
+              >
+                <LogOut size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
+                <span className="bottom-sheet__item-label">
+                  {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       )}

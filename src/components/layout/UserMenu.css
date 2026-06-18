@@ -295,3 +295,11 @@
     display: none;
   }
 }
+
+/* En móvil la navegación vive en la BottomTabBar; ocultamos el menú de avatar
+   para no duplicar accesos (sesión y cerrar sesión están en el sheet). */
+@media (max-width: 767px) {
+  .user-menu {
+    display: none;
+  }
+}

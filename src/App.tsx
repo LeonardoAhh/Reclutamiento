@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useLoader } from '@/hooks/useLoader';
 import { Header } from '@/components/layout/Header';
+import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
@@ -30,6 +31,8 @@ function ProtectedShell({ children }: { children: ReactNode }) {
       <PositionsProvider>
         <Header />
         {children}
+        <div className="bottom-nav-spacer" aria-hidden="true" />
+        <BottomTabBar />
       </PositionsProvider>
     </AuthGuard>
   );
