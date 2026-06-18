@@ -247,8 +247,16 @@ export function Pipeline() {
       if (filters.source && (c.source ?? '') !== filters.source) return false;
 
       if (desde || hasta) {
-        const ts = c.fecha_aplicacion ? new Date(c.fecha_aplicacion).getTime() : NaN;
-        if (Number.isNaN(ts)) return false;
+        // Filtramos por **fecha de entrevista** (`fecha_cita`).
+        // El valor guardado puede venir como `YYYY-MM-DD` (date) o como
+        // `YYYY-MM-DDTHH:MM` (datetime-local sin TZ): en ambos casos
+        // representa hora local MX. Nos quedamos con el día calendario
+        // y lo comparamos contra los bordes MX (start/endOfDayMxMs ya
+        // anclados a UTC-6) → comparación TZ-agnóstica.
+        if (!c.fecha_cita) return false;
+        const dayStr = String(c.fecha_cita).slice(0, 10);
+        const ts = startOfDayMxMs(dayStr);
+        if (ts === null) return false;
         if (desde && ts < desde) return false;
         if (hasta && ts > hasta) return false;
       }

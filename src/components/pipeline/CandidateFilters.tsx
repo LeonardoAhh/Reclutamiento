@@ -144,7 +144,7 @@ export function CandidateFilters({
         </div>
 
         <div className="filters__field">
-          <label htmlFor="filter-desde">Aplicó desde</label>
+          <label htmlFor="filter-desde">Entrevista desde</label>
           <input
             id="filter-desde"
             type="date"
@@ -154,7 +154,7 @@ export function CandidateFilters({
         </div>
 
         <div className="filters__field">
-          <label htmlFor="filter-hasta">Aplicó hasta</label>
+          <label htmlFor="filter-hasta">Entrevista hasta</label>
           <input
             id="filter-hasta"
             type="date"
