@@ -3,6 +3,13 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 6) — Fix definitivo scroll modales KPI (iOS PWA)
+- **Causa raíz**: scrollers ANIDADOS dentro del `.modal-body`. `TtfHistoryModal` tenía `.ttf-history-modal__content { flex:1; overflow-y:auto }` **sin `min-height:0`** → el hijo flex crece al alto del contenido en vez de encogerse y bloquea el momentum scroll de iOS (el panel de `AreaDetailModal` SÍ tenía `min-height:0`, por eso Dashboard funcionaba y KPI no).
+- **Fix unificado** (`global.css`, dentro de `@media max-width:767px`): regla global `.modal-content.modal-fullscreen-mobile .modal-body > * { min-height: 0 }` + `-webkit-overflow-scrolling:touch`/`overscroll-behavior:contain` en scrollers internos (`__content/__panel/__scroll`). El `.modal-body` queda como contenedor de scroll único; cualquier scroller anidado ya puede encogerse y hacer scroll en iOS.
+- **Fix específico** (`TtfHistoryModal.css`): añadido `min-height:0` + momentum a `.ttf-history-modal__content` (correcto también en desktop).
+- `npm run build` (tsc -b + vite) **OK**. Pendiente: el usuario despliega y valida en iOS PWA.
+
+
 ## 2026-06-18 (sesión 5) — Dashboard AreaDetailModal móvil + Login safe-area
 - **AreaDetailModal mobile-first** (`AreaDetailModal.tsx/.css`): en móvil la tabla saturada (se cortaba a la derecha) se reemplaza por **tarjetas** (`.area-detail-modal__cards`) con nombre del puesto, sección (en tab "Todas"), flags (urgente/excedente), métricas Real/Aut. y Vacantes, badge de estado y botón de comentario. Tabla intacta en desktop. Helpers reutilizables `renderEstado/renderFlags/commentButton/commentsFor`.
 - **Tab "Todas" repetitivo**: ahora sólo se muestra cuando hay **2+ secciones**; con una sola sección se omite (era idéntico a esa sección). Default `activeTab=ALL_TAB` sigue mostrando todo.

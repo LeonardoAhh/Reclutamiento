@@ -15,7 +15,10 @@
 /* ── Lista de meses ─────────────────────────────────────────────────── */
 .ttf-history-modal__content {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .ttf-history-modal__empty {

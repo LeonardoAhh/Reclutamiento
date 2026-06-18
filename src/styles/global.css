@@ -1102,6 +1102,24 @@ code:not(pre code) {
     overscroll-behavior: contain;
   }
 
+  /* Fix de scroll en iOS para scrollers ANIDADOS dentro del cuerpo del modal.
+     Un hijo flex (p.ej. `.ttf-history-modal__content { flex:1; overflow-y:auto }`)
+     sin `min-height:0` crece hasta el alto de su contenido en vez de encogerse,
+     y bloquea el momentum scroll de iOS. Garantizamos `min-height:0` y momentum
+     en cualquier hijo directo del cuerpo del modal fullscreen. El cuerpo
+     (`.modal-body`) sigue siendo el contenedor de scroll principal. */
+  .modal-content.modal-fullscreen-mobile .modal-body > * {
+    min-height: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile .modal-body [style*="overflow"],
+  .modal-content.modal-fullscreen-mobile .modal-body [class*="__content"],
+  .modal-content.modal-fullscreen-mobile .modal-body [class*="__panel"],
+  .modal-content.modal-fullscreen-mobile .modal-body [class*="__scroll"] {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
   .modal-content.modal-fullscreen-mobile > .modal-footer {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
