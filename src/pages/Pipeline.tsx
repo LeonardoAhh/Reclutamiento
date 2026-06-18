@@ -34,7 +34,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatShortDate, startOfDayMxMs, endOfDayMxMs, parseDdMmYyyy } from '@/lib/dates';
+import { formatShortDate, startOfDayMxMs, endOfDayMxMs, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
 import './Pipeline.css';
@@ -131,22 +131,11 @@ export function Pipeline() {
 
       for (const c of cands) {
         if (!c.fecha_aplicacion) continue;
-        const trimmed = c.fecha_aplicacion.trim();
-        const dateOnly = parseDdMmYyyy(trimmed);
-        const d = dateOnly ? new Date(`${dateOnly}T12:00:00-06:00`) : new Date(trimmed);
-        if (isNaN(d.getTime())) continue;
+        const range = getPautaWeekRange(c.fecha_aplicacion);
+        if (!range) continue;
 
-        const day = d.getDay();
-        const diffToWed = day >= 3 ? day - 3 : day + 4;
-
-        const startWed = new Date(d);
-        startWed.setDate(d.getDate() - diffToWed);
-        startWed.setHours(12, 0, 0, 0);
-
-        const timeKey = startWed.getTime();
+        const { startWed, endTue, timeKey } = range;
         if (!groups.has(timeKey)) {
-          const endTue = new Date(startWed);
-          endTue.setDate(startWed.getDate() + 6);
           groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
         }
 
@@ -155,28 +144,19 @@ export function Pipeline() {
         if (c.status === 'contratado') bucket.contratados += 1;
       }
 
-      const today = new Date();
-      const day = today.getDay();
-      const diffToWed = day >= 3 ? day - 3 : day + 4;
+      // Asegurar que aparezcan semana anterior / actual / siguiente
+      // aun sin candidatos. Todo el cálculo es TZ-agnóstico (MX, sin DST).
+      const currentRange = getPautaWeekRange(new Date());
+      if (currentRange) {
+        const prevRange = shiftPautaWeek(currentRange, -1);
+        const nextRange = shiftPautaWeek(currentRange, 1);
 
-      const currentWed = new Date(today);
-      currentWed.setDate(today.getDate() - diffToWed);
-      currentWed.setHours(12, 0, 0, 0);
-
-      const prevWed = new Date(currentWed);
-      prevWed.setDate(currentWed.getDate() - 7);
-
-      const nextWed = new Date(currentWed);
-      nextWed.setDate(currentWed.getDate() + 7);
-
-      [prevWed, currentWed, nextWed].forEach(startWed => {
-        const tKey = startWed.getTime();
-        if (!groups.has(tKey)) {
-          const endTue = new Date(startWed);
-          endTue.setDate(startWed.getDate() + 6);
-          groups.set(tKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
-        }
-      });
+        [prevRange, currentRange, nextRange].forEach(({ startWed, endTue, timeKey }) => {
+          if (!groups.has(timeKey)) {
+            groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
+          }
+        });
+      }
 
       return Array.from(groups.values()).map(stat => {
         // Cálculo de efectividad oculto (solo lógico)

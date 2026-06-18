@@ -489,6 +489,82 @@ export function businessDaysBetween(
 }
 
 /**
+ * Rango de una **semana de pauta** (Miércoles → Martes), evaluada en TZ MX.
+ *
+ * `startWed` siempre es el miércoles de inicio anclado a mediodía MX y
+ * `endTue` es el martes siguiente, también a mediodía MX. `timeKey` es
+ * útil como clave de agrupación.
+ *
+ * Toda la aritmética se hace sobre UTC anclando primero el día MX del
+ * input, lo que la vuelve **TZ-agnóstica**: produce el mismo resultado
+ * independientemente de la zona horaria del navegador.
+ */
+export interface PautaWeekRange {
+  startWed: Date;
+  endTue: Date;
+  timeKey: number;
+}
+
+export function getPautaWeekRange(input: Date | string | null | undefined): PautaWeekRange | null {
+  if (input === null || input === undefined) return null;
+
+  // 1. Normalizar a `YYYY-MM-DD` en TZ MX.
+  let isoDay: string | null = null;
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+    if (!trimmed) return null;
+    const ddmm = parseDdMmYyyy(trimmed);
+    if (ddmm) {
+      isoDay = ddmm;
+    } else {
+      // ISO completo con hora/zona → extraemos el día calendario en MX.
+      const d = new Date(trimmed);
+      if (!Number.isNaN(d.getTime())) {
+        const { year, month, day } = mxDateParts(d);
+        isoDay = `${year}-${pad2(month)}-${pad2(day)}`;
+      }
+    }
+  } else if (input instanceof Date && !Number.isNaN(input.getTime())) {
+    const { year, month, day } = mxDateParts(input);
+    isoDay = `${year}-${pad2(month)}-${pad2(day)}`;
+  }
+  if (!isoDay) return null;
+
+  // 2. Anclar a mediodía MX. Esto produce un instante UTC fijo:
+  //    `T12:00:00-06:00` = 18:00:00 UTC del mismo día MX.
+  //    A esa hora, `getUTCDay()` siempre devuelve el día de la semana
+  //    correcto del día calendario MX (no del navegador).
+  const anchor = new Date(`${isoDay}T12:00:00${MX_UTC_OFFSET}`);
+  if (Number.isNaN(anchor.getTime())) return null;
+
+  // 3. Día de la semana en MX (0=Dom, 1=Lun, 2=Mar, 3=Mié, …, 6=Sáb).
+  const dayMx = anchor.getUTCDay();
+
+  // 4. Días a retroceder hasta el miércoles de la misma semana de pauta.
+  //    Mié=3 → 0, Jue=4 → 1, …, Mar=2 → 6 (la semana pasa Mié→Mar).
+  const diffToWed = dayMx >= 3 ? dayMx - 3 : dayMx + 4;
+
+  // 5. Aritmética en ms (Querétaro no observa DST, 1 día = 86 400 000 ms).
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const startWed = new Date(anchor.getTime() - diffToWed * DAY_MS);
+  const endTue = new Date(startWed.getTime() + 6 * DAY_MS);
+
+  return { startWed, endTue, timeKey: startWed.getTime() };
+}
+
+/**
+ * Suma N semanas (de 7 días, en MX sin DST) a un `PautaWeekRange` y
+ * devuelve un nuevo rango. Útil para construir “semana anterior /
+ * actual / siguiente”.
+ */
+export function shiftPautaWeek(range: PautaWeekRange, weeks: number): PautaWeekRange {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const startWed = new Date(range.startWed.getTime() + weeks * 7 * DAY_MS);
+  const endTue = new Date(startWed.getTime() + 6 * DAY_MS);
+  return { startWed, endTue, timeKey: startWed.getTime() };
+}
+
+/**
  * Devuelve la fecha ISO (YYYY-MM-DD) del próximo miércoles en base a `dateIso`.
  * Si `dateIso` es lunes, martes o miércoles, el próximo ingreso será en esa misma semana.
  * Si `dateIso` es jueves, viernes, sábado o domingo, el próximo ingreso será el miércoles de la semana siguiente.
@@ -496,24 +572,23 @@ export function businessDaysBetween(
 export function getNextWednesdayIso(dateIso: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateIso).slice(0, 10));
   if (!match) return dateIso;
-  const d = new Date(`${match[0]}T12:00:00-06:00`); // MX_UTC_OFFSET = '-06:00'
-  const dayOfWeek = d.getDay(); // 0 = dom, ..., 3 = mié
-  
+  // Anclar a mediodía MX → `getUTCDay()` devuelve el día de la semana
+  // MX correcto, sin importar la zona horaria del navegador.
+  const d = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
+  const dayOfWeek = d.getUTCDay(); // 0 = dom, ..., 3 = mié
+
   let daysToAdd = 0;
   if (dayOfWeek <= 3) {
     daysToAdd = 3 - dayOfWeek;
   } else {
     daysToAdd = 7 - (dayOfWeek - 3);
   }
-  
+
   d.setTime(d.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-  
-  // Format YYYY-MM-DD manually instead of using non-exported pad2 from another context if not available,
-  // but we can just use the built in local extraction since we are at 12:00
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
+
+  // Extraer YYYY-MM-DD usando partes MX (TZ-agnóstico).
+  const { year, month, day } = mxDateParts(d);
+  return `${year}-${pad2(month)}-${pad2(day)}`;
 }
 
 /**

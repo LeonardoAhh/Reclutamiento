@@ -1,4 +1,6 @@
-import { Users, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { Users, TrendingUp, Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 import { Modal } from '@/components/ui/Modal';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -61,6 +63,37 @@ export function RecruiterStatsModal({
   danielaStats,
 }: RecruiterStatsModalProps) {
   const isMobile = useIsMobile();
+  const [copiedKey, setCopiedKey] = useState<number | null>(null);
+
+  const handleCopyRow = async (stat: WeekStat, weekNum: number) => {
+    // Formato TSV (tab-separado) listo para pegar en Excel: CITADOS \t CONTRATADOS
+    const text = `${stat.total}\t${stat.contratados}`;
+    const key = stat.startWed.getTime();
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopiedKey(key);
+      toast.success(`Sem ${weekNum} copiada`, {
+        description: `${stat.total} citados · ${stat.contratados} contratados`,
+        duration: 2000,
+      });
+      window.setTimeout(() => {
+        setCopiedKey((curr) => (curr === key ? null : curr));
+      }, 2000);
+    } catch {
+      toast.error('No se pudo copiar al portapapeles');
+    }
+  };
 
   const title =
     mode === 'global'
@@ -95,6 +128,9 @@ export function RecruiterStatsModal({
               <th className="recruiter-stats-modal__table-number">Candidatos</th>
               <th className="recruiter-stats-modal__table-number">Contratados</th>
               <th className="recruiter-stats-modal__table-number">Efectividad</th>
+              <th className="recruiter-stats-modal__table-copy-col">
+                <span className="recruiter-stats-modal__sr-only">Copiar</span>
+              </th>
             </tr>
           </thead>
         )}
@@ -112,9 +148,11 @@ export function RecruiterStatsModal({
               (stat.total === 0
                 ? 0
                 : Math.round((stat.contratados / stat.total) * 100));
+            const key = stat.startWed.getTime();
+            const isCopied = copiedKey === key;
 
             return (
-              <tr key={stat.startWed.getTime()}>
+              <tr key={key}>
                 <td className="recruiter-stats-modal__table-week">Sem {tueWeek}</td>
                 <td className="recruiter-stats-modal__table-period">
                   {wedStr} – {tueStr}
@@ -125,6 +163,22 @@ export function RecruiterStatsModal({
                 </td>
                 <td className="recruiter-stats-modal__table-number recruiter-stats-modal__table-number--pct">
                   {effectiveness}%
+                </td>
+                <td className="recruiter-stats-modal__table-copy-col">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyRow(stat, tueWeek)}
+                    className={`recruiter-stats-modal__copy-btn${isCopied ? ' is-copied' : ''}`}
+                    aria-label={`Copiar Semana ${tueWeek}: ${stat.total} citados, ${stat.contratados} contratados`}
+                    title="Copiar citados y contratados para Excel"
+                    data-testid={`copy-week-${tueWeek}-btn`}
+                  >
+                    {isCopied ? (
+                      <Check size={16} aria-hidden="true" />
+                    ) : (
+                      <Copy size={16} aria-hidden="true" />
+                    )}
+                  </button>
                 </td>
               </tr>
             );
