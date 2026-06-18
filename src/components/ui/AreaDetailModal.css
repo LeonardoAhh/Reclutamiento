@@ -306,6 +306,7 @@
     order: 1;
     width: 100%;
     min-width: 0;
+    flex: 0 0 auto;
   }
 
   .area-detail-modal__coverage-pct {
