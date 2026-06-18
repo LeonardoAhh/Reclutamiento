@@ -653,7 +653,11 @@ export function Pipeline() {
                       <div className="pipeline__name">
                         <span>{c.nombre}</span>
                         {c.source && (
-                          <span className="pipeline__source-badge" title={`Fuente: ${c.source}`}>
+                          <span
+                            className="pipeline__source-badge"
+                            data-source={normalizeString(c.source).toLowerCase()}
+                            title={`Fuente: ${c.source}`}
+                          >
                             {c.source}
                           </span>
                         )}

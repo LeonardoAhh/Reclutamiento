@@ -965,15 +965,57 @@
   padding: 0 var(--spacing-xs);
   margin-top: 4px;
   border-radius: var(--rounded-sm);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
-  border: 1px solid var(--color-hairline);
+  /* Base: contraste claramente legible sobre la card.
+     Cada `data-source` lo personaliza más abajo. */
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  color: var(--color-ink);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
   white-space: nowrap;
   width: max-content;
+}
+
+/* ── Variantes por fuente ──────────────────────────────
+   Color-coded para identificación de un vistazo. Todos
+   los tonos vienen de tokens del sistema. */
+
+.pipeline__source-badge[data-source="pauta"] {
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, transparent);
+  color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-accent-amber) 35%, transparent);
+}
+
+.pipeline__source-badge[data-source="computrabajo"] {
+  background: color-mix(in srgb, var(--color-accent-teal) 16%, transparent);
+  color: color-mix(in srgb, var(--color-accent-teal) 78%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-accent-teal) 32%, transparent);
+}
+
+.pipeline__source-badge[data-source="referido"] {
+  background: var(--color-success-tint);
+  color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-success) 32%, transparent);
+}
+
+.pipeline__source-badge[data-source="linkedin"],
+.pipeline__source-badge[data-source="indeed"],
+.pipeline__source-badge[data-source="occ"],
+.pipeline__source-badge[data-source="facebook"] {
+  /* Plataformas externas: tinte neutral más fuerte */
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+}
+
+.pipeline__source-badge[data-source="volanteo"],
+.pipeline__source-badge[data-source="lona"] {
+  /* Captación física: warm amber suave */
+  background: var(--color-warning-tint);
+  color: color-mix(in srgb, var(--color-warning) 80%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .pipeline__icon-badge {
