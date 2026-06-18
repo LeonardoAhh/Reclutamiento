@@ -177,20 +177,26 @@ export function AreaDetailModal({
 
   if (!dept) return null;
 
-  const tabs = [
-    {
-      id: ALL_TAB,
-      label: 'Todas',
-      count: dept.puestos.length,
-      incapacidad: incapacidadAreaTotal,
-    },
-    ...secciones.map((s) => ({
-      id: s,
-      label: s,
-      count: dept.puestos.filter((p) => p.seccion === s).length,
-      incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
-    })),
-  ];
+  const sectionTabs = secciones.map((s) => ({
+    id: s,
+    label: s,
+    count: dept.puestos.filter((p) => p.seccion === s).length,
+    incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
+  }));
+  // El tab "Todas" sólo aporta valor con 2+ secciones; con una sola sección
+  // sería idéntico a ésta (repetitivo), por eso se omite.
+  const tabs =
+    secciones.length > 1
+      ? [
+          {
+            id: ALL_TAB,
+            label: 'Todas',
+            count: dept.puestos.length,
+            incapacidad: incapacidadAreaTotal,
+          },
+          ...sectionTabs,
+        ]
+      : sectionTabs;
 
   const activeTotals =
     activeTab === ALL_TAB
@@ -208,6 +214,104 @@ export function AreaDetailModal({
         };
 
   const useModal = !isMobile;
+
+  type Puesto = DepartmentCoverage['puestos'][number];
+
+  const commentsFor = (pos: Puesto) =>
+    comments.filter(
+      (c) => c.area === pos.area && c.seccion === pos.seccion && c.puesto === pos.puesto
+    );
+
+  /** Badge de estado del puesto (reutilizado por tabla y tarjetas móviles). */
+  const renderEstado = (pos: Puesto) => {
+    const posComments = commentsFor(pos);
+    const latestComment = posComments[posComments.length - 1];
+    const activeCount =
+      candidatesByPuesto.get(`${pos.seccion}\u0000${normalizePuesto(pos.puesto)}`) ?? 0;
+
+    if (latestComment) {
+      return (
+        <Badge
+          variant={
+            latestComment.tipo === 'proceso_activo'
+              ? 'amber'
+              : latestComment.tipo === 'entrevista'
+                ? 'teal'
+                : latestComment.tipo === 'entrega_documentos'
+                  ? 'coral'
+                  : 'default'
+          }
+        >
+          {COMMENT_TYPE_LABELS[latestComment.tipo]}
+        </Badge>
+      );
+    }
+    if (pos.vacantes > 0 && activeCount > 0) {
+      return (
+        <div className="area-detail-modal__badge-stack">
+          <Badge variant="teal">Proceso ({activeCount})</Badge>
+          {pos.proximos_ingresos > 0 && (
+            <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>
+          )}
+        </div>
+      );
+    }
+    if (pos.vacantes > 0) {
+      return (
+        <div className="area-detail-modal__badge-stack">
+          <Badge variant="error">Sin proceso</Badge>
+          {pos.proximos_ingresos > 0 && (
+            <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>
+          )}
+        </div>
+      );
+    }
+    if (pos.proximos_ingresos > 0) {
+      return <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>;
+    }
+    return <span className="no-vacancy">—</span>;
+  };
+
+  const renderFlags = (pos: Puesto) => {
+    if (pos.urgentes <= 0 && pos.excedente_critico <= 0 && pos.excedente_backup <= 0) return null;
+    return (
+      <div className="cell-puesto__flags">
+        {pos.urgentes > 0 && (
+          <Badge variant="error">
+            <AlertCircle size={11} aria-hidden="true" />
+            URGENTE {pos.urgentes}
+          </Badge>
+        )}
+        {pos.excedente_critico > 0 && (
+          <Badge variant="amber">+{pos.excedente_critico} excede</Badge>
+        )}
+        {pos.excedente_backup > 0 && (
+          <Badge variant="teal">
+            <Shield size={11} aria-hidden="true" />
+            +{pos.excedente_backup} back-up
+          </Badge>
+        )}
+      </div>
+    );
+  };
+
+  const commentButton = (pos: Puesto) => {
+    const posComments = commentsFor(pos);
+    return (
+      <button
+        type="button"
+        className="btn-icon"
+        onClick={() => onOpenComment(pos.area, pos.seccion, pos.puesto)}
+        title="Agregar comentario"
+        aria-label={`Comentario para ${pos.puesto}`}
+      >
+        <MessageSquare size={16} aria-hidden="true" />
+        {posComments.length > 0 && (
+          <span className="btn-icon__count">{posComments.length}</span>
+        )}
+      </button>
+    );
+  };
 
   const modalContent = (
     <>
@@ -314,6 +418,47 @@ export function AreaDetailModal({
           <div className="area-detail-modal__empty">
             <p>No hay puestos en esta sección.</p>
           </div>
+        ) : isMobile ? (
+          <ul className="area-detail-modal__cards">
+            {visiblePuestos.map((pos) => (
+              <li
+                key={`${pos.area}-${pos.seccion}-${pos.puesto}`}
+                className={`area-detail-modal__card${pos.vacantes > 0 ? ' area-detail-modal__card--vac' : ''}${pos.urgentes > 0 ? ' area-detail-modal__card--urgent' : ''}`}
+              >
+                <div className="area-detail-modal__card-top">
+                  <div className="area-detail-modal__card-id">
+                    <span className="area-detail-modal__card-name">{pos.puesto}</span>
+                    {activeTab === ALL_TAB && (
+                      <span className="area-detail-modal__card-sec">{pos.seccion}</span>
+                    )}
+                  </div>
+                  {commentButton(pos)}
+                </div>
+                {renderFlags(pos)}
+                <div className="area-detail-modal__card-meta">
+                  <span className="area-detail-modal__card-metric">
+                    <span className="area-detail-modal__card-metric-value">
+                      {pos.plantilla_real}
+                      <span className="area-detail-modal__stat-sep">/</span>
+                      {pos.plantilla_autorizada}
+                    </span>
+                    <span className="area-detail-modal__card-metric-label">Real / Aut.</span>
+                  </span>
+                  <span className="area-detail-modal__card-metric">
+                    <span className="area-detail-modal__card-metric-value">
+                      {pos.vacantes > 0 ? (
+                        <span className="vacancy-count">{pos.vacantes}</span>
+                      ) : (
+                        <span className="no-vacancy">—</span>
+                      )}
+                    </span>
+                    <span className="area-detail-modal__card-metric-label">Vacantes</span>
+                  </span>
+                  <span className="area-detail-modal__card-estado">{renderEstado(pos)}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : (
           <div className="dept-card__table-wrapper area-detail-modal__table-wrapper">
             <table className="dept-card__table">

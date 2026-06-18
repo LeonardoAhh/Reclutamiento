@@ -296,3 +296,105 @@
   gap: var(--spacing-xs);
   align-items: center;
 }
+
+/* ─────────────────────────────────────────────
+   Vista de tarjetas (móvil) — reemplaza la tabla
+   saturada. Cada puesto se muestra como tarjeta
+   con expandir natural (sin scroll horizontal).
+───────────────────────────────────────────── */
+
+.area-detail-modal__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.area-detail-modal__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-left: 3px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.area-detail-modal__card--vac {
+  border-left-color: var(--color-warning, var(--color-amber));
+}
+
+.area-detail-modal__card--urgent {
+  border-left-color: var(--color-error);
+}
+
+.area-detail-modal__card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.area-detail-modal__card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.area-detail-modal__card-name {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-md-line);
+  color: var(--color-ink);
+  word-break: break-word;
+}
+
+.area-detail-modal__card-sec {
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.area-detail-modal__card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.area-detail-modal__card-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.area-detail-modal__card-metric-value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.area-detail-modal__card-metric-label {
+  font-size: var(--type-caption-sm-size);
+  line-height: 1;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.area-detail-modal__card-estado {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}

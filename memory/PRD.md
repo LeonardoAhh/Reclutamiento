@@ -3,6 +3,14 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-18 (sesión 5) — Dashboard AreaDetailModal móvil + Login safe-area
+- **AreaDetailModal mobile-first** (`AreaDetailModal.tsx/.css`): en móvil la tabla saturada (se cortaba a la derecha) se reemplaza por **tarjetas** (`.area-detail-modal__cards`) con nombre del puesto, sección (en tab "Todas"), flags (urgente/excedente), métricas Real/Aut. y Vacantes, badge de estado y botón de comentario. Tabla intacta en desktop. Helpers reutilizables `renderEstado/renderFlags/commentButton/commentsFor`.
+- **Tab "Todas" repetitivo**: ahora sólo se muestra cuando hay **2+ secciones**; con una sola sección se omite (era idéntico a esa sección). Default `activeTab=ALL_TAB` sigue mostrando todo.
+- **Login bajo barra de estado (PWA)** (`Login.css`): el panel superior móvil no reservaba safe-area; `padding-top: max(var(--spacing-lg), var(--safe-area-top))`. El `app-header` ya lo respetaba.
+- **Scroll de modales fullscreen**: el fix de `min-height:0` (sesión 4, en `global.css`) está verificado (scroll OK en preview). Si el usuario "sigue sin scroll" es porque la **PWA reinstalada trae la build publicada vieja → requiere DEPLOY**.
+- `npm run build` OK.
+
+
 ## 2026-06-18 (sesión 4) — Navbar: badge + pill animado · fix scroll modal
 - **Pill deslizante (iOS)**: el highlight activo de la navbar usa `framer-motion` `layoutId="bottom-nav-pill"` (`.bottom-nav__pill` absoluto detrás del contenido); anima entre KPIs/Candidatos. Respeta `prefers-reduced-motion` (`useReducedMotion`).
 - **Badge (puntito) en el botón Menú**: `.bottom-nav__badge`. `BottomTabBar` lo calcula desacoplado leyendo `sessionStorage["reporteDiarioCache"]` → si el reporte tiene **incidencias del día de hoy** o **no está guardado en Supabase** (mes ausente en `fetchSummaries`). Recalcula al montar, al cambiar de ruta y con el evento `window 'reporte-diario:changed'` que dispara `index.tsx` cuando cambian `rows`/`savedSummaries`.
