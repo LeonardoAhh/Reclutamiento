@@ -1089,10 +1089,17 @@ code:not(pre code) {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
     padding-bottom: var(--spacing-lg);
+  }
+
+  /* Cualquier contenedor de contenido (no header/footer) es el área scrollable.
+     Robusto aunque el wrapper no use la clase .modal-body. iOS: min-height:0 +
+     -webkit-overflow-scrolling + overscroll-behavior para permitir el pan. */
+  .modal-content.modal-fullscreen-mobile > *:not(.modal-header):not(.modal-footer) {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .modal-content.modal-fullscreen-mobile > .modal-footer {

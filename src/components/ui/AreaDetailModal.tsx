@@ -668,7 +668,7 @@ export function AreaDetailModal({
       size="xl"
       fullscreenMobile={true}
     >
-      <div className="area-detail-modal-body">
+      <div className="modal-body area-detail-modal-body">
         {modalContent}
       </div>
     </Modal>
