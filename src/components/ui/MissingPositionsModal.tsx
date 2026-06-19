@@ -4,6 +4,30 @@ import { Modal } from './Modal';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
 import './MissingPositionsModal.css';
 
+/**
+ * Normalización robusta para hacer match entre candidato y posición:
+ *  - lowercase
+ *  - quita acentos/diacríticos (NFD + strip de marcas combinantes)
+ *  - reemplaza cualquier carácter no alfanumérico por espacio
+ *  - colapsa espacios múltiples y recorta
+ *
+ * Esto evita que diferencias como "1ER. TURNO" vs "1ER TURNO",
+ * "PRODUCCIÓN" vs "PRODUCCION", caracteres NBSP invisibles, u otras
+ * variaciones de captura rompan el cruce de datos.
+ */
+function normalizeForMatch(s: string): string {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function buildPositionKey(puesto: string, seccion: string): string {
+  return `${normalizeForMatch(puesto)}||${normalizeForMatch(seccion)}`;
+}
+
 interface MissingPositionsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,12 +77,6 @@ export function MissingPositionsModal({
   const processStatsMap = useMemo(() => {
     const stats: Record<string, ProcessStats> = {};
 
-    const normalizeKey = (p: string, s: string) => {
-      const puesto = (p || '').trim().toLowerCase();
-      const seccion = (s || '').trim().toLowerCase();
-      return `${puesto}||${seccion}`;
-    };
-
     // Estados que cuentan como "proceso activo": aún en pipeline trabajando
     // hacia la contratación. Excluye terminales (contratado, rechazado,
     // no_asistio) que ya no son procesos abiertos.
@@ -71,7 +89,7 @@ export function MissingPositionsModal({
 
     candidates.forEach((c) => {
       if (!ACTIVE_STATUSES.has(c.status)) return;
-      const key = normalizeKey(c.puesto, c.seccion || '');
+      const key = buildPositionKey(c.puesto, c.seccion || '');
       if (!stats[key]) stats[key] = { candidates: 0 };
       stats[key].candidates += 1;
     });
@@ -176,9 +194,7 @@ export function MissingPositionsModal({
                 </thead>
                 <tbody>
                   {missingPositions.map((pos) => {
-                    const normalizedPuesto = (pos.puesto || '').trim().toLowerCase();
-                    const normalizedSeccion = (pos.seccion || '').trim().toLowerCase();
-                    const processKey = `${normalizedPuesto}||${normalizedSeccion}`;
+                    const processKey = buildPositionKey(pos.puesto, pos.seccion || '');
                     const processes = processStatsMap[processKey] || { candidates: 0 };
                     const totalProcesses = processes.candidates;
 
