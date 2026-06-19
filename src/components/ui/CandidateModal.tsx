@@ -102,6 +102,10 @@ export function CandidateModal({
 }: CandidateModalProps) {
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
+  // En edición, `source` y `fecha_cita` pueden ser modificados tanto por
+  // admin como por reclutador. El resto de campos sigue bloqueado en
+  // edición (estado/proceso se edita desde la fila directamente).
+  const canEditCitaAndSource = isAdmin || profile?.role === 'reclutador';
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -380,7 +384,8 @@ export function CandidateModal({
           placeholder="LinkedIn · Indeed · Referido…"
           autoComplete="off"
           list="cand-source-suggestions"
-          disabled={isEdit}
+          disabled={isEdit && !canEditCitaAndSource}
+          data-testid="cand-source-input"
         />
         <datalist id="cand-source-suggestions">
           {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
@@ -406,7 +411,8 @@ export function CandidateModal({
           type="datetime-local"
           value={form.fecha_cita}
           onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
-          disabled={isEdit}
+          disabled={isEdit && !canEditCitaAndSource}
+          data-testid="cand-fecha-cita-input"
         />
       </div>
 
