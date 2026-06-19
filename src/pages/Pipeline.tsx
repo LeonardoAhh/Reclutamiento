@@ -641,6 +641,12 @@ export function Pipeline() {
                   >
                     <div className="pipeline__ccard-name-col">
                       <div className="pipeline__name">
+                        <span
+                          className="pipeline__status-dot"
+                          data-status={c.status}
+                          aria-label={`Estado: ${CANDIDATE_STATUS_LABEL[c.status]}`}
+                          title={CANDIDATE_STATUS_LABEL[c.status]}
+                        />
                         <span>{c.nombre}</span>
                         {c.source && (
                           <span
