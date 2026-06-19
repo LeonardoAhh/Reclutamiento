@@ -1066,7 +1066,6 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   padding: var(--spacing-sm) var(--spacing-md);
-  border-left: 3px solid transparent;
   transition:
     background var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -1077,20 +1076,37 @@
   box-shadow: var(--shadow-card);
 }
 
-.pipeline__ccard--entrevista {
-  border-left-color: var(--color-accent-amber);
+/* ── Dot indicador de estado/proceso (reemplaza border-left) ── */
+.pipeline__status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 0%, transparent);
+  transition: box-shadow var(--transition-fast);
 }
-.pipeline__ccard--entrega_documentos {
-  border-left-color: var(--color-accent-teal);
+
+.pipeline__status-dot[data-status="entrevista"] {
+  background: var(--color-accent-amber);
 }
-.pipeline__ccard--feedback_pendiente {
-  border-left-color: var(--color-primary);
+.pipeline__status-dot[data-status="entrega_documentos"] {
+  background: var(--color-accent-teal);
 }
-.pipeline__ccard--contratado {
-  border-left-color: var(--color-success);
+.pipeline__status-dot[data-status="feedback_pendiente"] {
+  background: var(--color-primary);
 }
-.pipeline__ccard--rechazado {
-  border-left-color: var(--color-error);
+.pipeline__status-dot[data-status="contratado"] {
+  background: var(--color-success);
+  /* Halo sutil para destacar el "ganador" del proceso. */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 22%, transparent);
+}
+.pipeline__status-dot[data-status="rechazado"] {
+  background: var(--color-error);
+}
+.pipeline__status-dot[data-status="no_asistio"] {
+  background: color-mix(in srgb, var(--color-muted) 70%, transparent);
 }
 
 .pipeline__ccard-avatar {
