@@ -207,10 +207,15 @@ export function CandidateModal({
     setForm(candidate ? fromCandidate(candidate) : emptyForm());
   }, [isOpen, candidate, mode]);
 
-  const isFormValid =
-    form.nombre.trim().length > 0 &&
-    form.area.length > 0 &&
-    form.puesto.length > 0;
+  const missingRequiredFields = [
+    !form.nombre.trim() && 'Nombre completo',
+    !form.telefono.trim() && 'Teléfono',
+    !form.area && 'Área',
+    !form.seccion && 'Sección',
+    !form.puesto && 'Puesto',
+  ].filter(Boolean) as string[];
+
+  const isFormValid = missingRequiredFields.length === 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -302,6 +307,12 @@ export function CandidateModal({
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
 
+  const missingFieldsNotice = !isFormValid && !isDelete ? (
+    <p className="form-error" role="alert">
+      Completa los campos obligatorios.
+    </p>
+  ) : null;
+
   const icon = isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
@@ -374,25 +385,19 @@ export function CandidateModal({
 
   const noOpenPositions = restrictToOpen && areas.length === 0;
 
-  const fieldsPosicion = (
+const fieldsPosicion = (
     <>
-      {restrictToOpen && (
-        <div
-          className="form-group form-group--span-2 candidate-modal__hint"
-          role="note"
-        >
-          {noOpenPositions ? (
-            <span className="candidate-modal__hint--warning">
-              Sin vacantes abiertas
-            </span>
-          ) : (
-            <span>Solo puestos con vacante abierta</span>
-          )}
-        </div>
-      )}
-
       <div className="form-group">
-        <label htmlFor="cand-area">Área</label>
+        <label htmlFor="cand-area">
+          Área
+          {restrictToOpen && (
+            <span className="candidate-modal__hint" role="note">
+              {noOpenPositions
+                ? <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
+                : <>Solo puestos con vacante abierta</>}
+            </span>
+          )}
+        </label>
         <CustomSelect
           id="cand-area"
           value={form.area}
@@ -556,7 +561,7 @@ export function CandidateModal({
             submitDisabled={!isFormValid}
             submitLabel="Guardar"
             submittingLabel="Guardando…"
-            notice={errorNotice}
+            notice={errorMsg ? errorNotice : missingFieldsNotice}
             steps={[
               {
                 id: 'contacto',
@@ -617,6 +622,7 @@ export function CandidateModal({
           )}
 
           {errorNotice}
+          {missingFieldsNotice}
 
           <footer className="modal-footer">
             <button
