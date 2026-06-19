@@ -3,6 +3,23 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-19 (sesión 7) — Notificaciones / Toasts con `sileo`
+- **Migración completa de `sonner` → `sileo`** (0 referencias a sonner en `src`, paquete desinstalado).
+- **Setup core**:
+  - `src/components/ui/AppToaster.tsx`: `<Toaster position="top-center" />` con tema sincronizado al `data-theme` del documento (MutationObserver), `offset.top` con `env(safe-area-inset-top)` (mobile-first). Montado en `App.tsx` (visible también en login).
+  - `src/styles/sileo.css`: overrides cohesivos al design system → estados mapeados a tokens (`success #10b981`, `error #ef4444`, `warning #f59e0b`, `info/action #14b8a6`), `font-family: var(--font-body)`, sin `capitalize` (español), ancho responsive `calc(100vw - 1.75rem)` en ≤480px, contraste de descripción subido (a11y). Importado tras `sileo/styles.css` en `main.tsx`.
+  - `src/lib/notify.ts`: reexporta `sileo` + helper `notifyResult()` para flujos `{ ok, message }` (success/error toast sin romper el return al caller).
+- **Notificaciones agregadas en flujos críticos** (antes silenciados con `console.warn`):
+  - Login: éxito + error.
+  - Pipeline (candidatos): alta/edición, cambio de estado, contratación (incl. parcial), eliminación, nota.
+  - Vacantes: alta/edición, cambio de estado, eliminación.
+  - Bajas: import (con conteo insertadas/omitidas), cubrir/descubrir vacante.
+  - Empleados: edición, eliminación, incapacidad (registrada/finalizada).
+  - Reporte Diario: migrados los toasts existentes.
+- **a11y**: sileo expone `aria-live="polite"` en el viewport.
+- `npm run build` OK. NOTA: sileo emite warnings de consola `<circle> attribute cx/cy undefined` en el primer frame de medición del toast (motion); es cosmético en consola, no afecta el render. Validación visual final la hace el usuario en preview de Vercel.
+
+
 ## 2026-06-18 (sesión 6 cont.) — UX Dashboard + tokens
 - **AreaDetailModal**: eliminado tab "Todas" (default = primera sección); resumen superior **rediseñado** (cobertura hero con % grande + barra redondeada; métricas en tiles con tinte rojo/ámbar). Fix de hueco en móvil (`coverage` pasó de `flex:1 1 240px` a `flex:0 0 auto`).
 - **Header (PC)**: menús de grupo abren **solo con click** (quitado hover open/close que buggeaba la selección).

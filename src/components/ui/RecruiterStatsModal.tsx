@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Users, TrendingUp, Copy, Check } from 'lucide-react';
-import { toast } from 'sonner';
+import { sileo } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -83,7 +83,8 @@ export function RecruiterStatsModal({
         document.body.removeChild(ta);
       }
       setCopiedKey(key);
-      toast.success(`Sem ${weekNum} copiada`, {
+      sileo.success({
+        title: `Sem ${weekNum} copiada`,
         description: `${stat.total} citados · ${stat.contratados} contratados`,
         duration: 2000,
       });
@@ -91,7 +92,7 @@ export function RecruiterStatsModal({
         setCopiedKey((curr) => (curr === key ? null : curr));
       }, 2000);
     } catch {
-      toast.error('No se pudo copiar al portapapeles');
+      sileo.error({ title: 'No se pudo copiar al portapapeles' });
     }
   };
 

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
+import { notifyResult, sileo } from '@/lib/notify';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
@@ -313,15 +314,23 @@ export function Pipeline() {
     payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'>,
     id?: string
   ) {
-    if (id) {
-      return updateCandidate(id, payload);
-    }
-    return addCandidate(payload);
+    return notifyResult(
+      id ? updateCandidate(id, payload) : addCandidate(payload),
+      {
+        success: id ? 'Candidato actualizado' : 'Candidato agregado',
+        successDescription: payload.nombre,
+        error: id ? 'No se pudo actualizar el candidato' : 'No se pudo agregar el candidato',
+      }
+    );
   }
 
   async function handleStatusChange(c: Candidate, status: CandidateStatus) {
     if (!c.id || c.status === status) return;
-    await setCandidateStatus(c.id, status);
+    await notifyResult(setCandidateStatus(c.id, status), {
+      success: 'Estado actualizado',
+      successDescription: `${c.nombre} → ${status}`,
+      error: 'No se pudo cambiar el estado',
+    });
   }
 
   function openHire(c: Candidate) {
@@ -334,6 +343,7 @@ export function Pipeline() {
   }): Promise<{ ok: boolean; message?: string }> {
     const empResult = await addSingleEmployee(input.employee);
     if (!empResult.ok) {
+      sileo.error({ title: 'No se pudo contratar', description: empResult.message });
       return empResult;
     }
     const candResult = await markCandidateHired(
@@ -342,16 +352,19 @@ export function Pipeline() {
       input.employee.fecha_ingreso
     );
     if (!candResult.ok) {
-      return {
-        ok: false,
-        message:
-          candResult.message ??
-          'Empleado creado, pero no se pudo actualizar el candidato.',
-      };
+      const message =
+        candResult.message ??
+        'Empleado creado, pero no se pudo actualizar el candidato.';
+      sileo.warning({ title: 'Contratación parcial', description: message });
+      return { ok: false, message };
     }
     // Cierra automáticamente la vacante abierta que coincida con el puesto.
     await coverVacancyForEmployee(input.employee, {
       source: `candidato:${input.candidateId}`,
+    });
+    sileo.success({
+      title: 'Candidato contratado',
+      description: `${input.employee.nombre} · #${input.employee.num_empleado}`,
     });
     return { ok: true };
   }
@@ -774,7 +787,12 @@ export function Pipeline() {
             candidates={candidates}
             onClose={closeModal}
             onSave={handleSave}
-            onDelete={deleteCandidate}
+            onDelete={(id) =>
+              notifyResult(deleteCandidate(id), {
+                success: 'Candidato eliminado',
+                error: 'No se pudo eliminar el candidato',
+              })
+            }
           />
 
           <CandidateNotesModal
@@ -782,7 +800,12 @@ export function Pipeline() {
             candidate={notesTarget}
             notes={notes}
             onClose={() => setNotesTarget(null)}
-            onSave={addCandidateNote}
+            onSave={(note) =>
+              notifyResult(addCandidateNote(note), {
+                success: 'Nota agregada',
+                error: 'No se pudo guardar la nota',
+              })
+            }
           />
 
           <HireCandidateModal

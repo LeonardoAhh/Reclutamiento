@@ -16,6 +16,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { VacancyModal } from '@/components/ui/VacancyModal';
+import { notifyResult } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import {
@@ -191,13 +192,18 @@ export function Vacantes() {
     payload: Omit<VacancyRequest, 'id' | 'created_at' | 'updated_at'>,
     id?: string
   ) {
-    if (id) return updateVacancy(id, payload);
-    return addVacancy(payload);
+    return notifyResult(id ? updateVacancy(id, payload) : addVacancy(payload), {
+      success: id ? 'Vacante actualizada' : 'Vacante creada',
+      error: id ? 'No se pudo actualizar la vacante' : 'No se pudo crear la vacante',
+    });
   }
 
   async function handleStatusChange(v: VacancyRequest, status: VacancyStatus) {
     if (!v.id || v.status === status) return;
-    await setVacancyStatus(v.id, status);
+    await notifyResult(setVacancyStatus(v.id, status), {
+      success: 'Estado de vacante actualizado',
+      error: 'No se pudo cambiar el estado',
+    });
   }
 
   if (loading) {

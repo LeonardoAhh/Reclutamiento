@@ -1,0 +1,50 @@
+/* ============================================================
+   Sileo · Adaptación al design system (Ollama-inspired)
+   Mobile-first · semántico · cohesivo · accesible
+   Carga DESPUÉS de `sileo/styles.css` para sobrescribir tokens.
+   ============================================================ */
+
+:root {
+  /* Estados → tokens semánticos de la app (mismos colores que badges/alerts) */
+  --sileo-state-success: #10b981;
+  --sileo-state-error: #ef4444;
+  --sileo-state-warning: #f59e0b;
+  --sileo-state-info: #14b8a6;
+  --sileo-state-action: #14b8a6;
+
+  /* Ancho del pill alineado a la escala del sistema. */
+  --sileo-width: 360px;
+}
+
+/* Tipografía cohesiva. En español NO queremos capitalize forzado. */
+[data-sileo-title],
+[data-sileo-description],
+[data-sileo-button] {
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+[data-sileo-title] {
+  font-weight: 600;
+}
+
+[data-sileo-button] {
+  font-weight: 600;
+}
+
+/* Contraste de la descripción un poco más alto que el default (a11y). */
+[data-sileo-viewport][data-theme='light'] [data-sileo-description] {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+[data-sileo-viewport][data-theme='dark'] [data-sileo-description] {
+  color: rgba(0, 0, 0, 0.66);
+}
+
+/* Mobile-first: el toast nunca toca los bordes en pantallas chicas. */
+@media (max-width: 480px) {
+  :root {
+    --sileo-width: calc(100vw - 1.75rem);
+  }
+}

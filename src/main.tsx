@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/hooks/useAuth';
 import { LoaderProvider } from '@/hooks/useLoader';
 import '@/styles/global.css';
+import 'sileo/styles.css';
+import '@/styles/sileo.css';
 import App from './App';
 import { registerServiceWorker } from './pwa';
 

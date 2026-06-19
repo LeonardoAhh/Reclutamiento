@@ -9,6 +9,7 @@ import { SkeletonTable, SkeletonCardList } from '@/components/ui/PageSkeletons';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatShortDate } from '@/lib/dates';
+import { notifyResult } from '@/lib/notify';
 import type { Employee } from '@/lib/types';
 import './Empleados.css';
 
@@ -193,11 +194,17 @@ export function Empleados() {
       >
     >
   ) {
-    return updateEmployee(num_empleado, fields);
+    return notifyResult(updateEmployee(num_empleado, fields), {
+      success: 'Empleado actualizado',
+      error: 'No se pudo actualizar el empleado',
+    });
   }
 
   async function handleDeleteEmployee(num_empleado: string) {
-    return deleteEmployee(num_empleado);
+    return notifyResult(deleteEmployee(num_empleado), {
+      success: 'Empleado eliminado',
+      error: 'No se pudo eliminar el empleado',
+    });
   }
 
   function toggleArea(area: string) {
@@ -394,7 +401,12 @@ export function Empleados() {
         isOpen={incapacidadTarget !== null}
         employee={incapacidadTarget}
         onClose={() => setIncapacidadTarget(null)}
-        onSave={updateEmployeeIncapacidad}
+        onSave={(num, enIncapacidad, hasta) =>
+          notifyResult(updateEmployeeIncapacidad(num, enIncapacidad, hasta), {
+            success: enIncapacidad ? 'Incapacidad registrada' : 'Incapacidad finalizada',
+            error: 'No se pudo actualizar la incapacidad',
+          })
+        }
       />
 
       <DeleteEmployeeConfirmModal

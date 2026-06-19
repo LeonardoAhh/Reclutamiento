@@ -3,6 +3,7 @@ import { Eye, EyeOff, ArrowRight, Loader2, Users, AlertCircle } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { sileo } from '@/lib/notify';
 import './Login.css';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -40,9 +41,14 @@ export function Login() {
     if (!result.ok) {
       setSubmitting(false);
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
+      sileo.error({
+        title: 'No se pudo iniciar sesión',
+        description: result.message ?? 'Revisa tus credenciales.',
+      });
       return;
     }
 
+    sileo.success({ title: 'Sesión iniciada', description: 'Bienvenido de nuevo.' });
     flash({ tone: 'full', duration: 7000 });
   };
 

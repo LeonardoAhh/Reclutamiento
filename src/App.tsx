@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
+import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
@@ -41,6 +42,7 @@ function App() {
   return (
     <>
       <PWAStatus />
+      <AppToaster />
       <ThemeTransitionOverlay />
       <Routes>
       <Route

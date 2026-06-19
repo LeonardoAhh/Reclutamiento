@@ -5,7 +5,7 @@ import './ReporteDiario.css';
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
 import { motion, AnimatePresence } from "framer-motion"
-import { toast } from "sonner"
+import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
 import { cn } from "@/lib/utils-shadcn";
@@ -334,7 +334,7 @@ export default function ReporteDiarioContent() {
 
     const processFile = useCallback(async (file: File) => {
         if (file.type !== "application/json" && !file.name.endsWith('.json')) {
-            toast.error("Formato de archivo inválido. Por favor, asegúrate de subir el archivo correcto.")
+            sileo.error({ title: "Formato de archivo inválido", description: "Por favor, asegúrate de subir el archivo correcto." })
             return
         }
 
@@ -355,7 +355,7 @@ export default function ReporteDiarioContent() {
             if (errs.length > 0) { 
                 setProcessStep(null)
                 setErrors(errs)
-                toast.error("Se encontraron inconsistencias al revisar el archivo de datos")
+                sileo.error({ title: "Inconsistencias en el archivo", description: "Se encontraron errores al revisar los datos." })
                 return 
             }
             
@@ -370,7 +370,7 @@ export default function ReporteDiarioContent() {
             setProcessStep(null)
             const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`
             setErrors([msg])
-            toast.error("El archivo está corrupto o no tiene la estructura esperada")
+            sileo.error({ title: "Archivo corrupto", description: "El archivo no tiene la estructura esperada." })
         }
     }, [])
 
@@ -387,7 +387,7 @@ export default function ReporteDiarioContent() {
         
         setProcessStep(null)
         setPreviewData(null)
-        toast.success(`Información del mes de ${formatMes(previewData.mes)} cargada con éxito`)
+        sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
     }, [previewData])
 
     const cancelLoad = useCallback(() => {
@@ -427,7 +427,7 @@ export default function ReporteDiarioContent() {
         setFileName("")
         setErrors([])
         sessionStorage.removeItem("reporteDiarioCache")
-        toast.info("Vista de datos limpiada")
+        sileo.info({ title: "Vista de datos limpiada" })
     }, [])
 
     const computeKpis = useCallback((reportRows: ReporteRow[], dayH: string[]) => {

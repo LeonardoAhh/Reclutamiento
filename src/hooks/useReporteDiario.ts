@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { supabase } from "@/lib/supabase"
-import { toast } from "sonner"
+import { sileo } from "@/lib/notify"
 import { formatSupabaseError as describeSupabaseError } from "@/lib/errors"
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ export function useReporteDiario() {
         } catch (err) {
             const msg = describeSupabaseError(err)
             setError(msg)
-            toast.error(msg)
+            sileo.error({ title: msg })
             return { success: false, error: msg }
         } finally {
             setSaving(false)
@@ -154,11 +154,11 @@ export function useReporteDiario() {
                 .delete()
                 .eq("id", id)
             if (error) throw error
-            toast.success("Reporte eliminado")
+            sileo.success({ title: "Reporte eliminado" })
             return { success: true }
         } catch (err) {
             const msg = describeSupabaseError(err)
-            toast.error(msg)
+            sileo.error({ title: msg })
             return { success: false }
         } finally {
             setSaving(false)
