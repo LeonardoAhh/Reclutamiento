@@ -11,6 +11,7 @@ import {
   ClipboardList,
   BarChart3,
   Users,
+  UserRound,
   ChevronRight,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
@@ -630,25 +631,21 @@ export function Pipeline() {
               aria-label="Lista de candidatos"
             >
               {filtered.map((c) => {
-                const initials = c.nombre
-                  .split(' ')
-                  .slice(0, 2)
-                  .map((w) => w[0])
-                  .join('');
+                const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
+                const areaLine = `${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`;
+                const metaParts = [
+                  `${c.puesto} · ${areaLine}`,
+                  c.reclutador,
+                  fechaCitaFmt ? `Entrevista ${fechaCitaFmt}` : null,
+                ].filter(Boolean);
                 return (
                   <article
                     key={c.id ?? c.nombre + c.fecha_aplicacion}
                     className={`pipeline__ccard pipeline__ccard--${c.status}`}
                   >
                     <div
-                      className="pipeline__ccard-avatar"
-                      aria-hidden="true"
-                    >
-                      {initials}
-                    </div>
-                    <div
                       className="pipeline__ccard-name-col"
-                      data-puesto-area={`${c.puesto} · ${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`}
+                      data-meta={metaParts.join(' · ')}
                     >
                       <div className="pipeline__name">
                         <span>{c.nombre}</span>
@@ -662,16 +659,16 @@ export function Pipeline() {
                           </span>
                         )}
                       </div>
-                      <div className="pipeline__contact">
-                        {c.telefono || c.email || '—'}
-                      </div>
+                      {c.reclutador && (
+                        <div className="pipeline__recruiter" title={`Reclutador: ${c.reclutador}`}>
+                          <UserRound size={12} aria-hidden="true" />
+                          <span>{c.reclutador}</span>
+                        </div>
+                      )}
                     </div>
                     <div className="pipeline__ccard-puesto-col">
                       <div className="pipeline__puesto">{c.puesto}</div>
-                      <div className="pipeline__area">
-                        {c.area}
-                        {c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}
-                      </div>
+                      <div className="pipeline__area">{areaLine}</div>
                     </div>
                     <div className="pipeline__cell-status pipeline__ccard-status-col">
                       <CustomSelect
@@ -688,11 +685,9 @@ export function Pipeline() {
                       />
                     </div>
                     <div className="pipeline__ccard-dates-col pipeline__cell-dates">
+                      <div className="pipeline__cell-dates-label">Entrevista</div>
                       <div className="pipeline__cell-dates-primary">
-                        {formatDate(c.fecha_aplicacion)}
-                      </div>
-                      <div className="pipeline__cell-dates-secondary">
-                        {c.fecha_cita ? formatDate(c.fecha_cita) : '—'}
+                        {fechaCitaFmt ?? '—'}
                       </div>
                     </div>
                     <div className="pipeline__cell-actions pipeline__ccard-actions-col">
