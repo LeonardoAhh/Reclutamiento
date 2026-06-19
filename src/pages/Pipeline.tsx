@@ -12,6 +12,7 @@ import {
   BarChart3,
   Users,
   UserRound,
+  CalendarDays,
   ChevronRight,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
@@ -633,20 +634,12 @@ export function Pipeline() {
               {filtered.map((c) => {
                 const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
                 const areaLine = `${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`;
-                const metaParts = [
-                  `${c.puesto} · ${areaLine}`,
-                  c.reclutador,
-                  fechaCitaFmt ? `Entrevista ${fechaCitaFmt}` : null,
-                ].filter(Boolean);
                 return (
                   <article
                     key={c.id ?? c.nombre + c.fecha_aplicacion}
                     className={`pipeline__ccard pipeline__ccard--${c.status}`}
                   >
-                    <div
-                      className="pipeline__ccard-name-col"
-                      data-meta={metaParts.join(' · ')}
-                    >
+                    <div className="pipeline__ccard-name-col">
                       <div className="pipeline__name">
                         <span>{c.nombre}</span>
                         {c.source && (
@@ -665,6 +658,28 @@ export function Pipeline() {
                           <span>{c.reclutador}</span>
                         </div>
                       )}
+
+                      {/* Bloque visible solo en mobile (<=1024) que resume
+                          puesto + reclutador + entrevista de forma compacta. */}
+                      <div className="pipeline__ccard-mobile-info" aria-hidden="true">
+                        <div className="pipeline__ccard-mobile-info__puesto">
+                          {c.puesto}
+                        </div>
+                        <div className="pipeline__ccard-mobile-info__meta">
+                          {c.reclutador && (
+                            <span className="pipeline__ccard-mobile-info__chip">
+                              <UserRound size={11} aria-hidden="true" />
+                              {c.reclutador}
+                            </span>
+                          )}
+                          {fechaCitaFmt && (
+                            <span className="pipeline__ccard-mobile-info__chip">
+                              <CalendarDays size={11} aria-hidden="true" />
+                              {fechaCitaFmt}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div className="pipeline__ccard-puesto-col">
                       <div className="pipeline__puesto">{c.puesto}</div>

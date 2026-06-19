@@ -1157,6 +1157,42 @@
   margin-bottom: 2px;
 }
 
+/* ── Bloque compacto solo-mobile (oculto en desktop) ── */
+.pipeline__ccard-mobile-info {
+  display: none;
+}
+
+.pipeline__ccard-mobile-info__puesto {
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pipeline__ccard-mobile-info__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: 4px;
+}
+
+.pipeline__ccard-mobile-info__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  line-height: 1.2;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ── Responsive card-list ── */
 @media (max-width: 1024px) {
   .pipeline__ccard {
@@ -1179,20 +1215,14 @@
     display: none;
   }
 
-  /* Línea meta única que resume puesto·área·reclutador·entrevista
-     sin saturar la card en mobile. */
-  .pipeline__ccard-name-col::after {
-    content: attr(data-meta);
-    font-size: var(--type-caption-md-size);
-    color: var(--color-muted);
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  /* Mostramos el resumen compacto mobile (2 líneas limpias) */
+  .pipeline__ccard-mobile-info {
+    display: block;
+    min-width: 0;
   }
 
-  /* En mobile el reclutador ya queda dentro de la meta line → evitamos
-     duplicarlo arriba. */
+  /* En mobile el reclutador ya vive dentro de mobile-info → evitamos
+     duplicarlo arriba bajo el nombre. */
   .pipeline__recruiter {
     display: none;
   }
