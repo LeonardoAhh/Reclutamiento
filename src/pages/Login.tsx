@@ -61,9 +61,6 @@ export function Login() {
           transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
         >
           <div className="login__brand">
-            <span className="login__brand-icon">
-              <Users size={16} strokeWidth={2} aria-hidden="true" />
-            </span>
             <span className="login__eyebrow">Reclutamiento</span>
           </div>
         </motion.div>
@@ -76,13 +73,12 @@ export function Login() {
           transition={{ duration: 0.9, ease: EASE }}
         >
           <motion.div className="login__wordmark" {...fadeUp(0.2)}>
-            <span className="login__wordmark-main">Viño<br />Plastic</span>
-            <span className="login__wordmark-sub">Querétaro</span>
+            <span className="login__wordmark-main">ViñoPlastic</span>
           </motion.div>
 
           <motion.blockquote className="login__tagline" {...fadeUp(0.35)}>
-            <span className="login__tagline-year">Est. 1970</span>
-            <p>Excelencia en Inyección<br />de Plásticos de Ingeniería.</p>
+            <span className="login__tagline-year">Desde 1970</span>
+            <p>Excelencia en Inyección de Plásticos de Ingeniería.</p>
           </motion.blockquote>
 
           <motion.div
@@ -105,11 +101,8 @@ export function Login() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
         >
           <header className="login__header">
-            <motion.p className="login__header-label" {...fadeUp(0.2)}>
-              Acceso al sistema
-            </motion.p>
             <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
-              Bienvenido<br />de nuevo
+              Bienvenido de nuevo
             </motion.h2>
           </header>
 
@@ -207,7 +200,7 @@ export function Login() {
               {submitting ? (
                 <>
                   <Loader2 size={16} className="login__spinner" aria-hidden="true" />
-                  <span>Verificando acceso…</span>
+                  <span>Verificando credenciales...</span>
                 </>
               ) : (
                 <>
@@ -218,10 +211,6 @@ export function Login() {
             </motion.button>
 
           </form>
-
-          <motion.p className="login__footer-note" {...fadeUp(0.65)}>
-            Reclutamiento y Selección de Personal
-          </motion.p>
         </motion.section>
       </div>
 

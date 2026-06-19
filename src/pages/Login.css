@@ -22,12 +22,12 @@
    ================================================================ */
 .login__panel {
   --panel-bg: #26251e;
-  --panel-text: #f7f6f2;
-  --panel-text-soft: #a09c92;
+  --panel-text: #ffffff;
+  --panel-text-soft: #ffffff;
   --panel-hairline: rgba(247, 246, 242, 0.12);
-  --panel-brand-border: rgba(247, 246, 242, 0.16);
+  --panel-brand-border: rgb(255, 255, 255);
   --panel-rule: rgba(247, 246, 242, 0.1);
-  --panel-accent: #4a5db8;
+  --panel-accent: #ffffff;
 
   position: relative;
   background: var(--panel-bg);
