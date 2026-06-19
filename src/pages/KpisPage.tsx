@@ -845,7 +845,10 @@
           onClose={() => setMissingModalOpen(false)}
           coverage={currentPositionCoverage}
           vacancies={vacancies}
-          candidates={candidatesInProcess}
+          /* Pasamos TODOS los candidatos: el modal filtra internamente
+             por estados activos (entrevista, entrega_documentos,
+             faltan_documentos, feedback_pendiente). */
+          candidates={candidates}
         />
       </main>
     );
