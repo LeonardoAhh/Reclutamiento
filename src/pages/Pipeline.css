@@ -1058,8 +1058,8 @@
 .pipeline__ccard {
   display: grid;
   grid-template-columns:
-    40px minmax(160px, 1fr) minmax(160px, 1fr) minmax(140px, 200px)
-    minmax(80px, auto) auto;
+    minmax(180px, 1.4fr) minmax(160px, 1fr) minmax(140px, 200px)
+    minmax(90px, auto) auto;
   align-items: center;
   gap: var(--spacing-md);
   background: var(--color-surface-card);
@@ -1129,15 +1129,76 @@
   min-width: 0;
 }
 
+/* Reclutador inline bajo el nombre */
+.pipeline__recruiter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.pipeline__recruiter > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Etiqueta "Entrevista" arriba de la fecha */
+.pipeline__cell-dates-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+/* ── Bloque compacto solo-mobile (oculto en desktop) ── */
+.pipeline__ccard-mobile-info {
+  display: none;
+}
+
+.pipeline__ccard-mobile-info__puesto {
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pipeline__ccard-mobile-info__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: 4px;
+}
+
+.pipeline__ccard-mobile-info__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  line-height: 1.2;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ── Responsive card-list ── */
 @media (max-width: 1024px) {
   .pipeline__ccard {
-    grid-template-columns: 40px minmax(0, 1.4fr) minmax(140px, 200px) auto;
-    grid-template-areas: "avatar name status actions";
+    grid-template-columns: minmax(0, 1.4fr) minmax(140px, 200px) auto;
+    grid-template-areas: "name status actions";
     column-gap: var(--spacing-sm);
-  }
-  .pipeline__ccard-avatar {
-    grid-area: avatar;
   }
   .pipeline__ccard-name-col {
     grid-area: name;
@@ -1154,23 +1215,25 @@
     display: none;
   }
 
-  .pipeline__ccard-name-col::after {
-    content: attr(data-puesto-area);
-    font-size: var(--type-caption-md-size);
-    color: var(--color-muted);
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  /* Mostramos el resumen compacto mobile (2 líneas limpias) */
+  .pipeline__ccard-mobile-info {
+    display: block;
+    min-width: 0;
+  }
+
+  /* En mobile el reclutador ya vive dentro de mobile-info → evitamos
+     duplicarlo arriba bajo el nombre. */
+  .pipeline__recruiter {
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
   .pipeline__ccard {
-    grid-template-columns: 40px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      "avatar name actions"
-      ". status status";
+      "name actions"
+      "status status";
     row-gap: var(--spacing-xs);
     align-items: center;
   }
@@ -1183,10 +1246,10 @@
 
 @media (max-width: 480px) {
   .pipeline__ccard {
-    grid-template-columns: 36px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      "avatar name actions"
-      "status status status";
+      "name actions"
+      "status status";
     padding: var(--spacing-md);
     gap: var(--spacing-sm);
   }
