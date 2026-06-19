@@ -16,6 +16,12 @@
   --sileo-width: 360px;
 }
 
+/* El viewport debe ir por ENCIMA del header (z-100), dropdowns (z-200) y
+   modales (z-1000). Así el toast nunca queda oculto detrás del header. */
+[data-sileo-viewport] {
+  z-index: 1100;
+}
+
 /* Tipografía cohesiva. En español NO queremos capitalize forzado. */
 [data-sileo-title],
 [data-sileo-description],

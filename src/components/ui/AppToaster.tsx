@@ -34,7 +34,9 @@ export function AppToaster() {
     <Toaster
       position="top-center"
       theme={theme}
-      offset={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
+      offset={{
+        top: 'calc(var(--header-height, 64px) + env(safe-area-inset-top, 0px) + 0.5rem)',
+      }}
       options={{ duration: 4000 }}
     />
   );
