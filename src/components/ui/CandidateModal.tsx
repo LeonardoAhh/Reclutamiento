@@ -16,11 +16,18 @@ import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
 
 /**
- * Reclutadoras activas que pueden ser asignadas a un proceso. Lista
- * cerrada para evitar variantes ortográficas que rompan luego el cruce
- * de datos en KPIs y reportes.
+ * Reclutadoras activas que pueden ser asignadas a un proceso.
+ *
+ * El `value` se guarda en MAYÚSCULAS para mantener consistencia con el
+ * histórico (las normalizaciones en KPIs/Pipeline ya pasan por
+ * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
+ * El `label` se muestra en formato amigable en el select.
  */
-const RECLUTADORES_DISPONIBLES = ['Alexandra', 'Daniela', 'Leonardo'] as const;
+const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> = [
+  { value: 'ALEXANDRA', label: 'Alexandra' },
+  { value: 'DANIELA', label: 'Daniela' },
+  { value: 'LEONARDO', label: 'Leonardo' },
+];
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -376,15 +383,10 @@ export function CandidateModal({
         >
           {noOpenPositions ? (
             <span className="candidate-modal__hint--warning">
-              No hay puestos con vacante abierta en este momento. Sólo se pueden
-              capturar candidatos para posiciones con plantilla o backup por
-              cubrir.
+              Sin vacantes abiertas
             </span>
           ) : (
-            <span>
-              Solo se muestran puestos con <strong>vacante abierta</strong>
-              {' '}(plantilla autorizada o backup por cubrir).
-            </span>
+            <span>Solo puestos con vacante abierta</span>
           )}
         </div>
       )}
@@ -446,10 +448,7 @@ export function CandidateModal({
           value={form.reclutador}
           onChange={(val) => setForm({ ...form, reclutador: val })}
           placeholder="Quién lleva el proceso"
-          options={RECLUTADORES_DISPONIBLES.map((r) => ({
-            value: r,
-            label: r,
-          }))}
+          options={RECLUTADORES_DISPONIBLES}
           disabled={isEdit}
           aria-label="Reclutador a cargo del proceso"
         />
