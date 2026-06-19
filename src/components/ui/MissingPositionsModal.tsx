@@ -60,8 +60,18 @@ export function MissingPositionsModal({
       return `${puesto}||${seccion}`;
     };
 
-    // Contar candidatos activos
+    // Estados que cuentan como "proceso activo": aún en pipeline trabajando
+    // hacia la contratación. Excluye terminales (contratado, rechazado,
+    // no_asistio) que ya no son procesos abiertos.
+    const ACTIVE_STATUSES: ReadonlySet<string> = new Set([
+      'entrevista',
+      'entrega_documentos',
+      'faltan_documentos',
+      'feedback_pendiente',
+    ]);
+
     candidates.forEach((c) => {
+      if (!ACTIVE_STATUSES.has(c.status)) return;
       const key = normalizeKey(c.puesto, c.seccion || '');
       if (!stats[key]) stats[key] = { candidates: 0 };
       stats[key].candidates += 1;
