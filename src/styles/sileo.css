@@ -1,16 +1,19 @@
 /* ============================================================
    Sileo · Adaptación al design system (Ollama-inspired)
    Mobile-first · semántico · cohesivo · accesible
-   Carga DESPUÉS de `sileo/styles.css` para sobrescribir tokens.
+
+   IMPORTANTE: sileo inyecta su CSS en <head> en runtime (después de esta
+   hoja), por lo que los overrides necesitan `!important` para ganar al
+   tener la misma especificidad pero cargarse antes.
    ============================================================ */
 
 :root {
   /* Estados → tokens semánticos de la app (mismos colores que badges/alerts) */
-  --sileo-state-success: #10b981;
-  --sileo-state-error: #ef4444;
-  --sileo-state-warning: #f59e0b;
-  --sileo-state-info: #14b8a6;
-  --sileo-state-action: #14b8a6;
+  --sileo-state-success: #10b981 !important;
+  --sileo-state-error: #ef4444 !important;
+  --sileo-state-warning: #f59e0b !important;
+  --sileo-state-info: #14b8a6 !important;
+  --sileo-state-action: #14b8a6 !important;
 
   /* Ancho del pill alineado a la escala del sistema. */
   --sileo-width: 360px;
@@ -19,33 +22,30 @@
 /* El viewport debe ir por ENCIMA del header (z-100), dropdowns (z-200) y
    modales (z-1000). Así el toast nunca queda oculto detrás del header. */
 [data-sileo-viewport] {
-  z-index: 1100;
+  z-index: 99999 !important;
 }
 
 /* Tipografía cohesiva. En español NO queremos capitalize forzado. */
 [data-sileo-title],
 [data-sileo-description],
 [data-sileo-button] {
-  font-family: var(--font-body);
-  text-transform: none;
-  letter-spacing: 0;
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
 }
 
-[data-sileo-title] {
-  font-weight: 600;
-}
-
+[data-sileo-title],
 [data-sileo-button] {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 /* Contraste de la descripción un poco más alto que el default (a11y). */
 [data-sileo-viewport][data-theme='light'] [data-sileo-description] {
-  color: rgba(255, 255, 255, 0.74);
+  color: rgba(255, 255, 255, 0.74) !important;
 }
 
 [data-sileo-viewport][data-theme='dark'] [data-sileo-description] {
-  color: rgba(0, 0, 0, 0.66);
+  color: rgba(0, 0, 0, 0.66) !important;
 }
 
 /* Mobile-first: el toast nunca toca los bordes en pantallas chicas. */
