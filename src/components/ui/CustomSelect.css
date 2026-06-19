@@ -98,10 +98,29 @@
   animation: custom-select-in var(--transition-fast) ease-out;
 }
 
+/* Cuando no hay espacio suficiente abajo, el menú abre hacia arriba
+   con la animación reflejada. */
+.custom-select-dropdown--up {
+  top: auto;
+  bottom: calc(100% + var(--spacing-xxs));
+  animation: custom-select-in-up var(--transition-fast) ease-out;
+}
+
 @keyframes custom-select-in {
   from {
     opacity: 0;
     transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes custom-select-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
