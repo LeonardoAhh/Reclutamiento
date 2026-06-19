@@ -373,6 +373,37 @@
     color: var(--color-muted);
   }
 
+  /* Desglose plantilla / backup bajo "Próximos Ingresos" */
+  .projection-sublabel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .projection-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: var(--rounded-sm);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .projection-chip--plantilla {
+    background: var(--color-success-tint);
+    color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
+  }
+
+  .projection-chip--backup {
+    background: color-mix(in srgb, var(--color-accent-amber) 16%, transparent);
+    color: color-mix(in srgb, var(--color-accent-amber) 75%, var(--color-ink));
+  }
+
   .projection-card--future {
     background: linear-gradient(145deg, var(--color-surface-card) 0%, var(--color-surface-sunken) 100%);
     border-color: var(--color-primary);

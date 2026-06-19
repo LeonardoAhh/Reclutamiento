@@ -302,11 +302,42 @@
         }
       }
 
-      const proximosIngresos = employees.filter(e => {
-        const ing = String(e.fecha_ingreso);
-        return ing > todayIso && ing <= nextWednesdayIso;
-      }).length;
+      // Próximos ingresos en la ventana [hoy, próximo miércoles].
+      // Los desglosamos por destino (plantilla vs backup) simulando su
+      // ingreso por puesto en orden cronológico: cada uno llena primero
+      // la plantilla autorizada; los excedentes caen al buffer de backup.
+      const upcomingHires = employees
+        .filter(e => {
+          const ing = String(e.fecha_ingreso);
+          return ing > todayIso && ing <= nextWednesdayIso;
+        })
+        .sort((a, b) =>
+          String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))
+        );
 
+      const posState = new Map<string, { real: number; autorizada: number }>();
+      for (const p of currentPositionCoverage) {
+        posState.set(`${p.area}|${p.seccion}|${p.puesto}`, {
+          real: p.plantilla_real,
+          autorizada: p.plantilla_autorizada,
+        });
+      }
+
+      let proximosPlantilla = 0;
+      let proximosBackup = 0;
+      for (const e of upcomingHires) {
+        const key = `${e.area}|${e.seccion}|${e.puesto}`;
+        const pos = posState.get(key);
+        if (pos && pos.real < pos.autorizada) {
+          proximosPlantilla += 1;
+          pos.real += 1;
+        } else {
+          proximosBackup += 1;
+          if (pos) pos.real += 1;
+        }
+      }
+
+      const proximosIngresos = upcomingHires.length;
       const proyectadoReal = realTotal + proximosIngresos;
       const coberturaProyectada = objetivoGlobal > 0 ? Math.round((proyectadoReal / objetivoGlobal) * 100) : 0;
 
@@ -314,6 +345,8 @@
         vacantesPlantilla,
         vacantesBackup,
         proximosIngresos,
+        proximosPlantilla,
+        proximosBackup,
         coberturaProyectada
       };
     }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso]);
@@ -625,6 +658,20 @@
                     <div className="projection-metric">
                       <span className="projection-value text-success">+{projectionTotals.proximosIngresos}</span>
                       <span className="projection-label">Próximos Ingresos</span>
+                      {projectionTotals.proximosIngresos > 0 && (
+                        <span className="projection-sublabel">
+                          {projectionTotals.proximosPlantilla > 0 && (
+                            <span className="projection-chip projection-chip--plantilla">
+                              {projectionTotals.proximosPlantilla} plantilla
+                            </span>
+                          )}
+                          {projectionTotals.proximosBackup > 0 && (
+                            <span className="projection-chip projection-chip--backup">
+                              {projectionTotals.proximosBackup} backup
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </div>
                     <div className="projection-metric">
                       <span className="projection-value text-primary">{projectionTotals.coberturaProyectada}%</span>

@@ -13,6 +13,7 @@ import {
   Users,
   UserRound,
   CalendarDays,
+  ChevronDown,
   ChevronRight,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
@@ -631,6 +632,13 @@ export function Pipeline() {
               className="pipeline__card-list"
               aria-label="Lista de candidatos"
             >
+              <header className="pipeline__card-list-header" aria-hidden="true">
+                <span>Candidato</span>
+                <span>Puesto</span>
+                <span>Estado</span>
+                <span>Entrevista</span>
+                <span />
+              </header>
               {filtered.map((c) => {
                 const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
                 const areaLine = `${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`;
@@ -691,10 +699,14 @@ export function Pipeline() {
                       <div className="pipeline__puesto">{c.puesto}</div>
                       <div className="pipeline__area">{areaLine}</div>
                     </div>
-                    <div className="pipeline__cell-status pipeline__ccard-status-col">
+                    <div
+                      className="pipeline__cell-status pipeline__ccard-status-col"
+                      data-status={c.status}
+                    >
                       <CustomSelect
                         id={`status-${c.id}`}
                         value={c.status}
+                        placeholder=""
                         onChange={(val) =>
                           handleStatusChange(c, val as CandidateStatus)
                         }
@@ -703,10 +715,24 @@ export function Pipeline() {
                           label: CANDIDATE_STATUS_LABEL[s],
                         }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
+                        customTrigger={
+                          <span
+                            className="pipeline__status-tag"
+                            data-status={c.status}
+                          >
+                            <span className="pipeline__status-tag__label">
+                              {CANDIDATE_STATUS_LABEL[c.status]}
+                            </span>
+                            <ChevronDown
+                              size={14}
+                              aria-hidden="true"
+                              className="pipeline__status-tag__chevron"
+                            />
+                          </span>
+                        }
                       />
                     </div>
                     <div className="pipeline__ccard-dates-col pipeline__cell-dates">
-                      <div className="pipeline__cell-dates-label">Entrevista</div>
                       <div className="pipeline__cell-dates-primary">
                         {fechaCitaFmt ?? '—'}
                       </div>
