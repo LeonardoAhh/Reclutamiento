@@ -3,6 +3,8 @@ import { UserPlus, Pencil, Trash2 } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { calculatePositionCoverage } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -12,6 +14,13 @@ import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
+
+/**
+ * Reclutadoras activas que pueden ser asignadas a un proceso. Lista
+ * cerrada para evitar variantes ortográficas que rompan luego el cruce
+ * de datos en KPIs y reportes.
+ */
+const RECLUTADORES_DISPONIBLES = ['Alexandra', 'Daniela', 'Leonardo'] as const;
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -112,29 +121,76 @@ export function CandidateModal({
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
+  const { employees, comments } = useSupabaseData();
+
+  /**
+   * Cobertura actual de cada puesto. Sirve para detectar qué puestos
+   * realmente tienen vacante abierta (plantilla autorizada o backup
+   * sin cubrir) y limitar la captura a esos.
+   */
+  const positionCoverage = useMemo(
+    () => calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions]
+  );
+
+  /**
+   * Set de puestos con vacante abierta (`vacantes > 0`). Usamos
+   * área|sección|puesto como clave estricta para que un mismo puesto
+   * en distintos turnos se traten por separado.
+   */
+  const openPositionsKeySet = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of positionCoverage) {
+      if (p.vacantes > 0) {
+        s.add(`${p.area}||${p.seccion ?? ''}||${p.puesto}`);
+      }
+    }
+    return s;
+  }, [positionCoverage]);
+
+  /**
+   * Solo en modo "Agregar" restringimos a posiciones con vacante.
+   * Al editar un candidato existente respetamos los valores capturados
+   * aunque el puesto ya esté cubierto.
+   */
+  const restrictToOpen = mode === 'add';
+  const openPositions = useMemo(
+    () =>
+      restrictToOpen
+        ? positions.filter((p) =>
+            openPositionsKeySet.has(`${p.area}||${p.seccion ?? ''}||${p.puesto}`)
+          )
+        : positions,
+    [positions, openPositionsKeySet, restrictToOpen]
+  );
+
   const areas = useMemo(
-    () => Array.from(new Set(positions.map((p) => p.area))),
-    [positions]
+    () => Array.from(new Set(openPositions.map((p) => p.area))).sort(),
+    [openPositions]
   );
   const sectionsForArea = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
+          openPositions
+            .filter((p) => p.area === form.area)
+            .map((p) => p.seccion)
         )
-      ),
-    [positions, form.area]
+      ).sort(),
+    [openPositions, form.area]
   );
   const puestosForSection = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter(
-            (p) => p.area === form.area && p.seccion === form.seccion
-          ).map((p) => p.puesto)
+          openPositions
+            .filter(
+              (p) => p.area === form.area && p.seccion === form.seccion
+            )
+            .map((p) => p.puesto)
         )
-      ),
-    [positions, form.area, form.seccion]
+      ).sort(),
+    [openPositions, form.area, form.seccion]
   );
 
   useEffect(() => {
@@ -309,8 +365,30 @@ export function CandidateModal({
     </>
   );
 
+  const noOpenPositions = restrictToOpen && areas.length === 0;
+
   const fieldsPosicion = (
     <>
+      {restrictToOpen && (
+        <div
+          className="form-group form-group--span-2 candidate-modal__hint"
+          role="note"
+        >
+          {noOpenPositions ? (
+            <span className="candidate-modal__hint--warning">
+              No hay puestos con vacante abierta en este momento. Sólo se pueden
+              capturar candidatos para posiciones con plantilla o backup por
+              cubrir.
+            </span>
+          ) : (
+            <span>
+              Solo se muestran puestos con <strong>vacante abierta</strong>
+              {' '}(plantilla autorizada o backup por cubrir).
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="form-group">
         <label htmlFor="cand-area">Área</label>
         <CustomSelect
@@ -319,7 +397,7 @@ export function CandidateModal({
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
-          disabled={isEdit}
+          disabled={isEdit || noOpenPositions}
         />
       </div>
 
@@ -363,14 +441,17 @@ export function CandidateModal({
 
       <div className="form-group">
         <label htmlFor="cand-reclutador">Reclutador</label>
-        <input
+        <CustomSelect
           id="cand-reclutador"
-          type="text"
           value={form.reclutador}
-          onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
+          onChange={(val) => setForm({ ...form, reclutador: val })}
           placeholder="Quién lleva el proceso"
-          autoComplete="off"
+          options={RECLUTADORES_DISPONIBLES.map((r) => ({
+            value: r,
+            label: r,
+          }))}
           disabled={isEdit}
+          aria-label="Reclutador a cargo del proceso"
         />
       </div>
 

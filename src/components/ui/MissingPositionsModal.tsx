@@ -24,6 +24,11 @@ function normalizeForMatch(s: string): string {
     .trim();
 }
 
+/**
+ * Clave para cruzar candidato ↔ posición. Match estricto por
+ * `puesto + sección` ya normalizados — un candidato debe coincidir
+ * exactamente con la posición/turno que va a ocupar.
+ */
 function buildPositionKey(puesto: string, seccion: string): string {
   return `${normalizeForMatch(puesto)}||${normalizeForMatch(seccion)}`;
 }
