@@ -10,6 +10,12 @@ import { sileo } from 'sileo';
  */
 export { sileo };
 
+// Expuesto en window para poder disparar toasts manualmente desde la consola
+// (F12 → `sileo.success({ title: 'Hola' })`). Inofensivo: es solo la API de toasts.
+if (typeof window !== 'undefined') {
+  (window as unknown as { sileo: typeof sileo }).sileo = sileo;
+}
+
 export type ActionResult = { ok: boolean; message?: string };
 
 interface NotifyMessages {
