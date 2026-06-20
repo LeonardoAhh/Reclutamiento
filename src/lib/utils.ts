@@ -46,6 +46,32 @@ export function normalizePuesto(puesto: string): string {
 }
 
 /**
+ * Canonicaliza un segmento de identidad de puesto (área o sección) para que
+ * empareje aunque cambie el formato entre tablas (Bajas vs Empleados):
+ *  - mayúsculas, sin acentos, sin espacios extra
+ *  - puntuación (. , / -) → espacio
+ *  - turnos unificados: "1ER/1O/PRIMER" → 1, "2DO/2O/SEGUNDO" → 2, etc.
+ */
+export function canonicalizeKeyPart(text: string): string {
+  let s = normalizeString(text);
+  s = s.replace(/[.,/\-]/g, ' ').replace(/\s+/g, ' ').trim();
+  s = s
+    .replace(/\b(1ER|1RO|1O|PRIMER|PRIMERO|PRIMERA)\b/g, '1')
+    .replace(/\b(2DO|2O|SEGUNDO|SEGUNDA)\b/g, '2')
+    .replace(/\b(3ER|3RO|3O|TERCER|TERCERO|TERCERA)\b/g, '3')
+    .replace(/\b(4TO|4O|CUARTO|CUARTA)\b/g, '4');
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Igual que `canonicalizeKeyPart` pero además quita el sufijo de categoría
+ * del puesto (A/B/C/D), p. ej. "OPERADOR DE MAQUINA D" → "OPERADOR DE MAQUINA".
+ */
+export function canonicalizePuesto(puesto: string): string {
+  return canonicalizeKeyPart(puesto).replace(/\s+[A-D]$/, '');
+}
+
+/**
  * Flexible text matching for areas and sections
  */
 function matchesText(empVal: string, constVal: string): boolean {

@@ -1,4 +1,4 @@
-import { normalizeString, normalizePuesto } from '@/lib/utils';
+import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
 import { businessDaysBetween } from '@/lib/dates';
 import type { Baja, Employee, VacancyRequest } from '@/lib/types';
 
@@ -37,7 +37,7 @@ export interface AutoVacancy {
  * viene pegado al puesto pero en Empleados va en `categoria`.
  */
 function positionKey(x: { area: string; seccion: string; puesto: string }): string {
-  return `${normalizeString(x.area)}||${normalizeString(x.seccion)}||${normalizePuesto(
+  return `${canonicalizeKeyPart(x.area)}||${canonicalizeKeyPart(x.seccion)}||${canonicalizePuesto(
     x.puesto
   )}`;
 }
