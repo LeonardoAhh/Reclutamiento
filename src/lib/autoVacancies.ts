@@ -138,10 +138,13 @@ export function computeAutoVacancies(
       fechaCubierta = auto.fecha_ingreso;
     }
 
-    const endMs =
-      status === 'cubierta' && fechaCubierta ? toTime(fechaCubierta) : now;
+    // "Días transcurridos" hábiles: 0 el mismo día de la baja.
+    // Pasamos la fecha de cobertura como STRING para que se interprete en TZ
+    // MX (evita un segundo desfase de zona horaria).
+    const endArg: string | Date =
+      status === 'cubierta' && fechaCubierta ? fechaCubierta : new Date(now);
     const dias = baja.fecha_baja
-      ? businessDaysBetween(baja.fecha_baja, new Date(endMs))
+      ? Math.max(0, businessDaysBetween(baja.fecha_baja, endArg) - 1)
       : 0;
 
     return {
