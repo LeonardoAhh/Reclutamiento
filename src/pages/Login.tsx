@@ -1,4 +1,4 @@
-import { useState, type FormEvent, useId } from 'react';
+import { useState, type FormEvent, useId, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
@@ -28,6 +28,23 @@ export function Login() {
   const usernameId = useId();
   const passwordId = useId();
   const errorId = useId();
+
+  // La parte superior del login es negra (inmune al tema): forzamos el
+  // theme-color de la barra de estado a negro mientras estamos en el login,
+  // y lo restauramos al valor del tema al salir.
+  useEffect(() => {
+    const LOGIN_BAR = '#0d0d0f';
+    const root = document.documentElement;
+    const meta = document.getElementById('theme-color-meta');
+    meta?.setAttribute('content', LOGIN_BAR);
+    root.style.backgroundColor = LOGIN_BAR;
+    return () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      const restore = isDark ? '#0a0a0a' : '#ffffff';
+      meta?.setAttribute('content', restore);
+      root.style.backgroundColor = restore;
+    };
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

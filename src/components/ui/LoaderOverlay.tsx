@@ -34,10 +34,10 @@ function RouteLoader() {
       aria-label="Cargando"
     >
       <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="16" stroke="var(--color-hairline-strong)" strokeWidth="3" />
+        <circle cx="20" cy="20" r="16" stroke="var(--loader-core-track, var(--color-hairline-strong))" strokeWidth="3" />
         <motion.circle
           cx={20} cy={20} r={16}
-          stroke="var(--color-primary)"
+          stroke="var(--loader-core-color, var(--color-primary))"
           strokeWidth="3"
           strokeLinecap="round"
           strokeDasharray="100"
@@ -64,7 +64,7 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
       <circle
         cx={100} cy={100} r={RING_R}
         fill="none"
-        stroke="var(--color-hairline-strong)"
+        stroke="var(--loader-core-track, var(--color-hairline-strong))"
         strokeWidth={3}
         opacity={0.35}
       />
@@ -73,7 +73,7 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
       <motion.circle
         cx={100} cy={100} r={RING_R}
         fill="none"
-        stroke="var(--color-primary)"
+        stroke="var(--loader-core-color, var(--color-primary))"
         strokeWidth={3}
         strokeLinecap="round"
         strokeDasharray={RING_C}
@@ -98,7 +98,7 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
             <motion.circle
               key={i}
               r={4}
-              fill="var(--color-primary)"
+              fill="var(--loader-core-color, var(--color-primary))"
               initial={{ cx: fromX, cy: fromY, opacity: 0 }}
               animate={{ cx: [fromX, toX], cy: [fromY, toY], opacity: [0, 1, 0] }}
               transition={{
@@ -116,7 +116,7 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
         <motion.circle
           cx={100} cy={100} r={16}
           fill="none"
-          stroke="var(--color-primary)"
+          stroke="var(--loader-core-color, var(--color-primary))"
           strokeWidth={2}
           initial={{ scale: 1, opacity: 0.5 }}
           animate={{ scale: [1, 2.4], opacity: [0.45, 0] }}
@@ -128,7 +128,7 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
       {/* Núcleo central: se enciende (in) o se apaga/dispersa (out) */}
       <motion.circle
         cx={100} cy={100} r={16}
-        fill="var(--color-primary)"
+        fill="var(--loader-core-color, var(--color-primary))"
         initial={{ scale: filling ? 0 : 1, opacity: filling ? 0 : 1 }}
         animate={
           reduce

@@ -23,6 +23,8 @@
 .login__panel {
   --panel-bg: #0d0d0f;
   --panel-text: #ffffff;
+  --loader-core-color: #ffffff;
+  --loader-core-track: rgb(255 255 255 / 0.18);
   --panel-text-soft: #ffffff;
   --panel-hairline: rgba(247, 246, 242, 0.12);
   --panel-brand-border: rgb(255, 255, 255);
@@ -472,7 +474,7 @@
     border-right: none;
     border-bottom: none;
     padding: max(var(--spacing-lg), var(--safe-area-top)) var(--spacing-lg)
-      calc(var(--spacing-xxl) + var(--rounded-xl));
+      calc(var(--spacing-xxl) + 2rem);
   }
 
   /* En mobile el brand pill se oculta — el núcleo es el protagonista */
@@ -521,25 +523,12 @@
     z-index: 2;
     align-items: stretch;
     justify-content: flex-start;
-    margin-top: calc(var(--rounded-xl) * -1);
-    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    margin-top: -2rem;
+    border-radius: 2rem 2rem 0 0;
     background: var(--color-canvas);
     box-shadow: 0 -10px 30px rgb(0 0 0 / 0.16);
     padding: var(--spacing-xl) var(--spacing-lg);
     padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
-  }
-
-  /* Asa del sheet */
-  .login__form-panel::before {
-    content: '';
-    position: absolute;
-    top: var(--spacing-sm);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 36px;
-    height: 4px;
-    border-radius: var(--rounded-full);
-    background: var(--color-hairline-strong);
   }
 
   .login__form-wrap {
