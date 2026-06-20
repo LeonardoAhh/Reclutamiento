@@ -1,7 +1,7 @@
 import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
 import { businessDaysBetween } from '@/lib/dates';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
-import type { Baja, Employee, VacancyRequest } from '@/lib/types';
+import type { AuthorizedPosition, Baja, Employee, VacancyRequest } from '@/lib/types';
 
 export type AutoVacancyStatus = 'cubierta' | 'abierta';
 
@@ -196,5 +196,93 @@ export function autoVacancyToRequest(v: AutoVacancy): VacancyRequest {
     prioridad: 'media',
     dias_sla: null,
     excluida_indicador: false,
+  };
+}
+
+
+export interface SplitPair {
+  autorizado: number;
+  backup: number;
+}
+
+export interface VacancySplit {
+  vacantes: SplitPair;
+  cubiertas: SplitPair;
+  abiertas: SplitPair;
+  /** Cobertura en % (cubiertas / vacantes) por tipo. */
+  cobertura: SplitPair;
+}
+
+/**
+ * Divide las vacantes (derivadas de bajas) en AUTORIZADO vs BACKUP usando la
+ * plantilla definida en código (`AuthorizedPosition`).
+ *
+ * Regla (definida con el usuario):
+ *  - Por cada puesto (área + sección + puesto), la plantilla define
+ *    `plantilla_autorizada = A` y `backup = B`.
+ *  - Las vacantes del puesto se ordenan por fecha de baja ascendente; las
+ *    primeras A cuentan como AUTORIZADO y las siguientes (hasta B) como BACKUP.
+ *  - Cualquier excedente más allá de A + B vuelve a contar como AUTORIZADO
+ *    (demanda del puesto base, no buffer).
+ *  - Puestos sin entrada en la plantilla → todo AUTORIZADO.
+ *
+ * Cada vacante se clasifica una sola vez, de modo que los 4 indicadores
+ * (totales, cubiertas, abiertas, cobertura) quedan internamente consistentes:
+ * cubiertas + abiertas = total, por tipo.
+ */
+export function splitVacanciesByPlantilla(
+  vacancies: AutoVacancy[],
+  positions: AuthorizedPosition[]
+): VacancySplit {
+  const plantillaByKey = new Map<string, { A: number; B: number }>();
+  for (const p of positions) {
+    plantillaByKey.set(positionKey(p), {
+      A: p.plantilla_autorizada,
+      B: p.backup ?? 0,
+    });
+  }
+
+  const byKey = new Map<string, AutoVacancy[]>();
+  for (const v of vacancies) {
+    const k = positionKey(v);
+    const list = byKey.get(k) ?? [];
+    list.push(v);
+    byKey.set(k, list);
+  }
+
+  let vacAut = 0;
+  let vacBak = 0;
+  let cubAut = 0;
+  let cubBak = 0;
+  let abiAut = 0;
+  let abiBak = 0;
+
+  for (const [k, list] of byKey) {
+    const plant = plantillaByKey.get(k);
+    const A = plant ? plant.A : Number.POSITIVE_INFINITY;
+    const B = plant ? plant.B : 0;
+    const sorted = [...list].sort((a, b) => a.fechaBaja.localeCompare(b.fechaBaja));
+    sorted.forEach((v, i) => {
+      const isBackup = i >= A && i < A + B;
+      const covered = v.status === 'cubierta';
+      if (isBackup) {
+        vacBak += 1;
+        if (covered) cubBak += 1;
+        else abiBak += 1;
+      } else {
+        vacAut += 1;
+        if (covered) cubAut += 1;
+        else abiAut += 1;
+      }
+    });
+  }
+
+  const pct = (c: number, t: number) => (t > 0 ? Math.round((c / t) * 100) : 0);
+
+  return {
+    vacantes: { autorizado: vacAut, backup: vacBak },
+    cubiertas: { autorizado: cubAut, backup: cubBak },
+    abiertas: { autorizado: abiAut, backup: abiBak },
+    cobertura: { autorizado: pct(cubAut, vacAut), backup: pct(cubBak, vacBak) },
   };
 }

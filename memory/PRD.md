@@ -137,6 +137,12 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Decisión del usuario: "Vacantes abiertas" = conteo de la LISTA (bajas sin cubrir, `vacancies.filter(status==='abierta').length`), para que siempre cuadre con las tarjetas/tabla de abajo. "Cob. autorizada %" = Ocupados ÷ Plantilla autorizada (sin backups), ya implementado así.
 - Cambio en `src/pages/Vacantes.tsx`: nuevo `vacantesAbiertas` memo desde `vacancies`; se quitó `vacantesAbiertas` del `summary` de cobertura. Build + `tsc --noEmit` limpios.
 
+## KPIs Vacantes — rediseño Autorizado | Backup (jun 2026)
+- Layout nuevo: grid 4 filas (Vacantes, Cubiertas, Abiertas, Cobertura) × 2 columnas (Autorizado | Backup) = 8 KPIs. Izquierda autorizado, derecha backup. Reemplaza los 6 KPIs anteriores.
+- Lógica: `splitVacanciesByPlantilla(vacancies, positions)` en `src/lib/autoVacancies.ts`. Regla confirmada por usuario: por cada puesto (área+sección+puesto) la plantilla (`src/lib/constants.ts` → `PLANTILLA_AUTORIZADA`) define A=`plantilla_autorizada` y B=`backup`; las vacantes del puesto ordenadas por fecha_baja asc → primeras A = Autorizado, siguientes hasta B = Backup, excedente >A+B = Autorizado. Clasificación 1 vez por baja → totales/cubiertas/abiertas/cobertura consistentes.
+- CAVEAT de datos: solo 7 entradas de la plantilla tienen `backup` (OPERADOR DE MÁQUINA ×4=5, OPERADOR DE ACABADOS GP-12 ×2=2, INSPECTOR DE CALIDAD=2). Como A es grande (22/32), "Backup" solo aparece si un puesto+sección acumula MÁS bajas que su A → en la práctica Backup puede salir 0/bajo. Si el usuario espera números de backup mayores, cambiar a la regla "opción b" (clasificar la baja como backup si al ocurrir la plantilla real ya cubría la autorizada = excedente).
+- `tsc --noEmit` + `yarn build` limpios. Pendiente: validación con datos reales (este pod no tiene `VITE_SUPABASE_*`).
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).

@@ -15,8 +15,7 @@ import {
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { usePositions } from '@/lib/positions';
-import { calculatePositionCoverage } from '@/lib/utils';
-import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
+import { computeAutoVacancies, splitVacanciesByPlantilla, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
@@ -47,7 +46,7 @@ export function Vacantes() {
     marcarCubierta,
     desmarcarCubierta,
   } = useBajas();
-  const { employees, comments, loading: empLoading } = useSupabaseData();
+  const { employees, loading: empLoading } = useSupabaseData();
   const { positions, loading: positionsLoading } = usePositions();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,34 +59,22 @@ export function Vacantes() {
     [bajas, employees]
   );
 
-  // KPIs de cobertura basados en PLANTILLA AUTORIZADA + BACKUPS (no en bajas).
-  const summary = useMemo(() => {
-    const cov = calculatePositionCoverage(employees, comments, positions);
-    let autorizada = 0;
-    let ocupados = 0;
-    let backup = 0;
-    let ocupadosAut = 0;
-    let backupFilled = 0;
-    for (const p of cov) {
-      autorizada += p.plantilla_autorizada;
-      ocupados += p.plantilla_real;
-      backup += p.backup;
-      ocupadosAut += Math.min(p.plantilla_real, p.plantilla_autorizada);
-      backupFilled += p.excedente_backup;
-    }
-    return {
-      autorizada,
-      ocupados,
-      backup,
-      pctAutorizada: autorizada > 0 ? Math.round((ocupadosAut / autorizada) * 100) : 0,
-      pctBackup: backup > 0 ? Math.round((backupFilled / backup) * 100) : 0,
-    };
-  }, [employees, comments, positions]);
+  // 8 KPIs: cada métrica (Vacantes, Cubiertas, Abiertas, Cobertura) dividida en
+  // AUTORIZADO vs BACKUP según la plantilla definida en código.
+  const split = useMemo(
+    () => splitVacanciesByPlantilla(vacancies, positions),
+    [vacancies, positions]
+  );
 
-  // "Vacantes abiertas": conteo de bajas sin cubrir (coincide con la lista de abajo).
-  const vacantesAbiertas = useMemo(
-    () => vacancies.filter((v) => v.status === 'abierta').length,
-    [vacancies]
+  const kpiRows = useMemo(
+    () =>
+      [
+        { id: 'vacantes', label: 'Vacantes', pair: split.vacantes },
+        { id: 'cubiertas', label: 'Cubiertas', pair: split.cubiertas, tone: 'done' as const },
+        { id: 'abiertas', label: 'Abiertas', pair: split.abiertas, tone: 'open' as const },
+        { id: 'cobertura', label: 'Cobertura', pair: split.cobertura, suffix: '%' },
+      ] as const,
+    [split]
   );
 
   const filtered = useMemo(() => {
@@ -161,44 +148,31 @@ export function Vacantes() {
         </div>
       </section>
 
-      {/* ── Resumen: cobertura de plantilla autorizada y backups ── */}
-      <section className="vacantes__summary" aria-label="Resumen de cobertura">
-        <div className="vacantes__kpi" data-testid="vac-kpi-autorizada">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.autorizada} />
-          </span>
-          <span className="vacantes__kpi-label">Autorizada</span>
+      {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
+      <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
+        <div className="vacantes__split-head" role="row">
+          <span className="vacantes__split-corner" />
+          <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
+          <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
         </div>
-        <div className="vacantes__kpi" data-testid="vac-kpi-ocupados">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.ocupados} />
-          </span>
-          <span className="vacantes__kpi-label">Ocupados</span>
-        </div>
-        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-cob-autorizada">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.pctAutorizada} suffix="%" />
-          </span>
-          <span className="vacantes__kpi-label">Cob. autorizada</span>
-        </div>
-        <div className="vacantes__kpi" data-testid="vac-kpi-backups">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.backup} />
-          </span>
-          <span className="vacantes__kpi-label">Backups</span>
-        </div>
-        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-cob-backups">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.pctBackup} suffix="%" />
-          </span>
-          <span className="vacantes__kpi-label">Cob. backups</span>
-        </div>
-        <div className="vacantes__kpi vacantes__kpi--open" data-testid="vac-kpi-abiertas">
-          <span className="vacantes__kpi-value">
-            <AnimatedNumber value={vacantesAbiertas} />
-          </span>
-          <span className="vacantes__kpi-label">Vacantes abiertas</span>
-        </div>
+        {kpiRows.map((row) => (
+          <div
+            key={row.id}
+            className={`vacantes__split-row${
+              'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
+            }`}
+            role="row"
+            data-testid={`vac-split-${row.id}`}
+          >
+            <span className="vacantes__split-label">{row.label}</span>
+            <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
+              <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
+            </span>
+            <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
+              <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
+            </span>
+          </div>
+        ))}
       </section>
 
       {/* ── Controles ── */}
