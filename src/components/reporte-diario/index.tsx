@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './ReporteDiario.css';
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { SkeletonTable } from "@/components/ui/PageSkeletons";
 import { motion, AnimatePresence } from "framer-motion"
 import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
@@ -570,6 +572,27 @@ export default function ReporteDiarioContent() {
     const labelCls = "block text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5"
 
     const hasData = rows.length > 0 && Boolean(currentMonth)
+
+    /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
+       sistema (en vez de pantalla en blanco). ───────────────────────── */
+    if (dbLoading || loadingDb) {
+        return (
+            <div className="reporte-container">
+                <header className="reporte-card">
+                    <div className="reporte-header__top">
+                        <div className="reporte-title-wrapper">
+                            <h1 className="reporte-title">Reporte Diario</h1>
+                            <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
+                        </div>
+                    </div>
+                </header>
+                <div className="reporte-card" data-testid="reporte-skeleton" aria-busy="true">
+                    <Skeleton height={40} radius="var(--rounded-md)" style={{ marginBottom: 16, maxWidth: 320 }} />
+                    <SkeletonTable rows={8} columns={['24%', '30%', '12%', '12%', '10%', '12%']} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="reporte-container">

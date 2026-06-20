@@ -176,11 +176,6 @@ export function useCandidates() {
         { event: '*', schema: 'public', table: 'candidates' },
         () => refetch({ silent: true })
       )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'candidate_notes' },
-        () => refetch({ silent: true })
-      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
