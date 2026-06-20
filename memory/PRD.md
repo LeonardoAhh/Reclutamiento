@@ -162,6 +162,15 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Archivos: `src/components/ui/LoaderOverlay.tsx` (reescrito CoreGraphic + CinematicEntrance + LogoutCinematic), `LoaderOverlay.css` (.loader-core-scene/.loader-core).
 - `tsc` + `yarn build` limpios. Validación visual pendiente en el deploy del usuario (este pod no renderiza el flujo autenticado).
 
+## Login rediseñado + ajuste de animaciones (jun 2026)
+- **Login** (`Login.tsx` / `Login.css`), sin tocar lógica ni `signIn`:
+  - PC: split izquierdo **negro** (`--panel-bg: #0d0d0f`, isla inmune al tema) con el `CoreGraphic` animado + wordmark/tagline; derecho blanco (`--color-canvas`) con form minimalista.
+  - Móvil: animación (núcleo) arriba como hero (40vh) + form abajo tipo **sheet** (esquinas superiores `--rounded-xl`, solapa con `margin-top` negativo, sombra y asa `::before`).
+  - Reutiliza `CoreGraphic` (exportado desde `LoaderOverlay.tsx`) → cohesión total con entrada/salida.
+- **Animación entrada**: ahora **un solo mensaje** "Preparando tu espacio" SIN typewriter (3 fases no daban tiempo en 4s). Se eliminó la lógica de fases.
+- **Animación salida**: la frase motivacional se muestra **directa** (sin typewriter). `TypewriterTitle` ya no se usa en el loader.
+- `tsc` + `yarn build` limpios. Validación visual pendiente en deploy del usuario.
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).

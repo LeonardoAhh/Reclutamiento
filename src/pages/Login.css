@@ -21,7 +21,7 @@
    de wordmark + tagline (bottom).
    ================================================================ */
 .login__panel {
-  --panel-bg: #26251e;
+  --panel-bg: #0d0d0f;
   --panel-text: #ffffff;
   --panel-text-soft: #ffffff;
   --panel-hairline: rgba(247, 246, 242, 0.12);
@@ -73,6 +73,22 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
+}
+
+/* Zona central — núcleo animado (cohesivo con loader) */
+.login__visual-core {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login__visual-core .loader-core {
+  width: clamp(170px, 17vw, 260px);
+  height: clamp(170px, 17vw, 260px);
 }
 
 /* ── Brand pill ── */
@@ -443,34 +459,46 @@
 @media (max-width: 767px) {
   .login {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 40vh 1fr;
     min-height: 100dvh;
   }
 
+  /* Panel visual = hero vertical con el núcleo animado */
   .login__panel {
-    flex-direction: row; /* ← horizontal en mobile */
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: var(--spacing-lg);
     border-right: none;
-    border-bottom: 1px solid var(--panel-hairline);
-    padding: max(var(--spacing-lg), var(--safe-area-top)) var(--spacing-md) var(--spacing-lg);
+    border-bottom: none;
+    padding: max(var(--spacing-lg), var(--safe-area-top)) var(--spacing-lg)
+      calc(var(--spacing-xxl) + var(--rounded-xl));
   }
 
-  /* En mobile el panel-top (brand) se oculta — queda integrado en bottom */
+  /* En mobile el brand pill se oculta — el núcleo es el protagonista */
   .login__panel-top {
     display: none;
   }
 
+  .login__visual-core {
+    flex: 0 1 auto;
+  }
+
+  .login__visual-core .loader-core {
+    width: clamp(132px, 38vw, 188px);
+    height: clamp(132px, 38vw, 188px);
+  }
+
   .login__panel-bottom {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: var(--spacing-lg);
+    text-align: center;
+    gap: var(--spacing-xs);
     width: 100%;
   }
 
-  /* Brand pill aparece a la izquierda en mobile */
-  .login__brand {
-    order: -1;
+  .login__wordmark {
+    align-items: center;
   }
 
   .login__wordmark-main {
@@ -487,25 +515,41 @@
     display: none;
   }
 
-  /* Formulario ocupa el resto de la pantalla */
+  /* Form = sheet que solapa el hero, esquinas superiores redondeadas */
   .login__form-panel {
-    align-items: flex-start;
-    padding: var(--spacing-xl) var(--spacing-md);
+    position: relative;
+    z-index: 2;
+    align-items: stretch;
+    justify-content: flex-start;
+    margin-top: calc(var(--rounded-xl) * -1);
+    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    background: var(--color-canvas);
+    box-shadow: 0 -10px 30px rgb(0 0 0 / 0.16);
+    padding: var(--spacing-xl) var(--spacing-lg);
     padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
+  }
+
+  /* Asa del sheet */
+  .login__form-panel::before {
+    content: '';
+    position: absolute;
+    top: var(--spacing-sm);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: var(--rounded-full);
+    background: var(--color-hairline-strong);
   }
 
   .login__form-wrap {
     max-width: 100%;
     gap: var(--spacing-lg);
+    margin-top: var(--spacing-sm);
   }
 
   .login__title {
     font-size: clamp(1.7rem, 7vw, 2rem);
-  }
-
-  .login__theme-toggle {
-    top: max(var(--spacing-sm), var(--safe-area-top));
-    right: max(var(--spacing-sm), var(--safe-area-right));
   }
 
   /* Input ya tiene 44px — iOS no hace zoom con font-size: 16px */

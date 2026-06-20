@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
+import { motion, useReducedMotion } from 'framer-motion';
 import { MOTIVATIONAL_QUOTES, type Quote } from '@/lib/quotes';
 import './LoaderOverlay.css';
 
@@ -57,7 +56,7 @@ function RouteLoader() {
 // `mode='in'`  → partículas convergen al núcleo + anillo que se llena.
 // `mode='out'` → núcleo se dispersa + anillo que se vacía.
 // Mismo elemento, dirección invertida. Solo tokens (claro/oscuro).
-function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: boolean }) {
+export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: boolean }) {
   const filling = mode === 'in';
   return (
     <svg viewBox="0 0 200 200" className="loader-core" role="img" aria-hidden="true">
@@ -149,59 +148,21 @@ function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: boolean }) 
   );
 }
 
-// ── 3. Entrada (login): una sola escena, texto por fase ───────
-const ENTRY_PHASES = [
-  { title: 'Reclutamiento Querétaro', line: 'Cargando base de datos del personal...' },
-  { title: 'Estatus de Plantilla', line: 'Sincronizando candidatos en proceso e ingresos...' },
-  { title: 'Dashboard Activo', line: 'Indicadores clave listos para presentar...' },
-] as const;
-
-const textVariants = {
-  initial: { opacity: 0, y: 10 },
-  enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.35, ease: EASE } },
-};
-
+// ── 3. Entrada (login): una sola escena, mensaje único ────────
 function CinematicEntrance() {
-  const [phase, setPhase] = useState(0);
   const reduce = useReducedMotion() ?? false;
-
-  useEffect(() => {
-    const step = SCENE_DURATION_MS / ENTRY_PHASES.length;
-    const t1 = setTimeout(() => setPhase(1), step);
-    const t2 = setTimeout(() => setPhase(2), step * 2);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, []);
-
-  const current = ENTRY_PHASES[phase];
 
   return (
     <div className="loader-core-scene">
       <CoreGraphic mode="in" reduce={reduce} />
-      <div className="loader-text">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={phase}
-            initial="initial"
-            animate="enter"
-            exit="exit"
-            variants={textVariants}
-          >
-            <h2>{current.title}</h2>
-            <p>
-              <TypewriterTitle
-                sequences={[{ text: current.line, deleteAfter: false }]}
-                typingSpeed={15}
-                startDelay={250}
-                autoLoop={false}
-              />
-            </p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <motion.div
+        className="loader-text"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
+      >
+        <h2>Preparando tu espacio</h2>
+      </motion.div>
     </div>
   );
 }
@@ -236,14 +197,9 @@ function LogoutCinematic({ username }: { username?: string }) {
           className="loader-logout-quote"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.35 }}
         >
-          <TypewriterTitle
-            sequences={[{ text: `"${quote.text}"`, deleteAfter: false }]}
-            typingSpeed={15}
-            startDelay={500}
-            autoLoop={false}
-          />
+          "{quote.text}"
         </motion.div>
         <motion.p
           className="loader-logout-author"
