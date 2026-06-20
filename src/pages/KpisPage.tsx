@@ -4,6 +4,7 @@
   import { useMediaQuery } from '@/hooks/useMediaQuery';
   import { Eye } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
+  import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
   import { Reveal } from '@/components/ui/Reveal';
   import { staggerContainer, staggerItem } from '@/lib/motion';
   import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
@@ -647,11 +648,11 @@
                   </header>
                   <div className="projection-metrics">
                     <div className="projection-metric">
-                      <span className="projection-value text-error">{projectionTotals.vacantesPlantilla}</span>
+                      <span className="projection-value text-error"><AnimatedNumber value={projectionTotals.vacantesPlantilla} /></span>
                       <span className="projection-label">Vacantes Plantilla</span>
                     </div>
                     <div className="projection-metric">
-                      <span className="projection-value text-warning">{projectionTotals.vacantesBackup}</span>
+                      <span className="projection-value text-warning"><AnimatedNumber value={projectionTotals.vacantesBackup} /></span>
                       <span className="projection-label">Vacantes Backup</span>
                     </div>
                   </div>
@@ -664,7 +665,7 @@
                   </header>
                   <div className="projection-metrics">
                     <div className="projection-metric">
-                      <span className="projection-value text-success">+{projectionTotals.proximosIngresos}</span>
+                      <span className="projection-value text-success"><AnimatedNumber value={projectionTotals.proximosIngresos} prefix="+" /></span>
                       <span className="projection-label">Próximos Ingresos</span>
                       {projectionTotals.proximosIngresos > 0 && (
                         <span className="projection-sublabel">
@@ -682,7 +683,7 @@
                       )}
                     </div>
                     <div className="projection-metric">
-                      <span className="projection-value text-primary">{projectionTotals.coberturaProyectada}%</span>
+                      <span className="projection-value text-primary"><AnimatedNumber value={projectionTotals.coberturaProyectada} suffix="%" /></span>
                       <span className="projection-label">Avance Proyectado</span>
                     </div>
                   </div>
