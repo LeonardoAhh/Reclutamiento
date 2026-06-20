@@ -88,9 +88,50 @@
   justify-content: center;
 }
 
+/* Halo tipo "horizonte de eventos": anillo luminoso difuso detrás del núcleo.
+   Usa el mismo token del núcleo (--loader-core-color) → nada hardcodeado. */
+.login__visual-core::before {
+  content: '';
+  position: absolute;
+  width: clamp(200px, 20vw, 320px);
+  height: clamp(200px, 20vw, 320px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 39%,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 32%, transparent) 48%,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 10%, transparent) 58%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .login__visual-core .loader-core {
+  position: relative;
+  z-index: 1;
   width: clamp(170px, 17vw, 260px);
   height: clamp(170px, 17vw, 260px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .login__visual-core::before {
+    animation: hole-glow 6s ease-in-out infinite;
+  }
+}
+
+@keyframes hole-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
 }
 
 /* ── Brand pill ── */
@@ -489,6 +530,11 @@
   .login__visual-core .loader-core {
     width: clamp(132px, 38vw, 188px);
     height: clamp(132px, 38vw, 188px);
+  }
+
+  .login__visual-core::before {
+    width: clamp(160px, 46vw, 230px);
+    height: clamp(160px, 46vw, 230px);
   }
 
   .login__panel-bottom {
