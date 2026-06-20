@@ -68,14 +68,12 @@ export function Vacantes() {
     let backup = 0;
     let ocupadosAut = 0;
     let backupFilled = 0;
-    let vacantesAbiertas = 0;
     for (const p of cov) {
       autorizada += p.plantilla_autorizada;
       ocupados += p.plantilla_real;
       backup += p.backup;
       ocupadosAut += Math.min(p.plantilla_real, p.plantilla_autorizada);
       backupFilled += p.excedente_backup;
-      vacantesAbiertas += p.vacantes;
     }
     return {
       autorizada,
@@ -83,9 +81,14 @@ export function Vacantes() {
       backup,
       pctAutorizada: autorizada > 0 ? Math.round((ocupadosAut / autorizada) * 100) : 0,
       pctBackup: backup > 0 ? Math.round((backupFilled / backup) * 100) : 0,
-      vacantesAbiertas,
     };
   }, [employees, comments, positions]);
+
+  // "Vacantes abiertas": conteo de bajas sin cubrir (coincide con la lista de abajo).
+  const vacantesAbiertas = useMemo(
+    () => vacancies.filter((v) => v.status === 'abierta').length,
+    [vacancies]
+  );
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -192,7 +195,7 @@ export function Vacantes() {
         </div>
         <div className="vacantes__kpi vacantes__kpi--open" data-testid="vac-kpi-abiertas">
           <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.vacantesAbiertas} />
+            <AnimatedNumber value={vacantesAbiertas} />
           </span>
           <span className="vacantes__kpi-label">Vacantes abiertas</span>
         </div>

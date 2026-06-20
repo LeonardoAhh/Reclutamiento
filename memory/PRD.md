@@ -132,6 +132,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - **Botón "Guardar mes"**: `handleSaveToDb` existía pero **no estaba conectado a ningún botón**. Agregado botón primario en el header (`save-report-btn`, label dinámico "Guardar mes"/"Actualizar mes" según exista el mes). Tras guardar aparece en "Reportes guardados" + "Comparativa mensual".
 - Validado con el JSON real `REPORTE JUNIO.json` (720 empleados, 694 incidencias, días 01–16): parser OK (ignora fila header `mes`, mapea `área` con acento), render móvil+PC correcto, `tsc --noEmit` limpio.
 
+## KPIs Vacantes — fix de inconsistencia (jun 2026)
+- Causa: la página mezclaba dos definiciones de "vacante". El KPI "Vacantes abiertas" usaba el faltante de plantilla (`calculatePositionCoverage` → 21), distinto del conteo de la lista de bajas sin cubrir (22).
+- Decisión del usuario: "Vacantes abiertas" = conteo de la LISTA (bajas sin cubrir, `vacancies.filter(status==='abierta').length`), para que siempre cuadre con las tarjetas/tabla de abajo. "Cob. autorizada %" = Ocupados ÷ Plantilla autorizada (sin backups), ya implementado así.
+- Cambio en `src/pages/Vacantes.tsx`: nuevo `vacantesAbiertas` memo desde `vacancies`; se quitó `vacantesAbiertas` del `summary` de cobertura. Build + `tsc --noEmit` limpios.
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
