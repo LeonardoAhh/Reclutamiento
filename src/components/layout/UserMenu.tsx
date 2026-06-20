@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   LogOut,
   Map,
-  UserMinus,
   Users,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -33,7 +32,6 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/pipeline',  label: 'Candidatos', icon: Users },
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
   { to: '/vacantes',  label: 'Vacantes',   icon: Briefcase },
-  { to: '/bajas',     label: 'Bajas',      icon: UserMinus },
   { to: '/empleados', label: 'Empleados',  icon: Contact },
   { to: '/rutas',     label: 'Rutas',      icon: Map },
 ];

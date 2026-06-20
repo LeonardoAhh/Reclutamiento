@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   CalendarRange,
   Briefcase,
-  UserMinus,
   Contact,
   Map,
   LogOut,
@@ -38,7 +37,6 @@ const MENU_TABS: ReadonlyArray<TabItem> = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/bajas', label: 'Bajas', icon: UserMinus },
   { to: '/empleados', label: 'Empleados', icon: Contact },
   { to: '/rutas', label: 'Rutas', icon: Map },
 ];

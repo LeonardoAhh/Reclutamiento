@@ -20,7 +20,6 @@ const NAV_GROUPS = [
     items: [
       { to: '/pipeline',  label: 'Candidatos' },
       { to: '/vacantes',  label: 'Vacantes' },
-      { to: '/bajas',     label: 'Bajas' },
     ]
   },
   {
