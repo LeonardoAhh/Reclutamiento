@@ -1,5 +1,6 @@
 import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
 import { businessDaysBetween } from '@/lib/dates';
+import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type { Baja, Employee, VacancyRequest } from '@/lib/types';
 
 export type AutoVacancyStatus = 'cubierta' | 'abierta';
@@ -28,6 +29,14 @@ export interface AutoVacancy {
   reclutador: string | null;
   /** Días hábiles desde la baja hasta la cobertura (o hasta hoy si abierta). */
   dias: number;
+  /** Meta de cobertura en días hábiles (SLA). */
+  slaDays: number;
+  /**
+   * Cumplimiento del SLA:
+   *  - cubierta: true = se cubrió en ≤ SLA (a tiempo), false = tarde.
+   *  - abierta : true = aún dentro del SLA, false = vencida.
+   */
+  enTiempo: boolean;
 }
 
 /**
@@ -147,6 +156,9 @@ export function computeAutoVacancies(
       ? Math.max(0, businessDaysBetween(baja.fecha_baja, endArg) - 1)
       : 0;
 
+    const slaDays = DEFAULT_VACANCY_SLA_DAYS;
+    const enTiempo = dias <= slaDays;
+
     return {
       key,
       baja,
@@ -160,6 +172,8 @@ export function computeAutoVacancies(
       fechaCubierta,
       reclutador: baja.cubierta_reclutador ?? null,
       dias,
+      slaDays,
+      enTiempo,
     };
   });
 }

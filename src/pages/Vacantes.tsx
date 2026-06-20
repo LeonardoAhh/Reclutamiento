@@ -4,6 +4,8 @@ import {
   ClipboardList,
   Search,
   CheckCircle2,
+  Check,
+  AlertTriangle,
   UserPlus,
   ArrowRightLeft,
   Calendar,
@@ -246,7 +248,7 @@ export function Vacantes() {
                   <th scope="col">Estado</th>
                   <th scope="col">Cobertura</th>
                   <th scope="col">Baja</th>
-                  <th scope="col" title="Días hábiles baja → cobertura">Días</th>
+                  <th scope="col" title="Días hábiles baja → cobertura · SLA 12">Días · SLA</th>
                   <th scope="col">Reclutador</th>
                   <th scope="col" className="pipeline__th--actions">Acción</th>
                 </tr>
@@ -275,15 +277,18 @@ export function Vacantes() {
                       <div className="pipeline__area">{v.baja.nombre}</div>
                     </td>
                     <td>
-                      <span
-                        className={`vacantes__sla ${
-                          v.status === 'cubierta'
-                            ? 'vacantes__sla--done'
-                            : 'vacantes__sla--overdue'
-                        }`}
-                      >
-                        {v.dias}
-                      </span>
+                      <div className="vacantes__sla-cell">
+                        <span
+                          className={`vacantes__sla ${
+                            v.status === 'cubierta'
+                              ? 'vacantes__sla--done'
+                              : 'vacantes__sla--overdue'
+                          }`}
+                        >
+                          {v.dias}/{v.slaDays}
+                        </span>
+                        <SlaBadge v={v} />
+                      </div>
                     </td>
                     <td>
                       <CustomSelect
@@ -318,6 +323,33 @@ export function Vacantes() {
         </>
       )}
     </main>
+  );
+}
+
+/** Badge minimalista de cumplimiento de SLA (12 días hábiles). */
+function SlaBadge({ v }: { v: AutoVacancy }) {
+  const covered = v.status === 'cubierta';
+  let tone: 'ok' | 'warn' | 'bad' | 'neutral';
+  let label: string;
+  let Icon: typeof Check;
+  if (covered) {
+    tone = v.enTiempo ? 'ok' : 'warn';
+    label = v.enTiempo ? 'En tiempo' : 'Tarde';
+    Icon = v.enTiempo ? Check : AlertTriangle;
+  } else {
+    tone = v.enTiempo ? 'neutral' : 'bad';
+    label = v.enTiempo ? 'En SLA' : 'Vencida';
+    Icon = v.enTiempo ? Clock : AlertTriangle;
+  }
+  return (
+    <span
+      className={`vacantes__sla-badge vacantes__sla-badge--${tone}`}
+      title={`${v.dias} de ${v.slaDays} días hábiles`}
+      data-testid={`vac-sla-${v.key}`}
+    >
+      <Icon size={12} aria-hidden="true" />
+      {label}
+    </span>
   );
 }
 
@@ -403,6 +435,14 @@ function VacancyCard({
           />
         </div>
       </button>
+
+      {/* Fila resumen siempre visible: cumplimiento de SLA + días */}
+      <div className="vacantes__card-quick">
+        <SlaBadge v={v} />
+        <span className="vacantes__quick-days">
+          {v.dias}/{v.slaDays} días
+        </span>
+      </div>
 
       {/* Detalle inline (acordeón) */}
       <AnimatePresence initial={false}>
