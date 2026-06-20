@@ -67,8 +67,21 @@ export function canonicalizeKeyPart(text: string): string {
  * Igual que `canonicalizeKeyPart` pero además quita el sufijo de categoría
  * del puesto (A/B/C/D), p. ej. "OPERADOR DE MAQUINA D" → "OPERADOR DE MAQUINA".
  */
+/**
+ * Sinónimos de puesto: nombres distintos que representan el MISMO puesto entre
+ * Bajas y Empleados. Se aplican sobre el texto ya canonicalizado (sin espacios
+ * extra, sin acentos, sin categoría). Anclados (^…$) para no afectar variantes.
+ */
+const PUESTO_SYNONYMS: [RegExp, string][] = [
+  [/^TECNICO ESPECIALISTA DE MANTENIMIENTO$/, 'TECNICO DE MANTENIMIENTO'],
+];
+
 export function canonicalizePuesto(puesto: string): string {
-  return canonicalizeKeyPart(puesto).replace(/\s+[A-D]$/, '');
+  const base = canonicalizeKeyPart(puesto).replace(/\s+[A-D]$/, '');
+  for (const [pattern, replacement] of PUESTO_SYNONYMS) {
+    if (pattern.test(base)) return replacement;
+  }
+  return base;
 }
 
 /**
