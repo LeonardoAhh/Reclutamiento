@@ -1,8 +1,11 @@
   import { useMemo, useState } from 'react';
+  import { motion } from 'framer-motion';
   import { useAuth } from '@/hooks/useAuth';
   import { useMediaQuery } from '@/hooks/useMediaQuery';
   import { Eye } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
+  import { Reveal } from '@/components/ui/Reveal';
+  import { staggerContainer, staggerItem } from '@/lib/motion';
   import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
   import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
@@ -624,12 +627,12 @@
 
         {isDesktop ? (
           <>
-            <section className="kpis-page__chart-section">
+            <Reveal as="section" className="kpis-page__chart-section">
               <KpiHeroChart
                 data={heroChartData}
                 onClick={() => setMissingModalOpen(true)}
               />
-            </section>
+            </Reveal>
 
             <section className="kpis-page__projection-section" aria-label="Proyección Estratégica">
                <div className="kpis-page__projection-card">
@@ -764,9 +767,12 @@
               ))}
             </nav>
 
-            <section
+            <motion.section
               key={activeGroup}
               className="kpis-page__m-grid"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
               aria-label={`KPIs de ${
                 KPI_GROUPS.find((g) => g.id === activeGroup)?.label ?? activeGroup
               }`}
@@ -775,8 +781,9 @@
               {mobileCards.map((card) => {
                 const hasModal = MODAL_CARD_IDS.has(card.id);
                 return (
-                  <div
+                  <motion.div
                     key={card.id}
+                    variants={staggerItem}
                     className="kpis-page__m-card"
                     data-testid={`kpis-mobile-card-${card.id}`}
                   >
@@ -799,10 +806,10 @@
                         <Eye size={16} aria-hidden="true" />
                       </button>
                     )}
-                  </div>
+                  </motion.div>
                 );
               })}
-            </section>
+            </motion.section>
 
 
           </>

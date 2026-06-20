@@ -3,7 +3,15 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
-## 2026-06-19 (sesión 7) — Notificaciones / Toasts con `sileo`
+## 2026-06-19 (sesión 7 cont.) — "Siguiente nivel": motion + realtime
+- **Count-up KPIs (2)**: `AnimatedNumber.tsx` anima 0→valor al entrar en viewport (parsea "95%", "+3", decimales). Integrado en `StatCard` → cubre todos los KPIs. Respeta reduced-motion.
+- **Stagger reveals (3)** + **scroll-reveal (5)**: `lib/motion.ts` (variants) + `Reveal.tsx` (`Reveal`/`RevealList`/`RevealItem`, `whileInView once`). Aplicado: chart-section (scroll-reveal) y grid móvil de KPIs (stagger por tab).
+- **Modal entrance (nod a #1)**: `Modal.tsx` ahora entra con spring (overlay fade + content scale/slide). Shared-element real fila→modal queda pendiente (requiere trabajo cuidadoso por el portal).
+- **Realtime (14)**: `useCandidates` refactor → `refetch({silent})` + suscripción `postgres_changes` a `candidates`/`candidate_notes`. Refresca en vivo entre dispositivos/pestañas. REQUIERE habilitar **Realtime** en esas tablas en Supabase (Database → Replication). Si no, degrada silencioso.
+- **Accesibilidad global**: `<MotionConfig reducedMotion="user">` en `main.tsx` → todas las animaciones (nuevas y existentes) respetan la preferencia del sistema.
+- `tsc` + `npm run build` OK.
+
+
 - **Migración completa de `sonner` → `sileo`** (0 referencias a sonner en `src`, paquete desinstalado).
 - **Setup core**:
   - `src/components/ui/AppToaster.tsx`: `<Toaster position="top-center" />` con tema sincronizado al `data-theme` del documento (MutationObserver), `offset.top` con `env(safe-area-inset-top)` (mobile-first). Montado en `App.tsx` (visible también en login).

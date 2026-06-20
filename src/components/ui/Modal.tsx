@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { EASE_OUT } from '@/lib/motion';
 
 interface ModalProps {
   isOpen: boolean;
@@ -98,19 +100,25 @@ export function Modal({
     .join(' ');
 
   return createPortal(
-    <div
+    <motion.div
       className="modal-overlay"
       role="presentation"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div
+      <motion.div
         ref={contentRef}
         className={contentClasses}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledById}
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.42, ease: EASE_OUT }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <header className="modal-header">
@@ -135,8 +143,8 @@ export function Modal({
             {footerActions}
           </footer>
         )}
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }
