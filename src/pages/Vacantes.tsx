@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardList,
   Search,
@@ -7,7 +8,7 @@ import {
   ArrowRightLeft,
   Calendar,
   Clock,
-  User,
+  ChevronDown,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -20,6 +21,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { formatShortDate, localTodayIso } from '@/lib/dates';
+import { EASE_OUT } from '@/lib/motion';
 import './Pipeline.css';
 import './Vacantes.css';
 
@@ -341,7 +343,7 @@ function CoverageInfo({ v }: { v: AutoVacancy }) {
   );
 }
 
-/** Tarjeta mobile de una vacante automática. */
+/** Tarjeta mobile expandible (acordeón inline) de una vacante automática. */
 function VacancyCard({
   v,
   onReclutador,
@@ -351,90 +353,116 @@ function VacancyCard({
   onReclutador: (value: string) => void;
   onToggleManual: () => void;
 }) {
+  const [open, setOpen] = useState(false);
+
   const cardCls = [
     'vacantes__card',
     v.status === 'abierta' ? 'vacantes__card--overdue' : '',
+    open ? 'vacantes__card--open' : '',
   ]
     .filter(Boolean)
     .join(' ');
 
+  const coberturaText =
+    v.status === 'abierta'
+      ? 'Sin cubrir'
+      : v.coberturaTipo === 'manual'
+        ? `Cobertura interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+        : `${v.coveredBy?.nombre ?? ''}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`;
+
   return (
     <article className={cardCls} aria-label={`Vacante de ${v.puesto}`}>
-      <header className="vacantes__card-head">
+      {/* Cabecera: tap para expandir */}
+      <button
+        type="button"
+        className="vacantes__card-head"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        data-testid={`vac-card-toggle-${v.key}`}
+      >
         <div className="vacantes__card-title">
-          <div className="pipeline__puesto">{v.puesto}</div>
-          <div className="pipeline__area">
+          <div className="vacantes__card-puesto">{v.puesto}</div>
+          <div className="vacantes__card-sub">
             {v.area}
             {v.seccion ? ` · ${v.seccion}` : ''}
           </div>
         </div>
-        <VacancyStatusBadge status={v.status} />
-      </header>
-
-      <div className="vacantes__card-meta">
-        <div className="vacantes__card-info" title="Cobertura">
-          <UserPlus size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <span className="vacantes__card-info-text">
-            {v.status === 'abierta' ? (
-              'Sin cubrir'
-            ) : v.coberturaTipo === 'manual' ? (
-              `Interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
-            ) : (
-              `${v.coveredBy?.nombre}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
-            )}
-          </span>
-        </div>
-        <div className="vacantes__card-info" title="Baja">
-          <Calendar size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <span className="vacantes__card-info-text">
-            {v.baja.nombre} · {formatShortDate(v.fechaBaja)}
-          </span>
-        </div>
-        <div className="vacantes__card-info" title="Días hábiles">
-          <Clock size={14} className="vacantes__card-icon" aria-hidden="true" />
+        <div className="vacantes__card-head-right">
+          <VacancyStatusBadge status={v.status} />
           <span
             className={`vacantes__sla ${
               v.status === 'cubierta' ? 'vacantes__sla--done' : 'vacantes__sla--overdue'
             }`}
           >
-            {v.dias} días
+            {v.dias}d
           </span>
-        </div>
-      </div>
-
-      <footer className="vacantes__card-actions">
-        <div className="vacantes__card-status" style={{ flex: 1 }}>
-          <CustomSelect
-            id={`vac-rec-card-${v.key}`}
-            value={v.reclutador ?? ''}
-            onChange={onReclutador}
-            options={RECLUTADOR_OPTIONS}
-            aria-label={`Reclutador para ${v.puesto}`}
-            customTrigger={
-              <span className="vacantes__rec-trigger">
-                <User size={14} aria-hidden="true" />
-                {v.reclutador
-                  ? v.reclutador.charAt(0) + v.reclutador.slice(1).toLowerCase()
-                  : 'Asignar reclutador'}
-              </span>
-            }
+          <ChevronDown
+            size={18}
+            className={`vacantes__chevron${open ? ' vacantes__chevron--open' : ''}`}
+            aria-hidden="true"
           />
         </div>
-        <button
-          type="button"
-          className="pipeline__icon-btn"
-          onClick={onToggleManual}
-          title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-          aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-          data-testid={`vac-manual-card-${v.key}`}
-        >
-          {v.coberturaTipo === 'manual' ? (
-            <ArrowRightLeft size={16} aria-hidden="true" />
-          ) : (
-            <CheckCircle2 size={16} aria-hidden="true" />
-          )}
-        </button>
-      </footer>
+      </button>
+
+      {/* Detalle inline (acordeón) */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="detail"
+            className="vacantes__card-detail"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: EASE_OUT }}
+          >
+            <div className="vacantes__detail-inner">
+              <div className="vacantes__detail-row">
+                <UserPlus size={15} aria-hidden="true" />
+                <span className="vacantes__detail-label">Cobertura</span>
+                <span className="vacantes__detail-value">{coberturaText}</span>
+              </div>
+              <div className="vacantes__detail-row">
+                <Calendar size={15} aria-hidden="true" />
+                <span className="vacantes__detail-label">Baja</span>
+                <span className="vacantes__detail-value">
+                  {v.baja.nombre} · {formatShortDate(v.fechaBaja)}
+                </span>
+              </div>
+              <div className="vacantes__detail-row">
+                <Clock size={15} aria-hidden="true" />
+                <span className="vacantes__detail-label">Tiempo</span>
+                <span className="vacantes__detail-value">
+                  {v.dias} días {v.status === 'cubierta' ? 'para cubrir' : 'abierta'}
+                </span>
+              </div>
+
+              <div className="vacantes__detail-actions">
+                <CustomSelect
+                  id={`vac-rec-card-${v.key}`}
+                  value={v.reclutador ?? ''}
+                  onChange={onReclutador}
+                  options={RECLUTADOR_OPTIONS}
+                  aria-label={`Reclutador para ${v.puesto}`}
+                />
+                <button
+                  type="button"
+                  className="pipeline__icon-btn"
+                  onClick={onToggleManual}
+                  title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                  aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                  data-testid={`vac-manual-card-${v.key}`}
+                >
+                  {v.coberturaTipo === 'manual' ? (
+                    <ArrowRightLeft size={16} aria-hidden="true" />
+                  ) : (
+                    <CheckCircle2 size={16} aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </article>
   );
 }
