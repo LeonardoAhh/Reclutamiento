@@ -37,8 +37,11 @@ export interface AutoVacancy {
  * viene pegado al puesto pero en Empleados va en `categoria`.
  */
 function positionKey(x: { area: string; seccion: string; puesto: string }): string {
-  return `${canonicalizeKeyPart(x.area)}||${canonicalizeKeyPart(x.seccion)}||${canonicalizePuesto(
-    x.puesto
+  // Quitamos espacios al final del key para que "GP-12" / "GP 12" / "GP12"
+  // (y cualquier diferencia de espaciado) converjan al mismo valor.
+  const sp = (s: string) => s.replace(/\s+/g, '');
+  return `${sp(canonicalizeKeyPart(x.area))}||${sp(canonicalizeKeyPart(x.seccion))}||${sp(
+    canonicalizePuesto(x.puesto)
   )}`;
 }
 
