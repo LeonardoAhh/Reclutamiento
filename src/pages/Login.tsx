@@ -49,7 +49,7 @@ export function Login() {
     }
 
     sileo.success({ title: 'Sesión iniciada', description: 'Bienvenido de nuevo.' });
-    flash({ tone: 'full', duration: 7000 });
+    flash({ tone: 'full', duration: 4000 });
   };
 
   return (

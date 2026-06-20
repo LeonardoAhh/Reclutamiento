@@ -102,8 +102,8 @@ export function UserMenu() {
     } finally {
       setSigningOut(false);
       closeRef.current();
-      // El overlay motivacional de logout dura 7 segundos.
-      window.setTimeout(hide, 7000);
+      // El overlay cinemático de logout dura 4 segundos.
+      window.setTimeout(hide, 4000);
     }
   }, [signingOut, signOut, show, hide, username]);
 

@@ -154,6 +154,14 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Eliminada la función `splitVacanciesByPlantilla` (Modelo A, basada en bajas) de `autoVacancies.ts`, ya no aplica.
 - `tsc --noEmit` + `yarn build` limpios. Pendiente validación con datos reales (pod sin `VITE_SUPABASE_*`).
 
+## Rediseño animaciones login/logout — Idea A "Núcleo" (jun 2026)
+- Rediseño visual cohesivo (sin tocar lógica ni datos): login y logout comparten un `CoreGraphic` (núcleo + partículas + anillo de progreso). Login (`mode='in'`): partículas convergen y el anillo se llena. Logout (`mode='out'`): el núcleo se dispersa y el anillo se vacía. Misma figura, dirección invertida.
+- Color **primary** (var(--color-primary)), 100% tokens → claro/oscuro. Respeta `prefers-reduced-motion`. Mobile-first (`.loader-core` con clamp, safe-area).
+- Typewriter intacto (3 frases en login, frase motivacional en logout).
+- Tiempos a **4s ambos**: `Login.tsx` flash 4000, `UserMenu.tsx` y `BottomTabBar.tsx` setTimeout(hide, 4000). Fases de login = 4000/3 ms.
+- Archivos: `src/components/ui/LoaderOverlay.tsx` (reescrito CoreGraphic + CinematicEntrance + LogoutCinematic), `LoaderOverlay.css` (.loader-core-scene/.loader-core).
+- `tsc` + `yarn build` limpios. Validación visual pendiente en el deploy del usuario (este pod no renderiza el flujo autenticado).
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).

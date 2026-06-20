@@ -181,7 +181,7 @@ export function BottomTabBar() {
     } finally {
       setSigningOut(false);
       setSheetOpen(false);
-      window.setTimeout(hide, 7000);
+      window.setTimeout(hide, 4000);
     }
   };
 
