@@ -1,6 +1,6 @@
-import { normalizeString } from '@/lib/utils';
+import { normalizeString, normalizePuesto } from '@/lib/utils';
 import { businessDaysBetween } from '@/lib/dates';
-import type { Baja, Employee } from '@/lib/types';
+import type { Baja, Employee, VacancyRequest } from '@/lib/types';
 
 export type AutoVacancyStatus = 'cubierta' | 'abierta';
 
@@ -30,9 +30,14 @@ export interface AutoVacancy {
   dias: number;
 }
 
-/** Clave de puesto: área + sección + puesto, normalizados. */
+/**
+ * Clave de puesto: área + sección + puesto, normalizados.
+ * El puesto usa `normalizePuesto` para ignorar el sufijo de categoría
+ * (p. ej. "OPERADOR DE MÁQUINA D" == "OPERADOR DE MÁQUINA"), que en Bajas
+ * viene pegado al puesto pero en Empleados va en `categoria`.
+ */
 function positionKey(x: { area: string; seccion: string; puesto: string }): string {
-  return `${normalizeString(x.area)}||${normalizeString(x.seccion)}||${normalizeString(
+  return `${normalizeString(x.area)}||${normalizeString(x.seccion)}||${normalizePuesto(
     x.puesto
   )}`;
 }
@@ -151,4 +156,25 @@ export function computeAutoVacancies(
       dias,
     };
   });
+}
+
+/**
+ * Adapta una vacante automática a la forma `VacancyRequest` que consumen los
+ * KPIs y modales existentes (TTF, cobertura faltante). La "apertura" es la
+ * fecha de baja y la "cobertura" la fecha de ingreso del nuevo / fecha manual.
+ */
+export function autoVacancyToRequest(v: AutoVacancy): VacancyRequest {
+  return {
+    id: v.key,
+    puesto: v.puesto,
+    area: v.area,
+    seccion: v.seccion || null,
+    fecha_apertura: v.fechaBaja,
+    fecha_cubierta: v.fechaCubierta,
+    reclutador_asignado: v.reclutador,
+    status: v.status,
+    prioridad: 'media',
+    dias_sla: null,
+    excluida_indicador: false,
+  };
 }

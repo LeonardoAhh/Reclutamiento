@@ -14,9 +14,9 @@
   import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
   import { MissingPositionsModal } from '@/components/ui/MissingPositionsModal';
   import { useSupabaseData } from '@/hooks/useSupabaseData';
-  import { useVacancyRequests } from '@/hooks/useVacancyRequests';
   import { useCandidates } from '@/hooks/useCandidates';
   import { useBajas } from '@/hooks/useBajas';
+  import { computeAutoVacancies, autoVacancyToRequest } from '@/lib/autoVacancies';
   import { usePositions } from '@/lib/positions';
   import { KpiGridSkeleton } from '@/components/ui/PageSkeletons';
   import {
@@ -133,17 +133,22 @@
   export function KpisPage() {
   const { } = useAuth();
     const { employees, comments, loading: employeesLoading } = useSupabaseData();
-    const { vacancies, loading: vacanciesLoading } = useVacancyRequests();
     const { candidates, loading: candidatesLoading } = useCandidates();
     const { bajas, loading: bajasLoading } = useBajas();
     const { positions, loading: positionsLoading } = usePositions();
 
     const loading =
       employeesLoading ||
-      vacanciesLoading ||
       candidatesLoading ||
       bajasLoading ||
       positionsLoading;
+
+    // Vacantes derivadas automáticamente de bajas + empleados (mismo modelo
+    // que la página de Vacantes), adaptadas a VacancyRequest para los KPIs.
+    const vacancies = useMemo(
+      () => computeAutoVacancies(bajas, employees).map(autoVacancyToRequest),
+      [bajas, employees]
+    );
 
     const reveal = useKpiReveal();
     const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -237,7 +242,7 @@
       }
 
       const ttfPromedio = ttfCount > 0 ? Math.round(ttfSum / ttfCount) : 0;
-      return { abiertas, enSla, vencidas, ttfPromedio, excluidas };
+      return { abiertas, enSla, vencidas, ttfPromedio, excluidas, cubiertas };
     }, [vacancies]);
 
     /* ── Candidatos (5) ────────────────────────────────────────── */
@@ -470,9 +475,9 @@
         },
         {
           id: 'stat-vac-excluidas',
-          label: 'Excluidas KPI',
-          value: vacancyTotals.excluidas,
-          accentColor: 'var(--color-muted)',
+          label: 'Cubiertas',
+          value: vacancyTotals.cubiertas,
+          accentColor: 'var(--color-success)',
           origin: 'Vacantes',
         },
         {
