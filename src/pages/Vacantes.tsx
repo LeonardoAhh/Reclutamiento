@@ -15,7 +15,8 @@ import {
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { usePositions } from '@/lib/positions';
-import { computeAutoVacancies, splitVacanciesByPlantilla, type AutoVacancy } from '@/lib/autoVacancies';
+import { calculatePositionCoverage } from '@/lib/utils';
+import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
@@ -46,7 +47,7 @@ export function Vacantes() {
     marcarCubierta,
     desmarcarCubierta,
   } = useBajas();
-  const { employees, loading: empLoading } = useSupabaseData();
+  const { employees, comments, loading: empLoading } = useSupabaseData();
   const { positions, loading: positionsLoading } = usePositions();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,19 +60,38 @@ export function Vacantes() {
     [bajas, employees]
   );
 
-  // 8 KPIs: cada métrica (Vacantes, Cubiertas, Abiertas, Cobertura) dividida en
-  // AUTORIZADO vs BACKUP según la plantilla definida en código.
-  const split = useMemo(
-    () => splitVacanciesByPlantilla(vacancies, positions),
-    [vacancies, positions]
-  );
+  // 8 KPIs (Modelo B — plantilla real): cada métrica dividida en
+  // AUTORIZADO (plantilla autorizada A) vs BACKUP (buffer B definido en código).
+  // Ocupados/vacantes/cobertura se calculan por puesto contra los empleados reales.
+  const split = useMemo(() => {
+    const cov = calculatePositionCoverage(employees, comments, positions);
+    let autorizada = 0;
+    let backup = 0;
+    let ocupadosAut = 0;
+    let ocupadosBackup = 0;
+    for (const p of cov) {
+      autorizada += p.plantilla_autorizada;
+      backup += p.backup;
+      ocupadosAut += Math.min(p.plantilla_real, p.plantilla_autorizada);
+      ocupadosBackup += p.excedente_backup; // ocupados dentro de la banda backup
+    }
+    const vacAut = Math.max(0, autorizada - ocupadosAut);
+    const vacBackup = Math.max(0, backup - ocupadosBackup);
+    const pct = (c: number, t: number) => (t > 0 ? Math.round((c / t) * 100) : 0);
+    return {
+      plantilla: { autorizado: autorizada, backup },
+      ocupados: { autorizado: ocupadosAut, backup: ocupadosBackup },
+      vacantes: { autorizado: vacAut, backup: vacBackup },
+      cobertura: { autorizado: pct(ocupadosAut, autorizada), backup: pct(ocupadosBackup, backup) },
+    };
+  }, [employees, comments, positions]);
 
   const kpiRows = useMemo(
     () =>
       [
-        { id: 'vacantes', label: 'Vacantes', pair: split.vacantes },
-        { id: 'cubiertas', label: 'Cubiertas', pair: split.cubiertas, tone: 'done' as const },
-        { id: 'abiertas', label: 'Abiertas', pair: split.abiertas, tone: 'open' as const },
+        { id: 'plantilla', label: 'Plantilla', pair: split.plantilla },
+        { id: 'ocupados', label: 'Ocupados', pair: split.ocupados, tone: 'done' as const },
+        { id: 'vacantes', label: 'Vacantes', pair: split.vacantes, tone: 'open' as const },
         { id: 'cobertura', label: 'Cobertura', pair: split.cobertura, suffix: '%' },
       ] as const,
     [split]

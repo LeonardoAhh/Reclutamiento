@@ -143,6 +143,17 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - CAVEAT de datos: solo 7 entradas de la plantilla tienen `backup` (OPERADOR DE MÁQUINA ×4=5, OPERADOR DE ACABADOS GP-12 ×2=2, INSPECTOR DE CALIDAD=2). Como A es grande (22/32), "Backup" solo aparece si un puesto+sección acumula MÁS bajas que su A → en la práctica Backup puede salir 0/bajo. Si el usuario espera números de backup mayores, cambiar a la regla "opción b" (clasificar la baja como backup si al ocurrir la plantilla real ya cubría la autorizada = excedente).
 - `tsc --noEmit` + `yarn build` limpios. Pendiente: validación con datos reales (este pod no tiene `VITE_SUPABASE_*`).
 
+## KPIs Vacantes — Modelo B (plantilla real) Autorizado | Backup (jun 2026)
+- Decisión final del usuario: **Modelo B** (basado en empleados reales vs plantilla, NO en bajas). "Excedente" (lo que pasa de A+B) se ignora.
+- Grid 4 filas × 2 columnas (Autorizado | Backup) en `src/pages/Vacantes.tsx`:
+  - **Plantilla**: A = Σ`plantilla_autorizada` | B = Σ`backup` definido en `constants.ts`.
+  - **Ocupados**: Σ min(real, A) | Σ`excedente_backup` (ocupados dentro de la banda backup).
+  - **Vacantes**: max(0, A−ocupadosAut) | max(0, B−ocupadosBackup).
+  - **Cobertura %**: ocupadosAut/A | ocupadosBackup/B.
+- Reutiliza `calculatePositionCoverage(employees, comments, positions)` → mismos números que Dashboard y KpisPage (consistencia garantizada).
+- Eliminada la función `splitVacanciesByPlantilla` (Modelo A, basada en bajas) de `autoVacancies.ts`, ya no aplica.
+- `tsc --noEmit` + `yarn build` limpios. Pendiente validación con datos reales (pod sin `VITE_SUPABASE_*`).
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
