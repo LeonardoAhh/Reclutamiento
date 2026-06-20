@@ -171,6 +171,13 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - **Animación salida**: la frase motivacional se muestra **directa** (sin typewriter). `TypewriterTitle` ya no se usa en el loader.
 - `tsc` + `yarn build` limpios. Validación visual pendiente en deploy del usuario.
 
+## Login: siempre tema claro + fixes visuales (jun 2026)
+- **Login siempre claro** (sin modo oscuro): `Login.tsx` fuerza `data-theme="light"` en `<html>` mientras está montado y restaura el tema real (localStorage) al desmontar. Garantiza negro-arriba / blanco-abajo en cualquier tema.
+- **Núcleo visible en ambos temas:** `CoreGraphic` ahora usa `var(--loader-core-color, var(--color-primary))` y `var(--loader-core-track, ...)`. En `.login__panel` se setea `--loader-core-color:#fff` (blanco sobre negro). El overlay normal sigue en primary.
+- **Barra de estado:** `theme-color` forzado a `#0d0d0f` durante el login (status bar negra que coincide con el top), restaurado al salir.
+- **Sheet móvil:** esquinas superiores `2rem` (más redondeadas) y se quitó el asa/línea gris (`::before`).
+- `tsc` + `yarn build` limpios. Validación visual pendiente en deploy (pod sin `VITE_SUPABASE_*`).
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).

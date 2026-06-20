@@ -29,20 +29,32 @@ export function Login() {
   const passwordId = useId();
   const errorId = useId();
 
-  // La parte superior del login es negra (inmune al tema): forzamos el
-  // theme-color de la barra de estado a negro mientras estamos en el login,
-  // y lo restauramos al valor del tema al salir.
+  // El login SIEMPRE es claro: negro arriba, blanco abajo (sin modo oscuro).
+  // Forzamos data-theme="light" mientras el login está montado y el theme-color
+  // de la barra de estado a negro (coincide con la parte superior). Al salir,
+  // restauramos el tema real del usuario.
   useEffect(() => {
     const LOGIN_BAR = '#0d0d0f';
     const root = document.documentElement;
     const meta = document.getElementById('theme-color-meta');
-    meta?.setAttribute('content', LOGIN_BAR);
+    const prevTheme = root.getAttribute('data-theme');
+
+    root.setAttribute('data-theme', 'light');
     root.style.backgroundColor = LOGIN_BAR;
+    meta?.setAttribute('content', LOGIN_BAR);
+
     return () => {
-      const isDark = root.getAttribute('data-theme') === 'dark';
-      const restore = isDark ? '#0a0a0a' : '#ffffff';
-      meta?.setAttribute('content', restore);
-      root.style.backgroundColor = restore;
+      const stored = window.localStorage.getItem('reclutamiento_theme');
+      const theme =
+        stored === 'dark' || stored === 'light'
+          ? stored
+          : prevTheme === 'dark'
+            ? 'dark'
+            : 'light';
+      root.setAttribute('data-theme', theme);
+      const bg = theme === 'dark' ? '#0a0a0a' : '#ffffff';
+      root.style.backgroundColor = bg;
+      meta?.setAttribute('content', bg);
     };
   }, []);
 
