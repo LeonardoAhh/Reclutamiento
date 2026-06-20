@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { usePositions } from '@/lib/positions';
+import { calculatePositionCoverage } from '@/lib/utils';
 import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -45,25 +47,45 @@ export function Vacantes() {
     marcarCubierta,
     desmarcarCubierta,
   } = useBajas();
-  const { employees, loading: empLoading } = useSupabaseData();
+  const { employees, comments, loading: empLoading } = useSupabaseData();
+  const { positions, loading: positionsLoading } = usePositions();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
 
-  const loading = bajasLoading || empLoading;
+  const loading = bajasLoading || empLoading || positionsLoading;
 
   const vacancies = useMemo(
     () => computeAutoVacancies(bajas, employees),
     [bajas, employees]
   );
 
+  // KPIs de cobertura basados en PLANTILLA AUTORIZADA + BACKUPS (no en bajas).
   const summary = useMemo(() => {
-    const total = vacancies.length;
-    const cubiertas = vacancies.filter((v) => v.status === 'cubierta').length;
-    const abiertas = total - cubiertas;
-    const pct = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
-    return { total, cubiertas, abiertas, pct };
-  }, [vacancies]);
+    const cov = calculatePositionCoverage(employees, comments, positions);
+    let autorizada = 0;
+    let ocupados = 0;
+    let backup = 0;
+    let ocupadosAut = 0;
+    let backupFilled = 0;
+    let vacantesAbiertas = 0;
+    for (const p of cov) {
+      autorizada += p.plantilla_autorizada;
+      ocupados += p.plantilla_real;
+      backup += p.backup;
+      ocupadosAut += Math.min(p.plantilla_real, p.plantilla_autorizada);
+      backupFilled += p.excedente_backup;
+      vacantesAbiertas += p.vacantes;
+    }
+    return {
+      autorizada,
+      ocupados,
+      backup,
+      pctAutorizada: autorizada > 0 ? Math.round((ocupadosAut / autorizada) * 100) : 0,
+      pctBackup: backup > 0 ? Math.round((backupFilled / backup) * 100) : 0,
+      vacantesAbiertas,
+    };
+  }, [employees, comments, positions]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -136,31 +158,43 @@ export function Vacantes() {
         </div>
       </section>
 
-      {/* ── Resumen ── */}
-      <section className="vacantes__summary" aria-label="Resumen de vacantes">
-        <div className="vacantes__kpi" data-testid="vac-kpi-total">
+      {/* ── Resumen: cobertura de plantilla autorizada y backups ── */}
+      <section className="vacantes__summary" aria-label="Resumen de cobertura">
+        <div className="vacantes__kpi" data-testid="vac-kpi-autorizada">
           <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.total} />
+            <AnimatedNumber value={summary.autorizada} />
           </span>
-          <span className="vacantes__kpi-label">Vacantes</span>
+          <span className="vacantes__kpi-label">Autorizada</span>
         </div>
-        <div className="vacantes__kpi vacantes__kpi--open" data-testid="vac-kpi-open">
+        <div className="vacantes__kpi" data-testid="vac-kpi-ocupados">
           <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.abiertas} />
+            <AnimatedNumber value={summary.ocupados} />
           </span>
-          <span className="vacantes__kpi-label">Abiertas</span>
+          <span className="vacantes__kpi-label">Ocupados</span>
         </div>
-        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-covered">
+        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-cob-autorizada">
           <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.cubiertas} />
+            <AnimatedNumber value={summary.pctAutorizada} suffix="%" />
           </span>
-          <span className="vacantes__kpi-label">Cubiertas</span>
+          <span className="vacantes__kpi-label">Cob. autorizada</span>
         </div>
-        <div className="vacantes__kpi" data-testid="vac-kpi-pct">
+        <div className="vacantes__kpi" data-testid="vac-kpi-backups">
           <span className="vacantes__kpi-value">
-            <AnimatedNumber value={summary.pct} suffix="%" />
+            <AnimatedNumber value={summary.backup} />
           </span>
-          <span className="vacantes__kpi-label">Cobertura</span>
+          <span className="vacantes__kpi-label">Backups</span>
+        </div>
+        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-cob-backups">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.pctBackup} suffix="%" />
+          </span>
+          <span className="vacantes__kpi-label">Cob. backups</span>
+        </div>
+        <div className="vacantes__kpi vacantes__kpi--open" data-testid="vac-kpi-abiertas">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.vacantesAbiertas} />
+          </span>
+          <span className="vacantes__kpi-label">Vacantes abiertas</span>
         </div>
       </section>
 
