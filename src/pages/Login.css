@@ -21,15 +21,15 @@
    de wordmark + tagline (bottom).
    ================================================================ */
 .login__panel {
-  --panel-bg: #0d0d0f;
-  --panel-text: #ffffff;
-  --loader-core-color: #ffffff;
-  --loader-core-track: rgb(255 255 255 / 0.18);
-  --panel-text-soft: #ffffff;
-  --panel-hairline: rgba(247, 246, 242, 0.12);
-  --panel-brand-border: rgb(255, 255, 255);
-  --panel-rule: rgba(247, 246, 242, 0.1);
-  --panel-accent: #ffffff;
+  --panel-bg: #ffffff;
+  --panel-text: #0d0d0f;
+  --loader-core-color: #0d0d0f;
+  --loader-core-track: rgba(13, 13, 15, 0.14);
+  --panel-text-soft: rgba(13, 13, 15, 0.62);
+  --panel-hairline: rgba(13, 13, 15, 0.1);
+  --panel-brand-border: rgba(13, 13, 15, 0.7);
+  --panel-rule: rgba(13, 13, 15, 0.1);
+  --panel-accent: #0d0d0f;
 
   position: relative;
   background: var(--panel-bg);
@@ -49,15 +49,15 @@
       0deg,
       transparent,
       transparent 79px,
-      rgba(247, 246, 242, 0.04) 79px,
-      rgba(247, 246, 242, 0.04) 80px
+      rgba(13, 13, 15, 0.045) 79px,
+      rgba(13, 13, 15, 0.045) 80px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 79px,
-      rgba(247, 246, 242, 0.025) 79px,
-      rgba(247, 246, 242, 0.025) 80px
+      rgba(13, 13, 15, 0.03) 79px,
+      rgba(13, 13, 15, 0.03) 80px
     );
   pointer-events: none;
 }
@@ -88,25 +88,51 @@
   justify-content: center;
 }
 
-/* Halo tipo "horizonte de eventos": anillo luminoso difuso detrás del núcleo.
-   Usa el mismo token del núcleo (--loader-core-color) → nada hardcodeado. */
-.login__visual-core::before {
+/* Horizonte de eventos premium: halo de profundidad (::before) + disco de
+   acreción que gira en el borde (::after). Todo derivado de --loader-core-color
+   (nada hardcodeado). Centrado con inset/margin para no chocar con el transform
+   de las animaciones. */
+.login__visual-core::before,
+.login__visual-core::after {
   content: '';
   position: absolute;
-  width: clamp(200px, 20vw, 320px);
-  height: clamp(200px, 20vw, 320px);
+  inset: 0;
+  margin: auto;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    transparent 39%,
-    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 32%, transparent) 48%,
-    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 10%, transparent) 58%,
-    transparent 70%
-  );
-  filter: blur(8px);
-  opacity: 0.7;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Halo difuso de profundidad */
+.login__visual-core::before {
+  width: clamp(212px, 21vw, 340px);
+  height: clamp(212px, 21vw, 340px);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 16%, transparent) 28%,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 5%, transparent) 46%,
+    transparent 64%
+  );
+  filter: blur(14px);
+  opacity: 0.85;
+}
+
+/* Disco de acreción: arco luminoso recortado a un anillo fino que rota */
+.login__visual-core::after {
+  width: clamp(196px, 19.5vw, 300px);
+  height: clamp(196px, 19.5vw, 300px);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 4%, transparent) 80deg,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 50%, transparent) 200deg,
+    color-mix(in srgb, var(--loader-core-color, var(--color-primary)) 4%, transparent) 320deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 57%, #000 60%, #000 67%, transparent 70%);
+  mask: radial-gradient(circle, transparent 57%, #000 60%, #000 67%, transparent 70%);
+  filter: blur(1.5px);
+  opacity: 0.9;
 }
 
 .login__visual-core .loader-core {
@@ -120,17 +146,24 @@
   .login__visual-core::before {
     animation: hole-glow 6s ease-in-out infinite;
   }
+  .login__visual-core::after {
+    animation: hole-spin 9s linear infinite;
+  }
 }
 
 @keyframes hole-glow {
   0%,
   100% {
-    opacity: 0.5;
-    transform: scale(1);
+    opacity: 0.6;
   }
   50% {
-    opacity: 0.85;
-    transform: scale(1.06);
+    opacity: 0.95;
+  }
+}
+
+@keyframes hole-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -227,13 +260,106 @@
    PANEL DERECHO — formulario
    ================================================================ */
 .login__form-panel {
+  /* Panel negro: invertimos los tokens del form para texto claro sobre negro */
+  --color-canvas: #0d0d0f;
+  --color-ink: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.62);
+  --color-muted-soft: rgba(255, 255, 255, 0.4);
+  --color-charcoal: rgba(255, 255, 255, 0.5);
+  --color-hairline: rgba(255, 255, 255, 0.12);
+  --color-hairline-strong: rgba(255, 255, 255, 0.26);
+  --color-hairline-soft: rgba(255, 255, 255, 0.08);
+  --color-surface-soft: rgba(255, 255, 255, 0.06);
+  --color-primary: #ffffff;
+  --color-primary-active: rgba(255, 255, 255, 0.86);
+  --color-primary-disabled: rgba(255, 255, 255, 0.3);
+  --color-on-primary: #0d0d0f;
+  --color-muted-foreground: rgba(255, 255, 255, 0.62);
+  --shadow-focus: 0 0 0 3px rgba(255, 255, 255, 0.22);
+
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xxl) var(--spacing-xl);
   background: var(--color-canvas);
-  /* Sin padding-top extra — el flex center ya alinea al medio */
+}
+
+/* ── Toques premium del panel/sheet del form (negro) ───────────────────── */
+/* Borde superior iluminado (resalta en el sheet móvil) */
+.login__form-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.38),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glow de profundidad detrás del encabezado */
+.login__form-panel::after {
+  content: '';
+  position: absolute;
+  top: -8%;
+  left: 50%;
+  width: 85%;
+  height: 260px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at top,
+    rgba(255, 255, 255, 0.07),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login__form-panel .login__form-wrap {
+  position: relative;
+  z-index: 2;
+}
+
+/* Eyebrow editorial */
+.login__eyebrow-form {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Inputs como tarjetas sutiles sobre negro + focus glow */
+.login__form-panel .login__input {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.login__form-panel .login__input:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.login__form-panel .login__input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+/* Submit premium: pastilla blanca con profundidad */
+.login__form-panel .login__submit {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.login__form-panel .login__submit:hover:not(:disabled) {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 .login__theme-toggle {

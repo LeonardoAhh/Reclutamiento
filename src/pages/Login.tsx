@@ -34,7 +34,7 @@ export function Login() {
   // de la barra de estado a negro (coincide con la parte superior). Al salir,
   // restauramos el tema real del usuario.
   useEffect(() => {
-    const LOGIN_BAR = '#0d0d0f';
+    const LOGIN_BAR = '#ffffff';
     const root = document.documentElement;
     const meta = document.getElementById('theme-color-meta');
     const prevTheme = root.getAttribute('data-theme');
@@ -143,6 +143,9 @@ export function Login() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
         >
           <header className="login__header">
+            <motion.span className="login__eyebrow-form" {...fadeUp(0.2)}>
+              Acceso seguro
+            </motion.span>
             <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
               Bienvenido de nuevo
             </motion.h2>
