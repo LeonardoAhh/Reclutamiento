@@ -61,6 +61,37 @@ export function BottomTabBar() {
   const [signingOut, setSigningOut] = useState(false);
   const [showReporteBadge, setShowReporteBadge] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+
+  /* ── Anti-salto en scroll (iOS Safari) ───────────────────────────────
+     La barra del navegador se colapsa/expande al hacer scroll y cambia
+     `env(safe-area-inset-bottom)`, lo que hace "saltar" la navbar fija.
+     Con la VisualViewport API la pegamos al fondo VISIBLE real, así no se
+     mueve de lugar. En la PWA instalada el gap es 0 (no hace nada). */
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const nav = navRef.current;
+    if (!vv || !nav) return;
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const gap = Math.max(
+          0,
+          document.documentElement.clientHeight - vv.height - vv.offsetTop
+        );
+        nav.style.transform = gap > 0.5 ? `translateY(${-gap}px)` : '';
+      });
+    };
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      cancelAnimationFrame(raf);
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
 
   const isPath = (to: string) =>
     location.pathname === to || location.pathname.startsWith(`${to}/`);
@@ -160,7 +191,7 @@ export function BottomTabBar() {
 
   return (
     <>
-      <nav className="bottom-nav" aria-label="Navegación inferior">
+      <nav className="bottom-nav" aria-label="Navegación inferior" ref={navRef}>
         <div className="bottom-nav__group">
           <div className="bottom-nav__bar">
             {PRIMARY_TABS.map(({ to, label, icon: Icon, end }) => (

@@ -56,6 +56,8 @@ export interface Baja {
   cubierta_fecha?: string | null;
   /** Nota libre: “promovido X”, “transferido de Almacén”, etc. */
   cubierta_nota?: string | null;
+  /** Reclutador que cubrió la vacante derivada de esta baja (lo asigna el usuario). */
+  cubierta_reclutador?: string | null;
 }
 
 /** Forma cruda del JSON de bajas (claves con espacios al final permitidas). */

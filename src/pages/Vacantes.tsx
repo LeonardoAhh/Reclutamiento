@@ -1,230 +1,121 @@
 import { useMemo, useState } from 'react';
 import {
   ClipboardList,
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  Pencil,
-  Trash2,
   Search,
-  SlidersHorizontal,
-  EyeOff,
-  Plus,
-  User,
-  Share2,
+  CheckCircle2,
+  UserPlus,
+  ArrowRightLeft,
   Calendar,
   Clock,
+  User,
 } from 'lucide-react';
-import { VacancyModal } from '@/components/ui/VacancyModal';
-import { notifyResult } from '@/lib/notify';
+import { useBajas } from '@/hooks/useBajas';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
+import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
-import {
-  VacancyStatusBadge,
-  VacancyPriorityBadge,
-} from '@/components/ui/VacancyStatusBadge';
+import { VacancyStatusBadge } from '@/components/ui/VacancyStatusBadge';
 import { CustomSelect } from '@/components/ui/CustomSelect';
-import {
-  VacancyFilters,
-  EMPTY_VACANCY_FILTERS,
-  type VacancyFilterState,
-} from '@/components/vacancies/VacancyFilters';
-import { useVacancyRequests } from '@/hooks/useVacancyRequests';
-import {
-  VACANCY_STATUSES,
-  VACANCY_STATUS_LABEL,
-  DEFAULT_VACANCY_SLA_DAYS,
-} from '@/lib/types';
-import type { VacancyRequest, VacancyStatus } from '@/lib/types';
-import {
-  formatShortDate,
-  businessDaysBetween,
-  startOfDayMxMs,
-  endOfDayMxMs,
-} from '@/lib/dates';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
+import { formatShortDate, localTodayIso } from '@/lib/dates';
 import './Pipeline.css';
 import './Vacantes.css';
 
-const FILTERS_STORAGE_KEY = 'vacantes_filters_v1';
+type StatusFilter = 'todas' | 'abierta' | 'cubierta';
 
-type SheetMode = 'add' | 'edit' | 'delete' | null;
-
-interface VacancyMetrics {
-  diasAbierta: number;
-  sla: number;
-  vencida: boolean;
-  /** Una vacante "cuenta" si NO está excluida del indicador. */
-  cuentaEnKpi: boolean;
-}
-
-function computeMetrics(v: VacancyRequest): VacancyMetrics {
-  const sla = typeof v.dias_sla === 'number' ? v.dias_sla : DEFAULT_VACANCY_SLA_DAYS;
-  const end =
-    v.status === 'cubierta' && v.fecha_cubierta ? v.fecha_cubierta : new Date();
-  const diasAbierta = v.fecha_apertura ? businessDaysBetween(v.fecha_apertura, end) : 0;
-  const vencida =
-    v.status !== 'cubierta' &&
-    v.status !== 'cancelada' &&
-    diasAbierta > sla;
-  return {
-    diasAbierta,
-    sla,
-    vencida,
-    cuentaEnKpi: !v.excluida_indicador,
-  };
-}
+const RECLUTADOR_OPTIONS = [
+  { value: '', label: 'Sin asignar' },
+  ...RECLUTADORES_ACTIVOS.map((r) => ({
+    value: r,
+    label: r.charAt(0) + r.slice(1).toLowerCase(),
+  })),
+];
 
 export function Vacantes() {
   const {
-    vacancies,
-    loading,
-    addVacancy,
-    updateVacancy,
-    setVacancyStatus,
-    deleteVacancy,
-    getHistoryFor,
-  } = useVacancyRequests();
+    bajas,
+    loading: bajasLoading,
+    setBajaReclutador,
+    marcarCubierta,
+    desmarcarCubierta,
+  } = useBajas();
+  const { employees, loading: empLoading } = useSupabaseData();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sheetMode, setSheetMode] = useState<SheetMode>(null);
-  const [selected, setSelected] = useState<VacancyRequest | null>(null);
-  const [filters, setFilters] = useState<VacancyFilterState>(() => {
-    try {
-      const stored = localStorage.getItem(FILTERS_STORAGE_KEY);
-      if (!stored) return EMPTY_VACANCY_FILTERS;
-      return {
-        ...EMPTY_VACANCY_FILTERS,
-        ...(JSON.parse(stored) as Partial<VacancyFilterState>),
-      };
-    } catch {
-      return EMPTY_VACANCY_FILTERS;
-    }
-  });
-  const [showFilters, setShowFilters] = useState(() =>
-    Object.values(filters).some((v) => v !== '')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
+
+  const loading = bajasLoading || empLoading;
+
+  const vacancies = useMemo(
+    () => computeAutoVacancies(bajas, employees),
+    [bajas, employees]
   );
 
-  function changeFilters(next: VacancyFilterState) {
-    setFilters(next);
-    try {
-      localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(next));
-    } catch {
-      // ignore
-    }
-  }
-
-  function resetFilters() {
-    changeFilters(EMPTY_VACANCY_FILTERS);
-  }
-
-  const activeFiltersCount = (
-    Object.keys(filters) as Array<keyof VacancyFilterState>
-  ).filter((k) => filters[k] !== '').length;
-
-  /** Vacantes con sus métricas precalculadas, para no recalcular en cada render. */
-  const enriched = useMemo(
-    () => vacancies.map((v) => ({ vacancy: v, metrics: computeMetrics(v) })),
-    [vacancies]
-  );
+  const summary = useMemo(() => {
+    const total = vacancies.length;
+    const cubiertas = vacancies.filter((v) => v.status === 'cubierta').length;
+    const abiertas = total - cubiertas;
+    const pct = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
+    return { total, cubiertas, abiertas, pct };
+  }, [vacancies]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    // Filtros de rango anclados a TZ MX para evitar desfases del visor.
-    const desde = startOfDayMxMs(filters.fechaDesde);
-    const hasta = endOfDayMxMs(filters.fechaHasta);
-
-    return enriched.filter(({ vacancy: v }) => {
-      if (filters.area && v.area !== filters.area) return false;
-      if (filters.puesto && v.puesto !== filters.puesto) return false;
-      if (filters.status && v.status !== filters.status) return false;
-      if (filters.prioridad && v.prioridad !== filters.prioridad) return false;
-      if (filters.reclutador && (v.reclutador_asignado ?? '') !== filters.reclutador)
-        return false;
-
-      if (desde || hasta) {
-        const ts = v.fecha_apertura ? new Date(v.fecha_apertura).getTime() : NaN;
-        if (Number.isNaN(ts)) return false;
-        if (desde && ts < desde) return false;
-        if (hasta && ts > hasta) return false;
-      }
-
-      if (q) {
+    return vacancies
+      .filter((v) => statusFilter === 'todas' || v.status === statusFilter)
+      .filter((v) => {
+        if (!q) return true;
         const haystack = [
           v.puesto,
           v.area,
           v.seccion,
-          v.reclutador_asignado,
-          v.fuente_planeada,
-          v.justificacion,
-          v.motivo_exclusion,
+          v.baja.nombre,
+          v.coveredBy?.nombre,
+          v.reclutador,
         ]
           .filter(Boolean)
           .join(' ')
           .toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
+        return haystack.includes(q);
+      })
+      // Abiertas primero, luego por días desc (las más urgentes arriba).
+      .sort((a, b) => {
+        if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
+        return b.dias - a.dias;
+      });
+  }, [vacancies, searchTerm, statusFilter]);
 
-      return true;
-    });
-  }, [enriched, searchTerm, filters]);
-
-  function openAdd() {
-    setSelected(null);
-    setSheetMode('add');
-  }
-
-  function openEdit(v: VacancyRequest) {
-    setSelected(v);
-    setSheetMode('edit');
-  }
-
-  function openDelete(v: VacancyRequest) {
-    setSelected(v);
-    setSheetMode('delete');
-  }
-
-  function closeSheet() {
-    setSheetMode(null);
-    setSelected(null);
-  }
-
-  async function handleSave(
-    payload: Omit<VacancyRequest, 'id' | 'created_at' | 'updated_at'>,
-    id?: string
-  ) {
-    return notifyResult(id ? updateVacancy(id, payload) : addVacancy(payload), {
-      success: id ? 'Vacante actualizada' : 'Vacante creada',
-      error: id ? 'No se pudo actualizar la vacante' : 'No se pudo crear la vacante',
+  async function handleReclutador(v: AutoVacancy, value: string) {
+    await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
+      success: value ? `Reclutador: ${value}` : 'Reclutador quitado',
+      error: 'No se pudo guardar el reclutador',
     });
   }
 
-  async function handleStatusChange(v: VacancyRequest, status: VacancyStatus) {
-    if (!v.id || v.status === status) return;
-    await notifyResult(setVacancyStatus(v.id, status), {
-      success: 'Estado de vacante actualizado',
-      error: 'No se pudo cambiar el estado',
-    });
+  async function handleToggleManual(v: AutoVacancy) {
+    if (v.coberturaTipo === 'manual') {
+      const res = await desmarcarCubierta(v.baja.num_empleado);
+      if (res.ok) sileo.info({ title: 'Vacante reabierta' });
+      else sileo.error({ title: 'No se pudo reabrir' });
+    } else {
+      const res = await marcarCubierta(v.baja.num_empleado, localTodayIso());
+      if (res.ok) sileo.success({ title: 'Cubierta a mano' });
+      else sileo.error({ title: 'No se pudo marcar' });
+    }
   }
 
   if (loading) {
     return (
       <main className="pipeline container">
         <section className="pipeline__hero">
-          <div>
-            <h1>Vacancies</h1>
-          </div>
+          <h1>Vacantes</h1>
         </section>
         <section className="pipeline__controls">
-          <Skeleton
-            height={40}
-            radius="var(--rounded-md)"
-            style={{ flex: '1 1 260px' }}
-          />
+          <Skeleton height={40} radius="var(--rounded-md)" style={{ flex: '1 1 260px' }} />
         </section>
-        <SkeletonTable
-          rows={8}
-          columns={['28%', '22%', '20%', '16%', '14%']}
-        />
+        <SkeletonTable rows={8} columns={['30%', '16%', '24%', '16%', '14%']} />
       </main>
     );
   }
@@ -234,73 +125,86 @@ export function Vacantes() {
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
-          <h1>Vacancies</h1>
-        </div>
-        <div className="pipeline__hero-actions">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={openAdd}
-            aria-label="Nueva vacante"
-            title="Nueva vacante"
-          >
-            <Plus size={16} aria-hidden="true" />
-          </button>
+          <h1>Vacantes</h1>
+          <p className="vacantes__lead">
+            Automáticas desde Bajas · cobertura detectada por ingresos
+          </p>
         </div>
       </section>
 
-      {/* ── Search ── */}
+      {/* ── Resumen ── */}
+      <section className="vacantes__summary" aria-label="Resumen de vacantes">
+        <div className="vacantes__kpi" data-testid="vac-kpi-total">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.total} />
+          </span>
+          <span className="vacantes__kpi-label">Vacantes</span>
+        </div>
+        <div className="vacantes__kpi vacantes__kpi--open" data-testid="vac-kpi-open">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.abiertas} />
+          </span>
+          <span className="vacantes__kpi-label">Abiertas</span>
+        </div>
+        <div className="vacantes__kpi vacantes__kpi--done" data-testid="vac-kpi-covered">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.cubiertas} />
+          </span>
+          <span className="vacantes__kpi-label">Cubiertas</span>
+        </div>
+        <div className="vacantes__kpi" data-testid="vac-kpi-pct">
+          <span className="vacantes__kpi-value">
+            <AnimatedNumber value={summary.pct} suffix="%" />
+          </span>
+          <span className="vacantes__kpi-label">Cobertura</span>
+        </div>
+      </section>
+
+      {/* ── Controles ── */}
       <section className="pipeline__controls">
         <div className="pipeline__search">
           <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
           <label htmlFor="vac-search" className="sr-only">
-            Search vacancy
+            Buscar vacante
           </label>
           <input
             id="vac-search"
             type="text"
-            placeholder="Search by position, department, recruiter, source, reason…"
+            placeholder="Buscar por puesto, área, persona, reclutador…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pipeline__search-input"
             autoComplete="off"
+            data-testid="vac-search-input"
           />
         </div>
         <span className="pipeline__count">
           {filtered.length} de {vacancies.length}
         </span>
-        <button
-          type="button"
-          className={`btn-secondary pipeline__filter-btn${showFilters ? ' pipeline__filter-btn--active' : ''}`}
-          onClick={() => setShowFilters((v) => !v)}
-          aria-expanded={showFilters}
-          aria-controls="vac-filters"
-          title="Advanced filters"
-        >
-          <SlidersHorizontal size={16} aria-hidden="true" />
-          {activeFiltersCount > 0 && (
-            <span
-              className="pipeline__filter-pill"
-              aria-label={`${activeFiltersCount} activos`}
-            >
-              {activeFiltersCount}
-            </span>
-          )}
-        </button>
       </section>
 
-      {showFilters && (
-        <section id="vac-filters" aria-label="Filtros de vacantes">
-          <VacancyFilters
-            vacancies={vacancies}
-            value={filters}
-            onChange={changeFilters}
-            onReset={resetFilters}
-          />
-        </section>
-      )}
+      {/* Segmento de status */}
+      <div className="vacantes__segment" role="tablist" aria-label="Filtrar por estado">
+        {([
+          { id: 'todas', label: 'Todas' },
+          { id: 'abierta', label: 'Abiertas' },
+          { id: 'cubierta', label: 'Cubiertas' },
+        ] as const).map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            role="tab"
+            aria-selected={statusFilter === s.id}
+            className={`vacantes__segment-btn${statusFilter === s.id ? ' vacantes__segment-btn--active' : ''}`}
+            onClick={() => setStatusFilter(s.id)}
+            data-testid={`vac-filter-${s.id}`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
 
-      {/* ── Lista de vacantes (mobile-first cards / desktop table) ── */}
+      {/* ── Lista ── */}
       {filtered.length === 0 ? (
         <section className="pipeline__empty">
           <div className="pipeline__empty-icon" aria-hidden="true">
@@ -308,245 +212,148 @@ export function Vacantes() {
           </div>
           <h2 className="pipeline__empty-title">
             {vacancies.length === 0
-              ? 'Aún no hay vacantes registradas'
-              : 'No hay vacantes que coincidan con la búsqueda'}
+              ? 'No hay bajas registradas todavía'
+              : 'Sin vacantes que coincidan'}
           </h2>
           <p className="pipeline__empty-lead">
             {vacancies.length === 0
-              ? 'Registra la primera solicitud de cobertura para empezar a medir el SLA.'
-              : 'Prueba cambiando los filtros o el texto de búsqueda.'}
+              ? 'Importa las bajas para generar las vacantes automáticamente.'
+              : 'Prueba con otro filtro o término de búsqueda.'}
           </p>
-          <div className="pipeline__empty-actions">
-            <button type="button" className="btn-primary" onClick={openAdd} title="Nueva vacante">
-              <Plus size={16} aria-hidden="true" />
-            </button>
-          </div>
         </section>
       ) : (
         <>
-          {/* Mobile: tarjetas verticales. */}
-          <section
-            className="vacantes__cards"
-            aria-label="Lista de vacantes"
-          >
-            {filtered.map(({ vacancy: v, metrics: m }) => (
+          {/* Mobile: tarjetas */}
+          <section className="vacantes__cards" aria-label="Lista de vacantes">
+            {filtered.map((v) => (
               <VacancyCard
-                key={v.id ?? `${v.puesto}-${v.fecha_apertura}`}
-                vacancy={v}
-                metrics={m}
-                onEdit={() => openEdit(v)}
-                onDelete={() => openDelete(v)}
-                onStatusChange={(status) => handleStatusChange(v, status)}
+                key={v.key}
+                v={v}
+                onReclutador={(val) => handleReclutador(v, val)}
+                onToggleManual={() => handleToggleManual(v)}
               />
             ))}
           </section>
 
-          {/* Desktop: tabla densa. */}
-          <section
-            className="pipeline__table-wrap vacantes__table"
-            aria-label="Tabla de vacantes"
-          >
+          {/* Desktop: tabla */}
+          <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
             <table className="pipeline__table">
               <thead>
                 <tr>
                   <th scope="col">Puesto · Área</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Prior.</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Cobertura</th>
+                  <th scope="col">Baja</th>
+                  <th scope="col" title="Días hábiles baja → cobertura">Días</th>
                   <th scope="col">Reclutador</th>
-                  <th scope="col">Fuente</th>
-                  <th scope="col">Apertura</th>
-                  <th scope="col" title="Días hábiles (lun-vie, sin festivos)">Tiempo</th>
-                  <th scope="col" className="pipeline__th--actions">
-                    Acciones
-                  </th>
+                  <th scope="col" className="pipeline__th--actions">Acción</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(({ vacancy: v, metrics: m }) => {
-                  const excluded = !!v.excluida_indicador;
-                  const rowCls = [
-                    excluded ? 'vacantes__row--excluded' : '',
-                    m.vencida && !excluded ? 'vacantes__row--overdue' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ');
-                  return (
-                    <tr key={v.id ?? `${v.puesto}-${v.fecha_apertura}`} className={rowCls}>
-                      <td>
-                        <div className="pipeline__puesto">{v.puesto}</div>
-                        <div className="pipeline__area">
-                          {v.area}
-                          {v.seccion ? ` · ${v.seccion}` : ''}
-                        </div>
-                        {excluded && (
-                          <div
-                            className="vacantes__excluded-tag"
-                            title={v.motivo_exclusion ?? ''}
-                          >
-                            <EyeOff size={11} aria-hidden="true" />
-                            Excluida: {v.motivo_exclusion || 'sin motivo'}
-                          </div>
+                {filtered.map((v) => (
+                  <tr
+                    key={v.key}
+                    className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}
+                  >
+                    <td>
+                      <div className="pipeline__puesto">{v.puesto}</div>
+                      <div className="pipeline__area">
+                        {v.area}
+                        {v.seccion ? ` · ${v.seccion}` : ''}
+                      </div>
+                    </td>
+                    <td>
+                      <VacancyStatusBadge status={v.status} />
+                    </td>
+                    <td>
+                      <CoverageInfo v={v} />
+                    </td>
+                    <td>
+                      <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
+                      <div className="pipeline__area">{v.baja.nombre}</div>
+                    </td>
+                    <td>
+                      <span
+                        className={`vacantes__sla ${
+                          v.status === 'cubierta'
+                            ? 'vacantes__sla--done'
+                            : 'vacantes__sla--overdue'
+                        }`}
+                      >
+                        {v.dias}
+                      </span>
+                    </td>
+                    <td>
+                      <CustomSelect
+                        id={`vac-rec-${v.key}`}
+                        value={v.reclutador ?? ''}
+                        onChange={(val) => handleReclutador(v, val)}
+                        options={RECLUTADOR_OPTIONS}
+                        aria-label={`Reclutador para ${v.puesto}`}
+                      />
+                    </td>
+                    <td className="pipeline__cell-actions">
+                      <button
+                        type="button"
+                        className="pipeline__icon-btn"
+                        onClick={() => handleToggleManual(v)}
+                        title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano (interna)'}
+                        aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                        data-testid={`vac-manual-${v.key}`}
+                      >
+                        {v.coberturaTipo === 'manual' ? (
+                          <ArrowRightLeft size={16} aria-hidden="true" />
+                        ) : (
+                          <CheckCircle2 size={16} aria-hidden="true" />
                         )}
-                      </td>
-                      <td className="pipeline__cell-status">
-                        <VacancyStatusBadge status={v.status} />
-                        <label className="sr-only" htmlFor={`vstatus-${v.id}`}>
-                          Cambiar status de la vacante de {v.puesto}
-                        </label>
-                        <select
-                          id={`vstatus-${v.id}`}
-                          className="pipeline__status-select"
-                          value={v.status}
-                          onChange={(e) =>
-                            handleStatusChange(v, e.target.value as VacancyStatus)
-                          }
-                          aria-label={`Cambiar status de la vacante de ${v.puesto}`}
-                        >
-                          {VACANCY_STATUSES.map((s) => (
-                            <option key={s} value={s}>
-                              {VACANCY_STATUS_LABEL[s]}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <VacancyPriorityBadge priority={v.prioridad} />
-                      </td>
-                      <td>{v.reclutador_asignado || '—'}</td>
-                      <td>{v.fuente_planeada || '—'}</td>
-                      <td>{formatShortDate(v.fecha_apertura)}</td>
-                      <td>
-                        <SlaCell
-                          metrics={m}
-                          status={v.status}
-                          excluded={excluded}
-                        />
-                      </td>
-                      <td className="pipeline__cell-actions">
-                        <button
-                          type="button"
-                          className="pipeline__icon-btn"
-                          onClick={() => openEdit(v)}
-                          aria-label={`Editar vacante de ${v.puesto}`}
-                          title="Editar"
-                        >
-                          <Pencil size={16} aria-hidden="true" />
-                        </button>
-                        <button
-                          type="button"
-                          className="pipeline__icon-btn pipeline__icon-btn--danger"
-                          onClick={() => openDelete(v)}
-                          aria-label={`Eliminar vacante de ${v.puesto}`}
-                          title="Eliminar"
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </section>
         </>
       )}
-
-      {/* ── Modal add/edit/delete ── */}
-      <VacancyModal
-        isOpen={sheetMode !== null}
-        mode={sheetMode === 'edit' ? 'edit' : sheetMode === 'delete' ? 'delete' : 'add'}
-        vacancy={selected}
-        history={selected?.id ? getHistoryFor(selected.id) : undefined}
-        onClose={closeSheet}
-        onSave={handleSave}
-        onDelete={deleteVacancy}
-      />
     </main>
   );
 }
 
-/**
- * Pequeño componente para la celda de SLA: muestra `dias/sla` con código de color.
- * - Excluida: gris, texto tachado.
- * - Cubierta: verde con check.
- * - Cancelada: gris con dash.
- * - Vencida: rojo.
- * - Cerca del límite (≤2 días restantes): ámbar.
- * - OK: por defecto.
- */
-function SlaCell({
-  metrics,
-  status,
-  excluded,
-}: {
-  metrics: VacancyMetrics;
-  status: VacancyStatus;
-  excluded: boolean;
-}) {
-  if (excluded) {
+/** Texto de cobertura: quién la cubrió y cómo. */
+function CoverageInfo({ v }: { v: AutoVacancy }) {
+  if (v.status === 'abierta') {
+    return <span className="vacantes__cover vacantes__cover--pending">Pendiente</span>;
+  }
+  if (v.coberturaTipo === 'manual') {
     return (
-      <span className="vacantes__sla vacantes__sla--excluded" title="Excluida del indicador (días hábiles)">
-        {metrics.diasAbierta}/{metrics.sla}
+      <span className="vacantes__cover" title={v.baja.cubierta_nota ?? 'Cobertura interna'}>
+        <ArrowRightLeft size={13} aria-hidden="true" />
+        Interna{v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
       </span>
     );
   }
-  if (status === 'cubierta') {
-    return (
-      <span className="vacantes__sla vacantes__sla--done" title="Vacante cubierta (días hábiles)">
-        <CheckCircle2 size={12} aria-hidden="true" />
-        {metrics.diasAbierta}/{metrics.sla}
-      </span>
-    );
-  }
-  if (status === 'cancelada') {
-    return <span className="vacantes__sla vacantes__sla--cancel">—</span>;
-  }
-  if (metrics.vencida) {
-    return (
-      <span className="vacantes__sla vacantes__sla--overdue" title="SLA vencido (días hábiles)">
-        <AlertTriangle size={12} aria-hidden="true" />
-        {metrics.diasAbierta}/{metrics.sla}
-      </span>
-    );
-  }
-  const remaining = metrics.sla - metrics.diasAbierta;
-  const cls =
-    remaining <= 2
-      ? 'vacantes__sla vacantes__sla--warning'
-      : 'vacantes__sla vacantes__sla--ok';
   return (
-    <span className={cls} title={`${remaining} día(s) hábil(es) restante(s)`}>
-      <Activity size={12} aria-hidden="true" />
-      {metrics.diasAbierta}/{metrics.sla}
+    <span className="vacantes__cover" title={`Ingreso: ${v.coveredBy?.fecha_ingreso ?? ''}`}>
+      <UserPlus size={13} aria-hidden="true" />
+      {v.coveredBy?.nombre}
+      {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
     </span>
   );
 }
 
-/**
- * Tarjeta de vacante para vista mobile. Renderiza la misma información que
- * una fila de la tabla pero apilada verticalmente, con áreas de toque amplias
- * para edit/delete y un select-overlay sobre el badge de status para cambio
- * inline. Visible sólo por debajo del breakpoint de tabla (ver Vacantes.css).
- */
+/** Tarjeta mobile de una vacante automática. */
 function VacancyCard({
-  vacancy: v,
-  metrics: m,
-  onEdit,
-  onDelete,
-  onStatusChange,
+  v,
+  onReclutador,
+  onToggleManual,
 }: {
-  vacancy: VacancyRequest;
-  metrics: VacancyMetrics;
-  onEdit: () => void;
-  onDelete: () => void;
-  onStatusChange: (status: VacancyStatus) => void;
+  v: AutoVacancy;
+  onReclutador: (value: string) => void;
+  onToggleManual: () => void;
 }) {
-  const excluded = !!v.excluida_indicador;
-  const overdue = m.vencida && !excluded;
   const cardCls = [
     'vacantes__card',
-    excluded ? 'vacantes__card--excluded' : '',
-    overdue ? 'vacantes__card--overdue' : '',
+    v.status === 'abierta' ? 'vacantes__card--overdue' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -560,69 +367,73 @@ function VacancyCard({
             {v.area}
             {v.seccion ? ` · ${v.seccion}` : ''}
           </div>
-          {excluded && (
-            <div
-              className="vacantes__excluded-tag"
-              title={v.motivo_exclusion ?? ''}
-            >
-              <EyeOff size={11} aria-hidden="true" />
-              Excluida: {v.motivo_exclusion || 'sin motivo'}
-            </div>
-          )}
         </div>
-        <VacancyPriorityBadge priority={v.prioridad} />
+        <VacancyStatusBadge status={v.status} />
       </header>
 
       <div className="vacantes__card-meta">
-        <div className="vacantes__card-info" title="Reclutador asignado">
-          <User size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <span className="vacantes__card-info-text">{v.reclutador_asignado || 'Sin reclutador'}</span>
+        <div className="vacantes__card-info" title="Cobertura">
+          <UserPlus size={14} className="vacantes__card-icon" aria-hidden="true" />
+          <span className="vacantes__card-info-text">
+            {v.status === 'abierta' ? (
+              'Sin cubrir'
+            ) : v.coberturaTipo === 'manual' ? (
+              `Interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+            ) : (
+              `${v.coveredBy?.nombre}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+            )}
+          </span>
         </div>
-        <div className="vacantes__card-info" title="Fuente planeada">
-          <Share2 size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <span className="vacantes__card-info-text">{v.fuente_planeada || 'Sin fuente'}</span>
-        </div>
-        <div className="vacantes__card-info" title="Fecha de apertura">
+        <div className="vacantes__card-info" title="Baja">
           <Calendar size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <span className="vacantes__card-info-text">{formatShortDate(v.fecha_apertura)}</span>
+          <span className="vacantes__card-info-text">
+            {v.baja.nombre} · {formatShortDate(v.fechaBaja)}
+          </span>
         </div>
-        <div className="vacantes__card-info" title="Tiempo (SLA)">
+        <div className="vacantes__card-info" title="Días hábiles">
           <Clock size={14} className="vacantes__card-icon" aria-hidden="true" />
-          <SlaCell metrics={m} status={v.status} excluded={excluded} />
+          <span
+            className={`vacantes__sla ${
+              v.status === 'cubierta' ? 'vacantes__sla--done' : 'vacantes__sla--overdue'
+            }`}
+          >
+            {v.dias} días
+          </span>
         </div>
       </div>
 
       <footer className="vacantes__card-actions">
-        <div className="vacantes__card-status pipeline__cell-status">
+        <div className="vacantes__card-status" style={{ flex: 1 }}>
           <CustomSelect
-            id={`vstatus-card-${v.id}`}
-            value={v.status}
-            onChange={(val) => onStatusChange(val as VacancyStatus)}
-            options={VACANCY_STATUSES.map(s => ({ value: s, label: VACANCY_STATUS_LABEL[s] }))}
-            aria-label={`Cambiar status de la vacante de ${v.puesto}`}
-            customTrigger={<VacancyStatusBadge status={v.status} />}
+            id={`vac-rec-card-${v.key}`}
+            value={v.reclutador ?? ''}
+            onChange={onReclutador}
+            options={RECLUTADOR_OPTIONS}
+            aria-label={`Reclutador para ${v.puesto}`}
+            customTrigger={
+              <span className="vacantes__rec-trigger">
+                <User size={14} aria-hidden="true" />
+                {v.reclutador
+                  ? v.reclutador.charAt(0) + v.reclutador.slice(1).toLowerCase()
+                  : 'Asignar reclutador'}
+              </span>
+            }
           />
         </div>
-        <div className="vacantes__card-buttons">
-          <button
-            type="button"
-            className="pipeline__icon-btn"
-            onClick={onEdit}
-            aria-label={`Editar vacante de ${v.puesto}`}
-            title="Editar"
-          >
-            <Pencil size={16} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="pipeline__icon-btn pipeline__icon-btn--danger"
-            onClick={onDelete}
-            aria-label={`Eliminar vacante de ${v.puesto}`}
-            title="Eliminar"
-          >
-            <Trash2 size={16} aria-hidden="true" />
-          </button>
-        </div>
+        <button
+          type="button"
+          className="pipeline__icon-btn"
+          onClick={onToggleManual}
+          title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+          aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+          data-testid={`vac-manual-card-${v.key}`}
+        >
+          {v.coberturaTipo === 'manual' ? (
+            <ArrowRightLeft size={16} aria-hidden="true" />
+          ) : (
+            <CheckCircle2 size={16} aria-hidden="true" />
+          )}
+        </button>
       </footer>
     </article>
   );

@@ -3,7 +3,14 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
-## 2026-06-19 (sesión 7 cont.) — "Siguiente nivel": motion + realtime
+## 2026-06-19 (sesión 8) — Vacantes automática + fix navbar
+- **Vacantes 100% automática**: nueva `Vacantes.tsx` deriva las vacantes de `bajas` + `empleados` (ya no usa `vacancy_requests`). Lógica en `lib/autoVacancies.ts`: toda baja = vacante; empareja por area+seccion+puesto; cubre con el ingreso más reciente ≥ fecha_baja; 1 a 1; cobertura manual (interna) no consume ingreso. Resumen con count-up, filtro de estado, búsqueda; el usuario asigna reclutador (persistido) y puede marcar cobertura manual.
+- **Persistencia reclutador**: nuevo campo `Baja.cubierta_reclutador` + `setBajaReclutador` en `useBajas`. REQUIERE columna en Supabase: `alter table bajas add column if not exists cubierta_reclutador text;`
+- **Fix navbar (iOS Safari)**: la navbar fija "saltaba" al hacer scroll por el cambio de `env(safe-area-inset-bottom)` al colapsar la barra del navegador. Solución con VisualViewport API en `BottomTabBar.tsx` (se pega al fondo visible real). En PWA instalada no afecta.
+- NOTA: los KPIs de SLA/time-to-fill que leían `vacancy_requests` quedarán en 0 (tabla vacía). Pendiente: re-cablearlos al nuevo modelo si se desea.
+- `tsc` + `npm run build` OK.
+
+
 - **Count-up KPIs (2)**: `AnimatedNumber.tsx` anima 0→valor al entrar en viewport (parsea "95%", "+3", decimales). Integrado en `StatCard` → cubre todos los KPIs. Respeta reduced-motion.
 - **Stagger reveals (3)** + **scroll-reveal (5)**: `lib/motion.ts` (variants) + `Reveal.tsx` (`Reveal`/`RevealList`/`RevealItem`, `whileInView once`). Aplicado: chart-section (scroll-reveal) y grid móvil de KPIs (stagger por tab).
 - **Modal entrance (nod a #1)**: `Modal.tsx` ahora entra con spring (overlay fade + content scale/slide). Shared-element real fila→modal queda pendiente (requiere trabajo cuidadoso por el portal).
