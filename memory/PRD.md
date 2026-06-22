@@ -204,3 +204,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
   - `types.ts`: nueva interface `PositionSetting`.
 - Verificación: `tsc --noEmit` y `vite build` OK. No se pudo probar el flujo admin en vivo (este contenedor no tiene credenciales Supabase; la app corre en Vercel). El usuario debe correr la migración y validar en su deploy.
 - PENDIENTE (separado): reconciliar el CONTEO exacto lista vs tabla KPI (Abiertas+Backup ≠ KPI backup 13). Es un tema de modelo (bajas vs foto estructural), no del dato de backup. Confirmar con el usuario si se aborda después.
+
+## 2026-06-22 — Reconciliación exacta lista de Vacantes ↔ tabla KPI
+- Problema: el conteo de la lista (Abiertas+Backup) no cuadraba con la tabla KPI (8/13). Causa: dos modelos distintos (lista = bajas; KPI = foto estructural).
+- Decisión del usuario: "el KPI manda". Implementado en `computeAutoVacancies` (src/lib/autoVacancies.ts):
+  - Las vacantes ABIERTAS y su tipo se derivan de `calculatePositionCoverage` (misma fuente del KPI). Por puesto se abren `vacAut + vacBackup` filas, llenadas con las bajas más recientes; las bajas que sobran pasan a "cubiertas" (absorbidas) y, si faltan bajas para el hueco real, se generan filas ESTRUCTURALES (`baja = null`, etiqueta "Vacante estructural").
+  - Garantía por construcción: Σ abiertas autorizado = KPI autorizado vacantes; Σ abiertas backup = KPI backup vacantes.
+  - `AutoVacancy.baja` ahora es nullable. UI (`Vacantes.tsx`) maneja filas estructurales: muestra "Vacante estructural", deshabilita reclutador/acción y oculta SLA. KpisPage usa la ruta legacy (sin `positions`) intacta.
+- Verificación: test unitario con esbuild (3 puestos: understaffed con backup, sin backup, overstaffed) → open autorizado/backup cuadran EXACTO con el KPI; `tsc` y `vite build` OK. Falta validación en vivo (sin credenciales Supabase locales; app en Vercel).

@@ -117,7 +117,7 @@ export function Vacantes() {
           v.puesto,
           v.area,
           v.seccion,
-          v.baja.nombre,
+          v.baja?.nombre,
           v.coveredBy?.nombre,
           v.reclutador,
         ]
@@ -134,6 +134,7 @@ export function Vacantes() {
   }, [vacancies, searchTerm, statusFilter, typeFilter]);
 
   async function handleReclutador(v: AutoVacancy, value: string) {
+    if (!v.baja) return; // vacante estructural: sin baja a la cual asignar
     await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
       success: value ? `Reclutador: ${value}` : 'Reclutador quitado',
       error: 'No se pudo guardar el reclutador',
@@ -141,6 +142,7 @@ export function Vacantes() {
   }
 
   async function handleToggleManual(v: AutoVacancy) {
+    if (!v.baja) return; // vacante estructural: no se puede cubrir a mano
     if (v.coberturaTipo === 'manual') {
       const res = await desmarcarCubierta(v.baja.num_empleado);
       if (res.ok) sileo.info({ title: 'Vacante reabierta' });
@@ -363,21 +365,36 @@ export function Vacantes() {
                       <CoverageInfo v={v} />
                     </td>
                     <td>
-                      <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
-                      <div className="pipeline__area">{v.baja.nombre}</div>
+                      {v.baja ? (
+                        <>
+                          <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
+                          <div className="pipeline__area">{v.baja.nombre}</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="vacantes__cell-strong">—</div>
+                          <div className="pipeline__area">Vacante estructural</div>
+                        </>
+                      )}
                     </td>
                     <td>
                       <div className="vacantes__sla-cell">
-                        <span
-                          className={`vacantes__sla ${
-                            v.status === 'cubierta'
-                              ? 'vacantes__sla--done'
-                              : 'vacantes__sla--overdue'
-                          }`}
-                        >
-                          {v.dias}/{v.slaDays}
-                        </span>
-                        <SlaBadge v={v} />
+                        {v.baja ? (
+                          <>
+                            <span
+                              className={`vacantes__sla ${
+                                v.status === 'cubierta'
+                                  ? 'vacantes__sla--done'
+                                  : 'vacantes__sla--overdue'
+                              }`}
+                            >
+                              {v.dias}/{v.slaDays}
+                            </span>
+                            <SlaBadge v={v} />
+                          </>
+                        ) : (
+                          <span className="vacantes__sla">—</span>
+                        )}
                       </div>
                     </td>
                     <td>
@@ -387,6 +404,7 @@ export function Vacantes() {
                         onChange={(val) => handleReclutador(v, val)}
                         options={RECLUTADOR_OPTIONS}
                         aria-label={`Reclutador para ${v.puesto}`}
+                        disabled={!v.baja}
                       />
                     </td>
                     <td className="pipeline__cell-actions">
@@ -394,7 +412,14 @@ export function Vacantes() {
                         type="button"
                         className="pipeline__icon-btn"
                         onClick={() => handleToggleManual(v)}
-                        title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano (interna)'}
+                        disabled={!v.baja}
+                        title={
+                          !v.baja
+                            ? 'Vacante estructural (sin baja)'
+                            : v.coberturaTipo === 'manual'
+                              ? 'Reabrir vacante'
+                              : 'Marcar cubierta a mano (interna)'
+                        }
                         aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
                         data-testid={`vac-manual-${v.key}`}
                       >
@@ -450,9 +475,18 @@ function CoverageInfo({ v }: { v: AutoVacancy }) {
   }
   if (v.coberturaTipo === 'manual') {
     return (
-      <span className="vacantes__cover" title={v.baja.cubierta_nota ?? 'Cobertura interna'}>
+      <span className="vacantes__cover" title={v.baja?.cubierta_nota ?? 'Cobertura interna'}>
         <ArrowRightLeft size={13} aria-hidden="true" />
         Interna{v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
+      </span>
+    );
+  }
+  if (!v.coveredBy) {
+    // Baja absorbida: el puesto ya está cubierto por la plantilla vigente.
+    return (
+      <span className="vacantes__cover" title="Puesto cubierto por la plantilla actual">
+        <UserPlus size={13} aria-hidden="true" />
+        Plantilla completa
       </span>
     );
   }
@@ -487,10 +521,14 @@ function VacancyCard({
 
   const coberturaText =
     v.status === 'abierta'
-      ? 'Sin cubrir'
+      ? v.baja
+        ? 'Sin cubrir'
+        : 'Vacante estructural'
       : v.coberturaTipo === 'manual'
         ? `Cobertura interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
-        : `${v.coveredBy?.nombre ?? ''}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`;
+        : v.coveredBy
+          ? `${v.coveredBy.nombre}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+          : 'Plantilla completa';
 
   return (
     <article className={cardCls} aria-label={`Vacante de ${v.puesto}`}>
@@ -516,7 +554,7 @@ function VacancyCard({
               v.status === 'cubierta' ? 'vacantes__sla--done' : 'vacantes__sla--overdue'
             }`}
           >
-            {v.dias}d
+            {v.baja ? `${v.dias}d` : '—'}
           </span>
           <ChevronDown
             size={18}
@@ -529,10 +567,16 @@ function VacancyCard({
       {/* Fila resumen siempre visible: cumplimiento de SLA + días + tipo */}
       <div className="vacantes__card-quick">
         <VacancyTypeBadge type={v.vacancyType} />
-        <SlaBadge v={v} />
-        <span className="vacantes__quick-days">
-          {v.dias}/{v.slaDays} días
-        </span>
+        {v.baja ? (
+          <>
+            <SlaBadge v={v} />
+            <span className="vacantes__quick-days">
+              {v.dias}/{v.slaDays} días
+            </span>
+          </>
+        ) : (
+          <span className="vacantes__quick-days">Sin baja asociada</span>
+        )}
       </div>
 
       {/* Detalle inline (acordeón) */}
@@ -556,14 +600,18 @@ function VacancyCard({
                 <Calendar size={15} aria-hidden="true" />
                 <span className="vacantes__detail-label">Baja</span>
                 <span className="vacantes__detail-value">
-                  {v.baja.nombre} · {formatShortDate(v.fechaBaja)}
+                  {v.baja
+                    ? `${v.baja.nombre} · ${formatShortDate(v.fechaBaja)}`
+                    : 'Sin baja asociada'}
                 </span>
               </div>
               <div className="vacantes__detail-row">
                 <Clock size={15} aria-hidden="true" />
                 <span className="vacantes__detail-label">Tiempo</span>
                 <span className="vacantes__detail-value">
-                  {v.dias} días {v.status === 'cubierta' ? 'para cubrir' : 'abierta'}
+                  {v.baja
+                    ? `${v.dias} días ${v.status === 'cubierta' ? 'para cubrir' : 'abierta'}`
+                    : '—'}
                 </span>
               </div>
 
@@ -574,11 +622,13 @@ function VacancyCard({
                   onChange={onReclutador}
                   options={RECLUTADOR_OPTIONS}
                   aria-label={`Reclutador para ${v.puesto}`}
+                  disabled={!v.baja}
                 />
                 <button
                   type="button"
                   className="pipeline__icon-btn"
                   onClick={onToggleManual}
+                  disabled={!v.baja}
                   title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
                   aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
                   data-testid={`vac-manual-card-${v.key}`}

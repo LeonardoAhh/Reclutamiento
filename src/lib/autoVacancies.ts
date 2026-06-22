@@ -1,5 +1,5 @@
-import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
-import { businessDaysBetween, localTodayIso } from '@/lib/dates';
+import { canonicalizeKeyPart, canonicalizePuesto, calculatePositionCoverage } from '@/lib/utils';
+import { businessDaysBetween } from '@/lib/dates';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type { Baja, Employee, VacancyRequest, AuthorizedPosition } from '@/lib/types';
 
@@ -15,7 +15,13 @@ export interface CoveringEmployee {
 export interface AutoVacancy {
   /** Identificador estable (id de la baja o su num_empleado). */
   key: string;
-  baja: Baja;
+  /**
+   * Baja que originó la vacante. Es `null` para vacantes ESTRUCTURALES: huecos
+   * de plantilla/backup que existen según la tabla resumen (KPI) pero que no
+   * tienen una baja registrada que los explique. Se generan para que el conteo
+   * de la lista cuadre exactamente con el KPI.
+   */
+  baja: Baja | null;
   area: string;
   seccion: string;
   puesto: string;
@@ -130,9 +136,11 @@ export function computeAutoVacancies(
   }
 
   const now = Date.now();
+  const slaDays = DEFAULT_VACANCY_SLA_DAYS;
 
-  const result: AutoVacancy[] = bajas.map((baja) => {
-    const key = baja.id ?? baja.num_empleado;
+  // Objeto base por baja (estado natural según el emparejamiento por ingresos).
+  const baseByBaja = new Map<Baja, AutoVacancy>();
+  for (const baja of bajas) {
     const auto = coverageByBaja.get(baja) ?? null;
 
     let status: AutoVacancyStatus = 'abierta';
@@ -151,20 +159,14 @@ export function computeAutoVacancies(
       fechaCubierta = auto.fecha_ingreso;
     }
 
-    // "Días transcurridos" hábiles: 0 el mismo día de la baja.
-    // Pasamos la fecha de cobertura como STRING para que se interprete en TZ
-    // MX (evita un segundo desfase de zona horaria).
     const endArg: string | Date =
       status === 'cubierta' && fechaCubierta ? fechaCubierta : new Date(now);
     const dias = baja.fecha_baja
       ? Math.max(0, businessDaysBetween(baja.fecha_baja, endArg) - 1)
       : 0;
 
-    const slaDays = DEFAULT_VACANCY_SLA_DAYS;
-    const enTiempo = dias <= slaDays;
-
-    return {
-      key,
+    baseByBaja.set(baja, {
+      key: baja.id ?? baja.num_empleado,
       baja,
       area: baja.area,
       seccion: baja.seccion,
@@ -177,62 +179,116 @@ export function computeAutoVacancies(
       reclutador: baja.cubierta_reclutador ?? null,
       dias,
       slaDays,
-      enTiempo,
-      // Se asigna abajo en una segunda pasada por puesto.
-      vacancyType: 'autorizado' as VacancyType,
-    };
-  });
-
-  // ── Clasificación autorizado vs backup ──────────────────────────────────
-  // Consistente con `calculatePositionCoverage` (la tabla resumen): por puesto
-  // la plantilla real ocupa primero los lugares AUTORIZADOS (A) y luego el
-  // buffer de BACKUP (B). Las vacantes abiertas se reparten igual: las primeras
-  // (A − real) son de plantilla autorizada y las siguientes (hasta B) son
-  // backup. Un puesto SIN backup declarado (B = 0) nunca genera vacantes
-  // backup — corrige el caso en que operadores de producción aparecían como
-  // backup pese a no tener buffer.
-  const realByKey = new Map<string, number>();
-  {
-    const today = localTodayIso();
-    const seen = new Set<string>();
-    for (const emp of employees) {
-      const num = (emp.num_empleado ?? '').trim();
-      if (num) {
-        if (seen.has(num)) continue;
-        seen.add(num);
-      }
-      if (String(emp.fecha_ingreso).localeCompare(today) > 0) continue;
-      const k = positionKey(emp);
-      realByKey.set(k, (realByKey.get(k) ?? 0) + 1);
-    }
-  }
-
-  const posByKey = new Map<string, AuthorizedPosition>();
-  for (const p of positions) posByKey.set(positionKey(p), p);
-
-  const openByKey = new Map<string, AutoVacancy[]>();
-  for (const v of result) {
-    if (v.status !== 'abierta') continue;
-    const k = positionKey(v.baja);
-    const list = openByKey.get(k) ?? [];
-    list.push(v);
-    openByKey.set(k, list);
-  }
-
-  for (const [k, list] of openByKey) {
-    const pos = posByKey.get(k);
-    if (!pos) continue; // sin puesto autorizado → quedan como 'autorizado'
-    const A = pos.plantilla_autorizada;
-    const B = pos.backup ?? 0;
-    const real = realByKey.get(k) ?? 0;
-    const authVac = Math.max(0, A - real);
-    const backupVac = B <= 0 ? 0 : Math.max(0, Math.min(B, A + B - real));
-    // Orden estable: las más antiguas (gap de plantilla) primero.
-    list.sort((a, b) => toTime(a.fechaBaja) - toTime(b.fechaBaja));
-    list.forEach((v, i) => {
-      v.vacancyType =
-        i >= authVac && i < authVac + backupVac ? 'backup' : 'autorizado';
+      enTiempo: dias <= slaDays,
+      vacancyType: 'autorizado',
     });
+  }
+
+  // Sin catálogo de puestos (p. ej. desde KpisPage): comportamiento legacy,
+  // una vacante por baja con su estado natural.
+  if (positions.length === 0) {
+    return bajas.map((b) => baseByBaja.get(b)!);
+  }
+
+  // ── Reconciliación con la tabla resumen (KPI manda) ──────────────────────
+  // Las vacantes ABIERTAS y su tipo se derivan de `calculatePositionCoverage`
+  // (la misma fuente del KPI), por lo que el conteo de la lista cuadra EXACTO:
+  //   · abiertas autorizado = Σ vacantes autorizado del KPI
+  //   · abiertas backup     = Σ vacantes backup del KPI
+  // Por puesto se abren `vacAut + vacBackup` filas: se llenan con las bajas más
+  // recientes (no cubiertas a mano); las bajas que sobran pasan a "cubiertas"
+  // (puesto ya cubierto) y, si faltan bajas para el hueco real, se generan
+  // filas ESTRUCTURALES (baja = null).
+  const coverage = calculatePositionCoverage(employees, [], positions);
+  const covByKey = new Map<string, (typeof coverage)[number]>();
+  for (const c of coverage) covByKey.set(positionKey(c), c);
+
+  const result: AutoVacancy[] = [];
+  const handled = new Set<Baja>();
+  let synthSeq = 0;
+
+  for (const [k, cov] of covByKey) {
+    const A = cov.plantilla_autorizada;
+    const real = cov.plantilla_real;
+    const vacAut = Math.max(0, A - Math.min(real, A));
+    const vacBackup = Math.max(0, cov.backup - cov.excedente_backup);
+    const total = vacAut + vacBackup;
+
+    const group = bajasByKey.get(k) ?? [];
+    const manual = group.filter((b) => b.cubierta_manual);
+    const pool = group
+      .filter((b) => !b.cubierta_manual)
+      .sort((a, b) => toTime(b.fecha_baja) - toTime(a.fecha_baja));
+
+    // Las `total` bajas más recientes quedan ABIERTAS; el resto, absorbidas.
+    const openBajas = pool.slice(0, total);
+    const absorbed = pool.slice(total);
+
+    const typeFor = (idx: number): VacancyType =>
+      idx < vacAut ? 'autorizado' : 'backup';
+
+    openBajas.forEach((b, i) => {
+      const base = baseByBaja.get(b)!;
+      const dias = b.fecha_baja
+        ? Math.max(0, businessDaysBetween(b.fecha_baja, new Date(now)) - 1)
+        : 0;
+      result.push({
+        ...base,
+        status: 'abierta',
+        coberturaTipo: null,
+        coveredBy: null,
+        fechaCubierta: null,
+        dias,
+        enTiempo: dias <= slaDays,
+        vacancyType: typeFor(i),
+      });
+      handled.add(b);
+    });
+
+    // Filas estructurales: hueco real sin baja que lo respalde.
+    const synthNeeded = total - openBajas.length;
+    for (let i = 0; i < synthNeeded; i++) {
+      const idx = openBajas.length + i;
+      result.push({
+        key: `synthetic-${k}-${synthSeq++}`,
+        baja: null,
+        area: cov.area,
+        seccion: cov.seccion,
+        puesto: cov.puesto,
+        fechaBaja: '',
+        status: 'abierta',
+        coberturaTipo: null,
+        coveredBy: null,
+        fechaCubierta: null,
+        reclutador: null,
+        dias: 0,
+        slaDays,
+        enTiempo: true,
+        vacancyType: typeFor(idx),
+      });
+    }
+
+    // Bajas absorbidas (puesto ya cubierto) → cubiertas.
+    absorbed.forEach((b) => {
+      const base = baseByBaja.get(b)!;
+      result.push({
+        ...base,
+        status: 'cubierta',
+        coberturaTipo: base.coberturaTipo === 'manual' ? 'manual' : 'auto',
+      });
+      handled.add(b);
+    });
+
+    // Cubiertas a mano: se conservan tal cual.
+    manual.forEach((b) => {
+      result.push(baseByBaja.get(b)!);
+      handled.add(b);
+    });
+  }
+
+  // Bajas de puestos que no existen en el catálogo: estado natural.
+  for (const b of bajas) {
+    if (!handled.has(b)) result.push(baseByBaja.get(b)!);
   }
 
   return result;
