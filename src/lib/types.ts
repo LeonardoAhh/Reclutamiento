@@ -355,6 +355,16 @@ export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
   no_asistio: 'No asistió',
 };
 
+export function humanizeStatus(status: string): string {
+  if (!status) return '';
+  if (status in CANDIDATE_STATUS_LABEL) {
+    return CANDIDATE_STATUS_LABEL[status as CandidateStatus];
+  }
+  return status
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 /**
  * Mapa de status legados → status actuales. Solo se usa al leer data
  * persistida (Supabase / localStorage) para tolerar registros viejos.

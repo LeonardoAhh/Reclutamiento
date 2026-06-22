@@ -74,7 +74,7 @@ export function Login() {
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
       sileo.error({
         title: 'No se pudo iniciar sesión',
-        description: result.message ?? 'Revisa tus credenciales.',
+        description: 'Revisa tus credenciales.',
       });
       return;
     }

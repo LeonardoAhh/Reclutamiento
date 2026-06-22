@@ -19,6 +19,7 @@ import {
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { notifyResult, sileo } from '@/lib/notify';
+import { humanizeStatus } from '@/lib/types';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
@@ -328,7 +329,7 @@ export function Pipeline() {
     if (!c.id || c.status === status) return;
     await notifyResult(setCandidateStatus(c.id, status), {
       success: 'Estado actualizado',
-      successDescription: `${c.nombre} → ${status}`,
+      successDescription: `${c.nombre} → ${humanizeStatus(status)}`,
       error: 'No se pudo cambiar el estado',
     });
   }
@@ -343,7 +344,7 @@ export function Pipeline() {
   }): Promise<{ ok: boolean; message?: string }> {
     const empResult = await addSingleEmployee(input.employee);
     if (!empResult.ok) {
-      sileo.error({ title: 'No se pudo contratar', description: empResult.message });
+      sileo.error({ title: 'No se pudo contratar' });
       return empResult;
     }
     const candResult = await markCandidateHired(

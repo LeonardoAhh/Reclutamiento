@@ -88,7 +88,7 @@ export function Toulouse() {
     setSaving(false);
     sileo.success({
       title: 'Hoja guardada',
-      description: res.message ?? `${effectiveFolio} · ${candidato.trim()}`,
+      description: `${effectiveFolio} · ${candidato.trim()}`,
     });
   }
 

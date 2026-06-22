@@ -140,7 +140,10 @@ export function Bajas() {
                   description: `${res.inserted} registradas${res.skipped ? ` · ${res.skipped} omitidas` : ''}`,
                 });
               } else {
-                sileo.error({ title: 'No se pudo importar', description: res.message });
+                sileo.error({
+                  title: 'No se pudo importar',
+                  description: 'Revisa el archivo e intenta de nuevo.',
+                });
               }
               return res;
             }}

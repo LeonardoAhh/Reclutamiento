@@ -138,7 +138,7 @@ export function useReporteDiario() {
         } catch (err) {
             const msg = describeSupabaseError(err)
             setError(msg)
-            sileo.error({ title: msg })
+            sileo.error({ title: 'No se pudo guardar el reporte' })
             return { success: false, error: msg }
         } finally {
             setSaving(false)
@@ -158,7 +158,7 @@ export function useReporteDiario() {
             return { success: true }
         } catch (err) {
             const msg = describeSupabaseError(err)
-            sileo.error({ title: msg })
+            sileo.error({ title: 'No se pudo eliminar el reporte' })
             return { success: false }
         } finally {
             setSaving(false)

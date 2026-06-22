@@ -25,13 +25,14 @@ interface NotifyMessages {
   successDescription?: string;
   /** Título del toast de error (si la acción falla). */
   error?: string;
+  /** Descripción opcional del toast de error. */
+  errorDescription?: string;
 }
 
 /**
  * Ejecuta una acción asíncrona que resuelve a `{ ok, message }` y emite un
- * toast cohesivo: `success` en éxito, `error` (con el `message` del backend
- * como descripción) en fallo. Devuelve el mismo resultado para no romper el
- * flujo del caller (p. ej. un modal que se cierra al recibir `ok: true`).
+ * toast cohesivo: `success` en éxito, `error` en fallo. Devuelve el mismo
+ * resultado para no romper el flujo del caller.
  */
 export async function notifyResult<T extends ActionResult>(
   action: Promise<T> | (() => Promise<T>),
@@ -46,7 +47,7 @@ export async function notifyResult<T extends ActionResult>(
   } else {
     sileo.error({
       title: messages.error ?? 'No se pudo realizar la acción',
-      description: res.message,
+      description: messages.errorDescription,
     });
   }
   return res;

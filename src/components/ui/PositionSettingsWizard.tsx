@@ -122,7 +122,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     if (res.ok) {
       sileo.success({
         title: 'Configuración guardada',
-        description: res.message ?? `${puesto}: backup ${backupNum}, plantilla ${plantillaNum}`,
+        description: `${puesto}: backup ${backupNum}, plantilla ${plantillaNum}`,
       });
       resetAll();
       onClose();
