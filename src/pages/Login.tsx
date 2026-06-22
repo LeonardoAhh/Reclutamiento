@@ -3,6 +3,7 @@ import { Eye, EyeOff, ArrowRight, Loader2, Users, AlertCircle } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { BlackHole } from '@/components/BlackHole';
 import './Login.css';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -47,66 +48,51 @@ export function Login() {
   };
 
   return (
-    <main className="login" role="main">
+    <main className="login" role="main" data-testid="login-page">
+      {/* ── Fondo: agujero negro hiperrealista ───────────────────────── */}
+      <BlackHole />
 
-      {/* ── Panel izquierdo ───────────────────────────────────────────── */}
-      <div className="login__panel" aria-hidden="true">
-        <div className="login__panel-grid" />
+      {/* ── Marca: esquina superior izquierda ────────────────────────── */}
+      <motion.div
+        className="login__brand"
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+      >
+        <span className="login__brand-icon">
+          <Users size={15} strokeWidth={2} aria-hidden="true" />
+        </span>
+        <span className="login__eyebrow">Reclutamiento</span>
+      </motion.div>
 
-        {/* TOP — brand pill, anclado arriba (oculto en mobile) */}
-        <motion.div
-          className="login__panel-top"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-        >
-          <div className="login__brand">
-            <span className="login__brand-icon">
-              <Users size={16} strokeWidth={2} aria-hidden="true" />
-            </span>
-            <span className="login__eyebrow">Reclutamiento</span>
-          </div>
-        </motion.div>
+      {/* ── Wordmark: esquina inferior izquierda ─────────────────────── */}
+      <motion.div
+        className="login__wordmark"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease: EASE, delay: 0.25 }}
+      >
+        <span className="login__wordmark-main">
+          Viño<br />Plastic
+        </span>
+        <span className="login__wordmark-sub">Querétaro · Est. 1970</span>
+        <p className="login__wordmark-tag">
+          Excelencia en Inyección de Plásticos de Ingeniería.
+        </p>
+      </motion.div>
 
-        {/* BOTTOM — wordmark + tagline + regla, anclados abajo */}
-        <motion.div
-          className="login__panel-bottom"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE }}
-        >
-          <motion.div className="login__wordmark" {...fadeUp(0.2)}>
-            <span className="login__wordmark-main">Viño<br />Plastic</span>
-            <span className="login__wordmark-sub">Querétaro</span>
-          </motion.div>
-
-          <motion.blockquote className="login__tagline" {...fadeUp(0.35)}>
-            <span className="login__tagline-year">Est. 1970</span>
-            <p>Excelencia en Inyección<br />de Plásticos de Ingeniería.</p>
-          </motion.blockquote>
-
-          <motion.div
-            className="login__panel-rule"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.5 }}
-          />
-        </motion.div>
-      </div>
-
-      {/* ── Panel derecho — sin cambios ───────────────────────────────── */}
+      {/* ── Formulario (panel de cristal sobre el espacio) ───────────── */}
       <div className="login__form-panel">
-
         <motion.section
           className="login__form-wrap"
           aria-labelledby="login-title"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
         >
           <header className="login__header">
             <motion.p className="login__header-label" {...fadeUp(0.2)}>
-              Acceso al sistema
+              Acceso seguro
             </motion.p>
             <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
               Bienvenido<br />de nuevo
@@ -121,7 +107,6 @@ export function Login() {
           />
 
           <form className="login__form" onSubmit={handleSubmit} noValidate>
-
             <motion.div className="login__field" {...fadeUp(0.35)}>
               <label htmlFor={usernameId} className="login__field-label">
                 Correo electrónico
@@ -140,6 +125,7 @@ export function Login() {
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={submitting}
                   required
+                  data-testid="login-email-input"
                   aria-describedby={error ? errorId : undefined}
                 />
               </div>
@@ -160,6 +146,7 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={submitting}
                   required
+                  data-testid="login-password-input"
                   aria-describedby={error ? errorId : undefined}
                 />
                 <button
@@ -169,6 +156,7 @@ export function Login() {
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   disabled={submitting}
                   tabIndex={0}
+                  data-testid="login-toggle-password"
                 >
                   {showPassword
                     ? <EyeOff size={16} aria-hidden="true" />
@@ -184,6 +172,7 @@ export function Login() {
                   role="alert"
                   aria-live="polite"
                   id={errorId}
+                  data-testid="login-error"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -200,8 +189,9 @@ export function Login() {
               className="login__submit"
               disabled={submitting}
               aria-busy={submitting}
+              data-testid="login-submit-button"
               {...fadeUp(0.52)}
-              whileHover={!submitting ? { x: 3 } : {}}
+              whileHover={!submitting ? { y: -2 } : {}}
               whileTap={!submitting ? { scale: 0.98 } : {}}
             >
               {submitting ? (
@@ -216,7 +206,6 @@ export function Login() {
                 </>
               )}
             </motion.button>
-
           </form>
 
           <motion.p className="login__footer-note" {...fadeUp(0.65)}>
@@ -224,7 +213,6 @@ export function Login() {
           </motion.p>
         </motion.section>
       </div>
-
     </main>
   );
 }
