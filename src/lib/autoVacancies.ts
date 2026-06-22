@@ -1,5 +1,5 @@
 import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
-import { businessDaysBetween } from '@/lib/dates';
+import { businessDaysBetween, localTodayIso } from '@/lib/dates';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type { Baja, Employee, VacancyRequest, AuthorizedPosition } from '@/lib/types';
 
@@ -131,7 +131,7 @@ export function computeAutoVacancies(
 
   const now = Date.now();
 
-  return bajas.map((baja) => {
+  const result: AutoVacancy[] = bajas.map((baja) => {
     const key = baja.id ?? baja.num_empleado;
     const auto = coverageByBaja.get(baja) ?? null;
 
@@ -163,29 +163,6 @@ export function computeAutoVacancies(
     const slaDays = DEFAULT_VACANCY_SLA_DAYS;
     const enTiempo = dias <= slaDays;
 
-    // Determinar si la vacante es autorizado o backup
-    // Buscar la posición correspondiente
-    const posKey = positionKey(baja);
-    const matchingPosition = positions.find(
-      (p) => positionKey(p) === posKey
-    );
-
-    let vacancyType: VacancyType = 'autorizado';
-    if (matchingPosition) {
-      // Contar empleados en ese puesto que estaban activos al momento de la baja
-      // (fecha_ingreso <= fecha_baja)
-      const activeAtBaja = employees.filter(
-        (emp) =>
-          positionKey(emp) === posKey &&
-          String(emp.fecha_ingreso).localeCompare(baja.fecha_baja) <= 0
-      ).length;
-
-      // Si los empleados activos >= plantilla autorizada, la vacante es del backup
-      if (activeAtBaja >= matchingPosition.plantilla_autorizada) {
-        vacancyType = 'backup';
-      }
-    }
-
     return {
       key,
       baja,
@@ -201,9 +178,64 @@ export function computeAutoVacancies(
       dias,
       slaDays,
       enTiempo,
-      vacancyType,
+      // Se asigna abajo en una segunda pasada por puesto.
+      vacancyType: 'autorizado' as VacancyType,
     };
   });
+
+  // ── Clasificación autorizado vs backup ──────────────────────────────────
+  // Consistente con `calculatePositionCoverage` (la tabla resumen): por puesto
+  // la plantilla real ocupa primero los lugares AUTORIZADOS (A) y luego el
+  // buffer de BACKUP (B). Las vacantes abiertas se reparten igual: las primeras
+  // (A − real) son de plantilla autorizada y las siguientes (hasta B) son
+  // backup. Un puesto SIN backup declarado (B = 0) nunca genera vacantes
+  // backup — corrige el caso en que operadores de producción aparecían como
+  // backup pese a no tener buffer.
+  const realByKey = new Map<string, number>();
+  {
+    const today = localTodayIso();
+    const seen = new Set<string>();
+    for (const emp of employees) {
+      const num = (emp.num_empleado ?? '').trim();
+      if (num) {
+        if (seen.has(num)) continue;
+        seen.add(num);
+      }
+      if (String(emp.fecha_ingreso).localeCompare(today) > 0) continue;
+      const k = positionKey(emp);
+      realByKey.set(k, (realByKey.get(k) ?? 0) + 1);
+    }
+  }
+
+  const posByKey = new Map<string, AuthorizedPosition>();
+  for (const p of positions) posByKey.set(positionKey(p), p);
+
+  const openByKey = new Map<string, AutoVacancy[]>();
+  for (const v of result) {
+    if (v.status !== 'abierta') continue;
+    const k = positionKey(v.baja);
+    const list = openByKey.get(k) ?? [];
+    list.push(v);
+    openByKey.set(k, list);
+  }
+
+  for (const [k, list] of openByKey) {
+    const pos = posByKey.get(k);
+    if (!pos) continue; // sin puesto autorizado → quedan como 'autorizado'
+    const A = pos.plantilla_autorizada;
+    const B = pos.backup ?? 0;
+    const real = realByKey.get(k) ?? 0;
+    const authVac = Math.max(0, A - real);
+    const backupVac = B <= 0 ? 0 : Math.max(0, Math.min(B, A + B - real));
+    // Orden estable: las más antiguas (gap de plantilla) primero.
+    list.sort((a, b) => toTime(a.fechaBaja) - toTime(b.fechaBaja));
+    list.forEach((v, i) => {
+      v.vacancyType =
+        i >= authVac && i < authVac + backupVac ? 'backup' : 'autorizado';
+    });
+  }
+
+  return result;
 }
 
 /**

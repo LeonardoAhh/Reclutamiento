@@ -189,3 +189,8 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Supervisor `frontend` espera `/app/frontend` (no existe); Vite se corre manualmente: `cd /app && yarn dev` (puerto 3000).
 - Breakpoint móvil del sistema: 768px (`useIsMobile`, `useMediaQuery`).
 - `tsc -b --noEmit` limpio tras todos los cambios.
+
+## 2026-06-22 — Fix clasificación Autorizado/Backup en Vacantes
+- Bug: el filtro "Tipo = Backup" en /vacantes marcaba como backup vacantes de puestos SIN buffer (backup:0, p. ej. OPERADOR DE MÁQUINA de producción). El heurístico previo (`activeAtBaja >= plantilla_autorizada`) ignoraba si el puesto tenía backup y no era consistente con la tabla resumen (KPI).
+- Fix: `computeAutoVacancies` (src/lib/autoVacancies.ts) ahora clasifica por puesto siguiendo el mismo modelo que `calculatePositionCoverage`: la plantilla real ocupa primero los lugares AUTORIZADOS (A) y luego el BACKUP (B). Vacantes abiertas: primeras (A−real) = autorizado, siguientes (hasta B) = backup, excedente = autorizado. Puesto con B=0 nunca produce backup.
+- Validado con casos unitarios (B=0 → 0 backup; real=A → todas backup band; real<A → split correcto) y `tsc --noEmit` sin errores.
