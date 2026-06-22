@@ -138,6 +138,14 @@
   min-width: 0;
 }
 
+/* Mejora de apariencia del panel para integrarlo con el sistema */
+.tp-panel {
+  background: var(--color-surface-card);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline-strong);
+}
+
 .tp-form {
   display: flex;
   flex-direction: column;
@@ -170,6 +178,38 @@
   min-width: 0;
 }
 
+/* Inputs y selects — coherentes con tokens globales */
+.tp-form__group input,
+.tp-form__group select,
+.tp-form__group textarea {
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: var(--type-body-size, 14px);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.tp-form__group textarea { height: auto; min-height: 80px; padding-top: 8px; padding-bottom: 8px; }
+
+.tp-form__group input::placeholder,
+.tp-form__group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.tp-form__group input:focus,
+.tp-form__group select:focus,
+.tp-form__group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+  background: var(--color-surface-card);
+}
+
+.tp-form__row .tp-form__group { min-width: 0; }
+
 .tp-form__group label {
   font-size: var(--type-caption-md-size, 12px);
   font-weight: 600;
@@ -195,6 +235,12 @@
   justify-content: center;
   gap: 8px;
   white-space: nowrap;
+}
+
+/* Asegurar altura uniforme de botones en el panel */
+.tp-actions > .btn-primary,
+.tp-actions > .btn-secondary {
+  height: var(--control-height);
 }
 
 /* ── Hojas guardadas ── */
@@ -565,7 +611,11 @@
     margin: 0;
     padding: 0;
     box-shadow: none;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #fff !important;
+    color: #000 !important;
+    page-break-after: always;
+    break-after: page;
   }
 }

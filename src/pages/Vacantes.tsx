@@ -184,7 +184,6 @@ export function Vacantes() {
               data-testid="vac-config-btn"
             >
               <SlidersHorizontal size={16} aria-hidden="true" />
-              Configurar plantilla/backup
             </button>
           </div>
         )}

@@ -144,7 +144,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
       isOpen={isOpen}
       onClose={handleClose}
       icon={<SlidersHorizontal size={20} className="color-primary" aria-hidden="true" />}
-      title="Configurar plantilla / backup"
+      title="Plantilla / Backup"
       className="pos-settings-modal modal-fullscreen-mobile modal-wizard-mobile"
       size="lg"
     >
