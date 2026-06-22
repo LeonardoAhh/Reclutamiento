@@ -1173,6 +1173,102 @@
   margin-bottom: 2px;
 }
 
+/* ── Header minimalista de la lista de candidatos ── */
+.pipeline__card-list-header {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.4fr) minmax(160px, 1fr) minmax(140px, 200px)
+    minmax(90px, auto) auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-md);
+  margin-bottom: var(--spacing-xxs);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+
+/* ── Status tag estilo "lock" (idle) → editable on click ── */
+.pipeline__status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: color-mix(in srgb, var(--color-muted) 10%, transparent);
+  color: color-mix(in srgb, var(--color-muted) 85%, var(--color-ink));
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pipeline__status-tag__label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.pipeline__status-tag__chevron {
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* Hover/focus → revela chevron e indica que es editable */
+.pipeline__cell-status .custom-select-trigger:hover .pipeline__status-tag,
+.pipeline__cell-status .custom-select-trigger:focus-visible .pipeline__status-tag,
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag {
+  border-color: color-mix(in srgb, currentColor 24%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.pipeline__cell-status .custom-select-trigger:hover .pipeline__status-tag__chevron,
+.pipeline__cell-status .custom-select-trigger:focus-visible .pipeline__status-tag__chevron,
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag__chevron {
+  opacity: 0.7;
+}
+
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag__chevron {
+  transform: rotate(180deg);
+}
+
+/* Variantes de color por estado */
+.pipeline__status-tag[data-status="entrevista"] {
+  background: color-mix(in srgb, var(--color-accent-amber) 14%, transparent);
+  color: color-mix(in srgb, var(--color-accent-amber) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="entrega_documentos"] {
+  background: color-mix(in srgb, var(--color-accent-teal) 14%, transparent);
+  color: color-mix(in srgb, var(--color-accent-teal) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="feedback_pendiente"] {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-ink);
+}
+.pipeline__status-tag[data-status="contratado"] {
+  background: var(--color-success-tint);
+  color: color-mix(in srgb, var(--color-success) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="rechazado"] {
+  background: var(--color-error-tint);
+  color: color-mix(in srgb, var(--color-error) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="no_asistio"] {
+  background: color-mix(in srgb, var(--color-muted) 12%, transparent);
+  color: color-mix(in srgb, var(--color-muted) 90%, var(--color-ink));
+}
+
 /* ── Bloque compacto solo-mobile (oculto en desktop) ── */
 .pipeline__ccard-mobile-info {
   display: none;
@@ -1211,6 +1307,10 @@
 
 /* ── Responsive card-list ── */
 @media (max-width: 1024px) {
+  .pipeline__card-list-header {
+    display: none;
+  }
+
   .pipeline__ccard {
     grid-template-columns: minmax(0, 1.4fr) minmax(140px, 200px) auto;
     grid-template-areas: "name status actions";

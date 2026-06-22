@@ -67,3 +67,27 @@
   color: var(--color-text-primary);
   font-weight: var(--font-medium);
 }
+
+/* ── Hint: aviso de "solo vacantes abiertas" en modo Agregar ── */
+.candidate-modal__hint {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.candidate-modal__hint::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--color-muted);
+}
+
+.candidate-modal__hint--warning {
+  color: var(--color-error);
+  font-weight: var(--font-semibold);
+}

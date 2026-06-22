@@ -32,6 +32,14 @@
     "parada": "PARADA DE CAMIONES HUIZACHE"
   },
   {
+    "numero empleado": "1106",
+    "nombre": "ANGELES MARCIAL ANALLELI",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+  },
+  {
     "numero empleado": "1369",
     "nombre": "VAZQUEZ CAMPOS HORTENSIA",
     "turno": "2",
@@ -126,6 +134,14 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+  },
+  {
+    "numero empleado": "1731",
+    "nombre": "NARANJO HERNANDEZ JOSE MANUEL",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "1757",
@@ -1752,14 +1768,6 @@
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
-    "numero empleado": "4123",
-    "nombre": "JIMENEZ GARCIA AXEL JONATAN",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
-  },
-  {
     "numero empleado": "4125",
     "nombre": "RUIZ DE VICENTE JUANA ABIGAIL ",
     "turno": "4",
@@ -2192,6 +2200,14 @@
     "parada": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
+    "numero empleado": "4228",
+    "nombre": "LEON GARCIA MARCOS",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
     "numero empleado": "4229",
     "nombre": "DEL ANGEL CAMACHO LIZBETH DANIELA",
     "turno": "1",
@@ -2206,6 +2222,22 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4234",
+    "nombre": "ARCADIO CRUZ INGRID ALEJANDRA",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4235",
+    "nombre": "AMADOR RICO HUMBERTO JESUS",
+    "turno": "4",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "BUENAVISTA",
+    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4238",
@@ -2226,7 +2258,7 @@
   {
     "numero empleado": "4240",
     "nombre": "VARGAS MEJIA ANA KAREN",
-    "turno": "2",
+    "turno": "30",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"

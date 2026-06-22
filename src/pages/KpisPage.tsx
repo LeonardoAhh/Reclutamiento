@@ -1,8 +1,12 @@
   import { useMemo, useState } from 'react';
+  import { motion } from 'framer-motion';
   import { useAuth } from '@/hooks/useAuth';
   import { useMediaQuery } from '@/hooks/useMediaQuery';
   import { Eye } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
+  import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+  import { Reveal } from '@/components/ui/Reveal';
+  import { staggerContainer, staggerItem } from '@/lib/motion';
   import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
   import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
@@ -11,9 +15,9 @@
   import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
   import { MissingPositionsModal } from '@/components/ui/MissingPositionsModal';
   import { useSupabaseData } from '@/hooks/useSupabaseData';
-  import { useVacancyRequests } from '@/hooks/useVacancyRequests';
   import { useCandidates } from '@/hooks/useCandidates';
   import { useBajas } from '@/hooks/useBajas';
+  import { computeAutoVacancies, autoVacancyToRequest } from '@/lib/autoVacancies';
   import { usePositions } from '@/lib/positions';
   import { KpiGridSkeleton } from '@/components/ui/PageSkeletons';
   import {
@@ -130,17 +134,22 @@
   export function KpisPage() {
   const { } = useAuth();
     const { employees, comments, loading: employeesLoading } = useSupabaseData();
-    const { vacancies, loading: vacanciesLoading } = useVacancyRequests();
     const { candidates, loading: candidatesLoading } = useCandidates();
     const { bajas, loading: bajasLoading } = useBajas();
     const { positions, loading: positionsLoading } = usePositions();
 
     const loading =
       employeesLoading ||
-      vacanciesLoading ||
       candidatesLoading ||
       bajasLoading ||
       positionsLoading;
+
+    // Vacantes derivadas automáticamente de bajas + empleados (mismo modelo
+    // que la página de Vacantes), adaptadas a VacancyRequest para los KPIs.
+    const vacancies = useMemo(
+      () => computeAutoVacancies(bajas, employees).map(autoVacancyToRequest),
+      [bajas, employees]
+    );
 
     const reveal = useKpiReveal();
     const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -234,7 +243,7 @@
       }
 
       const ttfPromedio = ttfCount > 0 ? Math.round(ttfSum / ttfCount) : 0;
-      return { abiertas, enSla, vencidas, ttfPromedio, excluidas };
+      return { abiertas, enSla, vencidas, ttfPromedio, excluidas, cubiertas };
     }, [vacancies]);
 
     /* ── Candidatos (5) ────────────────────────────────────────── */
@@ -302,11 +311,42 @@
         }
       }
 
-      const proximosIngresos = employees.filter(e => {
-        const ing = String(e.fecha_ingreso);
-        return ing > todayIso && ing <= nextWednesdayIso;
-      }).length;
+      // Próximos ingresos en la ventana [hoy, próximo miércoles].
+      // Los desglosamos por destino (plantilla vs backup) simulando su
+      // ingreso por puesto en orden cronológico: cada uno llena primero
+      // la plantilla autorizada; los excedentes caen al buffer de backup.
+      const upcomingHires = employees
+        .filter(e => {
+          const ing = String(e.fecha_ingreso);
+          return ing > todayIso && ing <= nextWednesdayIso;
+        })
+        .sort((a, b) =>
+          String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))
+        );
 
+      const posState = new Map<string, { real: number; autorizada: number }>();
+      for (const p of currentPositionCoverage) {
+        posState.set(`${p.area}|${p.seccion}|${p.puesto}`, {
+          real: p.plantilla_real,
+          autorizada: p.plantilla_autorizada,
+        });
+      }
+
+      let proximosPlantilla = 0;
+      let proximosBackup = 0;
+      for (const e of upcomingHires) {
+        const key = `${e.area}|${e.seccion}|${e.puesto}`;
+        const pos = posState.get(key);
+        if (pos && pos.real < pos.autorizada) {
+          proximosPlantilla += 1;
+          pos.real += 1;
+        } else {
+          proximosBackup += 1;
+          if (pos) pos.real += 1;
+        }
+      }
+
+      const proximosIngresos = upcomingHires.length;
       const proyectadoReal = realTotal + proximosIngresos;
       const coberturaProyectada = objetivoGlobal > 0 ? Math.round((proyectadoReal / objetivoGlobal) * 100) : 0;
 
@@ -314,6 +354,8 @@
         vacantesPlantilla,
         vacantesBackup,
         proximosIngresos,
+        proximosPlantilla,
+        proximosBackup,
         coberturaProyectada
       };
     }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso]);
@@ -434,9 +476,9 @@
         },
         {
           id: 'stat-vac-excluidas',
-          label: 'Excluidas KPI',
-          value: vacancyTotals.excluidas,
-          accentColor: 'var(--color-muted)',
+          label: 'Cubiertas',
+          value: vacancyTotals.cubiertas,
+          accentColor: 'var(--color-success)',
           origin: 'Vacantes',
         },
         {
@@ -591,12 +633,12 @@
 
         {isDesktop ? (
           <>
-            <section className="kpis-page__chart-section">
+            <Reveal as="section" className="kpis-page__chart-section">
               <KpiHeroChart
                 data={heroChartData}
                 onClick={() => setMissingModalOpen(true)}
               />
-            </section>
+            </Reveal>
 
             <section className="kpis-page__projection-section" aria-label="Proyección Estratégica">
                <div className="kpis-page__projection-card">
@@ -606,11 +648,11 @@
                   </header>
                   <div className="projection-metrics">
                     <div className="projection-metric">
-                      <span className="projection-value text-error">{projectionTotals.vacantesPlantilla}</span>
+                      <span className="projection-value text-error"><AnimatedNumber value={projectionTotals.vacantesPlantilla} /></span>
                       <span className="projection-label">Vacantes Plantilla</span>
                     </div>
                     <div className="projection-metric">
-                      <span className="projection-value text-warning">{projectionTotals.vacantesBackup}</span>
+                      <span className="projection-value text-warning"><AnimatedNumber value={projectionTotals.vacantesBackup} /></span>
                       <span className="projection-label">Vacantes Backup</span>
                     </div>
                   </div>
@@ -623,11 +665,25 @@
                   </header>
                   <div className="projection-metrics">
                     <div className="projection-metric">
-                      <span className="projection-value text-success">+{projectionTotals.proximosIngresos}</span>
+                      <span className="projection-value text-success"><AnimatedNumber value={projectionTotals.proximosIngresos} prefix="+" /></span>
                       <span className="projection-label">Próximos Ingresos</span>
+                      {projectionTotals.proximosIngresos > 0 && (
+                        <span className="projection-sublabel">
+                          {projectionTotals.proximosPlantilla > 0 && (
+                            <span className="projection-chip projection-chip--plantilla">
+                              {projectionTotals.proximosPlantilla} plantilla
+                            </span>
+                          )}
+                          {projectionTotals.proximosBackup > 0 && (
+                            <span className="projection-chip projection-chip--backup">
+                              {projectionTotals.proximosBackup} backup
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </div>
                     <div className="projection-metric">
-                      <span className="projection-value text-primary">{projectionTotals.coberturaProyectada}%</span>
+                      <span className="projection-value text-primary"><AnimatedNumber value={projectionTotals.coberturaProyectada} suffix="%" /></span>
                       <span className="projection-label">Avance Proyectado</span>
                     </div>
                   </div>
@@ -717,9 +773,12 @@
               ))}
             </nav>
 
-            <section
+            <motion.section
               key={activeGroup}
               className="kpis-page__m-grid"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
               aria-label={`KPIs de ${
                 KPI_GROUPS.find((g) => g.id === activeGroup)?.label ?? activeGroup
               }`}
@@ -728,8 +787,9 @@
               {mobileCards.map((card) => {
                 const hasModal = MODAL_CARD_IDS.has(card.id);
                 return (
-                  <div
+                  <motion.div
                     key={card.id}
+                    variants={staggerItem}
                     className="kpis-page__m-card"
                     data-testid={`kpis-mobile-card-${card.id}`}
                   >
@@ -752,10 +812,10 @@
                         <Eye size={16} aria-hidden="true" />
                       </button>
                     )}
-                  </div>
+                  </motion.div>
                 );
               })}
-            </section>
+            </motion.section>
 
 
           </>
@@ -798,7 +858,10 @@
           onClose={() => setMissingModalOpen(false)}
           coverage={currentPositionCoverage}
           vacancies={vacancies}
-          candidates={candidatesInProcess}
+          /* Pasamos TODOS los candidatos: el modal filtra internamente
+             por estados activos (entrevista, entrega_documentos,
+             faltan_documentos, feedback_pendiente). */
+          candidates={candidates}
         />
       </main>
     );

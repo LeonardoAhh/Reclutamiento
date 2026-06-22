@@ -460,8 +460,16 @@ export function businessDaysBetween(
 ): number {
   if (!from || !to) return 0;
   
-  const start = typeof from === 'string' ? new Date(from) : from;
-  const end = typeof to === 'string' ? new Date(to) : to;
+  // Las fechas tipo "YYYY-MM-DD" deben interpretarse en TZ MX, NO en UTC
+  // (de lo contrario new Date("2026-06-19") cae el 18 a las 18:00 en México).
+  const parse = (v: string | Date): Date =>
+    typeof v === 'string'
+      ? /^\d{4}-\d{2}-\d{2}$/.test(v)
+        ? new Date(`${v}T00:00:00${MX_UTC_OFFSET}`)
+        : new Date(v)
+      : v;
+  const start = parse(from);
+  const end = parse(to);
   
   if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return 0;
   

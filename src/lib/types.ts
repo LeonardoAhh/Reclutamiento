@@ -56,6 +56,8 @@ export interface Baja {
   cubierta_fecha?: string | null;
   /** Nota libre: “promovido X”, “transferido de Almacén”, etc. */
   cubierta_nota?: string | null;
+  /** Reclutador que cubrió la vacante derivada de esta baja (lo asigna el usuario). */
+  cubierta_reclutador?: string | null;
 }
 
 /** Forma cruda del JSON de bajas (claves con espacios al final permitidas). */
@@ -210,6 +212,27 @@ export interface CustomPosition {
 }
 
 /**
+ * Override editable por puesto, persistido en la tabla `position_settings`.
+ * Permite que un admin gestione `backup`, `plantilla_autorizada`, `urgentes`
+ * y `notas` desde la UI (wizard en Vacantes) sin tocar código. Se identifica
+ * por la tripleta (área, sección, puesto) con match normalizado y manda sobre
+ * el valor estático de `PLANTILLA_AUTORIZADA`.
+ */
+export interface PositionSetting {
+  id?: string;
+  area: string;
+  seccion: string;
+  puesto: string;
+  /** `null` = no overridear; usar la plantilla base del catálogo. */
+  plantilla_autorizada: number | null;
+  backup: number;
+  urgentes: number;
+  notas?: string | null;
+  updated_by?: string | null;
+  updated_at?: string;
+}
+
+/**
  * Catálogo de habilidades requeridas por puesto. Se usa para pre-llenar el
  * bloque "Conocimientos técnicos del puesto" de la requisición. La búsqueda usa la
  * tripleta (área, sección, puesto) como clave compuesta, con normalización
@@ -331,6 +354,16 @@ export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
   rechazado: 'Rechazado',
   no_asistio: 'No asistió',
 };
+
+export function humanizeStatus(status: string): string {
+  if (!status) return '';
+  if (status in CANDIDATE_STATUS_LABEL) {
+    return CANDIDATE_STATUS_LABEL[status as CandidateStatus];
+  }
+  return status
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 /**
  * Mapa de status legados → status actuales. Solo se usa al leer data

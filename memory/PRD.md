@@ -3,6 +3,38 @@
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
+## 2026-06-19 (sesión 8) — Vacantes automática + fix navbar
+- **Vacantes 100% automática**: nueva `Vacantes.tsx` deriva las vacantes de `bajas` + `empleados` (ya no usa `vacancy_requests`). Lógica en `lib/autoVacancies.ts`: toda baja = vacante; empareja por area+seccion+puesto; cubre con el ingreso más reciente ≥ fecha_baja; 1 a 1; cobertura manual (interna) no consume ingreso. Resumen con count-up, filtro de estado, búsqueda; el usuario asigna reclutador (persistido) y puede marcar cobertura manual.
+- **Persistencia reclutador**: nuevo campo `Baja.cubierta_reclutador` + `setBajaReclutador` en `useBajas`. REQUIERE columna en Supabase: `alter table bajas add column if not exists cubierta_reclutador text;`
+- **Fix navbar (iOS Safari)**: la navbar fija "saltaba" al hacer scroll por el cambio de `env(safe-area-inset-bottom)` al colapsar la barra del navegador. Solución con VisualViewport API en `BottomTabBar.tsx` (se pega al fondo visible real). En PWA instalada no afecta.
+- NOTA: los KPIs de SLA/time-to-fill que leían `vacancy_requests` quedarán en 0 (tabla vacía). Pendiente: re-cablearlos al nuevo modelo si se desea.
+- `tsc` + `npm run build` OK.
+
+
+- **Count-up KPIs (2)**: `AnimatedNumber.tsx` anima 0→valor al entrar en viewport (parsea "95%", "+3", decimales). Integrado en `StatCard` → cubre todos los KPIs. Respeta reduced-motion.
+- **Stagger reveals (3)** + **scroll-reveal (5)**: `lib/motion.ts` (variants) + `Reveal.tsx` (`Reveal`/`RevealList`/`RevealItem`, `whileInView once`). Aplicado: chart-section (scroll-reveal) y grid móvil de KPIs (stagger por tab).
+- **Modal entrance (nod a #1)**: `Modal.tsx` ahora entra con spring (overlay fade + content scale/slide). Shared-element real fila→modal queda pendiente (requiere trabajo cuidadoso por el portal).
+- **Realtime (14)**: `useCandidates` refactor → `refetch({silent})` + suscripción `postgres_changes` a `candidates`/`candidate_notes`. Refresca en vivo entre dispositivos/pestañas. REQUIERE habilitar **Realtime** en esas tablas en Supabase (Database → Replication). Si no, degrada silencioso.
+- **Accesibilidad global**: `<MotionConfig reducedMotion="user">` en `main.tsx` → todas las animaciones (nuevas y existentes) respetan la preferencia del sistema.
+- `tsc` + `npm run build` OK.
+
+
+- **Migración completa de `sonner` → `sileo`** (0 referencias a sonner en `src`, paquete desinstalado).
+- **Setup core**:
+  - `src/components/ui/AppToaster.tsx`: `<Toaster position="top-center" />` con tema sincronizado al `data-theme` del documento (MutationObserver), `offset.top` con `env(safe-area-inset-top)` (mobile-first). Montado en `App.tsx` (visible también en login).
+  - `src/styles/sileo.css`: overrides cohesivos al design system → estados mapeados a tokens (`success #10b981`, `error #ef4444`, `warning #f59e0b`, `info/action #14b8a6`), `font-family: var(--font-body)`, sin `capitalize` (español), ancho responsive `calc(100vw - 1.75rem)` en ≤480px, contraste de descripción subido (a11y). Importado tras `sileo/styles.css` en `main.tsx`.
+  - `src/lib/notify.ts`: reexporta `sileo` + helper `notifyResult()` para flujos `{ ok, message }` (success/error toast sin romper el return al caller).
+- **Notificaciones agregadas en flujos críticos** (antes silenciados con `console.warn`):
+  - Login: éxito + error.
+  - Pipeline (candidatos): alta/edición, cambio de estado, contratación (incl. parcial), eliminación, nota.
+  - Vacantes: alta/edición, cambio de estado, eliminación.
+  - Bajas: import (con conteo insertadas/omitidas), cubrir/descubrir vacante.
+  - Empleados: edición, eliminación, incapacidad (registrada/finalizada).
+  - Reporte Diario: migrados los toasts existentes.
+- **a11y**: sileo expone `aria-live="polite"` en el viewport.
+- `npm run build` OK. NOTA: sileo emite warnings de consola `<circle> attribute cx/cy undefined` en el primer frame de medición del toast (motion); es cosmético en consola, no afecta el render. Validación visual final la hace el usuario en preview de Vercel.
+
+
 ## 2026-06-18 (sesión 6 cont.) — UX Dashboard + tokens
 - **AreaDetailModal**: eliminado tab "Todas" (default = primera sección); resumen superior **rediseñado** (cobertura hero con % grande + barra redondeada; métricas en tiles con tinte rojo/ámbar). Fix de hueco en móvil (`coverage` pasó de `flex:1 1 240px` a `flex:0 0 auto`).
 - **Header (PC)**: menús de grupo abren **solo con click** (quitado hover open/close que buggeaba la selección).
@@ -100,6 +132,52 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - **Botón "Guardar mes"**: `handleSaveToDb` existía pero **no estaba conectado a ningún botón**. Agregado botón primario en el header (`save-report-btn`, label dinámico "Guardar mes"/"Actualizar mes" según exista el mes). Tras guardar aparece en "Reportes guardados" + "Comparativa mensual".
 - Validado con el JSON real `REPORTE JUNIO.json` (720 empleados, 694 incidencias, días 01–16): parser OK (ignora fila header `mes`, mapea `área` con acento), render móvil+PC correcto, `tsc --noEmit` limpio.
 
+## KPIs Vacantes — fix de inconsistencia (jun 2026)
+- Causa: la página mezclaba dos definiciones de "vacante". El KPI "Vacantes abiertas" usaba el faltante de plantilla (`calculatePositionCoverage` → 21), distinto del conteo de la lista de bajas sin cubrir (22).
+- Decisión del usuario: "Vacantes abiertas" = conteo de la LISTA (bajas sin cubrir, `vacancies.filter(status==='abierta').length`), para que siempre cuadre con las tarjetas/tabla de abajo. "Cob. autorizada %" = Ocupados ÷ Plantilla autorizada (sin backups), ya implementado así.
+- Cambio en `src/pages/Vacantes.tsx`: nuevo `vacantesAbiertas` memo desde `vacancies`; se quitó `vacantesAbiertas` del `summary` de cobertura. Build + `tsc --noEmit` limpios.
+
+## KPIs Vacantes — rediseño Autorizado | Backup (jun 2026)
+- Layout nuevo: grid 4 filas (Vacantes, Cubiertas, Abiertas, Cobertura) × 2 columnas (Autorizado | Backup) = 8 KPIs. Izquierda autorizado, derecha backup. Reemplaza los 6 KPIs anteriores.
+- Lógica: `splitVacanciesByPlantilla(vacancies, positions)` en `src/lib/autoVacancies.ts`. Regla confirmada por usuario: por cada puesto (área+sección+puesto) la plantilla (`src/lib/constants.ts` → `PLANTILLA_AUTORIZADA`) define A=`plantilla_autorizada` y B=`backup`; las vacantes del puesto ordenadas por fecha_baja asc → primeras A = Autorizado, siguientes hasta B = Backup, excedente >A+B = Autorizado. Clasificación 1 vez por baja → totales/cubiertas/abiertas/cobertura consistentes.
+- CAVEAT de datos: solo 7 entradas de la plantilla tienen `backup` (OPERADOR DE MÁQUINA ×4=5, OPERADOR DE ACABADOS GP-12 ×2=2, INSPECTOR DE CALIDAD=2). Como A es grande (22/32), "Backup" solo aparece si un puesto+sección acumula MÁS bajas que su A → en la práctica Backup puede salir 0/bajo. Si el usuario espera números de backup mayores, cambiar a la regla "opción b" (clasificar la baja como backup si al ocurrir la plantilla real ya cubría la autorizada = excedente).
+- `tsc --noEmit` + `yarn build` limpios. Pendiente: validación con datos reales (este pod no tiene `VITE_SUPABASE_*`).
+
+## KPIs Vacantes — Modelo B (plantilla real) Autorizado | Backup (jun 2026)
+- Decisión final del usuario: **Modelo B** (basado en empleados reales vs plantilla, NO en bajas). "Excedente" (lo que pasa de A+B) se ignora.
+- Grid 4 filas × 2 columnas (Autorizado | Backup) en `src/pages/Vacantes.tsx`:
+  - **Plantilla**: A = Σ`plantilla_autorizada` | B = Σ`backup` definido en `constants.ts`.
+  - **Ocupados**: Σ min(real, A) | Σ`excedente_backup` (ocupados dentro de la banda backup).
+  - **Vacantes**: max(0, A−ocupadosAut) | max(0, B−ocupadosBackup).
+  - **Cobertura %**: ocupadosAut/A | ocupadosBackup/B.
+- Reutiliza `calculatePositionCoverage(employees, comments, positions)` → mismos números que Dashboard y KpisPage (consistencia garantizada).
+- Eliminada la función `splitVacanciesByPlantilla` (Modelo A, basada en bajas) de `autoVacancies.ts`, ya no aplica.
+- `tsc --noEmit` + `yarn build` limpios. Pendiente validación con datos reales (pod sin `VITE_SUPABASE_*`).
+
+## Rediseño animaciones login/logout — Idea A "Núcleo" (jun 2026)
+- Rediseño visual cohesivo (sin tocar lógica ni datos): login y logout comparten un `CoreGraphic` (núcleo + partículas + anillo de progreso). Login (`mode='in'`): partículas convergen y el anillo se llena. Logout (`mode='out'`): el núcleo se dispersa y el anillo se vacía. Misma figura, dirección invertida.
+- Color **primary** (var(--color-primary)), 100% tokens → claro/oscuro. Respeta `prefers-reduced-motion`. Mobile-first (`.loader-core` con clamp, safe-area).
+- Typewriter intacto (3 frases en login, frase motivacional en logout).
+- Tiempos a **4s ambos**: `Login.tsx` flash 4000, `UserMenu.tsx` y `BottomTabBar.tsx` setTimeout(hide, 4000). Fases de login = 4000/3 ms.
+- Archivos: `src/components/ui/LoaderOverlay.tsx` (reescrito CoreGraphic + CinematicEntrance + LogoutCinematic), `LoaderOverlay.css` (.loader-core-scene/.loader-core).
+- `tsc` + `yarn build` limpios. Validación visual pendiente en el deploy del usuario (este pod no renderiza el flujo autenticado).
+
+## Login rediseñado + ajuste de animaciones (jun 2026)
+- **Login** (`Login.tsx` / `Login.css`), sin tocar lógica ni `signIn`:
+  - PC: split izquierdo **negro** (`--panel-bg: #0d0d0f`, isla inmune al tema) con el `CoreGraphic` animado + wordmark/tagline; derecho blanco (`--color-canvas`) con form minimalista.
+  - Móvil: animación (núcleo) arriba como hero (40vh) + form abajo tipo **sheet** (esquinas superiores `--rounded-xl`, solapa con `margin-top` negativo, sombra y asa `::before`).
+  - Reutiliza `CoreGraphic` (exportado desde `LoaderOverlay.tsx`) → cohesión total con entrada/salida.
+- **Animación entrada**: ahora **un solo mensaje** "Preparando tu espacio" SIN typewriter (3 fases no daban tiempo en 4s). Se eliminó la lógica de fases.
+- **Animación salida**: la frase motivacional se muestra **directa** (sin typewriter). `TypewriterTitle` ya no se usa en el loader.
+- `tsc` + `yarn build` limpios. Validación visual pendiente en deploy del usuario.
+
+## Login: siempre tema claro + fixes visuales (jun 2026)
+- **Login siempre claro** (sin modo oscuro): `Login.tsx` fuerza `data-theme="light"` en `<html>` mientras está montado y restaura el tema real (localStorage) al desmontar. Garantiza negro-arriba / blanco-abajo en cualquier tema.
+- **Núcleo visible en ambos temas:** `CoreGraphic` ahora usa `var(--loader-core-color, var(--color-primary))` y `var(--loader-core-track, ...)`. En `.login__panel` se setea `--loader-core-color:#fff` (blanco sobre negro). El overlay normal sigue en primary.
+- **Barra de estado:** `theme-color` forzado a `#0d0d0f` durante el login (status bar negra que coincide con el top), restaurado al salir.
+- **Sheet móvil:** esquinas superiores `2rem` (más redondeadas) y se quitó el asa/línea gris (`::before`).
+- `tsc` + `yarn build` limpios. Validación visual pendiente en deploy (pod sin `VITE_SUPABASE_*`).
+
 ## Pendiente / Backlog
 - P0 (usuario): en Supabase correr `019_reportes_diarios.sql` (y `005_auth_profiles.sql` si no está) en SQL Editor; setear `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en `.env` local. Luego subir JSON → "Guardar mes" → historial.
 - P1: Verificación visual e2e por el usuario en local (este entorno no tiene `.env` de Supabase → app no carga datos aquí).
@@ -111,3 +189,41 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Supervisor `frontend` espera `/app/frontend` (no existe); Vite se corre manualmente: `cd /app && yarn dev` (puerto 3000).
 - Breakpoint móvil del sistema: 768px (`useIsMobile`, `useMediaQuery`).
 - `tsc -b --noEmit` limpio tras todos los cambios.
+
+## 2026-06-22 — Fix clasificación Autorizado/Backup en Vacantes
+- Bug: el filtro "Tipo = Backup" en /vacantes marcaba como backup vacantes de puestos SIN buffer (backup:0, p. ej. OPERADOR DE MÁQUINA de producción). El heurístico previo (`activeAtBaja >= plantilla_autorizada`) ignoraba si el puesto tenía backup y no era consistente con la tabla resumen (KPI).
+- Fix: `computeAutoVacancies` (src/lib/autoVacancies.ts) ahora clasifica por puesto siguiendo el mismo modelo que `calculatePositionCoverage`: la plantilla real ocupa primero los lugares AUTORIZADOS (A) y luego el BACKUP (B). Vacantes abiertas: primeras (A−real) = autorizado, siguientes (hasta B) = backup, excedente = autorizado. Puesto con B=0 nunca produce backup.
+- Validado con casos unitarios (B=0 → 0 backup; real=A → todas backup band; real<A → split correcto) y `tsc --noEmit` sin errores.
+
+## 2026-06-22 — Backup gestionable desde la BD + wizard admin (Vacantes)
+- Decisión: el `backup` (y plantilla/urgentes/notas) deja de vivir solo en `constants.ts`. Ahora se gestiona desde un wizard admin-only en la página Vacantes y se persiste en la BD.
+- BD: nueva tabla `public.position_settings` (tripleta área/sección/puesto, plantilla_autorizada override nullable, backup, urgentes, notas). Migración: `supabase/migrations/011_position_settings.sql` (incluye SEED con los valores actuales del código → los números NO cambian). **EL USUARIO DEBE EJECUTAR ESTE SQL EN SUPABASE.**
+- Frontend:
+  - `positions.tsx`: carga `position_settings` (fallback localStorage), aplica overrides sobre el catálogo (`applySettings`), expone `positionSettings` + `upsertPositionSetting` (upsert optimista por tripleta normalizada).
+  - `PositionSettingsWizard.tsx`: wizard paso a paso Área → Sección → Puesto → Valores (pre-llena con valores efectivos actuales). Botón "Configurar plantilla/backup" en Vacantes visible solo si `profile.role === 'admin'`.
+  - `types.ts`: nueva interface `PositionSetting`.
+- Verificación: `tsc --noEmit` y `vite build` OK. No se pudo probar el flujo admin en vivo (este contenedor no tiene credenciales Supabase; la app corre en Vercel). El usuario debe correr la migración y validar en su deploy.
+- PENDIENTE (separado): reconciliar el CONTEO exacto lista vs tabla KPI (Abiertas+Backup ≠ KPI backup 13). Es un tema de modelo (bajas vs foto estructural), no del dato de backup. Confirmar con el usuario si se aborda después.
+
+## 2026-06-22 — Reconciliación exacta lista de Vacantes ↔ tabla KPI
+- Problema: el conteo de la lista (Abiertas+Backup) no cuadraba con la tabla KPI (8/13). Causa: dos modelos distintos (lista = bajas; KPI = foto estructural).
+- Decisión del usuario: "el KPI manda". Implementado en `computeAutoVacancies` (src/lib/autoVacancies.ts):
+  - Las vacantes ABIERTAS y su tipo se derivan de `calculatePositionCoverage` (misma fuente del KPI). Por puesto se abren `vacAut + vacBackup` filas, llenadas con las bajas más recientes; las bajas que sobran pasan a "cubiertas" (absorbidas) y, si faltan bajas para el hueco real, se generan filas ESTRUCTURALES (`baja = null`, etiqueta "Vacante estructural").
+  - Garantía por construcción: Σ abiertas autorizado = KPI autorizado vacantes; Σ abiertas backup = KPI backup vacantes.
+  - `AutoVacancy.baja` ahora es nullable. UI (`Vacantes.tsx`) maneja filas estructurales: muestra "Vacante estructural", deshabilita reclutador/acción y oculta SLA. KpisPage usa la ruta legacy (sin `positions`) intacta.
+- Verificación: test unitario con esbuild (3 puestos: understaffed con backup, sin backup, overstaffed) → open autorizado/backup cuadran EXACTO con el KPI; `tsc` y `vite build` OK. Falta validación en vivo (sin credenciales Supabase locales; app en Vercel).
+
+## 2026-06-22 — Nueva página Toulouse-Piéron (/toulouse, en menú Procesos)
+- Genera hoja de aplicación + plantilla de corrección de la prueba de atención Toulouse-Piéron. Rejilla estándar fija 30×40, símbolos clásicos (cuadro con guion en 8 orientaciones), 2 modelos a tachar.
+- Generación DETERMINISTA por semilla (mulberry32) en `src/lib/toulouse.ts`: se guarda solo seed + config, la rejilla y la clave se regeneran idénticas. Plantilla de corrección resalta objetivos (anillo rojo) + conteo por renglón + total.
+- Campos: nombre candidato, puesto solicitado, edad, fecha, evaluador, tiempo límite, folio (auto). Preview en la misma página con toggle Candidato/Corrección. Impresión tamaño carta (@page letter, solo `.tp-printable` visible). Mobile-first responsivo (1 col → 2 cols ≥1024px). Semántico (fieldset/legend, labels, roles/aria) y sin hardcodear (tokens de tema, config centralizada).
+- Persistencia: tabla Supabase `toulouse_sheets` + respaldo localStorage (hook `useToulouseSheets`). Migración `supabase/migrations/012_toulouse_sheets.sql` — **EL USUARIO DEBE EJECUTARLA**. Guarda/carga/elimina hojas.
+- Archivos: `src/lib/toulouse.ts`, `src/hooks/useToulouseSheets.ts`, `src/components/toulouse/{ToulouseSymbol,ToulouseSheet}.tsx`, `src/pages/Toulouse.{tsx,css}`; rutas en `App.tsx` y nav en `Header.tsx`.
+- Verificación: `tsc` + `vite build` OK. Render visual validado en aislamiento (hoja + plantilla se ven correctas, ~320/1200 objetivos). Falta validación en vivo (sin credenciales Supabase locales).
+
+## 2026-06-22 — Toulouse-Piéron: fix impresión + apartado de instrucciones
+- Bug impresión en blanco: el truco `visibility:hidden` fallaba por contenedores con overflow/transform. Fix: la hoja activa se renderiza en un PORTAL a `document.body` (`.tp-print-portal`, oculto en pantalla); en `@media print` se ocultan `body > *:not(.tp-print-portal)` y se muestra solo el portal (tamaño carta). Robusto y sin clipping.
+- Instrucciones (investigadas del manual TP, no inventadas) centralizadas en `src/lib/toulouse.ts`: `TOULOUSE_CONSIGNA` (consigna textual), `TOULOUSE_EVALUATOR_STEPS` (aplicación: 10 min, señal por minuto, corrección PD=A−(E+O)), `TOULOUSE_CANDIDATE_STEPS`.
+  - Apartado on-page (`<details>` con 2 tarjetas: evaluador + candidato) en `Toulouse.tsx`.
+  - Hoja del candidato (impresa) ahora incluye consigna + 6 reglas (2 columnas). Plantilla de corrección incluye la fórmula PD = A − (E + O).
+- Verificación: `tsc` + `vite build` OK; render visual de ambas hojas validado (consigna+reglas y clave con fórmula, caben en una página carta). Impresión real pendiente de validar en vivo (sin Supabase/login local).

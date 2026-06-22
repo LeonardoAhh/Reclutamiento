@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
+import { motion, useReducedMotion } from 'framer-motion';
 import { MOTIVATIONAL_QUOTES, type Quote } from '@/lib/quotes';
 import './LoaderOverlay.css';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/** Duración compartida de las escenas cinemáticas (login y logout). */
+const SCENE_DURATION_MS = 4000;
+const SCENE_DURATION_S = SCENE_DURATION_MS / 1000;
+/** Geometría del núcleo en unidades del viewBox (se escala por CSS). */
+const RING_R = 70;
+const RING_C = 2 * Math.PI * RING_R;
+const PARTICLES = [0, 1, 2, 3, 4, 5];
 
 export type LoaderTone = 'full' | 'route' | 'logout';
 
@@ -14,7 +21,7 @@ interface LoaderOverlayProps {
   tone?: LoaderTone;
 }
 
-// ── 1. Cargador Mínimo para cambios de ruta (800ms) ──────────
+// ── 1. Cargador Mínimo para cambios de ruta ──────────────────
 function RouteLoader() {
   return (
     <motion.div
@@ -27,10 +34,10 @@ function RouteLoader() {
       aria-label="Cargando"
     >
       <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="16" stroke="var(--color-hairline-strong)" strokeWidth="3" />
+        <circle cx="20" cy="20" r="16" stroke="var(--loader-core-track, var(--color-hairline-strong))" strokeWidth="3" />
         <motion.circle
           cx={20} cy={20} r={16}
-          stroke="var(--color-primary)"
+          stroke="var(--loader-core-color, var(--color-primary))"
           strokeWidth="3"
           strokeLinecap="round"
           strokeDasharray="100"
@@ -44,198 +51,128 @@ function RouteLoader() {
   );
 }
 
-// ── 2. Animaciones de las Fases del Reclutamiento ──────────
-
-// FASE 1: Atracción (Recolección de perfiles)
-function AttractionGraphic() {
+// ── 2. Núcleo compartido (motivo cohesivo login ↔ logout) ─────
+//
+// `mode='in'`  → partículas convergen al núcleo + anillo que se llena.
+// `mode='out'` → núcleo se dispersa + anillo que se vacía.
+// Mismo elemento, dirección invertida. Solo tokens (claro/oscuro).
+export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: boolean }) {
+  const filling = mode === 'in';
   return (
-    <svg width="160" height="160" viewBox="0 0 160 160" className="loader-svg">
-      {/* Central Node */}
-      <motion.circle 
-        cx={80} cy={80} r={18} 
-        fill="var(--color-primary)" 
-        initial={{ scale: 0 }} 
-        animate={{ scale: 1 }} 
-        transition={{ duration: 0.8, delay: 0.3, ease: EASE }} 
+    <svg viewBox="0 0 200 200" className="loader-core" role="img" aria-hidden="true">
+      {/* Pista del anillo */}
+      <circle
+        cx={100} cy={100} r={RING_R}
+        fill="none"
+        stroke="var(--loader-core-track, var(--color-hairline-strong))"
+        strokeWidth={3}
+        opacity={0.35}
       />
-      {/* Orbiting nodes converging */}
-      {[0, 1, 2, 3, 4, 5].map((i) => {
-        const angle = (i * 360) / 6;
-        const rad = (angle * Math.PI) / 180;
-        const startX = 80 + Math.cos(rad) * 65;
-        const startY = 80 + Math.sin(rad) * 65;
-        return (
-          <motion.circle
-            key={i}
-            cx={startX}
-            cy={startY}
-            r={5}
-            fill="var(--color-primary)"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], cx: 80, cy: 80 }}
-            transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, delay: i * 0.3, ease: "easeInOut" }}
-          />
-        );
-      })}
+
+      {/* Anillo de progreso: se llena (in) o se vacía (out) en la duración */}
+      <motion.circle
+        cx={100} cy={100} r={RING_R}
+        fill="none"
+        stroke="var(--loader-core-color, var(--color-primary))"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeDasharray={RING_C}
+        initial={{ strokeDashoffset: filling ? RING_C : 0 }}
+        animate={{ strokeDashoffset: reduce ? (filling ? 0 : RING_C) : filling ? 0 : RING_C }}
+        transition={{ duration: reduce ? 0 : SCENE_DURATION_S, ease: EASE }}
+        style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px' }}
+      />
+
+      {/* Partículas: convergen (in) o se dispersan (out). Loop sutil. */}
+      {!reduce &&
+        PARTICLES.map((i) => {
+          const angle = (i * 360) / PARTICLES.length;
+          const rad = (angle * Math.PI) / 180;
+          const outerX = 100 + Math.cos(rad) * RING_R;
+          const outerY = 100 + Math.sin(rad) * RING_R;
+          const fromX = filling ? outerX : 100;
+          const fromY = filling ? outerY : 100;
+          const toX = filling ? 100 : outerX;
+          const toY = filling ? 100 : outerY;
+          return (
+            <motion.circle
+              key={i}
+              r={4}
+              fill="var(--loader-core-color, var(--color-primary))"
+              initial={{ cx: fromX, cy: fromY, opacity: 0 }}
+              animate={{ cx: [fromX, toX], cy: [fromY, toY], opacity: [0, 1, 0] }}
+              transition={{
+                duration: 2,
+                repeat: Number.POSITIVE_INFINITY,
+                delay: i * 0.18,
+                ease: 'easeInOut',
+              }}
+            />
+          );
+        })}
+
+      {/* Halo expansivo del núcleo */}
+      {!reduce && (
+        <motion.circle
+          cx={100} cy={100} r={16}
+          fill="none"
+          stroke="var(--loader-core-color, var(--color-primary))"
+          strokeWidth={2}
+          initial={{ scale: 1, opacity: 0.5 }}
+          animate={{ scale: [1, 2.4], opacity: [0.45, 0] }}
+          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: 'easeOut' }}
+          style={{ transformOrigin: '100px 100px' }}
+        />
+      )}
+
+      {/* Núcleo central: se enciende (in) o se apaga/dispersa (out) */}
+      <motion.circle
+        cx={100} cy={100} r={16}
+        fill="var(--loader-core-color, var(--color-primary))"
+        initial={{ scale: filling ? 0 : 1, opacity: filling ? 0 : 1 }}
+        animate={
+          reduce
+            ? { scale: filling ? 1 : 0.2, opacity: filling ? 1 : 0.2 }
+            : filling
+              ? { scale: [0, 1.12, 1], opacity: 1 }
+              : { scale: [1, 1.15, 0.15], opacity: [1, 1, 0] }
+        }
+        transition={{
+          duration: filling ? 1 : SCENE_DURATION_S,
+          ease: EASE,
+          times: filling ? [0, 0.6, 1] : [0, 0.5, 1],
+        }}
+        style={{ transformOrigin: '100px 100px' }}
+      />
     </svg>
   );
 }
 
-// FASE 2: Selección (Filtro / Match)
-function SelectionGraphic() {
-  return (
-    <svg width="160" height="160" viewBox="0 0 160 160" className="loader-svg">
-      {/* Profile Card base */}
-      <motion.rect 
-        x="45" y="35" width="70" height="90" rx="10" 
-        fill="none" stroke="var(--color-hairline-strong)" strokeWidth="3"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: EASE }}
-      />
-      {/* Abstract profile items */}
-      <motion.circle cx={80} cy={65} r={14} fill="var(--color-hairline-strong)" 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
-      <motion.rect x="60" y="95" width="40" height="4" rx="2" fill="var(--color-hairline-strong)" 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} />
-      <motion.rect x="65" y="107" width="30" height="4" rx="2" fill="var(--color-hairline-strong)" 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} />
-
-      {/* Scanner line */}
-      <motion.line 
-        x1="30" y1="35" x2="130" y2="35"
-        stroke="var(--color-accent-teal)" strokeWidth="3"
-        animate={{ y1: [35, 125, 35], y2: [35, 125, 35] }}
-        transition={{ duration: 2.2, ease: "linear", repeat: Number.POSITIVE_INFINITY }}
-      />
-      {/* Checkmark popping up periodically */}
-      <motion.path 
-        d="M68 85 L78 95 L98 65" 
-        fill="none" stroke="var(--color-success)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-        transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", times: [0, 0.2, 0.8, 1] }}
-      />
-    </svg>
-  );
-}
-
-// FASE 3: Onboarding (Acceso al Dashboard)
-function OnboardingGraphic() {
-  return (
-    <svg width="160" height="160" viewBox="0 0 160 160" className="loader-svg">
-      <motion.g 
-        initial={{ scale: 0.8, opacity: 0 }} 
-        animate={{ scale: 1, opacity: 1 }} 
-        transition={{ duration: 1, ease: EASE }}
-      >
-        <motion.rect x="35" y="35" width="40" height="40" rx="8" fill="var(--color-primary)" 
-          initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1, ease: EASE }} />
-        <motion.rect x="85" y="35" width="40" height="40" rx="8" fill="var(--color-hairline-strong)" 
-          initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, ease: EASE }} />
-        <motion.rect x="35" y="85" width="90" height="40" rx="8" fill="var(--color-hairline-strong)" 
-          initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, ease: EASE }} />
-        
-        {/* Abstract mini graphs indicating the dashboard is ready */}
-        <motion.rect x="45" y="105" width="6" height="10" rx="2" fill="var(--color-canvas)" 
-          initial={{ height: 0 }} animate={{ height: 10 }} transition={{ delay: 0.6 }} />
-        <motion.rect x="55" y="100" width="6" height="15" rx="2" fill="var(--color-canvas)" 
-          initial={{ height: 0 }} animate={{ height: 15 }} transition={{ delay: 0.7 }} />
-        <motion.rect x="65" y="95" width="6" height="20" rx="2" fill="var(--color-canvas)" 
-          initial={{ height: 0 }} animate={{ height: 20 }} transition={{ delay: 0.8 }} />
-      </motion.g>
-    </svg>
-  );
-}
-
-// ── 3. Secuencia Cinemática de 7 segundos ──────────
+// ── 3. Entrada (login): una sola escena, mensaje único ────────
 function CinematicEntrance() {
-  const [phase, setPhase] = useState(0);
-
-  // La secuencia dura 7s en total, dividida en 3 actos (aprox 2.3s cada uno).
-  useEffect(() => {
-    // 0s a 2.33s: Atracción
-    const t1 = setTimeout(() => setPhase(1), 2333);
-    // 2.33s a 4.66s: Selección
-    const t2 = setTimeout(() => setPhase(2), 4666);
-    // 4.66s a 7s: Onboarding
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
-
-  const variants = {
-    initial: { opacity: 0, y: 15 },
-    enter: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } },
-    exit: { opacity: 0, y: -15, transition: { duration: 0.6, ease: EASE } }
-  };
-
-  const textVariants = {
-    initial: { opacity: 0, y: 10 },
-    enter: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE, delay: 0.2 } },
-    exit: { opacity: 0, y: -10, transition: { duration: 0.4, ease: EASE } }
-  };
+  const reduce = useReducedMotion() ?? false;
 
   return (
-    <div className="loader-cinematic">
-      <AnimatePresence mode="wait">
-        {phase === 0 && (
-          <motion.div key="phase0" className="loader-phase" initial="initial" animate="enter" exit="exit" variants={variants}>
-             <AttractionGraphic />
-             <motion.div className="loader-text" variants={textVariants}>
-               <h2>Reclutamiento Querétaro</h2>
-               <p>
-                 <TypewriterTitle 
-                   sequences={[{ text: "Cargando base de datos del personal...", deleteAfter: false }]}
-                   typingSpeed={15}
-                   startDelay={300}
-                   autoLoop={false}
-                 />
-               </p>
-             </motion.div>
-          </motion.div>
-        )}
-        {phase === 1 && (
-          <motion.div key="phase1" className="loader-phase" initial="initial" animate="enter" exit="exit" variants={variants}>
-             <SelectionGraphic />
-             <motion.div className="loader-text" variants={textVariants}>
-               <h2>Estatus de Plantilla</h2>
-               <p>
-                 <TypewriterTitle 
-                   sequences={[{ text: "Sincronizando candidatos en proceso e ingresos...", deleteAfter: false }]}
-                   typingSpeed={15}
-                   startDelay={300}
-                   autoLoop={false}
-                 />
-               </p>
-             </motion.div>
-          </motion.div>
-        )}
-        {phase === 2 && (
-          <motion.div key="phase2" className="loader-phase" initial="initial" animate="enter" exit="exit" variants={variants}>
-             <OnboardingGraphic />
-             <motion.div className="loader-text" variants={textVariants}>
-               <h2>Dashboard Activo</h2>
-               <p>
-                 <TypewriterTitle 
-                   sequences={[{ text: "Indicadores clave listos para presentar...", deleteAfter: false }]}
-                   typingSpeed={15}
-                   startDelay={300}
-                   autoLoop={false}
-                 />
-               </p>
-             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="loader-core-scene">
+      <CoreGraphic mode="in" reduce={reduce} />
+      <motion.div
+        className="loader-text"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
+      >
+        <h2>Preparando tu espacio</h2>
+      </motion.div>
     </div>
   );
 }
 
-// ── 4. Secuencia Cinemática de Salida (7 segundos motivacionales) ──────────
+// ── 4. Salida (logout): mismo núcleo dispersándose + frase ────
 function LogoutCinematic({ username }: { username?: string }) {
   const [quote, setQuote] = useState<Quote | null>(null);
+  const reduce = useReducedMotion() ?? false;
 
   useEffect(() => {
-    // Escoger una frase aleatoria al montar
     const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
     setQuote(MOTIVATIONAL_QUOTES[randomIndex]);
   }, []);
@@ -243,45 +180,37 @@ function LogoutCinematic({ username }: { username?: string }) {
   if (!quote) return null;
 
   return (
-    <motion.div 
-      className="loader-logout"
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1.02 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 7, ease: "easeInOut" }}
-    >
-      {username && (
-        <motion.h2
-          className="loader-logout-greeting"
-          initial={{ opacity: 0, y: -10 }}
+    <div className="loader-core-scene">
+      <CoreGraphic mode="out" reduce={reduce} />
+      <div className="loader-logout">
+        {username && (
+          <motion.h2
+            className="loader-logout-greeting"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
+          >
+            HASTA PRONTO, {username}
+          </motion.h2>
+        )}
+        <motion.div
+          className="loader-logout-quote"
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, ease: EASE, delay: 0.1 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.35 }}
         >
-          HASTA PRONTO, {username}
-        </motion.h2>
-      )}
-      <motion.div 
-        className="loader-logout-quote"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: EASE, delay: 0.3 }}
-      >
-        <TypewriterTitle 
-          sequences={[{ text: `"${quote.text}"`, deleteAfter: false }]}
-          typingSpeed={15}
-          startDelay={800}
-          autoLoop={false}
-        />
-      </motion.div>
-      <motion.p 
-        className="loader-logout-author"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, ease: EASE, delay: 2.5 }}
-      >
-        — {quote.author}
-      </motion.p>
-    </motion.div>
+          "{quote.text}"
+        </motion.div>
+        <motion.p
+          className="loader-logout-author"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 1.8 }}
+        >
+          — {quote.author}
+        </motion.p>
+      </div>
+    </div>
   );
 }
 

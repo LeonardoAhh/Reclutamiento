@@ -1,6 +1,6 @@
-import { useState, type FormEvent, useId } from 'react';
-import { Eye, EyeOff, ArrowRight, Loader2, Users, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, type FormEvent, useId, useEffect } from 'react';
+import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
 import { BlackHole } from '@/components/BlackHole';
@@ -17,6 +17,7 @@ const fadeUp = (delay = 0) => ({
 export function Login() {
   const { signIn } = useAuth();
   const { flash } = useLoader();
+  const reduce = useReducedMotion() ?? false;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +27,35 @@ export function Login() {
   const usernameId = useId();
   const passwordId = useId();
   const errorId = useId();
+
+  // El login SIEMPRE es claro: negro arriba, blanco abajo (sin modo oscuro).
+  // Forzamos data-theme="light" mientras el login está montado y el theme-color
+  // de la barra de estado a negro (coincide con la parte superior). Al salir,
+  // restauramos el tema real del usuario.
+  useEffect(() => {
+    const LOGIN_BAR = '#ffffff';
+    const root = document.documentElement;
+    const meta = document.getElementById('theme-color-meta');
+    const prevTheme = root.getAttribute('data-theme');
+
+    root.setAttribute('data-theme', 'light');
+    root.style.backgroundColor = LOGIN_BAR;
+    meta?.setAttribute('content', LOGIN_BAR);
+
+    return () => {
+      const stored = window.localStorage.getItem('reclutamiento_theme');
+      const theme =
+        stored === 'dark' || stored === 'light'
+          ? stored
+          : prevTheme === 'dark'
+            ? 'dark'
+            : 'light';
+      root.setAttribute('data-theme', theme);
+      const bg = theme === 'dark' ? '#0a0a0a' : '#ffffff';
+      root.style.backgroundColor = bg;
+      meta?.setAttribute('content', bg);
+    };
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,10 +71,15 @@ export function Login() {
     if (!result.ok) {
       setSubmitting(false);
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
+      sileo.error({
+        title: 'No se pudo iniciar sesión',
+        description: 'Revisa tus credenciales.',
+      });
       return;
     }
 
-    flash({ tone: 'full', duration: 7000 });
+    sileo.success({ title: 'Sesión iniciada', description: 'Bienvenido de nuevo.' });
+    flash({ tone: 'full', duration: 4000 });
   };
 
   return (
@@ -95,7 +130,7 @@ export function Login() {
               Acceso seguro
             </motion.p>
             <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
-              Bienvenido<br />de nuevo
+              Bienvenido de nuevo
             </motion.h2>
           </header>
 
@@ -197,7 +232,7 @@ export function Login() {
               {submitting ? (
                 <>
                   <Loader2 size={16} className="login__spinner" aria-hidden="true" />
-                  <span>Verificando acceso…</span>
+                  <span>Verificando credenciales...</span>
                 </>
               ) : (
                 <>
@@ -207,10 +242,6 @@ export function Login() {
               )}
             </motion.button>
           </form>
-
-          <motion.p className="login__footer-note" {...fadeUp(0.65)}>
-            Reclutamiento y Selección de Personal
-          </motion.p>
         </motion.section>
       </div>
     </main>

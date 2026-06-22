@@ -30,7 +30,29 @@
   justify-content: center;
 }
 
-/* ── Cinematic Entrance (10 segundos) ───────────────────────────────────── */
+/* ── Núcleo cinemático compartido (login ↔ logout) ──────────────────────── */
+.loader-core-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--spacing-xl);
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-lg) var(--spacing-lg)
+    max(var(--spacing-lg), env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.loader-core {
+  width: clamp(132px, 42vw, 196px);
+  height: clamp(132px, 42vw, 196px);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* ── Cinematic Entrance (legacy, conservado por compatibilidad) ──────────── */
 .loader-cinematic {
   position: relative;
   width: 100%;

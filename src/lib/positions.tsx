@@ -11,7 +11,11 @@ import { supabase } from './supabase';
 import { formatSupabaseError } from './errors';
 import { PLANTILLA_AUTORIZADA } from './constants';
 import { normalizePuesto, normalizeString } from './utils';
-import type { AuthorizedPosition, CustomPosition } from './types';
+import type {
+  AuthorizedPosition,
+  CustomPosition,
+  PositionSetting,
+} from './types';
 
 /**
  * Catálogo unificado de puestos: une la `PLANTILLA_AUTORIZADA` estática con
@@ -19,9 +23,19 @@ import type { AuthorizedPosition, CustomPosition } from './types';
  * usuario pueda promover a un empleado a un puesto totalmente nuevo y que ese
  * puesto aparezca de inmediato en los selectores de Dashboard, Vacantes,
  * Pipeline, modales de candidato/empleado y requisiciones — sin tocar código.
+ *
+ * Encima de ese catálogo se aplican los `position_settings`: overrides de
+ * backup / plantilla / urgentes / notas que un admin gestiona desde el wizard
+ * de Vacantes. Esos overrides MANDAN sobre el valor estático.
  */
 
 const STORAGE_KEY = 'reclutamiento_custom_positions';
+const STORAGE_KEY_SETTINGS = 'reclutamiento_position_settings';
+
+/** Clave normalizada de tripleta (área, sección, puesto) — match tolerante. */
+function tripletKey(p: { area: string; seccion: string; puesto: string }): string {
+  return `${normalizeString(p.area)}::${normalizeString(p.seccion)}::${normalizePuesto(p.puesto)}`;
+}
 
 function loadLocal(): CustomPosition[] {
   try {
@@ -38,6 +52,51 @@ function saveLocal(data: CustomPosition[]): void {
   } catch (err) {
     console.warn('localStorage save failed:', err);
   }
+}
+
+function loadLocalSettings(): PositionSetting[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_SETTINGS);
+    return stored ? (JSON.parse(stored) as PositionSetting[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalSettings(data: PositionSetting[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(data));
+  } catch (err) {
+    console.warn('localStorage settings save failed:', err);
+  }
+}
+
+/**
+ * Aplica los overrides de `position_settings` sobre el catálogo base. Cada
+ * setting manda sobre el valor estático del puesto que coincide por tripleta
+ * normalizada. `plantilla_autorizada` solo se sobreescribe si el override trae
+ * un número (no `null`).
+ */
+function applySettings(
+  base: AuthorizedPosition[],
+  settings: PositionSetting[]
+): AuthorizedPosition[] {
+  if (settings.length === 0) return base;
+  const byKey = new Map(settings.map((s) => [tripletKey(s), s]));
+  return base.map((p) => {
+    const ov = byKey.get(tripletKey(p));
+    if (!ov) return p;
+    return {
+      ...p,
+      plantilla_autorizada:
+        ov.plantilla_autorizada != null
+          ? ov.plantilla_autorizada
+          : p.plantilla_autorizada,
+      backup: ov.backup ?? p.backup,
+      urgentes: ov.urgentes ?? p.urgentes,
+      notas: ov.notas ?? p.notas,
+    };
+  });
 }
 
 function isConfigured(): boolean {
@@ -102,11 +161,24 @@ export interface CreatePositionResult {
   isNew?: boolean;
 }
 
+export interface UpsertPositionSettingInput {
+  area: string;
+  seccion: string;
+  puesto: string;
+  plantilla_autorizada: number | null;
+  backup: number;
+  urgentes: number;
+  notas?: string | null;
+  updated_by?: string | null;
+}
+
 interface PositionsContextValue {
-  /** Lista unificada (estática + custom) lista para alimentar selectores. */
+  /** Lista unificada (estática + custom + overrides) lista para selectores. */
   positions: AuthorizedPosition[];
   /** Solo los puestos custom (los creados desde UI). */
   customPositions: CustomPosition[];
+  /** Overrides admin por puesto (backup / plantilla / urgentes / notas). */
+  positionSettings: PositionSetting[];
   loading: boolean;
   /**
    * Crea (o reutiliza) un puesto custom. Devuelve `isNew=true` cuando se
@@ -114,6 +186,10 @@ interface PositionsContextValue {
    * estática o custom (en cuyo caso no duplica).
    */
   createPosition: (input: CreatePositionInput) => Promise<CreatePositionResult>;
+  /** Inserta/actualiza el override (backup/plantilla/urgentes/notas) de un puesto. */
+  upsertPositionSetting: (
+    input: UpsertPositionSettingInput
+  ) => Promise<{ ok: boolean; message?: string }>;
 }
 
 const PositionsContext = createContext<PositionsContextValue | null>(null);
@@ -122,6 +198,9 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
   const configured = isConfigured();
   const [customPositions, setCustomPositions] = useState<CustomPosition[]>(() =>
     loadLocal()
+  );
+  const [positionSettings, setPositionSettings] = useState<PositionSetting[]>(
+    () => loadLocalSettings()
   );
   const [loading, setLoading] = useState(configured);
 
@@ -133,18 +212,33 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase
-          .from('custom_positions')
-          .select('*')
-          .order('created_at', { ascending: true });
-        if (error) throw error;
+        const [customRes, settingsRes] = await Promise.all([
+          supabase
+            .from('custom_positions')
+            .select('*')
+            .order('created_at', { ascending: true }),
+          supabase.from('position_settings').select('*'),
+        ]);
         if (cancelled) return;
-        const rows = (data ?? []) as CustomPosition[];
+        if (customRes.error) throw customRes.error;
+        const rows = (customRes.data ?? []) as CustomPosition[];
         setCustomPositions(rows);
         saveLocal(rows);
+        // `position_settings` puede no existir aún (migración pendiente): no
+        // es fatal, solo se conservan los valores estáticos / localStorage.
+        if (!settingsRes.error) {
+          const settings = (settingsRes.data ?? []) as PositionSetting[];
+          setPositionSettings(settings);
+          saveLocalSettings(settings);
+        } else {
+          console.warn(
+            'position_settings fetch failed (¿migración pendiente?):',
+            formatSupabaseError(settingsRes.error)
+          );
+        }
       } catch (err) {
         const msg = formatSupabaseError(err);
-        console.warn('custom_positions fetch failed, using localStorage:', msg, err);
+        console.warn('positions fetch failed, using localStorage:', msg, err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -155,8 +249,8 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
   }, [configured]);
 
   const positions = useMemo(
-    () => mergePositions(PLANTILLA_AUTORIZADA, customPositions),
-    [customPositions]
+    () => applySettings(mergePositions(PLANTILLA_AUTORIZADA, customPositions), positionSettings),
+    [customPositions, positionSettings]
   );
 
   const createPosition = useCallback(
@@ -234,9 +328,95 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
     [customPositions, configured]
   );
 
+  const upsertPositionSetting = useCallback(
+    async (input: UpsertPositionSettingInput) => {
+      const area = input.area.trim();
+      const seccion = input.seccion.trim();
+      const puesto = input.puesto.trim();
+      if (!area || !seccion || !puesto) {
+        return { ok: false, message: 'Área, sección y puesto son requeridos.' };
+      }
+
+      const row: PositionSetting = {
+        area,
+        seccion,
+        puesto,
+        plantilla_autorizada:
+          input.plantilla_autorizada != null
+            ? Math.max(0, input.plantilla_autorizada)
+            : null,
+        backup: Math.max(0, input.backup ?? 0),
+        urgentes: Math.max(0, input.urgentes ?? 0),
+        notas: input.notas?.trim() ? input.notas.trim() : null,
+        updated_by: input.updated_by ?? null,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Optimista: reemplaza por tripleta normalizada (case/acento-insensible).
+      const key = tripletKey(row);
+      const optimistic = [
+        ...positionSettings.filter((s) => tripletKey(s) !== key),
+        row,
+      ];
+      setPositionSettings(optimistic);
+      saveLocalSettings(optimistic);
+
+      if (!configured) return { ok: true };
+
+      try {
+        const { data, error } = await supabase
+          .from('position_settings')
+          .upsert(
+            {
+              area: row.area,
+              seccion: row.seccion,
+              puesto: row.puesto,
+              plantilla_autorizada: row.plantilla_autorizada,
+              backup: row.backup,
+              urgentes: row.urgentes,
+              notas: row.notas,
+              updated_by: row.updated_by,
+              updated_at: row.updated_at,
+            },
+            { onConflict: 'area,seccion,puesto' }
+          )
+          .select('*')
+          .single();
+        if (error) throw error;
+        const saved = data as PositionSetting;
+        const replaced = [
+          ...positionSettings.filter((s) => tripletKey(s) !== key),
+          saved,
+        ];
+        setPositionSettings(replaced);
+        saveLocalSettings(replaced);
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('position_settings upsert failed, kept locally:', message, err);
+        return { ok: true, message: 'Guardado local. Sincronización pendiente.' };
+      }
+    },
+    [positionSettings, configured]
+  );
+
   const value = useMemo<PositionsContextValue>(
-    () => ({ positions, customPositions, loading, createPosition }),
-    [positions, customPositions, loading, createPosition]
+    () => ({
+      positions,
+      customPositions,
+      positionSettings,
+      loading,
+      createPosition,
+      upsertPositionSetting,
+    }),
+    [
+      positions,
+      customPositions,
+      positionSettings,
+      loading,
+      createPosition,
+      upsertPositionSetting,
+    ]
   );
 
   return (

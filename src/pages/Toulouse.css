@@ -1,0 +1,679 @@
+/* ============================================================================
+   Toulouse-Piéron — página + hoja imprimible (tamaño carta).
+   Mobile-first; en ≥1024px el panel queda a la izquierda y la vista previa a
+   la derecha. Todos los colores/spacing usan tokens del tema.
+   ============================================================================ */
+
+.tp-page {
+  max-width: var(--container-max, 1400px);
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md) calc(var(--spacing-2xl) + 40px);
+}
+
+.tp-page__hero h1 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size, 2rem);
+  margin: 0;
+}
+
+.tp-page__lead {
+  margin: 6px 0 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size, 14px);
+  max-width: 60ch;
+}
+
+/* ── Apartado de instrucciones ── */
+.tp-instructions {
+  margin-top: var(--spacing-lg);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  padding: var(--spacing-md);
+}
+
+.tp-instructions__summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size, 1rem);
+  font-weight: 700;
+  color: var(--color-ink);
+  list-style: none;
+}
+
+.tp-instructions__summary::-webkit-details-marker {
+  display: none;
+}
+
+.tp-instructions__summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--color-primary);
+  transition: transform var(--transition-fast);
+}
+
+.tp-instructions[open] .tp-instructions__summary::before {
+  transform: rotate(90deg);
+}
+
+.tp-instructions__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .tp-instructions__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tp-instructions__card {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+}
+
+.tp-instructions__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--type-body-md-size, 15px);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.tp-instructions__consigna {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--type-body-sm-size, 14px);
+  font-style: italic;
+  color: var(--color-body);
+  padding: var(--spacing-sm);
+  background: var(--color-surface-card);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--rounded-sm);
+}
+
+.tp-instructions__list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--type-body-sm-size, 14px);
+  color: var(--color-body);
+}
+
+.tp-instructions__source {
+  margin: var(--spacing-md) 0 0;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* ── Layout ── */
+.tp-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .tp-layout {
+    grid-template-columns: 360px 1fr;
+  }
+  .tp-panel {
+    position: sticky;
+    top: var(--spacing-lg);
+  }
+}
+
+/* ── Panel / formulario ── */
+.tp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  min-width: 0;
+}
+
+/* Mejora de apariencia del panel para integrarlo con el sistema */
+.tp-panel {
+  background: var(--color-surface-card);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline-strong);
+}
+
+.tp-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.tp-fieldset {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.tp-fieldset > legend {
+  padding: 0 var(--spacing-xs);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider, 0.05em);
+  color: var(--color-muted);
+}
+
+.tp-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Inputs y selects — coherentes con tokens globales */
+.tp-form__group input,
+.tp-form__group select,
+.tp-form__group textarea {
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: var(--type-body-size, 14px);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.tp-form__group textarea { height: auto; min-height: 80px; padding-top: 8px; padding-bottom: 8px; }
+
+.tp-form__group input::placeholder,
+.tp-form__group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.tp-form__group input:focus,
+.tp-form__group select:focus,
+.tp-form__group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+  background: var(--color-surface-card);
+}
+
+.tp-form__row .tp-form__group { min-width: 0; }
+
+.tp-form__group label {
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+.tp-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.tp-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.tp-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: var(--control-height);
+  height: var(--control-height);
+}
+
+.tp-actions > .btn-icon {
+  padding: 0;
+  min-width: var(--control-height);
+}
+
+.tp-actions > .btn-icon svg {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .tp-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ── Hojas guardadas ── */
+.tp-saved__title {
+  font-size: var(--type-heading-sm-size, 1rem);
+  font-family: var(--font-display);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.tp-saved__empty {
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size, 14px);
+}
+
+.tp-saved__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.tp-saved__item {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-xs);
+}
+
+.tp-saved__load {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  min-width: 0;
+}
+
+.tp-saved__load:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-primary);
+}
+
+.tp-saved__name {
+  font-weight: 600;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.tp-saved__meta {
+  font-size: 12px;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.tp-saved__del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.tp-saved__del:hover {
+  background: color-mix(in srgb, var(--color-error, #ef4444) 12%, transparent);
+  color: var(--color-error, #ef4444);
+}
+
+/* ── Vista previa ── */
+.tp-preview-wrap {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.tp-preview-toolbar {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.tp-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-pill);
+  background: var(--color-surface-soft);
+  color: var(--color-body);
+  font-size: var(--type-body-sm-size, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.tp-tab--active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.tp-preview-scroll {
+  overflow: auto;
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+/* ============================================================================
+   HOJA (tp-sheet) — formato carta
+   ============================================================================ */
+.tp-sheet {
+  /* Tamaño de celda de la rejilla (se agranda en impresión para llenar carta). */
+  --tp-cell: 15px;
+  /* Ancho útil de carta (8.5in − márgenes). El zoom de preview lo controla
+     el contenedor con overflow. */
+  width: 200mm;
+  max-width: none;
+  margin: 0 auto;
+  padding: 8mm;
+  background: #fff;
+  color: #111;
+  font-family: var(--font-body, system-ui);
+  box-shadow: var(--shadow-card);
+}
+
+.tp-sheet__head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 2px solid #111;
+  padding-bottom: 8px;
+}
+
+.tp-sheet__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.tp-sheet__subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #444;
+}
+
+.tp-sheet__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 18px;
+}
+
+.tp-field {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.tp-field__label {
+  font-weight: 700;
+  white-space: nowrap;
+  color: #333;
+}
+
+.tp-field__value {
+  flex: 1;
+  min-width: 0;
+  border-bottom: 1px solid #999;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.tp-sheet__models {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 8px 0;
+}
+
+.tp-sheet__models-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tp-sheet__models-list {
+  display: inline-flex;
+  gap: 8px;
+  padding: 2px 8px;
+  border: 1px solid #111;
+  border-radius: 4px;
+}
+
+.tp-sheet__instructions {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 11px;
+  color: #222;
+}
+
+/* Reglas impresas para el candidato (2 columnas para ahorrar espacio). */
+.tp-sheet__rules {
+  margin: 4px 0 0;
+  padding-left: 1.1em;
+  columns: 2;
+  column-gap: 18px;
+  font-size: 10px;
+  color: #333;
+  line-height: 1.35;
+}
+
+.tp-sheet__rules > li {
+  break-inside: avoid;
+  margin-bottom: 2px;
+}
+
+.tp-score__formula {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  font-size: 11px;
+}
+
+/* Caja de calificación (plantilla) */
+.tp-score {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  border: 1px solid #111;
+  border-radius: 4px;
+}
+
+.tp-score__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.tp-score__label {
+  font-weight: 700;
+}
+
+.tp-score__value {
+  font-weight: 800;
+}
+
+.tp-score__blank {
+  display: inline-block;
+  min-width: 36px;
+  border-bottom: 1px solid #999;
+}
+
+/* ── Rejilla ── */
+.tp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 6px;
+}
+
+.tp-grid__row {
+  display: grid;
+  align-items: center;
+}
+
+.tp-grid__rownum {
+  font-size: 9px;
+  color: #888;
+  text-align: right;
+  padding-right: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tp-grid__cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tp-cell);
+  height: var(--tp-cell);
+  line-height: 0;
+}
+
+.tp-grid__cell .tp-symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tp-grid__count {
+  font-size: 9px;
+  color: #111;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* Símbolo — todo en negro para impresión B/N. */
+.tp-symbol__box,
+.tp-symbol__tail {
+  stroke: #111;
+  stroke-width: 1.4;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.tp-symbol__ring {
+  stroke: #111;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+/* Objetivo en la plantilla: trazo más grueso + anillo negro = legible en B/N. */
+.tp-grid__cell--hit .tp-symbol__box,
+.tp-grid__cell--hit .tp-symbol__tail {
+  stroke: #111;
+  stroke-width: 2.4;
+}
+
+.tp-sheet__foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #ccc;
+  font-size: 10px;
+  color: #666;
+}
+
+.tp-print-only {
+  display: none;
+}
+
+/* Portal de impresión: oculto en pantalla; al imprimir se oculta todo lo demás
+   del <body> y solo se muestra este contenedor (copia directa de la hoja, sin
+   ancestros con overflow/transform que rompan el layout de impresión). */
+.tp-print-portal {
+  display: none;
+}
+
+/* ============================================================================
+   IMPRESIÓN — solo la hoja, tamaño carta
+   ============================================================================ */
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 10mm;
+  }
+
+  /* Oculta todo lo que cuelga de <body> (incluido #root) excepto el portal. */
+  html,
+  body,
+  .tp-print-portal {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+  }
+
+  body > *:not(.tp-print-portal) {
+    display: none !important;
+  }
+
+  .tp-print-portal {
+    display: block !important;
+    position: static !important;
+  }
+
+  .tp-print-portal .tp-sheet {
+    /* Celda mayor + separación entre renglones para aprovechar toda la hoja. */
+    --tp-cell: 18px !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 4mm 4mm 3mm !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #fff !important;
+    color: #000 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .tp-print-portal .tp-sheet__head {
+    gap: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tp-print-portal .tp-sheet__fields {
+    gap: 3px 12px !important;
+  }
+
+  .tp-print-portal .tp-grid {
+    row-gap: 6px;
+    margin-top: 4px;
+  }
+
+  .tp-print-portal .tp-grid__rownum,
+  .tp-print-portal .tp-grid__count {
+    font-size: 11px;
+  }
+
+  .tp-print-portal .tp-sheet__foot {
+    display: none !important;
+  }
+}

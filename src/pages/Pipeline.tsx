@@ -13,10 +13,13 @@ import {
   Users,
   UserRound,
   CalendarDays,
+  ChevronDown,
   ChevronRight,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
+import { notifyResult, sileo } from '@/lib/notify';
+import { humanizeStatus } from '@/lib/types';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
@@ -312,15 +315,23 @@ export function Pipeline() {
     payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'>,
     id?: string
   ) {
-    if (id) {
-      return updateCandidate(id, payload);
-    }
-    return addCandidate(payload);
+    return notifyResult(
+      id ? updateCandidate(id, payload) : addCandidate(payload),
+      {
+        success: id ? 'Candidato actualizado' : 'Candidato agregado',
+        successDescription: payload.nombre,
+        error: id ? 'No se pudo actualizar el candidato' : 'No se pudo agregar el candidato',
+      }
+    );
   }
 
   async function handleStatusChange(c: Candidate, status: CandidateStatus) {
     if (!c.id || c.status === status) return;
-    await setCandidateStatus(c.id, status);
+    await notifyResult(setCandidateStatus(c.id, status), {
+      success: 'Estado actualizado',
+      successDescription: `${c.nombre} → ${humanizeStatus(status)}`,
+      error: 'No se pudo cambiar el estado',
+    });
   }
 
   function openHire(c: Candidate) {
@@ -333,6 +344,7 @@ export function Pipeline() {
   }): Promise<{ ok: boolean; message?: string }> {
     const empResult = await addSingleEmployee(input.employee);
     if (!empResult.ok) {
+      sileo.error({ title: 'No se pudo contratar' });
       return empResult;
     }
     const candResult = await markCandidateHired(
@@ -341,16 +353,19 @@ export function Pipeline() {
       input.employee.fecha_ingreso
     );
     if (!candResult.ok) {
-      return {
-        ok: false,
-        message:
-          candResult.message ??
-          'Empleado creado, pero no se pudo actualizar el candidato.',
-      };
+      const message =
+        candResult.message ??
+        'Empleado creado, pero no se pudo actualizar el candidato.';
+      sileo.warning({ title: 'Contratación incompleta', description: message });
+      return { ok: false, message };
     }
     // Cierra automáticamente la vacante abierta que coincida con el puesto.
     await coverVacancyForEmployee(input.employee, {
       source: `candidato:${input.candidateId}`,
+    });
+    sileo.success({
+      title: 'Candidato contratado',
+      description: `${input.employee.nombre} · #${input.employee.num_empleado}`,
     });
     return { ok: true };
   }
@@ -631,6 +646,13 @@ export function Pipeline() {
               className="pipeline__card-list"
               aria-label="Lista de candidatos"
             >
+              <header className="pipeline__card-list-header" aria-hidden="true">
+                <span>Candidato</span>
+                <span>Puesto</span>
+                <span>Estado</span>
+                <span>Entrevista</span>
+                <span />
+              </header>
               {filtered.map((c) => {
                 const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
                 const areaLine = `${c.area}${c.seccion?.trim() ? ` · ${c.seccion.trim()}` : ''}`;
@@ -691,10 +713,14 @@ export function Pipeline() {
                       <div className="pipeline__puesto">{c.puesto}</div>
                       <div className="pipeline__area">{areaLine}</div>
                     </div>
-                    <div className="pipeline__cell-status pipeline__ccard-status-col">
+                    <div
+                      className="pipeline__cell-status pipeline__ccard-status-col"
+                      data-status={c.status}
+                    >
                       <CustomSelect
                         id={`status-${c.id}`}
                         value={c.status}
+                        placeholder=""
                         onChange={(val) =>
                           handleStatusChange(c, val as CandidateStatus)
                         }
@@ -703,10 +729,24 @@ export function Pipeline() {
                           label: CANDIDATE_STATUS_LABEL[s],
                         }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
+                        customTrigger={
+                          <span
+                            className="pipeline__status-tag"
+                            data-status={c.status}
+                          >
+                            <span className="pipeline__status-tag__label">
+                              {CANDIDATE_STATUS_LABEL[c.status]}
+                            </span>
+                            <ChevronDown
+                              size={14}
+                              aria-hidden="true"
+                              className="pipeline__status-tag__chevron"
+                            />
+                          </span>
+                        }
                       />
                     </div>
                     <div className="pipeline__ccard-dates-col pipeline__cell-dates">
-                      <div className="pipeline__cell-dates-label">Entrevista</div>
                       <div className="pipeline__cell-dates-primary">
                         {fechaCitaFmt ?? '—'}
                       </div>
@@ -748,7 +788,12 @@ export function Pipeline() {
             candidates={candidates}
             onClose={closeModal}
             onSave={handleSave}
-            onDelete={deleteCandidate}
+            onDelete={(id) =>
+              notifyResult(deleteCandidate(id), {
+                success: 'Candidato eliminado',
+                error: 'No se pudo eliminar el candidato',
+              })
+            }
           />
 
           <CandidateNotesModal
@@ -756,7 +801,12 @@ export function Pipeline() {
             candidate={notesTarget}
             notes={notes}
             onClose={() => setNotesTarget(null)}
-            onSave={addCandidateNote}
+            onSave={(note) =>
+              notifyResult(addCandidateNote(note), {
+                success: 'Nota agregada',
+                error: 'No se pudo guardar la nota',
+              })
+            }
           />
 
           <HireCandidateModal

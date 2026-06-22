@@ -3,12 +3,14 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { PWAStatus } from '@/components/ui/PWAStatus';
+import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
+import { Toulouse } from '@/pages/Toulouse';
 import { Bajas } from '@/pages/Bajas';
 import { Empleados } from '@/pages/Empleados';
 import { Transporte } from '@/pages/Transporte';
@@ -41,6 +43,7 @@ function App() {
   return (
     <>
       <PWAStatus />
+      <AppToaster />
       <ThemeTransitionOverlay />
       <Routes>
       <Route
@@ -80,6 +83,14 @@ function App() {
         element={
           <ProtectedShell>
             <Vacantes />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/toulouse"
+        element={
+          <ProtectedShell>
+            <Toulouse />
           </ProtectedShell>
         }
       />

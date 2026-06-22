@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './ReporteDiario.css';
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { SkeletonTable } from "@/components/ui/PageSkeletons";
 import { motion, AnimatePresence } from "framer-motion"
-import { toast } from "sonner"
+import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
 import { cn } from "@/lib/utils-shadcn";
@@ -334,7 +336,7 @@ export default function ReporteDiarioContent() {
 
     const processFile = useCallback(async (file: File) => {
         if (file.type !== "application/json" && !file.name.endsWith('.json')) {
-            toast.error("Formato de archivo inválido. Por favor, asegúrate de subir el archivo correcto.")
+            sileo.error({ title: "Formato de archivo inválido", description: "Por favor, asegúrate de subir el archivo correcto." })
             return
         }
 
@@ -355,7 +357,7 @@ export default function ReporteDiarioContent() {
             if (errs.length > 0) { 
                 setProcessStep(null)
                 setErrors(errs)
-                toast.error("Se encontraron inconsistencias al revisar el archivo de datos")
+                sileo.error({ title: "Inconsistencias en el archivo", description: "Se encontraron errores al revisar los datos." })
                 return 
             }
             
@@ -370,7 +372,7 @@ export default function ReporteDiarioContent() {
             setProcessStep(null)
             const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`
             setErrors([msg])
-            toast.error("El archivo está corrupto o no tiene la estructura esperada")
+            sileo.error({ title: "Archivo corrupto", description: "El archivo no tiene la estructura esperada." })
         }
     }, [])
 
@@ -387,7 +389,7 @@ export default function ReporteDiarioContent() {
         
         setProcessStep(null)
         setPreviewData(null)
-        toast.success(`Información del mes de ${formatMes(previewData.mes)} cargada con éxito`)
+        sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
     }, [previewData])
 
     const cancelLoad = useCallback(() => {
@@ -427,7 +429,7 @@ export default function ReporteDiarioContent() {
         setFileName("")
         setErrors([])
         sessionStorage.removeItem("reporteDiarioCache")
-        toast.info("Vista de datos limpiada")
+        sileo.info({ title: "Vista de datos limpiada" })
     }, [])
 
     const computeKpis = useCallback((reportRows: ReporteRow[], dayH: string[]) => {
@@ -570,6 +572,27 @@ export default function ReporteDiarioContent() {
     const labelCls = "block text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5"
 
     const hasData = rows.length > 0 && Boolean(currentMonth)
+
+    /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
+       sistema (en vez de pantalla en blanco). ───────────────────────── */
+    if (dbLoading || loadingDb) {
+        return (
+            <div className="reporte-container">
+                <header className="reporte-card">
+                    <div className="reporte-header__top">
+                        <div className="reporte-title-wrapper">
+                            <h1 className="reporte-title">Reporte Diario</h1>
+                            <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
+                        </div>
+                    </div>
+                </header>
+                <div className="reporte-card" data-testid="reporte-skeleton" aria-busy="true">
+                    <Skeleton height={40} radius="var(--rounded-md)" style={{ marginBottom: 16, maxWidth: 320 }} />
+                    <SkeletonTable rows={8} columns={['24%', '30%', '12%', '12%', '10%', '12%']} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="reporte-container">

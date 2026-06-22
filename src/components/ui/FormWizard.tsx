@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import './FormWizard.css';
 
@@ -44,6 +44,21 @@ export function FormWizard({
   const current = steps[step];
   const isLast = step === total - 1;
 
+  /* Período de gracia tras cambiar de paso: evita que un tap que avanza al
+     último paso (o un "ghost click" en móvil) dispare el submit sin que el
+     usuario lo presione intencionalmente. */
+  const [armed, setArmed] = useState(true);
+  const armTimer = useRef<number | undefined>(undefined);
+
+  function goToStep(next: number) {
+    setArmed(false);
+    setStep(next);
+    window.clearTimeout(armTimer.current);
+    armTimer.current = window.setTimeout(() => setArmed(true), 450);
+  }
+
+  useEffect(() => () => window.clearTimeout(armTimer.current), []);
+
   return (
     <div className="form-wizard" data-testid="form-wizard">
       <div className="form-wizard__progress" data-testid="form-wizard-progress">
@@ -80,6 +95,7 @@ export function FormWizard({
       <footer className="form-wizard__footer">
         {step === 0 ? (
           <button
+            key="cancel"
             type="button"
             className="btn-secondary"
             onClick={onCancel}
@@ -90,9 +106,10 @@ export function FormWizard({
           </button>
         ) : (
           <button
+            key="back"
             type="button"
             className="btn-secondary"
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
+            onClick={() => goToStep(Math.max(0, step - 1))}
             disabled={submitting}
             data-testid="form-wizard-back"
           >
@@ -102,18 +119,20 @@ export function FormWizard({
         )}
         {isLast ? (
           <button
+            key="submit"
             type="submit"
             className="btn-primary"
-            disabled={submitDisabled || submitting}
+            disabled={submitDisabled || submitting || !armed}
             data-testid="form-wizard-submit"
           >
             {submitting ? submittingLabel ?? submitLabel : submitLabel}
           </button>
         ) : (
           <button
+            key="next"
             type="button"
             className="btn-primary"
-            onClick={() => setStep((s) => Math.min(total - 1, s + 1))}
+            onClick={() => goToStep(Math.min(total - 1, step + 1))}
             disabled={current.isValid === false}
             data-testid="form-wizard-next"
           >

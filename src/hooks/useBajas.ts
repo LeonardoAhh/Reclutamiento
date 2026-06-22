@@ -305,6 +305,40 @@ export function useBajas() {
     [isConfigured]
   );
 
+  /** Asigna (o limpia) el reclutador que cubrió la vacante de esta baja. */
+  const setBajaReclutador = useCallback(
+    async (numEmpleado: string, reclutador: string | null): Promise<{ ok: boolean }> => {
+      const next = bajasRef.current.map((b) =>
+        b.num_empleado === numEmpleado
+          ? { ...b, cubierta_reclutador: reclutador?.trim() || null }
+          : b
+      );
+      setBajas(next);
+      saveLocal(STORAGE_KEY, next);
+      if (!isConfigured) return { ok: true };
+      const target = next.find((b) => b.num_empleado === numEmpleado);
+      if (!target) return { ok: false };
+      try {
+        setSaveStatus('saving');
+        const { id: _omit, ...rest } = target;
+        void _omit;
+        const { error: err } = await supabase
+          .from('bajas')
+          .upsert([rest], { onConflict: 'num_empleado' });
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = errorMessage(err);
+        console.warn('Supabase upsert (reclutador) failed:', message, err);
+        setSaveStatus('error');
+        setError(message);
+        return { ok: false };
+      }
+    },
+    [isConfigured]
+  );
+
   const clearBajas = useCallback(async () => {
     setBajas([]);
     saveLocal(STORAGE_KEY, []);
@@ -432,6 +466,7 @@ export function useBajas() {
     retrySync,
     marcarCubierta,
     desmarcarCubierta,
+    setBajaReclutador,
     clearBajas,
     updateTurnosOnly,
     applyTurnosUpdate,

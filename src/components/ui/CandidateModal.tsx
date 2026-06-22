@@ -3,6 +3,8 @@ import { UserPlus, Pencil, Trash2 } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { calculatePositionCoverage } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -12,6 +14,20 @@ import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
+
+/**
+ * Reclutadoras activas que pueden ser asignadas a un proceso.
+ *
+ * El `value` se guarda en MAYÚSCULAS para mantener consistencia con el
+ * histórico (las normalizaciones en KPIs/Pipeline ya pasan por
+ * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
+ * El `label` se muestra en formato amigable en el select.
+ */
+const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> = [
+  { value: 'ALEXANDRA', label: 'Alexandra' },
+  { value: 'DANIELA', label: 'Daniela' },
+  { value: 'LEONARDO', label: 'Leonardo' },
+];
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -112,29 +128,76 @@ export function CandidateModal({
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
+  const { employees, comments } = useSupabaseData();
+
+  /**
+   * Cobertura actual de cada puesto. Sirve para detectar qué puestos
+   * realmente tienen vacante abierta (plantilla autorizada o backup
+   * sin cubrir) y limitar la captura a esos.
+   */
+  const positionCoverage = useMemo(
+    () => calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions]
+  );
+
+  /**
+   * Set de puestos con vacante abierta (`vacantes > 0`). Usamos
+   * área|sección|puesto como clave estricta para que un mismo puesto
+   * en distintos turnos se traten por separado.
+   */
+  const openPositionsKeySet = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of positionCoverage) {
+      if (p.vacantes > 0) {
+        s.add(`${p.area}||${p.seccion ?? ''}||${p.puesto}`);
+      }
+    }
+    return s;
+  }, [positionCoverage]);
+
+  /**
+   * Solo en modo "Agregar" restringimos a posiciones con vacante.
+   * Al editar un candidato existente respetamos los valores capturados
+   * aunque el puesto ya esté cubierto.
+   */
+  const restrictToOpen = mode === 'add';
+  const openPositions = useMemo(
+    () =>
+      restrictToOpen
+        ? positions.filter((p) =>
+            openPositionsKeySet.has(`${p.area}||${p.seccion ?? ''}||${p.puesto}`)
+          )
+        : positions,
+    [positions, openPositionsKeySet, restrictToOpen]
+  );
+
   const areas = useMemo(
-    () => Array.from(new Set(positions.map((p) => p.area))),
-    [positions]
+    () => Array.from(new Set(openPositions.map((p) => p.area))).sort(),
+    [openPositions]
   );
   const sectionsForArea = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
+          openPositions
+            .filter((p) => p.area === form.area)
+            .map((p) => p.seccion)
         )
-      ),
-    [positions, form.area]
+      ).sort(),
+    [openPositions, form.area]
   );
   const puestosForSection = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter(
-            (p) => p.area === form.area && p.seccion === form.seccion
-          ).map((p) => p.puesto)
+          openPositions
+            .filter(
+              (p) => p.area === form.area && p.seccion === form.seccion
+            )
+            .map((p) => p.puesto)
         )
-      ),
-    [positions, form.area, form.seccion]
+      ).sort(),
+    [openPositions, form.area, form.seccion]
   );
 
   useEffect(() => {
@@ -144,10 +207,15 @@ export function CandidateModal({
     setForm(candidate ? fromCandidate(candidate) : emptyForm());
   }, [isOpen, candidate, mode]);
 
-  const isFormValid =
-    form.nombre.trim().length > 0 &&
-    form.area.length > 0 &&
-    form.puesto.length > 0;
+  const missingRequiredFields = [
+    !form.nombre.trim() && 'Nombre completo',
+    !form.telefono.trim() && 'Teléfono',
+    !form.area && 'Área',
+    !form.seccion && 'Sección',
+    !form.puesto && 'Puesto',
+  ].filter(Boolean) as string[];
+
+  const isFormValid = missingRequiredFields.length === 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -239,6 +307,12 @@ export function CandidateModal({
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
 
+  const missingFieldsNotice = !isFormValid && !isDelete ? (
+    <p className="form-error" role="alert">
+      Completa los campos obligatorios.
+    </p>
+  ) : null;
+
   const icon = isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
@@ -309,17 +383,28 @@ export function CandidateModal({
     </>
   );
 
-  const fieldsPosicion = (
+  const noOpenPositions = restrictToOpen && areas.length === 0;
+
+const fieldsPosicion = (
     <>
       <div className="form-group">
-        <label htmlFor="cand-area">Área</label>
+        <label htmlFor="cand-area">
+          Área
+          {restrictToOpen && (
+            <span className="candidate-modal__hint" role="note">
+              {noOpenPositions
+                ? <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
+                : <>Solo puestos con vacante abierta</>}
+            </span>
+          )}
+        </label>
         <CustomSelect
           id="cand-area"
           value={form.area}
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
-          disabled={isEdit}
+          disabled={isEdit || noOpenPositions}
         />
       </div>
 
@@ -363,14 +448,14 @@ export function CandidateModal({
 
       <div className="form-group">
         <label htmlFor="cand-reclutador">Reclutador</label>
-        <input
+        <CustomSelect
           id="cand-reclutador"
-          type="text"
           value={form.reclutador}
-          onChange={(e) => setForm({ ...form, reclutador: e.target.value })}
+          onChange={(val) => setForm({ ...form, reclutador: val })}
           placeholder="Quién lleva el proceso"
-          autoComplete="off"
+          options={RECLUTADORES_DISPONIBLES}
           disabled={isEdit}
+          aria-label="Reclutador a cargo del proceso"
         />
       </div>
 
@@ -476,7 +561,7 @@ export function CandidateModal({
             submitDisabled={!isFormValid}
             submitLabel="Guardar"
             submittingLabel="Guardando…"
-            notice={errorNotice}
+            notice={errorMsg ? errorNotice : missingFieldsNotice}
             steps={[
               {
                 id: 'contacto',
@@ -537,6 +622,7 @@ export function CandidateModal({
           )}
 
           {errorNotice}
+          {missingFieldsNotice}
 
           <footer className="modal-footer">
             <button

@@ -95,6 +95,23 @@
    Panel del formulario — flota a la derecha sobre el espacio
    ================================================================ */
 .login__form-panel {
+  /* Panel negro: invertimos los tokens del form para texto claro sobre negro */
+  --color-canvas: #0d0d0f;
+  --color-ink: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.62);
+  --color-muted-soft: rgba(255, 255, 255, 0.4);
+  --color-charcoal: rgba(255, 255, 255, 0.5);
+  --color-hairline: rgba(255, 255, 255, 0.12);
+  --color-hairline-strong: rgba(255, 255, 255, 0.26);
+  --color-hairline-soft: rgba(255, 255, 255, 0.08);
+  --color-surface-soft: rgba(255, 255, 255, 0.06);
+  --color-primary: #ffffff;
+  --color-primary-active: rgba(255, 255, 255, 0.86);
+  --color-primary-disabled: rgba(255, 255, 255, 0.3);
+  --color-on-primary: #0d0d0f;
+  --color-muted-foreground: rgba(255, 255, 255, 0.62);
+  --shadow-focus: 0 0 0 3px rgba(255, 255, 255, 0.22);
+
   position: relative;
   z-index: 10;
   min-height: 100dvh;
@@ -386,6 +403,7 @@
   .login__form-wrap {
     max-width: 100%;
     gap: var(--spacing-lg);
+    margin-top: var(--spacing-sm);
   }
 
   .login__title {

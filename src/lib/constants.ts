@@ -249,6 +249,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
 export const RECLUTADORES_ACTIVOS = [
   'ALEXANDRA',
   'DANIELA',
+  'LEONARDO',
 ] as const;
 
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [

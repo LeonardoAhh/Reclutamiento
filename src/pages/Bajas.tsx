@@ -27,6 +27,7 @@ import {
 import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
 import { formatMonthLabel, formatShortDate, currentYearMx } from '@/lib/dates';
+import { sileo } from '@/lib/notify';
 import './Bajas.css';
 
 const currentYear = currentYearMx();
@@ -130,7 +131,23 @@ export function Bajas() {
           <h1 className="bajas__title">Downsizing</h1>
         </div>
         <div className="bajas__hero-actions" style={{ display: 'none' }}>
-          <BajasImporter onImport={importBajas} />
+          <BajasImporter
+            onImport={async (raw) => {
+              const res = await importBajas(raw);
+              if (res.ok) {
+                sileo.success({
+                  title: 'Bajas importadas',
+                  description: `${res.inserted} registradas${res.skipped ? ` · ${res.skipped} omitidas` : ''}`,
+                });
+              } else {
+                sileo.error({
+                  title: 'No se pudo importar',
+                  description: 'Revisa el archivo e intenta de nuevo.',
+                });
+              }
+              return res;
+            }}
+          />
           <TurnosUpdater onPreview={updateTurnosOnly} onApply={applyTurnosUpdate} />
         </div>
       </section>
@@ -394,8 +411,18 @@ export function Bajas() {
         isOpen={cubrirTarget !== null}
         baja={cubrirTarget}
         onClose={() => setCubrirTarget(null)}
-        onSave={async (n, f, note) => marcarCubierta(n, f, note)}
-        onClear={async (n) => desmarcarCubierta(n)}
+        onSave={async (n, f, note) => {
+          const res = await marcarCubierta(n, f, note);
+          if (res.ok) sileo.success({ title: 'Vacante cubierta' });
+          else sileo.error({ title: 'No se pudo marcar como cubierta' });
+          return res;
+        }}
+        onClear={async (n) => {
+          const res = await desmarcarCubierta(n);
+          if (res.ok) sileo.info({ title: 'Cobertura removida' });
+          else sileo.error({ title: 'No se pudo remover la cobertura' });
+          return res;
+        }}
       />
 
       <RequisicionSheet

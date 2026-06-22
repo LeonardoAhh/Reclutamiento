@@ -84,15 +84,11 @@ export function useCandidates() {
 
   const isConfigured = checkSupabaseConfig();
 
-  useEffect(() => {
-    if (!isConfigured) {
-      setLoading(false);
-      return;
-    }
-
-    async function fetchData() {
+  const refetch = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      if (!isConfigured) return;
       try {
-        setLoading(true);
+        if (!opts?.silent) setLoading(true);
         const [candResult, notesResult] = await Promise.all([
           supabase
             .from('candidates')
@@ -152,12 +148,39 @@ export function useCandidates() {
         console.warn('Supabase candidates fetch failed, using localStorage:', msg, err);
         setError(msg);
       } finally {
-        setLoading(false);
+        if (!opts?.silent) setLoading(false);
       }
-    }
+    },
+    [isConfigured]
+  );
 
-    fetchData();
-  }, [isConfigured]);
+  useEffect(() => {
+    if (!isConfigured) {
+      setLoading(false);
+      return;
+    }
+    refetch();
+  }, [isConfigured, refetch]);
+
+  /* ── Realtime ─────────────────────────────────────────────────────────
+     Suscripción a cambios en `candidates` / `candidate_notes`. Cuando otra
+     persona (u otra pestaña) inserta/edita/elimina, refrescamos en silencio
+     (sin skeleton). Requiere tener Realtime habilitado para estas tablas en
+     Supabase. Si no lo está, simplemente nunca dispara — degradación segura. */
+  useEffect(() => {
+    if (!isConfigured) return;
+    const channel = supabase
+      .channel('realtime:candidates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'candidates' },
+        () => refetch({ silent: true })
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isConfigured, refetch]);
 
   function flashSaved() {
     setSaveStatus('saved');
