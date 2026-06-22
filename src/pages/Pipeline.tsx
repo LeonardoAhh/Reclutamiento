@@ -355,7 +355,7 @@ export function Pipeline() {
       const message =
         candResult.message ??
         'Empleado creado, pero no se pudo actualizar el candidato.';
-      sileo.warning({ title: 'Contratación parcial', description: message });
+      sileo.warning({ title: 'Contratación incompleta', description: message });
       return { ok: false, message };
     }
     // Cierra automáticamente la vacante abierta que coincida con el puesto.

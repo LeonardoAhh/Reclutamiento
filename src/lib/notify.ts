@@ -45,7 +45,7 @@ export async function notifyResult<T extends ActionResult>(
     });
   } else {
     sileo.error({
-      title: messages.error ?? 'No se pudo completar la acción',
+      title: messages.error ?? 'No se pudo realizar la acción',
       description: res.message,
     });
   }

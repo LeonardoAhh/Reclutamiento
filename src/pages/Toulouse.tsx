@@ -101,7 +101,7 @@ export function Toulouse() {
     setTiempoMin(s.tiempo_limite_seg != null ? String(Math.round(s.tiempo_limite_seg / 60)) : '');
     setFolio(s.folio ?? '');
     setSeed(Number(s.seed));
-    sileo.info({ title: `Hoja cargada · ${s.folio ?? s.candidato_nombre}` });
+    sileo.info({ title: 'Hoja cargada' });
   }
 
   return (

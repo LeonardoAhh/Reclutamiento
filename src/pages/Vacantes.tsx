@@ -136,7 +136,7 @@ export function Vacantes() {
   async function handleReclutador(v: AutoVacancy, value: string) {
     if (!v.baja) return; // vacante estructural: sin baja a la cual asignar
     await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
-      success: value ? `Reclutador: ${value}` : 'Reclutador quitado',
+      success: value ? 'Reclutador asignado' : 'Reclutador quitado',
       error: 'No se pudo guardar el reclutador',
     });
   }
@@ -146,11 +146,11 @@ export function Vacantes() {
     if (v.coberturaTipo === 'manual') {
       const res = await desmarcarCubierta(v.baja.num_empleado);
       if (res.ok) sileo.info({ title: 'Vacante reabierta' });
-      else sileo.error({ title: 'No se pudo reabrir' });
+      else sileo.error({ title: 'No se pudo reabrir la vacante' });
     } else {
       const res = await marcarCubierta(v.baja.num_empleado, localTodayIso());
-      if (res.ok) sileo.success({ title: 'Cubierta a mano' });
-      else sileo.error({ title: 'No se pudo marcar' });
+      if (res.ok) sileo.success({ title: 'Vacante cubierta' });
+      else sileo.error({ title: 'No se pudo marcar la vacante' });
     }
   }
 
