@@ -21,6 +21,7 @@ import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { VacancyStatusBadge } from '@/components/ui/VacancyStatusBadge';
+import { VacancyTypeBadge } from '@/components/ui/VacancyTypeBadge';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
@@ -30,6 +31,7 @@ import './Pipeline.css';
 import './Vacantes.css';
 
 type StatusFilter = 'todas' | 'abierta' | 'cubierta';
+type VacancyTypeFilter = 'todos' | 'autorizado' | 'backup';
 
 const RECLUTADOR_OPTIONS = [
   { value: '', label: 'Sin asignar' },
@@ -52,12 +54,13 @@ export function Vacantes() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
+  const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
 
   const loading = bajasLoading || empLoading || positionsLoading;
 
   const vacancies = useMemo(
-    () => computeAutoVacancies(bajas, employees),
-    [bajas, employees]
+    () => computeAutoVacancies(bajas, employees, positions),
+    [bajas, employees, positions]
   );
 
   // 8 KPIs (Modelo B — plantilla real): cada métrica dividida en
@@ -101,6 +104,7 @@ export function Vacantes() {
     const q = searchTerm.trim().toLowerCase();
     return vacancies
       .filter((v) => statusFilter === 'todas' || v.status === statusFilter)
+      .filter((v) => typeFilter === 'todos' || v.vacancyType === typeFilter)
       .filter((v) => {
         if (!q) return true;
         const haystack = [
@@ -121,7 +125,7 @@ export function Vacantes() {
         if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
         return b.dias - a.dias;
       });
-  }, [vacancies, searchTerm, statusFilter]);
+  }, [vacancies, searchTerm, statusFilter, typeFilter]);
 
   async function handleReclutador(v: AutoVacancy, value: string) {
     await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
@@ -162,9 +166,6 @@ export function Vacantes() {
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
           <h1>Vacantes</h1>
-          <p className="vacantes__lead">
-            Automáticas desde Bajas · cobertura detectada por ingresos
-          </p>
         </div>
       </section>
 
@@ -218,26 +219,56 @@ export function Vacantes() {
         </span>
       </section>
 
-      {/* Segmento de status */}
-      <div className="vacantes__segment" role="tablist" aria-label="Filtrar por estado">
-        {([
-          { id: 'todas', label: 'Todas' },
-          { id: 'abierta', label: 'Abiertas' },
-          { id: 'cubierta', label: 'Cubiertas' },
-        ] as const).map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            role="tab"
-            aria-selected={statusFilter === s.id}
-            className={`vacantes__segment-btn${statusFilter === s.id ? ' vacantes__segment-btn--active' : ''}`}
-            onClick={() => setStatusFilter(s.id)}
-            data-testid={`vac-filter-${s.id}`}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
+      {/* Sección de filtros minimalista: Estado + Tipo */}
+      <section className="vacantes__filters" aria-label="Filtros de vacantes">
+        {/* Filtro de Estado */}
+        <div className="vacantes__filter-group">
+          <label className="vacantes__filter-label">Estado</label>
+          <div className="vacantes__filter-options" role="tablist">
+            {([
+              { id: 'todas', label: 'Todas' },
+              { id: 'abierta', label: 'Abiertas' },
+              { id: 'cubierta', label: 'Cubiertas' },
+            ] as const).map((s) => (
+              <button
+                key={`status-${s.id}`}
+                type="button"
+                role="tab"
+                aria-selected={statusFilter === s.id}
+                className={`vacantes__filter-btn${statusFilter === s.id ? ' vacantes__filter-btn--active' : ''}`}
+                onClick={() => setStatusFilter(s.id)}
+                data-testid={`vac-filter-status-${s.id}`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Filtro de Tipo */}
+        <div className="vacantes__filter-group">
+          <label className="vacantes__filter-label">Tipo</label>
+          <div className="vacantes__filter-options" role="tablist">
+            {([
+              { id: 'todos', label: 'Todos' },
+              { id: 'autorizado', label: 'Plantilla' },
+              { id: 'backup', label: 'Backup' },
+            ] as const).map((t) => (
+              <button
+                key={`type-${t.id}`}
+                type="button"
+                role="tab"
+                aria-selected={typeFilter === t.id}
+                className={`vacantes__filter-btn${typeFilter === t.id ? ' vacantes__filter-btn--active' : ''}`}
+                onClick={() => setTypeFilter(t.id as VacancyTypeFilter)}
+                data-testid={`vac-filter-type-${t.id}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Lista ── */}
       {filtered.length === 0 ? (
@@ -277,6 +308,7 @@ export function Vacantes() {
                 <tr>
                   <th scope="col">Puesto · Área</th>
                   <th scope="col">Estado</th>
+                  <th scope="col">Tipo</th>
                   <th scope="col">Cobertura</th>
                   <th scope="col">Baja</th>
                   <th scope="col" title="Días hábiles baja → cobertura · SLA 12">Días · SLA</th>
@@ -299,6 +331,9 @@ export function Vacantes() {
                     </td>
                     <td>
                       <VacancyStatusBadge status={v.status} />
+                    </td>
+                    <td>
+                      <VacancyTypeBadge type={v.vacancyType} />
                     </td>
                     <td>
                       <CoverageInfo v={v} />
@@ -467,8 +502,9 @@ function VacancyCard({
         </div>
       </button>
 
-      {/* Fila resumen siempre visible: cumplimiento de SLA + días */}
+      {/* Fila resumen siempre visible: cumplimiento de SLA + días + tipo */}
       <div className="vacantes__card-quick">
+        <VacancyTypeBadge type={v.vacancyType} />
         <SlaBadge v={v} />
         <span className="vacantes__quick-days">
           {v.dias}/{v.slaDays} días

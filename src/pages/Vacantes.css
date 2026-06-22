@@ -17,6 +17,78 @@
   display: none;
 }
 
+/* ───────────────────────────────────────────────────────────
+   Sección de filtros minimalista: Estado + Tipo
+   ─────────────────────────────────────────────────────────── */
+.vacantes__filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.vacantes__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.vacantes__filter-label {
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider, 0.04em);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.vacantes__filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.vacantes__filter-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-body);
+  font-size: var(--type-body-sm-size, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vacantes__filter-btn:hover {
+  background: var(--color-surface-hover, var(--color-surface-card));
+  border-color: var(--color-border-hover, var(--color-hairline));
+}
+
+.vacantes__filter-btn--active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+/* Desktop: filtros lado a lado */
+@media (min-width: 768px) {
+  .vacantes__filters {
+    flex-direction: row;
+    gap: var(--spacing-lg);
+  }
+
+  .vacantes__filter-group {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
 .vacantes__card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
@@ -567,35 +639,6 @@
   color: var(--color-success, #10b981);
 }
 
-
-/* Segmento de filtro por estado */
-.vacantes__segment {
-  display: inline-flex;
-  gap: 2px;
-  margin-bottom: var(--spacing-md);
-  padding: 3px;
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
-}
-
-.vacantes__segment-btn {
-  padding: 7px 16px;
-  border: none;
-  background: transparent;
-  border-radius: var(--rounded-full);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-muted);
-  cursor: pointer;
-  transition: color var(--transition-fast), background-color var(--transition-fast);
-}
-
-.vacantes__segment-btn--active {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
 
 /* Cobertura */
 .vacantes__cover {

@@ -1,9 +1,10 @@
 import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
 import { businessDaysBetween } from '@/lib/dates';
 import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
-import type { Baja, Employee, VacancyRequest } from '@/lib/types';
+import type { Baja, Employee, VacancyRequest, AuthorizedPosition } from '@/lib/types';
 
 export type AutoVacancyStatus = 'cubierta' | 'abierta';
+export type VacancyType = 'autorizado' | 'backup';
 
 export interface CoveringEmployee {
   num_empleado: string;
@@ -37,6 +38,8 @@ export interface AutoVacancy {
    *  - abierta : true = aún dentro del SLA, false = vencida.
    */
   enTiempo: boolean;
+  /** Tipo de vacante: plantilla autorizada o buffer de backup. */
+  vacancyType: VacancyType;
 }
 
 /**
@@ -75,7 +78,8 @@ function toTime(d: string | undefined | null): number {
  */
 export function computeAutoVacancies(
   bajas: Baja[],
-  employees: Employee[]
+  employees: Employee[],
+  positions: AuthorizedPosition[] = []
 ): AutoVacancy[] {
   // Empleados agrupados por puesto, ordenados por ingreso descendente.
   const empByKey = new Map<string, { emp: Employee; used: boolean }[]>();
@@ -159,6 +163,29 @@ export function computeAutoVacancies(
     const slaDays = DEFAULT_VACANCY_SLA_DAYS;
     const enTiempo = dias <= slaDays;
 
+    // Determinar si la vacante es autorizado o backup
+    // Buscar la posición correspondiente
+    const posKey = positionKey(baja);
+    const matchingPosition = positions.find(
+      (p) => positionKey(p) === posKey
+    );
+
+    let vacancyType: VacancyType = 'autorizado';
+    if (matchingPosition) {
+      // Contar empleados en ese puesto que estaban activos al momento de la baja
+      // (fecha_ingreso <= fecha_baja)
+      const activeAtBaja = employees.filter(
+        (emp) =>
+          positionKey(emp) === posKey &&
+          String(emp.fecha_ingreso).localeCompare(baja.fecha_baja) <= 0
+      ).length;
+
+      // Si los empleados activos >= plantilla autorizada, la vacante es del backup
+      if (activeAtBaja >= matchingPosition.plantilla_autorizada) {
+        vacancyType = 'backup';
+      }
+    }
+
     return {
       key,
       baja,
@@ -174,6 +201,7 @@ export function computeAutoVacancies(
       dias,
       slaDays,
       enTiempo,
+      vacancyType,
     };
   });
 }
