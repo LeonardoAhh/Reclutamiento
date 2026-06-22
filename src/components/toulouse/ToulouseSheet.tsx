@@ -54,12 +54,13 @@ export function ToulouseSheet({ data, config, seed, variant, cell = 15 }: Props)
   const isKey = variant === 'correccion';
 
   const columns = isKey
-    ? `2.4ch repeat(${config.cols}, ${cell}px) 3ch`
-    : `2.4ch repeat(${config.cols}, ${cell}px)`;
+    ? `2.4ch repeat(${config.cols}, var(--tp-cell)) 3ch`
+    : `2.4ch repeat(${config.cols}, var(--tp-cell))`;
 
   return (
     <article
       className={`tp-sheet tp-sheet--${variant}`}
+      style={{ ['--tp-cell' as string]: `${cell}px` } as React.CSSProperties}
       aria-label={
         isKey ? 'Plantilla de corrección Toulouse-Piéron' : 'Hoja del candidato Toulouse-Piéron'
       }
@@ -155,7 +156,7 @@ export function ToulouseSheet({ data, config, seed, variant, cell = 15 }: Props)
                   className={`tp-grid__cell${hit ? ' tp-grid__cell--hit' : ''}`}
                   key={c}
                 >
-                  <ToulouseSymbol orientation={orientation} size={cell - 2} highlight={hit} />
+                  <ToulouseSymbol orientation={orientation} highlight={hit} />
                 </span>
               );
             })}

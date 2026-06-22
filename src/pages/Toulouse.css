@@ -368,6 +368,8 @@
    HOJA (tp-sheet) — formato carta
    ============================================================================ */
 .tp-sheet {
+  /* Tamaño de celda de la rejilla (se agranda en impresión para llenar carta). */
+  --tp-cell: 15px;
   /* Ancho útil de carta (8.5in − márgenes). El zoom de preview lo controla
      el contenedor con overflow. */
   width: 200mm;
@@ -535,18 +537,26 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: var(--tp-cell);
+  height: var(--tp-cell);
   line-height: 0;
+}
+
+.tp-grid__cell .tp-symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .tp-grid__count {
   font-size: 9px;
-  color: #b00;
+  color: #111;
   text-align: center;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
 
-/* Símbolo */
+/* Símbolo — todo en negro para impresión B/N. */
 .tp-symbol__box,
 .tp-symbol__tail {
   stroke: #111;
@@ -556,14 +566,16 @@
 }
 
 .tp-symbol__ring {
-  stroke: #d11;
-  stroke-width: 1.3;
+  stroke: #111;
+  stroke-width: 1.8;
   fill: none;
 }
 
+/* Objetivo en la plantilla: trazo más grueso + anillo negro = legible en B/N. */
 .tp-grid__cell--hit .tp-symbol__box,
 .tp-grid__cell--hit .tp-symbol__tail {
-  stroke: #d11;
+  stroke: #111;
+  stroke-width: 2.4;
 }
 
 .tp-sheet__foot {
@@ -607,6 +619,8 @@
   }
 
   .tp-print-portal .tp-sheet {
+    /* Celda mayor + separación entre renglones para aprovechar toda la hoja. */
+    --tp-cell: 18px;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -617,5 +631,15 @@
     color: #000 !important;
     page-break-after: always;
     break-after: page;
+  }
+
+  .tp-print-portal .tp-grid {
+    row-gap: 7px;
+    margin-top: 10px;
+  }
+
+  .tp-print-portal .tp-grid__rownum,
+  .tp-print-portal .tp-grid__count {
+    font-size: 11px;
   }
 }
