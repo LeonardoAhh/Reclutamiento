@@ -4,6 +4,7 @@
  */
 interface Props {
   orientation: number;
+  /** Tamaño fijo en px (leyenda). Si se omite, el símbolo llena su celda. */
   size?: number;
   highlight?: boolean;
 }
@@ -20,14 +21,16 @@ const TAILS: Record<number, [number, number, number, number]> = {
   7: [5, 5, 1, 1], // NW
 };
 
-export function ToulouseSymbol({ orientation, size = 16, highlight = false }: Props) {
+export function ToulouseSymbol({ orientation, size, highlight = false }: Props) {
   const tail = TAILS[orientation] ?? TAILS[0];
+  const dim = size != null ? `${size}` : '100%';
   return (
     <svg
       className={`tp-symbol${highlight ? ' tp-symbol--hl' : ''}`}
-      width={size}
-      height={size}
+      width={dim}
+      height={dim}
       viewBox="0 0 20 20"
+      preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
       focusable="false"
     >
