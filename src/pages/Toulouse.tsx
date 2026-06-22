@@ -13,6 +13,7 @@ import {
   TOULOUSE_EVALUATOR_STEPS,
   TOULOUSE_CANDIDATE_STEPS,
 } from '@/lib/toulouse';
+import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { localTodayIso, formatShortDate } from '@/lib/dates';
 import { sileo } from '@/lib/notify';
 import './Toulouse.css';
@@ -200,14 +201,19 @@ export function Toulouse() {
               <div className="tp-form__row">
                 <div className="tp-form__group">
                   <label htmlFor="tp-evaluador">Evaluador</label>
-                  <input
+                  <select
                     id="tp-evaluador"
-                    type="text"
                     value={evaluador}
                     onChange={(e) => setEvaluador(e.target.value)}
-                    autoComplete="off"
                     data-testid="tp-evaluador"
-                  />
+                  >
+                    <option value="">SELECCIONA</option>
+                    {RECLUTADORES_ACTIVOS.map((name) => (
+                      <option key={name} value={name}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="tp-form__group">
                   <label htmlFor="tp-tiempo">Tiempo límite (min)</label>
@@ -236,42 +242,47 @@ export function Toulouse() {
               </div>
             </fieldset>
 
-            <div className="tp-actions">
+            <div className="tp-actions tp-actions--grid">
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn-secondary btn-icon"
                 onClick={regenerate}
                 data-testid="tp-regenerate"
+                title="Nueva rejilla"
+                aria-label="Nueva rejilla"
               >
-                <RefreshCw size={16} aria-hidden="true" /> Nueva rejilla
+                <RefreshCw size={16} aria-hidden="true" />
               </button>
               <button
                 type="button"
-                className="btn-primary"
+                className="btn-primary btn-icon"
                 onClick={handleSave}
                 disabled={saving}
                 data-testid="tp-save"
+                title={saving ? 'Guardando…' : 'Guardar'}
+                aria-label={saving ? 'Guardando' : 'Guardar'}
               >
-                <Save size={16} aria-hidden="true" /> {saving ? 'Guardando…' : 'Guardar'}
+                <Save size={16} aria-hidden="true" />
               </button>
-            </div>
-
-            <div className="tp-actions">
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn-secondary btn-icon"
                 onClick={() => printVariant('candidato')}
                 data-testid="tp-print-candidato"
+                title="Imprimir hoja"
+                aria-label="Imprimir hoja"
               >
-                <Printer size={16} aria-hidden="true" /> Imprimir hoja
+                <Printer size={16} aria-hidden="true" />
               </button>
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn-secondary btn-icon"
                 onClick={() => printVariant('correccion')}
                 data-testid="tp-print-correccion"
+                title="Imprimir plantilla"
+                aria-label="Imprimir plantilla"
               >
-                <Printer size={16} aria-hidden="true" /> Imprimir plantilla
+                <Printer size={16} aria-hidden="true" />
               </button>
             </div>
           </form>

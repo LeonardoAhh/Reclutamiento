@@ -223,24 +223,33 @@
 }
 
 .tp-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--spacing-sm);
-  flex-wrap: wrap;
 }
 
 .tp-actions > button {
-  flex: 1 1 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
+  gap: 0;
+  width: var(--control-height);
+  height: var(--control-height);
 }
 
-/* Asegurar altura uniforme de botones en el panel */
-.tp-actions > .btn-primary,
-.tp-actions > .btn-secondary {
-  height: var(--control-height);
+.tp-actions > .btn-icon {
+  padding: 0;
+  min-width: var(--control-height);
+}
+
+.tp-actions > .btn-icon svg {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .tp-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* ── Hojas guardadas ── */
@@ -609,22 +618,34 @@
   }
 
   /* Oculta todo lo que cuelga de <body> (incluido #root) excepto el portal. */
+  html,
+  body,
+  .tp-print-portal {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+  }
+
   body > *:not(.tp-print-portal) {
     display: none !important;
   }
 
   .tp-print-portal {
     display: block !important;
-    position: static;
+    position: static !important;
   }
 
   .tp-print-portal .tp-sheet {
     /* Celda mayor + separación entre renglones para aprovechar toda la hoja. */
-    --tp-cell: 18px;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
+    --tp-cell: 18px !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 4mm 4mm 3mm !important;
+    box-shadow: none !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     background: #fff !important;
@@ -633,13 +654,26 @@
     break-after: page;
   }
 
+  .tp-print-portal .tp-sheet__head {
+    gap: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tp-print-portal .tp-sheet__fields {
+    gap: 3px 12px !important;
+  }
+
   .tp-print-portal .tp-grid {
-    row-gap: 7px;
-    margin-top: 10px;
+    row-gap: 6px;
+    margin-top: 4px;
   }
 
   .tp-print-portal .tp-grid__rownum,
   .tp-print-portal .tp-grid__count {
     font-size: 11px;
+  }
+
+  .tp-print-portal .tp-sheet__foot {
+    display: none !important;
   }
 }
