@@ -169,12 +169,14 @@ export function Vacantes() {
   }
 
   return (
-    <main className="pipeline container">
+    <main className="pipeline">
       {/* ── Hero ── */}
       <section className="pipeline__hero">
-        <div className="pipeline__hero-content vacantes__hero-row">
+        <div className="pipeline__hero-content">
           <h1>Vacantes</h1>
-          {isAdmin && (
+        </div>
+        {isAdmin && (
+          <div className="pipeline__hero-actions">
             <button
               type="button"
               className="btn-secondary vacantes__config-btn"
@@ -184,8 +186,8 @@ export function Vacantes() {
               <SlidersHorizontal size={16} aria-hidden="true" />
               Configurar plantilla/backup
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </section>
 
       {isAdmin && (
@@ -195,8 +197,10 @@ export function Vacantes() {
         />
       )}
 
-      {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
-      <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
+      <div className="pipeline__layout">
+        <aside className="pipeline__sidebar">
+          {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
+          <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
         <div className="vacantes__split-head" role="row">
           <span className="vacantes__split-corner" />
           <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
@@ -220,29 +224,6 @@ export function Vacantes() {
             </span>
           </div>
         ))}
-      </section>
-
-      {/* ── Controles ── */}
-      <section className="pipeline__controls">
-        <div className="pipeline__search">
-          <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
-          <label htmlFor="vac-search" className="sr-only">
-            Buscar vacante
-          </label>
-          <input
-            id="vac-search"
-            type="text"
-            placeholder="Buscar por puesto, área, persona, reclutador…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pipeline__search-input"
-            autoComplete="off"
-            data-testid="vac-search-input"
-          />
-        </div>
-        <span className="pipeline__count">
-          {filtered.length} de {vacancies.length}
-        </span>
       </section>
 
       {/* Sección de filtros minimalista: Estado + Tipo */}
@@ -295,8 +276,33 @@ export function Vacantes() {
           </div>
         </div>
       </section>
+        </aside>
 
-      {/* ── Lista ── */}
+        <div className="pipeline__content">
+          {/* ── Controles (búsqueda) ── */}
+          <section className="pipeline__controls">
+            <div className="pipeline__search">
+              <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
+              <label htmlFor="vac-search" className="sr-only">
+                Buscar vacante
+              </label>
+              <input
+                id="vac-search"
+                type="text"
+                placeholder="Buscar por puesto, área, persona, reclutador…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pipeline__search-input"
+                autoComplete="off"
+                data-testid="vac-search-input"
+              />
+            </div>
+            <span className="pipeline__count">
+              {filtered.length} de {vacancies.length}
+            </span>
+          </section>
+
+          {/* ── Lista ── */}
       {filtered.length === 0 ? (
         <section className="pipeline__empty">
           <div className="pipeline__empty-icon" aria-hidden="true">
@@ -437,6 +443,8 @@ export function Vacantes() {
           </section>
         </>
       )}
+        </div>
+      </div>
     </main>
   );
 }

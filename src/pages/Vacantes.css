@@ -756,3 +756,32 @@
   gap: 8px;
   white-space: nowrap;
 }
+
+/* ───────────────────────────────────────────────────────────
+   Layout PC de /vacantes: KPIs (izquierda) + tabla (derecha).
+   Reutiliza .pipeline__layout / .pipeline__sidebar / .pipeline__content.
+   En el sidebar los filtros se apilan y se quitan los márgenes dobles
+   (el espaciado lo da el `gap` del sidebar).
+   ─────────────────────────────────────────────────────────── */
+.pipeline__sidebar .vacantes__split,
+.pipeline__sidebar .vacantes__filters {
+  margin-bottom: 0;
+}
+
+.pipeline__sidebar .vacantes__filters {
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.pipeline__sidebar .vacantes__filter-group {
+  flex: none;
+  min-width: 0;
+}
+
+/* La tabla/lista de la derecha ocupa todo el ancho disponible. */
+.pipeline__content .vacantes__table,
+.pipeline__content .vacantes__cards {
+  width: 100%;
+}
