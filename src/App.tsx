@@ -10,6 +10,7 @@ import { PositionsProvider } from '@/lib/positions';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
+import { Toulouse } from '@/pages/Toulouse';
 import { Bajas } from '@/pages/Bajas';
 import { Empleados } from '@/pages/Empleados';
 import { Transporte } from '@/pages/Transporte';
@@ -82,6 +83,14 @@ function App() {
         element={
           <ProtectedShell>
             <Vacantes />
+          </ProtectedShell>
+        }
+      />
+      <Route
+        path="/toulouse"
+        element={
+          <ProtectedShell>
+            <Toulouse />
           </ProtectedShell>
         }
       />

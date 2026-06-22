@@ -212,3 +212,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
   - Garantía por construcción: Σ abiertas autorizado = KPI autorizado vacantes; Σ abiertas backup = KPI backup vacantes.
   - `AutoVacancy.baja` ahora es nullable. UI (`Vacantes.tsx`) maneja filas estructurales: muestra "Vacante estructural", deshabilita reclutador/acción y oculta SLA. KpisPage usa la ruta legacy (sin `positions`) intacta.
 - Verificación: test unitario con esbuild (3 puestos: understaffed con backup, sin backup, overstaffed) → open autorizado/backup cuadran EXACTO con el KPI; `tsc` y `vite build` OK. Falta validación en vivo (sin credenciales Supabase locales; app en Vercel).
+
+## 2026-06-22 — Nueva página Toulouse-Piéron (/toulouse, en menú Procesos)
+- Genera hoja de aplicación + plantilla de corrección de la prueba de atención Toulouse-Piéron. Rejilla estándar fija 30×40, símbolos clásicos (cuadro con guion en 8 orientaciones), 2 modelos a tachar.
+- Generación DETERMINISTA por semilla (mulberry32) en `src/lib/toulouse.ts`: se guarda solo seed + config, la rejilla y la clave se regeneran idénticas. Plantilla de corrección resalta objetivos (anillo rojo) + conteo por renglón + total.
+- Campos: nombre candidato, puesto solicitado, edad, fecha, evaluador, tiempo límite, folio (auto). Preview en la misma página con toggle Candidato/Corrección. Impresión tamaño carta (@page letter, solo `.tp-printable` visible). Mobile-first responsivo (1 col → 2 cols ≥1024px). Semántico (fieldset/legend, labels, roles/aria) y sin hardcodear (tokens de tema, config centralizada).
+- Persistencia: tabla Supabase `toulouse_sheets` + respaldo localStorage (hook `useToulouseSheets`). Migración `supabase/migrations/012_toulouse_sheets.sql` — **EL USUARIO DEBE EJECUTARLA**. Guarda/carga/elimina hojas.
+- Archivos: `src/lib/toulouse.ts`, `src/hooks/useToulouseSheets.ts`, `src/components/toulouse/{ToulouseSymbol,ToulouseSheet}.tsx`, `src/pages/Toulouse.{tsx,css}`; rutas en `App.tsx` y nav en `Header.tsx`.
+- Verificación: `tsc` + `vite build` OK. Render visual validado en aislamiento (hoja + plantilla se ven correctas, ~320/1200 objetivos). Falta validación en vivo (sin credenciales Supabase locales).
