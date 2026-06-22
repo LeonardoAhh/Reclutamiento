@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { ToulouseSymbol } from './ToulouseSymbol';
-import { generateGrid, isModel, type ToulouseConfig } from '@/lib/toulouse';
+import {
+  generateGrid,
+  isModel,
+  TOULOUSE_CONSIGNA,
+  TOULOUSE_CANDIDATE_STEPS,
+  type ToulouseConfig,
+} from '@/lib/toulouse';
 
 export interface ToulouseSheetData {
   folio: string;
@@ -93,11 +99,18 @@ export function ToulouseSheet({ data, config, seed, variant, cell = 15 }: Props)
         </div>
         {!isKey && (
           <p className="tp-sheet__instructions">
-            Revise renglón por renglón, de izquierda a derecha, y marque con una línea
-            cada signo igual a los modelos. Trabaje lo más rápido y preciso posible.
+            <strong>Instrucciones:</strong> «{TOULOUSE_CONSIGNA}»
           </p>
         )}
       </section>
+
+      {!isKey && (
+        <ol className="tp-sheet__rules" aria-label="Instrucciones para el candidato">
+          {TOULOUSE_CANDIDATE_STEPS.map((s, i) => (
+            <li key={i}>{s}</li>
+          ))}
+        </ol>
+      )}
 
       {isKey && (
         <section className="tp-score" aria-label="Calificación">
@@ -121,6 +134,9 @@ export function ToulouseSheet({ data, config, seed, variant, cell = 15 }: Props)
             <span className="tp-score__label">Índice (A − E − O)</span>
             <span className="tp-score__blank">&nbsp;</span>
           </div>
+          <p className="tp-score__formula">
+            Puntuación directa: <strong>PD = A − (E + O)</strong>
+          </p>
         </section>
       )}
 
