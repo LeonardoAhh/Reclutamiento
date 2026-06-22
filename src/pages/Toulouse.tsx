@@ -104,10 +104,6 @@ export function Toulouse() {
       <section className="tp-page__hero tp-no-print">
         <div>
           <h1>Toulouse-Piéron</h1>
-          <p className="tp-page__lead">
-            Genera la hoja de aplicación y su plantilla de corrección, imprime en tamaño
-            carta y guarda cada hoja para reimprimir idéntica.
-          </p>
         </div>
       </section>
 
