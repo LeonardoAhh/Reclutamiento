@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Printer, Save, RefreshCw, Trash2, FileText, ClipboardCheck } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToulouseSheets, type ToulouseSheetRecord } from '@/hooks/useToulouseSheets';
@@ -8,6 +9,9 @@ import {
   buildFolio,
   generateGrid,
   newSeed,
+  TOULOUSE_CONSIGNA,
+  TOULOUSE_EVALUATOR_STEPS,
+  TOULOUSE_CANDIDATE_STEPS,
 } from '@/lib/toulouse';
 import { localTodayIso, formatShortDate } from '@/lib/dates';
 import { sileo } from '@/lib/notify';
@@ -110,6 +114,36 @@ export function Toulouse() {
           </p>
         </div>
       </section>
+
+      {/* ── Apartado de instrucciones (evaluador + candidato) ── */}
+      <details className="tp-instructions tp-no-print" open>
+        <summary className="tp-instructions__summary">Instrucciones de la prueba</summary>
+        <div className="tp-instructions__grid">
+          <article className="tp-instructions__card">
+            <h2 className="tp-instructions__title">Para el evaluador (aplicación)</h2>
+            <ol className="tp-instructions__list">
+              {TOULOUSE_EVALUATOR_STEPS.map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ol>
+          </article>
+          <article className="tp-instructions__card">
+            <h2 className="tp-instructions__title">Para el candidato</h2>
+            <p className="tp-instructions__consigna">
+              <strong>Consigna:</strong> «{TOULOUSE_CONSIGNA}»
+            </p>
+            <ol className="tp-instructions__list">
+              {TOULOUSE_CANDIDATE_STEPS.map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ol>
+          </article>
+        </div>
+        <p className="tp-instructions__source">
+          Basado en el manual del test Toulouse-Piéron (atención y resistencia a la fatiga):
+          ejecución de 10 min con señales por minuto y corrección PD = A − (E + O).
+        </p>
+      </details>
 
       <div className="tp-layout">
         {/* ── Panel de configuración ── */}
@@ -309,12 +343,21 @@ export function Toulouse() {
           </div>
 
           <div className="tp-preview-scroll">
-            <div className="tp-printable">
+            <div className="tp-preview-sheet">
               <ToulouseSheet data={sheetData} config={config} seed={seed} variant={variant} />
             </div>
           </div>
         </section>
       </div>
+
+      {/* Portal de impresión: copia directa en <body>, fuera de contenedores con
+          overflow/transform. Solo visible al imprimir (ver Toulouse.css). */}
+      {createPortal(
+        <div className="tp-print-portal">
+          <ToulouseSheet data={sheetData} config={config} seed={seed} variant={variant} />
+        </div>,
+        document.body
+      )}
     </main>
   );
 }

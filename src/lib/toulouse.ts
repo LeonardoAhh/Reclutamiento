@@ -99,3 +99,35 @@ export function buildFolio(date: string): string {
   const rand = Math.floor(1000 + Math.random() * 9000);
   return `TP-${ymd}-${rand}`;
 }
+
+/* ----------------------------------------------------------------------------
+ * Instrucciones basadas en el manual del test Toulouse-Piéron (atención /
+ * resistencia a la fatiga). Fuentes: manual TEA/Hogrefe TP-R y guías de
+ * aplicación. Consigna textual y protocolo de 10 min con señales por minuto;
+ * corrección PD = A − (E + O).
+ * ------------------------------------------------------------------------- */
+
+/** Consigna textual que el evaluador lee al candidato. */
+export const TOULOUSE_CONSIGNA =
+  'Fíjese en los modelos de arriba, observe los signos de la hoja y tache los que sean exactamente iguales; empiece por arriba, de izquierda a derecha, y hágalo lo más rápido posible, sin saltar ninguno.';
+
+/** Instrucciones para el evaluador (reclutador que aplica la prueba). */
+export const TOULOUSE_EVALUATOR_STEPS: string[] = [
+  'Aplicación individual o colectiva. Material: la hoja del test, un lápiz y un cronómetro.',
+  'Antes de iniciar, muestre los modelos a tachar y lea la consigna; verifique con los primeros signos que el candidato comprendió.',
+  'A su señal, inicie el cronómetro: la ejecución dura 10 minutos.',
+  'Cada minuto dé una señal y pida al candidato trazar una raya vertical en el signo donde va, sin detenerse (permite medir el ritmo por minuto).',
+  'Al cumplir los 10 minutos indique “alto, lápiz arriba”, recoja la hoja y marque la última fila respondida.',
+  'Corrija superponiendo la plantilla: cuente Aciertos (A), Errores (E = signos marcados que no son modelo) y Omisiones (O = modelos no marcados).',
+  'Puntuación directa: PD = A − (E + O).',
+];
+
+/** Instrucciones para el candidato (quien contesta la prueba). */
+export const TOULOUSE_CANDIDATE_STEPS: string[] = [
+  'Observe con atención los dos modelos de la parte superior de la hoja.',
+  'Revise los signos renglón por renglón, de izquierda a derecha y de arriba hacia abajo.',
+  'Tache (marque con una línea) únicamente los signos exactamente iguales a los modelos.',
+  'Trabaje lo más rápido posible, sin saltarse ninguno y sin regresar a renglones anteriores.',
+  'Cuando el evaluador dé la señal de cada minuto, trace una raya vertical donde va y continúe sin detenerse.',
+  'Dispone de 10 minutos para realizar la prueba.',
+];

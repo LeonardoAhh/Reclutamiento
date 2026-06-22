@@ -23,6 +23,94 @@
   max-width: 60ch;
 }
 
+/* ── Apartado de instrucciones ── */
+.tp-instructions {
+  margin-top: var(--spacing-lg);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  padding: var(--spacing-md);
+}
+
+.tp-instructions__summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size, 1rem);
+  font-weight: 700;
+  color: var(--color-ink);
+  list-style: none;
+}
+
+.tp-instructions__summary::-webkit-details-marker {
+  display: none;
+}
+
+.tp-instructions__summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--color-primary);
+  transition: transform var(--transition-fast);
+}
+
+.tp-instructions[open] .tp-instructions__summary::before {
+  transform: rotate(90deg);
+}
+
+.tp-instructions__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .tp-instructions__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tp-instructions__card {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+}
+
+.tp-instructions__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--type-body-md-size, 15px);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.tp-instructions__consigna {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--type-body-sm-size, 14px);
+  font-style: italic;
+  color: var(--color-body);
+  padding: var(--spacing-sm);
+  background: var(--color-surface-card);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--rounded-sm);
+}
+
+.tp-instructions__list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--type-body-sm-size, 14px);
+  color: var(--color-body);
+}
+
+.tp-instructions__source {
+  margin: var(--spacing-md) 0 0;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
 /* ── Layout ── */
 .tp-layout {
   display: grid;
@@ -319,7 +407,29 @@
   flex-basis: 100%;
   margin: 0;
   font-size: 11px;
-  color: #444;
+  color: #222;
+}
+
+/* Reglas impresas para el candidato (2 columnas para ahorrar espacio). */
+.tp-sheet__rules {
+  margin: 4px 0 0;
+  padding-left: 1.1em;
+  columns: 2;
+  column-gap: 18px;
+  font-size: 10px;
+  color: #333;
+  line-height: 1.35;
+}
+
+.tp-sheet__rules > li {
+  break-inside: avoid;
+  margin-bottom: 2px;
+}
+
+.tp-score__formula {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  font-size: 11px;
 }
 
 /* Caja de calificación (plantilla) */
@@ -424,6 +534,13 @@
   display: none;
 }
 
+/* Portal de impresión: oculto en pantalla; al imprimir se oculta todo lo demás
+   del <body> y solo se muestra este contenedor (copia directa de la hoja, sin
+   ancestros con overflow/transform que rompan el layout de impresión). */
+.tp-print-portal {
+  display: none;
+}
+
 /* ============================================================================
    IMPRESIÓN — solo la hoja, tamaño carta
    ============================================================================ */
@@ -433,32 +550,22 @@
     margin: 10mm;
   }
 
-  body * {
-    visibility: hidden !important;
+  /* Oculta todo lo que cuelga de <body> (incluido #root) excepto el portal. */
+  body > *:not(.tp-print-portal) {
+    display: none !important;
   }
 
-  .tp-printable,
-  .tp-printable * {
-    visibility: visible !important;
+  .tp-print-portal {
+    display: block !important;
+    position: static;
   }
 
-  .tp-printable {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  .tp-sheet {
+  .tp-print-portal .tp-sheet {
     width: 100%;
     margin: 0;
     padding: 0;
     box-shadow: none;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  .tp-no-print {
-    display: none !important;
   }
 }

@@ -220,3 +220,10 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Persistencia: tabla Supabase `toulouse_sheets` + respaldo localStorage (hook `useToulouseSheets`). Migración `supabase/migrations/012_toulouse_sheets.sql` — **EL USUARIO DEBE EJECUTARLA**. Guarda/carga/elimina hojas.
 - Archivos: `src/lib/toulouse.ts`, `src/hooks/useToulouseSheets.ts`, `src/components/toulouse/{ToulouseSymbol,ToulouseSheet}.tsx`, `src/pages/Toulouse.{tsx,css}`; rutas en `App.tsx` y nav en `Header.tsx`.
 - Verificación: `tsc` + `vite build` OK. Render visual validado en aislamiento (hoja + plantilla se ven correctas, ~320/1200 objetivos). Falta validación en vivo (sin credenciales Supabase locales).
+
+## 2026-06-22 — Toulouse-Piéron: fix impresión + apartado de instrucciones
+- Bug impresión en blanco: el truco `visibility:hidden` fallaba por contenedores con overflow/transform. Fix: la hoja activa se renderiza en un PORTAL a `document.body` (`.tp-print-portal`, oculto en pantalla); en `@media print` se ocultan `body > *:not(.tp-print-portal)` y se muestra solo el portal (tamaño carta). Robusto y sin clipping.
+- Instrucciones (investigadas del manual TP, no inventadas) centralizadas en `src/lib/toulouse.ts`: `TOULOUSE_CONSIGNA` (consigna textual), `TOULOUSE_EVALUATOR_STEPS` (aplicación: 10 min, señal por minuto, corrección PD=A−(E+O)), `TOULOUSE_CANDIDATE_STEPS`.
+  - Apartado on-page (`<details>` con 2 tarjetas: evaluador + candidato) en `Toulouse.tsx`.
+  - Hoja del candidato (impresa) ahora incluye consigna + 6 reglas (2 columnas). Plantilla de corrección incluye la fórmula PD = A − (E + O).
+- Verificación: `tsc` + `vite build` OK; render visual de ambas hojas validado (consigna+reglas y clave con fórmula, caben en una página carta). Impresión real pendiente de validar en vivo (sin Supabase/login local).
