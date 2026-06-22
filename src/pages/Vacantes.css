@@ -740,3 +740,19 @@
   gap: 8px;
 }
 
+
+/* Fila del hero con botón de configuración (admin). */
+.vacantes__hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.vacantes__config-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}

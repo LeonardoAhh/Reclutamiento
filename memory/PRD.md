@@ -194,3 +194,13 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Bug: el filtro "Tipo = Backup" en /vacantes marcaba como backup vacantes de puestos SIN buffer (backup:0, p. ej. OPERADOR DE MÁQUINA de producción). El heurístico previo (`activeAtBaja >= plantilla_autorizada`) ignoraba si el puesto tenía backup y no era consistente con la tabla resumen (KPI).
 - Fix: `computeAutoVacancies` (src/lib/autoVacancies.ts) ahora clasifica por puesto siguiendo el mismo modelo que `calculatePositionCoverage`: la plantilla real ocupa primero los lugares AUTORIZADOS (A) y luego el BACKUP (B). Vacantes abiertas: primeras (A−real) = autorizado, siguientes (hasta B) = backup, excedente = autorizado. Puesto con B=0 nunca produce backup.
 - Validado con casos unitarios (B=0 → 0 backup; real=A → todas backup band; real<A → split correcto) y `tsc --noEmit` sin errores.
+
+## 2026-06-22 — Backup gestionable desde la BD + wizard admin (Vacantes)
+- Decisión: el `backup` (y plantilla/urgentes/notas) deja de vivir solo en `constants.ts`. Ahora se gestiona desde un wizard admin-only en la página Vacantes y se persiste en la BD.
+- BD: nueva tabla `public.position_settings` (tripleta área/sección/puesto, plantilla_autorizada override nullable, backup, urgentes, notas). Migración: `supabase/migrations/011_position_settings.sql` (incluye SEED con los valores actuales del código → los números NO cambian). **EL USUARIO DEBE EJECUTAR ESTE SQL EN SUPABASE.**
+- Frontend:
+  - `positions.tsx`: carga `position_settings` (fallback localStorage), aplica overrides sobre el catálogo (`applySettings`), expone `positionSettings` + `upsertPositionSetting` (upsert optimista por tripleta normalizada).
+  - `PositionSettingsWizard.tsx`: wizard paso a paso Área → Sección → Puesto → Valores (pre-llena con valores efectivos actuales). Botón "Configurar plantilla/backup" en Vacantes visible solo si `profile.role === 'admin'`.
+  - `types.ts`: nueva interface `PositionSetting`.
+- Verificación: `tsc --noEmit` y `vite build` OK. No se pudo probar el flujo admin en vivo (este contenedor no tiene credenciales Supabase; la app corre en Vercel). El usuario debe correr la migración y validar en su deploy.
+- PENDIENTE (separado): reconciliar el CONTEO exacto lista vs tabla KPI (Abiertas+Backup ≠ KPI backup 13). Es un tema de modelo (bajas vs foto estructural), no del dato de backup. Confirmar con el usuario si se aborda después.

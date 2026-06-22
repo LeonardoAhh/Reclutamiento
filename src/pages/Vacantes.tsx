@@ -11,9 +11,11 @@ import {
   Calendar,
   Clock,
   ChevronDown,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useAuth } from '@/hooks/useAuth';
 import { usePositions } from '@/lib/positions';
 import { calculatePositionCoverage } from '@/lib/utils';
 import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
@@ -26,6 +28,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { formatShortDate, localTodayIso } from '@/lib/dates';
+import { PositionSettingsWizard } from '@/components/ui/PositionSettingsWizard';
 import { EASE_OUT } from '@/lib/motion';
 import './Pipeline.css';
 import './Vacantes.css';
@@ -51,10 +54,13 @@ export function Vacantes() {
   } = useBajas();
   const { employees, comments, loading: empLoading } = useSupabaseData();
   const { positions, loading: positionsLoading } = usePositions();
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === 'admin';
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
   const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const loading = bajasLoading || empLoading || positionsLoading;
 
@@ -164,10 +170,28 @@ export function Vacantes() {
     <main className="pipeline container">
       {/* ── Hero ── */}
       <section className="pipeline__hero">
-        <div className="pipeline__hero-content">
+        <div className="pipeline__hero-content vacantes__hero-row">
           <h1>Vacantes</h1>
+          {isAdmin && (
+            <button
+              type="button"
+              className="btn-secondary vacantes__config-btn"
+              onClick={() => setWizardOpen(true)}
+              data-testid="vac-config-btn"
+            >
+              <SlidersHorizontal size={16} aria-hidden="true" />
+              Configurar plantilla/backup
+            </button>
+          )}
         </div>
       </section>
+
+      {isAdmin && (
+        <PositionSettingsWizard
+          isOpen={wizardOpen}
+          onClose={() => setWizardOpen(false)}
+        />
+      )}
 
       {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
       <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">

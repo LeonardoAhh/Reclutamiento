@@ -212,6 +212,27 @@ export interface CustomPosition {
 }
 
 /**
+ * Override editable por puesto, persistido en la tabla `position_settings`.
+ * Permite que un admin gestione `backup`, `plantilla_autorizada`, `urgentes`
+ * y `notas` desde la UI (wizard en Vacantes) sin tocar código. Se identifica
+ * por la tripleta (área, sección, puesto) con match normalizado y manda sobre
+ * el valor estático de `PLANTILLA_AUTORIZADA`.
+ */
+export interface PositionSetting {
+  id?: string;
+  area: string;
+  seccion: string;
+  puesto: string;
+  /** `null` = no overridear; usar la plantilla base del catálogo. */
+  plantilla_autorizada: number | null;
+  backup: number;
+  urgentes: number;
+  notas?: string | null;
+  updated_by?: string | null;
+  updated_at?: string;
+}
+
+/**
  * Catálogo de habilidades requeridas por puesto. Se usa para pre-llenar el
  * bloque "Conocimientos técnicos del puesto" de la requisición. La búsqueda usa la
  * tripleta (área, sección, puesto) como clave compuesta, con normalización
