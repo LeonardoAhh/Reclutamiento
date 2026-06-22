@@ -98,6 +98,17 @@
   animation: custom-select-in var(--transition-fast) ease-out;
 }
 
+/* Variante en portal: posición fija calculada en JS desde el rect del
+   trigger. z-index por encima de modales (1000) para que nunca quede detrás
+   ni lo recorte el overflow de un contenedor. */
+.custom-select-dropdown--portal {
+  position: fixed;
+  top: auto;
+  left: auto;
+  width: auto;
+  z-index: 1200;
+}
+
 /* Cuando no hay espacio suficiente abajo, el menú abre hacia arriba
    con la animación reflejada. */
 .custom-select-dropdown--up {

@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 import './CustomSelect.css';
 
@@ -19,6 +20,18 @@ interface CustomSelectProps {
   customTrigger?: React.ReactNode;
 }
 
+interface DropdownPos {
+  left: number;
+  width: number;
+  top?: number;
+  bottom?: number;
+  up: boolean;
+}
+
+// Altura máxima del dropdown (debe coincidir con el max-height del CSS).
+const DROPDOWN_MAX_HEIGHT = 250;
+const GAP = 4;
+
 export function CustomSelect({
   id,
   value,
@@ -31,37 +44,43 @@ export function CustomSelect({
   customTrigger,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropUp, setDropUp] = useState(false);
+  const [pos, setPos] = useState<DropdownPos | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const selectedOption = options.find((o) => o.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
-  // Altura máxima del dropdown (debe coincidir con el max-height del CSS)
-  const DROPDOWN_MAX_HEIGHT = 250;
-
-  // Calcula si el dropdown debe abrir hacia arriba para no salirse del
-  // viewport ni empujar el contenido. Lo recomputamos en cada apertura,
-  // resize y scroll mientras está abierto.
-  const recomputeDropDirection = () => {
+  // Calcula posición fija del dropdown a partir del rect del trigger. Al ser
+  // `position: fixed` en un portal, ningún `overflow` de ancestros (modales,
+  // tablas, wizards) lo recorta.
+  const recompute = useCallback(() => {
     const trigger = triggerRef.current;
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
-    const viewportH = window.innerHeight;
-    const spaceBelow = viewportH - rect.bottom;
+    const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
-    // Solo flipea si abajo no cabe Y arriba hay más espacio.
-    setDropUp(spaceBelow < DROPDOWN_MAX_HEIGHT && spaceAbove > spaceBelow);
-  };
+    const up = spaceBelow < DROPDOWN_MAX_HEIGHT && spaceAbove > spaceBelow;
+    setPos({
+      left: rect.left,
+      width: rect.width,
+      up,
+      ...(up
+        ? { bottom: window.innerHeight - rect.top + GAP }
+        : { top: rect.bottom + GAP }),
+    });
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    recomputeDropDirection();
+    recompute();
 
     const onPointer = (e: PointerEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setIsOpen(false);
+      const t = e.target as Node;
+      if (rootRef.current?.contains(t) || dropdownRef.current?.contains(t)) return;
+      setIsOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -69,7 +88,7 @@ export function CustomSelect({
         triggerRef.current?.focus();
       }
     };
-    const onReflow = () => recomputeDropDirection();
+    const onReflow = () => recompute();
 
     document.addEventListener('pointerdown', onPointer);
     document.addEventListener('keydown', onKey);
@@ -81,7 +100,12 @@ export function CustomSelect({
       window.removeEventListener('resize', onReflow);
       window.removeEventListener('scroll', onReflow, true);
     };
-  }, [isOpen]);
+  }, [isOpen, recompute]);
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
+  };
 
   return (
     <div className={`custom-select-container ${className}`} ref={rootRef}>
@@ -106,47 +130,50 @@ export function CustomSelect({
         )}
       </button>
 
-      {isOpen && (
-        <div
-          className={`custom-select-dropdown${dropUp ? ' custom-select-dropdown--up' : ''}`}
-          role="listbox"
-        >
-          <div className="custom-select-list">
-            {placeholder && (
-              <button
-                type="button"
-                className={`custom-select-option ${value === '' ? 'is-selected' : ''}`}
-                onClick={() => {
-                  onChange('');
-                  setIsOpen(false);
-                }}
-                role="option"
-                aria-selected={value === ''}
-              >
-                <span className="custom-select-option-label">{placeholder}</span>
-                {value === '' && <Check size={16} className="custom-select-check" />}
-              </button>
-            )}
+      {isOpen &&
+        pos &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            className={`custom-select-dropdown custom-select-dropdown--portal${pos.up ? ' custom-select-dropdown--up' : ''}`}
+            role="listbox"
+            style={{
+              left: pos.left,
+              width: pos.width,
+              ...(pos.up ? { bottom: pos.bottom } : { top: pos.top }),
+            }}
+          >
+            <div className="custom-select-list">
+              {placeholder && (
+                <button
+                  type="button"
+                  className={`custom-select-option ${value === '' ? 'is-selected' : ''}`}
+                  onClick={() => handleSelect('')}
+                  role="option"
+                  aria-selected={value === ''}
+                >
+                  <span className="custom-select-option-label">{placeholder}</span>
+                  {value === '' && <Check size={16} className="custom-select-check" />}
+                </button>
+              )}
 
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={`custom-select-option ${value === opt.value ? 'is-selected' : ''}`}
-                onClick={() => {
-                  onChange(opt.value);
-                  setIsOpen(false);
-                }}
-                role="option"
-                aria-selected={value === opt.value}
-              >
-                <span className="custom-select-option-label">{opt.label}</span>
-                {value === opt.value && <Check size={16} className="custom-select-check" />}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+              {options.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`custom-select-option ${value === opt.value ? 'is-selected' : ''}`}
+                  onClick={() => handleSelect(opt.value)}
+                  role="option"
+                  aria-selected={value === opt.value}
+                >
+                  <span className="custom-select-option-label">{opt.label}</span>
+                  {value === opt.value && <Check size={16} className="custom-select-check" />}
+                </button>
+              ))}
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
