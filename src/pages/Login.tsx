@@ -21,6 +21,7 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [absorbing, setAbsorbing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const usernameId = useId();
@@ -45,12 +46,13 @@ export function Login() {
     }
 
     flash({ tone: 'full', duration: 7000 });
+    setAbsorbing(true);
   };
 
   return (
     <main className="login" role="main" data-testid="login-page">
       {/* ── Fondo: agujero negro hiperrealista ───────────────────────── */}
-      <BlackHole />
+      <BlackHole absorbing={absorbing} />
 
       {/* ── Marca: esquina superior izquierda ────────────────────────── */}
       <motion.div
