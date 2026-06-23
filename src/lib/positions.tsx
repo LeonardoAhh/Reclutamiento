@@ -186,6 +186,10 @@ interface PositionsContextValue {
    * estática o custom (en cuyo caso no duplica).
    */
   createPosition: (input: CreatePositionInput) => Promise<CreatePositionResult>;
+  /** Elimina un puesto custom (BD + caché local). No afecta la plantilla estática. */
+  deletePosition: (
+    target: { area: string; seccion: string; puesto: string }
+  ) => Promise<{ ok: boolean; message?: string }>;
   /** Inserta/actualiza el override (backup/plantilla/urgentes/notas) de un puesto. */
   upsertPositionSetting: (
     input: UpsertPositionSettingInput
@@ -328,6 +332,33 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
     [customPositions, configured]
   );
 
+  const deletePosition = useCallback(
+    async (target: { area: string; seccion: string; puesto: string }) => {
+      const key = tripletKey(target);
+      const next = customPositions.filter((p) => tripletKey(p) !== key);
+      setCustomPositions(next);
+      saveLocal(next);
+
+      if (!configured) return { ok: true };
+
+      try {
+        const { error } = await supabase
+          .from('custom_positions')
+          .delete()
+          .eq('area', target.area)
+          .eq('seccion', target.seccion)
+          .eq('puesto', target.puesto);
+        if (error) throw error;
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('custom_positions delete failed (kept removed locally):', message, err);
+        return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
+      }
+    },
+    [customPositions, configured]
+  );
+
   const upsertPositionSetting = useCallback(
     async (input: UpsertPositionSettingInput) => {
       const area = input.area.trim();
@@ -407,6 +438,7 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
       positionSettings,
       loading,
       createPosition,
+      deletePosition,
       upsertPositionSetting,
     }),
     [
@@ -415,6 +447,7 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
       positionSettings,
       loading,
       createPosition,
+      deletePosition,
       upsertPositionSetting,
     ]
   );

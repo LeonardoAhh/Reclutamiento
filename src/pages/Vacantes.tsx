@@ -12,12 +12,13 @@ import {
   Clock,
   ChevronDown,
   SlidersHorizontal,
+  Trash2,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useAuth } from '@/hooks/useAuth';
 import { usePositions } from '@/lib/positions';
-import { calculatePositionCoverage } from '@/lib/utils';
+import { calculatePositionCoverage, normalizeString, normalizePuesto } from '@/lib/utils';
 import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -53,7 +54,7 @@ export function Vacantes() {
     desmarcarCubierta,
   } = useBajas();
   const { employees, comments, loading: empLoading } = useSupabaseData();
-  const { positions, loading: positionsLoading } = usePositions();
+  const { positions, customPositions, deletePosition, loading: positionsLoading } = usePositions();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
 
@@ -152,6 +153,31 @@ export function Vacantes() {
       if (res.ok) sileo.success({ title: 'Vacante cubierta' });
       else sileo.error({ title: 'No se pudo marcar la vacante' });
     }
+  }
+
+  /** Devuelve la posición custom (creada desde la UI) que coincide con la vacante, si existe. */
+  function findCustomPosition(v: AutoVacancy) {
+    const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
+    return customPositions.find(
+      (p) => `${normalizeString(p.area)}::${normalizeString(p.seccion)}::${normalizePuesto(p.puesto)}` === key
+    );
+  }
+
+  async function handleDeleteCustom(v: AutoVacancy) {
+    const cp = findCustomPosition(v);
+    if (!cp) return;
+    const ubicacion = `${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`;
+    if (
+      !window.confirm(
+        `¿Eliminar la posición personalizada "${v.puesto}" (${ubicacion})?\n\nEsta acción no se puede deshacer.`
+      )
+    ) {
+      return;
+    }
+    await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
+      success: 'Posición personalizada eliminada',
+      error: 'No se pudo eliminar la posición',
+    });
   }
 
   if (loading) {
@@ -434,6 +460,18 @@ export function Vacantes() {
                           <CheckCircle2 size={16} aria-hidden="true" />
                         )}
                       </button>
+                      {!v.baja && findCustomPosition(v) && (
+                        <button
+                          type="button"
+                          className="pipeline__icon-btn vacantes__del-btn"
+                          onClick={() => handleDeleteCustom(v)}
+                          title="Eliminar posición personalizada"
+                          aria-label={`Eliminar posición personalizada ${v.puesto}`}
+                          data-testid={`vac-delete-${v.key}`}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -511,10 +549,14 @@ function VacancyCard({
   v,
   onReclutador,
   onToggleManual,
+  canDelete,
+  onDelete,
 }: {
   v: AutoVacancy;
   onReclutador: (value: string) => void;
   onToggleManual: () => void;
+  canDelete?: boolean;
+  onDelete?: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -646,6 +688,18 @@ function VacancyCard({
                     <CheckCircle2 size={16} aria-hidden="true" />
                   )}
                 </button>
+                {canDelete && (
+                  <button
+                    type="button"
+                    className="pipeline__icon-btn vacantes__del-btn"
+                    onClick={onDelete}
+                    title="Eliminar posición personalizada"
+                    aria-label={`Eliminar posición personalizada ${v.puesto}`}
+                    data-testid={`vac-delete-card-${v.key}`}
+                  >
+                    <Trash2 size={16} aria-hidden="true" />
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
