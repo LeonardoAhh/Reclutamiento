@@ -591,11 +591,10 @@ export default function ReporteDiarioContent() {
     if (dbLoading || loadingDb) {
         return (
             <div className="reporte-container">
-                <header className="reporte-card">
-                    <div className="reporte-header__top">
+                <header className="reporte-card reporte-head">
+                    <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
                             <h1 className="reporte-title">Reporte Diario</h1>
-                            <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
                         </div>
                     </div>
                 </header>
@@ -615,29 +614,37 @@ export default function ReporteDiarioContent() {
                 <div className="reporte-head__row">
                     <div className="reporte-title-wrapper">
                         <h1 className="reporte-title">Reporte Diario</h1>
-                        <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
                     </div>
 
                     <div className="reporte-control-group">
                         {hasData && (
-                            <>
-                                <button
-                                    type="button"
-                                    className="btn-primary"
-                                    onClick={handleSaveToDb}
-                                    disabled={dbSaving}
-                                    data-testid="save-report-btn"
-                                >
-                                    <Save size={16} />
-                                    {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
-                                </button>
-                                <span className="reporte-status-banner reporte-status-banner--warn">
-                                    {heroKpis.totalIncidencias} incidencias
-                                </span>
-                                <span className="reporte-status-banner">
-                                    {formatMes(currentMonth)}
-                                </span>
-                            </>
+                            <button
+                                type="button"
+                                className="btn-primary"
+                                onClick={handleSaveToDb}
+                                disabled={dbSaving}
+                                data-testid="save-report-btn"
+                            >
+                                <Save size={16} aria-hidden="true" />
+                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
+                            </button>
+                        )}
+                        {hasData && (
+                            <span className="reporte-status-banner reporte-status-banner--warn">
+                                {heroKpis.totalIncidencias} incidencias
+                            </span>
+                        )}
+                        {(savedSummaries.length >= 2) && (
+                            <ReporteComparison summaries={savedSummaries} />
+                        )}
+                        {(savedSummaries.length > 0) && (
+                            <ReportesGuardadosDialog
+                                savedSummaries={savedSummaries}
+                                dbSaving={dbSaving}
+                                onLoad={handleLoadFromDb}
+                                onDelete={handleDeleteFromDb}
+                                formatMes={formatMes}
+                            />
                         )}
                     </div>
                 </div>
@@ -728,21 +735,6 @@ export default function ReporteDiarioContent() {
                         ) : null}
                     </div>
                 )}
-
-                {(savedSummaries.length > 0) && (
-                    <div className="reporte-head__launchers">
-                        {(savedSummaries.length >= 2) && (
-                            <ReporteComparison summaries={savedSummaries} />
-                        )}
-                        <ReportesGuardadosDialog
-                            savedSummaries={savedSummaries}
-                            dbSaving={dbSaving}
-                            onLoad={handleLoadFromDb}
-                            onDelete={handleDeleteFromDb}
-                            formatMes={formatMes}
-                        />
-                    </div>
-                )}
             </header>
 
             <input
@@ -799,16 +791,12 @@ export default function ReporteDiarioContent() {
             {/* ── Detalle del día ──── */}
             <div className="reporte-card">
                 <div className="reporte-card__header">
-                    <h3 className="reporte-card__title">
-                        <Calendar size={20} className="text-primary" aria-hidden="true" />
-                        Reporte Diario de Asistencia
-                    </h3>
                     <div className="reporte-dayhead">
                         <div className="reporte-dayhead__title">
-                            <Calendar size={16} style={{ color: 'var(--color-muted)', flexShrink: 0 }} aria-hidden="true" />
-                            <p data-testid="selected-day-title">
+                            <Calendar size={20} className="text-primary" aria-hidden="true" />
+                            <h3 data-testid="selected-day-title">
                                 {selectedDay ? selectedDateTitle : "Detalle del día"}
-                            </p>
+                            </h3>
                         </div>
                         {selectedDay && (
                             <div className="reporte-dayhead__actions">
