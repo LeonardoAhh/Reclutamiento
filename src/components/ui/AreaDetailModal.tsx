@@ -8,6 +8,7 @@ import {
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
+import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { normalizePuesto } from '@/lib/bajas';
@@ -509,12 +510,22 @@ export function AreaDetailModal({
                       <td className="text-center hide-on-mobile">
                         {pos.plantilla_autorizada}
                         {pos.backup > 0 && (
-                          <span
-                            className="cell-backup-hint"
-                            title={pos.notas ?? 'Buffer de back-up autorizado'}
+                          <Tooltip
+                            content={
+                              <div style={{ whiteSpace: 'pre-line' }}>
+                                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                                  Buffer de {pos.backup} personas
+                                </div>
+                                <div>{pos.notas || 'Excedentes autorizados'}</div>
+                              </div>
+                            }
+                            side="top"
+                            delayMs={200}
                           >
-                            {' '}+{pos.backup}
-                          </span>
+                            <span className="cell-backup-hint">
+                              {' '}+{pos.backup}
+                            </span>
+                          </Tooltip>
                         )}
                       </td>
                       <td className="text-center font-strong hide-on-mobile">{pos.plantilla_real}</td>

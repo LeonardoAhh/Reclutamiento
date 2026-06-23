@@ -108,6 +108,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     bono_monto: 345,
   },
 
+
+  
   // ── PRODUCCIÓN 1ER TURNO ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
@@ -121,8 +123,8 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     seccion: 'PRODUCCIÓN 1ER. TURNO',
     puesto: 'OPERADOR DE MÁQUINA',
     plantilla_autorizada: 32,
-    backup: 5,
-    notas: 'Back-up por ausentismo y rotación del turno.',
+    backup: 10,
+    notas: 'BackUp: 5 por ausentismo + 10 asignados al proyecto StarLight',
     bono: true,
     bono_monto: 619,
   },
