@@ -223,27 +223,13 @@
 }
 
 .tp-actions {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
 
 .tp-actions > button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  width: var(--control-height);
-  height: var(--control-height);
-}
-
-.tp-actions > .btn-icon {
-  padding: 0;
-  min-width: var(--control-height);
-}
-
-.tp-actions > .btn-icon svg {
-  display: block;
+  flex: 1 1 auto;
 }
 
 /* ── Hojas guardadas ── */
@@ -646,6 +632,12 @@
     color: #000 !important;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* Última hoja sin salto: evita una página en blanco al final. */
+  .tp-print-portal .tp-sheet:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
 
   .tp-print-portal .tp-sheet__head {

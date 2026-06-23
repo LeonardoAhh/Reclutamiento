@@ -55,9 +55,8 @@ export function Toulouse() {
     sileo.info({ title: 'Nueva rejilla generada' });
   }
 
-  function printVariant(v: Variant) {
-    setVariant(v);
-    requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
+  function handlePrint() {
+    window.print();
   }
 
   async function handleSave() {
@@ -242,47 +241,34 @@ export function Toulouse() {
               </div>
             </fieldset>
 
-            <div className="tp-actions tp-actions--grid">
+            <div className="tp-actions">
               <button
                 type="button"
-                className="btn-secondary btn-icon"
+                className="btn-secondary"
                 onClick={regenerate}
                 data-testid="tp-regenerate"
-                title="Nueva rejilla"
-                aria-label="Nueva rejilla"
               >
                 <RefreshCw size={16} aria-hidden="true" />
+                Nueva rejilla
               </button>
               <button
                 type="button"
-                className="btn-primary btn-icon"
+                className="btn-primary"
                 onClick={handleSave}
                 disabled={saving}
                 data-testid="tp-save"
-                title={saving ? 'Guardando…' : 'Guardar'}
-                aria-label={saving ? 'Guardando' : 'Guardar'}
               >
                 <Save size={16} aria-hidden="true" />
+                {saving ? 'Guardando…' : 'Guardar'}
               </button>
               <button
                 type="button"
-                className="btn-secondary btn-icon"
-                onClick={() => printVariant('candidato')}
-                data-testid="tp-print-candidato"
-                title="Imprimir hoja"
-                aria-label="Imprimir hoja"
+                className="btn-secondary"
+                onClick={handlePrint}
+                data-testid="tp-print"
               >
                 <Printer size={16} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="btn-secondary btn-icon"
-                onClick={() => printVariant('correccion')}
-                data-testid="tp-print-correccion"
-                title="Imprimir plantilla"
-                aria-label="Imprimir plantilla"
-              >
-                <Printer size={16} aria-hidden="true" />
+                Imprimir
               </button>
             </div>
           </form>
@@ -373,7 +359,8 @@ export function Toulouse() {
           overflow/transform. Solo visible al imprimir (ver Toulouse.css). */}
       {createPortal(
         <div className="tp-print-portal">
-          <ToulouseSheet data={sheetData} config={config} seed={seed} variant={variant} />
+          <ToulouseSheet data={sheetData} config={config} seed={seed} variant="candidato" />
+          <ToulouseSheet data={sheetData} config={config} seed={seed} variant="correccion" />
         </div>,
         document.body
       )}
