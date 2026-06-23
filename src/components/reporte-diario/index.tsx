@@ -617,6 +617,22 @@ export default function ReporteDiarioContent() {
                     </div>
 
                     <div className="reporte-control-group">
+                        {fileName && hasData && (
+                            <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
+                                <FileJson size={16} className="text-primary" aria-hidden="true" />
+                                <span>{fileName}</span>
+                                <button
+                                    type="button"
+                                    onClick={handleClearFile}
+                                    title="Limpiar archivo actual"
+                                    aria-label="Limpiar archivo actual"
+                                    className="reporte-iconbtn"
+                                    data-testid="clear-file-btn"
+                                >
+                                    <X size={14} aria-hidden="true" />
+                                </button>
+                            </div>
+                        )}
                         {hasData && (
                             <button
                                 type="button"
@@ -648,23 +664,6 @@ export default function ReporteDiarioContent() {
                         )}
                     </div>
                 </div>
-
-                {fileName && hasData && (
-                    <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
-                        <FileJson size={16} className="text-primary" aria-hidden="true" />
-                        <span>{fileName}</span>
-                        <button
-                            type="button"
-                            onClick={handleClearFile}
-                            title="Limpiar archivo actual"
-                            aria-label="Limpiar archivo actual"
-                            className="reporte-iconbtn"
-                            data-testid="clear-file-btn"
-                        >
-                            <X size={14} aria-hidden="true" />
-                        </button>
-                    </div>
-                )}
 
                 {hasData && (
                     <div className="reporte-search">

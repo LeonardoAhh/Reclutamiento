@@ -1031,6 +1031,24 @@ button.reporte-card:focus-visible,
   flex-shrink: 0;
 }
 
+/* Variante solo-icono (compacta, alineada con los demás controles) */
+.reporte-saved__trigger--icon {
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs);
+  min-width: var(--control-height);
+  height: var(--control-height);
+  justify-content: center;
+  color: var(--color-charcoal);
+}
+
+.reporte-saved__count {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1;
+  color: var(--color-muted);
+}
+
 /* Modal body */
 .reporte-saved__body {
   padding: var(--spacing-md);

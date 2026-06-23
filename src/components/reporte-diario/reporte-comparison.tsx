@@ -50,16 +50,12 @@ function TriggerButton({ onClick }: { onClick: () => void }) {
         <button
             type="button"
             onClick={onClick}
-            className="reporte-saved__trigger"
+            className="reporte-saved__trigger reporte-saved__trigger--icon"
+            aria-label="Comparativa mensual"
+            title="Comparativa mensual"
             data-testid="open-comparison-btn"
         >
-            <span className="reporte-saved__trigger-left">
-                <span className="reporte-saved__trigger-icon">
-                    <BarChart3 size={16} />
-                </span>
-                <span className="reporte-saved__trigger-text">Comparativa mensual</span>
-            </span>
-            <ChevronRight size={16} className="reporte-saved__trigger-chevron" aria-hidden="true" />
+            <BarChart3 size={16} aria-hidden="true" />
         </button>
     );
 }
