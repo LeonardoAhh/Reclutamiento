@@ -611,27 +611,11 @@ export default function ReporteDiarioContent() {
         <div className="reporte-container">
 
             {/* ── Header ───────────────────────────────────────────────── */}
-            <header className="reporte-card">
-                <div className="reporte-header__top">
+            <header className="reporte-card reporte-head">
+                <div className="reporte-head__row">
                     <div className="reporte-title-wrapper">
                         <h1 className="reporte-title">Reporte Diario</h1>
                         <p className="reporte-subtitle">Asistencia e incidencias · planta Querétaro</p>
-                        {fileName && hasData && (
-                            <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
-                                <FileJson size={16} className="text-primary" aria-hidden="true" />
-                                <span>{fileName}</span>
-                                <button
-                                    type="button"
-                                    onClick={handleClearFile}
-                                    title="Limpiar archivo actual"
-                                    aria-label="Limpiar archivo actual"
-                                    className="reporte-iconbtn"
-                                    data-testid="clear-file-btn"
-                                >
-                                    <X size={14} />
-                                </button>
-                            </div>
-                        )}
                     </div>
 
                     <div className="reporte-control-group">
@@ -639,7 +623,7 @@ export default function ReporteDiarioContent() {
                             <>
                                 <button
                                     type="button"
-                                    className="reporte-btn-primary"
+                                    className="btn-primary"
                                     onClick={handleSaveToDb}
                                     disabled={dbSaving}
                                     data-testid="save-report-btn"
@@ -657,18 +641,25 @@ export default function ReporteDiarioContent() {
                         )}
                     </div>
                 </div>
-            </header>
 
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/json"
-                onChange={handleFileChange}
-                style={{display: 'none'}}
-            />
+                {fileName && hasData && (
+                    <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
+                        <FileJson size={16} className="text-primary" aria-hidden="true" />
+                        <span>{fileName}</span>
+                        <button
+                            type="button"
+                            onClick={handleClearFile}
+                            title="Limpiar archivo actual"
+                            aria-label="Limpiar archivo actual"
+                            className="reporte-iconbtn"
+                            data-testid="clear-file-btn"
+                        >
+                            <X size={14} aria-hidden="true" />
+                        </button>
+                    </div>
+                )}
 
-            {hasData && (
-                <div className="reporte-card reporte-search-card">
+                {hasData && (
                     <div className="reporte-search">
                         <div className="reporte-search__field-wrap">
                             <label htmlFor="reporte-search" className="sr-only">
@@ -736,26 +727,31 @@ export default function ReporteDiarioContent() {
                             </div>
                         ) : null}
                     </div>
-                </div>
-            )}
-
-            {/* ── Top Grid (Acciones & Insights) ─────────────────────────────────────────── */}
-            <div className="reporte-grid-4">
-                {(savedSummaries.length >= 2) && (
-                    <ReporteComparison summaries={savedSummaries} />
                 )}
+
                 {(savedSummaries.length > 0) && (
-                    <ReportesGuardadosDialog 
-                        savedSummaries={savedSummaries}
-                        dbSaving={dbSaving}
-                        onLoad={handleLoadFromDb}
-                        onDelete={handleDeleteFromDb}
-                        formatMes={formatMes}
-                    />
+                    <div className="reporte-head__launchers">
+                        {(savedSummaries.length >= 2) && (
+                            <ReporteComparison summaries={savedSummaries} />
+                        )}
+                        <ReportesGuardadosDialog
+                            savedSummaries={savedSummaries}
+                            dbSaving={dbSaving}
+                            onLoad={handleLoadFromDb}
+                            onDelete={handleDeleteFromDb}
+                            formatMes={formatMes}
+                        />
+                    </div>
                 )}
-                
+            </header>
 
-            </div>
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+            />
 
             {hasData ? (
                 <div className="reporte-container">
@@ -939,13 +935,13 @@ export default function ReporteDiarioContent() {
                 title="Revisión rápida del archivo"
                 icon={<FileJson />}
                 footerActions={
-                    <div className="reporte-control-group">
-                        <button onClick={cancelLoad} className="reporte-tab-trigger">Cancelar</button>
-                        <button onClick={confirmLoad} className="reporte-tab-trigger" style={{background: 'var(--color-primary)', color: 'white', borderRadius: 'var(--rounded-md)'}}>
-                            <Check size={16} />
+                    <>
+                        <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
+                        <button type="button" onClick={confirmLoad} className="btn-primary">
+                            <Check size={16} aria-hidden="true" />
                             Sí, cargar datos
                         </button>
-                    </div>
+                    </>
                 }
             >
                 {previewData && (
