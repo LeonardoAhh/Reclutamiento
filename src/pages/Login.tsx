@@ -1,18 +1,25 @@
-import { useState, type FormEvent, useId } from 'react';
-import { Eye, EyeOff, ArrowRight, Loader2, Users, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, type FormEvent, type CSSProperties, useId, useEffect } from 'react';
+import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
-import { BlackHole } from '@/components/BlackHole';
 import './Login.css';
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+/** Reloj de sistema aislado — re-renderiza solo, sin tocar el resto del login. */
+function SystemClock() {
+  const [clock, setClock] = useState(() =>
+    new Date().toLocaleTimeString('es-MX', { hour12: false }),
+  );
+  useEffect(() => {
+    const id = setInterval(
+      () => setClock(new Date().toLocaleTimeString('es-MX', { hour12: false })),
+      1000,
+    );
+    return () => clearInterval(id);
+  }, []);
+  return <>{clock}</>;
+}
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, ease: EASE, delay },
-});
+const d = (delay: number): CSSProperties => ({ '--d': `${delay}s` } as CSSProperties);
 
 export function Login() {
   const { signIn } = useAuth();
@@ -21,7 +28,6 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [absorbing, setAbsorbing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const usernameId = useId();
@@ -46,174 +52,164 @@ export function Login() {
     }
 
     flash({ tone: 'full', duration: 7000 });
-    setAbsorbing(true);
   };
 
   return (
     <main className="login" role="main" data-testid="login-page">
-      {/* ── Fondo: agujero negro hiperrealista ───────────────────────── */}
-      <BlackHole absorbing={absorbing} />
+      <div className="login__grid" aria-hidden="true" />
 
-      {/* ── Marca: esquina superior izquierda ────────────────────────── */}
-      <motion.div
-        className="login__brand"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-      >
-        <span className="login__brand-icon">
-          <Users size={15} strokeWidth={2} aria-hidden="true" />
-        </span>
-        <span className="login__eyebrow">Reclutamiento</span>
-      </motion.div>
+      <div className="login__frame">
+        {/* ── Barra superior ───────────────────────────────────────── */}
+        <header className="login__topbar ed-fade" style={d(0)}>
+          <span className="login__sys">Reclutamiento — Sistema interno</span>
+          <span className="login__ref">VP·01 / Acceso</span>
+          <span className="login__status">
+            <i className="login__dot" /> En línea · <SystemClock />
+          </span>
+        </header>
+        <div className="login__topline ed-line" style={d(0.1)} />
 
-      {/* ── Wordmark: esquina inferior izquierda ─────────────────────── */}
-      <motion.div
-        className="login__wordmark"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: EASE, delay: 0.25 }}
-      >
-        <span className="login__wordmark-main">
-          Viño<br />Plastic
-        </span>
-        <span className="login__wordmark-sub">Querétaro · Est. 1970</span>
-        <p className="login__wordmark-tag">
-          Excelencia en Inyección de Plásticos de Ingeniería.
-        </p>
-      </motion.div>
+        {/* ── Cuerpo ───────────────────────────────────────────────── */}
+        <div className="login__body">
+          {/* Columna editorial */}
+          <section className="login__editorial">
+            <span className="login__index ed-up" style={d(0.15)}>(01)</span>
 
-      {/* ── Formulario (panel de cristal sobre el espacio) ───────────── */}
-      <div className="login__form-panel">
-        <motion.section
-          className="login__form-wrap"
-          aria-labelledby="login-title"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-        >
-          <header className="login__header">
-            <motion.p className="login__header-label" {...fadeUp(0.2)}>
-              Acceso seguro
-            </motion.p>
-            <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
-              Bienvenido<br />de nuevo
-            </motion.h2>
-          </header>
+            <h1 className="login__wordmark">
+              <span className="login__wordmark-a ed-up" style={d(0.2)}>Viño</span>
+              <span className="login__wordmark-b ed-up" style={d(0.28)}>Plastic</span>
+            </h1>
 
-          <motion.div
-            className="login__sep"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, ease: EASE, delay: 0.3 }}
-          />
+            <p className="login__lede ed-up" style={d(0.4)}>
+              Excelencia en inyección de plásticos de ingeniería.
+            </p>
 
-          <form className="login__form" onSubmit={handleSubmit} noValidate>
-            <motion.div className="login__field" {...fadeUp(0.35)}>
-              <label htmlFor={usernameId} className="login__field-label">
-                Correo electrónico
-              </label>
-              <div className="login__input-wrap">
-                <input
-                  id={usernameId}
-                  className="login__input"
-                  type="email"
-                  autoComplete="username"
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  placeholder="usuario@empresa.com"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={submitting}
-                  required
-                  data-testid="login-email-input"
-                  aria-describedby={error ? errorId : undefined}
-                />
+            <dl className="login__specs ed-up" style={d(0.5)}>
+              <div className="login__spec">
+                <dt>Materia</dt>
+                <dd>Polímeros de ingeniería</dd>
               </div>
-            </motion.div>
-
-            <motion.div className="login__field" {...fadeUp(0.42)}>
-              <label htmlFor={passwordId} className="login__field-label">
-                Contraseña
-              </label>
-              <div className="login__input-wrap">
-                <input
-                  id={passwordId}
-                  className="login__input login__input--padded-r"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={submitting}
-                  required
-                  data-testid="login-password-input"
-                  aria-describedby={error ? errorId : undefined}
-                />
-                <button
-                  type="button"
-                  className="login__visibility btn-icon"
-                  onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  disabled={submitting}
-                  tabIndex={0}
-                  data-testid="login-toggle-password"
-                >
-                  {showPassword
-                    ? <EyeOff size={16} aria-hidden="true" />
-                    : <Eye size={16} aria-hidden="true" />}
-                </button>
+              <div className="login__spec">
+                <dt>Proceso</dt>
+                <dd>Inyección de precisión</dd>
               </div>
-            </motion.div>
+              <div className="login__spec">
+                <dt>Desde</dt>
+                <dd>1970 · Querétaro, MX</dd>
+              </div>
+            </dl>
+          </section>
 
-            <AnimatePresence mode="wait">
+          {/* Columna formulario */}
+          <section className="login__form-panel" aria-labelledby="login-title">
+            <div className="login__form-head ed-up" style={d(0.3)}>
+              <span className="login__form-eyebrow">Acceso seguro</span>
+              <h2 id="login-title" className="login__title">
+                Bienvenido<br />de nuevo
+              </h2>
+            </div>
+
+            <form className="login__form" onSubmit={handleSubmit} noValidate>
+              <div className="login__field ed-up" style={d(0.4)}>
+                <label htmlFor={usernameId} className="login__label">
+                  <span className="login__label-num">01</span>
+                  Correo electrónico
+                </label>
+                <div className="login__input-wrap">
+                  <input
+                    id={usernameId}
+                    className="login__input"
+                    type="email"
+                    autoComplete="username"
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    placeholder="usuario@empresa.com"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    disabled={submitting}
+                    required
+                    data-testid="login-email-input"
+                    aria-describedby={error ? errorId : undefined}
+                  />
+                </div>
+              </div>
+
+              <div className="login__field ed-up" style={d(0.48)}>
+                <label htmlFor={passwordId} className="login__label">
+                  <span className="login__label-num">02</span>
+                  Contraseña
+                </label>
+                <div className="login__input-wrap">
+                  <input
+                    id={passwordId}
+                    className="login__input login__input--padded-r"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={submitting}
+                    required
+                    data-testid="login-password-input"
+                    aria-describedby={error ? errorId : undefined}
+                  />
+                  <button
+                    type="button"
+                    className="login__visibility"
+                    onClick={() => setShowPassword((s) => !s)}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    disabled={submitting}
+                    data-testid="login-toggle-password"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
               {error && (
-                <motion.div
+                <div
                   className="login__error"
                   role="alert"
                   aria-live="polite"
                   id={errorId}
                   data-testid="login-error"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.22 }}
                 >
                   <AlertCircle size={14} aria-hidden="true" />
                   <span>{error}</span>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
 
-            <motion.button
-              type="submit"
-              className="login__submit"
-              disabled={submitting}
-              aria-busy={submitting}
-              data-testid="login-submit-button"
-              {...fadeUp(0.52)}
-              whileHover={!submitting ? { y: -2 } : {}}
-              whileTap={!submitting ? { scale: 0.98 } : {}}
-            >
-              {submitting ? (
-                <>
-                  <Loader2 size={16} className="login__spinner" aria-hidden="true" />
-                  <span>Verificando acceso…</span>
-                </>
-              ) : (
-                <>
-                  <span>Ingresar</span>
-                  <ArrowRight size={16} aria-hidden="true" />
-                </>
-              )}
-            </motion.button>
-          </form>
+              <button
+                type="submit"
+                className="login__submit ed-up"
+                style={d(0.56)}
+                disabled={submitting}
+                aria-busy={submitting}
+                data-testid="login-submit-button"
+              >
+                {submitting ? (
+                  <>
+                    <span>Verificando acceso…</span>
+                    <Loader2 size={16} className="login__spinner" aria-hidden="true" />
+                  </>
+                ) : (
+                  <>
+                    <span>Ingresar</span>
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </>
+                )}
+              </button>
+            </form>
+          </section>
+        </div>
 
-          <motion.p className="login__footer-note" {...fadeUp(0.65)}>
-            Reclutamiento y Selección de Personal
-          </motion.p>
-        </motion.section>
+        {/* ── Pie ──────────────────────────────────────────────────── */}
+        <footer className="login__footer ed-fade" style={d(0.7)}>
+          <span>© {new Date().getFullYear()} ViñoPlastic</span>
+          <span className="login__footer-mid">Reclutamiento y Selección de Personal</span>
+          <span>Confidencial</span>
+        </footer>
       </div>
     </main>
   );
