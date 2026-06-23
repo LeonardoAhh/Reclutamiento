@@ -54,7 +54,7 @@ export function Vacantes() {
     desmarcarCubierta,
   } = useBajas();
   const { employees, comments, loading: empLoading } = useSupabaseData();
-  const { positions, customPositions, deletePosition, loading: positionsLoading } = usePositions();
+  const { positions, customPositions, positionSettings, deletePosition, upsertPositionSetting, loading: positionsLoading } = usePositions();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
 
@@ -163,21 +163,63 @@ export function Vacantes() {
     );
   }
 
-  async function handleDeleteCustom(v: AutoVacancy) {
-    const cp = findCustomPosition(v);
-    if (!cp) return;
+  /** ¿Se puede quitar esta vacante desde la página? (estructural: custom o backup) */
+  function canRemoveStructural(v: AutoVacancy): boolean {
+    if (v.baja) return false; // las vacantes por baja se gestionan con cobertura, no se borran
+    return Boolean(findCustomPosition(v)) || v.vacancyType === 'backup';
+  }
+
+  async function handleRemoveStructural(v: AutoVacancy) {
+    if (v.baja) return;
     const ubicacion = `${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`;
+    const cp = findCustomPosition(v);
+
+    // Caso 1: posición personalizada → se elimina por completo (BD + local).
+    if (cp) {
+      if (
+        !window.confirm(
+          `¿Eliminar la posición personalizada "${v.puesto}" (${ubicacion})?\n\nEsta acción no se puede deshacer.`
+        )
+      ) {
+        return;
+      }
+      await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
+        success: 'Posición personalizada eliminada',
+        error: 'No se pudo eliminar la posición',
+      });
+      return;
+    }
+
+    // Caso 2: vacante de backup del catálogo estático → se pone el backup en 0
+    // (override reversible desde "Configurar plantilla/backup").
+    if (v.vacancyType !== 'backup') return;
     if (
       !window.confirm(
-        `¿Eliminar la posición personalizada "${v.puesto}" (${ubicacion})?\n\nEsta acción no se puede deshacer.`
+        `Esta es una vacante de backup del catálogo "${v.puesto}" (${ubicacion}).\n\n¿Quitarla? Su backup se pondrá en 0 (reversible desde "Configurar plantilla/backup").`
       )
     ) {
       return;
     }
-    await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
-      success: 'Posición personalizada eliminada',
-      error: 'No se pudo eliminar la posición',
-    });
+    const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
+    const cur = positionSettings.find(
+      (s) => `${normalizeString(s.area)}::${normalizeString(s.seccion)}::${normalizePuesto(s.puesto)}` === key
+    );
+    await notifyResult(
+      upsertPositionSetting({
+        area: v.area,
+        seccion: v.seccion,
+        puesto: v.puesto,
+        plantilla_autorizada: cur?.plantilla_autorizada ?? null,
+        backup: 0,
+        urgentes: cur?.urgentes ?? 0,
+        notas: cur?.notas ?? null,
+        updated_by: profile?.username ?? null,
+      }),
+      {
+        success: 'Vacante de backup quitada (backup = 0)',
+        error: 'No se pudo actualizar el backup',
+      }
+    );
   }
 
   if (loading) {
@@ -354,6 +396,8 @@ export function Vacantes() {
                 v={v}
                 onReclutador={(val) => handleReclutador(v, val)}
                 onToggleManual={() => handleToggleManual(v)}
+                canDelete={canRemoveStructural(v)}
+                onDelete={() => handleRemoveStructural(v)}
               />
             ))}
           </section>
@@ -460,13 +504,17 @@ export function Vacantes() {
                           <CheckCircle2 size={16} aria-hidden="true" />
                         )}
                       </button>
-                      {!v.baja && findCustomPosition(v) && (
+                      {canRemoveStructural(v) && (
                         <button
                           type="button"
                           className="pipeline__icon-btn vacantes__del-btn"
-                          onClick={() => handleDeleteCustom(v)}
-                          title="Eliminar posición personalizada"
-                          aria-label={`Eliminar posición personalizada ${v.puesto}`}
+                          onClick={() => handleRemoveStructural(v)}
+                          title={findCustomPosition(v) ? 'Eliminar posición personalizada' : 'Quitar vacante de backup'}
+                          aria-label={
+                            findCustomPosition(v)
+                              ? `Eliminar posición personalizada ${v.puesto}`
+                              : `Quitar vacante de backup ${v.puesto}`
+                          }
                           data-testid={`vac-delete-${v.key}`}
                         >
                           <Trash2 size={16} aria-hidden="true" />
@@ -693,8 +741,8 @@ function VacancyCard({
                     type="button"
                     className="pipeline__icon-btn vacantes__del-btn"
                     onClick={onDelete}
-                    title="Eliminar posición personalizada"
-                    aria-label={`Eliminar posición personalizada ${v.puesto}`}
+                    title="Quitar vacante"
+                    aria-label={`Quitar vacante ${v.puesto}`}
                     data-testid={`vac-delete-card-${v.key}`}
                   >
                     <Trash2 size={16} aria-hidden="true" />
