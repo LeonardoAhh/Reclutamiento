@@ -516,33 +516,39 @@ button.reporte-card:focus-visible,
 }
 
 .reporte-employee-detail__tabs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-lg);
   border-bottom: 1px solid var(--color-hairline);
 }
 
 .reporte-employee-detail__tab {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid transparent;
-  border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
-  background: var(--color-surface-soft);
-  color: var(--color-charcoal);
+  padding: var(--spacing-sm) 0;
+  margin-bottom: -1px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
   cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.reporte-employee-detail__tab:hover {
+  color: var(--color-ink);
 }
 
 .reporte-employee-detail__tab.is-active {
-  background: var(--color-surface-card);
-  border-color: var(--color-hairline-strong);
+  background: transparent;
+  border-bottom-color: var(--color-ink);
   color: var(--color-ink);
 }
 
 .reporte-employee-detail__tab:focus-visible {
   outline: none;
+  border-radius: var(--rounded-sm);
   box-shadow: var(--shadow-focus);
 }
 
