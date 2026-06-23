@@ -1,0 +1,278 @@
+/* ─────────────────────────────────────────────
+   App Header — rediseño minimalista.
+   56px de altura lógica (–8px vs. anterior).
+   Sin uppercase forzado, sin letter-spacing
+   editorial en el nav; jerarquía por peso y color.
+───────────────────────────────────────────── */
+
+.app-header {
+  --_h: 56px;
+
+  /* Posicionamiento */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  /* Box model */
+  height: calc(var(--_h) + var(--safe-area-top));
+  padding-top: var(--safe-area-top);
+
+  /* Visual */
+  background: var(--color-header-glass);
+  border-bottom: 0.5px solid var(--color-hairline);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.app-header__inner {
+  /* Display */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  /* Box model — reutiliza --_h del padre */
+  height: var(--_h);
+  gap: var(--spacing-md);
+}
+
+/* ── Brand ───────────────────────────────────── */
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  justify-self: start;
+}
+
+/* Punto decorativo: ancla visual sin logotipo */
+.app-header__brand-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--rounded-full);
+  background: var(--color-ink);
+  opacity: 0.2;
+  flex-shrink: 0;
+}
+
+.app-header__brand-text {
+  /* Tipografía */
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+
+  /* Visual */
+  color: var(--color-ink);
+}
+
+/* ── Nav ─────────────────────────────────────── */
+.app-header__nav {
+  /* Centrado en la celda media del grid */
+  justify-self: center;
+}
+
+.app-header__nav-list {
+  /* Display */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+
+  /* Reset */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Nav item ────────────────────────────────── */
+.app-header__nav-item {
+  /* Tipografía */
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  text-decoration: none;
+
+  /* Box model */
+  padding: var(--spacing-sm) var(--spacing-md);
+
+  /* Visual */
+  color: var(--color-body);
+  border-radius: var(--rounded-full);
+
+  /* Interacción */
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.app-header__nav-item:hover,
+.app-header__nav-item--active {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.app-header__nav-item--active {
+  font-weight: var(--type-body-sm-strong-weight);
+}
+
+.app-header__nav-item--active:hover {
+  background: var(--color-surface-card);
+}
+
+.app-header__nav-item:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Acciones ────────────────────────────────── */
+.app-header__actions {
+  /* Empuja el UserMenu a la derecha */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  justify-self: end;
+}
+
+/* ─────────────────────────────────────────────
+   Tablet (768px – 1024px)
+   Nav visible, comprimido en scroll horizontal.
+───────────────────────────────────────────── */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .app-header__inner {
+    /* Vuelve a flex para que el nav scroll no rompa el grid */
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .app-header__nav {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .app-header__nav-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-inline: var(--spacing-xs);
+    scroll-padding-inline: var(--spacing-xs);
+  }
+
+  .app-header__nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-header__nav-item {
+    white-space: nowrap;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Mobile (<768px)
+   Nav delegado al BottomTabBar.
+   Header: brand centro, avatar derecha.
+───────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .app-header__inner {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .app-header__nav {
+    display: none;
+  }
+
+  .app-header__actions {
+    justify-content: flex-end;
+  }
+}
+
+/* ── Mobile pequeño (<480px) ─────────────────── */
+@media (max-width: 480px) {
+  .app-header__title {
+    font-size: var(--type-caption-md-size);
+  }
+}
+
+/* ── Dropdown ────────────────────────────────── */
+.app-header__nav-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.app-header__nav-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+}
+
+.app-header__nav-chevron {
+  transition: transform var(--transition-fast);
+  color: var(--color-muted);
+}
+
+.app-header__nav-chevron--open {
+  transform: rotate(180deg);
+}
+
+.app-header__dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--spacing-xs));
+  left: 0;
+  min-width: 160px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  z-index: 200;
+  box-shadow: var(--shadow-subtle);
+  animation: dropdown-in var(--transition-fast) ease-out;
+}
+
+/* Puente invisible para que el mouse no dispare onMouseLeave al cruzar el gap */
+.app-header__dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--spacing-xs));
+  left: 0;
+  right: 0;
+  height: var(--spacing-xs);
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.app-header__dropdown-item {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-ink);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.app-header__dropdown-item:hover,
+.app-header__dropdown-item--active {
+  background: var(--color-surface-soft);
+}
+
+.app-header__dropdown-item--active {
+  font-weight: var(--type-body-sm-strong-weight);
+}

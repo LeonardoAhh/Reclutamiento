@@ -1,0 +1,1648 @@
+/* Pipeline — tabla densa de candidatos.
+   Layout responsive: desktop ≥1280, mid 1025-1279, tablet 641-1024, mobile ≤640.
+   Todos los colores, tipografías y radios consumen tokens (--color-*,
+   --type-*, --rounded-*, --spacing-*). No hardcodes. */
+
+.pipeline {
+  padding-bottom: calc(var(--spacing-xxl) + var(--safe-area-bottom));
+  padding-inline: max(var(--spacing-xl), var(--safe-area-left));
+}
+
+@media (max-width: 768px) {
+  .pipeline {
+    padding-inline: max(var(--spacing-md), var(--safe-area-left));
+  }
+}
+
+/* ── Hero ── */
+.pipeline__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+  flex-wrap: wrap;
+}
+
+.pipeline__hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.pipeline__hero h1 {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  letter-spacing: var(--type-display-xl-tracking);
+  color: var(--color-ink);
+  line-height: 1.1;
+}
+
+.pipeline__hero-sub {
+  font-size: var(--type-body-md-size);
+  color: var(--color-muted);
+}
+
+.pipeline__hero-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.pipeline__hero-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+/* ── Botón "Resumen de candidatos" (abre CandidateReportModal) ── */
+.pipeline__report-btn {
+  gap: var(--spacing-xs);
+}
+
+.pipeline__report-btn-label {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .pipeline__report-btn-label {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LAYOUT PRINCIPAL — two-column sticky sidebar
+   Desktop (≥1280): sidebar fijo 340px, content llena el resto.
+   Mid (1025–1279): sidebar 300px, content llena el resto.
+   ≤1024: colapsa a una sola columna.
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.pipeline__sidebar {
+  position: sticky;
+  top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 0;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+}
+
+.pipeline__sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.pipeline__sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pipeline__sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: var(--rounded-pill);
+}
+
+/* ── Sidebar Header ── */
+.pipeline__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0 var(--spacing-xs);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Sidebar Divider ── */
+.pipeline__sidebar-divider {
+  height: 1px;
+  background: var(--color-hairline);
+  margin: var(--spacing-xs) 0;
+}
+
+/* ── Sidebar Section ── */
+.pipeline__sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__sidebar-section__label {
+  padding: 0 var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+}
+
+/* ── KPI Card (Global) ── */
+.pipeline__kpi-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.pipeline__kpi-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-1px);
+}
+
+.pipeline__kpi-card:active {
+  transform: translateY(0);
+}
+
+.pipeline__kpi-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pipeline__kpi-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.pipeline__kpi-card__label {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.pipeline__kpi-card__hint {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.pipeline__kpi-card__arrow {
+  color: var(--color-muted-soft);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.pipeline__kpi-card:hover .pipeline__kpi-card__arrow {
+  transform: translateX(2px);
+  color: var(--color-primary);
+}
+
+/* ── KPI Row List ── */
+.pipeline__kpi-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__kpi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.pipeline__kpi-row:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline);
+}
+
+.pipeline__kpi-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.pipeline__kpi-row__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+}
+
+.pipeline__kpi-row__name {
+  font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.pipeline__kpi-row__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-muted);
+}
+
+.pipeline__kpi-row__value {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  min-width: 24px;
+  text-align: right;
+}
+
+.pipeline__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Mid-desktop: sidebar un poco más angosto */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .pipeline__layout {
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Tablet y abajo: una sola columna, sidebar deja de ser sticky */
+@media (max-width: 1024px) {
+  .pipeline__layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .pipeline__sidebar {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   KPIs por reclutador (tarjetas resumen en el sidebar)
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__recruiters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* En tablet/mobile cuando el sidebar no es sticky, usamos grid horizontal */
+@media (max-width: 1024px) {
+  .pipeline__recruiters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+.pipeline__recruiter-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.pipeline__recruiter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.pipeline__recruiter-name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  letter-spacing: var(--type-heading-md-tracking);
+  color: var(--color-ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.pipeline__recruiter-total {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.pipeline__recruiter-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xs);
+  margin: 0;
+}
+
+.pipeline__recruiter-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  border-left: 3px solid var(--color-muted-soft);
+  min-width: 0;
+}
+
+.pipeline__recruiter-stat dt {
+  font-size: var(--type-caption-md-size);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.pipeline__recruiter-stat dd {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.pipeline__recruiter-pct {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__recruiter-count {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+/* Variantes por tipo de estado */
+.pipeline__recruiter-stat--citados {
+  border-left-color: var(--color-accent-amber);
+}
+
+.pipeline__recruiter-stat--contratados {
+  border-left-color: var(--color-accent-teal);
+}
+
+.pipeline__recruiter-stat--rechazados {
+  border-left-color: var(--color-error);
+}
+
+@media (max-width: 480px) {
+  .pipeline__recruiter-stats {
+    grid-template-columns: 1fr;
+  }
+  .pipeline__recruiter-stat dd {
+    justify-content: space-between;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   KPIs por Semana (Pauta / Alexandra / Daniela)
+   Dentro del sidebar: un grupo por reclutador con scroll horizontal
+   interno para las tarjetas de semana. El sidebar maneja el scroll
+   vertical global, las tarjetas no se desbordan fuera de él.
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__weekly-kpis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Grupo = título + fila de tarjetas con scroll horizontal */
+.pipeline__weekly-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__weekly-group-title {
+  font-family: var(--font-display);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  padding: 0 var(--spacing-xs);
+}
+
+/* Fila con scroll horizontal para las tarjetas de semana */
+.pipeline__weekly-scroll {
+  display: flex;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-xs);
+  /* Scrollbar discreta */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pipeline__weekly-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: var(--rounded-pill);
+}
+
+/* Tarjeta de semana individual: compacta, ancho fijo para que el scroll funcione */
+.pipeline__weekly-card {
+  flex: 0 0 auto;
+  width: 148px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__weekly-card-head {
+  min-width: 0;
+}
+
+.pipeline__weekly-label {
+  display: block;
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: capitalize;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.pipeline__weekly-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xs);
+  margin: 0;
+}
+
+.pipeline__weekly-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  border-left: 2px solid var(--color-muted-soft);
+  min-width: 0;
+}
+
+.pipeline__weekly-stat dt {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.pipeline__weekly-stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__weekly-stat--contratados {
+  border-left-color: var(--color-accent-teal);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Controls (search + count + toggle vista)
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.pipeline__search {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.pipeline__search-icon {
+  position: absolute;
+  left: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted-soft);
+  pointer-events: none;
+}
+
+.pipeline__search-input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--spacing-md) 0 calc(var(--spacing-md) + 24px);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pipeline__search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.pipeline__count {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pipeline__filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  position: relative;
+  height: 36px;
+  padding: 0 var(--spacing-sm);
+  font-size: var(--type-caption-md-size);
+  margin-left: auto;
+}
+
+.pipeline__filter-btn--active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.pipeline__filter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xxs);
+  border-radius: var(--rounded-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.pipeline__view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.pipeline__view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: 0 var(--spacing-sm);
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.pipeline__view-btn + .pipeline__view-btn {
+  border-left: 1px solid var(--color-hairline);
+}
+
+.pipeline__view-btn:hover {
+  color: var(--color-ink);
+}
+
+.pipeline__view-btn--active {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+.pipeline__view-btn:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+@media (max-width: 480px) {
+  .pipeline__controls {
+    gap: var(--spacing-xs);
+  }
+  .pipeline__count {
+    order: 3;
+    width: 100%;
+    text-align: right;
+  }
+  .pipeline__filter-btn {
+    margin-left: 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Empty state
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__empty {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.pipeline__empty h2 {
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  letter-spacing: var(--type-display-xl-tracking);
+  margin: 0;
+}
+
+.pipeline__empty p {
+  max-width: 480px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+}
+
+.pipeline__empty .btn-primary {
+  margin-top: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+  .pipeline__empty {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Table (legacy, mantenida para referencia)
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__table-wrap {
+  overflow-x: auto;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.pipeline__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.pipeline__table thead th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+  white-space: nowrap;
+}
+
+.pipeline__th--actions {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.pipeline__table tbody tr {
+  border-bottom: 1px solid var(--color-hairline-soft);
+  transition: background var(--transition-fast);
+}
+
+.pipeline__table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.pipeline__table tbody tr:hover {
+  background: var(--color-surface-soft);
+}
+
+.pipeline__table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-body);
+  vertical-align: middle;
+}
+
+.pipeline__cell-name {
+  min-width: 200px;
+}
+
+/* Celda apilada Aplicó · Citado */
+.pipeline__cell-dates {
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.pipeline__cell-dates-primary {
+  color: var(--color-ink);
+}
+
+.pipeline__cell-dates-secondary {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.pipeline__name {
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.pipeline__contact {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.pipeline__puesto {
+  color: var(--color-ink);
+  font-weight: 500;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.pipeline__area {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.pipeline__seccion {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.pipeline__cell-status {
+  position: relative;
+  min-width: 0;
+}
+
+.pipeline__status-select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.pipeline__cell-status:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: var(--rounded-sm);
+}
+
+.pipeline__cell-status .custom-select {
+  width: 100%;
+}
+
+
+.pipeline__cell-cv,
+.pipeline__cell-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pipeline__icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
+  color: var(--color-body);
+  cursor: pointer;
+  margin-left: var(--spacing-xxs);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.pipeline__icon-btn:hover {
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  border-color: var(--color-muted-soft);
+}
+
+.pipeline__icon-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-color: var(--color-primary);
+}
+
+.pipeline__icon-btn--danger:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.pipeline__icon-btn--primary {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-surface-soft);
+}
+
+.pipeline__icon-btn--primary:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.pipeline__hired-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  margin-left: var(--spacing-xxs);
+  border-radius: var(--rounded-pill);
+  background: var(--color-success-tint);
+  color: var(--color-accent-teal);
+  border: 1px solid var(--color-hairline-soft);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pipeline__source-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--spacing-xs);
+  margin-top: 4px;
+  border-radius: var(--rounded-sm);
+  /* Base: contraste claramente legible sobre la card.
+     Cada `data-source` lo personaliza más abajo. */
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  color: var(--color-ink);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  white-space: nowrap;
+  width: max-content;
+}
+
+/* ── Variantes por fuente ──────────────────────────────
+   Color-coded para identificación de un vistazo. Todos
+   los tonos vienen de tokens del sistema. */
+
+.pipeline__source-badge[data-source="pauta"] {
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, transparent);
+  color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-accent-amber) 35%, transparent);
+}
+
+.pipeline__source-badge[data-source="computrabajo"] {
+  background: color-mix(in srgb, var(--color-accent-teal) 16%, transparent);
+  color: color-mix(in srgb, var(--color-accent-teal) 78%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-accent-teal) 32%, transparent);
+}
+
+.pipeline__source-badge[data-source="referido"] {
+  background: var(--color-success-tint);
+  color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-success) 32%, transparent);
+}
+
+.pipeline__source-badge[data-source="linkedin"],
+.pipeline__source-badge[data-source="indeed"],
+.pipeline__source-badge[data-source="occ"],
+.pipeline__source-badge[data-source="facebook"] {
+  /* Plataformas externas: tinte neutral más fuerte */
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+}
+
+.pipeline__source-badge[data-source="volanteo"],
+.pipeline__source-badge[data-source="lona"] {
+  /* Captación física: warm amber suave */
+  background: var(--color-warning-tint);
+  color: color-mix(in srgb, var(--color-warning) 80%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.pipeline__icon-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--spacing-xxs);
+  border-radius: var(--rounded-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-md-size);
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.pipeline__empty-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pipeline__muted {
+  color: var(--color-muted-soft);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Card-list (vista tabla de candidatos)
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline__ccard {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.4fr) minmax(160px, 1fr) minmax(140px, 200px)
+    minmax(90px, auto) auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pipeline__ccard:hover {
+  background: var(--color-surface-soft);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Dot indicador de estado/proceso (reemplaza border-left) ── */
+.pipeline__status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 0%, transparent);
+  transition: box-shadow var(--transition-fast);
+}
+
+.pipeline__status-dot[data-status="entrevista"] {
+  background: var(--color-accent-amber);
+}
+.pipeline__status-dot[data-status="entrega_documentos"] {
+  background: var(--color-accent-teal);
+}
+.pipeline__status-dot[data-status="feedback_pendiente"] {
+  background: var(--color-primary);
+}
+.pipeline__status-dot[data-status="contratado"] {
+  background: var(--color-success);
+  /* Halo sutil para destacar el "ganador" del proceso. */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 22%, transparent);
+}
+.pipeline__status-dot[data-status="rechazado"] {
+  background: var(--color-error);
+}
+.pipeline__status-dot[data-status="no_asistio"] {
+  background: color-mix(in srgb, var(--color-muted) 70%, transparent);
+}
+
+.pipeline__ccard-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.pipeline__ccard-name-col,
+.pipeline__ccard-puesto-col,
+.pipeline__ccard-dates-col,
+.pipeline__ccard-status-col {
+  min-width: 0;
+}
+
+.pipeline__ccard-actions-col {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xxs);
+  flex-wrap: wrap;
+}
+
+.pipeline__ccard-name-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Reclutador inline bajo el nombre */
+.pipeline__recruiter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.pipeline__recruiter > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Etiqueta "Entrevista" arriba de la fecha */
+.pipeline__cell-dates-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+/* ── Header minimalista de la lista de candidatos ── */
+.pipeline__card-list-header {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.4fr) minmax(160px, 1fr) minmax(140px, 200px)
+    minmax(90px, auto) auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-md);
+  margin-bottom: var(--spacing-xxs);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+
+/* ── Status tag estilo "lock" (idle) → editable on click ── */
+.pipeline__status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: color-mix(in srgb, var(--color-muted) 10%, transparent);
+  color: color-mix(in srgb, var(--color-muted) 85%, var(--color-ink));
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pipeline__status-tag__label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.pipeline__status-tag__chevron {
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* Hover/focus → revela chevron e indica que es editable */
+.pipeline__cell-status .custom-select-trigger:hover .pipeline__status-tag,
+.pipeline__cell-status .custom-select-trigger:focus-visible .pipeline__status-tag,
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag {
+  border-color: color-mix(in srgb, currentColor 24%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.pipeline__cell-status .custom-select-trigger:hover .pipeline__status-tag__chevron,
+.pipeline__cell-status .custom-select-trigger:focus-visible .pipeline__status-tag__chevron,
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag__chevron {
+  opacity: 0.7;
+}
+
+.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .pipeline__status-tag__chevron {
+  transform: rotate(180deg);
+}
+
+/* Variantes de color por estado */
+.pipeline__status-tag[data-status="entrevista"] {
+  background: color-mix(in srgb, var(--color-accent-amber) 14%, transparent);
+  color: color-mix(in srgb, var(--color-accent-amber) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="entrega_documentos"] {
+  background: color-mix(in srgb, var(--color-accent-teal) 14%, transparent);
+  color: color-mix(in srgb, var(--color-accent-teal) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="feedback_pendiente"] {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-ink);
+}
+.pipeline__status-tag[data-status="contratado"] {
+  background: var(--color-success-tint);
+  color: color-mix(in srgb, var(--color-success) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="rechazado"] {
+  background: var(--color-error-tint);
+  color: color-mix(in srgb, var(--color-error) 70%, var(--color-ink));
+}
+.pipeline__status-tag[data-status="no_asistio"] {
+  background: color-mix(in srgb, var(--color-muted) 12%, transparent);
+  color: color-mix(in srgb, var(--color-muted) 90%, var(--color-ink));
+}
+
+/* ── Bloque compacto solo-mobile (oculto en desktop) ── */
+.pipeline__ccard-mobile-info {
+  display: none;
+}
+
+.pipeline__ccard-mobile-info__puesto {
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pipeline__ccard-mobile-info__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: 4px;
+}
+
+.pipeline__ccard-mobile-info__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  line-height: 1.2;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Responsive card-list ── */
+@media (max-width: 1024px) {
+  .pipeline__card-list-header {
+    display: none;
+  }
+
+  .pipeline__ccard {
+    grid-template-columns: minmax(0, 1.4fr) minmax(140px, 200px) auto;
+    grid-template-areas: "name status actions";
+    column-gap: var(--spacing-sm);
+  }
+  .pipeline__ccard-name-col {
+    grid-area: name;
+  }
+  .pipeline__ccard-status-col {
+    grid-area: status;
+  }
+  .pipeline__ccard-actions-col {
+    grid-area: actions;
+  }
+
+  .pipeline__ccard-puesto-col,
+  .pipeline__ccard-dates-col {
+    display: none;
+  }
+
+  /* Mostramos el resumen compacto mobile (2 líneas limpias) */
+  .pipeline__ccard-mobile-info {
+    display: block;
+    min-width: 0;
+  }
+
+  /* En mobile el reclutador ya vive dentro de mobile-info → evitamos
+     duplicarlo arriba bajo el nombre. */
+  .pipeline__recruiter {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .pipeline__ccard {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name actions"
+      "status status";
+    row-gap: var(--spacing-xs);
+    align-items: center;
+  }
+  .pipeline__ccard-actions-col {
+    justify-content: flex-end;
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline__ccard {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name actions"
+      "status status";
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+  .pipeline__ccard-status-col {
+    min-height: unset;
+  }
+  .pipeline__icon-btn {
+    width: 36px;
+    height: 36px;
+    margin-left: 0;
+  }
+  .pipeline__ccard-actions-col {
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (pointer: coarse) {
+  .pipeline__icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   MODAL KPI — Layout sin scroll horizontal
+   ───────────────────────────────────────────────────────────────────────── */
+.pipeline__modal-body {
+  padding: var(--spacing-lg);
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Grid Global: 3 columnas en desktop, 2 en tablet, 1 en mobile ── */
+.pipeline__modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 1024px) {
+  .pipeline__modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pipeline__modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Card de Reclutador en Modal ── */
+.pipeline__modal-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  transition: box-shadow var(--transition-fast);
+}
+
+.pipeline__modal-card:hover {
+  box-shadow: var(--shadow-card);
+}
+
+.pipeline__modal-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.pipeline__modal-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pipeline__modal-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pipeline__modal-card__name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.pipeline__modal-card__total {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+/* Stats en fila horizontal */
+.pipeline__modal-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.pipeline__modal-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  text-align: center;
+}
+
+.pipeline__modal-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.pipeline__modal-stat__label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.pipeline__modal-stat__count {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted-soft);
+}
+
+/* Variantes de color */
+.pipeline__modal-stat--citados {
+  border-top: 3px solid var(--color-accent-amber);
+}
+
+.pipeline__modal-stat--contratados {
+  border-top: 3px solid var(--color-accent-teal);
+}
+
+.pipeline__modal-stat--rechazados {
+  border-top: 3px solid var(--color-error);
+}
+
+/* Barra de progreso visual */
+.pipeline__modal-card__bar {
+  display: flex;
+  height: 6px;
+  border-radius: var(--rounded-pill);
+  overflow: hidden;
+  background: var(--color-surface-soft);
+  margin-top: auto;
+}
+
+.pipeline__modal-card__bar-segment {
+  height: 100%;
+  width: var(--bar-width, 0%);
+  transition: width var(--transition-slow);
+}
+
+.pipeline__modal-card__bar-segment--contratados {
+  background: var(--color-accent-teal);
+}
+
+.pipeline__modal-card__bar-segment--citados {
+  background: var(--color-accent-amber);
+}
+
+.pipeline__modal-card__bar-segment--rechazados {
+  background: var(--color-error);
+}
+
+/* ── Tabla de Semanas (Vista Individual) ── */
+.pipeline__modal-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+}
+
+.pipeline__modal-weeks__header {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 100px 100px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.pipeline__modal-weeks__header--right {
+  text-align: right;
+}
+
+.pipeline__modal-weeks__row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 100px 100px;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  transition: background var(--transition-fast);
+}
+
+.pipeline__modal-weeks__row:last-child {
+  border-bottom: none;
+}
+
+.pipeline__modal-weeks__row:hover {
+  background: var(--color-surface-soft);
+}
+
+.pipeline__modal-weeks__week {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.pipeline__modal-weeks__period {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+.pipeline__modal-weeks__number {
+  font-family: var(--font-display);
+  font-size: var(--type-body-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-align: right;
+}
+
+.pipeline__modal-weeks__number--hired {
+  color: var(--color-accent-teal);
+}
+
+.pipeline__modal-weeks__number--pct {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+}
+
+/* Responsive tabla de semanas */
+@media (max-width: 768px) {
+  .pipeline__modal-weeks__header,
+  .pipeline__modal-weeks__row {
+    grid-template-columns: 60px 1fr 70px 70px 60px;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline__modal-weeks__header,
+  .pipeline__modal-weeks__row {
+    grid-template-columns: 50px 1fr 60px 60px 50px;
+    gap: var(--spacing-xs);
+    font-size: var(--type-caption-md-size);
+  }
+}

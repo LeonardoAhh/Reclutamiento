@@ -1,0 +1,293 @@
+/* VacancyReportModal — resumen de puestos con vacantes activas y backups
+   pendientes, agrupado por área. Animaciones manejadas por framer-motion
+   en el TSX; aquí solo layout/estilos cohesivos con el resto del sistema.
+*/
+
+@media (min-width: 768px) {
+  .modal-content.vacancy-report-modal {
+    max-width: min(820px, 96vw);
+    max-height: 90vh;
+  }
+}
+
+.vacancy-report-modal__subtitle {
+  color: var(--color-muted);
+}
+
+.vacancy-report-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Encabezado: 3 stats lado a lado ─────────────────────────────────── */
+
+.vacancy-report-modal__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+}
+
+.vacancy-report-modal__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.vacancy-report-modal__stat + .vacancy-report-modal__stat {
+  border-left: 1px solid var(--color-hairline);
+  padding-left: var(--spacing-md);
+}
+
+.vacancy-report-modal__big-number {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-error);
+  line-height: 1;
+}
+
+.vacancy-report-modal__big-number--backup {
+  color: var(--color-accent-amber);
+}
+
+.vacancy-report-modal__big-number--proximos {
+  color: var(--color-success);
+}
+
+.vacancy-report-modal__big-number--muted {
+  color: var(--color-ink);
+}
+
+.vacancy-report-modal__big-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+@media (max-width: 600px) {
+  .vacancy-report-modal__summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .vacancy-report-modal__stat + .vacancy-report-modal__stat {
+    border-left: 1px solid var(--color-hairline);
+    padding-left: var(--spacing-md);
+  }
+  .vacancy-report-modal__stat:nth-child(3),
+  .vacancy-report-modal__stat:nth-child(4) {
+    border-top: 1px solid var(--color-hairline);
+    padding-top: var(--spacing-sm);
+  }
+  .vacancy-report-modal__stat:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+/* ── Listado agrupado por área ───────────────────────────────────────── */
+
+.vacancy-report-modal__empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-xl) 0;
+}
+
+.vacancy-report-modal__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.vacancy-report-modal__group {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.vacancy-report-modal__group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.vacancy-report-modal__group-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  letter-spacing: var(--tracking-wider);
+}
+
+.vacancy-report-modal__group-count {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+  white-space: nowrap;
+}
+
+.vacancy-report-modal__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vacancy-report-modal__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.vacancy-report-modal__row:last-child {
+  border-bottom: 0;
+}
+
+.vacancy-report-modal__row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vacancy-report-modal__puesto {
+  color: var(--color-ink);
+  font-weight: 500;
+  font-size: var(--type-body-md-size);
+}
+
+.vacancy-report-modal__seccion {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+}
+
+.vacancy-report-modal__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxs);
+  justify-content: flex-end;
+}
+
+.vacancy-report-modal__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  font-family: var(--font-display);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  white-space: nowrap;
+}
+
+.vacancy-report-modal__badge--active {
+  background: color-mix(in srgb, var(--color-error) 12%, var(--color-canvas));
+  color: var(--color-error);
+}
+
+.vacancy-report-modal__badge--backup {
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
+  color: var(--color-accent-amber);
+}
+
+.vacancy-report-modal__badge--proximos {
+  background: color-mix(in srgb, var(--color-success) 18%, var(--color-canvas));
+  color: var(--color-success);
+}
+
+@media (max-width: 520px) {
+  .vacancy-report-modal__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .vacancy-report-modal__badges {
+    justify-content: flex-start;
+  }
+}
+
+/* ── Vista previa del mensaje WhatsApp ───────────────────────────────── */
+
+.vacancy-report-modal__preview {
+  border-top: 1px dashed var(--color-hairline);
+  padding-top: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.vacancy-report-modal__preview-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.vacancy-report-modal__preview-text {
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-family: var(--font-mono, var(--font-display));
+  font-size: var(--type-body-sm-size);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* ── Footer (acciones) ───────────────────────────────────────────────── */
+
+.vacancy-report-modal__footer {
+  gap: var(--spacing-sm);
+}
+
+.vacancy-report-modal__action {
+  gap: var(--spacing-xs);
+}
+
+.vacancy-report-modal__action-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Mobile (≤767px): el reporte en mobile sólo expone el preview del
+   mensaje y los CTAs (copiar / abrir WhatsApp). Los stats y el desglose
+   por área son contexto más relevante en desktop — en mobile satura
+   sin aportar valor sobre el preview, que ya contiene la información.
+   ────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* El preview queda como primer elemento: quitar el separador superior
+     y dar más alto al área scroll del mensaje (toma el espacio que antes
+     ocupaban los stats + groups). */
+  .vacancy-report-modal__preview {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .vacancy-report-modal__preview-text {
+    max-height: 55dvh;
+  }
+
+  /* Acciones de ancho completo para alcance del pulgar. */
+  .vacancy-report-modal__footer > .vacancy-report-modal__action {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}

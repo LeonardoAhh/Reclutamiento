@@ -1,0 +1,88 @@
+/* CandidatesInProcessModal — lista compacta de puesto + sección de candidatos
+   en estados activos del pipeline. Comparte la estética del WeeklyHiresModal
+   pero sin la tabla de detalle. */
+
+.candidates-in-process-modal .modal-content {
+  width: min(560px, 96vw);
+  max-height: 90vh;
+}
+
+.candidates-in-process-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.candidates-in-process-modal__summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+}
+
+.candidates-in-process-modal__big-number {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.candidates-in-process-modal__big-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+}
+
+.candidates-in-process-modal__empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-xl) 0;
+}
+
+.candidates-in-process-modal__section-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.candidates-in-process-modal__puesto-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.candidates-in-process-modal__puesto-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-card);
+}
+
+.candidates-in-process-modal__puesto-name {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.candidates-in-process-modal__puesto-seccion {
+  color: var(--color-muted-soft);
+  font-size: var(--type-caption-md-size);
+}
+
+.candidates-in-process-modal__puesto-count {
+  font-family: var(--font-display);
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+  color: var(--color-primary);
+}

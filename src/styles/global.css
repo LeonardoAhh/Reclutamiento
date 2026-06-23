@@ -1,0 +1,1395 @@
+/* ========================================
+   DESIGN TOKENS — Ollama-inspired system
+   Pure white canvas · SF Pro Rounded · Single black accent · Hairline depth
+   ======================================== */
+
+:root {
+  /* ── Brand & Accent ─────────────────────────────────────────────────────
+   * Un solo color de acción: negro puro. Se usa exclusivamente en CTAs
+   * primarios, indicadores de estado activo y focus rings. */
+  --color-primary: #000000;
+  --color-primary-active: #090909;
+  --color-primary-disabled: #e5e5e5;
+
+  /* ── Surface ─────────────────────────────────────────────────────────────
+   * Sistema minimalista de 3 niveles. La jerarquía visual se construye
+   * SÓLO con estas superficies + hairlines; no hay sombras. */
+  --color-canvas: #ffffff;        /* Blanco puro — piso de página */
+  --color-surface-soft: #fafafa;  /* Install pills, hover states leves */
+  --color-surface-card: #ffffff;  /* Cards — mismo que canvas */
+  --color-surface-dark: #171717;  /* Isla oscura / pricing "Max" tier */
+  --color-surface-dark-elevated: #1f1f1f; /* Hover sobre isla oscura */
+
+  /* ── Hairlines ───────────────────────────────────────────────────────────
+   * Toda la profundidad del sistema viene de líneas de 1px.
+   * Sin sombras, sin elevation layers extra. */
+  --color-hairline: #e5e5e5;
+  --color-hairline-soft: #f0f0f0;
+  --color-hairline-strong: #d4d4d4;
+
+  /* ── Text ────────────────────────────────────────────────────────────────
+   * Pure black para ink. Escala de grises neutros para énfasis. */
+  --color-ink: #000000;           /* Display, headlines, primary text */
+  --color-body-strong: #000000;   /* Same as ink para strong emphasis */
+  --color-body: #737373;          /* Cuerpo de texto corrido, FAQ answers */
+  --color-charcoal: #525252;      /* List items, disabled states */
+  --color-muted: #a3a3a3;         /* Sub-titles, labels, captions */
+  --color-muted-soft: #d4d4d4;    /* Disabled, placeholders */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #a3a3a3;
+
+  /* ── Semantic ────────────────────────────────────────────────────────────
+   * Para validación, alertas y estados funcionales. */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Accent Colors (keeping teal & amber for status badges) */
+  --color-accent-teal: #14b8a6;
+  --color-accent-teal-rgb: 20 184 166;
+  --color-accent-amber: #f59e0b;
+  --color-accent-amber-rgb: 245 158 11;
+
+  /* ── Channel values (para tints/overlays con rgb()) ─────────────────── */
+  --color-primary-rgb: 0 0 0;
+  --color-error-rgb: 239 68 68;
+  --color-success-rgb: 16 185 129;
+  --color-ink-rgb: 0 0 0;
+  --color-canvas-rgb: 255 255 255;
+
+  /* ── Derived overlays ───────────────────────────────────────────────────*/
+  --color-focus-ring: rgba(59, 130, 246, 0.5); /* Único azul del sistema */
+  --color-modal-scrim: rgba(0, 0, 0, 0.4);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  --color-success-tint: rgba(16, 185, 129, 0.1);
+  --color-error-tint: rgba(239, 68, 68, 0.1);
+  --color-warning-tint: rgba(245, 158, 11, 0.12);
+  --color-primary-tint: rgba(0, 0, 0, 0.05);
+  --color-header-glass: rgba(255, 255, 255, 0.92);
+
+  /* ── Typography ──────────────────────────────────────────────────────────
+   * Sistema con SF Pro Rounded para display, system sans para body.
+   * 
+   * Principio clave: el peso display se queda en 400-500. Voz editorial,
+   * nunca tech-bombástica. El énfasis viene del tamaño, no del bold. */
+  --font-display: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* ── Escala tipográfica ──────────────────────────────────────────────────
+   * Cada token agrupa size + weight + line-height + letter-spacing.
+   * Nota: tracking casi todo en 0, solo negativo en display sizes. */
+
+  /* display-xl — hero headline */
+  --type-display-xl-size: 36px;
+  --type-display-xl-weight: 500;
+  --type-display-xl-line: 1.11;
+  --type-display-xl-tracking: 0;
+
+  /* display-lg — section heads */
+  --type-display-lg-size: 30px;
+  --type-display-lg-weight: 500;
+  --type-display-lg-line: 1.2;
+  --type-display-lg-tracking: 0;
+
+  /* heading-lg — subsection headlines */
+  --type-heading-lg-size: 24px;
+  --type-heading-lg-weight: 600;
+  --type-heading-lg-line: 1.33;
+  --type-heading-lg-tracking: 0;
+
+  /* heading-md — pricing tier names, card titles */
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 500;
+  --type-heading-md-line: 1.4;
+  --type-heading-md-tracking: 0;
+
+  /* heading-sm — FAQ questions, in-card subtitle */
+  --type-heading-sm-size: 18px;
+  --type-heading-sm-weight: 500;
+  --type-heading-sm-line: 1.56;
+  --type-heading-sm-tracking: 0;
+
+  /* body-md — texto corrido, default body */
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-line: 1.5;
+  --type-body-md-tracking: 0;
+
+  /* body-sm — feature bullets, footer links */
+  --type-body-sm-size: 14px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 1.43;
+  --type-body-sm-tracking: 0;
+
+  /* body-strong — énfasis inline, nav links */
+  --type-body-strong-size: 16px;
+  --type-body-strong-weight: 500;
+  --type-body-strong-line: 1.5;
+  --type-body-strong-tracking: 0;
+
+  /* body-sm-strong — button label, pricing-card eyebrow */
+  --type-body-sm-strong-size: 14px;
+  --type-body-sm-strong-weight: 500;
+  --type-body-sm-strong-line: 1.43;
+  --type-body-sm-strong-tracking: 0;
+
+  /* caption-sm — footer copyright, smallest meta text */
+  --type-caption-sm-size: 12px;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.33;
+  --type-caption-sm-tracking: 0;
+
+  /* caption-uppercase — section labels (opcional) */
+  --type-caption-up-size: 11px;
+  --type-caption-up-weight: 600;
+  --type-caption-up-line: 1.4;
+  --type-caption-up-tracking: 0.08em;
+
+  /* button — labels de CTA */
+  --type-button-size: 14px;
+  --type-button-weight: 500;
+  --type-button-line: 1;
+  --type-button-tracking: 0;
+
+  /* code-md — install-snippet curl line */
+  --type-code-md-size: 16px;
+  --type-code-md-weight: 400;
+  --type-code-md-line: 1.5;
+  --type-code-md-tracking: 0;
+
+  /* code-sm — terminal output, inline code chips */
+  --type-code-sm-size: 14px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-line: 1.43;
+  --type-code-sm-tracking: 0;
+
+  /* ── Control sizing ──────────────────────────────────────────────────── */
+  --control-height: 36px;
+  --control-height-lg: 40px;
+  --control-padding-x: 20px;
+  --control-padding-y: 8px;
+
+  /* ── Spacing — base 8px ──────────────────────────────────────────────── */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-section: 88px;
+
+  /* ── Border radius ───────────────────────────────────────────────────── */
+  --rounded-none: 0;
+  --rounded-sm: 6px;   /* Inline code chips, command tags */
+  --rounded-md: 8px;   /* Opcional medio radius (dropdown panels) */
+  --rounded-lg: 12px;  /* Cards, modales, terminal mockup */
+  --rounded-full: 9999px; /* Buttons, pills, inputs, search, traffic lights */
+
+  /* ── Shadows ─────────────────────────────────────────────────────────────
+   * Sistema hairline-only. NO hay drop-shadows.
+   * --shadow-focus es la ÚNICA excepción: es un focus ring, no elevación. */
+  --shadow-focus: 0 0 0 3px var(--color-focus-ring);
+
+  /* ── Transitions ──────────────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  /* ── Container ────────────────────────────────────────────────────────── */
+  --container-max: 1200px;
+  --container-padding: var(--spacing-xl);
+  --container-padding-mobile: var(--spacing-lg);
+
+  /* ── PWA / safe-area ──────────────────────────────────────────────────── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  /* La barra inferior se removió; el token queda en 0 porque
+     PWAStatus.css y CommentModal.css aún lo referencian para offset. */
+  --tab-bar-height: 0px;
+
+  /* ── Tokens faltantes (definidos para consistencia; antes caían en valores
+     por defecto del navegador). Alias a la escala existente donde aplica. ─── */
+
+  /* Tipografía */
+  --type-caption-md-size: 13px;
+  --type-caption-md-weight: 400;
+  --type-caption-md-line: 1.4;
+  --type-display-md-size: 26px;
+  --type-display-md-weight: 500;
+  --type-body-lg-size: 18px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+
+  /* Pesos y familias */
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-sans: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Tracking */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+
+  /* Radios */
+  --rounded-xs: 4px;
+  --rounded-xl: 16px;
+  --rounded-pill: var(--rounded-full);
+  --radius-sm: var(--rounded-sm);
+  --radius-md: var(--rounded-md);
+  --border-width: 1px;
+
+  /* Espaciado (alias) */
+  --spacing-2xs: 3px;
+  --space-xxs: var(--spacing-xxs);
+  --space-xs: var(--spacing-xs);
+  --space-sm: var(--spacing-sm);
+  --space-md: var(--spacing-md);
+  --space-lg: var(--spacing-lg);
+  --space-xl: var(--spacing-xl);
+
+  /* Colores (alias; se adaptan al dark theme vía las variables base) */
+  --color-amber: var(--color-accent-amber);
+  --color-danger: var(--color-error);
+  --color-error-soft: var(--color-error-tint);
+  --color-border: var(--color-hairline);
+  --color-focus: var(--color-primary);
+  --color-surface: var(--color-surface-card);
+  --color-surface-contrast: var(--color-ink);
+  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-cream-strong: var(--color-surface-soft);
+  --color-text-primary: var(--color-ink);
+  --color-text-tertiary: var(--color-muted);
+
+  /* Sombras: el sistema es hairline-only (sin drop-shadows) → none. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-elevated: none;
+  --shadow-prominent: none;
+
+  /* Layout y movimiento */
+  --header-height: 64px;
+  --transition-slow: 350ms ease;
+  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-theme-in: 300ms;
+  --duration-theme-out: 200ms;
+  --duration-theme-stagger: 60ms;
+
+
+  color-scheme: light;
+}
+
+/* ========================================
+   DARK THEME
+   [data-theme="dark"] en <html>
+   ======================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surface: white → dark */
+  --color-canvas: #0a0a0a;
+  --color-surface-soft: #171717;
+  --color-surface-card: #0f0f0f;
+  --color-surface-dark: #fafafa;
+  --color-surface-dark-elevated: #ffffff;
+
+  --color-hairline: #262626;
+  --color-hairline-soft: #1a1a1a;
+  --color-hairline-strong: #404040;
+
+  /* Text: black → white */
+  --color-ink: #ffffff;
+  --color-body-strong: #ffffff;
+  --color-body: #a3a3a3;
+  --color-charcoal: #737373;
+  --color-muted: #525252;
+  --color-muted-soft: #404040;
+  --color-on-dark: #000000;
+  --color-on-dark-soft: #525252;
+
+  /* Brand: mantener cerca del blanco */
+  --color-primary: #ffffff;
+  --color-on-primary: #000000;
+  --color-primary-active: #f0f0f0;
+  --color-primary-disabled: #404040;
+
+  /* Channel values flip */
+  --color-primary-rgb: 255 255 255;
+  --color-ink-rgb: 255 255 255;
+  --color-canvas-rgb: 10 10 10;
+
+  /* Accent Colors for dark theme */
+  --color-accent-teal: #2dd4bf;
+  --color-accent-teal-rgb: 45 212 191;
+  --color-accent-amber: #fbbf24;
+  --color-accent-amber-rgb: 251 191 36;
+
+  /* Derived */
+  --color-focus-ring: rgba(96, 165, 250, 0.5);
+  --color-modal-scrim: rgba(0, 0, 0, 0.8);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.1);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
+  --color-success-tint: rgba(16, 185, 129, 0.15);
+  --color-error-tint: rgba(239, 68, 68, 0.15);
+  --color-warning-tint: rgba(245, 158, 11, 0.18);
+  --color-primary-tint: rgba(255, 255, 255, 0.08);
+  --color-header-glass: rgba(10, 10, 10, 0.88);
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS: el safe-area (notch + barra de estado) toma su color del <html>,
+     no del <body>. Sin esto, en tema oscuro la barra superior se ve blanca. */
+  background-color: var(--color-canvas);
+  transition: background-color var(--transition-base);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-body);
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: var(--safe-area-bottom);
+  }
+}
+
+.theme-init * {
+  transition: none !important;
+}
+
+/* ========================================
+   THEME TRANSITION — circular reveal + stagger
+   View Transitions API (Chrome 111+, Safari 18+).
+   En navegadores sin soporte, useTheme aplica el tema sin animación y
+   las transiciones CSS de color (body/html) hacen graceful degradation.
+   ======================================== */
+
+/* Pintamos snapshots; sin esto, ambos animan en cross-fade base. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Saliente: el tema previo cae rápido. */
+::view-transition-old(root) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+  z-index: 1;
+}
+
+/* Entrante: el nuevo tema se descubre con un clip circular desde el toggle. */
+::view-transition-new(root) {
+  animation: theme-reveal var(--duration-theme-in) var(--ease-apple) both;
+  z-index: 2;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+  to {
+    clip-path: circle(150% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+}
+
+@keyframes theme-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0.85; }
+}
+
+/* Stagger por capas: cada una recibe su propio snapshot con delay creciente.
+   El resultado: el reveal circular cruza el contenido y, una fracción de
+   segundo después, header/hero/main/tab-bar cross-fadean encima → sensación
+   de "el sistema respira" sin orquestar nada desde JS.
+
+   REGLA CRÍTICA: cada `view-transition-name` debe ser único en el snapshot.
+   Por eso los selectores apuntan a elementos de los que sólo hay UNO
+   montado a la vez (un main por ruta, un hero por página, un dropdown). */
+
+.app-header                 { view-transition-name: theme-header; }
+main.container              { view-transition-name: theme-page; }
+.user-menu__dropdown        { view-transition-name: theme-dropdown; }
+
+/* Heroes de cada página (sólo uno montado a la vez, route exclusivo). */
+.kpis-page__hero,
+.dashboard__hero,
+.pipeline__hero,
+.bajas__hero,
+.empleados__hero,
+.transporte__hero,
+.settings__hero             { view-transition-name: theme-page-hero; }
+
+/* Saliente uniforme para todas las capas con nombre. */
+::view-transition-old(theme-header),
+::view-transition-old(theme-page),
+::view-transition-old(theme-page-hero),
+::view-transition-old(theme-dropdown) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+}
+
+/* Entrante: animación común con delays escalonados por capa.
+   El stagger sigue el flujo visual: header → hero → contenido → dropdown. */
+::view-transition-new(theme-header),
+::view-transition-new(theme-page),
+::view-transition-new(theme-page-hero),
+::view-transition-new(theme-dropdown) {
+  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
+}
+
+::view-transition-new(theme-header)      { animation-delay: calc(var(--duration-theme-stagger) * 0.7); }
+::view-transition-new(theme-page-hero)   { animation-delay: calc(var(--duration-theme-stagger) * 1.2); }
+::view-transition-new(theme-page)        { animation-delay: calc(var(--duration-theme-stagger) * 1.6); }
+::view-transition-new(theme-dropdown)    { animation-delay: calc(var(--duration-theme-stagger) * 1.0); }
+
+@keyframes theme-layer-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Accesibilidad: usuarios con reduce-motion no ven animación.
+   useTheme también detecta esto y aplica el tema sin envolverlo en VT. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(theme-header),
+  ::view-transition-new(theme-header),
+  ::view-transition-old(theme-page),
+  ::view-transition-new(theme-page),
+  ::view-transition-old(theme-page-hero),
+  ::view-transition-new(theme-page-hero),
+  ::view-transition-old(theme-dropdown),
+  ::view-transition-new(theme-dropdown) {
+    animation: none;
+  }
+}
+
+/* ── Headings ── */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-weight: 500; /* Editorial weight — no bold pesado */
+}
+
+h1 {
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+h2 {
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+h3 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+h4 {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-active);
+}
+
+button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+}
+
+strong,
+b {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-line);
+}
+
+pre {
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-code-sm-size);
+}
+
+/* ========================================
+   TYPE UTILITY CLASSES
+   ======================================== */
+
+.type-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+.type-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+.type-heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.type-heading-md {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.type-heading-sm {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.type-body-md {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.type-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.type-body-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.type-body-sm-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.type-caption-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.type-caption-up {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.type-button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: max(var(--container-padding), var(--safe-area-left));
+  padding-right: max(var(--container-padding), var(--safe-area-right));
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: max(var(--container-padding-mobile), var(--safe-area-left));
+    padding-right: max(var(--container-padding-mobile), var(--safe-area-right));
+  }
+}
+
+/* Color text helpers */
+.text-ink {
+  color: var(--color-ink);
+}
+.text-body {
+  color: var(--color-body);
+}
+.text-body-strong {
+  color: var(--color-body-strong);
+}
+.text-charcoal {
+  color: var(--color-charcoal);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-muted-soft {
+  color: var(--color-muted-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-success {
+  color: var(--color-success);
+}
+.text-warning {
+  color: var(--color-warning);
+}
+.text-error {
+  color: var(--color-error);
+}
+
+/* Section divider — hairline pura, sin sombras */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--color-hairline);
+  margin: 0;
+}
+
+/* ========================================
+   VIEW TRANSITIONS
+   ======================================== */
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ========================================
+   FORM SYSTEM
+   ======================================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group label {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  color: var(--color-ink);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: 88px;
+  resize: vertical;
+  border-radius: var(--rounded-lg);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: var(--color-charcoal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.form-group input:invalid:not(:placeholder-shown),
+.form-group select:invalid:not(:focus) {
+  border-color: var(--color-error);
+}
+
+.form-group select:disabled,
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+}
+
+.form-error {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-error);
+  margin-top: var(--spacing-xxs);
+}
+
+/* ========================================
+   BUTTONS — Ollama style
+   Todos los botones usan rounded-full.
+   Sin sombras — profundidad viene del color y borders.
+   ======================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  border-radius: var(--rounded-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-danger:focus-visible,
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Primary — black pill, único CTA con color sólido */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn-primary:active {
+  background: var(--color-primary-active);
+}
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  border-color: var(--color-primary-disabled);
+  color: var(--color-charcoal);
+  cursor: not-allowed;
+}
+
+/* Secondary — white surface + hairline */
+.btn-secondary {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+}
+.btn-secondary:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-charcoal);
+}
+.btn-secondary:active {
+  background: var(--color-hairline);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+.btn-danger:hover {
+  background: color-mix(in srgb, var(--color-error) 88%, black);
+}
+.btn-danger:active {
+  background: color-mix(in srgb, var(--color-error) 78%, black);
+}
+
+/* Ghost — transparente, solo texto */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-charcoal);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* Text link style button */
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-decoration: underline;
+}
+.btn-text:hover {
+  color: var(--color-primary-active);
+}
+.btn-text:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Icon button */
+.btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--rounded-full);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+.btn-icon:hover {
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+  background: var(--color-surface-soft);
+}
+.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.btn-icon--danger:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.btn-icon__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   CARDS
+   Border 1px + rounded-lg. Sin sombra.
+   ======================================== */
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+}
+
+.card--soft {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+/* Card inverted — isla oscura (KPI hero, featured) */
+.card--dark {
+  background: var(--color-surface-dark);
+  border-color: transparent;
+  color: var(--color-on-dark);
+}
+
+.card--dark h1,
+.card--dark h2,
+.card--dark h3,
+.card--dark h4 {
+  color: var(--color-on-dark);
+}
+
+.card--dark .text-muted {
+  color: var(--color-on-dark-soft);
+}
+
+/* ========================================
+   MODAL — Ollama style (NO glass)
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-modal-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+.modal-content {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: min(85vh, 760px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: slideUpModal 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  position: relative;
+}
+
+.modal-content--lg {
+  max-width: 760px;
+}
+
+.modal-content--xl {
+  max-width: 900px;
+}
+
+/* Scrollbar estilo minimalista */
+.modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-charcoal);
+}
+
+/* Mobile: fullscreen para modales grandes, excepto confirmaciones */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  
+  /* Por defecto en mobile: sheet desde abajo con bordes redondeados arriba */
+  .modal-content {
+    max-height: 92vh;
+    border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    animation: slideUpMobile 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  /* Modales que deben ser fullscreen en mobile (no confirmaciones) */
+  .modal-content.modal-fullscreen-mobile {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    animation: modalFullscreenIn 250ms ease forwards;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: var(--spacing-lg);
+  }
+
+  /* Cualquier contenedor de contenido (no header/footer) es el área scrollable.
+     Robusto aunque el wrapper no use la clase .modal-body. iOS: min-height:0 +
+     -webkit-overflow-scrolling + overscroll-behavior para permitir el pan. */
+  .modal-content.modal-fullscreen-mobile > *:not(.modal-header):not(.modal-footer) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* El .modal-body es el ÚNICO contenedor de scroll en móvil. Sus hijos NO deben
+     encogerse: varios componentes usan overflow:hidden (ExpandableSection,
+     tarjetas con border-radius), lo que hace que su tamaño mínimo automático sea
+     0 y el algoritmo flexbox los APLASTE para caber en el alto del modal → el
+     contenido se recorta y el cuerpo nunca desborda → no hay scroll en iOS.
+     Con flex-shrink:0 conservan su alto natural, el cuerpo desborda y scrollea.
+     Los scrollers internos (flex:1) siguen funcionando porque mantienen grow:1. */
+  .modal-content.modal-fullscreen-mobile .modal-body > * {
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-footer {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+    margin-top: auto;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title > svg,
+.modal-title > [data-icon] {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-title__text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  line-height: 1.3;
+}
+
+.modal-title__sub {
+  display: block;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-body);
+  margin-top: var(--spacing-xxs);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-canvas);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-hairline);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .modal-footer {
+    justify-content: stretch;
+  }
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
+    flex: 1 1 auto;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFullscreenIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .modal-overlay {
+    animation: none;
+  }
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-charcoal);
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible para navegación por teclado */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ========================================
+   COLOR ALIASES (retrocompatibilidad)
+   ======================================== */
+
+.color-error {
+  color: var(--color-error);
+}
+.color-success {
+  color: var(--color-success);
+}
+.color-warning {
+  color: var(--color-warning);
+}
+.color-primary {
+  color: var(--color-primary);
+}

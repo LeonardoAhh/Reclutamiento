@@ -1,0 +1,347 @@
+/* TransporteImporter — preview + bulk update modal.
+ * Ghost style: soft surfaces, subtle hairlines, no heavy shadows. Driven
+ * entirely by design tokens so it adapts to light/dark themes. */
+
+.transporte-importer .modal-content {
+  width: min(720px, 96vw);
+  max-height: 92vh;
+}
+
+.transporte-importer__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+}
+
+/* ── Stage: pick file ───────────────────────────────────── */
+
+.transporte-importer__pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  align-items: flex-start;
+}
+
+.transporte-importer__lead {
+  color: var(--color-body);
+  font-size: var(--type-body-md-size);
+}
+
+.transporte-importer__schema {
+  align-self: stretch;
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  color: var(--color-body);
+  font-family: var(--font-code);
+  font-size: var(--type-body-sm-size);
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.transporte-importer__pick-btn {
+  align-self: flex-start;
+  gap: var(--spacing-xs);
+}
+
+/* ── Stage: preview ─────────────────────────────────────── */
+
+.transporte-importer__preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.transporte-importer__preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.transporte-importer__filename {
+  font-family: var(--font-code);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  word-break: break-all;
+}
+
+.transporte-importer__change-file {
+  gap: var(--spacing-xxs);
+  font-size: var(--type-body-sm-size);
+}
+
+.transporte-importer__stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.transporte-importer__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.transporte-importer__stat-num {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+.transporte-importer__stat-label {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.transporte-importer__stat--applicable {
+  border-color: rgb(var(--color-primary-rgb) / 0.35);
+  background: rgb(var(--color-primary-rgb) / 0.06);
+}
+
+.transporte-importer__stat--applicable .transporte-importer__stat-num {
+  color: var(--color-primary);
+}
+
+.transporte-importer__stat--muted .transporte-importer__stat-num {
+  color: var(--color-muted);
+}
+
+.transporte-importer__stat--warning {
+  background: var(--color-vacancy-tint);
+  border-color: rgb(var(--color-error-rgb) / 0.25);
+}
+
+.transporte-importer__stat--warning .transporte-importer__stat-num {
+  color: var(--color-warning);
+}
+
+.transporte-importer__stat--error {
+  background: var(--color-error-tint);
+  border-color: rgb(var(--color-error-rgb) / 0.35);
+}
+
+.transporte-importer__stat--error .transporte-importer__stat-num {
+  color: var(--color-error);
+}
+
+/* ── Preview table ──────────────────────────────────────── */
+
+.transporte-importer__table-wrap {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  background: var(--color-canvas);
+}
+
+.transporte-importer__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--type-body-sm-size);
+}
+
+.transporte-importer__table th,
+.transporte-importer__table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.transporte-importer__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.transporte-importer__table thead th {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  background: var(--color-surface-soft);
+}
+
+.transporte-importer__td-num {
+  font-family: var(--font-code);
+  color: var(--color-body);
+  white-space: nowrap;
+}
+
+.transporte-importer__td-sub {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.transporte-importer__td-old {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--color-muted-soft);
+  font-style: italic;
+}
+
+.transporte-importer__more {
+  margin: var(--spacing-xs) var(--spacing-sm);
+  font-size: 12px;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.transporte-importer__empty {
+  margin: 0;
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+/* ── Badges ─────────────────────────────────────────────── */
+
+.transporte-importer__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--rounded-pill);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-soft);
+  color: var(--color-body);
+}
+
+.transporte-importer__badge--new {
+  background: rgb(var(--color-success-rgb) / 0.12);
+  border-color: rgb(var(--color-success-rgb) / 0.35);
+  color: var(--color-success);
+}
+
+.transporte-importer__badge--changed {
+  background: rgb(var(--color-primary-rgb) / 0.10);
+  border-color: rgb(var(--color-primary-rgb) / 0.35);
+  color: var(--color-primary);
+}
+
+.transporte-importer__badge--unchanged {
+  color: var(--color-muted);
+}
+
+.transporte-importer__badge--missing,
+.transporte-importer__badge--invalid {
+  background: var(--color-error-tint);
+  border-color: rgb(var(--color-error-rgb) / 0.35);
+  color: var(--color-error);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+
+.transporte-importer__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+/* ── Busy / done / error states ─────────────────────────── */
+
+.transporte-importer__busy,
+.transporte-importer__done,
+.transporte-importer__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-body);
+}
+
+.transporte-importer__spin {
+  animation: transporte-spin 1s linear infinite;
+  color: var(--color-primary);
+}
+
+@keyframes transporte-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.transporte-importer__done-icon {
+  color: var(--color-success);
+}
+
+.transporte-importer__done-msg {
+  font-size: var(--type-body-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.transporte-importer__failed {
+  align-self: stretch;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-body);
+}
+
+.transporte-importer__failed summary {
+  cursor: pointer;
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+.transporte-importer__failed ul {
+  list-style: none;
+  padding: var(--spacing-xs) 0 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.transporte-importer__failed code {
+  font-family: var(--font-code);
+  color: var(--color-ink);
+}
+
+.transporte-importer__error-icon {
+  color: var(--color-error);
+}
+
+@media (max-width: 540px) {
+  .transporte-importer__body {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  }
+  .transporte-importer__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .transporte-importer__footer {
+    justify-content: stretch;
+  }
+  .transporte-importer__footer > .btn-primary,
+  .transporte-importer__footer > .btn-secondary {
+    flex: 1 1 auto;
+  }
+}
