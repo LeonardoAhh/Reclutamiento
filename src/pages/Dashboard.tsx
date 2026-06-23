@@ -584,30 +584,45 @@ function DepartmentCard({
     .join(' ');
 
   return (
-    <div className={cardClass} data-area={dept.area}>
+    <article className={cardClass} data-area={dept.area}>
       <button
-        className="dept-card__header"
+        className="dept-card__button"
         onClick={onOpen}
         aria-haspopup="dialog"
         aria-label={`Ver detalle de ${dept.area}`}
         type="button"
       >
-        <div className="dept-card__header-left">
-          <h3 className="dept-card__title">{dept.area}</h3>
-          {incapacidadCount > 0 && (
-            <Badge variant="amber">
-              <HeartPulse size={11} aria-hidden="true" />
-              {incapacidadCount} en incapacidad
+        <div className="dept-card__header">
+          <div className="dept-card__header-left">
+            <h3 className="dept-card__title">{dept.area}</h3>
+            {incapacidadCount > 0 && (
+              <Badge variant="amber">
+                <HeartPulse size={11} aria-hidden="true" />
+                {incapacidadCount}
+              </Badge>
+            )}
+          </div>
+          <div className="dept-card__header-right">
+            <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
+              {dept.porcentaje_cobertura}%
             </Badge>
-          )}
+            {hasVacancies && (
+              <span className="dept-card__vacancy-badge">{dept.vacantes} vacantes</span>
+            )}
+          </div>
         </div>
-        <div className="dept-card__header-right">
-          <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
-            {dept.porcentaje_cobertura}%
-          </Badge>
-          <div className="dept-card__summary">
-            <span className="dept-card__summary-item">
-              <strong>{dept.plantilla_real}</strong> / {dept.plantilla_autorizada}
+
+        <div className="dept-card__body">
+          <div className="dept-card__body-row">
+            <span className="dept-card__stat-label">Real / Aut.</span>
+            <span className="dept-card__stat-value">
+              {dept.plantilla_real} / {dept.plantilla_autorizada}
+            </span>
+          </div>
+          <div className="dept-card__body-row">
+            <span className="dept-card__stat-label">Urgentes</span>
+            <span className="dept-card__stat-value">
+              {dept.urgentes || '—'}
             </span>
           </div>
           <CoverageBar
@@ -616,9 +631,8 @@ function DepartmentCard({
             height={6}
             showLabel={false}
           />
-          <ChevronRight size={20} aria-hidden="true" />
         </div>
       </button>
-    </div>
+    </article>
   );
 }

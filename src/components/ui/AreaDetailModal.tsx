@@ -69,7 +69,6 @@ export function AreaDetailModal({
   const tablistRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
-
   const secciones = useMemo(() => {
     if (!dept) return [] as string[];
     const seen = new Set<string>();
@@ -93,7 +92,14 @@ export function AreaDetailModal({
 
   const visiblePuestos = useMemo(() => {
     if (!dept) return [];
-    return dept.puestos.filter((p) => p.seccion === activeTab);
+    return dept.puestos
+      .filter((p) => p.seccion === activeTab)
+      .slice()
+      .sort((a, b) => {
+        const aHasVacancies = a.vacantes > 0 ? 1 : 0;
+        const bHasVacancies = b.vacantes > 0 ? 1 : 0;
+        return bHasVacancies - aHasVacancies;
+      });
   }, [dept, activeTab]);
 
   /**
@@ -178,9 +184,16 @@ export function AreaDetailModal({
 
   if (!dept) return null;
 
+  const formatSeccionTabLabel = (label: string) => {
+    const match = label.match(/\b(\d{1,2}(?:er|do|to|ro|ra|o|º)?\.?\s*turno)\b/i);
+    if (!match) return label;
+    return match[1].replace(/\./g, '').replace(/\s+/g, ' ').toUpperCase();
+  };
+
   const sectionTabs = secciones.map((s) => ({
     id: s,
     label: s,
+    displayLabel: formatSeccionTabLabel(s),
     count: dept.puestos.filter((p) => p.seccion === s).length,
     incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
   }));
@@ -194,6 +207,16 @@ export function AreaDetailModal({
     vacantes: dept.vacantes,
     urgentes: dept.urgentes,
   };
+
+  // Vínculo accesible tab <-> panel: el panel toma su nombre del tab activo
+  // por ÍNDICE (no por el texto de la sección, que trae espacios/acentos y
+  // no es un id HTML válido). Con una sola sección no hay tabs, así que el
+  // panel se describe con su propio heading ("Puestos").
+  const activeTabIndex = tabs.findIndex((t) => t.id === activeTab);
+  const activeTabDomId =
+    tabs.length > 1 && activeTabIndex >= 0
+      ? `area-tab-${activeTabIndex}`
+      : 'area-detail-list-title';
 
   const useModal = !isMobile;
 
@@ -299,38 +322,46 @@ export function AreaDetailModal({
 
   const modalContent = (
     <>
-      <div className="area-detail-modal__summary" aria-hidden={false}>
-        {/* Métricas del área en tiles */}
-        <div className="area-detail-modal__summary-stats">
+      <section
+        className="area-detail-modal__summary"
+        aria-labelledby="area-detail-summary-title"
+      >
+        <div className="area-detail-modal__summary-heading">
+          <h3 id="area-detail-summary-title">Resumen del área</h3>
+        </div>
+
+        <dl className="area-detail-modal__summary-stats">
           <div className="area-detail-modal__stat">
-            <span className="area-detail-modal__stat-value">
+            <dt className="area-detail-modal__stat-label">Real / Aut.</dt>
+            <dd className="area-detail-modal__stat-value">
               {activeTotals.real}
               <span className="area-detail-modal__stat-sep">/</span>
               {activeTotals.autorizada}
-            </span>
-            <span className="area-detail-modal__stat-label">Real / Aut.</span>
+            </dd>
           </div>
           <div className="area-detail-modal__stat">
-            <span className="area-detail-modal__stat-value">{activeTotals.vacantes}</span>
-            <span className="area-detail-modal__stat-label">Vacantes</span>
+            <dt className="area-detail-modal__stat-label">Vacantes</dt>
+            <dd className="area-detail-modal__stat-value">{activeTotals.vacantes}</dd>
           </div>
           {activeTotals.urgentes > 0 && (
             <div className="area-detail-modal__stat area-detail-modal__stat--error">
-              <span className="area-detail-modal__stat-value">{activeTotals.urgentes}</span>
-              <span className="area-detail-modal__stat-label">Urgentes</span>
+              <dt className="area-detail-modal__stat-label">Urgentes</dt>
+              <dd className="area-detail-modal__stat-value">{activeTotals.urgentes}</dd>
             </div>
           )}
           {incapacidadAreaTotal > 0 && (
             <div className="area-detail-modal__stat area-detail-modal__stat--amber">
-              <span className="area-detail-modal__stat-value">{incapacidadAreaTotal}</span>
-              <span className="area-detail-modal__stat-label">
+              <dt className="area-detail-modal__stat-label">
                 <HeartPulse size={11} aria-hidden="true" /> Incapacidad
-              </span>
+              </dt>
+              <dd className="area-detail-modal__stat-value">{incapacidadAreaTotal}</dd>
             </div>
           )}
-        </div>
+        </dl>
 
-        {/* Cobertura — hero con barra de progreso */}
+        {/* Cobertura — hero con porcentaje grande + barra. El % ya queda
+            anunciado como texto arriba (showLabel=false), así que la
+            barra es puramente decorativa para lectores de pantalla. */}
         <div className="area-detail-modal__coverage">
           <div className="area-detail-modal__coverage-head">
             <span
@@ -342,14 +373,16 @@ export function AreaDetailModal({
             </span>
             <span className="area-detail-modal__coverage-label">Cobertura del área</span>
           </div>
-          <CoverageBar
-            percentage={dept.porcentaje_cobertura}
-            color={coverageColor}
-            height={8}
-            showLabel={false}
-          />
+          <div aria-hidden="true">
+            <CoverageBar
+              percentage={dept.porcentaje_cobertura}
+              color={coverageColor}
+              height={8}
+              showLabel={false}
+            />
+          </div>
         </div>
-      </div>
+      </section>
 
       {tabs.length > 1 && (
         <div
@@ -363,6 +396,7 @@ export function AreaDetailModal({
             return (
               <button
                 key={t.id}
+                id={`area-tab-${idx}`}
                 role="tab"
                 type="button"
                 aria-selected={isActive}
@@ -372,10 +406,11 @@ export function AreaDetailModal({
                 onClick={() => setActiveTab(t.id)}
                 onKeyDown={(e) => onTabKeyDown(e, idx)}
               >
-                <span className="area-detail-modal__tab-label">{t.label}</span>
+                <span className="area-detail-modal__tab-label">{t.displayLabel}</span>
                 <span className="area-detail-modal__tab-count" aria-hidden="true">
                   {t.count}
                 </span>
+                <span className="sr-only">, {t.count}</span>
                 {t.incapacidad > 0 && (
                   <span
                     className="area-detail-modal__tab-incapacidad"
@@ -392,10 +427,10 @@ export function AreaDetailModal({
         </div>
       )}
 
-      <div
+      <section
         id="area-detail-tabpanel"
         role="tabpanel"
-        aria-label={activeTab === ALL_TAB ? 'Todas las secciones' : activeTab}
+        aria-labelledby={activeTabDomId}
         className="area-detail-modal__panel"
       >
         {visiblePuestos.length === 0 ? (
@@ -632,7 +667,7 @@ export function AreaDetailModal({
             </table>
           </div>
         )}
-      </div>
+      </section>
     </>
   );
 
