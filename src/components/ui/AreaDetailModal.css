@@ -1,0 +1,474 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   AreaDetailSheet — detail con tabs por sección dentro de un área.
+
+   Mobile-first: usa el componente Sheet (bottom sheet en mobile,
+   drawer derecho ancho en desktop) para cohesión con EmployeeSheet,
+   RequisicionSheet, CubrirVacanteSheet. Tokens-only, sin hardcodes.
+
+   - Mobile (≤767px): Sheet sube desde abajo (Sheet.css base), ocupa
+     hasta 92dvh; tabs scrollables horizontal; summary stack vertical.
+   - Desktop (≥768px): override del ancho del drawer derecho para
+     acomodar la tabla con muchas columnas (96vw, máx. 1080px).
+   ───────────────────────────────────────────────────────────────────────── */
+
+.sheet.area-detail-sheet > .area-detail-modal__summary,
+.sheet.area-detail-sheet > .area-detail-modal__tabs {
+  flex: 0 0 auto;
+}
+
+@media (min-width: 768px) {
+  .sheet.area-detail-sheet.sheet--right {
+    width: min(96vw, 1080px);
+  }
+}
+
+.area-detail-modal__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  flex-wrap: wrap;
+}
+
+/* ── Métricas en tiles ── */
+.area-detail-modal__summary-stats {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  order: 1;
+}
+
+.area-detail-modal__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-width: 84px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  line-height: 1.1;
+  transition: border-color var(--transition-fast);
+}
+
+.area-detail-modal__stat-value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__stat-value--error {
+  color: var(--color-error);
+}
+
+.area-detail-modal__stat-sep {
+  color: var(--color-muted-soft);
+  font-weight: 400;
+  margin: 0 2px;
+}
+
+.area-detail-modal__stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  white-space: nowrap;
+}
+
+/* Variantes de color para métricas críticas */
+.area-detail-modal__stat--error {
+  background: var(--color-error-tint);
+  border-color: rgb(var(--color-error-rgb) / 0.25);
+}
+.area-detail-modal__stat--error .area-detail-modal__stat-value {
+  color: var(--color-error);
+}
+
+.area-detail-modal__stat--amber {
+  background: var(--color-warning-tint);
+  border-color: rgb(var(--color-accent-amber-rgb) / 0.3);
+}
+.area-detail-modal__stat--amber .area-detail-modal__stat-value,
+.area-detail-modal__stat--amber .area-detail-modal__stat-label {
+  color: var(--color-accent-amber);
+}
+
+/* ── Cobertura: hero con porcentaje grande + barra ── */
+.area-detail-modal__coverage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  order: 2;
+  flex: 1 1 240px;
+  min-width: 220px;
+}
+
+.area-detail-modal__coverage-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.area-detail-modal__coverage-pct {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__coverage-pct-sign {
+  font-size: 0.5em;
+  font-weight: 500;
+  margin-left: 2px;
+  opacity: 0.65;
+}
+
+.area-detail-modal__coverage-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+/* La barra de cobertura usa --rounded-pill (sin definir en tokens); aquí
+   garantizamos las esquinas redondeadas dentro de este modal. */
+.area-detail-modal__coverage .coverage-bar__track,
+.area-detail-modal__coverage .coverage-bar__fill {
+  border-radius: var(--rounded-full);
+}
+
+/* ── Tabs ── */
+.area-detail-modal__tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+  background: var(--color-canvas);
+}
+
+.area-detail-modal__tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: 44px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-md) var(--rounded-md) 0 0;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  letter-spacing: var(--tracking-snug);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.area-detail-modal__tab:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.area-detail-modal__tab:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.area-detail-modal__tab.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  background: var(--color-surface-soft);
+}
+
+.area-detail-modal__tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 0 var(--spacing-xs);
+  height: 18px;
+  border-radius: var(--rounded-pill);
+  background: var(--color-hairline);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__tab.is-active .area-detail-modal__tab-count {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.area-detail-modal__tab-incapacidad {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-pill);
+  background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
+  color: var(--color-accent-amber);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-detail-modal__stat-value--amber {
+  color: var(--color-accent-amber);
+}
+
+.area-detail-modal__stat-label svg {
+  vertical-align: -1px;
+  margin-right: var(--spacing-xxs);
+}
+
+/* ── Tab panel ── */
+.area-detail-modal__panel {
+  /* Toma toda la altura sobrante del Sheet y delega el scroll al wrapper
+     interno para que tabs y header sigan anclados arriba. */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.area-detail-modal__table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.area-detail-modal__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  color: var(--color-muted-soft);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Mobile (≤767px): el Sheet ya provee bottom-sheet con safe-area-bottom
+   y padding lateral en header. Aquí sólo ajustamos summary y tabs para
+   stack vertical + safe-area lateral, y un colchón al final del panel.
+   ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Tabs scrollan junto al summary; conservan safe-area lateral. */
+  .area-detail-modal__tabs {
+    padding-left: max(var(--spacing-md), var(--safe-area-left));
+    padding-right: max(var(--spacing-md), var(--safe-area-right));
+  }
+
+  /* Summary: cobertura hero arriba, métricas en grid 2 col. */
+  .area-detail-modal__summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
+
+  .area-detail-modal__coverage {
+    order: 1;
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+
+  .area-detail-modal__coverage-pct {
+    font-size: var(--type-display-xl-size);
+  }
+
+  .area-detail-modal__summary-stats {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+
+  /* Colchón al final del panel: el Sheet ya añade safe-area-bottom a
+     nivel de superficie; aquí sólo evitamos que la última fila quede
+     pegada al borde inferior. */
+  .area-detail-modal__table-wrapper {
+    padding-bottom: var(--spacing-md);
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────
+   Desktop: Modal overrides (para ver detalle de departamento)
+   ─────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .modal-content.area-detail-modal {
+    max-width: min(96vw, 1080px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.modal-content.area-detail-modal > .modal-body.area-detail-modal-body {
+  padding: 0; /* Permite que el summary, tabs y panel vayan de orilla a orilla */
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.area-detail-modal-body > .area-detail-modal__summary,
+.area-detail-modal-body > .area-detail-modal__tabs {
+  flex: 0 0 auto;
+}
+
+/* Badge stack for process status */
+.area-detail-modal__badge-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+/* ─────────────────────────────────────────────
+   Vista de tarjetas (móvil) — reemplaza la tabla
+   saturada. Cada puesto se muestra como tarjeta
+   con expandir natural (sin scroll horizontal).
+───────────────────────────────────────────── */
+
+.area-detail-modal__cards {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-md);
+}
+
+.area-detail-modal__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-left: 3px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.area-detail-modal__card--vac {
+  border-left-color: var(--color-warning, var(--color-amber));
+}
+
+.area-detail-modal__card--urgent {
+  border-left-color: var(--color-error);
+}
+
+.area-detail-modal__card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.area-detail-modal__card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.area-detail-modal__card-name {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-md-line);
+  color: var(--color-ink);
+  word-break: break-word;
+}
+
+.area-detail-modal__card-sec {
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.area-detail-modal__card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.area-detail-modal__card-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.area-detail-modal__card-metric-value {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.area-detail-modal__card-metric-label {
+  font-size: var(--type-caption-sm-size);
+  line-height: 1;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.area-detail-modal__card-estado {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}

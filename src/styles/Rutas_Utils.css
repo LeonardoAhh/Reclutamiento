@@ -1,0 +1,57 @@
+/* ── Error & Empty States ─────────────────────────────────────────────── */
+.rutas-empty-state {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.ruta-details-section--error {
+  border-color: var(--color-error);
+}
+
+/* ── Centered Mockup Animation ──────────────────────────────────────── */
+.mockup-animation--centered {
+  margin: var(--spacing-lg) auto;
+}
+
+/* ── Stops List ──────────────────────────────────────────────────────── */
+.ruta-stops-container {
+  margin-top: var(--spacing-md);
+}
+
+.ruta-stops-title {
+  margin-bottom: var(--spacing-xs);
+}
+
+.ruta-stops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.ruta-stops-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ruta-stops-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.ruta-stops-more {
+  margin-left: 14px;
+}
+
+/* ── Info Rows ───────────────────────────────────────────────────────── */
+.info-row--header {
+  border-bottom: 2px solid var(--color-hairline-strong);
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}

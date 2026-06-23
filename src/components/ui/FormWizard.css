@@ -1,0 +1,149 @@
+/* FormWizard — asistente por pasos para formularios largos en móvil.
+   Tokens-only: colores, tipografías, spacing, radios y transiciones vienen
+   de variables CSS (--color-*, --type-*, --spacing-*, etc.). */
+
+.form-wizard {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── Progreso ── */
+.form-wizard__progress {
+  flex-shrink: 0;
+  padding: var(--spacing-md) var(--spacing-lg) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-wizard__progress-info {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.form-wizard__step-count {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.form-wizard__step-title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}
+
+.form-wizard__bar {
+  display: flex;
+  gap: var(--spacing-xxs);
+}
+
+.form-wizard__seg {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: var(--rounded-pill);
+  background: var(--color-surface-cream-strong);
+  transition: background var(--transition-base);
+}
+
+.form-wizard__seg--done {
+  background: var(--color-primary);
+}
+
+/* ── Cuerpo del paso (scrollable) ── */
+.form-wizard__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  padding-left: max(var(--spacing-lg), var(--safe-area-left));
+  padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  animation: form-wizard-step-in var(--transition-base) both;
+}
+
+@keyframes form-wizard-step-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* En el wizard los campos van siempre en 1 columna (móvil). */
+.form-wizard .form-grid {
+  grid-template-columns: 1fr;
+}
+
+.form-wizard .form-group--span-2 {
+  grid-column: auto;
+}
+
+/* Controles más cómodos al tacto y sin zoom de iOS (16px). */
+.form-wizard .form-group input,
+.form-wizard .form-group select {
+  height: var(--control-height-lg);
+  font-size: var(--type-body-md-size);
+}
+
+.form-wizard .form-group textarea {
+  font-size: var(--type-body-md-size);
+}
+
+/* ── Footer (anclado abajo) ── */
+.form-wizard__footer {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  padding-left: max(var(--spacing-lg), var(--safe-area-left));
+  padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  padding-bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
+  border-top: 1px solid var(--color-hairline-soft);
+  background: var(--color-canvas);
+}
+
+.form-wizard__footer > button {
+  flex: 1 1 0;
+}
+
+/* ── Wizard dentro de un Modal fullscreen (móvil) ──
+   El modal pasa a layout de columna: header fijo, cuerpo del wizard
+   scrollable y footer de navegación anclado abajo. Clases genéricas
+   compartidas por todos los formularios de creación. */
+@media (max-width: 767px) {
+  .modal-content.modal-wizard-mobile {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-wizard-mobile .modal-wizard-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-wizard__body {
+    animation: none;
+  }
+  .form-wizard__seg {
+    transition: none;
+  }
+}

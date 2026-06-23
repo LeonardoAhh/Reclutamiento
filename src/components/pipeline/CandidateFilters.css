@@ -1,0 +1,94 @@
+/* CandidateFilters — panel de filtros para el pipeline. */
+
+.filters {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.filters__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.filters__field label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.filters__field select,
+.filters__field input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--spacing-sm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.filters__field select:focus,
+.filters__field input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.filters__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.filters__count {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.filters .btn-ghost {
+  height: 32px;
+  padding: 0 var(--spacing-sm);
+  gap: var(--spacing-xxs);
+  font-size: var(--type-caption-md-size);
+}
+
+@media (max-width: 640px) {
+  .filters__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .filters__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 360px) {
+  .filters__grid {
+    grid-template-columns: 1fr;
+  }
+}

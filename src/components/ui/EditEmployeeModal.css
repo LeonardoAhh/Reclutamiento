@@ -1,0 +1,15 @@
+/* ========================================
+   EDIT EMPLOYEE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.edit-employee-modal {
+  /* El componente Modal ya maneja el layout base */
+}
+
+/* Responsive grid override si es necesario */
+@media (max-width: 640px) {
+  .edit-employee-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

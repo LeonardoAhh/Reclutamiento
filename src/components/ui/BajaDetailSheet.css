@@ -1,0 +1,97 @@
+/* BajaDetailSheet — detalle de una baja en modal/sheet (master-detail).
+   Tokens del design system; sin valores hardcoded. */
+
+.baja-detail-sheet__body {
+  gap: var(--spacing-lg);
+}
+
+/* Resumen: identificador del empleado + estado de cobertura destacado. */
+.baja-detail-sheet__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.baja-detail-sheet__ident {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-body-strong);
+  min-width: 0;
+}
+
+/* Lista de campos: cada uno como par etiqueta/valor, con separadores sutiles. */
+.baja-detail-sheet__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.baja-detail-sheet__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.baja-detail-sheet__field:first-child {
+  padding-top: 0;
+}
+
+.baja-detail-sheet__field:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.baja-detail-sheet__field dt {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.baja-detail-sheet__field dd {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+  color: var(--color-body-strong);
+}
+
+.baja-detail-sheet__tipo {
+  display: block;
+  font-weight: var(--font-semibold);
+}
+
+.baja-detail-sheet__motivo {
+  display: block;
+  margin-top: var(--spacing-xxs);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+.baja-detail-sheet__code {
+  font-family: var(--font-code);
+  font-size: var(--type-code-sm-size);
+  letter-spacing: var(--tracking-wide);
+}
+
+.baja-detail-sheet__muted {
+  color: var(--color-muted);
+}
+
+/* Etiqueta/valor en dos columnas a partir de tablet, para densidad cómoda. */
+@media (min-width: 768px) {
+  .baja-detail-sheet__field {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--spacing-lg);
+  }
+}

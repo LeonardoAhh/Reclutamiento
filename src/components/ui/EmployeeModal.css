@@ -1,0 +1,130 @@
+/* ========================================
+   EMPLOYEE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.employee-modal {
+  /* El componente Modal ya maneja el layout base */
+}
+
+/* ── Baja flow ── */
+.employee-modal__delete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.employee-modal__baja-grid {
+  /* Heredamos form-grid pero sin override innecesario */
+}
+
+/* ── Delete warning (reutilizable) ── */
+.delete-warning {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-error-tint);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.delete-warning__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-error);
+}
+
+.delete-warning__title {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+}
+
+.delete-warning__name {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-error);
+}
+
+.delete-warning__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+}
+
+.delete-warning__meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.delete-warning__meta-row dt {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.delete-warning__meta-row dd {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-md-weight);
+  color: var(--color-ink);
+  text-align: right;
+}
+
+.delete-warning__sub {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-body-sm-line);
+}
+
+/* ── Form notice (avisos dentro de forms) ── */
+.form-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-md-size);
+  line-height: var(--type-caption-md-line);
+}
+
+.form-notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.form-notice--warning {
+  color: var(--color-warning);
+  background: var(--color-vacancy-tint);
+}
+
+.form-notice--info {
+  color: var(--color-primary);
+  background: var(--color-focus-ring);
+}
+
+.form-notice--success {
+  color: var(--color-success);
+  background: var(--color-success-tint);
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 640px) {
+  .delete-warning {
+    padding: var(--spacing-md);
+  }
+  
+  .employee-modal__baja-grid {
+    grid-template-columns: 1fr;
+  }
+}
