@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils-shadcn";
 import { INCIDENCIA_LABELS } from "./constants";
 import { isIncidence } from "./helpers";
@@ -372,10 +372,17 @@ export default function ReporteEmployeeDetail({
     dayHeaders,
     currentMonth,
 }: ReporteEmployeeDetailProps) {
+    const [activeTab, setActiveTab] = useState<'overview' | 'incidencias'>('overview');
     const stats = useMemo(
         () => (employee ? computeStats(employee, dayHeaders) : null),
         [employee, dayHeaders]
     );
+
+    useEffect(() => {
+        if (open) {
+            setActiveTab('overview');
+        }
+    }, [open]);
 
     if (!employee || !stats) return null;
 
@@ -400,22 +407,61 @@ export default function ReporteEmployeeDetail({
                 </div>
             }
             size="lg"
+            className="reporte-employee-detail-modal"
             fullscreenMobile={true}
         >
-            <KpiCards stats={stats} />
+            <div className="reporte-employee-detail__tabs" role="tablist" aria-label="Secciones del detalle de empleado">
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'overview'}
+                    className={`reporte-employee-detail__tab ${activeTab === 'overview' ? 'is-active' : ''}`}
+                    onClick={() => setActiveTab('overview')}
+                >
+                    Resumen
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === 'incidencias'}
+                    className={`reporte-employee-detail__tab ${activeTab === 'incidencias' ? 'is-active' : ''}`}
+                    onClick={() => setActiveTab('incidencias')}
+                >
+                    Incidencias
+                </button>
+            </div>
 
-            <CalendarGrid
-                employee={employee}
-                dayHeaders={dayHeaders}
-                year={year}
-                month={month}
-            />
-
-            <IncidentTable
-                incidents={stats.incidentDetail}
-                year={year}
-                month={month}
-            />
+            <div className="reporte-employee-detail__panel">
+                {activeTab === 'overview' ? (
+                    <>
+                        <div className="reporte-employee-detail__meta-grid">
+                            <div className="reporte-employee-detail__info-item">
+                                <span className="reporte-employee-detail__info-label">Departamento</span>
+                                <span>{employee.departamento || '—'}</span>
+                            </div>
+                            <div className="reporte-employee-detail__info-item">
+                                <span className="reporte-employee-detail__info-label">Área</span>
+                                <span>{employee.area || '—'}</span>
+                            </div>
+                            <div className="reporte-employee-detail__info-item">
+                                <span className="reporte-employee-detail__info-label">Puesto</span>
+                                <span>{employee.puesto || '—'}</span>
+                            </div>
+                            <div className="reporte-employee-detail__info-item">
+                                <span className="reporte-employee-detail__info-label">Turno</span>
+                                <span>{employee.turno || '—'}</span>
+                            </div>
+                        </div>
+                        <KpiCards stats={stats} />
+                    </>
+                ) : (
+                    <IncidentTable
+                        incidents={stats.incidentDetail}
+                        year={year}
+                        month={month}
+                    />
+                )}
+            </div>
         </Modal>
     );
 }

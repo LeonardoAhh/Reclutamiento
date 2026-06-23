@@ -28,6 +28,7 @@ import {
     ChevronRight,
     ChevronLeft,
     FileJson,
+    Search,
 } from "lucide-react"
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, AREA_STAFF, ALLOWED_PUESTOS } from "./constants"
@@ -146,6 +147,18 @@ export default function ReporteDiarioContent() {
                 )
             })
     }, [rows, currentMonth, search, departamentoFilter, turnoFilter])
+
+    const searchResults = useMemo(() => {
+        if (!search.trim() || !currentMonth) return []
+        return selectedRows.slice(0, 12)
+    }, [search, selectedRows, currentMonth])
+
+    const clearSearch = useCallback(() => setSearch(""), [])
+
+    const openEmployeeModal = useCallback((employeeId: string) => {
+        setSelectedEmployee(employeeId)
+        setEmpDetailOpen(true)
+    }, [])
 
     const daySummaries = useMemo(() => {
         return dayHeaders.reduce<Record<string, number>>((acc, day) => {
@@ -653,6 +666,78 @@ export default function ReporteDiarioContent() {
                 onChange={handleFileChange}
                 style={{display: 'none'}}
             />
+
+            {hasData && (
+                <div className="reporte-card reporte-search-card">
+                    <div className="reporte-search">
+                        <div className="reporte-search__field-wrap">
+                            <label htmlFor="reporte-search" className="sr-only">
+                                Buscar empleado
+                            </label>
+                            <Search size={16} className="reporte-search__icon" aria-hidden="true" />
+                            <input
+                                id="reporte-search"
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Buscar por nombre, número o área"
+                                className="reporte-search__input"
+                                aria-label="Buscar empleado por nombre, número o área"
+                            />
+                            {search && (
+                                <button
+                                    type="button"
+                                    onClick={clearSearch}
+                                    className="reporte-search__clear"
+                                    aria-label="Limpiar búsqueda"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="reporte-search__meta">
+                            {search ? (
+                                <p className="reporte-search__subtitle">
+                                    {searchResults.length} {searchResults.length === 1 ? 'resultado' : 'resultados'} encontrados
+                                </p>
+                            ) : (
+                                <p className="reporte-search__subtitle">
+                                    Busca un colaborador y abre su detalle en un modal con tabs.
+                                </p>
+                            )}
+                        </div>
+
+                        {search ? (
+                            <div className="reporte-search__results" role="list">
+                                {searchResults.length > 0 ? (
+                                    searchResults.map((row) => (
+                                        <button
+                                            key={row.numero_empleado}
+                                            type="button"
+                                            className="reporte-search__result"
+                                            onClick={() => openEmployeeModal(row.numero_empleado)}
+                                        >
+                                            <div className="reporte-search__result-main">
+                                                <span className="reporte-search__result-title">{row.nombre}</span>
+                                                <span className="reporte-search__result-meta">#{row.numero_empleado}</span>
+                                            </div>
+                                            <div className="reporte-search__result-followup">
+                                                <span>{row.departamento}</span>
+                                                <span>{row.area}</span>
+                                            </div>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="reporte-search__empty">
+                                        No se encontraron empleados que coincidan con la búsqueda.
+                                    </div>
+                                )}
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+            )}
 
             {/* ── Top Grid (Acciones & Insights) ─────────────────────────────────────────── */}
             <div className="reporte-grid-4">
