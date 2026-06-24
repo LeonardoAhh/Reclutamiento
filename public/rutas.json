@@ -122,7 +122,7 @@
   {
     "numero empleado": "1715",
     "nombre": "GARNICA SANCHEZ BEATRIZ",
-    "turno": "6",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
@@ -202,7 +202,7 @@
   {
     "numero empleado": "2038",
     "nombre": "FLORES GARCIA JAVIER ISRAEL",
-    "turno": "13",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
@@ -234,7 +234,7 @@
   {
     "numero empleado": "2106",
     "nombre": "ALEGRIA BALDERAS EVELIA",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "LA BARRETA",
     "parada": "TIENDA EN LA ENTRADA"
@@ -282,7 +282,7 @@
   {
     "numero empleado": "2254",
     "nombre": "HERNANDEZ LOPEZ MARIA DE LOS REMEDIOS",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA EN STEREN"
@@ -394,7 +394,7 @@
   {
     "numero empleado": "2393",
     "nombre": "LEDEZMA SOTELO MA. LOURDES",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PASEO QUERETARO ESQ. PIRINEOS"
@@ -402,7 +402,7 @@
   {
     "numero empleado": "2400",
     "nombre": "RESENDIZ SANCHEZ MARISOL",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
@@ -426,7 +426,7 @@
   {
     "numero empleado": "2440",
     "nombre": "GALLARDO DIAZ CIUNELY YETZABEL",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
@@ -434,7 +434,7 @@
   {
     "numero empleado": "2461",
     "nombre": "ARTEAGA PEREZ CARLOS",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
@@ -514,7 +514,7 @@
   {
     "numero empleado": "2672",
     "nombre": "SOLIS OSORIO MIREYA",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
@@ -592,14 +592,6 @@
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero empleado": "2779",
-    "nombre": "CHAPARRO OÑATE JESUS",
-    "turno": "36",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
-  },
-  {
     "numero empleado": "2863",
     "nombre": "MENDOZA CASTILLO BRENDA",
     "turno": "4",
@@ -634,7 +626,7 @@
   {
     "numero empleado": "2916",
     "nombre": "BARON GARCIA KATIA",
-    "turno": "6",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
@@ -642,7 +634,7 @@
   {
     "numero empleado": "2932",
     "nombre": "RAMIREZ ESPINOZA ANDREA CELESTE",
-    "turno": "6",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SAN ISIDRO",
     "parada": "PARADA DE CAMIONES"
@@ -722,7 +714,7 @@
   {
     "numero empleado": "2996",
     "nombre": "MARTINEZ ESPINO PATRICIA",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
@@ -850,7 +842,7 @@
   {
     "numero empleado": "3289",
     "nombre": "CRUZ REYES ANTONIO",
-    "turno": "7",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
     "parada": "EN EL PUENTE DE LAS ROSAS"
@@ -962,7 +954,7 @@
   {
     "numero empleado": "3466",
     "nombre": "AGUILAR GUERRERO JOSE ALONSO",
-    "turno": "4",
+    "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "LA BARRETA",
     "parada": "TIENDA EN LA ENTRADA"
@@ -972,13 +964,13 @@
     "nombre": "VARGAS VELAZQUEZ MARIA ELENA",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "N/A",
-    "parada": "N/A"
+    "colonia": "SANTA ROSA",
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "3473",
     "nombre": "MURILLO TLAZALO PABLO",
-    "turno": "6",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
@@ -1010,7 +1002,7 @@
   {
     "numero empleado": "3548",
     "nombre": "PEREZ CABELLO JUAN ANTONIO",
-    "turno": "35",
+    "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
@@ -1050,7 +1042,7 @@
   {
     "numero empleado": "3587",
     "nombre": "AVILA ALDANA KEVIN ULISES",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
@@ -1098,7 +1090,7 @@
   {
     "numero empleado": "3637",
     "nombre": "AGUILAR VICENCIO DAVID",
-    "turno": "1",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -1186,10 +1178,18 @@
   {
     "numero empleado": "3764",
     "nombre": "GONZALEZ RAMIREZ ISRAEL",
-    "turno": "6",
+    "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "LA MONJA",
     "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
+  },
+  {
+    "numero empleado": "3772",
+    "nombre": "MORENO ROMERO OSMAR",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3773",
@@ -1234,7 +1234,7 @@
   {
     "numero empleado": "3796",
     "nombre": "ALVARADO COSME ANGEL ALBERTO",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
@@ -1242,7 +1242,7 @@
   {
     "numero empleado": "3801",
     "nombre": "MORALES PARRA EDUARDO",
-    "turno": "3",
+    "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
@@ -1250,7 +1250,7 @@
   {
     "numero empleado": "3803",
     "nombre": "MARQUEZ EVANGELISTA YERANI",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
@@ -1266,7 +1266,7 @@
   {
     "numero empleado": "3816",
     "nombre": "GALICIA ROJAS JONATAN",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PASEO QUERETARO ESQ. PIRINEOS"
@@ -1274,7 +1274,7 @@
   {
     "numero empleado": "3818",
     "nombre": "CALZADA HERNANDEZ MARIAM XIMENA",
-    "turno": "16",
+    "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
@@ -1298,7 +1298,7 @@
   {
     "numero empleado": "3837",
     "nombre": "GARCIA  LOPEZ MARIANA PAOLA",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PEÑAFLOR",
     "parada": "BODEGA AURRERA, PEÑAFLOR"
@@ -1346,7 +1346,7 @@
   {
     "numero empleado": "3897",
     "nombre": "GONZALEZ GALLARETA VIANNEY",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "TRANSITO FRENTE AL OXXO"
@@ -1360,17 +1360,9 @@
     "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
-    "numero empleado": "3909",
-    "nombre": "MORELOS MARTINEZ NATIVIDAD",
-    "turno": "2",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
-  },
-  {
     "numero empleado": "3930",
     "nombre": "LUNA  SANCHEZ ALDO ALFREDO",
-    "turno": "16",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SANTA CATARINA",
     "parada": "PARADA DE CAMIONES"
@@ -1450,7 +1442,7 @@
   {
     "numero empleado": "3997",
     "nombre": "VILLA RAMIREZ IRIS",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
@@ -1458,7 +1450,7 @@
   {
     "numero empleado": "3999",
     "nombre": "LUNA VELAZQUEZ MA. ESTHER",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "RINCON OJO DE AGUA",
     "parada": "PARADA EN EL ENTRONQUE"
@@ -1490,7 +1482,7 @@
   {
     "numero empleado": "4020",
     "nombre": "HERNANDEZ HERNANDEZ JAVIER",
-    "turno": "31",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
@@ -1586,7 +1578,7 @@
   {
     "numero empleado": "4065",
     "nombre": "SERRANO  RODRIGUEZ JOSE ALEJANDRO",
-    "turno": "13",
+    "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
@@ -1640,14 +1632,6 @@
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
-    "numero empleado": "4091",
-    "nombre": "MONTIEL JIMENEZ MARIA YESSICA",
-    "turno": "30",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "PUERTO AGUIRRE",
-    "parada": "PARADA EN LA TORTILLERIA"
-  },
-  {
     "numero empleado": "4092",
     "nombre": "TLAPALCOYOA PEREZ SUSANA",
     "turno": "3",
@@ -1658,7 +1642,7 @@
   {
     "numero empleado": "4094",
     "nombre": "GARCIA GARCIA ELIZABETH",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
@@ -1738,7 +1722,7 @@
   {
     "numero empleado": "4115",
     "nombre": "REYES MONROY FRANCISCO ALEJANDRO",
-    "turno": "2",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "OBRERA",
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
@@ -1762,7 +1746,7 @@
   {
     "numero empleado": "4120",
     "nombre": "RAMIREZ CHAVEZ ANGEL GIOVANNI",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
@@ -1786,18 +1770,10 @@
   {
     "numero empleado": "4129",
     "nombre": "HERNANDEZ CITALAN JOSE DAVID",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "AV. PEDREGAL",
     "parada": "SEGUNDA PARADA DE CAMIONES"
-  },
-  {
-    "numero empleado": "4135",
-    "nombre": "ESPINOZA MENDOZA MARCOS ",
-    "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4137",
@@ -1826,7 +1802,7 @@
   {
     "numero empleado": "4143",
     "nombre": "SANCHEZ GARCIA DIANA LIZBETH",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA",
     "parada": "ENFRENTE AL WATER HOUSE"
@@ -1874,7 +1850,7 @@
   {
     "numero empleado": "4154",
     "nombre": "DOMINGUEZ SANTOS FLORA",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
@@ -2034,7 +2010,7 @@
   {
     "numero empleado": "4192",
     "nombre": "BALDERAS HERNANDEZ RENE",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -2106,7 +2082,7 @@
   {
     "numero empleado": "4213",
     "nombre": "RESENDIZ OSORIO HORACIO JAVIER",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "PARADA DE CAMIONES ESQ. MAYAS"
@@ -2224,6 +2200,14 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
+    "numero empleado": "4231",
+    "nombre": "TABOADA GARCIA EMMANUEL",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+  },
+  {
     "numero empleado": "4234",
     "nombre": "ARCADIO CRUZ INGRID ALEJANDRA",
     "turno": "1",
@@ -2258,7 +2242,7 @@
   {
     "numero empleado": "4240",
     "nombre": "VARGAS MEJIA ANA KAREN",
-    "turno": "30",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
@@ -2294,5 +2278,53 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4246",
+    "nombre": "FABIAN SANCHEZ ALAN",
+    "turno": "2",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+  },
+  {
+    "numero empleado": "4247",
+    "nombre": "SEGURA HERNANDEZ SANDRA",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "BUENAVISTA ",
+    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+  },
+  {
+    "numero empleado": "4248",
+    "nombre": "VALDEZ MONTOYA AREMY YUNUEN",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4249",
+    "nombre": "LLAMAS VALENCIA MARCO ANTONIO",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero empleado": "4250",
+    "nombre": "RANGEL  KIMBERLY LUSSY",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+  },
+  {
+    "numero empleado": "4251",
+    "nombre": "GASPAR SANTOS YESENIA",
+    "turno": "2",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "BUENAVISTA ",
+    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   }
 ]
