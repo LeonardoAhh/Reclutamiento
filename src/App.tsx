@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Header } from '@/components/layout/Header';
-import { BottomTabBar } from '@/components/layout/BottomTabBar';
+import { AppShell } from '@/components/layout/AppShell';
 import { PWAStatus } from '@/components/ui/PWAStatus';
 import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
@@ -18,22 +17,12 @@ import { Rutas } from '@/pages/Rutas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
-// NOTE: Settings page deshabilitada temporalmente — ni ruta ni botón.
-// Cuando se retome, restaurar import + ruta + item en UserMenu.
-// import { Settings } from '@/pages/Settings';
 
-/**
- * Shell con Header + página protegida. El Header sólo se monta dentro del
- * área autenticada para que el login se sienta como una pantalla aparte.
- */
 function ProtectedShell({ children }: { children: ReactNode }) {
   return (
     <AuthGuard>
       <PositionsProvider>
-        <Header />
-        {children}
-        <div className="bottom-nav-spacer" aria-hidden="true" />
-        <BottomTabBar />
+        <AppShell>{children}</AppShell>
       </PositionsProvider>
     </AuthGuard>
   );
@@ -54,88 +43,17 @@ function App() {
           </RedirectIfAuthed>
         }
       />
-      <Route
-        path="/"
-        element={
-          <ProtectedShell>
-            <KpisPage />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedShell>
-            <Dashboard />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/pipeline"
-        element={
-          <ProtectedShell>
-            <Pipeline />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/vacantes"
-        element={
-          <ProtectedShell>
-            <Vacantes />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/toulouse"
-        element={
-          <ProtectedShell>
-            <Toulouse />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/bajas"
-        element={
-          <ProtectedShell>
-            <Bajas />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/empleados"
-        element={
-          <ProtectedShell>
-            <Empleados />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/transporte"
-        element={
-          <ProtectedShell>
-            <Transporte />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/rutas"
-        element={
-          <ProtectedShell>
-            <Rutas />
-          </ProtectedShell>
-        }
-      />
-      <Route
-        path="/reporte-diario"
-        element={
-          <ProtectedShell>
-            <ReporteDiario />
-          </ProtectedShell>
-        }
-      />
+      <Route path="/" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
+      <Route path="/dashboard" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
+      <Route path="/pipeline" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
+      <Route path="/vacantes" element={<ProtectedShell><Vacantes /></ProtectedShell>} />
+      <Route path="/toulouse" element={<ProtectedShell><Toulouse /></ProtectedShell>} />
+      <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
+      <Route path="/empleados" element={<ProtectedShell><Empleados /></ProtectedShell>} />
+      <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
+      <Route path="/rutas" element={<ProtectedShell><Rutas /></ProtectedShell>} />
+      <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
       <Route path="/kpis" element={<Navigate to="/" replace />} />
-      {/* /settings deshabilitada: cualquier navegación cae al fallback. */}
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

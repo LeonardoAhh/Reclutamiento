@@ -279,3 +279,11 @@
     justify-content: flex-end;
   }
 }
+
+
+/* Desktop (>=1024px): la navegacion vive en el Sidebar; ocultamos el Header. */
+@media (min-width: 1024px) {
+  .app-header {
+    display: none;
+  }
+}
