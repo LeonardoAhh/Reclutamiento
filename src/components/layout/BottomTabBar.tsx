@@ -18,6 +18,7 @@ import { useLoader } from '@/hooks/useLoader';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
 import './BottomTabBar.css';
+import { motion } from 'framer-motion';
 
 type TabItem = {
   to: string;
@@ -206,9 +207,11 @@ export function BottomTabBar() {
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span
+                      <motion.span
+                        layoutId="bottom-nav-pill"
                         className="bottom-nav__pill"
                         aria-hidden="true"
+                        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                       />
                     )}
                     <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />

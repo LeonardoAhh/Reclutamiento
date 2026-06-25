@@ -32,7 +32,7 @@ export function AppToaster() {
 
   return (
     <Toaster
-      position="top-center"
+      position="bottom-left"
       theme={theme}
       offset={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
       options={{ duration: 4000 }}
