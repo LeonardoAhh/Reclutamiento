@@ -81,3 +81,10 @@ memory/test_credentials.md
 # Mobile development
 android-sdk/Reclutamiento/Node/node.exe
 Reclutamiento/.git/objects/pack/pack-dd4ed3680dc11dee67b68b21b9e5e15df644b4c7.pack
+.env
+.env.*
+*.env
+credentials.json
+*.key
+.credentials
+Reclutamiento/Node/node.exe
