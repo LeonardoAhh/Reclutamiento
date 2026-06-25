@@ -375,7 +375,7 @@ export function Pipeline() {
       <main className="pipeline container">
         <section className="pipeline__hero">
           <div>
-            <h1>Candidates</h1>
+            <h1>Candidatos</h1>
           </div>
         </section>
         <section className="pipeline__recruiters" aria-hidden="true">
@@ -403,7 +403,7 @@ export function Pipeline() {
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
-          <h1>Candidates</h1>
+          <h1>Candidatos</h1>
         </div>
         <div className="pipeline__hero-actions">
           <motion.button

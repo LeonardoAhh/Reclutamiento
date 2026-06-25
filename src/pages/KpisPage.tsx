@@ -592,7 +592,7 @@
         <main className="kpis-page container" id="page-kpis">
           <section className="kpis-page__hero">
             <div>
-              <h1 className="kpis-page__title">Recruitment Report</h1>
+              <h1 className="kpis-page__title">Reporte reclutamiento</h1>
               <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
             </div>
             {isDesktop && (
@@ -613,7 +613,7 @@
 
         <section className="kpis-page__hero">
           <div>
-            <h1 className="kpis-page__title">Recruitment Report</h1>
+            <h1 className="kpis-page__title">Reporte reclutamiento</h1>
             <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
           </div>
           {isDesktop && (
@@ -625,7 +625,7 @@
                 disabled={revealedCount === 0}
                 title="Volver a ocultar todas las cards"
               >
-                Incognito
+                Ocultar
               </button>
             </div>
           )}

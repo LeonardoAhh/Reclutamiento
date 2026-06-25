@@ -39,6 +39,7 @@ const MENU_TABS: ReadonlyArray<TabItem> = [
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
   { to: '/empleados', label: 'Empleados', icon: Contact },
   { to: '/rutas', label: 'Rutas', icon: Map },
+  { to: '/toulouse', label: 'Toulouse', icon: Briefcase },
 ];
 
 /**

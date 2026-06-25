@@ -9,6 +9,7 @@ import {
   LogOut,
   Map,
   Users,
+  Loader,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -160,10 +161,10 @@ export function UserMenu() {
           aria-label="Menú principal"
           data-testid="user-menu-dropdown"
         >
-          <div className="user-menu__header">
-            <p className="user-menu__label">Sesión activa</p>
-            <p className="user-menu__name" title={username}>
-              {username}
+            <div className="user-menu__header">
+            <p className="user-menu__label">Activo</p>
+            <p className="user-menu__name" title={username?.toUpperCase()}>
+              {username?.toUpperCase()}
             </p>
           </div>
 
@@ -203,18 +204,23 @@ export function UserMenu() {
           </div>
 
           <button
-            type="button"
-            className="user-menu__item user-menu__item--danger"
-            onClick={handleSignOut}
-            disabled={signingOut}
-            role="menuitem"
-            data-testid="user-menu-signout"
-          >
-            <LogOut size={14} aria-hidden="true" />
-            <span className="user-menu__item-label">
-              {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
-            </span>
-          </button>
+  type="button"
+  className="user-menu__item user-menu__item--danger"
+  onClick={handleSignOut}
+  disabled={signingOut}
+  role="menuitem"
+  data-testid="user-menu-signout"
+>
+  {/* Muestra un icono de carga si está saliendo, o el de LogOut por defecto */}
+  {signingOut ? (
+    <Loader size={14} className="animate-spin" aria-hidden="true" /> 
+  ) : (
+    <LogOut size={14} aria-hidden="true" />
+  )}
+  <span className="user-menu__item-label">
+    {signingOut ? 'CERRANDO...' : 'CERRAR SESIÓN'}
+  </span>
+</button>
         </div>
       )}
     </div>
