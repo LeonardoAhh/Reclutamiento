@@ -32,18 +32,13 @@ export default function ReportesGuardadosDialog({
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="reporte-saved__trigger"
+                className="reporte-saved__trigger reporte-saved__trigger--icon"
+                aria-label={`Reportes guardados (${savedSummaries.length})`}
+                title="Reportes guardados"
                 data-testid="open-saved-reports-btn"
             >
-                <span className="reporte-saved__trigger-left">
-                    <span className="reporte-saved__trigger-icon">
-                        <Database size={16} />
-                    </span>
-                    <span className="reporte-saved__trigger-text">
-                        Reportes guardados ({savedSummaries.length})
-                    </span>
-                </span>
-                <ChevronRight size={16} className="reporte-saved__trigger-chevron" aria-hidden="true" />
+                <Database size={16} aria-hidden="true" />
+                <span className="reporte-saved__count" aria-hidden="true">{savedSummaries.length}</span>
             </button>
 
             <Modal

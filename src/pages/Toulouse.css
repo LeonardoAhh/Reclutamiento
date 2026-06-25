@@ -36,7 +36,7 @@
   cursor: pointer;
   font-family: var(--font-display);
   font-size: var(--type-heading-sm-size, 1rem);
-  font-weight: 700;
+  font-weight: var(--font-semibold);
   color: var(--color-ink);
   list-style: none;
 }
@@ -80,7 +80,7 @@
 .tp-instructions__title {
   margin: 0 0 var(--spacing-sm);
   font-size: var(--type-body-md-size, 15px);
-  font-weight: 700;
+  font-weight: var(--font-semibold);
   color: var(--color-ink);
 }
 
@@ -100,7 +100,7 @@
   padding-left: 1.2em;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-xs);
   font-size: var(--type-body-sm-size, 14px);
   color: var(--color-body);
 }
@@ -174,7 +174,7 @@
 .tp-form__group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
   min-width: 0;
 }
 
@@ -188,7 +188,7 @@
   border-radius: var(--rounded-md);
   background: var(--color-canvas);
   color: var(--color-ink);
-  font-size: var(--type-body-size, 14px);
+  font-size: var(--type-body-md-size);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
@@ -223,33 +223,13 @@
 }
 
 .tp-actions {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
 
 .tp-actions > button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  width: var(--control-height);
-  height: var(--control-height);
-}
-
-.tp-actions > .btn-icon {
-  padding: 0;
-  min-width: var(--control-height);
-}
-
-.tp-actions > .btn-icon svg {
-  display: block;
-}
-
-@media (max-width: 640px) {
-  .tp-actions {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+  flex: 1 1 auto;
 }
 
 /* ── Hojas guardadas ── */
@@ -284,7 +264,7 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--spacing-xxs);
   padding: var(--spacing-sm);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
@@ -306,7 +286,7 @@
 }
 
 .tp-saved__meta {
-  font-size: 12px;
+  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
   overflow-wrap: anywhere;
 }
@@ -315,7 +295,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: var(--control-height-lg);
   flex-shrink: 0;
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -347,7 +327,7 @@
 .tp-tab {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-md);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-pill);
@@ -652,6 +632,12 @@
     color: #000 !important;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* Última hoja sin salto: evita una página en blanco al final. */
+  .tp-print-portal .tp-sheet:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
 
   .tp-print-portal .tp-sheet__head {

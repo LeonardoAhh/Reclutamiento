@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { UserMenu } from './UserMenu';
-import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Header.css';
 
@@ -90,10 +89,14 @@ export function Header() {
       <div className="app-header__inner container">
 
         {/* Brand */}
-        <div className="app-header__brand" aria-hidden="true">
-          <span className="app-header__brand-dot" />
-          <TypewriterTitle className="app-header__brand-text" />
-        </div>
+        <NavLink
+          to="/"
+          className="app-header__brand"
+          aria-label="Reclutamiento, ir al inicio"
+        >
+          <span className="app-header__brand-mark" aria-hidden="true" />
+          <span className="app-header__brand-text">Reclutamiento</span>
+        </NavLink>
 
         {/* Nav principal */}
         <nav className="app-header__nav" aria-label="Navegación principal">

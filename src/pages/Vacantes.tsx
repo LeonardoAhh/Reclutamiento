@@ -12,12 +12,13 @@ import {
   Clock,
   ChevronDown,
   SlidersHorizontal,
+  Trash2,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useAuth } from '@/hooks/useAuth';
 import { usePositions } from '@/lib/positions';
-import { calculatePositionCoverage } from '@/lib/utils';
+import { calculatePositionCoverage, normalizeString, normalizePuesto } from '@/lib/utils';
 import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -53,7 +54,7 @@ export function Vacantes() {
     desmarcarCubierta,
   } = useBajas();
   const { employees, comments, loading: empLoading } = useSupabaseData();
-  const { positions, loading: positionsLoading } = usePositions();
+  const { positions, customPositions, positionSettings, deletePosition, upsertPositionSetting, loading: positionsLoading } = usePositions();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
 
@@ -152,6 +153,73 @@ export function Vacantes() {
       if (res.ok) sileo.success({ title: 'Vacante cubierta' });
       else sileo.error({ title: 'No se pudo marcar la vacante' });
     }
+  }
+
+  /** Devuelve la posición custom (creada desde la UI) que coincide con la vacante, si existe. */
+  function findCustomPosition(v: AutoVacancy) {
+    const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
+    return customPositions.find(
+      (p) => `${normalizeString(p.area)}::${normalizeString(p.seccion)}::${normalizePuesto(p.puesto)}` === key
+    );
+  }
+
+  /** ¿Se puede quitar esta vacante desde la página? (estructural: custom o backup) */
+  function canRemoveStructural(v: AutoVacancy): boolean {
+    if (v.baja) return false; // las vacantes por baja se gestionan con cobertura, no se borran
+    return Boolean(findCustomPosition(v)) || v.vacancyType === 'backup';
+  }
+
+  async function handleRemoveStructural(v: AutoVacancy) {
+    if (v.baja) return;
+    const ubicacion = `${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`;
+    const cp = findCustomPosition(v);
+
+    // Caso 1: posición personalizada → se elimina por completo (BD + local).
+    if (cp) {
+      if (
+        !window.confirm(
+          `¿Eliminar la posición personalizada "${v.puesto}" (${ubicacion})?\n\nEsta acción no se puede deshacer.`
+        )
+      ) {
+        return;
+      }
+      await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
+        success: 'Posición personalizada eliminada',
+        error: 'No se pudo eliminar la posición',
+      });
+      return;
+    }
+
+    // Caso 2: vacante de backup del catálogo estático → se pone el backup en 0
+    // (override reversible desde "Configurar plantilla/backup").
+    if (v.vacancyType !== 'backup') return;
+    if (
+      !window.confirm(
+        `Esta es una vacante de backup del catálogo "${v.puesto}" (${ubicacion}).\n\n¿Quitarla? Su backup se pondrá en 0 (reversible desde "Configurar plantilla/backup").`
+      )
+    ) {
+      return;
+    }
+    const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
+    const cur = positionSettings.find(
+      (s) => `${normalizeString(s.area)}::${normalizeString(s.seccion)}::${normalizePuesto(s.puesto)}` === key
+    );
+    await notifyResult(
+      upsertPositionSetting({
+        area: v.area,
+        seccion: v.seccion,
+        puesto: v.puesto,
+        plantilla_autorizada: cur?.plantilla_autorizada ?? null,
+        backup: 0,
+        urgentes: cur?.urgentes ?? 0,
+        notas: cur?.notas ?? null,
+        updated_by: profile?.username ?? null,
+      }),
+      {
+        success: 'Vacante de backup quitada (backup = 0)',
+        error: 'No se pudo actualizar el backup',
+      }
+    );
   }
 
   if (loading) {
@@ -328,6 +396,8 @@ export function Vacantes() {
                 v={v}
                 onReclutador={(val) => handleReclutador(v, val)}
                 onToggleManual={() => handleToggleManual(v)}
+                canDelete={canRemoveStructural(v)}
+                onDelete={() => handleRemoveStructural(v)}
               />
             ))}
           </section>
@@ -434,6 +504,22 @@ export function Vacantes() {
                           <CheckCircle2 size={16} aria-hidden="true" />
                         )}
                       </button>
+                      {canRemoveStructural(v) && (
+                        <button
+                          type="button"
+                          className="pipeline__icon-btn vacantes__del-btn"
+                          onClick={() => handleRemoveStructural(v)}
+                          title={findCustomPosition(v) ? 'Eliminar posición personalizada' : 'Quitar vacante de backup'}
+                          aria-label={
+                            findCustomPosition(v)
+                              ? `Eliminar posición personalizada ${v.puesto}`
+                              : `Quitar vacante de backup ${v.puesto}`
+                          }
+                          data-testid={`vac-delete-${v.key}`}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -511,10 +597,14 @@ function VacancyCard({
   v,
   onReclutador,
   onToggleManual,
+  canDelete,
+  onDelete,
 }: {
   v: AutoVacancy;
   onReclutador: (value: string) => void;
   onToggleManual: () => void;
+  canDelete?: boolean;
+  onDelete?: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -646,6 +736,18 @@ function VacancyCard({
                     <CheckCircle2 size={16} aria-hidden="true" />
                   )}
                 </button>
+                {canDelete && (
+                  <button
+                    type="button"
+                    className="pipeline__icon-btn vacantes__del-btn"
+                    onClick={onDelete}
+                    title="Quitar vacante"
+                    aria-label={`Quitar vacante ${v.puesto}`}
+                    data-testid={`vac-delete-card-${v.key}`}
+                  >
+                    <Trash2 size={16} aria-hidden="true" />
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>

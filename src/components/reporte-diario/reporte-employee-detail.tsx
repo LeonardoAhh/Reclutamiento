@@ -410,57 +410,71 @@ export default function ReporteEmployeeDetail({
             className="reporte-employee-detail-modal"
             fullscreenMobile={true}
         >
-            <div className="reporte-employee-detail__tabs" role="tablist" aria-label="Secciones del detalle de empleado">
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTab === 'overview'}
-                    className={`reporte-employee-detail__tab ${activeTab === 'overview' ? 'is-active' : ''}`}
-                    onClick={() => setActiveTab('overview')}
-                >
-                    Resumen
-                </button>
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTab === 'incidencias'}
-                    className={`reporte-employee-detail__tab ${activeTab === 'incidencias' ? 'is-active' : ''}`}
-                    onClick={() => setActiveTab('incidencias')}
-                >
-                    Incidencias
-                </button>
-            </div>
+            <div className="modal-body">
+                <div className="reporte-employee-detail__tabs" role="tablist" aria-label="Secciones del detalle de empleado">
+                    <button
+                        type="button"
+                        role="tab"
+                        id="emp-tab-overview"
+                        aria-selected={activeTab === 'overview'}
+                        aria-controls="emp-detail-panel"
+                        tabIndex={activeTab === 'overview' ? 0 : -1}
+                        className={`reporte-employee-detail__tab ${activeTab === 'overview' ? 'is-active' : ''}`}
+                        onClick={() => setActiveTab('overview')}
+                    >
+                        Resumen
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        id="emp-tab-incidencias"
+                        aria-selected={activeTab === 'incidencias'}
+                        aria-controls="emp-detail-panel"
+                        tabIndex={activeTab === 'incidencias' ? 0 : -1}
+                        className={`reporte-employee-detail__tab ${activeTab === 'incidencias' ? 'is-active' : ''}`}
+                        onClick={() => setActiveTab('incidencias')}
+                    >
+                        Incidencias
+                    </button>
+                </div>
 
-            <div className="reporte-employee-detail__panel">
-                {activeTab === 'overview' ? (
-                    <>
-                        <div className="reporte-employee-detail__meta-grid">
-                            <div className="reporte-employee-detail__info-item">
-                                <span className="reporte-employee-detail__info-label">Departamento</span>
-                                <span>{employee.departamento || '—'}</span>
+                <div
+                    className="reporte-employee-detail__panel"
+                    id="emp-detail-panel"
+                    role="tabpanel"
+                    tabIndex={0}
+                    aria-labelledby={activeTab === 'overview' ? 'emp-tab-overview' : 'emp-tab-incidencias'}
+                >
+                    {activeTab === 'overview' ? (
+                        <>
+                            <div className="reporte-employee-detail__meta-grid">
+                                <div className="reporte-employee-detail__info-item">
+                                    <span className="reporte-employee-detail__info-label">Departamento</span>
+                                    <span>{employee.departamento || '—'}</span>
+                                </div>
+                                <div className="reporte-employee-detail__info-item">
+                                    <span className="reporte-employee-detail__info-label">Área</span>
+                                    <span>{employee.area || '—'}</span>
+                                </div>
+                                <div className="reporte-employee-detail__info-item">
+                                    <span className="reporte-employee-detail__info-label">Puesto</span>
+                                    <span>{employee.puesto || '—'}</span>
+                                </div>
+                                <div className="reporte-employee-detail__info-item">
+                                    <span className="reporte-employee-detail__info-label">Turno</span>
+                                    <span>{employee.turno || '—'}</span>
+                                </div>
                             </div>
-                            <div className="reporte-employee-detail__info-item">
-                                <span className="reporte-employee-detail__info-label">Área</span>
-                                <span>{employee.area || '—'}</span>
-                            </div>
-                            <div className="reporte-employee-detail__info-item">
-                                <span className="reporte-employee-detail__info-label">Puesto</span>
-                                <span>{employee.puesto || '—'}</span>
-                            </div>
-                            <div className="reporte-employee-detail__info-item">
-                                <span className="reporte-employee-detail__info-label">Turno</span>
-                                <span>{employee.turno || '—'}</span>
-                            </div>
-                        </div>
-                        <KpiCards stats={stats} />
-                    </>
-                ) : (
-                    <IncidentTable
-                        incidents={stats.incidentDetail}
-                        year={year}
-                        month={month}
-                    />
-                )}
+                            <KpiCards stats={stats} />
+                        </>
+                    ) : (
+                        <IncidentTable
+                            incidents={stats.incidentDetail}
+                            year={year}
+                            month={month}
+                        />
+                    )}
+                </div>
             </div>
         </Modal>
     );

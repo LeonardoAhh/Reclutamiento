@@ -42,3 +42,4 @@ credentials.json
 *.pem
 *.key
 .credentials
+Node/node.exe

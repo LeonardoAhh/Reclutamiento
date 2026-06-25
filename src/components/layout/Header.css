@@ -1,8 +1,10 @@
 /* ─────────────────────────────────────────────
-   App Header — rediseño minimalista.
-   56px de altura lógica (–8px vs. anterior).
-   Sin uppercase forzado, sin letter-spacing
-   editorial en el nav; jerarquía por peso y color.
+   App Header — primary-nav de escritorio (desing.md / Ollama).
+   Lienzo plano (canvas) + hairline inferior de 1px.
+   Sin glass, sin blur, sin sombras: la profundidad es la línea.
+   Nav: text-links planos (rounded-none), peso body-sm-strong;
+   jerarquía por color (body → ink), no por fondo.
+   Móvil (<768px): la navegación se delega al BottomTabBar.
 ───────────────────────────────────────────── */
 
 .app-header {
@@ -17,115 +19,111 @@
   height: calc(var(--_h) + var(--safe-area-top));
   padding-top: var(--safe-area-top);
 
-  /* Visual */
-  background: var(--color-header-glass);
-  border-bottom: 0.5px solid var(--color-hairline);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* Visual — canvas sólido + hairline (desing.md: primary-nav) */
+  background: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .app-header__inner {
-  /* Display */
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-
-  /* Box model — reutiliza --_h del padre */
   height: var(--_h);
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
 }
 
-/* ── Brand ───────────────────────────────────── */
+/* ── Brand (enlace a inicio) ─────────────────── */
 .app-header__brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   justify-self: start;
+
+  text-decoration: none;
+  color: var(--color-ink);
+  border-radius: var(--rounded-sm);
+  transition: opacity var(--transition-fast);
 }
 
-/* Punto decorativo: ancla visual sin logotipo */
-.app-header__brand-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: var(--rounded-full);
-  background: var(--color-ink);
-  opacity: 0.2;
+.app-header__brand:hover {
+  opacity: 0.7;
+}
+
+.app-header__brand:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Marca geométrica mínima (ancla visual, sin logotipo). */
+.app-header__brand-mark {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
   flex-shrink: 0;
+  border-radius: var(--rounded-sm);
+  background: var(--color-ink);
 }
 
 .app-header__brand-text {
-  /* Tipografía */
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-size: var(--type-body-md-size);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-
-  /* Visual */
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-snug);
   color: var(--color-ink);
+  white-space: nowrap;
 }
 
 /* ── Nav ─────────────────────────────────────── */
 .app-header__nav {
-  /* Centrado en la celda media del grid */
   justify-self: center;
 }
 
 .app-header__nav-list {
-  /* Display */
   display: flex;
   align-items: center;
-  gap: var(--spacing-2xs);
+  gap: var(--spacing-xs);
 
-  /* Reset */
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* ── Nav item ────────────────────────────────── */
+/* Nav item: text-link plano (desing.md primary-nav, rounded-none). */
 .app-header__nav-item {
-  /* Tipografía */
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
   text-decoration: none;
 
-  /* Box model */
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
 
-  /* Visual */
   color: var(--color-body);
-  border-radius: var(--rounded-full);
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-none);
 
-  /* Interacción */
   cursor: pointer;
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .app-header__nav-item:hover,
-.app-header__nav-item--active {
+.app-header__nav-item--active,
+.app-header__nav-dropdown-trigger--open {
   color: var(--color-ink);
-  background: var(--color-surface-soft);
 }
 
 .app-header__nav-item--active {
-  font-weight: var(--type-body-sm-strong-weight);
-}
-
-.app-header__nav-item--active:hover {
-  background: var(--color-surface-card);
+  font-weight: var(--type-body-strong-weight);
 }
 
 .app-header__nav-item:focus-visible {
   outline: none;
+  border-radius: var(--rounded-sm);
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Acciones ────────────────────────────────── */
+/* ── Acciones (derecha) ──────────────────────── */
 .app-header__actions {
-  /* Empuja el UserMenu a la derecha */
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -133,13 +131,105 @@
   justify-self: end;
 }
 
+/* ── Dropdown ────────────────────────────────── */
+.app-header__nav-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.app-header__nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.app-header__nav-chevron {
+  color: var(--color-muted);
+  transition: transform var(--transition-fast);
+}
+
+.app-header__nav-dropdown-trigger:hover .app-header__nav-chevron,
+.app-header__nav-dropdown-trigger--open .app-header__nav-chevron {
+  color: var(--color-ink);
+}
+
+.app-header__nav-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* Panel de dropdown (desing.md: rounded-md, hairline, sin sombra). */
+.app-header__dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--spacing-xs));
+  left: 0;
+  min-width: 180px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+
+  padding: var(--spacing-xs);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  z-index: 200;
+
+  animation: dropdown-in var(--transition-fast) ease-out;
+}
+
+/* Puente invisible para no perder el hover al cruzar el gap. */
+.app-header__dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--spacing-xs));
+  left: 0;
+  right: 0;
+  height: var(--spacing-xs);
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-header__dropdown-menu {
+    animation: none;
+  }
+}
+
+.app-header__dropdown-item {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-body);
+  text-decoration: none;
+
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.app-header__dropdown-item:hover,
+.app-header__dropdown-item--active {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.app-header__dropdown-item--active {
+  font-weight: var(--type-body-sm-strong-weight);
+}
+
+.app-header__dropdown-item:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
 /* ─────────────────────────────────────────────
-   Tablet (768px – 1024px)
-   Nav visible, comprimido en scroll horizontal.
+   Tablet (768px – 1024px): nav horizontal con scroll.
 ───────────────────────────────────────────── */
 @media (max-width: 1024px) and (min-width: 768px) {
   .app-header__inner {
-    /* Vuelve a flex para que el nav scroll no rompa el grid */
     display: flex;
     justify-content: space-between;
   }
@@ -172,9 +262,8 @@
 }
 
 /* ─────────────────────────────────────────────
-   Mobile (<768px)
-   Nav delegado al BottomTabBar.
-   Header: brand centro, avatar derecha.
+   Móvil (<768px): nav delegado al BottomTabBar.
+   Header: brand a la izquierda, acciones a la derecha.
 ───────────────────────────────────────────── */
 @media (max-width: 767px) {
   .app-header__inner {
@@ -189,90 +278,4 @@
   .app-header__actions {
     justify-content: flex-end;
   }
-}
-
-/* ── Mobile pequeño (<480px) ─────────────────── */
-@media (max-width: 480px) {
-  .app-header__title {
-    font-size: var(--type-caption-md-size);
-  }
-}
-
-/* ── Dropdown ────────────────────────────────── */
-.app-header__nav-group {
-  position: relative;
-  display: inline-flex;
-}
-
-.app-header__nav-dropdown-trigger {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-}
-
-.app-header__nav-chevron {
-  transition: transform var(--transition-fast);
-  color: var(--color-muted);
-}
-
-.app-header__nav-chevron--open {
-  transform: rotate(180deg);
-}
-
-.app-header__dropdown-menu {
-  position: absolute;
-  top: calc(100% + var(--spacing-xs));
-  left: 0;
-  min-width: 160px;
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-xs);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2xs);
-  z-index: 200;
-  box-shadow: var(--shadow-subtle);
-  animation: dropdown-in var(--transition-fast) ease-out;
-}
-
-/* Puente invisible para que el mouse no dispare onMouseLeave al cruzar el gap */
-.app-header__dropdown-menu::before {
-  content: '';
-  position: absolute;
-  top: calc(-1 * var(--spacing-xs));
-  left: 0;
-  right: 0;
-  height: var(--spacing-xs);
-}
-
-@keyframes dropdown-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.app-header__dropdown-item {
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  color: var(--color-ink);
-  text-decoration: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.app-header__dropdown-item:hover,
-.app-header__dropdown-item--active {
-  background: var(--color-surface-soft);
-}
-
-.app-header__dropdown-item--active {
-  font-weight: var(--type-body-sm-strong-weight);
 }

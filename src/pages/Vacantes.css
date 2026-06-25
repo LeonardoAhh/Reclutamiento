@@ -785,3 +785,15 @@
 .pipeline__content .vacantes__cards {
   width: 100%;
 }
+
+/* Botón eliminar posición personalizada (acción destructiva). */
+.vacantes__del-btn:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+  background: var(--color-error-tint);
+}
+
+.vacantes__del-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-error-tint);
+}

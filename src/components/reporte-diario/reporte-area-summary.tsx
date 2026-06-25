@@ -373,14 +373,14 @@ function DetailList({ rows }: DetailListProps) {
 
     if (rows.length === 0) {
         return (
-            <div className="reporte-incidents__empty" style={{ marginTop: "var(--spacing-md)" }}>
+            <div className="reporte-incidents__empty" style={{ padding: "var(--spacing-lg)" }}>
                 <p>No hay ausencias registradas para esta área.</p>
             </div>
         );
     }
 
     return (
-        <div style={{ marginTop: "var(--spacing-md)" }}>
+        <div style={{ padding: "var(--spacing-lg)" }}>
             {/* Desktop table */}
             <div className="reporte-incidents__table-wrap">
                 <table className="reporte-incidents__table">
@@ -524,6 +524,7 @@ export default function ReporteAreaSummary({
                 }}
                 title={`Detalle de ausencias: ${selectedArea}`}
                 subtitle={`Mostrando ${detailRows.length} colaboradores ausentes en esta área.`}
+                size="lg"
                 fullscreenMobile={true}
             >
                 <DetailList rows={detailRows} />
