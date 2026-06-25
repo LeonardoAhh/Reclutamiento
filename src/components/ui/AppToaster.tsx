@@ -3,8 +3,6 @@ import { Toaster } from 'sileo';
 
 type Theme = 'light' | 'dark';
 
-const DESKTOP_QUERY = '(min-width: 768px)';
-
 function readTheme(): Theme {
   if (typeof document === 'undefined') return 'light';
   return document.documentElement.getAttribute('data-theme') === 'dark'
@@ -12,19 +10,16 @@ function readTheme(): Theme {
     : 'light';
 }
 
-function readIsDesktop(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia(DESKTOP_QUERY).matches;
-}
-
 /**
  * Host de notificaciones (sileo) montado una sola vez en la raíz de la app.
- *  - PC (>=768px): top-right (no tapa el header).
- *  - Movil (<768px): top-center (bajo el notch).
+ *
+ * - Posición `top-center` (mobile-first: aparece bajo el notch, centrado).
+ * - Sincroniza su tema con el `data-theme` del documento vía MutationObserver,
+ *   así el toast acompaña el toggle claro/oscuro sin context extra.
+ * - `offset.top` respeta el safe-area de iOS.
  */
 export function AppToaster() {
   const [theme, setTheme] = useState<Theme>(readTheme);
-  const [isDesktop, setIsDesktop] = useState<boolean>(readIsDesktop);
 
   useEffect(() => {
     const obs = new MutationObserver(() => setTheme(readTheme()));
@@ -35,17 +30,9 @@ export function AppToaster() {
     return () => obs.disconnect();
   }, []);
 
-  useEffect(() => {
-    const mql = window.matchMedia(DESKTOP_QUERY);
-    const onChange = () => setIsDesktop(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
   return (
     <Toaster
-      position={isDesktop ? 'top-right' : 'top-center'}
+      position="top-center"
       theme={theme}
       offset={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
       options={{ duration: 4000 }}
