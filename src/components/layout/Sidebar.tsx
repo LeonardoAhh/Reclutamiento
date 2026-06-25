@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Sidebar.css';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 type NavItem = {
   to: string;
@@ -79,8 +80,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       {/* Top: marca + colapsar */}
       <div className="sidebar__top">
         <NavLink to="/" className="sidebar__brand" aria-label="Reclutamiento, ir al inicio">
-          <span className="sidebar__brand-mark" aria-hidden="true" />
-          <span className="sidebar__brand-text">Reclutamiento</span>
+        <BrandLogo showText={!collapsed} />
         </NavLink>
 
         <button
@@ -121,17 +121,27 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Footer: tema + sesión + logout */}
+{/* Footer: tarjeta de usuario + tema + logout */}
       <div className="sidebar__footer">
-        <div className="sidebar__footer-row">
-          <ThemeToggle />
+        <div className="sidebar__user">
           {!collapsed && (
-            <div className="sidebar__session">
-              <p className="sidebar__session-label">Sesión activa</p>
-              <p className="sidebar__session-name" title={username}>{username}</p>
-            </div>
+            <>
+              <div className="sidebar__session">
+                <p className="sidebar__session-label">Sesión activa</p>
+                <p className="sidebar__session-name" title={username}>{username}</p>
+              </div>
+              <span className="sidebar__user-theme">
+                <ThemeToggle />
+              </span>
+            </>
           )}
         </div>
+
+        {collapsed && (
+          <div className="sidebar__footer-row">
+            <ThemeToggle />
+          </div>
+        )}
 
         <button
           type="button"

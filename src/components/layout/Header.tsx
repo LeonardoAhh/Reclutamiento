@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Header.css';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 const NAV_GROUPS = [
   {
@@ -94,8 +95,7 @@ export function Header() {
           className="app-header__brand"
           aria-label="Reclutamiento, ir al inicio"
         >
-          <span className="app-header__brand-mark" aria-hidden="true" />
-          <span className="app-header__brand-text">Reclutamiento</span>
+        <BrandLogo size={26} />
         </NavLink>
 
         {/* Nav principal */}

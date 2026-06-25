@@ -275,7 +275,7 @@
     display: none;
   }
 
-  .app-header__actions {
+  .app-header__actions {  
     justify-content: flex-end;
   }
 }

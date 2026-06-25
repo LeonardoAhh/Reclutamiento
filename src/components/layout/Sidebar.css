@@ -21,9 +21,7 @@
   padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
 
   background: var(--color-canvas);
-  border-inline-end: 1px solid var(--color-hairline);
 
-  transition: width var(--transition-base);
 }
 
 .sidebar[data-collapsed='true'] {
@@ -201,35 +199,55 @@
   inset-block: 25%;
 }
 
-/* Footer */
+* Footer */
 .sidebar__footer {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-hairline);
+  margin-top: var(--spacing-md);
 }
 
-.sidebar__footer-row {
+/* Tarjeta de usuario */
+.sidebar__user {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  min-width: 0;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
 }
 
-.sidebar[data-collapsed='true'] .sidebar__footer-row {
+.sidebar[data-collapsed='true'] .sidebar__user {
   justify-content: center;
+  padding: var(--spacing-sm) 0;
+  background: transparent;
+}
+
+.sidebar__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--rounded-full);
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  font-family: var(--font-display);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
 }
 
 .sidebar__session {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-width: 0;
 }
 
 .sidebar__session-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: var(--font-medium);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -243,6 +261,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sidebar__user-theme {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Fila del tema cuando el sidebar está colapsado */
+.sidebar__footer-row {
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar__logout {
@@ -319,7 +348,6 @@
 
   .app-shell__main {
     margin-inline-start: var(--_app-sidebar-w);
-    transition: margin-inline-start var(--transition-base);
   }
 }
 
