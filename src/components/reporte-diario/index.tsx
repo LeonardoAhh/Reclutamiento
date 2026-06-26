@@ -216,9 +216,10 @@ export default function ReporteDiarioContent() {
         if (!selectedDay) return AREA_STAFF.map((area) => ({
             ...area,
             personal_activo: 0,
+            personal_autorizado: area.personal_autorizado,
             personal_incidencia: 0,
             personal_real: area.personal_autorizado,
-        }))
+        } as AreaStaffSummary))
 
         let dayOfWeek = -1
         if (currentMonth && selectedDay) {
@@ -255,6 +256,7 @@ export default function ReporteDiarioContent() {
             return {
                 ...area,
                 personal_activo,
+                personal_autorizado: area.personal_autorizado,
                 personal_incidencia,
                 personal_real: Math.max(personal_activo - personal_incidencia, 0),
                 is_descanso,

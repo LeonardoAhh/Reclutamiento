@@ -10,6 +10,7 @@ export type AreaStaffDefinition = (typeof AREA_STAFF)[number]
 
 export type AreaStaffSummary = AreaStaffDefinition & {
     personal_activo: number
+    personal_autorizado: number
     personal_incidencia: number
     personal_real: number
     is_descanso?: boolean

@@ -346,10 +346,17 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
             </div>
 
             <div style={STYLES.areaFooter}>
-                <div style={STYLES.staffCount}>
-                    <span style={STYLES.staffLabel}>Plantilla</span>
-                    <span style={STYLES.staffValue}>{area.personal_activo}</span>
+                <div style={{ display: "flex", gap: "var(--spacing-lg)", alignItems: "center", minWidth: 0 }}>
+                    <div style={STYLES.staffCount}>
+                        <span style={STYLES.staffLabel}>Activo</span>
+                        <span style={STYLES.staffValue}>{area.personal_activo}</span>
+                    </div>
+                    <div style={STYLES.staffCount}>
+                        <span style={STYLES.staffLabel}>Autorizado</span>
+                        <span style={STYLES.staffValue}>{area.personal_autorizado}</span>
+                    </div>
                 </div>
+
                 {area.personal_incidencia > 0 && (
                     <div style={STYLES.trend}>
                         {pct > TREND_THRESHOLD ? (
