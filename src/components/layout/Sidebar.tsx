@@ -31,10 +31,10 @@ type NavItem = {
 /** Navegación plana (sin grupos): orden por frecuencia de uso esperada. */
 const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/',               label: 'KPIs',           icon: BarChart3,       end: true },
+  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/pipeline',       label: 'Candidatos',     icon: Users },
   { to: '/dashboard',      label: 'Dashboard',      icon: LayoutDashboard },
   { to: '/vacantes',       label: 'Vacantes',       icon: Briefcase },
-  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/empleados',      label: 'Empleados',      icon: Contact },
   { to: '/rutas',          label: 'Rutas',          icon: Map },
   { to: '/toulouse',       label: 'Toulouse-Piéron', icon: ClipboardCheck },

@@ -173,6 +173,12 @@
   background: var(--color-ink);
 }
 
+.sidebar__item:not(.sidebar__item--active) .sidebar__item-label {
+  filter: blur(0.7px);
+  opacity: 0.65;
+  transition: filter var(--transition-fast), opacity var(--transition-fast);
+}
+
 .sidebar__item:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);

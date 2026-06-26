@@ -318,6 +318,7 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
         color: status.text,
     };
 
+    const asistenciaValue = area.is_descanso ? "—" : area.personal_real;
     const trendColor = getTrendColor(pct);
 
     return (
@@ -346,14 +347,18 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
             </div>
 
             <div style={STYLES.areaFooter}>
-                <div style={{ display: "flex", gap: "var(--spacing-lg)", alignItems: "center", minWidth: 0 }}>
-                    <div style={STYLES.staffCount}>
-                        <span style={STYLES.staffLabel}>Activo</span>
-                        <span style={STYLES.staffValue}>{area.personal_activo}</span>
-                    </div>
+                <div style={{ display: "flex", gap: "var(--spacing-lg)", alignItems: "center", minWidth: 0, flexWrap: "wrap" }}>
                     <div style={STYLES.staffCount}>
                         <span style={STYLES.staffLabel}>Autorizado</span>
                         <span style={STYLES.staffValue}>{area.personal_autorizado}</span>
+                    </div>
+                    <div style={STYLES.staffCount}>
+                        <span style={STYLES.staffLabel}>Contratados</span>
+                        <span style={STYLES.staffValue}>{area.personal_activo}</span>
+                    </div>
+                    <div style={STYLES.staffCount}>
+                        <span style={STYLES.staffLabel}>Asistencia</span>
+                        <span style={STYLES.staffValue}>{asistenciaValue}</span>
                     </div>
                 </div>
 
