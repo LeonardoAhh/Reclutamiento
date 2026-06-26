@@ -8,7 +8,7 @@ export type MexicoHolidayRule =
 
 export type AreaStaffDefinition = (typeof AREA_STAFF)[number]
 
-export type AreaStaffSummary = AreaStaffDefinition & {
+export type AreaStaffSummary = Omit<AreaStaffDefinition, "personal_autorizado"> & {
     personal_activo: number
     personal_autorizado: number
     personal_incidencia: number
