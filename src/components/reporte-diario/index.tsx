@@ -20,11 +20,8 @@ import {
     Download,
     Save,
     Check,
-    Database,
-    Trash2,
-    Building2,
-    SunMedium,
-    User,
+    PanelLeftClose,
+    PanelLeftOpen,
     ChevronRight,
     ChevronLeft,
     FileJson,
@@ -62,6 +59,7 @@ export default function ReporteDiarioContent() {
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [saveSuccess, setSaveSuccess] = useState(false)
+    const [panelCollapsed, setPanelCollapsed] = useState(false);
 
     const [processStep, setProcessStep] = useState<"reading" | "validating" | "generating" | null>(null)
     const [previewData, setPreviewData] = useState<{
@@ -585,6 +583,10 @@ export default function ReporteDiarioContent() {
     const labelCls = "block text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5"
 
     const hasData = rows.length > 0 && Boolean(currentMonth)
+        // Al cargar/seleccionar un reporte, el panel de controles se colapsa solo.
+    useEffect(() => {
+        setPanelCollapsed(hasData);
+    }, [hasData]);
 
     /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
        sistema (en vez de pantalla en blanco). ───────────────────────── */
@@ -607,134 +609,7 @@ export default function ReporteDiarioContent() {
     }
 
     return (
-        <div className="reporte-container">
-
-            {/* ── Header ───────────────────────────────────────────────── */}
-            <header className="reporte-card reporte-head">
-                <div className="reporte-head__row">
-                    <div className="reporte-title-wrapper">
-                        <h1 className="reporte-title">Reporte Diario</h1>
-                    </div>
-
-                    <div className="reporte-control-group">
-                        {fileName && hasData && (
-                            <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
-                                <FileJson size={16} className="text-primary" aria-hidden="true" />
-                                <span>{fileName}</span>
-                                <button
-                                    type="button"
-                                    onClick={handleClearFile}
-                                    title="Limpiar archivo actual"
-                                    aria-label="Limpiar archivo actual"
-                                    className="reporte-iconbtn"
-                                    data-testid="clear-file-btn"
-                                >
-                                    <X size={14} aria-hidden="true" />
-                                </button>
-                            </div>
-                        )}
-                        {hasData && (
-                            <button
-                                type="button"
-                                className="btn-primary"
-                                onClick={handleSaveToDb}
-                                disabled={dbSaving}
-                                data-testid="save-report-btn"
-                            >
-                                <Save size={16} aria-hidden="true" />
-                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
-                            </button>
-                        )}
-                        {hasData && (
-                            <span className="reporte-status-banner reporte-status-banner--warn">
-                                {heroKpis.totalIncidencias} incidencias
-                            </span>
-                        )}
-                        {(savedSummaries.length >= 2) && (
-                            <ReporteComparison summaries={savedSummaries} />
-                        )}
-                        {(savedSummaries.length > 0) && (
-                            <ReportesGuardadosDialog
-                                savedSummaries={savedSummaries}
-                                dbSaving={dbSaving}
-                                onLoad={handleLoadFromDb}
-                                onDelete={handleDeleteFromDb}
-                                formatMes={formatMes}
-                            />
-                        )}
-                    </div>
-                </div>
-
-                {hasData && (
-                    <div className="reporte-search">
-                        <div className="reporte-search__field-wrap">
-                            <label htmlFor="reporte-search" className="sr-only">
-                                Buscar empleado
-                            </label>
-                            <Search size={16} className="reporte-search__icon" aria-hidden="true" />
-                            <input
-                                id="reporte-search"
-                                type="text"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Buscar por nombre, número o área"
-                                className="reporte-search__input"
-                                aria-label="Buscar empleado por nombre, número o área"
-                            />
-                            {search && (
-                                <button
-                                    type="button"
-                                    onClick={clearSearch}
-                                    className="reporte-search__clear"
-                                    aria-label="Limpiar búsqueda"
-                                >
-                                    <X size={16} />
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="reporte-search__meta">
-                            {search ? (
-                                <p className="reporte-search__subtitle">
-                                    {searchResults.length} {searchResults.length === 1 ? 'resultado' : 'resultados'} encontrados
-                                </p>
-                            ) : (
-                                <p className="reporte-search__subtitle">
-                                    Busca un colaborador y abre su detalle en un modal con tabs.
-                                </p>
-                            )}
-                        </div>
-
-                        {search ? (
-                            <div className="reporte-search__results" role="list">
-                                {searchResults.length > 0 ? (
-                                    searchResults.map((row) => (
-                                        <button
-                                            key={row.numero_empleado}
-                                            type="button"
-                                            className="reporte-search__result"
-                                            onClick={() => openEmployeeModal(row.numero_empleado)}
-                                        >
-                                            <div className="reporte-search__result-main">
-                                                <span className="reporte-search__result-title">{row.nombre}</span>
-                                                <span className="reporte-search__result-meta">#{row.numero_empleado}</span>
-                                            </div>
-                                            <div className="reporte-search__result-followup">
-                                                <span>{row.departamento}</span>
-                                                <span>{row.area}</span>
-                                            </div>
-                                        </button>
-                                    ))
-                                ) : (
-                                    <div className="reporte-search__empty">
-                                        No se encontraron empleados que coincidan con la búsqueda.
-                                    </div>
-                                )}
-                            </div>
-                        ) : null}
-                    </div>
-                )}
-            </header>
+        <div className="reporte-layout" data-collapsed={panelCollapsed}>
 
             <input
                 ref={fileInputRef}
@@ -744,167 +619,317 @@ export default function ReporteDiarioContent() {
                 style={{ display: 'none' }}
             />
 
-            {hasData ? (
-                <div className="reporte-container">
-
-            {/* ── KPI Dashboard ─────────────────────────────────────────── */}
-            {currentMonth && rows.length > 0 && (
-                <ReporteKpiDashboard
-                    selectedRows={selectedRows}
-                    dayHeaders={dayHeaders}
-                    currentMonth={currentMonth}
-                />
-            )}
-
-            {/* ── Calendar ─────────────────────────────────────────────── */}
-            {currentMonth && rows.length > 0 && (
-                <div className="reporte-card">
-                    <div className="reporte-card__header">
-                        <div className="reporte-flex-between">
-                            <div>
-                                <p className="reporte-card__title">Calendario mensual</p>
-                                <p className="reporte-card__description">
-                                    Selecciona un día para ver el detalle de incidencias.
-                                </p>
-                            </div>
-                            <span className="reporte-status-banner">
-                                {formatMes(currentMonth)}
-                            </span>
+            {/* ── PANEL IZQUIERDO: header + controles + dropzone ───────── */}
+            <aside className="reporte-panel" aria-hidden={panelCollapsed}>
+                <header className="reporte-card reporte-head">
+                    <div className="reporte-head__row">
+                        <div className="reporte-title-wrapper">
+                            <h1 className="reporte-title">Reporte Diario</h1>
                         </div>
-                    </div>
 
-                    <div className="reporte-card__content">
-                        <ReporteCalendar
-                            calendarCells={calendarCells}
-                            daySummaries={daySummaries}
-                            dayAusentismoPct={dayAusentismoPct}
-                            selectedDay={selectedDay}
-                            selectedMonthHolidayLabels={selectedMonthHolidayLabels}
-                            currentMonth={currentMonth}
-                            onSelectDay={setSelectedDay}
-                        />
-                    </div>
-                </div>
-            )}
-
-            {/* ── Detalle del día ──── */}
-            <div className="reporte-card">
-                <div className="reporte-card__header">
-                    <div className="reporte-dayhead">
-                        <div className="reporte-dayhead__title">
-                            <Calendar size={20} className="text-primary" aria-hidden="true" />
-                            <h3 data-testid="selected-day-title">
-                                {selectedDay ? selectedDateTitle : "Detalle del día"}
-                            </h3>
-                        </div>
-                        {selectedDay && (
-                            <div className="reporte-dayhead__actions">
-                                <div className="reporte-daynav">
+                        <div className="reporte-control-group">
+                            {fileName && hasData && (
+                                <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
+                                    <FileJson size={16} className="text-primary" aria-hidden="true" />
+                                    <span>{fileName}</span>
                                     <button
                                         type="button"
-                                        className="reporte-daynav__btn"
-                                        onClick={() => prevDay && setSelectedDay(prevDay)}
-                                        disabled={!prevDay}
-                                        title="Día anterior"
-                                        aria-label="Día anterior"
-                                        data-testid="prev-day-btn"
+                                        onClick={handleClearFile}
+                                        title="Limpiar archivo actual"
+                                        aria-label="Limpiar archivo actual"
+                                        className="reporte-iconbtn"
+                                        data-testid="clear-file-btn"
                                     >
-                                        <ChevronLeft size={16} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="reporte-daynav__btn"
-                                        onClick={() => nextDay && setSelectedDay(nextDay)}
-                                        disabled={!nextDay}
-                                        title="Día siguiente"
-                                        aria-label="Día siguiente"
-                                        data-testid="next-day-btn"
-                                    >
-                                        <ChevronRight size={16} />
+                                        <X size={14} aria-hidden="true" />
                                     </button>
                                 </div>
+                            )}
+                            {hasData && (
                                 <button
                                     type="button"
-                                    onClick={handleExportPdf}
-                                    className="reporte-tab-trigger"
-                                    data-testid="export-pdf-btn"
+                                    className="btn-primary"
+                                    onClick={handleSaveToDb}
+                                    disabled={dbSaving}
+                                    data-testid="save-report-btn"
                                 >
-                                    <Download size={14} />
-                                    PDF
+                                    <Save size={16} aria-hidden="true" />
+                                    {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
+                                </button>
+                            )}
+                            {hasData && (
+                                <span className="reporte-status-banner reporte-status-banner--warn">
+                                    {heroKpis.totalIncidencias} incidencias
+                                </span>
+                            )}
+                            {(savedSummaries.length >= 2) && (
+                                <ReporteComparison summaries={savedSummaries} />
+                            )}
+                            {(savedSummaries.length > 0) && (
+                                <ReportesGuardadosDialog
+                                    savedSummaries={savedSummaries}
+                                    dbSaving={dbSaving}
+                                    onLoad={handleLoadFromDb}
+                                    onDelete={handleDeleteFromDb}
+                                    formatMes={formatMes}
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    {hasData && (
+                        <div className="reporte-search">
+                            <div className="reporte-search__field-wrap">
+                                <label htmlFor="reporte-search" className="sr-only">
+                                    Buscar empleado
+                                </label>
+                                <Search size={16} className="reporte-search__icon" aria-hidden="true" />
+                                <input
+                                    id="reporte-search"
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Buscar por nombre, número o área"
+                                    className="reporte-search__input"
+                                    aria-label="Buscar empleado por nombre, número o área"
+                                />
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={clearSearch}
+                                        className="reporte-search__clear"
+                                        aria-label="Limpiar búsqueda"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="reporte-search__meta">
+                                {search ? (
+                                    <p className="reporte-search__subtitle">
+                                        {searchResults.length} {searchResults.length === 1 ? 'resultado' : 'resultados'} encontrados
+                                    </p>
+                                ) : (
+                                    <p className="reporte-search__subtitle">
+                                        Busca un colaborador y abre su detalle en un modal con tabs.
+                                    </p>
+                                )}
+                            </div>
+
+                            {search ? (
+                                <div className="reporte-search__results" role="list">
+                                    {searchResults.length > 0 ? (
+                                        searchResults.map((row) => (
+                                            <button
+                                                key={row.numero_empleado}
+                                                type="button"
+                                                className="reporte-search__result"
+                                                onClick={() => openEmployeeModal(row.numero_empleado)}
+                                            >
+                                                <div className="reporte-search__result-main">
+                                                    <span className="reporte-search__result-title">{row.nombre}</span>
+                                                    <span className="reporte-search__result-meta">#{row.numero_empleado}</span>
+                                                </div>
+                                                <div className="reporte-search__result-followup">
+                                                    <span>{row.departamento}</span>
+                                                    <span>{row.area}</span>
+                                                </div>
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <div className="reporte-search__empty">
+                                            No se encontraron empleados que coincidan con la búsqueda.
+                                        </div>
+                                    )}
+                                </div>
+                            ) : null}
+                        </div>
+                    )}
+                </header>
+
+                {!hasData && (
+                    <div
+                        className="reporte-empty"
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => fileInputRef.current?.click()}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
+                        data-testid="upload-dropzone"
+                    >
+                        <CloudUpload size={48} className="reporte-empty__icon" aria-hidden="true" />
+                        <h3 className="reporte-card__title">Sube tu reporte diario</h3>
+                        <p className="reporte-subtitle">
+                            Arrastra y suelta tu archivo de datos aquí, o haz clic para seleccionarlo.
+                        </p>
+                    </div>
+                )}
+
+                {errors.length > 0 && (
+                    <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
+                        <AlertCircle size={16} aria-hidden="true" />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            <div className="reporte-flex-between">
+                                <strong>Errores de formato</strong>
+                                <button
+                                    type="button"
+                                    onClick={() => setErrors([])}
+                                    className="reporte-iconbtn"
+                                    aria-label="Cerrar errores"
+                                >
+                                    <X size={16} />
                                 </button>
                             </div>
-                        )}
-                    </div>
-                </div>
-                <div className="reporte-card__content">
-                    {!selectedDay ? (
-                        <p className="reporte-placeholder">
-                            Selecciona un día en el calendario.
-                        </p>
-                    ) : (
-                        <>
-                            <ReporteAreaSummary
-                                areas={selectedDayAreaSummary}
-                                selectedArea={selectedArea}
-                                onSelectArea={setSelectedArea}
-                                detailRows={selectedAreaDetailRows}
-                            />
-
-                            <ReporteIncidentTabs
-                                selectedTab={selectedIncidentTab}
-                                onSelectTab={setSelectedIncidentTab}
-                                dayCounts={selectedDayCounts}
-                                incidentSummary={selectedDayIncidentSummary}
-                            />
-                        </>
-                    )}
-                </div>
-            </div>
-                </div>
-            ) : (
-                <div
-                    className="reporte-empty"
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
-                    data-testid="upload-dropzone"
-                >
-                    <CloudUpload size={48} className="reporte-empty__icon" aria-hidden="true" />
-                    <h3 className="reporte-card__title">Sube tu reporte diario</h3>
-                    <p className="reporte-subtitle">
-                        Arrastra y suelta tu archivo de datos aquí, o haz clic para seleccionarlo.
-                    </p>
-                </div>
-            )}
-
-            {/* ── Errors ───────────────────────────────────────────────── */}
-            {errors.length > 0 && (
-                <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
-                    <AlertCircle size={16} aria-hidden="true" />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="reporte-flex-between">
-                            <strong>Errores de formato</strong>
-                            <button
-                                type="button"
-                                onClick={() => setErrors([])}
-                                className="reporte-iconbtn"
-                                aria-label="Cerrar errores"
-                            >
-                                <X size={16} />
-                            </button>
+                            <ul>
+                                {errors.map((err, i) => (
+                                    <li key={i}>{err}</li>
+                                ))}
+                            </ul>
                         </div>
-                        <ul>
-                            {errors.map((err, i) => (
-                                <li key={i}>{err}</li>
-                            ))}
-                        </ul>
                     </div>
-                </div>
-            )}
+                )}
+            </aside>
+
+            {/* ── PANEL DERECHO: el reporte ───────────────────────────── */}
+            <div className="reporte-main">
+                <button
+                    type="button"
+                    className="reporte-panel-toggle"
+                    onClick={() => setPanelCollapsed((v) => !v)}
+                    aria-pressed={panelCollapsed}
+                    aria-label={panelCollapsed ? 'Mostrar controles' : 'Ocultar controles'}
+                    title={panelCollapsed ? 'Mostrar controles' : 'Ocultar controles'}
+                    data-testid="reporte-panel-toggle"
+                >
+                    {panelCollapsed
+                        ? <PanelLeftOpen size={16} aria-hidden="true" />
+                        : <PanelLeftClose size={16} aria-hidden="true" />}
+                    <span>{panelCollapsed ? 'Controles' : 'Ocultar'}</span>
+                </button>
+
+                {hasData ? (
+                    <div className="reporte-container">
+                        {currentMonth && rows.length > 0 && (
+                            <ReporteKpiDashboard
+                                selectedRows={selectedRows}
+                                dayHeaders={dayHeaders}
+                                currentMonth={currentMonth}
+                            />
+                        )}
+
+                        {currentMonth && rows.length > 0 && (
+                            <div className="reporte-card">
+                                <div className="reporte-card__header">
+                                    <div className="reporte-flex-between">
+                                        <div>
+                                            <p className="reporte-card__title">Calendario mensual</p>
+                                            <p className="reporte-card__description">
+                                                Selecciona un día para ver el detalle de incidencias.
+                                            </p>
+                                        </div>
+                                        <span className="reporte-status-banner">
+                                            {formatMes(currentMonth)}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="reporte-card__content">
+                                    <ReporteCalendar
+                                        calendarCells={calendarCells}
+                                        daySummaries={daySummaries}
+                                        dayAusentismoPct={dayAusentismoPct}
+                                        selectedDay={selectedDay}
+                                        selectedMonthHolidayLabels={selectedMonthHolidayLabels}
+                                        currentMonth={currentMonth}
+                                        onSelectDay={setSelectedDay}
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="reporte-card">
+                            <div className="reporte-card__header">
+                                <div className="reporte-dayhead">
+                                    <div className="reporte-dayhead__title">
+                                        <Calendar size={20} className="text-primary" aria-hidden="true" />
+                                        <h3 data-testid="selected-day-title">
+                                            {selectedDay ? selectedDateTitle : "Detalle del día"}
+                                        </h3>
+                                    </div>
+                                    {selectedDay && (
+                                        <div className="reporte-dayhead__actions">
+                                            <div className="reporte-daynav">
+                                                <button
+                                                    type="button"
+                                                    className="reporte-daynav__btn"
+                                                    onClick={() => prevDay && setSelectedDay(prevDay)}
+                                                    disabled={!prevDay}
+                                                    title="Día anterior"
+                                                    aria-label="Día anterior"
+                                                    data-testid="prev-day-btn"
+                                                >
+                                                    <ChevronLeft size={16} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="reporte-daynav__btn"
+                                                    onClick={() => nextDay && setSelectedDay(nextDay)}
+                                                    disabled={!nextDay}
+                                                    title="Día siguiente"
+                                                    aria-label="Día siguiente"
+                                                    data-testid="next-day-btn"
+                                                >
+                                                    <ChevronRight size={16} />
+                                                </button>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={handleExportPdf}
+                                                className="reporte-tab-trigger"
+                                                data-testid="export-pdf-btn"
+                                            >
+                                                <Download size={14} />
+                                                PDF
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="reporte-card__content">
+                                {!selectedDay ? (
+                                    <p className="reporte-placeholder">
+                                        Selecciona un día en el calendario.
+                                    </p>
+                                ) : (
+                                    <>
+                                        <ReporteAreaSummary
+                                            areas={selectedDayAreaSummary}
+                                            selectedArea={selectedArea}
+                                            onSelectArea={setSelectedArea}
+                                            detailRows={selectedAreaDetailRows}
+                                        />
+
+                                        <ReporteIncidentTabs
+                                            selectedTab={selectedIncidentTab}
+                                            onSelectTab={setSelectedIncidentTab}
+                                            dayCounts={selectedDayCounts}
+                                            incidentSummary={selectedDayIncidentSummary}
+                                        />
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="reporte-main-empty">
+                        <p className="reporte-subtitle">
+                            Sube o selecciona un reporte para visualizar KPIs, calendario y detalle.
+                        </p>
+                    </div>
+                )}
+            </div>
 
             {/* ── Employee Detail Modal ────────────────────────────────── */}
             <ReporteEmployeeDetail

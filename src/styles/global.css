@@ -1084,7 +1084,7 @@ code:not(pre code) {
 }
 
 .modal-content--xl {
-  max-width: 900px;
+  max-width: 1040px;
 }
 
 /* Scrollbar estilo minimalista */

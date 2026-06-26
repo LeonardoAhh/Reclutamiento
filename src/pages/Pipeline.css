@@ -1396,13 +1396,14 @@
   padding: var(--spacing-lg);
   max-height: 70vh;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;   /* ← permite scroll horizontal si algo se desborda */
 }
 
 /* ── Grid Global: 3 columnas en desktop, 2 en tablet, 1 en mobile ── */
+/* Por esto: */
 .pipeline__modal-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-md);
 }
 

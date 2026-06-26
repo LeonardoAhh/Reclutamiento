@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Users, TrendingDown, TrendingUp, Filter, ChevronRight } from "lucide-react";
+import { Users, TrendingDown, TrendingUp, Filter, ChevronRight, Moon } from "lucide-react";
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
 import { Modal } from "@/components/ui/Modal";
@@ -53,8 +53,10 @@ const STYLES = {
     },
     grid: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-        gap: "var(--spacing-lg)",
+        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 3fr))",
+        gap: "var(--spacing-md)",
+        alignItems: "start",
+        alignContent: "start",
     },
     areaCard: {
         base: {
@@ -70,6 +72,7 @@ const STYLES = {
             flexDirection: "column",
             gap: "var(--spacing-sm)",
             boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+            overflow: "hidden",
         },
         selected: {
             borderColor: "var(--color-primary)",
@@ -108,11 +111,26 @@ const STYLES = {
         fontWeight: "var(--type-body-strong-weight)",
         lineHeight: "1",
     },
+    descansoBadge: {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "var(--spacing-xxs)",
+        alignSelf: "flex-start",
+        maxWidth: "100%",
+        padding: "var(--spacing-xxs) var(--spacing-sm)",
+        borderRadius: "var(--rounded-full)",
+        background: "var(--color-primary)",
+        color: "var(--color-on-primary)",
+        fontSize: "var(--type-caption-sm-size)",
+        fontWeight: "var(--type-body-strong-weight)",
+        lineHeight: "1.3",
+        overflow: "hidden",
+    },
     areaFooter: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-end",
-        marginTop: "auto",
+        marginTop: "var(--spacing-md)",
         width: "100%",
         paddingTop: "var(--spacing-sm)",
         borderTop: "1px solid var(--color-hairline-soft)",
@@ -153,7 +171,8 @@ const STYLES = {
         borderRadius: "var(--rounded-lg)",
     },
     table: {
-        minWidth: "100%",
+        width: "100%",
+        tableLayout: "auto" as const,
         fontSize: "var(--type-body-sm-size)",
         lineHeight: "var(--type-body-sm-line)",
         borderCollapse: "collapse" as const,
@@ -192,6 +211,7 @@ const STYLES = {
         name: {
             fontWeight: "var(--type-body-strong-weight)",
             color: "var(--color-ink)",
+            whiteSpace: "nowrap" as const,
         },
         shift: {
             display: "inline-flex",
@@ -309,6 +329,14 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
             style={cardStyle}
         >
             <div style={STYLES.areaHeader}>
+                {area.is_descanso && (
+                <div style={STYLES.descansoBadge} data-testid={`area-descanso-${area.area}`}>
+                    <Moon size={12} aria-hidden="true" style={{ flexShrink: 0 }} />
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        Descanso
+                    </span>
+                </div>
+            )}
                 <span style={STYLES.areaName} title={area.area}>
                     {area.area}
                 </span>
@@ -500,19 +528,30 @@ export default function ReporteAreaSummary({
                 )}
             </div>
 
-            {/* Grid */}
-            <div
-                className="reporte__layout"
-                style={STYLES.grid}
-            >
-                {sortedAreas.map((area) => (
-                    <AreaCard
-                        key={area.area}
-                        area={area}
-                        isSelected={selectedArea === area.area}
-                        onClick={() => handleSelectArea(area.area)}
-                    />
-                ))}
+           {/* Grids: 3 calidad arriba, 4 producción abajo */}
+            <div className="reporte-area-grid reporte-area-grid--calidad">
+                {sortedAreas
+                    .filter((a) => !a.area.toUpperCase().includes("PRODUC"))
+                    .map((area) => (
+                        <AreaCard
+                            key={area.area}
+                            area={area}
+                            isSelected={selectedArea === area.area}
+                            onClick={() => handleSelectArea(area.area)}
+                        />
+                    ))}
+            </div>
+            <div className="reporte-area-grid reporte-area-grid--prod">
+                {sortedAreas
+                    .filter((a) => a.area.toUpperCase().includes("PRODUC"))
+                    .map((area) => (
+                        <AreaCard
+                            key={area.area}
+                            area={area}
+                            isSelected={selectedArea === area.area}
+                            onClick={() => handleSelectArea(area.area)}
+                        />
+                    ))}
             </div>
 
             {/* Detail Modal */}
@@ -524,7 +563,7 @@ export default function ReporteAreaSummary({
                 }}
                 title={`Detalle de ausencias: ${selectedArea}`}
                 subtitle={`Mostrando ${detailRows.length} colaboradores ausentes en esta área.`}
-                size="lg"
+                size="xl"
                 fullscreenMobile={true}
             >
                 <DetailList rows={detailRows} />

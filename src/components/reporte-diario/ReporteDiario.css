@@ -1310,7 +1310,7 @@ button.reporte-card:focus-visible,
 .reporte-kpi__value {
   margin: var(--spacing-xxs) 0 0;
   font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
+  font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
   color: var(--color-ink);
@@ -1425,7 +1425,7 @@ button.reporte-card:focus-visible,
 
 .reporte-incidents__table {
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto;
   border-collapse: collapse;
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
@@ -1824,3 +1824,109 @@ button.reporte-card:focus-visible,
     transition: none;
   }
 }
+
+/* ── Layout 2 paneles: controles (izq) + reporte (der) ───────────── */
+.reporte-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+  gap: var(--spacing-xl);
+  align-items: start;
+  transition: grid-template-columns var(--transition-base), gap var(--transition-base);
+}
+
+.reporte-layout[data-collapsed="true"] {
+  grid-template-columns: 0 minmax(0, 1fr);
+  gap: 0;
+}
+
+.reporte-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  min-width: 0;
+  overflow: hidden;
+  transition: opacity var(--transition-base);
+}
+
+.reporte-layout[data-collapsed="true"] .reporte-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reporte-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Botón para mostrar/ocultar el panel de controles */
+.reporte-panel-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-body);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.reporte-panel-toggle:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.reporte-panel-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.reporte-main-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  text-align: center;
+  padding: var(--spacing-xl);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+/* Móvil/tablet: apilado en una columna */
+@media (max-width: 900px) {
+  .reporte-layout,
+  .reporte-layout[data-collapsed="true"] {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  .reporte-layout[data-collapsed="true"] .reporte-panel {
+    display: none;
+  }
+}
+
+/* ── Reporte Diario ocupa todo el ancho del área (pegado a la sidebar) ──────
+   Anula el cap de 1200px y el centrado de .container solo en esta página. */
+.reporte-page.container {
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* ── Impacto por Área: 3 calidad arriba / 4 producción abajo ──────────────── */
+.reporte-area-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .reporte-area-grid--calidad { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .reporte-area-grid--prod    { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+} 
