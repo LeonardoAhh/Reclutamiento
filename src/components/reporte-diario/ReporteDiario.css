@@ -475,27 +475,31 @@ button.reporte-card:focus-visible,
 }
 
 .reporte-search__result-main {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--spacing-sm);
+  align-items: flex-start;
   min-width: 0;
 }
 
 .reporte-search__result-title {
+  display: block;
+  min-width: 0;
   font-family: var(--font-display);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .reporte-search__result-meta {
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-caption-sm-size);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .reporte-search__result-followup {
@@ -949,7 +953,8 @@ button.reporte-card:focus-visible,
 .reporte-cmp__table td {
   padding: var(--spacing-sm) var(--spacing-md);
   color: var(--color-ink);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .reporte-cmp__num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -1444,7 +1449,7 @@ button.reporte-card:focus-visible,
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .reporte-incidents__table tbody tr {
@@ -1519,22 +1524,20 @@ button.reporte-card:focus-visible,
 
 .reporte-incidents__card-name {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-md-line);
+  line-height: var(--type-body-sm-line);
   color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .reporte-incidents__card-sub {
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   color: var(--color-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .reporte-incidents__chevron {
