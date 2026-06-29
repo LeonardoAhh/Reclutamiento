@@ -295,6 +295,44 @@ export function computeAutoVacancies(
 }
 
 /**
+ * Filtra las vacantes ABIERTAS que ya están "reservadas" por un empleado con
+ * fecha de ingreso futura (próximo ingreso). Un empleado futuro no cuenta como
+ * plantilla real todavía, por lo que la vacante sigue contando en el KPI, pero
+ * NO debe ofrecerse de nuevo en el selector de alta para evitar duplicar la
+ * contratación de un puesto ya comprometido.
+ *
+ * Por puesto se descarta una vacante por cada próximo ingreso (campo
+ * `proximos_ingresos` de la cobertura), hasta agotar los ingresos pendientes.
+ */
+export function filterUnreservedVacancies(
+  openVacancies: AutoVacancy[],
+  employees: Employee[],
+  positions: AuthorizedPosition[] = []
+): AutoVacancy[] {
+  if (positions.length === 0) return openVacancies;
+
+  const coverage = calculatePositionCoverage(employees, [], positions);
+  const reservedByKey = new Map<string, number>();
+  for (const c of coverage) {
+    if (c.proximos_ingresos > 0) {
+      reservedByKey.set(positionKey(c), c.proximos_ingresos);
+    }
+  }
+  if (reservedByKey.size === 0) return openVacancies;
+
+  const remaining = new Map(reservedByKey);
+  return openVacancies.filter((v) => {
+    const k = positionKey(v);
+    const left = remaining.get(k) ?? 0;
+    if (left > 0) {
+      remaining.set(k, left - 1);
+      return false; // reservada por un ingreso futuro → no ofrecer
+    }
+    return true;
+  });
+}
+
+/**
  * Adapta una vacante automática a la forma `VacancyRequest` que consumen los
  * KPIs y modales existentes (TTF, cobertura faltante). La "apertura" es la
  * fecha de baja y la "cobertura" la fecha de ingreso del nuevo / fecha manual.

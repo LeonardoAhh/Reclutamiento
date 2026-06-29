@@ -33,7 +33,7 @@ import {
   getCoverageColor,
 } from '@/lib/utils';
 import { localTodayIso } from '@/lib/dates';
-import { computeAutoVacancies } from '@/lib/autoVacancies';
+import { computeAutoVacancies, filterUnreservedVacancies } from '@/lib/autoVacancies';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -71,9 +71,18 @@ export function Dashboard() {
   // detalle de área en lugar de "Sin proceso" cuando hay procesos reales.
   const { candidates } = useCandidates();
 
-  // Vacantes abiertas detectadas automáticamente
+  // Vacantes abiertas detectadas automáticamente, excluyendo las que ya están
+  // reservadas por un empleado con fecha de ingreso futura (próximo ingreso),
+  // para no ofrecer en el alta un puesto ya comprometido.
   const openVacancies = useMemo(
-    () => computeAutoVacancies(bajas, employees, positions).filter(v => v.status === 'abierta'),
+    () =>
+      filterUnreservedVacancies(
+        computeAutoVacancies(bajas, employees, positions).filter(
+          (v) => v.status === 'abierta'
+        ),
+        employees,
+        positions
+      ),
     [bajas, employees, positions]
   );
 
