@@ -3,6 +3,8 @@ import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import type { AutoVacancy } from '@/lib/autoVacancies';
 import { usePositions } from '@/lib/positions';
+import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
+import { CATEGORIAS } from '@/lib/constants';
 import { localTodayIso } from '@/lib/dates';
 import {
   TRANSPORTE_NA,
@@ -51,6 +53,17 @@ function emptyForm(): FormState {
   };
 }
 
+/** Quita el sufijo de categoría (A/B/C/D) del puesto, preservando el resto. */
+function stripCategoria(puesto: string): string {
+  return puesto.replace(/\s+[A-D]$/i, '').trim();
+}
+
+interface VacancyOption {
+  area: string;
+  seccion: string;
+  puesto: string;
+}
+
 export function EmployeeModal({
   isOpen,
   mode,
@@ -97,6 +110,23 @@ export function EmployeeModal({
     [positions, form.area, form.seccion]
   );
 
+  // Vacantes seleccionables: deduplicadas por área+sección+puesto (ignorando la
+  // categoría) y con el puesto SIN sufijo de categoría. La categoría la asigna
+  // el usuario manualmente más abajo.
+  const vacancyOptions = useMemo<VacancyOption[]>(() => {
+    const seen = new Set<string>();
+    const list: VacancyOption[] = [];
+    for (const v of openVacancies) {
+      const key = `${canonicalizeKeyPart(v.area)}|${canonicalizeKeyPart(
+        v.seccion
+      )}|${canonicalizePuesto(v.puesto)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      list.push({ area: v.area, seccion: v.seccion, puesto: stripCategoria(v.puesto) });
+    }
+    return list;
+  }, [openVacancies]);
+
   useEffect(() => {
     if (!isOpen) return;
     setErrorMsg(null);
@@ -123,8 +153,8 @@ export function EmployeeModal({
       });
     } else {
       // En modo 'add', pre-llenar con la primera vacante disponible
-      if (openVacancies && openVacancies.length > 0) {
-        const vacancy = openVacancies[0];
+      if (vacancyOptions.length > 0) {
+        const vacancy = vacancyOptions[0];
         setForm({
           num_empleado: '',
           nombre: '',
@@ -141,7 +171,7 @@ export function EmployeeModal({
         setForm(emptyForm());
       }
     }
-  }, [isOpen, mode, employee, openVacancies]);
+  }, [isOpen, mode, employee, vacancyOptions]);
 
   const isAddValid =
     form.num_empleado.trim().length > 0 &&
@@ -222,7 +252,7 @@ export function EmployeeModal({
   const fieldsPosicion = 
     // Si hay vacantes disponibles y estamos en modo 'add', no mostrar selectores
     // porque se pre-llenan del selector de vacante
-    openVacancies && openVacancies.length > 0 && mode === 'add' ? null : (
+    vacancyOptions.length > 0 && mode === 'add' ? null : (
     <>
       <div className="form-group">
         <label htmlFor="emp-area">Área</label>
@@ -289,7 +319,7 @@ export function EmployeeModal({
     </>
   );
 
-  const showVacancySelector = openVacancies && openVacancies.length > 0 && mode === 'add';
+  const showVacancySelector = vacancyOptions.length > 0 && mode === 'add';
 
   const fieldsVacancySelector = showVacancySelector ? (
     <div className="form-group form-group--span-2">
@@ -300,10 +330,10 @@ export function EmployeeModal({
         onChange={(val) => {
           const idx = parseInt(val);
           setSelectedVacancyIndex(idx);
-          const vacancy = openVacancies[idx];
+          const vacancy = vacancyOptions[idx];
           setForm({ ...form, area: vacancy.area, seccion: vacancy.seccion, puesto: vacancy.puesto });
         }}
-        options={openVacancies.map((v, i) => ({
+        options={vacancyOptions.map((v, i) => ({
           value: i.toString(),
           label: `${v.area} - ${v.seccion} - ${v.puesto}`,
         }))}
@@ -316,6 +346,16 @@ export function EmployeeModal({
   // selector de vacante, `fieldsPosicion` ya incluye su propia Fecha de Ingreso.
   const fieldsFecha = showVacancySelector ? (
     <>
+      <div className="form-group">
+        <label htmlFor="emp-vac-categoria">Categoría</label>
+        <CustomSelect
+          id="emp-vac-categoria"
+          value={form.categoria}
+          onChange={(val) => setForm({ ...form, categoria: val })}
+          options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
+          placeholder="Categoría..."
+        />
+      </div>
       <div className="form-group">
         <label htmlFor="emp-vac-turno">Turno</label>
         <CustomSelect
@@ -573,8 +613,8 @@ export function EmployeeModal({
         )}
         {isAdd && (
           <p className="form-hint">
-            {openVacancies && openVacancies.length > 0 ? (
-              <>Al guardar se crea un nuevo empleado y se cierra automáticamente la vacante seleccionada.</>
+            {showVacancySelector ? (
+              <>Al guardar se crea un nuevo empleado con la categoría que asignes y se cierra automáticamente la vacante seleccionada (la categoría no afecta la cobertura).</>
             ) : (
               <>Al guardar se crea un nuevo empleado. Si existen vacantes abiertas que coincidan con el área, sección y puesto, se <strong>cerrarán automáticamente</strong>.</>
             )}
