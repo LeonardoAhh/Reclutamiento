@@ -189,24 +189,8 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
     Domingo:   'T1',
   };
 
-  const totalPassengers = DAYS_ORDER.reduce((sum, day) => sum + (capacityPerDay[day] || 0), 0);
-  const busiestDay = DAYS_ORDER.reduce((current, day) => {
-    return (capacityPerDay[day] || 0) > (capacityPerDay[current] || 0) ? day : current;
-  }, DAYS_ORDER[0]);
-
   return (
     <div className="daily-capacity-list" key={`daily-${animKey}`}>
-      <div className="daily-capacity-summary" aria-label="Resumen semanal de pasajeros">
-        <div className="daily-capacity-summary__item">
-          <span className="daily-capacity-summary__label">Total semanal</span>
-          <span className="daily-capacity-summary__value">{totalPassengers}</span>
-        </div>
-        <div className="daily-capacity-summary__item">
-          <span className="daily-capacity-summary__label">Día más cargado</span>
-          <span className="daily-capacity-summary__value">{busiestDay}</span>
-        </div>
-      </div>
-
       <div className="daily-capacity-list__header">
         <span>Día</span>
         <div className="daily-capacity-list__header-cols">
