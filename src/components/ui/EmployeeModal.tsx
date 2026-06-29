@@ -289,7 +289,9 @@ export function EmployeeModal({
     </>
   );
 
-  const fieldsVacancySelector = openVacancies && openVacancies.length > 0 && mode === 'add' ? (
+  const showVacancySelector = openVacancies && openVacancies.length > 0 && mode === 'add';
+
+  const fieldsVacancySelector = showVacancySelector ? (
     <div className="form-group form-group--span-2">
       <label htmlFor="emp-vacancy">Vacante Disponible</label>
       <CustomSelect
@@ -307,6 +309,44 @@ export function EmployeeModal({
         }))}
       />
     </div>
+  ) : null;
+
+  // Cuando se usa el selector de vacante, `fieldsPosicion` se oculta y con él
+  // su campo de Fecha de Ingreso. Lo reponemos aquí para no perderlo. Si NO hay
+  // selector de vacante, `fieldsPosicion` ya incluye su propia Fecha de Ingreso.
+  const fieldsFecha = showVacancySelector ? (
+    <>
+      <div className="form-group">
+        <label htmlFor="emp-vac-turno">Turno</label>
+        <CustomSelect
+          id="emp-vac-turno"
+          value={form.turno}
+          onChange={(val) => setForm({ ...form, turno: val })}
+          options={[
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+          ]}
+          placeholder="Turno..."
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="emp-vac-fecha">Fecha de Ingreso</label>
+        <input
+          id="emp-vac-fecha"
+          type="date"
+          value={form.fecha_ingreso}
+          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+        />
+        {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+          <p className="form-notice form-notice--warning">
+            <AlertCircle size={14} aria-hidden="true" />
+            <span>Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.</span>
+          </p>
+        )}
+      </div>
+    </>
   ) : null;
 
   const fieldsTransporte = (
@@ -492,6 +532,7 @@ export function EmployeeModal({
                 content: (
                   <div className="form-grid">
                     {fieldsVacancySelector}
+                    {fieldsFecha}
                     {fieldsPosicion}
                   </div>
                 ),
@@ -523,6 +564,7 @@ export function EmployeeModal({
           <div className="form-grid">
             {fieldsIdentidad}
             {fieldsVacancySelector}
+            {fieldsFecha}
             {fieldsPosicion}
             {fieldsTransporte}
           </div>
