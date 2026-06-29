@@ -46,6 +46,35 @@ interface ProcessStats {
   candidates: number;
 }
 
+interface MissingRow {
+  pos: PositionCoverage;
+  netPlantilla: number;
+  netBackup: number;
+  netTotal: number;
+  proximos: number;
+}
+
+/**
+ * Descuenta los próximos ingresos (empleados ya dados de alta con fecha de
+ * ingreso futura) de las vacantes: primero cubren la plantilla autorizada y
+ * el remanente el buffer de backup. Así el reporte refleja YA cuánto bajará la
+ * necesidad sin esperar a la fecha de ingreso.
+ */
+function netVacancies(pos: PositionCoverage): MissingRow {
+  const rawPlantilla = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
+  const rawBackup = Math.max(
+    0,
+    pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada)
+  );
+  const proximos = pos.proximos_ingresos;
+
+  const netPlantilla = Math.max(0, rawPlantilla - proximos);
+  const remaining = Math.max(0, proximos - rawPlantilla);
+  const netBackup = Math.max(0, rawBackup - remaining);
+
+  return { pos, netPlantilla, netBackup, netTotal: netPlantilla + netBackup, proximos };
+}
+
 export function MissingPositionsModal({
   isOpen,
   onClose,
@@ -59,16 +88,18 @@ export function MissingPositionsModal({
     let faltanBackup = 0;
 
     const filtered = coverage
-      .filter((pos) => pos.vacantes > 0)
+      .map(netVacancies)
+      // Solo puestos que aún hacen falta DESPUÉS de descontar próximos ingresos.
+      .filter((r) => r.netTotal > 0)
       .sort((a, b) =>
-        a.area.localeCompare(b.area) ||
-        (a.seccion || '').localeCompare(b.seccion || '') ||
-        a.puesto.localeCompare(b.puesto)
+        a.pos.area.localeCompare(b.pos.area) ||
+        (a.pos.seccion || '').localeCompare(b.pos.seccion || '') ||
+        a.pos.puesto.localeCompare(b.pos.puesto)
       );
 
-    filtered.forEach((pos) => {
-      faltanPlantilla += Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
-      faltanBackup += Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
+    filtered.forEach((r) => {
+      faltanPlantilla += r.netPlantilla;
+      faltanBackup += r.netBackup;
     });
 
     return {
@@ -198,13 +229,14 @@ export function MissingPositionsModal({
                   </tr>
                 </thead>
                 <tbody>
-                  {missingPositions.map((pos) => {
+                  {missingPositions.map((r) => {
+                    const pos = r.pos;
                     const processKey = buildPositionKey(pos.puesto, pos.seccion || '');
                     const processes = processStatsMap[processKey] || { candidates: 0 };
                     const totalProcesses = processes.candidates;
 
-                    const faltanPlantilla = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
-                    const faltanBackup = Math.max(0, pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada));
+                    const faltanPlantilla = r.netPlantilla;
+                    const faltanBackup = r.netBackup;
 
                     const rowKey = `${pos.area}-${pos.seccion || 'none'}-${pos.puesto}`;
 
@@ -226,6 +258,14 @@ export function MissingPositionsModal({
                           <span className="missing-positions-modal__puesto-name">
                             {pos.puesto}
                           </span>
+                          {r.proximos > 0 && (
+                            <span
+                              className="missing-positions-modal__puesto-note"
+                              title="Vacantes ya cubiertas por empleados con fecha de ingreso futura, descontadas del total."
+                            >
+                              −{r.proximos} próx. ingreso{r.proximos === 1 ? '' : 's'} descontado{r.proximos === 1 ? '' : 's'}
+                            </span>
+                          )}
                         </td>
                         <td className="missing-positions-modal__num-col">
                           {faltanPlantilla > 0 ? (
@@ -247,7 +287,7 @@ export function MissingPositionsModal({
                         </td>
                         <td className="missing-positions-modal__num-col">
                           <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--total">
-                            {pos.vacantes}
+                            {r.netTotal}
                           </span>
                         </td>
                         <td>
