@@ -1,6 +1,14 @@
 import type { AuthorizedPosition, PuestoHabilidades } from './types';
 
 /**
+ * Categorías de puesto asignables manualmente al dar de alta un empleado.
+ * NO se derivan del puesto: la cobertura de vacantes ignora la categoría, por
+ * lo que un puesto se cubre sin importar la categoría seleccionada.
+ */
+export const CATEGORIAS = ['N/A', 'A', 'B', 'C', 'D'] as const;
+
+
+/**
  * PLANTILLA AUTORIZADA — Números inamovibles
  *
  * Cada entrada define el headcount aprobado por puesto/área/sección.
