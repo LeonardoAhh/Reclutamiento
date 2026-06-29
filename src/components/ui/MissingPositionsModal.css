@@ -182,6 +182,14 @@
   color: var(--color-ink);
 }
 
+.missing-positions-modal__puesto-note {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-xs, 0.72rem);
+  font-weight: var(--font-medium);
+  color: var(--color-accent-teal, #0f766e);
+}
+
 /* ── Badges numéricos ── */
 
 .missing-positions-modal__count-badge {
