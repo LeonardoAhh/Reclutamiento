@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info, CheckCircle2, Wrench, X } from 'lucide-react';
+import { Info, CheckCircle2, Wrench, X, RefreshCw } from 'lucide-react';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import './SystemUpdateBanner.css';
@@ -28,6 +28,12 @@ export function SystemUpdateBanner() {
   const visible = shouldNotify && !!info;
   const level = info?.nivel ?? 'info';
   const Icon = LEVEL_ICON[level];
+  const requiresReload = level === 'mantenimiento';
+
+  const handleReload = () => {
+    dismiss();
+    window.location.reload();
+  };
 
   return (
     <AnimatePresence>
@@ -59,15 +65,27 @@ export function SystemUpdateBanner() {
             )}
           </div>
 
-          <button
-            type="button"
-            className="system-update__close"
-            onClick={dismiss}
-            aria-label="Entendido, cerrar aviso"
-            data-testid="system-update-dismiss"
-          >
-            <X size={16} aria-hidden="true" />
-          </button>
+          {requiresReload ? (
+            <button
+              type="button"
+              className="system-update__action"
+              onClick={handleReload}
+              data-testid="system-update-reload"
+            >
+              <RefreshCw size={14} aria-hidden="true" />
+              Actualizar y recargar
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="system-update__close"
+              onClick={dismiss}
+              aria-label="Entendido, cerrar aviso"
+              data-testid="system-update-dismiss"
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          )}
         </motion.aside>
       )}
     </AnimatePresence>
