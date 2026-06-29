@@ -299,6 +299,8 @@ export interface PositionCoverage {
   excedente_critico: number;
   /** Número de empleados con fecha de ingreso en el futuro. */
   proximos_ingresos: number;
+  /** Fecha (ISO) del próximo ingreso más cercano, o null si no hay. */
+  proximo_ingreso_fecha: string | null;
 }
 
 /**
@@ -317,6 +319,8 @@ export interface DepartmentCoverage {
   urgentes: number;
   /** Suma de próximos ingresos a través de todos los puestos. */
   proximos_ingresos: number;
+  /** Fecha (ISO) del próximo ingreso más cercano del área, o null. */
+  proximo_ingreso_fecha: string | null;
 }
 
 /* ────────────────────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@ import {
   Pencil,
   ClipboardList,
   Clock,
+  CalendarClock,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
@@ -32,7 +33,7 @@ import {
   calculateDepartmentCoverage,
   getCoverageColor,
 } from '@/lib/utils';
-import { localTodayIso } from '@/lib/dates';
+import { localTodayIso, formatShortDate } from '@/lib/dates';
 import { computeAutoVacancies, filterUnreservedVacancies } from '@/lib/autoVacancies';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
@@ -618,6 +619,13 @@ function DepartmentCard({
               <Badge variant="amber">
                 <HeartPulse size={11} aria-hidden="true" />
                 {incapacidadCount}
+              </Badge>
+            )}
+            {dept.proximos_ingresos > 0 && (
+              <Badge variant="teal">
+                <CalendarClock size={11} aria-hidden="true" />
+                {dept.proximos_ingresos} próx. ingreso{dept.proximos_ingresos > 1 ? 's' : ''}
+                {dept.proximo_ingreso_fecha && ` · ${formatShortDate(dept.proximo_ingreso_fecha)}`}
               </Badge>
             )}
           </div>
