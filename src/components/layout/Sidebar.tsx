@@ -17,6 +17,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
@@ -53,6 +54,7 @@ type SidebarProps = {
 export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
   const { username, signOut } = useAuth();
   const { show, hide } = useLoader();
+  const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = useCallback(async () => {
@@ -159,6 +161,16 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
             {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
           </span>
         </button>
+
+        {version && (
+          <p
+            className="sidebar__version"
+            title={`Versión del sistema ${version}`}
+            data-testid="sidebar-version"
+          >
+            {collapsed ? `v${version}` : `Sistema · v${version}`}
+          </p>
+        )}
       </div>
     </aside>
   );
