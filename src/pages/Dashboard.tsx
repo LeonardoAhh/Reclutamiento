@@ -12,6 +12,7 @@ import {
   Pencil,
   ClipboardList,
   Clock,
+  CalendarClock,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
@@ -618,6 +619,12 @@ function DepartmentCard({
               <Badge variant="amber">
                 <HeartPulse size={11} aria-hidden="true" />
                 {incapacidadCount}
+              </Badge>
+            )}
+            {dept.proximos_ingresos > 0 && (
+              <Badge variant="teal">
+                <CalendarClock size={11} aria-hidden="true" />
+                {dept.proximos_ingresos} próx. ingreso{dept.proximos_ingresos > 1 ? 's' : ''}
               </Badge>
             )}
           </div>
