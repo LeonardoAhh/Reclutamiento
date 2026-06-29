@@ -4,7 +4,7 @@
     "nombre": "PACHECO ALCAYA MARIA GABRIELA",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ",
+    "colonia": "LA LUZ ",
     "parada": "PARADA EN LA IGLESIA"
   },
   {
@@ -12,7 +12,7 @@
     "nombre": "PACHECO CORDOBA MA DE LOS ANGELES",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ",
+    "colonia": "LA LUZ ",
     "parada": "PARADA EN LA IGLESIA"
   },
   {
@@ -68,7 +68,7 @@
     "nombre": "JUAREZ CALVO VERONICA CHRISTAL",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -84,7 +84,7 @@
     "nombre": "PILAR BARCENAS GUADALUPE",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -109,14 +109,14 @@
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "1677",
     "nombre": "SOSA MEDRANO MA ISABEL",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -132,7 +132,7 @@
     "nombre": "HURTADO BALDERAS ALEJANDRA",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -188,7 +188,7 @@
     "nombre": "HERNANDEZ QUEZADA VERONICA JAHEL",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -220,7 +220,7 @@
     "nombre": "TREJO TREJO YEIMI",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -300,7 +300,7 @@
     "nombre": "CORTES VELAZQUEZ ANALLELY",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
@@ -316,7 +316,7 @@
     "nombre": "NIEVES MANDUJANO YOLANDA",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -332,7 +332,7 @@
     "nombre": "LOYOLA CASTAÑON VICTOR",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -340,7 +340,7 @@
     "nombre": "VARGAS MEJIA SONIA ABIGAIL",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ",
+    "colonia": "LA LUZ ",
     "parada": "PARADA EN EL PUENTE PEATONAL"
   },
   {
@@ -348,7 +348,7 @@
     "nombre": "CORNEJO JUAREZ JOSE ALFREDO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
@@ -364,7 +364,7 @@
     "nombre": "ANGELES ROJAS EFREN",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -388,7 +388,7 @@
     "nombre": "GAYOSSO CRUZ ERIKA",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -404,7 +404,7 @@
     "nombre": "RESENDIZ SANCHEZ MARISOL",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -492,7 +492,7 @@
     "nombre": "LOPEZ CARRILLO JONATHAN EDUARDO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -500,7 +500,7 @@
     "nombre": "BELTRAN RAMIREZ MA CONSUELO ASUCENA",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA",
+    "colonia": "LA MONJA ",
     "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
@@ -516,7 +516,7 @@
     "nombre": "SOLIS OSORIO MIREYA",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -524,7 +524,7 @@
     "nombre": "CECILIANO GONZALEZ MARIA PUEBLITO AIDE",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -540,7 +540,7 @@
     "nombre": "ARREDONDO GATICA REBECA",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -548,7 +548,7 @@
     "nombre": "JIMENEZ GARCIA SHEYLA ISABEL",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -613,7 +613,7 @@
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "2895",
@@ -652,7 +652,7 @@
     "nombre": "SILVAR FLORES MONICA CECILIA",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
   },
   {
@@ -732,7 +732,7 @@
     "nombre": "JUAREZ CALVO MARTHA GRISEL",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -804,7 +804,7 @@
     "nombre": "ZAMANO CAMACHO MARIA DEL ROCIO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -812,7 +812,7 @@
     "nombre": "ORTIZ FLORES ROMAN",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
   },
   {
@@ -836,7 +836,7 @@
     "nombre": "HERNANDEZ GALLARDO JOSE MARTIN",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -868,7 +868,7 @@
     "nombre": "PEREZ SANCHEZ LUIS ALBERTO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -884,7 +884,7 @@
     "nombre": "TREJO REYES FRANCISCA",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -948,7 +948,7 @@
     "nombre": "GOMEZ OLVERA EVELIN",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -973,7 +973,7 @@
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "3473",
@@ -996,7 +996,7 @@
     "nombre": "MORA JUAREZ JOSE OSWALDO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1052,7 +1052,7 @@
     "nombre": "AVILA ALDANA KEVIN ULISES",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
   },
   {
@@ -1084,7 +1084,7 @@
     "nombre": "GONZALEZ VILLANUEVA PAULINA MIREYA",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1092,7 +1092,7 @@
     "nombre": "ALONSO MORENO GIOVANNA GUADALUPE",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1108,7 +1108,7 @@
     "nombre": "TELLES MORALES MAURICIO ADAN",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -1140,7 +1140,7 @@
     "nombre": "MUÑOZ ESPINOZA ERIKA PATRICIA",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1148,7 +1148,7 @@
     "nombre": "PEREZ BAHENA ALEJANDRA",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -1204,7 +1204,7 @@
     "nombre": "PEREZ UGALDE KARLA MARIANA",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -1316,7 +1316,7 @@
     "nombre": "SANCHEZ LUNA MOIRA DARELI",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1412,7 +1412,7 @@
     "nombre": "LOPEZ YAÑEZ DIEGO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -1540,7 +1540,7 @@
     "nombre": "GUADARRAMA VELAZQUEZ MARIA DE JESUS",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1548,7 +1548,7 @@
     "nombre": "ZUÑIGA ORTIZ INGRID AILIN",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA",
+    "colonia": "LA MONJA ",
     "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
@@ -1564,7 +1564,7 @@
     "nombre": "CRUZ SALINAS MARIA EUGENIA",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1572,7 +1572,7 @@
     "nombre": "HERNANDEZ CABRERA JUANA",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1580,7 +1580,7 @@
     "nombre": "SERRANO  RODRIGUEZ JOSE ALEJANDRO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -1740,7 +1740,7 @@
     "nombre": "GUZMAN MENDOZA LAURA ROMINA",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -1780,7 +1780,7 @@
     "nombre": "HERNANDEZ HUERTA MARIA DE LOURDES",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA",
+    "colonia": "LA MONJA ",
     "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
@@ -1796,7 +1796,7 @@
     "nombre": "LUGO  DE JESUS DANIEL MARTIN",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
   },
   {
@@ -1813,7 +1813,7 @@
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
-    "parada": "EN EL CIDESI"
+    "parada": "EN EL CIDESI "
   },
   {
     "numero empleado": "4146",
@@ -1836,7 +1836,7 @@
     "nombre": "TORRES PAZ EDGAR GIOVANY",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "EN EL OXXO DE LOS PILARES"
   },
   {
@@ -1852,7 +1852,7 @@
     "nombre": "DOMINGUEZ SANTOS FLORA",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1861,7 +1861,7 @@
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4160",
@@ -1892,7 +1892,7 @@
     "nombre": "RANGEL GARDUÑO ELIZABETH",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -1908,7 +1908,7 @@
     "nombre": "LUNA JIMENEZ JENNIFER AMERICA",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -1956,7 +1956,7 @@
     "nombre": "HERNANDEZ VILLA MARIA FERNANDA",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -1980,7 +1980,7 @@
     "nombre": "SANTOS ENCARNACION JUAN JOSE",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -1988,7 +1988,7 @@
     "nombre": "NAVA VELAZQUEZ GONZALO EDUARDO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -2045,7 +2045,7 @@
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4203",
@@ -2060,7 +2060,7 @@
     "nombre": "MARTINEZ AGUILAR EMILIA",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
@@ -2078,14 +2078,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "4213",
-    "nombre": "RESENDIZ OSORIO HORACIO JAVIER",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "4215",
@@ -2148,7 +2140,7 @@
     "nombre": "ESCOLASTICO LOPEZ JESUS ABNER",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -2165,7 +2157,7 @@
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
-    "parada": "EN EL CIDESI"
+    "parada": "EN EL CIDESI "
   },
   {
     "numero empleado": "4227",
@@ -2196,7 +2188,7 @@
     "nombre": "HERNANDEZ LOPEZ JOSE ANTONIO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -2248,20 +2240,12 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4241",
-    "nombre": "OLVERA MATA HANNIEL",
-    "turno": "4",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
-  },
-  {
     "numero empleado": "4242",
     "nombre": "BAUTISTA VICENCIO MARIBEL",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4243",
@@ -2276,7 +2260,7 @@
     "nombre": "DIAZ PEREZ GENARO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
   },
   {
@@ -2292,7 +2276,7 @@
     "nombre": "SEGURA HERNANDEZ SANDRA",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -2313,7 +2297,7 @@
   },
   {
     "numero empleado": "4250",
-    "nombre": "RANGEL  KIMBERLY LUSSY",
+    "nombre": "RANGEL KIMBERLY LUSSY",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
@@ -2324,7 +2308,7 @@
     "nombre": "GASPAR SANTOS YESENIA",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
+    "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
@@ -2332,7 +2316,39 @@
     "nombre": "DE LA CRUZ NAVOR JESUS SANTIAGO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "5 E FEBRERO",
+    "colonia": "5 E FEBRERO ",
     "parada": "PARADA EN EL PUENTE PEOATONAL DE TREMEC"
+  },
+  {
+    "numero empleado": "4253",
+    "nombre": "ZURITA LOPEZ DAGMARA EVELYN",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DEL MA. TERESA"
+  },
+  {
+    "numero empleado": "4254",
+    "nombre": "RANGEL LEON MIGUEL ANGEL",
+    "turno": "4",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DEL MA. TERESA"
+  },
+  {
+    "numero empleado": "4255",
+    "nombre": "MENDOZA GARCIA JOSE CARLOS",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "EN EL PUENTE DE LA CRUZ "
+  },
+  {
+    "numero empleado": "4257",
+    "nombre": "SANDOVAL BELLO JESUS",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   }
 ]
