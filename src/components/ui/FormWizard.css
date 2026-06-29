@@ -7,6 +7,8 @@
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  /* Previene que el scroll del body "escape" al documento en iOS */
+  overflow: hidden;
 }
 
 /* ── Progreso ── */
@@ -68,6 +70,8 @@
   padding-right: max(var(--spacing-lg), var(--safe-area-right));
   display: flex;
   flex-direction: column;
+  /* CRÍTICO: los items se quedan arriba, no se distribuyen */
+  justify-content: flex-start;
   gap: var(--spacing-lg);
   animation: form-wizard-step-in var(--transition-base) both;
 }
@@ -86,6 +90,8 @@
 /* En el wizard los campos van siempre en 1 columna (móvil). */
 .form-wizard .form-grid {
   grid-template-columns: 1fr;
+  /* Las filas del grid se quedan arriba, no se estiran */
+  align-content: start;
 }
 
 .form-wizard .form-group--span-2 {
@@ -120,10 +126,7 @@
   flex: 1 1 0;
 }
 
-/* ── Wizard dentro de un Modal fullscreen (móvil) ──
-   El modal pasa a layout de columna: header fijo, cuerpo del wizard
-   scrollable y footer de navegación anclado abajo. Clases genéricas
-   compartidas por todos los formularios de creación. */
+/* ── Wizard dentro de un Modal fullscreen (móvil) ── */
 @media (max-width: 767px) {
   .modal-content.modal-wizard-mobile {
     display: flex;
@@ -136,6 +139,13 @@
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
+  }
+
+  /* Asegura que el wizard crezca dentro del form */
+  .modal-wizard-mobile .form-wizard {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
   }
 }
 

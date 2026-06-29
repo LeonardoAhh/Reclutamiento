@@ -33,9 +33,11 @@ import {
   getCoverageColor,
 } from '@/lib/utils';
 import { localTodayIso } from '@/lib/dates';
+import { computeAutoVacancies } from '@/lib/autoVacancies';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
+import { useBajas } from '@/hooks/useBajas';
 import { usePositions } from '@/lib/positions';
 import type {
   Employee,
@@ -63,10 +65,17 @@ export function Dashboard() {
 
   const { coverVacancyForEmployee } = useVacancyRequests();
   const { positions, createPosition } = usePositions();
+  const { bajas } = useBajas();
   // Pipeline completo. Se pasa a `AreaDetailModal` para contar candidatos
   // activos por (área, sección, puesto) y reflejar "EN PROCESO (N)" en el
   // detalle de área en lugar de "Sin proceso" cuando hay procesos reales.
   const { candidates } = useCandidates();
+
+  // Vacantes abiertas detectadas automáticamente
+  const openVacancies = useMemo(
+    () => computeAutoVacancies(bajas, employees, positions).filter(v => v.status === 'abierta'),
+    [bajas, employees, positions]
+  );
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
@@ -523,6 +532,7 @@ export function Dashboard() {
         onClose={() => setEmpModalMode(null)}
         onSave={handleSaveEmployee}
         onDelete={handleDeleteEmployee}
+        openVacancies={openVacancies}
       />
 
       {/* ── Edit Employee Modal ── */}

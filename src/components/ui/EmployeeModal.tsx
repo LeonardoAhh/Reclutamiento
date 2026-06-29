@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
+import type { AutoVacancy } from '@/lib/autoVacancies';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
 import {
@@ -24,6 +25,7 @@ interface EmployeeModalProps {
     num_empleado: string,
     bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
   ) => Promise<{ ok: boolean; message?: string }> | void;
+  openVacancies?: AutoVacancy[];
 }
 
 type FormState = Pick<
@@ -56,6 +58,7 @@ export function EmployeeModal({
   onClose,
   onSave,
   onDelete,
+  openVacancies = [],
 }: EmployeeModalProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
@@ -65,6 +68,7 @@ export function EmployeeModal({
     tipo_baja: 'Renuncia Voluntaria',
     motivo_baja: '',
   });
+  const [selectedVacancyIndex, setSelectedVacancyIndex] = useState(0);
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
@@ -97,6 +101,7 @@ export function EmployeeModal({
     if (!isOpen) return;
     setErrorMsg(null);
     setSubmitting(false);
+    setSelectedVacancyIndex(0);
 
     if (mode === 'delete' && employee) {
       setForm({
@@ -117,9 +122,26 @@ export function EmployeeModal({
         motivo_baja: '',
       });
     } else {
-      setForm(emptyForm());
+      // En modo 'add', pre-llenar con la primera vacante disponible
+      if (openVacancies && openVacancies.length > 0) {
+        const vacancy = openVacancies[0];
+        setForm({
+          num_empleado: '',
+          nombre: '',
+          area: vacancy.area,
+          seccion: vacancy.seccion,
+          puesto: vacancy.puesto,
+          categoria: 'N/A',
+          turno: '1',
+          fecha_ingreso: localTodayIso(),
+          ruta: '',
+          parada: '',
+        });
+      } else {
+        setForm(emptyForm());
+      }
     }
-  }, [isOpen, mode, employee]);
+  }, [isOpen, mode, employee, openVacancies]);
 
   const isAddValid =
     form.num_empleado.trim().length > 0 &&
@@ -197,7 +219,10 @@ export function EmployeeModal({
     </>
   );
 
-  const fieldsPosicion = (
+  const fieldsPosicion = 
+    // Si hay vacantes disponibles y estamos en modo 'add', no mostrar selectores
+    // porque se pre-llenan del selector de vacante
+    openVacancies && openVacancies.length > 0 && mode === 'add' ? null : (
     <>
       <div className="form-group">
         <label htmlFor="emp-area">Área</label>
@@ -263,6 +288,26 @@ export function EmployeeModal({
       </div>
     </>
   );
+
+  const fieldsVacancySelector = openVacancies && openVacancies.length > 0 && mode === 'add' ? (
+    <div className="form-group form-group--span-2">
+      <label htmlFor="emp-vacancy">Vacante Disponible</label>
+      <CustomSelect
+        id="emp-vacancy"
+        value={selectedVacancyIndex.toString()}
+        onChange={(val) => {
+          const idx = parseInt(val);
+          setSelectedVacancyIndex(idx);
+          const vacancy = openVacancies[idx];
+          setForm({ ...form, area: vacancy.area, seccion: vacancy.seccion, puesto: vacancy.puesto });
+        }}
+        options={openVacancies.map((v, i) => ({
+          value: i.toString(),
+          label: `${v.area} - ${v.seccion} - ${v.puesto}`,
+        }))}
+      />
+    </div>
+  ) : null;
 
   const fieldsTransporte = (
     <>
@@ -444,7 +489,12 @@ export function EmployeeModal({
                   form.area.length > 0 &&
                   form.seccion.length > 0 &&
                   form.puesto.length > 0,
-                content: <div className="form-grid">{fieldsPosicion}</div>,
+                content: (
+                  <div className="form-grid">
+                    {fieldsVacancySelector}
+                    {fieldsPosicion}
+                  </div>
+                ),
               },
               {
                 id: 'transporte',
@@ -472,11 +522,21 @@ export function EmployeeModal({
         {isAdd ? (
           <div className="form-grid">
             {fieldsIdentidad}
+            {fieldsVacancySelector}
             {fieldsPosicion}
             {fieldsTransporte}
           </div>
         ) : (
           deleteContent
+        )}
+        {isAdd && (
+          <p className="form-hint">
+            {openVacancies && openVacancies.length > 0 ? (
+              <>Al guardar se crea un nuevo empleado y se cierra automáticamente la vacante seleccionada.</>
+            ) : (
+              <>Al guardar se crea un nuevo empleado. Si existen vacantes abiertas que coincidan con el área, sección y puesto, se <strong>cerrarán automáticamente</strong>.</>
+            )}
+          </p>
         )}
         {errorNotice}
         <footer className="modal-footer">{actionButtons}</footer>

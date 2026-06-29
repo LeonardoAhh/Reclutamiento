@@ -1,10 +1,83 @@
 /* ========================================
    EMPLOYEE MODAL
-   Sin hardcoding - solo tokens CSS
+   Mobile-first · Sin hardcoding · Tokens CSS
    ======================================== */
 
-.employee-modal {
-  /* El componente Modal ya maneja el layout base */
+/* ── Grid helpers ── */
+.form-group--span-2 {
+  grid-column: 1 / -1;
+}
+
+/* ── Mobile-first: siempre 1 columna ── */
+.employee-modal .form-grid,
+.modal-wizard-mobile .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  /* CRÍTICO: el grid NO debe estirarse para llenar el body */
+  align-content: start;
+}
+
+/* Desktop: 2 columnas */
+@media (min-width: 640px) {
+  .employee-modal .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ── Wizard mobile: layout flex vertical ── */
+.modal-wizard-mobile .modal-wizard-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* El FormWizard (único hijo del form) crece para llenar el modal */
+.modal-wizard-mobile .modal-wizard-form > *:first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* El body del wizard scrollea; el grid NO scrollea por su cuenta */
+.modal-wizard-mobile .form-wizard__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* El grid dentro del wizard: solo ocupa su contenido, nada de flex */
+.modal-wizard-mobile .form-grid {
+  flex: none;
+  overflow: visible;
+}
+
+/* ── Controles: nunca desborden la celda ── */
+.employee-modal .form-group {
+  min-width: 0;
+}
+
+.employee-modal .form-group input,
+.employee-modal .form-group select,
+.employee-modal .form-group textarea,
+.employee-modal .form-group > div[class*="CustomSelect"] {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Texto largo en selects: ellipsis (no rompe layout) */
+.employee-modal .form-group [class*="CustomSelect"] [class*="trigger"],
+.employee-modal .form-group [class*="CustomSelect"] > div[role="button"] {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 /* ── Baja flow ── */
@@ -14,19 +87,21 @@
   gap: var(--spacing-lg);
 }
 
-.employee-modal__baja-grid {
-  /* Heredamos form-grid pero sin override innecesario */
-}
-
-/* ── Delete warning (reutilizable) ── */
+/* ── Delete warning ── */
 .delete-warning {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   background: var(--color-error-tint);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+}
+
+@media (min-width: 640px) {
+  .delete-warning {
+    padding: var(--spacing-lg);
+  }
 }
 
 .delete-warning__icon {
@@ -86,7 +161,7 @@
   line-height: var(--type-body-sm-line);
 }
 
-/* ── Form notice (avisos dentro de forms) ── */
+/* ── Form notice ── */
 .form-notice {
   display: flex;
   align-items: flex-start;
@@ -118,13 +193,19 @@
   background: var(--color-success-tint);
 }
 
-/* ── Mobile adjustments ── */
-@media (max-width: 640px) {
-  .delete-warning {
-    padding: var(--spacing-md);
-  }
-  
-  .employee-modal__baja-grid {
-    grid-template-columns: 1fr;
-  }
+/* ── Form hint ── */
+.form-hint {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-body);
+}
+
+.form-hint strong {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
 }
