@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
+  "version": "0.0.29",
   "fecha": "2026-06-29",
   "nivel": "success",
-  "titulo": "Sistema actualizado",
-  "mensaje": "Se actualizó la información de rutas y mejoras en el módulo de vacantes.",
+  "titulo": "Actualización completada",
+  "mensaje": "El sistema de reclutamiento ha sido actualizado exitosamente. Se incorporaron nuevas funcionalidades y se corrigieron errores.",
   "notificar": true
 }
