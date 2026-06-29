@@ -13,6 +13,8 @@ import {
   ChevronDown,
   SlidersHorizontal,
   Trash2,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -62,6 +64,19 @@ export function Vacantes() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
   const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [kpisVisible, setKpisVisible] = useState(
+    () => typeof localStorage === 'undefined' || localStorage.getItem('vac_kpis_hidden') !== '1'
+  );
+
+  const toggleKpis = () => {
+    setKpisVisible((prev) => {
+      const next = !prev;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('vac_kpis_hidden', next ? '0' : '1');
+      }
+      return next;
+    });
+  };
 
   const loading = bajasLoading || empLoading || positionsLoading;
 
@@ -119,6 +134,7 @@ export function Vacantes() {
           v.area,
           v.seccion,
           v.baja?.nombre,
+          v.baja?.num_empleado,
           v.coveredBy?.nombre,
           v.reclutador,
         ]
@@ -266,7 +282,25 @@ export function Vacantes() {
 
       <div className="pipeline__layout">
         <aside className="pipeline__sidebar">
+          {/* ── Toggle mostrar/ocultar KPIs ── */}
+          <button
+            type="button"
+            className="vacantes__kpi-toggle"
+            onClick={toggleKpis}
+            aria-pressed={!kpisVisible}
+            aria-label={kpisVisible ? 'Ocultar resumen de KPIs' : 'Mostrar resumen de KPIs'}
+            data-testid="vac-kpi-toggle"
+          >
+            {kpisVisible ? (
+              <EyeOff size={15} aria-hidden="true" />
+            ) : (
+              <Eye size={15} aria-hidden="true" />
+            )}
+            <span>{kpisVisible ? 'Ocultar KPIs' : 'Mostrar KPIs'}</span>
+          </button>
+
           {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
+          {kpisVisible && (
           <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
         <div className="vacantes__split-head" role="row">
           <span className="vacantes__split-corner" />
@@ -292,6 +326,7 @@ export function Vacantes() {
           </div>
         ))}
       </section>
+          )}
 
       {/* Sección de filtros minimalista: Estado + Tipo */}
       <section className="vacantes__filters" aria-label="Filtros de vacantes">
@@ -444,6 +479,7 @@ export function Vacantes() {
                         <>
                           <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
                           <div className="pipeline__area">{v.baja.nombre}</div>
+                          <div className="vacantes__cell-emp">#{v.baja.num_empleado}</div>
                         </>
                       ) : (
                         <>
@@ -698,7 +734,7 @@ function VacancyCard({
                 <span className="vacantes__detail-label">Baja</span>
                 <span className="vacantes__detail-value">
                   {v.baja
-                    ? `${v.baja.nombre} · ${formatShortDate(v.fechaBaja)}`
+                    ? `${v.baja.nombre} (#${v.baja.num_empleado}) · ${formatShortDate(v.fechaBaja)}`
                     : 'Sin baja asociada'}
                 </span>
               </div>
