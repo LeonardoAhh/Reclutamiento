@@ -571,7 +571,7 @@
 .shift-bars__row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--spacing-sm);
   animation: item-fadein var(--dur-fade) var(--ease-out) both;
   animation-delay: var(--bar-delay, 0s);
 }
@@ -691,6 +691,34 @@
   gap: var(--spacing-xs);
 }
 
+.daily-capacity-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: var(--spacing-sm);
+}
+
+.daily-capacity-summary__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.daily-capacity-summary__label {
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  text-transform: uppercase;
+}
+
+.daily-capacity-summary__value {
+  color: var(--color-ink);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+}
+
 .daily-capacity-list__header {
   display: flex;
   justify-content: space-between;
@@ -720,8 +748,9 @@
 }
 
 .daily-capacity-list__row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--spacing-sm);
   padding: var(--spacing-xs) 0;
   align-items: center;
 }
@@ -762,6 +791,40 @@
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-sm-strong-weight);
   min-width: 32px;
+}
+
+@media (max-width: 768px) {
+  .daily-capacity-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .daily-capacity-list__header {
+    display: none;
+  }
+
+  .daily-capacity-list__row {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-sm);
+    border-radius: var(--rounded-lg);
+    background: var(--color-surface-soft);
+  }
+
+  .daily-capacity-list__cols {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+
+  .daily-capacity-list__count,
+  .daily-capacity-list__rest {
+    width: auto;
+    text-align: left;
+  }
+
+  .daily-capacity-list__rest-badge {
+    min-width: auto;
+    padding-inline: var(--spacing-sm);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════

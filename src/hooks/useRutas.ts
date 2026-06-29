@@ -92,9 +92,13 @@ function groupByRuta(empleados: EmpleadoRuta[]): RutaAgrupada[] {
     group.empleados.push(emp);
     group.totalEmpleados += 1;
     if (!group.paradas.includes(emp.parada)) group.paradas.push(emp.parada);
-    group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
+    if (emp.turno !== '4') {
+      group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
+    }
     
-    // Add to daily capacity based on shift schedule
+    // Add to daily capacity based on shift schedule. Turno 4 is variable,
+    // so it contributes to the day-by-day passenger load but is not shown as
+    // a separate route shift in the Rutas breakdown.
     const schedule = SHIFT_SCHEDULE[emp.turno] || [];
     for (const day of schedule) {
       if (group.capacityPerDay[day] !== undefined) {

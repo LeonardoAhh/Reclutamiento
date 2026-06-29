@@ -129,7 +129,9 @@ interface ShiftBarsProps {
 }
 
 function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps) {
-  const entries = Object.entries(turnosCount).sort(([a], [b]) => a.localeCompare(b));
+  const entries = Object.entries(turnosCount)
+    .filter(([turno]) => turno !== '4')
+    .sort(([a], [b]) => a.localeCompare(b));
 
   return (
     <div className="shift-bars" key={animKey}>
@@ -154,14 +156,10 @@ function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps
               aria-valuemax={barMax}
               aria-label={`Turno ${turno}`}
             >
-              <div
-                className="shift-bars__fill"
-                style={isOverCapacity ? { background: 'var(--color-error)' } : undefined}
-              />
+              <div className="shift-bars__fill" />
             </div>
             <span
-              className="shift-bars__count type-body-sm"
-              style={isOverCapacity ? { color: 'var(--color-error)', fontWeight: 600 } : undefined}
+              className={`shift-bars__count type-body-sm${isOverCapacity ? ' shift-bars__count--over' : ''}`}
             >
               {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
             </span>
@@ -191,8 +189,24 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
     Domingo:   'T1',
   };
 
+  const totalPassengers = DAYS_ORDER.reduce((sum, day) => sum + (capacityPerDay[day] || 0), 0);
+  const busiestDay = DAYS_ORDER.reduce((current, day) => {
+    return (capacityPerDay[day] || 0) > (capacityPerDay[current] || 0) ? day : current;
+  }, DAYS_ORDER[0]);
+
   return (
     <div className="daily-capacity-list" key={`daily-${animKey}`}>
+      <div className="daily-capacity-summary" aria-label="Resumen semanal de pasajeros">
+        <div className="daily-capacity-summary__item">
+          <span className="daily-capacity-summary__label">Total semanal</span>
+          <span className="daily-capacity-summary__value">{totalPassengers}</span>
+        </div>
+        <div className="daily-capacity-summary__item">
+          <span className="daily-capacity-summary__label">Día más cargado</span>
+          <span className="daily-capacity-summary__value">{busiestDay}</span>
+        </div>
+      </div>
+
       <div className="daily-capacity-list__header">
         <span>Día</span>
         <div className="daily-capacity-list__header-cols">
@@ -209,8 +223,8 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
               <div className="daily-capacity-list__cols">
                 <span className="daily-capacity-list__count">{count}</span>
                 <div className="daily-capacity-list__rest">
-                  <span 
-                    className="daily-capacity-list__rest-badge" 
+                  <span
+                    className="daily-capacity-list__rest-badge"
                     title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
                   >
                     {RESTING_SHIFTS[day]}
