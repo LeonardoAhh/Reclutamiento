@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
 import { PWAStatus } from '@/components/ui/PWAStatus';
+import { SystemUpdateBanner } from '@/components/ui/SystemUpdateBanner';
 import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
@@ -32,6 +33,7 @@ function App() {
   return (
     <>
       <PWAStatus />
+      <SystemUpdateBanner />
       <AppToaster />
       <ThemeTransitionOverlay />
       <Routes>
