@@ -187,13 +187,20 @@ export function calculatePositionCoverage(
         matchesPuesto(c.puesto, pos.puesto)
     );
 
-    const proximosIngresos = allUniqueEmployees.filter(
+    const proximosList = allUniqueEmployees.filter(
       (emp) =>
         String(emp.fecha_ingreso).localeCompare(today) > 0 &&
         matchesText(emp.area, pos.area) &&
         matchesText(emp.seccion, pos.seccion) &&
         matchesPuesto(emp.puesto, pos.puesto)
-    ).length;
+    );
+    const proximosIngresos = proximosList.length;
+    const proximoIngresoFecha =
+      proximosList.length > 0
+        ? proximosList
+            .map((emp) => String(emp.fecha_ingreso))
+            .reduce((min, f) => (f.localeCompare(min) < 0 ? f : min))
+        : null;
 
     return {
       area: pos.area,
@@ -212,6 +219,7 @@ export function calculatePositionCoverage(
       excedente_backup: excedenteBackup,
       excedente_critico: excedenteCritico,
       proximos_ingresos: proximosIngresos,
+      proximo_ingreso_fecha: proximoIngresoFecha,
     };
   });
 }
@@ -241,6 +249,10 @@ export function calculateDepartmentCoverage(
 
     const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
     const proximosIngresos = puestos.reduce((sum, p) => sum + p.proximos_ingresos, 0);
+    const proximoIngresoFecha = puestos
+      .map((p) => p.proximo_ingreso_fecha)
+      .filter((f): f is string => !!f)
+      .reduce<string | null>((min, f) => (min === null || f.localeCompare(min) < 0 ? f : min), null);
 
     return {
       area,
@@ -252,6 +264,7 @@ export function calculateDepartmentCoverage(
       puestos,
       urgentes,
       proximos_ingresos: proximosIngresos,
+      proximo_ingreso_fecha: proximoIngresoFecha,
     };
   });
 }
