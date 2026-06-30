@@ -833,3 +833,147 @@
   outline: none;
   box-shadow: 0 0 0 3px var(--color-error-tint);
 }
+
+/* ──────────────────────────────────────────────────────────────────
+   SIDEBAR COLAPSABLE — igual que .reporte-layout en ReporteDiario.
+   Solo aplica en desktop (≥1025px); en móvil/tablet el layout ya es
+   de una columna y el sidebar se oculta con display:none.
+   ────────────────────────────────────────────────────────────────── */
+
+/* Habilita la transición suave sobre la grid del layout */
+/* Usamos minmax(0,_) para que la transición sea compatible en ambos estados */
+.vacantes-page .pipeline__layout {
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  transition: grid-template-columns var(--transition-base, 0.25s ease),
+              gap              var(--transition-base, 0.25s ease);
+}
+
+/* Estado colapsado: columna izquierda → 0 */
+.vacantes-page .pipeline__layout[data-collapsed="true"] {
+  grid-template-columns: 0px minmax(0, 1fr);
+  gap: 0;
+}
+
+/* Sidebar: overflow:hidden recorta el contenido cuando la columna se estrecha */
+/* Solo en desktop (≥1025px) donde ocurre el colapso horizontal */
+@media (min-width: 1025px) {
+  .vacantes-page .pipeline__sidebar {
+    overflow: hidden;
+    transition: opacity var(--transition-base, 0.25s ease);
+  }
+
+  .vacantes-page .pipeline__layout[data-collapsed="true"] .pipeline__sidebar {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* En móvil/tablet: cuando está colapsado simplemente no se muestra */
+@media (max-width: 1024px) {
+  .vacantes-page .pipeline__layout[data-collapsed="true"] .pipeline__sidebar {
+    display: none;
+  }
+  /* Restaurar grid normal en móvil independientemente del collapsed */
+  .vacantes-page .pipeline__layout,
+  .vacantes-page .pipeline__layout[data-collapsed="true"] {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   BOTÓN TOGGLE SIDEBAR
+   ────────────────────────────────────────────────────────────────── */
+.vacantes__sidebar-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size, 13px);
+  font-weight: var(--font-medium, 500);
+  color: var(--color-body);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.vacantes__sidebar-toggle:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.vacantes__sidebar-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   TABLA ORGANIZADA — widths explícitas por columna + alineación.
+   Se usan las clases de colgroup para un control limpio.
+   ────────────────────────────────────────────────────────────────── */
+
+/* table-layout:fixed con las anchos de colgroup */
+.vacantes__table .pipeline__table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Widths de columna */
+.vac-col--puesto     { width: auto; min-width: 160px; }
+.vac-col--estado     { width: 90px; }
+.vac-col--tipo       { width: 145px; }
+.vac-col--cobertura  { width: 130px; }
+.vac-col--baja       { width: 175px; }
+.vac-col--sla        { width: 130px; }
+.vac-col--reclutador { width: 155px; }
+.vac-col--accion     { width: 72px; }
+
+/* Alineación vertical y recorte de contenido en celdas */
+.vacantes__table .pipeline__table td {
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Puesto y área: permitimos que el texto envuelva en esta columna */
+.vacantes__table .pipeline__table td:first-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Celdas compactas: no se rompen en varias líneas */
+.vacantes__table .pipeline__table td:nth-child(2),
+.vacantes__table .pipeline__table td:nth-child(3),
+.vacantes__table .pipeline__table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+/* SLA: el par número/badge debe ir siempre en una línea */
+.vacantes__sla-cell {
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+/* Columna BAJA: fecha en negrita, nombre y número debajo */
+.vacantes__table .pipeline__table td:nth-child(5) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Reclutador: el select usa todo el ancho disponible */
+.vacantes__table .pipeline__table td:nth-child(7) .custom-select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Acción: centrada */
+.vacantes__table .pipeline__table td:last-child {
+  text-align: center;
+}
+

@@ -13,8 +13,8 @@ import {
   ChevronDown,
   SlidersHorizontal,
   Trash2,
-  Eye,
-  EyeOff,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -64,15 +64,15 @@ export function Vacantes() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
   const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [kpisVisible, setKpisVisible] = useState(
-    () => typeof localStorage === 'undefined' || localStorage.getItem('vac_kpis_hidden') !== '1'
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => typeof localStorage !== 'undefined' && localStorage.getItem('vac_sidebar_collapsed') === '1'
   );
 
-  const toggleKpis = () => {
-    setKpisVisible((prev) => {
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
       const next = !prev;
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('vac_kpis_hidden', next ? '0' : '1');
+        localStorage.setItem('vac_sidebar_collapsed', next ? '1' : '0');
       }
       return next;
     });
@@ -253,7 +253,7 @@ export function Vacantes() {
   }
 
   return (
-    <main className="pipeline">
+    <main className="pipeline vacantes-page">
       {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
@@ -280,27 +280,9 @@ export function Vacantes() {
         />
       )}
 
-      <div className="pipeline__layout">
-        <aside className="pipeline__sidebar">
-          {/* ── Toggle mostrar/ocultar KPIs ── */}
-          <button
-            type="button"
-            className="vacantes__kpi-toggle"
-            onClick={toggleKpis}
-            aria-pressed={!kpisVisible}
-            aria-label={kpisVisible ? 'Ocultar resumen de KPIs' : 'Mostrar resumen de KPIs'}
-            data-testid="vac-kpi-toggle"
-          >
-            {kpisVisible ? (
-              <EyeOff size={15} aria-hidden="true" />
-            ) : (
-              <Eye size={15} aria-hidden="true" />
-            )}
-            <span>{kpisVisible ? 'Ocultar KPIs' : 'Mostrar KPIs'}</span>
-          </button>
-
+      <div className="pipeline__layout" data-collapsed={sidebarCollapsed ? 'true' : undefined}>
+        <aside className="pipeline__sidebar" aria-hidden={sidebarCollapsed}>
           {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
-          {kpisVisible && (
           <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
         <div className="vacantes__split-head" role="row">
           <span className="vacantes__split-corner" />
@@ -326,7 +308,6 @@ export function Vacantes() {
           </div>
         ))}
       </section>
-          )}
 
       {/* Sección de filtros minimalista: Estado + Tipo */}
       <section className="vacantes__filters" aria-label="Filtros de vacantes">
@@ -381,6 +362,21 @@ export function Vacantes() {
         </aside>
 
         <div className="pipeline__content">
+          {/* ── Toggle sidebar ── */}
+          <button
+            type="button"
+            className="vacantes__sidebar-toggle"
+            onClick={toggleSidebar}
+            aria-pressed={sidebarCollapsed}
+            aria-label={sidebarCollapsed ? 'Mostrar panel de KPIs' : 'Ocultar panel de KPIs'}
+            data-testid="vac-sidebar-toggle"
+          >
+            {sidebarCollapsed
+              ? <PanelLeftOpen size={16} aria-hidden="true" />
+              : <PanelLeftClose size={16} aria-hidden="true" />}
+            <span>{sidebarCollapsed ? 'KPIs' : 'Ocultar'}</span>
+          </button>
+
           {/* ── Controles (búsqueda) ── */}
           <section className="pipeline__controls">
             <div className="pipeline__search">
@@ -440,6 +436,16 @@ export function Vacantes() {
           {/* Desktop: tabla */}
           <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
             <table className="pipeline__table">
+              <colgroup>
+                <col className="vac-col--puesto" />
+                <col className="vac-col--estado" />
+                <col className="vac-col--tipo" />
+                <col className="vac-col--cobertura" />
+                <col className="vac-col--baja" />
+                <col className="vac-col--sla" />
+                <col className="vac-col--reclutador" />
+                <col className="vac-col--accion" />
+              </colgroup>
               <thead>
                 <tr>
                   <th scope="col">Puesto · Área</th>
