@@ -2,7 +2,6 @@ import { useState, type FormEvent, useId, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
-import { useLoader } from '@/hooks/useLoader';
 import { CoreGraphic } from '@/components/ui/LoaderOverlay';
 import { sileo } from '@/lib/notify';
 import './Login.css';
@@ -17,7 +16,6 @@ const fadeUp = (delay = 0) => ({
 
 export function Login() {
   const { signIn } = useAuth();
-  const { flash } = useLoader();
   const reduce = useReducedMotion() ?? false;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -80,7 +78,7 @@ export function Login() {
     }
 
     sileo.success({ title: 'Sesión iniciada', description: 'Bienvenido de nuevo.' });
-    flash({ tone: 'full', duration: 4000 });
+    // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
   };
 
   return (

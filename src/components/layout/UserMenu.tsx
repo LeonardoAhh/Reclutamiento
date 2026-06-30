@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLoader } from '@/hooks/useLoader';
+import { sileo } from '@/lib/notify';
 import './UserMenu.css';
 
 type NavItem = {
@@ -48,7 +48,6 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
  */
 export function UserMenu() {
   const { username, signOut } = useAuth();
-  const { show, hide } = useLoader();
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen]             = useState(false);
@@ -94,19 +93,17 @@ export function UserMenu() {
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
-
-    const displayName = username ? username.split('@')[0].toUpperCase() : '';
-    show({ tone: 'logout', title: displayName });
-
     try {
       await signOut();
+      sileo.success({
+        title: 'Hasta pronto',
+        description: username ? username.split('@')[0].toUpperCase() : '',
+      });
     } finally {
       setSigningOut(false);
       closeRef.current();
-      // El overlay cinemático de logout dura 4 segundos.
-      window.setTimeout(hide, 4000);
     }
-  }, [signingOut, signOut, show, hide, username]);
+  }, [signingOut, signOut, username]);
 
   const isActive = useCallback(
     (item: NavItem) => {
