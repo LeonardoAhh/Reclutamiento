@@ -143,13 +143,13 @@ export function Vacantes() {
           .toLowerCase();
         return haystack.includes(q);
       })
-      // 1º Tipo: Plantilla Autorizada primero, Backup después.
-      // 2º Dentro del mismo tipo: abiertas antes que cubiertas.
-      // 3º Dentro del mismo tipo y estado: más urgentes arriba (días desc).
+      // 1º Estado: Abiertas primero, Cubiertas después.
+      // 2º Tipo: Plantilla Autorizada antes que Backup (dentro del mismo estado).
+      // 3º Urgencia: más días primero (dentro del mismo estado y tipo).
       .sort((a, b) => {
+        if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
         if (a.vacancyType !== b.vacancyType)
           return a.vacancyType === 'autorizado' ? -1 : 1;
-        if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
         return b.dias - a.dias;
       });
   }, [vacancies, searchTerm, statusFilter, typeFilter]);
