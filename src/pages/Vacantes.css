@@ -914,66 +914,70 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────
-   TABLA ORGANIZADA — widths explícitas por columna + alineación.
-   Se usan las clases de colgroup para un control limpio.
+   TABLA ORGANIZADA — mobile-first, sin valores px hardcodeados.
+   Las columnas usan % para adaptarse a cualquier ancho de viewport.
+   table-layout:fixed garantiza distribución sin espacios vacíos.
    ────────────────────────────────────────────────────────────────── */
 
-/* table-layout:fixed con las anchos de colgroup */
+/* table-layout:fixed garantiza columnas sin espacios vacíos */
 .vacantes__table .pipeline__table {
   table-layout: fixed;
   width: 100%;
 }
 
-/* Widths de columna */
-.vac-col--puesto     { width: auto; min-width: 160px; }
-.vac-col--estado     { width: 90px; }
-.vac-col--tipo       { width: 145px; }
-.vac-col--cobertura  { width: 130px; }
-.vac-col--baja       { width: 175px; }
-.vac-col--sla        { width: 130px; }
-.vac-col--reclutador { width: 155px; }
-.vac-col--accion     { width: 72px; }
+/* ── Anchos de columna en % (mobile-first, sin px hardcodeados) ── */
+/* Orden: BAJA | PUESTO | ÁREA | ESTADO | TIPO | DÍAS·SLA | RECLUTADOR | ACCIÓN */
+/* Total: 100% */
+.vac-col--baja       { width: 15%; }   /* fecha + nombre persona */
+.vac-col--puesto     { width: 19%; }   /* título del puesto */
+.vac-col--area       { width: 15%; }   /* área · sección */
+.vac-col--estado     { width: 8%;  }   /* badge Abierta/Cubierta */
+.vac-col--tipo       { width: 12%; }   /* badge Plantilla/Backup */
+.vac-col--sla        { width: 12%; }   /* días / SLA badge */
+.vac-col--reclutador { width: 14%; }   /* selector reclutador */
+.vac-col--accion     { width: 5%;  }   /* botones de acción */
 
-/* Alineación vertical y recorte de contenido en celdas */
+/* ── Alineación vertical en todas las celdas ── */
 .vacantes__table .pipeline__table td {
   vertical-align: middle;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* Puesto y área: permitimos que el texto envuelva en esta columna */
-.vacantes__table .pipeline__table td:first-child {
+/* ── Columnas de texto: permiten wrap ── */
+/* BAJA (1), PUESTO (2), ÁREA (3) */
+.vacantes__table .pipeline__table td:nth-child(1),
+.vacantes__table .pipeline__table td:nth-child(2),
+.vacantes__table .pipeline__table td:nth-child(3) {
   white-space: normal;
   overflow-wrap: anywhere;
 }
 
-/* Celdas compactas: no se rompen en varias líneas */
-.vacantes__table .pipeline__table td:nth-child(2),
-.vacantes__table .pipeline__table td:nth-child(3),
-.vacantes__table .pipeline__table td:nth-child(4) {
+/* ── Columnas de badge: no se rompen ── */
+/* ESTADO (4), TIPO (5) */
+.vacantes__table .pipeline__table td:nth-child(4),
+.vacantes__table .pipeline__table td:nth-child(5) {
   white-space: nowrap;
 }
 
-/* SLA: el par número/badge debe ir siempre en una línea */
+/* ── SLA (6): número + badge siempre en una línea ── */
 .vacantes__sla-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
   white-space: nowrap;
   flex-wrap: nowrap;
 }
 
-/* Columna BAJA: fecha en negrita, nombre y número debajo */
-.vacantes__table .pipeline__table td:nth-child(5) {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-/* Reclutador: el select usa todo el ancho disponible */
-.vacantes__table .pipeline__table td:nth-child(7) .custom-select {
+/* ── Reclutador (7): el select ocupa todo el ancho ── */
+.vacantes__table .pipeline__table td:nth-child(7) .custom-select,
+.vacantes__table .pipeline__table td:nth-child(7) [class*="select"] {
   width: 100%;
   min-width: 0;
 }
 
-/* Acción: centrada */
+/* ── Acciones (8): centradas ── */
 .vacantes__table .pipeline__table td:last-child {
   text-align: center;
 }
+
 
