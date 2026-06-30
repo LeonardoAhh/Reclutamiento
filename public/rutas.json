@@ -592,14 +592,6 @@
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero empleado": "2779",
-    "nombre": "CHAPARRO OÑATE JESUS",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
-  },
-  {
     "numero empleado": "2863",
     "nombre": "MENDOZA CASTILLO BRENDA",
     "turno": "4",
@@ -846,14 +838,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "RINCON OJO DE AGUA",
     "parada": "PARADA EN EL ENTRONQUE"
-  },
-  {
-    "numero empleado": "3289",
-    "nombre": "CRUZ REYES ANTONIO",
-    "turno": "2",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero empleado": "3306",
@@ -1577,19 +1561,11 @@
   },
   {
     "numero empleado": "4065",
-    "nombre": "SERRANO  RODRIGUEZ JOSE ALEJANDRO",
+    "nombre": "SERRANO RODRIGUEZ JOSE ALEJANDRO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
-    "numero empleado": "4075",
-    "nombre": "ESTRELLA SAUCEDO JUANA",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "4077",
@@ -2297,7 +2273,7 @@
   },
   {
     "numero empleado": "4250",
-    "nombre": "RANGEL KIMBERLY LUSSY",
+    "nombre": "RANGEL  KIMBERLY LUSSY",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
@@ -2350,5 +2326,21 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4259",
+    "nombre": "BECERRA NUÑEZ SUSANA",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DEL MA. TERESA"
+  },
+  {
+    "numero empleado": "4260",
+    "nombre": "MENDOZA RAMIREZ MINERLY JAZMIN",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "5 E FEBRERO ",
+    "parada": "PARADA EN EL PUENTE PEOATONAL DE TREMEC"
   }
 ]
