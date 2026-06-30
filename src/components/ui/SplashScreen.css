@@ -1,0 +1,90 @@
+/* ── Splash Screen ──────────────────────────────────────────────────
+   Pantalla de entrada — aparece una vez por sesión antes del login.
+   Moderna, minimalista, mobile-first.
+   Sin valores hardcodeados: todo usa tokens del design system.
+   ────────────────────────────────────────────────────────────────── */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 8000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* El fondo sigue el tema del sistema (light/dark) */
+  background-color: var(--color-surface);
+}
+
+/* ── Contenedor centrado — mobile-first ── */
+.splash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  width: min(100%, 24rem);
+  padding-inline: var(--spacing-layout-x);
+  text-align: center;
+}
+
+/* ── Marca ── */
+.splash__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  user-select: none;
+}
+
+.splash__wordmark {
+  display: block;
+  font-family: var(--font-heading);
+  /*
+   * Escala fluida: parte de un tamaño legible en móvil
+   * y crece suavemente hacia desktop sin hardcodear breakpoints.
+   * Los extremos usan tokens del design system como fallback.
+   */
+  font-size: clamp(
+    var(--type-display-sm-size, 1.75rem),
+    6vw,
+    var(--type-display-size, 2.5rem)
+  );
+  font-weight: var(--font-bold);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.splash__sub {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  line-height: 1;
+}
+
+/* ── Barra de progreso ── */
+.splash__track {
+  width: min(10rem, 60%);
+  height: 2px;
+  background-color: var(--color-hairline);
+  border-radius: var(--rounded-full);
+  overflow: hidden;
+}
+
+.splash__bar {
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--rounded-full);
+  will-change: transform;
+}
+
+/* ── Movimiento reducido: mostrar en estado final inmediatamente ── */
+@media (prefers-reduced-motion: reduce) {
+  .splash__bar {
+    transform: scaleX(1) !important;
+  }
+}

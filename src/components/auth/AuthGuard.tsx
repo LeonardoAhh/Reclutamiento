@@ -16,7 +16,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   if (loading) {
-    return <LoaderOverlay hint="Reclutamiento" />;
+    return <LoaderOverlay tone="route" />;
   }
 
   if (!session) {
@@ -38,7 +38,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const from = (location.state as { from?: string } | null)?.from ?? '/';
 
   if (loading) {
-    return <LoaderOverlay hint="Reclutamiento" />;
+    return <LoaderOverlay tone="route" />;
   }
 
   if (session) {
