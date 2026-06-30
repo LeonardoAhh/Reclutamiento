@@ -16,8 +16,8 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLoader } from '@/hooks/useLoader';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
+import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
@@ -53,22 +53,22 @@ type SidebarProps = {
  */
 export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
   const { username, signOut } = useAuth();
-  const { show, hide } = useLoader();
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
-    const displayName = username ? username.split('@')[0].toUpperCase() : '';
-    show({ tone: 'logout', title: displayName });
     try {
       await signOut();
+      sileo.success({
+        title: 'Hasta pronto',
+        description: username ? username.split('@')[0].toUpperCase() : '',
+      });
     } finally {
       setSigningOut(false);
-      window.setTimeout(hide, 4000);
     }
-  }, [signingOut, signOut, show, hide, username]);
+  }, [signingOut, signOut, username]);
 
   if (!username) return null;
 
