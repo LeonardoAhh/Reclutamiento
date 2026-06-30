@@ -1,8 +1,8 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "fecha": "2026-06-29",
   "nivel": "success",
   "titulo": "Actualización completada",
-  "mensaje": "Se corrigieron errores de logica y se mejoró la estabilidad de la aplicación.",
+  "mensaje": "Se corrigieron errores de lógica y se mejoró la estabilidad de la aplicación.",
   "notificar": true
 }
