@@ -1,8 +1,8 @@
 {
-  "version": "0.0.29",
+  "version": "0.0.30",
   "fecha": "2026-06-29",
   "nivel": "success",
   "titulo": "Actualización completada",
-  "mensaje": "El sistema de reclutamiento ha sido actualizado exitosamente. Se incorporaron nuevas funcionalidades y se corrigieron errores.",
+  "mensaje": "Se incorporaron nuevas funcionalidades y se corrigieron errores.",
   "notificar": true
 }
