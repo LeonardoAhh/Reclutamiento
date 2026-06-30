@@ -1,8 +1,8 @@
 {
-  "version": "0.0.30",
+  "version": "0.1.0",
   "fecha": "2026-06-29",
   "nivel": "success",
   "titulo": "Actualización completada",
-  "mensaje": "Se incorporaron nuevas funcionalidades y se corrigieron errores.",
+  "mensaje": "Se corrigieron errores de logica y se mejoró la estabilidad de la aplicación.",
   "notificar": true
 }
