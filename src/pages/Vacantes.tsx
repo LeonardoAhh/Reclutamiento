@@ -143,8 +143,12 @@ export function Vacantes() {
           .toLowerCase();
         return haystack.includes(q);
       })
-      // Abiertas primero, luego por días desc (las más urgentes arriba).
+      // 1º Tipo: Plantilla Autorizada primero, Backup después.
+      // 2º Dentro del mismo tipo: abiertas antes que cubiertas.
+      // 3º Dentro del mismo tipo y estado: más urgentes arriba (días desc).
       .sort((a, b) => {
+        if (a.vacancyType !== b.vacancyType)
+          return a.vacancyType === 'autorizado' ? -1 : 1;
         if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
         return b.dias - a.dias;
       });
