@@ -355,66 +355,101 @@
 
 /* ================================================================
    RESPONSIVE — Mobile (<768px)
+   Patrón nativo: marca ocupa la mitad superior de la pantalla,
+   formulario como card/sheet en la mitad inferior.
    ================================================================ */
 @media (max-width: 767px) {
+  /* Grid vertical: marca ~44vh, formulario el resto */
   .login {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 44vh 1fr;
+    min-height: 100dvh;
+    background: var(--color-surface-dark);
   }
 
-  /* Panel marca: banda compacta horizontal */
+  /* ── Panel marca: ocupa la mitad superior, contenido centrado ── */
   .login__panel {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
-    min-height: 0;
+    justify-content: center;
+    text-align: center;
+    gap: var(--spacing-lg);
     padding:
-      max(var(--spacing-md), var(--safe-area-top))
-      var(--spacing-lg)
-      var(--spacing-md);
+      max(var(--spacing-xxl), var(--safe-area-top))
+      var(--spacing-xl)
+      var(--spacing-lg);
   }
 
+  /* Sin grid de fondo en pantallas pequeñas */
   .login__panel-grid {
-    display: none; /* sin ruido en mobile */
+    display: none;
   }
 
+  /* Badge centrado */
+  .login__panel-header {
+    position: static;
+  }
+
+  /* Wordmark + tagline centrados */
   .login__panel-body {
-    flex: 1;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: flex-start;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
     gap: var(--spacing-sm);
   }
 
   .login__wordmark {
-    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-size: clamp(2.6rem, 10vw, 3.8rem);
   }
 
-  /* Tagline y footer ocultos en mobile */
-  .login__tagline,
+  /* Tagline visible en mobile, versión compacta centrada */
+  .login__tagline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: none;
+    padding-left: 0;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+    gap: 2px;
+  }
+
+  .login__tagline p {
+    text-align: center;
+    font-size: var(--type-caption-sm-size);
+  }
+
+  /* Footer innecesario en mobile */
   .login__panel-footer {
     display: none;
   }
 
-  /* Panel formulario ocupa el resto */
+  /* ── Panel formulario: card sheet con esquinas superiores redondeadas ── */
   .login__form-panel {
     border-left: none;
-    border-top: 1px solid var(--color-hairline);
-    align-items: flex-start;
+    border-top: none;
+    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    box-shadow: 0 -2px 0 color-mix(in srgb, var(--color-hairline) 60%, transparent),
+                0 -12px 32px color-mix(in srgb, var(--color-ink) 12%, transparent);
+    align-items: stretch;
     justify-content: flex-start;
     padding: var(--spacing-xl) var(--spacing-lg);
     padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
+    /* Pull ligero hacia arriba para solapar el panel de marca */
+    margin-top: calc(-1 * var(--rounded-xl));
   }
 
   .login__form-wrap {
     max-width: 100%;
+    gap: var(--spacing-lg);
+    margin: 0;
   }
 
   .login__title {
-    font-size: clamp(1.5rem, 5.5vw, 1.9rem);
+    font-size: clamp(1.5rem, 6vw, 2rem);
   }
 
-  /* iOS: 16px evita zoom automático en focus */
+  /* iOS: 16px evita zoom automático al enfocar inputs */
   .login__input {
     font-size: 16px;
   }
