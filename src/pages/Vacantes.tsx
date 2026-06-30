@@ -443,7 +443,6 @@ export function Vacantes() {
                 <col className="vac-col--baja" />
                 <col className="vac-col--puesto" />
                 <col className="vac-col--area" />
-                <col className="vac-col--estado" />
                 <col className="vac-col--tipo" />
                 <col className="vac-col--sla" />
                 <col className="vac-col--reclutador" />
@@ -454,7 +453,6 @@ export function Vacantes() {
                   <th scope="col" id="vac-th-baja">Baja</th>
                   <th scope="col" id="vac-th-puesto">Puesto</th>
                   <th scope="col" id="vac-th-area">Área</th>
-                  <th scope="col" id="vac-th-estado">Estado</th>
                   <th scope="col" id="vac-th-tipo">Tipo</th>
                   <th scope="col" id="vac-th-sla" title="Días hábiles desde la baja · SLA 12 días">
                     Días · SLA
@@ -471,13 +469,13 @@ export function Vacantes() {
                     key={v.key}
                     className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}
                   >
-                    {/* BAJA */}
+                    {/* BAJA — orden: #num → nombre → fecha */}
                     <td headers="vac-th-baja">
                       {v.baja ? (
                         <>
-                          <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
-                          <div className="pipeline__area">{v.baja.nombre}</div>
                           <div className="vacantes__cell-emp">#{v.baja.num_empleado}</div>
+                          <div className="pipeline__area">{v.baja.nombre}</div>
+                          <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
                         </>
                       ) : (
                         <>
@@ -498,11 +496,6 @@ export function Vacantes() {
                         {v.area}
                         {v.seccion ? ` · ${v.seccion}` : ''}
                       </div>
-                    </td>
-
-                    {/* ESTADO */}
-                    <td headers="vac-th-estado">
-                      <VacancyStatusBadge status={v.status} />
                     </td>
 
                     {/* TIPO */}

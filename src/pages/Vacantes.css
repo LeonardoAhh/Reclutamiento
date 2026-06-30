@@ -926,21 +926,20 @@
 }
 
 /* ── Anchos de columna en % (mobile-first, sin px hardcodeados) ── */
-/* Orden: BAJA | PUESTO | ÁREA | ESTADO | TIPO | DÍAS·SLA | RECLUTADOR | ACCIÓN */
+/* Orden: BAJA | PUESTO | ÁREA | TIPO | DÍAS·SLA | RECLUTADOR | ACCIÓN */
 /* Total: 100% */
-.vac-col--baja       { width: 15%; }   /* fecha + nombre persona */
-.vac-col--puesto     { width: 19%; }   /* título del puesto */
-.vac-col--area       { width: 15%; }   /* área · sección */
-.vac-col--estado     { width: 8%;  }   /* badge Abierta/Cubierta */
-.vac-col--tipo       { width: 12%; }   /* badge Plantilla/Backup */
-.vac-col--sla        { width: 12%; }   /* días / SLA badge */
-.vac-col--reclutador { width: 14%; }   /* selector reclutador */
-.vac-col--accion     { width: 5%;  }   /* botones de acción */
+.vac-col--baja       { width: 16%; }   /* #num + nombre + fecha */
+.vac-col--puesto     { width: 21%; }   /* título del puesto */
+.vac-col--area       { width: 16%; }   /* área · sección */
+.vac-col--tipo       { width: 13%; }   /* badge Plantilla/Backup */
+.vac-col--sla        { width: 13%; }   /* días / SLA badge */
+.vac-col--reclutador { width: 15%; }   /* selector reclutador */
+.vac-col--accion     { width: 6%;  }   /* botones de acción */
 
 /* ── Alineación vertical en todas las celdas ── */
+/* SIN overflow:hidden genérico — el select necesita que su texto sea visible */
 .vacantes__table .pipeline__table td {
   vertical-align: middle;
-  overflow: hidden;
 }
 
 /* ── Columnas de texto: permiten wrap ── */
@@ -950,16 +949,15 @@
 .vacantes__table .pipeline__table td:nth-child(3) {
   white-space: normal;
   overflow-wrap: anywhere;
+  overflow: hidden;
 }
 
-/* ── Columnas de badge: no se rompen ── */
-/* ESTADO (4), TIPO (5) */
-.vacantes__table .pipeline__table td:nth-child(4),
-.vacantes__table .pipeline__table td:nth-child(5) {
+/* ── Tipo (4): badge — no se rompe ── */
+.vacantes__table .pipeline__table td:nth-child(4) {
   white-space: nowrap;
 }
 
-/* ── SLA (6): número + badge siempre en una línea ── */
+/* ── SLA (5): número + badge siempre en una línea ── */
 .vacantes__sla-cell {
   display: inline-flex;
   align-items: center;
@@ -968,14 +966,10 @@
   flex-wrap: nowrap;
 }
 
-/* ── Reclutador (7): el select ocupa todo el ancho ── */
-.vacantes__table .pipeline__table td:nth-child(7) .custom-select,
-.vacantes__table .pipeline__table td:nth-child(7) [class*="select"] {
-  width: 100%;
-  min-width: 0;
-}
+/* ── Reclutador (6): el container del select ya tiene width:100% ── */
+/* No se aplica overflow:hidden aquí para que el texto del select sea visible */
 
-/* ── Acciones (8): centradas ── */
+/* ── Acciones (7 / last): centradas ── */
 .vacantes__table .pipeline__table td:last-child {
   text-align: center;
 }
