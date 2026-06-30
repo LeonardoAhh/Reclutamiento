@@ -1,27 +1,20 @@
-import { useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { MOTIVATIONAL_QUOTES, type Quote } from '@/lib/quotes';
 import './LoaderOverlay.css';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** Duración compartida de las escenas cinemáticas (login y logout). */
-const SCENE_DURATION_MS = 4000;
-const SCENE_DURATION_S = SCENE_DURATION_MS / 1000;
-/** Geometría del núcleo en unidades del viewBox (se escala por CSS). */
+const SCENE_DURATION_S = 4;
 const RING_R = 70;
 const RING_C = 2 * Math.PI * RING_R;
 const PARTICLES = [0, 1, 2, 3, 4, 5];
 
-export type LoaderTone = 'full' | 'route' | 'logout';
+export type LoaderTone = 'route';
 
 interface LoaderOverlayProps {
-  title?: string;
-  hint?: string;
   tone?: LoaderTone;
 }
 
-// ── 1. Cargador Mínimo para cambios de ruta ──────────────────
+// ── Cargador mínimo para cambios de ruta ────────────────────────
 function RouteLoader() {
   return (
     <motion.div
@@ -51,16 +44,13 @@ function RouteLoader() {
   );
 }
 
-// ── 2. Núcleo compartido (motivo cohesivo login ↔ logout) ─────
-//
-// `mode='in'`  → partículas convergen al núcleo + anillo que se llena.
-// `mode='out'` → núcleo se dispersa + anillo que se vacía.
-// Mismo elemento, dirección invertida. Solo tokens (claro/oscuro).
+// ── Núcleo gráfico (motivo visual del login) ─────────────────────
+// Usado en la pantalla de Login (panel izquierdo).
+// `mode='in'`  → partículas convergen + anillo que se llena.
 export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: boolean }) {
   const filling = mode === 'in';
   return (
     <svg viewBox="0 0 200 200" className="loader-core" role="img" aria-hidden="true">
-      {/* Pista del anillo */}
       <circle
         cx={100} cy={100} r={RING_R}
         fill="none"
@@ -68,8 +58,6 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
         strokeWidth={3}
         opacity={0.35}
       />
-
-      {/* Anillo de progreso: se llena (in) o se vacía (out) en la duración */}
       <motion.circle
         cx={100} cy={100} r={RING_R}
         fill="none"
@@ -82,8 +70,6 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
         transition={{ duration: reduce ? 0 : SCENE_DURATION_S, ease: EASE }}
         style={{ transform: 'rotate(-90deg)', transformOrigin: '100px 100px' }}
       />
-
-      {/* Partículas: convergen (in) o se dispersan (out). Loop sutil. */}
       {!reduce &&
         PARTICLES.map((i) => {
           const angle = (i * 360) / PARTICLES.length;
@@ -110,8 +96,6 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
             />
           );
         })}
-
-      {/* Halo expansivo del núcleo */}
       {!reduce && (
         <motion.circle
           cx={100} cy={100} r={16}
@@ -124,8 +108,6 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
           style={{ transformOrigin: '100px 100px' }}
         />
       )}
-
-      {/* Núcleo central: se enciende (in) o se apaga/dispersa (out) */}
       <motion.circle
         cx={100} cy={100} r={16}
         fill="var(--loader-core-color, var(--color-primary))"
@@ -148,87 +130,20 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
   );
 }
 
-// ── 3. Entrada (login): una sola escena, mensaje único ────────
-function CinematicEntrance() {
-  const reduce = useReducedMotion() ?? false;
-
-  return (
-    <div className="loader-core-scene">
-      <CoreGraphic mode="in" reduce={reduce} />
-      <motion.div
-        className="loader-text"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
-      >
-        <h2>Preparando tu espacio</h2>
-      </motion.div>
-    </div>
-  );
-}
-
-// ── 4. Salida (logout): mismo núcleo dispersándose + frase ────
-function LogoutCinematic({ username }: { username?: string }) {
-  const [quote, setQuote] = useState<Quote | null>(null);
-  const reduce = useReducedMotion() ?? false;
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
-    setQuote(MOTIVATIONAL_QUOTES[randomIndex]);
-  }, []);
-
-  if (!quote) return null;
-
-  return (
-    <div className="loader-core-scene">
-      <CoreGraphic mode="out" reduce={reduce} />
-      <div className="loader-logout">
-        {username && (
-          <motion.h2
-            className="loader-logout-greeting"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
-          >
-            HASTA PRONTO, {username}
-          </motion.h2>
-        )}
-        <motion.div
-          className="loader-logout-quote"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.35 }}
-        >
-          "{quote.text}"
-        </motion.div>
-        <motion.p
-          className="loader-logout-author"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 1.8 }}
-        >
-          — {quote.author}
-        </motion.p>
-      </div>
-    </div>
-  );
-}
-
-// ── 5. Main Overlay Wrapper ──────────
-export function LoaderOverlay({ title, tone = 'full' }: LoaderOverlayProps) {
+// ── Wrapper del overlay (solo spinner de ruta) ──────────────────
+export function LoaderOverlay({ tone = 'route' }: LoaderOverlayProps) {
+  void tone; // solo existe 'route'
   return (
     <motion.div
-      className={`loader-overlay ${tone === 'route' ? 'loader-overlay--route' : ''}`}
+      className="loader-overlay loader-overlay--route"
       role="status"
       aria-live="polite"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.6, ease: EASE }}
+      transition={{ duration: 0.25, ease: EASE }}
     >
-      {tone === 'route' && <RouteLoader />}
-      {tone === 'full' && <CinematicEntrance />}
-      {tone === 'logout' && <LogoutCinematic username={title} />}
+      <RouteLoader />
     </motion.div>
   );
 }

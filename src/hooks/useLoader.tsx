@@ -82,12 +82,7 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
       {createPortal(
         <AnimatePresence>
           {state !== null && (
-            <LoaderOverlay
-              key="app-loader"
-              title={state.title}
-              hint={state.hint}
-              tone={state.tone}
-            />
+            <LoaderOverlay key="app-loader" />
           )}
         </AnimatePresence>,
         document.body

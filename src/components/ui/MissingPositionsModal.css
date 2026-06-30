@@ -147,8 +147,28 @@
   background: color-mix(in srgb, var(--color-surface-soft) 50%, transparent);
 }
 
+.missing-positions-modal__table tbody tr {
+  cursor: pointer;
+  transition: opacity 0.25s ease, filter 0.25s ease;
+}
+
 .missing-positions-modal__table tbody tr:hover td {
   background: var(--color-surface-soft);
+}
+
+/* Fila bloureada: excluida del conteo */
+.missing-positions-modal__table tbody tr.is-dismissed {
+  opacity: 0.3;
+  filter: blur(1.5px);
+}
+
+.missing-positions-modal__table tbody tr.is-dismissed:hover {
+  opacity: 0.45;
+  filter: blur(0.5px);
+}
+
+.missing-positions-modal__table tbody tr.is-dismissed td {
+  background: transparent !important;
 }
 
 /* ── Celda Área / Sección apilada ── */
@@ -312,6 +332,10 @@
     grid-template-columns: 1fr auto;
     gap: var(--spacing-xs) var(--spacing-sm);
     align-items: center;
+  }
+
+  .missing-positions-modal__table tbody tr.is-dismissed {
+    border-color: transparent;
   }
 
   .missing-positions-modal__table tbody tr:nth-child(even) td,

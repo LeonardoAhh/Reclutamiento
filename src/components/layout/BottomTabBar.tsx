@@ -14,9 +14,9 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLoader } from '@/hooks/useLoader';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
+import { sileo } from '@/lib/notify';
 import './BottomTabBar.css';
 import { motion } from 'framer-motion';
 
@@ -55,7 +55,6 @@ export function BottomTabBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { username, signOut } = useAuth();
-  const { show, hide } = useLoader();
   const { fetchSummaries } = useReporteDiario();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -176,14 +175,15 @@ export function BottomTabBar() {
   const handleSignOut = async () => {
     if (signingOut) return;
     setSigningOut(true);
-    const displayName = username ? username.split('@')[0].toUpperCase() : '';
-    show({ tone: 'logout', title: displayName });
     try {
       await signOut();
+      sileo.success({
+        title: 'Hasta pronto',
+        description: username ? username.split('@')[0].toUpperCase() : '',
+      });
     } finally {
       setSigningOut(false);
       setSheetOpen(false);
-      window.setTimeout(hide, 4000);
     }
   };
 
