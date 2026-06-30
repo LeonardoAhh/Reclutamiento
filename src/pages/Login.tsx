@@ -1,58 +1,48 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
-import { CoreGraphic } from '@/components/ui/LoaderOverlay';
 import { sileo } from '@/lib/notify';
 import './Login.css';
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, ease: EASE, delay },
-});
+// Valores hex para la API del navegador (<meta name="theme-color">).
+// No pueden ser CSS variables — el browser los necesita resueltos.
+const BROWSER_BAR_LIGHT = '#ffffff';
+const BROWSER_BAR_DARK  = '#0a0a0a';
 
 export function Login() {
   const { signIn } = useAuth();
-  const reduce = useReducedMotion() ?? false;
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [username, setUsername]       = useState('');
+  const [password, setPassword]       = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting]   = useState(false);
+  const [error, setError]             = useState<string | null>(null);
 
   const usernameId = useId();
   const passwordId = useId();
-  const errorId = useId();
+  const errorId    = useId();
 
-  // El login SIEMPRE es claro: negro arriba, blanco abajo (sin modo oscuro).
-  // Forzamos data-theme="light" mientras el login está montado y el theme-color
-  // de la barra de estado a negro (coincide con la parte superior). Al salir,
-  // restauramos el tema real del usuario.
+  // El login siempre es modo claro. Forzamos data-theme="light" mientras
+  // está montado y restauramos el tema del usuario al salir.
   useEffect(() => {
-    const LOGIN_BAR = '#ffffff';
     const root = document.documentElement;
     const meta = document.getElementById('theme-color-meta');
     const prevTheme = root.getAttribute('data-theme');
 
     root.setAttribute('data-theme', 'light');
-    root.style.backgroundColor = LOGIN_BAR;
-    meta?.setAttribute('content', LOGIN_BAR);
+    root.style.backgroundColor = BROWSER_BAR_LIGHT;
+    meta?.setAttribute('content', BROWSER_BAR_LIGHT);
 
     return () => {
       const stored = window.localStorage.getItem('reclutamiento_theme');
       const theme =
         stored === 'dark' || stored === 'light'
           ? stored
-          : prevTheme === 'dark'
-            ? 'dark'
-            : 'light';
+          : prevTheme === 'dark' ? 'dark' : 'light';
+
       root.setAttribute('data-theme', theme);
-      const bg = theme === 'dark' ? '#0a0a0a' : '#ffffff';
-      root.style.backgroundColor = bg;
-      meta?.setAttribute('content', bg);
+      root.style.backgroundColor = theme === 'dark' ? BROWSER_BAR_DARK : BROWSER_BAR_LIGHT;
+      meta?.setAttribute('content', theme === 'dark' ? BROWSER_BAR_DARK : BROWSER_BAR_LIGHT);
     };
   }, []);
 
@@ -61,7 +51,7 @@ export function Login() {
     setError(null);
 
     const u = username.trim();
-    if (!u) return setError('Ingresa tu correo electrónico.');
+    if (!u)       return setError('Ingresa tu correo electrónico.');
     if (!password) return setError('Ingresa tu contraseña.');
 
     setSubmitting(true);
@@ -70,10 +60,7 @@ export function Login() {
     if (!result.ok) {
       setSubmitting(false);
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
-      sileo.error({
-        title: 'No se pudo iniciar sesión',
-        description: 'Revisa tus credenciales.',
-      });
+      sileo.error({ title: 'No se pudo iniciar sesión', description: 'Revisa tus credenciales.' });
       return;
     }
 
@@ -82,112 +69,93 @@ export function Login() {
   };
 
   return (
-    <main className="login" role="main">
+    <main className="login" role="main" aria-label="Inicio de sesión">
 
-      {/* ── Panel izquierdo ───────────────────────────────────────────── */}
-      <div className="login__panel" aria-hidden="true">
+      {/* ────────────────────────────────────────────────────────────
+          Panel izquierdo — identidad de marca
+          aria-hidden: contenido decorativo, no necesario para SR
+      ──────────────────────────────────────────────────────────── */}
+      <section className="login__panel" aria-hidden="true">
         <div className="login__panel-grid" />
 
-        {/* TOP — brand pill, anclado arriba (oculto en mobile) */}
-        <motion.div
-          className="login__panel-top"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-        >
+        <header className="login__panel-header">
           <div className="login__brand">
-            <span className="login__eyebrow">Reclutamiento</span>
+            <span className="login__brand-label">Reclutamiento</span>
           </div>
-        </motion.div>
+        </header>
 
-        {/* CENTRO — núcleo animado (cohesivo con entrada/salida) */}
-        <div className="login__visual-core">
-          <CoreGraphic mode="in" reduce={reduce} />
-        </div>
+        <div className="login__panel-body">
+          <p className="login__wordmark">ViñoPlastic</p>
 
-        {/* BOTTOM — wordmark + tagline + regla, anclados abajo */}
-        <motion.div
-          className="login__panel-bottom"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE }}
-        >
-          <motion.div className="login__wordmark" {...fadeUp(0.2)}>
-            <span className="login__wordmark-main">ViñoPlastic</span>
-          </motion.div>
-
-          <motion.blockquote className="login__tagline" {...fadeUp(0.35)}>
+          <blockquote className="login__tagline">
             <span className="login__tagline-year">Desde 1970</span>
             <p>Excelencia en Inyección de Plásticos de Ingeniería.</p>
-          </motion.blockquote>
+          </blockquote>
+        </div>
 
-          <motion.div
-            className="login__panel-rule"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.5 }}
-          />
-        </motion.div>
-      </div>
+        <footer className="login__panel-footer">
+          <span className="login__panel-copy">
+            © {new Date().getFullYear()} ViñoPlastic
+          </span>
+        </footer>
+      </section>
 
-      {/* ── Panel derecho — sin cambios ───────────────────────────────── */}
+      {/* ────────────────────────────────────────────────────────────
+          Panel derecho — formulario
+      ──────────────────────────────────────────────────────────── */}
       <div className="login__form-panel">
-
-        <motion.section
+        <section
           className="login__form-wrap"
-          aria-labelledby="login-title"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
+          aria-labelledby="login-heading"
         >
           <header className="login__header">
-            <motion.span className="login__eyebrow-form" {...fadeUp(0.2)}>
-              Acceso seguro
-            </motion.span>
-            <motion.h2 id="login-title" className="login__title" {...fadeUp(0.25)}>
+            <span className="login__eyebrow">Acceso seguro</span>
+            <h1 id="login-heading" className="login__title">
               Bienvenido de nuevo
-            </motion.h2>
+            </h1>
           </header>
 
-          <motion.div
-            className="login__sep"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, ease: EASE, delay: 0.3 }}
-          />
+          <form
+            className="login__form"
+            onSubmit={handleSubmit}
+            noValidate
+            aria-label="Formulario de inicio de sesión"
+          >
 
-          <form className="login__form" onSubmit={handleSubmit} noValidate>
-
-            <motion.div className="login__field" {...fadeUp(0.35)}>
+            {/* Campo: correo */}
+            <div className="login__field">
               <label htmlFor={usernameId} className="login__field-label">
                 Correo electrónico
               </label>
-              <div className="login__input-wrap">
-                <input
-                  id={usernameId}
-                  className="login__input"
-                  type="email"
-                  autoComplete="username"
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  placeholder="usuario@empresa.com"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={submitting}
-                  required
-                  aria-describedby={error ? errorId : undefined}
-                />
-              </div>
-            </motion.div>
+              <input
+                id={usernameId}
+                data-testid="login-email-input"
+                className="login__input"
+                type="email"
+                autoComplete="username"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="usuario@empresa.com"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={submitting}
+                required
+                aria-required="true"
+                aria-describedby={error ? errorId : undefined}
+                aria-invalid={error ? 'true' : undefined}
+              />
+            </div>
 
-            <motion.div className="login__field" {...fadeUp(0.42)}>
+            {/* Campo: contraseña */}
+            <div className="login__field">
               <label htmlFor={passwordId} className="login__field-label">
                 Contraseña
               </label>
               <div className="login__input-wrap">
                 <input
                   id={passwordId}
+                  data-testid="login-password-input"
                   className="login__input login__input--padded-r"
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
@@ -196,49 +164,52 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={submitting}
                   required
+                  aria-required="true"
                   aria-describedby={error ? errorId : undefined}
+                  aria-invalid={error ? 'true' : undefined}
                 />
                 <button
                   type="button"
+                  data-testid="login-toggle-password-button"
                   className="login__visibility btn-icon"
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-pressed={showPassword}
                   disabled={submitting}
-                  tabIndex={0}
                 >
                   {showPassword
                     ? <EyeOff size={16} aria-hidden="true" />
-                    : <Eye size={16} aria-hidden="true" />}
+                    : <Eye   size={16} aria-hidden="true" />}
                 </button>
               </div>
-            </motion.div>
+            </div>
 
-            <AnimatePresence mode="wait">
-              {error && (
-                <motion.div
-                  className="login__error"
-                  role="alert"
-                  aria-live="polite"
-                  id={errorId}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.22 }}
-                >
-                  <AlertCircle size={14} aria-hidden="true" />
-                  <span>{error}</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Error inline */}
+            {error && (
+              <div
+                id={errorId}
+                data-testid="login-error-message"
+                className="login__error"
+                role="alert"
+                aria-live="assertive"
+              >
+                <AlertCircle size={14} aria-hidden="true" />
+                <span>{error}</span>
+              </div>
+            )}
 
-            <motion.button
+            {/* Submit */}
+            <button
               type="submit"
+              data-testid="login-submit-button"
               className="login__submit"
               disabled={submitting}
               aria-busy={submitting}
-              {...fadeUp(0.52)}
-              whileHover={!submitting ? { x: 3 } : {}}
-              whileTap={!submitting ? { scale: 0.98 } : {}}
+              aria-label={
+                submitting
+                  ? 'Verificando credenciales, por favor espera'
+                  : 'Ingresar al sistema'
+              }
             >
               {submitting ? (
                 <>
@@ -251,10 +222,10 @@ export function Login() {
                   <ArrowRight size={16} aria-hidden="true" />
                 </>
               )}
-            </motion.button>
+            </button>
 
           </form>
-        </motion.section>
+        </section>
       </div>
 
     </main>
