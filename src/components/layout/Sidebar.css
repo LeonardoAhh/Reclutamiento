@@ -205,7 +205,7 @@
   inset-block: 25%;
 }
 
-* Footer */
+/* Footer */
 .sidebar__footer {
   display: flex;
   flex-direction: column;
