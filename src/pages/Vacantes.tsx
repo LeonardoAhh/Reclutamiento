@@ -435,27 +435,34 @@ export function Vacantes() {
 
           {/* Desktop: tabla */}
           <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
-            <table className="pipeline__table">
+            <table className="pipeline__table" aria-labelledby="vac-table-caption">
+              <caption id="vac-table-caption" className="sr-only">
+                Listado de vacantes — {filtered.length} de {vacancies.length}
+              </caption>
               <colgroup>
+                <col className="vac-col--baja" />
                 <col className="vac-col--puesto" />
+                <col className="vac-col--area" />
                 <col className="vac-col--estado" />
                 <col className="vac-col--tipo" />
-                <col className="vac-col--cobertura" />
-                <col className="vac-col--baja" />
                 <col className="vac-col--sla" />
                 <col className="vac-col--reclutador" />
                 <col className="vac-col--accion" />
               </colgroup>
               <thead>
                 <tr>
-                  <th scope="col">Puesto · Área</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Tipo</th>
-                  <th scope="col">Cobertura</th>
-                  <th scope="col">Baja</th>
-                  <th scope="col" title="Días hábiles baja → cobertura · SLA 12">Días · SLA</th>
-                  <th scope="col">Reclutador</th>
-                  <th scope="col" className="pipeline__th--actions">Acción</th>
+                  <th scope="col" id="vac-th-baja">Baja</th>
+                  <th scope="col" id="vac-th-puesto">Puesto</th>
+                  <th scope="col" id="vac-th-area">Área</th>
+                  <th scope="col" id="vac-th-estado">Estado</th>
+                  <th scope="col" id="vac-th-tipo">Tipo</th>
+                  <th scope="col" id="vac-th-sla" title="Días hábiles desde la baja · SLA 12 días">
+                    Días · SLA
+                  </th>
+                  <th scope="col" id="vac-th-reclutador">Reclutador</th>
+                  <th scope="col" id="vac-th-accion" className="pipeline__th--actions">
+                    Acción
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -464,23 +471,8 @@ export function Vacantes() {
                     key={v.key}
                     className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}
                   >
-                    <td>
-                      <div className="pipeline__puesto">{v.puesto}</div>
-                      <div className="pipeline__area">
-                        {v.area}
-                        {v.seccion ? ` · ${v.seccion}` : ''}
-                      </div>
-                    </td>
-                    <td>
-                      <VacancyStatusBadge status={v.status} />
-                    </td>
-                    <td>
-                      <VacancyTypeBadge type={v.vacancyType} />
-                    </td>
-                    <td>
-                      <CoverageInfo v={v} />
-                    </td>
-                    <td>
+                    {/* BAJA */}
+                    <td headers="vac-th-baja">
                       {v.baja ? (
                         <>
                           <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
@@ -494,7 +486,32 @@ export function Vacantes() {
                         </>
                       )}
                     </td>
-                    <td>
+
+                    {/* PUESTO */}
+                    <td headers="vac-th-puesto">
+                      <div className="pipeline__puesto">{v.puesto}</div>
+                    </td>
+
+                    {/* ÁREA */}
+                    <td headers="vac-th-area">
+                      <div className="pipeline__area">
+                        {v.area}
+                        {v.seccion ? ` · ${v.seccion}` : ''}
+                      </div>
+                    </td>
+
+                    {/* ESTADO */}
+                    <td headers="vac-th-estado">
+                      <VacancyStatusBadge status={v.status} />
+                    </td>
+
+                    {/* TIPO */}
+                    <td headers="vac-th-tipo">
+                      <VacancyTypeBadge type={v.vacancyType} />
+                    </td>
+
+                    {/* DÍAS · SLA */}
+                    <td headers="vac-th-sla">
                       <div className="vacantes__sla-cell">
                         {v.baja ? (
                           <>
@@ -514,7 +531,9 @@ export function Vacantes() {
                         )}
                       </div>
                     </td>
-                    <td>
+
+                    {/* RECLUTADOR */}
+                    <td headers="vac-th-reclutador">
                       <CustomSelect
                         id={`vac-rec-${v.key}`}
                         value={v.reclutador ?? ''}
@@ -524,7 +543,9 @@ export function Vacantes() {
                         disabled={!v.baja}
                       />
                     </td>
-                    <td className="pipeline__cell-actions">
+
+                    {/* ACCIONES */}
+                    <td headers="vac-th-accion" className="pipeline__cell-actions">
                       <button
                         type="button"
                         className="pipeline__icon-btn"
@@ -537,7 +558,11 @@ export function Vacantes() {
                               ? 'Reabrir vacante'
                               : 'Marcar cubierta a mano (interna)'
                         }
-                        aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                        aria-label={
+                          v.coberturaTipo === 'manual'
+                            ? 'Reabrir vacante'
+                            : 'Marcar cubierta a mano'
+                        }
                         data-testid={`vac-manual-${v.key}`}
                       >
                         {v.coberturaTipo === 'manual' ? (
@@ -551,7 +576,11 @@ export function Vacantes() {
                           type="button"
                           className="pipeline__icon-btn vacantes__del-btn"
                           onClick={() => handleRemoveStructural(v)}
-                          title={findCustomPosition(v) ? 'Eliminar posición personalizada' : 'Quitar vacante de backup'}
+                          title={
+                            findCustomPosition(v)
+                              ? 'Eliminar posición personalizada'
+                              : 'Quitar vacante de backup'
+                          }
                           aria-label={
                             findCustomPosition(v)
                               ? `Eliminar posición personalizada ${v.puesto}`
