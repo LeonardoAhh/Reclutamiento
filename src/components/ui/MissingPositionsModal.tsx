@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Modal } from './Modal';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
@@ -82,32 +82,48 @@ export function MissingPositionsModal({
   candidates,
 }: MissingPositionsModalProps) {
 
-  // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
-  const { missingPositions, totalFaltanPlantilla, totalFaltanBackup } = useMemo(() => {
-    let faltanPlantilla = 0;
-    let faltanBackup = 0;
+  // Estado de filas "bloureadas" (excluidas del conteo)
+  const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
 
-    const filtered = coverage
+  // Resetear al cerrar el modal
+  useEffect(() => {
+    if (!isOpen) setDismissedKeys(new Set());
+  }, [isOpen]);
+
+  const toggleDismiss = (key: string) => {
+    setDismissedKeys(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
+  const missingPositions = useMemo(() => {
+    return coverage
       .map(netVacancies)
-      // Solo puestos que aún hacen falta DESPUÉS de descontar próximos ingresos.
       .filter((r) => r.netTotal > 0)
       .sort((a, b) =>
         a.pos.area.localeCompare(b.pos.area) ||
         (a.pos.seccion || '').localeCompare(b.pos.seccion || '') ||
         a.pos.puesto.localeCompare(b.pos.puesto)
       );
-
-    filtered.forEach((r) => {
-      faltanPlantilla += r.netPlantilla;
-      faltanBackup += r.netBackup;
-    });
-
-    return {
-      missingPositions: filtered,
-      totalFaltanPlantilla: faltanPlantilla,
-      totalFaltanBackup: faltanBackup
-    };
   }, [coverage]);
+
+  // 2. Totales recalculados excluyendo filas bloureadas
+  const { totalFaltanPlantilla, totalFaltanBackup } = useMemo(() => {
+    let faltanPlantilla = 0;
+    let faltanBackup = 0;
+    missingPositions.forEach((r) => {
+      const key = `${r.pos.area}-${r.pos.seccion || 'none'}-${r.pos.puesto}`;
+      if (!dismissedKeys.has(key)) {
+        faltanPlantilla += r.netPlantilla;
+        faltanBackup += r.netBackup;
+      }
+    });
+    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup };
+  }, [missingPositions, dismissedKeys]);
 
   // 2. Creamos un diccionario (Hash Map) de procesos activos (O(1) lookup)
   const processStatsMap = useMemo(() => {
@@ -239,9 +255,16 @@ export function MissingPositionsModal({
                     const faltanBackup = r.netBackup;
 
                     const rowKey = `${pos.area}-${pos.seccion || 'none'}-${pos.puesto}`;
+                    const isDismissed = dismissedKeys.has(rowKey);
 
                     return (
-                      <tr key={rowKey}>
+                      <tr
+                        key={rowKey}
+                        className={isDismissed ? 'is-dismissed' : ''}
+                        onClick={() => toggleDismiss(rowKey)}
+                        title={isDismissed ? 'Click para incluir de nuevo en el conteo' : 'Click para excluir del conteo'}
+                        aria-pressed={isDismissed}
+                      >
                         <td>
                           <div className="missing-positions-modal__loc">
                             <span className="missing-positions-modal__loc-area">
