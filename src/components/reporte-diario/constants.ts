@@ -72,6 +72,25 @@ export const ALLOWED_PUESTOS = new Set([
 
 export const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"])
 
+// ── Secciones visibles en "Impacto por Sección" del Reporte Diario ───────────
+// Solo se muestran las secciones operativas relevantes.
+export const VISIBLE_SECTIONS = new Set([
+    'A. CALIDAD 1ER TURNO',
+    'A. CALIDAD 2DO. TURNO',
+    'ALMACÉN',
+    'ALMACÉN 1ER TURNO',
+    'ALMACÉN 2DO TURNO',
+    'CALIDAD ADMTVO',
+    'MANTENIMIENTO',
+    'METROLOGÍA',
+    'MOLDES',
+    'PRODUCCIÓN 1ER. TURNO',
+    'PRODUCCIÓN 2o. TURNO',
+    'PRODUCCIÓN 3ER. TURNO',
+    'PRODUCCIÓN 4o. TURNO',
+    'PRODUCCIÓN MONTAJE',
+])
+
 // ── SECTION_CONFIGS: secciones únicas derivadas de PLANTILLA_AUTORIZADA ───────
 // Cada entrada = una sección de la plantilla con su headcount total sumado.
 // Ésta es la fuente canónica para el grid de secciones del Reporte Diario.
