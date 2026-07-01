@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Users, CalendarX, MapPin } from "lucide-react";
-import { isIncidence, formatMes } from "./helpers";
+import { formatMes } from "./helpers";
+import { AUSENTISMO_CODES } from "./ausentismo-helpers";
 import type { ReporteRow } from "./types";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -52,7 +53,7 @@ function computeKpis(
             totalDaysTracked++;
             if (code === "A") {
                 totalAsistencias++;
-            } else if (isIncidence(code)) {
+            } else if (AUSENTISMO_CODES.has(code)) {
                 totalIncidencias++;
                 incidentsByDay[day] = (incidentsByDay[day] ?? 0) + 1;
                 incidentsByArea[row.area] = (incidentsByArea[row.area] ?? 0) + 1;

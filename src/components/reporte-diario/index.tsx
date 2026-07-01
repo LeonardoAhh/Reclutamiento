@@ -531,7 +531,7 @@ export default function ReporteDiarioContent() {
     }, [])
 
     const heroKpis = useMemo(
-        () => computeKpis(selectedRows, dayHeaders),
+        () => computeKpis(selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area)), dayHeaders),
         [computeKpis, selectedRows, dayHeaders],
     )
 
@@ -905,7 +905,7 @@ export default function ReporteDiarioContent() {
                     <div className="reporte-container">
                         {currentMonth && rows.length > 0 && (
                             <ReporteKpiDashboard
-                                selectedRows={selectedRows}
+                                selectedRows={selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area))}
                                 dayHeaders={dayHeaders}
                                 currentMonth={currentMonth}
                             />
