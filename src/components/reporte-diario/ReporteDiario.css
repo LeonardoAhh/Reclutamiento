@@ -1921,6 +1921,543 @@ button.reporte-card:focus-visible,
   margin-inline: 0;
 }
 
+/* ── Acciones del header del calendario ─────────────────────────────────── */
+.reporte-cal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Botón "Récord incidencias" */
+.reporte-top-emp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+              border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.reporte-top-emp-btn:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+.reporte-top-emp-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Modal: Récord de incidencias ──────────────────────────────────────── */
+.top-emp-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+/* Tarjeta del empleado */
+.top-emp-modal__card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.top-emp-modal__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-muted);
+}
+
+.top-emp-modal__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-emp-modal__name {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  line-height: var(--type-body-md-line);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-emp-modal__meta {
+  margin: 0;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-caption-sm-line);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.top-emp-modal__dot {
+  color: var(--color-hairline-strong);
+}
+
+/* Total en la esquina derecha */
+.top-emp-modal__total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-error-tint);
+  border: 1px solid color-mix(in srgb, var(--color-error) 20%, transparent);
+  min-width: 56px;
+}
+
+.top-emp-modal__total-num {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: 1;
+  color: var(--color-error);
+}
+
+.top-emp-modal__total-label {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-error);
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* Título de sección interna */
+.top-emp-modal__section-title {
+  margin: 0 0 var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Lista de códigos de incidencia */
+.top-emp-modal__codes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-emp-modal__code-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-soft);
+}
+
+.top-emp-modal__code-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.top-emp-modal__code-label {
+  flex: 1;
+  font-size: var(--type-body-sm-size);
+  color: var(--color-charcoal);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-emp-modal__code-count {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* Lista por mes con mini barra de progreso */
+.top-emp-modal__months {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-emp-modal__month-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 2fr) auto auto;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.top-emp-modal__month-name {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-charcoal);
+  white-space: nowrap;
+}
+
+.top-emp-modal__month-bar-wrap {
+  height: 6px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.top-emp-modal__month-bar {
+  height: 100%;
+  border-radius: var(--rounded-full);
+  background: var(--color-error);
+  transition: width var(--transition-normal);
+  min-width: 4px;
+}
+
+.top-emp-modal__month-count {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  text-align: right;
+  min-width: 24px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .top-emp-modal {
+    padding: var(--spacing-md);
+  }
+
+  .top-emp-modal__month-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .top-emp-modal__month-bar-wrap {
+    display: none;
+  }
+}
+
+/* ── Lista rankeada top 10 ───────────────────────────────────────────────── */
+.top-emp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-emp-item {
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.top-emp-item:last-child {
+  border-bottom: none;
+}
+
+/* Fila de empleado (botón clickeable) */
+.top-emp-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+  min-height: 52px;
+}
+
+.top-emp-row:hover {
+  background: var(--color-surface-soft);
+}
+
+.top-emp-item--open .top-emp-row {
+  background: var(--color-surface-soft);
+}
+
+.top-emp-row:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+/* Número de rank */
+.top-emp-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-muted);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.top-emp-rank--first {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+/* Info del empleado */
+.top-emp-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.top-emp-row__name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: var(--type-body-sm-line);
+}
+
+.top-emp-row__meta {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: var(--type-caption-sm-line);
+}
+
+/* Barra proporcional + total */
+.top-emp-row__right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.top-emp-row__bar-wrap {
+  width: 60px;
+  height: 4px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.top-emp-row__bar {
+  height: 100%;
+  border-radius: var(--rounded-full);
+  background: var(--color-error);
+  min-width: 3px;
+}
+
+.top-emp-rank--first ~ .top-emp-row__right .top-emp-row__bar {
+  background: var(--color-primary);
+}
+
+.top-emp-row__total {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  min-width: 26px;
+  text-align: right;
+}
+
+/* Detalle expandido */
+.top-emp-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  border-top: 1px solid var(--color-hairline-soft);
+  background: var(--color-canvas);
+}
+
+/* Mobile: sin barra de fila */
+@media (max-width: 480px) {
+  .top-emp-row {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .top-emp-row__bar-wrap {
+    display: none;
+  }
+
+  .top-emp-detail {
+    padding: var(--spacing-md);
+  }
+}
+
+/* ── Mes como botón clickeable ───────────────────────────────────────────── */
+.top-emp-modal__month-row--btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--rounded-md);
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.top-emp-modal__month-row--btn:hover {
+  background: var(--color-surface-soft);
+}
+
+.top-emp-modal__month-row--btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.top-emp-month-hint {
+  font-weight: 400;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted-soft);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.top-emp-month-chevron {
+  color: var(--color-muted-soft);
+  flex-shrink: 0;
+}
+
+/* ── Drill-down: vista de días ───────────────────────────────────────────── */
+.top-emp-drill-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.top-emp-drill-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.top-emp-drill-back:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.top-emp-drill-back:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.top-emp-drill-header__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-emp-drill-header__name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-emp-drill-header__month {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-caption-sm-line);
+}
+
+/* Lista de días */
+.top-emp-drill-days {
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-sm) 0;
+}
+
+.top-emp-drill-day {
+  display: grid;
+  grid-template-columns: 56px 44px 1fr;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.top-emp-drill-day:last-child {
+  border-bottom: none;
+}
+
+.top-emp-drill-day__num {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.top-emp-drill-day__label {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-charcoal);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-emp-drill-empty {
+  margin: 0;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  text-align: center;
+}
+
 /* ── Impacto por Área: 3 calidad arriba / 4 producción abajo ──────────────── */
 .reporte-area-grid {
   display: grid;
@@ -1932,4 +2469,306 @@ button.reporte-card:focus-visible,
 @media (min-width: 768px) {
   .reporte-area-grid--calidad { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .reporte-area-grid--prod    { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-} 
+}
+
+/* ================================================================
+   REPORTE AREA SUMMARY — Grid de 21+ secciones agrupadas por área
+   Mobile-first · Responsive · Sin hardcoding
+   ================================================================ */
+
+/* Contenedor principal de la sección */
+.ras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Encabezado con título + acciones */
+.ras__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.ras__header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.ras__heading {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-md-line);
+  color: var(--color-ink);
+}
+
+.ras__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-muted);
+  line-height: 1;
+}
+
+.ras__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.ras__incidents-total {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
+  border-radius: var(--rounded-full);
+  padding: var(--spacing-xxs) var(--spacing-sm);
+}
+
+.ras__clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.ras__clear-btn:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.ras__clear-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Grupos de secciones (uno por área padre) ─── */
+.ras__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.ras__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Etiqueta del área padre */
+.ras__group-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-hairline);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.ras__group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-muted-soft);
+  line-height: 1;
+}
+
+/* ── Grid de tarjetas (mobile-first) ─── */
+.ras__grid {
+  display: grid;
+  gap: var(--spacing-sm);
+  grid-template-columns: 1fr;             /* 1 col mobile */
+  align-items: start;
+}
+
+@media (min-width: 480px) {
+  .ras__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  .ras__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .ras__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1400px) {
+  .ras__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* ── Tarjeta de sección ─── */
+.ras-card {
+  text-align: left;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ras-card:hover {
+  border-color: var(--color-hairline-strong);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-ink) 6%, transparent);
+}
+
+.ras-card:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.ras-card--selected {
+  border-color: var(--color-primary);
+  background: var(--color-surface-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Header de la tarjeta */
+.ras-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+}
+
+.ras-card__name {
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.ras-card__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1;
+}
+
+/* Chip de descanso */
+.ras-card__descanso {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  align-self: flex-start;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1.3;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Footer con KPIs */
+.ras-card__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-hairline-soft);
+  gap: var(--spacing-xs);
+}
+
+.ras-card__kpis {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+
+.ras-card__kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ras-card__kpi dt {
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.ras-card__kpi dd {
+  margin: 0;
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+}
+
+/* Tendencia */
+.ras-card__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-caption-sm-line);
+  flex-shrink: 0;
+}
+

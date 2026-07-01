@@ -1,4 +1,5 @@
 import type { MexicoHolidayRule } from "./types"
+import { PLANTILLA_AUTORIZADA } from "@/lib/constants"
 
 export const INCIDENCIA_LABELS: Record<string, string> = {
     "-": "No contratado",
@@ -32,6 +33,8 @@ export const MEXICO_HOLIDAY_RULES: readonly MexicoHolidayRule[] = [
     { label: "Dia de las madres", month: 4, day: 10, fixed: true },
 ]
 
+// ── Compatibilidad con código que aún usa AREA_STAFF ──────────────────────────
+// Se mantiene solo como alias; la fuente de verdad es PLANTILLA_AUTORIZADA.
 export const AREA_STAFF = [
     { area: "A. CALIDAD 1ER TURNO", personal_autorizado: 22 },
     { area: "A. CALIDAD 2DO. TURNO", personal_autorizado: 22 },
@@ -68,3 +71,33 @@ export const ALLOWED_PUESTOS = new Set([
 ])
 
 export const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"])
+
+// ── SECTION_CONFIGS: secciones únicas derivadas de PLANTILLA_AUTORIZADA ───────
+// Cada entrada = una sección de la plantilla con su headcount total sumado.
+// Ésta es la fuente canónica para el grid de secciones del Reporte Diario.
+
+export interface SectionConfig {
+    /** Área padre (ej. 'PRODUCCIÓN') */
+    area: string
+    /** Nombre de la sección (ej. 'PRODUCCIÓN 1ER. TURNO') */
+    seccion: string
+    /** Suma de plantilla_autorizada de todos los puestos de la sección */
+    personal_autorizado: number
+}
+
+export const SECTION_CONFIGS: SectionConfig[] = (() => {
+    const map = new Map<string, SectionConfig>()
+    for (const pos of PLANTILLA_AUTORIZADA) {
+        const existing = map.get(pos.seccion)
+        if (existing) {
+            existing.personal_autorizado += pos.plantilla_autorizada
+        } else {
+            map.set(pos.seccion, {
+                area: pos.area,
+                seccion: pos.seccion,
+                personal_autorizado: pos.plantilla_autorizada,
+            })
+        }
+    }
+    return Array.from(map.values())
+})()
