@@ -7,6 +7,8 @@ import { Modal } from "@/components/ui/Modal";
 
 interface ReporteComparisonDialogProps {
     summaries: ReporteDiarioSummary[];
+    /** "icon" (default): botón compacto ícono · "labeled": ícono + texto */
+    triggerVariant?: "icon" | "labeled";
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
@@ -45,7 +47,21 @@ function TrendDelta({ diff, suffix = "", decimals = 0 }: { diff: number; suffix?
 
 // ─── Subcomponent: Trigger ─────────────────────────────────────────────────────
 
-function TriggerButton({ onClick }: { onClick: () => void }) {
+function TriggerButton({ onClick, variant = "icon" }: { onClick: () => void; variant?: "icon" | "labeled" }) {
+    if (variant === "labeled") {
+        return (
+            <button
+                type="button"
+                onClick={onClick}
+                className="reporte-saved__trigger reporte-saved__trigger--labeled"
+                aria-label="Comparativa mensual"
+                data-testid="open-comparison-btn"
+            >
+                <BarChart3 size={16} aria-hidden="true" />
+                <span className="reporte-saved__trigger-label">Comparar meses</span>
+            </button>
+        );
+    }
     return (
         <button
             type="button"
@@ -64,6 +80,7 @@ function TriggerButton({ onClick }: { onClick: () => void }) {
 
 export default function ReporteComparisonDialog({
     summaries,
+    triggerVariant = "icon",
 }: ReporteComparisonDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -87,7 +104,7 @@ export default function ReporteComparisonDialog({
 
     return (
         <>
-            <TriggerButton onClick={() => setIsOpen(true)} />
+            <TriggerButton onClick={() => setIsOpen(true)} variant={triggerVariant} />
 
             <Modal
                 isOpen={isOpen}

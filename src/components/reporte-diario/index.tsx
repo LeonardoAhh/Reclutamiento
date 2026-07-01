@@ -32,6 +32,7 @@ import {
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
+import { AUSENTISMO_CODES } from "./ausentismo-helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
 import ReporteCalendar from "./reporte-calendar"
@@ -521,7 +522,8 @@ export default function ReporteDiarioContent() {
                 if (!code || code === "-" || code === "X") continue
                 totalDaysTracked++
                 if (code === "A") totalAsistencias++
-                else if (isIncidence(code)) totalIncidencias++
+                // Consistente con ReporteKpiDashboard: solo códigos de ausentismo.
+                else if (AUSENTISMO_CODES.has(code)) totalIncidencias++
             }
         }
         const tasaAsistencia = totalDaysTracked > 0
@@ -803,19 +805,17 @@ export default function ReporteDiarioContent() {
                             <p className="reporte-hero__saved-hint">
                                 ¿Ya tienes reportes guardados?
                             </p>
-                            <div className="reporte-head__meta reporte-head__meta--center">
+                            <div className="reporte-hero__saved-actions">
                                 <ReportesGuardadosDialog
                                     savedSummaries={savedSummaries}
                                     dbSaving={dbSaving}
                                     onLoad={handleLoadFromDb}
                                     onDelete={handleDeleteFromDb}
                                     formatMes={formatMes}
+                                    triggerVariant="labeled"
                                 />
-                                <span className="reporte-hero__saved-hint">
-                                    {savedSummaries.length} {savedSummaries.length === 1 ? 'reporte disponible' : 'reportes disponibles'}
-                                </span>
                                 {savedSummaries.length >= 2 && (
-                                    <ReporteComparison summaries={savedSummaries} />
+                                    <ReporteComparison summaries={savedSummaries} triggerVariant="labeled" />
                                 )}
                             </div>
                         </div>
@@ -994,11 +994,11 @@ export default function ReporteDiarioContent() {
                     </div>
 
                     {hasData && (
-                        <div className="reporte-head__meta" aria-label="Información del reporte cargado">
+                        <div className="reporte-head__grid" aria-label="Información del reporte cargado">
                             {fileName && (
                                 <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
                                     <FileJson size={16} className="text-primary" aria-hidden="true" />
-                                    <span>{fileName}</span>
+                                    <span className="reporte-head__grid-text">{fileName}</span>
                                     <button
                                         type="button"
                                         onClick={handleClearFile}
@@ -1011,11 +1011,15 @@ export default function ReporteDiarioContent() {
                                     </button>
                                 </div>
                             )}
-                            <span className="reporte-status-banner reporte-status-banner--warn">
-                                {heroKpis.totalIncidencias} incidencias
+                            <span
+                                className="reporte-status-banner reporte-status-banner--warn"
+                                aria-label={`${heroKpis.totalIncidencias} incidencias detectadas`}
+                            >
+                                <span className="reporte-head__grid-value">{heroKpis.totalIncidencias}</span>
+                                <span className="reporte-head__grid-text">incidencias</span>
                             </span>
                             {(savedSummaries.length >= 2) && (
-                                <ReporteComparison summaries={savedSummaries} />
+                                <ReporteComparison summaries={savedSummaries} triggerVariant="labeled" />
                             )}
                             {(savedSummaries.length > 0) && (
                                 <ReportesGuardadosDialog
@@ -1024,6 +1028,7 @@ export default function ReporteDiarioContent() {
                                     onLoad={handleLoadFromDb}
                                     onDelete={handleDeleteFromDb}
                                     formatMes={formatMes}
+                                    triggerVariant="labeled"
                                 />
                             )}
                         </div>

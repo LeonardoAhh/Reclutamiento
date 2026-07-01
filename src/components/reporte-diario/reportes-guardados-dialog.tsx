@@ -15,6 +15,8 @@ interface ReportesGuardadosDialogProps {
     onLoad: (mes: string) => void
     onDelete: (id: string) => void
     formatMes: (mes: string) => string
+    /** "icon" (default): botón compacto ícono + contador · "labeled": ícono + texto */
+    triggerVariant?: "icon" | "labeled"
 }
 
 export default function ReportesGuardadosDialog({
@@ -23,23 +25,40 @@ export default function ReportesGuardadosDialog({
     onLoad,
     onDelete,
     formatMes,
+    triggerVariant = "icon",
 }: ReportesGuardadosDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const count = savedSummaries.length;
+    const label = count === 1 ? "1 reporte guardado" : `${count} reportes guardados`;
 
     return (
         <>
             {/* Trigger */}
-            <button
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className="reporte-saved__trigger reporte-saved__trigger--icon"
-                aria-label={`Reportes guardados (${savedSummaries.length})`}
-                title="Reportes guardados"
-                data-testid="open-saved-reports-btn"
-            >
-                <Database size={16} aria-hidden="true" />
-                <span className="reporte-saved__count" aria-hidden="true">{savedSummaries.length}</span>
-            </button>
+            {triggerVariant === "labeled" ? (
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    className="reporte-saved__trigger reporte-saved__trigger--labeled"
+                    aria-label={label}
+                    data-testid="open-saved-reports-btn"
+                >
+                    <Database size={16} aria-hidden="true" />
+                    <span className="reporte-saved__trigger-label">Ver guardados</span>
+                    <span className="reporte-saved__count" aria-hidden="true">{count}</span>
+                </button>
+            ) : (
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    className="reporte-saved__trigger reporte-saved__trigger--icon"
+                    aria-label={`Reportes guardados (${count})`}
+                    title="Reportes guardados"
+                    data-testid="open-saved-reports-btn"
+                >
+                    <Database size={16} aria-hidden="true" />
+                    <span className="reporte-saved__count" aria-hidden="true">{count}</span>
+                </button>
+            )}
 
             <Modal
                 isOpen={isOpen}
