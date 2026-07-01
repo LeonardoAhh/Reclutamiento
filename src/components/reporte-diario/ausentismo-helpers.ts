@@ -3,8 +3,8 @@ import { parseReporteJSON } from "./helpers"
 import type { ReporteRow, IncidentTab } from "./types"
 
 // Codes treated as "ausentismo" puro (no asistencia, no descanso, no festivo)
-// Aligned with the existing pct_ausentismo definition in index.tsx (F + P + I).
-export const AUSENTISMO_CODES = new Set<string>(["F", "P", "I"])
+// F=Falta injustificada, FJ=Falta justificada, S=Sanción, P=Permiso, I=Incapacidad
+export const AUSENTISMO_CODES = new Set<string>(["F", "FJ", "S", "P", "I"])
 
 // Codes considered "incidencias" of any kind (everything that is not asistencia,
 // descanso, festivo, no-contrato o sin-incidencia).

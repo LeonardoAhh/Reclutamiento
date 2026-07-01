@@ -540,14 +540,18 @@ export default function ReporteDiarioContent() {
         const monthRows = rows.filter((r) => r.mes === currentMonth)
         const dCount = daysInMonth(currentMonth)
         const dHeaders = Array.from({ length: dCount }, (_, i) => String(i + 1).padStart(2, "0"))
-        const { totalIncidencias, tasaAsistencia } = computeKpis(monthRows, dHeaders)
 
-        const diasDisponibles = monthRows.length * dCount
+        // Solo las 14 secciones configuradas para KPIs del resumen
+        const visibleRows = monthRows.filter((r) => VISIBLE_SECTIONS.has(r.area))
+        const { totalIncidencias, tasaAsistencia } = computeKpis(visibleRows, dHeaders)
+
+        const diasDisponibles = visibleRows.length * dCount
         let totalAusentismo = 0
-        for (const row of monthRows) {
+        for (const row of visibleRows) {
             for (const day of dHeaders) {
                 const code = row.days[day]
-                if (code === "F" || code === "P" || code === "I") {
+                // F=Falta injustificada, FJ=Falta justificada, S=Sanción, P=Permiso, I=Incapacidad
+                if (code === "F" || code === "FJ" || code === "S" || code === "P" || code === "I") {
                     totalAusentismo++
                 }
             }
@@ -558,8 +562,8 @@ export default function ReporteDiarioContent() {
 
         const result = await saveReport({
             mes: currentMonth,
-            data: monthRows,
-            total_empleados: monthRows.length,
+            data: monthRows,                    // datos completos para drill-down
+            total_empleados: visibleRows.length, // solo 14 secciones
             total_incidencias: totalIncidencias,
             tasa_asistencia: tasaAsistencia,
             dias_disponibles: diasDisponibles,
