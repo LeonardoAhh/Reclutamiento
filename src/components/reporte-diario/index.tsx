@@ -594,14 +594,18 @@ export default function ReporteDiarioContent() {
 
     // Días con incidencia de un empleado en un mes específico (para drill-down)
     const getDrillDownDays = useCallback((empKey: string, mes: string) => {
+        const [year, month] = mes.split('-').map(Number)
+        const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
         const empRows = allMonthsRows.filter((r) => r.numero_empleado === empKey && r.mes === mes)
         const seen = new Set<string>()
-        const days: { day: string; code: string; label: string }[] = []
+        const days: { day: string; dayLabel: string; code: string; label: string }[] = []
         for (const row of empRows) {
             for (const [day, code] of Object.entries(row.days)) {
                 if (isIncidence(code) && !seen.has(day)) {
                     seen.add(day)
-                    days.push({ day, code, label: INCIDENCIA_LABELS[code] ?? code })
+                    const dayNum = parseInt(day, 10)
+                    const weekday = DAY_NAMES[new Date(year, month - 1, dayNum).getDay()]
+                    days.push({ day, dayLabel: `${weekday} ${dayNum}`, code, label: INCIDENCIA_LABELS[code] ?? code })
                 }
             }
         }
@@ -1215,10 +1219,10 @@ export default function ReporteDiarioContent() {
                                             <p className="top-emp-drill-empty">Sin incidencias registradas este mes.</p>
                                         ) : (
                                             <ol className="top-emp-drill-days" aria-label={`Días con incidencia en ${formatMes(drillDownMonth.mes)}`}>
-                                                {days.map(({ day, code, label }) => (
+                                                {days.map(({ day, dayLabel, code, label }) => (
                                                     <li key={day} className="top-emp-drill-day">
-                                                        <span className="top-emp-drill-day__num" aria-label={`Día ${parseInt(day, 10)}`}>
-                                                            {parseInt(day, 10)}
+                                                        <span className="top-emp-drill-day__num" aria-label={dayLabel}>
+                                                            {dayLabel}
                                                         </span>
                                                         <span className="top-emp-modal__code-badge" aria-hidden="true">{code}</span>
                                                         <span className="top-emp-drill-day__label">{label}</span>
