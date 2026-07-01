@@ -64,6 +64,7 @@ export default function ReporteDiarioContent() {
     const [panelCollapsed, setPanelCollapsed] = useState(false);
     const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
     const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
+    const [drillDownMonth, setDrillDownMonth] = useState<{ empKey: string; mes: string } | null>(null);
 
     const [processStep, setProcessStep] = useState<"reading" | "validating" | "generating" | null>(null)
     const [previewData, setPreviewData] = useState<{
@@ -590,6 +591,22 @@ export default function ReporteDiarioContent() {
             setSavedSummaries(updated)
         }
     }, [deleteReport, fetchSummaries])
+
+    // Días con incidencia de un empleado en un mes específico (para drill-down)
+    const getDrillDownDays = useCallback((empKey: string, mes: string) => {
+        const empRows = allMonthsRows.filter((r) => r.numero_empleado === empKey && r.mes === mes)
+        const seen = new Set<string>()
+        const days: { day: string; code: string; label: string }[] = []
+        for (const row of empRows) {
+            for (const [day, code] of Object.entries(row.days)) {
+                if (isIncidence(code) && !seen.has(day)) {
+                    seen.add(day)
+                    days.push({ day, code, label: INCIDENCIA_LABELS[code] ?? code })
+                }
+            }
+        }
+        return days.sort((a, b) => parseInt(a.day, 10) - parseInt(b.day, 10))
+    }, [allMonthsRows])
 
     const handleExportPdf = useCallback(async () => {
         if (!selectedDay || !currentMonth) return
@@ -1152,7 +1169,7 @@ export default function ReporteDiarioContent() {
             {topIncidenceEmployees.length > 0 && (
                 <Modal
                     isOpen={topEmpModalOpen}
-                    onClose={() => setTopEmpModalOpen(false)}
+                    onClose={() => { setTopEmpModalOpen(false); setDrillDownMonth(null) }}
                     title="Top 10 incidencias"
                     subtitle={(() => {
                         const allMeses = Array.from(new Set(allMonthsRows.map(r => r.mes))).sort()
@@ -1163,100 +1180,163 @@ export default function ReporteDiarioContent() {
                     size="md"
                 >
                     <div className="top-emp-modal">
-                        {/* Lista rankeada */}
-                        <ol className="top-emp-list" aria-label="Top 10 empleados con más incidencias">
-                            {topIncidenceEmployees.map((emp, idx) => {
-                                const isOpen = selectedTopEmpKey === emp.numero_empleado
-                                const detailId = `top-emp-detail-${emp.numero_empleado}`
-                                const maxTotal = topIncidenceEmployees[0].total
-                                const barPct = Math.round((emp.total / maxTotal) * 100)
+                        <AnimatePresence mode="wait" initial={false}>
 
+                            {/* ── Vista detalle: días de un mes específico ── */}
+                            {drillDownMonth ? (() => {
+                                const emp = topIncidenceEmployees.find(e => e.numero_empleado === drillDownMonth.empKey)
+                                const days = getDrillDownDays(drillDownMonth.empKey, drillDownMonth.mes)
                                 return (
-                                    <li key={emp.numero_empleado} className={`top-emp-item${isOpen ? " top-emp-item--open" : ""}`}>
-                                        {/* Fila principal — click para expandir */}
-                                        <button
-                                            type="button"
-                                            className="top-emp-row"
-                                            aria-expanded={isOpen}
-                                            aria-controls={detailId}
-                                            onClick={() => setSelectedTopEmpKey(isOpen ? null : emp.numero_empleado)}
-                                            data-testid={`top-emp-row-${idx + 1}`}
-                                        >
-                                            {/* Rank */}
-                                            <span className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`} aria-label={`Posición ${idx + 1}`}>
-                                                {idx + 1}
-                                            </span>
-
-                                            {/* Info */}
-                                            <span className="top-emp-row__info">
-                                                <span className="top-emp-row__name">{emp.nombre}</span>
-                                                <span className="top-emp-row__meta">
-                                                    #{emp.numero_empleado}
-                                                    <span aria-hidden="true"> · </span>
-                                                    {emp.area}
-                                                </span>
-                                            </span>
-
-                                            {/* Barra + total */}
-                                            <span className="top-emp-row__right" aria-hidden="true">
-                                                <span className="top-emp-row__bar-wrap">
-                                                    <span className="top-emp-row__bar" style={{ width: `${barPct}%` }} />
-                                                </span>
-                                                <span className="top-emp-row__total" aria-label={`${emp.total} incidencias`}>
-                                                    {emp.total}
-                                                </span>
-                                            </span>
-                                        </button>
-
-                                        {/* Detalle expandible */}
-                                        {isOpen && (
-                                            <div id={detailId} className="top-emp-detail">
-
-                                                {/* Por tipo */}
-                                                <section aria-labelledby={`type-heading-${emp.numero_empleado}`}>
-                                                    <h4 id={`type-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">Por tipo</h4>
-                                                    <div className="top-emp-modal__codes" role="list">
-                                                        {Object.entries(emp.byCode)
-                                                            .sort(([, a], [, b]) => b - a)
-                                                            .map(([code, count]) => (
-                                                                <div key={code} className="top-emp-modal__code-item" role="listitem"
-                                                                    aria-label={`${INCIDENCIA_LABELS[code] ?? code}: ${count}`}>
-                                                                    <span className="top-emp-modal__code-badge">{code}</span>
-                                                                    <span className="top-emp-modal__code-label">{INCIDENCIA_LABELS[code] ?? code}</span>
-                                                                    <span className="top-emp-modal__code-count">{count}</span>
-                                                                </div>
-                                                            ))}
-                                                    </div>
-                                                </section>
-
-                                                {/* Por mes */}
-                                                <section aria-labelledby={`month-heading-${emp.numero_empleado}`}>
-                                                    <h4 id={`month-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">Por mes</h4>
-                                                    <div className="top-emp-modal__months" role="list">
-                                                        {Object.entries(emp.byMes)
-                                                            .sort(([a], [b]) => a.localeCompare(b))
-                                                            .map(([mes, count]) => {
-                                                                const pct = Math.round((count / emp.total) * 100)
-                                                                return (
-                                                                    <div key={mes} className="top-emp-modal__month-row" role="listitem"
-                                                                        aria-label={`${formatMes(mes)}: ${count} incidencias`}>
-                                                                        <span className="top-emp-modal__month-name">{formatMes(mes)}</span>
-                                                                        <div className="top-emp-modal__month-bar-wrap" aria-hidden="true">
-                                                                            <div className="top-emp-modal__month-bar" style={{ width: `${pct}%` }} />
-                                                                        </div>
-                                                                        <span className="top-emp-modal__month-count">{count}</span>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                    </div>
-                                                </section>
-
+                                    <motion.div
+                                        key="drill"
+                                        initial={{ opacity: 0, x: 24 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 24 }}
+                                        transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
+                                    >
+                                        <div className="top-emp-drill-header">
+                                            <button
+                                                type="button"
+                                                className="top-emp-drill-back"
+                                                onClick={() => setDrillDownMonth(null)}
+                                                aria-label="Regresar a la lista de empleados"
+                                                data-testid="drill-back-btn"
+                                            >
+                                                <ChevronLeft size={16} aria-hidden="true" />
+                                                <span>Regresar</span>
+                                            </button>
+                                            <div className="top-emp-drill-header__info">
+                                                <span className="top-emp-drill-header__name">{emp?.nombre}</span>
+                                                <span className="top-emp-drill-header__month">{formatMes(drillDownMonth.mes)}</span>
                                             </div>
+                                        </div>
+
+                                        {days.length === 0 ? (
+                                            <p className="top-emp-drill-empty">Sin incidencias registradas este mes.</p>
+                                        ) : (
+                                            <ol className="top-emp-drill-days" aria-label={`Días con incidencia en ${formatMes(drillDownMonth.mes)}`}>
+                                                {days.map(({ day, code, label }) => (
+                                                    <li key={day} className="top-emp-drill-day">
+                                                        <span className="top-emp-drill-day__num" aria-label={`Día ${parseInt(day, 10)}`}>
+                                                            {parseInt(day, 10)}
+                                                        </span>
+                                                        <span className="top-emp-modal__code-badge" aria-hidden="true">{code}</span>
+                                                        <span className="top-emp-drill-day__label">{label}</span>
+                                                    </li>
+                                                ))}
+                                            </ol>
                                         )}
-                                    </li>
+                                    </motion.div>
                                 )
-                            })}
-                        </ol>
+                            })() : (
+
+                            /* ── Vista principal: lista top 10 ── */
+                            <motion.div
+                                key="list"
+                                initial={{ opacity: 0, x: -24 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -24 }}
+                                transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
+                            >
+                                <ol className="top-emp-list" aria-label="Top 10 empleados con más incidencias">
+                                    {topIncidenceEmployees.map((emp, idx) => {
+                                        const isOpen = selectedTopEmpKey === emp.numero_empleado
+                                        const detailId = `top-emp-detail-${emp.numero_empleado}`
+                                        const maxTotal = topIncidenceEmployees[0].total
+                                        const barPct = Math.round((emp.total / maxTotal) * 100)
+
+                                        return (
+                                            <li key={emp.numero_empleado} className={`top-emp-item${isOpen ? " top-emp-item--open" : ""}`}>
+                                                <button
+                                                    type="button"
+                                                    className="top-emp-row"
+                                                    aria-expanded={isOpen}
+                                                    aria-controls={detailId}
+                                                    onClick={() => {
+                                                        setDrillDownMonth(null)
+                                                        setSelectedTopEmpKey(isOpen ? null : emp.numero_empleado)
+                                                    }}
+                                                    data-testid={`top-emp-row-${idx + 1}`}
+                                                >
+                                                    <span className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`} aria-label={`Posición ${idx + 1}`}>
+                                                        {idx + 1}
+                                                    </span>
+                                                    <span className="top-emp-row__info">
+                                                        <span className="top-emp-row__name">{emp.nombre}</span>
+                                                        <span className="top-emp-row__meta">
+                                                            #{emp.numero_empleado}
+                                                            <span aria-hidden="true"> · </span>
+                                                            {emp.area}
+                                                        </span>
+                                                    </span>
+                                                    <span className="top-emp-row__right" aria-hidden="true">
+                                                        <span className="top-emp-row__bar-wrap">
+                                                            <span className="top-emp-row__bar" style={{ width: `${barPct}%` }} />
+                                                        </span>
+                                                        <span className="top-emp-row__total" aria-label={`${emp.total} incidencias`}>
+                                                            {emp.total}
+                                                        </span>
+                                                    </span>
+                                                </button>
+
+                                                {isOpen && (
+                                                    <div id={detailId} className="top-emp-detail">
+                                                        <section aria-labelledby={`type-heading-${emp.numero_empleado}`}>
+                                                            <h4 id={`type-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">Por tipo</h4>
+                                                            <div className="top-emp-modal__codes" role="list">
+                                                                {Object.entries(emp.byCode)
+                                                                    .sort(([, a], [, b]) => b - a)
+                                                                    .map(([code, count]) => (
+                                                                        <div key={code} className="top-emp-modal__code-item" role="listitem"
+                                                                            aria-label={`${INCIDENCIA_LABELS[code] ?? code}: ${count}`}>
+                                                                            <span className="top-emp-modal__code-badge">{code}</span>
+                                                                            <span className="top-emp-modal__code-label">{INCIDENCIA_LABELS[code] ?? code}</span>
+                                                                            <span className="top-emp-modal__code-count">{count}</span>
+                                                                        </div>
+                                                                    ))}
+                                                            </div>
+                                                        </section>
+
+                                                        <section aria-labelledby={`month-heading-${emp.numero_empleado}`}>
+                                                            <h4 id={`month-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">
+                                                                Por mes
+                                                                <span className="top-emp-month-hint"> — toca para ver los días</span>
+                                                            </h4>
+                                                            <div className="top-emp-modal__months" role="list">
+                                                                {Object.entries(emp.byMes)
+                                                                    .sort(([a], [b]) => a.localeCompare(b))
+                                                                    .map(([mes, count]) => {
+                                                                        const pct = Math.round((count / emp.total) * 100)
+                                                                        return (
+                                                                            <button
+                                                                                key={mes}
+                                                                                type="button"
+                                                                                className="top-emp-modal__month-row top-emp-modal__month-row--btn"
+                                                                                onClick={() => setDrillDownMonth({ empKey: emp.numero_empleado, mes })}
+                                                                                aria-label={`Ver días de ${formatMes(mes)}: ${count} incidencias`}
+                                                                                data-testid={`month-drill-${emp.numero_empleado}-${mes}`}
+                                                                            >
+                                                                                <span className="top-emp-modal__month-name">{formatMes(mes)}</span>
+                                                                                <div className="top-emp-modal__month-bar-wrap" aria-hidden="true">
+                                                                                    <div className="top-emp-modal__month-bar" style={{ width: `${pct}%` }} />
+                                                                                </div>
+                                                                                <span className="top-emp-modal__month-count">{count}</span>
+                                                                                <ChevronRight size={13} className="top-emp-month-chevron" aria-hidden="true" />
+                                                                            </button>
+                                                                        )
+                                                                    })}
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                )}
+                                            </li>
+                                        )
+                                    })}
+                                </ol>
+                            </motion.div>
+                            )}
+
+                        </AnimatePresence>
                     </div>
                 </Modal>
             )}
