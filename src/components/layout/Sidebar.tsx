@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   BarChart3,
   Users,
@@ -44,17 +45,36 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
 type SidebarProps = {
   collapsed: boolean;
   onToggleCollapse: () => void;
+  /** Forzar colapso (sin toggle). Se usa para auto-colapsar al navegar. */
+  onCollapse?: () => void;
 };
 
 /**
  * Sidebar de escritorio (≥1024px). Fija a la izquierda, colapsable a iconos.
- * Construida 100% con design tokens (Ollama): canvas + hairline, sin sombras.
- * Footer: tema, sesión activa y cerrar sesión.
+ * Al navegar entre páginas se contrae automáticamente para dar más espacio
+ * al contenido; el usuario puede volver a expandir con el botón toggle.
+ * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
  */
-export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
+export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProps) {
   const { username, signOut } = useAuth();
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
+  const location = useLocation();
+  const firstNavRef = useRef(true);
+
+  /* ── Auto-colapso al navegar ─────────────────────────────────────────
+     Cuando cambia la ruta (por click, URL bar o browser back), colapsamos
+     el sidebar para dar más espacio al contenido. Ignoramos el primer
+     render para respetar la preferencia guardada del usuario al cargar. */
+  useEffect(() => {
+    if (firstNavRef.current) {
+      firstNavRef.current = false;
+      return;
+    }
+    if (!collapsed && onCollapse) {
+      onCollapse();
+    }
+  }, [location.pathname, collapsed, onCollapse]);
 
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
@@ -69,6 +89,15 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       setSigningOut(false);
     }
   }, [signingOut, signOut, username]);
+
+  /** Iniciales del usuario para el avatar. */
+  const userInitials = useMemo(() => {
+    if (!username) return '';
+    const base = username.split('@')[0] ?? '';
+    const parts = base.split(/[._\-\s]+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return base.slice(0, 2).toUpperCase();
+  }, [username]);
 
   if (!username) return null;
 
@@ -115,8 +144,20 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
                 aria-label={label}
                 data-testid={`sidebar-nav-${to.replace('/', '') || 'kpis'}`}
               >
-                <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
-                <span className="sidebar__item-label">{label}</span>
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.span
+                        layoutId="sidebar-active-indicator"
+                        className="sidebar__item-active-indicator"
+                        aria-hidden="true"
+                        transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                      />
+                    )}
+                    <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
+                    <span className="sidebar__item-label">{label}</span>
+                  </>
+                )}
               </NavLink>
             </li>
           ))}
@@ -126,6 +167,9 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
 {/* Footer: tarjeta de usuario + tema + logout */}
       <div className="sidebar__footer">
         <div className="sidebar__user">
+          <span className="sidebar__avatar" aria-hidden="true" title={username}>
+            {userInitials}
+          </span>
           {!collapsed && (
             <>
               <div className="sidebar__session">

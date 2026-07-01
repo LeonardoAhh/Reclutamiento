@@ -226,46 +226,10 @@
 }
 
 /* ─────────────────────────────────────────────
-   Tablet (768px – 1024px): nav horizontal con scroll.
-───────────────────────────────────────────── */
-@media (max-width: 1024px) and (min-width: 768px) {
-  .app-header__inner {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .app-header__nav {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .app-header__nav-list {
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    padding-inline: var(--spacing-xs);
-    scroll-padding-inline: var(--spacing-xs);
-  }
-
-  .app-header__nav-list::-webkit-scrollbar {
-    display: none;
-  }
-
-  .app-header__nav-item {
-    white-space: nowrap;
-  }
-}
-
-/* ─────────────────────────────────────────────
-   Móvil (<768px): nav delegado al BottomTabBar.
+   Tablet + Móvil (<1024px): nav delegado al BottomTabBar.
    Header: brand a la izquierda, acciones a la derecha.
 ───────────────────────────────────────────── */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .app-header__inner {
     display: flex;
     justify-content: space-between;
@@ -275,11 +239,10 @@
     display: none;
   }
 
-  .app-header__actions {  
+  .app-header__actions {
     justify-content: flex-end;
   }
 }
-
 
 /* Desktop (>=1024px): la navegacion vive en el Sidebar; ocultamos el Header. */
 @media (min-width: 1024px) {

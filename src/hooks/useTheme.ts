@@ -26,14 +26,22 @@ function getInitialTheme(): Theme {
     : 'light';
 }
 
+/** Colores exactos del canvas por tema — deben coincidir con los tokens
+ * `--color-canvas` de global.css. Se usan para pintar el `<html>` durante
+ * el safe-area (iOS notch) y el <meta name="theme-color">. */
+const CANVAS_BY_THEME: Record<Theme, string> = {
+  light: '#f6f5f4', // warm paper — coincide con --color-canvas (light)
+  dark: '#191817',  // deep neutral — coincide con --color-canvas (dark)
+};
+
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
   root.setAttribute('data-theme', theme);
   // El safe-area superior en iOS lo pinta el <html>.
-  root.style.backgroundColor = theme === 'dark' ? '#0a0a0a' : '#ffffff';
+  root.style.backgroundColor = CANVAS_BY_THEME[theme];
   const meta = document.getElementById('theme-color-meta');
   if (meta) {
-    meta.setAttribute('content', theme === 'dark' ? '#0a0a0a' : '#ffffff');
+    meta.setAttribute('content', CANVAS_BY_THEME[theme]);
   }
 }
 
