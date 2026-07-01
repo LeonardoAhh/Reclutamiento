@@ -77,12 +77,15 @@ export default function ReporteDiarioContent() {
         saving: dbSaving,
         fetchSummaries,
         fetchByMes,
+        fetchByMesList,
         saveReport,
         deleteReport,
     } = useReporteDiario()
 
     const [savedSummaries, setSavedSummaries] = useState<ReporteDiarioSummary[]>([])
     const [loadingDb, setLoadingDb] = useState(true)
+    // Filas de TODOS los meses guardados en Supabase (para análisis cross-month)
+    const [allMonthsRows, setAllMonthsRows] = useState<ReporteRow[]>([])
 
     // Recuperar último reporte parseado si se recarga la página por accidente
     useEffect(() => {
@@ -109,6 +112,21 @@ export default function ReporteDiarioContent() {
         })
     }, [fetchSummaries])
 
+    // Cuando cambia la lista de meses guardados, trae el contenido completo
+    // de todos los meses para el cálculo cross-month (récord de incidencias).
+    useEffect(() => {
+        if (savedSummaries.length === 0) { setAllMonthsRows([]); return }
+        const mesList = savedSummaries.map((s) => s.mes)
+        fetchByMesList(mesList).then((records) => {
+            const combined: ReporteRow[] = []
+            for (const record of records) {
+                const { rows: parsed } = parseReporteJSON(record.data as unknown[])
+                combined.push(...parsed)
+            }
+            setAllMonthsRows(combined)
+        })
+    }, [savedSummaries, fetchByMesList])
+
     // Notifica a la navbar (badge del Menú) cuando cambian los datos del
     // reporte o la lista de meses guardados en Supabase.
     useEffect(() => {
@@ -134,7 +152,16 @@ export default function ReporteDiarioContent() {
 
     // ── Empleado con más incidencias en TODOS los meses cargados ──────────────
     const topIncidenceEmployee = useMemo(() => {
-        if (rows.length === 0) return null;
+        // Base: todos los meses guardados en Supabase.
+        // Si el mes en memoria aún no está guardado, lo incluimos también.
+        const dbMeses = new Set(allMonthsRows.map((r) => r.mes))
+        const currentMes = rows[0]?.mes ?? null
+        const analysisRows: ReporteRow[] =
+            currentMes && !dbMeses.has(currentMes)
+                ? [...allMonthsRows, ...rows]
+                : allMonthsRows
+
+        if (analysisRows.length === 0) return null;
 
         const empMap = new Map<string, {
             numero_empleado: string;
@@ -146,7 +173,7 @@ export default function ReporteDiarioContent() {
             byMes: Record<string, number>;
         }>();
 
-        for (const row of rows) {
+        for (const row of analysisRows) {
             const k = row.numero_empleado;
             if (!empMap.has(k)) {
                 empMap.set(k, {
@@ -175,7 +202,7 @@ export default function ReporteDiarioContent() {
             if (emp.total > max) { max = emp.total; top = emp; }
         }
         return max > 0 ? top : null;
-    }, [rows]);
+    }, [allMonthsRows, rows]);
 
     const selectedRows = useMemo(() => {
         const lower = search.toLowerCase()
@@ -1127,7 +1154,12 @@ export default function ReporteDiarioContent() {
                     isOpen={topEmpModalOpen}
                     onClose={() => setTopEmpModalOpen(false)}
                     title="Récord de incidencias"
-                    subtitle={`Basado en ${months.length} mes${months.length !== 1 ? "es" : ""} cargado${months.length !== 1 ? "s" : ""}: ${months.map((m) => formatMes(m)).join(", ")}`}
+                    subtitle={(() => {
+                        const allMeses = Array.from(new Set(allMonthsRows.map(r => r.mes))).sort()
+                        const currentMes = rows[0]?.mes
+                        if (currentMes && !allMeses.includes(currentMes)) allMeses.push(currentMes)
+                        return `Basado en ${allMeses.length} mes${allMeses.length !== 1 ? "es" : ""} guardado${allMeses.length !== 1 ? "s" : ""}: ${allMeses.map((m) => formatMes(m)).join(", ")}`
+                    })()}
                     size="md"
                 >
                     <div className="top-emp-modal">
