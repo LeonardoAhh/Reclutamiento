@@ -1921,6 +1921,257 @@ button.reporte-card:focus-visible,
   margin-inline: 0;
 }
 
+/* ── Acciones del header del calendario ─────────────────────────────────── */
+.reporte-cal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Botón "Récord incidencias" */
+.reporte-top-emp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+              border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.reporte-top-emp-btn:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+.reporte-top-emp-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Modal: Récord de incidencias ──────────────────────────────────────── */
+.top-emp-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+/* Tarjeta del empleado */
+.top-emp-modal__card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.top-emp-modal__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-muted);
+}
+
+.top-emp-modal__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-emp-modal__name {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  line-height: var(--type-body-md-line);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-emp-modal__meta {
+  margin: 0;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-caption-sm-line);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.top-emp-modal__dot {
+  color: var(--color-hairline-strong);
+}
+
+/* Total en la esquina derecha */
+.top-emp-modal__total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-error-tint);
+  border: 1px solid color-mix(in srgb, var(--color-error) 20%, transparent);
+  min-width: 56px;
+}
+
+.top-emp-modal__total-num {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: 1;
+  color: var(--color-error);
+}
+
+.top-emp-modal__total-label {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-error);
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* Título de sección interna */
+.top-emp-modal__section-title {
+  margin: 0 0 var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Lista de códigos de incidencia */
+.top-emp-modal__codes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-emp-modal__code-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-soft);
+}
+
+.top-emp-modal__code-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.top-emp-modal__code-label {
+  flex: 1;
+  font-size: var(--type-body-sm-size);
+  color: var(--color-charcoal);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-emp-modal__code-count {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* Lista por mes con mini barra de progreso */
+.top-emp-modal__months {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-emp-modal__month-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 2fr) auto;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.top-emp-modal__month-name {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-charcoal);
+  white-space: nowrap;
+}
+
+.top-emp-modal__month-bar-wrap {
+  height: 6px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.top-emp-modal__month-bar {
+  height: 100%;
+  border-radius: var(--rounded-full);
+  background: var(--color-error);
+  transition: width var(--transition-normal);
+  min-width: 4px;
+}
+
+.top-emp-modal__month-count {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  text-align: right;
+  min-width: 24px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .top-emp-modal {
+    padding: var(--spacing-md);
+  }
+
+  .top-emp-modal__month-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .top-emp-modal__month-bar-wrap {
+    display: none;
+  }
+}
+
 /* ── Impacto por Área: 3 calidad arriba / 4 producción abajo ──────────────── */
 .reporte-area-grid {
   display: grid;
