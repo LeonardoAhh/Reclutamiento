@@ -1,8 +1,8 @@
 {
-  "version": "0.2.0",
+  "version": "0.1.2",
   "fecha": "2026-07-01",
   "nivel": "success",
-  "titulo": "Sistema actualizado",
-  "mensaje": "Pagina de reporte diario con nuevas funcionalidades y mejoras en la interfaz.",
+  "titulo": "Actualización completada",
+  "mensaje": "Capacidad de rutas actualizado con prox. ingresos del 01/07/2026",
   "notificar": true
 }
