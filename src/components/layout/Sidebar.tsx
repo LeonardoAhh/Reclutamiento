@@ -60,21 +60,18 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
   const location = useLocation();
-  const firstNavRef = useRef(true);
+  const prevPathRef = useRef(location.pathname);
 
   /* ── Auto-colapso al navegar ─────────────────────────────────────────
      Cuando cambia la ruta (por click, URL bar o browser back), colapsamos
-     el sidebar para dar más espacio al contenido. Ignoramos el primer
-     render para respetar la preferencia guardada del usuario al cargar. */
+     el sidebar para dar más espacio al contenido. Usamos un ref para
+     detectar cambio real de ruta (no reaccionamos a `collapsed`, lo que
+     provocaría un loop al intentar expandir manualmente). */
   useEffect(() => {
-    if (firstNavRef.current) {
-      firstNavRef.current = false;
-      return;
-    }
-    if (!collapsed && onCollapse) {
-      onCollapse();
-    }
-  }, [location.pathname, collapsed, onCollapse]);
+    if (prevPathRef.current === location.pathname) return;
+    prevPathRef.current = location.pathname;
+    onCollapse?.();
+  }, [location.pathname, onCollapse]);
 
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
