@@ -708,7 +708,7 @@ export default function ReporteDiarioContent() {
                 <header className="reporte-card reporte-head">
                     <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
-                            <h1 className="reporte-title">Reporte Diario</h1>
+                            <h1 className="reporte-title">Reporte Asistencia</h1>
                         </div>
 
                         <div className="reporte-control-group">
