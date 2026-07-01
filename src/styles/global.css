@@ -22,8 +22,8 @@
   --color-surface: #ffffff;                /* Cards, panels, form fields */
   --color-surface-soft: #f6f5f4;           /* Nav pills, dividers suaves */
   --color-surface-card: #ffffff;           /* Cards de feature/testimonial */
-  --color-surface-dark: #213183;           /* Hero "night" band (deep indigo) */
-  --color-surface-dark-elevated: #2b3d99;  /* Cards anidadas sobre indigo */
+  --color-surface-dark: #191817;           /* Superficies oscuras (login panel, footer) */
+  --color-surface-dark-elevated: #232120;  /* Cards anidadas sobre superficie oscura */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #e6e6e6;

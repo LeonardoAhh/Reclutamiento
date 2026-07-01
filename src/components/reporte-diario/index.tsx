@@ -732,8 +732,7 @@ export default function ReporteDiarioContent() {
                             Sube tu reporte de asistencia
                         </h1>
                         <p className="reporte-hero__subtitle">
-                            Carga el archivo JSON del mes para visualizar KPIs,
-                            calendario diario y el detalle por colaborador.
+                            Visualiza métricas, calendario y detalle por colaborador.
                         </p>
                     </header>
 
@@ -752,17 +751,17 @@ export default function ReporteDiarioContent() {
                                 fileInputRef.current?.click();
                             }
                         }}
-                        aria-label="Sube un archivo JSON de reporte de asistencia"
+                        aria-label="Sube un archivo de reporte de asistencia"
                         data-testid="upload-dropzone"
                     >
                         <span className="reporte-hero__dropzone-icon" aria-hidden="true">
                             <CloudUpload size={28} />
                         </span>
                         <h3 className="reporte-hero__dropzone-title">
-                            Click para subir o arrastra el archivo
+                            Arrastra o selecciona un archivo
                         </h3>
                         <p className="reporte-hero__dropzone-hint">
-                            Formato admitido: JSON exportado del sistema de asistencia.
+                            Detectamos el mes automáticamente.
                         </p>
                         <span className="reporte-hero__dropzone-format" aria-hidden="true">
                             <FileJson size={12} />
@@ -770,31 +769,31 @@ export default function ReporteDiarioContent() {
                         </span>
                     </div>
 
-                    <ol className="reporte-hero__steps" aria-label="Pasos para generar tu reporte">
+                    <ol className="reporte-hero__steps" aria-label="Cómo funciona">
                         <li className="reporte-hero__step">
                             <span className="reporte-hero__step-index" aria-hidden="true">1</span>
                             <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Sube el archivo</p>
+                                <p className="reporte-hero__step-title">Sube</p>
                                 <p className="reporte-hero__step-desc">
-                                    Selecciona el JSON del mes generado por el sistema.
+                                    Elige el archivo desde tu equipo.
                                 </p>
                             </div>
                         </li>
                         <li className="reporte-hero__step">
                             <span className="reporte-hero__step-index" aria-hidden="true">2</span>
                             <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Revisa los KPIs</p>
+                                <p className="reporte-hero__step-title">Analiza</p>
                                 <p className="reporte-hero__step-desc">
-                                    Analiza tasa de asistencia, incidencias y calendario diario.
+                                    Explora asistencia e incidencias por día.
                                 </p>
                             </div>
                         </li>
                         <li className="reporte-hero__step">
                             <span className="reporte-hero__step-index" aria-hidden="true">3</span>
                             <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Guarda el mes</p>
+                                <p className="reporte-hero__step-title">Guarda</p>
                                 <p className="reporte-hero__step-desc">
-                                    Consulta y compara históricos con los meses anteriores.
+                                    Compara con los meses anteriores.
                                 </p>
                             </div>
                         </li>

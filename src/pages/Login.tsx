@@ -6,8 +6,9 @@ import './Login.css';
 
 // Valores hex para la API del navegador (<meta name="theme-color">).
 // No pueden ser CSS variables — el browser los necesita resueltos.
-const BROWSER_BAR_LIGHT = '#ffffff';
-const BROWSER_BAR_DARK  = '#0a0a0a';
+// Deben coincidir con --color-canvas de global.css (Notion warm paper / dark neutral).
+const BROWSER_BAR_LIGHT = '#f6f5f4';
+const BROWSER_BAR_DARK  = '#191817';
 
 export function Login() {
   const { signIn } = useAuth();
