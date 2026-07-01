@@ -22,7 +22,7 @@
         <!-- Color de la barra del navegador en Chrome/Edge/Android y Safari iOS 15+.
          Debe coincidir con --color-canvas. Se actualiza dinámicamente por el
          script de tema (ver abajo) y por el hook useTheme. -->
-        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+        <meta name="theme-color" content="#f6f5f4" id="theme-color-meta" />
 
         <!-- =====================================================================
          PWA / INSTALACIÓN EN PANTALLA DE INICIO
@@ -147,17 +147,16 @@
                     /* 6. Actualizar el meta theme-color del navegador.
                 Debe coincidir con --color-canvas para que iOS pinte la barra
                 de estado del color correcto del tema. */
+                    var CANVAS_LIGHT = "#f6f5f4"; /* warm paper — Notion */
+                    var CANVAS_DARK  = "#191817"; /* deep neutral — Notion dark */
+                    var canvas = theme === "dark" ? CANVAS_DARK : CANVAS_LIGHT;
                     var meta = document.getElementById("theme-color-meta");
                     if (meta) {
-                        meta.setAttribute(
-                            "content",
-                            theme === "dark" ? "#0a0a0a" : "#ffffff",
-                        );
+                        meta.setAttribute("content", canvas);
                     }
                     /* También fijamos el background del <html> de inmediato
-                para que el safe-area superior en iOS no parpadee en blanco. */
-                    document.documentElement.style.backgroundColor =
-                        theme === "dark" ? "#0a0a0a" : "#ffffff";
+                para que el safe-area superior en iOS no parpadee. */
+                    document.documentElement.style.backgroundColor = canvas;
 
                     /* 7. Remover la clase de bloqueo en el siguiente frame,
                 una vez que los estilos iniciales ya se aplicaron */
