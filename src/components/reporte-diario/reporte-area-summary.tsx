@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Users, TrendingDown, TrendingUp, Filter, ChevronRight, Moon } from "lucide-react";
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
+import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
 import { Modal } from "@/components/ui/Modal";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -13,286 +14,38 @@ interface ReporteAreaSummaryProps {
     detailRows: AreaDetailRow[];
 }
 
-// ─── Style Maps ────────────────────────────────────────────────────────────────
-
-const STYLES = {
-    container: {
-        display: "flex",
-        flexDirection: "column" as const,
-        gap: "var(--spacing-lg)",
-    },
-    header: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    headerTitle: {
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-sm)",
-        fontWeight: "var(--type-body-strong-weight)",
-        fontSize: "var(--type-body-md-size)",
-        lineHeight: "var(--type-body-md-line)",
-        color: "var(--color-ink)",
-    },
-    clearBtn: {
-        padding: "var(--spacing-xs) var(--spacing-sm)",
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-xs)",
-        borderRadius: "var(--rounded-full)",
-        border: "1px solid var(--color-hairline)",
-        background: "var(--color-surface-card)",
-        color: "var(--color-charcoal)",
-        fontFamily: "var(--font-body)",
-        fontSize: "var(--type-body-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        lineHeight: "var(--type-body-sm-line)",
-        cursor: "pointer",
-        transition: "all var(--transition-fast)",
-    },
-    grid: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 3fr))",
-        gap: "var(--spacing-md)",
-        alignItems: "start",
-        alignContent: "start",
-    },
-    areaCard: {
-        base: {
-            cursor: "pointer",
-            textAlign: "left" as const,
-            position: "relative" as const,
-            padding: "var(--spacing-md)",
-            borderRadius: "var(--rounded-lg)",
-            border: "1px solid var(--color-hairline)",
-            background: "var(--color-surface-card)",
-            transition: "all var(--transition-base)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--spacing-sm)",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
-            overflow: "hidden",
-        },
-        selected: {
-            borderColor: "var(--color-primary)",
-            background: "var(--color-surface-soft)",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-            transform: "translateY(-2px)",
-        },
-    },
-    areaHeader: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        marginBottom: "var(--spacing-sm)",
-        width: "100%",
-    },
-    areaName: {
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        lineHeight: "var(--type-caption-sm-line)",
-        color: "var(--color-muted)",
-        whiteSpace: "nowrap" as const,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        paddingRight: "var(--spacing-xs)",
-        minWidth: 0,
-    },
-    incidentBadge: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "28px",
-        minWidth: "28px",
-        borderRadius: "var(--rounded-md)",
-        padding: "0 var(--spacing-sm)",
-        fontSize: "var(--type-body-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        lineHeight: "1",
-    },
-    descansoBadge: {
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "var(--spacing-xxs)",
-        alignSelf: "flex-start",
-        maxWidth: "100%",
-        padding: "var(--spacing-xxs) var(--spacing-sm)",
-        borderRadius: "var(--rounded-full)",
-        background: "var(--color-primary)",
-        color: "var(--color-on-primary)",
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        lineHeight: "1.3",
-        overflow: "hidden",
-    },
-    areaFooter: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-end",
-        marginTop: "var(--spacing-md)",
-        width: "100%",
-        paddingTop: "var(--spacing-sm)",
-        borderTop: "1px solid var(--color-hairline-soft)",
-    },
-    staffCount: {
-        display: "flex",
-        flexDirection: "column" as const,
-        gap: "var(--spacing-xxs)",
-    },
-    staffLabel: {
-        fontSize: "var(--type-caption-sm-size)",
-        lineHeight: "var(--type-caption-sm-line)",
-        color: "var(--color-muted)",
-        textTransform: "uppercase" as const,
-        letterSpacing: "0.5px",
-    },
-    staffValue: {
-        fontSize: "var(--type-heading-sm-size)",
-        fontWeight: "var(--type-heading-sm-weight)",
-        lineHeight: "var(--type-heading-sm-line)",
-        color: "var(--color-ink)",
-    },
-    trend: {
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-xs)",
-    },
-    trendValue: {
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
-        lineHeight: "var(--type-caption-sm-line)",
-    },
-    modalTableWrapper: {
-        marginTop: "var(--spacing-md)",
-        overflowY: "auto" as const,
-        maxHeight: "60vh",
-        border: "1px solid var(--color-hairline)",
-        borderRadius: "var(--rounded-lg)",
-    },
-    table: {
-        width: "100%",
-        tableLayout: "auto" as const,
-        fontSize: "var(--type-body-sm-size)",
-        lineHeight: "var(--type-body-sm-line)",
-        borderCollapse: "collapse" as const,
-    },
-    thead: {
-        background: "var(--color-surface-soft)",
-        position: "sticky" as const,
-        top: 0,
-        zIndex: 10,
-    },
-    th: {
-        padding: "var(--spacing-sm) var(--spacing-md)",
-        textAlign: "left" as const,
-        fontWeight: "var(--type-body-strong-weight)",
-        color: "var(--color-muted)",
-        borderBottom: "1px solid var(--color-hairline)",
-        fontSize: "var(--type-caption-sm-size)",
-        lineHeight: "var(--type-caption-sm-line)",
-    },
-    tbody: {
-        background: "var(--color-surface-card)",
-    },
-    tr: {
-        borderBottom: "1px solid var(--color-hairline-soft)",
-    },
-    td: {
-        base: {
-            padding: "var(--spacing-sm) var(--spacing-md)",
-        },
-        number: {
-            color: "var(--color-muted)",
-            fontFamily: "var(--font-code)",
-            fontSize: "var(--type-caption-sm-size)",
-            lineHeight: "var(--type-caption-sm-line)",
-        },
-        name: {
-            fontWeight: "var(--type-body-strong-weight)",
-            color: "var(--color-ink)",
-            whiteSpace: "nowrap" as const,
-        },
-        shift: {
-            display: "inline-flex",
-            alignItems: "center",
-            borderRadius: "var(--rounded-full)",
-            background: "var(--color-surface-soft)",
-            padding: "var(--spacing-xxs) var(--spacing-sm)",
-            fontSize: "var(--type-caption-sm-size)",
-            lineHeight: "var(--type-caption-sm-line)",
-        },
-        dept: {
-            color: "var(--color-muted)",
-            fontSize: "var(--type-caption-sm-size)",
-            lineHeight: "var(--type-caption-sm-line)",
-        },
-    },
-    emptyCell: {
-        padding: "var(--spacing-xl)",
-        textAlign: "center" as const,
-        color: "var(--color-muted)",
-        fontSize: "var(--type-body-sm-size)",
-        lineHeight: "var(--type-body-sm-line)",
-    },
-    modalFooter: {
-        display: "flex",
-        justifyContent: "flex-end",
-        marginTop: "var(--spacing-md)",
-    },
-} as const;
-
-// ─── Constants ─────────────────────────────────────────────────────────────────
-
-const STATUS_THRESHOLDS = {
-    critical: 15,
-    warning: 5,
-} as const;
-
-const TREND_THRESHOLD = 10;
+interface AreaGroup {
+    area: string;
+    sections: AreaStaffSummary[];
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-interface StatusColors {
-    background: string;
-    text: string;
-    border: string;
-}
+const STATUS_THRESHOLDS = { critical: 15, warning: 5 } as const;
+const TREND_THRESHOLD = 10;
+
+interface StatusColors { background: string; text: string }
 
 function getStatusColors(pct: number, hasIncidents: boolean): StatusColors {
-    if (!hasIncidents) {
-        return {
-            background: "var(--color-surface-soft)",
-            text: "var(--color-muted)",
-            border: "var(--color-hairline)",
-        };
-    }
-    if (pct > STATUS_THRESHOLDS.critical) {
-        return {
-            background: "var(--color-error-tint)",
-            text: "var(--color-error)",
-            border: "var(--color-error)",
-        };
-    }
-    if (pct > STATUS_THRESHOLDS.warning) {
-        return {
-            background: "var(--color-warning-tint)",
-            text: "var(--color-warning)",
-            border: "var(--color-warning)",
-        };
-    }
+    if (!hasIncidents) return {
+        background: "var(--color-surface-soft)",
+        text: "var(--color-muted)",
+    };
+    if (pct > STATUS_THRESHOLDS.critical) return {
+        background: "var(--color-error-tint)",
+        text: "var(--color-error)",
+    };
+    if (pct > STATUS_THRESHOLDS.warning) return {
+        background: "var(--color-warning-tint)",
+        text: "var(--color-warning)",
+    };
     return {
         background: "var(--color-primary-tint, rgba(0,0,0,0.05))",
         text: "var(--color-primary)",
-        border: "var(--color-primary)",
     };
 }
 
-function getTrendColor(pct: number): string {
-    return pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
-}
-
-// ─── Subcomponent: Area Card ───────────────────────────────────────────────────
+// ─── AreaCard ──────────────────────────────────────────────────────────────────
 
 interface AreaCardProps {
     area: AreaStaffSummary;
@@ -304,82 +57,72 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     const pct = area.personal_activo > 0
         ? (area.personal_incidencia / area.personal_activo) * 100
         : 0;
-
     const status = getStatusColors(pct, area.personal_incidencia > 0);
-
-    const cardStyle = {
-        ...STYLES.areaCard.base,
-        ...(isSelected ? STYLES.areaCard.selected : {}),
-    };
-
-    const badgeStyle = {
-        ...STYLES.incidentBadge,
-        backgroundColor: status.background,
-        color: status.text,
-    };
-
     const asistenciaValue = area.is_descanso ? "—" : area.personal_real;
-    const trendColor = getTrendColor(pct);
+    const trendColor = pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
 
     return (
         <button
-            key={area.area}
             type="button"
             onClick={onClick}
-            className="reporte__card"
-            style={cardStyle}
+            className={`ras-card${isSelected ? " ras-card--selected" : ""}`}
+            aria-pressed={isSelected}
+            aria-label={`Sección ${area.area}. Autorizado: ${area.personal_autorizado}, Contratados: ${area.personal_activo}, Asistencia: ${asistenciaValue}`}
+            data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
         >
-            <div style={STYLES.areaHeader}>
-                {area.is_descanso && (
-                <div style={STYLES.descansoBadge} data-testid={`area-descanso-${area.area}`}>
-                    <Moon size={12} aria-hidden="true" style={{ flexShrink: 0 }} />
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        Descanso
-                    </span>
-                </div>
-            )}
-                <span style={STYLES.areaName} title={area.area}>
+            {/* Header: nombre + badge de incidencias */}
+            <div className="ras-card__header">
+                <span className="ras-card__name" title={area.area}>
                     {area.area}
                 </span>
-                <div style={badgeStyle}>
+                <span
+                    className="ras-card__badge"
+                    style={{ background: status.background, color: status.text }}
+                    aria-label={`${area.personal_incidencia} incidencias`}
+                >
                     {area.personal_incidencia}
-                </div>
+                </span>
             </div>
 
-            <div style={STYLES.areaFooter}>
-                <div style={{ display: "flex", gap: "var(--spacing-lg)", alignItems: "center", minWidth: 0, flexWrap: "wrap" }}>
-                    <div style={STYLES.staffCount}>
-                        <span style={STYLES.staffLabel}>Autorizado</span>
-                        <span style={STYLES.staffValue}>{area.personal_autorizado}</span>
-                    </div>
-                    <div style={STYLES.staffCount}>
-                        <span style={STYLES.staffLabel}>Contratados</span>
-                        <span style={STYLES.staffValue}>{area.personal_activo}</span>
-                    </div>
-                    <div style={STYLES.staffCount}>
-                        <span style={STYLES.staffLabel}>Asistencia</span>
-                        <span style={STYLES.staffValue}>{asistenciaValue}</span>
-                    </div>
+            {/* Chip de descanso */}
+            {area.is_descanso && (
+                <div className="ras-card__descanso" data-testid={`area-descanso-${area.area}`}>
+                    <Moon size={11} aria-hidden="true" />
+                    <span>Descanso</span>
                 </div>
+            )}
+
+            {/* KPIs: autorizado / contratados / asistencia */}
+            <footer className="ras-card__footer">
+                <dl className="ras-card__kpis">
+                    <div className="ras-card__kpi">
+                        <dt>Autorizado</dt>
+                        <dd>{area.personal_autorizado}</dd>
+                    </div>
+                    <div className="ras-card__kpi">
+                        <dt>Contratados</dt>
+                        <dd>{area.personal_activo}</dd>
+                    </div>
+                    <div className="ras-card__kpi">
+                        <dt>Asistencia</dt>
+                        <dd>{asistenciaValue}</dd>
+                    </div>
+                </dl>
 
                 {area.personal_incidencia > 0 && (
-                    <div style={STYLES.trend}>
-                        {pct > TREND_THRESHOLD ? (
-                            <TrendingUp size={12} style={{ color: "var(--color-error)" }} />
-                        ) : (
-                            <TrendingDown size={12} style={{ color: "var(--color-success)" }} />
-                        )}
-                        <span style={{ ...STYLES.trendValue, color: trendColor }}>
-                            {pct.toFixed(0)}%
-                        </span>
-                    </div>
+                    <span className="ras-card__trend" style={{ color: trendColor }} aria-label={`${pct.toFixed(0)}% ausentismo`}>
+                        {pct > TREND_THRESHOLD
+                            ? <TrendingUp size={12} aria-hidden="true" />
+                            : <TrendingDown size={12} style={{ color: "var(--color-success)" }} aria-hidden="true" />}
+                        {pct.toFixed(0)}%
+                    </span>
                 )}
-            </div>
+            </footer>
         </button>
     );
 }
 
-// ─── Subcomponent: Incidence Badge ─────────────────────────────────────────────
+// ─── IncidenceBadge ────────────────────────────────────────────────────────────
 
 const INC_TONE: Record<string, "error" | "warn" | "info"> = {
     F: "error", S: "error", I: "error",
@@ -389,39 +132,29 @@ const INC_TONE: Record<string, "error" | "warn" | "info"> = {
 
 function IncidenceBadge({ code }: { code: string }) {
     const tone = INC_TONE[code] ?? "warn";
-    const label = INCIDENCIA_LABELS[code] ?? code;
-    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{label}</span>;
+    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{INCIDENCIA_LABELS[code] ?? code}</span>;
 }
 
-// ─── Subcomponent: Detail List (mobile cards + desktop table) ───────────────────
+// ─── DetailList ────────────────────────────────────────────────────────────────
 
-interface DetailListProps {
-    rows: AreaDetailRow[];
-}
-
-function DetailList({ rows }: DetailListProps) {
+function DetailList({ rows }: { rows: AreaDetailRow[] }) {
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-    const toggle = (key: string) => {
-        setExpanded((prev) => {
-            const next = new Set(prev);
-            if (next.has(key)) next.delete(key);
-            else next.add(key);
-            return next;
-        });
-    };
+    const toggle = (key: string) => setExpanded((prev) => {
+        const next = new Set(prev);
+        if (next.has(key)) next.delete(key); else next.add(key);
+        return next;
+    });
 
-    if (rows.length === 0) {
-        return (
-            <div className="reporte-incidents__empty" style={{ padding: "var(--spacing-lg)" }}>
-                <p>No hay ausencias registradas para esta área.</p>
-            </div>
-        );
-    }
+    if (rows.length === 0) return (
+        <div className="reporte-incidents__empty" style={{ padding: "var(--spacing-lg)" }}>
+            <p>No hay ausencias registradas para esta sección.</p>
+        </div>
+    );
 
     return (
         <div style={{ padding: "var(--spacing-lg)" }}>
-            {/* Desktop table */}
+            {/* Desktop: tabla */}
             <div className="reporte-incidents__table-wrap">
                 <table className="reporte-incidents__table">
                     <thead>
@@ -447,7 +180,7 @@ function DetailList({ rows }: DetailListProps) {
                 </table>
             </div>
 
-            {/* Mobile cards with inline expand */}
+            {/* Mobile: cards colapsables */}
             <ul className="reporte-incidents__cards" aria-label="Detalle de ausencias por empleado">
                 {rows.map((row) => {
                     const isOpen = expanded.has(row.key);
@@ -504,10 +237,33 @@ export default function ReporteAreaSummary({
 }: ReporteAreaSummaryProps) {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-    const sortedAreas = useMemo(
-        () => [...areas].sort((a, b) => a.area.localeCompare(b.area, "es", { sensitivity: "base" })),
-        [areas]
-    );
+    // Mapa seccion → área padre derivado de PLANTILLA_AUTORIZADA
+    const sectionAreaMap = useMemo(() => {
+        const map = new Map<string, string>();
+        for (const pos of PLANTILLA_AUTORIZADA) {
+            map.set(pos.seccion, pos.area);
+        }
+        return map;
+    }, []);
+
+    // Agrupa las secciones por su área padre y ordena internamente
+    const areaGroups = useMemo((): AreaGroup[] => {
+        const groups = new Map<string, AreaStaffSummary[]>();
+        for (const sec of areas) {
+            const parent = sectionAreaMap.get(sec.area) ?? sec.area;
+            if (!groups.has(parent)) groups.set(parent, []);
+            groups.get(parent)!.push(sec);
+        }
+        // Ordenamos los grupos alfabéticamente y las secciones dentro de cada grupo
+        return Array.from(groups.entries())
+            .sort(([a], [b]) => a.localeCompare(b, "es", { sensitivity: "base" }))
+            .map(([area, sections]) => ({
+                area,
+                sections: sections.sort((a, b) =>
+                    a.area.localeCompare(b.area, "es", { sensitivity: "base" })
+                ),
+            }));
+    }, [areas, sectionAreaMap]);
 
     const handleSelectArea = (area: string) => {
         if (selectedArea === area) {
@@ -520,53 +276,84 @@ export default function ReporteAreaSummary({
 
     if (areas.length === 0) return null;
 
+    const totalSecciones = areas.length;
+    const totalIncidencias = areas.reduce((n, a) => n + a.personal_incidencia, 0);
+
     return (
-        <div style={STYLES.container}>
-            {/* Header */}
-            <div style={STYLES.header}>
-                <div style={STYLES.headerTitle}>
-                    <Users size={16} style={{ color: "var(--color-muted)" }} />
-                    Impacto por Área
+        <section className="ras" aria-labelledby="ras-heading">
+
+            {/* Encabezado */}
+            <div className="ras__header">
+                <div className="ras__header-title">
+                    <Users size={16} aria-hidden="true" style={{ color: "var(--color-muted)", flexShrink: 0 }} />
+                    <h2 id="ras-heading" className="ras__heading">
+                        Impacto por Sección
+                    </h2>
+                    <span className="ras__count" aria-label={`${totalSecciones} secciones`}>
+                        {totalSecciones}
+                    </span>
                 </div>
-                {selectedArea && (
-                    <button
-                        type="button"
-                        onClick={() => onSelectArea(null)}
-                        style={STYLES.clearBtn}
+
+                <div className="ras__header-actions">
+                    {totalIncidencias > 0 && (
+                        <span
+                            className="ras__incidents-total"
+                            aria-label={`${totalIncidencias} incidencias totales`}
+                        >
+                            {totalIncidencias} incidencias
+                        </span>
+                    )}
+                    {selectedArea && (
+                        <button
+                            type="button"
+                            onClick={() => onSelectArea(null)}
+                            className="ras__clear-btn"
+                            aria-label="Limpiar filtro de sección"
+                            data-testid="clear-area-filter"
+                        >
+                            <Filter size={13} aria-hidden="true" />
+                            Limpiar filtro
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Grid agrupado por área */}
+            <div className="ras__groups" role="list" aria-label="Secciones de la plantilla">
+                {areaGroups.map(({ area, sections }) => (
+                    <div
+                        key={area}
+                        className="ras__group"
+                        role="listitem"
                     >
-                        <Filter size={14} />
-                        Limpiar filtro
-                    </button>
-                )}
+                        {/* Etiqueta del área padre */}
+                        <h3 className="ras__group-label">
+                            <span>{area}</span>
+                            <span className="ras__group-count" aria-label={`${sections.length} secciones`}>
+                                {sections.length}
+                            </span>
+                        </h3>
+
+                        {/* Grid de tarjetas de sección */}
+                        <div
+                            className="ras__grid"
+                            role="group"
+                            aria-label={`Secciones de ${area}`}
+                        >
+                            {sections.map((sec) => (
+                                <AreaCard
+                                    key={sec.area}
+                                    area={sec}
+                                    isSelected={selectedArea === sec.area}
+                                    onClick={() => handleSelectArea(sec.area)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
 
-           {/* Grids: 3 calidad arriba, 4 producción abajo */}
-            <div className="reporte-area-grid reporte-area-grid--calidad">
-                {sortedAreas
-                    .filter((a) => !a.area.toUpperCase().includes("PRODUC"))
-                    .map((area) => (
-                        <AreaCard
-                            key={area.area}
-                            area={area}
-                            isSelected={selectedArea === area.area}
-                            onClick={() => handleSelectArea(area.area)}
-                        />
-                    ))}
-            </div>
-            <div className="reporte-area-grid reporte-area-grid--prod">
-                {sortedAreas
-                    .filter((a) => a.area.toUpperCase().includes("PRODUC"))
-                    .map((area) => (
-                        <AreaCard
-                            key={area.area}
-                            area={area}
-                            isSelected={selectedArea === area.area}
-                            onClick={() => handleSelectArea(area.area)}
-                        />
-                    ))}
-            </div>
-
-            {/* Detail Modal */}
+            {/* Modal de detalle de ausencias */}
             <Modal
                 isOpen={isDetailOpen && selectedArea !== null}
                 onClose={() => {
@@ -574,12 +361,12 @@ export default function ReporteAreaSummary({
                     onSelectArea(null);
                 }}
                 title={`Detalle de ausencias: ${selectedArea}`}
-                subtitle={`Mostrando ${detailRows.length} colaboradores ausentes en esta área.`}
+                subtitle={`${detailRows.length} colaborador${detailRows.length !== 1 ? "es" : ""} ausente${detailRows.length !== 1 ? "s" : ""} en esta sección.`}
                 size="xl"
                 fullscreenMobile={true}
             >
                 <DetailList rows={detailRows} />
             </Modal>
-        </div>
+        </section>
     );
 }

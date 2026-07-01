@@ -1,4 +1,4 @@
-import type { INCIDENT_TABS, AREA_STAFF } from "./constants"
+import type { INCIDENT_TABS } from "./constants"
 
 export type IncidentTab = (typeof INCIDENT_TABS)[number]
 
@@ -6,11 +6,12 @@ export type MexicoHolidayRule =
     | { label: string; month: number; day: number; fixed: true }
     | { label: string; month: number; weekday: number; occurrence: number }
 
-export type AreaStaffDefinition = (typeof AREA_STAFF)[number]
-
-export type AreaStaffSummary = Omit<AreaStaffDefinition, "personal_autorizado"> & {
-    personal_activo: number
+/** Resumen de personal por sección para el grid del Reporte Diario */
+export interface AreaStaffSummary {
+    /** Nombre de la sección (ej. 'PRODUCCIÓN 1ER. TURNO') */
+    area: string
     personal_autorizado: number
+    personal_activo: number
     personal_incidencia: number
     personal_real: number
     is_descanso?: boolean

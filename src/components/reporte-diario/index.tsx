@@ -28,7 +28,7 @@ import {
     Search,
 } from "lucide-react"
 
-import { INCIDENT_TABS, INCIDENCIA_LABELS, AREA_STAFF, ALLOWED_PUESTOS } from "./constants"
+import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS } from "./constants"
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
@@ -213,13 +213,13 @@ export default function ReporteDiarioContent() {
     }, [selectedRows, selectedDay])
 
     const selectedDayAreaSummary = useMemo<AreaStaffSummary[]>(() => {
-        if (!selectedDay) return AREA_STAFF.map((area) => ({
-            ...area,
+        if (!selectedDay) return SECTION_CONFIGS.map((sec) => ({
+            area: sec.seccion,
             personal_activo: 0,
-            personal_autorizado: area.personal_autorizado,
+            personal_autorizado: sec.personal_autorizado,
             personal_incidencia: 0,
-            personal_real: area.personal_autorizado,
-        } as AreaStaffSummary))
+            personal_real: sec.personal_autorizado,
+        }))
 
         let dayOfWeek = -1
         if (currentMonth && selectedDay) {
@@ -227,36 +227,26 @@ export default function ReporteDiarioContent() {
             dayOfWeek = new Date(year, month - 1, parseInt(selectedDay, 10)).getDay()
         }
 
-        return AREA_STAFF.map((area) => {
-            const rowsInArea = selectedRows.filter(
-                (row) => row.area === area.area && ALLOWED_PUESTOS.has(row.puesto || ""),
-            )
-            const personal_activo = rowsInArea.length
-            const personal_incidencia = rowsInArea.reduce((count, row) => {
+        return SECTION_CONFIGS.map((sec) => {
+            const rowsInSection = selectedRows.filter((row) => row.area === sec.seccion)
+            const personal_activo = rowsInSection.length
+            const personal_incidencia = rowsInSection.reduce((count, row) => {
                 return count + (isIncidence(row.days[selectedDay]) ? 1 : 0)
             }, 0)
 
+            // Lógica de descanso para turnos de producción
             let is_descanso = false
             if (dayOfWeek !== -1) {
-                if (area.area === "PRODUCCIÓN 1ER. TURNO" && dayOfWeek === 0) {
-                    // Domingo
-                    is_descanso = true
-                } else if (area.area === "PRODUCCIÓN 2o. TURNO" && (dayOfWeek === 1 || dayOfWeek === 2)) {
-                    // Lunes y Martes
-                    is_descanso = true
-                } else if (area.area === "PRODUCCIÓN 3ER. TURNO" && (dayOfWeek === 3 || dayOfWeek === 4)) {
-                    // Miércoles y Jueves
-                    is_descanso = true
-                } else if (area.area === "PRODUCCIÓN 4o. TURNO" && (dayOfWeek === 5 || dayOfWeek === 6)) {
-                    // Viernes y Sábado
-                    is_descanso = true
-                }
+                if (sec.seccion === "PRODUCCIÓN 1ER. TURNO" && dayOfWeek === 0) is_descanso = true
+                else if (sec.seccion === "PRODUCCIÓN 2o. TURNO" && (dayOfWeek === 1 || dayOfWeek === 2)) is_descanso = true
+                else if (sec.seccion === "PRODUCCIÓN 3ER. TURNO" && (dayOfWeek === 3 || dayOfWeek === 4)) is_descanso = true
+                else if (sec.seccion === "PRODUCCIÓN 4o. TURNO" && (dayOfWeek === 5 || dayOfWeek === 6)) is_descanso = true
             }
 
             return {
-                ...area,
+                area: sec.seccion,
                 personal_activo,
-                personal_autorizado: area.personal_autorizado,
+                personal_autorizado: sec.personal_autorizado,
                 personal_incidencia,
                 personal_real: Math.max(personal_activo - personal_incidencia, 0),
                 is_descanso,
@@ -272,7 +262,6 @@ export default function ReporteDiarioContent() {
             .filter(
                 (row) =>
                     row.area === selectedArea &&
-                    ALLOWED_PUESTOS.has(row.puesto || "") &&
                     isIncidence(row.days[selectedDay]),
             )
             .filter((row) => {
