@@ -688,7 +688,7 @@ export default function ReporteDiarioContent() {
                 <header className="reporte-card reporte-head">
                     <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
-                            <h1 className="reporte-title">Reporte Diario</h1>
+                            <h1 className="reporte-title">Asistencia</h1>
                         </div>
                     </div>
                 </header>
@@ -716,7 +716,7 @@ export default function ReporteDiarioContent() {
                 <header className="reporte-card reporte-head">
                     <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
-                            <h1 className="reporte-title">Reporte Asistencia</h1>
+                            <h1 className="reporte-title">Asistencia</h1>
                         </div>
 
                         <div className="reporte-control-group">
@@ -852,9 +852,9 @@ export default function ReporteDiarioContent() {
                         data-testid="upload-dropzone"
                     >
                         <CloudUpload size={48} className="reporte-empty__icon" aria-hidden="true" />
-                        <h3 className="reporte-card__title">Sube tu reporte diario</h3>
+                        <h3 className="reporte-card__title">Click para subir</h3>
                         <p className="reporte-subtitle">
-                            Arrastra y suelta tu archivo de datos aquí, o haz clic para seleccionarlo.
+                            Arrastra o suelta el archivo aqui.
                         </p>
                     </div>
                 )}
@@ -1182,8 +1182,8 @@ export default function ReporteDiarioContent() {
                 <Modal
                     isOpen={topEmpModalOpen}
                     onClose={() => { setTopEmpModalOpen(false); setDrillDownMonth(null) }}
-                    title="Top empleados con más incidencias"
-                    subtitle="Reportes cargados en el sistema"
+                    title="Detalle incidencias"
+                    subtitle="Empleados con mas incidencias 2026."
                 >
                     <div className="top-emp-modal">
                         <AnimatePresence mode="wait" initial={false}>

@@ -1,8 +1,8 @@
 {
-  "version": "0.2.2",
+  "version": "0.2.2.1",
   "fecha": "2026-07-01",
   "nivel": "success",
   "titulo": "Actualización completada",
-  "mensaje": "Pagina reporte diario con mejoras en la visualización de datos y corrección de errores menores.",
+  "mensaje": "Actualización de la aplicación completada con éxito.",
   "notificar": true
 }
