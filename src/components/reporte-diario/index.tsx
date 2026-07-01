@@ -30,7 +30,7 @@ import {
     User,
 } from "lucide-react"
 
-import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS } from "./constants"
+import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
@@ -286,7 +286,9 @@ export default function ReporteDiarioContent() {
     }, [selectedRows, selectedDay])
 
     const selectedDayAreaSummary = useMemo<AreaStaffSummary[]>(() => {
-        if (!selectedDay) return SECTION_CONFIGS.map((sec) => ({
+        if (!selectedDay) return SECTION_CONFIGS
+            .filter((sec) => VISIBLE_SECTIONS.has(sec.seccion))
+            .map((sec) => ({
             area: sec.seccion,
             personal_activo: 0,
             personal_autorizado: sec.personal_autorizado,
@@ -300,7 +302,9 @@ export default function ReporteDiarioContent() {
             dayOfWeek = new Date(year, month - 1, parseInt(selectedDay, 10)).getDay()
         }
 
-        return SECTION_CONFIGS.map((sec) => {
+        return SECTION_CONFIGS
+            .filter((sec) => VISIBLE_SECTIONS.has(sec.seccion))
+            .map((sec) => {
             const rowsInSection = selectedRows.filter((row) => row.area === sec.seccion)
             const personal_activo = rowsInSection.length
             const personal_incidencia = rowsInSection.reduce((count, row) => {
