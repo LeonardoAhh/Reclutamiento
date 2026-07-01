@@ -1,151 +1,170 @@
 /* ========================================
-   DESIGN TOKENS — Ollama-inspired system
-   Pure white canvas · SF Pro Rounded · Single black accent · Hairline depth
+   DESIGN TOKENS — Notion-inspired system
+   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
+   Values updated · Variable names preserved for backwards compatibility.
    ======================================== */
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
-     Cal.com: acción casi-negra (#111111), no azul. */
-  --color-primary: #111111;
-  --color-primary-active: #242424;
-  --color-primary-disabled: #e5e7eb;
+     Notion: single blue accent (#0075de) reserved for CTAs / links / focus. */
+  --color-primary: #0075de;
+  --color-primary-active: #005bab;
+  --color-primary-disabled: #e6e6e6;
+
+  /* Deep indigo "night" band background — signature single-hero moment. */
+  --color-secondary: #213183;
+  --color-secondary-rgb: 33 49 131;
 
   /* ── Surface ────────────────────────────────────────────────────
-     Canvas blanco · cards gris claro (#f5f5f5) · footer/featured #101010 */
-  --color-canvas: #ffffff;
-  --color-surface-soft: #f8f9fa;          /* nav-pill-group, dividers suaves */
-  --color-surface-card: #f5f5f5;          /* feature/testimonial cards (gris) */
-  --color-surface-dark: #101010;          /* footer + featured pricing tier */
-  --color-surface-dark-elevated: #1a1a1a; /* cards anidadas en superficie oscura */
+     Warm paper canvas over pure white. Cards on pure white to lift from canvas. */
+  --color-canvas: #f6f5f4;                /* Warm off-white (paper) — page background */
+  --color-canvas-soft: #f6f5f4;            /* Alias explícito Notion */
+  --color-surface: #ffffff;                /* Cards, panels, form fields */
+  --color-surface-soft: #f6f5f4;           /* Nav pills, dividers suaves */
+  --color-surface-card: #ffffff;           /* Cards de feature/testimonial */
+  --color-surface-dark: #213183;           /* Hero "night" band (deep indigo) */
+  --color-surface-dark-elevated: #2b3d99;  /* Cards anidadas sobre indigo */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #e5e7eb;
-  --color-hairline-soft: #f3f4f6;
-  --color-hairline-strong: #d1d5db;
+  --color-hairline: #e6e6e6;
+  --color-hairline-soft: #f0efee;
+  --color-hairline-strong: #d5d3d1;
 
   /* ── Text ───────────────────────────────────────────────────── */
-  --color-ink: #111111;
-  --color-body-strong: #111111;
-  --color-body: #374151;
-  --color-charcoal: #4b5563;
-  --color-muted: #6b7280;
-  --color-muted-soft: #898989;
+  --color-ink: #000000;                    /* Notion true-black (soft via alpha en usos) */
+  --color-body-strong: #000000;
+  --color-body: #31302e;                   /* Warm charcoal — body copy */
+  --color-charcoal: #31302e;
+  --color-muted: #615d59;                  /* Stone — supporting copy */
+  --color-muted-soft: #a39e98;             /* Ash — captions, placeholders */
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
-  --color-on-dark-soft: #a1a1aa;
+  --color-on-dark-soft: #b8b6b3;
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-success: #1aae39;                /* Sticker green como affirmative */
+  --color-warning: #dd5b00;                /* Sticker orange como warning */
   --color-error: #ef4444;
 
-  /* ── Cal accent + badge pastels (uso escaso, nunca en CTAs) ──── */
-  --color-brand-accent: #3b82f6;
-  --color-badge-orange: #fb923c;
-  --color-badge-pink: #ec4899;
-  --color-badge-violet: #8b5cf6;
-  --color-badge-emerald: #34d399;
+  /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
+     Small colourful illustration blocks, app-icon tiles, category dots. */
+  --color-accent-sky: #62aef0;
+  --color-accent-purple: #d6b6f6;
+  --color-accent-purple-deep: #391c57;
+  --color-accent-pink: #ff64c8;
+  --color-accent-orange: #dd5b00;
+  --color-accent-orange-deep: #793400;
+  --color-accent-teal: #2a9d99;
+  --color-accent-green: #1aae39;
+  --color-accent-brown: #523410;
 
-  /* Accent colors (status badges existentes) */
-  --color-accent-teal: #14b8a6;
-  --color-accent-teal-rgb: 20 184 166;
-  --color-accent-amber: #f59e0b;
-  --color-accent-amber-rgb: 245 158 11;
+  /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  --color-brand-accent: var(--color-primary);
+  --color-badge-orange: var(--color-accent-orange);
+  --color-badge-pink: var(--color-accent-pink);
+  --color-badge-violet: var(--color-accent-purple);
+  --color-badge-emerald: var(--color-accent-green);
+
+  /* Accent RGB channels (usados por gradientes/tintes en la app) */
+  --color-accent-teal-rgb: 42 157 153;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: 221 91 0;
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 17 17 17;
+  --color-primary-rgb: 0 117 222;
   --color-error-rgb: 239 68 68;
-  --color-success-rgb: 16 185 129;
-  --color-ink-rgb: 17 17 17;
-  --color-canvas-rgb: 255 255 255;
+  --color-success-rgb: 26 174 57;
+  --color-ink-rgb: 0 0 0;
+  --color-canvas-rgb: 246 245 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  --color-focus-ring: rgba(59, 130, 246, 0.5);
-  --color-modal-scrim: rgba(0, 0, 0, 0.4);
+  --color-focus-ring: rgba(0, 117, 222, 0.35);
+  --color-modal-scrim: rgba(0, 0, 0, 0.32);
   --color-vacancy-tint: rgba(239, 68, 68, 0.05);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
-  --color-success-tint: rgba(16, 185, 129, 0.1);
+  --color-success-tint: rgba(26, 174, 57, 0.1);
   --color-error-tint: rgba(239, 68, 68, 0.1);
-  --color-warning-tint: rgba(245, 158, 11, 0.12);
-  --color-primary-tint: rgba(17, 17, 17, 0.05);
-  --color-header-glass: rgba(255, 255, 255, 0.92);
+  --color-warning-tint: rgba(221, 91, 0, 0.1);
+  --color-primary-tint: rgba(0, 117, 222, 0.08);
+  --color-header-glass: rgba(246, 245, 244, 0.92);
 
   /* ── Typography ─────────────────────────────────────────────────
-     Display = Cal Sans (sustituto Inter 600). Body/UI = Inter. */
-  --font-display: "Cal Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+     Notion sets everything in tuned Inter. Weight 700 for display,
+     weight 400 for body — the primary expressive lever. */
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
-  /* display-xl — hero (Cal Sans 600, tracking negativo) */
-  --type-display-xl-size: 38px;
-  --type-display-xl-weight: 600;
+  /* display-xl — hero headline (Notion: 64px 700, tight tracking) */
+  --type-display-xl-size: 40px;
+  --type-display-xl-weight: 700;
   --type-display-xl-line: 1.05;
-  --type-display-xl-tracking: -0.03em;
+  --type-display-xl-tracking: -0.035em;
 
-  /* display-lg — section heads */
-  --type-display-lg-size: 30px;
-  --type-display-lg-weight: 600;
-  --type-display-lg-line: 1.1;
+  /* display-lg — large section headlines */
+  --type-display-lg-size: 32px;
+  --type-display-lg-weight: 700;
+  --type-display-lg-line: 1.08;
   --type-display-lg-tracking: -0.03em;
 
-  /* heading-lg — sub-section / card titles grandes (Cal display-md 36) */
-  --type-heading-lg-size: 24px;
-  --type-heading-lg-weight: 600;
+  /* heading-lg — section headlines */
+  --type-heading-lg-size: 26px;
+  --type-heading-lg-weight: 700;
   --type-heading-lg-line: 1.15;
-  --type-heading-lg-tracking: -0.02em;
+  --type-heading-lg-tracking: -0.024em;
 
-  /* heading-md — plan names / títulos (Cal title-lg 22) */
+  /* heading-md — sub-section headings */
   --type-heading-md-size: 22px;
-  --type-heading-md-weight: 600;
-  --type-heading-md-line: 1.3;
-  --type-heading-md-tracking: -0.01em;
+  --type-heading-md-weight: 700;
+  --type-heading-md-line: 1.23;
+  --type-heading-md-tracking: -0.018em;
 
-  /* heading-sm — feature card titles (Cal title-md 18) */
+  /* heading-sm — card titles */
   --type-heading-sm-size: 18px;
-  --type-heading-sm-weight: 600;
-  --type-heading-sm-line: 1.4;
-  --type-heading-sm-tracking: 0;
+  --type-heading-sm-weight: 700;
+  --type-heading-sm-line: 1.3;
+  --type-heading-sm-tracking: -0.012em;
 
-  /* body-md — texto corrido */
+  /* body-md — texto corrido, 400 weight (readability first) */
   --type-body-md-size: 16px;
   --type-body-md-weight: 400;
   --type-body-md-line: 1.5;
   --type-body-md-tracking: 0;
 
-  /* body-sm — footer, fine-print */
-  --type-body-sm-size: 14px;
+  /* body-sm — dense body, table rows, nav */
+  --type-body-sm-size: 15px;
   --type-body-sm-weight: 400;
-  --type-body-sm-line: 1.5;
+  --type-body-sm-line: 1.4;
   --type-body-sm-tracking: 0;
 
-  /* body-strong — small card titles / nav (Cal title-sm 16/600) */
+  /* body-strong — feature titles / callouts (Notion title) */
   --type-body-strong-size: 16px;
   --type-body-strong-weight: 600;
   --type-body-strong-line: 1.4;
-  --type-body-strong-tracking: 0;
+  --type-body-strong-tracking: -0.006em;
 
-  /* body-sm-strong — button label */
-  --type-body-sm-strong-size: 14px;
+  /* body-sm-strong — button labels, dense strong copy */
+  --type-body-sm-strong-size: 15px;
   --type-body-sm-strong-weight: 600;
-  --type-body-sm-strong-line: 1.43;
+  --type-body-sm-strong-line: 1.4;
   --type-body-sm-strong-tracking: 0;
 
-  /* caption-sm — badge labels, captions (Cal caption 13/500) */
-  --type-caption-sm-size: 13px;
-  --type-caption-sm-weight: 500;
-  --type-caption-sm-line: 1.4;
+  /* caption-sm — captions, footnotes */
+  --type-caption-sm-size: 14px;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.43;
   --type-caption-sm-tracking: 0;
 
-  /* caption-uppercase — section labels */
-  --type-caption-up-size: 11px;
+  /* caption-uppercase — eyebrows / section labels */
+  --type-caption-up-size: 12px;
   --type-caption-up-weight: 600;
-  --type-caption-up-line: 1.4;
-  --type-caption-up-tracking: 0.08em;
+  --type-caption-up-line: 1.33;
+  --type-caption-up-tracking: 0.06em;
 
-  /* button — Inter 14 / 600 */
-  --type-button-size: 14px;
+  /* button — Notion: 16 / 500 (label size 15/600 en utility) */
+  --type-button-size: 15px;
   --type-button-weight: 600;
-  --type-button-line: 1;
+  --type-button-line: 1.2;
   --type-button-tracking: 0;
 
   /* code */
@@ -158,13 +177,13 @@
   --type-code-sm-line: 1.43;
   --type-code-sm-tracking: 0;
 
-  /* ── Control sizing (Cal: botón/input 40px, radius 8px) ──────── */
+  /* ── Control sizing ─────────────────────────────────────────── */
   --control-height: 36px;
   --control-height-lg: 40px;
   --control-padding-x: 20px;
   --control-padding-y: 8px;
 
-  /* ── Spacing — base 4px (Cal) ────────────────────────────────── */
+  /* ── Spacing — base 4px (mantenemos escala actual estable) ─── */
   --spacing-xxs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -173,17 +192,18 @@
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
   --spacing-2xl: 48px;
-  --spacing-section: 96px;   /* Cal: 96px entre bandas */
+  --spacing-section: 96px;
 
-  /* ── Border radius (Cal: md8 botones · lg12 cards · xl16 hero) ── */
+  /* ── Border radius (Notion: xs4 · sm5 · md8 · lg12 · xl16 · full) ── */
   --rounded-none: 0;
-  --rounded-sm: 6px;
+  --rounded-xs: 4px;
+  --rounded-sm: 5px;
   --rounded-md: 8px;
   --rounded-lg: 12px;
+  --rounded-xl: 16px;
   --rounded-full: 9999px;
 
-  /* ── Shadows ───────────────────────────────────────────────────
-     Cal usa sombras MUY suaves en cards elevadas. */
+  /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
   --shadow-focus: 0 0 0 3px var(--color-focus-ring);
 
   /* ── Transitions ─────────────────────────────────────────────── */
@@ -206,25 +226,24 @@
   --type-caption-md-size: 13px;
   --type-caption-md-weight: 500;
   --type-caption-md-line: 1.4;
-  --type-display-md-size: 36px;
-  --type-display-md-weight: 600;
+  --type-display-md-size: 30px;
+  --type-display-md-weight: 700;
   --type-body-lg-size: 18px;
   --text-xs: 12px;
   --text-sm: 14px;
 
   --font-medium: 500;
   --font-semibold: 600;
+  --font-bold: 700;
   --font-sans: var(--font-body);
   --font-mono: var(--font-code);
 
-  /* Tracking (firma Cal Sans: -0.04em) */
-  --tracking-tight: -0.04em;
-  --tracking-snug: -0.02em;
+  /* Tracking Notion (tight display) */
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.018em;
   --tracking-wide: 0.02em;
   --tracking-wider: 0.04em;
 
-  --rounded-xs: 4px;
-  --rounded-xl: 16px;
   --rounded-pill: var(--rounded-full);
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
@@ -243,20 +262,34 @@
   --color-error-soft: var(--color-error-tint);
   --color-border: var(--color-hairline);
   --color-focus: var(--color-primary);
-  --color-surface: var(--color-surface-card);
   --color-surface-contrast: var(--color-ink);
   --color-surface-sunken: var(--color-surface-soft);
   --color-surface-cream-strong: var(--color-surface-soft);
   --color-text-primary: var(--color-ink);
   --color-text-tertiary: var(--color-muted);
 
-  /* Cal usa sombras suaves: las activamos a niveles bajos */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-prominent: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Shadows — Notion barely-there layered stack.
+     Level 0 = flat (hairline only). Level 1 = soft. Level 2 = elevated. */
+  --shadow-xs:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02);
+  --shadow-sm:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027);
+  --shadow-subtle: var(--shadow-sm);
+  --shadow-card: var(--shadow-sm);
+  --shadow-elevated:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
+    0 4px 18px rgba(0, 0, 0, 0.04);
+  --shadow-prominent:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
+    0 4px 18px rgba(0, 0, 0, 0.04),
+    0 23px 52px rgba(0, 0, 0, 0.05);
 
   --header-height: 64px;
   --transition-slow: 350ms ease;
@@ -276,48 +309,55 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --color-canvas: #0a0a0a;
-  --color-surface-soft: #1a1a1a;
-  --color-surface-card: #141414;
-  --color-surface-dark: #fafafa;
+  /* Notion-style dark: deep neutral canvas, cards a un pelo más claros */
+  --color-canvas: #191817;
+  --color-canvas-soft: #191817;
+  --color-surface: #232120;
+  --color-surface-soft: #232120;
+  --color-surface-card: #232120;
+  --color-surface-dark: #f6f5f4;
   --color-surface-dark-elevated: #ffffff;
 
-  --color-hairline: #262626;
-  --color-hairline-soft: #1a1a1a;
-  --color-hairline-strong: #404040;
+  --color-hairline: #3a3735;
+  --color-hairline-soft: #2c2a29;
+  --color-hairline-strong: #504c48;
 
-  --color-ink: #ffffff;
-  --color-body-strong: #ffffff;
-  --color-body: #a1a1aa;
-  --color-charcoal: #71717a;
-  --color-muted: #6b7280;
-  --color-muted-soft: #4b5563;
-  --color-on-dark: #111111;
-  --color-on-dark-soft: #71717a;
+  --color-ink: #f6f5f4;
+  --color-body-strong: #f6f5f4;
+  --color-body: #c9c5c0;
+  --color-charcoal: #c9c5c0;
+  --color-muted: #8f8a83;
+  --color-muted-soft: #615d59;
+  --color-on-dark: #191817;
+  --color-on-dark-soft: #8f8a83;
 
-  --color-primary: #ffffff;
-  --color-on-primary: #111111;
-  --color-primary-active: #f0f0f0;
-  --color-primary-disabled: #404040;
+  /* Notion blue slightly lifted for dark surfaces */
+  --color-primary: #4ca3f4;
+  --color-on-primary: #ffffff;
+  --color-primary-active: #62aef0;
+  --color-primary-disabled: #3a3735;
 
-  --color-primary-rgb: 255 255 255;
-  --color-ink-rgb: 255 255 255;
-  --color-canvas-rgb: 10 10 10;
+  --color-primary-rgb: 76 163 244;
+  --color-ink-rgb: 246 245 244;
+  --color-canvas-rgb: 25 24 23;
+
+  --color-secondary: #4a5cc4;
+  --color-secondary-rgb: 74 92 196;
 
   --color-accent-teal: #2dd4bf;
   --color-accent-teal-rgb: 45 212 191;
   --color-accent-amber: #fbbf24;
   --color-accent-amber-rgb: 251 191 36;
 
-  --color-focus-ring: rgba(96, 165, 250, 0.5);
-  --color-modal-scrim: rgba(0, 0, 0, 0.8);
+  --color-focus-ring: rgba(76, 163, 244, 0.4);
+  --color-modal-scrim: rgba(0, 0, 0, 0.72);
   --color-vacancy-tint: rgba(239, 68, 68, 0.1);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
-  --color-success-tint: rgba(16, 185, 129, 0.15);
+  --color-success-tint: rgba(26, 174, 57, 0.15);
   --color-error-tint: rgba(239, 68, 68, 0.15);
-  --color-warning-tint: rgba(245, 158, 11, 0.18);
-  --color-primary-tint: rgba(255, 255, 255, 0.08);
-  --color-header-glass: rgba(10, 10, 10, 0.88);
+  --color-warning-tint: rgba(221, 91, 0, 0.18);
+  --color-primary-tint: rgba(76, 163, 244, 0.12);
+  --color-header-glass: rgba(25, 24, 23, 0.88);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);

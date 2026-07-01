@@ -3352,3 +3352,127 @@ button.reporte-card:focus-visible,
   margin-bottom: var(--spacing-lg);
 }
 
+
+/* ============================================================================
+   HERO — Acciones "reportes guardados" con botones etiquetados.
+   ============================================================================ */
+
+.reporte-hero__saved-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+  width: 100%;
+  max-width: 420px;
+}
+
+@media (min-width: 480px) {
+  .reporte-hero__saved-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.reporte-hero__saved-actions > * {
+  width: 100%;
+}
+
+/* Variant "labeled" del trigger — usado en el hero y en el grid 2x2 */
+.reporte-saved__trigger--labeled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-height: 40px;
+  border-radius: var(--rounded-full);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.reporte-saved__trigger--labeled:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.reporte-saved__trigger--labeled:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.reporte-saved__trigger-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* El chip del contador dentro del trigger labeled */
+.reporte-saved__trigger--labeled .reporte-saved__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1;
+}
+
+/* ============================================================================
+   HEADER CON DATOS — Grid 2x2 (2 arriba, 2 abajo) con textos reducidos.
+   Sustituye a .reporte-head__meta cuando hay 4 chips que se rompen en fila.
+   ============================================================================ */
+
+.reporte-head__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+@media (min-width: 420px) {
+  .reporte-head__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.reporte-head__grid > * {
+  min-width: 0;
+  min-height: 40px;
+  justify-content: flex-start;
+}
+
+/* Texto principal dentro de un chip: truncar con ellipsis */
+.reporte-head__grid-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Valor numérico protagonista (ej. "543") */
+.reporte-head__grid-value {
+  font-family: var(--font-display);
+  font-weight: var(--type-body-strong-weight);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Los dialogs (Comparison, Guardados) en el grid 2x2 ocupan la celda completa */
+.reporte-head__grid .reporte-saved__trigger--labeled {
+  width: 100%;
+}
+
