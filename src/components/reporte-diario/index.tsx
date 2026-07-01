@@ -700,6 +700,266 @@ export default function ReporteDiarioContent() {
         );
     }
 
+    /* ── Rediseño (Idea A): Hero centrado cuando NO hay reporte ──────────
+       Rompe el split lateral y muestra: título + dropzone protagonista +
+       3 pasos de onboarding + acceso rápido a reportes guardados. */
+    if (!hasData) {
+        return (
+            <div className="reporte-container">
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="application/json"
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                />
+
+                <motion.section
+                    className="reporte-hero"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    aria-labelledby="reporte-hero-title"
+                >
+                    <header className="reporte-hero__intro">
+                        <span className="reporte-hero__eyebrow" aria-hidden="true">
+                            <BarChart2 size={12} />
+                            Reporte diario
+                        </span>
+                        <h1 id="reporte-hero-title" className="reporte-hero__title">
+                            Sube tu reporte de asistencia
+                        </h1>
+                        <p className="reporte-hero__subtitle">
+                            Carga el archivo JSON del mes para visualizar KPIs,
+                            calendario diario y el detalle por colaborador.
+                        </p>
+                    </header>
+
+                    <div
+                        className="reporte-hero__dropzone"
+                        data-dragging={isDragging}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => fileInputRef.current?.click()}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                fileInputRef.current?.click();
+                            }
+                        }}
+                        aria-label="Sube un archivo JSON de reporte de asistencia"
+                        data-testid="upload-dropzone"
+                    >
+                        <span className="reporte-hero__dropzone-icon" aria-hidden="true">
+                            <CloudUpload size={28} />
+                        </span>
+                        <h3 className="reporte-hero__dropzone-title">
+                            Click para subir o arrastra el archivo
+                        </h3>
+                        <p className="reporte-hero__dropzone-hint">
+                            Formato admitido: JSON exportado del sistema de asistencia.
+                        </p>
+                        <span className="reporte-hero__dropzone-format" aria-hidden="true">
+                            <FileJson size={12} />
+                            .json
+                        </span>
+                    </div>
+
+                    <ol className="reporte-hero__steps" aria-label="Pasos para generar tu reporte">
+                        <li className="reporte-hero__step">
+                            <span className="reporte-hero__step-index" aria-hidden="true">1</span>
+                            <div className="reporte-hero__step-body">
+                                <p className="reporte-hero__step-title">Sube el archivo</p>
+                                <p className="reporte-hero__step-desc">
+                                    Selecciona el JSON del mes generado por el sistema.
+                                </p>
+                            </div>
+                        </li>
+                        <li className="reporte-hero__step">
+                            <span className="reporte-hero__step-index" aria-hidden="true">2</span>
+                            <div className="reporte-hero__step-body">
+                                <p className="reporte-hero__step-title">Revisa los KPIs</p>
+                                <p className="reporte-hero__step-desc">
+                                    Analiza tasa de asistencia, incidencias y calendario diario.
+                                </p>
+                            </div>
+                        </li>
+                        <li className="reporte-hero__step">
+                            <span className="reporte-hero__step-index" aria-hidden="true">3</span>
+                            <div className="reporte-hero__step-body">
+                                <p className="reporte-hero__step-title">Guarda el mes</p>
+                                <p className="reporte-hero__step-desc">
+                                    Consulta y compara históricos con los meses anteriores.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+
+                    {savedSummaries.length > 0 && (
+                        <div className="reporte-hero__saved" aria-label="Acceso a reportes guardados">
+                            <p className="reporte-hero__saved-hint">
+                                ¿Ya tienes reportes guardados?
+                            </p>
+                            <div className="reporte-head__meta reporte-head__meta--center">
+                                <ReportesGuardadosDialog
+                                    savedSummaries={savedSummaries}
+                                    dbSaving={dbSaving}
+                                    onLoad={handleLoadFromDb}
+                                    onDelete={handleDeleteFromDb}
+                                    formatMes={formatMes}
+                                />
+                                <span className="reporte-hero__saved-hint">
+                                    {savedSummaries.length} {savedSummaries.length === 1 ? 'reporte disponible' : 'reportes disponibles'}
+                                </span>
+                                {savedSummaries.length >= 2 && (
+                                    <ReporteComparison summaries={savedSummaries} />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </motion.section>
+
+                {errors.length > 0 && (
+                    <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
+                        <AlertCircle size={16} aria-hidden="true" />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            <div className="reporte-flex-between">
+                                <strong>Errores de formato</strong>
+                                <button
+                                    type="button"
+                                    onClick={() => setErrors([])}
+                                    className="reporte-iconbtn"
+                                    aria-label="Cerrar errores"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                            <ul>
+                                {errors.map((err, i) => (
+                                    <li key={i}>{err}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
+                {/* Preview Modal + Processing Overlay + Drag Overlay siguen debajo */}
+                <Modal
+                    isOpen={!!previewData}
+                    onClose={cancelLoad}
+                    title="Revisión rápida del archivo"
+                    subtitle="Confirma que los datos son los esperados antes de aplicarlos."
+                    icon={<FileJson />}
+                    footerActions={
+                        <>
+                            <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
+                            <button type="button" onClick={confirmLoad} className="btn-primary">
+                                <Check size={16} aria-hidden="true" />
+                                Sí, cargar datos
+                            </button>
+                        </>
+                    }
+                >
+                    {previewData && (
+                        <div className="reporte-preview">
+                            <div className="reporte-preview__card">
+                                <span className="reporte-preview__icon" aria-hidden="true">
+                                    <FileJson size={20} />
+                                </span>
+                                <div className="reporte-preview__body">
+                                    <p className="reporte-preview__filename" title={previewData.fileName}>
+                                        {previewData.fileName}
+                                    </p>
+                                    <p className="reporte-preview__meta">
+                                        {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
+                                    </p>
+                                </div>
+                            </div>
+                            <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
+                                <li className="reporte-preview__stat">
+                                    <span className="reporte-preview__stat-value">
+                                        {previewData.rows.length.toLocaleString('es-MX')}
+                                    </span>
+                                    <span className="reporte-preview__stat-label">Registros</span>
+                                </li>
+                                <li className="reporte-preview__stat">
+                                    <span className="reporte-preview__stat-value">
+                                        {formatMes(previewData.mes)}
+                                    </span>
+                                    <span className="reporte-preview__stat-label">Periodo</span>
+                                </li>
+                                <li className="reporte-preview__stat">
+                                    <span className="reporte-preview__stat-value">JSON</span>
+                                    <span className="reporte-preview__stat-label">Formato</span>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </Modal>
+
+                <AnimatePresence>
+                    {processStep && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="reporte-overlay"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, y: 10 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 10 }}
+                                className="reporte-overlay__card"
+                            >
+                                <Loader2 size={40} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
+                                <h2 className="reporte-overlay__title">
+                                    {processStep === "reading" && "Leyendo archivo..."}
+                                    {processStep === "validating" && "Revisando incidencias..."}
+                                    {processStep === "generating" && "Construyendo tu tablero..."}
+                                </h2>
+                                <p className="reporte-subtitle">
+                                    {processStep === "reading" && "Por favor, espera un momento."}
+                                    {processStep === "validating" && "Asegurando que la información sea correcta."}
+                                    {processStep === "generating" && "Solo tomará un segundo más."}
+                                </p>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {isDragging && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="reporte-drag"
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.8, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.8, y: 20 }}
+                                className="reporte-drag__inner"
+                            >
+                                <CloudUpload size={64} className="reporte-overlay__icon-primary" aria-hidden="true" />
+                                <h2 className="reporte-overlay__title">Suelta el archivo aquí</h2>
+                                <p className="reporte-subtitle">Detecta automáticamente el mes y valida el formato.</p>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        );
+    }
+
     return (
         <div className="reporte-layout" data-collapsed={panelCollapsed}>
 
@@ -719,8 +979,23 @@ export default function ReporteDiarioContent() {
                             <h1 className="reporte-title">Asistencia</h1>
                         </div>
 
-                        <div className="reporte-control-group">
-                            {fileName && hasData && (
+                        {hasData && (
+                            <button
+                                type="button"
+                                className="btn-primary"
+                                onClick={handleSaveToDb}
+                                disabled={dbSaving}
+                                data-testid="save-report-btn"
+                            >
+                                <Save size={16} aria-hidden="true" />
+                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
+                            </button>
+                        )}
+                    </div>
+
+                    {hasData && (
+                        <div className="reporte-head__meta" aria-label="Información del reporte cargado">
+                            {fileName && (
                                 <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
                                     <FileJson size={16} className="text-primary" aria-hidden="true" />
                                     <span>{fileName}</span>
@@ -736,23 +1011,9 @@ export default function ReporteDiarioContent() {
                                     </button>
                                 </div>
                             )}
-                            {hasData && (
-                                <button
-                                    type="button"
-                                    className="btn-primary"
-                                    onClick={handleSaveToDb}
-                                    disabled={dbSaving}
-                                    data-testid="save-report-btn"
-                                >
-                                    <Save size={16} aria-hidden="true" />
-                                    {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
-                                </button>
-                            )}
-                            {hasData && (
-                                <span className="reporte-status-banner reporte-status-banner--warn">
-                                    {heroKpis.totalIncidencias} incidencias
-                                </span>
-                            )}
+                            <span className="reporte-status-banner reporte-status-banner--warn">
+                                {heroKpis.totalIncidencias} incidencias
+                            </span>
                             {(savedSummaries.length >= 2) && (
                                 <ReporteComparison summaries={savedSummaries} />
                             )}
@@ -766,7 +1027,7 @@ export default function ReporteDiarioContent() {
                                 />
                             )}
                         </div>
-                    </div>
+                    )}
 
                     {hasData && (
                         <div className="reporte-search">
@@ -839,26 +1100,6 @@ export default function ReporteDiarioContent() {
                     )}
                 </header>
 
-                {!hasData && (
-                    <div
-                        className="reporte-empty"
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        onClick={() => fileInputRef.current?.click()}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
-                        data-testid="upload-dropzone"
-                    >
-                        <CloudUpload size={48} className="reporte-empty__icon" aria-hidden="true" />
-                        <h3 className="reporte-card__title">Click para subir</h3>
-                        <p className="reporte-subtitle">
-                            Arrastra o suelta el archivo aqui.
-                        </p>
-                    </div>
-                )}
-
                 {errors.length > 0 && (
                     <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
                         <AlertCircle size={16} aria-hidden="true" />
@@ -901,18 +1142,42 @@ export default function ReporteDiarioContent() {
                     <span>{panelCollapsed ? 'Controles' : 'Ocultar'}</span>
                 </button>
 
-                {hasData ? (
-                    <div className="reporte-container">
+                {hasData && (
+                    <motion.div
+                        className="reporte-container"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+                            },
+                        }}
+                    >
                         {currentMonth && rows.length > 0 && (
-                            <ReporteKpiDashboard
-                                selectedRows={selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area))}
-                                dayHeaders={dayHeaders}
-                                currentMonth={currentMonth}
-                            />
+                            <motion.div
+                                variants={{
+                                    hidden: { opacity: 0, y: 12 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+                                }}
+                            >
+                                <ReporteKpiDashboard
+                                    selectedRows={selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area))}
+                                    dayHeaders={dayHeaders}
+                                    currentMonth={currentMonth}
+                                />
+                            </motion.div>
                         )}
 
                         {currentMonth && rows.length > 0 && (
-                            <div className="reporte-card">
+                            <motion.div
+                                className="reporte-card"
+                                variants={{
+                                    hidden: { opacity: 0, y: 12 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+                                }}
+                            >
                                 <div className="reporte-card__header">
                                     <div className="reporte-flex-between">
                                         <div>
@@ -955,10 +1220,16 @@ export default function ReporteDiarioContent() {
                                         onSelectDay={setSelectedDay}
                                     />
                                 </div>
-                            </div>
+                            </motion.div>
                         )}
 
-                        <div className="reporte-card">
+                        <motion.div
+                            className="reporte-card"
+                            variants={{
+                                hidden: { opacity: 0, y: 12 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+                            }}
+                        >
                             <div className="reporte-card__header">
                                 <div className="reporte-dayhead">
                                     <div className="reporte-dayhead__title">
@@ -1029,14 +1300,8 @@ export default function ReporteDiarioContent() {
                                     </>
                                 )}
                             </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="reporte-main-empty">
-                        <p className="reporte-subtitle">
-                            Sube o selecciona un reporte para visualizar KPIs, calendario y detalle.
-                        </p>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 )}
             </div>
 
@@ -1054,6 +1319,7 @@ export default function ReporteDiarioContent() {
                 isOpen={!!previewData}
                 onClose={cancelLoad}
                 title="Revisión rápida del archivo"
+                subtitle="Confirma que los datos son los esperados antes de aplicarlos."
                 icon={<FileJson />}
                 footerActions={
                     <>
@@ -1066,17 +1332,38 @@ export default function ReporteDiarioContent() {
                 }
             >
                 {previewData && (
-                    <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', padding: 'var(--spacing-md) 0'}}>
-                        <div className="reporte-status-banner">
-                            <FileJson size={24} style={{color: 'var(--color-primary)'}} />
-                            <div>
-                                <p style={{fontWeight: 'var(--type-body-strong-weight)'}}>{previewData.fileName}</p>
-                                <p className="reporte-subtitle">
-                                    Se encontraron {previewData.rows.length} registros para el mes de {formatMes(previewData.mes)}.
+                    <div className="reporte-preview">
+                        <div className="reporte-preview__card">
+                            <span className="reporte-preview__icon" aria-hidden="true">
+                                <FileJson size={20} />
+                            </span>
+                            <div className="reporte-preview__body">
+                                <p className="reporte-preview__filename" title={previewData.fileName}>
+                                    {previewData.fileName}
+                                </p>
+                                <p className="reporte-preview__meta">
+                                    {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
                                 </p>
                             </div>
                         </div>
-                        <p style={{textAlign: 'center', fontSize: 'var(--type-body-md-size)'}}>¿Deseas aplicar esta información en tu tablero?</p>
+                        <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
+                            <li className="reporte-preview__stat">
+                                <span className="reporte-preview__stat-value">
+                                    {previewData.rows.length.toLocaleString('es-MX')}
+                                </span>
+                                <span className="reporte-preview__stat-label">Registros</span>
+                            </li>
+                            <li className="reporte-preview__stat">
+                                <span className="reporte-preview__stat-value">
+                                    {formatMes(previewData.mes)}
+                                </span>
+                                <span className="reporte-preview__stat-label">Periodo</span>
+                            </li>
+                            <li className="reporte-preview__stat">
+                                <span className="reporte-preview__stat-value">JSON</span>
+                                <span className="reporte-preview__stat-label">Formato</span>
+                            </li>
+                        </ul>
                     </div>
                 )}
             </Modal>
@@ -1098,7 +1385,7 @@ export default function ReporteDiarioContent() {
                             exit={{ scale: 0.9, y: 10 }}
                             className="reporte-overlay__card"
                         >
-                            <Loader2 size={40} className="animate-spin" style={{ color: 'var(--color-primary)' }} aria-hidden="true" />
+                            <Loader2 size={40} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
                             <h2 className="reporte-overlay__title">
                                 {processStep === "reading" && "Leyendo archivo..."}
                                 {processStep === "validating" && "Revisando incidencias..."}
@@ -1121,8 +1408,7 @@ export default function ReporteDiarioContent() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="reporte-overlay"
-                        style={{ zIndex: 50 }}
+                        className="reporte-overlay reporte-overlay--top"
                         role="status"
                         aria-live="polite"
                     >
@@ -1167,9 +1453,9 @@ export default function ReporteDiarioContent() {
                             initial={{ scale: 0.8, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.8, y: 20 }}
-                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}
+                            className="reporte-drag__inner"
                         >
-                            <FileJson size={64} style={{ color: 'var(--color-primary)', marginBottom: 'var(--spacing-lg)' }} aria-hidden="true" />
+                            <FileJson size={64} className="reporte-overlay__icon-primary reporte-drag__icon" aria-hidden="true" />
                             <h2 className="reporte-card__title">Suelta tu archivo aquí</h2>
                             <p className="reporte-subtitle">El reporte se generará automáticamente</p>
                         </motion.div>
