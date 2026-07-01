@@ -246,16 +246,18 @@ export default function ReporteAreaSummary({
         return map;
     }, []);
 
-    // Agrupa las secciones por su área padre y ordena internamente
-    const areaGroups = useMemo((): AreaGroup[] => {
+    // Agrupa las secciones por su área padre y ordena internamente.
+    // Los grupos con 1 sola sección se fusionan en "OTRAS ÁREAS" para
+    // evitar filas de grid con espacios vacíos.
+    const { mainGroups, otrasAreas } = useMemo(() => {
         const groups = new Map<string, AreaStaffSummary[]>();
         for (const sec of areas) {
             const parent = sectionAreaMap.get(sec.area) ?? sec.area;
             if (!groups.has(parent)) groups.set(parent, []);
             groups.get(parent)!.push(sec);
         }
-        // Ordenamos los grupos alfabéticamente y las secciones dentro de cada grupo
-        return Array.from(groups.entries())
+
+        const sorted = Array.from(groups.entries())
             .sort(([a], [b]) => a.localeCompare(b, "es", { sensitivity: "base" }))
             .map(([area, sections]) => ({
                 area,
@@ -263,6 +265,21 @@ export default function ReporteAreaSummary({
                     a.area.localeCompare(b.area, "es", { sensitivity: "base" })
                 ),
             }));
+
+        const main: AreaGroup[] = [];
+        const singles: AreaStaffSummary[] = [];
+
+        for (const g of sorted) {
+            if (g.sections.length > 1) main.push(g);
+            else singles.push(...g.sections);
+        }
+
+        return {
+            mainGroups: main,
+            otrasAreas: singles.sort((a, b) =>
+                a.area.localeCompare(b.area, "es", { sensitivity: "base" })
+            ),
+        };
     }, [areas, sectionAreaMap]);
 
     const handleSelectArea = (area: string) => {
@@ -320,26 +337,16 @@ export default function ReporteAreaSummary({
 
             {/* Grid agrupado por área */}
             <div className="ras__groups" role="list" aria-label="Secciones de la plantilla">
-                {areaGroups.map(({ area, sections }) => (
-                    <div
-                        key={area}
-                        className="ras__group"
-                        role="listitem"
-                    >
-                        {/* Etiqueta del área padre */}
+                {/* Grupos con varias secciones */}
+                {mainGroups.map(({ area, sections }) => (
+                    <div key={area} className="ras__group" role="listitem">
                         <h3 className="ras__group-label">
                             <span>{area}</span>
                             <span className="ras__group-count" aria-label={`${sections.length} secciones`}>
                                 {sections.length}
                             </span>
                         </h3>
-
-                        {/* Grid de tarjetas de sección */}
-                        <div
-                            className="ras__grid"
-                            role="group"
-                            aria-label={`Secciones de ${area}`}
-                        >
+                        <div className="ras__grid" role="group" aria-label={`Secciones de ${area}`}>
                             {sections.map((sec) => (
                                 <AreaCard
                                     key={sec.area}
@@ -351,6 +358,28 @@ export default function ReporteAreaSummary({
                         </div>
                     </div>
                 ))}
+
+                {/* Grupos de 1 sección → fusionados en "Otras Áreas" */}
+                {otrasAreas.length > 0 && (
+                    <div className="ras__group" role="listitem">
+                        <h3 className="ras__group-label">
+                            <span>Otras Áreas</span>
+                            <span className="ras__group-count" aria-label={`${otrasAreas.length} secciones`}>
+                                {otrasAreas.length}
+                            </span>
+                        </h3>
+                        <div className="ras__grid" role="group" aria-label="Otras áreas de la plantilla">
+                            {otrasAreas.map((sec) => (
+                                <AreaCard
+                                    key={sec.area}
+                                    area={sec}
+                                    isSelected={selectedArea === sec.area}
+                                    onClick={() => handleSelectArea(sec.area)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Modal de detalle de ausencias */}
