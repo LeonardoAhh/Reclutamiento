@@ -63,6 +63,7 @@ export default function ReporteDiarioContent() {
     const [saveSuccess, setSaveSuccess] = useState(false)
     const [panelCollapsed, setPanelCollapsed] = useState(false);
     const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
+    const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
 
     const [processStep, setProcessStep] = useState<"reading" | "validating" | "generating" | null>(null)
     const [previewData, setPreviewData] = useState<{
@@ -150,10 +151,8 @@ export default function ReporteDiarioContent() {
     const dayCount = currentMonth ? daysInMonth(currentMonth) : 0
     const dayHeaders = Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0"))
 
-    // ── Empleado con más incidencias en TODOS los meses cargados ──────────────
-    const topIncidenceEmployee = useMemo(() => {
-        // Base: todos los meses guardados en Supabase.
-        // Si el mes en memoria aún no está guardado, lo incluimos también.
+    // ── Top 10 empleados con más incidencias (todos los meses guardados) ──────
+    const topIncidenceEmployees = useMemo(() => {
         const dbMeses = new Set(allMonthsRows.map((r) => r.mes))
         const currentMes = rows[0]?.mes ?? null
         const analysisRows: ReporteRow[] =
@@ -161,20 +160,20 @@ export default function ReporteDiarioContent() {
                 ? [...allMonthsRows, ...rows]
                 : allMonthsRows
 
-        if (analysisRows.length === 0) return null;
+        if (analysisRows.length === 0) return []
 
         const empMap = new Map<string, {
-            numero_empleado: string;
-            nombre: string;
-            departamento: string;
-            area: string;
-            total: number;
-            byCode: Record<string, number>;
-            byMes: Record<string, number>;
-        }>();
+            numero_empleado: string
+            nombre: string
+            departamento: string
+            area: string
+            total: number
+            byCode: Record<string, number>
+            byMes: Record<string, number>
+        }>()
 
         for (const row of analysisRows) {
-            const k = row.numero_empleado;
+            const k = row.numero_empleado
             if (!empMap.has(k)) {
                 empMap.set(k, {
                     numero_empleado: row.numero_empleado,
@@ -184,25 +183,23 @@ export default function ReporteDiarioContent() {
                     total: 0,
                     byCode: {},
                     byMes: {},
-                });
+                })
             }
-            const emp = empMap.get(k)!;
+            const emp = empMap.get(k)!
             for (const code of Object.values(row.days)) {
                 if (isIncidence(code)) {
-                    emp.total++;
-                    emp.byCode[code] = (emp.byCode[code] ?? 0) + 1;
-                    emp.byMes[row.mes] = (emp.byMes[row.mes] ?? 0) + 1;
+                    emp.total++
+                    emp.byCode[code] = (emp.byCode[code] ?? 0) + 1
+                    emp.byMes[row.mes] = (emp.byMes[row.mes] ?? 0) + 1
                 }
             }
         }
 
-        let top: typeof empMap extends Map<string, infer V> ? V : never = null as never;
-        let max = 0;
-        for (const [, emp] of empMap) {
-            if (emp.total > max) { max = emp.total; top = emp; }
-        }
-        return max > 0 ? top : null;
-    }, [allMonthsRows, rows]);
+        return Array.from(empMap.values())
+            .filter((e) => e.total > 0)
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 10)
+    }, [allMonthsRows, rows])
 
     const selectedRows = useMemo(() => {
         const lower = search.toLowerCase()
@@ -896,16 +893,19 @@ export default function ReporteDiarioContent() {
                                             </p>
                                         </div>
                                         <div className="reporte-cal-actions">
-                                            {topIncidenceEmployee && (
+                                            {topIncidenceEmployees.length > 0 && (
                                                 <button
                                                     type="button"
                                                     className="reporte-top-emp-btn"
-                                                    onClick={() => setTopEmpModalOpen(true)}
+                                                    onClick={() => {
+                                                        setSelectedTopEmpKey(topIncidenceEmployees[0].numero_empleado)
+                                                        setTopEmpModalOpen(true)
+                                                    }}
                                                     data-testid="top-incidence-btn"
-                                                    aria-label="Ver empleado con más incidencias en todos los meses cargados"
+                                                    aria-label="Ver top 10 empleados con más incidencias"
                                                 >
                                                     <BarChart2 size={13} aria-hidden="true" />
-                                                    <span>Récord incidencias</span>
+                                                    <span>Top 10 incidencias</span>
                                                 </button>
                                             )}
                                             <span className="reporte-status-banner">
@@ -1148,12 +1148,12 @@ export default function ReporteDiarioContent() {
                 )}
             </AnimatePresence>
 
-            {/* ── Modal: Empleado con más incidencias ───────────────── */}
-            {topIncidenceEmployee && (
+            {/* ── Modal: Top 10 empleados con más incidencias ──────── */}
+            {topIncidenceEmployees.length > 0 && (
                 <Modal
                     isOpen={topEmpModalOpen}
                     onClose={() => setTopEmpModalOpen(false)}
-                    title="Récord de incidencias"
+                    title="Top 10 incidencias"
                     subtitle={(() => {
                         const allMeses = Array.from(new Set(allMonthsRows.map(r => r.mes))).sort()
                         const currentMes = rows[0]?.mes
@@ -1163,81 +1163,100 @@ export default function ReporteDiarioContent() {
                     size="md"
                 >
                     <div className="top-emp-modal">
+                        {/* Lista rankeada */}
+                        <ol className="top-emp-list" aria-label="Top 10 empleados con más incidencias">
+                            {topIncidenceEmployees.map((emp, idx) => {
+                                const isOpen = selectedTopEmpKey === emp.numero_empleado
+                                const detailId = `top-emp-detail-${emp.numero_empleado}`
+                                const maxTotal = topIncidenceEmployees[0].total
+                                const barPct = Math.round((emp.total / maxTotal) * 100)
 
-                        {/* Tarjeta del empleado */}
-                        <div className="top-emp-modal__card" aria-label="Empleado con más incidencias">
-                            <div className="top-emp-modal__avatar" aria-hidden="true">
-                                <User size={22} />
-                            </div>
-                            <div className="top-emp-modal__info">
-                                <p className="top-emp-modal__name">{topIncidenceEmployee.nombre}</p>
-                                <p className="top-emp-modal__meta">
-                                    #{topIncidenceEmployee.numero_empleado}
-                                    <span className="top-emp-modal__dot" aria-hidden="true">·</span>
-                                    {topIncidenceEmployee.departamento}
-                                </p>
-                                <p className="top-emp-modal__meta">{topIncidenceEmployee.area}</p>
-                            </div>
-                            <div className="top-emp-modal__total" aria-label={`${topIncidenceEmployee.total} incidencias totales`}>
-                                <span className="top-emp-modal__total-num">{topIncidenceEmployee.total}</span>
-                                <span className="top-emp-modal__total-label">incidencias</span>
-                            </div>
-                        </div>
-
-                        {/* Por tipo de incidencia */}
-                        <section aria-labelledby="top-emp-by-type">
-                            <h3 id="top-emp-by-type" className="top-emp-modal__section-title">
-                                Por tipo
-                            </h3>
-                            <div className="top-emp-modal__codes" role="list">
-                                {Object.entries(topIncidenceEmployee.byCode)
-                                    .sort(([, a], [, b]) => b - a)
-                                    .map(([code, count]) => (
-                                        <div
-                                            key={code}
-                                            className="top-emp-modal__code-item"
-                                            role="listitem"
-                                            aria-label={`${INCIDENCIA_LABELS[code] ?? code}: ${count}`}
+                                return (
+                                    <li key={emp.numero_empleado} className={`top-emp-item${isOpen ? " top-emp-item--open" : ""}`}>
+                                        {/* Fila principal — click para expandir */}
+                                        <button
+                                            type="button"
+                                            className="top-emp-row"
+                                            aria-expanded={isOpen}
+                                            aria-controls={detailId}
+                                            onClick={() => setSelectedTopEmpKey(isOpen ? null : emp.numero_empleado)}
+                                            data-testid={`top-emp-row-${idx + 1}`}
                                         >
-                                            <span className="top-emp-modal__code-badge">{code}</span>
-                                            <span className="top-emp-modal__code-label">{INCIDENCIA_LABELS[code] ?? code}</span>
-                                            <span className="top-emp-modal__code-count">{count}</span>
-                                        </div>
-                                    ))}
-                            </div>
-                        </section>
+                                            {/* Rank */}
+                                            <span className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`} aria-label={`Posición ${idx + 1}`}>
+                                                {idx + 1}
+                                            </span>
 
-                        {/* Por mes */}
-                        <section aria-labelledby="top-emp-by-month">
-                            <h3 id="top-emp-by-month" className="top-emp-modal__section-title">
-                                Por mes
-                            </h3>
-                            <div className="top-emp-modal__months" role="list">
-                                {Object.entries(topIncidenceEmployee.byMes)
-                                    .sort(([a], [b]) => a.localeCompare(b))
-                                    .map(([mes, count]) => {
-                                        const pct = Math.round((count / topIncidenceEmployee.total) * 100);
-                                        return (
-                                            <div
-                                                key={mes}
-                                                className="top-emp-modal__month-row"
-                                                role="listitem"
-                                                aria-label={`${formatMes(mes)}: ${count} incidencias`}
-                                            >
-                                                <span className="top-emp-modal__month-name">{formatMes(mes)}</span>
-                                                <div className="top-emp-modal__month-bar-wrap" aria-hidden="true">
-                                                    <div
-                                                        className="top-emp-modal__month-bar"
-                                                        style={{ width: `${pct}%` }}
-                                                    />
-                                                </div>
-                                                <span className="top-emp-modal__month-count">{count}</span>
+                                            {/* Info */}
+                                            <span className="top-emp-row__info">
+                                                <span className="top-emp-row__name">{emp.nombre}</span>
+                                                <span className="top-emp-row__meta">
+                                                    #{emp.numero_empleado}
+                                                    <span aria-hidden="true"> · </span>
+                                                    {emp.area}
+                                                </span>
+                                            </span>
+
+                                            {/* Barra + total */}
+                                            <span className="top-emp-row__right" aria-hidden="true">
+                                                <span className="top-emp-row__bar-wrap">
+                                                    <span className="top-emp-row__bar" style={{ width: `${barPct}%` }} />
+                                                </span>
+                                                <span className="top-emp-row__total" aria-label={`${emp.total} incidencias`}>
+                                                    {emp.total}
+                                                </span>
+                                            </span>
+                                        </button>
+
+                                        {/* Detalle expandible */}
+                                        {isOpen && (
+                                            <div id={detailId} className="top-emp-detail">
+
+                                                {/* Por tipo */}
+                                                <section aria-labelledby={`type-heading-${emp.numero_empleado}`}>
+                                                    <h4 id={`type-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">Por tipo</h4>
+                                                    <div className="top-emp-modal__codes" role="list">
+                                                        {Object.entries(emp.byCode)
+                                                            .sort(([, a], [, b]) => b - a)
+                                                            .map(([code, count]) => (
+                                                                <div key={code} className="top-emp-modal__code-item" role="listitem"
+                                                                    aria-label={`${INCIDENCIA_LABELS[code] ?? code}: ${count}`}>
+                                                                    <span className="top-emp-modal__code-badge">{code}</span>
+                                                                    <span className="top-emp-modal__code-label">{INCIDENCIA_LABELS[code] ?? code}</span>
+                                                                    <span className="top-emp-modal__code-count">{count}</span>
+                                                                </div>
+                                                            ))}
+                                                    </div>
+                                                </section>
+
+                                                {/* Por mes */}
+                                                <section aria-labelledby={`month-heading-${emp.numero_empleado}`}>
+                                                    <h4 id={`month-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">Por mes</h4>
+                                                    <div className="top-emp-modal__months" role="list">
+                                                        {Object.entries(emp.byMes)
+                                                            .sort(([a], [b]) => a.localeCompare(b))
+                                                            .map(([mes, count]) => {
+                                                                const pct = Math.round((count / emp.total) * 100)
+                                                                return (
+                                                                    <div key={mes} className="top-emp-modal__month-row" role="listitem"
+                                                                        aria-label={`${formatMes(mes)}: ${count} incidencias`}>
+                                                                        <span className="top-emp-modal__month-name">{formatMes(mes)}</span>
+                                                                        <div className="top-emp-modal__month-bar-wrap" aria-hidden="true">
+                                                                            <div className="top-emp-modal__month-bar" style={{ width: `${pct}%` }} />
+                                                                        </div>
+                                                                        <span className="top-emp-modal__month-count">{count}</span>
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                    </div>
+                                                </section>
+
                                             </div>
-                                        );
-                                    })}
-                            </div>
-                        </section>
-
+                                        )}
+                                    </li>
+                                )
+                            })}
+                        </ol>
                     </div>
                 </Modal>
             )}
