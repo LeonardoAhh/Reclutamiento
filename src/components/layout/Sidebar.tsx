@@ -107,9 +107,11 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     >
       {/* Top: marca + colapsar */}
       <div className="sidebar__top">
-        <NavLink to="/" className="sidebar__brand" aria-label="Reclutamiento, ir al inicio">
-        <BrandLogo showText={!collapsed} />
-        </NavLink>
+        {!collapsed && (
+          <NavLink to="/" className="sidebar__brand" aria-label="Reclutamiento, ir al inicio">
+            <BrandLogo showText={!collapsed} />
+          </NavLink>
+        )}
 
         <button
           type="button"
