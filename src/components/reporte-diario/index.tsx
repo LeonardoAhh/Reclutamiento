@@ -926,7 +926,7 @@ export default function ReporteDiarioContent() {
                                                     aria-label="Ver top 10 empleados con más incidencias"
                                                 >
                                                     <BarChart2 size={13} aria-hidden="true" />
-                                                    <span>Top 10 incidencias</span>
+                                                    <span>Reporte de incidencias</span>
                                                 </button>
                                             )}
                                             <span className="reporte-status-banner">
@@ -1174,14 +1174,8 @@ export default function ReporteDiarioContent() {
                 <Modal
                     isOpen={topEmpModalOpen}
                     onClose={() => { setTopEmpModalOpen(false); setDrillDownMonth(null) }}
-                    title="Top 10 incidencias"
-                    subtitle={(() => {
-                        const allMeses = Array.from(new Set(allMonthsRows.map(r => r.mes))).sort()
-                        const currentMes = rows[0]?.mes
-                        if (currentMes && !allMeses.includes(currentMes)) allMeses.push(currentMes)
-                        return `Basado en ${allMeses.length} mes${allMeses.length !== 1 ? "es" : ""} guardado${allMeses.length !== 1 ? "s" : ""}: ${allMeses.map((m) => formatMes(m)).join(", ")}`
-                    })()}
-                    size="md"
+                    title="Top empleados con más incidencias"
+                    subtitle="Reportes cargados en el sistema"
                 >
                     <div className="top-emp-modal">
                         <AnimatePresence mode="wait" initial={false}>
@@ -1304,7 +1298,6 @@ export default function ReporteDiarioContent() {
                                                         <section aria-labelledby={`month-heading-${emp.numero_empleado}`}>
                                                             <h4 id={`month-heading-${emp.numero_empleado}`} className="top-emp-modal__section-title">
                                                                 Por mes
-                                                                <span className="top-emp-month-hint"> — toca para ver los días</span>
                                                             </h4>
                                                             <div className="top-emp-modal__months" role="list">
                                                                 {Object.entries(emp.byMes)

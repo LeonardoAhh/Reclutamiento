@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
-  "fecha": "2026-06-29",
+  "version": "0.2.0",
+  "fecha": "2026-07-01",
   "nivel": "success",
   "titulo": "Sistema actualizado",
-  "mensaje": "Se actualizó la información de rutas y mejoras en el módulo de vacantes.",
+  "mensaje": "Pagina de reporte diario con nuevas funcionalidades y mejoras en la interfaz.",
   "notificar": true
 }
