@@ -3,10 +3,6 @@
    En <1024px no se monta (la nav la maneja Header/BottomTabBar). */
 
 .sidebar {
-  --_w-expanded: 248px;
-  --_w-collapsed: 76px;
-  --_w: var(--_w-expanded);
-
   position: fixed;
   inset-block: 0;
   inset-inline-start: 0;
@@ -15,17 +11,19 @@
   display: none;
   flex-direction: column;
 
-  width: var(--_w);
+  /* Ancho compartido con .app-shell (fuente única de verdad, ver abajo). */
+  width: var(--_app-sidebar-w);
   padding: var(--spacing-lg) var(--spacing-md);
   padding-top: calc(var(--spacing-lg) + var(--safe-area-top));
   padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
 
   background: var(--color-canvas);
-
+  transition:
+    width var(--transition-base),
+    padding var(--transition-base);
 }
 
 .sidebar[data-collapsed='true'] {
-  --_w: var(--_w-collapsed);
   padding-inline: var(--spacing-sm);
 }
 
@@ -61,29 +59,6 @@
 .sidebar__brand:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
-}
-
-.sidebar__brand-mark {
-  width: var(--spacing-xl);
-  height: var(--spacing-xl);
-  flex-shrink: 0;
-  border-radius: var(--rounded-sm);
-  background: var(--color-ink);
-}
-
-.sidebar__brand-text {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--font-semibold);
-  letter-spacing: var(--tracking-snug);
-  color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sidebar[data-collapsed='true'] .sidebar__brand-text {
-  display: none;
 }
 
 .sidebar__collapse {
@@ -360,13 +335,17 @@
   .sidebar__spin { animation: none; }
 }
 
-/* App shell: layout sidebar + contenido */
+/* App shell: layout sidebar + contenido.
+   Fuente única de verdad para los anchos del sidebar (los consume
+   .sidebar por herencia de custom properties). */
 .app-shell {
-  --_app-sidebar-w: 248px;
+  --_sidebar-w-expanded: 248px;
+  --_sidebar-w-collapsed: 76px;
+  --_app-sidebar-w: var(--_sidebar-w-expanded);
 }
 
 .app-shell[data-collapsed='true'] {
-  --_app-sidebar-w: 76px;
+  --_app-sidebar-w: var(--_sidebar-w-collapsed);
 }
 
 @media (min-width: 1024px) {
@@ -376,6 +355,7 @@
 
   .app-shell__main {
     margin-inline-start: var(--_app-sidebar-w);
+    transition: margin-inline-start var(--transition-base);
   }
 }
 

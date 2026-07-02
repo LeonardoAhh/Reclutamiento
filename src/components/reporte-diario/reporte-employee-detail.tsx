@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils-shadcn";
 import { INCIDENCIA_LABELS } from "./constants";

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   BarChart3,
   Users,
@@ -10,6 +10,7 @@ import {
   Briefcase,
   Contact,
   Map,
+  ClipboardCheck,
   LogOut,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -40,20 +41,20 @@ const MENU_TABS: ReadonlyArray<TabItem> = [
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
   { to: '/empleados', label: 'Empleados', icon: Contact },
   { to: '/rutas', label: 'Rutas', icon: Map },
-  { to: '/toulouse', label: 'Toulouse', icon: Briefcase },
+  { to: '/toulouse', label: 'Toulouse', icon: ClipboardCheck },
 ];
 
 /**
- * Navbar inferior minimalista para móvil/PWA (≤767px). Centrada, flotante.
+ * Navbar inferior minimalista para móvil/tablet (≤1023px). Centrada, flotante.
  * 2 accesos principales (KPIs, Candidatos) + botón "Menú" que despliega un
  * bottom-sheet con el resto de páginas, la sesión activa y cerrar sesión.
  *
  * Patrones: safe-area-inset, touch targets ≥44px, Esc / click-outside,
- * body scroll-lock y restauración de foco al trigger.
+ * body scroll-lock, focus trap dentro del sheet y restauración de foco
+ * al trigger al cerrar.
  */
 export function BottomTabBar() {
   const location = useLocation();
-  const navigate = useNavigate();
   const { username, signOut } = useAuth();
   const { fetchSummaries } = useReporteDiario();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -61,6 +62,7 @@ export function BottomTabBar() {
   const [showReporteBadge, setShowReporteBadge] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   /* ── Anti-salto en scroll (iOS Safari) ───────────────────────────────
      La barra del navegador se colapsa/expande al hacer scroll y cambia
@@ -101,16 +103,46 @@ export function BottomTabBar() {
     setSheetOpen(false);
   }, [location.pathname]);
 
-  // Scroll-lock + Esc + restaurar foco.
+  // Scroll-lock + foco inicial en el diálogo + focus trap (Tab) + Esc + restaurar foco.
   useEffect(() => {
     if (!sheetOpen) return;
     const { body } = document;
     const prev = body.style.overflow;
     body.style.overflow = 'hidden';
+
+    const focusables = (): HTMLElement[] => {
+      const sheet = sheetRef.current;
+      if (!sheet) return [];
+      return Array.from(
+        sheet.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    };
+
+    // a11y: al abrir un role="dialog" el foco debe entrar al diálogo.
+    focusables()[0]?.focus();
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
         setSheetOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const els = focusables();
+      if (!els.length) return;
+      const sheet = sheetRef.current;
+      const first = els[0];
+      const last = els[els.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const inside = !!(active && sheet && sheet.contains(active));
+      if (e.shiftKey && (active === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !inside)) {
+        e.preventDefault();
+        first.focus();
       }
     };
     document.addEventListener('keydown', onKey);
@@ -274,24 +306,25 @@ export function BottomTabBar() {
             </header>
 
             <ul className="bottom-sheet__list">
-              {MENU_TABS.map(({ to, label, icon: Icon }) => {
-                const active = isPath(to);
-                return (
-                  <li key={to}>
-                    <button
-                      type="button"
-                      className={`bottom-sheet__item${active ? ' bottom-sheet__item--active' : ''}`}
-                      onClick={() => navigate(to)}
-                      aria-current={active ? 'page' : undefined}
-                      data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
-                    >
-                      <Icon size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
-                      <span className="bottom-sheet__item-label">{label}</span>
-                      {active && <span className="bottom-sheet__item-dot" aria-hidden="true" />}
-                    </button>
-                  </li>
-                );
-              })}
+              {MENU_TABS.map(({ to, label, icon: Icon }) => (
+                <li key={to}>
+                  <NavLink
+                    to={to}
+                    className={({ isActive }) =>
+                      `bottom-sheet__item${isActive ? ' bottom-sheet__item--active' : ''}`
+                    }
+                    data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <Icon size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
+                        <span className="bottom-sheet__item-label">{label}</span>
+                        {isActive && <span className="bottom-sheet__item-dot" aria-hidden="true" />}
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
 
             <div className="bottom-sheet__divider" role="separator" />

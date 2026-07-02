@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './ReporteDiario.css';
 import { CustomSelect } from "@/components/ui/CustomSelect";
