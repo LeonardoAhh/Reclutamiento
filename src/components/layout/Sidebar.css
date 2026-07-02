@@ -228,28 +228,35 @@
   inset-block: 25%;
 }
 
-/* Footer */
+/* Footer: Avatar Popover Minimalista */
 .sidebar__footer {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
+  justify-content: center;
+  margin-top: auto;
+  padding-top: var(--spacing-md);
 }
 
-/* Tarjeta de usuario */
-.sidebar__user {
-  display: flex;
+.sidebar__user-trigger {
+  display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  padding: 4px;
   border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
-.sidebar[data-collapsed='true'] .sidebar__user {
-  justify-content: center;
-  padding: var(--spacing-sm) 0;
-  background: transparent;
+.sidebar__user-trigger:hover {
+  background: var(--color-surface-soft);
+  transform: scale(1.02);
+}
+
+.sidebar__user-trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 .sidebar__avatar {
@@ -257,8 +264,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--control-height-lg);
-  height: var(--control-height-lg);
+  width: var(--control-height);
+  height: var(--control-height);
   border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -266,22 +273,62 @@
   font-size: var(--type-body-sm-strong-size);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0;
 }
 
-.sidebar__session {
+.sidebar__trigger-info {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-width: 0;
+  align-items: flex-start;
 }
 
-.sidebar__session-label {
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
+.sidebar__trigger-name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-ink);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+/* Popover */
+.sidebar__popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xs);
+  z-index: 1000;
+  animation: sidebar-popover-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* En modo colapsado (<=76px), el popover flota hacia la derecha para no salirse */
+.sidebar[data-collapsed='true'] .sidebar__popover {
+  left: 100%;
+  bottom: 0;
+  transform: translateX(12px);
+}
+
+@keyframes sidebar-popover-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.sidebar[data-collapsed='true'] .sidebar__popover {
+  animation: sidebar-popover-side-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes sidebar-popover-side-in {
+  from { opacity: 0; transform: translateX(0) scale(0.95); }
+  to { opacity: 1; transform: translateX(12px) scale(1); }
+}
+
+.sidebar__popover-header {
+  padding: var(--spacing-sm);
+  text-align: left;
 }
 
 .sidebar__session-name {
@@ -291,75 +338,60 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: capitalize;
 }
 
-.sidebar__user-theme {
-  display: inline-flex;
-  flex-shrink: 0;
-}
-
-/* Versión del sistema (footer) */
-.sidebar__version {
-  margin: var(--spacing-xs) 0 0;
-  padding: 0 var(--spacing-xs);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-muted);
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Fila del tema cuando el sidebar está colapsado */
-.sidebar__footer-row {
-  display: flex;
-  justify-content: center;
-}
-
-.sidebar__logout {
+.sidebar__popover-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  justify-content: space-between;
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
 
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-weight);
+.sidebar__popover-text {
+  font-size: var(--type-body-sm-size);
   color: var(--color-body);
-  text-align: start;
+}
 
+.sidebar__popover-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--spacing-xs) 0;
+}
+
+.sidebar__popover-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm);
   background: transparent;
   border: none;
+  border-radius: var(--rounded-md);
   cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-body);
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.sidebar__logout:hover:not(:disabled) {
-  color: var(--color-error);
+.sidebar__popover-item:hover {
+  background: var(--color-surface-soft);
+}
+
+.sidebar__popover-item--danger:hover {
   background: var(--color-error-tint);
+  color: var(--color-error);
 }
 
-.sidebar__logout:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-.sidebar__logout:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.sidebar[data-collapsed='true'] .sidebar__logout {
-  justify-content: center;
-  padding-inline: 0;
-}
-
-.sidebar[data-collapsed='true'] .sidebar__logout .sidebar__item-label {
-  display: none;
+.sidebar__popover-version {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
 }
 
 .sidebar__spin {

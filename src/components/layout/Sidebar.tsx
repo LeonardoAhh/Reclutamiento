@@ -23,6 +23,8 @@ import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
+// @ts-ignore
+import Avatar from 'boring-avatars';
 
 type NavItem = {
   to: string;
@@ -63,6 +65,21 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const [signingOut, setSigningOut] = useState(false);
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
+  
+  const [menuOpen, setMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar popover al hacer click fuera
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [menuOpen]);
 
   /* ── Auto-colapso al navegar ─────────────────────────────────────────
      Cuando cambia la ruta (por click, URL bar o browser back), colapsamos
@@ -170,57 +187,59 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
         </ul>
       </nav>
 
-{/* Footer: tarjeta de usuario + tema + logout */}
-      <div className="sidebar__footer">
-        <div className="sidebar__user">
-          <span className="sidebar__avatar" aria-hidden="true" title={username}>
-            {userInitials}
-          </span>
-          {!collapsed && (
-            <>
-              <div className="sidebar__session">
-                <p className="sidebar__session-label">Sesión activa</p>
-                <p className="sidebar__session-name" title={username}>{username}</p>
-              </div>
-              <span className="sidebar__user-theme">
-                <ThemeToggle />
-              </span>
-            </>
-          )}
-        </div>
+      {/* Footer: Avatar Popover Minimalista */}
+      <div className="sidebar__footer" ref={userMenuRef}>
+        {menuOpen && (
+          <div className="sidebar__popover" role="menu">
+            <div className="sidebar__popover-row">
+              <span className="sidebar__popover-text">Tema visual</span>
+              <ThemeToggle />
+            </div>
 
-        {collapsed && (
-          <div className="sidebar__footer-row">
-            <ThemeToggle />
+            <div className="sidebar__popover-divider" />
+
+            <button
+              type="button"
+              className="sidebar__popover-item sidebar__popover-item--danger"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              role="menuitem"
+            >
+              {signingOut
+                ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
+                : <LogOut size={16} aria-hidden="true" />}
+              <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
+            </button>
+
+            {version && (
+              <p className="sidebar__popover-version">v{version}</p>
+            )}
           </div>
         )}
 
         <button
           type="button"
-          className="sidebar__logout"
-          onClick={handleSignOut}
-          disabled={signingOut}
-          title={collapsed ? 'Cerrar sesión' : undefined}
-          aria-label="Cerrar sesión"
-          data-testid="sidebar-signout"
+          className="sidebar__user-trigger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          aria-label="Opciones de usuario"
         >
-          {signingOut
-            ? <Loader size={18} className="sidebar__spin" aria-hidden="true" />
-            : <LogOut size={18} aria-hidden="true" />}
-          <span className="sidebar__item-label">
-            {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
+          <span className="sidebar__avatar" aria-hidden="true" title={username}>
+            {/* @ts-ignore - boring-avatars no trae tipos por defecto */}
+            <Avatar 
+              size={40} 
+              name={username} 
+              variant="beam" 
+              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']} 
+            />
           </span>
+          {!collapsed && (
+            <div className="sidebar__trigger-info">
+              <span className="sidebar__trigger-name">{username.split('@')[0]}</span>
+            </div>
+          )}
         </button>
-
-        {version && (
-          <p
-            className="sidebar__version"
-            title={`Versión del sistema ${version}`}
-            data-testid="sidebar-version"
-          >
-            {collapsed ? `v${version}` : `Sistema · v${version}`}
-          </p>
-        )}
       </div>
     </aside>
   );

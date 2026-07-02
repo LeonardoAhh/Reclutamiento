@@ -15,6 +15,8 @@ import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { sileo } from '@/lib/notify';
 import './UserMenu.css';
+// @ts-ignore
+import Avatar from 'boring-avatars';
 
 type NavItem = {
   to: string;
@@ -141,7 +143,13 @@ export function UserMenu() {
         data-testid="user-menu-trigger"
       >
         <span className="user-menu__avatar" aria-hidden="true">
-          {initial}
+          {/* @ts-ignore */}
+          <Avatar 
+            size={32} 
+            name={username} 
+            variant="beam" 
+            colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']} 
+          />
         </span>
         <ChevronDown
           size={12}
@@ -160,8 +168,8 @@ export function UserMenu() {
         >
             <div className="user-menu__header">
             <p className="user-menu__label">Activo</p>
-            <p className="user-menu__name" title={username?.toUpperCase()}>
-              {username?.toUpperCase()}
+            <p className="user-menu__name" title={username}>
+              {username}
             </p>
           </div>
 
