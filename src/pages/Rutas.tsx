@@ -227,16 +227,19 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
 function Placeholder() {
   return (
     <div className="rutas-placeholder">
-      <div className="rutas-placeholder__animation" aria-hidden="true">
-        <div className="mockup-path" />
-        <div className="mockup-stop mockup-stop--start" />
-        <div className="mockup-stop mockup-stop--end" />
-        <div className="mockup-bus">
-          <Bus size={18} />
+      <div className="rutas-mockup" aria-hidden="true">
+        <div className="rutas-mockup__track">
+          <span className="rutas-mockup__progress" />
+          <span className="rutas-mockup__stop rutas-mockup__stop--start" />
+          <span className="rutas-mockup__stop rutas-mockup__stop--mid" />
+          <span className="rutas-mockup__stop rutas-mockup__stop--end" />
+          <span className="rutas-mockup__bus">
+            <Bus size={16} strokeWidth={2.2} aria-hidden="true" />
+          </span>
         </div>
       </div>
       <h2 className="type-heading-md">Selecciona una ruta</h2>
-      <p className="type-body-sm">Haz clic en cualquier tarjeta para ver sus detalles.</p>
+      <p className="type-body-sm">Toca cualquier tarjeta para ver sus detalles.</p>
     </div>
   );
 }
