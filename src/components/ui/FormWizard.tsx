@@ -95,7 +95,6 @@ export function FormWizard({
       <footer className="form-wizard__footer">
         {step === 0 ? (
           <button
-            key="cancel"
             type="button"
             className="btn-secondary"
             onClick={onCancel}
@@ -106,7 +105,6 @@ export function FormWizard({
           </button>
         ) : (
           <button
-            key="back"
             type="button"
             className="btn-secondary"
             onClick={() => goToStep(Math.max(0, step - 1))}
@@ -119,7 +117,6 @@ export function FormWizard({
         )}
         {isLast ? (
           <button
-            key="submit"
             type="submit"
             className="btn-primary"
             disabled={submitDisabled || submitting || !armed}
@@ -129,7 +126,6 @@ export function FormWizard({
           </button>
         ) : (
           <button
-            key="next"
             type="button"
             className="btn-primary"
             onClick={() => goToStep(Math.min(total - 1, step + 1))}

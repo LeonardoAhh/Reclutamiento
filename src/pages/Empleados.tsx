@@ -59,6 +59,11 @@ function EmployeeCards({
             <span className="empleados__puesto">
               {emp.puesto}
             </span>
+            {emp.seccion && (
+              <span className="empleados__seccion">
+                {emp.seccion}
+              </span>
+            )}
             {emp.en_incapacidad && (
               <span
                 className="empleados__incapacidad-tag"

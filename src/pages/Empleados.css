@@ -48,7 +48,7 @@
   height: var(--control-height);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: 9999px;
   color: var(--color-muted);
   transition:
     border-color var(--transition-fast),
@@ -67,12 +67,24 @@
 .empleados__search input {
   flex: 1 1 auto;
   min-width: 0;
+  padding: 0;
+  margin: 0;
   border: none;
   background: transparent;
   outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
+}
+
+.empleados__search input::-webkit-search-decoration,
+.empleados__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* ══════════════════════════════════════════
@@ -230,7 +242,6 @@
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  overflow: hidden;
 }
 
 .empleados__detail-head {
@@ -268,6 +279,7 @@
 
 .empleados__detail-body {
   max-height: calc(100vh - var(--header-height, 56px) - 160px);
+  overflow-x: visible;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-hairline-strong) transparent;
@@ -295,7 +307,7 @@
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .empleados__acc-heading {
@@ -353,6 +365,7 @@
 
 .empleados__acc-panel {
   border-top: 1px solid var(--color-hairline-soft);
+  overflow: visible;
 }
 
 /* ══════════════════════════════════════════
@@ -365,6 +378,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  overflow: visible;
 }
 
 
@@ -418,6 +432,16 @@
 .empleados__grid-info .empleados__puesto {
   font-size: 10px;
   color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.empleados__grid-info .empleados__seccion {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

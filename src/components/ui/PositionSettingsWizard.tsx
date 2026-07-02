@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -82,6 +82,13 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
   // Al elegir puesto, pre-llenar con los valores efectivos actuales.
   function handlePuestoChange(value: string) {
     setPuesto(value);
+    if (!value) {
+      setPlantilla('');
+      setBackup('');
+      setUrgentes('');
+      setNotas('');
+      return;
+    }
     const pos = positions.find(
       (p) => p.area === area && p.seccion === seccion && p.puesto === value
     );
@@ -93,19 +100,38 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     }
   }
 
+  // Validación del paso 4: todos los campos numéricos deben ser ≥ 0.
+  const valoresValidos = useMemo(() => {
+    const plantillaNum = Number(plantilla);
+    const backupNum = Number(backup);
+    const urgentesNum = Number(urgentes);
+    return (
+      plantilla !== '' &&
+      backup !== '' &&
+      urgentes !== '' &&
+      !Number.isNaN(plantillaNum) &&
+      !Number.isNaN(backupNum) &&
+      !Number.isNaN(urgentesNum) &&
+      plantillaNum >= 0 &&
+      backupNum >= 0 &&
+      urgentesNum >= 0
+    );
+  }, [plantilla, backup, urgentes]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selected) {
-      setError('Selecciona un puesto válido.');
+    if (!area || !seccion || !puesto) {
+      setError('Selecciona un área, sección y puesto válidos.');
+      return;
+    }
+    if (!valoresValidos) {
+      setError('Los valores deben ser números mayores o iguales a 0.');
       return;
     }
     const plantillaNum = Number(plantilla);
     const backupNum = Number(backup);
     const urgentesNum = Number(urgentes);
-    if ([plantillaNum, backupNum, urgentesNum].some((n) => Number.isNaN(n) || n < 0)) {
-      setError('Los valores deben ser números mayores o iguales a 0.');
-      return;
-    }
+
     setSubmitting(true);
     setError('');
     const res = await upsertPositionSetting({
@@ -152,7 +178,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
         <FormWizard
           onCancel={handleClose}
           submitting={submitting}
-          submitDisabled={!selected}
+          submitDisabled={!area || !seccion || !puesto || !valoresValidos}
           submitLabel="Guardar configuración"
           submittingLabel="Guardando…"
           notice={errorNotice}
@@ -221,19 +247,28 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
             {
               id: 'valores',
               title: 'Valores',
+              isValid: valoresValidos,
               content: (
                 <div data-testid="pos-settings-step-valores">
-                  {selected && (
+                  {/* El summary desaparece si no hay selected, pero los inputs SIEMPRE se renderizan */}
+                  {selected ? (
                     <div className="pos-settings__summary">
                       <span className="pos-settings__summary-puesto">{selected.puesto}</span>
                       <span className="pos-settings__summary-sub">
                         {selected.area} · {selected.seccion}
                       </span>
                     </div>
+                  ) : (
+                    <div className="pos-settings__summary pos-settings__summary--empty">
+                      <span className="pos-settings__summary-puesto">—</span>
+                      <span className="pos-settings__summary-sub">
+                        Selecciona un puesto válido
+                      </span>
+                    </div>
                   )}
                   <div className="form-grid">
                     <div className="form-group">
-                      <label htmlFor="pos-plantilla">Plantilla autorizada</label>
+                      <label htmlFor="pos-plantilla">Plantilla autorizada *</label>
                       <input
                         id="pos-plantilla"
                         type="number"
@@ -241,10 +276,11 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={plantilla}
                         onChange={(e) => setPlantilla(e.target.value)}
                         data-testid="pos-settings-plantilla"
+                        required
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="pos-backup">Backup</label>
+                      <label htmlFor="pos-backup">Backup *</label>
                       <input
                         id="pos-backup"
                         type="number"
@@ -252,10 +288,11 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={backup}
                         onChange={(e) => setBackup(e.target.value)}
                         data-testid="pos-settings-backup"
+                        required
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="pos-urgentes">Urgentes</label>
+                      <label htmlFor="pos-urgentes">Urgentes *</label>
                       <input
                         id="pos-urgentes"
                         type="number"
@@ -263,6 +300,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={urgentes}
                         onChange={(e) => setUrgentes(e.target.value)}
                         data-testid="pos-settings-urgentes"
+                        required
                       />
                     </div>
                     <div className="form-group form-group--span-2">
