@@ -611,7 +611,26 @@
   overflow: visible;
 }
 
+/* Track base — hairline suave debajo del recorrido animado */
+.route-svg__track {
+  fill: none;
+  stroke: var(--color-route-track);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Línea de recorrido — se dibuja de origen a destino.
+   `pathLength="1"` normaliza el path para poder usar dasharray/offset = 1
+   sin necesidad de calcular la longitud real (fudge factor eliminado). */
 .route-svg__line {
+  fill: none;
+  stroke: var(--color-route-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
   animation: draw-line var(--dur-path) var(--ease-out) both;
 }
 
@@ -621,7 +640,24 @@
   }
 }
 
+/* Dots — endpoints más grandes con fill primary, intermedios donut style. */
+.route-svg__dot {
+  r: 1.6;
+  fill: var(--color-route-stop);
+  stroke: var(--color-route-line);
+  stroke-width: 0.7;
+}
+
+.route-svg__dot--endpoint {
+  r: 2.4;
+  fill: var(--color-route-line);
+  stroke: var(--color-route-line);
+  stroke-width: 0;
+}
+
 .route-svg__stop {
+  transform-box: fill-box;
+  transform-origin: center;
   animation: stop-pop var(--dur-stop) var(--ease-spring) both;
   animation-delay: var(--stop-delay, 0s);
 }
@@ -651,15 +687,20 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
+/* Fix crítico: al usar `align-items: center` el dot se desplazaba al centro
+   vertical cuando el texto se envolvía en 2+ líneas. Con `flex-start` y un
+   pequeño margin-top en el dot queda alineado a la PRIMERA línea del texto. */
 .ruta-stops__item {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-body);
   animation: item-fadein var(--dur-fade) var(--ease-out) both;
   animation-delay: var(--item-delay, 0s);
+  text-transform: none;
 }
 
 @keyframes item-fadein {
@@ -674,11 +715,14 @@
 }
 
 .ruta-stops__dot {
+  flex-shrink: 0;
   width: 6px;
   height: 6px;
   border-radius: var(--rounded-full);
   background: var(--color-primary);
-  flex-shrink: 0;
+  /* Compensación para alinear el dot con la primera línea de texto
+     (aprox. la mitad de la altura de línea del body-sm). */
+  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 3px);
 }
 
 .ruta-stops__more {
@@ -844,6 +888,19 @@
     background: var(--color-primary);
     border-color: var(--color-primary);
     opacity: 1;
+  }
+
+  /* Route SVG y lista de paradas: mostrar estado final sin animación */
+  .route-svg__line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .route-svg__stop,
+  .ruta-stops__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .skeleton-pulse {

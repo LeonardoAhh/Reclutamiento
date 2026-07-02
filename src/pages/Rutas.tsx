@@ -55,68 +55,87 @@ interface RouteSvgProps {
 }
 
 function RouteSvg({ paradas, animKey }: RouteSvgProps) {
-  const count = Math.min(paradas.length, 6);
-  const width = 480;
-  const height = 80;
-  const margin = 40;
-  const step = count > 1 ? (width - margin * 2) / (count - 1) : 0;
+  // Mostramos TODAS las paradas (antes se hardcodeaba cap 6, lo que era
+  // inconsistente con la lista de abajo). Cap generoso para casos extremos.
+  const MAX_POINTS = 20;
+  const count = Math.max(1, Math.min(paradas.length, MAX_POINTS));
 
-  const points = Array.from({ length: count }, (_, i) => ({
-    x: margin + i * step,
-    y: height / 2 + (i % 2 === 0 ? -10 : 10),
-    label: paradas[i],
-  }));
+  // ViewBox normalizado — el SVG usa width:100% del contenedor.
+  const VB_W = 100;
+  const VB_H = 24;
+  const MARGIN_X = 4;
+  const MID_Y = VB_H / 2;
+  const AMPLITUDE = 5; // Alto de la ondulación (dentro del viewBox)
 
-  const pathD =
-    count > 1
-      ? `M ${points[0].x} ${points[0].y} ` +
-        points.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ')
-      : `M ${margin} ${height / 2} L ${width - margin} ${height / 2}`;
+  const step = count > 1 ? (VB_W - MARGIN_X * 2) / (count - 1) : 0;
 
-  const approxLen = count > 1 ? (width - margin * 2) * 1.1 : width - margin * 2;
+  // Ondulación sinusoidal suave (comunicativa, no aleatoria).
+  const points = Array.from({ length: count }, (_, i) => {
+    const t = count > 1 ? i / (count - 1) : 0.5;
+    return {
+      x: MARGIN_X + i * step,
+      y: MID_Y + Math.sin(t * Math.PI * 1.6) * AMPLITUDE * 0.55,
+    };
+  });
+
+  // Path suave usando Catmull-Rom → Bezier cúbico (pasa por todos los puntos).
+  const smoothPath = (() => {
+    if (points.length < 2) {
+      return `M ${MARGIN_X} ${MID_Y} L ${VB_W - MARGIN_X} ${MID_Y}`;
+    }
+    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i - 1] || points[i];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2] || p2;
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+    }
+    return d;
+  })();
 
   return (
     <svg
       key={animKey}
       className="route-svg"
-      viewBox={`0 0 ${width} ${height}`}
-      aria-hidden="true"
+      viewBox={`0 0 ${VB_W} ${VB_H}`}
+      role="img"
+      aria-label={`Recorrido con ${paradas.length} ${paradas.length === 1 ? 'parada' : 'paradas'}`}
       preserveAspectRatio="xMidYMid meet"
     >
+      {/* Track base (hairline) */}
       <path
-        d={pathD}
-        stroke="var(--color-route-track)"
-        strokeWidth="2"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        className="route-svg__track"
+        d={smoothPath}
+        pathLength="1"
       />
+      {/* Progress line que se dibuja de origen a destino */}
       <path
         className="route-svg__line"
-        d={pathD}
-        stroke="var(--color-route-line)"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={{ strokeDasharray: approxLen, strokeDashoffset: approxLen } as React.CSSProperties}
+        d={smoothPath}
+        pathLength="1"
       />
-      {points.map((p, i) => (
-        <g
-          key={i}
-          className="route-svg__stop"
-          style={{ '--stop-delay': `${0.15 + i * 0.18}s` } as React.CSSProperties}
-        >
-          <circle
-            cx={p.x}
-            cy={p.y}
-            r={i === 0 || i === count - 1 ? 7 : 5}
-            fill={i === 0 || i === count - 1 ? 'var(--color-route-line)' : 'var(--color-route-stop)'}
-            stroke="var(--color-route-line)"
-            strokeWidth="1.5"
-          />
-        </g>
-      ))}
+      {/* Paradas — endpoints más grandes; intermedias tipo donut. */}
+      {points.map((p, i) => {
+        const isEndpoint = i === 0 || i === count - 1;
+        return (
+          <g
+            key={i}
+            className={`route-svg__stop${isEndpoint ? ' route-svg__stop--endpoint' : ''}`}
+            style={{ '--stop-delay': `${0.2 + i * (1 / Math.max(count, 6)) * 0.8}s` } as React.CSSProperties}
+          >
+            <circle
+              cx={p.x}
+              cy={p.y}
+              className={`route-svg__dot${isEndpoint ? ' route-svg__dot--endpoint' : ''}`}
+            />
+          </g>
+        );
+      })}
     </svg>
   );
 }
