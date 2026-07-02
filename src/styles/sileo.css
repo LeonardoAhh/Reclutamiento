@@ -1,5 +1,5 @@
 /* ============================================================
-   Sileo · Adaptación al design system (Ollama-inspired)
+   Sileo · Adaptación al design system (Notion-inspired)
    Mobile-first · semántico · cohesivo · accesible
 
    IMPORTANTE: sileo inyecta su CSS en <head> en runtime (después de esta
@@ -12,8 +12,12 @@
   --sileo-state-success: var(--color-success) !important;
   --sileo-state-error: var(--color-error) !important;
   --sileo-state-warning: var(--color-warning) !important;
-  --sileo-state-info: var(--color-accent-teal) !important;
-  --sileo-state-action: var(--color-accent-teal) !important;
+  --sileo-state-info: var(--color-primary) !important;
+  --sileo-state-action: var(--color-primary) !important;
+
+  /* Radios cohesivos con el resto del sistema (Notion: lg=12, full=pill). */
+  --sileo-radius: var(--rounded-lg) !important;
+  --sileo-radius-button: var(--rounded-full) !important;
 
   /* Ancho del pill alineado a la escala del sistema. */
   --sileo-width: 360px;
@@ -39,18 +43,21 @@
   font-weight: var(--font-semibold) !important;
 }
 
-/* Contraste de la descripción un poco más alto que el default (a11y). */
+/* Contraste de la descripción un poco más alto que el default (a11y).
+   Sileo invierte el fondo del toast: en light theme usa fondo oscuro
+   (texto claro), en dark theme fondo claro (texto oscuro). Usamos los
+   channel tokens para que respondan automáticamente al tema activo. */
 [data-sileo-viewport][data-theme='light'] [data-sileo-description] {
-  color: rgba(255, 255, 255, 0.74) !important;
+  color: rgba(var(--color-canvas-rgb), 0.78) !important;
 }
 
 [data-sileo-viewport][data-theme='dark'] [data-sileo-description] {
-  color: rgba(0, 0, 0, 0.66) !important;
+  color: rgba(var(--color-ink-rgb), 0.7) !important;
 }
 
 /* Mobile-first: el toast nunca toca los bordes en pantallas chicas. */
 @media (max-width: 480px) {
   :root {
-    --sileo-width: calc(100vw - 1.75rem);
+    --sileo-width: calc(100vw - var(--spacing-xl) * 2);
   }
 }
