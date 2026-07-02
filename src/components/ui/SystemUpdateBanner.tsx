@@ -38,20 +38,22 @@ export function SystemUpdateBanner() {
   return (
     <AnimatePresence>
       {visible && info && (
-        <motion.aside
-          key={info.version}
-          className={`system-update system-update--${level}`}
-          role="status"
-          aria-live="polite"
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 360, damping: 30 }}
-          data-testid="system-update-banner"
-        >
-          <span className="system-update__badge" aria-hidden="true">
-            <Icon size={18} />
-          </span>
+          <motion.aside
+            key={info.version}
+            className={`system-update system-update--${level}`}
+            role="status"
+            aria-live="polite"
+            initial={{ y: 50, opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+            animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ y: 30, opacity: 0, scale: 0.9, filter: 'blur(10px)', transition: { duration: 0.2 } }}
+            transition={{ type: 'spring', damping: 20, stiffness: 400, mass: 0.8 }}
+            data-testid="system-update-banner"
+          >
+            <div className="system-update__icon-wrapper">
+              <span className="system-update__badge" aria-hidden="true">
+                <Icon size={20} strokeWidth={2.5} />
+              </span>
+            </div>
 
           <div className="system-update__body">
             <div className="system-update__heading">

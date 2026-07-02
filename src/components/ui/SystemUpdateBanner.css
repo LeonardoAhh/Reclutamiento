@@ -8,7 +8,7 @@
 .system-update {
   /* Color por nivel (default = info). Los modificadores lo sobreescriben. */
   --su-accent: var(--color-accent-teal);
-  --su-tint: rgba(var(--color-accent-teal-rgb), 0.12);
+  --su-tint: rgba(var(--color-accent-teal-rgb), 0.15);
 
   position: fixed;
   z-index: 1100;
@@ -20,14 +20,18 @@
 
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
 
-  background: var(--color-surface, #fff);
-  border: 1px solid var(--color-hairline);
-  border-left: 3px solid var(--su-accent);
-  border-radius: var(--rounded-lg);
+  /* Glassmorphism & Shadows */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--rounded-2xl, 16px);
+  box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.05);
 
   font-family: var(--font-body);
 }
@@ -35,28 +39,60 @@
 /* ── Niveles ──────────────────────────────────────────────────── */
 .system-update--info {
   --su-accent: var(--color-accent-teal);
-  --su-tint: rgba(var(--color-accent-teal-rgb), 0.12);
+  --su-tint: rgba(var(--color-accent-teal-rgb), 0.2);
 }
 .system-update--success {
   --su-accent: var(--color-success);
-  --su-tint: var(--color-success-tint);
+  --su-tint: rgba(var(--color-success-rgb), 0.25);
 }
 .system-update--mantenimiento {
   --su-accent: var(--color-warning);
-  --su-tint: var(--color-warning-tint);
+  --su-tint: rgba(var(--color-warning-rgb), 0.25);
+}
+
+/* ── Dark Mode Adaptations ────────────────────────────────────── */
+html.dark .system-update {
+  background: rgba(30, 30, 30, 0.75);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ── Icono ────────────────────────────────────────────────────── */
+.system-update__icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
 .system-update__badge {
+  position: relative;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--spacing-lg) + var(--spacing-sm));
-  height: calc(var(--spacing-lg) + var(--spacing-sm));
+  width: calc(var(--spacing-xl) + 4px);
+  height: calc(var(--spacing-xl) + 4px);
   border-radius: var(--rounded-full);
   background: var(--su-tint);
   color: var(--su-accent);
+  z-index: 1;
+}
+
+/* Efecto de latido en el icono para llamar la atención suavemente */
+.system-update__badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--su-accent);
+  z-index: -1;
+  animation: su-pulse 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes su-pulse {
+  0% { transform: scale(1); opacity: 0.2; }
+  70%, 100% { transform: scale(1.6); opacity: 0; }
 }
 
 /* ── Texto ────────────────────────────────────────────────────── */
