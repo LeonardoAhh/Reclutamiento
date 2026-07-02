@@ -43,7 +43,7 @@ function SafeImage({
         src={src}
         alt={alt}
         className={className}
-        loading="lazy"
+        crossOrigin="anonymous"
         onError={() => setError(true)}
       />
     </div>
