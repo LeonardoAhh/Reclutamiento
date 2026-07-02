@@ -86,9 +86,32 @@ export function Documentos() {
       const timestamp = new Date().toISOString().split('T')[0];
       const fileName = `constancia_fiscal_${timestamp}.png`;
 
+      const dataUrl = canvas.toDataURL('image/png');
+      
+      // Intentar usar la API nativa de Compartir/Guardar de iOS/Android
+      if (navigator.share) {
+        try {
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], fileName, { type: 'image/png' });
+          
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Constancia Fiscal',
+            });
+            setStatus('idle');
+            return; // Termina con éxito si se compartió/guardó nativamente
+          }
+        } catch (e) {
+          console.warn('Fallo al intentar usar Web Share API', e);
+        }
+      }
+
+      // Fallback estándar para PC y Android
       const link = document.createElement('a');
       link.download = fileName;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
       setStatus('idle');
     } catch (err) {
