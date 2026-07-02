@@ -1,0 +1,68 @@
+/* ─────────────────────────────────────────────
+   App Header — solo móvil/tablet (<1024px).
+   Lienzo plano (canvas) + hairline inferior de 1px.
+   Sin glass, sin blur, sin sombras: la profundidad es la línea.
+   Brand a la izquierda, acciones a la derecha; la navegación
+   se delega al BottomTabBar. En >=1024px se oculta (Sidebar).
+───────────────────────────────────────────── */
+
+.app-header {
+  --_h: 56px;
+
+  /* Posicionamiento */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  /* Box model */
+  height: calc(var(--_h) + var(--safe-area-top));
+  padding-top: var(--safe-area-top);
+
+  /* Visual — canvas sólido + hairline (desing.md: primary-nav) */
+  background: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.app-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--_h);
+  gap: var(--spacing-lg);
+}
+
+/* ── Brand (enlace a inicio) ─────────────────── */
+.app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+
+  text-decoration: none;
+  color: var(--color-ink);
+  border-radius: var(--rounded-sm);
+  transition: opacity var(--transition-fast);
+}
+
+.app-header__brand:hover {
+  opacity: 0.7;
+}
+
+.app-header__brand:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Acciones (derecha) ──────────────────────── */
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+}
+
+/* Desktop (>=1024px): la navegacion vive en el Sidebar; ocultamos el Header. */
+@media (min-width: 1024px) {
+  .app-header {
+    display: none;
+  }
+}

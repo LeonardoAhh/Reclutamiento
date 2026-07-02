@@ -1,0 +1,1506 @@
+/* ========================================
+   DESIGN TOKENS — Notion-inspired system
+   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
+   Values updated · Variable names preserved for backwards compatibility.
+   ======================================== */
+
+:root {
+  /* ── Brand & Accent ─────────────────────────────────────────────
+     Notion: single blue accent (#0075de) reserved for CTAs / links / focus. */
+  --color-primary: #0075de;
+  --color-primary-active: #005bab;
+  --color-primary-disabled: #e6e6e6;
+
+  /* Deep indigo "night" band background — signature single-hero moment. */
+  --color-secondary: #213183;
+  --color-secondary-rgb: 33 49 131;
+
+  /* ── Surface ────────────────────────────────────────────────────
+     Warm paper canvas over pure white. Cards on pure white to lift from canvas. */
+  --color-canvas: #f6f5f4;                /* Warm off-white (paper) — page background */
+  --color-canvas-soft: #f6f5f4;            /* Alias explícito Notion */
+  --color-surface: #ffffff;                /* Cards, panels, form fields */
+  --color-surface-soft: #f6f5f4;           /* Nav pills, dividers suaves */
+  --color-surface-card: #ffffff;           /* Cards de feature/testimonial */
+  --color-surface-dark: #191817;           /* Superficies oscuras (login panel, footer) */
+  --color-surface-dark-elevated: #232120;  /* Cards anidadas sobre superficie oscura */
+
+  /* ── Hairlines ──────────────────────────────────────────────── */
+  --color-hairline: #e6e6e6;
+  --color-hairline-soft: #f0efee;
+  --color-hairline-strong: #d5d3d1;
+
+  /* ── Text ───────────────────────────────────────────────────── */
+  --color-ink: #000000;                    /* Notion true-black (soft via alpha en usos) */
+  --color-body-strong: #000000;
+  --color-body: #31302e;                   /* Warm charcoal — body copy */
+  --color-charcoal: #31302e;
+  --color-muted: #615d59;                  /* Stone — supporting copy */
+  --color-muted-soft: #a39e98;             /* Ash — captions, placeholders */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b8b6b3;
+
+  /* ── Semantic ───────────────────────────────────────────────── */
+  --color-success: #1aae39;                /* Sticker green como affirmative */
+  --color-warning: #dd5b00;                /* Sticker orange como warning */
+  --color-error: #ef4444;
+
+  /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
+     Small colourful illustration blocks, app-icon tiles, category dots. */
+  --color-accent-sky: #62aef0;
+  --color-accent-purple: #d6b6f6;
+  --color-accent-purple-deep: #391c57;
+  --color-accent-pink: #ff64c8;
+  --color-accent-orange: #dd5b00;
+  --color-accent-orange-deep: #793400;
+  --color-accent-teal: #2a9d99;
+  --color-accent-green: #1aae39;
+  --color-accent-brown: #523410;
+
+  /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  --color-brand-accent: var(--color-primary);
+  --color-badge-orange: var(--color-accent-orange);
+  --color-badge-pink: var(--color-accent-pink);
+  --color-badge-violet: var(--color-accent-purple);
+  --color-badge-emerald: var(--color-accent-green);
+
+  /* Accent RGB channels (usados por gradientes/tintes en la app) */
+  --color-accent-teal-rgb: 42 157 153;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: 221 91 0;
+
+  /* ── Channel values ─────────────────────────────────────────── */
+  --color-primary-rgb: 0 117 222;
+  --color-error-rgb: 239 68 68;
+  --color-success-rgb: 26 174 57;
+  --color-ink-rgb: 0 0 0;
+  --color-canvas-rgb: 246 245 244;
+
+  /* ── Derived overlays ───────────────────────────────────────── */
+  --color-focus-ring: rgba(0, 117, 222, 0.35);
+  --color-modal-scrim: rgba(0, 0, 0, 0.32);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  --color-success-tint: rgba(26, 174, 57, 0.1);
+  --color-error-tint: rgba(239, 68, 68, 0.1);
+  --color-warning-tint: rgba(221, 91, 0, 0.1);
+  --color-primary-tint: rgba(0, 117, 222, 0.08);
+  --color-header-glass: rgba(246, 245, 244, 0.92);
+
+  /* ── Typography ─────────────────────────────────────────────────
+     Notion sets everything in tuned Inter. Weight 700 for display,
+     weight 400 for body — the primary expressive lever. */
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* display-xl — hero headline (Notion: 64px 700, tight tracking) */
+  --type-display-xl-size: 40px;
+  --type-display-xl-weight: 700;
+  --type-display-xl-line: 1.05;
+  --type-display-xl-tracking: -0.035em;
+
+  /* display-lg — large section headlines */
+  --type-display-lg-size: 32px;
+  --type-display-lg-weight: 700;
+  --type-display-lg-line: 1.08;
+  --type-display-lg-tracking: -0.03em;
+
+  /* heading-lg — section headlines */
+  --type-heading-lg-size: 26px;
+  --type-heading-lg-weight: 700;
+  --type-heading-lg-line: 1.15;
+  --type-heading-lg-tracking: -0.024em;
+
+  /* heading-md — sub-section headings */
+  --type-heading-md-size: 22px;
+  --type-heading-md-weight: 700;
+  --type-heading-md-line: 1.23;
+  --type-heading-md-tracking: -0.018em;
+
+  /* heading-sm — card titles */
+  --type-heading-sm-size: 18px;
+  --type-heading-sm-weight: 700;
+  --type-heading-sm-line: 1.3;
+  --type-heading-sm-tracking: -0.012em;
+
+  /* body-md — texto corrido, 400 weight (readability first) */
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-line: 1.5;
+  --type-body-md-tracking: 0;
+
+  /* body-sm — dense body, table rows, nav */
+  --type-body-sm-size: 15px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 1.4;
+  --type-body-sm-tracking: 0;
+
+  /* body-strong — feature titles / callouts (Notion title) */
+  --type-body-strong-size: 16px;
+  --type-body-strong-weight: 600;
+  --type-body-strong-line: 1.4;
+  --type-body-strong-tracking: -0.006em;
+
+  /* body-sm-strong — button labels, dense strong copy */
+  --type-body-sm-strong-size: 15px;
+  --type-body-sm-strong-weight: 600;
+  --type-body-sm-strong-line: 1.4;
+  --type-body-sm-strong-tracking: 0;
+
+  /* caption-sm — captions, footnotes */
+  --type-caption-sm-size: 14px;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.43;
+  --type-caption-sm-tracking: 0;
+
+  /* caption-uppercase — eyebrows / section labels */
+  --type-caption-up-size: 12px;
+  --type-caption-up-weight: 600;
+  --type-caption-up-line: 1.33;
+  --type-caption-up-tracking: 0.06em;
+
+  /* button — Notion: 16 / 500 (label size 15/600 en utility) */
+  --type-button-size: 15px;
+  --type-button-weight: 600;
+  --type-button-line: 1.2;
+  --type-button-tracking: 0;
+
+  /* code */
+  --type-code-md-size: 14px;
+  --type-code-md-weight: 400;
+  --type-code-md-line: 1.5;
+  --type-code-md-tracking: 0;
+  --type-code-sm-size: 14px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-line: 1.43;
+  --type-code-sm-tracking: 0;
+
+  /* ── Control sizing ─────────────────────────────────────────── */
+  --control-height: 36px;
+  --control-height-lg: 40px;
+  --control-padding-x: 20px;
+  --control-padding-y: 8px;
+
+  /* ── Spacing — base 4px (mantenemos escala actual estable) ─── */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-section: 96px;
+
+  /* ── Border radius (Notion: xs4 · sm5 · md8 · lg12 · xl16 · full) ── */
+  --rounded-none: 0;
+  --rounded-xs: 4px;
+  --rounded-sm: 5px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-xl: 16px;
+  --rounded-full: 9999px;
+
+  /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
+  --shadow-focus: 0 0 0 3px var(--color-focus-ring);
+
+  /* ── Transitions ─────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  /* ── Container ───────────────────────────────────────────────── */
+  --container-max: 1200px;
+  --container-padding: var(--spacing-xl);
+  --container-padding-mobile: var(--spacing-lg);
+
+  /* ── PWA / safe-area ─────────────────────────────────────────── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --tab-bar-height: 0px;
+
+  /* ── Tokens extra / alias ────────────────────────────────────── */
+  --type-caption-md-size: 13px;
+  --type-caption-md-weight: 500;
+  --type-caption-md-line: 1.4;
+  --type-display-md-size: 30px;
+  --type-display-md-weight: 700;
+  --type-body-lg-size: 18px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-regular: 400;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+
+  /* Tracking Notion (tight display) */
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.018em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+
+  --rounded-pill: var(--rounded-full);
+  --radius-sm: var(--rounded-sm);
+  --radius-md: var(--rounded-md);
+  --border-width: 1px;
+
+  --spacing-2xs: 3px;
+  --space-xxs: var(--spacing-xxs);
+  --space-xs: var(--spacing-xs);
+  --space-sm: var(--spacing-sm);
+  --space-md: var(--spacing-md);
+  --space-lg: var(--spacing-lg);
+  --space-xl: var(--spacing-xl);
+
+  --color-amber: var(--color-accent-amber);
+  --color-danger: var(--color-error);
+  --color-error-soft: var(--color-error-tint);
+  --color-border: var(--color-hairline);
+  --color-focus: var(--color-primary);
+  --color-surface-contrast: var(--color-ink);
+  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-cream-strong: var(--color-surface-soft);
+  --color-text-primary: var(--color-ink);
+  --color-text-tertiary: var(--color-muted);
+
+  /* Shadows — Notion barely-there layered stack.
+     Level 0 = flat (hairline only). Level 1 = soft. Level 2 = elevated. */
+  --shadow-xs:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02);
+  --shadow-sm:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027);
+  --shadow-subtle: var(--shadow-sm);
+  --shadow-card: var(--shadow-sm);
+  --shadow-elevated:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
+    0 4px 18px rgba(0, 0, 0, 0.04);
+  --shadow-prominent:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
+    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
+    0 4px 18px rgba(0, 0, 0, 0.04),
+    0 23px 52px rgba(0, 0, 0, 0.05);
+
+  --header-height: 64px;
+  --transition-slow: 350ms ease;
+  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-theme-in: 300ms;
+  --duration-theme-out: 200ms;
+  --duration-theme-stagger: 60ms;
+
+  color-scheme: light;
+}
+
+/* ========================================
+   DARK THEME
+   [data-theme="dark"] en <html>
+   ======================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Notion-style dark: deep neutral canvas, cards a un pelo más claros */
+  --color-canvas: #191817;
+  --color-canvas-soft: #191817;
+  --color-surface: #232120;
+  --color-surface-soft: #232120;
+  --color-surface-card: #232120;
+  --color-surface-dark: #f6f5f4;
+  --color-surface-dark-elevated: #ffffff;
+
+  --color-hairline: #3a3735;
+  --color-hairline-soft: #2c2a29;
+  --color-hairline-strong: #504c48;
+
+  --color-ink: #f6f5f4;
+  --color-body-strong: #f6f5f4;
+  --color-body: #c9c5c0;
+  --color-charcoal: #c9c5c0;
+  --color-muted: #8f8a83;
+  --color-muted-soft: #615d59;
+  --color-on-dark: #191817;
+  --color-on-dark-soft: #8f8a83;
+
+  /* Notion blue slightly lifted for dark surfaces */
+  --color-primary: #4ca3f4;
+  --color-on-primary: #ffffff;
+  --color-primary-active: #62aef0;
+  --color-primary-disabled: #3a3735;
+
+  --color-primary-rgb: 76 163 244;
+  --color-ink-rgb: 246 245 244;
+  --color-canvas-rgb: 25 24 23;
+
+  --color-secondary: #4a5cc4;
+  --color-secondary-rgb: 74 92 196;
+
+  --color-accent-teal: #2dd4bf;
+  --color-accent-teal-rgb: 45 212 191;
+  --color-accent-amber: #fbbf24;
+  --color-accent-amber-rgb: 251 191 36;
+
+  --color-focus-ring: rgba(76, 163, 244, 0.4);
+  --color-modal-scrim: rgba(0, 0, 0, 0.72);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.1);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
+  --color-success-tint: rgba(26, 174, 57, 0.15);
+  --color-error-tint: rgba(239, 68, 68, 0.15);
+  --color-warning-tint: rgba(221, 91, 0, 0.18);
+  --color-primary-tint: rgba(76, 163, 244, 0.12);
+  --color-header-glass: rgba(25, 24, 23, 0.88);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-prominent: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS: el safe-area (notch + barra de estado) toma su color del <html>,
+     no del <body>. Sin esto, en tema oscuro la barra superior se ve blanca. */
+  background-color: var(--color-canvas);
+  transition: background-color var(--transition-base);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-body);
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: var(--safe-area-bottom);
+  }
+}
+
+.theme-init * {
+  transition: none !important;
+}
+
+/* ========================================
+   THEME TRANSITION — circular reveal + stagger
+   View Transitions API (Chrome 111+, Safari 18+).
+   En navegadores sin soporte, useTheme aplica el tema sin animación y
+   las transiciones CSS de color (body/html) hacen graceful degradation.
+   ======================================== */
+
+/* Pintamos snapshots; sin esto, ambos animan en cross-fade base. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Saliente: el tema previo cae rápido. */
+::view-transition-old(root) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+  z-index: 1;
+}
+
+/* Entrante: el nuevo tema se descubre con un clip circular desde el toggle. */
+::view-transition-new(root) {
+  animation: theme-reveal var(--duration-theme-in) var(--ease-apple) both;
+  z-index: 2;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+  to {
+    clip-path: circle(150% at var(--theme-origin-x) var(--theme-origin-y));
+  }
+}
+
+@keyframes theme-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0.85; }
+}
+
+/* Stagger por capas: cada una recibe su propio snapshot con delay creciente.
+   El resultado: el reveal circular cruza el contenido y, una fracción de
+   segundo después, header/hero/main/tab-bar cross-fadean encima → sensación
+   de "el sistema respira" sin orquestar nada desde JS.
+
+   REGLA CRÍTICA: cada `view-transition-name` debe ser único en el snapshot.
+   Por eso los selectores apuntan a elementos de los que sólo hay UNO
+   montado a la vez (un main por ruta, un hero por página, un dropdown). */
+
+.app-header                 { view-transition-name: theme-header; }
+main.container              { view-transition-name: theme-page; }
+.user-menu__dropdown        { view-transition-name: theme-dropdown; }
+
+/* Heroes de cada página (sólo uno montado a la vez, route exclusivo). */
+.kpis-page__hero,
+.dashboard__hero,
+.pipeline__hero,
+.bajas__hero,
+.empleados__hero,
+.transporte__hero,
+.settings__hero             { view-transition-name: theme-page-hero; }
+
+/* Saliente uniforme para todas las capas con nombre. */
+::view-transition-old(theme-header),
+::view-transition-old(theme-page),
+::view-transition-old(theme-page-hero),
+::view-transition-old(theme-dropdown) {
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+}
+
+/* Entrante: animación común con delays escalonados por capa.
+   El stagger sigue el flujo visual: header → hero → contenido → dropdown. */
+::view-transition-new(theme-header),
+::view-transition-new(theme-page),
+::view-transition-new(theme-page-hero),
+::view-transition-new(theme-dropdown) {
+  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
+}
+
+::view-transition-new(theme-header)      { animation-delay: calc(var(--duration-theme-stagger) * 0.7); }
+::view-transition-new(theme-page-hero)   { animation-delay: calc(var(--duration-theme-stagger) * 1.2); }
+::view-transition-new(theme-page)        { animation-delay: calc(var(--duration-theme-stagger) * 1.6); }
+::view-transition-new(theme-dropdown)    { animation-delay: calc(var(--duration-theme-stagger) * 1.0); }
+
+@keyframes theme-layer-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Accesibilidad: usuarios con reduce-motion no ven animación.
+   useTheme también detecta esto y aplica el tema sin envolverlo en VT. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(theme-header),
+  ::view-transition-new(theme-header),
+  ::view-transition-old(theme-page),
+  ::view-transition-new(theme-page),
+  ::view-transition-old(theme-page-hero),
+  ::view-transition-new(theme-page-hero),
+  ::view-transition-old(theme-dropdown),
+  ::view-transition-new(theme-dropdown) {
+    animation: none;
+  }
+}
+
+/* ── Headings ── */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-weight: 500; /* Editorial weight — no bold pesado */
+}
+
+h1 {
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+h2 {
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+h3 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+h4 {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-active);
+}
+
+button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+}
+
+strong,
+b {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-line);
+}
+
+pre {
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-code-sm-size);
+}
+
+/* ========================================
+   TYPE UTILITY CLASSES
+   ======================================== */
+
+.type-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+.type-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+.type-heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.type-heading-md {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.type-heading-sm {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.type-body-md {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.type-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.type-body-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.type-body-sm-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.type-caption-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.type-caption-up {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.type-button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: max(var(--container-padding), var(--safe-area-left));
+  padding-right: max(var(--container-padding), var(--safe-area-right));
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: max(var(--container-padding-mobile), var(--safe-area-left));
+    padding-right: max(var(--container-padding-mobile), var(--safe-area-right));
+  }
+}
+
+/* Color text helpers */
+.text-ink {
+  color: var(--color-ink);
+}
+.text-body {
+  color: var(--color-body);
+}
+.text-body-strong {
+  color: var(--color-body-strong);
+}
+.text-charcoal {
+  color: var(--color-charcoal);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-muted-soft {
+  color: var(--color-muted-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-success {
+  color: var(--color-success);
+}
+.text-warning {
+  color: var(--color-warning);
+}
+.text-error {
+  color: var(--color-error);
+}
+
+/* Section divider — hairline pura, sin sombras */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--color-hairline);
+  margin: 0;
+}
+
+/* ========================================
+   VIEW TRANSITIONS
+   ======================================== */
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ========================================
+   FORM SYSTEM
+   ======================================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group label {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  color: var(--color-ink);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: 88px;
+  resize: vertical;
+  border-radius: var(--rounded-lg);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: var(--color-charcoal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.form-group input:invalid:not(:placeholder-shown),
+.form-group select:invalid:not(:focus) {
+  border-color: var(--color-error);
+}
+
+.form-group select:disabled,
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+}
+
+.form-error {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-error);
+  margin-top: var(--spacing-xxs);
+}
+
+/* ========================================
+   BUTTONS — Ollama style
+   Todos los botones usan rounded-full.
+   Sin sombras — profundidad viene del color y borders.
+   ======================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  border-radius: var(--rounded-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-danger:focus-visible,
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Primary — black pill, único CTA con color sólido */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn-primary:active {
+  background: var(--color-primary-active);
+}
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  border-color: var(--color-primary-disabled);
+  color: var(--color-charcoal);
+  cursor: not-allowed;
+}
+
+/* Secondary — white surface + hairline */
+.btn-secondary {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+}
+.btn-secondary:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-charcoal);
+}
+.btn-secondary:active {
+  background: var(--color-hairline);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+.btn-danger:hover {
+  background: color-mix(in srgb, var(--color-error) 88%, black);
+}
+.btn-danger:active {
+  background: color-mix(in srgb, var(--color-error) 78%, black);
+}
+
+/* Ghost — transparente, solo texto */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-charcoal);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* Text link style button */
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-decoration: underline;
+}
+.btn-text:hover {
+  color: var(--color-primary-active);
+}
+.btn-text:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Icon button */
+.btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--rounded-full);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+.btn-icon:hover {
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+  background: var(--color-surface-soft);
+}
+.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.btn-icon--danger:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.btn-icon__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   CARDS
+   Border 1px + rounded-lg. Sin sombra.
+   ======================================== */
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+}
+
+.card--soft {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+/* Card inverted — isla oscura (KPI hero, featured) */
+.card--dark {
+  background: var(--color-surface-dark);
+  border-color: transparent;
+  color: var(--color-on-dark);
+}
+
+.card--dark h1,
+.card--dark h2,
+.card--dark h3,
+.card--dark h4 {
+  color: var(--color-on-dark);
+}
+
+.card--dark .text-muted {
+  color: var(--color-on-dark-soft);
+}
+
+/* ========================================
+   MODAL — Ollama style (NO glass)
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-modal-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+.modal-content {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: min(85vh, 760px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: slideUpModal 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  position: relative;
+}
+
+.modal-content--lg {
+  max-width: 760px;
+}
+
+.modal-content--xl {
+  max-width: 1040px;
+}
+
+/* Scrollbar estilo minimalista */
+.modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-charcoal);
+}
+
+/* Mobile: fullscreen para modales grandes, excepto confirmaciones */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  /* Por defecto en mobile: sheet desde abajo con bordes redondeados arriba */
+  .modal-content {
+    max-height: 92vh;
+    border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    animation: slideUpMobile 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  /* Modales que deben ser fullscreen en mobile (no confirmaciones) */
+  .modal-content.modal-fullscreen-mobile {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    animation: modalFullscreenIn 250ms ease forwards;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: var(--spacing-lg);
+  }
+
+  /* Cualquier contenedor de contenido (no header/footer) es el área scrollable.
+     Robusto aunque el wrapper no use la clase .modal-body. iOS: min-height:0 +
+     -webkit-overflow-scrolling + overscroll-behavior para permitir el pan. */
+  .modal-content.modal-fullscreen-mobile > *:not(.modal-header):not(.modal-footer) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* El .modal-body es el ÚNICO contenedor de scroll en móvil. Sus hijos NO deben
+     encogerse: varios componentes usan overflow:hidden (ExpandableSection,
+     tarjetas con border-radius), lo que hace que su tamaño mínimo automático sea
+     0 y el algoritmo flexbox los APLASTE para caber en el alto del modal → el
+     contenido se recorta y el cuerpo nunca desborda → no hay scroll en iOS.
+     Con flex-shrink:0 conservan su alto natural, el cuerpo desborda y scrollea.
+     Los scrollers internos (flex:1) siguen funcionando porque mantienen grow:1. */
+  .modal-content.modal-fullscreen-mobile .modal-body > * {
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-footer {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+    margin-top: auto;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title > svg,
+.modal-title > [data-icon] {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-title__text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  line-height: 1.3;
+}
+
+.modal-title__sub {
+  display: block;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-body);
+  margin-top: var(--spacing-xxs);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-canvas);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-hairline);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .modal-footer {
+    justify-content: stretch;
+  }
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
+    flex: 1 1 auto;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFullscreenIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .modal-overlay {
+    animation: none;
+  }
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-charcoal);
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible para navegación por teclado */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ========================================
+   COLOR ALIASES (retrocompatibilidad)
+   ======================================== */
+
+.color-error {
+  color: var(--color-error);
+}
+.color-success {
+  color: var(--color-success);
+}
+.color-warning {
+  color: var(--color-warning);
+}
+.color-primary {
+  color: var(--color-primary);
+}
+
+
+/* ========================================
+   DOCUMENTOS PAGE
+   ======================================== */
+
+.documentos-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* Mobile first: en pantallas pequeñas apilamos y usamos safe-area */
+@media (max-width: 640px) {
+  .documentos-page {
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+  }
+}
+
+/* ── Header ── */
+.documentos-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.documentos-header h1 {
+  margin: 0;
+  /* Hereda .type-display-lg, pero forzamos mobile */
+  font-size: var(--type-display-lg-size);
+}
+
+@media (max-width: 480px) {
+  .documentos-header h1 {
+    font-size: var(--type-heading-lg-size);
+  }
+
+  .documentos-header .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Error banner ── */
+.documentos-error {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-error-tint);
+  border: 1px solid var(--color-error);
+  border-radius: var(--rounded-md);
+}
+
+/* ── Constancia capture wrapper ── */
+.constancia-capture {
+  background: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-lg);
+  /* Evita que el contenido rompa el layout en móvil antes de la captura */
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .constancia-capture {
+    padding: var(--spacing-md);
+    border-radius: var(--rounded-md);
+  }
+}
+
+/* Spinner accesible */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Asegura que el botón tenga touch target mínimo 44×44 */
+.btn-primary {
+  min-height: 44px;
+  min-width: 44px;
+}

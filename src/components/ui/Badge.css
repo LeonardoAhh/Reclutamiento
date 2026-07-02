@@ -1,0 +1,65 @@
+/* Badge — pill labels siguiendo design.md Ollama style */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  white-space: nowrap;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.badge svg {
+  flex-shrink: 0;
+}
+
+.badge--default {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-hairline);
+}
+
+.badge--coral {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.badge--teal {
+  background: var(--color-accent-teal);
+  color: var(--color-on-primary);
+  border-color: var(--color-accent-teal);
+}
+
+.badge--amber {
+  background: var(--color-accent-amber);
+  color: var(--color-on-primary);
+  border-color: var(--color-accent-amber);
+}
+
+.badge--success {
+  background: var(--color-success);
+  color: var(--color-on-primary);
+  border-color: var(--color-success);
+}
+
+.badge--error {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+
+/* Adjustments para dark theme */
+[data-theme="dark"] .badge--teal {
+  color: var(--color-ink);
+}
+
+[data-theme="dark"] .badge--amber {
+  color: var(--color-ink);
+}
+

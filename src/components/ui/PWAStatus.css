@@ -1,0 +1,248 @@
+/* ================================================================
+   PWAStatus — offline bar + update card
+   Tokens: design-system globals (colors, spacing, type, rounded,
+           shadow-focus, transition, safe-area, tab-bar-height).
+   Zero hardcoded values. Hairline-only depth, no drop-shadows.
+   ================================================================ */
+
+/* ── Offline bar ──────────────────────────────────────────────────
+   Full-width sticky top bar. Uses --color-error (semantic).
+   Respects safe-area-inset-top for notched devices.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-offline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+
+  /* Top padding absorbs the notch / status bar */
+  padding: calc(var(--spacing-xs) + var(--safe-area-top)) var(--spacing-md)
+    var(--spacing-xs);
+
+  background: var(--color-error);
+  color: var(--color-on-primary); /* #fff — same token used on btn-primary */
+
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-semibold);
+  line-height: var(--type-body-sm-line);
+
+  /* Hairline at the bottom keeps it grounded without a shadow */
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.pwa-offline__icon {
+  flex-shrink: 0;
+}
+
+/* ── Update card ──────────────────────────────────────────────────
+   Floating bottom card. Matches .card token set:
+   surface-card + 1px hairline + rounded-lg. No shadow.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update {
+  position: fixed;
+  bottom: calc(var(--safe-area-bottom) + var(--spacing-lg));
+  /* Centrado con left/right + margin auto (NO transform): Framer Motion
+     anima `transform` (y/scale) y pisaría un translateX(-50%) del CSS,
+     dejando la card descentrada y cortada en móvil. */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  z-index: 1100;
+
+  /* Width: capped at 460 px, always respects viewport edges */
+  width: min(460px, calc(100vw - var(--spacing-md) * 2));
+
+  /* Card base — mirrors .card in globals */
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden; /* clips the progress bar */
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+
+  font-family: var(--font-body);
+}
+
+/* Lift above bottom tab-bar on mobile */
+@media (max-width: 767px) {
+  .pwa-update {
+    bottom: calc(
+      var(--tab-bar-height) + var(--safe-area-bottom) + var(--spacing-sm)
+    );
+  }
+}
+
+/* ── Icon badge ───────────────────────────────────────────────────
+   Surface-cream-strong circle — same treatment as .badge-pill
+   but circular. Color stays neutral (no brand accent on icons).
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-cream-strong);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+}
+
+/* ── Icon animations ─────────────────────────────────────────────*/
+@keyframes pwa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pwa-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.pwa-update__icon--spin {
+  animation: pwa-spin 1s linear infinite;
+}
+.pwa-update__icon--pulse {
+  animation: pwa-pulse 2s ease-in-out infinite;
+}
+
+/* ── Body copy ────────────────────────────────────────────────────*/
+.pwa-update__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.pwa-update__title {
+  font-size: var(--type-body-sm-size); /* 14px */
+  font-weight: var(--font-semibold);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-ink);
+}
+
+.pwa-update__desc {
+  font-size: var(--type-caption-md-size); /* 13px */
+  font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
+  color: var(--color-body);
+}
+
+/* ── Actions ──────────────────────────────────────────────────────
+   Update CTA reuses .btn-primary tokens exactly.
+   Dismiss reuses .btn-icon tokens exactly.
+   No duplication — only sizing overrides where needed.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* The update button is a .btn-primary with a tighter height (--control-height)
+   to sit comfortably inside the compact card padding. */
+.pwa-update__btn-update {
+  /* Inherits: background, color, border, font, radius from btn-primary */
+  height: var(--control-height);
+  padding: 0 var(--spacing-md);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+}
+
+.pwa-update__btn-update:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Dismiss reuses .btn-icon — just need focus-visible */
+.pwa-update__btn-dismiss:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Progress bar ─────────────────────────────────────────────────
+   Pinned to the bottom edge of the card (overflow: hidden clips it).
+   Uses --color-primary for the fill — sole accent usage, functional.
+   ──────────────────────────────────────────────────────────────── */
+.pwa-update__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-hairline);
+}
+
+@keyframes pwa-progress {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.pwa-update__progress-fill {
+  width: 40%;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--rounded-pill);
+  animation: pwa-progress 1.4s ease-in-out infinite;
+}
+
+/* ── Mobile stacked layout (<480 px) ──────────────────────────────
+   Badge + body fill row 1. Actions stretch to full width in row 2.
+   ──────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .pwa-update {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  /* Body fills remaining space in row 1 next to badge */
+  .pwa-update__body {
+    flex-basis: calc(100% - var(--control-height) - var(--spacing-sm));
+  }
+
+  /* Actions drop to row 2, full width */
+  .pwa-update__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Update CTA fills available space; dismiss stays fixed */
+  .pwa-update__btn-update {
+    flex: 1;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────
+   Framer Motion's own reducedMotion prop handles the enter/exit
+   animations. Here we disable the CSS-only looping animations.
+   ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pwa-update__icon--spin,
+  .pwa-update__icon--pulse,
+  .pwa-update__progress-fill {
+    animation: none;
+  }
+}

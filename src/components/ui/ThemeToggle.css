@@ -1,0 +1,112 @@
+/* ─────────────────────────────────────────────
+   ThemeToggle — emblema "split disc + orbital dot".
+   Diseño único: disco partido en hemisferios ink / canvas con un
+   pequeño satélite que orbita sobre el lado oscuro. Rota 180° al
+   alternar tema, vía Framer Motion (animaciones en el .tsx).
+
+   100% tokens — sin colores, fuentes ni tamaños hardcodeados.
+───────────────────────────────────────────── */
+
+.theme-toggle {
+  /* Display */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* Box model — control circular, mismo alto que el avatar del UserMenu */
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+
+  /* Visual */
+  color: var(--color-ink);
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+
+  /* Interacción */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-strong);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ── Halo: aura suave detrás del emblema ───── */
+.theme-toggle__halo {
+  position: absolute;
+  inset: var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: radial-gradient(
+    circle at center,
+    var(--color-ink) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* ── Emblema SVG ──────────────────────────── */
+.theme-toggle__emblem {
+  position: relative;
+  width: 60%;
+  height: 60%;
+  overflow: visible;
+}
+
+.theme-toggle__ring {
+  stroke: var(--color-ink);
+  stroke-width: 1.25;
+  opacity: 0.35;
+}
+
+.theme-toggle__hemisphere {
+  fill: var(--color-ink);
+}
+
+.theme-toggle__satellite {
+  fill: var(--color-canvas);
+  stroke: var(--color-ink);
+  stroke-width: 0.6;
+}
+
+/* ── Dark state ───────────────────────────── */
+.theme-toggle[data-state='dark'] {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-surface-soft);
+}
+
+.theme-toggle[data-state='dark']:hover {
+  background: var(--color-surface-card);
+}
+
+/* ── Mobile (<768px): control más grande, mejor tap target ── */
+@media (max-width: 767px) {
+  .theme-toggle {
+    width: var(--control-height-lg);
+    height: var(--control-height-lg);
+  }
+}
+
+/* ── Reduce motion ────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle__emblem,
+  .theme-toggle__halo,
+  .theme-toggle__satellite {
+    transition: none !important;
+    animation: none !important;
+  }
+}

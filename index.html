@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    <head>
+        <meta charset="UTF-8" />
+
+        <!-- =====================================================================
+         METADATOS BÁSICOS
+         ===================================================================== -->
+
+        <!-- Viewport: viewport-fit=cover cubre el "notch" en iPhones modernos -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+
+        <!-- Descripción visible en motores de búsqueda y previsualizaciones -->
+        <meta
+            name="description"
+            content="Dashboard de Reclutamiento — Control de plantilla autorizada, vacantes y cobertura por puesto y departamento"
+        />
+
+        <!-- Color de la barra del navegador en Chrome/Edge/Android y Safari iOS 15+.
+         Debe coincidir con --color-canvas. Se actualiza dinámicamente por el
+         script de tema (ver abajo) y por el hook useTheme. -->
+        <meta name="theme-color" content="#f6f5f4" id="theme-color-meta" />
+
+        <!-- =====================================================================
+         PWA / INSTALACIÓN EN PANTALLA DE INICIO
+         ===================================================================== -->
+
+        <!-- Habilita el modo standalone en iOS (oculta barra de Safari) -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+        <!-- "black-translucent" hace que el contenido se extienda por debajo
+         de la barra de estado, permitiendo que el color del <html> (canvas)
+         sea visible en esa zona. Combinado con viewport-fit=cover y el
+         background del <html>, la barra superior adopta el color del tema. -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        <!-- Nombre que aparece bajo el ícono al guardar en pantalla de inicio -->
+        <meta name="apple-mobile-web-app-title" content="Reclutamiento" />
+
+        <!-- Equivalente de la etiqueta anterior para Android/Chrome -->
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <!-- =====================================================================
+         FAVICONS
+         Orden recomendado: SVG (moderno) → PNG 32×32 → PNG 16×16 → Apple touch
+         El navegador toma el primer formato que soporte.
+         ===================================================================== -->
+        <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+        />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+        />
+
+        <!-- =====================================================================
+         TÍTULO
+         Formato recomendado: "Sección — Nombre de la app"
+         ===================================================================== -->
+        <title>Dashboard — Reclutamiento</title>
+
+        <!-- =====================================================================
+         TIPOGRAFÍA
+         Berkeley Mono es una fuente propietaria; si tienes licencia, coloca
+         los archivos .woff2 en /public/fonts/ y agrega un bloque @font-face
+         aquí para que carguen de forma local (sin petición de red externa).
+
+         Ejemplo:
+           <style>
+             @font-face {
+               font-family: 'Berkeley Mono';
+               src: url('/fonts/BerkeleyMono-Regular.woff2') format('woff2');
+               font-weight: 400;
+               font-style: normal;
+               font-display: swap;   ← muestra fallback mientras carga
+             }
+           </style>
+
+         Sin los archivos, el navegador usará el monospace nativo del sistema
+         (Menlo en macOS, Consolas en Windows, etc.) gracias al stack de
+         fallback definido en el CSS de la app.
+         ===================================================================== -->
+
+        <!-- Fuentes Cal.com look: Inter (display+body) + JetBrains Mono (code) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- =====================================================================
+         SCRIPT DE TEMA INLINE  (debe ejecutarse ANTES del primer paint)
+         Objetivo: leer la preferencia guardada y aplicar data-theme al <html>
+         antes de que el navegador renderice cualquier elemento, evitando así
+         el destello de color incorrecto (FOUC — Flash of Unstyled Content).
+
+         Notas de seguridad y mantenimiento:
+           • El try/catch captura errores de localStorage en modo privado o
+             cuando el usuario bloquea el acceso al almacenamiento local.
+           • Se usa var en lugar de const/let para máxima compatibilidad con
+             navegadores antiguos (aunque Vite ya transpila el bundle principal,
+             este script inline no pasa por el mismo proceso).
+           • La clase "theme-init" puede usarse en CSS para desactivar
+             transiciones durante la inicialización y evitar parpadeos.
+         ===================================================================== -->
+        <script>
+            (function () {
+                try {
+                    /* 1. Leer la preferencia guardada por el usuario */
+                    var stored = localStorage.getItem("reclutamiento_theme");
+
+                    /* 2. Detectar preferencia del sistema operativo */
+                    var prefersDark = window.matchMedia(
+                        "(prefers-color-scheme: dark)",
+                    ).matches;
+
+                    /* 3. Resolver el tema: guardado > preferencia del sistema > claro */
+                    var theme =
+                        stored === "light" || stored === "dark"
+                            ? stored
+                            : prefersDark
+                              ? "dark"
+                              : "light";
+
+                    /* 4. Aplicar el tema al documento */
+                    document.documentElement.setAttribute("data-theme", theme);
+
+                    /* 5. Bloquear transiciones CSS durante la inicialización para evitar
+                el parpadeo del cambio de colores al cargar la página */
+                    document.documentElement.classList.add("theme-init");
+
+                    /* 6. Actualizar el meta theme-color del navegador.
+                Debe coincidir con --color-canvas para que iOS pinte la barra
+                de estado del color correcto del tema. */
+                    var CANVAS_LIGHT = "#f6f5f4"; /* warm paper — Notion */
+                    var CANVAS_DARK  = "#191817"; /* deep neutral — Notion dark */
+                    var canvas = theme === "dark" ? CANVAS_DARK : CANVAS_LIGHT;
+                    var meta = document.getElementById("theme-color-meta");
+                    if (meta) {
+                        meta.setAttribute("content", canvas);
+                    }
+                    /* También fijamos el background del <html> de inmediato
+                para que el safe-area superior en iOS no parpadee. */
+                    document.documentElement.style.backgroundColor = canvas;
+
+                    /* 7. Remover la clase de bloqueo en el siguiente frame,
+                una vez que los estilos iniciales ya se aplicaron */
+                    window.requestAnimationFrame(function () {
+                        document.documentElement.classList.remove("theme-init");
+                    });
+                } catch (e) {
+                    /* localStorage no disponible (modo privado / políticas de navegador).
+             La app cargará con el tema por defecto definido en el CSS. */
+                }
+            })();
+        </script>
+    </head>
+
+    <body>
+        <!-- Punto de montaje de la aplicación React.
+         Vite inyecta el bundle en main.tsx, que llama a ReactDOM.createRoot('#root'). -->
+        <div id="root"></div>
+
+        <!-- Punto de entrada de la aplicación.
+         type="module" habilita ES Modules nativos; Vite lo reemplaza
+         por el bundle optimizado al hacer `vite build`. -->
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

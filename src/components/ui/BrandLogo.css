@@ -1,0 +1,38 @@
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.brand-logo__mark {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.brand-logo__svg {
+  display: block;
+}
+
+/* El badge se invierte solo entre claro/oscuro vía tokens. */
+.brand-logo__tile {
+  fill: var(--color-ink);
+}
+
+.brand-logo__glyph {
+  fill: var(--color-canvas);
+  font-family: var(--font-display);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-snug);
+}
+
+.brand-logo__text {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,489 @@
+/* ─────────────────────────────────────────────
+   Empleados — directorio agrupado por departamento.
+   Layout en 2 columnas (responsivo a 1 en mobile).
+───────────────────────────────────────────── */
+
+.empleados {
+  padding-top: var(--spacing-lg);
+  padding-bottom: var(--spacing-xxl);
+}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+
+.empleados__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
+}
+
+.empleados__title {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.empleados__sub {
+  margin: var(--spacing-xxs) 0 0;
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+/* ══════════════════════════════════════════
+   BÚSQUEDA
+══════════════════════════════════════════ */
+
+.empleados__search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 280px;
+  padding: 0 var(--spacing-md);
+  height: var(--control-height);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: 9999px;
+  color: var(--color-muted);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.empleados__search:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.empleados__search svg {
+  flex-shrink: 0;
+}
+
+.empleados__search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+}
+
+.empleados__search input::-webkit-search-decoration,
+.empleados__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ══════════════════════════════════════════
+   BANNER OFFLINE
+══════════════════════════════════════════ */
+
+.empleados__banner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  color: var(--color-body);
+  font-size: var(--type-caption-md-size);
+}
+
+/* ══════════════════════════════════════════
+   VACÍO
+══════════════════════════════════════════ */
+
+.empleados__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.empleados__empty p {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+}
+
+/* ══════════════════════════════════════════
+   CONTEO PILL
+   Compartido por rail / accordion
+══════════════════════════════════════════ */
+
+.empleados__rail-count,
+.empleados__acc-count {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 2px var(--spacing-xs);
+  text-align: center;
+  font-size: var(--type-caption-md-size);
+  font-weight: 600;
+  color: var(--color-on-dark);
+  background: var(--color-ink);
+  border-radius: var(--rounded-pill);
+  line-height: 1.6;
+}
+
+/* El pill del rail activo hereda el acento */
+.empleados__rail-item--active .empleados__rail-count {
+  background: var(--color-primary);
+}
+
+/* ══════════════════════════════════════════
+   PC — MASTER / DETAIL
+══════════════════════════════════════════ */
+
+.empleados__layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+/* ── Rail de departamentos ── */
+
+.empleados__rail {
+  position: sticky;
+  top: calc(var(--header-height, 56px) + var(--spacing-md));
+  max-height: calc(100vh - var(--header-height, 56px) - var(--spacing-xl));
+  overflow-y: auto;
+  padding: var(--spacing-xs);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  /* Scrollbar discreta */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
+.empleados__rail::-webkit-scrollbar {
+  width: 4px;
+}
+.empleados__rail::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
+}
+
+.empleados__rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empleados__rail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 7px var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  text-align: left;
+  color: var(--color-body);
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.empleados__rail-item:hover,
+.empleados__rail-item:focus-visible {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+  outline: none;
+}
+
+.empleados__rail-item:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.empleados__rail-item--active {
+  color: var(--color-ink);
+  background: rgb(var(--color-primary-rgb) / 0.08);
+  font-weight: 600;
+}
+
+.empleados__rail-name {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Panel de detalle ── */
+
+.empleados__detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.empleados__detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  min-height: 48px;
+}
+
+.empleados__detail-name {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  /* Truncado si el nombre es muy largo */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empleados__detail-count {
+  flex-shrink: 0;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.empleados__detail-body {
+  max-height: calc(100vh - var(--header-height, 56px) - 160px);
+  overflow-x: visible;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
+.empleados__detail-body::-webkit-scrollbar {
+  width: 4px;
+}
+.empleados__detail-body::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
+}
+
+/* ══════════════════════════════════════════
+   MÓVIL — ACCORDION
+══════════════════════════════════════════ */
+
+.empleados__accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.empleados__acc-item {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: visible;
+}
+
+.empleados__acc-heading {
+  margin: 0;
+}
+
+.empleados__acc-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  text-align: left;
+  transition: background var(--transition-fast);
+  min-height: 48px; /* tap target cómodo */
+  box-sizing: border-box;
+}
+
+.empleados__acc-trigger:hover,
+.empleados__acc-trigger:focus-visible {
+  background: var(--color-surface-card);
+  outline: none;
+}
+
+.empleados__acc-trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.empleados__acc-name {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--type-body-strong-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.empleados__acc-chevron {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform var(--transition-fast);
+}
+
+.empleados__acc-chevron--open {
+  transform: rotate(180deg);
+}
+
+.empleados__acc-panel {
+  border-top: 1px solid var(--color-hairline-soft);
+  overflow: visible;
+}
+
+/* ══════════════════════════════════════════
+   GRID LIST MINIMALISTA (Mobile & PC)
+══════════════════════════════════════════ */
+
+.empleados__grid-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+
+.empleados__grid-item {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: var(--spacing-md);
+  padding: 10px var(--spacing-md);
+  align-items: center;
+  border-bottom: 1px solid var(--color-hairline-soft);
+  min-height: 48px;
+}
+
+.empleados__grid-item:last-child {
+  border-bottom: none;
+}
+
+.empleados__grid-item--incapacidad {
+  background: var(--color-vacancy-tint);
+}
+
+.empleados__grid-item .empleados__cell-num {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-align: center;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: 4px;
+  padding: 2px 0;
+  line-height: 1.2;
+}
+
+.empleados__grid-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.empleados__grid-info .empleados__name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  text-transform: capitalize;
+}
+
+.empleados__grid-info .empleados__puesto {
+  font-size: 10px;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.empleados__grid-info .empleados__seccion {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.empleados__incapacidad-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-error-soft);
+  color: var(--color-error);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  margin-top: 4px;
+  width: fit-content;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — móvil (≤ 767px)
+══════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  .empleados__hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .empleados__search {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Ajuste de padding en cards para pantallas pequeñas */
+  .empleados__card {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .empleados__acc-trigger {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}

@@ -1,0 +1,1049 @@
+/* ═══════════════════════════════════════════════════════════
+   RUTAS – Design tokens
+   All values reference the shared design system — nothing hardcoded.
+═══════════════════════════════════════════════════════════ */
+
+.rutas-page {
+  --color-route-line: var(--color-primary);
+  --color-route-track: var(--color-hairline);
+  --color-route-stop: var(--color-surface-card);
+
+  --dur-path: 1.1s;
+  --dur-stop: 0.28s;
+  --dur-bar: 0.7s;
+  --dur-fade: 0.22s;
+  --dur-slide: 0.32s;
+
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE STRUCTURE
+═══════════════════════════════════════════════════════════ */
+
+.rutas-header {
+  margin-bottom: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+}
+
+/* ── Mobile-first: stacked, single column ── */
+.rutas-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  align-items: stretch;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE NAVIGATION STATE
+   On small screens, list and detail are mutually exclusive views.
+   The active panel is shown; the inactive one is hidden via
+   data-mobile-view on the layout wrapper.
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .rutas-layout[data-mobile-view="detail"] .rutas-list {
+    display: none;
+  }
+
+  .rutas-layout[data-mobile-view="list"] .rutas-detail-pane {
+    display: none;
+  }
+}
+
+/* ── Back button (mobile only) ── */
+.rutas-back-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .rutas-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: var(--type-body-sm-size);
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .rutas-back-btn:hover {
+    color: var(--color-primary-active);
+  }
+
+  .rutas-back-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--rounded-sm);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT COLUMN – Route list
+═══════════════════════════════════════════════════════════ */
+
+.rutas-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .rutas-list {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+.rutas-empty {
+  padding: var(--spacing-md);
+  color: var(--color-muted);
+  border-radius: var(--rounded-md);
+}
+
+.rutas-error {
+  padding: var(--spacing-md);
+  color: var(--color-error);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-error);
+  background: var(--color-error-tint);
+}
+
+/* ─── Skeleton loading ─── */
+
+.ruta-skeleton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+}
+
+.ruta-skeleton__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-md);
+  flex-shrink: 0;
+  background: var(--color-surface-cream-strong);
+}
+
+.ruta-skeleton__lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ruta-skeleton__line {
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface-cream-strong);
+}
+
+.ruta-skeleton__line--title {
+  height: 13px;
+  width: 65%;
+}
+
+.ruta-skeleton__line--sub {
+  height: 11px;
+  width: 42%;
+}
+
+@keyframes skeleton-shimmer {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* ─── Route card ─── */
+
+.ruta-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform var(--dur-fade) var(--ease-out),
+    background var(--dur-fade) var(--ease-out),
+    border-color var(--dur-fade) var(--ease-out),
+    filter var(--dur-fade) var(--ease-out),
+    opacity var(--dur-fade) var(--ease-out);
+}
+
+.ruta-card:hover {
+  background: var(--color-surface-soft);
+}
+
+.ruta-card:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Selected state: slide right on desktop only */
+@media (min-width: 769px) {
+  .ruta-card--active {
+    background: rgb(var(--color-primary-rgb) / 0.07);
+    border-color: var(--color-primary);
+    transform: translateX(4px);
+  }
+
+  /* Blur unselected cards when one is active (desktop only — too distracting on mobile) */
+  .rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active) {
+    filter: blur(1.5px);
+    opacity: 0.6;
+  }
+
+  .rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active):hover,
+  .rutas-list:has(.ruta-card--active)
+    .ruta-card:not(.ruta-card--active):focus-visible {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* On mobile the active card just gets a tinted border, no transform or blur */
+@media (max-width: 768px) {
+  .ruta-card--active {
+    background: rgb(var(--color-primary-rgb) / 0.07);
+    border-color: var(--color-primary);
+  }
+}
+
+.ruta-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  transition:
+    background var(--dur-fade) var(--ease-out),
+    color var(--dur-fade) var(--ease-out);
+}
+
+.ruta-card--active .ruta-card__icon {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.ruta-card__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.ruta-card__title {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.ruta-card__chevron {
+  margin-left: auto;
+  color: var(--color-muted-soft);
+  flex-shrink: 0;
+  transition: color var(--dur-fade) var(--ease-out), transform var(--dur-fade) var(--ease-out);
+}
+
+.ruta-card--active .ruta-card__chevron {
+  color: var(--color-primary);
+  transform: translateX(2px);
+}
+
+.ruta-card__subtitle {
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+/* Animated checkmark */
+.ruta-card__check {
+  margin-left: auto;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-primary);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity var(--dur-fade) var(--ease-out),
+    transform var(--dur-fade) var(--ease-spring);
+}
+
+.ruta-card--active .ruta-card__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT COLUMN – Detail pane
+═══════════════════════════════════════════════════════════ */
+
+.rutas-detail-pane {
+  min-height: 360px;
+}
+
+/* ─── Placeholder with looping bus ─── */
+
+.rutas-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--rounded-lg);
+  min-height: 320px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PLACEHOLDER MOCKUP · Animación del camioncito
+   Mobile-first · GPU-accelerated · Sin hardcodes · A11y
+   El bus recorre un track con 3 paradas que "aparecen" en cadena.
+   Todo con tokens (colores, spacing, radius, tipografía).
+   ═══════════════════════════════════════════════════════════ */
+
+.rutas-mockup {
+  --mockup-track-width: min(240px, 60vw);
+  --mockup-track-height: 2px;
+  --mockup-stop-size: 10px;
+  --mockup-bus-size: 32px;
+  --mockup-duration: 3.2s;
+  --mockup-ease: cubic-bezier(0.65, 0, 0.35, 1);
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg) 0 var(--spacing-xl);
+}
+
+.rutas-mockup__track {
+  position: relative;
+  width: var(--mockup-track-width);
+  height: var(--mockup-bus-size);
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+/* Track base (hairline suave) */
+.rutas-mockup__track::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  height: var(--mockup-track-height);
+  background: var(--color-hairline);
+  border-radius: var(--rounded-full);
+  z-index: 1;
+}
+
+/* Progress line que se dibuja de izquierda a derecha */
+.rutas-mockup__progress {
+  position: absolute;
+  inset-inline: 0;
+  height: var(--mockup-track-height);
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: mockup-progress var(--mockup-duration) var(--mockup-ease) infinite;
+  z-index: 2;
+}
+
+/* Paradas: aparecen cuando el bus pasa por encima */
+.rutas-mockup__stop {
+  position: absolute;
+  width: var(--mockup-stop-size);
+  height: var(--mockup-stop-size);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 2px solid var(--color-hairline-strong);
+  transform: scale(0.7);
+  opacity: 0.4;
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base),
+    border-color var(--transition-base),
+    opacity var(--transition-base);
+  z-index: 3;
+  will-change: transform;
+}
+
+.rutas-mockup__stop--start {
+  inset-inline-start: 0;
+  animation: mockup-stop-activate var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+}
+
+.rutas-mockup__stop--mid {
+  inset-inline-start: 50%;
+  transform: translateX(-50%) scale(0.7);
+  animation: mockup-stop-activate-mid var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+}
+
+.rutas-mockup__stop--end {
+  inset-inline-end: 0;
+  animation: mockup-stop-activate var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0);
+}
+
+/* Bus: chip circular con hairline y sombra "barely-there" (Notion). */
+.rutas-mockup__bus {
+  position: absolute;
+  inset-inline-start: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mockup-bus-size);
+  height: var(--mockup-bus-size);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-primary);
+  transform: translateX(0);
+  animation: mockup-bus-travel var(--mockup-duration) var(--mockup-ease) infinite;
+  z-index: 4;
+  will-change: transform;
+}
+
+/* Progress: 0 → 100% del track */
+@keyframes mockup-progress {
+  0% {
+    transform: scaleX(0);
+  }
+  85% {
+    transform: scaleX(1);
+  }
+  95%, 100% {
+    transform: scaleX(1);
+  }
+}
+
+/* Bus travel: recorre el track de 0 a (100% - bus-size), pausa y vuelve.
+   Usamos translateX en lugar de left para animación GPU-accelerated. */
+@keyframes mockup-bus-travel {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
+    opacity: 1;
+  }
+  90% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(-6deg);
+  }
+  95% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* Stops start & end: cuando llega el bus, se "activan" (scale up + color) */
+@keyframes mockup-stop-activate {
+  0%, 5% {
+    transform: scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+  15%, 85% {
+    transform: scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+}
+
+/* La parada del medio se activa a mitad del recorrido y usa translateX */
+@keyframes mockup-stop-activate-mid {
+  0%, 30% {
+    transform: translateX(-50%) scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+  50%, 85% {
+    transform: translateX(-50%) scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+}
+
+/* ─── Detail panel fade-up entry ─── */
+
+.ruta-detail--enter {
+  animation: detail-enter var(--dur-slide) var(--ease-out) both;
+}
+
+@keyframes detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ruta-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .ruta-detail__body {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    align-items: start;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ─── Section wrapper ─── */
+
+.ruta-section {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+/* Reduce section padding on mobile */
+@media (max-width: 768px) {
+  .ruta-section {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+.ruta-detail__grids {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .ruta-detail__grids {
+    display: contents;
+  }
+}
+
+.ruta-section__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--spacing-md);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATION 1 – Route draw-on SVG
+═══════════════════════════════════════════════════════════ */
+
+.route-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80px;
+  margin-bottom: var(--spacing-md);
+  overflow: visible;
+}
+
+/* Track base — hairline suave debajo del recorrido animado */
+.route-svg__track {
+  fill: none;
+  stroke: var(--color-route-track);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Línea de recorrido — se dibuja de origen a destino.
+   `pathLength="1"` normaliza el path para poder usar dasharray/offset = 1
+   sin necesidad de calcular la longitud real (fudge factor eliminado). */
+.route-svg__line {
+  fill: none;
+  stroke: var(--color-route-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line var(--dur-path) var(--ease-out) both;
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Dots — endpoints más grandes con fill primary, intermedios donut style. */
+.route-svg__dot {
+  r: 1.6;
+  fill: var(--color-route-stop);
+  stroke: var(--color-route-line);
+  stroke-width: 0.7;
+}
+
+.route-svg__dot--endpoint {
+  r: 2.4;
+  fill: var(--color-route-line);
+  stroke: var(--color-route-line);
+  stroke-width: 0;
+}
+
+.route-svg__stop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stop-pop var(--dur-stop) var(--ease-spring) both;
+  animation-delay: var(--stop-delay, 0s);
+}
+
+@keyframes stop-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ─── Stops list ─── */
+
+.ruta-stops__heading {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-muted);
+}
+
+.ruta-stops__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* Fix crítico: al usar `align-items: center` el dot se desplazaba al centro
+   vertical cuando el texto se envolvía en 2+ líneas. Con `flex-start` y un
+   pequeño margin-top en el dot queda alineado a la PRIMERA línea del texto. */
+.ruta-stops__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-body);
+  animation: item-fadein var(--dur-fade) var(--ease-out) both;
+  animation-delay: var(--item-delay, 0s);
+  text-transform: none;
+}
+
+@keyframes item-fadein {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ruta-stops__dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  /* Compensación para alinear el dot con la primera línea de texto
+     (aprox. la mitad de la altura de línea del body-sm). */
+  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 3px);
+}
+
+.ruta-stops__more {
+  margin-left: 14px;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATION 3 – Shift & daily capacity bars
+═══════════════════════════════════════════════════════════ */
+
+.ruta-capacity {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.ruta-capacity__label {
+  color: var(--color-muted);
+}
+
+.ruta-capacity__value {
+  color: var(--color-primary);
+}
+
+.shift-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shift-bars__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  animation: item-fadein var(--dur-fade) var(--ease-out) both;
+  animation-delay: var(--bar-delay, 0s);
+}
+
+.shift-bars__row--over .shift-bars__fill {
+  background: var(--color-error);
+}
+
+.shift-bars__label {
+  min-width: 75px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+.shift-bars__track {
+  flex: 1;
+  height: 6px;
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
+  overflow: hidden;
+}
+
+.shift-bars__fill {
+  height: 100%;
+  border-radius: var(--rounded-pill);
+  background: var(--color-primary);
+  width: 0;
+  animation: bar-grow var(--dur-bar) var(--ease-out) both;
+  animation-delay: var(--bar-delay, 0s);
+}
+
+@keyframes bar-grow {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--bar-pct, 0%);
+  }
+}
+
+.shift-bars__count {
+  min-width: 45px;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--color-ink);
+  flex-shrink: 0;
+  font-size: var(--type-body-sm-size);
+}
+
+/* ─── Off-shift badge (daily capacity) ─── */
+
+.ruta-employees-modal__tab-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-pill);
+  background: var(--color-surface-cream-strong);
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-up-weight);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .route-svg__line {
+    animation: none;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .route-svg__stop,
+  .ruta-stops__item,
+  .shift-bars__row,
+  .ruta-detail--enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .shift-bars__fill {
+    animation: none;
+    width: var(--bar-pct, 0%);
+  }
+
+  .ruta-card--active {
+    transform: none;
+  }
+
+  .ruta-card__check {
+    transition: none;
+  }
+
+  .rutas-mockup__bus,
+  .rutas-mockup__progress,
+  .rutas-mockup__stop {
+    animation: none !important;
+  }
+
+  .rutas-mockup__bus {
+    transform: translateX(calc((var(--mockup-track-width) - var(--mockup-bus-size)) / 2));
+    opacity: 1;
+  }
+
+  .rutas-mockup__progress {
+    transform: scaleX(0.5);
+    opacity: 1;
+  }
+
+  .rutas-mockup__stop--start,
+  .rutas-mockup__stop--end {
+    transform: scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+
+  .rutas-mockup__stop--mid {
+    transform: translateX(-50%) scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+
+  /* Route SVG y lista de paradas: mostrar estado final sin animación */
+  .route-svg__line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .route-svg__stop,
+  .ruta-stops__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .skeleton-pulse {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DAILY CAPACITY LIST
+═══════════════════════════════════════════════════════════ */
+
+.daily-capacity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.daily-capacity-list__header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm);
+}
+
+.daily-capacity-list__header-cols {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.daily-capacity-list__header-col {
+  width: 70px;
+  text-align: right;
+}
+
+.daily-capacity-list__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.daily-capacity-list__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  align-items: center;
+}
+
+.daily-capacity-list__day {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-ink);
+}
+
+.daily-capacity-list__cols {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.daily-capacity-list__count {
+  width: 70px;
+  text-align: right;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}
+
+.daily-capacity-list__rest {
+  width: 70px;
+  text-align: right;
+}
+
+.daily-capacity-list__rest-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  min-width: 32px;
+}
+
+@media (max-width: 768px) {
+  .daily-capacity-list__header {
+    display: none;
+  }
+
+  .daily-capacity-list__row {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-sm);
+    border-radius: var(--rounded-lg);
+    background: var(--color-surface-soft);
+  }
+
+  .daily-capacity-list__cols {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+
+  .daily-capacity-list__count,
+  .daily-capacity-list__rest {
+    width: auto;
+    text-align: left;
+  }
+
+  .daily-capacity-list__rest-badge {
+    min-width: auto;
+    padding-inline: var(--spacing-sm);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RUTA SECTION TITLE WITH ICON
+═══════════════════════════════════════════════════════════ */
+
+.ruta-section__title-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ruta-section__title-icon {
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.ruta-section__title-btn {
+  margin-left: auto;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

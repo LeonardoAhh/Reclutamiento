@@ -1,0 +1,72 @@
+/* ============================================================
+   Sileo · Adaptación al design system (Notion-inspired)
+
+   Sileo v0.1.5 es un toast tipo "iOS Dynamic Island":
+   - El chip siempre se invierte respecto al tema del contexto:
+     light-mode → toast NEGRO con texto claro
+     dark-mode  → toast BLANCO con texto oscuro
+   - Los estilos del badge / title / button se derivan de `--sileo-state-*`
+     con `color-mix(in oklch, ...)`. Por eso sí podemos pasarle nuestros
+     tokens Notion (los estados semánticos).
+   - `border-radius` está hardcodeado a `9999px` en sileo — no hay variable
+     que lo controle. Aceptamos la forma pill por defecto (además coincide
+     con la guía Notion para pill CTAs).
+
+   IMPORTANTE: sileo inyecta su CSS en <head> en runtime (después de esta
+   hoja), por lo que los overrides necesitan `!important` para ganar al
+   tener la misma especificidad pero cargarse antes.
+   ============================================================ */
+
+:root {
+  /* Estados → tokens semánticos de la app (badges/alerts).
+     Sileo los combina con `color-mix in oklch` para el fondo tintado. */
+  --sileo-state-success: var(--color-success) !important;
+  --sileo-state-error:   var(--color-error)   !important;
+  --sileo-state-warning: var(--color-warning) !important;
+  --sileo-state-info:    var(--color-primary) !important;
+  --sileo-state-action:  var(--color-primary) !important;
+
+  /* Ancho del pill — cómodo para copy en español. */
+  --sileo-width: 360px;
+}
+
+/* Viewport por encima del header (z-100), dropdowns (z-200) y modales
+   (z-1000). Así el toast nunca queda oculto detrás del header. */
+[data-sileo-viewport] {
+  z-index: 99999 !important;
+}
+
+/* Tipografía cohesiva. En español NO queremos capitalize forzado
+   (sileo lo aplica al título por default). */
+[data-sileo-title],
+[data-sileo-description],
+[data-sileo-button] {
+  font-family: var(--font-body) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+[data-sileo-title],
+[data-sileo-button] {
+  font-weight: var(--font-semibold) !important;
+}
+
+/* Contraste de la descripción un poco más alto que el default (a11y).
+   Recordatorio: en light-mode el toast es NEGRO (texto claro) y en
+   dark-mode el toast es BLANCO (texto oscuro). Los valores fijos aquí
+   son intencionales — el toast se invierte respecto al contexto. */
+[data-sileo-viewport][data-theme='light'] [data-sileo-description] {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+[data-sileo-viewport][data-theme='dark'] [data-sileo-description] {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Mobile-first: el toast nunca toca los bordes en pantallas chicas.
+   Restamos 2× spacing-lg (16px) a cada lado. */
+@media (max-width: 480px) {
+  :root {
+    --sileo-width: calc(100vw - var(--spacing-lg) * 2);
+  }
+}

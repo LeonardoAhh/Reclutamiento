@@ -1,0 +1,459 @@
+/* ========================================
+   CONSTANCIA FISCAL — SAT
+   Mobile-first · Tokens del sistema · A11y
+   ======================================== */
+
+.constancia-frame {
+  /* Colores institucionales SAT (no existen en tokens globales) */
+  --constancia-primary: #9d2449;
+  --constancia-gold: #b38e5d;
+  --constancia-surface: #ffffff;
+  --constancia-surface-soft: #f2f2f2;
+  --constancia-border: #e0e0e0;
+
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background-color: var(--constancia-surface);
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid var(--constancia-border);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
+  line-height: var(--type-body-md-line);
+  overflow: hidden;
+}
+
+/* ── Franjas decorativas ── */
+.constancia-strip {
+  width: 100%;
+}
+
+.constancia-strip--primary {
+  height: var(--spacing-xs);
+  background-color: var(--constancia-primary);
+}
+
+.constancia-strip--secondary {
+  height: var(--control-height);
+  background-color: var(--color-ink);
+}
+
+/* ── Cuerpo ── */
+.constancia-body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* ── Lado Izquierdo ── */
+.constancia-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.constancia-title-sm {
+  background-color: var(--constancia-surface-soft);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  border-radius: var(--rounded-sm);
+  color: var(--color-ink);
+}
+
+/* ── Logos ── */
+.constancia-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  min-height: 60px;
+}
+
+.constancia-logos-wrapper,
+.constancia-logos-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  height: 100%;
+  width: 100%;
+}
+
+.constancia-logos-img {
+  max-height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.constancia-logos-divider {
+  height: 35px;
+  width: 1px;
+  background-color: var(--color-hairline);
+  flex-shrink: 0;
+}
+
+/* SVG Logos */
+.constancia-logo {
+  height: 100%;
+  width: auto;
+  max-height: 45px;
+  flex-shrink: 0;
+}
+
+.constancia-logo--hacienda {
+  max-width: 160px;
+}
+
+.constancia-logo--sat {
+  max-width: 130px;
+}
+
+.constancia-logo-hacienda-circle {
+  fill: var(--constancia-gold);
+}
+
+.constancia-logo-hacienda-text {
+  font-family: Georgia, serif;
+  font-weight: var(--font-bold);
+  font-size: 28px;
+  fill: var(--constancia-primary);
+}
+
+.constancia-logo-hacienda-sub {
+  font-family: var(--font-body);
+  font-weight: var(--font-bold);
+  font-size: 7.5px;
+  fill: var(--color-ink);
+}
+
+.constancia-logo-sat-dots {
+  fill: #005d99;
+}
+
+.constancia-logo-sat-text {
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: 32px;
+  fill: var(--color-ink);
+  letter-spacing: -1px;
+}
+
+.constancia-logo-sat-sub {
+  font-family: var(--font-body);
+  font-weight: var(--font-bold);
+  font-size: 7.5px;
+  fill: var(--color-muted);
+}
+
+/* ── Sección de ID ── */
+.constancia-id-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.constancia-qr {
+  width: 140px;
+  height: 140px;
+  background-color: var(--constancia-surface-soft);
+  border: 1px solid var(--constancia-border);
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.constancia-qr-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.constancia-img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: var(--type-heading-md-size);
+  color: var(--color-muted);
+}
+
+/* Lista de datos */
+.constancia-data-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  text-align: center;
+  margin: 0;
+}
+
+.constancia-data-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.constancia-data-value {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-semibold);
+  color: var(--color-ink);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.constancia-data-value-break {
+  display: block;
+}
+
+.constancia-data-value--uppercase {
+  text-transform: uppercase;
+}
+
+.constancia-data-label {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+  font-weight: var(--font-regular);
+}
+
+/* ── Lado Derecho ── */
+.constancia-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.constancia-title-lg {
+  background-color: var(--constancia-surface-soft);
+  padding: var(--spacing-md);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--font-bold);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  border-radius: var(--rounded-sm);
+  color: var(--color-ink);
+}
+
+.constancia-emision {
+  background-color: var(--constancia-surface-soft);
+  padding: var(--spacing-md);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+}
+
+.constancia-emision-label {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-ink);
+}
+
+.constancia-emision-value {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.constancia-emision-warning {
+  font-size: var(--type-caption-sm-size);
+  color: var(--constancia-primary);
+  margin-top: var(--spacing-sm);
+  font-weight: var(--font-semibold);
+}
+
+/* ── Barcode ── */
+.constancia-barcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+}
+
+.constancia-barcode {
+  width: 240px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.constancia-barcode-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  mix-blend-mode: multiply;
+}
+
+.constancia-barcode-text {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ── Secciones genéricas ── */
+.constancia-section {
+  margin-top: var(--spacing-md);
+  border-top: 1px solid var(--constancia-border);
+}
+
+.constancia-section-title {
+  background-color: var(--constancia-surface-soft);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.constancia-section-content {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.constancia-row-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin: 0;
+}
+
+.constancia-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--type-body-sm-size);
+}
+
+.constancia-label-bold {
+  font-weight: var(--font-bold);
+  color: var(--color-ink);
+}
+
+.constancia-value {
+  color: var(--color-body);
+  margin: 0;
+}
+
+/* ── Tablas ── */
+.constancia-table-section {
+  margin-top: var(--spacing-xl);
+}
+
+.constancia-table-header-box {
+  background-color: var(--constancia-surface-soft);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.constancia-table-title {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
+  color: var(--color-ink);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.constancia-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.constancia-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: var(--type-caption-sm-size);
+  text-align: left;
+}
+
+.constancia-table th,
+.constancia-table td {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  vertical-align: top;
+}
+
+.constancia-table th {
+  font-weight: var(--font-bold);
+  background-color: var(--constancia-surface-soft);
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.constancia-table-col--xs {
+  width: 60px;
+}
+
+.constancia-table-col--sm {
+  width: 100px;
+}
+
+.constancia-table-cell {
+  color: var(--color-body);
+}
+
+/* ── Desktop (min-width: 768px) ── */
+@media (min-width: 768px) {
+  .constancia-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .constancia-id-section {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .constancia-data-list {
+    text-align: left;
+  }
+
+  .constancia-row {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--spacing-md);
+  }
+
+  .constancia-label-bold {
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Accesibilidad ── */
+@media (prefers-reduced-motion: reduce) {
+  .constancia-frame,
+  .constancia-frame * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .constancia-frame {
+    border-width: 2px;
+    border-color: var(--color-ink);
+  }
+
+  .constancia-table th,
+  .constancia-title-sm,
+  .constancia-title-lg,
+  .constancia-section-title,
+  .constancia-table-header-box {
+    border: 1px solid var(--color-ink);
+  }
+}

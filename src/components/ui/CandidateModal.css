@@ -1,0 +1,93 @@
+/* ========================================
+   CANDIDATE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.candidate-modal {
+  /* El componente Modal ya maneja el layout base */
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 640px) {
+  .candidate-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Auditoría de Sistema ── */
+.candidate-modal__audit {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background-color: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+}
+
+.candidate-modal__audit h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0 0 var(--space-md) 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-error); /* Distinguirlo como un elemento de sistema/seguridad */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.candidate-modal__audit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  font-size: var(--text-sm);
+}
+
+.candidate-modal__audit-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.candidate-modal__audit-grid > div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.candidate-modal__audit-label {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.candidate-modal__audit-grid span:not(.candidate-modal__audit-label) {
+  font-family: var(--font-mono);
+  color: var(--color-text-primary);
+  font-weight: var(--font-medium);
+}
+
+/* ── Hint: aviso de "solo vacantes abiertas" en modo Agregar ── */
+.candidate-modal__hint {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.candidate-modal__hint::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--color-muted);
+}
+
+.candidate-modal__hint--warning {
+  color: var(--color-error);
+  font-weight: var(--font-semibold);
+}

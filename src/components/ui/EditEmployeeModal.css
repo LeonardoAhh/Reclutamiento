@@ -1,0 +1,33 @@
+/* ========================================
+   EDIT EMPLOYEE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.edit-employee-modal .modal-body {
+  padding: var(--spacing-xl);
+}
+
+@media (max-width: 640px) {
+  .edit-employee-modal .modal-body {
+    padding: var(--spacing-lg);
+  }
+}
+/* Responsive grid override si es necesario */
+@media (max-width: 640px) {
+  .edit-employee-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Controles: nunca desborden la celda ── */
+.edit-employee-modal .form-group {
+  min-width: 0;
+}
+
+.edit-employee-modal .form-group input,
+.edit-employee-modal .form-group select,
+.edit-employee-modal .form-group textarea,
+.edit-employee-modal .form-group > div[class*="CustomSelect"] {
+  width: 100%;
+  min-width: 0;
+}

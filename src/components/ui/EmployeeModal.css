@@ -1,0 +1,180 @@
+/* ========================================
+   EMPLOYEE MODAL
+   Mobile-first · Sin hardcoding · Tokens CSS
+   ======================================== */
+
+/* ── Grid helpers ── */
+.form-group--span-2 {
+  grid-column: 1 / -1;
+}
+
+/* ── Mobile-first: siempre 1 columna ── */
+.employee-modal .form-grid,
+.modal-wizard-mobile .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  /* CRÍTICO: el grid NO debe estirarse para llenar el body */
+  align-content: start;
+}
+
+/* Desktop: 2 columnas */
+@media (min-width: 640px) {
+  .employee-modal .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ── Wizard mobile: layout flex vertical ── */
+.modal-wizard-mobile .modal-wizard-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* El FormWizard (único hijo del form) crece para llenar el modal */
+.modal-wizard-mobile .modal-wizard-form > *:first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* El body del wizard scrollea; el grid NO scrollea por su cuenta */
+.modal-wizard-mobile .form-wizard__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* El grid dentro del wizard: solo ocupa su contenido, nada de flex */
+.modal-wizard-mobile .form-grid {
+  flex: none;
+  overflow: visible;
+}
+
+/* ── Controles: nunca desborden la celda ── */
+.employee-modal .form-group {
+  min-width: 0;
+}
+
+.employee-modal .form-group input,
+.employee-modal .form-group select,
+.employee-modal .form-group textarea,
+.employee-modal .form-group > div[class*="CustomSelect"] {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Texto largo en selects: ellipsis (no rompe layout) */
+.employee-modal .form-group [class*="CustomSelect"] [class*="trigger"],
+.employee-modal .form-group [class*="CustomSelect"] > div[role="button"] {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ── Baja flow ── */
+.employee-modal__delete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Delete warning ── */
+.delete-warning {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-error-tint);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+@media (min-width: 640px) {
+  .delete-warning {
+    padding: var(--spacing-lg);
+  }
+}
+
+.delete-warning__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-error);
+}
+
+.delete-warning__title {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+}
+
+.delete-warning__name {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-error);
+}
+
+
+.delete-warning__sub {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  line-height: var(--type-body-sm-line);
+}
+
+/* ── Form notice ── */
+.form-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-md-size);
+  line-height: var(--type-caption-md-line);
+}
+
+.form-notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.form-notice--warning {
+  color: var(--color-warning);
+  background: var(--color-vacancy-tint);
+}
+
+.form-notice--info {
+  color: var(--color-primary);
+  background: var(--color-focus-ring);
+}
+
+.form-notice--success {
+  color: var(--color-success);
+  background: var(--color-success-tint);
+}
+
+/* ── Form hint ── */
+.form-hint {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-body);
+}
+
+.form-hint strong {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}

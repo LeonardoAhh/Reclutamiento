@@ -1,0 +1,518 @@
+/* ================================================================
+   Login — Panel dividido, plano, sin animaciones decorativas
+   Todos los valores de color/tipografía/espaciado vienen de tokens.
+   Solo hex permitido: constantes de browser API en el .tsx.
+   ================================================================ */
+
+/* ── Raíz ──────────────────────────────────────────────────────── */
+.login {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 42fr 58fr;
+  background: var(--color-surface-dark);
+  overflow: hidden;
+}
+
+/* ================================================================
+   PANEL IZQUIERDO — Identidad de marca
+   Fondo: --color-surface-dark (oscuro)
+   Texto: tokens "on-dark"
+   ================================================================ */
+.login__panel {
+  position: relative;
+  background: var(--color-surface-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  overflow: hidden;
+}
+
+/* Grid de profundidad sutil — color-mix evita hardcoding */
+.login__panel-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      color-mix(in srgb, var(--color-on-dark) 3%, transparent) 80px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 79px,
+      color-mix(in srgb, var(--color-on-dark) 2%, transparent) 80px
+    );
+  pointer-events: none;
+}
+
+/* ── Header del panel ── */
+.login__panel-header {
+  position: relative;
+  z-index: 1;
+}
+
+.login__brand {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 18%, transparent);
+  border-radius: var(--rounded-full);
+  width: fit-content;
+}
+
+.login__brand-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-on-dark) 55%, transparent);
+}
+
+/* ── Cuerpo central ── */
+.login__panel-body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+/* Wordmark principal */
+.login__wordmark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 4.5vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-on-dark);
+}
+
+/* Tagline con acento izquierdo */
+.login__tagline {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  border-left: 2px solid color-mix(in srgb, var(--color-on-dark) 18%, transparent);
+  padding-left: var(--spacing-md);
+}
+
+.login__tagline-year {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-on-dark) 40%, transparent);
+}
+
+.login__tagline p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-style: italic;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--color-on-dark) 48%, transparent);
+}
+
+/* ── Footer del panel ── */
+.login__panel-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.login__panel-copy {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  color: color-mix(in srgb, var(--color-on-dark) 28%, transparent);
+}
+
+/* ================================================================
+   PANEL DERECHO — Formulario
+   Fondo: --color-canvas (blanco)
+   Tokens de texto y color en modo normal (no overrides)
+   ================================================================ */
+.login__form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  background: var(--color-canvas);
+  border-left: 1px solid var(--color-hairline);
+}
+
+.login__form-wrap {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* ── Encabezado ── */
+.login__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.login__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.login__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+/* ── Formulario ── */
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.login__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.login__field-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  cursor: default;
+  transition: color var(--transition-fast);
+}
+
+.login__field:focus-within .login__field-label {
+  color: var(--color-ink);
+}
+
+.login__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Input — WCAG: min 44px touch target ── */
+.login__input {
+  width: 100%;
+  height: var(--control-height-lg);
+  padding: 0 var(--control-padding-x);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.login__input::placeholder {
+  color: var(--color-muted-soft);
+}
+
+.login__input:hover:not(:disabled) {
+  border-color: var(--color-charcoal);
+}
+
+.login__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.login__input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
+}
+
+/* Estado de error en el input */
+.login__input[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
+.login__input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent);
+}
+
+.login__input--padded-r {
+  padding-right: calc(var(--control-padding-x) + 40px);
+}
+
+/* ── Toggle de contraseña ── */
+.login__visibility {
+  position: absolute;
+  right: var(--spacing-xxs);
+  top: 50%;
+  transform: translateY(-50%);
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--color-muted);
+  transition: color var(--transition-fast);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login__visibility:hover {
+  color: var(--color-ink);
+}
+
+/* ── Mensaje de error ── */
+.login__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-error-tint);
+  border: 1px solid color-mix(in srgb, var(--color-error) 20%, transparent);
+  border-left: 3px solid var(--color-error);
+  border-radius: 0 var(--rounded-md) var(--rounded-md) 0;
+  color: var(--color-error);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  overflow: hidden;
+}
+
+.login__error svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Botón submit ── */
+.login__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  width: 100%;
+  height: var(--control-height-lg);
+  padding: 0 var(--spacing-lg);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--rounded-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  cursor: pointer;
+  margin-top: var(--spacing-xs);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.login__submit:hover:not(:disabled) {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+
+.login__submit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 28%, transparent);
+}
+
+.login__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Spinner — feedback funcional de carga (no decorativo) */
+.login__spinner {
+  animation: login-spin 0.75s linear infinite;
+}
+
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ================================================================
+   RESPONSIVE — Mobile (<768px)
+   Patrón nativo: marca ocupa la mitad superior de la pantalla,
+   formulario como card/sheet en la mitad inferior.
+   ================================================================ */
+@media (max-width: 767px) {
+  /* Grid vertical: marca ~44vh, formulario el resto */
+  .login {
+    grid-template-columns: 1fr;
+    grid-template-rows: 44vh 1fr;
+    min-height: 100dvh;
+    background: var(--color-surface-dark);
+  }
+
+  /* ── Panel marca: ocupa la mitad superior, contenido centrado ── */
+  .login__panel {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--spacing-lg);
+    padding:
+      max(var(--spacing-xxl), var(--safe-area-top))
+      var(--spacing-xl)
+      var(--spacing-lg);
+  }
+
+  /* Sin grid de fondo en pantallas pequeñas */
+  .login__panel-grid {
+    display: none;
+  }
+
+  /* Badge centrado */
+  .login__panel-header {
+    position: static;
+  }
+
+  /* Wordmark + tagline centrados */
+  .login__panel-body {
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .login__wordmark {
+    font-size: clamp(2.6rem, 10vw, 3.8rem);
+  }
+
+  /* Tagline visible en mobile, versión compacta centrada */
+  .login__tagline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: none;
+    padding-left: 0;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+    gap: 2px;
+  }
+
+  .login__tagline p {
+    text-align: center;
+    font-size: var(--type-caption-sm-size);
+  }
+
+  /* Footer innecesario en mobile */
+  .login__panel-footer {
+    display: none;
+  }
+
+  /* ── Panel formulario: card sheet con esquinas superiores redondeadas ── */
+  .login__form-panel {
+    border-left: none;
+    border-top: none;
+    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    box-shadow: 0 -2px 0 color-mix(in srgb, var(--color-hairline) 60%, transparent),
+                0 -12px 32px color-mix(in srgb, var(--color-ink) 12%, transparent);
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
+    /* Pull ligero hacia arriba para solapar el panel de marca */
+    margin-top: calc(-1 * var(--rounded-xl));
+  }
+
+  .login__form-wrap {
+    max-width: 100%;
+    gap: var(--spacing-lg);
+    margin: 0;
+  }
+
+  .login__title {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  /* iOS: 16px evita zoom automático al enfocar inputs */
+  .login__input {
+    font-size: 16px;
+  }
+}
+
+/* ================================================================
+   RESPONSIVE — Tablet (768–1024px)
+   ================================================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .login {
+    grid-template-columns: 40fr 60fr;
+  }
+
+  .login__panel {
+    padding: var(--spacing-xxl) var(--spacing-lg);
+  }
+
+  .login__wordmark {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+  }
+
+  .login__form-panel {
+    padding: var(--spacing-xxl) var(--spacing-lg);
+  }
+
+  .login__form-wrap {
+    max-width: 360px;
+  }
+}
+
+/* ================================================================
+   RESPONSIVE — Grande (≥1440px)
+   ================================================================ */
+@media (min-width: 1440px) {
+  .login__panel {
+    padding: calc(var(--spacing-xxl) * 1.5) calc(var(--spacing-xxl) * 1.25);
+  }
+
+  .login__form-panel {
+    padding: calc(var(--spacing-xxl) * 1.5) calc(var(--spacing-xxl) * 1.25);
+  }
+
+  .login__wordmark {
+    font-size: clamp(4rem, 4.5vw, 6.5rem);
+  }
+
+  .login__form-wrap {
+    max-width: 440px;
+  }
+}
+
+/* ================================================================
+   ACCESIBILIDAD
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .login__spinner {
+    animation: none;
+  }
+
+  .login__input,
+  .login__submit,
+  .login__visibility,
+  .login__field-label {
+    transition: none;
+  }
+}

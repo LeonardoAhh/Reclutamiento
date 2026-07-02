@@ -1,0 +1,253 @@
+/* PurgeEmployeesModal — danger zone para vaciar la tabla empleados.
+   Pasos forzados en orden: respaldo → tipear BORRAR → confirmar. */
+
+.purge-employees-modal .modal-content {
+  width: min(560px, 96vw);
+  max-height: 92vh;
+}
+
+.purge-employees-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ── Banner de advertencia ─────────────────────────────────── */
+
+.purge-employees-modal__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-md);
+  background: color-mix(in srgb, var(--color-danger, #b91c1c) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger, #b91c1c) 25%, transparent);
+  color: var(--color-ink);
+}
+
+.purge-employees-modal__warning-icon {
+  color: var(--color-danger, #b91c1c);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.purge-employees-modal__warning-title {
+  margin: 0 0 var(--spacing-xxs);
+  font-weight: 600;
+}
+
+.purge-employees-modal__warning-sub {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+.purge-employees-modal__warning-sub code,
+.purge-employees-modal__success-msg code,
+.purge-employees-modal__step-confirm code,
+.purge-employees-modal__step-title code {
+  font-family: var(--font-mono, monospace);
+  background: var(--color-surface-soft);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* ── Pasos forzados ────────────────────────────────────────── */
+
+.purge-employees-modal__steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.purge-employees-modal__step {
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+  transition: opacity var(--transition-base), border-color var(--transition-base);
+}
+
+.purge-employees-modal__step.is-locked {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.purge-employees-modal__step.is-active {
+  border-color: var(--color-primary);
+}
+
+.purge-employees-modal__step.is-done {
+  border-color: var(--color-success, #15803d);
+  background: color-mix(in srgb, var(--color-success, #15803d) 4%, transparent);
+}
+
+.purge-employees-modal__step-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.purge-employees-modal__step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface-soft);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-ink);
+  flex-shrink: 0;
+}
+
+.purge-employees-modal__step.is-done .purge-employees-modal__step-num {
+  background: var(--color-success, #15803d);
+  color: white;
+}
+
+.purge-employees-modal__step-title {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.purge-employees-modal__step-help {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+/* ── Botón secundario para el respaldo ─────────────────────── */
+
+.purge-employees-modal__backup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.purge-employees-modal__step-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  margin: var(--spacing-xs) 0 0;
+  color: var(--color-success, #15803d);
+  font-size: var(--type-body-sm-size);
+}
+
+/* ── Input de confirmación ─────────────────────────────────── */
+
+.purge-employees-modal__confirm-input {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--type-body-md-size);
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+
+.purge-employees-modal__confirm-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.purge-employees-modal__confirm-input:disabled {
+  background: var(--color-surface-soft);
+  cursor: not-allowed;
+}
+
+/* ── Acciones finales ──────────────────────────────────────── */
+
+.purge-employees-modal__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.purge-employees-modal__danger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-sm);
+  border: 1px solid var(--color-danger, #b91c1c);
+  background: var(--color-danger, #b91c1c);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-base), opacity var(--transition-base);
+}
+
+.purge-employees-modal__danger-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-danger, #b91c1c) 85%, black);
+}
+
+.purge-employees-modal__danger-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.purge-employees-modal__spinner {
+  animation: purge-spin 0.8s linear infinite;
+}
+
+@keyframes purge-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.purge-employees-modal__error {
+  margin: 0 0 var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: color-mix(in srgb, var(--color-danger, #b91c1c) 10%, transparent);
+  color: var(--color-danger, #b91c1c);
+  font-size: var(--type-body-sm-size);
+}
+
+/* ── Estado final de éxito ─────────────────────────────────── */
+
+.purge-employees-modal__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.purge-employees-modal__success-icon {
+  color: var(--color-success, #15803d);
+}
+
+.purge-employees-modal__success-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  color: var(--color-ink);
+}
+
+.purge-employees-modal__success-msg {
+  margin: 0;
+  color: var(--color-muted);
+  max-width: 36ch;
+}
+
+.purge-employees-modal__close-btn {
+  margin-top: var(--spacing-sm);
+}
