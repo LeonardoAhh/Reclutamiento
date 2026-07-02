@@ -80,20 +80,24 @@ export function CoreGraphic({ mode, reduce }: { mode: 'in' | 'out'; reduce: bool
           const fromY = filling ? outerY : 100;
           const toX = filling ? 100 : outerX;
           const toY = filling ? 100 : outerY;
+          /* Animamos transform (x/y) en un <g> en vez de los atributos
+             cx/cy del <circle>: escribir atributos SVG frame a frame
+             producía "Error: <circle> attribute cx/cy: Expected length,
+             'undefined'" en el primer frame. */
           return (
-            <motion.circle
+            <motion.g
               key={i}
-              r={4}
-              fill="var(--loader-core-color, var(--color-primary))"
-              initial={{ cx: fromX, cy: fromY, opacity: 0 }}
-              animate={{ cx: [fromX, toX], cy: [fromY, toY], opacity: [0, 1, 0] }}
+              initial={{ x: fromX, y: fromY, opacity: 0 }}
+              animate={{ x: [fromX, toX], y: [fromY, toY], opacity: [0, 1, 0] }}
               transition={{
                 duration: 2,
                 repeat: Number.POSITIVE_INFINITY,
                 delay: i * 0.18,
                 ease: 'easeInOut',
               }}
-            />
+            >
+              <circle r={4} fill="var(--loader-core-color, var(--color-primary))" />
+            </motion.g>
           );
         })}
       {!reduce && (

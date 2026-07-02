@@ -9,6 +9,7 @@ import {
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { sileo } from '@/lib/notify';
 import {
   signInWithUsername as signInLib,
   signOut as signOutLib,
@@ -65,6 +66,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  /* ── Revalidación de sesión al volver a la app ─────────────────────
+     Los timers de auto-refresh de Supabase se CONGELAN cuando la
+     pestaña/PWA queda en segundo plano. Al volver, el JWT puede haber
+     expirado sin que se emitiera SIGNED_OUT → la UI queda "zombie":
+     con sesión vieja, las queries fallan y no se muestra nada.
+     Aquí, al recuperar foco/visibilidad/conexión: si el token ya venció
+     intentamos refrescarlo; si no se puede, cerramos sesión localmente
+     (con aviso) → AuthGuard redirige a /login automáticamente. */
+  useEffect(() => {
+    let running = false;
+
+    const revalidate = async () => {
+      if (running) return;
+      if (document.visibilityState === 'hidden') return;
+      running = true;
+      try {
+        const { data } = await supabase.auth.getSession();
+        let sess = data.session;
+        const expired =
+          !!sess?.expires_at && sess.expires_at * 1000 <= Date.now();
+
+        if (sess && expired) {
+          const { data: refreshed, error } = await supabase.auth.refreshSession();
+          sess = error ? null : refreshed.session;
+          if (!sess) {
+            await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+            sileo.error({
+              title: 'Sesión expirada',
+              description: 'Vuelve a iniciar sesión para continuar.',
+            });
+          }
+        }
+        setSession(sess);
+      } finally {
+        running = false;
+      }
+    };
+
+    window.addEventListener('focus', revalidate);
+    document.addEventListener('visibilitychange', revalidate);
+    window.addEventListener('online', revalidate);
+    return () => {
+      window.removeEventListener('focus', revalidate);
+      document.removeEventListener('visibilitychange', revalidate);
+      window.removeEventListener('online', revalidate);
     };
   }, []);
 
