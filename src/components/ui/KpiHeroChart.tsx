@@ -233,6 +233,39 @@ function formatYRight(value: number): string {
   return `${value}%`;
 }
 
+/* Guard para los dots de la línea: recharts puede pasar cx/cy undefined
+   (hover/animación interna), lo que producía "Error: <circle> attribute
+   cy/r: Expected length, 'undefined'". Solo renderizamos el punto cuando
+   las coordenadas son números finitos. */
+function isFinitePair(cx?: number, cy?: number): cx is number {
+  return (
+    typeof cx === 'number' &&
+    Number.isFinite(cx) &&
+    typeof cy === 'number' &&
+    Number.isFinite(cy)
+  );
+}
+
+interface SafeDotProps {
+  cx?: number;
+  cy?: number;
+}
+
+/** Dot de línea a prueba de coords inválidas (elemento clonado por recharts). */
+function SafeLineDot({
+  cx,
+  cy,
+  r,
+  fill,
+  stroke,
+  strokeWidth,
+}: SafeDotProps & { r: number; fill: string; stroke?: string; strokeWidth?: number }) {
+  if (!isFinitePair(cx, cy) || typeof cy !== 'number') return <g />;
+  return (
+    <circle cx={cx} cy={cy} r={r} fill={fill} stroke={stroke} strokeWidth={strokeWidth} />
+  );
+}
+
 // ─────────────────────────────────────────────
 // Tarjetas de resumen por día
 // ─────────────────────────────────────────────
@@ -727,13 +760,15 @@ export function KpiHeroChart({
                   name="Cobertura %"
                   stroke={PALETTE.ink}
                   strokeWidth={LINE_STROKE_WIDTH}
-                  dot={{
-                    r: DOT_REST_RADIUS,
-                    fill: PALETTE.surfaceCard,
-                    stroke: PALETTE.ink,
-                    strokeWidth: presentation ? 2.5 : 2,
-                  }}
-                  activeDot={{ r: DOT_ACTIVE_RADIUS, strokeWidth: 0, fill: PALETTE.ink }}
+                  dot={
+                    <SafeLineDot
+                      r={DOT_REST_RADIUS}
+                      fill={PALETTE.surfaceCard}
+                      stroke={PALETTE.ink}
+                      strokeWidth={presentation ? 2.5 : 2}
+                    />
+                  }
+                  activeDot={<SafeLineDot r={DOT_ACTIVE_RADIUS} fill={PALETTE.ink} />}
                   isAnimationActive
                   animationDuration={800}
                   animationEasing="ease-out"

@@ -1,5 +1,16 @@
 # PRD — Reclutamiento (React + Vite + Supabase)
 
+## 2026-07-02 (sesión actual) — Auditoría sidebar/navbar + fixes consola circle + JWT expirado
+- **Sidebar (PC)**: transición suave de colapso (width/padding + margin del main, `--transition-base`, respeta reduced-motion); anchos 248/76px unificados en `.app-shell` (`--_sidebar-w-*`); CSS muerto `__brand-mark/text` eliminado.
+- **BottomTabBar**: icono Toulouse → ClipboardCheck; `font-size:11px` → `--text-xs`; focus trap + foco inicial en bottom-sheet (dialog); items del sheet ahora `<NavLink>` (aria-current nativo); comentarios ≤767px→≤1023px.
+- **Header**: eliminado nav con dropdowns que nunca se mostraba (display:none en todos los breakpoints) + su CSS; header queda brand+acciones solo <1024px.
+- **Reporte Diario**: tokens en `.ras__group-count` y `.top-emp-month-hint` (nuevo token `--font-regular: 400` en global.css); `"use client"` eliminados (Vite).
+- **FIX consola `<circle> attribute cy/r: Expected length, "undefined"`**: (1) `LoaderOverlay.tsx` CoreGraphic: partículas animan transform x/y en `<motion.g>` en vez de atributos cx/cy (VERIFICADO con testing agent en /login: 0 errores). (2) `KpiHeroChart.tsx`: dot/activeDot ahora `<SafeLineDot>` (elemento clonado por recharts) con guard de coords finitas.
+- **FIX sesión zombie / JWT expirado**: `useAuth.tsx` revalida sesión en focus/visibilitychange/online; si el token venció y el refresh falla → `signOut({scope:'local'})` + toast "Sesión expirada" → AuthGuard redirige a /login. (Los timers de auto-refresh de Supabase se congelan en background; este era el motivo de "abro un reporte y no pasa nada".)
+- Entorno pod: `/app/.env` con placeholders de Supabase (gitignored) para que la app arranque localmente; rama de trabajo: **main**.
+- `tsc`, eslint y `vite build` limpios.
+
+
 ## Planteamiento original
 App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend, React/Vite/TS frontend, PWA). El usuario pide diseños **mobile-first** diferenciados de PC, sin borrar datos ni lógica, sin fonts/colores hardcodeados (tokens de `global.css`), buenas prácticas y cohesión.
 
