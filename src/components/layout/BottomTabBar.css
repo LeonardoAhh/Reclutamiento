@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────
    BottomTabBar — navbar inferior minimalista
-   Solo visible en ≤767px. Centrada y flotante.
+   Solo visible en móvil/tablet (≤1023px). Centrada y flotante.
    Sin sombras (el sistema usa borde + glass).
    z-index: 90 (bajo el header: 100).
 ───────────────────────────────────────────── */
@@ -154,7 +154,7 @@
   }
 
   .bottom-nav__label {
-    font-size: 11px;
+    font-size: var(--text-xs);
     line-height: 1;
     font-weight: var(--type-body-strong-weight);
   }
