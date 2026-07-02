@@ -1,8 +1,8 @@
 {
-  "version": "0.2.2.1",
+  "version": "0.3.0",
   "fecha": "2026-07-01",
   "nivel": "success",
-  "titulo": "Actualización completada",
-  "mensaje": "Actualización de la aplicación completada con éxito.",
+  "titulo": "Nueva versión disponible",
+  "mensaje": "Rediseño visual y correcciones en el reporte diario.",
   "notificar": true
 }
