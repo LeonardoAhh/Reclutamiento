@@ -328,7 +328,7 @@ export function CandidateModal({
       : 'Nuevo candidato';
 
   const subtitle = isDelete
-    ? 'Eliminar Candidato'
+    ? undefined
     : isEdit
       ? 'Actualizar Candidato'
       : 'Registrar Candidato';
@@ -593,23 +593,6 @@ const fieldsPosicion = (
               <p className="delete-warning__title">
                 ¿Eliminar a{' '}
                 <span className="delete-warning__name">{form.nombre || 'este candidato'}</span>?
-              </p>
-              <dl className="delete-warning__meta">
-                <div className="delete-warning__meta-row">
-                  <dt>Puesto</dt>
-                  <dd>{form.puesto || '—'}</dd>
-                </div>
-                <div className="delete-warning__meta-row">
-                  <dt>Área</dt>
-                  <dd>{form.area || '—'}</dd>
-                </div>
-                <div className="delete-warning__meta-row">
-                  <dt>Estado</dt>
-                  <dd>{CANDIDATE_STATUS_LABEL[form.status]}</dd>
-                </div>
-              </dl>
-              <p className="delete-warning__sub">
-                Esta acción no se puede deshacer.
               </p>
             </div>
           ) : (

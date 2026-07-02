@@ -322,7 +322,7 @@ export function EmployeeSheet({
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
   const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
-  const subtitle = isAdd ? 'Alta de Empleado' : 'Baja de Empleado';
+  const subtitle = isAdd ? 'Alta de Empleado' : undefined;
 
   const deleteContent = (
     <div className="delete-flow">
@@ -336,16 +336,8 @@ export function EmployeeSheet({
             <dt>Núm.</dt>
             <dd>{form.num_empleado || '—'}</dd>
           </div>
-          <div className="delete-warning__meta-row">
-            <dt>Puesto</dt>
-            <dd>{form.puesto || '—'}</dd>
-          </div>
-          <div className="delete-warning__meta-row">
-            <dt>Área</dt>
-            <dd>{form.area || '—'}</dd>
-          </div>
         </dl>
-        <p className="delete-warning__sub">El empleado será eliminado de la plantilla activa y enviado a la tabla de Bajas.</p>
+        <p className="delete-warning__sub">Esta acción no se puede deshacer.</p>
       </div>
 
       <div className="form-grid employee-sheet__baja-grid">
