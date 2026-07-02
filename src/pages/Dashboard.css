@@ -141,24 +141,14 @@
   width: 100%;
 }
 
+/* Wrapper que envuelve al CustomSelect. NO debe pintar borde/fondo/radius
+   propios: el trigger interno de CustomSelect ya trae su propio chrome
+   (pill con border, background y focus ring). Aquí solo controlamos el
+   layout (ancho y min-width). Duplicar estilos crea el efecto "rectángulo
+   detrás + pill delante". */
 .dashboard__filter-select {
-  height: var(--control-height);
-  padding: 0 var(--spacing-md);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-ink);
-  background: var(--color-canvas);
-  cursor: pointer;
   width: 100%;
-  min-height: 44px;
-}
-
-.dashboard__filter-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
+  min-width: 0;
 }
 
 /* ── Empty State ── */
