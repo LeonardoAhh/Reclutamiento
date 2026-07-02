@@ -1,8 +1,8 @@
 {
-  "version": "0.3.0",
-  "fecha": "2026-07-01",
+  "version": "0.3.5",
+  "fecha": "2026-07-02",
   "nivel": "success",
   "titulo": "Nueva versión disponible",
-  "mensaje": "Rediseño visual y correcciones en el reporte diario.",
+  "mensaje": "Corrección de errores y mejoras de rendimiento.",
   "notificar": true
 }

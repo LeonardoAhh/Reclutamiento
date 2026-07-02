@@ -52,7 +52,7 @@ function SafeImage({
 
 export function ConstanciaFiscal({
   rfc = 'XAXX010101000',
-  nombre = 'JUAN PEREZ GARCIA',
+  nombre = 'JOSEFA ORTIZ DE DOMINGUEZ',
   idCif = '12345678901',
   lugarFecha,
   qrSrc,
@@ -66,7 +66,7 @@ export function ConstanciaFiscal({
       year: 'numeric',
     });
     const formatted = formatter.format(new Date()).toUpperCase();
-    return `CELAYA, GUANAJUATO A ${formatted}`;
+    return `QUERÉTARO, QUERÉTARO A ${formatted}`;
   }, []);
 
   const isoDate = useMemo(() => new Date().toISOString(), []);

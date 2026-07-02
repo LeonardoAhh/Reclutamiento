@@ -86,7 +86,7 @@ function App() {
       <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
       <Route path="/rutas" element={<ProtectedShell><Rutas /></ProtectedShell>} />
       <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
-      <Route path="/documentos" element={<ProtectedShell><AdminGuard><Documentos /></AdminGuard></ProtectedShell>} />
+      <Route path="/documentos" element={<ProtectedShell><Documentos /></ProtectedShell>} />
       <Route path="/kpis" element={<Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

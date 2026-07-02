@@ -309,7 +309,6 @@ export function BottomTabBar() {
 
             <ul className="bottom-sheet__list">
               {MENU_TABS.map(({ to, label, icon: Icon }) => {
-                if (to === '/documentos' && profile?.role !== 'admin') return null;
                 return (
                   <li key={to}>
                   <NavLink
@@ -322,7 +321,16 @@ export function BottomTabBar() {
                     {({ isActive }) => (
                       <>
                         <Icon size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
-                        <span className="bottom-sheet__item-label">{label}</span>
+                        <span className="bottom-sheet__item-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          {label}
+                          {to === '/documentos' && (
+                            <span style={{
+                              display: 'inline-flex', padding: '2px 6px', backgroundColor: 'var(--color-primary)', 
+                              color: 'var(--color-on-primary)', fontSize: '0.65rem', fontWeight: 800, 
+                              borderRadius: '999px', animation: 'sidebar-pulse-new 2s infinite'
+                            }}>Nuevo</span>
+                          )}
+                        </span>
                         {isActive && <span className="bottom-sheet__item-dot" aria-hidden="true" />}
                       </>
                     )}

@@ -134,7 +134,6 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
       <nav className="sidebar__nav" aria-label="Secciones">
         <ul className="sidebar__list" role="list">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => {
-            if (to === '/documentos' && profile?.role !== 'admin') return null;
             return (
               <li key={to}>
               <NavLink
@@ -159,6 +158,9 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                     )}
                     <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
                     <span className="sidebar__item-label">{label}</span>
+                    {to === '/documentos' && (
+                      <span className="sidebar__new-badge" title="¡Nuevo!">Nuevo</span>
+                    )}
                   </>
                 )}
               </NavLink>
