@@ -334,54 +334,200 @@
   min-height: 320px;
 }
 
-.mockup-path {
+/* ═══════════════════════════════════════════════════════════
+   PLACEHOLDER MOCKUP · Animación del camioncito
+   Mobile-first · GPU-accelerated · Sin hardcodes · A11y
+   El bus recorre un track con 3 paradas que "aparecen" en cadena.
+   Todo con tokens (colores, spacing, radius, tipografía).
+   ═══════════════════════════════════════════════════════════ */
+
+.rutas-mockup {
+  --mockup-track-width: min(240px, 60vw);
+  --mockup-track-height: 2px;
+  --mockup-stop-size: 10px;
+  --mockup-bus-size: 32px;
+  --mockup-duration: 3.2s;
+  --mockup-ease: cubic-bezier(0.65, 0, 0.35, 1);
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg) 0 var(--spacing-xl);
+}
+
+.rutas-mockup__track {
   position: relative;
-  width: 200px;
-  height: 3px;
-  background: var(--color-hairline-strong);
-  border-radius: var(--rounded-pill);
-  margin: 0 auto var(--spacing-md);
+  width: var(--mockup-track-width);
+  height: var(--mockup-bus-size);
+  display: flex;
+  align-items: center;
+  isolation: isolate;
 }
 
-.mockup-stop {
+/* Track base (hairline suave) */
+.rutas-mockup__track::before {
+  content: '';
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
+  inset-inline: 0;
+  height: var(--mockup-track-height);
+  background: var(--color-hairline);
   border-radius: var(--rounded-full);
-  background: var(--color-primary);
+  z-index: 1;
 }
 
-.mockup-stop--start {
-  left: 0;
-}
-.mockup-stop--end {
-  right: 0;
-}
-
-.mockup-bus {
+/* Progress line que se dibuja de izquierda a derecha */
+.rutas-mockup__progress {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-primary);
-  animation: bus-loop 2.4s var(--ease-out) infinite;
+  inset-inline: 0;
+  height: var(--mockup-track-height);
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: mockup-progress var(--mockup-duration) var(--mockup-ease) infinite;
+  z-index: 2;
 }
 
-@keyframes bus-loop {
+/* Paradas: aparecen cuando el bus pasa por encima */
+.rutas-mockup__stop {
+  position: absolute;
+  width: var(--mockup-stop-size);
+  height: var(--mockup-stop-size);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 2px solid var(--color-hairline-strong);
+  transform: scale(0.7);
+  opacity: 0.4;
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base),
+    border-color var(--transition-base),
+    opacity var(--transition-base);
+  z-index: 3;
+  will-change: transform;
+}
+
+.rutas-mockup__stop--start {
+  inset-inline-start: 0;
+  animation: mockup-stop-activate var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+}
+
+.rutas-mockup__stop--mid {
+  inset-inline-start: 50%;
+  transform: translateX(-50%) scale(0.7);
+  animation: mockup-stop-activate-mid var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+}
+
+.rutas-mockup__stop--end {
+  inset-inline-end: 0;
+  animation: mockup-stop-activate var(--mockup-duration) var(--mockup-ease) infinite;
+  animation-delay: 0.05s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0);
+}
+
+/* Bus: chip circular con hairline y sombra "barely-there" (Notion). */
+.rutas-mockup__bus {
+  position: absolute;
+  inset-inline-start: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mockup-bus-size);
+  height: var(--mockup-bus-size);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-primary);
+  transform: translateX(0);
+  animation: mockup-bus-travel var(--mockup-duration) var(--mockup-ease) infinite;
+  z-index: 4;
+  will-change: transform;
+}
+
+/* Progress: 0 → 100% del track */
+@keyframes mockup-progress {
   0% {
-    left: -4px;
+    transform: scaleX(0);
+  }
+  85% {
+    transform: scaleX(1);
+  }
+  95%, 100% {
+    transform: scaleX(1);
+  }
+}
+
+/* Bus travel: recorre el track de 0 a (100% - bus-size), pausa y vuelve.
+   Usamos translateX en lugar de left para animación GPU-accelerated. */
+@keyframes mockup-bus-travel {
+  0% {
+    transform: translateX(0) rotate(0deg);
     opacity: 0;
   }
-  8% {
+  5% {
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
     opacity: 1;
   }
   90% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(-6deg);
+  }
+  95% {
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
     opacity: 1;
   }
   100% {
-    left: calc(100% - 14px);
+    transform: translateX(calc(var(--mockup-track-width) - var(--mockup-bus-size))) rotate(0deg);
     opacity: 0;
+  }
+}
+
+/* Stops start & end: cuando llega el bus, se "activan" (scale up + color) */
+@keyframes mockup-stop-activate {
+  0%, 5% {
+    transform: scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+  15%, 85% {
+    transform: scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+}
+
+/* La parada del medio se activa a mitad del recorrido y usa translateX */
+@keyframes mockup-stop-activate-mid {
+  0%, 30% {
+    transform: translateX(-50%) scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
+  }
+  50%, 85% {
+    transform: translateX(-50%) scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.7);
+    background: var(--color-surface);
+    border-color: var(--color-hairline-strong);
+    opacity: 0.4;
   }
 }
 
@@ -465,7 +611,26 @@
   overflow: visible;
 }
 
+/* Track base — hairline suave debajo del recorrido animado */
+.route-svg__track {
+  fill: none;
+  stroke: var(--color-route-track);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Línea de recorrido — se dibuja de origen a destino.
+   `pathLength="1"` normaliza el path para poder usar dasharray/offset = 1
+   sin necesidad de calcular la longitud real (fudge factor eliminado). */
 .route-svg__line {
+  fill: none;
+  stroke: var(--color-route-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
   animation: draw-line var(--dur-path) var(--ease-out) both;
 }
 
@@ -475,7 +640,24 @@
   }
 }
 
+/* Dots — endpoints más grandes con fill primary, intermedios donut style. */
+.route-svg__dot {
+  r: 1.6;
+  fill: var(--color-route-stop);
+  stroke: var(--color-route-line);
+  stroke-width: 0.7;
+}
+
+.route-svg__dot--endpoint {
+  r: 2.4;
+  fill: var(--color-route-line);
+  stroke: var(--color-route-line);
+  stroke-width: 0;
+}
+
 .route-svg__stop {
+  transform-box: fill-box;
+  transform-origin: center;
   animation: stop-pop var(--dur-stop) var(--ease-spring) both;
   animation-delay: var(--stop-delay, 0s);
 }
@@ -505,15 +687,20 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
+/* Fix crítico: al usar `align-items: center` el dot se desplazaba al centro
+   vertical cuando el texto se envolvía en 2+ líneas. Con `flex-start` y un
+   pequeño margin-top en el dot queda alineado a la PRIMERA línea del texto. */
 .ruta-stops__item {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-body);
   animation: item-fadein var(--dur-fade) var(--ease-out) both;
   animation-delay: var(--item-delay, 0s);
+  text-transform: none;
 }
 
 @keyframes item-fadein {
@@ -528,11 +715,14 @@
 }
 
 .ruta-stops__dot {
+  flex-shrink: 0;
   width: 6px;
   height: 6px;
   border-radius: var(--rounded-full);
   background: var(--color-primary);
-  flex-shrink: 0;
+  /* Compensación para alinear el dot con la primera línea de texto
+     (aprox. la mitad de la altura de línea del body-sm). */
+  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 3px);
 }
 
 .ruta-stops__more {
@@ -669,10 +859,48 @@
     transition: none;
   }
 
-  .mockup-bus {
-    animation: none;
-    left: 50%;
+  .rutas-mockup__bus,
+  .rutas-mockup__progress,
+  .rutas-mockup__stop {
+    animation: none !important;
+  }
+
+  .rutas-mockup__bus {
+    transform: translateX(calc((var(--mockup-track-width) - var(--mockup-bus-size)) / 2));
     opacity: 1;
+  }
+
+  .rutas-mockup__progress {
+    transform: scaleX(0.5);
+    opacity: 1;
+  }
+
+  .rutas-mockup__stop--start,
+  .rutas-mockup__stop--end {
+    transform: scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+
+  .rutas-mockup__stop--mid {
+    transform: translateX(-50%) scale(1);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+
+  /* Route SVG y lista de paradas: mostrar estado final sin animación */
+  .route-svg__line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .route-svg__stop,
+  .ruta-stops__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .skeleton-pulse {
