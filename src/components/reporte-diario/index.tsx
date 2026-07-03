@@ -738,7 +738,7 @@ export default function ReporteDiarioContent() {
                     <header className="reporte-hero__intro">
                         <span className="reporte-hero__eyebrow" aria-hidden="true">
                             <BarChart2 size={12} />
-                            Reporte diario
+                            Asistencia
                         </span>
                         <h1 id="reporte-hero-title" className="reporte-hero__title">
                             Sube tu reporte de asistencia
