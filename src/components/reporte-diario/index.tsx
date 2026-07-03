@@ -293,6 +293,9 @@ export default function ReporteDiarioContent() {
             personal_autorizado: sec.personal_autorizado,
             personal_incidencia: 0,
             personal_real: sec.personal_autorizado,
+            operadores_autorizados: sec.operadores_autorizados,
+            operadores_contratados: 0,
+            operadores_incidencia: 0,
         }))
 
         let dayOfWeek = -1
@@ -310,6 +313,14 @@ export default function ReporteDiarioContent() {
                 return count + (isIncidence(row.days[selectedDay]) ? 1 : 0)
             }, 0)
 
+            const operadoresRows = rowsInSection.filter(
+                row => row.puesto && row.puesto.toUpperCase().includes("OPERADOR DE MÁQUINA")
+            )
+            const operadores_contratados = operadoresRows.length
+            const operadores_incidencia = operadoresRows.reduce((count, row) => {
+                return count + (isIncidence(row.days[selectedDay]) ? 1 : 0)
+            }, 0)
+
             // Lógica de descanso para turnos de producción
             let is_descanso = false
             if (dayOfWeek !== -1) {
@@ -323,6 +334,9 @@ export default function ReporteDiarioContent() {
                 area: sec.seccion,
                 personal_activo,
                 personal_autorizado: sec.personal_autorizado,
+                operadores_autorizados: sec.operadores_autorizados,
+                operadores_contratados,
+                operadores_incidencia,
                 personal_incidencia,
                 personal_real: Math.max(personal_activo - personal_incidencia, 0),
                 is_descanso,
@@ -425,20 +439,20 @@ export default function ReporteDiarioContent() {
         try {
             await delay(1200) // Simulación de lectura (más tiempo)
             const text = await file.text()
-            
+
             setProcessStep("validating")
             await delay(2000) // Simulación de validación (más tiempo)
 
             const json = JSON.parse(text)
             const { rows: parsed, errors: errs } = parseReporteJSON(json)
-            
-            if (errs.length > 0) { 
+
+            if (errs.length > 0) {
                 setProcessStep(null)
                 setErrors(errs)
                 sileo.error({ title: "Inconsistencias en el archivo", description: "Se encontraron errores al revisar los datos." })
-                return 
+                return
             }
-            
+
             setPreviewData({
                 rows: parsed,
                 mes: parsed[0]?.mes ?? "",
@@ -464,7 +478,7 @@ export default function ReporteDiarioContent() {
         setSelectedMes(previewData.mes)
         setFileName(previewData.fileName)
         sessionStorage.setItem("reporteDiarioCache", JSON.stringify(previewData.jsonRaw))
-        
+
         setProcessStep(null)
         setPreviewData(null)
         sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
@@ -1183,10 +1197,9 @@ export default function ReporteDiarioContent() {
                                 <div className="reporte-card__header">
                                     <div className="reporte-flex-between">
                                         <div>
-                                            <p className="reporte-card__title">Calendario mensual</p>
-                                            <p className="reporte-card__description">
-                                                Selecciona un día para ver el detalle de incidencias.
-                                            </p>
+                                            <h2 className="reporte-card__title" style={{ textTransform: 'capitalize' }}>
+                                                {formatMes(currentMonth)}
+                                            </h2>
                                         </div>
                                         <div className="reporte-cal-actions">
                                             {topIncidenceEmployees.length > 0 && (
@@ -1201,12 +1214,9 @@ export default function ReporteDiarioContent() {
                                                     aria-label="Ver top 10 empleados con más incidencias"
                                                 >
                                                     <BarChart2 size={13} aria-hidden="true" />
-                                                    <span>Reporte de incidencias</span>
+                                                    <span>Analisis de asistencia</span>
                                                 </button>
                                             )}
-                                            <span className="reporte-status-banner">
-                                                {formatMes(currentMonth)}
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -1224,7 +1234,6 @@ export default function ReporteDiarioContent() {
                                 </div>
                             </motion.div>
                         )}
-
                         <motion.div
                             className="reporte-card"
                             variants={{
@@ -1235,7 +1244,9 @@ export default function ReporteDiarioContent() {
                             <div className="reporte-card__header">
                                 <div className="reporte-dayhead">
                                     <div className="reporte-dayhead__title">
-                                        <Calendar size={20} className="text-primary" aria-hidden="true" />
+                                        <div className="reporte-dayhead__icon">
+                                            <Calendar size={18} aria-hidden="true" />
+                                        </div>
                                         <h3 data-testid="selected-day-title">
                                             {selectedDay ? selectedDateTitle : "Detalle del día"}
                                         </h3>
@@ -1253,6 +1264,7 @@ export default function ReporteDiarioContent() {
                                                     data-testid="prev-day-btn"
                                                 >
                                                     <ChevronLeft size={16} />
+                                                    <span className="reporte-daynav__text">Anterior</span>
                                                 </button>
                                                 <button
                                                     type="button"
@@ -1263,18 +1275,10 @@ export default function ReporteDiarioContent() {
                                                     aria-label="Día siguiente"
                                                     data-testid="next-day-btn"
                                                 >
+                                                    <span className="reporte-daynav__text">Siguiente</span>
                                                     <ChevronRight size={16} />
                                                 </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={handleExportPdf}
-                                                className="reporte-tab-trigger"
-                                                data-testid="export-pdf-btn"
-                                            >
-                                                <Download size={14} />
-                                                PDF
-                                            </button>
                                         </div>
                                     )}
                                 </div>

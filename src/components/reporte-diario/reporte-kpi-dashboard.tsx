@@ -106,12 +106,14 @@ function KpiCardItem({ card }: { card: KpiCard }) {
     const toneClass = card.tone !== "default" ? ` reporte-kpi__card--${card.tone}` : "";
     return (
         <article className={`reporte-kpi__card${toneClass}`} data-testid={`kpi-${card.tone}`}>
-            <div className="reporte-kpi__head">
+            <div className="reporte-kpi__icon-box" aria-hidden="true">{card.icon}</div>
+            <div className="reporte-kpi__content">
                 <span className="reporte-kpi__label">{card.label}</span>
-                <span className="reporte-kpi__icon" aria-hidden="true">{card.icon}</span>
+                <div className="reporte-kpi__value-row">
+                    <p className="reporte-kpi__value">{card.value}</p>
+                    {card.sub && <p className="reporte-kpi__sub">{card.sub}</p>}
+                </div>
             </div>
-            <p className="reporte-kpi__value">{card.value}</p>
-            {card.sub && <p className="reporte-kpi__sub">{card.sub}</p>}
         </article>
     );
 }
@@ -148,16 +150,12 @@ export default function ReporteKpiDashboard({
         {
             label: "Día con más incidencias",
             value: getWorstDayLabel(kpis.worstDay, currentMonth),
-            sub: kpis.worstDay
-                ? `${kpis.worstDayCount} incidencias`
-                : undefined,
             icon: <CalendarX size={18} />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
             label: "Área con más incidencias",
             value: kpis.worstArea || "—",
-            sub: kpis.worstArea ? `${kpis.worstAreaCount} incidencias` : undefined,
             icon: <MapPin size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
         },

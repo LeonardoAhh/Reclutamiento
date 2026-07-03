@@ -28,19 +28,19 @@ interface StatusColors { background: string; text: string }
 
 function getStatusColors(pct: number, hasIncidents: boolean): StatusColors {
     if (!hasIncidents) return {
-        background: "var(--color-surface-soft)",
+        background: "transparent",
         text: "var(--color-muted)",
     };
     if (pct > STATUS_THRESHOLDS.critical) return {
-        background: "var(--color-error-tint)",
+        background: "transparent",
         text: "var(--color-error)",
     };
     if (pct > STATUS_THRESHOLDS.warning) return {
-        background: "var(--color-warning-tint)",
+        background: "transparent",
         text: "var(--color-warning)",
     };
     return {
-        background: "var(--color-primary-tint, rgba(0,0,0,0.05))",
+        background: "transparent",
         text: "var(--color-primary)",
     };
 }
@@ -54,11 +54,16 @@ interface AreaCardProps {
 }
 
 function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
-    const pct = area.personal_activo > 0
-        ? (area.personal_incidencia / area.personal_activo) * 100
-        : 0;
-    const status = getStatusColors(pct, area.personal_incidencia > 0);
-    const asistenciaValue = area.is_descanso ? "—" : area.personal_real;
+    const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
+    const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
+    
+    const pct = active > 0 ? (incidence / active) * 100 : 0;
+    
+    // El badge de la derecha sigue siendo el total de incidencias del área o solo operadores?
+    // Mostramos solo de operadores si hay operadores.
+    const status = getStatusColors(pct, incidence > 0);
+    
+    const asistenciaValue = area.is_descanso ? "—" : Math.max(active - incidence, 0);
     const trendColor = pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
 
     return (
@@ -67,56 +72,80 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
             onClick={onClick}
             className={`ras-card${isSelected ? " ras-card--selected" : ""}`}
             aria-pressed={isSelected}
-            aria-label={`Sección ${area.area}. Autorizado: ${area.personal_autorizado}, Contratados: ${area.personal_activo}, Asistencia: ${asistenciaValue}`}
+            aria-label={`Sección ${area.area}. Autorizado: ${area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado}`}
             data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
         >
-            {/* Header: nombre + badge de incidencias */}
+            {/* Header: nombre + badge de incidencias o descanso */}
             <div className="ras-card__header">
                 <span className="ras-card__name" title={area.area}>
                     {area.area}
                 </span>
-                <span
-                    className="ras-card__badge"
-                    style={{ background: status.background, color: status.text }}
-                    aria-label={`${area.personal_incidencia} incidencias`}
-                >
-                    {area.personal_incidencia}
-                </span>
+                
+                <div className="ras-card__header-metrics">
+                    {incidence > 0 && (
+                        <span className="ras-card__trend" style={{ color: trendColor }} aria-label={`${pct.toFixed(0)}% ausentismo`}>
+                            {pct > TREND_THRESHOLD
+                                ? <TrendingUp size={12} aria-hidden="true" />
+                                : <TrendingDown size={12} style={{ color: "var(--color-success)" }} aria-hidden="true" />}
+                            {pct.toFixed(0)}%
+                        </span>
+                    )}
+                    
+                    {area.is_descanso ? (
+                        <div className="ras-card__descanso" data-testid={`area-descanso-${area.area}`}>
+                            <Moon size={11} aria-hidden="true" />
+                            <span>Descanso</span>
+                        </div>
+                    ) : (
+                        <span
+                            className="ras-card__badge"
+                            style={{ background: status.background, color: status.text }}
+                            aria-label={`${incidence} incidencias`}
+                        >
+                            {incidence}
+                        </span>
+                    )}
+                </div>
             </div>
 
-            {/* Chip de descanso */}
-            {area.is_descanso && (
-                <div className="ras-card__descanso" data-testid={`area-descanso-${area.area}`}>
-                    <Moon size={11} aria-hidden="true" />
-                    <span>Descanso</span>
-                </div>
-            )}
-
-            {/* KPIs: autorizado / contratados / asistencia */}
+            {/* KPIs */}
             <footer className="ras-card__footer">
-                <dl className="ras-card__kpis">
-                    <div className="ras-card__kpi">
-                        <dt>Autorizado</dt>
-                        <dd>{area.personal_autorizado}</dd>
-                    </div>
-                    <div className="ras-card__kpi">
-                        <dt>Contratados</dt>
-                        <dd>{area.personal_activo}</dd>
-                    </div>
-                    <div className="ras-card__kpi">
-                        <dt>Asistencia</dt>
-                        <dd>{asistenciaValue}</dd>
-                    </div>
-                </dl>
-
-                {area.personal_incidencia > 0 && (
-                    <span className="ras-card__trend" style={{ color: trendColor }} aria-label={`${pct.toFixed(0)}% ausentismo`}>
-                        {pct > TREND_THRESHOLD
-                            ? <TrendingUp size={12} aria-hidden="true" />
-                            : <TrendingDown size={12} style={{ color: "var(--color-success)" }} aria-hidden="true" />}
-                        {pct.toFixed(0)}%
-                    </span>
-                )}
+                <div className="ras-card__kpis-group">
+                    {area.operadores_autorizados > 0 ? (
+                        <>
+                            <div className="ras-card__op-title">OP. DE MÁQUINA</div>
+                            <dl className="ras-card__kpis">
+                                <div className="ras-card__kpi">
+                                    <dt>Autorizado</dt>
+                                    <dd>{area.operadores_autorizados}</dd>
+                                </div>
+                                <div className="ras-card__kpi">
+                                    <dt>Contratados</dt>
+                                    <dd>{area.operadores_contratados}</dd>
+                                </div>
+                                <div className="ras-card__kpi">
+                                    <dt>Asistencia</dt>
+                                    <dd>{asistenciaValue}</dd>
+                                </div>
+                            </dl>
+                        </>
+                    ) : (
+                        <dl className="ras-card__kpis">
+                            <div className="ras-card__kpi">
+                                <dt>Autorizado</dt>
+                                <dd>{area.personal_autorizado}</dd>
+                            </div>
+                            <div className="ras-card__kpi">
+                                <dt>Contratados</dt>
+                                <dd>{area.personal_activo}</dd>
+                            </div>
+                            <div className="ras-card__kpi">
+                                <dt>Asistencia</dt>
+                                <dd>{asistenciaValue}</dd>
+                            </div>
+                        </dl>
+                    )}
+                </div>
             </footer>
         </button>
     );
@@ -312,14 +341,6 @@ export default function ReporteAreaSummary({
                 </div>
 
                 <div className="ras__header-actions">
-                    {totalIncidencias > 0 && (
-                        <span
-                            className="ras__incidents-total"
-                            aria-label={`${totalIncidencias} incidencias totales`}
-                        >
-                            {totalIncidencias} incidencias
-                        </span>
-                    )}
                     {selectedArea && (
                         <button
                             type="button"

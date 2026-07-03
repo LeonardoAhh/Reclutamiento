@@ -14,6 +14,9 @@ export interface AreaStaffSummary {
     personal_activo: number
     personal_incidencia: number
     personal_real: number
+    operadores_autorizados: number
+    operadores_contratados: number
+    operadores_incidencia: number
     is_descanso?: boolean
 }
 

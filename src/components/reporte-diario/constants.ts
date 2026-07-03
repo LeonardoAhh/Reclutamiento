@@ -102,19 +102,27 @@ export interface SectionConfig {
     seccion: string
     /** Suma de plantilla_autorizada de todos los puestos de la sección */
     personal_autorizado: number
+    /** Suma de plantilla autorizada solo para operadores de máquina */
+    operadores_autorizados: number
 }
 
 export const SECTION_CONFIGS: SectionConfig[] = (() => {
     const map = new Map<string, SectionConfig>()
     for (const pos of PLANTILLA_AUTORIZADA) {
         const existing = map.get(pos.seccion)
+        const isOperador = pos.puesto === 'OPERADOR DE MÁQUINA'
+        
         if (existing) {
             existing.personal_autorizado += pos.plantilla_autorizada
+            if (isOperador) {
+                existing.operadores_autorizados += pos.plantilla_autorizada
+            }
         } else {
             map.set(pos.seccion, {
                 area: pos.area,
                 seccion: pos.seccion,
                 personal_autorizado: pos.plantilla_autorizada,
+                operadores_autorizados: isOperador ? pos.plantilla_autorizada : 0,
             })
         }
     }
