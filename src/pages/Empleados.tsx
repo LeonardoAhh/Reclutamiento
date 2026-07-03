@@ -226,7 +226,7 @@ export function Empleados() {
     [groups, selectedArea]
   );
 
-  if (loading) {
+  if (loading && employees.length === 0) {
     return (
       <main className="empleados container" id="page-empleados">
         <section className="empleados__hero">

@@ -242,7 +242,8 @@ export function Vacantes() {
     );
   }
 
-  if (loading) {
+  const hasData = bajas.length > 0 || employees.length > 0 || positions.length > 0;
+  if (loading && !hasData) {
     return (
       <main className="pipeline container">
         <section className="pipeline__hero">

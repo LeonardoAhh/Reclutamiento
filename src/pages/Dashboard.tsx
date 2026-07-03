@@ -276,7 +276,7 @@ export function Dashboard() {
     return result;
   }
 
-  if (loading) {
+  if (loading && employees.length === 0) {
     return (
       <main className="dashboard container" id="dashboard-main">
         <section className="dashboard__hero" id="dashboard-hero">

@@ -697,6 +697,16 @@ export default function ReporteDiarioContent() {
     /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
        sistema (en vez de pantalla en blanco). ───────────────────────── */
     if (dbLoading || loadingDb) {
+        // Si no hay datos (carga inicial limpia), mostramos un loader centrado 
+        // para no "engañar" visualmente al usuario con un esqueleto de tabla.
+        if (!hasData) {
+            return (
+                <div className="reporte-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                    <Loader2 className="animate-spin text-muted-foreground" size={40} />
+                </div>
+            );
+        }
+
         return (
             <div className="reporte-container">
                 <header className="reporte-card reporte-head">

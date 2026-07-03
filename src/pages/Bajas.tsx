@@ -100,7 +100,7 @@ export function Bajas() {
     return Math.max(m, 1);
   }, [months]);
 
-  if (loading) {
+  if (loading && bajas.length === 0) {
     return (
       <main className="bajas container" id="page-bajas">
         <section className="bajas__hero">
