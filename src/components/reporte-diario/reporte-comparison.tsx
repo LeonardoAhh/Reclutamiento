@@ -18,13 +18,22 @@ const MONTH_NAMES = [
     "Jul", "Ago", "Sep", "Oct", "Nov", "Dic",
 ] as const;
 
-const AUSENTISMO_THRESHOLD = 2.5;
+// TODO: Temporalmente el objetivo de ausentismo está en 3.0% a petición del usuario.
+// Regresarlo a 2.5 (u otro valor oficial) cuando sea requerido.
+const AUSENTISMO_THRESHOLD = 3.0;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatShortMes(ym: string): string {
     const [year, month] = ym.split("-");
     return `${MONTH_NAMES[parseInt(month, 10) - 1] ?? month} ${year}`;
+}
+
+function getQuarterLabel(q: number): string {
+    if (q === 1) return "Ene-Mar";
+    if (q === 2) return "Abr-Jun";
+    if (q === 3) return "Jul-Sep";
+    return "Oct-Dic";
 }
 
 function ausentismoTone(pct: number): "ok" | "warn" | "error" {
@@ -93,6 +102,32 @@ export default function ReporteComparisonDialog({
     chrono.forEach((s, i) => { if (i > 0) prevByMes.set(s.mes, chrono[i - 1]); });
     const rows = [...chrono].reverse();
 
+    // ─── Quarterly aggregation ────────────────────────────
+    const qMap = new Map<string, {
+        year: string;
+        quarter: number;
+        totalAusentismo: number;
+        diasDisponibles: number;
+        count: number;
+    }>();
+
+    chrono.forEach((s) => {
+        const [y, mStr] = s.mes.split("-");
+        const monthNum = parseInt(mStr, 10);
+        const q = Math.ceil(monthNum / 3);
+        const key = `${y}-Q${q}`;
+
+        if (!qMap.has(key)) {
+            qMap.set(key, { year: y, quarter: q, totalAusentismo: 0, diasDisponibles: 0, count: 0 });
+        }
+        const st = qMap.get(key)!;
+        st.totalAusentismo += s.total_ausentismo;
+        st.diasDisponibles += s.dias_disponibles;
+        st.count += 1;
+    });
+
+    const quarters = Array.from(qMap.values()).reverse(); // newest first
+
     const toggle = (mes: string) => {
         setExpanded((prev) => {
             const next = new Set(prev);
@@ -115,6 +150,47 @@ export default function ReporteComparisonDialog({
                 fullscreenMobile={true}
             >
                 <div className="reporte-cmp__body">
+                    {/* Quarterly Summary Cards */}
+                    {quarters.length > 0 && (
+                        <div className="reporte-cmp__quarters" style={{ 
+                            display: "grid", 
+                            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", 
+                            gap: "12px", 
+                            marginBottom: "24px",
+                            padding: "0 12px" 
+                        }}>
+                            {quarters.map((q) => {
+                                const avgPct = q.diasDisponibles > 0 ? (q.totalAusentismo / q.diasDisponibles) * 100 : 0;
+                                const tone = ausentismoTone(avgPct);
+                                return (
+                                    <div key={`${q.year}-Q${q.quarter}`} style={{
+                                        backgroundColor: "var(--color-bg)",
+                                        border: "1px solid var(--color-border)",
+                                        borderRadius: "8px",
+                                        padding: "16px",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "8px"
+                                    }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--color-fg)" }}>
+                                                Q{q.quarter} {q.year}
+                                            </span>
+                                            <span style={{ fontSize: "11px", color: "var(--color-muted-foreground)", textTransform: "uppercase" }}>
+                                                {getQuarterLabel(q.quarter)}
+                                            </span>
+                                        </div>
+                                        <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                                            <span style={{ fontSize: "24px", fontWeight: 700, color: "var(--color-fg)" }} className={`text-[var(--color-${tone === "ok" ? "success" : tone === "warn" ? "warning" : "error"})]`}>
+                                                {avgPct.toFixed(2)}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     {/* Desktop table */}
                     <div className="reporte-cmp__table-wrap">
                         <table className="reporte-cmp__table">

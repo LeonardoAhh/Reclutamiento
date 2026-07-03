@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { useState, useRef, useMemo, useEffect } from 'react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Search, X } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -26,11 +26,11 @@ interface RutaCardProps {
   onClick: () => void;
 }
 
-function RutaCard({ ruta, isActive, onClick }: RutaCardProps) {
+function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { matchCount?: number }) {
   return (
     <button
       type="button"
-      className={`ruta-card${isActive ? ' ruta-card--active' : ''}`}
+      className={`ruta-card${isActive ? ' ruta-card--active' : ''}${matchCount ? ' ruta-card--has-match' : ''}`}
       onClick={onClick}
       aria-pressed={isActive}
     >
@@ -43,6 +43,11 @@ function RutaCard({ ruta, isActive, onClick }: RutaCardProps) {
           {ruta.paradas.length} parada{ruta.paradas.length === 1 ? '' : 's'} · {ruta.totalEmpleados} pasajero{ruta.totalEmpleados === 1 ? '' : 's'}
         </span>
       </div>
+      {matchCount !== undefined && matchCount > 0 && (
+        <span className="ruta-card__match-badge">
+          {matchCount} encontrado{matchCount === 1 ? '' : 's'}
+        </span>
+      )}
       <ChevronRight size={18} aria-hidden="true" className="ruta-card__chevron" />
     </button>
   );
@@ -349,12 +354,47 @@ export function Rutas() {
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [animKey, setAnimKey] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
    */
   const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
   const listRef = useRef<HTMLElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Filter routes based on search term (by employee number or name)
+  const searchNorm = searchTerm.trim().toLowerCase();
+
+  const matchCounts = useMemo(() => {
+    if (!searchNorm) return new Map<string, number>();
+    const map = new Map<string, number>();
+    for (const ruta of rutas) {
+      const count = ruta.empleados.filter(
+        (emp) =>
+          emp.numeroEmpleado.toLowerCase().includes(searchNorm) ||
+          emp.nombre.toLowerCase().includes(searchNorm)
+      ).length;
+      if (count > 0) map.set(ruta.nombreRuta, count);
+    }
+    return map;
+  }, [rutas, searchNorm]);
+
+  const filteredRutas = useMemo(() => {
+    if (!searchNorm) return rutas;
+    return rutas.filter((ruta) => matchCounts.has(ruta.nombreRuta));
+  }, [rutas, searchNorm, matchCounts]);
+
+  // Auto-select first matching route when search changes
+  useEffect(() => {
+    if (searchNorm && filteredRutas.length > 0) {
+      const currentStillVisible = selectedRuta && matchCounts.has(selectedRuta.nombreRuta);
+      if (!currentStillVisible) {
+        setSelectedRuta(filteredRutas[0]);
+        setAnimKey((k) => k + 1);
+      }
+    }
+  }, [searchNorm, filteredRutas, matchCounts]);
 
   function handleSelect(ruta: RutaAgrupada) {
     setSelectedRuta(ruta);
@@ -393,6 +433,39 @@ export function Rutas() {
         </a>
       </header>
 
+      {/* ── Search bar ── */}
+      <div className="rutas-search">
+        <div className="rutas-search__field">
+          <Search size={18} className="rutas-search__icon" aria-hidden="true" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            className="rutas-search__input"
+            placeholder="Buscar por número de empleado o nombre…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Buscar empleado por número o nombre"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              className="rutas-search__clear"
+              onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
+              aria-label="Limpiar búsqueda"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+        {searchNorm && (
+          <p className="rutas-search__results type-body-sm">
+            {filteredRutas.length === 0
+              ? 'Sin resultados'
+              : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}
+          </p>
+        )}
+      </div>
+
       <div className="rutas-layout" data-mobile-view={mobileView}>
         {/* ── Left: route list ── */}
         <section
@@ -416,20 +489,23 @@ export function Rutas() {
             </div>
           )}
 
-          {!loading && !errorMsg && rutas.length === 0 && (
+          {!loading && !errorMsg && filteredRutas.length === 0 && (
             <p className="rutas-empty type-body-sm">
-              No se encontraron rutas en el archivo.
+              {searchNorm
+                ? 'No se encontraron empleados con ese criterio.'
+                : 'No se encontraron rutas en el archivo.'}
             </p>
           )}
 
           {!loading &&
             !errorMsg &&
-            rutas.map((ruta) => (
+            filteredRutas.map((ruta) => (
               <RutaCard
                 key={ruta.nombreRuta}
                 ruta={ruta}
                 isActive={selectedRuta?.nombreRuta === ruta.nombreRuta}
                 onClick={() => handleSelect(ruta)}
+                matchCount={searchNorm ? matchCounts.get(ruta.nombreRuta) : undefined}
               />
             ))}
         </section>

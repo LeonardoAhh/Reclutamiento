@@ -63,8 +63,7 @@ export default function ReportesGuardadosDialog({
             <Modal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                title="Reportes guardados"
-                subtitle="Selecciona un reporte para cargarlo en pantalla."
+                title="REPORTES GUARDADOS"
                 size="lg"
                 fullscreenMobile={true}
             >
@@ -91,14 +90,9 @@ export default function ReportesGuardadosDialog({
                                             <Calendar size={18} aria-hidden="true" />
                                         </span>
                                         <span className="reporte-saved__main">
-                                            <span className="reporte-saved__title">{formatMes(s.mes)}</span>
-                                            <span className="reporte-saved__sub">Click para cargar</span>
-                                        </span>
-                                        <span className="reporte-saved__count">
-                                            <span className={`reporte-saved__count-value${s.total_incidencias > 50 ? " reporte-saved__count-value--high" : ""}`}>
-                                                {s.total_incidencias}
+                                            <span className="reporte-saved__title" style={{ textTransform: "uppercase" }}>
+                                                {formatMes(s.mes)} | CARGAR
                                             </span>
-                                            <span className="reporte-saved__count-label">incidencias</span>
                                         </span>
                                     </button>
 

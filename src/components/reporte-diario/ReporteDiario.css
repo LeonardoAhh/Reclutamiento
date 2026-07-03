@@ -1120,8 +1120,8 @@ button.reporte-card:focus-visible,
 }
 
 .reporte-saved__list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-sm);
   list-style: none;
   margin: 0;
@@ -3537,11 +3537,9 @@ button.ras-card:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 var(--spacing-xs);
-  border-radius: var(--rounded-full);
-  background: var(--color-primary-tint);
+  background: transparent;
+  padding: 0;
+  margin: 0;
   color: var(--color-primary);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);

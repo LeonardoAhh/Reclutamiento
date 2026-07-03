@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './ReporteDiario.css';
-import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SkeletonTable } from "@/components/ui/PageSkeletons";
@@ -8,14 +7,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
-import { cn } from "@/lib/utils-shadcn";
 import {
     CloudUpload,
     Calendar,
     AlertCircle,
     Loader2,
     X,
-    Download,
     Save,
     Check,
     PanelLeftClose,
@@ -25,12 +22,10 @@ import {
     FileJson,
     Search,
     BarChart2,
-    User,
 } from "lucide-react"
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
-import { AUSENTISMO_CODES } from "./ausentismo-helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
 import ReporteCalendar from "./reporte-calendar"
@@ -60,7 +55,9 @@ export default function ReporteDiarioContent() {
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [saveSuccess, setSaveSuccess] = useState(false)
-    const [panelCollapsed, setPanelCollapsed] = useState(false);
+    const [panelCollapsed, setPanelCollapsed] = useState(() => {
+        return typeof window !== 'undefined' && !!sessionStorage.getItem("reporteDiarioCache");
+    });
     const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
     const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
     const [drillDownMonth, setDrillDownMonth] = useState<{ empKey: string; mes: string } | null>(null);
@@ -74,7 +71,6 @@ export default function ReporteDiarioContent() {
     } | null>(null)
 
     const {
-        loading: dbLoading,
         saving: dbSaving,
         fetchSummaries,
         fetchByMes,
@@ -138,14 +134,7 @@ export default function ReporteDiarioContent() {
         () => Array.from(new Set(rows.map((r) => r.mes))).sort(),
         [rows],
     )
-    const availableDepartments = useMemo(
-        () => Array.from(new Set(rows.map((r) => r.departamento))).sort(),
-        [rows],
-    )
-    const availableTurnos = useMemo(
-        () => Array.from(new Set(rows.map((r) => r.turno).filter((t): t is string => !!t))).sort(),
-        [rows],
-    )
+
 
     const currentMonth = selectedMes || months[0] || ""
     const dayCount = currentMonth ? daysInMonth(currentMonth) : 0
@@ -155,10 +144,12 @@ export default function ReporteDiarioContent() {
     const topIncidenceEmployees = useMemo(() => {
         const dbMeses = new Set(allMonthsRows.map((r) => r.mes))
         const currentMes = rows[0]?.mes ?? null
-        const analysisRows: ReporteRow[] =
+        const analysisRowsRaw: ReporteRow[] =
             currentMes && !dbMeses.has(currentMes)
                 ? [...allMonthsRows, ...rows]
                 : allMonthsRows
+
+        const analysisRows = analysisRowsRaw.filter(r => VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area))
 
         if (analysisRows.length === 0) return []
 
@@ -188,6 +179,10 @@ export default function ReporteDiarioContent() {
             const emp = empMap.get(k)!
             for (const code of Object.values(row.days)) {
                 if (isIncidence(code)) {
+                    // TODO: Temporalmente ignoramos "I" (Incapacidad) y "V" (Vacaciones) a petición del usuario.
+                    // Eliminar este bloque if cuando se requiera volver a contarlas.
+                    if (code === "I" || code === "V") continue;
+
                     emp.total++
                     emp.byCode[code] = (emp.byCode[code] ?? 0) + 1
                     emp.byMes[row.mes] = (emp.byMes[row.mes] ?? 0) + 1
@@ -205,6 +200,7 @@ export default function ReporteDiarioContent() {
         const lower = search.toLowerCase()
         return rows
             .filter((r) => r.mes === currentMonth)
+            .filter((r) => VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area))
             .filter((r) => {
                 if (departamentoFilter && r.departamento !== departamentoFilter) return false
                 if (turnoFilter && r.turno !== turnoFilter) return false
@@ -307,7 +303,10 @@ export default function ReporteDiarioContent() {
         return SECTION_CONFIGS
             .filter((sec) => VISIBLE_SECTIONS.has(sec.seccion))
             .map((sec) => {
-            const rowsInSection = selectedRows.filter((row) => row.area === sec.seccion)
+            const rowsInSection = selectedRows.filter((row) => {
+                const effectiveSection = VISIBLE_SECTIONS.has(row.area) ? row.area : row.departamento;
+                return effectiveSection === sec.seccion;
+            })
             const personal_activo = rowsInSection.length
             const personal_incidencia = rowsInSection.reduce((count, row) => {
                 return count + (isIncidence(row.days[selectedDay]) ? 1 : 0)
@@ -350,9 +349,10 @@ export default function ReporteDiarioContent() {
         const seen = new Set<string>()
         return selectedRows
             .filter(
-                (row) =>
-                    row.area === selectedArea &&
-                    isIncidence(row.days[selectedDay]),
+                (row) => {
+                    const effectiveSection = VISIBLE_SECTIONS.has(row.area) ? row.area : row.departamento;
+                    return effectiveSection === selectedArea && isIncidence(row.days[selectedDay]);
+                }
             )
             .filter((row) => {
                 if (seen.has(row.numero_empleado)) return false
@@ -481,6 +481,7 @@ export default function ReporteDiarioContent() {
 
         setProcessStep(null)
         setPreviewData(null)
+        setPanelCollapsed(true)
         sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
     }, [previewData])
 
@@ -534,8 +535,7 @@ export default function ReporteDiarioContent() {
                 if (!code || code === "-" || code === "X") continue
                 totalDaysTracked++
                 if (code === "A") totalAsistencias++
-                // Consistente con ReporteKpiDashboard: solo códigos de ausentismo.
-                else if (AUSENTISMO_CODES.has(code)) totalIncidencias++
+                else if (isIncidence(code)) totalIncidencias++
             }
         }
         const tasaAsistencia = totalDaysTracked > 0
@@ -545,18 +545,19 @@ export default function ReporteDiarioContent() {
     }, [])
 
     const heroKpis = useMemo(
-        () => computeKpis(selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area)), dayHeaders),
+        () => computeKpis(selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area)), dayHeaders),
         [computeKpis, selectedRows, dayHeaders],
     )
 
     const handleSaveToDb = useCallback(async () => {
+        setSaveSuccess(false)
         if (!currentMonth || rows.length === 0) return
         const monthRows = rows.filter((r) => r.mes === currentMonth)
         const dCount = daysInMonth(currentMonth)
         const dHeaders = Array.from({ length: dCount }, (_, i) => String(i + 1).padStart(2, "0"))
 
         // Solo las 14 secciones configuradas para KPIs del resumen
-        const visibleRows = monthRows.filter((r) => VISIBLE_SECTIONS.has(r.area))
+        const visibleRows = monthRows.filter((r) => VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area))
         const { totalIncidencias, tasaAsistencia } = computeKpis(visibleRows, dHeaders)
 
         const diasDisponibles = visibleRows.length * dCount
@@ -604,6 +605,7 @@ export default function ReporteDiarioContent() {
         setSelectedMes(mes)
         setFileName(formatMes(mes))
         setErrors([])
+        setPanelCollapsed(true)
     }, [fetchByMes])
 
     const handleDeleteFromDb = useCallback(async (id: string) => {
@@ -624,6 +626,9 @@ export default function ReporteDiarioContent() {
         for (const row of empRows) {
             for (const [day, code] of Object.entries(row.days)) {
                 if (isIncidence(code) && !seen.has(day)) {
+                    // TODO: Temporalmente ignoramos "I" (Incapacidad) y "V" (Vacaciones).
+                    if (code === "I" || code === "V") continue;
+
                     seen.add(day)
                     const dayNum = parseInt(day, 10)
                     const weekday = DAY_NAMES[new Date(year, month - 1, dayNum).getDay()]
@@ -634,69 +639,11 @@ export default function ReporteDiarioContent() {
         return days.sort((a, b) => parseInt(a.day, 10) - parseInt(b.day, 10))
     }, [allMonthsRows])
 
-    const handleExportPdf = useCallback(async () => {
-        if (!selectedDay || !currentMonth) return
-
-        const jsPDF = (await import("jspdf")).default
-        const autoTable = (await import("jspdf-autotable")).default
-        const { addReportFooter } = await import("@/lib/pdf-footer")
-
-        const doc = new jsPDF()
-        const dayNum = parseInt(selectedDay, 10)
-        const title = `Reporte Diario — ${formatMes(currentMonth)} — Día ${dayNum}`
-
-        doc.setFontSize(14)
-        doc.text(title, 14, 20)
-
-        let y = 30
-
-        doc.setFontSize(11)
-        doc.text("Resumen por Área", 14, y)
-        y += 4
-        autoTable(doc, {
-            startY: y,
-            head: [["Área", "Autorizado", "Activo", "Incidencias", "Personal Real"]],
-            body: selectedDayAreaSummary.map((a) => [
-                a.area, a.personal_autorizado, a.personal_activo, a.personal_incidencia, a.personal_real,
-            ]),
-            styles: { fontSize: 8 },
-        })
-
-        y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10
-
-        for (const code of INCIDENT_TABS) {
-            const rows = selectedDayIncidentSummary[code]
-            if (rows.length === 0) continue
-
-            if (y > 260) { doc.addPage(); y = 20 }
-
-            doc.setFontSize(11)
-            doc.text(`${INCIDENCIA_LABELS[code] ?? code} (${rows.length})`, 14, y)
-            y += 4
-            autoTable(doc, {
-                startY: y,
-                head: [["Empleado", "# Empleado", "Departamento", "Área", "Turno"]],
-                body: rows.map((r) => [r.nombre, r.numero_empleado, r.departamento, r.area, r.turno]),
-                styles: { fontSize: 8 },
-            })
-            y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
-        }
-
-        addReportFooter(doc)
-        doc.save(`reporte-diario-${currentMonth}-dia-${selectedDay}.pdf`)
-    }, [selectedDay, currentMonth, selectedDayAreaSummary, selectedDayIncidentSummary])
-
-    const labelCls = "block text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5"
-
     const hasData = rows.length > 0 && Boolean(currentMonth)
-        // Al cargar/seleccionar un reporte, el panel de controles se colapsa solo.
-    useEffect(() => {
-        setPanelCollapsed(hasData);
-    }, [hasData]);
 
     /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
        sistema (en vez de pantalla en blanco). ───────────────────────── */
-    if (dbLoading || loadingDb) {
+    if (loadingDb) {
         // Si no hay datos (carga inicial limpia), mostramos un loader centrado 
         // para no "engañar" visualmente al usuario con un esqueleto de tabla.
         if (!hasData) {
@@ -791,35 +738,7 @@ export default function ReporteDiarioContent() {
                         </span>
                     </div>
 
-                    <ol className="reporte-hero__steps" aria-label="Cómo funciona">
-                        <li className="reporte-hero__step">
-                            <span className="reporte-hero__step-index" aria-hidden="true">1</span>
-                            <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Sube</p>
-                                <p className="reporte-hero__step-desc">
-                                    Elige el archivo desde tu equipo.
-                                </p>
-                            </div>
-                        </li>
-                        <li className="reporte-hero__step">
-                            <span className="reporte-hero__step-index" aria-hidden="true">2</span>
-                            <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Analiza</p>
-                                <p className="reporte-hero__step-desc">
-                                    Explora asistencia e incidencias por día.
-                                </p>
-                            </div>
-                        </li>
-                        <li className="reporte-hero__step">
-                            <span className="reporte-hero__step-index" aria-hidden="true">3</span>
-                            <div className="reporte-hero__step-body">
-                                <p className="reporte-hero__step-title">Guarda</p>
-                                <p className="reporte-hero__step-desc">
-                                    Compara con los meses anteriores.
-                                </p>
-                            </div>
-                        </li>
-                    </ol>
+
 
                     {savedSummaries.length > 0 && (
                         <div className="reporte-hero__saved" aria-label="Acceso a reportes guardados">
@@ -1189,7 +1108,7 @@ export default function ReporteDiarioContent() {
                                 }}
                             >
                                 <ReporteKpiDashboard
-                                    selectedRows={selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.area))}
+                                    selectedRows={selectedRows.filter((r) => VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area))}
                                     dayHeaders={dayHeaders}
                                     currentMonth={currentMonth}
                                 />
@@ -1264,7 +1183,7 @@ export default function ReporteDiarioContent() {
                                     {selectedDay && (
                                         <div className="reporte-dayhead__actions">
                                             {(() => {
-                                                const totalInc = selectedDayAreaSummary.reduce((n, a) => n + (a.operadores_autorizados > 0 ? a.operadores_incidencia : a.personal_incidencia), 0);
+                                                const totalInc = daySummaries[selectedDay] || 0;
                                                 if (totalInc === 0) return null;
                                                 return (
                                                     <span className="ras__incidents-total" aria-label={`${totalInc} incidencias`}>

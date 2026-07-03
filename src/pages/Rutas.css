@@ -146,6 +146,97 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════════════════════ */
+
+.rutas-search {
+  margin-bottom: var(--spacing-lg);
+}
+
+.rutas-search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.rutas-search__field:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb) / 0.12);
+}
+
+.rutas-search__icon {
+  position: absolute;
+  left: var(--spacing-md);
+  color: var(--color-muted);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.rutas-search__field:focus-within .rutas-search__icon {
+  color: var(--color-primary);
+}
+
+.rutas-search__input {
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  padding-left: calc(var(--spacing-md) + 18px + var(--spacing-sm));
+  padding-right: calc(var(--spacing-md) + 32px);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.rutas-search__input::placeholder {
+  color: var(--color-muted-soft);
+}
+
+.rutas-search__clear {
+  position: absolute;
+  right: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.rutas-search__clear:hover {
+  background: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+.rutas-search__clear:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.rutas-search__results {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--color-muted);
+  padding-left: var(--spacing-xs);
+}
+
+
 /* ── Mobile-first: stacked, single column ── */
 .rutas-layout {
   display: flex;
@@ -410,6 +501,38 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 12px;
+}
+
+/* ─── Match badge (search active) ─── */
+
+.ruta-card__match-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--rounded-pill);
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: badge-pop 0.25s var(--ease-spring) both;
+}
+
+@keyframes badge-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ruta-card--has-match {
+  border-color: rgb(var(--color-primary-rgb) / 0.25);
 }
 
 /* Animated checkmark */
