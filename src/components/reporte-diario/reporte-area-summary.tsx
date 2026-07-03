@@ -66,15 +66,11 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     const asistenciaValue = area.is_descanso ? "—" : Math.max(active - incidence, 0);
     const trendColor = pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
 
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`ras-card${isSelected ? " ras-card--selected" : ""}`}
-            aria-pressed={isSelected}
-            aria-label={`Sección ${area.area}. Autorizado: ${area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado}`}
-            data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
-        >
+    const isClickable = incidence > 0;
+    const className = `ras-card${isSelected ? " ras-card--selected" : ""}`;
+
+    const cardContent = (
+        <>
             {/* Header: nombre + badge de incidencias o descanso */}
             <div className="ras-card__header">
                 <span className="ras-card__name" title={area.area}>
@@ -147,6 +143,30 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
                     )}
                 </div>
             </footer>
+        </>
+    );
+
+    if (!isClickable) {
+        return (
+            <div
+                className={className}
+                data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
+            >
+                {cardContent}
+            </div>
+        );
+    }
+
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={className}
+            aria-pressed={isSelected}
+            aria-label={`Sección ${area.area}. Autorizado: ${area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado}`}
+            data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
+        >
+            {cardContent}
         </button>
     );
 }
@@ -192,7 +212,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                             <th scope="col">Nombre</th>
                             <th scope="col">Incidencia</th>
                             <th scope="col">Turno</th>
-                            <th scope="col">Depto</th>
+                            <th scope="col">Puesto</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,7 +222,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                                 <td className="reporte-incidents__td-name">{row.nombre}</td>
                                 <td><IncidenceBadge code={row.tipo_incidencia} /></td>
                                 <td><span className="reporte-chip">{row.turno}</span></td>
-                                <td>{row.departamento}</td>
+                                <td>{row.puesto || '-'}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -238,8 +258,6 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                                 <div id={detailId} className="reporte-incidents__card-detail">
                                     <span className="reporte-incidents__detail-label"># Empleado</span>
                                     <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
-                                    <span className="reporte-incidents__detail-label">Departamento</span>
-                                    <span className="reporte-incidents__detail-value">{row.departamento}</span>
                                     {row.puesto && (
                                         <>
                                             <span className="reporte-incidents__detail-label">Puesto</span>
@@ -327,22 +345,8 @@ export default function ReporteAreaSummary({
     return (
         <section className="ras" aria-labelledby="ras-heading">
 
-            {/* Encabezado (ahora solo acciones si hay filtro) */}
+            {/* Encabezado (ya no renderiza botones inútiles detrás del modal) */}
             <div className="ras__header">
-                {selectedArea && (
-                    <div className="ras__header-actions">
-                        <button
-                            type="button"
-                            onClick={() => onSelectArea(null)}
-                            className="ras__clear-btn"
-                            aria-label="Limpiar filtro de sección"
-                            data-testid="clear-area-filter"
-                        >
-                            <Filter size={13} aria-hidden="true" />
-                            Limpiar filtro
-                        </button>
-                    </div>
-                )}
             </div>
 
             {/* Grid agrupado por área */}
@@ -399,8 +403,14 @@ export default function ReporteAreaSummary({
                     setIsDetailOpen(false);
                     onSelectArea(null);
                 }}
-                title={`Detalle de ausencias: ${selectedArea}`}
-                subtitle={`${detailRows.length} colaborador${detailRows.length !== 1 ? "es" : ""} ausente${detailRows.length !== 1 ? "s" : ""} en esta sección.`}
+                title={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
+                        <span>{selectedArea || ''}</span>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--color-muted)', fontWeight: 'normal' }}>
+                            ({detailRows.length} ausencia{detailRows.length !== 1 ? "s" : ""})
+                        </span>
+                    </div>
+                }
                 size="xl"
                 fullscreenMobile={true}
             >
