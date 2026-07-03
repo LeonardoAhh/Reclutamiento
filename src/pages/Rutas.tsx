@@ -489,11 +489,9 @@ export function Rutas() {
             </div>
           )}
 
-          {!loading && !errorMsg && filteredRutas.length === 0 && (
+          {!loading && !errorMsg && !searchNorm && filteredRutas.length === 0 && (
             <p className="rutas-empty type-body-sm">
-              {searchNorm
-                ? 'No se encontraron empleados con ese criterio.'
-                : 'No se encontraron rutas en el archivo.'}
+              No se encontraron rutas en el archivo.
             </p>
           )}
 
