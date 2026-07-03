@@ -327,18 +327,10 @@ export default function ReporteAreaSummary({
     return (
         <section className="ras" aria-labelledby="ras-heading">
 
-            {/* Encabezado */}
+            {/* Encabezado (ahora solo acciones si hay filtro) */}
             <div className="ras__header">
-                <div className="ras__header-title">
-                    {totalIncidencias > 0 && (
-                        <span className="ras__incidents-total" aria-label={`${totalIncidencias} incidencias`}>
-                            {totalIncidencias} {totalIncidencias === 1 ? 'incidencia' : 'incidencias'}
-                        </span>
-                    )}
-                </div>
-
-                <div className="ras__header-actions">
-                    {selectedArea && (
+                {selectedArea && (
+                    <div className="ras__header-actions">
                         <button
                             type="button"
                             onClick={() => onSelectArea(null)}
@@ -349,8 +341,8 @@ export default function ReporteAreaSummary({
                             <Filter size={13} aria-hidden="true" />
                             Limpiar filtro
                         </button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Grid agrupado por área */}

@@ -999,7 +999,7 @@ export default function ReporteDiarioContent() {
                                 data-testid="save-report-btn"
                             >
                                 <Save size={16} aria-hidden="true" />
-                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar mes" : "Guardar mes"}
+                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
                             </button>
                         )}
                     </div>
@@ -1253,6 +1253,15 @@ export default function ReporteDiarioContent() {
                                     </div>
                                     {selectedDay && (
                                         <div className="reporte-dayhead__actions">
+                                            {(() => {
+                                                const totalInc = selectedDayAreaSummary.reduce((n, a) => n + (a.operadores_autorizados > 0 ? a.operadores_incidencia : a.personal_incidencia), 0);
+                                                if (totalInc === 0) return null;
+                                                return (
+                                                    <span className="ras__incidents-total" aria-label={`${totalInc} incidencias`}>
+                                                        {totalInc} {totalInc === 1 ? 'incidencia' : 'incidencias'}
+                                                    </span>
+                                                );
+                                            })()}
                                             <div className="reporte-daynav">
                                                 <button
                                                     type="button"
@@ -1474,8 +1483,7 @@ export default function ReporteDiarioContent() {
                 <Modal
                     isOpen={topEmpModalOpen}
                     onClose={() => { setTopEmpModalOpen(false); setDrillDownMonth(null) }}
-                    title="Detalle incidencias"
-                    subtitle="Empleados con mas incidencias 2026."
+                    title="ANALISIS DE ASISTENCIA"
                 >
                     <div className="top-emp-modal">
                         <AnimatePresence mode="wait" initial={false}>

@@ -34,6 +34,27 @@
   width: 100%;
 }
 
+/* Forzar mayúsculas en todo el dashboard y modales, incluyendo inputs y botones */
+.reporte-layout,
+.reporte-layout button,
+.reporte-layout input,
+.reporte-layout select,
+.reporte-layout textarea,
+.top-emp-modal,
+.top-emp-modal button,
+.top-emp-modal input,
+.reporte-page,
+.reporte-page button,
+.reporte-page input {
+  text-transform: uppercase;
+}
+
+.reporte-layout input::placeholder,
+.top-emp-modal input::placeholder,
+.reporte-page input::placeholder {
+  text-transform: uppercase;
+}
+
 @media (min-width: 768px) {
   .reporte-container {
     gap: var(--spacing-xl);
@@ -68,36 +89,41 @@
 
 .reporte-title {
   font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
   color: var(--color-ink);
   margin: 0;
 }
 
 @media (min-width: 768px) {
   .reporte-title {
-    font-size: var(--type-display-lg-size);
-    font-weight: var(--type-display-lg-weight);
-    line-height: var(--type-display-lg-line);
-    letter-spacing: var(--type-display-lg-tracking);
+    font-size: var(--type-heading-xl-size, 1.5rem);
+    font-weight: var(--type-heading-xl-weight, 700);
+    line-height: var(--type-heading-xl-line, 1.2);
+    letter-spacing: var(--type-heading-xl-tracking, 0);
   }
 }
 
 .reporte-subtitle {
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.4;
   margin: 0;
 }
 
 @media (min-width: 768px) {
   .reporte-subtitle {
-    font-size: var(--type-body-md-size);
-    line-height: var(--type-body-md-line);
+    font-size: var(--type-body-sm-size);
   }
+}
+
+.reporte-search__subtitle {
+  color: var(--color-muted);
+  font-size: var(--text-xs, 0.75rem);
+  margin: 0;
 }
 
 /* ── Sección superior unificada (desing.md: una sola tarjeta minimalista) ──── */
@@ -118,16 +144,11 @@
 
 .reporte-head__row {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-  .reporte-head__row {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: nowrap;
 }
 
 .reporte-head__launchers {
