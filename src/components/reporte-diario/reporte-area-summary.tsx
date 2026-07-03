@@ -322,8 +322,7 @@ export default function ReporteAreaSummary({
 
     if (areas.length === 0) return null;
 
-    const totalSecciones = areas.length;
-    const totalIncidencias = areas.reduce((n, a) => n + a.personal_incidencia, 0);
+    const totalIncidencias = areas.reduce((n, a) => n + (a.operadores_autorizados > 0 ? a.operadores_incidencia : a.personal_incidencia), 0);
 
     return (
         <section className="ras" aria-labelledby="ras-heading">
@@ -331,13 +330,11 @@ export default function ReporteAreaSummary({
             {/* Encabezado */}
             <div className="ras__header">
                 <div className="ras__header-title">
-                    <Users size={16} aria-hidden="true" style={{ color: "var(--color-muted)", flexShrink: 0 }} />
-                    <h2 id="ras-heading" className="ras__heading">
-                        Impacto por Sección
-                    </h2>
-                    <span className="ras__count" aria-label={`${totalSecciones} secciones`}>
-                        {totalSecciones}
-                    </span>
+                    {totalIncidencias > 0 && (
+                        <span className="ras__incidents-total" aria-label={`${totalIncidencias} incidencias`}>
+                            {totalIncidencias} {totalIncidencias === 1 ? 'incidencia' : 'incidencias'}
+                        </span>
+                    )}
                 </div>
 
                 <div className="ras__header-actions">
