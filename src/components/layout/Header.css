@@ -60,6 +60,13 @@
   gap: var(--spacing-xs);
 }
 
+.app-header__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+}
+
 /* Desktop (>=1024px): la navegacion vive en el Sidebar; ocultamos el Header. */
 @media (min-width: 1024px) {
   .app-header {

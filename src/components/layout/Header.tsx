@@ -1,16 +1,18 @@
 import { NavLink } from 'react-router-dom';
-import { UserMenu } from './UserMenu';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import './Header.css';
+import { useAuth } from '@/hooks/useAuth';
+// @ts-ignore
+import Avatar from 'boring-avatars';
 import { BrandLogo } from '@/components/ui/BrandLogo';
+import './Header.css';
 
 /**
  * Header superior — solo móvil/tablet (<1024px).
- * Brand a la izquierda + acciones (tema, usuario) a la derecha.
- * La navegación vive en el BottomTabBar (móvil/tablet) o Sidebar (desktop,
- * donde este header se oculta por completo).
+ * Brand a la izquierda + Avatar simple a la derecha.
+ * La navegación y configuraciones viven en el BottomTabBar.
  */
 export function Header() {
+  const { username } = useAuth();
+
   return (
     <header className="app-header" id="main-header">
       <div className="app-header__inner container">
@@ -24,10 +26,19 @@ export function Header() {
         </NavLink>
 
         {/* Acciones */}
-        <div className="app-header__actions">
-          <ThemeToggle />
-          <UserMenu />
-        </div>
+        {username && (
+          <div className="app-header__actions">
+            <span className="app-header__avatar" aria-hidden="true" title={username}>
+              {/* @ts-ignore */}
+              <Avatar 
+                size={32} 
+                name={username} 
+                variant="beam" 
+                colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']} 
+              />
+            </span>
+          </div>
+        )}
       </div>
     </header>
   );

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   BarChart3,
@@ -19,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
 import { sileo } from '@/lib/notify';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './BottomTabBar.css';
 import { motion } from 'framer-motion';
 
@@ -151,7 +153,7 @@ export function BottomTabBar() {
     return () => {
       document.removeEventListener('keydown', onKey);
       body.style.overflow = prev;
-      triggerRef.current?.focus();
+      requestAnimationFrame(() => triggerRef.current?.focus());
     };
   }, [sheetOpen]);
 
@@ -275,90 +277,88 @@ export function BottomTabBar() {
         </div>
       </nav>
 
-      {sheetOpen && (
+      <div
+        className="bottom-sheet-overlay"
+        data-open={sheetOpen || undefined}
+        role="presentation"
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setSheetOpen(false);
+        }}
+      >
         <div
-          className="bottom-sheet-overlay"
-          role="presentation"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setSheetOpen(false);
-          }}
+          id="bottom-nav-sheet"
+          className="bottom-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú de navegación"
+          ref={sheetRef}
         >
-          <div
-            id="bottom-nav-sheet"
-            className="bottom-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menú de navegación"
-          >
-            <div className="bottom-sheet__handle" aria-hidden="true" />
-
-            <header className="bottom-sheet__header">
-              <div className="bottom-sheet__session">
-                <p className="bottom-sheet__session-label">Sesión activa</p>
-                <p className="bottom-sheet__session-name" title={username}>{username}</p>
-              </div>
+          <header className="bottom-sheet__header">
+            <div className="bottom-sheet__session">
+              <p className="bottom-sheet__session-label">Sesión activa</p>
+              <p className="bottom-sheet__session-name" title={username}>{username}</p>
+            </div>
+            <div className="bottom-sheet__header-actions">
+              <ThemeToggle />
               <button
                 type="button"
                 className="bottom-sheet__close"
                 onClick={() => setSheetOpen(false)}
-                aria-label="Cerrar"
+                aria-label="Cerrar menú"
               >
-                <X size={18} aria-hidden="true" />
+                <X size={20} aria-hidden="true" />
               </button>
-            </header>
+            </div>
+          </header>
 
-            <ul className="bottom-sheet__list">
+          <div className="bottom-sheet__content">
+            <ul className="bottom-sheet__grid">
               {MENU_TABS.map(({ to, label, icon: Icon }) => {
                 return (
                   <li key={to}>
-                  <NavLink
-                    to={to}
-                    className={({ isActive }) =>
-                      `bottom-sheet__item${isActive ? ' bottom-sheet__item--active' : ''}`
-                    }
-                    data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <Icon size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
-                        <span className="bottom-sheet__item-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          {label}
-                          {to === '/documentos' && (
-                            <span style={{
-                              display: 'inline-flex', padding: '2px 6px', backgroundColor: 'var(--color-primary)', 
-                              color: 'var(--color-on-primary)', fontSize: '0.65rem', fontWeight: 800, 
-                              borderRadius: '999px', animation: 'sidebar-pulse-new 2s infinite'
-                            }}>Nuevo</span>
-                          )}
-                        </span>
-                        {isActive && <span className="bottom-sheet__item-dot" aria-hidden="true" />}
-                      </>
-                    )}
-                  </NavLink>
-                </li>
+                    <NavLink
+                      to={to}
+                      className={({ isActive }) =>
+                        `bottom-sheet__grid-item${isActive ? ' bottom-sheet__grid-item--active' : ''}`
+                      }
+                      data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <div className="bottom-sheet__grid-icon-wrapper">
+                            <Icon size={28} aria-hidden="true" className="bottom-sheet__grid-icon" />
+                            {to === '/documentos' && (
+                              <span className="bottom-sheet__grid-badge">N</span>
+                            )}
+                          </div>
+                          <span className="bottom-sheet__grid-label">
+                            {label}
+                          </span>
+                        </>
+                      )}
+                    </NavLink>
+                  </li>
                 );
               })}
             </ul>
+          </div>
 
-            <div className="bottom-sheet__divider" role="separator" />
-
-            <div className="bottom-sheet__footer">
-              <button
-                type="button"
-                className="bottom-sheet__item bottom-sheet__item--danger"
-                onClick={handleSignOut}
-                disabled={signingOut}
-                data-testid="bottom-nav-signout"
-              >
-                <LogOut size={20} aria-hidden="true" className="bottom-sheet__item-icon" />
-                <span className="bottom-sheet__item-label">
-                  {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
-                </span>
-              </button>
-            </div>
+          <div className="bottom-sheet__footer">
+            <button
+              type="button"
+              className="bottom-sheet__signout"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              data-testid="bottom-nav-signout"
+            >
+              <LogOut size={20} aria-hidden="true" className="bottom-sheet__signout-icon" />
+              <span className="bottom-sheet__signout-label">
+                {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
+              </span>
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
