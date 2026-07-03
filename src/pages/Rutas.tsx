@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -381,6 +381,16 @@ export function Rutas() {
     <main className="rutas-page container" id="main-content" tabIndex={-1}>
       <header className="rutas-header">
         <h1 className="type-display-lg">Rutas de transporte</h1>
+        <a
+          href="https://rtsq.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rutas-external-link"
+        >
+          <span className="rutas-external-link__badge">Nuevo</span>
+          <ExternalLink size={16} aria-hidden="true" />
+          <span>Hojas de Rutas</span>
+        </a>
       </header>
 
       <div className="rutas-layout" data-mobile-view={mobileView}>
