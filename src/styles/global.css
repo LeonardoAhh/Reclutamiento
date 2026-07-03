@@ -415,107 +415,33 @@ body {
 }
 
 /* ========================================
-   THEME TRANSITION — circular reveal + stagger
+   THEME TRANSITION — fade suave instantáneo
    View Transitions API (Chrome 111+, Safari 18+).
-   En navegadores sin soporte, useTheme aplica el tema sin animación y
-   las transiciones CSS de color (body/html) hacen graceful degradation.
+   En navegadores sin soporte, el tema cambia sin animación.
    ======================================== */
 
-/* Pintamos snapshots; sin esto, ambos animan en cross-fade base. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-/* Saliente: el tema previo cae rápido. */
 ::view-transition-old(root) {
-  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
-  z-index: 1;
+  animation: theme-fade-out 200ms ease both;
 }
 
-/* Entrante: el nuevo tema se descubre con un clip circular desde el toggle. */
 ::view-transition-new(root) {
-  animation: theme-reveal var(--duration-theme-in) var(--ease-apple) both;
-  z-index: 2;
-}
-
-@keyframes theme-reveal {
-  from {
-    clip-path: circle(0% at var(--theme-origin-x) var(--theme-origin-y));
-  }
-  to {
-    clip-path: circle(150% at var(--theme-origin-x) var(--theme-origin-y));
-  }
+  animation: theme-fade-in 200ms ease both;
 }
 
 @keyframes theme-fade-out {
   from { opacity: 1; }
-  to { opacity: 0.85; }
+  to   { opacity: 0; }
 }
 
-/* Stagger por capas: cada una recibe su propio snapshot con delay creciente.
-   El resultado: el reveal circular cruza el contenido y, una fracción de
-   segundo después, header/hero/main/tab-bar cross-fadean encima → sensación
-   de "el sistema respira" sin orquestar nada desde JS.
-
-   REGLA CRÍTICA: cada `view-transition-name` debe ser único en el snapshot.
-   Por eso los selectores apuntan a elementos de los que sólo hay UNO
-   montado a la vez (un main por ruta, un hero por página, un dropdown). */
-
-.app-header                 { view-transition-name: theme-header; }
-main.container              { view-transition-name: theme-page; }
-.user-menu__dropdown        { view-transition-name: theme-dropdown; }
-
-/* Heroes de cada página (sólo uno montado a la vez, route exclusivo). */
-.kpis-page__hero,
-.dashboard__hero,
-.pipeline__hero,
-.bajas__hero,
-.empleados__hero,
-.transporte__hero,
-.settings__hero             { view-transition-name: theme-page-hero; }
-
-/* Saliente uniforme para todas las capas con nombre. */
-::view-transition-old(theme-header),
-::view-transition-old(theme-page),
-::view-transition-old(theme-page-hero),
-::view-transition-old(theme-dropdown) {
-  animation: theme-fade-out var(--duration-theme-out) var(--ease-apple) both;
+@keyframes theme-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* Entrante: animación común con delays escalonados por capa.
-   El stagger sigue el flujo visual: header → hero → contenido → dropdown. */
-::view-transition-new(theme-header),
-::view-transition-new(theme-page),
-::view-transition-new(theme-page-hero),
-::view-transition-new(theme-dropdown) {
-  animation: theme-layer-in var(--duration-theme-in) var(--ease-apple) both;
-}
-
-::view-transition-new(theme-header)      { animation-delay: calc(var(--duration-theme-stagger) * 0.7); }
-::view-transition-new(theme-page-hero)   { animation-delay: calc(var(--duration-theme-stagger) * 1.2); }
-::view-transition-new(theme-page)        { animation-delay: calc(var(--duration-theme-stagger) * 1.6); }
-::view-transition-new(theme-dropdown)    { animation-delay: calc(var(--duration-theme-stagger) * 1.0); }
-
-@keyframes theme-layer-in {
-  from { opacity: 0; transform: translateY(2px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Accesibilidad: usuarios con reduce-motion no ven animación.
-   useTheme también detecta esto y aplica el tema sin envolverlo en VT. */
+/* Accesibilidad: usuarios con reduce-motion no ven animación. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
-  ::view-transition-new(root),
-  ::view-transition-old(theme-header),
-  ::view-transition-new(theme-header),
-  ::view-transition-old(theme-page),
-  ::view-transition-new(theme-page),
-  ::view-transition-old(theme-page-hero),
-  ::view-transition-new(theme-page-hero),
-  ::view-transition-old(theme-dropdown),
-  ::view-transition-new(theme-dropdown) {
+  ::view-transition-new(root) {
     animation: none;
   }
 }

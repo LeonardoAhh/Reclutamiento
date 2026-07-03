@@ -191,25 +191,22 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
       <div className="sidebar__footer" ref={userMenuRef}>
         {menuOpen && (
           <div className="sidebar__popover" role="menu">
-            <div className="sidebar__popover-row">
-              <span className="sidebar__popover-text">Tema visual</span>
+            <div className="sidebar__popover-actions">
+              <button
+                type="button"
+                className="sidebar__popover-item sidebar__popover-item--danger"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                role="menuitem"
+              >
+                {signingOut
+                  ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
+                  : <LogOut size={16} aria-hidden="true" />}
+                <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
+              </button>
+              <div className="sidebar__popover-divider-vertical" />
               <ThemeToggle />
             </div>
-
-            <div className="sidebar__popover-divider" />
-
-            <button
-              type="button"
-              className="sidebar__popover-item sidebar__popover-item--danger"
-              onClick={handleSignOut}
-              disabled={signingOut}
-              role="menuitem"
-            >
-              {signingOut
-                ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
-                : <LogOut size={16} aria-hidden="true" />}
-              <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
-            </button>
 
             {version && (
               <p className="sidebar__popover-version">v{version}</p>
