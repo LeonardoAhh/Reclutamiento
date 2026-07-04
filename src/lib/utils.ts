@@ -145,12 +145,13 @@ function dedupeEmployees(employees: Employee[]): Employee[] {
 export function calculatePositionCoverage(
   employees: Employee[],
   comments: PositionComment[],
-  positions: AuthorizedPosition[] = PLANTILLA_AUTORIZADA
+  positions: AuthorizedPosition[] = PLANTILLA_AUTORIZADA,
+  asOfDate?: string
 ): PositionCoverage[] {
   const allUniqueEmployees = dedupeEmployees(employees);
-  const today = localTodayIso();
+  const targetDate = asOfDate || localTodayIso();
   const uniqueEmployees = allUniqueEmployees.filter(
-    (emp) => String(emp.fecha_ingreso).localeCompare(today) <= 0
+    (emp) => String(emp.fecha_ingreso).localeCompare(targetDate) <= 0
   );
 
   return positions.map((pos) => {
@@ -189,7 +190,7 @@ export function calculatePositionCoverage(
 
     const proximosList = allUniqueEmployees.filter(
       (emp) =>
-        String(emp.fecha_ingreso).localeCompare(today) > 0 &&
+        String(emp.fecha_ingreso).localeCompare(targetDate) > 0 &&
         matchesText(emp.area, pos.area) &&
         matchesText(emp.seccion, pos.seccion) &&
         matchesPuesto(emp.puesto, pos.puesto)

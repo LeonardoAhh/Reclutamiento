@@ -315,13 +315,18 @@ export function isInIsoWeek(
  */
 export function formatIsoWeekRange(range: IsoWeekRange): string {
   const startMx = mxDateParts(range.start);
-  const endMx = mxDateParts(range.end);
+  
+  // Ajustamos el final de la semana de visualización al Viernes (-2 días desde el Domingo original)
+  const workWeekEnd = new Date(range.end.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const endMx = mxDateParts(workWeekEnd);
+  
   const startMonth = range.start
     .toLocaleDateString('es-MX', { month: 'short', timeZone: TZ_MX })
     .replace('.', '');
-  const endMonth = range.end
+  const endMonth = workWeekEnd
     .toLocaleDateString('es-MX', { month: 'short', timeZone: TZ_MX })
     .replace('.', '');
+    
   if (startMx.month === endMx.month) {
     return `${startMx.day}-${endMx.day} ${startMonth}`;
   }

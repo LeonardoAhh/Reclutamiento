@@ -10,7 +10,9 @@
  * Dependencias: recharts
  */
 
+import './KpiHeroChart.css';
 import { useMemo, useId } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import {
   ResponsiveContainer,
@@ -43,6 +45,10 @@ interface KpiHeroChartProps {
   ariaLabel?: string;
   variant?: 'default' | 'presentation';
   onClick?: () => void;
+  onPrevWeek?: () => void;
+  onNextWeek?: () => void;
+  disableNextWeek?: boolean;
+  weekNumber?: number;
 }
 
 // ─────────────────────────────────────────────
@@ -364,9 +370,13 @@ function DayCard({ data, presentation, expanded = false }: DayCardProps) {
 interface ChartHeaderProps {
   data: DailyKpiData[];
   presentation: boolean;
+  onPrevWeek?: () => void;
+  onNextWeek?: () => void;
+  disableNextWeek?: boolean;
+  weekNumber?: number;
 }
 
-function ChartHeader({ data, presentation }: ChartHeaderProps) {
+function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
   if (!data.length) return null;
 
   const avgCobertura = data.reduce((s, d) => s + d.cobertura, 0) / data.length;
@@ -379,61 +389,51 @@ function ChartHeader({ data, presentation }: ChartHeaderProps) {
   const subFontSize = presentation ? 14 : 11;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: presentation ? 24 : 16,
-        flexWrap: 'wrap',
-        gap: 12,
-      }}
-    >
+    <div className="kpi-hero-header">
       {/* Título */}
       <div>
-        <p
-          style={{
-            fontSize: subFontSize,
-            textTransform: 'uppercase',
-            letterSpacing: 'var(--type-caption-up-tracking)',
-            color: PALETTE.textMuted,
-            margin: '0 0 4px',
-            fontWeight: 600,
-          }}
-        >
-          {data[0]?.dateIso ?? ''} — {data[data.length - 1]?.dateIso ?? ''}
-        </p>
-        <h2
-          style={{
-            fontSize: headerFontSize,
-            fontWeight: 400,
-            margin: 0,
-            color: PALETTE.textPrimary,
-            letterSpacing: 'var(--type-display-lg-tracking)',
-          }}
-        >
+        <h2 className="kpi-hero-title">
           Detalle de Vacantes y Procesos.
         </h2>
       </div>
 
-      {/* KPIs destacados */}
-      <div style={{ display: 'flex', gap: presentation ? 28 : 20, alignItems: 'flex-start' }}>
-        <div style={{ textAlign: 'right' }}>
-          <p
-            style={{
-              fontSize: labelFontSize,
-              color: PALETTE.textMuted,
-              margin: '0 0 2px',
-              textTransform: 'uppercase',
-              letterSpacing: 'var(--type-caption-up-tracking)',
-              fontWeight: 600,
-            }}
-          >
-            Cobertura prom.
-          </p>
-          <p style={{ fontSize: numFontSize, fontWeight: 400, margin: 0, color: PALETTE.ink }}>
-            {avgCobertura.toFixed(1)}%
-          </p>
+      {/* KPIs destacados y Navegación */}
+      <div className="kpi-hero-metrics">
+        <div className="kpi-hero-avg-container">
+          {weekNumber && (
+            <div className="kpi-hero-badge">
+              Semana {weekNumber}
+            </div>
+          )}
+          <div className="kpi-hero-avg-top">
+            {(onPrevWeek || onNextWeek) && (
+              <div className="kpi-hero-nav">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onPrevWeek) onPrevWeek();
+                  }}
+                  className="kpi-hero-nav-btn"
+                  aria-label="Semana anterior"
+                >
+                  <ChevronLeft size={16} strokeWidth={3} />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onNextWeek) onNextWeek();
+                  }}
+                  disabled={disableNextWeek}
+                  className="kpi-hero-nav-btn"
+                  aria-label="Semana siguiente"
+                >
+                  <ChevronRight size={16} strokeWidth={3} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {isCriticalWeek && (
@@ -527,6 +527,10 @@ export function KpiHeroChart({
   ariaLabel = 'Gráfica de vacantes plantilla, vacantes backup y cobertura por día de la semana',
   variant = 'default',
   onClick,
+  onPrevWeek,
+  onNextWeek,
+  disableNextWeek,
+  weekNumber,
 }: KpiHeroChartProps) {
   const descId = useId();
 
@@ -639,15 +643,13 @@ export function KpiHeroChart({
         </div>
       ) : (
         <>
-          <ChartHeader data={chartData} presentation={presentation} />
-
-          <CustomLegend
-            presentation={presentation}
-            payload={[
-              { value: 'Vacantes Plantilla', color: PALETTE.red, dataKey: 'vacantesPlantilla' },
-              { value: 'Vacantes Backup', color: PALETTE.amber, dataKey: 'vacantesBackup' },
-              { value: 'Cobertura %', color: PALETTE.ink, dataKey: 'cobertura' },
-            ]}
+          <ChartHeader 
+            data={chartData} 
+            presentation={presentation} 
+            onPrevWeek={onPrevWeek}
+            onNextWeek={onNextWeek}
+            disableNextWeek={disableNextWeek}
+            weekNumber={weekNumber}
           />
 
           <div

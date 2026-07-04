@@ -15,12 +15,14 @@ import {
   LogOut,
   Loader,
   FileText,
+  ChevronUp,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Tooltip } from '@/components/ui/Tooltip';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
 // @ts-ignore
@@ -151,37 +153,44 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
       <nav className="sidebar__nav" aria-label="Secciones">
         <ul className="sidebar__list" role="list">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => {
-            return (
-              <li key={to}>
+            const isActive = end 
+              ? location.pathname === to 
+              : location.pathname.startsWith(to);
+
+            const link = (
               <NavLink
                 to={to}
                 end={end}
-                className={({ isActive }) =>
-                  `sidebar__item${isActive ? ' sidebar__item--active' : ''}`
-                }
-                title={collapsed ? label : undefined}
+                className={`sidebar__item${isActive ? ' sidebar__item--active' : ''}`}
                 aria-label={label}
                 data-testid={`sidebar-nav-${to.replace('/', '') || 'kpis'}`}
               >
-                {({ isActive }) => (
-                  <>
-                    {isActive && (
-                      <motion.span
-                        layoutId="sidebar-active-indicator"
-                        className="sidebar__item-active-indicator"
-                        aria-hidden="true"
-                        transition={{ type: 'spring', stiffness: 480, damping: 34 }}
-                      />
-                    )}
-                    <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
-                    <span className="sidebar__item-label">{label}</span>
-                    {to === '/documentos' && (
-                      <span className="sidebar__new-badge" title="¡Nuevo!">Nuevo</span>
-                    )}
-                  </>
+                {isActive && (
+                  <motion.span
+                    layoutId="sidebar-active-indicator"
+                    className="sidebar__item-active-indicator"
+                    aria-hidden="true"
+                    transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                  />
+                )}
+                <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
+                <span className="sidebar__item-label">{label}</span>
+                {to === '/documentos' && (
+                  <span className="sidebar__new-badge" title="¡Nuevo!">Nuevo</span>
                 )}
               </NavLink>
-            </li>
+            );
+
+            return (
+              <li key={to}>
+                {collapsed ? (
+                  <Tooltip content={label} side="right" delayMs={0}>
+                    {link}
+                  </Tooltip>
+                ) : (
+                  link
+                )}
+              </li>
             );
           })}
         </ul>
@@ -234,6 +243,11 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           {!collapsed && (
             <div className="sidebar__trigger-info">
               <span className="sidebar__trigger-name">{username.split('@')[0]}</span>
+              <ChevronUp 
+                size={16} 
+                className={`sidebar__trigger-icon ${menuOpen ? 'sidebar__trigger-icon--open' : ''}`} 
+                aria-hidden="true" 
+              />
             </div>
           )}
         </button>

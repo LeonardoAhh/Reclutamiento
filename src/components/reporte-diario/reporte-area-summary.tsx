@@ -67,7 +67,17 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     const trendColor = pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
 
     const isClickable = incidence > 0;
-    const className = `ras-card${isSelected ? " ras-card--selected" : ""}`;
+    
+    let statusClass = "";
+    if (area.is_descanso) {
+        statusClass = " ras-card--descanso";
+    } else if (incidence > 0) {
+        statusClass = " ras-card--has-incidents";
+    } else {
+        statusClass = " ras-card--no-incidents";
+    }
+
+    const className = `ras-card${isSelected ? " ras-card--selected" : ""}${statusClass}`;
 
     const cardContent = (
         <>

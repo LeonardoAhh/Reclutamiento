@@ -372,28 +372,47 @@ export function Pipeline() {
 
   if (loading) {
     return (
-      <main className="pipeline container">
+      <main className="pipeline">
         <section className="pipeline__hero">
-          <div>
+          <div className="pipeline__hero-content">
             <h1>Candidatos</h1>
           </div>
+          <div className="pipeline__hero-actions">
+            <Skeleton variant="circle" width={36} height={36} />
+            <Skeleton width={130} height={36} radius="var(--rounded-md)" />
+          </div>
         </section>
-        <section className="pipeline__recruiters" aria-hidden="true">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} height={120} radius="var(--rounded-lg)" />
-          ))}
-        </section>
-        <section className="pipeline__controls">
-          <Skeleton
-            height={40}
-            radius="var(--rounded-md)"
-            style={{ flex: '1 1 260px' }}
-          />
-        </section>
-        <SkeletonTable
-          rows={8}
-          columns={['26%', '22%', '20%', '18%', '14%']}
-        />
+
+        <div className="pipeline__layout">
+          <aside className="pipeline__sidebar">
+            <div className="pipeline__sidebar-header">
+              <Skeleton width={140} height={20} />
+            </div>
+            <Skeleton height={140} radius="var(--rounded-xl)" style={{ marginBottom: '16px' }} />
+            <Skeleton height={100} radius="var(--rounded-xl)" style={{ marginBottom: '12px' }} />
+            <Skeleton height={100} radius="var(--rounded-xl)" style={{ marginBottom: '12px' }} />
+            <Skeleton height={100} radius="var(--rounded-xl)" style={{ marginBottom: '12px' }} />
+          </aside>
+          
+          <div className="pipeline__main">
+            <section className="pipeline__controls">
+              <Skeleton
+                height={40}
+                radius="var(--rounded-md)"
+                style={{ flex: '1 1 260px' }}
+              />
+              <Skeleton width={100} height={40} radius="var(--rounded-md)" />
+              <div className="pipeline__view-toggle">
+                <Skeleton width={80} height={32} radius="16px" />
+              </div>
+            </section>
+            
+            <SkeletonTable
+              rows={8}
+              columns={['26%', '22%', '20%', '18%', '14%']}
+            />
+          </div>
+        </div>
       </main>
     );
   }

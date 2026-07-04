@@ -20,6 +20,7 @@
   import { computeAutoVacancies, autoVacancyToRequest } from '@/lib/autoVacancies';
   import { usePositions } from '@/lib/positions';
   import { KpiGridSkeleton } from '@/components/ui/PageSkeletons';
+  import { Skeleton } from '@/components/ui/Skeleton';
   import {
     calculatePositionCoverage,
     calculateDepartmentCoverage,
@@ -159,9 +160,14 @@
     const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
     const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
     const [missingModalOpen, setMissingModalOpen] = useState(false);
+    const [weekOffset, setWeekOffset] = useState(0);
 
     /* ── Semana ISO actual + semana anterior ──────────────────── */
-    const currentWeek = useMemo(() => isoWeekOf(new Date()), []);
+    const currentWeek = useMemo(() => {
+      const d = new Date();
+      d.setDate(d.getDate() + (weekOffset * 7));
+      return isoWeekOf(d);
+    }, [weekOffset]);
     const currentWeekLabel = useMemo(
       () => formatIsoWeekRange(currentWeek),
       [currentWeek]
@@ -370,7 +376,7 @@
       const d = String(currentWeek.start.getUTCDate()).padStart(2, '0');
       const startIso = `${y}-${m}-${d}`;
 
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 5; i++) {
         const currentDayIso = addDaysToIso(startIso, i) || '';
         const currentDayDate = new Date(`${currentDayIso}T12:00:00-06:00`);
         let dayName = fmtDay.format(currentDayDate).replace(',', '');
@@ -387,7 +393,7 @@
         } as Employee));
 
         const mockEmployeesForDay = [...realEmpleadosActuales, ...realBajasHistoricas];
-        const coverageForDay = calculatePositionCoverage(mockEmployeesForDay, comments, positions);
+        const coverageForDay = calculatePositionCoverage(mockEmployeesForDay, comments, positions, currentDayIso);
 
         let vacantesPlantilla = 0;
         let vacantesBackup = 0;
@@ -593,7 +599,6 @@
           <section className="kpis-page__hero">
             <div>
               <h1 className="kpis-page__title">Reporte reclutamiento</h1>
-              <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
             </div>
             {isDesktop && (
               <div className="kpis-page__hero-actions">
@@ -603,6 +608,60 @@
               </div>
             )}
           </section>
+
+          {isDesktop && (
+            <>
+              <section className="kpis-page__chart-section">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%', padding: '0 4px', marginBottom: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Skeleton variant="text" width={280} height={32} />
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                      <Skeleton width={100} height={24} radius={12} />
+                      <Skeleton width={50} height={24} radius={12} />
+                    </div>
+                  </div>
+                  <Skeleton width="100%" height={300} radius={12} />
+                </div>
+              </section>
+
+              <section className="kpis-page__projection-section" aria-hidden="true">
+                 <div className="kpis-page__projection-card">
+                    <header>
+                      <Skeleton variant="text" width={140} height={24} />
+                      <Skeleton variant="text" width={100} height={16} />
+                    </header>
+                    <div className="projection-metrics">
+                      <div className="projection-metric">
+                        <Skeleton variant="text" width={50} height={32} style={{ marginBottom: 4 }} />
+                        <Skeleton variant="text" width={120} height={16} />
+                      </div>
+                      <div className="projection-metric">
+                        <Skeleton variant="text" width={50} height={32} style={{ marginBottom: 4 }} />
+                        <Skeleton variant="text" width={120} height={16} />
+                      </div>
+                      <div className="projection-metric">
+                        <Skeleton variant="text" width={60} height={32} style={{ marginBottom: 4 }} />
+                        <Skeleton variant="text" width={120} height={16} />
+                      </div>
+                    </div>
+                 </div>
+
+                 <div className="kpis-page__projection-card projection-card--future">
+                    <header>
+                      <Skeleton variant="text" width={160} height={24} />
+                      <Skeleton variant="text" width={110} height={16} />
+                    </header>
+                    <div className="projection-metrics">
+                      <div className="projection-metric">
+                        <Skeleton variant="text" width={40} height={32} style={{ marginBottom: 4 }} />
+                        <Skeleton variant="text" width={130} height={16} />
+                      </div>
+                    </div>
+                 </div>
+              </section>
+            </>
+          )}
+
           <KpiGridSkeleton count={isDesktop ? cards.length : 4} />
         </main>
       );
@@ -614,7 +673,6 @@
         <section className="kpis-page__hero">
           <div>
             <h1 className="kpis-page__title">Reporte reclutamiento</h1>
-            <p className="kpis-page__subtitle">Semana {currentWeek.week} ({currentWeekLabel})</p>
           </div>
           {isDesktop && (
             <div className="kpis-page__hero-actions">
@@ -637,6 +695,9 @@
               <KpiHeroChart
                 data={heroChartData}
                 onClick={() => setMissingModalOpen(true)}
+                onPrevWeek={() => setWeekOffset(prev => prev - 1)}
+                onNextWeek={() => setWeekOffset(prev => prev + 1)}
+                weekNumber={currentWeek.week}
               />
             </Reveal>
 
@@ -654,6 +715,14 @@
                     <div className="projection-metric">
                       <span className="projection-value text-warning"><AnimatedNumber value={projectionTotals.vacantesBackup} /></span>
                       <span className="projection-label">Vacantes Backup</span>
+                    </div>
+                    <div className="projection-metric">
+                      <span className="projection-value text-primary">
+                        <AnimatedNumber 
+                          value={heroChartData.length > 0 ? Math.round(heroChartData.reduce((s, d) => s + d.cobertura, 0) / heroChartData.length) : 0} 
+                        />%
+                      </span>
+                      <span className="projection-label">Cobertura Prom.</span>
                     </div>
                   </div>
                </div>
