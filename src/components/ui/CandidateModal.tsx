@@ -4,7 +4,7 @@ import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { calculatePositionCoverage } from '@/lib/utils';
+import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -362,6 +362,7 @@ export function CandidateModal({
           inputMode="tel"
           value={form.telefono}
           onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+          onBlur={() => setForm({ ...form, telefono: formatPhoneNumber(form.telefono) })}
           placeholder="442 123 4567"
           autoComplete="off"
           disabled={isEdit}

@@ -91,21 +91,6 @@ export function CandidateRowActions({
             </button>
           )}
 
-          {candidate.telefono && (
-            <a
-              href={`https://wa.me/52${candidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${firstName}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="candidate-row-actions__item"
-              role="menuitem"
-              style={{ color: 'var(--color-success)' }}
-              onClick={() => setOpen(false)}
-            >
-              <MessageCircle size={14} aria-hidden="true" />
-              <span>WhatsApp</span>
-            </a>
-          )}
-
           <button
             type="button"
             className="candidate-row-actions__item"
