@@ -598,7 +598,7 @@
         <main className="kpis-page container" id="page-kpis">
           <section className="kpis-page__hero">
             <div>
-              <h1 className="kpis-page__title">Reporte reclutamiento</h1>
+              <h1 className="kpis-page__title">Reclutamiento</h1>
             </div>
             {isDesktop && (
               <div className="kpis-page__hero-actions">
@@ -672,7 +672,7 @@
 
         <section className="kpis-page__hero">
           <div>
-            <h1 className="kpis-page__title">Reporte reclutamiento</h1>
+            <h1 className="kpis-page__title">Reclutamiento</h1>
           </div>
           {isDesktop && (
             <div className="kpis-page__hero-actions">
@@ -718,8 +718,8 @@
                     </div>
                     <div className="projection-metric">
                       <span className="projection-value text-primary">
-                        <AnimatedNumber 
-                          value={heroChartData.length > 0 ? Math.round(heroChartData.reduce((s, d) => s + d.cobertura, 0) / heroChartData.length) : 0} 
+                        <AnimatedNumber
+                          value={heroChartData.length > 0 ? Math.round(heroChartData.reduce((s, d) => s + d.cobertura, 0) / heroChartData.length) : 0}
                         />%
                       </span>
                       <span className="projection-label">Cobertura Prom.</span>

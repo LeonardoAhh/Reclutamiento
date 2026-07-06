@@ -37,10 +37,10 @@ type NavItem = {
 
 /** Navegación plana (sin grupos): orden por frecuencia de uso esperada. */
 const NAV_ITEMS: ReadonlyArray<NavItem> = [
-  { to: '/',               label: 'KPIs',           icon: BarChart3,       end: true },
+  { to: '/',               label: 'Reclutamiento',           icon: BarChart3,       end: true },
   { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/pipeline',       label: 'Candidatos',     icon: Users },
-  { to: '/dashboard',      label: 'Dashboard',      icon: LayoutDashboard },
+  { to: '/dashboard',      label: 'Plantilla',      icon: LayoutDashboard },
   { to: '/vacantes',       label: 'Vacantes',       icon: Briefcase },
   { to: '/empleados',      label: 'Empleados',      icon: Contact },
   { to: '/rutas',          label: 'Rutas',          icon: Map },
@@ -67,7 +67,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const [signingOut, setSigningOut] = useState(false);
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
-  
+
   const [menuOpen, setMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -153,8 +153,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
       <nav className="sidebar__nav" aria-label="Secciones">
         <ul className="sidebar__list" role="list">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => {
-            const isActive = end 
-              ? location.pathname === to 
+            const isActive = end
+              ? location.pathname === to
               : location.pathname.startsWith(to);
 
             const link = (
@@ -233,20 +233,20 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
         >
           <span className="sidebar__avatar" aria-hidden="true" title={username}>
             {/* @ts-ignore - boring-avatars no trae tipos por defecto */}
-            <Avatar 
-              size={40} 
-              name={username} 
-              variant="beam" 
-              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']} 
+            <Avatar
+              size={40}
+              name={username}
+              variant="beam"
+              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
             />
           </span>
           {!collapsed && (
             <div className="sidebar__trigger-info">
               <span className="sidebar__trigger-name">{username.split('@')[0]}</span>
-              <ChevronUp 
-                size={16} 
-                className={`sidebar__trigger-icon ${menuOpen ? 'sidebar__trigger-icon--open' : ''}`} 
-                aria-hidden="true" 
+              <ChevronUp
+                size={16}
+                className={`sidebar__trigger-icon ${menuOpen ? 'sidebar__trigger-icon--open' : ''}`}
+                aria-hidden="true"
               />
             </div>
           )}

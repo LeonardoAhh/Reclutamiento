@@ -33,13 +33,13 @@ type TabItem = {
 
 /** Dos accesos principales, siempre visibles en la barra. */
 const PRIMARY_TABS: ReadonlyArray<TabItem> = [
-  { to: '/', label: 'KPIs', icon: BarChart3, end: true },
+  { to: '/', label: 'Reclutamiento', icon: BarChart3, end: true },
   { to: '/pipeline', label: 'Candidatos', icon: Users },
 ];
 
 /** Resto de accesos, dentro del menú desplegable. */
 const MENU_TABS: ReadonlyArray<TabItem> = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Plantilla', icon: LayoutDashboard },
   { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
   { to: '/empleados', label: 'Empleados', icon: Contact },

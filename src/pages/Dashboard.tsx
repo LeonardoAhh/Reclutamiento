@@ -281,7 +281,7 @@ export function Dashboard() {
       <main className="dashboard container" id="dashboard-main">
         <section className="dashboard__hero" id="dashboard-hero">
           <div className="dashboard__hero-content">
-            <h1>Dashboard</h1>
+            <h1>Plantilla</h1>
           </div>
         </section>
         <section className="dashboard__controls">

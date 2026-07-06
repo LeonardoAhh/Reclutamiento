@@ -35,7 +35,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? '/';
+  const from = (location.state as { from?: string } | null)?.from ?? '/reporte-diario';
 
   if (loading) {
     return <LoaderOverlay tone="route" />;
