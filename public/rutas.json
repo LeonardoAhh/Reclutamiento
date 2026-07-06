@@ -464,14 +464,6 @@
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero empleado": "2576",
-    "nombre": "MORALES LOPEZ OCTAVIO",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
-  },
-  {
     "numero empleado": "2617",
     "nombre": "GONZALEZ SUAREZ KARLA DIANE",
     "turno": "4",
@@ -1058,7 +1050,7 @@
   {
     "numero empleado": "3593",
     "nombre": "DE LA CRUZ BECERRA ENRIQUE",
-    "turno": "1",
+    "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
@@ -1422,14 +1414,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
-  },
-  {
-    "numero empleado": "3965",
-    "nombre": "BAUTISTA RESENDIZ ALICIA",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3983",
@@ -1864,14 +1848,6 @@
     "parada": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
-    "numero empleado": "4163",
-    "nombre": "MENDOZA RUIZ MA. REMEDIOS CANDELARIA",
-    "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
-  },
-  {
     "numero empleado": "4165",
     "nombre": "RANGEL GARDUÑO ELIZABETH",
     "turno": "1",
@@ -1902,14 +1878,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
-  },
-  {
-    "numero empleado": "4175",
-    "nombre": "RAMIREZ MEDINA ALEJANDRO IVAN",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "4177",
@@ -1982,14 +1950,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PEÑAFLOR",
     "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
-    "numero empleado": "4190",
-    "nombre": "AVILA GONZALEZ LAURA SUSANA",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
   },
   {
     "numero empleado": "4192",
@@ -2260,8 +2220,8 @@
     "nombre": "SEGURA HERNANDEZ SANDRA",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "colonia": "BUENAVISTA",
+    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4248",
@@ -2358,5 +2318,37 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PEÑAFLOR",
     "parada": "BODEGA AURRERA, PEÑAFLOR"
+  },
+  {
+    "numero empleado": "4262",
+    "nombre": "GAYOSSO CRUZ BRANDON JESUS",
+    "turno": "4",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4263",
+    "nombre": "ZEPETA GARCIA KEVIN ALEJANDRO",
+    "turno": "4",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4264",
+    "nombre": "GUERRERO GUERRERO JUAN CARLOS",
+    "turno": "4",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "MONTENEGRO",
+    "parada": "LONCHERIA LILI"
+  },
+  {
+    "numero empleado": "4266",
+    "nombre": "AGUILLON HERNANDEZ REYNA ELIZABETH",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "TLALOC ",
+    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   }
 ]

@@ -312,7 +312,7 @@ export function Dashboard() {
       {/* ── Hero Band ── */}
       <section className="dashboard__hero" id="dashboard-hero">
         <div className="dashboard__hero-content">
-          <h1>Dashboard</h1>
+          <h1>Plantilla</h1>
         </div>
         <div className="dashboard__hero-actions">
           <button
