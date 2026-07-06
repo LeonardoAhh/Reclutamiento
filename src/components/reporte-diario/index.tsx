@@ -644,7 +644,7 @@ export default function ReporteDiarioContent() {
     /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
        sistema (en vez de pantalla en blanco). ───────────────────────── */
     if (loadingDb) {
-        // Si no hay datos (carga inicial limpia), mostramos un loader centrado 
+        // Si no hay datos (carga inicial limpia), mostramos un loader centrado
         // para no "engañar" visualmente al usuario con un esqueleto de tabla.
         if (!hasData) {
             return (
@@ -694,15 +694,9 @@ export default function ReporteDiarioContent() {
                 >
                     <header className="reporte-hero__intro">
                         <span className="reporte-hero__eyebrow" aria-hidden="true">
-                            <BarChart2 size={12} />
+                            <BarChart2 size={25} />
                             Asistencia
                         </span>
-                        <h1 id="reporte-hero-title" className="reporte-hero__title">
-                            Sube tu reporte de asistencia
-                        </h1>
-                        <p className="reporte-hero__subtitle">
-                            Visualiza métricas, calendario y detalle por colaborador.
-                        </p>
                     </header>
 
                     <div
@@ -724,18 +718,11 @@ export default function ReporteDiarioContent() {
                         data-testid="upload-dropzone"
                     >
                         <span className="reporte-hero__dropzone-icon" aria-hidden="true">
-                            <CloudUpload size={28} />
+                            <CloudUpload size={34} />
                         </span>
                         <h3 className="reporte-hero__dropzone-title">
-                            Arrastra o selecciona un archivo
+                            Selecciona un archivo <FileJson size={18} />
                         </h3>
-                        <p className="reporte-hero__dropzone-hint">
-                            Detectamos el mes automáticamente.
-                        </p>
-                        <span className="reporte-hero__dropzone-format" aria-hidden="true">
-                            <FileJson size={12} />
-                            .json
-                        </span>
                     </div>
 
 
@@ -743,7 +730,7 @@ export default function ReporteDiarioContent() {
                     {savedSummaries.length > 0 && (
                         <div className="reporte-hero__saved" aria-label="Acceso a reportes guardados">
                             <p className="reporte-hero__saved-hint">
-                                ¿Ya tienes reportes guardados?
+                                Reportes guardados.
                             </p>
                             <div className="reporte-hero__saved-actions">
                                 <ReportesGuardadosDialog
