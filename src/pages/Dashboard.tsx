@@ -23,6 +23,7 @@ import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
+import Avatar from 'boring-avatars';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { VacancyReportModal } from '@/components/ui/VacancyReportModal';
@@ -365,37 +366,48 @@ export function Dashboard() {
           <input
             id="search-input"
             type="text"
-            placeholder="Shearch employee, position, or section"
+            placeholder="Buscar por nombre, número de empleado, puesto o área..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="dashboard__search-input"
             autoComplete="off"
             aria-haspopup="listbox"
             aria-expanded={showSearchDropdown}
+            aria-label="Buscar en la plantilla"
           />
           {showSearchDropdown && (
-            <div className="dashboard__search-dropdown" role="listbox">
-              <div className="search-dropdown__head">Employees Found</div>
+            <div className="dashboard__search-dropdown" role="listbox" aria-label="Resultados de búsqueda">
+              <div className="search-dropdown__head" aria-hidden="true">Resultados de búsqueda</div>
               {matchingEmployees.map((emp) => (
                 <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
                   <div className="search-dropdown-item__info">
-                    <span className="emp-name">
-                      {emp.nombre}
-                      {emp.en_incapacidad && (
-                        <Badge variant="amber">
-                          <HeartPulse size={11} aria-hidden="true" />
-                          INCAPACIDAD
-                        </Badge>
-                      )}
-                      {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-                        <Badge variant="coral">
-                          PRÓXIMO INGRESO
-                        </Badge>
-                      )}
-                    </span>
-                    <span className="emp-meta">
-                      {emp.puesto} · #{emp.num_empleado}
-                    </span>
+                    <div className="search-dropdown-item__avatar" aria-hidden="true">
+                      <Avatar
+                        size={32}
+                        name={emp.nombre}
+                        variant="beam"
+                        colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                      />
+                    </div>
+                    <div className="search-dropdown-item__text">
+                      <span className="emp-name">
+                        {emp.nombre}
+                        {emp.en_incapacidad && (
+                          <Badge variant="amber">
+                            <HeartPulse size={11} aria-hidden="true" />
+                            INCAPACIDAD
+                          </Badge>
+                        )}
+                        {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+                          <Badge variant="coral">
+                            PRÓXIMO INGRESO
+                          </Badge>
+                        )}
+                      </span>
+                      <span className="emp-meta">
+                        {emp.puesto} {emp.seccion ? `(${emp.seccion})` : ''} • Turno {emp.turno || 'Sin asignar'} • #{emp.num_empleado}
+                      </span>
+                    </div>
                   </div>
                   <div className="search-dropdown-item__actions">
                     <button
