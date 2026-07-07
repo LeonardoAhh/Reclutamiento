@@ -155,12 +155,14 @@ export function calculatePositionCoverage(
   );
 
   return positions.map((pos) => {
-    const real = uniqueEmployees.filter(
+    const matchedEmployees = uniqueEmployees.filter(
       (emp) =>
         matchesText(emp.area, pos.area) &&
         matchesText(emp.seccion, pos.seccion) &&
         matchesPuesto(emp.puesto, pos.puesto)
-    ).length;
+    );
+    const real = matchedEmployees.length;
+    const starlineEmpleados = matchedEmployees.filter((emp) => emp.is_starline).length;
 
     const backup = pos.backup ?? 0;
     /*
@@ -221,6 +223,7 @@ export function calculatePositionCoverage(
       excedente_critico: excedenteCritico,
       proximos_ingresos: proximosIngresos,
       proximo_ingreso_fecha: proximoIngresoFecha,
+      starline_empleados: starlineEmpleados,
     };
   });
 }
@@ -249,6 +252,7 @@ export function calculateDepartmentCoverage(
       : 0;
 
     const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
+    const starlineEmpleados = puestos.reduce((sum, p) => sum + p.starline_empleados, 0);
     const proximosIngresos = puestos.reduce((sum, p) => sum + p.proximos_ingresos, 0);
     const proximoIngresoFecha = puestos
       .map((p) => p.proximo_ingreso_fecha)
@@ -266,6 +270,7 @@ export function calculateDepartmentCoverage(
       urgentes,
       proximos_ingresos: proximosIngresos,
       proximo_ingreso_fecha: proximoIngresoFecha,
+      starline_empleados: starlineEmpleados,
     };
   });
 }

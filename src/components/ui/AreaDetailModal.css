@@ -434,6 +434,11 @@
     border-bottom: 1px solid var(--color-hairline-soft);
   }
 
+  .dept-card__table th.text-center,
+  .dept-card__table td.text-center {
+    text-align: center;
+  }
+
   .dept-card__table th {
     color: var(--color-muted);
     font-size: var(--type-caption-md-size);

@@ -278,15 +278,9 @@ export function AreaDetailModal({
   };
 
   const renderFlags = (pos: Puesto) => {
-    if (pos.urgentes <= 0 && pos.excedente_critico <= 0 && pos.excedente_backup <= 0) return null;
+    if (pos.excedente_critico <= 0 && pos.excedente_backup <= 0) return null;
     return (
       <div className="cell-puesto__flags">
-        {pos.urgentes > 0 && (
-          <Badge variant="error">
-            <AlertCircle size={11} aria-hidden="true" />
-            URGENTE {pos.urgentes}
-          </Badge>
-        )}
         {pos.excedente_critico > 0 && (
           <Badge variant="amber">+{pos.excedente_critico} excede</Badge>
         )}
@@ -344,8 +338,8 @@ export function AreaDetailModal({
             <dd className="area-detail-modal__stat-value">{activeTotals.vacantes}</dd>
           </div>
           {activeTotals.urgentes > 0 && (
-            <div className="area-detail-modal__stat area-detail-modal__stat--error">
-              <dt className="area-detail-modal__stat-label">Urgentes</dt>
+            <div className="area-detail-modal__stat">
+              <dt className="area-detail-modal__stat-label">Starline</dt>
               <dd className="area-detail-modal__stat-value">{activeTotals.urgentes}</dd>
             </div>
           )}
@@ -451,7 +445,6 @@ export function AreaDetailModal({
                       <span className="area-detail-modal__card-sec">{pos.seccion}</span>
                     )}
                   </div>
-                  {commentButton(pos)}
                 </div>
                 {renderFlags(pos)}
                 <div className="area-detail-modal__card-meta">
@@ -466,12 +459,22 @@ export function AreaDetailModal({
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
                       {pos.vacantes > 0 ? (
-                        <span className="vacancy-count">{pos.vacantes}</span>
+                        <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{pos.vacantes}</span>
                       ) : (
                         <span className="no-vacancy">—</span>
                       )}
                     </span>
                     <span className="area-detail-modal__card-metric-label">Vacantes</span>
+                  </span>
+                  <span className="area-detail-modal__card-metric">
+                    <span className="area-detail-modal__card-metric-value">
+                      {pos.urgentes > 0 ? (
+                        <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starline_empleados || 0} / {pos.urgentes}</span>
+                      ) : (
+                        <span className="no-vacancy">—</span>
+                      )}
+                    </span>
+                    <span className="area-detail-modal__card-metric-label">Starline</span>
                   </span>
                   <span className="area-detail-modal__card-estado">{renderEstado(pos)}</span>
                 </div>
@@ -488,9 +491,9 @@ export function AreaDetailModal({
                   <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
                   <th scope="col" className="text-center hide-on-mobile">Real</th>
                   <th scope="col" className="text-center">Vacantes</th>
+                  <th scope="col" className="text-center">Starline</th>
                   <th scope="col" className="hide-on-mobile">Cobertura</th>
                   <th scope="col" className="text-center">Estado</th>
-                  <th scope="col" aria-label="Acciones" />
                 </tr>
               </thead>
               <tbody>
@@ -519,12 +522,6 @@ export function AreaDetailModal({
                         <div className="cell-puesto__inner">
                           <span className="cell-puesto__name">{pos.puesto}</span>
                           <div className="cell-puesto__flags">
-                            {pos.urgentes > 0 && (
-                              <Badge variant="error">
-                                <AlertCircle size={11} aria-hidden="true" />
-                                URGENTE {pos.urgentes}
-                              </Badge>
-                            )}
                             {pos.excedente_critico > 0 && (
                               <Badge variant="amber">
                                 +{pos.excedente_critico} excede
@@ -566,17 +563,20 @@ export function AreaDetailModal({
                       <td className="text-center font-strong hide-on-mobile">{pos.plantilla_real}</td>
                       <td className="text-center">
                         {pos.vacantes > 0 ? (
-                          <span className="vacancy-count">{pos.vacantes}</span>
+                          <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{pos.vacantes}</span>
                         ) : (
                           <span className="no-vacancy">—</span>
                         )}
                       </td>
-                      <td className="hide-on-mobile">
-                        <CoverageBar
-                          percentage={pos.porcentaje_cobertura}
-                          color={getCoverageColor(pos.porcentaje_cobertura)}
-                          height={6}
-                        />
+                      <td className="text-center">
+                        {pos.urgentes > 0 ? (
+                          <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starline_empleados || 0} / {pos.urgentes}</span>
+                        ) : (
+                          <span className="no-vacancy">—</span>
+                        )}
+                      </td>
+                      <td className="hide-on-mobile" style={{ color: getCoverageColor(pos.porcentaje_cobertura), fontWeight: 600 }}>
+                        {pos.porcentaje_cobertura}%
                       </td>
                       <td className="text-center">
                         {(() => {
@@ -588,19 +588,9 @@ export function AreaDetailModal({
 
                           if (latestComment) {
                             return (
-                              <Badge
-                                variant={
-                                  latestComment.tipo === 'proceso_activo'
-                                    ? 'amber'
-                                    : latestComment.tipo === 'entrevista'
-                                      ? 'teal'
-                                      : latestComment.tipo === 'entrega_documentos'
-                                        ? 'coral'
-                                        : 'default'
-                                }
-                              >
+                              <span style={{ color: latestComment.tipo === 'proceso_activo' ? '#d97706' : latestComment.tipo === 'entrevista' ? '#0d9488' : '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
                                 {COMMENT_TYPE_LABELS[latestComment.tipo]}
-                              </Badge>
+                              </span>
                             );
                           }
                           if (pos.vacantes > 0 && activeCount > 0) {
@@ -608,57 +598,39 @@ export function AreaDetailModal({
                             // el puesto SÍ está en proceso aunque no haya
                             // comentario manual capturado.
                             return (
-                              <div className="area-detail-modal__badge-stack">
-                                <Badge variant="teal">
+                              <div className="area-detail-modal__badge-stack" style={{ gap: '2px' }}>
+                                <span style={{ color: '#0d9488', fontWeight: 600, fontSize: '0.8125rem' }}>
                                   Proceso ({activeCount})
-                                </Badge>
+                                </span>
                                 {pos.proximos_ingresos > 0 && (
-                                  <Badge variant="coral">
+                                  <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
                                     Ingreso ({pos.proximos_ingresos})
-                                  </Badge>
+                                  </span>
                                 )}
                               </div>
                             );
                           }
                           if (pos.vacantes > 0) {
                             return (
-                              <div className="area-detail-modal__badge-stack">
-                                <Badge variant="error">Sin proceso</Badge>
+                              <div className="area-detail-modal__badge-stack" style={{ gap: '2px' }}>
+                                <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>Sin proceso</span>
                                 {pos.proximos_ingresos > 0 && (
-                                  <Badge variant="coral">
+                                  <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
                                     Ingreso ({pos.proximos_ingresos})
-                                  </Badge>
+                                  </span>
                                 )}
                               </div>
                             );
                           }
                           if (pos.proximos_ingresos > 0) {
                             return (
-                              <Badge variant="coral">
+                              <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
                                 Ingreso ({pos.proximos_ingresos})
-                              </Badge>
+                              </span>
                             );
                           }
                           return <span className="no-vacancy">—</span>;
                         })()}
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn-icon"
-                          onClick={() =>
-                            onOpenComment(pos.area, pos.seccion, pos.puesto)
-                          }
-                          title="Agregar comentario"
-                          aria-label={`Comentario para ${pos.puesto}`}
-                        >
-                          <MessageSquare size={16} aria-hidden="true" />
-                          {posComments.length > 0 && (
-                            <span className="btn-icon__count">
-                              {posComments.length}
-                            </span>
-                          )}
-                        </button>
                       </td>
                     </tr>
                   );

@@ -35,12 +35,14 @@ interface PuestoRow {
   fd: number;
   fp: number;
   total: number;
+  starline: number;
 }
 
 interface AreaGroup {
   area: string;
   rows: PuestoRow[];
   total: number;
+  starline: number;
 }
 
 interface RecruiterRow {
@@ -50,6 +52,7 @@ interface RecruiterRow {
   fd: number;
   fp: number;
   total: number;
+  starline: number;
 }
 
 function extractTurno(seccion: string): string {
@@ -78,6 +81,7 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
         fd: 0,
         fp: 0,
         total: 0,
+        starline: 0,
       };
       rowMap.set(key, row);
     }
@@ -86,6 +90,7 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
     else if (c.status === 'faltan_documentos') row.fd += 1;
     else if (c.status === 'feedback_pendiente') row.fp += 1;
     row.total += 1;
+    if (c.is_starline) row.starline += 1;
   }
 
   const rows = Array.from(rowMap.values()).sort((a, b) => {
@@ -98,17 +103,18 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
   for (const row of rows) {
     let group = map.get(row.area);
     if (!group) {
-      group = { area: row.area, rows: [], total: 0 };
+      group = { area: row.area, rows: [], total: 0, starline: 0 };
       map.set(row.area, group);
     }
     group.rows.push(row);
     group.total += row.total;
+    group.starline += row.starline;
   }
   return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
 }
 
 function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
-  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, fp: 0, total: 0 });
+  const empty = (name: string): RecruiterRow => ({ name, e1: 0, e2: 0, fd: 0, fp: 0, total: 0, starline: 0 });
   const acc = new Map<string, RecruiterRow>();
   for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
   acc.set(SIN_ASIGNAR, empty(SIN_ASIGNAR));
@@ -122,6 +128,7 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
     else if (c.status === 'faltan_documentos') bucket.fd += 1;
     else if (c.status === 'feedback_pendiente') bucket.fp += 1;
     bucket.total += 1;
+    if (c.is_starline) bucket.starline += 1;
   }
 
   return Array.from(acc.values()).filter(
@@ -136,10 +143,12 @@ function buildWhatsappMessage(
 ): string {
   const fecha = formatShortDate(new Date().toISOString());
 
+  const totalStarline = groups.reduce((s, g) => s + g.starline, 0);
+
   const lines: string[] = [
     `*Resumen de Candidatos* — ${fecha}`,
     '',
-    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)} · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}`,
+    `Activos: ${totalActivos}${totalStarline > 0 ? ` (${totalStarline} Starline)` : ''} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)} · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}`,
     '',
   ];
 
@@ -158,7 +167,8 @@ function buildWhatsappMessage(
         if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
         if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
         lines.push(`• ${seccionConTurno} — ${r.puesto}`);
-        lines.push(`   ${r.total} (${detalle.join(' · ')})`);
+        const starlineStr = r.starline > 0 ? ` · ${r.starline} Starline` : '';
+        lines.push(`   ${r.total}${starlineStr} (${detalle.join(' · ')})`);
       }
     }
     lines.push('');
@@ -173,7 +183,8 @@ function buildWhatsappMessage(
       if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
       if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
       if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
-      lines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
+      const starlineStr = r.starline > 0 ? ` · ${r.starline} Starline` : '';
+      lines.push(`• ${r.name} — ${r.total}${starlineStr} (${detalle.join(' · ')})`);
     }
   }
 
@@ -211,6 +222,7 @@ export function CandidateReportModal({
   const recruiters = useMemo(() => buildRecruiterRows(active), [active]);
 
   const totalActivos = active.length;
+  const totalStarline = groups.reduce((sum, g) => sum + g.starline, 0);
   const totalPuestos = groups.reduce((sum, g) => sum + g.rows.length, 0);
   const reclutadoresActivos = recruiters.filter((r) => r.total > 0).length;
   const message = useMemo(
@@ -274,19 +286,9 @@ export function CandidateReportModal({
             </span>
           </div>
           <div className="candidate-report-modal__badges">
-            {row.e1 > 0 && (
-              <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
-                E1: {row.e1}
-              </span>
-            )}
-            {row.e2 > 0 && (
-              <span className="candidate-report-modal__badge candidate-report-modal__badge--e2">
-                E2: {row.e2}
-              </span>
-            )}
-            {row.fp > 0 && (
-              <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
-                FP: {row.fp}
+            {row.starline > 0 && (
+              <span className="candidate-report-modal__badge" style={{ backgroundColor: '#fffbeb', color: '#d97706', border: '1px solid #fcd34d' }}>
+                ★ {row.starline}
               </span>
             )}
             <span className="candidate-report-modal__badge candidate-report-modal__badge--total">
@@ -321,6 +323,16 @@ export function CandidateReportModal({
               candidato{totalActivos === 1 ? '' : 's'} activo{totalActivos === 1 ? '' : 's'}
             </p>
           </div>
+          {totalStarline > 0 && (
+            <div className="candidate-report-modal__stat">
+              <div className="candidate-report-modal__big-number" style={{ color: '#d97706' }}>
+                {totalStarline}
+              </div>
+              <p className="candidate-report-modal__big-label">
+                starline
+              </p>
+            </div>
+          )}
           <div className="candidate-report-modal__stat">
             <div className="candidate-report-modal__big-number candidate-report-modal__big-number--alt">
               {totalPuestos}

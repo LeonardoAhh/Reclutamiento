@@ -305,6 +305,8 @@ export interface PositionCoverage {
   proximos_ingresos: number;
   /** Fecha (ISO) del próximo ingreso más cercano, o null si no hay. */
   proximo_ingreso_fecha: string | null;
+  /** Empleados contratados que pertenecen a Starline. */
+  starline_empleados: number;
 }
 
 /**
@@ -325,6 +327,8 @@ export interface DepartmentCoverage {
   proximos_ingresos: number;
   /** Fecha (ISO) del próximo ingreso más cercano del área, o null. */
   proximo_ingreso_fecha: string | null;
+  /** Suma de empleados contratados que pertenecen a Starline. */
+  starline_empleados: number;
 }
 
 /* ────────────────────────────────────────────────────────────────────────
