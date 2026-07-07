@@ -971,6 +971,37 @@
   font-weight: 500;
 }
 
+.pipeline__starline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #d97706; /* Amber-600 */
+  background: color-mix(in srgb, #fbbf24 15%, transparent);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  letter-spacing: 0.05em;
+  border: 1px solid color-mix(in srgb, #fbbf24 30%, transparent);
+}
+
+.pipeline__vinoplastic-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-muted);
+  background: var(--color-surface-sunken);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-border);
+}
+
+.pipeline__starline-icon {
+  fill: currentColor;
+}
+
 .pipeline__area {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
@@ -1184,7 +1215,7 @@
 .pipeline__ccard {
   display: grid;
   grid-template-columns:
-    minmax(180px, 1.4fr) minmax(130px, 1.1fr) minmax(120px, 1fr) minmax(100px, 1fr) minmax(140px, 180px)
+    minmax(180px, 1.4fr) minmax(110px, 0.9fr) minmax(130px, 1.1fr) minmax(120px, 1fr) minmax(100px, 1fr) minmax(140px, 180px)
     130px 80px;
   align-items: center;
   gap: var(--spacing-md);
@@ -1376,7 +1407,7 @@
 .pipeline__card-list-header {
   display: grid;
   grid-template-columns:
-    minmax(180px, 1.4fr) minmax(130px, 1.1fr) minmax(120px, 1fr) minmax(100px, 1fr) minmax(140px, 180px)
+    minmax(180px, 1.4fr) minmax(110px, 0.9fr) minmax(130px, 1.1fr) minmax(120px, 1fr) minmax(100px, 1fr) minmax(140px, 180px)
     130px 80px;
   align-items: center;
   gap: var(--spacing-md);
@@ -1515,6 +1546,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "name actions"
+      "project project"
       "source status"
       "contact contact";
     row-gap: var(--spacing-sm);
@@ -1523,6 +1555,7 @@
   }
   
   .pipeline__ccard-name-col { grid-area: name; }
+  .pipeline__ccard-project-col { grid-area: project; }
   .pipeline__ccard-actions-col { 
     grid-area: actions; 
     align-self: start;

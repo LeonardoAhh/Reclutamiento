@@ -36,6 +36,7 @@ type FormState = Pick<
 > & {
   ruta: string;
   parada: string;
+  is_starline: boolean;
 };
 
 function emptyForm(): FormState {
@@ -50,6 +51,7 @@ function emptyForm(): FormState {
     fecha_ingreso: localTodayIso(),
     ruta: '',
     parada: '',
+    is_starline: false,
   };
 }
 
@@ -145,6 +147,7 @@ export function EmployeeModal({
         fecha_ingreso: employee.fecha_ingreso,
         ruta: employee.ruta ?? '',
         parada: employee.parada ?? '',
+        is_starline: employee.is_starline ?? false,
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
@@ -166,6 +169,7 @@ export function EmployeeModal({
           fecha_ingreso: localTodayIso(),
           ruta: '',
           parada: '',
+          is_starline: false,
         });
       } else {
         setForm(emptyForm());
@@ -249,7 +253,7 @@ export function EmployeeModal({
     </>
   );
 
-  const fieldsPosicion = 
+  const fieldsPosicion =
     // Si hay vacantes disponibles y estamos en modo 'add', no mostrar selectores
     // porque se pre-llenan del selector de vacante
     vacancyOptions.length > 0 && mode === 'add' ? null : (
@@ -429,6 +433,28 @@ export function EmployeeModal({
     </>
   );
 
+  const fieldsExtra = (
+    <div className="form-group employee-modal__starline-toggle">
+      <label htmlFor="emp-starline" className="starline-label">
+        Starline
+      </label>
+      <div className="starline-switch-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', height: 'var(--control-height)' }}>
+        <label className="switch">
+          <input
+            id="emp-starline"
+            type="checkbox"
+            checked={form.is_starline}
+            onChange={(e) => setForm({ ...form, is_starline: e.target.checked })}
+          />
+          <span className="slider round"></span>
+        </label>
+        <span className="starline-text" style={{ fontSize: '13px', color: 'var(--color-body)' }}>
+          {form.is_starline ? 'Si' : 'No'}
+        </span>
+      </div>
+    </div>
+  );
+
   const errorNotice = errorMsg ? (
     <p className="form-error" role="alert">{errorMsg}</p>
   ) : null;
@@ -568,7 +594,12 @@ export function EmployeeModal({
               {
                 id: 'transporte',
                 title: 'Transporte',
-                content: <div className="form-grid">{fieldsTransporte}</div>,
+                content: (
+                  <div className="form-grid">
+                    {fieldsTransporte}
+                    {fieldsExtra}
+                  </div>
+                ),
               },
             ]}
           />
@@ -595,6 +626,7 @@ export function EmployeeModal({
             {fieldsFecha}
             {fieldsPosicion}
             {fieldsTransporte}
+            {fieldsExtra}
           </div>
         ) : (
           deleteContent

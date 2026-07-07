@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
 import './MissingPositionsModal.css';
@@ -44,6 +44,7 @@ interface MissingPositionsModalProps {
 // Interfaz interna para el diccionario de procesos
 interface ProcessStats {
   candidates: number;
+  starline: number;
 }
 
 interface MissingRow {
@@ -111,20 +112,6 @@ export function MissingPositionsModal({
       );
   }, [coverage]);
 
-  // 2. Totales recalculados excluyendo filas bloureadas
-  const { totalFaltanPlantilla, totalFaltanBackup } = useMemo(() => {
-    let faltanPlantilla = 0;
-    let faltanBackup = 0;
-    missingPositions.forEach((r) => {
-      const key = `${r.pos.area}-${r.pos.seccion || 'none'}-${r.pos.puesto}`;
-      if (!dismissedKeys.has(key)) {
-        faltanPlantilla += r.netPlantilla;
-        faltanBackup += r.netBackup;
-      }
-    });
-    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup };
-  }, [missingPositions, dismissedKeys]);
-
   // 2. Creamos un diccionario (Hash Map) de procesos activos (O(1) lookup)
   const processStatsMap = useMemo(() => {
     const stats: Record<string, ProcessStats> = {};
@@ -142,12 +129,31 @@ export function MissingPositionsModal({
     candidates.forEach((c) => {
       if (!ACTIVE_STATUSES.has(c.status)) return;
       const key = buildPositionKey(c.puesto, c.seccion || '');
-      if (!stats[key]) stats[key] = { candidates: 0 };
+      if (!stats[key]) stats[key] = { candidates: 0, starline: 0 };
       stats[key].candidates += 1;
+      if (c.is_starline) stats[key].starline += 1;
     });
 
     return stats;
   }, [candidates]);
+
+  // 3. Totales recalculados excluyendo filas bloureadas
+  const { totalFaltanPlantilla, totalFaltanBackup, totalStarline } = useMemo(() => {
+    let faltanPlantilla = 0;
+    let faltanBackup = 0;
+    let starline = 0;
+    missingPositions.forEach((r) => {
+      const key = `${r.pos.area}-${r.pos.seccion || 'none'}-${r.pos.puesto}`;
+      if (!dismissedKeys.has(key)) {
+        faltanPlantilla += r.netPlantilla;
+        faltanBackup += r.netBackup;
+        const processKey = buildPositionKey(r.pos.puesto, r.pos.seccion || '');
+        const processes = processStatsMap[processKey];
+        if (processes) starline += processes.starline;
+      }
+    });
+    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup, totalStarline: starline };
+  }, [missingPositions, dismissedKeys, processStatsMap]);
 
   return (
     <Modal
@@ -189,6 +195,24 @@ export function MissingPositionsModal({
                 </span>
                 <span className="missing-positions-modal__summary-label">
                   Vacantes Backup
+                </span>
+              </div>
+            </>
+          )}
+
+          {totalStarline > 0 && (
+            <>
+              <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
+              <div
+                className="missing-positions-modal__summary-item missing-positions-modal__summary-item--starline"
+                data-testid="summary-starline"
+              >
+                <span className="missing-positions-modal__summary-value">
+                  {totalStarline}
+                </span>
+                <span className="missing-positions-modal__summary-label">
+                  <Star size={12} className="missing-positions-modal__starline-icon" style={{ display: 'inline-block', marginRight: '4px' }} aria-hidden="true" />
+                  Starline
                 </span>
               </div>
             </>
@@ -241,15 +265,17 @@ export function MissingPositionsModal({
                     >
                       Total
                     </th>
-                    <th scope="col">Procesos activos</th>
+                    <th scope="col" className="missing-positions-modal__tight-col">Procesos activos</th>
+                    <th scope="col" className="missing-positions-modal__starline-col missing-positions-modal__tight-col">Starline</th>
                   </tr>
                 </thead>
                 <tbody>
                   {missingPositions.map((r) => {
                     const pos = r.pos;
                     const processKey = buildPositionKey(pos.puesto, pos.seccion || '');
-                    const processes = processStatsMap[processKey] || { candidates: 0 };
+                    const processes = processStatsMap[processKey] || { candidates: 0, starline: 0 };
                     const totalProcesses = processes.candidates;
+                    const starlineProcesses = processes.starline;
 
                     const faltanPlantilla = r.netPlantilla;
                     const faltanBackup = r.netBackup;
@@ -313,16 +339,31 @@ export function MissingPositionsModal({
                             {r.netTotal}
                           </span>
                         </td>
-                        <td>
+                        <td className="missing-positions-modal__tight-col">
                           {totalProcesses > 0 ? (
                             <span className="missing-positions-modal__processes-pill">
                               <span className="missing-positions-modal__processes-dot" aria-hidden="true" />
-                              {totalProcesses} candidato{totalProcesses !== 1 ? 's' : ''}
+                              {totalProcesses}
                             </span>
                           ) : (
                             <span
                               className="missing-positions-modal__count-empty"
                               aria-label="Sin procesos activos"
+                            >
+                              —
+                            </span>
+                          )}
+                        </td>
+                        <td className="missing-positions-modal__tight-col">
+                          {starlineProcesses > 0 ? (
+                            <span className="missing-positions-modal__processes-pill missing-positions-modal__processes-pill--starline" title="Candidatos etiquetados como Starline en proceso activo">
+                              <Star size={12} className="missing-positions-modal__starline-icon" aria-hidden="true" />
+                              {starlineProcesses}
+                            </span>
+                          ) : (
+                            <span
+                              className="missing-positions-modal__count-empty"
+                              aria-label="Sin procesos Starline"
                             >
                               —
                             </span>

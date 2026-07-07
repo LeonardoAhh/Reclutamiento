@@ -58,6 +58,7 @@ interface FormState {
   fecha_aplicacion: string;
   fecha_cita: string;
   notas: string;
+  is_starline: boolean;
 }
 
 function emptyForm(): FormState {
@@ -75,6 +76,7 @@ function emptyForm(): FormState {
     fecha_aplicacion: localTodayIso(),
     fecha_cita: '',
     notas: '',
+    is_starline: false,
   };
 }
 
@@ -104,6 +106,7 @@ function fromCandidate(c: Candidate): FormState {
       : localTodayIso(),
     fecha_cita: formatDateTimeLocal(c.fecha_cita),
     notas: c.notas ?? '',
+    is_starline: c.is_starline ?? false,
   };
 }
 
@@ -290,6 +293,7 @@ export function CandidateModal({
           // ya entrega ese formato. Vacío = sin cita programada (null).
           fecha_cita: form.fecha_cita ? form.fecha_cita : null,
           notas: form.notas.trim() || null,
+          is_starline: form.is_starline,
         };
         const result = await onSave(payload, candidate?.id);
         if (result && result.ok === false) {
@@ -478,6 +482,25 @@ const fieldsPosicion = (
         </datalist>
       </div>
 
+      <div className="form-group candidate-modal__starline-toggle">
+        <label htmlFor="cand-starline" className="starline-label">
+          Etiqueta Starline
+        </label>
+        <div className="starline-switch-container">
+          <label className="switch">
+            <input
+              id="cand-starline"
+              type="checkbox"
+              checked={form.is_starline}
+              onChange={(e) => setForm({ ...form, is_starline: e.target.checked })}
+              disabled={isEdit && !isAdmin}
+            />
+            <span className="slider round"></span>
+          </label>
+          <span className="starline-text">{form.is_starline ? 'Sí (Candidato Starline)' : 'No'}</span>
+        </div>
+      </div>
+
       <div className="form-group">
         <label htmlFor="cand-fecha">Fecha de contacto</label>
         <input
@@ -489,8 +512,7 @@ const fieldsPosicion = (
         />
       </div>
 
-      {/* Fecha entrevista sola, span-2 para no quedar huérfana */}
-      <div className="form-group form-group--span-2">
+      <div className="form-group">
         <label htmlFor="cand-fecha-cita">Fecha y Hora de entrevista</label>
         <input
           id="cand-fecha-cita"

@@ -49,6 +49,10 @@
   color: var(--color-accent-amber);
 }
 
+.missing-positions-modal__summary-item--starline .missing-positions-modal__summary-value {
+  color: #d97706; /* Amber-600 */
+}
+
 .missing-positions-modal__summary-label {
   font-size: var(--type-body-md-size);
   font-weight: var(--font-medium);
@@ -127,6 +131,11 @@
 
 .missing-positions-modal__num-col {
   text-align: center;
+}
+
+.missing-positions-modal__tight-col {
+  width: 1%;
+  white-space: nowrap;
 }
 
 /* ── Celdas ── */
@@ -221,29 +230,28 @@
   padding: 0 var(--spacing-xs);
   border-radius: var(--rounded-full);
   font-weight: var(--font-semibold);
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-heading-sm-size);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  background: transparent !important;
 }
 
 .missing-positions-modal__count-badge--error {
-  background: var(--color-error-tint);
   color: color-mix(in srgb, var(--color-error) 80%, var(--color-ink));
 }
 
 .missing-positions-modal__count-badge--warning {
-  background: var(--color-warning-tint);
   color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
 }
 
 .missing-positions-modal__count-badge--total {
-  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
   color: var(--color-ink);
 }
 
 .missing-positions-modal__count-empty {
   color: var(--color-muted-soft);
   font-variant-numeric: tabular-nums;
+  font-size: var(--type-heading-sm-size);
 }
 
 /* ── Píldora de procesos activos ── */
@@ -254,12 +262,20 @@
   gap: 6px;
   padding: 4px var(--spacing-xs);
   border-radius: var(--rounded-full);
-  background: var(--color-success-tint);
   color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-heading-sm-size);
   font-weight: var(--font-semibold);
   line-height: 1;
   white-space: nowrap;
+  background: transparent !important;
+}
+
+.missing-positions-modal__processes-pill--starline {
+  color: #d97706;
+}
+
+.missing-positions-modal__starline-icon {
+  fill: currentColor;
 }
 
 .missing-positions-modal__processes-dot {

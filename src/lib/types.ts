@@ -25,6 +25,10 @@ export interface Employee {
    * Parada dentro de la ruta. Null/undefined si no hay asignación.
    */
   parada?: string | null;
+  /**
+   * Determina si el empleado forma parte del proyecto especial Starline.
+   */
+  is_starline?: boolean;
 }
 
 /**
@@ -424,6 +428,7 @@ export interface Candidate {
    * Null mientras no se haya hecho la conversion. PR F.
    */
   employee_num?: string | null;
+  is_starline?: boolean;
   created_at?: string;
   updated_at?: string;
 }

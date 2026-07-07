@@ -24,6 +24,7 @@ import {
   Phone,
   MessageSquare,
   MessageCircle,
+  Star,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
@@ -689,6 +690,7 @@ export function Pipeline() {
             >
               <header className="pipeline__card-list-header" aria-hidden="true">
                 <span>Candidato</span>
+                <span>Proyecto</span>
                 <span>Puesto</span>
                 <span>Contacto</span>
                 <span>Fuente</span>
@@ -782,6 +784,20 @@ export function Pipeline() {
                         </div>
                       </div>
                     </div>
+
+                    <div className="pipeline__ccard-project-col">
+                      {c.is_starline ? (
+                        <div className="pipeline__starline-badge" title="Proyecto: Starline">
+                          <Star size={11} className="pipeline__starline-icon" aria-hidden="true" />
+                          <span>STARLINE</span>
+                        </div>
+                      ) : (
+                        <div className="pipeline__vinoplastic-badge" title="Proyecto: ViñoPlastic">
+                          <span>VIÑOPLASTIC</span>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="pipeline__ccard-puesto-col">
                       <div className="pipeline__puesto">
                         <div>{c.puesto}</div>
