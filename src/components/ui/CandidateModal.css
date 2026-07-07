@@ -92,14 +92,14 @@
   font-weight: var(--font-semibold);
 }
 
-/* ── Starline Switch ── */
-.candidate-modal__starline-toggle {
+/* ── Starlite Switch ── */
+.candidate-modal__starlite-toggle {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
 }
 
-.starline-switch-container {
+.starlite-switch-container {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -107,7 +107,7 @@
   padding: 0 var(--space-xs);
 }
 
-.starline-text {
+.starlite-text {
   font-size: var(--text-sm);
   color: var(--color-text-primary);
   font-weight: var(--font-medium);

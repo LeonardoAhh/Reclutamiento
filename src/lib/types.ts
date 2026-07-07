@@ -26,9 +26,9 @@ export interface Employee {
    */
   parada?: string | null;
   /**
-   * Determina si el empleado forma parte del proyecto especial Starline.
+   * Determina si el empleado forma parte del proyecto especial Starlite.
    */
-  is_starline?: boolean;
+  is_starlite?: boolean;
 }
 
 /**
@@ -305,8 +305,8 @@ export interface PositionCoverage {
   proximos_ingresos: number;
   /** Fecha (ISO) del próximo ingreso más cercano, o null si no hay. */
   proximo_ingreso_fecha: string | null;
-  /** Empleados contratados que pertenecen a Starline. */
-  starline_empleados: number;
+  /** Empleados contratados que pertenecen a Starlite. */
+  starlite_empleados: number;
 }
 
 /**
@@ -327,8 +327,8 @@ export interface DepartmentCoverage {
   proximos_ingresos: number;
   /** Fecha (ISO) del próximo ingreso más cercano del área, o null. */
   proximo_ingreso_fecha: string | null;
-  /** Suma de empleados contratados que pertenecen a Starline. */
-  starline_empleados: number;
+  /** Suma de empleados contratados que pertenecen a Starlite. */
+  starlite_empleados: number;
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -432,7 +432,7 @@ export interface Candidate {
    * Null mientras no se haya hecho la conversion. PR F.
    */
   employee_num?: string | null;
-  is_starline?: boolean;
+  is_starlite?: boolean;
   created_at?: string;
   updated_at?: string;
 }

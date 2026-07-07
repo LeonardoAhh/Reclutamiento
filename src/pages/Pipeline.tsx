@@ -81,6 +81,93 @@ type RecruiterStats = {
   no_asistio: number;
 };
 
+const AnimatedStarliteBadge = () => {
+  return (
+    <motion.div
+      className="pipeline__starlite-badge"
+      title="Proyecto: Starlite"
+      whileHover={{ scale: 1.05, backgroundColor: "color-mix(in srgb, #fbbf24 30%, transparent)" }}
+      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'default' }}
+    >
+      <div style={{ position: 'relative', width: '14px', height: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Pequeña estrella arriba a la derecha */}
+        <motion.div
+          animate={{ opacity: [0.2, 1, 0.2], scale: [0.7, 1.2, 0.7] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+          style={{ position: 'absolute', top: -1, right: -3 }}
+        >
+          <Star size={6} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1} />
+        </motion.div>
+        
+        {/* Pequeña estrella abajo a la izquierda */}
+        <motion.div
+          animate={{ opacity: [0.3, 1, 0.3], scale: [0.7, 1.1, 0.7] }}
+          transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
+          style={{ position: 'absolute', bottom: -1, left: -2 }}
+        >
+          <Star size={5} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1} />
+        </motion.div>
+
+        {/* Estrella central */}
+        <motion.div
+          animate={{ opacity: [0.7, 1, 0.7], scale: [0.9, 1.1, 0.9], rotate: [0, 5, -5, 0] }}
+          transition={{ duration: 3, repeat: Infinity, delay: 0.3 }}
+          style={{ zIndex: 1 }}
+        >
+          <Star size={9} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1.5} />
+        </motion.div>
+      </div>
+      <span>STARLITE</span>
+    </motion.div>
+  );
+};
+
+const AnimatedVinoplasticBadge = () => {
+  return (
+    <motion.div
+      className="pipeline__vinoplastic-badge"
+      title="Proyecto: ViñoPlastic"
+      whileHover={{ scale: 1.05 }}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        border: '1px solid #bfdbfe', // tailwind blue-200
+        background: '#eff6ff', // tailwind blue-50
+        cursor: 'default',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <motion.div
+        animate={{ x: ['-100%', '250%'] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          height: '100%',
+          width: '50%',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(0, 230, 255, 0.4) 50%, transparent 100%)',
+          zIndex: 1
+        }}
+      />
+      <span style={{ 
+        position: 'relative', 
+        zIndex: 2, 
+        fontWeight: 800, 
+        color: '#1e3a8a', // Dark blue from logo
+        letterSpacing: '0.05em',
+        fontSize: '10px'
+      }}>
+        VIÑOPLASTIC
+      </span>
+    </motion.div>
+  );
+};
+
 export function Pipeline() {
   const {
     candidates,
@@ -786,15 +873,10 @@ export function Pipeline() {
                     </div>
 
                     <div className="pipeline__ccard-project-col">
-                      {c.is_starline ? (
-                        <div className="pipeline__starline-badge" title="Proyecto: Starline">
-                          <Star size={11} className="pipeline__starline-icon" aria-hidden="true" />
-                          <span>STARLINE</span>
-                        </div>
+                      {c.is_starlite ? (
+                        <AnimatedStarliteBadge />
                       ) : (
-                        <div className="pipeline__vinoplastic-badge" title="Proyecto: ViñoPlastic">
-                          <span>VIÑOPLASTIC</span>
-                        </div>
+                        <AnimatedVinoplasticBadge />
                       )}
                     </div>
 

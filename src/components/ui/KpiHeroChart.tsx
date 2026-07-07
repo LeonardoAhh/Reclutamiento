@@ -393,7 +393,7 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
       {/* Título */}
       <div>
         <h2 className="kpi-hero-title">
-          Detalle de Vacantes y Procesos.
+          Vacantes y Procesos
         </h2>
       </div>
 
@@ -643,9 +643,9 @@ export function KpiHeroChart({
         </div>
       ) : (
         <>
-          <ChartHeader 
-            data={chartData} 
-            presentation={presentation} 
+          <ChartHeader
+            data={chartData}
+            presentation={presentation}
             onPrevWeek={onPrevWeek}
             onNextWeek={onNextWeek}
             disableNextWeek={disableNextWeek}
@@ -810,7 +810,7 @@ export function KpiHeroChart({
               fontWeight: 400,
             }}
           >
-            KPI Reclutamiento
+            KPI RECLUTAMIENTO
           </p>
         </>
       )}

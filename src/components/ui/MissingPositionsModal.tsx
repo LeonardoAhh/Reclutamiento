@@ -44,7 +44,7 @@ interface MissingPositionsModalProps {
 // Interfaz interna para el diccionario de procesos
 interface ProcessStats {
   candidates: number;
-  starline: number;
+  starlite: number;
 }
 
 interface MissingRow {
@@ -129,31 +129,33 @@ export function MissingPositionsModal({
     candidates.forEach((c) => {
       if (!ACTIVE_STATUSES.has(c.status)) return;
       const key = buildPositionKey(c.puesto, c.seccion || '');
-      if (!stats[key]) stats[key] = { candidates: 0, starline: 0 };
+      if (!stats[key]) stats[key] = { candidates: 0, starlite: 0 };
       stats[key].candidates += 1;
-      if (c.is_starline) stats[key].starline += 1;
+      if (c.is_starlite) stats[key].starlite += 1;
     });
 
     return stats;
   }, [candidates]);
 
   // 3. Totales recalculados excluyendo filas bloureadas
-  const { totalFaltanPlantilla, totalFaltanBackup, totalStarline } = useMemo(() => {
+  const { totalFaltanPlantilla, totalFaltanBackup, totalStarlite } = useMemo(() => {
     let faltanPlantilla = 0;
     let faltanBackup = 0;
-    let starline = 0;
+    let starlite = 0;
     missingPositions.forEach((r) => {
       const key = `${r.pos.area}-${r.pos.seccion || 'none'}-${r.pos.puesto}`;
       if (!dismissedKeys.has(key)) {
         faltanPlantilla += r.netPlantilla;
         faltanBackup += r.netBackup;
-        const processKey = buildPositionKey(r.pos.puesto, r.pos.seccion || '');
-        const processes = processStatsMap[processKey];
-        if (processes) starline += processes.starline;
+
+        // Sumar vacantes de Starlite (urgentes menos los empleados que ya son starlite)
+        const starliteUrgentes = r.pos.urgentes || 0;
+        const starliteEmpleados = r.pos.starlite_empleados || 0;
+        starlite += Math.max(0, starliteUrgentes - starliteEmpleados);
       }
     });
-    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup, totalStarline: starline };
-  }, [missingPositions, dismissedKeys, processStatsMap]);
+    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup, totalStarlite: starlite };
+  }, [missingPositions, dismissedKeys]);
 
   return (
     <Modal
@@ -161,7 +163,7 @@ export function MissingPositionsModal({
       onClose={onClose}
       className="missing-positions-modal"
       icon={<AlertCircle size={20} aria-hidden="true" />}
-      title="Detalle de Vacantes y Procesos"
+      title="Vacantes y Procesos"
       fullscreenMobile={true}
     >
       <div className="modal-body missing-positions-modal__body">
@@ -179,7 +181,7 @@ export function MissingPositionsModal({
               {totalFaltanPlantilla}
             </span>
             <span className="missing-positions-modal__summary-label">
-              Vacantes Plantilla
+              PLANTILLA
             </span>
           </div>
 
@@ -191,28 +193,28 @@ export function MissingPositionsModal({
                 data-testid="summary-backup"
               >
                 <span className="missing-positions-modal__summary-value">
-                  +{totalFaltanBackup}
+                  {totalFaltanBackup}
                 </span>
                 <span className="missing-positions-modal__summary-label">
-                  Vacantes Backup
+                  BACKUP
                 </span>
               </div>
             </>
           )}
 
-          {totalStarline > 0 && (
+          {totalStarlite > 0 && (
             <>
               <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
               <div
-                className="missing-positions-modal__summary-item missing-positions-modal__summary-item--starline"
-                data-testid="summary-starline"
+                className="missing-positions-modal__summary-item missing-positions-modal__summary-item--starlite"
+                data-testid="summary-starlite"
               >
                 <span className="missing-positions-modal__summary-value">
-                  {totalStarline}
+                  {totalStarlite}
                 </span>
                 <span className="missing-positions-modal__summary-label">
-                  <Star size={12} className="missing-positions-modal__starline-icon" style={{ display: 'inline-block', marginRight: '4px' }} aria-hidden="true" />
-                  Starline
+                  <Star size={12} className="missing-positions-modal__starlite-icon" style={{ display: 'inline-block', marginRight: '4px' }} aria-hidden="true" />
+                  STARLITE
                 </span>
               </div>
             </>
@@ -227,11 +229,8 @@ export function MissingPositionsModal({
         ) : (
           <section
             className="missing-positions-modal__section"
-            aria-labelledby="missing-positions-title"
           >
-            <h3 id="missing-positions-title" className="missing-positions-modal__section-title">
-              Puestos que hacen falta
-            </h3>
+
 
             {/* Contenedor con tabIndex para permitir scroll con teclado (Accesibilidad) */}
             <div
@@ -266,16 +265,16 @@ export function MissingPositionsModal({
                       Total
                     </th>
                     <th scope="col" className="missing-positions-modal__tight-col">Procesos activos</th>
-                    <th scope="col" className="missing-positions-modal__starline-col missing-positions-modal__tight-col">Starline</th>
+                    <th scope="col" className="missing-positions-modal__starlite-col missing-positions-modal__tight-col">Starlite</th>
                   </tr>
                 </thead>
                 <tbody>
                   {missingPositions.map((r) => {
                     const pos = r.pos;
                     const processKey = buildPositionKey(pos.puesto, pos.seccion || '');
-                    const processes = processStatsMap[processKey] || { candidates: 0, starline: 0 };
+                    const processes = processStatsMap[processKey] || { candidates: 0, starlite: 0 };
                     const totalProcesses = processes.candidates;
-                    const starlineProcesses = processes.starline;
+                    const starliteProcesses = processes.starlite;
 
                     const faltanPlantilla = r.netPlantilla;
                     const faltanBackup = r.netBackup;
@@ -312,7 +311,7 @@ export function MissingPositionsModal({
                               className="missing-positions-modal__puesto-note"
                               title="Vacantes ya cubiertas por empleados con fecha de ingreso futura, descontadas del total."
                             >
-                              −{r.proximos} próx. ingreso{r.proximos === 1 ? '' : 's'} descontado{r.proximos === 1 ? '' : 's'}
+                              −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
                             </span>
                           )}
                         </td>
@@ -355,15 +354,15 @@ export function MissingPositionsModal({
                           )}
                         </td>
                         <td className="missing-positions-modal__tight-col">
-                          {starlineProcesses > 0 ? (
-                            <span className="missing-positions-modal__processes-pill missing-positions-modal__processes-pill--starline" title="Candidatos etiquetados como Starline en proceso activo">
-                              <Star size={12} className="missing-positions-modal__starline-icon" aria-hidden="true" />
-                              {starlineProcesses}
+                          {starliteProcesses > 0 ? (
+                            <span className="missing-positions-modal__processes-pill missing-positions-modal__processes-pill--starlite" title="Candidatos etiquetados como Starlite en proceso activo">
+                              <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" />
+                              {starliteProcesses}
                             </span>
                           ) : (
                             <span
                               className="missing-positions-modal__count-empty"
-                              aria-label="Sin procesos Starline"
+                              aria-label="Sin procesos Starlite"
                             >
                               —
                             </span>

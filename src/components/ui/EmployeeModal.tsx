@@ -36,7 +36,7 @@ type FormState = Pick<
 > & {
   ruta: string;
   parada: string;
-  is_starline: boolean;
+  is_starlite: boolean;
 };
 
 function emptyForm(): FormState {
@@ -51,7 +51,7 @@ function emptyForm(): FormState {
     fecha_ingreso: localTodayIso(),
     ruta: '',
     parada: '',
-    is_starline: false,
+    is_starlite: false,
   };
 }
 
@@ -147,7 +147,7 @@ export function EmployeeModal({
         fecha_ingreso: employee.fecha_ingreso,
         ruta: employee.ruta ?? '',
         parada: employee.parada ?? '',
-        is_starline: employee.is_starline ?? false,
+        is_starlite: employee.is_starlite ?? false,
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
@@ -169,7 +169,7 @@ export function EmployeeModal({
           fecha_ingreso: localTodayIso(),
           ruta: '',
           parada: '',
-          is_starline: false,
+          is_starlite: false,
         });
       } else {
         setForm(emptyForm());
@@ -434,22 +434,22 @@ export function EmployeeModal({
   );
 
   const fieldsExtra = (
-    <div className="form-group employee-modal__starline-toggle">
-      <label htmlFor="emp-starline" className="starline-label">
-        Starline
+    <div className="form-group employee-modal__starlite-toggle">
+      <label htmlFor="emp-starlite" className="starlite-label">
+        Starlite
       </label>
-      <div className="starline-switch-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', height: 'var(--control-height)' }}>
+      <div className="starlite-switch-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', height: 'var(--control-height)' }}>
         <label className="switch">
           <input
-            id="emp-starline"
+            id="emp-starlite"
             type="checkbox"
-            checked={form.is_starline}
-            onChange={(e) => setForm({ ...form, is_starline: e.target.checked })}
+            checked={form.is_starlite}
+            onChange={(e) => setForm({ ...form, is_starlite: e.target.checked })}
           />
           <span className="slider round"></span>
         </label>
-        <span className="starline-text" style={{ fontSize: '13px', color: 'var(--color-body)' }}>
-          {form.is_starline ? 'Si' : 'No'}
+        <span className="starlite-text" style={{ fontSize: '13px', color: 'var(--color-body)' }}>
+          {form.is_starlite ? 'Si' : 'No'}
         </span>
       </div>
     </div>

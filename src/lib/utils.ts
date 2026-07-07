@@ -162,7 +162,7 @@ export function calculatePositionCoverage(
         matchesPuesto(emp.puesto, pos.puesto)
     );
     const real = matchedEmployees.length;
-    const starlineEmpleados = matchedEmployees.filter((emp) => emp.is_starline).length;
+    const starliteEmpleados = matchedEmployees.filter((emp) => emp.is_starlite).length;
 
     const backup = pos.backup ?? 0;
     /*
@@ -223,7 +223,7 @@ export function calculatePositionCoverage(
       excedente_critico: excedenteCritico,
       proximos_ingresos: proximosIngresos,
       proximo_ingreso_fecha: proximoIngresoFecha,
-      starline_empleados: starlineEmpleados,
+      starlite_empleados: starliteEmpleados,
     };
   });
 }
@@ -252,7 +252,7 @@ export function calculateDepartmentCoverage(
       : 0;
 
     const urgentes = puestos.reduce((sum, p) => sum + p.urgentes, 0);
-    const starlineEmpleados = puestos.reduce((sum, p) => sum + p.starline_empleados, 0);
+    const starliteEmpleados = puestos.reduce((sum, p) => sum + p.starlite_empleados, 0);
     const proximosIngresos = puestos.reduce((sum, p) => sum + p.proximos_ingresos, 0);
     const proximoIngresoFecha = puestos
       .map((p) => p.proximo_ingreso_fecha)
@@ -270,7 +270,7 @@ export function calculateDepartmentCoverage(
       urgentes,
       proximos_ingresos: proximosIngresos,
       proximo_ingreso_fecha: proximoIngresoFecha,
-      starline_empleados: starlineEmpleados,
+      starlite_empleados: starliteEmpleados,
     };
   });
 }

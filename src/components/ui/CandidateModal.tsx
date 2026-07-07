@@ -58,7 +58,7 @@ interface FormState {
   fecha_aplicacion: string;
   fecha_cita: string;
   notas: string;
-  is_starline: boolean;
+  is_starlite: boolean;
 }
 
 function emptyForm(): FormState {
@@ -76,14 +76,14 @@ function emptyForm(): FormState {
     fecha_aplicacion: localTodayIso(),
     fecha_cita: '',
     notas: '',
-    is_starline: false,
+    is_starlite: false,
   };
 }
 
 function formatDateTimeLocal(val: string | null | undefined): string {
   if (!val) return '';
   // If it already has a T, return up to minutes
-  if (val.includes('T')) return val.slice(0, 16); 
+  if (val.includes('T')) return val.slice(0, 16);
   // If it's just a date YYYY-MM-DD, append T12:00
   if (val.length === 10) return `${val}T12:00`;
   return val;
@@ -106,7 +106,7 @@ function fromCandidate(c: Candidate): FormState {
       : localTodayIso(),
     fecha_cita: formatDateTimeLocal(c.fecha_cita),
     notas: c.notas ?? '',
-    is_starline: c.is_starline ?? false,
+    is_starlite: c.is_starlite ?? false,
   };
 }
 
@@ -238,10 +238,10 @@ export function CandidateModal({
 
         // Duplicate check (only check if changed or adding)
         if (candidates.length > 0) {
-          const isDupPhone = candidates.some(c => 
-            c.id !== candidate?.id && 
-            c.telefono && 
-            c.telefono.replace(/\D/g, '') === telDigits && 
+          const isDupPhone = candidates.some(c =>
+            c.id !== candidate?.id &&
+            c.telefono &&
+            c.telefono.replace(/\D/g, '') === telDigits &&
             telDigits.length === 10
           );
           if (isDupPhone) {
@@ -251,9 +251,9 @@ export function CandidateModal({
           }
 
           if (form.email.trim()) {
-            const isDupEmail = candidates.some(c => 
-              c.id !== candidate?.id && 
-              c.email && 
+            const isDupEmail = candidates.some(c =>
+              c.id !== candidate?.id &&
+              c.email &&
               c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
             );
             if (isDupEmail) {
@@ -293,7 +293,7 @@ export function CandidateModal({
           // ya entrega ese formato. Vacío = sin cita programada (null).
           fecha_cita: form.fecha_cita ? form.fecha_cita : null,
           notas: form.notas.trim() || null,
-          is_starline: form.is_starline,
+          is_starlite: form.is_starlite,
         };
         const result = await onSave(payload, candidate?.id);
         if (result && result.ok === false) {
@@ -482,22 +482,22 @@ const fieldsPosicion = (
         </datalist>
       </div>
 
-      <div className="form-group candidate-modal__starline-toggle">
-        <label htmlFor="cand-starline" className="starline-label">
-          Etiqueta Starline
+      <div className="form-group candidate-modal__starlite-toggle">
+        <label htmlFor="cand-starlite" className="starlite-label">
+          Etiqueta Starlite
         </label>
-        <div className="starline-switch-container">
+        <div className="starlite-switch-container">
           <label className="switch">
             <input
-              id="cand-starline"
+              id="cand-starlite"
               type="checkbox"
-              checked={form.is_starline}
-              onChange={(e) => setForm({ ...form, is_starline: e.target.checked })}
+              checked={form.is_starlite}
+              onChange={(e) => setForm({ ...form, is_starlite: e.target.checked })}
               disabled={isEdit && !isAdmin}
             />
             <span className="slider round"></span>
           </label>
-          <span className="starline-text">{form.is_starline ? 'Sí (Candidato Starline)' : 'No'}</span>
+          <span className="starlite-text">{form.is_starlite ? 'Sí (Candidato Starlite)' : 'No'}</span>
         </div>
       </div>
 

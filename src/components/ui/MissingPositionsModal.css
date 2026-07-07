@@ -49,7 +49,7 @@
   color: var(--color-accent-amber);
 }
 
-.missing-positions-modal__summary-item--starline .missing-positions-modal__summary-value {
+.missing-positions-modal__summary-item--starlite .missing-positions-modal__summary-value {
   color: #d97706; /* Amber-600 */
 }
 
@@ -270,11 +270,11 @@
   background: transparent !important;
 }
 
-.missing-positions-modal__processes-pill--starline {
+.missing-positions-modal__processes-pill--starlite {
   color: #d97706;
 }
 
-.missing-positions-modal__starline-icon {
+.missing-positions-modal__starlite-icon {
   fill: currentColor;
 }
 

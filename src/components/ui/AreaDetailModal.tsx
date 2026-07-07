@@ -339,7 +339,7 @@ export function AreaDetailModal({
           </div>
           {activeTotals.urgentes > 0 && (
             <div className="area-detail-modal__stat">
-              <dt className="area-detail-modal__stat-label">Starline</dt>
+              <dt className="area-detail-modal__stat-label">Starlite</dt>
               <dd className="area-detail-modal__stat-value">{activeTotals.urgentes}</dd>
             </div>
           )}
@@ -469,12 +469,12 @@ export function AreaDetailModal({
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
                       {pos.urgentes > 0 ? (
-                        <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starline_empleados || 0} / {pos.urgentes}</span>
+                        <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starlite_empleados || 0} / {pos.urgentes}</span>
                       ) : (
                         <span className="no-vacancy">—</span>
                       )}
                     </span>
-                    <span className="area-detail-modal__card-metric-label">Starline</span>
+                    <span className="area-detail-modal__card-metric-label">Starlite</span>
                   </span>
                   <span className="area-detail-modal__card-estado">{renderEstado(pos)}</span>
                 </div>
@@ -491,7 +491,7 @@ export function AreaDetailModal({
                   <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
                   <th scope="col" className="text-center hide-on-mobile">Real</th>
                   <th scope="col" className="text-center">Vacantes</th>
-                  <th scope="col" className="text-center">Starline</th>
+                  <th scope="col" className="text-center">Starlite</th>
                   <th scope="col" className="hide-on-mobile">Cobertura</th>
                   <th scope="col" className="text-center">Estado</th>
                 </tr>
@@ -570,7 +570,7 @@ export function AreaDetailModal({
                       </td>
                       <td className="text-center">
                         {pos.urgentes > 0 ? (
-                          <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starline_empleados || 0} / {pos.urgentes}</span>
+                          <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starlite_empleados || 0} / {pos.urgentes}</span>
                         ) : (
                           <span className="no-vacancy">—</span>
                         )}

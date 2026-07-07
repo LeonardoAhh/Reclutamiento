@@ -23,8 +23,8 @@ interface VacancyRow {
   vacantesBackup: number;
   totalVacantes: number;
   proximosIngresos: number;
-  starlineUrgentes: number;
-  starlineEmpleados: number;
+  starliteUrgentes: number;
+  starliteEmpleados: number;
 }
 
 interface AreaGroup {
@@ -33,8 +33,8 @@ interface AreaGroup {
   totalVacantes: number;
   totalBackup: number;
   totalProximosIngresos: number;
-  totalStarlineUrgentes: number;
-  totalStarlineEmpleados: number;
+  totalStarliteUrgentes: number;
+  totalStarliteEmpleados: number;
 }
 
 function extractTurno(seccion: string): string {
@@ -67,8 +67,8 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
         vacantesBackup,
         totalVacantes: p.vacantes,
         proximosIngresos: p.proximos_ingresos,
-        starlineUrgentes: p.urgentes || 0,
-        starlineEmpleados: p.starline_empleados || 0,
+        starliteUrgentes: p.urgentes || 0,
+        starliteEmpleados: p.starlite_empleados || 0,
       };
     })
     .sort((a, b) => {
@@ -81,15 +81,15 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   for (const row of pendientes) {
     let group = map.get(row.area);
     if (!group) {
-      group = { area: row.area, rows: [], totalVacantes: 0, totalBackup: 0, totalProximosIngresos: 0, totalStarlineUrgentes: 0, totalStarlineEmpleados: 0 };
+      group = { area: row.area, rows: [], totalVacantes: 0, totalBackup: 0, totalProximosIngresos: 0, totalStarliteUrgentes: 0, totalStarliteEmpleados: 0 };
       map.set(row.area, group);
     }
     group.rows.push(row);
     group.totalVacantes += row.vacantesAutorizada;
     group.totalBackup += row.vacantesBackup;
     group.totalProximosIngresos += row.proximosIngresos;
-    group.totalStarlineUrgentes += row.starlineUrgentes;
-    group.totalStarlineEmpleados += row.starlineEmpleados;
+    group.totalStarliteUrgentes += row.starliteUrgentes;
+    group.totalStarliteEmpleados += row.starliteEmpleados;
   }
   return Array.from(map.values()).sort((a, b) => a.area.localeCompare(b.area, 'es'));
 }
@@ -101,11 +101,11 @@ function toTitleCase(str: string): string {
 function buildWhatsappMessageBlock(
   title: string,
   groups: AreaGroup[],
-  type: 'general' | 'starline'
+  type: 'general' | 'starlite'
 ): string {
   const filteredGroups = groups.map(g => ({
     ...g,
-    rows: g.rows.filter(r => type === 'general' ? (r.vacantesAutorizada > 0 || r.vacantesBackup > 0 || r.proximosIngresos > 0) : (r.starlineUrgentes > 0))
+    rows: g.rows.filter(r => type === 'general' ? (r.vacantesAutorizada > 0 || r.vacantesBackup > 0 || r.proximosIngresos > 0) : (r.starliteUrgentes > 0))
   })).filter(g => g.rows.length > 0);
 
   if (filteredGroups.length === 0) return '';
@@ -113,8 +113,8 @@ function buildWhatsappMessageBlock(
   const totalActivas = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesAutorizada, 0), 0);
   const totalBackup = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesBackup, 0), 0);
   const totalProximos = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.proximosIngresos, 0), 0);
-  const totalStarlineUrgentes = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starlineUrgentes, 0), 0);
-  const totalStarlineEmpleados = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starlineEmpleados, 0), 0);
+  const totalStarliteUrgentes = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteUrgentes, 0), 0);
+  const totalStarliteEmpleados = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteEmpleados, 0), 0);
   
   const totalVacantes = totalActivas + totalBackup;
   const vacantesNetas = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + Math.max(0, r.totalVacantes - r.proximosIngresos), 0), 0);
@@ -131,7 +131,7 @@ function buildWhatsappMessageBlock(
     lines.push(proximosText);
     lines.push(`*Balance estimado: ${vacantesNetas} vacantes por cubrir*`);
   } else {
-    lines.push(`Starline: ${totalStarlineEmpleados} contratados / ${totalStarlineUrgentes} meta`);
+    lines.push(`Starlite: ${totalStarliteEmpleados} contratados / ${totalStarliteUrgentes} meta`);
   }
   
   lines.push('');
@@ -181,7 +181,7 @@ function buildWhatsappMessageBlock(
           const balanceStr = faltan > 0 ? ` ➔ Faltan ${faltan}` : ` ➔ Cubierto`;
           lines.push(`   - ${seccionLabel}: ${detalle.join(' · ')}${balanceStr}`);
         } else {
-          detalle.push(`★ Starline (${r.starlineEmpleados}/${r.starlineUrgentes})`);
+          detalle.push(`★ Starlite (${r.starliteEmpleados}/${r.starliteUrgentes})`);
           lines.push(`   - ${seccionLabel}: ${detalle.join(' · ')}`);
         }
       }
@@ -204,8 +204,8 @@ function buildWhatsappMessage(allGroups: AreaGroup[], dismissedKeys: Set<string>
   const generales = buildWhatsappMessageBlock(`*Resumen de Vacantes Generales* — ${fecha}`, groups, 'general');
   if (generales) blocks.push(generales);
 
-  const starline = buildWhatsappMessageBlock(`*Resumen Proyecto Starline*${!generales ? ` — ${fecha}` : ''}`, groups, 'starline');
-  if (starline) blocks.push(starline);
+  const starlite = buildWhatsappMessageBlock(`*Resumen Proyecto Starlite*${!generales ? ` — ${fecha}` : ''}`, groups, 'starlite');
+  if (starlite) blocks.push(starlite);
 
   if (blocks.length === 0) {
     return `*Resumen de Vacantes* — ${fecha}\n\nSin vacantes pendientes.`;
@@ -253,15 +253,15 @@ export function VacancyReportModal({
     totalActivas,
     totalBackup,
     totalProximos,
-    totalStarlineUrgentes,
-    totalStarlineEmpleados,
+    totalStarliteUrgentes,
+    totalStarliteEmpleados,
     totalPuestos
   } = useMemo(() => {
     let activas = 0;
     let backup = 0;
     let proximos = 0;
-    let starlineUrgentes = 0;
-    let starlineEmpleados = 0;
+    let starliteUrgentes = 0;
+    let starliteEmpleados = 0;
     let puestos = 0;
 
     for (const g of groups) {
@@ -270,8 +270,8 @@ export function VacancyReportModal({
           activas += r.vacantesAutorizada;
           backup += r.vacantesBackup;
           proximos += r.proximosIngresos;
-          starlineUrgentes += r.starlineUrgentes;
-          starlineEmpleados += r.starlineEmpleados;
+          starliteUrgentes += r.starliteUrgentes;
+          starliteEmpleados += r.starliteEmpleados;
           puestos += 1;
         }
       }
@@ -280,8 +280,8 @@ export function VacancyReportModal({
       totalActivas: activas,
       totalBackup: backup,
       totalProximos: proximos,
-      totalStarlineUrgentes: starlineUrgentes,
-      totalStarlineEmpleados: starlineEmpleados,
+      totalStarliteUrgentes: starliteUrgentes,
+      totalStarliteEmpleados: starliteEmpleados,
       totalPuestos: puestos
     };
   }, [groups, dismissedKeys]);
@@ -348,9 +348,9 @@ export function VacancyReportModal({
             </span>
           </div>
           <div className="vacancy-report-modal__badges" style={{ gap: '6px' }}>
-            {row.starlineUrgentes > 0 && (
+            {row.starliteUrgentes > 0 && (
               <span style={{ color: '#d97706', fontWeight: 600, fontSize: '0.8125rem' }}>
-                ★ STARLINE {row.starlineEmpleados || 0}/{row.starlineUrgentes}
+                ★ STARLITE {row.starliteEmpleados || 0}/{row.starliteUrgentes}
               </span>
             )}
             {row.vacantesAutorizada > 0 && (
@@ -406,13 +406,13 @@ export function VacancyReportModal({
               backup{totalBackup === 1 ? '' : 's'}
             </p>
           </div>
-          {totalStarlineUrgentes > 0 && (
+          {totalStarliteUrgentes > 0 && (
             <div className="vacancy-report-modal__stat">
               <div className="vacancy-report-modal__big-number" style={{ color: '#d97706' }}>
-                {totalStarlineEmpleados}/{totalStarlineUrgentes}
+                {totalStarliteEmpleados}/{totalStarliteUrgentes}
               </div>
               <p className="vacancy-report-modal__big-label">
-                Starline
+                Starlite
               </p>
             </div>
           )}
@@ -458,7 +458,7 @@ export function VacancyReportModal({
                   <ExpandableSection
                     key={group.area}
                     title={group.area}
-                    badge={`${group.totalStarlineUrgentes > 0 ? `★ ${group.totalStarlineEmpleados}/${group.totalStarlineUrgentes} · ` : ''}${group.totalVacantes + group.totalBackup} total`}
+                    badge={`${group.totalStarliteUrgentes > 0 ? `★ ${group.totalStarliteEmpleados}/${group.totalStarliteUrgentes} · ` : ''}${group.totalVacantes + group.totalBackup} total`}
                     variant="list"
                   >
                     {renderGroupContent(group)}
@@ -482,7 +482,7 @@ export function VacancyReportModal({
                     <header className="vacancy-report-modal__group-header">
                       <h3 className="vacancy-report-modal__group-title">{group.area}</h3>
                       <span className="vacancy-report-modal__group-count">
-                        {group.totalStarlineUrgentes > 0 && `★ Starline ${group.totalStarlineEmpleados}/${group.totalStarlineUrgentes} · `}
+                        {group.totalStarliteUrgentes > 0 && `★ Starlite ${group.totalStarliteEmpleados}/${group.totalStarliteUrgentes} · `}
                         {group.totalVacantes} activa{group.totalVacantes === 1 ? '' : 's'}
                         {group.totalBackup > 0 && ` · ${group.totalBackup} backup`}
                         {group.totalProximosIngresos > 0 && ` · ${group.totalProximosIngresos} próx.`}

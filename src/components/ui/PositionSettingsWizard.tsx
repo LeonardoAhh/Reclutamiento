@@ -292,7 +292,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="pos-urgentes">Starline *</label>
+                      <label htmlFor="pos-urgentes">Starlite *</label>
                       <input
                         id="pos-urgentes"
                         type="number"
