@@ -78,6 +78,19 @@ export function TopRecruiterModal() {
 
         const actualTopRecruiter = totalsArray.reduce((max, current) => current.total > max.total ? current : max);
         
+        const emailMap: Record<string, string> = {
+          'leonardo': 'leonardo@reclutamiento.local',
+          'daniela': 'daniela@reclutamiento.local',
+          'alexandra': 'alexandra@reclutamiento.local'
+        };
+
+        const topNameLower = actualTopRecruiter.name.toLowerCase();
+        const expectedEmail = emailMap[topNameLower];
+        
+        const isTop = expectedEmail 
+          ? user.email?.toLowerCase() === expectedEmail
+          : user.email?.toLowerCase().includes(topNameLower);
+
         if (isTop) {
           setTopRecruiter(actualTopRecruiter);
           setIsOpen(true);
