@@ -16,7 +16,7 @@ import {
   Loader,
   FileText,
   ChevronUp,
-  Settings,
+  Sparkles,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -198,11 +198,11 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           {user?.email === 'leonardo@reclutamiento.local' && (
             <li key="/configuracion">
               {collapsed ? (
-                <Tooltip content="Configuración" side="right" delayMs={0}>
+                <Tooltip content="Features" side="right" delayMs={0}>
                   <NavLink
                     to="/configuracion"
                     className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
-                    aria-label="Configuración"
+                    aria-label="Features"
                   >
                     {location.pathname.startsWith('/configuracion') && (
                       <motion.span
@@ -212,15 +212,15 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                         transition={{ type: 'spring', stiffness: 480, damping: 34 }}
                       />
                     )}
-                    <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
-                    <span className="sidebar__item-label">Configuración</span>
+                    <Sparkles size={20} aria-hidden="true" className="sidebar__item-icon" />
+                    <span className="sidebar__item-label">Features</span>
                   </NavLink>
                 </Tooltip>
               ) : (
                 <NavLink
                   to="/configuracion"
                   className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
-                  aria-label="Configuración"
+                  aria-label="Features"
                 >
                   {location.pathname.startsWith('/configuracion') && (
                     <motion.span
@@ -230,8 +230,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                       transition={{ type: 'spring', stiffness: 480, damping: 34 }}
                     />
                   )}
-                  <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
-                  <span className="sidebar__item-label">Configuración</span>
+                  <Sparkles size={20} aria-hidden="true" className="sidebar__item-icon" />
+                  <span className="sidebar__item-label">Features</span>
                 </NavLink>
               )}
             </li>

@@ -660,7 +660,7 @@ export function KpiHeroChart({
               padding: presentation ? '20px 16px 12px' : '8px 4px 6px',
             }}
           >
-            <ResponsiveContainer width="100%" height={chartHeight}>
+            <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
               <ComposedChart
                 data={chartData}
                 margin={MARGIN}

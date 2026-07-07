@@ -24,6 +24,7 @@ import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Documentos } from '@/pages/Documentos';
 import { Configuracion } from '@/pages/Configuracion';
+import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 
 function AdminGuard({ children }: { children: ReactNode }) {
   const { profile, loading } = useAuth();
@@ -39,6 +40,7 @@ function ProtectedShell({ children }: { children: ReactNode }) {
     <AuthGuard>
       <PositionsProvider>
         <AppShell>{children}</AppShell>
+        <TopRecruiterModal />
       </PositionsProvider>
     </AuthGuard>
   );

@@ -67,8 +67,6 @@
   pointer-events: none;
 }
 
-/* Reutiliza .form-group input de global.css; solo ajusta el padding
-   interno para dejar espacio a los íconos. */
 .config-search input {
   padding-left: calc(var(--spacing-xl) + var(--spacing-xs)) !important;
   padding-right: calc(var(--spacing-xl) + var(--spacing-xs)) !important;
@@ -93,10 +91,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  min-width: 0;
+  width: 100%;
 }
 
-/* Pantallas grandes: aprovecha el ancho disponible con un grid en vez
-   de una única columna que estira las cards indefinidamente. */
 @media (min-width: 1400px) {
   .config-results {
     display: grid;
@@ -106,11 +104,10 @@
 }
 
 .config-card {
-  /* Cada card decide su propio layout interno según su ancho real
-     (no el del viewport) — así funciona igual de bien en columna
-     única o dentro del grid de dos columnas en desktop ancho. */
   container-type: inline-size;
   container-name: config-card;
+  min-width: 0;
+  width: 100%;
 
   display: flex;
   flex-direction: column;
@@ -163,8 +160,6 @@
   gap: var(--spacing-xl);
 }
 
-/* Propiedades + calendario lado a lado solo cuando la card tiene
-   espacio real para eso (independiente del viewport). */
 @container config-card (min-width: 620px) {
   .config-card__body {
     display: grid;
@@ -245,12 +240,13 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 }
 
 .config-calendar-details {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
 }
@@ -291,8 +287,6 @@
   flex-shrink: 0;
 }
 
-/* Chip con fondo tintado en vez de texto rojo suelto: mejor contraste
-   y no depende únicamente del color para transmitir el estado. */
 .config-incidence-list__label {
   color: var(--color-error);
   background: var(--color-error-tint);
@@ -306,6 +300,7 @@
   align-items: center;
   height: 100%;
 }
+
 
 /* ── Estados vacío / inicial ──────────────────────────────────── */
 
@@ -373,9 +368,6 @@
   color: var(--color-ink);
   cursor: pointer;
   outline: none;
-
-  /* Flecha vía mask-image: hereda color del token (funciona en dark mode)
-     en vez de un SVG con stroke fijo. */
   background-color: transparent;
   -webkit-mask-image: none;
   position: relative;
@@ -393,8 +385,6 @@
   display: none;
 }
 
-/* Contenedor con la flecha dibujada como pseudo-elemento para poder
-   usar currentColor / var() sin hardcodear un hex en el SVG. */
 .config-calendar-header-actions {
   position: relative;
 }
@@ -440,7 +430,7 @@
 .config-calendar__day {
   aspect-ratio: 1;
   border-radius: var(--rounded-xs);
-  background: var(--color-canvas-soft); /* Sin registro */
+  background: var(--color-canvas-soft);
   transition: transform var(--transition-fast);
 }
 
@@ -491,4 +481,379 @@
 
 .config-calendar-legend__swatch--incident {
   background: var(--color-error);
+}
+
+/* Layout Sidebar */
+.config-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  background-color: var(--color-canvas);
+}
+
+@media (min-width: 768px) {
+  .config-layout {
+    flex-direction: row;
+  }
+}
+
+/* Sidebar */
+.config-sidebar {
+  width: 100%;
+  background-color: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+  .config-sidebar {
+    width: 260px;
+    border-bottom: none;
+    border-right: 1px solid var(--color-hairline);
+    padding: var(--spacing-2xl) var(--spacing-lg);
+  }
+}
+
+.config-sidebar__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.config-sidebar__nav {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .config-sidebar__nav {
+    flex-direction: column;
+    overflow-x: visible;
+  }
+}
+
+.config-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.config-sidebar__link:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.config-sidebar__link.active {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+}
+
+/* Main Content Area */
+.config-main {
+  flex: 1;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .config-main {
+    padding: var(--spacing-2xl);
+  }
+}
+
+/* ── Indicadores View ─────────────────────────────────────────── */
+
+.indicadores-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* KPI Cards */
+.indicadores-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .indicadores-kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.indicadores-kpi-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.indicadores-kpi-card:hover {
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.indicadores-kpi-label {
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  line-height: 1;
+}
+
+.indicadores-kpi-value {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  color: var(--color-ink);
+  line-height: 1.1;
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+.indicadores-kpi-sub {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted-soft);
+  line-height: 1.3;
+}
+
+/* Chart */
+.indicadores-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xl);
+}
+
+.indicadores-chart-title {
+  margin-bottom: var(--spacing-md);
+}
+
+.indicadores-chart-wrapper {
+  width: 100%;
+  height: 280px;
+}
+
+@media (min-width: 768px) {
+  .indicadores-chart-wrapper {
+    height: 360px;
+  }
+}
+
+/* Table */
+.indicadores-table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.indicadores-table-header {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.indicadores-skeleton-title {
+  margin-bottom: var(--spacing-md);
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tabla transpuesta: compacta, sin fondos, alineada */
+.indicadores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--type-body-sm-size);
+  min-width: 640px; /* fuerza scroll horizontal en móvil si hay muchas fechas */
+}
+
+/* Header */
+.indicadores-table thead th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  color: var(--color-muted);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  font-size: var(--type-caption-sm-size);
+  letter-spacing: var(--tracking-wider);
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: var(--color-surface-soft);
+}
+
+.indicadores-table thead th:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: var(--color-surface-soft);
+}
+
+.indicadores-table thead th:last-child {
+  text-align: right;
+}
+
+/* Body */
+.indicadores-table tbody td {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.indicadores-table tbody td:first-child,
+.indicadores-table tbody th {
+  text-align: left;
+}
+
+.indicadores-table tbody td:last-child {
+  text-align: right;
+}
+
+/* Row header (reclutador) */
+.indicadores-table-row-header {
+  white-space: nowrap;
+  font-weight: var(--font-medium);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  position: sticky;
+  left: 0;
+  background-color: var(--color-surface);
+  z-index: 1;
+}
+
+/* Dot de color al lado del nombre del reclutador */
+.indicadores-recruiter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* Hover fila */
+.indicadores-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.indicadores-table tbody tr:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.indicadores-table tbody tr:hover .indicadores-table-row-header {
+  background-color: var(--color-surface-soft);
+}
+
+/* Valor numérico */
+.indicador-value {
+  font-weight: var(--font-semibold);
+  font-size: var(--type-body-sm-size);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.indicador-value--total {
+  color: var(--color-ink);
+  font-weight: var(--font-bold);
+}
+
+/* Celda vacía */
+.indicadores-empty-cell {
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+/* Footer / Total por fecha */
+.indicadores-table tfoot th,
+.indicadores-table tfoot td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 2px solid var(--color-hairline-soft);
+  border-bottom: none;
+  background-color: var(--color-surface-soft);
+  text-align: center;
+  vertical-align: middle;
+  font-weight: var(--font-semibold);
+}
+
+.indicadores-table tfoot th:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.indicadores-table tfoot td:last-child {
+  text-align: right;
+  font-weight: var(--font-bold);
+  color: var(--color-primary);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .indicadores-table tbody tr,
+  .indicadores-table tbody tr:hover {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ── Búsqueda View ────────────────────────────────────────────── */
+
+.busqueda-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+.busqueda-view__header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.busqueda-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }

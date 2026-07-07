@@ -356,7 +356,7 @@ export function BottomTabBar() {
                           <Settings size={28} aria-hidden="true" className="bottom-sheet__grid-icon" />
                         </div>
                         <span className="bottom-sheet__grid-label">
-                          Configuración
+                          Features
                         </span>
                       </>
                     )}
