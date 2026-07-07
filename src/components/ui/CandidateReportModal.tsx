@@ -136,59 +136,103 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
   );
 }
 
-function buildWhatsappMessage(
-  groups: AreaGroup[],
-  recruiters: RecruiterRow[],
-  totalActivos: number,
-): string {
-  const fecha = formatShortDate(new Date().toISOString());
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/(?:^|\s|-|\/)\w/g, m => m.toUpperCase());
+}
 
-  const totalStarline = groups.reduce((s, g) => s + g.starline, 0);
+function buildWhatsappMessageBlock(
+  title: string,
+  candidates: Candidate[],
+  showRecruiters: boolean
+): string {
+  if (candidates.length === 0) return '';
+  const groups = buildPuestoGroups(candidates);
+  const recruiters = buildRecruiterRows(candidates);
+  const totalActivos = candidates.length;
 
   const lines: string[] = [
-    `*Resumen de Candidatos* — ${fecha}`,
-    '',
-    `Activos: ${totalActivos}${totalStarline > 0 ? ` (${totalStarline} Starline)` : ''} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)} · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}`,
+    title,
+    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)}${showRecruiters ? ` · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}` : ''}`,
     '',
   ];
 
-  if (groups.length > 0) {
-    lines.push('*Por puesto*');
-    for (const g of groups) {
-      lines.push('');
-      lines.push(`_${g.area}_ — ${g.total}`);
-      for (const r of g.rows) {
-        const seccionConTurno = r.turno && !r.seccion.toUpperCase().includes(r.turno)
-          ? `${r.seccion} · ${r.turno}`
-          : r.seccion;
+  for (const g of groups) {
+    lines.push(`*${g.area}* — ${g.total} candidatos`);
+    const puestosMap = new Map<string, typeof g.rows>();
+    for (const r of g.rows) {
+      if (!puestosMap.has(r.puesto)) puestosMap.set(r.puesto, []);
+      puestosMap.get(r.puesto)!.push(r);
+    }
+
+    for (const [puesto, filas] of puestosMap.entries()) {
+      lines.push(`• ${toTitleCase(puesto)}`);
+      for (const r of filas) {
+        let cleanSeccion = r.seccion;
+        if (cleanSeccion.toUpperCase().startsWith(g.area.toUpperCase())) {
+          cleanSeccion = cleanSeccion.substring(g.area.length).trim();
+          if (cleanSeccion.startsWith('-') || cleanSeccion.startsWith('—')) {
+            cleanSeccion = cleanSeccion.substring(1).trim();
+          }
+        }
+        
+        let seccionLabel = r.turno && !cleanSeccion.toUpperCase().includes(r.turno)
+          ? `${cleanSeccion} (${r.turno})`
+          : r.turno ? r.turno : cleanSeccion || 'General';
+          
+        seccionLabel = toTitleCase(seccionLabel);
+
         const detalle: string[] = [];
         if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
-        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
-        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
-        lines.push(`• ${seccionConTurno} — ${r.puesto}`);
-        const starlineStr = r.starline > 0 ? ` · ${r.starline} Starline` : '';
-        lines.push(`   ${r.total}${starlineStr} (${detalle.join(' · ')})`);
+        if (r.e2 > 0) detalle.push(`Docs: ${r.e2}`);
+        if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
+        if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
+        
+        lines.push(`   - ${seccionLabel}: ${r.total} activos (${detalle.join(' · ')})`);
       }
     }
     lines.push('');
   }
 
-  const activeRecruiters = recruiters.filter((r) => r.total > 0);
-  if (activeRecruiters.length > 0) {
-    lines.push('*Por reclutador*');
-    for (const r of activeRecruiters) {
-      const detalle: string[] = [];
-      if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-      if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
-      if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
-      if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
-      const starlineStr = r.starline > 0 ? ` · ${r.starline} Starline` : '';
-      lines.push(`• ${r.name} — ${r.total}${starlineStr} (${detalle.join(' · ')})`);
+  if (showRecruiters) {
+    const activeRecruiters = recruiters.filter((r) => r.total > 0);
+    if (activeRecruiters.length > 0) {
+      lines.push('*Por reclutador*');
+      for (const r of activeRecruiters) {
+        const detalle: string[] = [];
+        if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
+        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
+        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
+        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
+        lines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
+      }
+      lines.push('');
     }
   }
 
   return lines.join('\n').trim();
+}
+
+function buildWhatsappMessage(active: Candidate[]): string {
+  const fecha = formatShortDate(new Date().toISOString());
+  
+  const generales = active.filter(c => !c.is_starline);
+  const starline = active.filter(c => c.is_starline);
+
+  const blocks: string[] = [];
+  
+  if (generales.length > 0) {
+    blocks.push(buildWhatsappMessageBlock(`*Resumen de Candidatos Generales* — ${fecha}`, generales, true));
+  }
+  
+  if (starline.length > 0) {
+    blocks.push(buildWhatsappMessageBlock(`*Resumen Proyecto Starline*${generales.length === 0 ? ` — ${fecha}` : ''}`, starline, false));
+  }
+
+  if (blocks.length === 0) {
+    return `*Resumen de Candidatos* — ${fecha}\n\nSin candidatos activos.`;
+  }
+
+  return blocks.join('\n\n-----------------------------------\n\n');
 }
 
 const containerVariants: Variants = {
@@ -226,8 +270,8 @@ export function CandidateReportModal({
   const totalPuestos = groups.reduce((sum, g) => sum + g.rows.length, 0);
   const reclutadoresActivos = recruiters.filter((r) => r.total > 0).length;
   const message = useMemo(
-    () => buildWhatsappMessage(groups, recruiters, totalActivos),
-    [groups, recruiters, totalActivos],
+    () => buildWhatsappMessage(active),
+    [active],
   );
 
   const [copied, setCopied] = useState(false);
