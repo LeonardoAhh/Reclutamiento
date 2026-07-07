@@ -83,20 +83,17 @@
 }
 
 /* ── Icon badge ───────────────────────────────────────────────────
-   Surface-cream-strong circle — same treatment as .badge-pill
-   but circular. Color stays neutral (no brand accent on icons).
+   Minimalist icon, no background circle
    ──────────────────────────────────────────────────────────────── */
-.pwa-update__badge {
+.pwa-update__icon-wrapper {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--control-height);
-  height: var(--control-height);
-  border-radius: var(--rounded-full);
-  background: var(--color-surface-cream-strong);
-  color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
+  align-items: flex-start;
+  padding-top: var(--spacing-xxs);
+}
+
+.pwa-update__icon-success {
+  color: var(--color-success);
 }
 
 /* ── Icon animations ─────────────────────────────────────────────*/
@@ -106,21 +103,8 @@
   }
 }
 
-@keyframes pwa-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
-}
-
 .pwa-update__icon--spin {
   animation: pwa-spin 1s linear infinite;
-}
-.pwa-update__icon--pulse {
-  animation: pwa-pulse 2s ease-in-out infinite;
 }
 
 /* ── Body copy ────────────────────────────────────────────────────*/
@@ -129,51 +113,95 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: 2px;
+}
+
+.pwa-update__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .pwa-update__title {
-  font-size: var(--type-body-sm-size); /* 14px */
+  font-size: var(--type-body-sm-size); /* 15px */
   font-weight: var(--font-semibold);
   line-height: var(--type-body-sm-line);
   color: var(--color-ink);
 }
 
+.pwa-update__btn-dismiss {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.pwa-update__btn-dismiss:hover {
+  color: var(--color-ink);
+}
+
+.pwa-update__version {
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-success);
+  margin-top: 2px;
+}
+
 .pwa-update__desc {
-  font-size: var(--type-caption-md-size); /* 13px */
+  font-size: var(--type-caption-md-size);
   font-weight: var(--type-caption-md-weight);
   line-height: var(--type-caption-md-line);
-  color: var(--color-body);
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
 }
 
 /* ── Actions ──────────────────────────────────────────────────────
-   Update CTA reuses .btn-primary tokens exactly.
-   Dismiss reuses .btn-icon tokens exactly.
-   No duplication — only sizing overrides where needed.
+   Minimalist update CTA
    ──────────────────────────────────────────────────────────────── */
-.pwa-update__actions {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+.pwa-update__btn-update {
+  align-self: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* The update button is a .btn-primary with a tighter height (--control-height)
-   to sit comfortably inside the compact card padding. */
-.pwa-update__btn-update {
-  /* Inherits: background, color, border, font, radius from btn-primary */
-  height: var(--control-height);
-  padding: 0 var(--spacing-md);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
+.pwa-update__btn-update:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-muted-soft);
+}
+
+/* Ensure button is visible in dark mode since surface and surface-soft are similar */
+[data-theme="dark"] .pwa-update__btn-update {
+  background: var(--color-surface-dark); /* Slightly lighter background */
+  color: var(--color-on-dark);
+}
+
+[data-theme="dark"] .pwa-update__btn-update:hover {
+  background: var(--color-surface-dark-elevated);
+  border-color: var(--color-muted);
 }
 
 .pwa-update__btn-update:focus-visible {
   outline: none;
+  border-color: var(--color-primary);
   box-shadow: var(--shadow-focus);
 }
 
-/* Dismiss reuses .btn-icon — just need focus-visible */
 .pwa-update__btn-dismiss:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);

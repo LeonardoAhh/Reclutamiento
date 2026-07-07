@@ -65,29 +65,44 @@ export function SystemUpdateBanner() {
             {info.mensaje && (
               <p className="system-update__desc">{info.mensaje}</p>
             )}
+            
+            {/* Update Action Button placed below the text */}
+            {!requiresReload && (
+              <div className="system-update__action-container">
+                <button
+                  type="button"
+                  className="system-update__btn-update"
+                  onClick={handleReload}
+                >
+                  Actualizar app
+                </button>
+              </div>
+            )}
+            
+            {requiresReload && (
+              <div className="system-update__action-container">
+                <button
+                  type="button"
+                  className="system-update__action system-update__action--mantenimiento"
+                  onClick={handleReload}
+                  data-testid="system-update-reload"
+                >
+                  <RefreshCw size={14} aria-hidden="true" />
+                  Actualizar y recargar
+                </button>
+              </div>
+            )}
           </div>
 
-          {requiresReload ? (
-            <button
-              type="button"
-              className="system-update__action"
-              onClick={handleReload}
-              data-testid="system-update-reload"
-            >
-              <RefreshCw size={14} aria-hidden="true" />
-              Actualizar y recargar
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="system-update__close"
-              onClick={dismiss}
-              aria-label="Entendido, cerrar aviso"
-              data-testid="system-update-dismiss"
-            >
-              <X size={16} aria-hidden="true" />
-            </button>
-          )}
+          <button
+            type="button"
+            className="system-update__close"
+            onClick={dismiss}
+            aria-label="Entendido, cerrar aviso"
+            data-testid="system-update-dismiss"
+          >
+            <X size={16} aria-hidden="true" />
+          </button>
         </motion.aside>
       )}
     </AnimatePresence>

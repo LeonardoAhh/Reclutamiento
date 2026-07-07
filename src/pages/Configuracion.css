@@ -502,7 +502,7 @@
 /* Sidebar */
 .config-sidebar {
   width: 100%;
-  background-color: var(--color-surface-soft);
+  background-color: var(--color-canvas);
   border-bottom: 1px solid var(--color-hairline);
   padding: var(--spacing-lg);
   display: flex;

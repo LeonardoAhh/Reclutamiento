@@ -1,9 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Download, RefreshCw, WifiOff, X, Sparkles } from 'lucide-react';
+import { RefreshCw, WifiOff, X, CheckCircle2 } from 'lucide-react';
 import './PWAStatus.css';
 
 type BannerState = 'idle' | 'available' | 'updating';
+
+interface VersionData {
+  version: string;
+  fecha: string;
+  nivel: string;
+  titulo: string;
+  mensaje: string;
+  notificar: boolean;
+}
 
 /**
  * PWA status banners
@@ -19,6 +28,7 @@ type BannerState = 'idle' | 'available' | 'updating';
 export function PWAStatus() {
   const [updateFn, setUpdateFn] = useState<(() => void) | null>(null);
   const [bannerState, setBannerState] = useState<BannerState>('idle');
+  const [versionData, setVersionData] = useState<VersionData | null>(null);
   const [offline, setOffline] = useState(
     typeof navigator !== 'undefined' ? !navigator.onLine : false,
   );
@@ -28,7 +38,25 @@ export function PWAStatus() {
       const detail = (e as CustomEvent<{ update: () => void }>).detail;
       setUpdateFn(() => detail.update);
       setBannerState('available');
+      
+      // Obtener la información de la nueva versión evadiendo el caché
+      fetch(`/version.json?t=${Date.now()}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) setVersionData(data);
+        })
+        .catch(console.error);
     }
+    
+    // Si queremos probar el banner en local, podemos simular la llamada 
+    // y descomentar esto para ver el estado leyendo version.json:
+    /*
+    fetch(`/version.json?t=${Date.now()}`).then(res => res.json()).then(data => {
+      setVersionData(data);
+      setBannerState('available');
+    });
+    */
+
     function onOnline() {
       setOffline(false);
     }
@@ -48,7 +76,11 @@ export function PWAStatus() {
   }, []);
 
   const handleUpdate = useCallback(() => {
-    if (!updateFn) return;
+    if (!updateFn) {
+      // Si no hay función real (ej. estamos probando UI), recargamos
+      window.location.reload();
+      return;
+    }
     setBannerState('updating');
     updateFn();
   }, [updateFn]);
@@ -83,7 +115,7 @@ export function PWAStatus() {
         {bannerState !== 'idle' && (
           <motion.div
             className="pwa-update"
-            role="status"
+            role="alertdialog"
             aria-live="polite"
             initial={{ y: 72, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -91,56 +123,60 @@ export function PWAStatus() {
             transition={{ type: 'spring', stiffness: 360, damping: 28 }}
           >
             {/* Icon badge */}
-            <div className="pwa-update__badge" aria-hidden="true">
+            <div className="pwa-update__icon-wrapper" aria-hidden="true">
               {bannerState === 'updating' ? (
-                <RefreshCw size={16} className="pwa-update__icon--spin" />
+                <RefreshCw size={22} className="pwa-update__icon--spin pwa-update__icon-success" />
               ) : (
-                <Sparkles size={16} className="pwa-update__icon--pulse" />
+                <CheckCircle2 size={22} className="pwa-update__icon-success" />
               )}
             </div>
 
-            {/* Copy */}
+            {/* Content */}
             <div className="pwa-update__body">
-              <strong className="pwa-update__title">
-                {bannerState === 'updating'
-                  ? 'Actualizando…'
-                  : 'Nueva versión disponible'}
-              </strong>
+              <div className="pwa-update__header">
+                <strong className="pwa-update__title">
+                  {bannerState === 'updating'
+                    ? 'Actualizando…'
+                    : (versionData?.titulo || 'Nueva versión disponible')}
+                </strong>
+                <button
+                  type="button"
+                  className="pwa-update__btn-dismiss"
+                  onClick={handleDismiss}
+                  aria-label="Cerrar"
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
+
+              <span className="pwa-update__version">
+                Actualización · v{versionData?.version || '1.0.0'}
+              </span>
+              
               <span className="pwa-update__desc">
                 {bannerState === 'updating'
-                  ? 'Aplicando cambios, un momento'
-                  : 'Mejoras y correcciones listas para instalar'}
+                  ? 'Aplicando cambios, un momento...'
+                  : (versionData?.mensaje || 'Mejoras y correcciones listas para instalar')}
               </span>
-            </div>
 
-            {/* Actions */}
-            {bannerState === 'available' && (
-              <div className="pwa-update__actions">
+              {/* Action Button */}
+              {bannerState === 'available' && (
                 <button
                   type="button"
-                  className="pwa-update__btn-update btn-primary"
+                  className="pwa-update__btn-update"
                   onClick={handleUpdate}
                 >
-                  <Download size={13} aria-hidden="true" />
-                  Actualizar
+                  Actualizar app
                 </button>
-                <button
-                  type="button"
-                  className="pwa-update__btn-dismiss btn-icon"
-                  onClick={handleDismiss}
-                  aria-label="Descartar actualización"
-                >
-                  <X size={15} aria-hidden="true" />
-                </button>
-              </div>
-            )}
-
-            {/* Indeterminate progress — visible only while updating */}
-            {bannerState === 'updating' && (
-              <div className="pwa-update__progress" aria-hidden="true">
-                <div className="pwa-update__progress-fill" />
-              </div>
-            )}
+              )}
+              
+              {/* Indeterminate progress — visible only while updating */}
+              {bannerState === 'updating' && (
+                <div className="pwa-update__progress" aria-hidden="true">
+                  <div className="pwa-update__progress-fill" />
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
