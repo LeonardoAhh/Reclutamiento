@@ -16,6 +16,7 @@ import {
   Loader,
   FileText,
   ChevronUp,
+  Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -62,7 +63,7 @@ type SidebarProps = {
  * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
  */
 export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProps) {
-  const { username, profile, signOut } = useAuth();
+  const { user, username, signOut } = useAuth();
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
   const location = useLocation();
@@ -193,6 +194,48 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
               </li>
             );
           })}
+
+          {user?.email === 'leonardo@reclutamiento.local' && (
+            <li key="/configuracion">
+              {collapsed ? (
+                <Tooltip content="Configuración" side="right" delayMs={0}>
+                  <NavLink
+                    to="/configuracion"
+                    className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
+                    aria-label="Configuración"
+                  >
+                    {location.pathname.startsWith('/configuracion') && (
+                      <motion.span
+                        layoutId="sidebar-active-indicator"
+                        className="sidebar__item-active-indicator"
+                        aria-hidden="true"
+                        transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                      />
+                    )}
+                    <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
+                    <span className="sidebar__item-label">Configuración</span>
+                  </NavLink>
+                </Tooltip>
+              ) : (
+                <NavLink
+                  to="/configuracion"
+                  className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
+                  aria-label="Configuración"
+                >
+                  {location.pathname.startsWith('/configuracion') && (
+                    <motion.span
+                      layoutId="sidebar-active-indicator"
+                      className="sidebar__item-active-indicator"
+                      aria-hidden="true"
+                      transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                    />
+                  )}
+                  <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
+                  <span className="sidebar__item-label">Configuración</span>
+                </NavLink>
+              )}
+            </li>
+          )}
         </ul>
       </nav>
 

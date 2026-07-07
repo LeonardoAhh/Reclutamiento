@@ -14,6 +14,7 @@ import {
   ClipboardCheck,
   LogOut,
   FileText,
+  Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -59,7 +60,7 @@ const MENU_TABS: ReadonlyArray<TabItem> = [
  */
 export function BottomTabBar() {
   const location = useLocation();
-  const { username, profile, signOut } = useAuth();
+  const { user, username, signOut } = useAuth();
   const { fetchSummaries } = useReporteDiario();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -340,6 +341,28 @@ export function BottomTabBar() {
                   </li>
                 );
               })}
+              {user?.email === 'leonardo@reclutamiento.local' && (
+                <li key="/configuracion">
+                  <NavLink
+                    to="/configuracion"
+                    className={({ isActive }) =>
+                      `bottom-sheet__grid-item${isActive ? ' bottom-sheet__grid-item--active' : ''}`
+                    }
+                    data-testid="bottom-nav-sheet-configuracion"
+                  >
+                    {() => (
+                      <>
+                        <div className="bottom-sheet__grid-icon-wrapper">
+                          <Settings size={28} aria-hidden="true" className="bottom-sheet__grid-icon" />
+                        </div>
+                        <span className="bottom-sheet__grid-label">
+                          Configuración
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </div>
 

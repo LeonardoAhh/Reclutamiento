@@ -23,6 +23,7 @@ import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Documentos } from '@/pages/Documentos';
+import { Configuracion } from '@/pages/Configuracion';
 
 function AdminGuard({ children }: { children: ReactNode }) {
   const { profile, loading } = useAuth();
@@ -87,6 +88,7 @@ function App() {
       <Route path="/rutas" element={<ProtectedShell><Rutas /></ProtectedShell>} />
       <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
       <Route path="/documentos" element={<ProtectedShell><Documentos /></ProtectedShell>} />
+      <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
       <Route path="/kpis" element={<Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
