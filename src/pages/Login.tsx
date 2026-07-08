@@ -2,7 +2,7 @@ import { useState, type FormEvent, useId, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { sileo } from '@/lib/notify';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import './Login.css';
 
 // Valores hex para la API del navegador (<meta name="theme-color">).
@@ -12,7 +12,7 @@ const BROWSER_BAR_LIGHT = '#f6f5f4';
 const BROWSER_BAR_DARK  = '#191817';
 
 // Framer Motion Variants
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -23,7 +23,7 @@ const staggerContainer = {
   }
 };
 
-const staggerItem = {
+const staggerItem: Variants = {
   hidden: { opacity: 0, y: 15 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
