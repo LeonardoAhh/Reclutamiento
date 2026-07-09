@@ -17,8 +17,6 @@ import {
   FileText,
   ChevronUp,
   Sparkles,
-  Volume2,
-  VolumeX,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -71,7 +69,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const [menuOpen, setMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const { soundEnabled, toggleSound, trigger } = useFeedback();
+  const { trigger } = useFeedback();
 
   // Cerrar popover al hacer click fuera
   useEffect(() => {
@@ -277,31 +275,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                 </button>
                 <div className="sidebar__popover-divider-vertical" />
                 
-                <button
-                  type="button"
-                  onClick={() => {
-                    trigger('light');
-                    toggleSound();
-                  }}
-                  className="sidebar__popover-item"
-                  style={{ width: '40px', padding: '0', justifyContent: 'center' }}
-                  title={soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
-                  aria-label={soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={soundEnabled ? 'on' : 'off'}
-                      initial={{ scale: 0, rotate: -45 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      exit={{ scale: 0, rotate: 45 }}
-                      transition={{ duration: 0.15 }}
-                      style={{ display: "inline-flex" }}
-                    >
-                      {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                    </motion.span>
-                  </AnimatePresence>
-                </button>
-                <div className="sidebar__popover-divider-vertical" />
+
 
                 <ThemeToggle />
               </div>
