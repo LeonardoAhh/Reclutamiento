@@ -25,7 +25,7 @@
   justify-content: center;
   text-align: center;
   gap: var(--spacing-lg);
-  padding: max(var(--spacing-xxl), var(--safe-area-top)) var(--spacing-xl) calc(var(--spacing-2xl) + var(--spacing-lg));
+  padding: calc(var(--spacing-xxl) + var(--safe-area-top)) var(--spacing-xl) calc(var(--spacing-2xl) + var(--spacing-lg));
   overflow: hidden;
 }
 

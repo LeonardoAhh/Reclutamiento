@@ -69,7 +69,7 @@ function App() {
 
       <SidebarInset>
         {/* Top bar with global search */}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-hairline bg-canvas/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-canvas/80 sm:px-6">
+        <header className="sticky top-0 z-30 flex min-h-14 pt-[env(safe-area-inset-top)] items-center gap-3 border-b border-hairline bg-canvas/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-canvas/80 sm:px-6">
           <a href="/" className="md:hidden flex items-center justify-center size-8 rounded-md hover:bg-surface-card transition-colors" aria-label="Regresar">
             <ArrowLeft size={18} />
           </a>
