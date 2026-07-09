@@ -421,15 +421,14 @@ export function RutasView() {
     <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
       <header className="rutas-header">
         <h1 className="type-display-lg">Rutas de transporte</h1>
-        <a
-          href="https://rtsq.vercel.app/"
-          target="_blank"
+        <a 
+          href="/horarios/index.html" 
+          target="_blank" 
           rel="noopener noreferrer"
-          className="rutas-external-link"
+          className="btn-secondary"
         >
-          <span className="rutas-external-link__badge">Nuevo</span>
           <ExternalLink size={16} aria-hidden="true" />
-          <span>Hojas de Rutas</span>
+          <span>Horarios</span>
         </a>
       </header>
 

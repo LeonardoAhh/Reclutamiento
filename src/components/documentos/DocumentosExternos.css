@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Design System Tokens (OpenCode) - Scoped for Documentos Externos
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+.documento-imprimible {
+    /* Colors */
+    --doc-color-canvas: #ffffff;
+    --doc-color-surface-soft: #f8f7f7;
+    --doc-color-surface-dark: #201d1d;
+    --doc-color-ink: #201d1d;
+    --doc-color-body: #424245;
+    --doc-color-mute: #646262;
+    --doc-color-hairline: rgba(15,0,0,0.12);
+    --doc-color-hairline-strong: #646262;
+
+    /* Typography */
+    --doc-font-family-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    
+    /* Font Sizes (pt for print optimization) */
+    --doc-text-display-xl: 17pt; 
+    --doc-text-heading-md: 10.5pt;
+    --doc-text-body-md: 9pt;
+    --doc-text-caption-md: 7.5pt;
+    
+    /* Spacing (Base 4px approx) */
+    --doc-spacing-xs: 2pt;
+    --doc-spacing-sm: 4pt;
+    --doc-spacing-md: 6pt;
+    --doc-spacing-lg: 10pt;
+    --doc-spacing-xl: 14pt;
+    --doc-spacing-section: 16pt; /* Compressed for 1-page form */
+
+    /* Borders */
+    --doc-rounded-none: 0;
+    --doc-rounded-sm: 3pt;
+    
+    font-family: var(--doc-font-family-mono);
+    background-color: var(--doc-color-canvas);
+    color: var(--doc-color-body);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-align: left;
+}
+
+.documento-imprimible *, .documento-imprimible *::before, .documento-imprimible *::after {
+    box-sizing: border-box;
+}
+
+.documento-imprimible h1, .documento-imprimible h2, .documento-imprimible h3 {
+    color: var(--doc-color-ink);
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Layout Containers
+   ========================================================================== */
+.documento-imprimible .page-container {
+    width: 21.59cm;
+    min-height: 27.94cm;
+    margin: 2cm auto;
+    padding: 10mm 12mm;
+    background-color: var(--doc-color-canvas);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+
+/* Header */
+.documento-imprimible .page-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--doc-color-hairline);
+    padding-bottom: var(--doc-spacing-md);
+    margin-bottom: var(--doc-spacing-section);
+}
+
+.documento-imprimible .page-header .logo {
+    max-height: 40pt;
+    margin-right: var(--doc-spacing-md);
+}
+
+.documento-imprimible .page-header .title-wrapper {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.documento-imprimible .display-title {
+    font-size: var(--doc-text-display-xl);
+    font-weight: 700;
+}
+
+/* Main Content */
+.documento-imprimible .page-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--doc-spacing-section);
+}
+
+/* Sections */
+.documento-imprimible .card {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.documento-imprimible .card-header {
+    background-color: transparent;
+    color: var(--doc-color-ink);
+    border-bottom: 1px solid var(--doc-color-hairline);
+    padding: 0 0 var(--doc-spacing-xs) 0;
+    font-size: var(--doc-text-heading-md);
+    font-weight: 700;
+    margin-bottom: var(--doc-spacing-lg);
+}
+
+/* Grids */
+.documento-imprimible .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--doc-spacing-xl);
+}
+
+.documento-imprimible .grid-cols {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Data Rows */
+.documento-imprimible .data-row {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: var(--doc-spacing-xs);
+    padding-top: var(--doc-spacing-xs);
+}
+
+.documento-imprimible .data-label {
+    font-weight: 700;
+    color: var(--doc-color-ink);
+    font-size: var(--doc-text-body-md);
+    width: 45%;
+    flex-shrink: 0;
+}
+
+.documento-imprimible .data-value {
+    color: var(--doc-color-body);
+    font-size: var(--doc-text-body-md);
+    flex-grow: 1;
+    border-bottom: 1px solid var(--doc-color-hairline-strong);
+    min-height: 12pt;
+    margin-left: 4pt;
+}
+
+/* ASCII Toggles */
+.documento-imprimible .ascii-toggle {
+    font-weight: 500;
+    color: var(--doc-color-ink);
+    font-size: var(--doc-text-body-md);
+    display: inline-block;
+    padding: 0 var(--doc-spacing-sm);
+}
+
+/* Footer & Declarations */
+.documento-imprimible .page-footer {
+    margin-top: 24pt;
+    padding-top: var(--doc-spacing-lg);
+}
+
+.documento-imprimible .declaration {
+    background-color: transparent;
+    border: 1px solid var(--doc-color-hairline);
+    border-radius: var(--doc-rounded-none);
+    padding: var(--doc-spacing-md);
+    font-size: var(--doc-text-caption-md);
+    color: var(--doc-color-mute);
+    text-align: justify;
+    margin-bottom: var(--doc-spacing-lg);
+}
+
+.documento-imprimible .declaration strong {
+    color: var(--doc-color-ink);
+}
+
+.documento-imprimible .signature-container {
+    display: flex;
+    justify-content: center;
+}
+
+.documento-imprimible .signature-block {
+    text-align: center;
+}
+
+.documento-imprimible .signature-line {
+    border-bottom: 1px solid var(--doc-color-ink);
+    width: 250pt;
+    height: 30pt;
+    margin-bottom: var(--doc-spacing-xs);
+}
+
+.documento-imprimible .signature-label {
+    font-size: var(--doc-text-body-md);
+    font-weight: 700;
+    color: var(--doc-color-ink);
+}

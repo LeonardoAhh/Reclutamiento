@@ -857,3 +857,43 @@
   flex-direction: column;
   gap: var(--spacing-md);
 }
+
+/* ── Documentos View Toolbar ──────────────────────────────────── */
+
+.documentos-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+}
+
+.documentos-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.documentos-tabs .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .documentos-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .documentos-tabs {
+    flex-direction: row;
+    width: auto;
+    gap: var(--spacing-sm);
+  }
+  
+  .documentos-tabs .btn {
+    width: auto;
+  }
+}

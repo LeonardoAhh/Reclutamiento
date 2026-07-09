@@ -2192,22 +2192,6 @@
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
-    "numero empleado": "4243",
-    "nombre": "RAMIREZ CHAVEZ MANUEL ALEXANDER",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
-  },
-  {
-    "numero empleado": "4244",
-    "nombre": "DIAZ PEREZ GENARO",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
-  },
-  {
     "numero empleado": "4246",
     "nombre": "FABIAN SANCHEZ ALAN",
     "turno": "2",
@@ -2334,21 +2318,5 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4264",
-    "nombre": "GUERRERO GUERRERO JUAN CARLOS",
-    "turno": "4",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "MONTENEGRO",
-    "parada": "LONCHERIA LILI"
-  },
-  {
-    "numero empleado": "4266",
-    "nombre": "AGUILLON HERNANDEZ REYNA ELIZABETH",
-    "turno": "2",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   }
 ]
