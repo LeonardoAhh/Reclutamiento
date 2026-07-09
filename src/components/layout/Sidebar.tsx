@@ -17,6 +17,7 @@ import {
   FileText,
   ChevronUp,
   Sparkles,
+  Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -193,32 +194,16 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
             );
           })}
 
-          {user?.email === 'leonardo@reclutamiento.local' && (
-            <li key="/features">
-              {collapsed ? (
-                <Tooltip content="Features" side="right" delayMs={0}>
-                  <NavLink
-                    to="/features"
-                    className={`sidebar__item${location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''}`}
-                    aria-label="Features"
-                  >
-                    {location.pathname.startsWith('/features') && (
-                      <motion.span
-                        layoutId="sidebar-active-indicator"
-                        className="sidebar__item-active-indicator"
-                        aria-hidden="true"
-                        transition={{ type: 'spring', stiffness: 480, damping: 34 }}
-                      />
-                    )}
-                    <Sparkles size={20} aria-hidden="true" className="sidebar__item-icon" />
-                    <span className="sidebar__item-label">Features</span>
-                  </NavLink>
-                </Tooltip>
-              ) : (
+          <li key="/features">
+            {collapsed ? (
+              <Tooltip content="Features" side="right" delayMs={0}>
                 <NavLink
                   to="/features"
-                  className={`sidebar__item${location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''}`}
+                  className={`sidebar__item${
+                    location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''
+                  }`}
                   aria-label="Features"
+                  data-testid="sidebar-nav-features"
                 >
                   {location.pathname.startsWith('/features') && (
                     <motion.span
@@ -228,12 +213,32 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                       transition={{ type: 'spring', stiffness: 480, damping: 34 }}
                     />
                   )}
-                  <Sparkles size={20} aria-hidden="true" className="sidebar__item-icon" />
+                  <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
                   <span className="sidebar__item-label">Features</span>
                 </NavLink>
-              )}
-            </li>
-          )}
+              </Tooltip>
+            ) : (
+              <NavLink
+                to="/features"
+                className={`sidebar__item${
+                  location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''
+                }`}
+                aria-label="Features"
+                data-testid="sidebar-nav-features"
+              >
+                {location.pathname.startsWith('/features') && (
+                  <motion.span
+                    layoutId="sidebar-active-indicator"
+                    className="sidebar__item-active-indicator"
+                    aria-hidden="true"
+                    transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                  />
+                )}
+                <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
+                <span className="sidebar__item-label">Features</span>
+              </NavLink>
+            )}
+          </li>
         </ul>
       </nav>
 
