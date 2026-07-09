@@ -5,7 +5,6 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Modal } from './Modal';
 import { Badge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
@@ -19,7 +18,7 @@ import type {
   DepartmentCoverage,
   PositionComment,
 } from '@/lib/types';
-import './AreaDetailModal.css';
+import './AreaDetailView.css';
 
 /**
  * Status que cuentan como "candidato activo" para mostrar el badge de
@@ -34,8 +33,7 @@ const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<Candidat
   'feedback_pendiente',
 ]);
 
-interface AreaDetailModalProps {
-  isOpen: boolean;
+interface AreaDetailViewProps {
   dept: DepartmentCoverage | null;
   comments: PositionComment[];
   /**
@@ -44,8 +42,8 @@ interface AreaDetailModalProps {
    * sección) para mostrar el badge "EN PROCESO (N)" en el row.
    */
   candidates?: Candidate[];
-  onClose: () => void;
   onOpenComment: (area: string, seccion: string, puesto: string) => void;
+  onBack?: () => void;
   getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
   /** Mapa sección -> # empleados en incapacidad dentro del área activa. */
   incapacidadPorSeccion?: Map<string, number> | null;
@@ -55,17 +53,16 @@ interface AreaDetailModalProps {
 
 const ALL_TAB = '__all__';
 
-export function AreaDetailModal({
-  isOpen,
+export function AreaDetailView({
   dept,
   comments,
   candidates = [],
-  onClose,
   onOpenComment,
+  onBack,
   getCoverageBadge,
   incapacidadPorSeccion = null,
   incapacidadAreaTotal = 0,
-}: AreaDetailModalProps) {
+}: AreaDetailViewProps) {
   const tablistRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
@@ -87,8 +84,8 @@ export function AreaDetailModal({
   // Cada departamento ya está dividido por secciones, así que no hay tab "Todas":
   // al abrir un área se selecciona su primera sección.
   useEffect(() => {
-    if (isOpen) setActiveTab(secciones[0] ?? '');
-  }, [isOpen, dept?.area, secciones]);
+    setActiveTab(secciones[0] ?? '');
+  }, [dept?.area, secciones]);
 
   const visiblePuestos = useMemo(() => {
     if (!dept) return [];
@@ -218,8 +215,6 @@ export function AreaDetailModal({
       ? `area-tab-${activeTabIndex}`
       : 'area-detail-list-title';
 
-  const useModal = !isMobile;
-
   type Puesto = DepartmentCoverage['puestos'][number];
 
   const commentsFor = (pos: Puesto) =>
@@ -314,10 +309,19 @@ export function AreaDetailModal({
 
   const coverageColor = getCoverageColor(dept.porcentaje_cobertura);
 
-  const modalContent = (
-    <>
+  return (
+    <section className="area-detail-view config-page__content">
+      <header className="config-page__header" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+        {onBack && (
+          <button type="button" className="btn-icon" onClick={onBack} aria-label="Volver al resumen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+        )}
+        <h2 className="type-heading-md text-ink m-0">{dept.area}</h2>
+      </header>
+
       <section
-        className="area-detail-modal__summary"
+        className="area-detail-modal__summary mt-md"
         aria-labelledby="area-detail-summary-title"
       >
         <div className="area-detail-modal__summary-heading">
@@ -640,38 +644,6 @@ export function AreaDetailModal({
           </div>
         )}
       </section>
-    </>
-  );
-
-  if (useModal) {
-    return (
-      <Modal
-        isOpen={isOpen}
-        title={dept.area}
-        subtitle="Detalle por sección"
-        onClose={onClose}
-        className="area-detail-modal"
-      >
-        <div className="modal-body area-detail-modal-body">
-          {modalContent}
-        </div>
-      </Modal>
-    );
-  }
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      title={dept.area}
-      subtitle="Detalle por sección"
-      onClose={onClose}
-      className="area-detail-modal"
-      size="xl"
-      fullscreenMobile={true}
-    >
-      <div className="modal-body area-detail-modal-body">
-        {modalContent}
-      </div>
-    </Modal>
+    </section>
   );
 }

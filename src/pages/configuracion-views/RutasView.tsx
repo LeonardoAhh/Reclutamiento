@@ -349,7 +349,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
    Main component
 ───────────────────────────────────────── */
 
-export function Rutas() {
+export function RutasView() {
   const { rutas, loading, errorMsg } = useRutas();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -418,7 +418,7 @@ export function Rutas() {
   }
 
   return (
-    <main className="rutas-page container" id="main-content" tabIndex={-1}>
+    <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
       <header className="rutas-header">
         <h1 className="type-display-lg">Rutas de transporte</h1>
         <a
@@ -540,6 +540,6 @@ export function Rutas() {
         onClose={() => setIsModalOpen(false)}
         ruta={selectedRuta}
       />
-    </main>
+    </section>
   );
 }

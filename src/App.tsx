@@ -14,15 +14,11 @@ import { SplashScreen } from '@/components/ui/SplashScreen';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
-import { Toulouse } from '@/pages/Toulouse';
 import { Bajas } from '@/pages/Bajas';
-import { Empleados } from '@/pages/Empleados';
 import { Transporte } from '@/pages/Transporte';
-import { Rutas } from '@/pages/Rutas';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
-import { Documentos } from '@/pages/Documentos';
 import { Configuracion } from '@/pages/Configuracion';
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 
@@ -80,17 +76,19 @@ function App() {
         }
       />
       <Route path="/" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
-      <Route path="/dashboard" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
+      <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
       <Route path="/pipeline" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
       <Route path="/vacantes" element={<ProtectedShell><Vacantes /></ProtectedShell>} />
-      <Route path="/toulouse" element={<ProtectedShell><Toulouse /></ProtectedShell>} />
+      <Route path="/toulouse" element={<Navigate to="/features" replace />} />
       <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
-      <Route path="/empleados" element={<ProtectedShell><Empleados /></ProtectedShell>} />
+      <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
       <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
-      <Route path="/rutas" element={<ProtectedShell><Rutas /></ProtectedShell>} />
+      <Route path="/rutas" element={<Navigate to="/features" replace />} />
       <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
-      <Route path="/documentos" element={<ProtectedShell><Documentos /></ProtectedShell>} />
-      <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
+      <Route path="/documentos" element={<Navigate to="/features" replace />} />
+      <Route path="/features" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
+      <Route path="/configuracion" element={<Navigate to="/features" replace />} />
+      <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
       <Route path="/kpis" element={<Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

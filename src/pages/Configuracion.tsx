@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Navigate } from 'react-router-dom';
-import { Sparkles, Search, BarChart2 } from 'lucide-react';
+import { Sparkles, Search, BarChart2, Wallet, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BusquedaView } from './configuracion-views/BusquedaView';
 import { IndicadoresView } from './configuracion-views/IndicadoresView';
+import { TabuladorView } from './configuracion-views/TabuladorView';
+import { DocumentosView } from './configuracion-views/DocumentosView';
+import { ToulouseView } from './configuracion-views/ToulouseView';
+import { RutasView } from './configuracion-views/RutasView';
+import { ClipboardCheck, Bus } from 'lucide-react';
 import './Configuracion.css';
 
 export function Configuracion() {
-  const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'busqueda' | 'indicadores'>('busqueda');
+  const { loading } = useAuth();
+  const [activeTab, setActiveTab] = useState<'busqueda' | 'indicadores' | 'tabulador' | 'documentos' | 'toulouse' | 'rutas'>('busqueda');
 
   if (loading) {
     return (
@@ -21,10 +25,7 @@ export function Configuracion() {
     );
   }
 
-  // Protección exclusiva para el usuario específico
-  if (user?.email !== 'leonardo@reclutamiento.local') {
-    return <Navigate to="/" replace />;
-  }
+  // Protección exclusiva removida por petición del usuario
 
   return (
     <div className="config-layout">
@@ -40,7 +41,15 @@ export function Configuracion() {
             aria-current={activeTab === 'busqueda' ? 'page' : undefined}
           >
             <Search size={18} aria-hidden="true" />
-            <span>Búsqueda Global</span>
+            <span>Búsqueda</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'documentos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('documentos')}
+            aria-current={activeTab === 'documentos' ? 'page' : undefined}
+          >
+            <FileText size={18} aria-hidden="true" />
+            <span>Documentos</span>
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'indicadores' ? 'active' : ''}`}
@@ -49,6 +58,30 @@ export function Configuracion() {
           >
             <BarChart2 size={18} aria-hidden="true" />
             <span>Indicadores</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'rutas' ? 'active' : ''}`}
+            onClick={() => setActiveTab('rutas')}
+            aria-current={activeTab === 'rutas' ? 'page' : undefined}
+          >
+            <Bus size={18} aria-hidden="true" />
+            <span>Rutas</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'tabulador' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tabulador')}
+            aria-current={activeTab === 'tabulador' ? 'page' : undefined}
+          >
+            <Wallet size={18} aria-hidden="true" />
+            <span>Tabulador</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'toulouse' ? 'active' : ''}`}
+            onClick={() => setActiveTab('toulouse')}
+            aria-current={activeTab === 'toulouse' ? 'page' : undefined}
+          >
+            <ClipboardCheck size={18} aria-hidden="true" />
+            <span>Toulouse</span>
           </button>
         </nav>
       </aside>
@@ -65,6 +98,10 @@ export function Configuracion() {
           >
             {activeTab === 'busqueda' && <BusquedaView />}
             {activeTab === 'indicadores' && <IndicadoresView />}
+            {activeTab === 'tabulador' && <TabuladorView />}
+            {activeTab === 'documentos' && <DocumentosView />}
+            {activeTab === 'toulouse' && <ToulouseView />}
+            {activeTab === 'rutas' && <RutasView />}
           </motion.div>
         </AnimatePresence>
       </main>

@@ -41,12 +41,8 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/',               label: 'Reclutamiento',           icon: BarChart3,       end: true },
   { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/pipeline',       label: 'Candidatos',     icon: Users },
-  { to: '/dashboard',      label: 'Plantilla',      icon: LayoutDashboard },
+  { to: '/plantilla',      label: 'Plantilla',      icon: LayoutDashboard },
   { to: '/vacantes',       label: 'Vacantes',       icon: Briefcase },
-  { to: '/empleados',      label: 'Empleados',      icon: Contact },
-  { to: '/rutas',          label: 'Rutas',          icon: Map },
-  { to: '/toulouse',       label: 'Toulouse-Piéron', icon: ClipboardCheck },
-  { to: '/documentos',     label: 'Documentos',     icon: FileText },
 ];
 
 type SidebarProps = {
@@ -196,15 +192,15 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           })}
 
           {user?.email === 'leonardo@reclutamiento.local' && (
-            <li key="/configuracion">
+            <li key="/features">
               {collapsed ? (
                 <Tooltip content="Features" side="right" delayMs={0}>
                   <NavLink
-                    to="/configuracion"
-                    className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
+                    to="/features"
+                    className={`sidebar__item${location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''}`}
                     aria-label="Features"
                   >
-                    {location.pathname.startsWith('/configuracion') && (
+                    {location.pathname.startsWith('/features') && (
                       <motion.span
                         layoutId="sidebar-active-indicator"
                         className="sidebar__item-active-indicator"
@@ -218,11 +214,11 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                 </Tooltip>
               ) : (
                 <NavLink
-                  to="/configuracion"
-                  className={`sidebar__item${location.pathname.startsWith('/configuracion') ? ' sidebar__item--active' : ''}`}
+                  to="/features"
+                  className={`sidebar__item${location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''}`}
                   aria-label="Features"
                 >
-                  {location.pathname.startsWith('/configuracion') && (
+                  {location.pathname.startsWith('/features') && (
                     <motion.span
                       layoutId="sidebar-active-indicator"
                       className="sidebar__item-active-indicator"

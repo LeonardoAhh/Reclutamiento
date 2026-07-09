@@ -92,7 +92,7 @@ function EmployeeCards({
 
 
 
-export function Empleados() {
+export function EmpleadosView() {
   const {
     employees,
     loading,
@@ -228,7 +228,7 @@ export function Empleados() {
 
   if (loading && employees.length === 0) {
     return (
-      <main className="empleados container" id="page-empleados">
+      <section className="empleados config-page__content" id="page-empleados">
         <section className="empleados__hero">
           <div>
             <h1 className="empleados__title">Empleados</h1>
@@ -257,12 +257,12 @@ export function Empleados() {
         ) : (
           <SkeletonCardList items={6} />
         )}
-      </main>
+      </section>
     );
   }
 
   return (
-    <main className="empleados container" id="page-empleados">
+    <section className="empleados config-page__content" id="page-empleados">
       <section className="empleados__hero">
         <div>
           <h1 className="empleados__title">Empleados</h1>
@@ -420,6 +420,6 @@ export function Empleados() {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDeleteEmployee}
       />
-    </main>
+    </section>
   );
 }

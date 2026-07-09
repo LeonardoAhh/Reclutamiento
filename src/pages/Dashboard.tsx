@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users,
   ChevronRight,
@@ -12,7 +12,7 @@ import {
   Pencil,
   ClipboardList,
   Clock,
-  CalendarClock,
+  Contact,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import { Badge } from '@/components/ui/Badge';
@@ -21,7 +21,8 @@ import { JsonImporter } from '@/components/ui/JsonImporter';
 import { TurnosImporter } from '@/components/turnos/TurnosImporter';
 import { EmployeeModal } from '@/components/ui/EmployeeModal';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
-import { AreaDetailModal } from '@/components/ui/AreaDetailModal';
+import { AreaDetailView } from '@/components/ui/AreaDetailView';
+import { EmpleadosView } from '@/pages/plantilla-views/EmpleadosView';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import Avatar from 'boring-avatars';
 import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
@@ -90,7 +91,7 @@ export function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
-  const [activeArea, setActiveArea] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('general');
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
     seccion: string;
@@ -309,72 +310,70 @@ export function Dashboard() {
     editTarget === null;
 
   return (
-    <main className="dashboard container" id="dashboard-main">
-      {/* ── Hero Band ── */}
-      <section className="dashboard__hero" id="dashboard-hero">
-        <div className="dashboard__hero-content">
-          <h1>Plantilla</h1>
-        </div>
-        <div className="dashboard__hero-actions">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => {
-              setSelectedEmployee(null);
-              setEmpModalMode('add');
-            }}
-            title="Nuevo empleado"
-          >
-            <UserPlusIcon size={16} aria-hidden="true" />
-          </button>
-          {/* Oculto, pero presente */}
-  <span style={{ display: 'none' }}>
-    <JsonImporter onImport={handleImport} />
-  </span>
-          <motion.button
-            type="button"
-            className="btn-secondary dashboard__report-btn"
-            onClick={() => setTurnosImporterOpen(true)}
-            title="Importar turnos por clave de horario"
-            aria-label="Importar turnos"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <Clock size={16} aria-hidden="true" />
-          </motion.button>
-          <motion.button
-            type="button"
-            className="btn-secondary dashboard__report-btn"
-            onClick={() => setVacancyReportOpen(true)}
-            title="Resumen de vacantes para WhatsApp"
-            aria-label="Abrir resumen de vacantes"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <ClipboardList size={16} aria-hidden="true" />
-          </motion.button>
-        </div>
-      </section>
+    <div className="config-layout plantilla-layout">
+      <aside className="config-sidebar" aria-label="Menú de Plantilla">
+        <header className="config-sidebar__header" style={{ marginBottom: 'var(--spacing-md)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-xs)', flexWrap: 'wrap', width: '100%' }}>
+            <h1 className="type-heading-sm m-0" style={{flex: 1}}>Plantilla</h1>
+            <div className="dashboard__hero-actions" style={{ display: 'flex', gap: '8px' }}>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setSelectedEmployee(null);
+                  setEmpModalMode('add');
+                }}
+                title="Nuevo empleado"
+                style={{ padding: '0 var(--spacing-sm)' }}
+              >
+                <UserPlusIcon size={16} aria-hidden="true" />
+              </button>
+              <span style={{ display: 'none' }}>
+                <JsonImporter onImport={handleImport} />
+              </span>
+              <motion.button
+                type="button"
+                className="btn-secondary dashboard__report-btn"
+                onClick={() => setTurnosImporterOpen(true)}
+                title="Importar turnos por clave de horario"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                style={{ padding: '0 var(--spacing-sm)' }}
+              >
+                <Clock size={16} aria-hidden="true" />
+              </motion.button>
+              <motion.button
+                type="button"
+                className="btn-secondary dashboard__report-btn"
+                onClick={() => setVacancyReportOpen(true)}
+                title="Resumen de vacantes"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                style={{ padding: '0 var(--spacing-sm)' }}
+              >
+                <ClipboardList size={16} aria-hidden="true" />
+              </motion.button>
+            </div>
+          </div>
+        </header>
 
-      {/* ── Search & Filter ── */}
-      <section className="dashboard__controls" id="dashboard-controls">
-        <div className="dashboard__search">
-          <Search size={16} className="dashboard__search-icon" aria-hidden="true" />
-          <label htmlFor="search-input" className="sr-only">
-            Buscar empleado, puesto o sección
-          </label>
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Buscar por nombre, número de empleado, puesto o área..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="dashboard__search-input"
-            autoComplete="off"
-            aria-haspopup="listbox"
-            aria-expanded={showSearchDropdown}
-            aria-label="Buscar en la plantilla"
-          />
+        <div className="config-search" style={{ padding: '0 var(--spacing-sm)', marginBottom: 'var(--spacing-md)' }}>
+          <div className="config-search__wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <Search size={16} className="text-muted" style={{ position: 'absolute', left: 'var(--spacing-sm)', pointerEvents: 'none' }} aria-hidden="true" />
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Buscar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="dashboard__search-input"
+              style={{ width: '100%', paddingLeft: 'calc(var(--spacing-lg) + var(--spacing-xs))' }}
+              autoComplete="off"
+              aria-haspopup="listbox"
+              aria-expanded={showSearchDropdown}
+              aria-label="Buscar en la plantilla"
+            />
+          </div>
           {showSearchDropdown && (
             <div className="dashboard__search-dropdown" role="listbox" aria-label="Resultados de búsqueda">
               <div className="search-dropdown__head" aria-hidden="true">Resultados de búsqueda</div>
@@ -457,24 +456,37 @@ export function Dashboard() {
             </div>
           )}
         </div>
-        <div className="dashboard__filter">
-          <Filter size={16} aria-hidden="true" />
-          <label htmlFor="filter-area" className="sr-only">
-            Filter by department area
-          </label>
-          <CustomSelect
-            id="filter-area"
-            value={filterArea}
-            onChange={setFilterArea}
-            options={areas.map((a) => ({ value: a, label: a }))}
-            placeholder="Filter"
-            className="dashboard__filter-select"
-          />
-        </div>
-      </section>
 
-      {/* ── Department Cards ── */}
-      <section className="dashboard__departments" id="dashboard-departments">
+        <nav className="config-sidebar__nav">
+          <button
+            className={`config-sidebar__link ${activeTab === 'general' ? 'active' : ''}`}
+            onClick={() => setActiveTab('general')}
+          >
+            <Users size={18} aria-hidden="true" />
+            <span>Plantilla Activa</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
+            onClick={() => setActiveTab('empleados')}
+          >
+            <Contact size={18} aria-hidden="true" />
+            <span>Empleados</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main className="config-main" aria-label="Contenido principal">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%', padding: 'var(--spacing-md)' }}
+          >
+            {activeTab === 'general' && (
+              <section className="dashboard__departments" id="dashboard-departments">
         {filteredDepts.length === 0 && employees.length === 0 && (
           <div className="dashboard__empty" id="dashboard-empty">
             <Users size={48} strokeWidth={1} />
@@ -495,31 +507,34 @@ export function Dashboard() {
           <DepartmentCard
             key={dept.area}
             dept={dept}
-            onOpen={() => setActiveArea(dept.area)}
+            onOpen={() => setActiveTab(dept.area)}
             getCoverageBadge={getCoverageBadge}
             incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
           />
         ))}
       </section>
-
-      {/* ── Area Detail Modal (Tabs) ── */}
-      <AreaDetailModal
-        isOpen={activeArea !== null}
-        dept={filteredDepts.find((d) => d.area === activeArea) ?? null}
-        comments={comments}
-        candidates={candidates}
-        onClose={() => setActiveArea(null)}
-        onOpenComment={(area, seccion, puesto) =>
-          setCommentTarget({ area, seccion, puesto })
-        }
-        getCoverageBadge={getCoverageBadge}
-        incapacidadPorSeccion={
-          activeArea ? incapacidadPorAreaSeccion.get(activeArea) ?? null : null
-        }
-        incapacidadAreaTotal={
-          activeArea ? incapacidadPorArea.get(activeArea) ?? 0 : 0
-        }
-      />
+            )}
+            {activeTab === 'empleados' && <EmpleadosView />}
+            {activeTab !== 'general' && activeTab !== 'empleados' && (
+              <AreaDetailView
+                dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
+                comments={comments}
+                candidates={candidates}
+                onOpenComment={(area, seccion, puesto) =>
+                  setCommentTarget({ area, seccion, puesto })
+                }
+                onBack={() => setActiveTab('general')}
+                getCoverageBadge={getCoverageBadge}
+                incapacidadPorSeccion={
+                  activeTab !== 'general' ? incapacidadPorAreaSeccion.get(activeTab) ?? null : null
+                }
+                incapacidadAreaTotal={
+                  activeTab !== 'general' ? incapacidadPorArea.get(activeTab) ?? 0 : 0
+                }
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
 
       {/* ── Incapacidad Modal ── */}
       <IncapacidadModal
@@ -588,7 +603,8 @@ export function Dashboard() {
         employees={employees}
         onConfirm={assignTurnos}
       />
-    </main>
+      </main>
+    </div>
   );
 }
 

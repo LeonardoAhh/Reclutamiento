@@ -40,13 +40,10 @@ const PRIMARY_TABS: ReadonlyArray<TabItem> = [
 
 /** Resto de accesos, dentro del menú desplegable. */
 const MENU_TABS: ReadonlyArray<TabItem> = [
-  { to: '/dashboard', label: 'Plantilla', icon: LayoutDashboard },
+  { to: '/plantilla', label: 'Plantilla', icon: LayoutDashboard },
   { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/empleados', label: 'Empleados', icon: Contact },
-  { to: '/rutas', label: 'Rutas', icon: Map },
-  { to: '/toulouse', label: 'Toulouse', icon: ClipboardCheck },
-  { to: '/documentos', label: 'Documentos', icon: FileText },
+  { to: '/features',       label: 'Features',       icon: Settings },
 ];
 
 /**
@@ -342,9 +339,9 @@ export function BottomTabBar() {
                 );
               })}
               {user?.email === 'leonardo@reclutamiento.local' && (
-                <li key="/configuracion">
+                <li key="/features">
                   <NavLink
-                    to="/configuracion"
+                    to="/features"
                     className={({ isActive }) =>
                       `bottom-sheet__grid-item${isActive ? ' bottom-sheet__grid-item--active' : ''}`
                     }

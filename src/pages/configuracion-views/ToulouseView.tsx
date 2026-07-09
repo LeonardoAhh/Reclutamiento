@@ -20,7 +20,7 @@ import './Toulouse.css';
 
 type Variant = 'candidato' | 'correccion';
 
-export function Toulouse() {
+export function ToulouseView() {
   const { profile, username } = useAuth();
   const { sheets, save, remove } = useToulouseSheets();
 
@@ -104,7 +104,7 @@ export function Toulouse() {
   }
 
   return (
-    <main className="tp-page">
+    <section className="tp-page config-page__content">
       <section className="tp-page__hero tp-no-print">
         <div>
           <h1>Toulouse-Piéron</h1>
@@ -364,6 +364,6 @@ export function Toulouse() {
         </div>,
         document.body
       )}
-    </main>
+    </section>
   );
 }

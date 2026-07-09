@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, FileText } from 'lucide-react';
 
 /* ── Tipado mínimo para html2canvas ── */
 type Html2CanvasFn = (
@@ -45,7 +45,7 @@ function useHtml2CanvasLoader() {
   return load;
 }
 
-export function Documentos() {
+export function DocumentosView() {
   const constanciaRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -125,9 +125,17 @@ export function Documentos() {
   const hasError = status === 'error';
 
   return (
-    <main className="container documentos-page">
-      <header className="documentos-header">
-        <h1 className="type-display-lg text-ink">Documentos</h1>
+    <section className="documentos-view config-page__content">
+      <header className="config-page__header" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
+        <div>
+          <h2 className="type-heading-md text-ink" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+            <FileText size={24} className="text-primary" />
+            Documentos
+          </h2>
+          <p className="type-body-sm text-muted mt-xxs">
+            Genera y descarga documentos oficiales como la constancia de situación fiscal.
+          </p>
+        </div>
 
         <button
           type="button"
@@ -166,6 +174,6 @@ export function Documentos() {
       >
         <ConstanciaFiscal />
       </section>
-    </main>
+    </section>
   );
 }
