@@ -267,80 +267,97 @@
 .bottom-sheet__content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-lg) var(--spacing-md);
+  padding: var(--spacing-md) 0;
 }
 
-.bottom-sheet__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
+.bottom-sheet__list {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid var(--color-hairline);
 }
 
-.bottom-sheet__grid-item {
+.bottom-sheet__list-item-wrapper {
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.bottom-sheet__list-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg) var(--spacing-xs);
-  text-align: center;
+  gap: var(--spacing-md);
+  min-height: 56px;
+  padding: 0 var(--spacing-lg);
   text-decoration: none;
-  background: var(--color-surface-soft);
-  border-radius: var(--rounded-2xl, 16px);
+  background: transparent;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
-.bottom-sheet__grid-item:hover,
-.bottom-sheet__grid-item:focus-visible {
+.bottom-sheet__list-item:hover,
+.bottom-sheet__list-item:focus-visible {
   background: var(--color-surface-hover, var(--color-hairline-soft));
-  transform: translateY(-2px);
   outline: none;
 }
 
-.bottom-sheet__grid-item--active {
+.bottom-sheet__list-item--active {
   background: var(--color-primary-tint);
-  color: var(--color-primary);
 }
 
-.bottom-sheet__grid-icon-wrapper {
+.bottom-sheet__list-icon-wrapper {
   position: relative;
-  display: inline-flex;
-}
-
-.bottom-sheet__grid-icon {
-  color: var(--color-charcoal);
-}
-
-.bottom-sheet__grid-item--active .bottom-sheet__grid-icon {
-  color: var(--color-primary);
-}
-
-.bottom-sheet__grid-badge {
-  position: absolute;
-  top: -6px;
-  right: -10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  background: var(--color-error);
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 50%;
-  border: 2px solid var(--color-surface-soft);
 }
 
-.bottom-sheet__grid-label {
-  font-size: var(--type-body-sm-size);
+.bottom-sheet__list-icon {
+  color: var(--color-charcoal);
+  transition: color var(--transition-fast);
+}
+
+.bottom-sheet__list-item--active .bottom-sheet__list-icon {
+  color: var(--color-primary);
+}
+
+.bottom-sheet__list-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--color-error);
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  border-radius: 50%;
+  border: 1px solid var(--color-surface);
+}
+
+.bottom-sheet__list-label {
+  flex: 1;
+  text-align: left;
+  font-size: var(--type-body-md-size);
   font-weight: var(--font-medium);
   color: var(--color-ink);
-  line-height: 1.2;
+}
+
+.bottom-sheet__list-item--active .bottom-sheet__list-label {
+  color: var(--color-primary);
+}
+
+.bottom-sheet__list-chevron {
+  color: var(--color-muted-soft);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.bottom-sheet__list-item--active .bottom-sheet__list-chevron {
+  color: var(--color-primary);
+  transform: translateX(2px);
 }
 
 .bottom-sheet__footer {
@@ -349,26 +366,29 @@
   border-top: 1px solid var(--color-hairline);
 }
 
+.bottom-sheet__footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .bottom-sheet__signout {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--spacing-sm);
-  width: 100%;
   min-height: 48px;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-xs);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-error);
-  background: var(--color-error-tint);
+  background: transparent;
   border: none;
-  border-radius: var(--rounded-lg);
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-fast), color var(--transition-fast);
 }
 
 .bottom-sheet__signout:hover {
-  opacity: 0.8;
+  color: var(--color-error-strong, #dc2626);
 }
 
 .bottom-sheet__signout:disabled {

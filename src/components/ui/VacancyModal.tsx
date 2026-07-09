@@ -6,6 +6,9 @@ import {
   AlertCircle,
   History,
   ArrowRight,
+  Info,
+  AlertTriangle,
+  Save,
 } from 'lucide-react';
 import type {
   VacancyRequest,
@@ -32,6 +35,7 @@ import {
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect } from './CustomSelect';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import './VacancyModal.css';
@@ -123,6 +127,7 @@ export function VacancyModal({
 }: VacancyModalProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
@@ -156,6 +161,7 @@ export function VacancyModal({
     if (!isOpen) return;
     setErrorMsg(null);
     setSubmitting(false);
+    setIsSuccess(false);
     setForm(vacancy ? fromVacancy(vacancy) : emptyForm());
   }, [isOpen, vacancy, mode]);
 
@@ -180,12 +186,17 @@ export function VacancyModal({
       setSubmitting(true);
 
       if (mode === 'delete' && onDelete && vacancy?.id) {
+        // Retraso artificial para que se note la animación
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const result = await onDelete(vacancy.id);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
         return;
       }
 
@@ -220,14 +231,21 @@ export function VacancyModal({
             ? form.motivo_exclusion.trim() || 'Sin seguimiento del área'
             : null,
         };
+
+        // Retraso artificial para que se note la animación
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const result = await onSave(payload, vacancy?.id);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
       }
-    } finally {
+    } catch (err) {
+      setErrorMsg('Error inesperado.');
       setSubmitting(false);
     }
   }
@@ -571,14 +589,17 @@ export function VacancyModal({
   }
 
   const footerActions = !isDelete ? (
-    <button
-      type="submit"
+    <AnimatedSubmitButton
+      isSubmitting={submitting}
+      isSuccess={isSuccess}
+      idleText={isAdd ? 'Crear vacante' : 'Guardar cambios'}
+      loadingText="Guardando..."
+      successText="¡Guardado!"
+      idleIcon={Save}
       className="btn-primary"
-      disabled={!isFormValid || submitting}
+      disabled={!isFormValid}
       form="vacancy-form"
-    >
-      {submitting ? 'Guardando…' : isAdd ? 'Crear vacante' : 'Guardar cambios'}
-    </button>
+    />
   ) : null;
 
   return (
@@ -602,13 +623,19 @@ export function VacancyModal({
                 type="button"
                 className="btn-secondary"
                 onClick={onClose}
-                disabled={submitting}
+                disabled={submitting || isSuccess}
               >
                 Cancelar
               </button>
-              <button type="submit" className="btn-danger" disabled={submitting}>
-                {submitting ? 'Eliminando…' : 'Eliminar'}
-              </button>
+              <AnimatedSubmitButton
+                isSubmitting={submitting}
+                isSuccess={isSuccess}
+                idleText="Eliminar"
+                loadingText="Eliminando..."
+                successText="¡Eliminado!"
+                idleIcon={Trash2}
+                className="btn-danger"
+              />
             </footer>
           </>
         ) : (

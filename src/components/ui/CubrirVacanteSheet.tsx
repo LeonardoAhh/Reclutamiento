@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Trash2, CheckCircle } from 'lucide-react';
 import { Modal } from './Modal';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import type { Baja } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
@@ -27,6 +28,7 @@ export function CubrirVacanteSheet({
   const [fecha, setFecha] = useState<string>('');
   const [nota, setNota] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export function CubrirVacanteSheet({
     setNota(baja.cubierta_nota ?? '');
     setErrorMsg(null);
     setSubmitting(false);
+    setIsSuccess(false);
   }, [isOpen, baja]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,13 +50,20 @@ export function CubrirVacanteSheet({
     }
     try {
       setSubmitting(true);
+      
+      // Retraso artificial para que se note la animación de pensando
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       const res = await onSave(baja.num_empleado, fecha, nota.trim() || null);
       if (!res.ok) {
         setErrorMsg(res.message ?? 'No se pudo guardar.');
+        setSubmitting(false);
         return;
       }
-      onClose();
-    } finally {
+      setIsSuccess(true);
+      setTimeout(() => onClose(), 1500);
+    } catch (err) {
+      setErrorMsg('Error inesperado.');
       setSubmitting(false);
     }
   }
@@ -91,9 +101,16 @@ export function CubrirVacanteSheet({
           <span>Quitar cobertura</span>
         </button>
       )}
-      <button type="submit" className="btn-primary" disabled={submitting} form="cubrir-vacante-form">
-        {submitting ? 'Guardando…' : isMarcada ? 'Actualizar' : 'Marcar cubierta'}
-      </button>
+      <AnimatedSubmitButton
+        isSubmitting={submitting}
+        isSuccess={isSuccess}
+        idleText={isMarcada ? 'Actualizar' : 'Marcar cubierta'}
+        loadingText="Guardando..."
+        successText="¡Guardado!"
+        idleIcon={CheckCircle}
+        className="btn-primary"
+        form="cubrir-vacante-form"
+      />
     </>
   );
 

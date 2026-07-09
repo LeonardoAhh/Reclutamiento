@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UserPlus, Pencil, Trash2 } from 'lucide-react';
+import { UserPlus, Pencil, Trash2, Save } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
@@ -14,6 +14,7 @@ import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 
 /**
  * Reclutadoras activas que pueden ser asignadas a un proceso.
@@ -127,6 +128,7 @@ export function CandidateModal({
   const canEditCitaAndSource = isAdmin || profile?.role === 'reclutador';
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
@@ -204,10 +206,12 @@ export function CandidateModal({
   );
 
   useEffect(() => {
-    if (!isOpen) return;
-    setErrorMsg(null);
-    setSubmitting(false);
-    setForm(candidate ? fromCandidate(candidate) : emptyForm());
+    if (isOpen) {
+      setErrorMsg(null);
+      setIsSuccess(false);
+      setSubmitting(false);
+      setForm(candidate ? fromCandidate(candidate) : emptyForm());
+    }
   }, [isOpen, candidate, mode]);
 
   const missingRequiredFields = [
@@ -266,12 +270,17 @@ export function CandidateModal({
       }
 
       if (mode === 'delete' && onDelete && candidate?.id) {
+        // Retraso artificial para que se note la animación de "pensando"
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const result = await onDelete(candidate.id);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
         return;
       }
 
@@ -295,14 +304,21 @@ export function CandidateModal({
           notas: form.notas.trim() || null,
           is_starlite: form.is_starlite,
         };
+        
+        // Retraso artificial para que se note la animación de "pensando"
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const result = await onSave(payload, candidate?.id);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
       }
-    } finally {
+    } catch (err) {
+      setErrorMsg('Ocurrió un error inesperado.');
       setSubmitting(false);
     }
   }
@@ -635,22 +651,31 @@ const fieldsPosicion = (
               type="button"
               className="btn-secondary"
               onClick={onClose}
-              disabled={submitting}
+              disabled={submitting || isSuccess}
             >
               Cancelar
             </button>
             {isDelete ? (
-              <button type="submit" className="btn-danger" disabled={submitting}>
-                {submitting ? 'Eliminando…' : 'Eliminar'}
-              </button>
+              <AnimatedSubmitButton
+                isSubmitting={submitting}
+                isSuccess={isSuccess}
+                idleText="Eliminar"
+                loadingText="Eliminando..."
+                successText="¡Eliminado!"
+                idleIcon={Trash2}
+                className="btn-danger"
+              />
             ) : (
-              <button
-                type="submit"
+              <AnimatedSubmitButton
+                isSubmitting={submitting}
+                isSuccess={isSuccess}
+                idleText={isAdd ? 'Guardar' : 'Guardar'}
+                loadingText="Guardando..."
+                successText="¡Guardado!"
+                idleIcon={Save}
                 className="btn-primary"
-                disabled={!isFormValid || submitting}
-              >
-                {submitting ? 'Guardando…' : isAdd ? 'Guardar' : 'Guardar'}
-              </button>
+                disabled={!isFormValid}
+              />
             )}
           </footer>
         </form>

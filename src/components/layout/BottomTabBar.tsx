@@ -15,6 +15,7 @@ import {
   LogOut,
   FileText,
   Settings,
+  ChevronRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -211,10 +212,6 @@ export function BottomTabBar() {
     setSigningOut(true);
     try {
       await signOut();
-      sileo.success({
-        title: 'Hasta pronto',
-        description: username ? username.split('@')[0].toUpperCase() : '',
-      });
     } finally {
       setSigningOut(false);
       setSheetOpen(false);
@@ -297,7 +294,6 @@ export function BottomTabBar() {
               <p className="bottom-sheet__session-name" title={username}>{username}</p>
             </div>
             <div className="bottom-sheet__header-actions">
-              <ThemeToggle />
               <button
                 type="button"
                 className="bottom-sheet__close"
@@ -310,72 +306,56 @@ export function BottomTabBar() {
           </header>
 
           <div className="bottom-sheet__content">
-            <ul className="bottom-sheet__grid">
+            <ul className="bottom-sheet__list">
               {MENU_TABS.map(({ to, label, icon: Icon }) => {
                 return (
-                  <li key={to}>
+                  <li key={to} className="bottom-sheet__list-item-wrapper">
                     <NavLink
                       to={to}
                       className={({ isActive }) =>
-                        `bottom-sheet__grid-item${isActive ? ' bottom-sheet__grid-item--active' : ''}`
+                        `bottom-sheet__list-item${isActive ? ' bottom-sheet__list-item--active' : ''}`
                       }
                       data-testid={`bottom-nav-sheet-${to.replace('/', '')}`}
                     >
                       {({ isActive }) => (
                         <>
-                          <div className="bottom-sheet__grid-icon-wrapper">
-                            <Icon size={28} aria-hidden="true" className="bottom-sheet__grid-icon" />
+                          <div className="bottom-sheet__list-icon-wrapper">
+                            <Icon size={22} aria-hidden="true" className="bottom-sheet__list-icon" />
                             {to === '/documentos' && (
-                              <span className="bottom-sheet__grid-badge">N</span>
+                              <span className="bottom-sheet__list-badge">N</span>
                             )}
                           </div>
-                          <span className="bottom-sheet__grid-label">
+                          <span className="bottom-sheet__list-label">
                             {label}
                           </span>
+                          <ChevronRight size={18} aria-hidden="true" className="bottom-sheet__list-chevron" />
                         </>
                       )}
                     </NavLink>
                   </li>
                 );
               })}
-              {user?.email === 'leonardo@reclutamiento.local' && (
-                <li key="/features">
-                  <NavLink
-                    to="/features"
-                    className={({ isActive }) =>
-                      `bottom-sheet__grid-item${isActive ? ' bottom-sheet__grid-item--active' : ''}`
-                    }
-                    data-testid="bottom-nav-sheet-configuracion"
-                  >
-                    {() => (
-                      <>
-                        <div className="bottom-sheet__grid-icon-wrapper">
-                          <Settings size={28} aria-hidden="true" className="bottom-sheet__grid-icon" />
-                        </div>
-                        <span className="bottom-sheet__grid-label">
-                          Features
-                        </span>
-                      </>
-                    )}
-                  </NavLink>
-                </li>
-              )}
             </ul>
           </div>
 
           <div className="bottom-sheet__footer">
-            <button
-              type="button"
-              className="bottom-sheet__signout"
-              onClick={handleSignOut}
-              disabled={signingOut}
-              data-testid="bottom-nav-signout"
-            >
-              <LogOut size={20} aria-hidden="true" className="bottom-sheet__signout-icon" />
-              <span className="bottom-sheet__signout-label">
-                {signingOut ? 'Cerrando...' : 'Cerrar sesión'}
-              </span>
-            </button>
+            <div className="bottom-sheet__footer-actions">
+              <ThemeToggle />
+              <button
+                type="button"
+                className="bottom-sheet__signout"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                data-testid="bottom-nav-signout"
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+              >
+                <LogOut size={20} aria-hidden="true" className="bottom-sheet__signout-icon" />
+                <span className="bottom-sheet__signout-label">
+                  {signingOut ? 'Saliendo...' : 'Salir'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
+import {
+  UserPlus,
+  Trash2,
+  Calendar,
+  UserCheck,
+  AlertCircle,
+  Bus,
+  Save,
+} from 'lucide-react';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import type { Employee } from '@/lib/types';
 import type { AutoVacancy } from '@/lib/autoVacancies';
 import { usePositions } from '@/lib/positions';
@@ -77,6 +86,7 @@ export function EmployeeModal({
 }: EmployeeModalProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [bajaForm, setBajaForm] = useState({
     fecha_baja: localTodayIso(),
@@ -133,6 +143,7 @@ export function EmployeeModal({
     if (!isOpen) return;
     setErrorMsg(null);
     setSubmitting(false);
+    setIsSuccess(false);
     setSelectedVacancyIndex(0);
 
     if (mode === 'delete' && employee) {
@@ -202,21 +213,33 @@ export function EmployeeModal({
           ruta: form.ruta ? form.ruta : null,
           parada: form.parada ? form.parada : null,
         };
+
+        // Retraso artificial para que se note la animación
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const result = await onSave(payload);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
       } else if (mode === 'delete' && onDelete && form.num_empleado) {
+        // Retraso artificial para que se note la animación
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const result = await onDelete(form.num_empleado, bajaForm);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          setSubmitting(false);
           return;
         }
-        onClose();
+        setIsSuccess(true);
+        setTimeout(() => onClose(), 1500);
       }
-    } finally {
+    } catch (err) {
+      setErrorMsg('Error inesperado.');
       setSubmitting(false);
     }
   }
@@ -525,26 +548,32 @@ export function EmployeeModal({
         type="button"
         className="btn-secondary"
         onClick={onClose}
-        disabled={submitting}
+        disabled={submitting || isSuccess}
       >
         Cancelar
       </button>
       {isAdd ? (
-        <button
-          type="submit"
+        <AnimatedSubmitButton
+          isSubmitting={submitting}
+          isSuccess={isSuccess}
+          idleText="Guardar empleado"
+          loadingText="Guardando..."
+          successText="¡Guardado!"
+          idleIcon={Save}
           className="btn-primary"
-          disabled={!isAddValid || submitting}
-        >
-          {submitting ? 'Guardando…' : 'Guardar empleado'}
-        </button>
+          disabled={!isAddValid}
+        />
       ) : (
-        <button
-          type="submit"
+        <AnimatedSubmitButton
+          isSubmitting={submitting}
+          isSuccess={isSuccess}
+          idleText="Registrar Baja"
+          loadingText="Registrando baja..."
+          successText="¡Baja registrada!"
+          idleIcon={Trash2}
           className="btn-danger"
-          disabled={!isDeleteValid || submitting}
-        >
-          {submitting ? 'Registrando baja…' : 'Registrar Baja'}
-        </button>
+          disabled={!isDeleteValid}
+        />
       )}
     </>
   );

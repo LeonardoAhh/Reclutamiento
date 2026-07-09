@@ -1,5 +1,6 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { useAuth } from '@/hooks/useAuth';
 import { sileo } from '@/lib/notify';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
@@ -94,7 +95,6 @@ export function Login() {
     }
 
     setIsSuccess(true);
-    sileo.success({ title: 'Sesión iniciada', description: 'Bienvenido de nuevo.' });
     // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
   };
 
@@ -290,63 +290,17 @@ export function Login() {
 
               {/* Submit Botón Animado */}
               <motion.div variants={staggerItem}>
-                <motion.button
-                  type="submit"
+                <AnimatedSubmitButton
+                  isSubmitting={submitting}
+                  isSuccess={isSuccess}
+                  idleText="Ingresar"
+                  loadingText="Verificando..."
+                  successText="¡Bienvenido!"
+                  idleIcon={ArrowRight}
+                  className="login__submit"
                   data-testid="login-submit-button"
-                  className={`login__submit ${isSuccess ? 'login__submit--success' : ''}`}
-                  disabled={submitting || isSuccess}
-                  aria-busy={submitting}
-                  aria-label={
-                    submitting
-                      ? 'Verificando credenciales, por favor espera'
-                      : isSuccess
-                      ? 'Sesión iniciada con éxito'
-                      : 'Ingresar al sistema'
-                  }
-                  whileTap={{ scale: submitting || isSuccess ? 1 : 0.96 }}
-                  layout
-                  style={{ overflow: 'hidden' }}
-                >
-                  <AnimatePresence mode="popLayout" initial={false}>
-                    {isSuccess ? (
-                      <motion.div
-                        key="success"
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -15 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', width: '100%' }}
-                      >
-                        <CheckCircle size={16} aria-hidden="true" />
-                        <span>¡Bienvenido!</span>
-                      </motion.div>
-                    ) : submitting ? (
-                      <motion.div 
-                        key="loading"
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -15 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', width: '100%' }}
-                      >
-                        <Loader2 size={16} className="login__spinner" aria-hidden="true" />
-                        <span>Verificando...</span>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="idle"
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -15 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
-                      >
-                        <span>Ingresar</span>
-                        <ArrowRight size={16} aria-hidden="true" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
+                  style={{ justifyContent: 'space-between' }}
+                />
               </motion.div>
 
             </form>

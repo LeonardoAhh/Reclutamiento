@@ -96,10 +96,6 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     setSigningOut(true);
     try {
       await signOut();
-      sileo.success({
-        title: 'Hasta pronto',
-        description: username ? username.split('@')[0].toUpperCase() : '',
-      });
     } finally {
       setSigningOut(false);
     }
