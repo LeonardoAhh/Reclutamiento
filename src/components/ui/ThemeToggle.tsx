@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
+import { useFeedback } from '@/hooks/useFeedback';
 import { Sun, Moon } from 'lucide-react';
 import './ThemeToggle.css';
 
@@ -10,12 +11,18 @@ import './ThemeToggle.css';
  */
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const { trigger } = useFeedback();
   const isDark = theme === 'dark';
+
+  const handleToggle = () => {
+    trigger('light');
+    toggleTheme();
+  };
 
   return (
     <button
       type="button"
-      onClick={toggleTheme}
+      onClick={handleToggle}
       className="theme-toggle"
       data-state={isDark ? 'dark' : 'light'}
       data-testid="theme-toggle"

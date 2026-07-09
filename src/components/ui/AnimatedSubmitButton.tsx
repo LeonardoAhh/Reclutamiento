@@ -4,6 +4,8 @@ import { Loader2, CheckCircle, Save } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { HTMLMotionProps } from 'framer-motion';
 
+import { useFeedback } from '@/hooks/useFeedback';
+
 export interface AnimatedSubmitButtonProps extends HTMLMotionProps<"button"> {
   isSubmitting: boolean;
   isSuccess: boolean;
@@ -34,6 +36,14 @@ export function AnimatedSubmitButton({
   type = 'submit',
   ...rest
 }: AnimatedSubmitButtonProps) {
+  const { trigger } = useFeedback();
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      trigger('success');
+    }
+  }, [isSuccess, trigger]);
+
   // Combinamos la clase disabled natural o el estado de loading/success
   const isDisabled = disabled || isSubmitting || isSuccess;
 

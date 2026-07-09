@@ -17,10 +17,13 @@ import {
   FileText,
   ChevronUp,
   Sparkles,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
+import { useFeedback } from '@/hooks/useFeedback';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -68,6 +71,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const [menuOpen, setMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
+  const { soundEnabled, toggleSound, trigger } = useFeedback();
+
   // Cerrar popover al hacer click fuera
   useEffect(() => {
     if (!menuOpen) return;
@@ -94,13 +99,15 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
     setSigningOut(true);
+    trigger('light');
     try {
       await new Promise((r) => setTimeout(r, 1500));
+      trigger('success');
       await signOut();
     } finally {
       setSigningOut(false);
     }
-  }, [signingOut, signOut, username]);
+  }, [signingOut, signOut, trigger]);
 
   /** Iniciales del usuario para el avatar. */
   const userInitials = useMemo(() => {
@@ -269,6 +276,33 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                   <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
                 </button>
                 <div className="sidebar__popover-divider-vertical" />
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    trigger('light');
+                    toggleSound();
+                  }}
+                  className="sidebar__popover-item"
+                  style={{ width: '40px', padding: '0', justifyContent: 'center' }}
+                  title={soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
+                  aria-label={soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={soundEnabled ? 'on' : 'off'}
+                      initial={{ scale: 0, rotate: -45 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 45 }}
+                      transition={{ duration: 0.15 }}
+                      style={{ display: "inline-flex" }}
+                    >
+                      {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                    </motion.span>
+                  </AnimatePresence>
+                </button>
+                <div className="sidebar__popover-divider-vertical" />
+
                 <ThemeToggle />
               </div>
 
