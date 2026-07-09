@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users,
   ChevronRight,
+  ChevronLeft,
   HeartPulse,
   Search,
   Filter,
@@ -92,11 +93,17 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterArea, setFilterArea] = useState('');
   const [activeTab, setActiveTab] = useState<string>('general');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
     seccion: string;
     puesto: string;
   } | null>(null);
+
+  const handleTabClick = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<'add' | 'delete' | null>(null);
@@ -311,7 +318,7 @@ export function Dashboard() {
 
   return (
     <div className="config-layout plantilla-layout">
-      <aside className="config-sidebar" aria-label="Menú de Plantilla">
+      <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
         <header className="config-sidebar__header" style={{ marginBottom: 'var(--spacing-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-xs)', flexWrap: 'wrap', width: '100%' }}>
             <h1 className="type-heading-sm m-0" style={{flex: 1}}>Plantilla</h1>
@@ -460,14 +467,14 @@ export function Dashboard() {
         <nav className="config-sidebar__nav">
           <button
             className={`config-sidebar__link ${activeTab === 'general' ? 'active' : ''}`}
-            onClick={() => setActiveTab('general')}
+            onClick={() => handleTabClick('general')}
           >
             <Users size={18} aria-hidden="true" />
             <span>Plantilla Activa</span>
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
-            onClick={() => setActiveTab('empleados')}
+            onClick={() => handleTabClick('empleados')}
           >
             <Contact size={18} aria-hidden="true" />
             <span>Empleados</span>
@@ -475,7 +482,22 @@ export function Dashboard() {
         </nav>
       </aside>
 
-      <main className="config-main" aria-label="Contenido principal">
+      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
+        <button 
+          className="config-mobile-back" 
+          onClick={() => {
+            if (activeTab !== 'general' && activeTab !== 'empleados') {
+              setActiveTab('general');
+            } else {
+              setIsMobileMenuOpen(true);
+            }
+          }}
+          aria-label="Volver"
+        >
+          <ChevronLeft size={20} />
+          <span>Volver</span>
+        </button>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

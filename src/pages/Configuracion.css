@@ -897,3 +897,64 @@
     width: auto;
   }
 }
+
+/* ── Mobile Menu / Drill-down UX ──────────────────────────────── */
+@media (max-width: 767px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  /* El sidebar (menú de tabs) en móvil debe verse como una lista de opciones */
+  .config-sidebar:not(.mobile-hidden) {
+    /* Toma todo el espacio disponible */
+    flex: 1;
+    border-bottom: none;
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  /* Cambiar nav de row a column en móvil */
+  .config-sidebar__nav {
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  .config-sidebar__link {
+    padding: var(--spacing-md);
+    font-size: var(--type-body-md-size);
+    border: 1px solid var(--color-hairline-soft);
+    justify-content: flex-start;
+  }
+
+  .config-sidebar__link.active {
+    /* En la vista de menú, 'active' no resalta tanto, todos parecen botones de menú */
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    border-color: var(--color-hairline);
+    font-weight: var(--font-medium);
+  }
+
+  .config-sidebar__link:active {
+    background-color: var(--color-surface-soft);
+  }
+}
+
+.config-mobile-back {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
+  margin-bottom: var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+  font-size: var(--type-body-sm-size);
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+@media (min-width: 768px) {
+  .config-mobile-back {
+    display: none;
+  }
+}

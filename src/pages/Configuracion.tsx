@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Search, BarChart2, Wallet, FileText } from 'lucide-react';
+import { Sparkles, Search, BarChart2, Wallet, FileText, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BusquedaView } from './configuracion-views/BusquedaView';
 import { IndicadoresView } from './configuracion-views/IndicadoresView';
@@ -14,6 +14,7 @@ import './Configuracion.css';
 export function Configuracion() {
   const { loading } = useAuth();
   const [activeTab, setActiveTab] = useState<'busqueda' | 'indicadores' | 'tabulador' | 'documentos' | 'toulouse' | 'rutas'>('busqueda');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
   if (loading) {
     return (
@@ -25,11 +26,14 @@ export function Configuracion() {
     );
   }
 
-  // Protección exclusiva removida por petición del usuario
+  const handleTabClick = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <div className="config-layout">
-      <aside className="config-sidebar" aria-label="Menú de Features">
+      <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Features">
         <header className="config-sidebar__header">
           <Sparkles size={24} aria-hidden="true" className="text-primary" />
           <h1 className="type-heading-sm m-0">Features</h1>
@@ -37,7 +41,7 @@ export function Configuracion() {
         <nav className="config-sidebar__nav">
           <button
             className={`config-sidebar__link ${activeTab === 'busqueda' ? 'active' : ''}`}
-            onClick={() => setActiveTab('busqueda')}
+            onClick={() => handleTabClick('busqueda')}
             aria-current={activeTab === 'busqueda' ? 'page' : undefined}
           >
             <Search size={18} aria-hidden="true" />
@@ -45,7 +49,7 @@ export function Configuracion() {
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'documentos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('documentos')}
+            onClick={() => handleTabClick('documentos')}
             aria-current={activeTab === 'documentos' ? 'page' : undefined}
           >
             <FileText size={18} aria-hidden="true" />
@@ -53,7 +57,7 @@ export function Configuracion() {
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'indicadores' ? 'active' : ''}`}
-            onClick={() => setActiveTab('indicadores')}
+            onClick={() => handleTabClick('indicadores')}
             aria-current={activeTab === 'indicadores' ? 'page' : undefined}
           >
             <BarChart2 size={18} aria-hidden="true" />
@@ -61,7 +65,7 @@ export function Configuracion() {
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'rutas' ? 'active' : ''}`}
-            onClick={() => setActiveTab('rutas')}
+            onClick={() => handleTabClick('rutas')}
             aria-current={activeTab === 'rutas' ? 'page' : undefined}
           >
             <Bus size={18} aria-hidden="true" />
@@ -69,7 +73,7 @@ export function Configuracion() {
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'tabulador' ? 'active' : ''}`}
-            onClick={() => setActiveTab('tabulador')}
+            onClick={() => handleTabClick('tabulador')}
             aria-current={activeTab === 'tabulador' ? 'page' : undefined}
           >
             <Wallet size={18} aria-hidden="true" />
@@ -77,7 +81,7 @@ export function Configuracion() {
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'toulouse' ? 'active' : ''}`}
-            onClick={() => setActiveTab('toulouse')}
+            onClick={() => handleTabClick('toulouse')}
             aria-current={activeTab === 'toulouse' ? 'page' : undefined}
           >
             <ClipboardCheck size={18} aria-hidden="true" />
@@ -86,7 +90,16 @@ export function Configuracion() {
         </nav>
       </aside>
 
-      <main className="config-main" aria-label="Contenido principal">
+      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
+        <button 
+          className="config-mobile-back" 
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="Volver al menú"
+        >
+          <ChevronLeft size={20} />
+          <span>Volver</span>
+        </button>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
