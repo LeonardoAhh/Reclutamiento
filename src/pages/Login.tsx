@@ -84,6 +84,7 @@ export function Login() {
     }
 
     setSubmitting(true);
+    await new Promise((r) => setTimeout(r, 1500));
     const result = await signIn(u, password);
 
     if (!result.ok) {

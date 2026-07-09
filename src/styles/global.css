@@ -838,6 +838,12 @@ code:not(pre code) {
     box-shadow var(--transition-fast);
 }
 
+.btn-sm {
+  height: 32px;
+  padding: 0 var(--spacing-md);
+  font-size: var(--type-caption-sm-size);
+}
+
 .btn-primary:focus-visible,
 .btn-secondary:focus-visible,
 .btn-danger:focus-visible,

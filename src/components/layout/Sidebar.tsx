@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   BarChart3,
   Users,
@@ -95,6 +95,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     if (signingOut) return;
     setSigningOut(true);
     try {
+      await new Promise((r) => setTimeout(r, 1500));
       await signOut();
     } finally {
       setSigningOut(false);
@@ -233,30 +234,50 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
 
       {/* Footer: Avatar Popover Minimalista */}
       <div className="sidebar__footer" ref={userMenuRef}>
-        {menuOpen && (
-          <div className="sidebar__popover" role="menu">
-            <div className="sidebar__popover-actions">
-              <button
-                type="button"
-                className="sidebar__popover-item sidebar__popover-item--danger"
-                onClick={handleSignOut}
-                disabled={signingOut}
-                role="menuitem"
-              >
-                {signingOut
-                  ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
-                  : <LogOut size={16} aria-hidden="true" />}
-                <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
-              </button>
-              <div className="sidebar__popover-divider-vertical" />
-              <ThemeToggle />
-            </div>
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              className="sidebar__popover"
+              role="menu"
+              initial={{ opacity: 0, y: collapsed ? 0 : 10, x: collapsed ? 0 : "-50%", scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, x: collapsed ? 12 : "-50%", scale: 1 }}
+              exit={{ opacity: 0, y: collapsed ? 0 : 10, x: collapsed ? 0 : "-50%", scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <div className="sidebar__popover-actions">
+                <button
+                  type="button"
+                  className="sidebar__popover-item sidebar__popover-item--danger"
+                  onClick={handleSignOut}
+                  disabled={signingOut}
+                  role="menuitem"
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={signingOut ? "loading" : "idle"}
+                      initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                      exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                      {signingOut
+                        ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
+                        : <LogOut size={16} aria-hidden="true" />}
+                    </motion.span>
+                  </AnimatePresence>
+                  <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
+                </button>
+                <div className="sidebar__popover-divider-vertical" />
+                <ThemeToggle />
+              </div>
 
-            {version && (
-              <p className="sidebar__popover-version">v{version}</p>
-            )}
-          </div>
-        )}
+              {version && (
+                <p className="sidebar__popover-version">v{version}</p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <button
           type="button"

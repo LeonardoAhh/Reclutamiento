@@ -391,17 +391,22 @@ export default function ReporteEmployeeDetail({
             isOpen={open}
             onClose={onClose}
             title={
-                <div style={STYLES.titleRow}>
-                    <span style={STYLES.employeeId}>#{employee.numero_empleado}</span>
-                    <span>{employee.nombre}</span>
+                <div style={{ ...STYLES.titleRow, textTransform: 'capitalize' }}>
+                    <span style={{ ...STYLES.employeeId, textTransform: 'none' }}>#{employee.numero_empleado}</span>
+                    <span>{employee.nombre.toLowerCase()}</span>
                 </div>
             }
             subtitle={
-                <div style={STYLES.subtitle}>
-                    {employee.puesto && <Badge>{employee.puesto}</Badge>}
-                    {employee.departamento && <Badge>{employee.departamento}</Badge>}
-                    {employee.area && <Badge>{employee.area}</Badge>}
-                    {employee.turno && <Badge>Turno {employee.turno}</Badge>}
+                <div style={{ ...STYLES.subtitle, textTransform: 'capitalize' }}>
+                    {[
+                        employee.puesto,
+                        employee.departamento,
+                        employee.area !== employee.departamento ? employee.area : null,
+                        employee.turno ? `Turno ${employee.turno}` : null
+                    ]
+                        .filter(Boolean)
+                        .map(s => String(s).toLowerCase())
+                        .join(' • ')}
                 </div>
             }
             size="lg"
@@ -444,27 +449,9 @@ export default function ReporteEmployeeDetail({
                     aria-labelledby={activeTab === 'overview' ? 'emp-tab-overview' : 'emp-tab-incidencias'}
                 >
                     {activeTab === 'overview' ? (
-                        <>
-                            <div className="reporte-employee-detail__meta-grid">
-                                <div className="reporte-employee-detail__info-item">
-                                    <span className="reporte-employee-detail__info-label">Departamento</span>
-                                    <span>{employee.departamento || '—'}</span>
-                                </div>
-                                <div className="reporte-employee-detail__info-item">
-                                    <span className="reporte-employee-detail__info-label">Área</span>
-                                    <span>{employee.area || '—'}</span>
-                                </div>
-                                <div className="reporte-employee-detail__info-item">
-                                    <span className="reporte-employee-detail__info-label">Puesto</span>
-                                    <span>{employee.puesto || '—'}</span>
-                                </div>
-                                <div className="reporte-employee-detail__info-item">
-                                    <span className="reporte-employee-detail__info-label">Turno</span>
-                                    <span>{employee.turno || '—'}</span>
-                                </div>
-                            </div>
+                        <div style={{ marginTop: 'var(--spacing-md)' }}>
                             <KpiCards stats={stats} />
-                        </>
+                        </div>
                     ) : (
                         <IncidentTable
                             incidents={stats.incidentDetail}

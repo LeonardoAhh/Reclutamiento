@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton'
 import {
     CloudUpload,
     Calendar,
@@ -54,6 +55,9 @@ export default function ReporteDiarioContent() {
     const [fileName, setFileName] = useState("")
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const [loadSubmitting, setLoadSubmitting] = useState(false)
+    const [loadSuccess, setLoadSuccess] = useState(false)
+    const [isSavingDb, setIsSavingDb] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
     const [panelCollapsed, setPanelCollapsed] = useState(() => {
         return typeof window !== 'undefined' && !!sessionStorage.getItem("reporteDiarioCache");
@@ -470,16 +474,20 @@ export default function ReporteDiarioContent() {
 
     const confirmLoad = useCallback(async () => {
         if (!previewData) return
-        setProcessStep("generating")
+        setLoadSubmitting(true)
         const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
-        await delay(1500) // Simulación de generación (más tiempo)
+        await delay(1000) // Animación pensando
 
         setRows(previewData.rows)
         setSelectedMes(previewData.mes)
         setFileName(previewData.fileName)
         sessionStorage.setItem("reporteDiarioCache", JSON.stringify(previewData.jsonRaw))
 
-        setProcessStep(null)
+        setLoadSubmitting(false)
+        setLoadSuccess(true)
+        await delay(1500)
+
+        setLoadSuccess(false)
         setPreviewData(null)
         setPanelCollapsed(true)
         sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
@@ -550,8 +558,9 @@ export default function ReporteDiarioContent() {
     )
 
     const handleSaveToDb = useCallback(async () => {
+        setIsSavingDb(true)
         setSaveSuccess(false)
-        if (!currentMonth || rows.length === 0) return
+        if (!currentMonth || rows.length === 0) { setIsSavingDb(false); return; }
         const monthRows = rows.filter((r) => r.mes === currentMonth)
         const dCount = daysInMonth(currentMonth)
         const dHeaders = Array.from({ length: dCount }, (_, i) => String(i + 1).padStart(2, "0"))
@@ -575,6 +584,9 @@ export default function ReporteDiarioContent() {
             ? Math.round((totalAusentismo / diasDisponibles) * 100 * 100) / 100
             : 0
 
+        // Retraso artificial para "pensando"
+        await new Promise(r => setTimeout(r, 1000))
+
         const result = await saveReport({
             mes: currentMonth,
             data: monthRows,                    // datos completos para drill-down
@@ -587,9 +599,12 @@ export default function ReporteDiarioContent() {
         })
         if (result.success) {
             setSaveSuccess(true)
-            setTimeout(() => setSaveSuccess(false), 3500)
+            setIsSavingDb(false)
+            setTimeout(() => setSaveSuccess(false), 1500)
             const updated = await fetchSummaries()
             setSavedSummaries(updated)
+        } else {
+            setIsSavingDb(false)
         }
     }, [currentMonth, rows, computeKpis, saveReport, fetchSummaries])
 
@@ -705,11 +720,11 @@ export default function ReporteDiarioContent() {
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => !processStep && fileInputRef.current?.click()}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
+                            if (!processStep && (e.key === "Enter" || e.key === " ")) {
                                 e.preventDefault();
                                 fileInputRef.current?.click();
                             }
@@ -717,12 +732,41 @@ export default function ReporteDiarioContent() {
                         aria-label="Sube un archivo de reporte de asistencia"
                         data-testid="upload-dropzone"
                     >
-                        <span className="reporte-hero__dropzone-icon" aria-hidden="true">
-                            <CloudUpload size={34} />
-                        </span>
-                        <h3 className="reporte-hero__dropzone-title">
-                            Selecciona un archivo <FileJson size={18} />
-                        </h3>
+                        <AnimatePresence mode="wait">
+                            {processStep ? (
+                                <motion.div
+                                    key="processing"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="reporte-hero__dropzone-inner"
+                                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-sm)' }}
+                                >
+                                    <Loader2 size={34} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
+                                    <h3 className="reporte-hero__dropzone-title">
+                                        {processStep === "reading" && "Leyendo archivo..."}
+                                        {processStep === "validating" && "Revisando incidencias..."}
+                                        {processStep === "generating" && "Construyendo tu tablero..."}
+                                    </h3>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="idle"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="reporte-hero__dropzone-inner"
+                                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-xs)' }}
+                                >
+                                    <span className="reporte-hero__dropzone-icon" aria-hidden="true">
+                                        <CloudUpload size={34} />
+                                    </span>
+                                    <h3 className="reporte-hero__dropzone-title">
+                                        Selecciona un archivo <FileJson size={18} />
+                                    </h3>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
 
@@ -783,10 +827,16 @@ export default function ReporteDiarioContent() {
                     footerActions={
                         <>
                             <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
-                            <button type="button" onClick={confirmLoad} className="btn-primary">
-                                <Check size={16} aria-hidden="true" />
-                                Sí, cargar datos
-                            </button>
+                            <AnimatedSubmitButton
+                                isSubmitting={loadSubmitting}
+                                isSuccess={loadSuccess}
+                                idleText="Sí, cargar datos"
+                                loadingText="Cargando..."
+                                successText="¡Cargado!"
+                                idleIcon={Check}
+                                className="btn-primary"
+                                onClick={confirmLoad}
+                            />
                         </>
                     }
                 >
@@ -805,59 +855,11 @@ export default function ReporteDiarioContent() {
                                     </p>
                                 </div>
                             </div>
-                            <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
-                                <li className="reporte-preview__stat">
-                                    <span className="reporte-preview__stat-value">
-                                        {previewData.rows.length.toLocaleString('es-MX')}
-                                    </span>
-                                    <span className="reporte-preview__stat-label">Registros</span>
-                                </li>
-                                <li className="reporte-preview__stat">
-                                    <span className="reporte-preview__stat-value">
-                                        {formatMes(previewData.mes)}
-                                    </span>
-                                    <span className="reporte-preview__stat-label">Periodo</span>
-                                </li>
-                                <li className="reporte-preview__stat">
-                                    <span className="reporte-preview__stat-value">JSON</span>
-                                    <span className="reporte-preview__stat-label">Formato</span>
-                                </li>
-                            </ul>
                         </div>
                     )}
                 </Modal>
 
-                <AnimatePresence>
-                    {processStep && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="reporte-overlay"
-                            role="status"
-                            aria-live="polite"
-                        >
-                            <motion.div
-                                initial={{ scale: 0.9, y: 10 }}
-                                animate={{ scale: 1, y: 0 }}
-                                exit={{ scale: 0.9, y: 10 }}
-                                className="reporte-overlay__card"
-                            >
-                                <Loader2 size={40} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
-                                <h2 className="reporte-overlay__title">
-                                    {processStep === "reading" && "Leyendo archivo..."}
-                                    {processStep === "validating" && "Revisando incidencias..."}
-                                    {processStep === "generating" && "Construyendo tu tablero..."}
-                                </h2>
-                                <p className="reporte-subtitle">
-                                    {processStep === "reading" && "Por favor, espera un momento."}
-                                    {processStep === "validating" && "Asegurando que la información sea correcta."}
-                                    {processStep === "generating" && "Solo tomará un segundo más."}
-                                </p>
-                            </motion.div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+
 
                 <AnimatePresence>
                     {isDragging && (
@@ -907,22 +909,23 @@ export default function ReporteDiarioContent() {
                         </div>
 
                         {hasData && (
-                            <button
-                                type="button"
-                                className="btn-primary"
+                            <AnimatedSubmitButton
+                                isSubmitting={dbSaving || isSavingDb}
+                                isSuccess={saveSuccess}
+                                idleText={savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
+                                loadingText="Guardando..."
+                                successText="¡Guardado Exitoso!"
+                                idleIcon={Save}
+                                className="btn-primary btn-sm"
                                 onClick={handleSaveToDb}
-                                disabled={dbSaving}
                                 data-testid="save-report-btn"
-                            >
-                                <Save size={16} aria-hidden="true" />
-                                {savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
-                            </button>
+                            />
                         )}
                     </div>
 
                     {hasData && (
                         <div className="reporte-head__grid" aria-label="Información del reporte cargado">
-                            {fileName && (
+                            {fileName && !processStep && (
                                 <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename">
                                     <FileJson size={16} className="text-primary" aria-hidden="true" />
                                     <span className="reporte-head__grid-text">{fileName}</span>
@@ -938,10 +941,17 @@ export default function ReporteDiarioContent() {
                                     </button>
                                 </div>
                             )}
+                            {processStep && (
+                                <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename-loading">
+                                    <Loader2 size={16} className="animate-spin text-primary" aria-hidden="true" />
+                                    <span className="reporte-head__grid-text">Analizando archivo...</span>
+                                </div>
+                            )}
                             <span
                                 className="reporte-status-banner reporte-status-banner--warn"
                                 aria-label={`${heroKpis.totalIncidencias} incidencias detectadas`}
                             >
+                                <AlertCircle size={16} aria-hidden="true" />
                                 <span className="reporte-head__grid-value">{heroKpis.totalIncidencias}</span>
                                 <span className="reporte-head__grid-text">incidencias</span>
                             </span>
@@ -990,13 +1000,9 @@ export default function ReporteDiarioContent() {
                             </div>
 
                             <div className="reporte-search__meta">
-                                {search ? (
+                                {search && (
                                     <p className="reporte-search__subtitle">
-                                        {searchResults.length} {searchResults.length === 1 ? 'resultado' : 'resultados'} encontrados
-                                    </p>
-                                ) : (
-                                    <p className="reporte-search__subtitle">
-                                        Busca un colaborador y abre su detalle en un modal con tabs.
+                                        {searchResults.length} {searchResults.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
                                     </p>
                                 )}
                             </div>
@@ -1012,12 +1018,14 @@ export default function ReporteDiarioContent() {
                                                 onClick={() => openEmployeeModal(row.numero_empleado)}
                                             >
                                                 <div className="reporte-search__result-main">
-                                                    <span className="reporte-search__result-title">{row.nombre}</span>
+                                                    <span className="reporte-search__result-title">
+                                                        {row.nombre.toLowerCase()}
+                                                    </span>
                                                     <span className="reporte-search__result-meta">#{row.numero_empleado}</span>
                                                 </div>
                                                 <div className="reporte-search__result-followup">
-                                                    <span>{row.departamento}</span>
-                                                    <span>{row.area}</span>
+                                                    <span>{row.departamento.toLowerCase()}</span>
+                                                    {row.area && row.area !== row.departamento && <span>• {row.area.toLowerCase()}</span>}
                                                 </div>
                                             </button>
                                         ))
@@ -1255,10 +1263,16 @@ export default function ReporteDiarioContent() {
                 footerActions={
                     <>
                         <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
-                        <button type="button" onClick={confirmLoad} className="btn-primary">
-                            <Check size={16} aria-hidden="true" />
-                            Sí, cargar datos
-                        </button>
+                        <AnimatedSubmitButton
+                            isSubmitting={loadSubmitting}
+                            isSuccess={loadSuccess}
+                            idleText="Sí, cargar datos"
+                            loadingText="Cargando..."
+                            successText="¡Cargado!"
+                            idleIcon={Check}
+                            className="btn-primary"
+                            onClick={confirmLoad}
+                        />
                     </>
                 }
             >
@@ -1300,73 +1314,9 @@ export default function ReporteDiarioContent() {
             </Modal>
 
             {/* ── Processing Overlay ────────────────────────────────── */}
-            <AnimatePresence>
-                {processStep && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="reporte-overlay"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, y: 10 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 10 }}
-                            className="reporte-overlay__card"
-                        >
-                            <Loader2 size={40} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
-                            <h2 className="reporte-overlay__title">
-                                {processStep === "reading" && "Leyendo archivo..."}
-                                {processStep === "validating" && "Revisando incidencias..."}
-                                {processStep === "generating" && "Construyendo tu tablero..."}
-                            </h2>
-                            <p className="reporte-subtitle">
-                                {processStep === "reading" && "Por favor, espera un momento."}
-                                {processStep === "validating" && "Asegurando que la información sea correcta."}
-                                {processStep === "generating" && "Solo tomará un segundo más."}
-                            </p>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
-            {/* ── Save Overlay ────────────────────────────────── */}
-            <AnimatePresence>
-                {(dbSaving || saveSuccess) && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="reporte-overlay reporte-overlay--top"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="reporte-overlay__card"
-                        >
-                            <AnimatePresence mode="wait">
-                                {saveSuccess ? (
-                                    <motion.div key="success" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} className="reporte-overlay__badge reporte-overlay__badge--success">
-                                        <Check size={32} />
-                                    </motion.div>
-                                ) : (
-                                    <motion.div key="saving" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="reporte-overlay__badge reporte-overlay__badge--primary">
-                                        <Loader2 size={32} className="animate-spin" />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                            <motion.h2 className="reporte-overlay__title">
-                                {saveSuccess ? "¡Guardado Exitoso!" : "Guardando reporte..."}
-                            </motion.h2>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
+
 
             {/* ── Global Drag Overlay ────────────────────────────────── */}
             <AnimatePresence>
