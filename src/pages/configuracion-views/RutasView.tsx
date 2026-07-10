@@ -37,9 +37,7 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
       <span className="ruta-card__icon" aria-hidden="true">
         <Bus size={18} />
       </span>
-      <div className="ruta-card__content">
-        <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</h3>
-      </div>
+      <span className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</span>
       {matchCount !== undefined && matchCount > 0 && (
         <span className="ruta-card__match-badge">
           {matchCount} encontrado{matchCount === 1 ? '' : 's'}
@@ -259,7 +257,7 @@ function Placeholder() {
           </span>
         </div>
       </div>
-      <h2 className="type-heading-md">Selecciona una ruta</h2>
+      <h3 className="type-heading-md">Selecciona una ruta</h3>
       <p className="type-body-sm">Toca cualquier tarjeta para ver sus detalles.</p>
     </div>
   );

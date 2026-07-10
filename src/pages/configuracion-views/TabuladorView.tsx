@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { Search, Wallet, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
@@ -106,6 +106,20 @@ export function TabuladorView() {
     searchInputRef.current?.focus();
   };
 
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentId: TabuladorType) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const currentIndex = TAB_OPTIONS.findIndex(({ id }) => id === currentId);
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? TAB_OPTIONS.length - 1
+        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + TAB_OPTIONS.length) % TAB_OPTIONS.length;
+    const nextId = TAB_OPTIONS[nextIndex].id;
+    setTabuladorType(nextId);
+    requestAnimationFrame(() => document.getElementById(`tabulador-tab-${nextId}`)?.focus());
+  };
+
   if (loading) {
     return (
       <section className="tabulador-view config-page__content" aria-busy="true">
@@ -149,6 +163,7 @@ export function TabuladorView() {
                 aria-controls="tabulador-panel"
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => setTabuladorType(id)}
+                onKeyDown={(event) => handleTabKeyDown(event, id)}
               >
                 {label}
               </button>

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
 import { Download, FileText } from 'lucide-react';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
@@ -77,9 +77,7 @@ export function DocumentosView() {
     setStatus('loading');
     setErrorMsg(null);
 
-    // Retraso artificial para "pensar" como pidió el usuario
-    await new Promise(resolve => setTimeout(resolve, 800));
-
+    // La captura empieza en cuanto la dependencia está lista; el estado comunica el progreso.
     try {
       const html2canvas = await loadHtml2Canvas();
       const canvas = await html2canvas(element, {
@@ -187,6 +185,20 @@ export function DocumentosView() {
   const isSuccess = status === 'success';
   const hasError = status === 'error';
 
+  const handleDocumentTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentId: DocumentId) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const currentIndex = DOCUMENT_OPTIONS.findIndex(({ id }) => id === currentId);
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? DOCUMENT_OPTIONS.length - 1
+        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + DOCUMENT_OPTIONS.length) % DOCUMENT_OPTIONS.length;
+    const nextId = DOCUMENT_OPTIONS[nextIndex].id;
+    setActiveDoc(nextId);
+    requestAnimationFrame(() => document.getElementById(`documentos-tab-${nextId}`)?.focus());
+  };
+
   return (
     <section className="documentos-view config-page__content">
       <header className="config-page__header">
@@ -220,6 +232,7 @@ export function DocumentosView() {
                 aria-controls="documentos-panel"
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveDoc(id)}
+                onKeyDown={(event) => handleDocumentTabKeyDown(event, id)}
               >
                 {label}
               </button>

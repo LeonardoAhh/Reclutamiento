@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import {
   BarChart2,
@@ -37,7 +37,7 @@ const FEATURES: FeatureItem[] = [
   { id: 'toulouse', label: 'Toulouse', icon: ClipboardCheck },
 ];
 
-const FEATURE_VIEWS: Record<FeatureId, React.ReactNode> = {
+const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   busqueda: <BusquedaView />,
   documentos: <DocumentosView />,
   indicadores: <IndicadoresView />,

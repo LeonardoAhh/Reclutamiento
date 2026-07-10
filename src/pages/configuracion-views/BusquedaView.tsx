@@ -199,14 +199,14 @@ export function BusquedaView() {
             <div className="config-initial-state__icon">
               <Search size={32} color="var(--color-muted-soft)" aria-hidden="true" />
             </div>
-            <h2 className="type-heading-md text-ink">Búsqueda Global</h2>
+            <h3 className="type-heading-md text-ink">Búsqueda global</h3>
             <p className="type-body-md text-muted config-initial-state__copy">
               Encuentra rápidamente la información de cualquier empleado ingresando su nombre o número.
             </p>
           </div>
         ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">
-            <h2 className="sr-only">Resultados de búsqueda</h2>
+            <h3 className="sr-only">Resultados de búsqueda</h3>
             <p
               className="config-results__count type-caption-sm text-muted"
               role="status"

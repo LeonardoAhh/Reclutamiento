@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, Save, RefreshCw, Trash2, FileText, ClipboardCheck } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -91,6 +91,16 @@ export function ToulouseView() {
     });
   }
 
+  function handlePreviewTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextVariant: Variant = event.key === 'Home' || event.key === 'ArrowLeft'
+      ? 'candidato'
+      : 'correccion';
+    setVariant(nextVariant);
+    requestAnimationFrame(() => document.getElementById(`tp-tab-${nextVariant}`)?.focus());
+  }
+
   function loadSheet(s: ToulouseSheetRecord) {
     setCandidato(s.candidato_nombre);
     setPuesto(s.puesto_solicitado ?? '');
@@ -114,7 +124,7 @@ export function ToulouseView() {
         <summary className="tp-instructions__summary">Instrucciones de la prueba</summary>
         <div className="tp-instructions__grid">
           <article className="tp-instructions__card">
-            <h2 className="tp-instructions__title">Para el evaluador (aplicación)</h2>
+            <h3 className="tp-instructions__title">Para el evaluador (aplicación)</h3>
             <ol className="tp-instructions__list">
               {TOULOUSE_EVALUATOR_STEPS.map((s, i) => (
                 <li key={i}>{s}</li>
@@ -154,6 +164,8 @@ export function ToulouseView() {
                   value={candidato}
                   onChange={(e) => setCandidato(e.target.value)}
                   autoComplete="off"
+                  required
+                  aria-required="true"
                   data-testid="tp-candidato"
                 />
               </div>
@@ -273,7 +285,7 @@ export function ToulouseView() {
 
           {/* ── Hojas guardadas ── */}
           <section className="tp-saved" aria-label="Hojas guardadas">
-            <h2 className="tp-saved__title">Hojas guardadas</h2>
+            <h3 className="tp-saved__title">Hojas guardadas</h3>
             {sheets.length === 0 ? (
               <p className="tp-saved__empty">Aún no hay hojas guardadas.</p>
             ) : (
@@ -320,6 +332,7 @@ export function ToulouseView() {
               tabIndex={variant === 'candidato' ? 0 : -1}
               className={`tp-tab${variant === 'candidato' ? ' tp-tab--active' : ''}`}
               onClick={() => setVariant('candidato')}
+              onKeyDown={handlePreviewTabKeyDown}
               data-testid="tp-tab-candidato"
             >
               <FileText size={15} aria-hidden="true" /> Hoja del candidato
@@ -333,6 +346,7 @@ export function ToulouseView() {
               tabIndex={variant === 'correccion' ? 0 : -1}
               className={`tp-tab${variant === 'correccion' ? ' tp-tab--active' : ''}`}
               onClick={() => setVariant('correccion')}
+              onKeyDown={handlePreviewTabKeyDown}
               data-testid="tp-tab-correccion"
             >
               <ClipboardCheck size={15} aria-hidden="true" /> Plantilla de corrección
