@@ -419,8 +419,13 @@ export function RutasView() {
   return (
     <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
       <header className="config-page__header rutas-header">
-        <h2 className="config-page__title">Rutas de transporte</h2>
-        <a 
+        <div className="rutas-header__copy">
+          <h2 className="config-page__title">Rutas de transporte</h2>
+          <p className="config-page__subtitle">
+            Consulta rutas, paradas y capacidad de transporte por turno.
+          </p>
+        </div>
+        <a
           href="/horarios/index.html" 
           target="_blank" 
           rel="noopener noreferrer"
