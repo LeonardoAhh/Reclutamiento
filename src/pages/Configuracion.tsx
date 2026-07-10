@@ -1,120 +1,125 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Search, BarChart2, Wallet, FileText, ChevronLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  BarChart2,
+  Bus,
+  ChevronLeft,
+  ClipboardCheck,
+  FileText,
+  Search,
+  Sparkles,
+  Wallet,
+  type LucideIcon,
+} from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BusquedaView } from './configuracion-views/BusquedaView';
-import { IndicadoresView } from './configuracion-views/IndicadoresView';
-import { TabuladorView } from './configuracion-views/TabuladorView';
 import { DocumentosView } from './configuracion-views/DocumentosView';
-import { ToulouseView } from './configuracion-views/ToulouseView';
+import { IndicadoresView } from './configuracion-views/IndicadoresView';
 import { RutasView } from './configuracion-views/RutasView';
-import { ClipboardCheck, Bus } from 'lucide-react';
+import { TabuladorView } from './configuracion-views/TabuladorView';
+import { ToulouseView } from './configuracion-views/ToulouseView';
 import './Configuracion.css';
+
+type FeatureId = 'busqueda' | 'documentos' | 'indicadores' | 'rutas' | 'tabulador' | 'toulouse';
+
+interface FeatureItem {
+  id: FeatureId;
+  label: string;
+  icon: LucideIcon;
+}
+
+const FEATURES: FeatureItem[] = [
+  { id: 'busqueda', label: 'Búsqueda', icon: Search },
+  { id: 'documentos', label: 'Documentos', icon: FileText },
+  { id: 'indicadores', label: 'Indicadores', icon: BarChart2 },
+  { id: 'rutas', label: 'Rutas', icon: Bus },
+  { id: 'tabulador', label: 'Tabulador', icon: Wallet },
+  { id: 'toulouse', label: 'Toulouse', icon: ClipboardCheck },
+];
+
+const FEATURE_VIEWS: Record<FeatureId, React.ReactNode> = {
+  busqueda: <BusquedaView />,
+  documentos: <DocumentosView />,
+  indicadores: <IndicadoresView />,
+  rutas: <RutasView />,
+  tabulador: <TabuladorView />,
+  toulouse: <ToulouseView />,
+};
 
 export function Configuracion() {
   const { loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'busqueda' | 'indicadores' | 'tabulador' | 'documentos' | 'toulouse' | 'rutas'>('busqueda');
+  const reduceMotion = useReducedMotion();
+  const [activeTab, setActiveTab] = useState<FeatureId>('busqueda');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
   if (loading) {
     return (
       <div className="config-layout">
-         <main className="config-main" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="type-body-md text-muted">Cargando configuración...</span>
-         </main>
+        <main className="config-main config-main--loading" aria-busy="true">
+          <span className="type-body-md text-muted" role="status">Cargando features…</span>
+        </main>
       </div>
     );
   }
 
-  const handleTabClick = (tab: typeof activeTab) => {
+  const handleTabClick = (tab: FeatureId) => {
     setActiveTab(tab);
     setIsMobileMenuOpen(false);
   };
 
   return (
     <div className="config-layout">
-      <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Features">
+      <aside
+        className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`}
+        aria-labelledby="features-navigation-title"
+      >
         <header className="config-sidebar__header">
           <Sparkles size={24} aria-hidden="true" className="text-primary" />
-          <h1 className="type-heading-sm m-0">Features</h1>
+          <h1 id="features-navigation-title" className="type-heading-sm m-0">Features</h1>
         </header>
-        <nav className="config-sidebar__nav">
-          <button
-            className={`config-sidebar__link ${activeTab === 'busqueda' ? 'active' : ''}`}
-            onClick={() => handleTabClick('busqueda')}
-            aria-current={activeTab === 'busqueda' ? 'page' : undefined}
-          >
-            <Search size={18} aria-hidden="true" />
-            <span>Búsqueda</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'documentos' ? 'active' : ''}`}
-            onClick={() => handleTabClick('documentos')}
-            aria-current={activeTab === 'documentos' ? 'page' : undefined}
-          >
-            <FileText size={18} aria-hidden="true" />
-            <span>Documentos</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'indicadores' ? 'active' : ''}`}
-            onClick={() => handleTabClick('indicadores')}
-            aria-current={activeTab === 'indicadores' ? 'page' : undefined}
-          >
-            <BarChart2 size={18} aria-hidden="true" />
-            <span>Indicadores</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'rutas' ? 'active' : ''}`}
-            onClick={() => handleTabClick('rutas')}
-            aria-current={activeTab === 'rutas' ? 'page' : undefined}
-          >
-            <Bus size={18} aria-hidden="true" />
-            <span>Rutas</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'tabulador' ? 'active' : ''}`}
-            onClick={() => handleTabClick('tabulador')}
-            aria-current={activeTab === 'tabulador' ? 'page' : undefined}
-          >
-            <Wallet size={18} aria-hidden="true" />
-            <span>Tabulador</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'toulouse' ? 'active' : ''}`}
-            onClick={() => handleTabClick('toulouse')}
-            aria-current={activeTab === 'toulouse' ? 'page' : undefined}
-          >
-            <ClipboardCheck size={18} aria-hidden="true" />
-            <span>Toulouse</span>
-          </button>
+        <nav className="config-sidebar__nav" aria-label="Subpáginas de features">
+          {FEATURES.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              className={`config-sidebar__link ${activeTab === id ? 'active' : ''}`}
+              onClick={() => handleTabClick(id)}
+              aria-current={activeTab === id ? 'page' : undefined}
+              aria-controls="feature-content"
+            >
+              <Icon size={18} aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          ))}
         </nav>
       </aside>
 
-      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
-        <button 
-          className="config-mobile-back" 
+      <main
+        id="feature-content"
+        className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`}
+        aria-label={`Feature: ${FEATURES.find(({ id }) => id === activeTab)?.label}`}
+        tabIndex={-1}
+      >
+        <button
+          type="button"
+          className="config-mobile-back"
           onClick={() => setIsMobileMenuOpen(true)}
-          aria-label="Volver al menú"
+          aria-label="Volver al menú de features"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={20} aria-hidden="true" />
           <span>Volver</span>
         </button>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
+            className="config-view-transition"
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%' }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
           >
-            {activeTab === 'busqueda' && <BusquedaView />}
-            {activeTab === 'indicadores' && <IndicadoresView />}
-            {activeTab === 'tabulador' && <TabuladorView />}
-            {activeTab === 'documentos' && <DocumentosView />}
-            {activeTab === 'toulouse' && <ToulouseView />}
-            {activeTab === 'rutas' && <RutasView />}
+            {FEATURE_VIEWS[activeTab]}
           </motion.div>
         </AnimatePresence>
       </main>

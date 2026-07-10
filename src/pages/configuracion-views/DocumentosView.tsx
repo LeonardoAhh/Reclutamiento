@@ -1,10 +1,21 @@
 import { useCallback, useRef, useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { Download, FileText } from 'lucide-react';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
 import { DatosGenerales } from '@/components/documentos/DatosGenerales';
-import { Download, FileText } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+
+type DocumentId = 'constancia' | 'salud' | 'generales';
+
+const DOCUMENT_OPTIONS: Array<{ id: DocumentId; label: string }> = [
+  { id: 'constancia', label: 'Constancia fiscal' },
+  { id: 'salud', label: 'Cuestionario de salud' },
+  { id: 'generales', label: 'Datos generales' },
+];
+
+function readCssToken(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 /* ── Tipado mínimo para html2canvas ── */
 type Html2CanvasFn = (
@@ -52,7 +63,7 @@ export function DocumentosView() {
   const constanciaRef = useRef<HTMLDivElement>(null);
   const saludRef = useRef<HTMLDivElement>(null);
   const generalesRef = useRef<HTMLDivElement>(null);
-  const [activeDoc, setActiveDoc] = useState<'constancia' | 'salud' | 'generales'>('constancia');
+  const [activeDoc, setActiveDoc] = useState<DocumentId>('constancia');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const loadHtml2Canvas = useHtml2CanvasLoader();
@@ -74,7 +85,7 @@ export function DocumentosView() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff',
+        backgroundColor: readCssToken('--color-surface') || null,
         windowWidth: 1024,
         onclone: (clonedDoc: Document) => {
           if (activeDoc === 'constancia') {
