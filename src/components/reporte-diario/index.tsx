@@ -3,7 +3,7 @@ import './ReporteDiario.css';
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SkeletonTable } from "@/components/ui/PageSkeletons";
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
@@ -40,6 +40,19 @@ import ReportesGuardadosDialog from "./reportes-guardados-dialog"
 import { useReporteDiario } from "@/hooks/useReporteDiario"
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario"
 
+const LOAD_SUCCESS_DURATION_MS = 1200;
+const SAVE_SUCCESS_DURATION_MS = 1500;
+
+function hasCachedReport() {
+    if (typeof window === "undefined") return false;
+    try {
+        return Boolean(window.sessionStorage.getItem("reporteDiarioCache"));
+    } catch {
+        return false;
+    }
+}
+
+
 export default function ReporteDiarioContent() {
     const [rows, setRows] = useState<ReporteRow[]>([])
     const [selectedMes, setSelectedMes] = useState("")
@@ -55,18 +68,24 @@ export default function ReporteDiarioContent() {
     const [fileName, setFileName] = useState("")
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const [loadSubmitting, setLoadSubmitting] = useState(false)
+    const loadSuccessTimerRef = useRef<number | null>(null)
+    const saveSuccessTimerRef = useRef<number | null>(null)
     const [loadSuccess, setLoadSuccess] = useState(false)
-    const [isSavingDb, setIsSavingDb] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
-    const [panelCollapsed, setPanelCollapsed] = useState(() => {
-        return typeof window !== 'undefined' && !!sessionStorage.getItem("reporteDiarioCache");
-    });
+    const [panelCollapsed, setPanelCollapsed] = useState(hasCachedReport);
     const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
     const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
     const [drillDownMonth, setDrillDownMonth] = useState<{ empKey: string; mes: string } | null>(null);
+    const reduceMotion = useReducedMotion();
 
-    const [processStep, setProcessStep] = useState<"reading" | "validating" | "generating" | null>(null)
+    const enterFromBelow = reduceMotion ? false : { opacity: 0, y: 8 };
+    const enterFromRight = reduceMotion ? false : { opacity: 0, x: 24 };
+    const enterFromLeft = reduceMotion ? false : { opacity: 0, x: -24 };
+    const overlayPanelInitial = reduceMotion ? false : { opacity: 0, scale: 0.96, y: 12 };
+    const exitToRight = reduceMotion ? undefined : { opacity: 0, x: 24 };
+    const exitToLeft = reduceMotion ? undefined : { opacity: 0, x: -24 };
+
+    const [processStep, setProcessStep] = useState<"reading" | "validating" | null>(null)
     const [previewData, setPreviewData] = useState<{
         rows: ReporteRow[];
         mes: string;
@@ -88,21 +107,27 @@ export default function ReporteDiarioContent() {
     // Filas de TODOS los meses guardados en Supabase (para análisis cross-month)
     const [allMonthsRows, setAllMonthsRows] = useState<ReporteRow[]>([])
 
+    useEffect(() => {
+        return () => {
+            if (loadSuccessTimerRef.current !== null) window.clearTimeout(loadSuccessTimerRef.current)
+            if (saveSuccessTimerRef.current !== null) window.clearTimeout(saveSuccessTimerRef.current)
+        }
+    }, [])
+
     // Recuperar último reporte parseado si se recarga la página por accidente
     useEffect(() => {
-        const cached = sessionStorage.getItem("reporteDiarioCache")
-        if (cached) {
-            try {
-                const json = JSON.parse(cached)
-                const { rows: parsed, errors: errs } = parseReporteJSON(json)
-                if (errs.length === 0 && parsed.length > 0) {
-                    setRows(parsed)
-                    setSelectedMes(parsed[0]?.mes ?? "")
-                    setFileName("Autoguardado")
-                }
-            } catch (err) {
-                // Si falla el parseo, solo ignoramos la caché
+        try {
+            const cached = window.sessionStorage.getItem("reporteDiarioCache")
+            if (!cached) return
+            const json = JSON.parse(cached)
+            const { rows: parsed, errors: errs } = parseReporteJSON(json)
+            if (errs.length === 0 && parsed.length > 0) {
+                setRows(parsed)
+                setSelectedMes(parsed[0]?.mes ?? "")
+                setFileName("Autoguardado")
             }
+        } catch {
+            // La caché es una mejora progresiva; el reporte funciona sin ella.
         }
     }, [])
 
@@ -431,6 +456,7 @@ export default function ReporteDiarioContent() {
     )
 
     const processFile = useCallback(async (file: File) => {
+        if (processStep) return
         if (file.type !== "application/json" && !file.name.endsWith('.json')) {
             sileo.error({ title: "Formato de archivo inválido", description: "Por favor, asegúrate de subir el archivo correcto." })
             return
@@ -438,14 +464,11 @@ export default function ReporteDiarioContent() {
 
         setErrors([])
         setProcessStep("reading")
-        const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
         try {
-            await delay(1200) // Simulación de lectura (más tiempo)
             const text = await file.text()
 
             setProcessStep("validating")
-            await delay(2000) // Simulación de validación (más tiempo)
 
             const json = JSON.parse(text)
             const { rows: parsed, errors: errs } = parseReporteJSON(json)
@@ -470,38 +493,51 @@ export default function ReporteDiarioContent() {
             setErrors([msg])
             sileo.error({ title: "Archivo corrupto", description: "El archivo no tiene la estructura esperada." })
         }
-    }, [])
+    }, [processStep])
 
-    const confirmLoad = useCallback(async () => {
-        if (!previewData) return
-        setLoadSubmitting(true)
-        const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
-        await delay(1000) // Animación pensando
+    const confirmLoad = useCallback(() => {
+        if (!previewData || loadSuccess) return
 
         setRows(previewData.rows)
         setSelectedMes(previewData.mes)
         setFileName(previewData.fileName)
-        sessionStorage.setItem("reporteDiarioCache", JSON.stringify(previewData.jsonRaw))
+        try {
+            sessionStorage.setItem("reporteDiarioCache", JSON.stringify(previewData.jsonRaw))
+        } catch (error) {
+            console.warn("No se pudo actualizar la caché local del reporte:", error)
+        }
 
-        setLoadSubmitting(false)
         setLoadSuccess(true)
-        await delay(1500)
-
-        setLoadSuccess(false)
-        setPreviewData(null)
-        setPanelCollapsed(true)
+        if (loadSuccessTimerRef.current !== null) window.clearTimeout(loadSuccessTimerRef.current)
+        loadSuccessTimerRef.current = window.setTimeout(() => {
+            setLoadSuccess(false)
+            setPreviewData(null)
+            setPanelCollapsed(true)
+            loadSuccessTimerRef.current = null
+        }, LOAD_SUCCESS_DURATION_MS)
         sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
-    }, [previewData])
+    }, [loadSuccess, previewData])
 
     const cancelLoad = useCallback(() => {
+        if (loadSuccess) return
+        if (loadSuccessTimerRef.current !== null) {
+            window.clearTimeout(loadSuccessTimerRef.current)
+            loadSuccessTimerRef.current = null
+        }
+        setLoadSuccess(false)
         setPreviewData(null)
         setProcessStep(null)
-    }, [])
+    }, [loadSuccess])
 
     const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
+        const input = e.currentTarget
+        const file = input.files?.[0]
         if (!file) return
-        await processFile(file)
+        try {
+            await processFile(file)
+        } finally {
+            input.value = ""
+        }
     }, [processFile])
 
     const handleDrop = useCallback(async (e: React.DragEvent) => {
@@ -529,7 +565,11 @@ export default function ReporteDiarioContent() {
         setRows([])
         setFileName("")
         setErrors([])
-        sessionStorage.removeItem("reporteDiarioCache")
+        try {
+            window.sessionStorage.removeItem("reporteDiarioCache")
+        } catch {
+            // La limpieza visual no depende de que sessionStorage esté disponible.
+        }
         sileo.info({ title: "Vista de datos limpiada" })
     }, [])
 
@@ -558,9 +598,8 @@ export default function ReporteDiarioContent() {
     )
 
     const handleSaveToDb = useCallback(async () => {
-        setIsSavingDb(true)
         setSaveSuccess(false)
-        if (!currentMonth || rows.length === 0) { setIsSavingDb(false); return; }
+        if (!currentMonth || rows.length === 0 || dbSaving) return
         const monthRows = rows.filter((r) => r.mes === currentMonth)
         const dCount = daysInMonth(currentMonth)
         const dHeaders = Array.from({ length: dCount }, (_, i) => String(i + 1).padStart(2, "0"))
@@ -584,9 +623,6 @@ export default function ReporteDiarioContent() {
             ? Math.round((totalAusentismo / diasDisponibles) * 100 * 100) / 100
             : 0
 
-        // Retraso artificial para "pensando"
-        await new Promise(r => setTimeout(r, 1000))
-
         const result = await saveReport({
             mes: currentMonth,
             data: monthRows,                    // datos completos para drill-down
@@ -599,14 +635,15 @@ export default function ReporteDiarioContent() {
         })
         if (result.success) {
             setSaveSuccess(true)
-            setIsSavingDb(false)
-            setTimeout(() => setSaveSuccess(false), 1500)
+            if (saveSuccessTimerRef.current !== null) window.clearTimeout(saveSuccessTimerRef.current)
+            saveSuccessTimerRef.current = window.setTimeout(() => {
+                setSaveSuccess(false)
+                saveSuccessTimerRef.current = null
+            }, SAVE_SUCCESS_DURATION_MS)
             const updated = await fetchSummaries()
             setSavedSummaries(updated)
-        } else {
-            setIsSavingDb(false)
         }
-    }, [currentMonth, rows, computeKpis, saveReport, fetchSummaries])
+    }, [currentMonth, rows, dbSaving, computeKpis, saveReport, fetchSummaries])
 
     const handleLoadFromDb = useCallback(async (mes: string) => {
         const record = await fetchByMes(mes)
@@ -656,17 +693,26 @@ export default function ReporteDiarioContent() {
 
     const hasData = rows.length > 0 && Boolean(currentMonth)
 
-    /* ── Carga inicial desde Supabase: skeleton cohesivo con el resto del
-       sistema (en vez de pantalla en blanco). ───────────────────────── */
+    /* ── Carga inicial: skeleton que replica la estructura real. ─────────── */
     if (loadingDb) {
-        // Si no hay datos (carga inicial limpia), mostramos un loader centrado
-        // para no "engañar" visualmente al usuario con un esqueleto de tabla.
         if (!hasData) {
             return (
-                <div className="reporte-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-                    <Loader2 className="animate-spin text-muted-foreground" size={40} />
+                <div className="reporte-container">
+                    <section className="reporte-hero reporte-loading-state" aria-busy="true" aria-labelledby="reporte-loading-status">
+                        <header className="reporte-hero__intro" aria-hidden="true">
+                            <Skeleton variant="text" className="reporte-loading-state__eyebrow" />
+                        </header>
+                        <div className="reporte-hero__dropzone reporte-loading-state__dropzone" aria-hidden="true">
+                            <Skeleton variant="circle" className="reporte-loading-state__icon" />
+                            <Skeleton variant="text" className="reporte-loading-state__title" />
+                            <Skeleton variant="text" className="reporte-loading-state__subtitle" />
+                        </div>
+                        <span id="reporte-loading-status" className="sr-only" role="status" aria-live="polite">
+                            Cargando reportes de asistencia…
+                        </span>
+                    </section>
                 </div>
-            );
+            )
         }
 
         return (
@@ -678,12 +724,13 @@ export default function ReporteDiarioContent() {
                         </div>
                     </div>
                 </header>
-                <div className="reporte-card" data-testid="reporte-skeleton" aria-busy="true">
-                    <Skeleton height={40} radius="var(--rounded-md)" style={{ marginBottom: 16, maxWidth: 320 }} />
+                <div className="reporte-card reporte-skeleton-card" data-testid="reporte-skeleton" aria-busy="true">
+                    <Skeleton variant="text" className="reporte-skeleton-card__title" />
                     <SkeletonTable rows={8} columns={['24%', '30%', '12%', '12%', '10%', '12%']} />
+                    <span className="sr-only" role="status" aria-live="polite">Actualizando datos del reporte…</span>
                 </div>
             </div>
-        );
+        )
     }
 
     /* ── Rediseño (Idea A): Hero centrado cuando NO hay reporte ──────────
@@ -694,17 +741,19 @@ export default function ReporteDiarioContent() {
             <div className="reporte-container">
                 <input
                     ref={fileInputRef}
+                    className="reporte-file-input"
                     type="file"
                     accept="application/json"
                     onChange={handleFileChange}
-                    style={{ display: 'none' }}
+                    tabIndex={-1}
+                    aria-hidden="true"
                 />
 
                 <motion.section
                     className="reporte-hero"
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={enterFromBelow}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }}
                     aria-labelledby="reporte-hero-title"
                 >
                     <header className="reporte-hero__intro">
@@ -730,33 +779,35 @@ export default function ReporteDiarioContent() {
                             }
                         }}
                         aria-label="Sube un archivo de reporte de asistencia"
+                        aria-busy={Boolean(processStep)}
+                        aria-disabled={Boolean(processStep)}
                         data-testid="upload-dropzone"
                     >
                         <AnimatePresence mode="wait">
                             {processStep ? (
                                 <motion.div
                                     key="processing"
-                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="reporte-hero__dropzone-inner"
-                                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-sm)' }}
+                                    exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
+                                    className="reporte-hero__dropzone-inner reporte-hero__dropzone-inner--processing"
+                                    role="status"
+                                    aria-live="polite"
+                                    aria-atomic="true"
                                 >
-                                    <Loader2 size={34} className="animate-spin reporte-overlay__icon-primary" aria-hidden="true" />
+                                    <Loader2 size="1em" className="reporte-spinner reporte-overlay__icon-primary" aria-hidden="true" />
                                     <h3 className="reporte-hero__dropzone-title">
-                                        {processStep === "reading" && "Leyendo archivo..."}
-                                        {processStep === "validating" && "Revisando incidencias..."}
-                                        {processStep === "generating" && "Construyendo tu tablero..."}
+                                        {processStep === "reading" && "Leyendo archivo…"}
+                                        {processStep === "validating" && "Revisando incidencias…"}
                                     </h3>
                                 </motion.div>
                             ) : (
                                 <motion.div
                                     key="idle"
-                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
                                     className="reporte-hero__dropzone-inner"
-                                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-xs)' }}
                                 >
                                     <span className="reporte-hero__dropzone-icon" aria-hidden="true">
                                         <CloudUpload size={34} />
@@ -796,7 +847,7 @@ export default function ReporteDiarioContent() {
                 {errors.length > 0 && (
                     <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
                         <AlertCircle size={16} aria-hidden="true" />
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="reporte-errors__content">
                             <div className="reporte-flex-between">
                                 <strong>Errores de formato</strong>
                                 <button
@@ -826,12 +877,12 @@ export default function ReporteDiarioContent() {
                     icon={<FileJson />}
                     footerActions={
                         <>
-                            <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
+                            <button type="button" onClick={cancelLoad} className="btn-secondary" disabled={loadSuccess}>Cancelar</button>
                             <AnimatedSubmitButton
-                                isSubmitting={loadSubmitting}
+                                type="button"
+                                isSubmitting={false}
                                 isSuccess={loadSuccess}
                                 idleText="Sí, cargar datos"
-                                loadingText="Cargando..."
                                 successText="¡Cargado!"
                                 idleIcon={Check}
                                 className="btn-primary"
@@ -864,21 +915,24 @@ export default function ReporteDiarioContent() {
                 <AnimatePresence>
                     {isDragging && (
                         <motion.div
-                            initial={{ opacity: 0 }}
+                            initial={reduceMotion ? false : { opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            exit={reduceMotion ? undefined : { opacity: 0 }}
                             className="reporte-drag"
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
+                            role="status"
+                            aria-live="assertive"
+                            aria-label="Suelta el archivo para cargar el reporte"
                         >
                             <motion.div
-                                initial={{ scale: 0.8, y: 20 }}
-                                animate={{ scale: 1, y: 0 }}
-                                exit={{ scale: 0.8, y: 20 }}
+                                initial={overlayPanelInitial}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={reduceMotion ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
                                 className="reporte-drag__inner"
                             >
-                                <CloudUpload size={64} className="reporte-overlay__icon-primary" aria-hidden="true" />
+                                <CloudUpload size="1em" className="reporte-overlay__icon-primary reporte-drag__icon" aria-hidden="true" />
                                 <h2 className="reporte-overlay__title">Suelta el archivo aquí</h2>
                                 <p className="reporte-subtitle">Detecta automáticamente el mes y valida el formato.</p>
                             </motion.div>
@@ -894,10 +948,12 @@ export default function ReporteDiarioContent() {
 
             <input
                 ref={fileInputRef}
+                className="reporte-file-input"
                 type="file"
                 accept="application/json"
                 onChange={handleFileChange}
-                style={{ display: 'none' }}
+                tabIndex={-1}
+                aria-hidden="true"
             />
 
             {/* ── PANEL IZQUIERDO: header + controles + dropzone ───────── */}
@@ -910,13 +966,14 @@ export default function ReporteDiarioContent() {
 
                         {hasData && (
                             <AnimatedSubmitButton
-                                isSubmitting={dbSaving || isSavingDb}
+                                type="button"
+                                isSubmitting={dbSaving}
                                 isSuccess={saveSuccess}
                                 idleText={savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
-                                loadingText="Guardando..."
-                                successText="¡Guardado Exitoso!"
+                                loadingText="Guardando…"
+                                successText="¡Guardado!"
                                 idleIcon={Save}
-                                className="btn-primary btn-sm"
+                                className="btn-primary"
                                 onClick={handleSaveToDb}
                                 data-testid="save-report-btn"
                             />
@@ -943,7 +1000,7 @@ export default function ReporteDiarioContent() {
                             )}
                             {processStep && (
                                 <div className="reporte-status-banner reporte-status-banner--file" data-testid="reporte-filename-loading">
-                                    <Loader2 size={16} className="animate-spin text-primary" aria-hidden="true" />
+                                    <Loader2 size="1em" className="reporte-spinner text-primary" aria-hidden="true" />
                                     <span className="reporte-head__grid-text">Analizando archivo...</span>
                                 </div>
                             )}
@@ -1043,7 +1100,7 @@ export default function ReporteDiarioContent() {
                 {errors.length > 0 && (
                     <div className="reporte-status-banner error reporte-errors" role="alert" data-testid="errors-banner">
                         <AlertCircle size={16} aria-hidden="true" />
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="reporte-errors__content">
                             <div className="reporte-flex-between">
                                 <strong>Errores de formato</strong>
                                 <button
@@ -1085,21 +1142,21 @@ export default function ReporteDiarioContent() {
                 {hasData && (
                     <motion.div
                         className="reporte-container"
-                        initial="hidden"
+                        initial={reduceMotion ? false : "hidden"}
                         animate="visible"
                         variants={{
                             hidden: { opacity: 0 },
                             visible: {
                                 opacity: 1,
-                                transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+                                transition: reduceMotion ? { duration: 0 } : { staggerChildren: 0.08, delayChildren: 0.05 },
                             },
                         }}
                     >
                         {currentMonth && rows.length > 0 && (
                             <motion.div
                                 variants={{
-                                    hidden: { opacity: 0, y: 12 },
-                                    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+                                    hidden: { opacity: 0, y: reduceMotion ? 0 : 12 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] } },
                                 }}
                             >
                                 <ReporteKpiDashboard
@@ -1121,7 +1178,7 @@ export default function ReporteDiarioContent() {
                                 <div className="reporte-card__header">
                                     <div className="reporte-flex-between">
                                         <div>
-                                            <h2 className="reporte-card__title" style={{ textTransform: 'capitalize' }}>
+                                            <h2 className="reporte-card__title reporte-card__title--capitalize">
                                                 {formatMes(currentMonth)}
                                             </h2>
                                         </div>
@@ -1262,12 +1319,12 @@ export default function ReporteDiarioContent() {
                 icon={<FileJson />}
                 footerActions={
                     <>
-                        <button type="button" onClick={cancelLoad} className="btn-secondary">Cancelar</button>
+                        <button type="button" onClick={cancelLoad} className="btn-secondary" disabled={loadSuccess}>Cancelar</button>
                         <AnimatedSubmitButton
-                            isSubmitting={loadSubmitting}
+                            type="button"
+                            isSubmitting={false}
                             isSuccess={loadSuccess}
                             idleText="Sí, cargar datos"
-                            loadingText="Cargando..."
                             successText="¡Cargado!"
                             idleIcon={Check}
                             className="btn-primary"
@@ -1322,21 +1379,24 @@ export default function ReporteDiarioContent() {
             <AnimatePresence>
                 {isDragging && (
                     <motion.div
-                        initial={{ opacity: 0 }}
+                        initial={reduceMotion ? false : { opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        exit={reduceMotion ? undefined : { opacity: 0 }}
                         className="reporte-drag"
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
+                        role="status"
+                        aria-live="assertive"
+                        aria-label="Suelta el archivo para cargar el reporte"
                     >
                         <motion.div
-                            initial={{ scale: 0.8, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.8, y: 20 }}
+                            initial={overlayPanelInitial}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
                             className="reporte-drag__inner"
                         >
-                            <FileJson size={64} className="reporte-overlay__icon-primary reporte-drag__icon" aria-hidden="true" />
+                            <FileJson size="1em" className="reporte-overlay__icon-primary reporte-drag__icon" aria-hidden="true" />
                             <h2 className="reporte-card__title">Suelta tu archivo aquí</h2>
                             <p className="reporte-subtitle">El reporte se generará automáticamente</p>
                         </motion.div>
@@ -1361,10 +1421,10 @@ export default function ReporteDiarioContent() {
                                 return (
                                     <motion.div
                                         key="drill"
-                                        initial={{ opacity: 0, x: 24 }}
+                                        initial={enterFromRight}
                                         animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: 24 }}
-                                        transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
+                                        exit={exitToRight}
+                                        transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.25, 0.1, 0.25, 1] }}
                                     >
                                         <div className="top-emp-drill-header">
                                             <button
@@ -1405,10 +1465,10 @@ export default function ReporteDiarioContent() {
                             /* ── Vista principal: lista top 10 ── */
                             <motion.div
                                 key="list"
-                                initial={{ opacity: 0, x: -24 }}
+                                initial={enterFromLeft}
                                 animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -24 }}
-                                transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
+                                exit={exitToLeft}
+                                transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.25, 0.1, 0.25, 1] }}
                             >
                                 <ol className="top-emp-list" aria-label="Top 10 empleados con más incidencias">
                                     {topIncidenceEmployees.map((emp, idx) => {

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Users, TrendingDown, TrendingUp, Filter, ChevronRight, Moon } from "lucide-react";
+import { Users, TrendingDown, TrendingUp, ChevronRight, Moon } from "lucide-react";
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
 import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
@@ -61,10 +61,10 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     
     // El badge de la derecha sigue siendo el total de incidencias del área o solo operadores?
     // Mostramos solo de operadores si hay operadores.
-    const status = getStatusColors(pct, incidence > 0);
+    const statusTone = getStatusTone(pct, incidence > 0);
     
     const asistenciaValue = area.is_descanso ? "—" : Math.max(active - incidence, 0);
-    const trendColor = pct > TREND_THRESHOLD ? "var(--color-error)" : "var(--color-muted)";
+    const isCriticalTrend = pct > TREND_THRESHOLD;
 
     const isClickable = incidence > 0;
     
@@ -89,10 +89,10 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
                 
                 <div className="ras-card__header-metrics">
                     {incidence > 0 && (
-                        <span className="ras-card__trend" style={{ color: trendColor }} aria-label={`${pct.toFixed(0)}% ausentismo`}>
-                            {pct > TREND_THRESHOLD
-                                ? <TrendingUp size={12} aria-hidden="true" />
-                                : <TrendingDown size={12} style={{ color: "var(--color-success)" }} aria-hidden="true" />}
+                        <span className={`ras-card__trend ras-card__trend--${isCriticalTrend ? "critical" : "stable"}`} aria-label={`${pct.toFixed(0)}% ausentismo`}>
+                            {isCriticalTrend
+                                ? <TrendingUp size="1em" aria-hidden="true" />
+                                : <TrendingDown size="1em" aria-hidden="true" />}
                             {pct.toFixed(0)}%
                         </span>
                     )}
@@ -104,8 +104,7 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
                         </div>
                     ) : (
                         <span
-                            className="ras-card__badge"
-                            style={{ background: status.background, color: status.text }}
+                            className={`ras-card__badge ras-card__badge--${statusTone}`}
                             aria-label={`${incidence} incidencias`}
                         >
                             {incidence}
@@ -206,13 +205,13 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
     });
 
     if (rows.length === 0) return (
-        <div className="reporte-incidents__empty" style={{ padding: "var(--spacing-lg)" }}>
+        <div className="reporte-incidents__empty reporte-incidents__empty--padded">
             <p>No hay ausencias registradas para esta sección.</p>
         </div>
     );
 
     return (
-        <div style={{ padding: "var(--spacing-lg)" }}>
+        <div className="reporte-incidents__detail-list">
             {/* Desktop: tabla */}
             <div className="reporte-incidents__table-wrap">
                 <table className="reporte-incidents__table">
@@ -354,10 +353,15 @@ export default function ReporteAreaSummary({
 
     return (
         <section className="ras" aria-labelledby="ras-heading">
-
-            {/* Encabezado (ya no renderiza botones inútiles detrás del modal) */}
-            <div className="ras__header">
-            </div>
+            <header className="ras__header">
+                <div className="ras__header-title">
+                    <Users size="1em" aria-hidden="true" />
+                    <h3 id="ras-heading" className="ras__heading">Resumen por sección</h3>
+                </div>
+                <span className="ras__count" aria-label={`${totalIncidencias} incidencias en total`}>
+                    {totalIncidencias}
+                </span>
+            </header>
 
             {/* Grid agrupado por área */}
             <div className="ras__groups" role="list" aria-label="Secciones de la plantilla">
@@ -413,14 +417,8 @@ export default function ReporteAreaSummary({
                     setIsDetailOpen(false);
                     onSelectArea(null);
                 }}
-                title={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                        <span>{selectedArea || ''}</span>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--color-muted)', fontWeight: 'normal' }}>
-                            ({detailRows.length} ausencia{detailRows.length !== 1 ? "s" : ""})
-                        </span>
-                    </div>
-                }
+                title={selectedArea || 'Detalle de sección'}
+                subtitle={`${detailRows.length} ausencia${detailRows.length !== 1 ? "s" : ""}`}
                 size="xl"
                 fullscreenMobile={true}
             >
