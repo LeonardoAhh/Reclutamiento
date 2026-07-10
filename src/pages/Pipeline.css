@@ -325,6 +325,11 @@
   flex-shrink: 0;
 }
 
+.pipeline__kpi-row__dot--pauta { background: var(--color-warning); }
+.pipeline__kpi-row__dot--alexandra { background: var(--color-accent-teal); }
+.pipeline__kpi-row__dot--daniela { background: var(--color-primary); }
+
+
 .pipeline__kpi-row__name {
   font-size: var(--type-body-sm-size);
   font-weight: 500;
@@ -653,8 +658,8 @@
 
 .pipeline__search-input {
   width: 100%;
-  height: var(--control-height);
-  padding: 0 var(--spacing-md) 0 calc(var(--spacing-md) + 24px);
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-md) 0 calc(var(--spacing-md) + var(--spacing-xl));
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
@@ -686,7 +691,7 @@
   align-items: center;
   gap: var(--spacing-xxs);
   position: relative;
-  height: 36px;
+  min-height: var(--touch-target-min);
   padding: 0 var(--spacing-sm);
   font-size: var(--type-caption-md-size);
   margin-left: auto;
@@ -974,28 +979,28 @@
 .pipeline__starlite-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  color: #d97706; /* Amber-600 */
-  background: color-mix(in srgb, #fbbf24 15%, transparent);
-  padding: 2px 6px;
+  gap: var(--spacing-xs);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-bold);
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
+  padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
-  letter-spacing: 0.05em;
-  border: 1px solid color-mix(in srgb, #fbbf24 30%, transparent);
+  letter-spacing: var(--tracking-wider);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .pipeline__vinoplastic-badge {
   display: inline-flex;
   align-items: center;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--color-muted);
-  background: var(--color-surface-sunken);
-  padding: 2px 6px;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
-  letter-spacing: 0.05em;
-  border: 1px solid var(--color-border);
+  letter-spacing: var(--tracking-wider);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .pipeline__starlite-icon {
@@ -2309,6 +2314,16 @@
     padding: 2px 6px;
     background: var(--color-surface-soft);
     border-radius: var(--rounded-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline *,
+  .pipeline *::before,
+  .pipeline *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
   }
 }
 
