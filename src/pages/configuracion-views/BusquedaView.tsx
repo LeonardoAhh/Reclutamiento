@@ -1,10 +1,15 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
+import { formatMes } from '@/components/reporte-diario/helpers';
+import type { ReporteRow } from '@/components/reporte-diario/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { useReporteDiario, ReporteDiarioRecord } from '@/hooks/useReporteDiario';
-import { Navigate } from 'react-router-dom';
-import { Settings, Search, X, User } from 'lucide-react';
+import {
+  useReporteDiario,
+  type ReporteDiarioRecord,
+  type ReporteDiarioSummary,
+} from '@/hooks/useReporteDiario';
+import { Search, User, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
@@ -16,6 +21,20 @@ const STICKER_TONES = 5;
 function getStickerTone(numEmpleado: string) {
   const numVal = parseInt(numEmpleado.replace(/\D/g, '') || '0', 10);
   return numVal % STICKER_TONES;
+}
+
+function displayValue(value: unknown) {
+  const text = String(value ?? '').trim();
+  return text || 'Sin información';
+}
+
+
+function describeCalendarCode(code?: string) {
+  if (!code || code === '-' || code === 'X') return 'Sin registro';
+  if (code === 'A') return 'Asistencia';
+  if (code === 'D' || code === 'DF') return 'Descanso';
+  if (code === 'B') return 'Baja';
+  return INCIDENCIA_LABELS[code] || code;
 }
 
 function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefined, mesStr: string }) {
@@ -45,29 +64,34 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
   ];
 
   return (
-    <div className="config-calendar-wrapper" aria-hidden="true">
-      <div className="config-calendar-header">
+    <div className="config-calendar-wrapper">
+      <span className="sr-only">Calendario de asistencia e incidencias de {formatMes(mesStr)}.</span>
+      <div className="config-calendar-header" aria-hidden="true">
         {weekdays.map((d, i) => (
           <abbr key={i} title={d.full} className="config-calendar-header__abbr">
             {d.short}
           </abbr>
         ))}
       </div>
-      <div className="config-calendar">
-        {blanks.map(b => <div key={`blank-${b}`} className="config-calendar__day config-calendar__day--blank" />)}
+      <div className="config-calendar" role="list" aria-label={`Calendario de ${formatMes(mesStr)}`}>
+        {blanks.map(b => <div key={`blank-${b}`} className="config-calendar__day config-calendar__day--blank" role="presentation" />)}
         {monthDays.map(d => {
           const hasCode = !!d.code;
+          const isAttendance = d.code === 'A';
           const isIncident = hasCode && !NON_INCIDENT_CODES.has(d.code as string);
 
           let className = "config-calendar__day";
           if (isIncident) className += " config-calendar__day--incident";
-          else if (hasCode) className += " config-calendar__day--active";
+          else if (isAttendance) className += " config-calendar__day--active";
 
           return (
             <div
               key={d.dayStr}
               className={className}
-              title={`${d.dayStr}: ${d.code || 'Sin registro'}`}
+              data-day={d.dayStr}
+              role="listitem"
+              title={`${d.dayStr}: ${describeCalendarCode(d.code)}`}
+              aria-label={`Día ${Number(d.dayStr)}: ${describeCalendarCode(d.code)}`}
             />
           );
         })}
@@ -87,54 +111,99 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
 }
 
 export function BusquedaView() {
-  const { user, loading } = useAuth();
-  const { employees } = useSupabaseData();
+  const { loading: authLoading } = useAuth();
+  const { employees, loading: employeesLoading, error: employeesError } = useSupabaseData();
   const { fetchByMes, fetchSummaries } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [summaries, setSummaries] = useState<any[]>([]);
+  const [summaries, setSummaries] = useState<ReporteDiarioSummary[]>([]);
+  const [summariesLoading, setSummariesLoading] = useState(true);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState('');
   const [selectedMes, setSelectedMes] = useState<string>('');
   const [currentReport, setCurrentReport] = useState<ReporteDiarioRecord | null>(null);
 
   useEffect(() => {
+    let active = true;
     fetchSummaries().then(data => {
+      if (!active) return;
       setSummaries(data);
       if (data.length > 0) {
         setSelectedMes(data[0].mes);
       }
+    }).finally(() => {
+      if (active) setSummariesLoading(false);
     });
+    return () => {
+      active = false;
+    };
   }, [fetchSummaries]);
 
   useEffect(() => {
-    if (selectedMes) {
-      fetchByMes(selectedMes).then(setCurrentReport);
+    if (!selectedMes) {
+      setCurrentReport(null);
+      setReportError('');
+      setReportLoading(false);
+      return;
     }
+    let active = true;
+    setCurrentReport(null);
+    setReportError('');
+    setReportLoading(true);
+    fetchByMes(selectedMes).then((report) => {
+      if (!active) return;
+      setCurrentReport(report);
+      if (!report) setReportError('No fue posible cargar las incidencias del mes seleccionado.');
+    }).catch(() => {
+      if (active) setReportError('No fue posible cargar las incidencias del mes seleccionado.');
+    }).finally(() => {
+      if (active) setReportLoading(false);
+    });
+    return () => {
+      active = false;
+    };
   }, [selectedMes, fetchByMes]);
 
+  const reportRows = useMemo(() => {
+    if (!currentReport) return [];
+    return currentReport.data.filter((row): row is ReporteRow => {
+      if (!row || typeof row !== 'object') return false;
+      const candidate = row as Partial<ReporteRow>;
+      return typeof candidate.numero_empleado === 'string' && Boolean(candidate.days && typeof candidate.days === 'object');
+    });
+  }, [currentReport]);
+
+  const employeeDaysByNumber = useMemo(() => {
+    return new Map(reportRows.map((row) => [row.numero_empleado, row.days]));
+  }, [reportRows]);
+
+  const searchQuery = searchTerm.trim();
+
   const filteredEmployees = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
-    if (q.length < 2) return [];
+    const query = searchQuery.toLocaleLowerCase('es');
+    if (query.length < 2) return [];
 
-    return employees.filter(e => {
-      return e.num_empleado.toLowerCase().includes(q) ||
-             e.nombre.toLowerCase().includes(q);
+    return employees.filter((employee) => {
+      return employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
+             employee.nombre.toLocaleLowerCase('es').includes(query);
     }).slice(0, 10);
-  }, [searchTerm, employees]);
+  }, [searchQuery, employees]);
 
-  if (loading) {
+  if (authLoading || employeesLoading) {
     return (
-      <section className="busqueda-view">
+      <section className="busqueda-view" aria-busy="true">
         <header className="config-page__header">
-          <Skeleton variant="text" width="200px" height="28px" />
-          <Skeleton variant="text" width="60%" height="20px" className="mt-sm" />
+          <Skeleton variant="text" width="var(--skeleton-title-width)" height="var(--type-heading-lg-size)" />
+          <Skeleton variant="text" width="60%" height="var(--type-body-md-size)" className="mt-sm" />
         </header>
 
-        <div className="busqueda-skeleton">
-           <Skeleton variant="rect" width="100%" height="48px" radius="8px" />
-           <Skeleton variant="rect" width="100%" height="150px" radius="8px" />
+        <div className="busqueda-skeleton" aria-hidden="true">
+           <Skeleton variant="rect" width="100%" height="var(--touch-target-min)" radius="var(--rounded-md)" />
+           <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-md)" />
         </div>
+        <span className="sr-only" role="status" aria-live="polite">Cargando colaboradores…</span>
       </section>
     );
   }
@@ -144,14 +213,20 @@ export function BusquedaView() {
     searchInputRef.current?.focus();
   };
 
-  const showHelperText = searchTerm.length === 1;
+  const showHelperText = searchQuery.length === 1;
 
   return (
-    <section className="busqueda-view config-page__content">
+    <section className="busqueda-view config-page__content" aria-labelledby="busqueda-title">
       <header className="config-page__header">
-        <h2 className="config-page__title">Búsqueda Global</h2>
+        <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
         <p className="config-page__subtitle">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
       </header>
+
+      {employeesError && (
+        <p className="config-search-error type-body-sm" role="alert">
+          No fue posible actualizar la lista de colaboradores. Se muestran los datos disponibles.
+        </p>
+      )}
 
       <section className="config-page__toolbar" aria-label="Herramientas de configuración">
         <div className="form-group config-search">
@@ -163,11 +238,13 @@ export function BusquedaView() {
             <input
               id="config-search-input"
               ref={searchInputRef}
-              type="text"
-              placeholder="Buscar empleado por nombre o número..."
+              type="search"
+              inputMode="search"
+              placeholder="Buscar empleado por nombre o número…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               autoComplete="off"
+              aria-controls="config-search-results"
               aria-describedby={showHelperText ? "config-search-hint" : undefined}
             />
             {searchTerm.length > 0 && (
@@ -191,10 +268,17 @@ export function BusquedaView() {
       </section>
 
       <section
+        id="config-search-results"
         className="config-page__content"
         aria-label="Resultados de búsqueda"
+        aria-busy={summariesLoading || reportLoading}
       >
-        {searchTerm.length < 2 ? (
+        {(summariesLoading || reportLoading) && (
+          <span className="sr-only" role="status" aria-live="polite">
+            {summariesLoading ? 'Cargando reportes disponibles…' : 'Actualizando incidencias del mes seleccionado…'}
+          </span>
+        )}
+        {searchQuery.length < 2 ? (
           <div className="config-initial-state">
             <div className="config-initial-state__icon">
               <Search size={32} color="var(--color-muted-soft)" aria-hidden="true" />
@@ -212,26 +296,30 @@ export function BusquedaView() {
               role="status"
               aria-live="polite"
             >
-              {filteredEmployees.length} resultado{filteredEmployees.length !== 1 ? 's' : ''} para "{searchTerm}"
+              {filteredEmployees.length} resultado{filteredEmployees.length !== 1 ? 's' : ''} para “{searchQuery}”
             </p>
 
             <div className="config-results">
               {filteredEmployees.map(emp => {
-                const stickerTone = getStickerTone(emp.num_empleado);
-                const monthSelectId = `config-month-select-${emp.num_empleado}`;
+                const employeeName = displayValue(emp.nombre);
+                const employeeNumber = displayValue(emp.num_empleado);
+                const stickerTone = getStickerTone(employeeNumber);
+                const employeeDomId = employeeNumber.replace(/[^a-zA-Z0-9_-]/g, '-');
+                const monthSelectId = `config-month-select-${employeeDomId}`;
+                const employeeTitleId = `employee-card-title-${employeeDomId}`;
 
                 return (
-                  <article key={emp.num_empleado} className="config-card">
+                  <article key={employeeNumber} className="config-card" aria-labelledby={employeeTitleId}>
                     <header className="config-card__header">
                       <div
                         className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
                         aria-hidden="true"
                       >
-                        <User size={20} color="var(--color-on-primary)" aria-hidden="true" />
+                        <User size="1em" aria-hidden="true" />
                       </div>
                       <div className="config-card__title-group">
-                        <h3 className="type-heading-sm text-ink">{emp.nombre}</h3>
-                        <p className="type-caption-sm text-muted-soft">#{emp.num_empleado}</p>
+                        <h3 id={employeeTitleId} className="type-heading-sm text-ink">{employeeName}</h3>
+                        <p className="type-caption-sm text-muted-soft">#{employeeNumber}</p>
                       </div>
                     </header>
 
@@ -239,19 +327,19 @@ export function BusquedaView() {
                       <dl className="config-card__properties">
                         <div className="notion-prop">
                           <dt className="notion-prop__label type-caption-up text-muted">Puesto</dt>
-                          <dd className="notion-prop__value type-body-sm-strong text-charcoal">{emp.puesto}</dd>
+                          <dd className="notion-prop__value type-body-sm-strong text-charcoal">{displayValue(emp.puesto)}</dd>
                         </div>
                         <div className="notion-prop">
                           <dt className="notion-prop__label type-caption-up text-muted">Departamento</dt>
-                          <dd className="notion-prop__value text-charcoal">{emp.area}</dd>
+                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.area)}</dd>
                         </div>
                         <div className="notion-prop">
                           <dt className="notion-prop__label type-caption-up text-muted">Sección</dt>
-                          <dd className="notion-prop__value text-charcoal">{emp.seccion}</dd>
+                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.seccion)}</dd>
                         </div>
                         <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Fecha Ingreso</dt>
-                          <dd className="notion-prop__value text-charcoal">{emp.fecha_ingreso}</dd>
+                          <dt className="notion-prop__label type-caption-up text-muted">Fecha de ingreso</dt>
+                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.fecha_ingreso)}</dd>
                         </div>
                         <div className="notion-prop">
                           <dt className="notion-prop__label type-caption-up text-muted">Turno</dt>
@@ -265,14 +353,16 @@ export function BusquedaView() {
                         </div>
                       </dl>
 
-                      <aside className="config-card__calendar-section" aria-label={`Incidencias de ${emp.nombre}`}>
+                      <aside className="config-card__calendar-section" aria-label={`Incidencias de ${employeeName}`}>
                         <div className="config-calendar-header-actions">
                           <span className="notion-prop__label type-caption-up text-muted">Incidencias</span>
 
-                          {summaries.length > 1 && (
+                          {summariesLoading ? (
+                            <span className="type-caption-sm text-muted" role="status">Cargando reportes…</span>
+                          ) : summaries.length > 1 ? (
                             <>
                               <label htmlFor={monthSelectId} className="sr-only">
-                                Seleccionar mes para {emp.nombre}
+                                Seleccionar mes para {employeeName}
                               </label>
                               <select
                                 id={monthSelectId}
@@ -280,23 +370,39 @@ export function BusquedaView() {
                                 onChange={e => setSelectedMes(e.target.value)}
                                 className="config-month-select"
                               >
-                                {summaries.map(s => (
-                                  <option key={s.mes} value={s.mes}>{s.mes}</option>
+                                {summaries.map(summary => (
+                                  <option key={summary.mes} value={summary.mes}>{formatMes(summary.mes)}</option>
                                 ))}
                               </select>
                             </>
-                          )}
-                          {summaries.length === 1 && (
-                            <span className="type-caption-sm text-muted">{selectedMes}</span>
-                          )}
-                          {summaries.length === 0 && (
+                          ) : summaries.length === 1 ? (
+                            <span className="type-caption-sm text-muted">{formatMes(selectedMes)}</span>
+                          ) : (
                             <span className="type-caption-sm text-muted">Sin reportes</span>
                           )}
                         </div>
 
                         <div className="config-calendar-layout">
                           {(() => {
-                            const empDays = (currentReport?.data as any[])?.find(r => r.numero_empleado === emp.num_empleado)?.days;
+                            const empDays = employeeDaysByNumber.get(employeeNumber);
+
+                            if (reportLoading) {
+                              return (
+                                <div className="config-incidence-loading" role="status" aria-live="polite">
+                                  <Skeleton variant="text" width="60%" height="var(--type-caption-sm-size)" />
+                                  <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-md)" />
+                                  <span className="sr-only">Cargando incidencias de {employeeName}…</span>
+                                </div>
+                              );
+                            }
+
+                            if (reportError) {
+                              return (
+                                <p className="config-incidence-error type-caption-sm" role="alert">
+                                  {reportError}
+                                </p>
+                              );
+                            }
 
                             const parsedIncidents = Object.entries(empDays || {})
                               .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code as string))
@@ -345,7 +451,7 @@ export function BusquedaView() {
         ) : (
           <div className="config-empty" role="status">
             <Search size={32} className="text-muted-soft config-empty__icon" aria-hidden="true" />
-            <p className="type-body-md text-muted config-empty__copy">No se encontraron resultados para "{searchTerm}"</p>
+            <p className="type-body-md text-muted config-empty__copy">No se encontraron resultados para “{searchQuery}”.</p>
           </div>
         )}
       </section>
