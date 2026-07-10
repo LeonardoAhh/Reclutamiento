@@ -1016,8 +1016,7 @@
 .documentos-capture {
   width: fit-content;
   margin-inline: auto;
-  background: var(--color-surface);
-}
+  background: var(--color-document-paper);
 
 @media (min-width: 640px) {
   .documentos-toolbar {
@@ -1181,5 +1180,13 @@
 @media (min-width: 768px) {
   .config-mobile-back {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabulador-tab,
+  .config-sidebar__link,
+  .indicadores-mobile-list__btn {
+    transition: none;
   }
 }

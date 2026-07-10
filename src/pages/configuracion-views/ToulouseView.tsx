@@ -83,11 +83,11 @@ export function ToulouseView() {
       total_objetivos: targets,
       created_by: profile?.display_name ?? username ?? null,
     };
-    const res = await save(record);
+    const result = await save(record);
     setSaving(false);
     sileo.success({
       title: 'Hoja guardada',
-      description: `${effectiveFolio} · ${candidato.trim()}`,
+      description: result.message || `${effectiveFolio} · ${candidato.trim()}`,
     });
   }
 

@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
-import { TrendingUp, Users, Target, Calendar, Trophy, ChevronRight, ChevronLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Calendar, ChevronLeft, ChevronRight, Target, TrendingUp, Users } from 'lucide-react';
 
 interface IndicadorRecord {
   "No.": string;
@@ -37,7 +36,6 @@ function parseDate(dateStr: string) {
 }
 
 export function IndicadoresView() {
-  const { user } = useAuth();
   const [data, setData] = useState<IndicadorRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

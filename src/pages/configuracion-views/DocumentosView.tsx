@@ -83,7 +83,7 @@ export function DocumentosView() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: readCssToken('--color-surface') || null,
+        backgroundColor: readCssToken('--color-document-paper') || null,
         windowWidth: 1024,
         onclone: (clonedDoc: Document) => {
           if (activeDoc === 'constancia') {

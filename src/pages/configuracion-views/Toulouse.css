@@ -576,10 +576,6 @@
   color: var(--color-muted);
 }
 
-.tp-print-only {
-  display: none;
-}
-
 /* Portal de impresión: oculto en pantalla; al imprimir se oculta todo lo demás
    del <body> y solo se muestra este contenedor (copia directa de la hoja, sin
    ancestros con overflow/transform que rompan el layout de impresión). */
