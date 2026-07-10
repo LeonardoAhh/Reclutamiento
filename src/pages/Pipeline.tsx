@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Avatar from 'boring-avatars';
@@ -83,92 +83,18 @@ type RecruiterStats = {
   no_asistio: number;
 };
 
-const AnimatedStarliteBadge = () => {
-  return (
-    <motion.div
-      className="pipeline__starlite-badge"
-      title="Proyecto: Starlite"
-      whileHover={{ scale: 1.05, backgroundColor: "color-mix(in srgb, #fbbf24 30%, transparent)" }}
-      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'default' }}
-    >
-      <div style={{ position: 'relative', width: '14px', height: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Pequeña estrella arriba a la derecha */}
-        <motion.div
-          animate={{ opacity: [0.2, 1, 0.2], scale: [0.7, 1.2, 0.7] }}
-          transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-          style={{ position: 'absolute', top: -1, right: -3 }}
-        >
-          <Star size={6} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1} />
-        </motion.div>
-        
-        {/* Pequeña estrella abajo a la izquierda */}
-        <motion.div
-          animate={{ opacity: [0.3, 1, 0.3], scale: [0.7, 1.1, 0.7] }}
-          transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-          style={{ position: 'absolute', bottom: -1, left: -2 }}
-        >
-          <Star size={5} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1} />
-        </motion.div>
+const StarliteBadge = () => (
+  <span className="pipeline__starlite-badge" title="Proyecto: Starlite">
+    <Star size="1em" className="pipeline__starlite-icon" aria-hidden="true" />
+    <span>Starlite</span>
+  </span>
+);
 
-        {/* Estrella central */}
-        <motion.div
-          animate={{ opacity: [0.7, 1, 0.7], scale: [0.9, 1.1, 0.9], rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 3, repeat: Infinity, delay: 0.3 }}
-          style={{ zIndex: 1 }}
-        >
-          <Star size={9} className="pipeline__starlite-icon" fill="currentColor" strokeWidth={1.5} />
-        </motion.div>
-      </div>
-      <span>STARLITE</span>
-    </motion.div>
-  );
-};
-
-const AnimatedVinoplasticBadge = () => {
-  return (
-    <motion.div
-      className="pipeline__vinoplastic-badge"
-      title="Proyecto: ViñoPlastic"
-      whileHover={{ scale: 1.05 }}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        padding: '2px 6px',
-        borderRadius: '4px',
-        border: '1px solid #bfdbfe', // tailwind blue-200
-        background: '#eff6ff', // tailwind blue-50
-        cursor: 'default',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-    >
-      <motion.div
-        animate={{ x: ['-100%', '250%'] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '50%',
-          background: 'linear-gradient(90deg, transparent 0%, rgba(0, 230, 255, 0.4) 50%, transparent 100%)',
-          zIndex: 1
-        }}
-      />
-      <span style={{ 
-        position: 'relative', 
-        zIndex: 2, 
-        fontWeight: 800, 
-        color: '#1e3a8a', // Dark blue from logo
-        letterSpacing: '0.05em',
-        fontSize: '10px'
-      }}>
-        VIÑOPLASTIC
-      </span>
-    </motion.div>
-  );
-};
+const VinoplasticBadge = () => (
+  <span className="pipeline__vinoplastic-badge" title="Proyecto: ViñoPlastic">
+    ViñoPlastic
+  </span>
+);
 
 export function Pipeline() {
   const {
@@ -376,7 +302,9 @@ export function Pipeline() {
   }, [candidates, searchTerm, filters]);
 
   // Reset page when filters change
-  useMemo(() => setCurrentPage(1), [searchTerm, filters]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginatedCandidates = filtered.slice(
@@ -525,7 +453,8 @@ export function Pipeline() {
   }
 
   return (
-    <main className="pipeline">
+    <MotionConfig reducedMotion="user">
+      <main className="pipeline">
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
         <section className="pipeline__hero">
@@ -537,8 +466,8 @@ export function Pipeline() {
             type="button"
             className="btn-secondary pipeline__report-btn"
             onClick={() => setReportOpen(true)}
-            aria-label="Open candidate summary"
-            title="Candidate summary for WhatsApp"
+            aria-label="Abrir resumen de candidatos"
+            title="Resumen de candidatos para WhatsApp"
             whileHover={{ y: -1 }}
             whileTap={{ scale: 0.97 }}
           >
@@ -596,7 +525,7 @@ export function Pipeline() {
                 onClick={() => setKpiModalOpen('pauta')}
               >
                 <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-accent-amber)' }} />
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
                   <span className="pipeline__kpi-row__name">Pauta</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
@@ -613,7 +542,7 @@ export function Pipeline() {
                 onClick={() => setKpiModalOpen('alexandra')}
               >
                 <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-accent-teal)' }} />
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--alexandra" />
                   <span className="pipeline__kpi-row__name">Alexandra</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
@@ -630,7 +559,7 @@ export function Pipeline() {
                 onClick={() => setKpiModalOpen('daniela')}
               >
                 <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot" style={{ background: 'var(--color-primary)' }} />
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--daniela" />
                   <span className="pipeline__kpi-row__name">Daniela</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
@@ -668,7 +597,8 @@ export function Pipeline() {
               </label>
               <input
                 id="pipeline-search"
-                type="text"
+                type="search"
+                inputMode="search"
                 placeholder="Buscar por nombre, puesto, área, reclutador, fuente…"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -701,6 +631,7 @@ export function Pipeline() {
                 className="btn-icon"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
+                aria-label="Página anterior"
                 title="Página anterior"
               >
                 <ChevronLeft size={16} aria-hidden="true" />
@@ -713,6 +644,7 @@ export function Pipeline() {
                 className="btn-icon"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => p + 1)}
+                aria-label="Página siguiente"
                 title="Página siguiente"
               >
                 <ChevronRight size={16} aria-hidden="true" />
@@ -885,9 +817,9 @@ export function Pipeline() {
 
                     <div className="pipeline__ccard-project-col">
                       {c.is_starlite ? (
-                        <AnimatedStarliteBadge />
+                        <StarliteBadge />
                       ) : (
-                        <AnimatedVinoplasticBadge />
+                        <VinoplasticBadge />
                       )}
                     </div>
 
@@ -1169,7 +1101,7 @@ export function Pipeline() {
                 <div className="pipeline-mobile-detail__info-content">
                   <span className="pipeline-mobile-detail__info-label">Proyecto</span>
                   <span className="pipeline-mobile-detail__info-value" style={{ display: 'flex' }}>
-                    {selectedMobileCandidate.is_starlite ? <AnimatedStarliteBadge /> : <AnimatedVinoplasticBadge />}
+                    {selectedMobileCandidate.is_starlite ? <StarliteBadge /> : <VinoplasticBadge />}
                   </span>
                 </div>
               </div>
@@ -1287,6 +1219,7 @@ export function Pipeline() {
         alexandraStats={alexandraStats}
         danielaStats={danielaStats}
       />
-    </main>
+      </main>
+    </MotionConfig>
   );
 }
