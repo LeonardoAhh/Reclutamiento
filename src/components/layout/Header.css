@@ -7,7 +7,7 @@
 ───────────────────────────────────────────── */
 
 .app-header {
-  --_h: 56px;
+  --_h: var(--mobile-nav-height);
 
   /* Posicionamiento */
   position: sticky;

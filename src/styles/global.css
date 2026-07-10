@@ -300,6 +300,8 @@
     0 23px 52px rgba(0, 0, 0, 0.05);
 
   --header-height: 64px;
+  --mobile-nav-height: 56px;
+  --mobile-nav-content-space: calc(var(--mobile-nav-height) + var(--spacing-2xl));
   --transition-slow: 350ms ease;
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-theme-in: 300ms;

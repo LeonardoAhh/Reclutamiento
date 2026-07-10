@@ -26,6 +26,7 @@ import { useFeedback } from '@/hooks/useFeedback';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { AVATAR_COLORS } from '@/lib/avatar';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
 // @ts-ignore
@@ -100,7 +101,6 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     setSigningOut(true);
     trigger('light');
     try {
-      await new Promise((r) => setTimeout(r, 1500));
       trigger('success');
       await signOut();
     } finally {
@@ -269,7 +269,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                       animate={{ opacity: 1, scale: 1, rotate: 0 }}
                       exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
                       transition={{ duration: 0.2 }}
-                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                      className="sidebar__popover-icon"
                     >
                       {signingOut
                         ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
@@ -306,7 +306,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
               size={40}
               name={username}
               variant="beam"
-              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+              colors={AVATAR_COLORS}
             />
           </span>
           {!collapsed && (

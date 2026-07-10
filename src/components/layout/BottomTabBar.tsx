@@ -211,6 +211,7 @@ export function BottomTabBar() {
     if (signingOut) return;
     setSigningOut(true);
     try {
+      sileo.info({ title: 'Cerrando sesión…' });
       await signOut();
     } finally {
       setSigningOut(false);
@@ -352,7 +353,7 @@ export function BottomTabBar() {
               >
                 <LogOut size={20} aria-hidden="true" className="bottom-sheet__signout-icon" />
                 <span className="bottom-sheet__signout-label">
-                  {signingOut ? 'Saliendo...' : 'Salir'}
+                  {signingOut ? 'Saliendo…' : 'Salir'}
                 </span>
               </button>
             </div>
