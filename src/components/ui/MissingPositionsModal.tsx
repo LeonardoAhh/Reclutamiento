@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { AlertCircle, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useDismissedPositions } from '@/hooks/useDismissedPositions';
 import './MissingPositionsModal.css';
 
 /**
@@ -112,25 +114,11 @@ export function MissingPositionsModal({
   isOpen,
   onClose,
   coverage,
+  vacancies,
   candidates,
 }: MissingPositionsModalProps) {
-
-  // Estado de filas "bloureadas" (excluidas del conteo)
-  const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
-
-  // Resetear al cerrar el modal
-  useEffect(() => {
-    if (!isOpen) setDismissedKeys(new Set());
-  }, [isOpen]);
-
-  const toggleDismiss = (key: string) => {
-    setDismissedKeys(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
+  const { dismissedKeys, toggleDismiss } = useDismissedPositions();
+  const isMobile = useIsMobile();
 
   // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
   const missingPositions = useMemo(() => {
