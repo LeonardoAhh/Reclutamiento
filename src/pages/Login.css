@@ -9,7 +9,8 @@
   display: flex;
   flex-direction: column;
   background: var(--color-canvas-soft); /* Warm paper base */
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* ================================================================
@@ -238,13 +239,13 @@
 /* ── Input — Strict rounded.xs (4px) ── */
 .login__input {
   width: 100%;
-  height: var(--control-height-lg);
+  min-height: var(--touch-target-min);
   padding: 0 var(--control-padding-x);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-xs);
   font-family: var(--font-body);
-  font-size: 16px; /* Evita zoom automático en iOS */
+  font-size: var(--type-body-md-size); /* Evita zoom automático en iOS */
   color: var(--color-ink);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   appearance: none;
@@ -279,7 +280,7 @@
 }
 
 .login__input--padded-r {
-  padding-right: calc(var(--control-padding-x) + 40px);
+  padding-right: calc(var(--control-padding-x) + var(--touch-target-min));
 }
 
 /* ── Toggle de contraseña ── */
@@ -292,8 +293,8 @@
   background: transparent !important;
   color: var(--color-muted);
   transition: color var(--transition-fast);
-  min-width: 44px;
-  min-height: 44px;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,6 +309,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  overflow: hidden;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--rounded-md);
   background: color-mix(in srgb, var(--color-error) 8%, transparent);
@@ -319,20 +321,23 @@
 /* ── Botón Submit ──────────── */
 .login__submit {
   width: 100%;
+  min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--spacing-sm);
-  padding: 12px 20px; /* Tapered padding */
+  padding: var(--spacing-md) var(--control-padding-x);
   background: var(--color-primary);
   color: var(--color-on-primary);
   border: none;
-  border-radius: var(--rounded-full); /* Botón de marketing Notion */
+  border-radius: var(--rounded-full);
   font-family: var(--font-body);
   font-size: var(--type-button-size);
-  font-weight: 500;
+  font-weight: var(--type-button-weight);
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
   will-change: transform;
 }
 
@@ -343,19 +348,6 @@
 .login__submit:disabled {
   opacity: 0.8;
   cursor: not-allowed;
-}
-
-/* Modificador de Éxito */
-.login__submit--success {
-  background: var(--color-accent-green, #1aae39) !important;
-}
-
-.login__spinner {
-  animation: login-spin 0.75s linear infinite;
-}
-
-@keyframes login-spin {
-  to { transform: rotate(360deg); }
 }
 
 /* ================================================================
@@ -530,10 +522,6 @@
    ACCESIBILIDAD
    ================================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .login__spinner {
-    animation: none;
-  }
-
   .login__input,
   .login__submit,
   .login__visibility,

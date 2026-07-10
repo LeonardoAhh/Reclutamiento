@@ -73,6 +73,12 @@
   padding-right: calc(var(--touch-target-min) + var(--spacing-xs)) !important;
 }
 
+.config-search input[type="search"]::-webkit-search-cancel-button,
+.config-search input[type="search"]::-webkit-search-results-button {
+  display: none;
+  appearance: none;
+}
+
 .config-search__clear {
   position: absolute;
   right: 0;

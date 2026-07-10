@@ -91,3 +91,10 @@ agent_communication:
       - working: true
         agent: "testing"
         comment: "✓ VERIFICADO: TypeScript compilation (yarn tsc -b) PASS sin errores. Vite build PASS sin errores TS2552. La función getStatusTone está correctamente definida y el error de compilación ha sido resuelto."
+
+
+
+## Bug Búsqueda — doble botón de limpiar
+- Causa: control nativo de `input[type="search"]` + botón personalizado.
+- Corrección: ocultar únicamente los controles WebKit nativos; conservar el botón accesible propio.
+- Verificación: puntual, sin exploración adicional.
