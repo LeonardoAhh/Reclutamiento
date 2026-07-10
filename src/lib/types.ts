@@ -288,7 +288,12 @@ export interface PositionCoverage {
    */
   plantilla_objetivo: number;
   plantilla_real: number;
+  
   vacantes: number;
+  vacantes_plantilla: number;
+  vacantes_backup: number;
+  vacantes_starlite: number;
+
   porcentaje_cobertura: number;
   comentarios: PositionComment[];
   /** Flags propagados desde la PLANTILLA_AUTORIZADA. */
@@ -305,8 +310,10 @@ export interface PositionCoverage {
   proximos_ingresos: number;
   /** Fecha (ISO) del próximo ingreso más cercano, o null si no hay. */
   proximo_ingreso_fecha: string | null;
-  /** Empleados contratados que pertenecen a Starlite. */
+  /** Empleados contratados que pertenecen a Starlite y ya ingresaron. */
   starlite_empleados: number;
+  /** Empleados contratados que pertenecen a Starlite con fecha de ingreso futura. */
+  starlite_proximos: number;
 }
 
 /**

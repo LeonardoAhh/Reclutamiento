@@ -164,32 +164,6 @@ export function calculatePositionCoverage(
     const real = matchedEmployees.length;
     const starliteEmpleados = matchedEmployees.filter((emp) => emp.is_starlite).length;
 
-    const backup = pos.backup ?? 0;
-    /*
-     * `plantilla_objetivo` es el target operativo: la suma de la plantilla
-     * autorizada más el buffer de back-up definido para el puesto. Es el
-     * denominador de la cobertura y la base de las vacantes — si un puesto
-     * no tiene back-up declarado, el objetivo iguala la autorizada y el
-     * cálculo se comporta exactamente como antes.
-     */
-    const objetivo = pos.plantilla_autorizada + backup;
-
-    const vacantes = Math.max(0, objetivo - real);
-    const porcentaje = objetivo > 0
-      ? Math.round((real / objetivo) * 100)
-      : 0;
-
-    const excedente = Math.max(0, real - pos.plantilla_autorizada);
-    const excedenteBackup = Math.min(excedente, backup);
-    const excedenteCritico = Math.max(0, excedente - backup);
-
-    const posComments = comments.filter(
-      (c) =>
-        matchesText(c.area, pos.area) &&
-        matchesText(c.seccion || '', pos.seccion) &&
-        matchesPuesto(c.puesto, pos.puesto)
-    );
-
     const proximosList = allUniqueEmployees.filter(
       (emp) =>
         String(emp.fecha_ingreso).localeCompare(targetDate) > 0 &&
@@ -204,6 +178,45 @@ export function calculatePositionCoverage(
             .map((emp) => String(emp.fecha_ingreso))
             .reduce((min, f) => (f.localeCompare(min) < 0 ? f : min))
         : null;
+    const starliteProximos = proximosList.filter((emp) => emp.is_starlite).length;
+
+    const urgentes = pos.urgentes ?? 0;
+    const backup = pos.backup ?? 0;
+
+    // 1. Calcular el target operativo total (Plantilla + Backup + Starlite)
+    const objetivo = pos.plantilla_autorizada + backup + urgentes;
+
+    const totalEmpleados = real + proximosIngresos;
+    const totalStarlite = starliteEmpleados + starliteProximos;
+    const empleadosRegulares = totalEmpleados - totalStarlite;
+
+    // 2. Calcular vacantes de Starlite
+    const vacantesStarlite = Math.max(0, urgentes - totalStarlite);
+    const starliteSpillover = Math.max(0, totalStarlite - urgentes);
+
+    // 3. Empleados disponibles para llenar Plantilla y Backup
+    const disponiblesParaRegular = empleadosRegulares + starliteSpillover;
+
+    // 4. Calcular vacantes de Plantilla y Backup
+    const vacantesPlantilla = Math.max(0, pos.plantilla_autorizada - disponiblesParaRegular);
+    const vacantesBackup = Math.max(0, backup - Math.max(0, disponiblesParaRegular - pos.plantilla_autorizada));
+
+    const vacantes = vacantesPlantilla + vacantesBackup + vacantesStarlite;
+
+    const porcentaje = objetivo > 0
+      ? Math.round(((totalEmpleados) / objetivo) * 100)
+      : 0;
+
+    const excedente = Math.max(0, (totalEmpleados) - pos.plantilla_autorizada);
+    const excedenteBackup = Math.min(excedente, backup);
+    const excedenteCritico = Math.max(0, excedente - backup);
+
+    const posComments = comments.filter(
+      (c) =>
+        matchesText(c.area, pos.area) &&
+        matchesText(c.seccion || '', pos.seccion) &&
+        matchesPuesto(c.puesto, pos.puesto)
+    );
 
     return {
       area: pos.area,
@@ -213,6 +226,9 @@ export function calculatePositionCoverage(
       plantilla_objetivo: objetivo,
       plantilla_real: real,
       vacantes,
+      vacantes_plantilla: vacantesPlantilla,
+      vacantes_backup: vacantesBackup,
+      vacantes_starlite: vacantesStarlite,
       porcentaje_cobertura: porcentaje,
       comentarios: posComments,
       urgentes: Math.max(0, pos.urgentes ?? 0),
@@ -224,6 +240,7 @@ export function calculatePositionCoverage(
       proximos_ingresos: proximosIngresos,
       proximo_ingreso_fecha: proximoIngresoFecha,
       starlite_empleados: starliteEmpleados,
+      starlite_proximos: starliteProximos,
     };
   });
 }
