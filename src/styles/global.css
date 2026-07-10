@@ -1442,9 +1442,5 @@ code:not(pre code) {
   min-width: 44px;
 }
 
-/* Ocultar preview de documentos en móvil para ahorrar espacio */
-@media (max-width: 768px) {
-  .documentos-preview {
-    display: none !important;
-  }
-}
+/* Los previews permanecen disponibles en móvil mediante scroll horizontal.
+   Ocultarlos impediría revisar el documento antes de descargarlo. */
