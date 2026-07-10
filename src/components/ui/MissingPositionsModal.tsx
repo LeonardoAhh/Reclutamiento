@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { AlertCircle, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useDismissedPositions } from '@/hooks/useDismissedPositions';
 import './MissingPositionsModal.css';
 
 /**
@@ -51,8 +53,12 @@ interface MissingRow {
   pos: PositionCoverage;
   netPlantilla: number;
   netBackup: number;
+  netStarlite: number;
   netTotal: number;
   proximos: number;
+  proxPlantilla: number;
+  proxBackup: number;
+  proxExcedente: number;
 }
 
 /**
@@ -62,43 +68,57 @@ interface MissingRow {
  * necesidad sin esperar a la fecha de ingreso.
  */
 function netVacancies(pos: PositionCoverage): MissingRow {
-  const rawPlantilla = Math.max(0, pos.plantilla_autorizada - pos.plantilla_real);
-  const rawBackup = Math.max(
-    0,
-    pos.plantilla_objetivo - Math.max(pos.plantilla_real, pos.plantilla_autorizada)
-  );
+  // Las vacantes netas ya vienen calculadas desde utils.ts (considerando proximos ingresos)
+  const netPlantilla = pos.vacantes_plantilla;
+  const netBackup = pos.vacantes_backup;
+  const netStarlite = pos.vacantes_starlite;
+  
+  const netTotal = netPlantilla + netBackup + netStarlite;
   const proximos = pos.proximos_ingresos;
 
-  const netPlantilla = Math.max(0, rawPlantilla - proximos);
-  const remaining = Math.max(0, proximos - rawPlantilla);
-  const netBackup = Math.max(0, rawBackup - remaining);
+  // Para el desglose visual de a dónde se fueron los "próximos ingresos":
+  // Calculamos cómo estaban las vacantes ANTES de los próximos ingresos,
+  // y vemos la diferencia con las vacantes actuales.
+  
+  const urgentes = pos.urgentes ?? 0;
+  const backup = pos.backup ?? 0;
+  
+  // Vacantes previas de Starlite
+  const vacantesStarlitePrev = Math.max(0, urgentes - pos.starlite_empleados);
+  const proxStarlite = vacantesStarlitePrev - netStarlite;
+  const starliteSpilloverPrev = Math.max(0, pos.starlite_empleados - urgentes);
 
-  return { pos, netPlantilla, netBackup, netTotal: netPlantilla + netBackup, proximos };
+  const disponiblesPrev = pos.plantilla_real - pos.starlite_empleados + starliteSpilloverPrev;
+  
+  const vacantesPlantillaPrev = Math.max(0, pos.plantilla_autorizada - disponiblesPrev);
+  const vacantesBackupPrev = Math.max(0, backup - Math.max(0, disponiblesPrev - pos.plantilla_autorizada));
+  
+  const proxPlantilla = vacantesPlantillaPrev - netPlantilla;
+  const proxBackup = vacantesBackupPrev - netBackup;
+  const proxExcedente = proximos - proxStarlite - proxPlantilla - proxBackup;
+
+  return { 
+    pos, 
+    netPlantilla, 
+    netBackup,
+    netStarlite,
+    netTotal, 
+    proximos,
+    proxPlantilla,
+    proxBackup,
+    proxExcedente
+  };
 }
 
 export function MissingPositionsModal({
   isOpen,
   onClose,
   coverage,
+  vacancies,
   candidates,
 }: MissingPositionsModalProps) {
-
-  // Estado de filas "bloureadas" (excluidas del conteo)
-  const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
-
-  // Resetear al cerrar el modal
-  useEffect(() => {
-    if (!isOpen) setDismissedKeys(new Set());
-  }, [isOpen]);
-
-  const toggleDismiss = (key: string) => {
-    setDismissedKeys(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
+  const { dismissedKeys, toggleDismiss } = useDismissedPositions();
+  const isMobile = useIsMobile();
 
   // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
   const missingPositions = useMemo(() => {
@@ -147,11 +167,7 @@ export function MissingPositionsModal({
       if (!dismissedKeys.has(key)) {
         faltanPlantilla += r.netPlantilla;
         faltanBackup += r.netBackup;
-
-        // Sumar vacantes de Starlite (urgentes menos los empleados que ya son starlite)
-        const starliteUrgentes = r.pos.urgentes || 0;
-        const starliteEmpleados = r.pos.starlite_empleados || 0;
-        starlite += Math.max(0, starliteUrgentes - starliteEmpleados);
+        starlite += r.netStarlite;
       }
     });
     return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup, totalStarlite: starlite };
@@ -260,12 +276,19 @@ export function MissingPositionsModal({
                     </th>
                     <th
                       scope="col"
+                      className="missing-positions-modal__num-col missing-positions-modal__starlite-col"
+                      title="Vacantes del programa Starlite"
+                    >
+                      <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" style={{ marginRight: '2px' }} />
+                      Starlite
+                    </th>
+                    <th
+                      scope="col"
                       className="missing-positions-modal__num-col"
                     >
                       Total
                     </th>
                     <th scope="col" className="missing-positions-modal__tight-col">Procesos activos</th>
-                    <th scope="col" className="missing-positions-modal__starlite-col missing-positions-modal__tight-col">Starlite</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -274,7 +297,7 @@ export function MissingPositionsModal({
                     const processKey = buildPositionKey(pos.puesto, pos.seccion || '');
                     const processes = processStatsMap[processKey] || { candidates: 0, starlite: 0 };
                     const totalProcesses = processes.candidates;
-                    const starliteProcesses = processes.starlite;
+                    const starliteCount = r.pos.starlite_empleados + r.pos.starlite_proximos;
 
                     const faltanPlantilla = r.netPlantilla;
                     const faltanBackup = r.netBackup;
@@ -307,12 +330,35 @@ export function MissingPositionsModal({
                             {pos.puesto}
                           </span>
                           {r.proximos > 0 && (
-                            <span
-                              className="missing-positions-modal__puesto-note"
-                              title="Vacantes ya cubiertas por empleados con fecha de ingreso futura, descontadas del total."
-                            >
-                              −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
-                            </span>
+                            <div className="missing-positions-modal__prox-details">
+                              <span
+                                className="missing-positions-modal__puesto-note"
+                                title="Vacantes ya cubiertas por empleados con fecha de ingreso futura, descontadas del total."
+                              >
+                                −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
+                              </span>
+                              {(() => {
+                                const starliteDisp = pos.starlite_proximos;
+                                const regularDisp = Math.max(0, r.proximos - starliteDisp);
+                                
+                                const plantillaDisp = Math.min(r.proxPlantilla, regularDisp);
+                                const backupDisp = Math.min(r.proxBackup, regularDisp - plantillaDisp);
+                                const excedenteDisp = Math.min(r.proxExcedente, regularDisp - plantillaDisp - backupDisp);
+
+                                return (
+                                  <span className="missing-positions-modal__prox-breakdown" style={{ fontSize: '0.75rem', color: 'var(--color-muted)', display: 'block', marginTop: '2px' }}>
+                                    (
+                                    {[
+                                      starliteDisp > 0 ? `★ ${starliteDisp} Starlite` : null,
+                                      plantillaDisp > 0 ? `${plantillaDisp} Plantilla` : null,
+                                      backupDisp > 0 ? `${backupDisp} Backup` : null,
+                                      excedenteDisp > 0 ? `${excedenteDisp} Excedente` : null,
+                                    ].filter(Boolean).join(', ')}
+                                    )
+                                  </span>
+                                );
+                              })()}
+                            </div>
                           )}
                         </td>
                         <td className="missing-positions-modal__num-col">
@@ -334,6 +380,15 @@ export function MissingPositionsModal({
                           )}
                         </td>
                         <td className="missing-positions-modal__num-col">
+                          {r.netStarlite > 0 ? (
+                            <span className="missing-positions-modal__count-badge" style={{ color: '#d97706', fontWeight: 600 }}>
+                              {r.netStarlite}
+                            </span>
+                          ) : (
+                            <span className="missing-positions-modal__count-empty" aria-label="Sin faltantes en starlite">—</span>
+                          )}
+                        </td>
+                        <td className="missing-positions-modal__num-col">
                           <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--total">
                             {r.netTotal}
                           </span>
@@ -348,21 +403,6 @@ export function MissingPositionsModal({
                             <span
                               className="missing-positions-modal__count-empty"
                               aria-label="Sin procesos activos"
-                            >
-                              —
-                            </span>
-                          )}
-                        </td>
-                        <td className="missing-positions-modal__tight-col">
-                          {starliteProcesses > 0 ? (
-                            <span className="missing-positions-modal__processes-pill missing-positions-modal__processes-pill--starlite" title="Candidatos etiquetados como Starlite en proceso activo">
-                              <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" />
-                              {starliteProcesses}
-                            </span>
-                          ) : (
-                            <span
-                              className="missing-positions-modal__count-empty"
-                              aria-label="Sin procesos Starlite"
                             >
                               —
                             </span>

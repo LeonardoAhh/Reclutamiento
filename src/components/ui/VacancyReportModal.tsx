@@ -5,6 +5,7 @@ import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { formatShortDate } from '@/lib/dates';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useDismissedPositions } from '@/hooks/useDismissedPositions';
 import type { PositionCoverage } from '@/lib/types';
 import './VacancyReportModal.css';
 
@@ -238,16 +239,7 @@ export function VacancyReportModal({
 }: VacancyReportModalProps) {
   const isMobile = useIsMobile();
   const groups = useMemo(() => buildGroups(positions), [positions]);
-  const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
-
-  const toggleDismiss = (key: string) => {
-    setDismissedKeys(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
+  const { dismissedKeys, toggleDismiss } = useDismissedPositions();
 
   const {
     totalActivas,
@@ -298,7 +290,6 @@ export function VacancyReportModal({
   useEffect(() => {
     if (!isOpen) {
       setCopied(false);
-      setDismissedKeys(new Set());
     }
   }, [isOpen]);
 

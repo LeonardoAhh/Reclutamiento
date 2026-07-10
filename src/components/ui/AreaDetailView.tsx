@@ -473,7 +473,7 @@ export function AreaDetailView({
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
                       {pos.urgentes > 0 ? (
-                        <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starlite_empleados || 0} / {pos.urgentes}</span>
+                        <span style={{ color: '#d97706', fontWeight: 600 }}>{(pos.starlite_empleados || 0) + (pos.starlite_proximos || 0)} / {pos.urgentes}</span>
                       ) : (
                         <span className="no-vacancy">—</span>
                       )}
@@ -574,7 +574,7 @@ export function AreaDetailView({
                       </td>
                       <td className="text-center">
                         {pos.urgentes > 0 ? (
-                          <span style={{ color: '#d97706', fontWeight: 600 }}>{pos.starlite_empleados || 0} / {pos.urgentes}</span>
+                          <span style={{ color: '#d97706', fontWeight: 600 }}>{(pos.starlite_empleados || 0) + (pos.starlite_proximos || 0)} / {pos.urgentes}</span>
                         ) : (
                           <span className="no-vacancy">—</span>
                         )}

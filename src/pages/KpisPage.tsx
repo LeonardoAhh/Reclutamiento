@@ -9,6 +9,7 @@
   import { staggerContainer, staggerItem } from '@/lib/motion';
   import { KpiReveal, useKpiReveal } from '@/components/ui/KpiReveal';
   import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
+  import { useDismissedPositions } from '@/hooks/useDismissedPositions';
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
   import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
   import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
@@ -300,27 +301,41 @@
     const todayIso = useMemo(() => localTodayIso(), []);
     const nextWednesdayIso = useMemo(() => getNextWednesdayIso(todayIso), [todayIso]);
 
+    const { dismissedKeys, toggleDismiss } = useDismissedPositions();
+
     const projectionTotals = useMemo(() => {
       let vacantesPlantilla = 0;
       let vacantesBackup = 0;
+      let vacantesStarlite = 0;
       let realTotal = 0;
       let objetivoGlobal = 0;
 
       for (const pos of currentPositionCoverage) {
+        const key = `${pos.area}-${pos.seccion || 'none'}-${pos.puesto}`;
+        if (dismissedKeys.has(key)) continue;
+
         realTotal += pos.plantilla_real;
         objetivoGlobal += pos.plantilla_objetivo;
-        if (pos.plantilla_real < pos.plantilla_autorizada) {
-          vacantesPlantilla += (pos.plantilla_autorizada - pos.plantilla_real);
-          vacantesBackup += pos.backup;
-        } else {
-          vacantesBackup += Math.max(0, pos.plantilla_objetivo - pos.plantilla_real);
-        }
+        
+        const urgentes = pos.urgentes ?? 0;
+        const backup = pos.backup ?? 0;
+        const starliteEmpleados = pos.starlite_empleados || 0;
+        
+        const vStarlite = Math.max(0, urgentes - starliteEmpleados);
+        const starliteSpillover = Math.max(0, starliteEmpleados - urgentes);
+        
+        const empleadosRegulares = pos.plantilla_real - starliteEmpleados;
+        const disponiblesParaRegular = empleadosRegulares + starliteSpillover;
+        
+        const vPlantilla = Math.max(0, pos.plantilla_autorizada - disponiblesParaRegular);
+        const vBackup = Math.max(0, backup - Math.max(0, disponiblesParaRegular - pos.plantilla_autorizada));
+        
+        vacantesPlantilla += vPlantilla;
+        vacantesBackup += vBackup;
+        vacantesStarlite += vStarlite;
       }
 
       // Próximos ingresos en la ventana [hoy, próximo miércoles].
-      // Los desglosamos por destino (plantilla vs backup) simulando su
-      // ingreso por puesto en orden cronológico: cada uno llena primero
-      // la plantilla autorizada; los excedentes caen al buffer de backup.
       const upcomingHires = employees
         .filter(e => {
           const ing = String(e.fecha_ingreso);
@@ -330,25 +345,43 @@
           String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))
         );
 
-      const posState = new Map<string, { real: number; autorizada: number }>();
+      const posState = new Map<string, { disponiblesReg: number; autorizada: number, starliteFaltantes: number }>();
       for (const p of currentPositionCoverage) {
+        const key = `${p.area}-${p.seccion || 'none'}-${p.puesto}`;
+        if (dismissedKeys.has(key)) continue;
+
+        const urgentes = p.urgentes ?? 0;
+        const starliteEmpleados = p.starlite_empleados || 0;
+        const starliteFaltantes = Math.max(0, urgentes - starliteEmpleados);
+        const starliteSpill = Math.max(0, starliteEmpleados - urgentes);
+        const disponiblesReg = p.plantilla_real - starliteEmpleados + starliteSpill;
+
         posState.set(`${p.area}|${p.seccion}|${p.puesto}`, {
-          real: p.plantilla_real,
+          disponiblesReg,
           autorizada: p.plantilla_autorizada,
+          starliteFaltantes,
         });
       }
 
       let proximosPlantilla = 0;
       let proximosBackup = 0;
+      let proximosStarlite = 0;
+
       for (const e of upcomingHires) {
         const key = `${e.area}|${e.seccion}|${e.puesto}`;
         const pos = posState.get(key);
-        if (pos && pos.real < pos.autorizada) {
-          proximosPlantilla += 1;
-          pos.real += 1;
-        } else {
-          proximosBackup += 1;
-          if (pos) pos.real += 1;
+        if (pos) {
+          if (e.is_starlite && pos.starliteFaltantes > 0) {
+            proximosStarlite += 1;
+            pos.starliteFaltantes -= 1;
+          } else {
+            if (pos.disponiblesReg < pos.autorizada) {
+              proximosPlantilla += 1;
+            } else {
+              proximosBackup += 1;
+            }
+            pos.disponiblesReg += 1;
+          }
         }
       }
 
@@ -359,12 +392,14 @@
       return {
         vacantesPlantilla,
         vacantesBackup,
+        vacantesStarlite,
         proximosIngresos,
         proximosPlantilla,
         proximosBackup,
+        proximosStarlite,
         coberturaProyectada
       };
-    }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso]);
+    }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso, dismissedKeys]);
 
     /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
     const heroChartData = useMemo<DailyKpiData[]>(() => {
@@ -401,6 +436,9 @@
         let objetivoGlobal = 0;
 
         for (const pos of coverageForDay) {
+          const key = `${pos.area}-${pos.seccion || 'none'}-${pos.puesto}`;
+          if (dismissedKeys.has(key)) continue;
+
           realTotal += pos.plantilla_real;
           objetivoGlobal += pos.plantilla_objetivo;
           if (pos.plantilla_real < pos.plantilla_autorizada) {
@@ -717,6 +755,10 @@
                       <span className="projection-label">Vacantes Backup</span>
                     </div>
                     <div className="projection-metric">
+                      <span className="projection-value text-starlite" style={{ color: '#d97706' }}><AnimatedNumber value={projectionTotals.vacantesStarlite} /></span>
+                      <span className="projection-label">Vacantes Starlite</span>
+                    </div>
+                    <div className="projection-metric">
                       <span className="projection-value text-primary">
                         <AnimatedNumber
                           value={heroChartData.length > 0 ? Math.round(heroChartData.reduce((s, d) => s + d.cobertura, 0) / heroChartData.length) : 0}
@@ -746,6 +788,11 @@
                           {projectionTotals.proximosBackup > 0 && (
                             <span className="projection-chip projection-chip--backup">
                               {projectionTotals.proximosBackup} backup
+                            </span>
+                          )}
+                          {projectionTotals.proximosStarlite > 0 && (
+                            <span className="projection-chip projection-chip--starlite" style={{ backgroundColor: '#fef3c7', color: '#b45309' }}>
+                              ★ {projectionTotals.proximosStarlite} starlite
                             </span>
                           )}
                         </span>
