@@ -216,6 +216,11 @@
   --container-max: 1200px;
   --container-padding: var(--spacing-xl);
   --container-padding-mobile: var(--spacing-lg);
+  --feature-result-card-min: 34rem;
+  --feature-calendar-column-min: 10rem;
+  --feature-calendar-column-max: 13rem;
+  --skeleton-title-width: 50%;
+  --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));
 
   /* ── PWA / safe-area ─────────────────────────────────────────── */
   --safe-area-top: env(safe-area-inset-top, 0px);
