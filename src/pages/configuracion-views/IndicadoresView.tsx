@@ -18,13 +18,11 @@ interface IndicadorRecord {
   "Reclutador": string;
 }
 
-const RECRUITER_COLORS = [
-  'var(--color-primary)',
-  'var(--color-secondary)',
-  'var(--color-muted)',
-  'var(--color-charcoal)',
-  'var(--color-muted-soft)',
-];
+const RECRUITER_TONES = 5;
+
+function getRecruiterTone(index: number) {
+  return `data-tone-${index % RECRUITER_TONES}`;
+}
 
 const KPI_ICONS = [TrendingUp, Users, Target, Calendar];
 
@@ -106,7 +104,7 @@ export function IndicadoresView() {
     const recruiterTotals = recruiterList.map(rec => ({
       name: rec,
       total: formattedData.reduce((acc, row) => acc + (row[rec] || 0), 0),
-      color: RECRUITER_COLORS[recruiterList.indexOf(rec) % RECRUITER_COLORS.length]
+      tone: getRecruiterTone(recruiterList.indexOf(rec))
     }));
     const topRecruiter = recruiterTotals.length ? recruiterTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
     const diasObjetivo = formattedData.filter(row => row.total >= 7).length;
@@ -170,7 +168,7 @@ export function IndicadoresView() {
           </div>
           <div className="indicadores-kpi-card">
             <span className="indicadores-kpi-label">Top Reclutador</span>
-            <span className="indicadores-kpi-value" style={{ fontSize: 'var(--type-heading-md-size)' }}>
+            <span className="indicadores-kpi-value indicadores-kpi-value--name">
               {kpi.topRecruiter?.name}
             </span>
             <span className="indicadores-kpi-sub">{kpi.topRecruiter?.total} ingresos</span>
@@ -222,8 +220,7 @@ export function IndicadoresView() {
                 >
                   <th scope="row" className="indicadores-table-row-header">
                     <span
-                      className="indicadores-recruiter-dot"
-                      style={{ backgroundColor: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
+                      className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
                       aria-hidden="true"
                     />
                     {recruiter}

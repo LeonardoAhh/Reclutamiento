@@ -206,19 +206,25 @@ export function DocumentosView() {
       )}
 
       <div className="documentos-toolbar">
-        <div className="documentos-tabs">
-          <button 
-            className={`btn ${activeDoc === 'constancia' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('constancia')}
-          >Constancia Fiscal</button>
-          <button 
-            className={`btn ${activeDoc === 'salud' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('salud')}
-          >Cuestionario de Salud</button>
-          <button 
-            className={`btn ${activeDoc === 'generales' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('generales')}
-          >Datos Generales</button>
+        <div className="documentos-tabs" role="tablist" aria-label="Tipo de documento">
+          {DOCUMENT_OPTIONS.map(({ id, label }) => {
+            const isActive = activeDoc === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                id={`documentos-tab-${id}`}
+                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls="documentos-panel"
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => setActiveDoc(id)}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         <AnimatedSubmitButton
@@ -227,33 +233,40 @@ export function DocumentosView() {
           isSubmitting={isLoading}
           isSuccess={isSuccess}
           idleIcon={Download}
-          idleText={activeDoc === 'constancia' ? 'Guardar Imagen' : 'Descargar PDF'}
+          idleText={activeDoc === 'constancia' ? 'Guardar imagen' : 'Descargar PDF'}
           loadingText="Generando…"
           successText="¡Listo!"
           className="btn-primary"
         />
       </div>
 
-      <div className="documentos-preview" style={{ overflow: 'auto', padding: 'var(--spacing-md)' }}>
+      <div
+        id="documentos-panel"
+        className="documentos-preview"
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={`documentos-tab-${activeDoc}`}
+        aria-busy={isLoading}
+      >
         {activeDoc === 'constancia' && (
           <section
             id="constancia-fiscal-node"
             ref={constanciaRef}
-            className="card constancia-capture"
+            className="card constancia-capture documentos-capture"
             aria-label="Constancia de situación fiscal"
           >
             <ConstanciaFiscal />
           </section>
         )}
-        
+
         {activeDoc === 'salud' && (
-          <section ref={saludRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={saludRef} className="documentos-capture" aria-label="Cuestionario de salud">
             <CuestionarioSalud />
           </section>
         )}
 
         {activeDoc === 'generales' && (
-          <section ref={generalesRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={generalesRef} className="documentos-capture" aria-label="Formato de datos generales">
             <DatosGenerales />
           </section>
         )}
