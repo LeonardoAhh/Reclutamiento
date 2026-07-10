@@ -24,25 +24,13 @@ interface AreaGroup {
 const STATUS_THRESHOLDS = { critical: 15, warning: 5 } as const;
 const TREND_THRESHOLD = 10;
 
-interface StatusColors { background: string; text: string }
+type StatusTone = "muted" | "error" | "warning" | "primary";
 
-function getStatusColors(pct: number, hasIncidents: boolean): StatusColors {
-    if (!hasIncidents) return {
-        background: "transparent",
-        text: "var(--color-muted)",
-    };
-    if (pct > STATUS_THRESHOLDS.critical) return {
-        background: "transparent",
-        text: "var(--color-error)",
-    };
-    if (pct > STATUS_THRESHOLDS.warning) return {
-        background: "transparent",
-        text: "var(--color-warning)",
-    };
-    return {
-        background: "transparent",
-        text: "var(--color-primary)",
-    };
+function getStatusTone(pct: number, hasIncidents: boolean): StatusTone {
+    if (!hasIncidents) return "muted";
+    if (pct > STATUS_THRESHOLDS.critical) return "error";
+    if (pct > STATUS_THRESHOLDS.warning) return "warning";
+    return "primary";
 }
 
 // ─── AreaCard ──────────────────────────────────────────────────────────────────
