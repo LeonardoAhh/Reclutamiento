@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
-import { Calendar, ChevronLeft, ChevronRight, Target, TrendingUp, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IndicadorRecord {
   "No.": string;
@@ -22,8 +22,6 @@ const RECRUITER_TONES = 5;
 function getRecruiterTone(index: number) {
   return `data-tone-${index % RECRUITER_TONES}`;
 }
-
-const KPI_ICONS = [TrendingUp, Users, Target, Calendar];
 
 function parseDate(dateStr: string) {
   if (!dateStr) return new Date(0);

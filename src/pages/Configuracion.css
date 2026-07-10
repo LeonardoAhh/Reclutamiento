@@ -1017,6 +1017,7 @@
   width: fit-content;
   margin-inline: auto;
   background: var(--color-document-paper);
+}
 
 @media (min-width: 640px) {
   .documentos-toolbar {
