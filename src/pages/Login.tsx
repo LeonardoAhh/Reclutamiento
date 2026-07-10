@@ -1,9 +1,9 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
-import { Eye, EyeOff, ArrowRight, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { useAuth } from '@/hooks/useAuth';
 import { sileo } from '@/lib/notify';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
 import './Login.css';
 
 // Valores hex para la API del navegador (<meta name="theme-color">).
@@ -84,7 +84,6 @@ export function Login() {
     }
 
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
     const result = await signIn(u, password);
 
     if (!result.ok) {
@@ -95,12 +94,14 @@ export function Login() {
       return;
     }
 
+    setSubmitting(false);
     setIsSuccess(true);
     // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
   };
 
   return (
-    <main className="login" role="main" aria-label="Inicio de sesión">
+    <MotionConfig reducedMotion="user">
+      <main className="login" aria-label="Inicio de sesión">
 
       {/* ────────────────────────────────────────────────────────────
           Panel izquierdo — identidad de marca
@@ -145,7 +146,7 @@ export function Login() {
 
         <div className="login__panel-body">
           {/* Mask Reveal (Editorial) para el título */}
-          <div style={{ overflow: 'hidden', paddingBottom: '8px' }}>
+          <div className="login__wordmark-mask">
             <motion.p 
               className="login__wordmark"
               initial={{ y: "100%", opacity: 0 }}
@@ -281,7 +282,6 @@ export function Login() {
                     animate={{ opacity: 1, height: 'auto', marginBottom: 12 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ overflow: 'hidden' }}
                   >
                     <AlertCircle size={14} aria-hidden="true" />
                     <span>{error}</span>
@@ -300,7 +300,6 @@ export function Login() {
                   idleIcon={ArrowRight}
                   className="login__submit"
                   data-testid="login-submit-button"
-                  style={{ justifyContent: 'space-between' }}
                 />
               </motion.div>
 
@@ -309,6 +308,7 @@ export function Login() {
         </motion.section>
       </motion.div>
 
-    </main>
+      </main>
+    </MotionConfig>
   );
 }
