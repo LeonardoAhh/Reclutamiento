@@ -37,9 +37,7 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
       <span className="ruta-card__icon" aria-hidden="true">
         <Bus size={18} />
       </span>
-      <div className="ruta-card__content">
-        <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</h3>
-      </div>
+      <span className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</span>
       {matchCount !== undefined && matchCount > 0 && (
         <span className="ruta-card__match-badge">
           {matchCount} encontrado{matchCount === 1 ? '' : 's'}
@@ -174,7 +172,8 @@ function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps
               role="progressbar"
               aria-valuenow={count}
               aria-valuemin={0}
-              aria-valuemax={barMax}
+              aria-valuemax={Math.max(barMax, count)}
+              aria-valuetext={assignedCapacity ? `${count} de ${assignedCapacity} pasajeros` : `${count} pasajeros`}
               aria-label={`Turno ${turno}`}
             >
               <div className="shift-bars__fill" />
@@ -259,7 +258,7 @@ function Placeholder() {
           </span>
         </div>
       </div>
-      <h2 className="type-heading-md">Selecciona una ruta</h2>
+      <h3 className="type-heading-md">Selecciona una ruta</h3>
       <p className="type-body-sm">Toca cualquier tarjeta para ver sus detalles.</p>
     </div>
   );
@@ -403,16 +402,19 @@ export function RutasView() {
     setMobileView('list');
   }
 
-  function handleListKeyDown(e: React.KeyboardEvent) {
-    if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
-    e.preventDefault();
-    const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>('.ruta-card');
-    if (!buttons?.length) return;
-    const arr = Array.from(buttons);
-    const idx = arr.indexOf(document.activeElement as HTMLButtonElement);
-    const next = e.key === 'ArrowDown' ? arr[idx + 1] : arr[idx - 1];
-    next?.focus();
-  }
+  const handleListKeyDown = (event: React.KeyboardEvent) => {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const buttons = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('.ruta-card') ?? []);
+    if (!buttons.length) return;
+    const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? buttons.length - 1
+        : (Math.max(currentIndex, 0) + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
+    buttons[nextIndex]?.focus();
+  };
 
   return (
     <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
@@ -444,7 +446,7 @@ export function RutasView() {
               placeholder="Buscar por número de empleado o nombre…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Buscar empleado por número o nombre"
+              aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
               autoComplete="off"
             />
             {searchTerm && (
@@ -461,7 +463,7 @@ export function RutasView() {
           </div>
         </div>
         {searchNorm && (
-          <p className="config-search__hint text-muted mt-xs">
+          <p id="rutas-search-status" className="config-search__hint text-muted mt-xs" role="status" aria-live="polite">
             {filteredRutas.length === 0
               ? 'Sin resultados'
               : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}

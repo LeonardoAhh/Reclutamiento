@@ -1,10 +1,21 @@
-import { useCallback, useRef, useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
+import { Download, FileText } from 'lucide-react';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
 import { DatosGenerales } from '@/components/documentos/DatosGenerales';
-import { Download, FileText } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+
+type DocumentId = 'constancia' | 'salud' | 'generales';
+
+const DOCUMENT_OPTIONS: Array<{ id: DocumentId; label: string }> = [
+  { id: 'constancia', label: 'Constancia fiscal' },
+  { id: 'salud', label: 'Cuestionario de salud' },
+  { id: 'generales', label: 'Datos generales' },
+];
+
+function readCssToken(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 /* ── Tipado mínimo para html2canvas ── */
 type Html2CanvasFn = (
@@ -52,7 +63,7 @@ export function DocumentosView() {
   const constanciaRef = useRef<HTMLDivElement>(null);
   const saludRef = useRef<HTMLDivElement>(null);
   const generalesRef = useRef<HTMLDivElement>(null);
-  const [activeDoc, setActiveDoc] = useState<'constancia' | 'salud' | 'generales'>('constancia');
+  const [activeDoc, setActiveDoc] = useState<DocumentId>('constancia');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const loadHtml2Canvas = useHtml2CanvasLoader();
@@ -66,15 +77,13 @@ export function DocumentosView() {
     setStatus('loading');
     setErrorMsg(null);
 
-    // Retraso artificial para "pensar" como pidió el usuario
-    await new Promise(resolve => setTimeout(resolve, 800));
-
+    // La captura empieza en cuanto la dependencia está lista; el estado comunica el progreso.
     try {
       const html2canvas = await loadHtml2Canvas();
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff',
+        backgroundColor: readCssToken('--color-document-paper') || null,
         windowWidth: 1024,
         onclone: (clonedDoc: Document) => {
           if (activeDoc === 'constancia') {
@@ -176,6 +185,20 @@ export function DocumentosView() {
   const isSuccess = status === 'success';
   const hasError = status === 'error';
 
+  const handleDocumentTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentId: DocumentId) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const currentIndex = DOCUMENT_OPTIONS.findIndex(({ id }) => id === currentId);
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? DOCUMENT_OPTIONS.length - 1
+        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + DOCUMENT_OPTIONS.length) % DOCUMENT_OPTIONS.length;
+    const nextId = DOCUMENT_OPTIONS[nextIndex].id;
+    setActiveDoc(nextId);
+    requestAnimationFrame(() => document.getElementById(`documentos-tab-${nextId}`)?.focus());
+  };
+
   return (
     <section className="documentos-view config-page__content">
       <header className="config-page__header">
@@ -195,19 +218,26 @@ export function DocumentosView() {
       )}
 
       <div className="documentos-toolbar">
-        <div className="documentos-tabs">
-          <button 
-            className={`btn ${activeDoc === 'constancia' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('constancia')}
-          >Constancia Fiscal</button>
-          <button 
-            className={`btn ${activeDoc === 'salud' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('salud')}
-          >Cuestionario de Salud</button>
-          <button 
-            className={`btn ${activeDoc === 'generales' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveDoc('generales')}
-          >Datos Generales</button>
+        <div className="documentos-tabs" role="tablist" aria-label="Tipo de documento">
+          {DOCUMENT_OPTIONS.map(({ id, label }) => {
+            const isActive = activeDoc === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                id={`documentos-tab-${id}`}
+                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls="documentos-panel"
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => setActiveDoc(id)}
+                onKeyDown={(event) => handleDocumentTabKeyDown(event, id)}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         <AnimatedSubmitButton
@@ -216,33 +246,40 @@ export function DocumentosView() {
           isSubmitting={isLoading}
           isSuccess={isSuccess}
           idleIcon={Download}
-          idleText={activeDoc === 'constancia' ? 'Guardar Imagen' : 'Descargar PDF'}
+          idleText={activeDoc === 'constancia' ? 'Guardar imagen' : 'Descargar PDF'}
           loadingText="Generando…"
           successText="¡Listo!"
           className="btn-primary"
         />
       </div>
 
-      <div className="documentos-preview" style={{ overflow: 'auto', padding: 'var(--spacing-md)' }}>
+      <div
+        id="documentos-panel"
+        className="documentos-preview"
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={`documentos-tab-${activeDoc}`}
+        aria-busy={isLoading}
+      >
         {activeDoc === 'constancia' && (
           <section
             id="constancia-fiscal-node"
             ref={constanciaRef}
-            className="card constancia-capture"
+            className="card constancia-capture documentos-capture"
             aria-label="Constancia de situación fiscal"
           >
             <ConstanciaFiscal />
           </section>
         )}
-        
+
         {activeDoc === 'salud' && (
-          <section ref={saludRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={saludRef} className="documentos-capture" aria-label="Cuestionario de salud">
             <CuestionarioSalud />
           </section>
         )}
 
         {activeDoc === 'generales' && (
-          <section ref={generalesRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={generalesRef} className="documentos-capture" aria-label="Formato de datos generales">
             <DatosGenerales />
           </section>
         )}

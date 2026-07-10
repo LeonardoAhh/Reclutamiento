@@ -168,6 +168,7 @@
 .tp-form__group input,
 .tp-form__group select,
 .tp-form__group textarea {
+  min-height: var(--touch-target-min);
   height: var(--control-height);
   padding: 0 var(--control-padding-x);
   border: 1px solid var(--color-hairline);
@@ -178,7 +179,11 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
-.tp-form__group textarea { height: auto; min-height: 80px; padding-top: 8px; padding-bottom: 8px; }
+  .tp-form__group textarea {
+  height: auto;
+  min-height: calc(var(--touch-target-min) * 2);
+  padding-block: var(--spacing-sm);
+}
 
 .tp-form__group input::placeholder,
 .tp-form__group textarea::placeholder {
@@ -204,8 +209,14 @@
 
 .tp-form__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--spacing-sm);
+}
+
+@media (min-width: 480px) {
+  .tp-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .tp-actions {
@@ -216,6 +227,7 @@
 
 .tp-actions > button {
   flex: 1 1 auto;
+  min-height: var(--touch-target-min);
 }
 
 /* ── Hojas guardadas ── */
@@ -292,8 +304,8 @@
 }
 
 .tp-saved__del:hover {
-  background: color-mix(in srgb, var(--color-error, #ef4444) 12%, transparent);
-  color: var(--color-error, #ef4444);
+  background: color-mix(in srgb, var(--color-error) 12%, transparent);
+  color: var(--color-error);
 }
 
 /* ── Vista previa ── */
@@ -313,6 +325,7 @@
 .tp-tab {
   display: inline-flex;
   align-items: center;
+  min-height: var(--touch-target-min);
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-md);
   border: 1px solid var(--color-hairline);
@@ -353,7 +366,7 @@
   padding: 8mm;
   background: var(--color-surface);
   color: var(--color-ink);
-  font-family: var(--font-body, system-ui);
+  font-family: var(--font-body);
   box-shadow: var(--shadow-card);
 }
 
@@ -561,10 +574,6 @@
   border-top: 1px solid var(--color-hairline);
   font-size: var(--type-caption-xs-size, 10px);
   color: var(--color-muted);
-}
-
-.tp-print-only {
-  display: none;
 }
 
 /* Portal de impresión: oculto en pantalla; al imprimir se oculta todo lo demás

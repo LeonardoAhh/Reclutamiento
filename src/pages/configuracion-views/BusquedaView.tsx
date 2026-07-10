@@ -11,17 +11,11 @@ import '../Configuracion.css';
 
 const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"]);
 
-const STICKER_COLORS = [
-  'var(--color-accent-sky)',
-  'var(--color-accent-purple)',
-  'var(--color-accent-pink)',
-  'var(--color-accent-orange)',
-  'var(--color-accent-teal)',
-];
+const STICKER_TONES = 5;
 
-function getStickerColor(numEmpleado: string) {
+function getStickerTone(numEmpleado: string) {
   const numVal = parseInt(numEmpleado.replace(/\D/g, '') || '0', 10);
-  return STICKER_COLORS[numVal % STICKER_COLORS.length];
+  return numVal % STICKER_TONES;
 }
 
 function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefined, mesStr: string }) {
@@ -205,14 +199,14 @@ export function BusquedaView() {
             <div className="config-initial-state__icon">
               <Search size={32} color="var(--color-muted-soft)" aria-hidden="true" />
             </div>
-            <h2 className="type-heading-md text-ink">Búsqueda Global</h2>
+            <h3 className="type-heading-md text-ink">Búsqueda global</h3>
             <p className="type-body-md text-muted config-initial-state__copy">
               Encuentra rápidamente la información de cualquier empleado ingresando su nombre o número.
             </p>
           </div>
         ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">
-            <h2 className="sr-only">Resultados de búsqueda</h2>
+            <h3 className="sr-only">Resultados de búsqueda</h3>
             <p
               className="config-results__count type-caption-sm text-muted"
               role="status"
@@ -223,15 +217,14 @@ export function BusquedaView() {
 
             <div className="config-results">
               {filteredEmployees.map(emp => {
-                const stickerColor = getStickerColor(emp.num_empleado);
+                const stickerTone = getStickerTone(emp.num_empleado);
                 const monthSelectId = `config-month-select-${emp.num_empleado}`;
 
                 return (
                   <article key={emp.num_empleado} className="config-card">
                     <header className="config-card__header">
                       <div
-                        className="config-card__avatar"
-                        style={{ backgroundColor: stickerColor }}
+                        className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
                         aria-hidden="true"
                       >
                         <User size={20} color="var(--color-on-primary)" aria-hidden="true" />

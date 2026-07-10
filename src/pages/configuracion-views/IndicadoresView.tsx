@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
-import { TrendingUp, Users, Target, Calendar, Trophy, ChevronRight, ChevronLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IndicadorRecord {
   "No.": string;
@@ -18,15 +17,11 @@ interface IndicadorRecord {
   "Reclutador": string;
 }
 
-const RECRUITER_COLORS = [
-  'var(--color-primary)',
-  'var(--color-secondary)',
-  'var(--color-muted)',
-  'var(--color-charcoal)',
-  'var(--color-muted-soft)',
-];
+const RECRUITER_TONES = 5;
 
-const KPI_ICONS = [TrendingUp, Users, Target, Calendar];
+function getRecruiterTone(index: number) {
+  return `data-tone-${index % RECRUITER_TONES}`;
+}
 
 function parseDate(dateStr: string) {
   if (!dateStr) return new Date(0);
@@ -39,7 +34,6 @@ function parseDate(dateStr: string) {
 }
 
 export function IndicadoresView() {
-  const { user } = useAuth();
   const [data, setData] = useState<IndicadorRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -106,7 +100,7 @@ export function IndicadoresView() {
     const recruiterTotals = recruiterList.map(rec => ({
       name: rec,
       total: formattedData.reduce((acc, row) => acc + (row[rec] || 0), 0),
-      color: RECRUITER_COLORS[recruiterList.indexOf(rec) % RECRUITER_COLORS.length]
+      tone: getRecruiterTone(recruiterList.indexOf(rec))
     }));
     const topRecruiter = recruiterTotals.length ? recruiterTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
     const diasObjetivo = formattedData.filter(row => row.total >= 7).length;
@@ -118,6 +112,10 @@ export function IndicadoresView() {
       kpi: { totalIngresos, promedio, topRecruiter, diasObjetivo, recruiterTotals }
     };
   }, [data]);
+
+  const selectedRecruiterIndex = selectedMobileRecruiter
+    ? recruiters.indexOf(selectedMobileRecruiter)
+    : -1;
 
   if (loading) {
     return (
@@ -170,7 +168,7 @@ export function IndicadoresView() {
           </div>
           <div className="indicadores-kpi-card">
             <span className="indicadores-kpi-label">Top Reclutador</span>
-            <span className="indicadores-kpi-value" style={{ fontSize: 'var(--type-heading-md-size)' }}>
+            <span className="indicadores-kpi-value indicadores-kpi-value--name">
               {kpi.topRecruiter?.name}
             </span>
             <span className="indicadores-kpi-sub">{kpi.topRecruiter?.total} ingresos</span>
@@ -222,8 +220,7 @@ export function IndicadoresView() {
                 >
                   <th scope="row" className="indicadores-table-row-header">
                     <span
-                      className="indicadores-recruiter-dot"
-                      style={{ backgroundColor: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
+                      className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
                       aria-hidden="true"
                     />
                     {recruiter}
@@ -233,10 +230,7 @@ export function IndicadoresView() {
                     return (
                       <td key={row.date}>
                         {val ? (
-                          <span
-                            className="indicador-value"
-                            style={{ color: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
-                          >
+                          <span className={`indicador-value ${getRecruiterTone(index)}`}>
                             {val}
                           </span>
                         ) : (
@@ -287,8 +281,7 @@ export function IndicadoresView() {
               
               <div className="indicadores-mobile-detail__header">
                 <span
-                  className="indicadores-recruiter-dot"
-                  style={{ backgroundColor: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}
+                  className={`indicadores-recruiter-dot ${getRecruiterTone(selectedRecruiterIndex)}`}
                   aria-hidden="true"
                 />
                 <h4 className="type-heading-md m-0">{selectedMobileRecruiter}</h4>
@@ -302,7 +295,7 @@ export function IndicadoresView() {
                       <span className="type-body-sm font-medium">{row.date}</span>
                       <span className="type-body-sm text-ink font-bold">
                         {val ? (
-                          <span style={{ color: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}>
+                          <span className={`indicadores-tone-value ${getRecruiterTone(selectedRecruiterIndex)}`}>
                             {val} ingresos
                           </span>
                         ) : (
@@ -332,8 +325,7 @@ export function IndicadoresView() {
                   >
                     <div className="indicadores-mobile-list__info">
                       <span
-                        className="indicadores-recruiter-dot"
-                        style={{ backgroundColor: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
+                        className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
                         aria-hidden="true"
                       />
                       <span className="type-body-sm font-medium text-ink">{recruiter}</span>
