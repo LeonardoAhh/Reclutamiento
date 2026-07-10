@@ -60,3 +60,12 @@ agent_communication:
 
 ## Incorporate User Feedback
 - El usuario NO quiere pruebas largas ni exploratorias: verificación puntual del error de consola reportado.
+
+
+
+## Tarea actual — auditoría `/features`
+- Alcance: `/app/src/pages/Configuracion.tsx` y subpáginas Búsqueda, Documentos, Indicadores, Rutas, Tabulador y Toulouse.
+- Implementado: navegación reutilizable; jerarquía semántica; tabs ARIA con teclado; targets táctiles de 48px; estilos visuales por tokens/clases; eliminación de estilos inline visuales y CSS muerto; mejoras mobile-first y estados accesibles.
+- Validación local: `yarn tsc -b` y `yarn vite build` pasan.
+- Prueba UI solicitada: revisar `/features` en 390px, 768px y 1440px; verificar menú móvil y cada subpágina, navegación por teclado, ausencia de overflow global y consola sin errores.
+- Limitación de entorno: Supervisor es READONLY y apunta erróneamente a `/app/frontend` con `yarn start`; el proyecto está en `/app` y usa `yarn dev`. Si la preview no abre, reportar bloqueo de infraestructura sin editar configuración ni código.
