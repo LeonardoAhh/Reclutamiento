@@ -651,3 +651,10 @@
   display: flex;
   align-items: center;
 }
+
+/* ── Hide back button on mobile (Dashboard provides global one) ── */
+@media (max-width: 1024px) {
+  .area-detail__back-btn {
+    display: none !important;
+  }
+}

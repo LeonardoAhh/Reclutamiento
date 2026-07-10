@@ -1871,3 +1871,450 @@
     font-size: var(--type-caption-md-size);
   }
 }
+
+/* ── Mobile Drill-Down Detail View ── */
+.pipeline-mobile-detail-container {
+  padding: var(--spacing-md) 0;
+  width: 100%;
+}
+
+.pipeline-mobile-detail__card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pipeline-mobile-detail__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: var(--spacing-md);
+}
+
+.pipeline-mobile-detail__avatar-wrapper {
+  position: relative;
+}
+
+.pipeline-mobile-detail__status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 2px solid var(--color-surface-card);
+  width: 16px;
+  height: 16px;
+}
+
+.pipeline-mobile-detail__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.pipeline-mobile-detail__name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.pipeline-mobile-detail__puesto {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+.pipeline-mobile-detail__info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+.pipeline-mobile-detail__info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.pipeline-mobile-detail__info-icon {
+  color: var(--color-muted-soft);
+  margin-top: 2px;
+}
+
+.pipeline-mobile-detail__info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pipeline-mobile-detail__info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted-soft);
+  font-weight: 600;
+}
+
+.pipeline-mobile-detail__info-value {
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.pipeline-mobile-detail__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-md);
+}
+
+.pipeline-mobile-detail__whatsapp {
+  width: 100%;
+  justify-content: center;
+  padding: var(--spacing-md);
+  font-size: var(--type-body-md-size);
+}
+
+.pipeline-mobile-detail__no-whatsapp {
+  text-align: center;
+  padding: var(--spacing-sm);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-md);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+.pipeline-mobile-detail__status-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline-mobile-detail__row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline-mobile-detail__row-actions .pipeline__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: flex-start;
+}
+
+.pipeline-mobile-detail__row-actions .pipeline__row-actions button {
+  flex: 1;
+  min-width: 80px;
+  justify-content: center;
+}
+
+/* ── Mobile Overrides for Cards ── */
+@media (max-width: 1024px) {
+  /* Hide standard pipeline on mobile detail view */
+  .pipeline-main-container.mobile-hidden {
+    display: none !important;
+  }
+  
+  /* Make mobile cards clickable */
+  .pipeline__ccard {
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+  }
+  
+  .pipeline__ccard:active {
+    transform: scale(0.98);
+  }
+
+  /* Simplify mobile card layout */
+  .pipeline__ccard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+  }
+
+  .pipeline__ccard-name-col {
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+  }
+
+  /* We only want Avatar + Name on the left, and Date on the right */
+  .pipeline__ccard-project-col,
+  .pipeline__ccard-puesto-col,
+  .pipeline__ccard-contact-col,
+  .pipeline__ccard-source-col,
+  .pipeline__ccard-status-col,
+  .pipeline__cell-actions,
+  .pipeline__ccard-mobile-info,
+  .pipeline__recruiter {
+    display: none !important;
+  }
+
+  /* Keep the date visible and position it on the right */
+  .pipeline__ccard-dates-col {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    flex-shrink: 0;
+    padding-left: var(--spacing-md);
+  }
+
+  .pipeline__name-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pipeline__name-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pipeline__name-first {
+    font-size: var(--type-body-md-size);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .pipeline__name-rest {
+    font-size: var(--type-body-sm-size);
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+
+  /* Mobile date formatting inside card */
+  .pipeline__date-smart {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  height: 16px;
+}
+
+.pipeline-mobile-detail__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.pipeline-mobile-detail__name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.pipeline-mobile-detail__puesto {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+.pipeline-mobile-detail__info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+.pipeline-mobile-detail__info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.pipeline-mobile-detail__info-icon {
+  color: var(--color-muted-soft);
+  margin-top: 2px;
+}
+
+.pipeline-mobile-detail__info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pipeline-mobile-detail__info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted-soft);
+  font-weight: 600;
+}
+
+.pipeline-mobile-detail__info-value {
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.pipeline-mobile-detail__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-md);
+}
+
+.pipeline-mobile-detail__whatsapp {
+  width: 100%;
+  justify-content: center;
+  padding: var(--spacing-md);
+  font-size: var(--type-body-md-size);
+}
+
+.pipeline-mobile-detail__no-whatsapp {
+  text-align: center;
+  padding: var(--spacing-sm);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-md);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+.pipeline-mobile-detail__status-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline-mobile-detail__row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pipeline-mobile-detail__row-actions .pipeline__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: flex-start;
+}
+
+.pipeline-mobile-detail__row-actions .pipeline__row-actions button {
+  flex: 1;
+  min-width: 80px;
+  justify-content: center;
+}
+
+/* ── Mobile Overrides for Cards ── */
+@media (max-width: 1024px) {
+  /* Hide standard pipeline on mobile detail view */
+  .pipeline-main-container.mobile-hidden {
+    display: none !important;
+  }
+  
+  /* Make mobile cards clickable */
+  .pipeline__ccard {
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+  }
+  
+  .pipeline__ccard:active {
+    transform: scale(0.98);
+  }
+
+  /* Simplify mobile card layout */
+  .pipeline__ccard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+  }
+
+  .pipeline__ccard-name-col {
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+  }
+
+  /* We only want Avatar + Name on the left, and Date on the right */
+  .pipeline__ccard-project-col,
+  .pipeline__ccard-puesto-col,
+  .pipeline__ccard-contact-col,
+  .pipeline__ccard-source-col,
+  .pipeline__ccard-status-col,
+  .pipeline__cell-actions,
+  .pipeline__ccard-mobile-info,
+  .pipeline__recruiter {
+    display: none !important;
+  }
+
+  /* Keep the date visible and position it on the right */
+  .pipeline__ccard-dates-col {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    flex-shrink: 0;
+    padding-left: var(--spacing-md);
+  }
+
+  .pipeline__name-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pipeline__name-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pipeline__name-first {
+    font-size: var(--type-body-md-size);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .pipeline__name-rest {
+    font-size: var(--type-body-sm-size);
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+
+  /* Mobile date formatting inside card */
+  .pipeline__date-smart {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .pipeline__date-relative {
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+
+  .pipeline__date-exact {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-ink);
+    padding: 2px 6px;
+    background: var(--color-surface-soft);
+    border-radius: var(--rounded-sm);
+  }
+}
+
+/* ── Desktop Fallback ── */
+@media (min-width: 1025px) {
+  .pipeline-mobile-detail-container {
+    display: none !important;
+  }
+}

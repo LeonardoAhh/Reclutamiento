@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
-import { TrendingUp, Users, Target, Calendar, Trophy } from 'lucide-react';
+import { TrendingUp, Users, Target, Calendar, Trophy, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface IndicadorRecord {
@@ -44,6 +44,7 @@ export function IndicadoresView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [selectedMobileRecruiter, setSelectedMobileRecruiter] = useState<string | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -146,10 +147,10 @@ export function IndicadoresView() {
   }
 
   return (
-    <section className="indicadores-view" aria-label="Indicadores de Reclutamiento">
+    <section className="indicadores-view config-page__content" aria-label="Indicadores de Reclutamiento">
       <header className="config-page__header">
-        <h2 className="type-heading-md text-ink">Ingresos por Reclutador</h2>
-        <p className="type-body-sm text-muted">Resumen de contrataciones semanales y desempeño del equipo.</p>
+        <h2 className="config-page__title">Ingresos por Reclutador</h2>
+        <p className="config-page__subtitle">Resumen de contrataciones semanales y desempeño del equipo.</p>
       </header>
 
 
@@ -189,7 +190,7 @@ export function IndicadoresView() {
           <h3 className="type-heading-sm text-ink m-0">Desglose Detallado</h3>
           <p className="type-caption-sm text-muted m-0">Reclutadores en filas, fechas en columnas</p>
         </div>
-        <div className="table-responsive">
+        <div className="table-responsive indicadores-desktop-only">
           <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y fecha">
             <caption className="sr-only">Desglose detallado de ingresos por reclutador y fecha</caption>
             <thead>
@@ -268,6 +269,86 @@ export function IndicadoresView() {
               </tfoot>
             )}
           </table>
+        </div>
+
+        {/* ── Mobile Drill-down ── */}
+        <div className="indicadores-mobile-only">
+          {selectedMobileRecruiter ? (
+            <div className="indicadores-mobile-detail" aria-live="polite">
+              <button
+                type="button"
+                className="config-mobile-back"
+                onClick={() => setSelectedMobileRecruiter(null)}
+                aria-label="Volver a la lista de reclutadores"
+              >
+                <ChevronLeft size={16} aria-hidden="true" />
+                Volver
+              </button>
+              
+              <div className="indicadores-mobile-detail__header">
+                <span
+                  className="indicadores-recruiter-dot"
+                  style={{ backgroundColor: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}
+                  aria-hidden="true"
+                />
+                <h4 className="type-heading-md m-0">{selectedMobileRecruiter}</h4>
+              </div>
+              
+              <ul className="indicadores-mobile-detail__list">
+                {tableData.map(row => {
+                  const val = row[selectedMobileRecruiter];
+                  return (
+                    <li key={row.date} className="indicadores-mobile-detail__item">
+                      <span className="type-body-sm font-medium">{row.date}</span>
+                      <span className="type-body-sm text-ink font-bold">
+                        {val ? (
+                          <span style={{ color: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}>
+                            {val} ingresos
+                          </span>
+                        ) : (
+                          <span className="text-muted-soft">-</span>
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              
+              <div className="indicadores-mobile-detail__total">
+                <span className="type-body-sm font-bold">Total</span>
+                <span className="type-heading-sm text-primary">
+                  {kpi?.recruiterTotals[recruiters.indexOf(selectedMobileRecruiter)]?.total ?? 0}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <ul className="indicadores-mobile-list" aria-label="Lista de reclutadores">
+              {recruiters.map((recruiter, index) => (
+                <li key={recruiter}>
+                  <button
+                    type="button"
+                    className="indicadores-mobile-list__btn"
+                    onClick={() => setSelectedMobileRecruiter(recruiter)}
+                  >
+                    <div className="indicadores-mobile-list__info">
+                      <span
+                        className="indicadores-recruiter-dot"
+                        style={{ backgroundColor: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
+                        aria-hidden="true"
+                      />
+                      <span className="type-body-sm font-medium text-ink">{recruiter}</span>
+                    </div>
+                    <div className="indicadores-mobile-list__right">
+                      <span className="type-caption-sm text-muted">
+                        {kpi?.recruiterTotals[index]?.total ?? 0} ingresos
+                      </span>
+                      <ChevronRight size={16} className="text-muted-soft" aria-hidden="true" />
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

@@ -103,11 +103,11 @@ export function TabuladorView() {
       <header className="config-page__header">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--spacing-md)' }}>
           <div>
-            <h2 className="type-heading-md text-ink" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-              <Wallet size={24} className="text-primary" />
+            <h2 className="config-page__title">
+              <Wallet size={24} className="text-primary" aria-hidden="true" />
               Tabulador de Salarios
             </h2>
-            <p className="type-body-sm text-muted mt-xxs">
+            <p className="config-page__subtitle">
               Consulta los salarios diarios y mensuales vigentes agrupados por área.
             </p>
           </div>
@@ -149,7 +149,7 @@ export function TabuladorView() {
         </div>
       </header>
 
-      <section className="config-page__toolbar" aria-label="Buscador de puestos" style={{ marginTop: 'var(--spacing-xl)' }}>
+      <section className="config-page__toolbar" aria-label="Buscador de puestos">
         <div className="form-group config-search">
           <label htmlFor="tabulador-search-input" className="sr-only">
             Buscar puesto o área

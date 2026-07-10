@@ -179,15 +179,13 @@ export function DocumentosView() {
   return (
     <section className="documentos-view config-page__content">
       <header className="config-page__header">
-        <div>
-          <h2 className="type-heading-md text-ink" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-            <FileText size={24} className="text-primary" />
-            Documentos
-          </h2>
-          <p className="type-body-sm text-muted mt-xxs">
-            Genera y descarga documentos oficiales para impresión o resguardo.
-          </p>
-        </div>
+        <h2 className="config-page__title">
+          <FileText size={24} className="text-primary" aria-hidden="true" />
+          Documentos
+        </h2>
+        <p className="config-page__subtitle">
+          Genera y descarga documentos oficiales para impresión o resguardo.
+        </p>
       </header>
 
       {hasError && (
@@ -238,13 +236,13 @@ export function DocumentosView() {
         )}
         
         {activeDoc === 'salud' && (
-          <section ref={saludRef} style={{ background: '#fff', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={saludRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
             <CuestionarioSalud />
           </section>
         )}
 
         {activeDoc === 'generales' && (
-          <section ref={generalesRef} style={{ background: '#fff', width: 'fit-content', margin: '0 auto' }}>
+          <section ref={generalesRef} style={{ background: 'var(--color-surface)', width: 'fit-content', margin: '0 auto' }}>
             <DatosGenerales />
           </section>
         )}

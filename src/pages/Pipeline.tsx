@@ -25,6 +25,8 @@ import {
   MessageSquare,
   MessageCircle,
   Star,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
@@ -208,6 +210,7 @@ export function Pipeline() {
   const [showFilters, setShowFilters] = useState(
     () => Object.values(filters).some((v) => v !== '')
   );
+  const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => typeof localStorage !== 'undefined' && localStorage.getItem('pipeline_sidebar_collapsed') === '1'
@@ -523,8 +526,9 @@ export function Pipeline() {
 
   return (
     <main className="pipeline">
-      {/* ── Hero ── */}
-      <section className="pipeline__hero">
+      <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
+        {/* ── Hero ── */}
+        <section className="pipeline__hero">
         <div className="pipeline__hero-content">
           <h1>Candidatos</h1>
         </div>
@@ -810,6 +814,7 @@ export function Pipeline() {
 
                 const displayFullName = c.nombre.toUpperCase();
                 const firstName = nameParts[0] ? nameParts[0].toUpperCase() : '';
+                const restOfName = nameParts.slice(1).join(' ').toUpperCase();
 
                 const rawPuesto = c.puesto || '';
                 const puestoLower = rawPuesto.toLowerCase();
@@ -819,6 +824,11 @@ export function Pipeline() {
                   <article
                     key={c.id ?? c.nombre + c.fecha_aplicacion}
                     className={`pipeline__ccard pipeline__ccard--${c.status}`}
+                    onClick={(e) => {
+                      if (window.innerWidth <= 1024) {
+                        setSelectedMobileCandidate(c);
+                      }
+                    }}
                   >
                     <div className="pipeline__ccard-name-col">
                       <div className="pipeline__ccard-avatar">
@@ -837,7 +847,8 @@ export function Pipeline() {
                       </div>
                       <div className="pipeline__name-details">
                         <span className="pipeline__name-text">
-                          {displayFullName}
+                          <span className="pipeline__name-first">{firstName}</span>
+                          {restOfName && <span className="pipeline__name-rest"> {restOfName}</span>}
                         </span>
                         {c.reclutador && (
                           <div className="pipeline__recruiter" title={`Reclutador: ${c.reclutador}`}>
@@ -1095,6 +1106,176 @@ export function Pipeline() {
           />
         </div>
       </div>
+      </div>
+
+      {/* ── Drill-down Detail View (Mobile) ── */}
+      {selectedMobileCandidate && (
+        <div className="pipeline-mobile-detail-container">
+          <button 
+            className="config-mobile-back" 
+            onClick={() => setSelectedMobileCandidate(null)}
+            aria-label="Volver a Candidatos"
+          >
+            <ChevronLeft size={20} aria-hidden="true" />
+            <span>Volver</span>
+          </button>
+
+          <article className="pipeline-mobile-detail__card">
+            <div className="pipeline-mobile-detail__header">
+              <div className="pipeline-mobile-detail__avatar-wrapper">
+                <Avatar
+                  size={56}
+                  name={selectedMobileCandidate.nombre}
+                  variant="beam"
+                  colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                />
+                <span
+                  className="pipeline__status-dot pipeline__status-dot--avatar pipeline-mobile-detail__status-dot"
+                  data-status={selectedMobileCandidate.status}
+                  aria-label={`Estado: ${CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}`}
+                  title={CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}
+                />
+              </div>
+              <div className="pipeline-mobile-detail__title">
+                <h2 className="pipeline-mobile-detail__name">{selectedMobileCandidate.nombre.toUpperCase()}</h2>
+                <div className="pipeline-mobile-detail__puesto">
+                  {selectedMobileCandidate.puesto}
+                  {selectedMobileCandidate.seccion?.trim() && ` - ${selectedMobileCandidate.seccion.trim()}`}
+                </div>
+              </div>
+            </div>
+
+            <div className="pipeline-mobile-detail__info-grid">
+              <div className="pipeline-mobile-detail__info-item">
+                <UserRound size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
+                <div className="pipeline-mobile-detail__info-content">
+                  <span className="pipeline-mobile-detail__info-label">Reclutador</span>
+                  <span className="pipeline-mobile-detail__info-value">{selectedMobileCandidate.reclutador || '—'}</span>
+                </div>
+              </div>
+              
+              <div className="pipeline-mobile-detail__info-item">
+                <CalendarDays size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
+                <div className="pipeline-mobile-detail__info-content">
+                  <span className="pipeline-mobile-detail__info-label">Entrevista</span>
+                  <span className="pipeline-mobile-detail__info-value">
+                    {selectedMobileCandidate.fecha_cita ? formatDate(selectedMobileCandidate.fecha_cita) : '—'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pipeline-mobile-detail__info-item">
+                <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
+                <div className="pipeline-mobile-detail__info-content">
+                  <span className="pipeline-mobile-detail__info-label">Proyecto</span>
+                  <span className="pipeline-mobile-detail__info-value" style={{ display: 'flex' }}>
+                    {selectedMobileCandidate.is_starlite ? <AnimatedStarliteBadge /> : <AnimatedVinoplasticBadge />}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pipeline-mobile-detail__actions">
+              {selectedMobileCandidate.telefono ? (
+                <motion.a
+                  href={`https://wa.me/52${selectedMobileCandidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${selectedMobileCandidate.puesto}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pipeline__whatsapp-link pipeline-mobile-detail__whatsapp"
+                  title="Enviar WhatsApp"
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <MessageCircle size={18} aria-hidden="true" />
+                  <span>Contactar por WhatsApp</span>
+                </motion.a>
+              ) : (
+                <div className="pipeline-mobile-detail__no-whatsapp">
+                  Sin número registrado
+                </div>
+              )}
+
+              <div className="pipeline-mobile-detail__status-select">
+                <span className="pipeline-mobile-detail__info-label" style={{ marginBottom: 'var(--spacing-xs)', display: 'block' }}>Estado</span>
+                <div className="pipeline__cell-status" data-status={selectedMobileCandidate.status} style={{ width: '100%', maxWidth: 'none', justifySelf: 'auto' }}>
+                  <CustomSelect
+                    id={`mobile-status-${selectedMobileCandidate.id}`}
+                    value={selectedMobileCandidate.status}
+                    placeholder=""
+                    onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
+                    options={CANDIDATE_STATUSES.map((s) => ({
+                      value: s,
+                      label: CANDIDATE_STATUS_LABEL[s],
+                    }))}
+                    aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
+                    customTrigger={
+                      <motion.span
+                        className="pipeline__status-tag"
+                        data-status={selectedMobileCandidate.status}
+                        whileTap={{ scale: 0.95 }}
+                        style={{ width: '100%', justifyContent: 'space-between' }}
+                      >
+                        <span className="pipeline__status-tag__label">
+                          {CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}
+                        </span>
+                        <ChevronDown size={16} aria-hidden="true" className="pipeline__status-tag__chevron" />
+                      </motion.span>
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="pipeline-mobile-detail__row-actions">
+                <span className="pipeline-mobile-detail__info-label" style={{ marginBottom: 'var(--spacing-xs)', display: 'block' }}>Acciones</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--spacing-sm)' }}>
+                  <button
+                    className="btn-secondary"
+                    title="Editar candidato"
+                    onClick={() => openEdit(selectedMobileCandidate)}
+                    style={{ padding: 'var(--spacing-sm)' }}
+                  >
+                    <Pencil size={16} aria-hidden="true" />
+                    <span>Editar</span>
+                  </button>
+                  <button
+                    className="btn-secondary"
+                    title="Ver notas"
+                    onClick={() => setNotesTarget(selectedMobileCandidate)}
+                    style={{ padding: 'var(--spacing-sm)' }}
+                  >
+                    <MessageSquare size={16} aria-hidden="true" />
+                    <span>Notas ({notesCount(selectedMobileCandidate)})</span>
+                  </button>
+                  {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
+                    <button
+                      className="btn-primary"
+                      title="Contratar"
+                      onClick={() => openHire(selectedMobileCandidate)}
+                      style={{ padding: 'var(--spacing-sm)' }}
+                    >
+                      <BadgeCheck size={16} aria-hidden="true" />
+                      <span>Contratar</span>
+                    </button>
+                  )}
+                  {isAdmin && (
+                    <button
+                      className="btn-secondary"
+                      title="Eliminar candidato"
+                      onClick={() => {
+                        openDelete(selectedMobileCandidate);
+                        setSelectedMobileCandidate(null);
+                      }}
+                      style={{ padding: 'var(--spacing-sm)', color: 'var(--color-error)' }}
+                    >
+                      <Trash2 size={16} aria-hidden="true" />
+                      <span>Eliminar</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      )}
 
       {/* ── Modals de KPIs de reclutadores ── */}
       <RecruiterStatsModal

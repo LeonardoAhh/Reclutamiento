@@ -153,10 +153,10 @@ export function BusquedaView() {
   const showHelperText = searchTerm.length === 1;
 
   return (
-    <section className="busqueda-view">
-      <header className="config-page__header busqueda-view__header">
-        <h2 className="type-heading-md text-ink">Búsqueda Global</h2>
-        <p className="type-body-sm text-muted">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
+    <section className="busqueda-view config-page__content">
+      <header className="config-page__header">
+        <h2 className="config-page__title">Búsqueda Global</h2>
+        <p className="config-page__subtitle">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
       </header>
 
       <section className="config-page__toolbar" aria-label="Herramientas de configuración">

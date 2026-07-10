@@ -39,9 +39,6 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
       </span>
       <div className="ruta-card__content">
         <h3 className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</h3>
-        <span className="ruta-card__subtitle">
-          {ruta.paradas.length} parada{ruta.paradas.length === 1 ? '' : 's'} · {ruta.totalEmpleados} pasajero{ruta.totalEmpleados === 1 ? '' : 's'}
-        </span>
       </div>
       {matchCount !== undefined && matchCount > 0 && (
         <span className="ruta-card__match-badge">
@@ -419,8 +416,8 @@ export function RutasView() {
 
   return (
     <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
-      <header className="rutas-header">
-        <h1 className="type-display-lg">Rutas de transporte</h1>
+      <header className="config-page__header rutas-header">
+        <h2 className="config-page__title">Rutas de transporte</h2>
         <a 
           href="/horarios/index.html" 
           target="_blank" 
@@ -433,37 +430,44 @@ export function RutasView() {
       </header>
 
       {/* ── Search bar ── */}
-      <div className="rutas-search">
-        <div className="rutas-search__field">
-          <Search size={18} className="rutas-search__icon" aria-hidden="true" />
-          <input
-            ref={searchInputRef}
-            type="text"
-            className="rutas-search__input"
-            placeholder="Buscar por número de empleado o nombre…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="Buscar empleado por número o nombre"
-          />
-          {searchTerm && (
-            <button
-              type="button"
-              className="rutas-search__clear"
-              onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
-              aria-label="Limpiar búsqueda"
-            >
-              <X size={16} />
-            </button>
-          )}
+      <section className="config-page__toolbar" aria-label="Herramientas de rutas">
+        <div className="form-group config-search">
+          <label htmlFor="rutas-search-input" className="sr-only">
+            Buscar empleado por número o nombre
+          </label>
+          <div className="config-search__wrapper">
+            <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+            <input
+              id="rutas-search-input"
+              ref={searchInputRef}
+              type="text"
+              placeholder="Buscar por número de empleado o nombre…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Buscar empleado por número o nombre"
+              autoComplete="off"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="btn-icon config-search__clear"
+                onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
+                aria-label="Limpiar búsqueda"
+                title="Limpiar búsqueda"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            )}
+          </div>
         </div>
         {searchNorm && (
-          <p className="rutas-search__results type-body-sm">
+          <p className="config-search__hint text-muted mt-xs">
             {filteredRutas.length === 0
               ? 'Sin resultados'
               : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}
           </p>
         )}
-      </div>
+      </section>
 
       <div className="rutas-layout" data-mobile-view={mobileView}>
         {/* ── Left: route list ── */}

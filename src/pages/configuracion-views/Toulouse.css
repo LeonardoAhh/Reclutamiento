@@ -7,20 +7,6 @@
 .tp-page {
   max-width: var(--container-max, 1400px);
   margin: 0 auto;
-  padding: var(--spacing-lg) var(--spacing-md) calc(var(--spacing-2xl) + 40px);
-}
-
-.tp-page__hero h1 {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size, 2rem);
-  margin: 0;
-}
-
-.tp-page__lead {
-  margin: 6px 0 0;
-  color: var(--color-muted);
-  font-size: var(--type-body-sm-size, 14px);
-  max-width: 60ch;
 }
 
 /* ── Apartado de instrucciones ── */
@@ -107,7 +93,7 @@
 
 .tp-instructions__source {
   margin: var(--spacing-md) 0 0;
-  font-size: 12px;
+  font-size: var(--type-caption-md-size);
   color: var(--color-muted);
 }
 
@@ -365,8 +351,8 @@
   max-width: none;
   margin: 0 auto;
   padding: 8mm;
-  background: #fff;
-  color: #111;
+  background: var(--color-surface);
+  color: var(--color-ink);
   font-family: var(--font-body, system-ui);
   box-shadow: var(--shadow-card);
 }
@@ -375,21 +361,21 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-bottom: 2px solid #111;
+  border-bottom: 2px solid var(--color-ink);
   padding-bottom: 8px;
 }
 
 .tp-sheet__title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--type-heading-sm-size);
   font-weight: 800;
   letter-spacing: 0.02em;
 }
 
 .tp-sheet__subtitle {
   margin: 2px 0 0;
-  font-size: 12px;
-  color: #444;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
 }
 
 .tp-sheet__fields {
@@ -402,19 +388,19 @@
   display: flex;
   align-items: baseline;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--type-caption-md-size);
 }
 
 .tp-field__label {
   font-weight: 700;
   white-space: nowrap;
-  color: #333;
+  color: var(--color-ink);
 }
 
 .tp-field__value {
   flex: 1;
   min-width: 0;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid var(--color-hairline);
   font-weight: 500;
   overflow-wrap: anywhere;
 }
@@ -428,7 +414,7 @@
 }
 
 .tp-sheet__models-label {
-  font-size: 12px;
+  font-size: var(--type-caption-md-size);
   font-weight: 700;
 }
 
@@ -436,15 +422,15 @@
   display: inline-flex;
   gap: 8px;
   padding: 2px 8px;
-  border: 1px solid #111;
+  border: 1px solid var(--color-ink);
   border-radius: 4px;
 }
 
 .tp-sheet__instructions {
   flex-basis: 100%;
   margin: 0;
-  font-size: 11px;
-  color: #222;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-ink);
 }
 
 /* Reglas impresas para el candidato (2 columnas para ahorrar espacio). */
@@ -453,8 +439,8 @@
   padding-left: 1.1em;
   columns: 2;
   column-gap: 18px;
-  font-size: 10px;
-  color: #333;
+  font-size: var(--type-caption-xs-size, 10px);
+  color: var(--color-ink);
   line-height: 1.35;
 }
 
@@ -466,7 +452,7 @@
 .tp-score__formula {
   flex-basis: 100%;
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: var(--type-caption-sm-size);
 }
 
 /* Caja de calificación (plantilla) */
@@ -476,7 +462,7 @@
   gap: 6px 10px;
   padding: 6px 8px;
   margin-bottom: 6px;
-  border: 1px solid #111;
+  border: 1px solid var(--color-ink);
   border-radius: 4px;
 }
 
@@ -484,7 +470,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--type-caption-sm-size);
 }
 
 .tp-score__label {
@@ -498,7 +484,7 @@
 .tp-score__blank {
   display: inline-block;
   min-width: 36px;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 /* ── Rejilla ── */
@@ -515,8 +501,8 @@
 }
 
 .tp-grid__rownum {
-  font-size: 9px;
-  color: #888;
+  font-size: var(--type-caption-xs-size, 9px);
+  color: var(--color-muted);
   text-align: right;
   padding-right: 3px;
   font-variant-numeric: tabular-nums;
@@ -538,8 +524,8 @@
 }
 
 .tp-grid__count {
-  font-size: 9px;
-  color: #111;
+  font-size: var(--type-caption-xs-size, 9px);
+  color: var(--color-ink);
   text-align: center;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
@@ -548,14 +534,14 @@
 /* Símbolo — todo en negro para impresión B/N. */
 .tp-symbol__box,
 .tp-symbol__tail {
-  stroke: #111;
+  stroke: var(--color-ink);
   stroke-width: 1.4;
   fill: none;
   stroke-linecap: round;
 }
 
 .tp-symbol__ring {
-  stroke: #111;
+  stroke: var(--color-ink);
   stroke-width: 1.8;
   fill: none;
 }
@@ -563,7 +549,7 @@
 /* Objetivo en la plantilla: trazo más grueso + anillo negro = legible en B/N. */
 .tp-grid__cell--hit .tp-symbol__box,
 .tp-grid__cell--hit .tp-symbol__tail {
-  stroke: #111;
+  stroke: var(--color-ink);
   stroke-width: 2.4;
 }
 
@@ -572,9 +558,9 @@
   justify-content: space-between;
   margin-top: 8px;
   padding-top: 6px;
-  border-top: 1px solid #ccc;
-  font-size: 10px;
-  color: #666;
+  border-top: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-xs-size, 10px);
+  color: var(--color-muted);
 }
 
 .tp-print-only {
@@ -628,8 +614,8 @@
     box-shadow: none !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--color-surface) !important;
+    color: var(--color-ink) !important;
     page-break-after: always;
     break-after: page;
   }
@@ -656,7 +642,7 @@
 
   .tp-print-portal .tp-grid__rownum,
   .tp-print-portal .tp-grid__count {
-    font-size: 11px;
+    font-size: var(--type-caption-sm-size);
   }
 
   .tp-print-portal .tp-sheet__foot {
