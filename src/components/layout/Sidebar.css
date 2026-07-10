@@ -67,8 +67,8 @@
   justify-content: center;
   flex-shrink: 0;
 
-  width: var(--control-height);
-  height: var(--control-height);
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
 
   color: var(--color-muted);
   background: transparent;
@@ -112,6 +112,7 @@
   align-items: center;
   gap: var(--spacing-md);
 
+  min-height: var(--touch-target-min);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--rounded-md);
 
@@ -243,7 +244,9 @@
   gap: var(--spacing-sm);
   background: transparent;
   border: none;
-  padding: 4px;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-xs);
   border-radius: var(--rounded-lg);
   cursor: pointer;
   transition: background var(--transition-fast);
@@ -263,8 +266,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--control-height);
-  height: var(--control-height);
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -376,6 +379,7 @@
   justify-content: center;
   gap: var(--spacing-sm);
   flex: 1; /* Ocupa el resto del espacio */
+  min-height: var(--touch-target-min);
   padding: var(--spacing-sm);
   background: transparent;
   border: none;
@@ -397,6 +401,12 @@
   color: var(--color-error);
 }
 
+.sidebar__popover-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sidebar__popover-version {
   text-align: center;
   font-size: 0.65rem;
@@ -414,8 +424,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sidebar { transition: none; }
-  .sidebar__spin { animation: none; }
+  .sidebar,
+  .sidebar__item,
+  .sidebar__item-icon,
+  .sidebar__trigger-icon,
+  .sidebar__popover-item {
+    transition: none;
+  }
+  .sidebar__new-badge,
+  .sidebar__popover,
+  .sidebar__spin {
+    animation: none;
+  }
 }
 
 /* App shell: layout sidebar + contenido.

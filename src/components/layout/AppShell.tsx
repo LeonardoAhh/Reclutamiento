@@ -5,6 +5,23 @@ import { BottomTabBar } from './BottomTabBar';
 
 const STORAGE_KEY = 'sidebar-collapsed';
 
+function readSidebarCollapsed() {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function persistSidebarCollapsed(collapsed: boolean) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, String(collapsed));
+  } catch {
+    // La navegación funciona aunque el almacenamiento no esté disponible.
+  }
+}
+
+
 /**
  * Shell de la app autenticada.
  *  - Desktop (>=1024px): Sidebar fijo a la izquierda + contenido desplazado.
@@ -13,12 +30,10 @@ const STORAGE_KEY = 'sidebar-collapsed';
  * Al navegar entre páginas el sidebar se contrae automáticamente.
  */
 export function AppShell({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true',
-  );
+  const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, String(collapsed));
+    persistSidebarCollapsed(collapsed);
   }, [collapsed]);
 
   const toggleCollapse = useCallback(() => setCollapsed((v) => !v), []);

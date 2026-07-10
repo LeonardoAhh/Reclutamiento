@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 // @ts-ignore
 import Avatar from 'boring-avatars';
 import { BrandLogo } from '@/components/ui/BrandLogo';
+import { AVATAR_COLORS } from '@/lib/avatar';
 import './Header.css';
 
 /**
@@ -34,7 +35,7 @@ export function Header() {
                 size={32} 
                 name={username} 
                 variant="beam" 
-                colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']} 
+                colors={AVATAR_COLORS} 
               />
             </span>
           </div>
