@@ -44,11 +44,11 @@ function ausentismoTone(pct: number): "ok" | "warn" | "error" {
 
 function TrendDelta({ diff, suffix = "", decimals = 0 }: { diff: number; suffix?: string; decimals?: number }) {
     const formatted = decimals > 0 ? Math.abs(diff).toFixed(decimals) : String(Math.abs(diff));
-    const color = diff > 0 ? "var(--color-error)" : diff < 0 ? "var(--color-success)" : "var(--color-muted)";
+    const tone = diff > 0 ? "error" : diff < 0 ? "success" : "muted";
     const Icon = diff > 0 ? TrendingUp : diff < 0 ? TrendingDown : Minus;
     return (
-        <span className="reporte-cmp__trend" style={{ color }}>
-            <Icon size={14} aria-hidden="true" />
+        <span className={`reporte-cmp__trend reporte-cmp__trend--${tone}`}>
+            <Icon size="1em" aria-hidden="true" />
             {diff > 0 ? "+" : diff < 0 ? "−" : ""}{formatted}{suffix}
         </span>
     );
@@ -108,7 +108,6 @@ export default function ReporteComparisonDialog({
         quarter: number;
         totalAusentismo: number;
         diasDisponibles: number;
-        count: number;
     }>();
 
     chrono.forEach((s) => {
@@ -118,12 +117,11 @@ export default function ReporteComparisonDialog({
         const key = `${y}-Q${q}`;
 
         if (!qMap.has(key)) {
-            qMap.set(key, { year: y, quarter: q, totalAusentismo: 0, diasDisponibles: 0, count: 0 });
+            qMap.set(key, { year: y, quarter: q, totalAusentismo: 0, diasDisponibles: 0 });
         }
         const st = qMap.get(key)!;
         st.totalAusentismo += s.total_ausentismo;
         st.diasDisponibles += s.dias_disponibles;
-        st.count += 1;
     });
 
     const quarters = Array.from(qMap.values()).reverse(); // newest first
@@ -152,40 +150,24 @@ export default function ReporteComparisonDialog({
                 <div className="reporte-cmp__body">
                     {/* Quarterly Summary Cards */}
                     {quarters.length > 0 && (
-                        <div className="reporte-cmp__quarters" style={{ 
-                            display: "grid", 
-                            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", 
-                            gap: "12px", 
-                            marginBottom: "24px",
-                            padding: "0 12px" 
-                        }}>
+                        <div className="reporte-cmp__quarters">
                             {quarters.map((q) => {
                                 const avgPct = q.diasDisponibles > 0 ? (q.totalAusentismo / q.diasDisponibles) * 100 : 0;
                                 const tone = ausentismoTone(avgPct);
                                 return (
-                                    <div key={`${q.year}-Q${q.quarter}`} style={{
-                                        backgroundColor: "var(--color-bg)",
-                                        border: "1px solid var(--color-border)",
-                                        borderRadius: "8px",
-                                        padding: "16px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "8px"
-                                    }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--color-fg)" }}>
+                                    <article key={`${q.year}-Q${q.quarter}`} className="reporte-cmp__quarter">
+                                        <header className="reporte-cmp__quarter-header">
+                                            <span className="reporte-cmp__quarter-title">
                                                 Q{q.quarter} {q.year}
                                             </span>
-                                            <span style={{ fontSize: "11px", color: "var(--color-muted-foreground)", textTransform: "uppercase" }}>
+                                            <span className="reporte-cmp__quarter-label">
                                                 {getQuarterLabel(q.quarter)}
                                             </span>
-                                        </div>
-                                        <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-                                            <span style={{ fontSize: "24px", fontWeight: 700, color: "var(--color-fg)" }} className={`text-[var(--color-${tone === "ok" ? "success" : tone === "warn" ? "warning" : "error"})]`}>
-                                                {avgPct.toFixed(2)}%
-                                            </span>
-                                        </div>
-                                    </div>
+                                        </header>
+                                        <strong className={`reporte-cmp__quarter-value reporte-cmp__quarter-value--${tone}`}>
+                                            {avgPct.toFixed(2)}%
+                                        </strong>
+                                    </article>
                                 );
                             })}
                         </div>

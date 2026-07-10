@@ -90,7 +90,7 @@ export default function ReportesGuardadosDialog({
                                             <Calendar size={18} aria-hidden="true" />
                                         </span>
                                         <span className="reporte-saved__main">
-                                            <span className="reporte-saved__title" style={{ textTransform: "uppercase" }}>
+                                            <span className="reporte-saved__title reporte-saved__title--uppercase">
                                                 {formatMes(s.mes)} | CARGAR
                                             </span>
                                         </span>

@@ -16,19 +16,10 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.4),
+    color-mix(in srgb, var(--color-ink) 8%, transparent),
     transparent
   );
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
-}
-
-[data-theme="dark"] .skeleton::after {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
 }
 
 .skeleton--text {

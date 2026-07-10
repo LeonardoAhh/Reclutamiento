@@ -69,3 +69,25 @@ agent_communication:
 - Validación local: `yarn tsc -b` y `yarn vite build` pasan.
 - Prueba UI solicitada: revisar `/features` en 390px, 768px y 1440px; verificar menú móvil y cada subpágina, navegación por teclado, ausencia de overflow global y consola sin errores.
 - Limitación de entorno: Supervisor es READONLY y apunta erróneamente a `/app/frontend` con `yarn start`; el proyecto está en `/app` y usa `yarn dev`. Si la preview no abre, reportar bloqueo de infraestructura sin editar configuración ni código.
+
+
+
+## Bug actual — build de reporte diario
+- Error reportado: `TS2552 Cannot find name 'getStatusTone'` en `reporte-area-summary.tsx:64`.
+- Corrección: restaurado helper tipado `getStatusTone` y eliminado helper anterior incompatible.
+- Verificación solicitada al agente: únicamente TypeScript/build; sin pruebas UI ni exploratorias.
+
+  - task: "Fix TS2552 Cannot find name 'getStatusTone' en reporte-area-summary.tsx"
+    implemented: true
+    working: true
+    file: "src/components/reporte-diario/reporte-area-summary.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Restaurado helper tipado getStatusTone en línea 29, usado correctamente en línea 52."
+      - working: true
+        agent: "testing"
+        comment: "✓ VERIFICADO: TypeScript compilation (yarn tsc -b) PASS sin errores. Vite build PASS sin errores TS2552. La función getStatusTone está correctamente definida y el error de compilación ha sido resuelto."
