@@ -142,6 +142,12 @@
   justify-content: center;
 }
 
+.config-card__avatar--tone-0 { background-color: var(--color-accent-sky); }
+.config-card__avatar--tone-1 { background-color: var(--color-accent-purple); }
+.config-card__avatar--tone-2 { background-color: var(--color-accent-pink); }
+.config-card__avatar--tone-3 { background-color: var(--color-accent-orange); }
+.config-card__avatar--tone-4 { background-color: var(--color-accent-teal); }
+
 .config-card__title-group {
   display: flex;
   flex-direction: column;
@@ -544,6 +550,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  min-height: var(--touch-target-min);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--rounded-md);
   border: none;
@@ -576,6 +583,19 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-width: 0;
+}
+
+.config-main--loading {
+  align-items: center;
+  justify-content: center;
+}
+
+.config-view-transition {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -653,6 +673,11 @@
   color: var(--color-ink);
   line-height: 1.1;
   letter-spacing: var(--type-display-lg-tracking);
+}
+
+.indicadores-kpi-value--name {
+  font-size: var(--type-heading-md-size);
+  overflow-wrap: anywhere;
 }
 
 .indicadores-kpi-sub {
@@ -783,6 +808,23 @@
   flex-shrink: 0;
   display: inline-block;
 }
+
+.indicadores-recruiter-dot.data-tone-0 { background-color: var(--color-primary); }
+.indicadores-recruiter-dot.data-tone-1 { background-color: var(--color-secondary); }
+.indicadores-recruiter-dot.data-tone-2 { background-color: var(--color-muted); }
+.indicadores-recruiter-dot.data-tone-3 { background-color: var(--color-charcoal); }
+.indicadores-recruiter-dot.data-tone-4 { background-color: var(--color-muted-soft); }
+
+.indicador-value.data-tone-0,
+.indicadores-tone-value.data-tone-0 { color: var(--color-primary); }
+.indicador-value.data-tone-1,
+.indicadores-tone-value.data-tone-1 { color: var(--color-secondary); }
+.indicador-value.data-tone-2,
+.indicadores-tone-value.data-tone-2 { color: var(--color-muted); }
+.indicador-value.data-tone-3,
+.indicadores-tone-value.data-tone-3 { color: var(--color-charcoal); }
+.indicador-value.data-tone-4,
+.indicadores-tone-value.data-tone-4 { color: var(--color-muted-soft); }
 
 /* Hover fila */
 .indicadores-table tbody tr {

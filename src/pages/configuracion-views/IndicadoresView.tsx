@@ -299,7 +299,7 @@ export function IndicadoresView() {
                       <span className="type-body-sm font-medium">{row.date}</span>
                       <span className="type-body-sm text-ink font-bold">
                         {val ? (
-                          <span className={getRecruiterTone(selectedRecruiterIndex)}>
+                          <span className={`indicadores-tone-value ${getRecruiterTone(selectedRecruiterIndex)}`}>
                             {val} ingresos
                           </span>
                         ) : (

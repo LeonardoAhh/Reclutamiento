@@ -180,6 +180,7 @@
   /* ── Control sizing ─────────────────────────────────────────── */
   --control-height: 36px;
   --control-height-lg: 40px;
+  --touch-target-min: 48px;
   --control-padding-x: 20px;
   --control-padding-y: 8px;
 
