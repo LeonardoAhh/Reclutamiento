@@ -73,7 +73,7 @@ export function IndicadoresView() {
 
   const { chartData, recruiters, tableData, kpi } = useMemo(() => {
     if (!data || data.length === 0) {
-      return { chartData: [], recruiters: [], tableData: [], kpi: null };
+      return { chartData: [] as any[], recruiters: [] as string[], tableData: [] as any[], kpi: null };
     }
 
     const groupedByDate: Record<string, Record<string, number>> = {};
