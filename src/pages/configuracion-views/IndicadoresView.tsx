@@ -117,6 +117,10 @@ export function IndicadoresView() {
     };
   }, [data]);
 
+  const selectedRecruiterIndex = selectedMobileRecruiter
+    ? recruiters.indexOf(selectedMobileRecruiter)
+    : -1;
+
   if (loading) {
     return (
       <section className="indicadores-view">
@@ -230,10 +234,7 @@ export function IndicadoresView() {
                     return (
                       <td key={row.date}>
                         {val ? (
-                          <span
-                            className="indicador-value"
-                            style={{ color: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
-                          >
+                          <span className={`indicador-value ${getRecruiterTone(index)}`}>
                             {val}
                           </span>
                         ) : (
@@ -284,8 +285,7 @@ export function IndicadoresView() {
               
               <div className="indicadores-mobile-detail__header">
                 <span
-                  className="indicadores-recruiter-dot"
-                  style={{ backgroundColor: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}
+                  className={`indicadores-recruiter-dot ${getRecruiterTone(selectedRecruiterIndex)}`}
                   aria-hidden="true"
                 />
                 <h4 className="type-heading-md m-0">{selectedMobileRecruiter}</h4>
@@ -299,7 +299,7 @@ export function IndicadoresView() {
                       <span className="type-body-sm font-medium">{row.date}</span>
                       <span className="type-body-sm text-ink font-bold">
                         {val ? (
-                          <span style={{ color: RECRUITER_COLORS[recruiters.indexOf(selectedMobileRecruiter) % RECRUITER_COLORS.length] }}>
+                          <span className={getRecruiterTone(selectedRecruiterIndex)}>
                             {val} ingresos
                           </span>
                         ) : (
@@ -329,8 +329,7 @@ export function IndicadoresView() {
                   >
                     <div className="indicadores-mobile-list__info">
                       <span
-                        className="indicadores-recruiter-dot"
-                        style={{ backgroundColor: RECRUITER_COLORS[index % RECRUITER_COLORS.length] }}
+                        className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
                         aria-hidden="true"
                       />
                       <span className="type-body-sm font-medium text-ink">{recruiter}</span>
