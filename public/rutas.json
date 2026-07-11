@@ -8,6 +8,14 @@
     "parada": "PARADA EN LA IGLESIA"
   },
   {
+    "numero empleado": "54",
+    "nombre": "URIAS SANCHEZ ARMANDO",
+    "turno": "3",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PEÑAFLOR",
+    "parada": "BODEGA AURRERA, PEÑAFLOR"
+  },
+  {
     "numero empleado": "645",
     "nombre": "PACHECO CORDOBA MA DE LOS ANGELES",
     "turno": "1",
@@ -70,6 +78,14 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "1496",
+    "nombre": "SANCHEZ LOPEZ ELIUD",
+    "turno": "3",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "1526",
@@ -318,14 +334,6 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
-  },
-  {
-    "numero empleado": "2324",
-    "nombre": "AGUILLON HERNANDEZ MARIA LETICIA MARINA",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "2330",
@@ -582,14 +590,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
-  },
-  {
-    "numero empleado": "2779",
-    "nombre": "CHAPARRO OÑATE JESUS",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
   },
   {
     "numero empleado": "2863",
@@ -862,14 +862,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "3324",
-    "nombre": "ANGEL BLANCO RAUL ENRIQUE",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "3366",
@@ -2318,5 +2310,29 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4264",
+    "nombre": "GUERRERO GUERRERO JUAN CARLOS",
+    "turno": "4",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "MONTENEGRO",
+    "parada": "LONCHERIA LILI"
+  },
+  {
+    "numero empleado": "4267",
+    "nombre": "MARTINEZ FLORES ARELY GUADALUPE",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+  },
+  {
+    "numero empleado": "4269",
+    "nombre": "GUTIERREZ ROBLES BERENICE",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "LA LUZ ",
+    "parada": "PARADA EN EL PUENTE PEATONAL"
   }
 ]
