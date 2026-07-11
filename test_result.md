@@ -98,3 +98,40 @@ agent_communication:
 - Causa: control nativo de `input[type="search"]` + botón personalizado.
 - Corrección: ocultar únicamente los controles WebKit nativos; conservar el botón accesible propio.
 - Verificación: puntual, sin exploración adicional.
+
+
+
+## Bug Sileo — contraste y consistencia en ambos temas
+- Reporte del usuario: "revisar sileo, que funcione bien en ambos temas, sin bugs".
+- Diagnóstico:
+  - `--sileo-state-info` y `--sileo-state-action` estaban ligados a `--color-primary`, que cambia entre `#0075de` (light) y `#4ca3f4` (dark). La píldora de sileo se INVIERTE respecto al tema del contexto (fill `#1a1a1a` en light, `#f2f2f2` en dark), por lo que el badge/title del toast quedaba con contraste muy bajo (<3:1) en ambos temas.
+  - Título por defecto (sin `data-state`) no tenía color explícito de inversión → podía heredar mal.
+  - Botón de acción sin `focus-visible` (a11y).
+- Corrección (`src/styles/sileo.css`):
+  - Overrides scoped por `[data-sileo-viewport][data-theme='light'|'dark']` con paletas fijas de alto contraste (≥4.5:1) para success/error/warning/info/action en cada tema.
+  - Color inverso explícito del título por defecto (`:not([data-state])`).
+  - `focus-visible` outline para `[data-sileo-button]`.
+  - Ancho móvil calc con fallback `var(--spacing-lg, 16px)`.
+- Verificación solicitada: puntual, únicamente Sileo. Abrir `/login`, alternar tema (light ⇄ dark) desde el header/menú y disparar toasts desde consola:
+    `sileo.success({ title: 'Guardado', description: 'Cambios aplicados' })`
+    `sileo.error({ title: 'Error', description: 'Reintenta más tarde' })`
+    `sileo.info({ title: 'Nueva versión', description: 'Actualiza para ver mejoras' })`
+    `sileo.warning({ title: 'Cuidado', description: 'Revisa los datos' })`
+    `sileo.action({ title: 'Deshacer', description: 'Se eliminó el registro', button: { label: 'Deshacer', onClick: () => {} } })`
+  Criterios:
+    1. En light: píldora oscura con textos e íconos legibles (colores brillantes).
+    2. En dark: píldora clara con textos e íconos legibles (colores saturados oscuros).
+    3. Sin errores en consola.
+    4. Al cambiar de tema con toast visible, el `data-theme` del viewport se actualiza y los colores del toast también.
+
+  - task: "Sileo: contraste y consistencia en light/dark"
+    implemented: true
+    working: "NA"
+    file: "src/styles/sileo.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Overrides scoped por [data-sileo-viewport][data-theme] con paletas de alto contraste para cada estado en ambos temas. Focus-visible en botón de acción."

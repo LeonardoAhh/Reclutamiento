@@ -2,42 +2,73 @@
    Sileo · Adaptación al design system (Notion-inspired)
 
    Sileo v0.1.5 es un toast tipo "iOS Dynamic Island":
-   - El chip siempre se invierte respecto al tema del contexto:
-     light-mode → toast NEGRO con texto claro
-     dark-mode  → toast BLANCO con texto oscuro
-   - Los estilos del badge / title / button se derivan de `--sileo-state-*`
-     con `color-mix(in oklch, ...)`. Por eso sí podemos pasarle nuestros
-     tokens Notion (los estados semánticos).
-   - `border-radius` está hardcodeado a `9999px` en sileo — no hay variable
-     que lo controle. Aceptamos la forma pill por defecto (además coincide
-     con la guía Notion para pill CTAs).
+   - El chip SIEMPRE se invierte respecto al tema del contexto:
+       light  → píldora oscura (fill #1a1a1a)  + texto claro
+       dark   → píldora clara  (fill #f2f2f2)  + texto oscuro
+   - `--sileo-state-*` alimenta badge/title/button vía
+     `color-mix(in oklch, ...)`. Como la píldora es INVERSA,
+     los colores de estado deben elegirse con contraste alto
+     respecto al fill de la píldora, NO respecto al canvas
+     del tema. Por eso definimos variantes por tema.
+   - `border-radius` está hardcodeado a 9999px en sileo (pill).
 
-   IMPORTANTE: sileo inyecta su CSS en <head> en runtime (después de esta
-   hoja), por lo que los overrides necesitan `!important` para ganar al
-   tener la misma especificidad pero cargarse antes.
+   Import order (main.tsx):
+     1) 'sileo/styles.css'        ← estilos base
+     2) '@/styles/sileo.css'      ← estos overrides
+   Como cargamos DESPUÉS y usamos igual/mayor especificidad,
+   ganamos sin necesidad de !important en la mayoría de reglas.
+   Mantenemos !important sólo donde sileo también inyecta el
+   mismo custom prop en `:root` en tiempo de ejecución.
    ============================================================ */
 
+/* ── Defaults globales ────────────────────────────────────────
+   Se aplican mientras Toaster no monta el viewport (o si por
+   alguna razón el atributo data-theme no se propaga). Usa los
+   tokens semánticos crudos del design system. */
 :root {
-  /* Estados → tokens semánticos de la app (badges/alerts).
-     Sileo los combina con `color-mix in oklch` para el fondo tintado. */
   --sileo-state-success: var(--color-success) !important;
   --sileo-state-error:   var(--color-error)   !important;
   --sileo-state-warning: var(--color-warning) !important;
   --sileo-state-info:    var(--color-primary) !important;
   --sileo-state-action:  var(--color-primary) !important;
 
-  /* Ancho del pill — cómodo para copy en español. */
+  /* Ancho del pill — cómodo para copy en español (≥ desktop). */
   --sileo-width: 360px;
 }
 
-/* Viewport por encima del header (z-100), dropdowns (z-200) y modales
-   (z-1000). Así el toast nunca queda oculto detrás del header. */
+/* ── Overrides por tema ───────────────────────────────────────
+   Sileo pinta `data-theme` en el viewport según la prop del
+   Toaster. La especificidad aquí (0-2-0) > `:root` (0-1-0),
+   por eso NO necesitan !important y son deterministas. */
+
+/* Tema LIGHT → píldora OSCURA #1a1a1a.
+   Elegimos colores VIVOS/CLAROS que contrasten sobre negro. */
+[data-sileo-viewport][data-theme='light'] {
+  --sileo-state-success: #22c55e; /* green-500  ~6:1  */
+  --sileo-state-error:   #f87171; /* red-400    ~5:1  */
+  --sileo-state-warning: #f59e0b; /* amber-500  ~6:1  */
+  --sileo-state-info:    #60a5fa; /* blue-400   ~4.7:1 */
+  --sileo-state-action:  #60a5fa;
+}
+
+/* Tema DARK → píldora CLARA #f2f2f2.
+   Elegimos colores SATURADOS/OSCUROS que contrasten sobre blanco. */
+[data-sileo-viewport][data-theme='dark'] {
+  --sileo-state-success: #15803d; /* green-700  ~5.5:1 */
+  --sileo-state-error:   #b91c1c; /* red-700    ~6:1   */
+  --sileo-state-warning: #b45309; /* amber-700  ~5:1   */
+  --sileo-state-info:    #1d4ed8; /* blue-700   ~5.5:1 */
+  --sileo-state-action:  #1d4ed8;
+}
+
+/* ── Viewport z-index ─────────────────────────────────────────
+   Por encima de header (100), dropdowns (200) y modales (1000). */
 [data-sileo-viewport] {
   z-index: 99999 !important;
 }
 
-/* Tipografía cohesiva. En español NO queremos capitalize forzado
-   (sileo lo aplica al título por default). */
+/* ── Tipografía cohesiva ──────────────────────────────────────
+   En español desactivamos capitalize forzado y letter-spacing. */
 [data-sileo-title],
 [data-sileo-description],
 [data-sileo-button] {
@@ -51,22 +82,45 @@
   font-weight: var(--font-semibold) !important;
 }
 
-/* Contraste de la descripción un poco más alto que el default (a11y).
-   Recordatorio: en light-mode el toast es NEGRO (texto claro) y en
-   dark-mode el toast es BLANCO (texto oscuro). Los valores fijos aquí
-   son intencionales — el toast se invierte respecto al contexto. */
+/* ── Contraste de descripción (a11y) ──────────────────────────
+   Sileo default usa 0.5 de opacidad; subimos a valores más
+   legibles. La inversión (light→texto claro, dark→texto
+   oscuro) es intencional: coincide con el fill de la píldora. */
 [data-sileo-viewport][data-theme='light'] [data-sileo-description] {
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: rgba(255, 255, 255, 0.82) !important;
 }
 
 [data-sileo-viewport][data-theme='dark'] [data-sileo-description] {
-  color: rgba(0, 0, 0, 0.7) !important;
+  color: rgba(0, 0, 0, 0.75) !important;
 }
 
-/* Mobile-first: el toast nunca toca los bordes en pantallas chicas.
-   Restamos 2× spacing-lg (16px) a cada lado. */
+/* Título por defecto (sin data-state) también sigue la inversión.
+   Esto cubre `sileo({ title })` sin estado explícito. */
+[data-sileo-viewport][data-theme='light'] [data-sileo-title]:not([data-state]) {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+[data-sileo-viewport][data-theme='dark'] [data-sileo-title]:not([data-state]) {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* ── Focus visible en el botón de acción ─────────────────────
+   Sileo no expone estilos de focus; agregamos uno accesible. */
+[data-sileo-button]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* ── Mobile-first ─────────────────────────────────────────────
+   El toast nunca toca los bordes en pantallas chicas.
+   Restamos 2× --spacing-lg (32px) al ancho de la pantalla. */
 @media (max-width: 480px) {
   :root {
-    --sileo-width: calc(100vw - var(--spacing-lg) * 2);
+    --sileo-width: calc(100vw - (var(--spacing-lg, 16px) * 2));
   }
 }
+
+/* ── Reduce motion ────────────────────────────────────────────
+   Sileo ya respeta prefers-reduced-motion, pero el spring
+   easing puede sentirse "bouncy" incluso con no-preference.
+   No lo tocamos aquí — dejamos que el usuario/OS decida. */
