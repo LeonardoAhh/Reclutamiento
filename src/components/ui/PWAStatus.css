@@ -41,6 +41,11 @@
   flex-shrink: 0;
 }
 
+/* Variante para "listo offline" — usa color de éxito */
+.pwa-offline--ready {
+  background: var(--color-success, var(--color-primary));
+}
+
 /* ── Update card ──────────────────────────────────────────────────
    Floating bottom card. Matches .card token set:
    surface-card + 1px hairline + rounded-lg. No shadow.

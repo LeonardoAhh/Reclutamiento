@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: [
         'favicon-16x16.png',
         'favicon-32x32.png',
@@ -15,17 +15,21 @@ export default defineConfig({
         'icon.svg',
       ],
       manifest: {
+        id: '/',
         name: 'Reclutamiento',
         short_name: 'Reclutamiento',
         description:
           'Control de plantilla, vacantes y pipeline de candidatos.',
-        theme_color: '#faf9f5',
-        background_color: '#faf9f5',
+        theme_color: '#f6f5f4',
+        background_color: '#f6f5f4',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui', 'browser'],
         orientation: 'portrait-primary',
         scope: '/',
         start_url: '/pipeline',
         lang: 'es-MX',
+        dir: 'ltr',
+        categories: ['business', 'productivity'],
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -54,11 +58,18 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest,woff2}'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
-        skipWaiting: true,
+        navigateFallbackDenylist: [/^\/api\//, /version\.json$/],
+        skipWaiting: false,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
+          {
+            // Siempre red para /version.json (evita servir versión vieja)
+            urlPattern: ({ url }) => url.pathname.endsWith('/version.json'),
+            handler: 'NetworkOnly',
+            options: { cacheName: 'version-check' },
+          },
           {
             urlPattern: ({ url }) =>
               url.origin.includes('supabase.co'),
@@ -82,6 +93,20 @@ export default defineConfig({
               expiration: {
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Imágenes locales (logos, avatares, lottie json)
+            urlPattern: ({ request, sameOrigin }) =>
+              sameOrigin && (request.destination === 'image' || /\.(json)$/.test(new URL(request.url).pathname)),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'assets',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: { statuses: [0, 200] },
             },

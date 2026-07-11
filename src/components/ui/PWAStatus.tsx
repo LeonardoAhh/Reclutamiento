@@ -32,20 +32,37 @@ export function PWAStatus() {
   const [offline, setOffline] = useState(
     typeof navigator !== 'undefined' ? !navigator.onLine : false,
   );
+  const [offlineReady, setOfflineReady] = useState(false);
 
   useEffect(() => {
     function onNeedRefresh(e: Event) {
       const detail = (e as CustomEvent<{ update: () => void }>).detail;
-      setUpdateFn(() => detail.update);
-      setBannerState('available');
-      
+
       // Obtener la información de la nueva versión evadiendo el caché
       fetch(`/version.json?t=${Date.now()}`)
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data: VersionData | null) => {
           if (data) setVersionData(data);
+          // Respetar dismiss del usuario para la misma versión
+          try {
+            const dismissed = localStorage.getItem('pwa_update_dismissed');
+            if (data && dismissed === data.version) return;
+          } catch {
+            /* localStorage no disponible */
+          }
+          setUpdateFn(() => detail.update);
+          setBannerState('available');
         })
-        .catch(console.error);
+        .catch(() => {
+          // Sin version.json: mostrar el banner con datos por defecto
+          setUpdateFn(() => detail.update);
+          setBannerState('available');
+        });
+    }
+
+    function onOfflineReady() {
+      setOfflineReady(true);
+      window.setTimeout(() => setOfflineReady(false), 4000);
     }
     
     // Si queremos probar el banner en local, podemos simular la llamada 
@@ -65,11 +82,13 @@ export function PWAStatus() {
     }
 
     window.addEventListener('pwa:need-refresh', onNeedRefresh);
+    window.addEventListener('pwa:offline-ready', onOfflineReady);
     window.addEventListener('online', onOnline);
     window.addEventListener('offline', onOffline);
 
     return () => {
       window.removeEventListener('pwa:need-refresh', onNeedRefresh);
+      window.removeEventListener('pwa:offline-ready', onOfflineReady);
       window.removeEventListener('online', onOnline);
       window.removeEventListener('offline', onOffline);
     };
@@ -88,7 +107,15 @@ export function PWAStatus() {
   const handleDismiss = useCallback(() => {
     setBannerState('idle');
     setUpdateFn(null);
-  }, []);
+    // Recordar dismiss para no re-notificar la misma versión
+    try {
+      if (versionData?.version) {
+        localStorage.setItem('pwa_update_dismissed', versionData.version);
+      }
+    } catch {
+      /* localStorage no disponible */
+    }
+  }, [versionData]);
 
   return (
     <>
@@ -106,6 +133,24 @@ export function PWAStatus() {
           >
             <WifiOff size={14} aria-hidden="true" className="pwa-offline__icon" />
             <span>Sin conexión — mostrando datos en caché</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Offline-ready toast (primera instalación del SW) ─────────── */}
+      <AnimatePresence>
+        {offlineReady && !offline && (
+          <motion.div
+            className="pwa-offline pwa-offline--ready"
+            role="status"
+            aria-live="polite"
+            initial={{ y: -40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -40, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+          >
+            <CheckCircle2 size={14} aria-hidden="true" className="pwa-offline__icon" />
+            <span>App lista para uso sin conexión</span>
           </motion.div>
         )}
       </AnimatePresence>
