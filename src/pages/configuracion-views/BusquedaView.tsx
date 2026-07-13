@@ -9,7 +9,10 @@ import {
   type ReporteDiarioRecord,
   type ReporteDiarioSummary,
 } from '@/hooks/useReporteDiario';
-import { Search, User, X } from 'lucide-react';
+import { useBajas } from '@/hooks/useBajas';
+import { formatReadableDate } from '@/lib/dates';
+import { toTitleCase } from '@/lib/utils';
+import { Search, CircleUser, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
@@ -25,7 +28,7 @@ function getStickerTone(numEmpleado: string) {
 
 function displayValue(value: unknown) {
   const text = String(value ?? '').trim();
-  return text || 'Sin información';
+  return text ? toTitleCase(text) : 'Sin información';
 }
 
 
@@ -113,6 +116,7 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
 export function BusquedaView() {
   const { loading: authLoading } = useAuth();
   const { employees, loading: employeesLoading, error: employeesError } = useSupabaseData();
+  const { bajas, loading: bajasLoading } = useBajas();
   const { fetchByMes, fetchSummaries } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -185,13 +189,20 @@ export function BusquedaView() {
     const query = searchQuery.toLocaleLowerCase('es');
     if (query.length < 2) return [];
 
-    return employees.filter((employee) => {
+    const activeMatches = employees.filter((employee) => {
       return employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
              employee.nombre.toLocaleLowerCase('es').includes(query);
-    }).slice(0, 10);
-  }, [searchQuery, employees]);
+    }).map(e => ({ ...e, isBaja: false }));
 
-  if (authLoading || employeesLoading) {
+    const bajaMatches = bajas.filter((employee) => {
+      return employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
+             employee.nombre.toLocaleLowerCase('es').includes(query);
+    }).map(e => ({ ...e, isBaja: true }));
+
+    return [...activeMatches, ...bajaMatches].slice(0, 10);
+  }, [searchQuery, employees, bajas]);
+
+  if (authLoading || employeesLoading || bajasLoading) {
     return (
       <section className="busqueda-view" aria-busy="true">
         <header className="config-page__header">
@@ -217,55 +228,59 @@ export function BusquedaView() {
 
   return (
     <section className="busqueda-view config-page__content" aria-labelledby="busqueda-title">
-      <header className="config-page__header">
-        <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
-        <p className="config-page__subtitle">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
-      </header>
+      <div className="config-page__header-container">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <header className="config-page__header">
+            <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
+            <p className="config-page__subtitle">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
+          </header>
 
-      {employeesError && (
-        <p className="config-search-error type-body-sm" role="alert">
-          No fue posible actualizar la lista de colaboradores. Se muestran los datos disponibles.
-        </p>
-      )}
-
-      <section className="config-page__toolbar" aria-label="Herramientas de configuración">
-        <div className="form-group config-search">
-          <label htmlFor="config-search-input" className="sr-only">
-            Buscar empleado o configuración
-          </label>
-          <div className="config-search__wrapper">
-            <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
-            <input
-              id="config-search-input"
-              ref={searchInputRef}
-              type="search"
-              inputMode="search"
-              placeholder="Buscar empleado por nombre o número…"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              autoComplete="off"
-              aria-controls="config-search-results"
-              aria-describedby={showHelperText ? "config-search-hint" : undefined}
-            />
-            {searchTerm.length > 0 && (
-              <button
-                type="button"
-                className="btn-icon config-search__clear"
-                onClick={handleClearSearch}
-                aria-label="Limpiar búsqueda"
-                title="Limpiar búsqueda"
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
-            )}
-          </div>
-          {showHelperText && (
-            <p id="config-search-hint" className="config-search__hint type-caption-sm text-muted-soft">
-              Escribe al menos 2 caracteres para buscar.
+          {employeesError && (
+            <p className="config-search-error type-body-sm mt-sm" role="alert">
+              No fue posible actualizar la lista de colaboradores. Se muestran los datos disponibles.
             </p>
           )}
         </div>
-      </section>
+
+        <section className="config-page__toolbar" aria-label="Herramientas de búsqueda">
+          <div className="form-group config-search">
+            <label htmlFor="config-search-input" className="sr-only">
+              Buscar empleado
+            </label>
+            <div className="config-search__wrapper">
+              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <input
+                id="config-search-input"
+                ref={searchInputRef}
+                type="search"
+                inputMode="search"
+                placeholder="Buscar empleado por nombre o número…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                autoComplete="off"
+                aria-controls="config-search-results"
+                aria-describedby={showHelperText ? "config-search-hint" : undefined}
+              />
+              {searchTerm.length > 0 && (
+                <button
+                  type="button"
+                  className="btn-icon config-search__clear"
+                  onClick={handleClearSearch}
+                  aria-label="Limpiar búsqueda"
+                  title="Limpiar búsqueda"
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              )}
+            </div>
+            {showHelperText && (
+              <p id="config-search-hint" className="config-search__hint type-caption-sm text-muted-soft">
+                Escribe al menos 2 caracteres para buscar.
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
 
       <section
         id="config-search-results"
@@ -283,9 +298,9 @@ export function BusquedaView() {
             <div className="config-initial-state__icon">
               <Search size={32} color="var(--color-muted-soft)" aria-hidden="true" />
             </div>
-            <h3 className="type-heading-md text-ink">Búsqueda global</h3>
+            <h3 className="type-heading-md text-ink">Listo para buscar</h3>
             <p className="type-body-md text-muted config-initial-state__copy">
-              Encuentra rápidamente la información de cualquier empleado ingresando su nombre o número.
+              Escribe el nombre, apellidos o número de nómina en la barra superior.
             </p>
           </div>
         ) : filteredEmployees.length > 0 ? (
@@ -315,42 +330,61 @@ export function BusquedaView() {
                         className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
                         aria-hidden="true"
                       >
-                        <User size="1em" aria-hidden="true" />
+                        <CircleUser size="1em" aria-hidden="true" />
                       </div>
                       <div className="config-card__title-group">
-                        <h3 id={employeeTitleId} className="type-heading-sm text-ink">{employeeName}</h3>
-                        <p className="type-caption-sm text-muted-soft">#{employeeNumber}</p>
+                        <h3 id={employeeTitleId} className="type-heading-sm text-ink" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                          <span className="text-muted-soft" style={{ fontWeight: 'normal' }}>#{employeeNumber}</span>
+                          <span>{employeeName}</span>
+                          {emp.isBaja && <Badge variant="error">Baja</Badge>}
+                        </h3>
                       </div>
                     </header>
 
                     <div className="config-card__body">
                       <dl className="config-card__properties">
                         <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Puesto</dt>
+                          <dt className="notion-prop__label type-body-sm text-muted">Puesto</dt>
                           <dd className="notion-prop__value type-body-sm-strong text-charcoal">{displayValue(emp.puesto)}</dd>
                         </div>
                         <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Departamento</dt>
-                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.area)}</dd>
+                          <dt className="notion-prop__label type-body-sm text-muted">Departamento</dt>
+                          <dd className="notion-prop__value type-body-sm-strong text-charcoal">{displayValue(emp.area)}</dd>
                         </div>
                         <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Sección</dt>
-                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.seccion)}</dd>
+                          <dt className="notion-prop__label type-body-sm text-muted">Sección</dt>
+                          <dd className="notion-prop__value type-body-sm-strong text-charcoal">{displayValue(emp.seccion)}</dd>
                         </div>
                         <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Fecha de ingreso</dt>
-                          <dd className="notion-prop__value text-charcoal">{displayValue(emp.fecha_ingreso)}</dd>
+                          <dt className="notion-prop__label type-body-sm text-muted">Fecha de ingreso</dt>
+                          <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate(emp.fecha_ingreso))}</dd>
                         </div>
-                        <div className="notion-prop">
-                          <dt className="notion-prop__label type-caption-up text-muted">Turno</dt>
-                          <dd className="notion-prop__value">
-                            {emp.turno ? (
-                              <Badge variant="teal">{emp.turno}</Badge>
-                            ) : (
-                              <span className="text-muted">N/A</span>
-                            )}
-                          </dd>
-                        </div>
+                        {emp.isBaja && 'fecha_baja' in emp && (
+                          <div className="notion-prop">
+                            <dt className="notion-prop__label type-body-sm text-muted">Fecha de baja</dt>
+                            <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate((emp as any).fecha_baja))}</dd>
+                          </div>
+                        )}
+                        {emp.isBaja && 'motivo_baja' in emp && (
+                          <div className="notion-prop">
+                            <dt className="notion-prop__label type-body-sm text-muted">Motivo de baja</dt>
+                            <dd className="notion-prop__value type-body-sm-strong text-charcoal" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={String((emp as any).motivo_baja || '')}>
+                              {displayValue((emp as any).motivo_baja)}
+                            </dd>
+                          </div>
+                        )}
+                        {!(emp.isBaja && !emp.turno) && (
+                          <div className="notion-prop">
+                            <dt className="notion-prop__label type-body-sm text-muted">Turno</dt>
+                            <dd className="notion-prop__value">
+                              {emp.turno ? (
+                                <Badge variant="teal">{emp.turno}</Badge>
+                              ) : (
+                                <span className="type-body-sm-strong text-muted">N/A</span>
+                              )}
+                            </dd>
+                          </div>
+                        )}
                       </dl>
 
                       <aside className="config-card__calendar-section" aria-label={`Incidencias de ${employeeName}`}>

@@ -24,7 +24,7 @@ const LEVEL_LABEL: Record<SystemNotiLevel, string> = {
  *   grandes se vuelve una tarjeta flotante. Cero valores hardcodeados (tokens).
  */
 export function SystemUpdateBanner() {
-  const { info, shouldNotify, dismiss } = useSystemVersion();
+  const { info, shouldNotify, dismiss, swUpdateFn } = useSystemVersion();
   const visible = shouldNotify && !!info;
   const level = info?.nivel ?? 'info';
   const Icon = LEVEL_ICON[level];
@@ -32,7 +32,11 @@ export function SystemUpdateBanner() {
 
   const handleReload = () => {
     dismiss();
-    window.location.reload();
+    if (swUpdateFn) {
+      swUpdateFn();
+    } else {
+      window.location.reload();
+    }
   };
 
   return (

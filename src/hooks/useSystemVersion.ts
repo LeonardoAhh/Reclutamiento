@@ -76,6 +76,8 @@ export function useSystemVersion() {
     }
   }, []);
 
+  const [swUpdateFn, setSwUpdateFn] = useState<(() => void) | null>(null);
+
   useEffect(() => {
     fetchVersion();
 
@@ -83,15 +85,23 @@ export function useSystemVersion() {
     const onVisibility = () => {
       if (document.visibilityState === 'visible') fetchVersion();
     };
+    const onNeedRefresh = (e: Event) => {
+      const detail = (e as CustomEvent<{ update: () => void }>).detail;
+      setSwUpdateFn(() => detail.update);
+      fetchVersion();
+    };
+    
     const id = window.setInterval(fetchVersion, POLL_MS);
 
     window.addEventListener('focus', onFocus);
     document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pwa:need-refresh', onNeedRefresh);
 
     return () => {
       window.clearInterval(id);
       window.removeEventListener('focus', onFocus);
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pwa:need-refresh', onNeedRefresh);
     };
   }, [fetchVersion]);
 
@@ -103,13 +113,7 @@ export function useSystemVersion() {
     setSeenVersion(info.version);
   }, [info]);
 
-  const shouldNotify =
-    !!info && info.notificar && info.version !== seenVersion;
+  const shouldNotify = info != null && info.notificar && info.version !== seenVersion;
 
-  return {
-    version: info?.version ?? null,
-    info,
-    shouldNotify,
-    dismiss,
-  };
+  return { version: info?.version ?? null, info, shouldNotify, dismiss, swUpdateFn };
 }

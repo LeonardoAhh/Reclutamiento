@@ -43,6 +43,31 @@
   }
 }
 
+.config-page__header-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+@media (min-width: 1024px) {
+  .config-page__header-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .config-page__header-container .config-page__header {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .config-page__header-container .config-page__toolbar {
+    width: 400px;
+    flex-shrink: 0;
+  }
+}
+
 /* ── Toolbar & Search ─────────────────────────────────────────── */
 
 .config-page__toolbar {
@@ -84,8 +109,14 @@
   right: 0;
   width: var(--touch-target-min);
   height: var(--touch-target-min);
-  border-color: transparent;
-  background: transparent;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.config-search__clear:hover {
+  background: transparent !important;
+  color: var(--color-charcoal) !important;
 }
 
 .config-search__hint {
@@ -154,21 +185,17 @@
 
 .config-card__avatar {
   flex-shrink: 0;
-  width: var(--control-height);
-  height: var(--control-height);
-  border-radius: var(--rounded-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-on-primary);
-  font-size: var(--type-heading-md-size);
+  font-size: 2rem;
 }
 
-.config-card__avatar--tone-0 { background-color: var(--color-accent-sky); }
-.config-card__avatar--tone-1 { background-color: var(--color-accent-purple); }
-.config-card__avatar--tone-2 { background-color: var(--color-accent-pink); }
-.config-card__avatar--tone-3 { background-color: var(--color-accent-orange); }
-.config-card__avatar--tone-4 { background-color: var(--color-accent-teal); }
+.config-card__avatar--tone-0 { color: var(--color-accent-sky); }
+.config-card__avatar--tone-1 { color: var(--color-accent-purple); }
+.config-card__avatar--tone-2 { color: var(--color-accent-pink); }
+.config-card__avatar--tone-3 { color: var(--color-accent-orange); }
+.config-card__avatar--tone-4 { color: var(--color-accent-teal); }
 
 .config-card__title-group {
   display: flex;

@@ -26,6 +26,16 @@ export function transformEmployeeData(raw: EmployeeRaw): Omit<Employee, 'id'> {
 }
 
 /**
+ * Convert string to Title Case / Capitalized format
+ */
+export function toTitleCase(str: string | null | undefined): string {
+  if (!str) return '';
+  return str.toLowerCase().replace(/(?:^|\s|-)\S/g, function(match) {
+    return match.toUpperCase();
+  });
+}
+
+/**
  * Normalize string by stripping accents and trimming
  */
 export function normalizeString(text: string): string {

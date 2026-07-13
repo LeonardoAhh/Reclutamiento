@@ -192,6 +192,28 @@ export function formatShortDate(iso: string | null | undefined): string {
 }
 
 /**
+ * Formato más legible para el usuario (`18 feb 2026`), en TZ MX.
+ */
+export function formatReadableDate(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  const trimmed = String(iso).trim();
+  if (!trimmed) return '—';
+
+  const dateOnly = parseDdMmYyyy(trimmed);
+  const d = dateOnly
+    ? new Date(`${dateOnly}T12:00:00${MX_UTC_OFFSET}`)
+    : new Date(trimmed);
+
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('es-MX', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: TZ_MX,
+  });
+}
+
+/**
  * Parse `DD/MM/YYYY` (o `DD-MM-YYYY`) → ISO `YYYY-MM-DD`. Acepta también
  * entradas ya en ISO. Regresa `null` si la entrada no es reconocible.
  */
