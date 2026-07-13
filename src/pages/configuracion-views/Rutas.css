@@ -834,13 +834,46 @@
   }
 }
 
+.shift-bars__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 80px;
+  justify-content: flex-end;
+}
+
 .shift-bars__count {
-  min-width: 45px;
   white-space: nowrap;
   text-align: right;
   color: var(--color-ink);
   flex-shrink: 0;
   font-size: var(--type-body-sm-size);
+}
+
+.shift-bars__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-sm-size);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.trend-up {
+  color: var(--color-success-strong, #10b981);
+  background: var(--color-success-soft, rgba(16, 185, 129, 0.1));
+}
+
+.trend-down {
+  color: var(--color-error-strong, #ef4444);
+  background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
+}
+
+.trend-flat {
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
 }
 
 /* ─── Off-shift badge (daily capacity) ─── */

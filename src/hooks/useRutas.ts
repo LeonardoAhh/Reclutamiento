@@ -54,11 +54,13 @@ export interface RutaAgrupada {
   totalEmpleados: number;
   paradas: string[];
   turnosCount: Record<string, number>;
+  turnosCountPrev: Record<string, number>;
   maxCapacityPerShift: Record<string, number>;
   capacityPerDay: Record<string, number>;
 }
 
 const RUTAS_URL = '/rutas.json';
+const RUTAS_PREV_URL = '/rutas-anterior.json';
 
 function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
   return {
@@ -71,7 +73,7 @@ function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
   };
 }
 
-function groupByRuta(empleados: EmpleadoRuta[]): RutaAgrupada[] {
+function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = []): RutaAgrupada[] {
   const map = new Map<string, RutaAgrupada>();
 
   for (const emp of empleados) {
@@ -82,6 +84,7 @@ function groupByRuta(empleados: EmpleadoRuta[]): RutaAgrupada[] {
         totalEmpleados: 0,
         paradas: [],
         turnosCount: {},
+        turnosCountPrev: {},
         maxCapacityPerShift: {},
         capacityPerDay: {
           'Lunes': 0, 'Martes': 0, 'Miércoles': 0, 'Jueves': 0, 'Viernes': 0, 'Sábado': 0, 'Domingo': 0
@@ -104,6 +107,13 @@ function groupByRuta(empleados: EmpleadoRuta[]): RutaAgrupada[] {
       if (group.capacityPerDay[day] !== undefined) {
         group.capacityPerDay[day] += 1;
       }
+    }
+  }
+
+  for (const empPrev of empleadosPrev) {
+    if (map.has(empPrev.nombreRuta) && empPrev.turno !== '4') {
+      const group = map.get(empPrev.nombreRuta)!;
+      group.turnosCountPrev[empPrev.turno] = (group.turnosCountPrev[empPrev.turno] ?? 0) + 1;
     }
   }
 
@@ -134,6 +144,7 @@ function groupByRuta(empleados: EmpleadoRuta[]): RutaAgrupada[] {
 
 export function useRutas() {
   const [rawData, setRawData] = useState<EmpleadoRuta[]>([]);
+  const [rawPrevData, setRawPrevData] = useState<EmpleadoRuta[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -142,7 +153,10 @@ export function useRutas() {
 
     async function load() {
       try {
-        const res = await fetch(RUTAS_URL, { signal: controller.signal });
+        const [res, resPrev] = await Promise.all([
+          fetch(RUTAS_URL, { signal: controller.signal }),
+          fetch(RUTAS_PREV_URL, { signal: controller.signal }).catch(() => null)
+        ]);
 
         if (!res.ok) throw new Error(`No se pudo cargar rutas.json (${res.status})`);
 
@@ -155,6 +169,14 @@ export function useRutas() {
 
         const data: EmpleadoRutaRaw[] = await res.json();
         setRawData(data.map(normalise));
+        
+        if (resPrev && resPrev.ok) {
+          const ctPrev = resPrev.headers.get('content-type') ?? '';
+          if (!ctPrev.includes('text/html')) {
+            const dataPrev: EmpleadoRutaRaw[] = await resPrev.json();
+            setRawPrevData(dataPrev.map(normalise));
+          }
+        }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === 'AbortError') return;
         setErrorMsg(err instanceof Error ? err.message : 'Error desconocido');
@@ -167,7 +189,7 @@ export function useRutas() {
     return () => controller.abort();
   }, []);
 
-  const rutas = useMemo(() => groupByRuta(rawData), [rawData]);
+  const rutas = useMemo(() => groupByRuta(rawData, rawPrevData), [rawData, rawPrevData]);
 
   return { rutas, loading, errorMsg };
 }

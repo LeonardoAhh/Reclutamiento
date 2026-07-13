@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Search, X } from 'lucide-react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -143,11 +143,12 @@ function RouteSvg({ paradas, animKey }: RouteSvgProps) {
 /* ─── Animated shift bars ─── */
 interface ShiftBarsProps {
   turnosCount: Record<string, number>;
+  turnosCountPrev: Record<string, number>;
   maxCapacityPerShift: Record<string, number>;
   animKey: number;
 }
 
-function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps) {
+function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, animKey }: ShiftBarsProps) {
   const entries = Object.entries(turnosCount)
     .filter(([turno]) => turno !== '4')
     .sort(([a], [b]) => a.localeCompare(b));
@@ -159,6 +160,12 @@ function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps
         const barMax = assignedCapacity || Math.max(count, 21);
         const pct = barMax > 0 ? Math.round((count / barMax) * 100) : 0;
         const isOverCapacity = count > barMax;
+        
+        const prevCount = turnosCountPrev[turno] ?? count; // Default to count if no prev data
+        const delta = count - prevCount;
+        let trendAria = 'Sin cambios';
+        if (delta > 0) trendAria = `Subió ${delta} pasajero${delta === 1 ? '' : 's'}`;
+        if (delta < 0) trendAria = `Bajó ${Math.abs(delta)} pasajero${Math.abs(delta) === 1 ? '' : 's'}`;
 
         return (
           <div
@@ -178,11 +185,24 @@ function ShiftBars({ turnosCount, maxCapacityPerShift, animKey }: ShiftBarsProps
             >
               <div className="shift-bars__fill" />
             </div>
-            <span
-              className={`shift-bars__count type-body-sm${isOverCapacity ? ' shift-bars__count--over' : ''}`}
-            >
-              {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
-            </span>
+            <div className="shift-bars__stats">
+              <span
+                className={`shift-bars__count type-body-sm${isOverCapacity ? ' shift-bars__count--over' : ''}`}
+              >
+                {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
+              </span>
+              {turnosCountPrev[turno] !== undefined && (
+                <span
+                  className={`shift-bars__trend ${delta > 0 ? 'trend-up' : delta < 0 ? 'trend-down' : 'trend-flat'}`}
+                  aria-label={trendAria}
+                  title={trendAria}
+                >
+                  {delta > 0 ? <TrendingUp size={14} aria-hidden="true" /> : delta < 0 ? <TrendingDown size={14} aria-hidden="true" /> : <Minus size={14} aria-hidden="true" />}
+                  <span className="sr-only">{trendAria}</span>
+                  <span aria-hidden="true">{Math.abs(delta)}</span>
+                </span>
+              )}
+            </div>
           </div>
         );
       })}
@@ -320,6 +340,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
 
             <ShiftBars
               turnosCount={ruta.turnosCount}
+              turnosCountPrev={ruta.turnosCountPrev}
               maxCapacityPerShift={ruta.maxCapacityPerShift}
               animKey={animKey}
             />
