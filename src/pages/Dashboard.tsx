@@ -380,88 +380,88 @@ export function Dashboard() {
               aria-expanded={showSearchDropdown}
               aria-label="Buscar en la plantilla"
             />
+            {showSearchDropdown && (
+              <div className="dashboard__search-dropdown" role="listbox" aria-label="Resultados de búsqueda">
+                <div className="search-dropdown__head" aria-hidden="true">Resultados de búsqueda</div>
+                {matchingEmployees.map((emp) => (
+                  <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
+                    <div className="search-dropdown-item__info">
+                      <div className="search-dropdown-item__avatar" aria-hidden="true">
+                        <Avatar
+                          size={32}
+                          name={emp.nombre}
+                          variant="beam"
+                          colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                        />
+                      </div>
+                      <div className="search-dropdown-item__text">
+                        <span className="emp-name">
+                          {emp.nombre}
+                          {emp.en_incapacidad && (
+                            <Badge variant="amber">
+                              <HeartPulse size={11} aria-hidden="true" />
+                              INCAPACIDAD
+                            </Badge>
+                          )}
+                          {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+                            <Badge variant="coral">
+                              PRÓXIMO INGRESO
+                            </Badge>
+                          )}
+                        </span>
+                        <span className="emp-meta">
+                          {emp.puesto} {emp.seccion ? `(${emp.seccion})` : ''} • Turno {emp.turno || 'Sin asignar'} • #{emp.num_empleado}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="search-dropdown-item__actions">
+                      <button
+                        type="button"
+                        className="search-dropdown-item__edit"
+                        onClick={() => openEditFor(emp)}
+                        aria-label={`Editar a ${emp.nombre}`}
+                        title="Editar empleado"
+                      >
+                        <Pencil size={14} aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className="search-dropdown-item__promote"
+                        onClick={() => openPromoteFor(emp)}
+                        aria-label={`Promover a ${emp.nombre}`}
+                        title="Promover a otro puesto"
+                      >
+                        <ArrowUpCircle size={14} aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? ' is-active' : ''}`}
+                        onClick={() => setIncapacidadTarget(emp)}
+                        aria-label={`Marcar incapacidad de ${emp.nombre}`}
+                        aria-pressed={Boolean(emp.en_incapacidad)}
+                        title={
+                          emp.en_incapacidad
+                            ? 'Editar / quitar incapacidad'
+                            : 'Marcar en incapacidad'
+                        }
+                      >
+                        <HeartPulse size={14} aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className="search-dropdown-item__delete"
+                        onClick={() => openDeleteFor(emp)}
+                        aria-label={`Eliminar a ${emp.nombre}`}
+                        title="Eliminar empleado"
+                      >
+                        <Trash2 size={14} aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {showSearchDropdown && (
-            <div className="dashboard__search-dropdown" role="listbox" aria-label="Resultados de búsqueda">
-              <div className="search-dropdown__head" aria-hidden="true">Resultados de búsqueda</div>
-              {matchingEmployees.map((emp) => (
-                <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
-                  <div className="search-dropdown-item__info">
-                    <div className="search-dropdown-item__avatar" aria-hidden="true">
-                      <Avatar
-                        size={32}
-                        name={emp.nombre}
-                        variant="beam"
-                        colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
-                      />
-                    </div>
-                    <div className="search-dropdown-item__text">
-                      <span className="emp-name">
-                        {emp.nombre}
-                        {emp.en_incapacidad && (
-                          <Badge variant="amber">
-                            <HeartPulse size={11} aria-hidden="true" />
-                            INCAPACIDAD
-                          </Badge>
-                        )}
-                        {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-                          <Badge variant="coral">
-                            PRÓXIMO INGRESO
-                          </Badge>
-                        )}
-                      </span>
-                      <span className="emp-meta">
-                        {emp.puesto} {emp.seccion ? `(${emp.seccion})` : ''} • Turno {emp.turno || 'Sin asignar'} • #{emp.num_empleado}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="search-dropdown-item__actions">
-                    <button
-                      type="button"
-                      className="search-dropdown-item__edit"
-                      onClick={() => openEditFor(emp)}
-                      aria-label={`Editar a ${emp.nombre}`}
-                      title="Editar empleado"
-                    >
-                      <Pencil size={14} aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      className="search-dropdown-item__promote"
-                      onClick={() => openPromoteFor(emp)}
-                      aria-label={`Promover a ${emp.nombre}`}
-                      title="Promover a otro puesto"
-                    >
-                      <ArrowUpCircle size={14} aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? ' is-active' : ''}`}
-                      onClick={() => setIncapacidadTarget(emp)}
-                      aria-label={`Marcar incapacidad de ${emp.nombre}`}
-                      aria-pressed={Boolean(emp.en_incapacidad)}
-                      title={
-                        emp.en_incapacidad
-                          ? 'Editar / quitar incapacidad'
-                          : 'Marcar en incapacidad'
-                      }
-                    >
-                      <HeartPulse size={14} aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      className="search-dropdown-item__delete"
-                      onClick={() => openDeleteFor(emp)}
-                      aria-label={`Eliminar a ${emp.nombre}`}
-                      title="Eliminar empleado"
-                    >
-                      <Trash2 size={14} aria-hidden="true" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <nav className="config-sidebar__nav">
