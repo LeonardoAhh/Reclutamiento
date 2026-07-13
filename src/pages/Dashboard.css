@@ -459,7 +459,9 @@
   position: absolute;
   top: calc(100% + var(--spacing-xxs));
   left: 0;
-  right: 0;
+  min-width: 100%;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
