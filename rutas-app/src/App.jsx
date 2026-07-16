@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { WifiOff, ArrowLeft } from 'lucide-react';
+import { WifiOff, ArrowLeft, FileSpreadsheet } from 'lucide-react';
 import { rutas } from './data/rutas';
+import { downloadRutasExcel } from './lib/excelExport';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import RouteSidebar from './features/routes/RouteSidebar';
@@ -57,7 +58,7 @@ function App() {
   };
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={true}>
       <h1 className="sr-only">Horarios de transporte Viño Plastic / UTEP</h1>
 
       <RouteSidebar
@@ -73,9 +74,16 @@ function App() {
           <a href="/" className="md:hidden flex items-center justify-center size-8 rounded-md hover:bg-surface-card transition-colors" aria-label="Regresar">
             <ArrowLeft size={18} />
           </a>
-          <span className="text-body-strong font-bold text-ink">
+          <span className="text-body-strong font-bold text-ink flex-1">
             Horarios de Transporte
           </span>
+          <Button variant="outline" size="sm" onClick={downloadRutasExcel} className="hidden sm:flex" aria-label="Descargar Excel">
+            <FileSpreadsheet className="size-4 mr-2" />
+            Excel
+          </Button>
+          <Button variant="outline" size="icon" onClick={downloadRutasExcel} className="sm:hidden" aria-label="Descargar Excel">
+            <FileSpreadsheet className="size-4" />
+          </Button>
         </header>
 
         {!online && (
