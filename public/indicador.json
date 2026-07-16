@@ -33,7 +33,7 @@
     "Parada": "N/A",
     "Ubicacion": "N/A",
     "Fuente de Reclutamiento": "COMPUTRABAJO",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
   {
     "No.": "4224",
@@ -129,7 +129,7 @@
     "Parada": "AV. DE LA LUZ",
     "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS",
     "Fuente de Reclutamiento": "COMPUTRABAJO",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
   {
     "No.": "4233",
@@ -141,7 +141,7 @@
     "Parada": "N/A",
     "Ubicacion": "N/A",
     "Fuente de Reclutamiento": "COMPUTRABAJO",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
     "No.": "4234",
@@ -285,7 +285,7 @@
     "Parada": "BUENAVISTA ",
     "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA",
     "Fuente de Reclutamiento": "FACEBOOK",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
     "No.": "4248",
@@ -297,7 +297,7 @@
     "Parada": "SAN JOSE ITURBIDE",
     "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
     "Fuente de Reclutamiento": "PAUTA",
-    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
   {
     "No.": "4249",
@@ -417,7 +417,7 @@
     "Parada": "N/A",
     "Ubicacion": "N/A",
     "Fuente de Reclutamiento": "COMPUTRABAJO",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
     "No.": "4259",
@@ -517,14 +517,98 @@
   },
   {
     "No.": "4267",
-    "Nombre": "LOPEZ CRUZ JOSE",
+    "Nombre": "MARTINEZ FLORES ARELY GUADALUPE",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "15/07/2026",
+    "Ruta": "R1",
+    "Parada": "PIE DE LA CUESTA",
+    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO",
+    "Fuente de Reclutamiento": "LONA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4268",
+    "Nombre": "PEREZ MORALES ERICK ALEXIS",
+    "Puesto": "AUXILIAR DE CALIDAD",
+    "Turno": "5",
+    "Fecha Ingreso": "15/07/2026",
+    "Ruta": "N/A",
+    "Parada": "N/A",
+    "Ubicacion": "N/A",
+    "Fuente de Reclutamiento": "COMPUTRABAJO",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4269",
+    "Nombre": "GUTIERREZ ROBLES BERENICE",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "15/07/2026",
+    "Ruta": "R3",
+    "Parada": "LA LUZ ",
+    "Ubicacion": "PARADA EN EL PUENTE PEATONAL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4270",
+    "Nombre": "SANDOVAL BELLO JESUS",
     "Puesto": "OPERADOR DE MÁQUINA D",
     "Turno": "2",
-    "Fecha Ingreso": "10/07/2026",
+    "Fecha Ingreso": "15/07/2026",
     "Ruta": "R2",
-    "Parada": "OJO DE AGUA",
-    "Ubicacion": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4271",
+    "Nombre": "FONSECA SOLIS MARIA DEL CARMEN",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "15/07/2026",
+    "Ruta": "R4",
+    "Parada": "FRACC. MONTENEGRO",
+    "Ubicacion": "PARADA DE CAMIONES HUIZACHE",
     "Fuente de Reclutamiento": "FACEBOOK",
-    "Reclutador": "LEONARDO AHMED HERNANDEZ HERRERA"
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4272",
+    "Nombre": "CRUZ BERMUDEZ ABIGAIL",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "3",
+    "Fecha Ingreso": "15/07/2026",
+    "Ruta": "R2",
+    "Parada": "BUENAVISTA",
+    "Ubicacion": "PARADA DE AUTOBUSES SECUNDARIA",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4274",
+    "Nombre": "ANTONIO SABINO JOSE ROBERTO",
+    "Puesto": "INSPECTOR DE CALIDAD D",
+    "Turno": "5",
+    "Fecha Ingreso": "17/07/2026",
+    "Ruta": "R6",
+    "Parada": "AV. DE LA LUZ",
+    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS",
+    "Fuente de Reclutamiento": "COMPUTRABAJO",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4275",
+    "Nombre": "GUDIÑO LOPEZ MARIA GABRIELA",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "17/07/2026",
+    "Ruta": "R1",
+    "Parada": "PIE DE LA CUESTA",
+    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\"",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]

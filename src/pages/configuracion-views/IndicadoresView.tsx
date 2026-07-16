@@ -186,7 +186,6 @@ export function IndicadoresView() {
       <div className="indicadores-card indicadores-table-card">
         <div className="indicadores-table-header">
           <h3 className="type-heading-sm text-ink m-0">Desglose Detallado</h3>
-          <p className="type-caption-sm text-muted m-0">Reclutadores en filas, fechas en columnas</p>
         </div>
         <div className="table-responsive indicadores-desktop-only">
           <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y fecha">
