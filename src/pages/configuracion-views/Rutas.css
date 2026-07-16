@@ -245,19 +245,6 @@
     border-color: var(--color-primary);
     transform: translateX(4px);
   }
-
-  /* Blur unselected cards when one is active (desktop only — too distracting on mobile) */
-  .rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active) {
-    filter: blur(1.5px);
-    opacity: 0.6;
-  }
-
-  .rutas-list:has(.ruta-card--active) .ruta-card:not(.ruta-card--active):hover,
-  .rutas-list:has(.ruta-card--active)
-    .ruta-card:not(.ruta-card--active):focus-visible {
-    filter: blur(0);
-    opacity: 1;
-  }
 }
 
 /* On mobile the active card just gets a tinted border, no transform or blur */
@@ -610,7 +597,7 @@
 @media (min-width: 1024px) {
   .ruta-detail__body {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1.4fr;
     align-items: start;
     gap: var(--spacing-lg);
   }
@@ -891,6 +878,16 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE UTILITIES
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .ruta-btn-text {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
    REDUCED MOTION
 ═══════════════════════════════════════════════════════════ */
 
@@ -976,113 +973,87 @@
    DAILY CAPACITY LIST
 ═══════════════════════════════════════════════════════════ */
 
-.daily-capacity-list {
+/* ── Daily capacity cards (2-column grid) ── */
+.daily-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.daily-cards__card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  transition: border-color var(--transition-fast);
 }
 
-.daily-capacity-list__header {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-hairline);
-  color: var(--color-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  text-transform: uppercase;
-  margin-bottom: var(--spacing-sm);
+.daily-cards__card:hover {
+  border-color: var(--color-hairline-strong);
 }
 
-.daily-capacity-list__header-cols {
+.daily-cards__day {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
+  color: var(--color-ink);
+}
+
+.daily-cards__stats {
   display: flex;
   gap: var(--spacing-lg);
 }
 
-.daily-capacity-list__header-col {
-  width: 70px;
-  text-align: right;
-}
-
-.daily-capacity-list__rows {
+.daily-cards__stat {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xxs);
 }
 
-.daily-capacity-list__row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) 0;
-  align-items: center;
+.daily-cards__label {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted-soft);
 }
 
-.daily-capacity-list__day {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
+.daily-cards__value {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-bold);
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink);
 }
 
-.daily-capacity-list__cols {
-  display: flex;
-  gap: var(--spacing-lg);
-  align-items: center;
-}
-
-.daily-capacity-list__count {
-  width: 70px;
-  text-align: right;
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
-}
-
-.daily-capacity-list__rest {
-  width: 70px;
-  text-align: right;
-}
-
-.daily-capacity-list__rest-badge {
+.daily-cards__rest-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-full);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
   font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-weight: var(--font-semibold);
   min-width: 32px;
+  width: fit-content;
 }
 
-@media (max-width: 768px) {
-  .daily-capacity-list__header {
-    display: none;
+@media (max-width: 480px) {
+  .daily-cards {
+    gap: var(--spacing-xs);
   }
-
-  .daily-capacity-list__row {
-    grid-template-columns: 1fr;
-    padding: var(--spacing-sm);
-    border-radius: var(--rounded-lg);
-    background: var(--color-surface-soft);
+  .daily-cards__card {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    gap: var(--spacing-xs);
   }
-
-  .daily-capacity-list__cols {
-    width: 100%;
-    justify-content: space-between;
+  .daily-cards__stats {
     gap: var(--spacing-sm);
   }
-
-  .daily-capacity-list__count,
-  .daily-capacity-list__rest {
-    width: auto;
-    text-align: left;
-  }
-
-  .daily-capacity-list__rest-badge {
-    min-width: auto;
-    padding-inline: var(--spacing-sm);
+  .daily-cards__label {
+    letter-spacing: 0;
   }
 }
 
@@ -1102,11 +1073,14 @@
 
 .ruta-section__title-btn {
   margin-left: auto;
-  height: 32px;
-  width: 32px;
-  padding: 0;
-  display: flex;
+  height: 28px;
+  width: auto;
+  padding: 0 var(--spacing-md);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-semibold);
+  border-radius: var(--rounded-full);
 }

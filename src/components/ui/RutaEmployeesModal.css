@@ -1,18 +1,36 @@
+/* ================================================================
+   RutaEmployeesModal
+   Notion-design system — tokens only, zero hardcoded values.
+   Mobile-first · A11y · Semantic
+   ================================================================ */
+
+/* ── Modal shell override ──
+   The base .modal-content has overflow-y:auto, but we need an internal
+   scroll container (the employee list) while keeping the search bar
+   and tabs pinned. So we disable the base scroll and use flex layout. */
 .ruta-employees-modal {
   width: 100%;
-  max-width: 720px;
-  max-height: 90vh;
+  max-width: 680px;
+  max-height: min(85vh, 760px);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  overflow-y: hidden !important; /* override base modal-content overflow-y:auto */
 }
 
+/* ── Content wrapper ── */
 .ruta-employees-modal__content {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0; /* crucial for nested flex scroll */
   overflow: hidden;
-  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
-  gap: var(--spacing-sm);
+}
+
+/* ── Search ── */
+.ruta-employees-modal__search-container {
+  flex-shrink: 0;
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm);
 }
 
 .ruta-employees-modal__search {
@@ -24,25 +42,27 @@
 .ruta-employees-modal__search-icon {
   position: absolute;
   left: var(--spacing-md);
-  color: var(--color-charcoal);
+  color: var(--color-muted-soft);
+  pointer-events: none;
 }
 
 .ruta-employees-modal__input {
   width: 100%;
-  height: var(--control-height);
-  padding-left: 40px;
+  height: 44px;
+  padding-left: 44px;
   padding-right: var(--spacing-md);
-  border: 1px solid var(--color-hairline-strong);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-full);
-  background: var(--color-canvas);
+  background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  line-height: var(--type-body-sm-line);
+  transition: border-color var(--transition-fast);
 }
 
 .ruta-employees-modal__input::placeholder {
-  color: var(--color-muted);
+  color: var(--color-muted-soft);
 }
 
 .ruta-employees-modal__input:focus {
@@ -51,20 +71,43 @@
   box-shadow: var(--shadow-focus);
 }
 
-.ruta-employees-modal__list {
-  flex-grow: 1;
-  overflow-y: hidden;
+/* ── List area (tabs + panel — fills remaining space) ── */
+.ruta-employees-modal__list-area {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  overflow: hidden;
 }
 
-.ruta-employees-modal__tabs {
+/* ── Empty State ── */
+.ruta-employees-modal__empty {
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  text-align: center;
+}
+
+/* ── Tabs ── */
+.ruta-employees-modal__tabs {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0;
+  padding: 0 var(--spacing-lg);
   border-bottom: 1px solid var(--color-hairline);
-  padding-bottom: var(--spacing-xs);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ruta-employees-modal__tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .ruta-employees-modal__tab {
@@ -73,43 +116,48 @@
   justify-content: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-lg);
-  min-height: var(--control-height);
+  min-height: 44px;
   border: none;
   background: transparent;
-  color: var(--color-body);
+  color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-weight: var(--font-semibold);
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
   white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-  border-radius: var(--rounded-md) var(--rounded-md) 0 0;
+  scroll-snap-align: start;
 }
 
 .ruta-employees-modal__tab:hover {
   color: var(--color-ink);
-  background: var(--color-surface-soft);
 }
 
 .ruta-employees-modal__tab--active {
   color: var(--color-ink);
-  background: var(--color-surface-soft);
   border-bottom-color: var(--color-primary);
 }
 
+.ruta-employees-modal__tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: var(--rounded-sm) var(--rounded-sm) 0 0;
+}
+
 .ruta-employees-modal__tab-badge {
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-hairline-soft);
+  color: var(--color-charcoal);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  padding: var(--spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-full);
-  min-width: 24px;
-  text-align: center;
+  min-width: 22px;
+  line-height: var(--type-caption-up-line);
 }
 
 .ruta-employees-modal__tab--active .ruta-employees-modal__tab-badge {
@@ -117,86 +165,185 @@
   color: var(--color-on-primary);
 }
 
+/* ── Tab Panel ── */
 .ruta-employees-modal__tab-panel {
-  flex-grow: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.ruta-employees-modal__table-wrapper {
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  overflow: hidden;
+.ruta-employees-modal__tab-panel:focus-visible {
+  outline: none;
+}
+
+/* ── Panel header (sticky context bar) ── */
+.ruta-employees-modal__panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs) var(--spacing-lg);
+  background: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.ruta-employees-modal__capacity-badge {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+}
+
+.ruta-employees-modal__capacity-badge--over {
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
+}
+
+/* ── Scroll area (the only scrolling region) ── */
+.ruta-employees-modal__scroll-area {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  max-height: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-lg);
 }
 
-.ruta-employees-modal__table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+/* Minimal scrollbar */
+.ruta-employees-modal__scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+.ruta-employees-modal__scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ruta-employees-modal__scroll-area::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
 }
 
-.ruta-employees-modal__table th,
-.ruta-employees-modal__table td {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-hairline);
+/* ── Employee list ── */
+.ruta-employees-modal__employee-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.ruta-employees-modal__table th:first-child,
-.ruta-employees-modal__table td:first-child {
-  width: 100px;
+/* ── Letter group (A-Z separator) ── */
+.ruta-employees-modal__letter-group {
+  margin-top: var(--spacing-lg);
 }
 
-.ruta-employees-modal__table th:last-child,
-.ruta-employees-modal__table td:last-child {
-  width: auto;
+.ruta-employees-modal__letter-group:first-child {
+  margin-top: 0;
 }
 
-.ruta-employees-modal__table tr:last-child td {
-  border-bottom: none;
+.ruta-employees-modal__letter-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xxs) 0;
+  margin-bottom: var(--spacing-xxs);
+  background: var(--color-surface);
 }
 
-.ruta-employees-modal__table th {
-  background: var(--color-surface-soft);
-  color: var(--color-body);
+.ruta-employees-modal__letter-header span {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.ruta-employees-modal__letter-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-hairline-soft);
+}
+
+/* ── Card grid (2 columns) ── */
+.ruta-employees-modal__group-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.ruta-employees-modal__employee-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline-soft);
+  background: var(--color-surface);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.ruta-employees-modal__employee-card:hover {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-canvas);
+}
+
+.ruta-employees-modal__emp-id {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-primary);
+}
+
+.ruta-employees-modal__emp-name {
+  font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  white-space: nowrap;
-}
-
-.ruta-employees-modal__table tbody tr:hover {
-  background: var(--color-surface-soft);
-}
-
-.ruta-employees-modal__table td {
+  line-height: var(--type-body-sm-line);
   color: var(--color-ink);
-  font-size: var(--type-body-sm-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-/* Responsive adjustments for mobile */
-@media (max-width: 640px) {
+/* ================================================================
+   Mobile — Bottom sheet behavior (≤767px)
+   The base Modal already handles fullscreen via
+   .modal-fullscreen-mobile, we just refine inner spacing.
+   ================================================================ */
+@media (max-width: 767px) {
+  .ruta-employees-modal {
+    max-width: 100%;
+    max-height: 100dvh;
+  }
+
+  .ruta-employees-modal__search-container {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-xs);
+  }
+
+  .ruta-employees-modal__tabs {
+    padding: 0 var(--spacing-md);
+  }
+
   .ruta-employees-modal__tab {
-    flex: 1 1 calc(50% - var(--spacing-xxs));
-    min-width: calc(50% - var(--spacing-xxs));
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--type-body-sm-size);
-  }
-  
-  .ruta-employees-modal__content {
-    padding: var(--spacing-sm);
-  }
-
-  .ruta-employees-modal__input {
-    height: var(--control-height);
-    font-size: var(--type-body-sm-size);
-  }
-
-  .ruta-employees-modal__table th,
-  .ruta-employees-modal__table td {
     padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--type-body-sm-size);
+  }
+
+  .ruta-employees-modal__panel-header {
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+
+  .ruta-employees-modal__scroll-area {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-lg);
   }
 }

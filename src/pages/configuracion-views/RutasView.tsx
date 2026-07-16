@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, Clock, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import './Rutas.css';
@@ -160,7 +160,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, animKey 
         const barMax = assignedCapacity || Math.max(count, 21);
         const pct = barMax > 0 ? Math.round((count / barMax) * 100) : 0;
         const isOverCapacity = count > barMax;
-        
+
         const prevCount = turnosCountPrev[turno] ?? count; // Default to count if no prev data
         const delta = count - prevCount;
         let trendAria = 'Sin cambios';
@@ -230,35 +230,30 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
   };
 
   return (
-    <div className="daily-capacity-list" key={`daily-${animKey}`}>
-      <div className="daily-capacity-list__header">
-        <span>Día</span>
-        <div className="daily-capacity-list__header-cols">
-          <span className="daily-capacity-list__header-col">Pasajeros</span>
-          <span className="daily-capacity-list__header-col">Descansa</span>
-        </div>
-      </div>
-      <div className="daily-capacity-list__rows">
-        {DAYS_ORDER.map((day) => {
-          const count = capacityPerDay[day] || 0;
-          return (
-            <div key={day} className="daily-capacity-list__row">
-              <span className="daily-capacity-list__day">{day}</span>
-              <div className="daily-capacity-list__cols">
-                <span className="daily-capacity-list__count">{count}</span>
-                <div className="daily-capacity-list__rest">
-                  <span
-                    className="daily-capacity-list__rest-badge"
-                    title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
-                  >
-                    {RESTING_SHIFTS[day]}
-                  </span>
-                </div>
+    <div className="daily-cards" key={`daily-${animKey}`}>
+      {DAYS_ORDER.map((day) => {
+        const count = capacityPerDay[day] || 0;
+        return (
+          <div key={day} className="daily-cards__card">
+            <span className="daily-cards__day">{day}</span>
+            <div className="daily-cards__stats">
+              <div className="daily-cards__stat">
+                <span className="daily-cards__label">Empleados</span>
+                <span className="daily-cards__value">{count}</span>
+              </div>
+              <div className="daily-cards__stat">
+                <span className="daily-cards__label">Descansa</span>
+                <span
+                  className="daily-cards__rest-badge"
+                  title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
+                >
+                  {RESTING_SHIFTS[day]}
+                </span>
               </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -295,11 +290,48 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
   return (
     <div className="ruta-detail ruta-detail--enter" key={animKey}>
       <div className="ruta-detail__body">
+        {/* Dual column grids */}
+        <div className="ruta-detail__grids">
+          <section className="ruta-section">
+            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
+              <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" />
+              {ruta.nombreRuta}
+              <button
+                type="button"
+                className="btn-secondary ruta-section__title-btn"
+                onClick={onOpenEmployeesModal}
+                title="Ver empleados"
+                aria-label="Ver empleados"
+              >
+                Empleados
+              </button>
+            </h3>
+
+            <ShiftBars
+              turnosCount={ruta.turnosCount}
+              turnosCountPrev={ruta.turnosCountPrev}
+              maxCapacityPerShift={ruta.maxCapacityPerShift}
+              animKey={animKey}
+            />
+          </section>
+
+          <section className="ruta-section">
+            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
+              <CalendarDays size={16} aria-hidden="true" className="ruta-section__title-icon" />
+              Empleados por día
+            </h3>
+            <DailyCapacityBars
+              capacityPerDay={ruta.capacityPerDay}
+              animKey={animKey}
+            />
+          </section>
+        </div>
+
         {/* Route simulation */}
         <section className="ruta-section">
           <h3 className="ruta-section__title type-heading-sm">
-            <MapPin size={16} aria-hidden="true" />
-            {ruta.nombreRuta}
+            <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" style={{ marginRight: 'var(--spacing-sm)' }} />
+            Paradas
           </h3>
           <RouteSvg paradas={ruta.paradas} animKey={animKey} />
           <div className="ruta-stops">
@@ -320,43 +352,6 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
             </ul>
           </div>
         </section>
-
-        {/* Dual column grids */}
-        <div className="ruta-detail__grids">
-          <section className="ruta-section">
-            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
-              <Users size={16} aria-hidden="true" className="ruta-section__title-icon" />
-              Desglose por turno
-              <button
-                type="button"
-                className="btn-secondary ruta-section__title-btn"
-                onClick={onOpenEmployeesModal}
-                title="Ver plantilla"
-                aria-label="Ver plantilla"
-              >
-                <Users size={16} aria-hidden="true" />
-              </button>
-            </h3>
-
-            <ShiftBars
-              turnosCount={ruta.turnosCount}
-              turnosCountPrev={ruta.turnosCountPrev}
-              maxCapacityPerShift={ruta.maxCapacityPerShift}
-              animKey={animKey}
-            />
-          </section>
-
-          <section className="ruta-section">
-            <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
-              <CalendarDays size={16} aria-hidden="true" className="ruta-section__title-icon" />
-              Pasajeros por día
-            </h3>
-            <DailyCapacityBars
-              capacityPerDay={ruta.capacityPerDay}
-              animKey={animKey}
-            />
-          </section>
-        </div>
       </div>
     </div>
   );
@@ -446,55 +441,61 @@ export function RutasView() {
             Consulta rutas, paradas y capacidad de transporte por turno.
           </p>
         </div>
-        <a
-          href="/horarios/index.html" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="btn-secondary"
-        >
-          <ExternalLink size={16} aria-hidden="true" />
-          <span>Horarios</span>
-        </a>
       </header>
 
-      {/* ── Search bar ── */}
+      {/* ── Search bar & Horarios ── */}
       <section className="config-page__toolbar" aria-label="Herramientas de rutas">
-        <div className="form-group config-search">
-          <label htmlFor="rutas-search-input" className="sr-only">
-            Buscar empleado por número o nombre
-          </label>
-          <div className="config-search__wrapper">
-            <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
-            <input
-              id="rutas-search-input"
-              ref={searchInputRef}
-              type="text"
-              placeholder="Buscar por número de empleado o nombre…"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
-              autoComplete="off"
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                className="btn-icon config-search__clear"
-                onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
-                aria-label="Limpiar búsqueda"
-                title="Limpiar búsqueda"
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
+        <div className="rutas-toolbar-flex" style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', width: '100%' }}>
+          <div className="form-group config-search" style={{ flex: 1, minWidth: 0, margin: 0 }}>
+            <label htmlFor="rutas-search-input" className="sr-only">
+              Buscar empleado por número o nombre
+            </label>
+            <div className="config-search__wrapper">
+              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <input
+                id="rutas-search-input"
+                ref={searchInputRef}
+                type="text"
+                placeholder="Buscar por número de empleado o nombre…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
+                autoComplete="off"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="btn-icon config-search__clear"
+                  onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
+                  aria-label="Limpiar búsqueda"
+                  title="Limpiar búsqueda"
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              )}
+            </div>
+            {searchNorm && (
+              <p id="rutas-search-status" className="config-search__hint text-muted mt-xs" role="status" aria-live="polite">
+                {filteredRutas.length === 0
+                  ? 'Sin resultados'
+                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}
+              </p>
             )}
           </div>
+          
+          <a
+            href="/horarios/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-secondary"
+            style={{ flexShrink: 0 }}
+            title="Ver horarios"
+            aria-label="Ver horarios"
+          >
+            <Clock size={16} aria-hidden="true" />
+            <span className="ruta-btn-text">Horarios</span>
+          </a>
         </div>
-        {searchNorm && (
-          <p id="rutas-search-status" className="config-search__hint text-muted mt-xs" role="status" aria-live="polite">
-            {filteredRutas.length === 0
-              ? 'Sin resultados'
-              : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}
-          </p>
-        )}
       </section>
 
       <div className="rutas-layout" data-mobile-view={mobileView}>

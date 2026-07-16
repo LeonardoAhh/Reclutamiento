@@ -93,9 +93,9 @@
 }
 
 .config-search input {
-  min-height: var(--touch-target-min);
+  height: var(--control-height);
   padding-left: calc(var(--spacing-xl) + var(--spacing-xs)) !important;
-  padding-right: calc(var(--touch-target-min) + var(--spacing-xs)) !important;
+  padding-right: calc(var(--control-height) + var(--spacing-xs)) !important;
 }
 
 .config-search input[type="search"]::-webkit-search-cancel-button,
