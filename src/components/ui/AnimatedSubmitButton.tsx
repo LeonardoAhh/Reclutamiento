@@ -55,26 +55,35 @@ export function AnimatedSubmitButton({
       aria-label={stateText}
       whileTap={reduceMotion || isDisabled ? undefined : { scale: 0.96 }}
       layout={!reduceMotion}
+      transition={{
+        layout: { type: 'spring', bounce: 0, duration: 0.3 }
+      }}
     >
+      {/* ── Hidden live region for screen readers ── */}
+      <span className="sr-only" aria-live="polite" aria-atomic="true">
+        {stateText}
+      </span>
+
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={state}
           className="animated-submit-button__content"
-          aria-live="polite"
-          aria-atomic="true"
-          initial={reduceMotion ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={reduceMotion ? undefined : { opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.2 }}
+          aria-hidden="true"
+          initial={reduceMotion ? false : { y: 15, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={reduceMotion ? undefined : { y: -15, opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
         >
           {state === 'success' ? (
-            <CheckCircle size="1em" aria-hidden="true" />
+            <CheckCircle size="1.25em" />
           ) : state === 'loading' ? (
-            <Loader2 size="1em" className="animated-submit-button__spinner" aria-hidden="true" />
+            <Loader2 size="1.25em" className="animated-submit-button__spinner" />
           ) : (
-            <IdleIcon size="1em" aria-hidden="true" />
+            <>
+              <IdleIcon size="1.2em" />
+              <span className="animated-submit-button__text">{idleText}</span>
+            </>
           )}
-          <span>{stateText}</span>
         </motion.span>
       </AnimatePresence>
     </motion.button>

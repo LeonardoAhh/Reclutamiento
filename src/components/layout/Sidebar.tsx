@@ -247,6 +247,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
         <AnimatePresence>
           {menuOpen && (
             <motion.div
+              id="user-menu-popover"
               className="sidebar__popover"
               role="menu"
               initial={{ opacity: 0, y: collapsed ? 0 : 10, x: collapsed ? 0 : "-50%", scale: 0.95 }}
@@ -281,7 +282,6 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                 <div className="sidebar__popover-divider-vertical" />
                 
 
-
                 <ThemeToggle />
               </div>
 
@@ -293,11 +293,13 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
         </AnimatePresence>
 
         <button
+          id="user-menu-trigger"
           type="button"
           className="sidebar__user-trigger"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-haspopup="menu"
           aria-expanded={menuOpen}
+          aria-controls={menuOpen ? "user-menu-popover" : undefined}
           aria-label="Opciones de usuario"
         >
           <span className="sidebar__avatar" aria-hidden="true" title={username}>
@@ -305,7 +307,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
             <Avatar
               size={40}
               name={username}
-              variant="beam"
+              variant="marble"
               colors={AVATAR_COLORS}
             />
           </span>
