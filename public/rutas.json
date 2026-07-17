@@ -2256,14 +2256,6 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
-    "numero empleado": "4265",
-    "nombre": "RIVERA MONROY SELENE",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "AV. PEDREGAL",
-    "parada": "SEGUNDA PARADA DE CAMIONES"
-  },
-  {
     "numero empleado": "4267",
     "nombre": "MARTINEZ FLORES ARELY GUADALUPE",
     "turno": "1",
@@ -2318,5 +2310,29 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+  },
+  {
+    "numero empleado": "4277",
+    "nombre": "HERNANDEZ SANCHEZ MARIA GUADALUPE",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4278",
+    "nombre": "PERUCHO TLALAPANGO JESSICA NAYELLI",
+    "turno": "3",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+  },
+  {
+    "numero empleado": "4265",
+    "nombre": "RIVERA MONROY SELENE",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "AV. PEDREGAL",
+    "parada": "SEGUNDA PARADA DE CAMIONES"
   }
 ]

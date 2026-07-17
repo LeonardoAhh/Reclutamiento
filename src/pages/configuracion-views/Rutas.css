@@ -1084,3 +1084,38 @@
   font-weight: var(--font-semibold);
   border-radius: var(--rounded-full);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   TOOLTIP PARA VARIACIONES
+═══════════════════════════════════════════════════════════ */
+
+.trend-tooltip {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xs);
+  min-width: 150px;
+}
+
+.trend-tooltip__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-on-surface);
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trend-tooltip__list li {
+  position: relative;
+  padding-left: var(--spacing-sm);
+}
+
+.trend-tooltip__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-on-surface-soft);
+}

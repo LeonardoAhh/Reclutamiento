@@ -51,6 +51,7 @@ export interface EmpleadoRuta {
 export interface RutaAgrupada {
   nombreRuta: string;
   empleados: EmpleadoRuta[];
+  empleadosPrev: EmpleadoRuta[];
   totalEmpleados: number;
   paradas: string[];
   turnosCount: Record<string, number>;
@@ -81,6 +82,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
       map.set(emp.nombreRuta, {
         nombreRuta: emp.nombreRuta,
         empleados: [],
+        empleadosPrev: [],
         totalEmpleados: 0,
         paradas: [],
         turnosCount: {},
@@ -113,6 +115,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
   for (const empPrev of empleadosPrev) {
     if (map.has(empPrev.nombreRuta) && empPrev.turno !== '4') {
       const group = map.get(empPrev.nombreRuta)!;
+      group.empleadosPrev.push(empPrev);
       group.turnosCountPrev[empPrev.turno] = (group.turnosCountPrev[empPrev.turno] ?? 0) + 1;
     }
   }

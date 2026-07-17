@@ -1,7 +1,8 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, Clock, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { useRutas, RutaAgrupada } from '@/hooks/useRutas';
+import { useRutas, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
+import { Tooltip } from '@/components/ui/Tooltip';
 import './Rutas.css';
 
 /* ─────────────────────────────────────────
@@ -145,10 +146,12 @@ interface ShiftBarsProps {
   turnosCount: Record<string, number>;
   turnosCountPrev: Record<string, number>;
   maxCapacityPerShift: Record<string, number>;
+  empleados: EmpleadoRuta[];
+  empleadosPrev: EmpleadoRuta[];
   animKey: number;
 }
 
-function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, animKey }: ShiftBarsProps) {
+function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleados = [], empleadosPrev = [], animKey }: ShiftBarsProps) {
   const entries = Object.entries(turnosCount)
     .filter(([turno]) => turno !== '4')
     .sort(([a], [b]) => a.localeCompare(b));
@@ -166,6 +169,48 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, animKey 
         let trendAria = 'Sin cambios';
         if (delta > 0) trendAria = `Subió ${delta} pasajero${delta === 1 ? '' : 's'}`;
         if (delta < 0) trendAria = `Bajó ${Math.abs(delta)} pasajero${Math.abs(delta) === 1 ? '' : 's'}`;
+
+        const currentEmps = empleados.filter(e => e.turno === turno);
+        const prevEmps = empleadosPrev.filter(e => e.turno === turno);
+        const added = currentEmps.filter(curr => !prevEmps.some(prev => prev.numeroEmpleado === curr.numeroEmpleado));
+        const removed = prevEmps.filter(prev => !currentEmps.some(curr => curr.numeroEmpleado === prev.numeroEmpleado));
+
+        const tooltipContent = (added.length > 0 || removed.length > 0) ? (
+          <div className="trend-tooltip">
+            {added.length > 0 && (
+              <div className="trend-tooltip__section">
+                <strong className="text-success" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <TrendingUp size={12} /> Subieron ({added.length}):
+                </strong>
+                <ul className="trend-tooltip__list">
+                  {added.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
+                </ul>
+              </div>
+            )}
+            {removed.length > 0 && (
+              <div className="trend-tooltip__section" style={{ marginTop: added.length > 0 ? 'var(--spacing-sm)' : 0 }}>
+                <strong className="text-danger" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <TrendingDown size={12} /> Bajaron ({removed.length}):
+                </strong>
+                <ul className="trend-tooltip__list">
+                  {removed.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        ) : null;
+
+        const trendBadge = (
+          <span
+            tabIndex={0}
+            className={`shift-bars__trend ${delta > 0 ? 'trend-up' : delta < 0 ? 'trend-down' : 'trend-flat'}`}
+            aria-label={trendAria}
+          >
+            {delta > 0 ? <TrendingUp size={14} aria-hidden="true" /> : delta < 0 ? <TrendingDown size={14} aria-hidden="true" /> : <Minus size={14} aria-hidden="true" />}
+            <span className="sr-only">{trendAria}</span>
+            <span aria-hidden="true">{Math.abs(delta)}</span>
+          </span>
+        );
 
         return (
           <div
@@ -192,15 +237,13 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, animKey 
                 {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
               </span>
               {turnosCountPrev[turno] !== undefined && (
-                <span
-                  className={`shift-bars__trend ${delta > 0 ? 'trend-up' : delta < 0 ? 'trend-down' : 'trend-flat'}`}
-                  aria-label={trendAria}
-                  title={trendAria}
-                >
-                  {delta > 0 ? <TrendingUp size={14} aria-hidden="true" /> : delta < 0 ? <TrendingDown size={14} aria-hidden="true" /> : <Minus size={14} aria-hidden="true" />}
-                  <span className="sr-only">{trendAria}</span>
-                  <span aria-hidden="true">{Math.abs(delta)}</span>
-                </span>
+                tooltipContent ? (
+                  <Tooltip content={tooltipContent} side="top" delayMs={200}>
+                    {trendBadge}
+                  </Tooltip>
+                ) : (
+                  trendBadge
+                )
               )}
             </div>
           </div>
@@ -311,6 +354,8 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
               turnosCount={ruta.turnosCount}
               turnosCountPrev={ruta.turnosCountPrev}
               maxCapacityPerShift={ruta.maxCapacityPerShift}
+              empleados={ruta.empleados}
+              empleadosPrev={ruta.empleadosPrev}
               animKey={animKey}
             />
           </section>
