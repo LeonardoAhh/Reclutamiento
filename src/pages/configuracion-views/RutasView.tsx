@@ -167,8 +167,8 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
         const prevCount = turnosCountPrev[turno] ?? count; // Default to count if no prev data
         const delta = count - prevCount;
         let trendAria = 'Sin cambios';
-        if (delta > 0) trendAria = `Subió ${delta} pasajero${delta === 1 ? '' : 's'}`;
-        if (delta < 0) trendAria = `Bajó ${Math.abs(delta)} pasajero${Math.abs(delta) === 1 ? '' : 's'}`;
+        if (delta > 0) trendAria = `${delta} alta${delta === 1 ? '' : 's'}`;
+        if (delta < 0) trendAria = `${Math.abs(delta)} baja${Math.abs(delta) === 1 ? '' : 's'}`;
 
         const currentEmps = empleados.filter(e => e.turno === turno);
         const prevEmps = empleadosPrev.filter(e => e.turno === turno);
@@ -180,7 +180,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
             {added.length > 0 && (
               <div className="trend-tooltip__section">
                 <strong className="text-success" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <TrendingUp size={12} /> Subieron ({added.length}):
+                  <TrendingUp size={12} /> Altas ({added.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
                   {added.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
@@ -190,7 +190,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
             {removed.length > 0 && (
               <div className="trend-tooltip__section" style={{ marginTop: added.length > 0 ? 'var(--spacing-sm)' : 0 }}>
                 <strong className="text-danger" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <TrendingDown size={12} /> Bajaron ({removed.length}):
+                  <TrendingDown size={12} /> Bajas ({removed.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
                   {removed.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
@@ -225,7 +225,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
               aria-valuenow={count}
               aria-valuemin={0}
               aria-valuemax={Math.max(barMax, count)}
-              aria-valuetext={assignedCapacity ? `${count} de ${assignedCapacity} pasajeros` : `${count} pasajeros`}
+              aria-valuetext={assignedCapacity ? `${count} de ${assignedCapacity} empleados` : `${count} empleados`}
               aria-label={`Turno ${turno}`}
             >
               <div className="shift-bars__fill" />
