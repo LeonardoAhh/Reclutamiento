@@ -6,9 +6,9 @@
   display: grid;
   min-height: 100dvh;
   background: var(--color-canvas);
-  /* Mobile default: stacked */
+  /* Mobile default: only action panel */
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
 }
 
 @media (min-width: 1024px) {
@@ -20,18 +20,18 @@
 
 /* ── Left Panel (Brand) ── */
 .login__brand-panel {
-  display: flex;
+  display: none; /* Hidden on mobile */
   flex-direction: column;
   justify-content: center;
   padding: var(--spacing-2xl);
   /* Subtle dark gradient matching Acme image */
   background: linear-gradient(145deg, #1f1f1f 0%, #111111 100%);
   color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @media (min-width: 1024px) {
   .login__brand-panel {
+    display: flex; /* Show on desktop */
     border-bottom: none;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     padding: 4rem;
