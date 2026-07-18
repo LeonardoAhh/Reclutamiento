@@ -1,17 +1,22 @@
-import { sileo } from 'sileo';
+import React from 'react';
+import { sileo as originalSileo } from 'sileo';
+import { AnimatedCheck, AnimatedError } from '@/components/ui/AnimatedIcons';
+import type { SileoOptions, SileoPosition } from 'sileo';
 
 /**
  * Punto único de notificaciones de la app. Reexporta la API de `sileo`
- * (sileo.success / error / warning / info / action / promise) y añade un
- * helper para flujos que devuelven `{ ok, message }`.
- *
- * El `<AppToaster />` (montado en App.tsx) define posición, tema y estilos
- * cohesivos con el design system.
+ * pero inyectando nuestros íconos animados de Framer Motion por defecto.
  */
-export { sileo };
+export const sileo = {
+  ...originalSileo,
+  success: (opts: SileoOptions) => 
+    originalSileo.success({ icon: React.createElement(AnimatedCheck), ...opts }),
+  error: (opts: SileoOptions) => 
+    originalSileo.error({ icon: React.createElement(AnimatedError), ...opts }),
+  promise: <T,>(promise: Promise<T> | (() => Promise<T>), opts: Parameters<typeof originalSileo.promise>[1]) =>
+    originalSileo.promise(promise, opts),
+};
 
-// Expuesto en window para poder disparar toasts manualmente desde la consola
-// (F12 → `sileo.success({ title: 'Hola' })`). Inofensivo: es solo la API de toasts.
 if (typeof window !== 'undefined') {
   (window as unknown as { sileo: typeof sileo }).sileo = sileo;
 }
@@ -21,12 +26,9 @@ export type ActionResult = { ok: boolean; message?: string };
 interface NotifyMessages {
   /** Título del toast de éxito. */
   success: string;
-  /** Descripción opcional del toast de éxito. */
-  successDescription?: string;
   /** Título del toast de error (si la acción falla). */
   error?: string;
-  /** Descripción opcional del toast de error. */
-  errorDescription?: string;
+  successDescription?: string;
 }
 
 /**
@@ -47,7 +49,6 @@ export async function notifyResult<T extends ActionResult>(
   } else {
     sileo.error({
       title: messages.error ?? 'No se pudo realizar la acción',
-      description: messages.errorDescription,
     });
   }
   return res;

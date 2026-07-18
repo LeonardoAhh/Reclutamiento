@@ -85,7 +85,6 @@ export function RecruiterStatsModal({
       setCopiedKey(key);
       sileo.success({
         title: `Sem ${weekNum} copiada`,
-        description: `${stat.total} citados · ${stat.contratados} contratados`,
         duration: 2000,
       });
       window.setTimeout(() => {

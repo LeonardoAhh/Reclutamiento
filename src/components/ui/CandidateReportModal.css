@@ -211,6 +211,11 @@
   color: var(--color-accent-teal);
 }
 
+.candidate-report-modal__badge--starlite {
+  background: var(--color-warning-tint);
+  color: color-mix(in srgb, var(--color-accent-orange) 75%, var(--color-ink));
+}
+
 .candidate-report-modal__badge--total {
   background: var(--color-surface-soft);
   color: var(--color-ink);

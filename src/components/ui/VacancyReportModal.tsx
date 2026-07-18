@@ -372,7 +372,6 @@ export function VacancyReportModal({
       className="vacancy-report-modal"
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title="Resumen de vacantes"
-      subtitle="Puestos con vacantes activas o backup pendiente"
       size={isMobile ? 'md' : 'lg'}
       fullscreenMobile={true}
     >

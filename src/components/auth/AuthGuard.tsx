@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { LoaderOverlay } from '@/components/ui/LoaderOverlay';
+import { useLoader } from '@/hooks/useLoader';
 
 /**
  * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
@@ -16,7 +16,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   if (loading) {
-    return <LoaderOverlay tone="route" />;
+    return null;
   }
 
   if (!session) {
@@ -36,6 +36,7 @@ import { useState, useEffect } from 'react';
  */
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
+  const loader = useLoader();
   const location = useLocation();
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -54,18 +55,18 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
         setShouldRedirect(true);
       } else {
         // Si no es la carga inicial, significa que el usuario acaba de iniciar sesión.
-        // Damos 800ms de gracia para que la animación del botón verde se complete.
-        const timer = setTimeout(() => setShouldRedirect(true), 800);
+        // Damos gracia para que la animación del botón verde se complete.
+        const timer = setTimeout(() => {
+          loader.flash({ duration: 3000 }); // Launch transition loader
+          // Wait briefly for the loader to fade in and cover the screen before redirecting
+          setTimeout(() => setShouldRedirect(true), 300);
+        }, 800);
         return () => clearTimeout(timer);
       }
     }
-  }, [session, loading, isInitialLoad]);
+  }, [session, loading, isInitialLoad, loader]);
 
   const from = (location.state as { from?: string } | null)?.from ?? '/reporte-diario';
-
-  if (loading) {
-    return <LoaderOverlay tone="route" />;
-  }
 
   if (shouldRedirect) {
     return <Navigate to={from} replace />;

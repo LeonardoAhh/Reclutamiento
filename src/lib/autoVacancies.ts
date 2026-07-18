@@ -4,7 +4,7 @@ import { DEFAULT_VACANCY_SLA_DAYS } from '@/lib/types';
 import type { Baja, Employee, VacancyRequest, AuthorizedPosition } from '@/lib/types';
 
 export type AutoVacancyStatus = 'cubierta' | 'abierta';
-export type VacancyType = 'autorizado' | 'backup';
+export type VacancyType = 'autorizado' | 'backup' | 'starlite';
 
 export interface CoveringEmployee {
   num_empleado: string;
@@ -208,11 +208,10 @@ export function computeAutoVacancies(
   let synthSeq = 0;
 
   for (const [k, cov] of covByKey) {
-    const A = cov.plantilla_autorizada;
-    const real = cov.plantilla_real;
-    const vacAut = Math.max(0, A - Math.min(real, A));
-    const vacBackup = Math.max(0, cov.backup - cov.excedente_backup);
-    const total = vacAut + vacBackup;
+    const vacAut = cov.vacantes_plantilla;
+    const vacBackup = cov.vacantes_backup;
+    const vacStarlite = cov.vacantes_starlite;
+    const total = cov.vacantes;
 
     const group = bajasByKey.get(k) ?? [];
     const manual = group.filter((b) => b.cubierta_manual);
@@ -224,8 +223,11 @@ export function computeAutoVacancies(
     const openBajas = pool.slice(0, total);
     const absorbed = pool.slice(total);
 
-    const typeFor = (idx: number): VacancyType =>
-      idx < vacAut ? 'autorizado' : 'backup';
+    const typeFor = (idx: number): VacancyType => {
+      if (idx < vacAut) return 'autorizado';
+      if (idx < vacAut + vacBackup) return 'backup';
+      return 'starlite';
+    };
 
     openBajas.forEach((b, i) => {
       const base = baseByBaja.get(b)!;

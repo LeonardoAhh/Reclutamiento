@@ -72,17 +72,16 @@
 }
 
 .kpi-hero-badge {
-  background: linear-gradient(135deg, var(--color-primary-light, #eef2ff) 0%, rgba(255,255,255,0) 100%);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-hairline);
   padding: 4px 12px;
-  border-radius: 12px;
-  font-size: var(--type-caption-sm-size, 0.75rem);
-  color: var(--color-primary-dark, #3730a3);
+  border-radius: var(--rounded-full);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  letter-spacing: var(--type-caption-up-tracking);
+  font-weight: var(--font-semibold);
 }
 
 .kpi-hero-avg-value {

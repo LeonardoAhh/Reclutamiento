@@ -1,0 +1,26 @@
+/* ── Calendar.css ───────────────────────────────────────────
+   Overrides for react-day-picker aligned with the design system
+──────────────────────────────────────────────────────────────── */
+
+.rdp-root {
+  --rdp-cell-size: 36px;
+  --rdp-accent-color: var(--color-primary);
+  --rdp-background-color: var(--color-primary-tint);
+  --rdp-accent-color-dark: var(--color-primary);
+  --rdp-background-color-dark: var(--color-primary-tint);
+  --rdp-outline: 2px solid var(--color-primary);
+  --rdp-outline-selected: 2px solid var(--color-primary);
+  
+  /* Additional v9 variables for rounded borders if needed */
+  --rdp-border-radius: var(--rounded-md);
+  margin: 0;
+}
+
+/* Make sure the text on selected days is white */
+.rdp-root {
+  --rdp-selected-color: var(--color-surface);
+}
+
+.rdp-day_selected {
+  font-weight: bold;
+}

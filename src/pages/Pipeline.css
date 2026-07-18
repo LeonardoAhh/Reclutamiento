@@ -1336,24 +1336,24 @@
 .pipeline__whatsapp-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 24px;
-  padding: 0 10px;
-  border-radius: var(--rounded-pill);
-  background: color-mix(in srgb, #25D366 12%, transparent);
-  color: #1A9A46;
-  font-size: 11px;
-  font-weight: 600;
+  gap: var(--spacing-xs);
+  height: var(--control-height-sm);
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: color-mix(in srgb, var(--color-brand-whatsapp) 12%, transparent);
+  color: color-mix(in srgb, var(--color-brand-whatsapp) 60%, var(--color-ink));
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
   text-decoration: none;
-  border: 1px solid color-mix(in srgb, #25D366 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-brand-whatsapp) 30%, transparent);
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
 
 .pipeline__whatsapp-link:hover {
-  background: color-mix(in srgb, #25D366 20%, transparent);
-  color: #147a36;
-  border-color: color-mix(in srgb, #25D366 50%, transparent);
+  background: color-mix(in srgb, var(--color-brand-whatsapp) 20%, transparent);
+  color: color-mix(in srgb, var(--color-brand-whatsapp) 80%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-brand-whatsapp) 50%, transparent);
   transform: translateY(-1px);
 }
 

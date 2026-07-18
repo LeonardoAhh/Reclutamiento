@@ -331,7 +331,7 @@ export function CandidateReportModal({
           </div>
           <div className="candidate-report-modal__badges">
             {row.starlite > 0 && (
-              <span className="candidate-report-modal__badge" style={{ backgroundColor: '#fffbeb', color: '#d97706', border: '1px solid #fcd34d' }}>
+              <span className="candidate-report-modal__badge candidate-report-modal__badge--starlite">
                 ★ {row.starlite}
               </span>
             )}

@@ -2,14 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pencil, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
-import {
-  TRANSPORTE_NA,
-  TRANSPORTE_PARADAS,
-  TRANSPORTE_RUTAS,
-} from '@/lib/transporte-routes';
 import { localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
+import { SmartDatePicker } from './SmartDatePicker';
 import './EditEmployeeModal.css';
 
 interface EditEmployeeModalProps {
@@ -131,7 +127,7 @@ export function EditEmployeeModal({
     <Pencil size={20} className="color-primary" aria-hidden="true" />
   );
   const title = 'Editar Empleado';
-  const subtitle = employee ? `#${employee.num_empleado}` : '';
+  const subtitle = '';
 
   return (
     <Modal
@@ -158,7 +154,7 @@ export function EditEmployeeModal({
             className="btn-primary"
             disabled={!isValid || submitting}
           >
-            {submitting ? 'Guardando…' : 'Guardar cambios'}
+            {submitting ? 'Guardando…' : 'Guardar'}
           </button>
         </>
       }
@@ -227,12 +223,11 @@ export function EditEmployeeModal({
           </div>
           <div className="form-group">
             <label htmlFor="edit-emp-fecha">Fecha de Ingreso</label>
-            <input
+            <SmartDatePicker
               id="edit-emp-fecha"
-              type="date"
               value={form.fecha_ingreso}
-              onChange={(e) =>
-                setForm({ ...form, fecha_ingreso: e.target.value })
+              onChange={(val) =>
+                setForm({ ...form, fecha_ingreso: val })
               }
             />
             {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
@@ -241,39 +236,6 @@ export function EditEmployeeModal({
                 <span>Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.</span>
               </p>
             )}
-          </div>
-          <div className="form-group">
-            <label htmlFor="edit-emp-ruta">Ruta</label>
-            <CustomSelect
-              id="edit-emp-ruta"
-              value={form.ruta}
-              onChange={(val) => {
-                if (val === TRANSPORTE_NA) {
-                  setForm({ ...form, ruta: val, parada: TRANSPORTE_NA });
-                } else if (val === '') {
-                  setForm({ ...form, ruta: '', parada: '' });
-                } else {
-                  const nextParada = form.parada === TRANSPORTE_NA ? '' : form.parada;
-                  setForm({ ...form, ruta: val, parada: nextParada });
-                }
-              }}
-              options={[
-                { value: TRANSPORTE_NA, label: 'N/A — no toma transporte' },
-                ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))
-              ]}
-              placeholder="Sin asignar"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="edit-emp-parada">Parada</label>
-            <CustomSelect
-              id="edit-emp-parada"
-              value={form.parada}
-              onChange={(val) => setForm({ ...form, parada: val })}
-              options={TRANSPORTE_PARADAS.map((p) => ({ value: p, label: p }))}
-              placeholder="Sin asignar"
-              disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
-            />
           </div>
         </div>
 

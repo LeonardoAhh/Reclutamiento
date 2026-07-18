@@ -364,42 +364,8 @@ button.reporte-card:focus-visible,
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Primary button (Guardar mes) ─────────────────────────────────────────── */
+/* ── Primary button — uses global .btn-primary ─────────────────────────────── */
 
-.reporte-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-height: var(--control-height);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: 1;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    background-color var(--transition-fast),
-    opacity var(--transition-fast);
-}
-
-.reporte-btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-active);
-}
-
-.reporte-btn-primary:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.reporte-btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 .reporte-search-card {
   padding: var(--spacing-md);

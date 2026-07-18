@@ -3,15 +3,17 @@ import { Badge } from './Badge';
 
 const VACANCY_TYPE_VARIANT: Record<
   VacancyType,
-  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
+  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'purple'
 > = {
   autorizado: 'success',
   backup: 'teal',
+  starlite: 'purple',
 };
 
 const VACANCY_TYPE_LABEL: Record<VacancyType, string> = {
   autorizado: 'Plantilla Autorizada',
   backup: 'Backup',
+  starlite: 'Starlite',
 };
 
 export function VacancyTypeBadge({ type }: { type: VacancyType }) {

@@ -544,7 +544,7 @@ export function VacancySheet({
             disabled={!isFormValid || submitting}
             form="vacancy-form"
           >
-            {submitting ? 'Guardando…' : isAdd ? 'Crear vacante' : 'Guardar cambios'}
+            {submitting ? 'Guardando…' : isAdd ? 'Crear' : 'Guardar'}
           </button>
         )}
       </>
@@ -616,7 +616,7 @@ export function VacancySheet({
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isFormValid}
-            submitLabel={isAdd ? 'Crear vacante' : 'Guardar cambios'}
+            submitLabel={isAdd ? 'Crear' : 'Guardar'}
             submittingLabel="Guardando…"
             notice={errorNotice}
             steps={[

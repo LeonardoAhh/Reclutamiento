@@ -9,12 +9,11 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence } from 'framer-motion';
-import { LoaderOverlay, type LoaderTone } from '@/components/ui/LoaderOverlay';
+import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 interface LoaderOptions {
   title?: string;
   hint?: string;
-  tone?: LoaderTone;
 }
 
 interface LoaderApi {
@@ -29,7 +28,7 @@ interface LoaderApi {
 const LoaderContext = createContext<LoaderApi | null>(null);
 
 /**
- * Provider global del splash de carga. Renderiza un único <LoaderOverlay> vía
+ * Provider global del splash de carga. Renderiza un único <AppLoader> vía
  * portal en <body>, con entrada/salida coordinada por AnimatePresence. Es
  * independiente del Skeleton: el Skeleton vive dentro de cada página mientras
  * carga su data; este overlay cubre transiciones de sesión y navegación.
@@ -82,7 +81,7 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
       {createPortal(
         <AnimatePresence>
           {state !== null && (
-            <LoaderOverlay key="app-loader" />
+            <TransitionLoader key="transition-loader" title={state.title} hint={state.hint} />
           )}
         </AnimatePresence>,
         document.body

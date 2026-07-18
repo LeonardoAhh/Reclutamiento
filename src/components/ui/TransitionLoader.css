@@ -1,0 +1,81 @@
+.transition-loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 9999);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxl);
+  padding: var(--spacing-2xl);
+  background: var(--color-canvas); /* Solid background for clean transitions */
+}
+
+.transition-loader__ring-container {
+  position: relative;
+  width: 128px; /* size-32 */
+  height: 128px; /* size-32 */
+}
+
+.transition-loader__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rounded-full);
+}
+
+.transition-loader__ring--outer {
+  background: conic-gradient(from 0deg, transparent 0deg, rgb(var(--color-ink-rgb)) 90deg, transparent 180deg);
+  mask: radial-gradient(circle at 50% 50%, transparent 35%, black 37%, black 39%, transparent 41%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 35%, black 37%, black 39%, transparent 41%);
+  opacity: 0.8;
+}
+
+.transition-loader__ring--primary {
+  background: conic-gradient(from 0deg, transparent 0deg, rgb(var(--color-ink-rgb)) 120deg, rgb(var(--color-ink-rgb) / 50%) 240deg, transparent 360deg);
+  mask: radial-gradient(circle at 50% 50%, transparent 42%, black 44%, black 48%, transparent 50%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 42%, black 44%, black 48%, transparent 50%);
+  opacity: 0.9;
+}
+
+.transition-loader__ring--secondary {
+  background: conic-gradient(from 180deg, transparent 0deg, rgb(var(--color-ink-rgb) / 60%) 45deg, transparent 90deg);
+  mask: radial-gradient(circle at 50% 50%, transparent 52%, black 54%, black 56%, transparent 58%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 52%, black 54%, black 56%, transparent 58%);
+  opacity: 0.35;
+}
+
+.transition-loader__ring--accent {
+  background: conic-gradient(from 270deg, transparent 0deg, rgb(var(--color-ink-rgb) / 40%) 20deg, transparent 40deg);
+  mask: radial-gradient(circle at 50% 50%, transparent 61%, black 62%, black 63%, transparent 64%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 61%, black 62%, black 63%, transparent 64%);
+  opacity: 0.5;
+}
+
+.transition-loader__text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+  max-width: 16rem; /* max-w-64 */
+}
+
+.transition-loader__title {
+  font-family: var(--font-display);
+  font-size: var(--type-body-lg-size, 18px); /* text-lg */
+  line-height: 1.15;
+  font-weight: 500; /* font-medium */
+  color: rgb(var(--color-ink-rgb) / 90%); /* text-black/90 */
+  letter-spacing: -0.02em; /* tracking-[-0.02em] */
+  margin: 0;
+}
+
+.transition-loader__hint {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size, 16px); /* text-base */
+  line-height: 1.45;
+  font-weight: 400; /* font-normal */
+  color: rgb(var(--color-ink-rgb) / 60%); /* text-black/60 */
+  letter-spacing: -0.01em; /* tracking-[-0.01em] */
+  margin: 0;
+}

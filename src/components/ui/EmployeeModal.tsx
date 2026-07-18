@@ -20,6 +20,8 @@ import {
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
+import { SmartDatePicker } from './SmartDatePicker';
+import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -331,11 +333,10 @@ export function EmployeeModal({
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
-        <input
-          id="emp-fecha"
-          type="date"
+        <SmartDatePicker
           value={form.fecha_ingreso}
-          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
+          presets="past"
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="form-notice form-notice--warning">
@@ -402,11 +403,10 @@ export function EmployeeModal({
       </div>
       <div className="form-group">
         <label htmlFor="emp-vac-fecha">Fecha de Ingreso</label>
-        <input
-          id="emp-vac-fecha"
-          type="date"
+        <SmartDatePicker
           value={form.fecha_ingreso}
-          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
+          presets="past"
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="form-notice form-notice--warning">
@@ -418,43 +418,7 @@ export function EmployeeModal({
     </>
   ) : null;
 
-  const fieldsTransporte = (
-    <>
-      <div className="form-group">
-        <label htmlFor="emp-ruta">Ruta</label>
-        <CustomSelect
-          id="emp-ruta"
-          value={form.ruta}
-          onChange={(val) => {
-            if (val === TRANSPORTE_NA) {
-              setForm({ ...form, ruta: val, parada: TRANSPORTE_NA });
-            } else if (val === '') {
-              setForm({ ...form, ruta: '', parada: '' });
-            } else {
-              const nextParada = form.parada === TRANSPORTE_NA ? '' : form.parada;
-              setForm({ ...form, ruta: val, parada: nextParada });
-            }
-          }}
-          options={[
-            { value: TRANSPORTE_NA, label: 'N/A — no toma transporte' },
-            ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))
-          ]}
-          placeholder="Sin asignar"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-parada">Parada</label>
-        <CustomSelect
-          id="emp-parada"
-          value={form.parada}
-          onChange={(val) => setForm({ ...form, parada: val })}
-          options={TRANSPORTE_PARADAS.map((p) => ({ value: p, label: p }))}
-          placeholder="Sin asignar"
-          disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
-        />
-      </div>
-    </>
-  );
+  const fieldsTransporte = null;
 
   const fieldsExtra = (
     <div className="form-group employee-modal__starlite-toggle">
@@ -488,7 +452,7 @@ export function EmployeeModal({
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
   const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
-  const subtitle = isAdd ? 'Alta de Empleado' : undefined;
+  const subtitle = undefined;
 
   const deleteContent = (
     <div className="employee-modal__delete">
@@ -503,12 +467,10 @@ export function EmployeeModal({
       <div className="form-grid employee-modal__baja-grid">
         <div className="form-group">
           <label htmlFor="baja-fecha">Fecha de Baja</label>
-          <input
-            id="baja-fecha"
-            type="date"
-            required
+          <SmartDatePicker
             value={bajaForm.fecha_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
+            onChange={(val) => setBajaForm({ ...bajaForm, fecha_baja: val })}
+            presets="past"
           />
         </div>
         <div className="form-group">
@@ -556,7 +518,7 @@ export function EmployeeModal({
         <AnimatedSubmitButton
           isSubmitting={submitting}
           isSuccess={isSuccess}
-          idleText="Guardar empleado"
+          idleText="Guardar"
           loadingText="Guardando..."
           successText="¡Guardado!"
           idleIcon={Save}
@@ -593,7 +555,7 @@ export function EmployeeModal({
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isAddValid}
-            submitLabel="Guardar empleado"
+            submitLabel="Guardar"
             submittingLabel="Guardando…"
             notice={errorNotice}
             steps={[
@@ -660,15 +622,7 @@ export function EmployeeModal({
         ) : (
           deleteContent
         )}
-        {isAdd && (
-          <p className="form-hint">
-            {showVacancySelector ? (
-              <>Al guardar se crea un nuevo empleado con la categoría que asignes y se cierra automáticamente la vacante seleccionada (la categoría no afecta la cobertura).</>
-            ) : (
-              <>Al guardar se crea un nuevo empleado. Si existen vacantes abiertas que coincidan con el área, sección y puesto, se <strong>cerrarán automáticamente</strong>.</>
-            )}
-          </p>
-        )}
+
         {errorNotice}
         <footer className="modal-footer">{actionButtons}</footer>
       </form>

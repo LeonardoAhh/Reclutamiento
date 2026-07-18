@@ -132,7 +132,7 @@ export function CommentModal({
             disabled={!comentario.trim() || submitting}
           >
             <MessageSquarePlus size={16} aria-hidden="true" />
-            {submitting ? 'Guardando…' : 'Guardar comentario'}
+            {submitting ? 'Guardando…' : 'Guardar'}
           </button>
         </div>
       </form>

@@ -145,7 +145,6 @@ export function TurnosImporter({
     <Modal
       isOpen={isOpen}
       title="Importar turnos"
-      subtitle="Asigna clave de horario por número de empleado"
       onClose={onClose}
       className="transporte-importer"
     >

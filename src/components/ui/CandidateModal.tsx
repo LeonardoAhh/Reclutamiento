@@ -6,9 +6,13 @@ import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
+import { X, Search } from 'lucide-react';
+import { SmartDatePicker } from './SmartDatePicker';
+import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { Tooltip } from './Tooltip';
 import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -58,7 +62,6 @@ interface FormState {
   cv_url: string;
   fecha_aplicacion: string;
   fecha_cita: string;
-  notas: string;
   is_starlite: boolean;
 }
 
@@ -76,7 +79,6 @@ function emptyForm(): FormState {
     cv_url: '',
     fecha_aplicacion: localTodayIso(),
     fecha_cita: '',
-    notas: '',
     is_starlite: false,
   };
 }
@@ -106,7 +108,6 @@ function fromCandidate(c: Candidate): FormState {
       ? isoToLocalDateString(c.fecha_aplicacion)
       : localTodayIso(),
     fecha_cita: formatDateTimeLocal(c.fecha_cita),
-    notas: c.notas ?? '',
     is_starlite: c.is_starlite ?? false,
   };
 }
@@ -301,7 +302,6 @@ export function CandidateModal({
           // `fecha_cita` se guarda como date (YYYY-MM-DD) — el <input type="date">
           // ya entrega ese formato. Vacío = sin cita programada (null).
           fecha_cita: form.fecha_cita ? form.fecha_cita : null,
-          notas: form.notas.trim() || null,
           is_starlite: form.is_starlite,
         };
         
@@ -327,11 +327,7 @@ export function CandidateModal({
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
 
-  const missingFieldsNotice = !isFormValid && !isDelete ? (
-    <p className="form-error" role="alert">
-      Completa los campos obligatorios.
-    </p>
-  ) : null;
+
 
   const icon = isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
@@ -347,11 +343,7 @@ export function CandidateModal({
       ? 'Editar candidato'
       : 'Nuevo candidato';
 
-  const subtitle = isDelete
-    ? undefined
-    : isEdit
-      ? 'Actualizar Candidato'
-      : 'Registrar Candidato';
+  const subtitle = undefined;
 
   /* ── Campos agrupados para componer ambos layouts ────────────────────
      PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
@@ -519,36 +511,23 @@ const fieldsPosicion = (
 
       <div className="form-group">
         <label htmlFor="cand-fecha">Fecha de contacto</label>
-        <input
-          id="cand-fecha"
-          type="date"
+        <SmartDatePicker
           value={form.fecha_aplicacion}
-          onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
+          onChange={(val) => setForm({ ...form, fecha_aplicacion: val })}
           disabled={isEdit}
+          presets="past"
         />
       </div>
 
       <div className="form-group">
         <label htmlFor="cand-fecha-cita">Fecha y Hora de entrevista</label>
-        <input
-          id="cand-fecha-cita"
-          type="datetime-local"
+        <SmartDatePicker
           value={form.fecha_cita}
-          onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
+          onChange={(val) => setForm({ ...form, fecha_cita: val })}
           disabled={isEdit && !canEditCitaAndSource}
-          data-testid="cand-fecha-cita-input"
-        />
-      </div>
-
-      <div className="form-group form-group--span-2">
-        <label htmlFor="cand-notas">Notas</label>
-        <textarea
-          id="cand-notas"
-          rows={3}
-          value={form.notas}
-          onChange={(e) => setForm({ ...form, notas: e.target.value })}
-          placeholder="Detalles breves"
-          disabled={isEdit}
+          withTime
+          placeholder="Sin fecha agendada"
+          presets="future"
         />
       </div>
     </>
@@ -600,7 +579,7 @@ const fieldsPosicion = (
             submitDisabled={!isFormValid}
             submitLabel="Guardar"
             submittingLabel="Guardando…"
-            notice={errorMsg ? errorNotice : missingFieldsNotice}
+            notice={errorMsg ? errorNotice : null}
             steps={[
               {
                 id: 'contacto',
@@ -644,7 +623,6 @@ const fieldsPosicion = (
           )}
 
           {errorNotice}
-          {missingFieldsNotice}
 
           <footer className="modal-footer">
             <button
@@ -665,16 +643,33 @@ const fieldsPosicion = (
                 idleIcon={Trash2}
                 className="btn-danger"
               />
+            ) : !isFormValid ? (
+              <Tooltip content="Faltan campos obligatorios">
+                <span tabIndex={0} style={{ display: 'inline-block', cursor: 'not-allowed' }}>
+                  <div style={{ pointerEvents: 'none' }}>
+                    <AnimatedSubmitButton
+                      isSubmitting={submitting}
+                      isSuccess={isSuccess}
+                      idleText="Guardar"
+                      loadingText="Guardando..."
+                      successText="¡Guardado!"
+                      idleIcon={Save}
+                      className="btn-primary"
+                      disabled={true}
+                    />
+                  </div>
+                </span>
+              </Tooltip>
             ) : (
               <AnimatedSubmitButton
                 isSubmitting={submitting}
                 isSuccess={isSuccess}
-                idleText={isAdd ? 'Guardar' : 'Guardar'}
+                idleText="Guardar"
                 loadingText="Guardando..."
                 successText="¡Guardado!"
                 idleIcon={Save}
                 className="btn-primary"
-                disabled={!isFormValid}
+                disabled={false}
               />
             )}
           </footer>

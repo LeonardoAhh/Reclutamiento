@@ -458,7 +458,7 @@ export default function ReporteDiarioContent() {
     const processFile = useCallback(async (file: File) => {
         if (processStep) return
         if (file.type !== "application/json" && !file.name.endsWith('.json')) {
-            sileo.error({ title: "Formato de archivo inválido", description: "Por favor, asegúrate de subir el archivo correcto." })
+            sileo.error({ title: "Formato de archivo inválido" })
             return
         }
 
@@ -476,7 +476,7 @@ export default function ReporteDiarioContent() {
             if (errs.length > 0) {
                 setProcessStep(null)
                 setErrors(errs)
-                sileo.error({ title: "Inconsistencias en el archivo", description: "Se encontraron errores al revisar los datos." })
+                sileo.error({ title: "Inconsistencias en el archivo" })
                 return
             }
 
@@ -491,7 +491,7 @@ export default function ReporteDiarioContent() {
             setProcessStep(null)
             const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`
             setErrors([msg])
-            sileo.error({ title: "Archivo corrupto", description: "El archivo no tiene la estructura esperada." })
+            sileo.error({ title: "Archivo corrupto" })
         }
     }, [processStep])
 
@@ -515,7 +515,7 @@ export default function ReporteDiarioContent() {
             setPanelCollapsed(true)
             loadSuccessTimerRef.current = null
         }, LOAD_SUCCESS_DURATION_MS)
-        sileo.success({ title: "Reporte cargado", description: `Información de ${formatMes(previewData.mes)} cargada con éxito.` })
+        sileo.success({ title: "Reporte cargado" })
     }, [loadSuccess, previewData])
 
     const cancelLoad = useCallback(() => {

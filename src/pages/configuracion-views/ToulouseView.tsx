@@ -87,7 +87,6 @@ export function ToulouseView() {
     setSaving(false);
     sileo.success({
       title: 'Hoja guardada',
-      description: result.message || `${effectiveFolio} · ${candidato.trim()}`,
     });
   }
 

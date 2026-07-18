@@ -148,7 +148,6 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     if (res.ok) {
       sileo.success({
         title: 'Configuración guardada',
-        description: `${puesto}: backup ${backupNum}, plantilla ${plantillaNum}`,
       });
       resetAll();
       onClose();
@@ -179,7 +178,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
           onCancel={handleClose}
           submitting={submitting}
           submitDisabled={!area || !seccion || !puesto || !valoresValidos}
-          submitLabel="Guardar configuración"
+          submitLabel="Guardar"
           submittingLabel="Guardando…"
           notice={errorNotice}
           steps={[

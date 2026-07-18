@@ -2,7 +2,7 @@ import './Badge.css';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error';
+  variant?: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'purple';
 }
 
 export function Badge({ children, variant = 'default' }: BadgeProps) {

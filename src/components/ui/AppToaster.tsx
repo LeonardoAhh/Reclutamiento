@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Toaster } from 'sileo';
+import './AppToaster.css';
 
 type Theme = 'light' | 'dark';
 
@@ -31,7 +32,7 @@ function useIsMobile(breakpoint = 768): boolean {
  * Host de notificaciones (sileo) montado una sola vez en la raíz de la app.
  *
  * - Móvil (<768px): `top-center` — bajo el notch, centrado.
- * - Desktop (≥768px): `bottom-left` — abajo a la izquierda.
+ * - Desktop (≥768px): `top-center` — centrado arriba.
  * - Sincroniza su tema con el `data-theme` del documento vía MutationObserver.
  * - `offset.top` respeta el safe-area de iOS.
  */
@@ -50,10 +51,18 @@ export function AppToaster() {
 
   return (
     <Toaster
-      position={isMobile ? 'top-center' : 'bottom-left'}
+      position="top-center"
       theme={theme}
       offset={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
-      options={{ duration: 4000 }}
+      options={{ 
+        duration: 4000,
+        fill: 'var(--color-surface)',
+        roundness: 8,
+        styles: {
+          title: 'app-toaster-title',
+          badge: 'app-toaster-badge',
+        }
+      }}
     />
   );
 }

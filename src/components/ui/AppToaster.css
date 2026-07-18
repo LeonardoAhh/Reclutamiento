@@ -1,0 +1,56 @@
+/* -------------------------------------------------------------------------- */
+/* Ajustes Globales de Sileo                                                  */
+/* Integración con el Sistema de Diseño (Variables)                           */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  /* Forzamos a Sileo a usar exactamente nuestra paleta de colores semánticos */
+  --sileo-state-success: var(--color-success) !important;
+  --sileo-state-error: var(--color-error) !important;
+  --sileo-state-warning: var(--color-warning) !important;
+  --sileo-state-info: var(--color-primary) !important;
+}
+
+/* Ajustes a la figura SVG (píldora) del toast */
+[data-sileo-svg] path {
+  /* Agregamos el borde sutil que usamos en todos los componentes */
+  stroke: var(--color-hairline-strong) !important;
+  stroke-width: 1px !important;
+  /* Una sombra más dramática y elegante para elevarlo sobre el contenido */
+  filter: drop-shadow(var(--shadow-lg)) !important;
+}
+
+/* Fix para asegurar que el contenido (descripciones y botones) no se quede invisible por culpa del morphing de Sileo */
+[data-sileo-content], [data-sileo-description] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  content-visibility: visible !important;
+  contain: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Clases Inyectadas a los Elementos Internos                                 */
+/* -------------------------------------------------------------------------- */
+
+.app-toaster-title {
+  font-family: var(--font-body) !important;
+  font-size: var(--type-body-sm-strong-size) !important;
+  font-weight: 500 !important;
+  /* Forzamos el texto a ser del color de la tinta principal (blanco o negro según el tema) 
+     en lugar del verde/rojo fosforescente que trae por defecto */
+  color: var(--color-ink) !important;
+  letter-spacing: -0.01em;
+}
+
+.app-toaster-badge {
+  width: 22px !important;
+  height: 22px !important;
+  /* El icono se verá ligeramente más sólido */
+}
+
+.app-toaster-description {
+  font-family: var(--font-body) !important;
+  font-size: var(--type-body-sm-size) !important;
+  color: var(--color-muted) !important;
+  margin-top: 2px !important;
+}

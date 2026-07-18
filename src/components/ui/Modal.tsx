@@ -130,7 +130,6 @@ export function Modal({
             {icon}
             <div className="modal-title__text">
               <h2 id={labelledById}>{title}</h2>
-              {subtitle && <span className="modal-title__sub">{subtitle}</span>}
             </div>
           </div>
           <button

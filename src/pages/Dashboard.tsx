@@ -395,22 +395,44 @@ export function Dashboard() {
                         />
                       </div>
                       <div className="search-dropdown-item__text">
-                        <span className="emp-name">
-                          {emp.nombre}
-                          {emp.en_incapacidad && (
-                            <Badge variant="amber">
-                              <HeartPulse size={11} aria-hidden="true" />
-                              INCAPACIDAD
-                            </Badge>
-                          )}
-                          {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-                            <Badge variant="coral">
-                              PRÓXIMO INGRESO
-                            </Badge>
-                          )}
-                        </span>
-                        <span className="emp-meta">
-                          {emp.puesto} {emp.seccion ? `(${emp.seccion})` : ''} • Turno {emp.turno || 'Sin asignar'} • #{emp.num_empleado}
+                        <span className="emp-name" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+                          {(() => {
+                            const parts = emp.nombre.trim().split(/\s+/);
+                            let apellidos = '';
+                            let nombres = emp.nombre;
+                            if (parts.length >= 3) {
+                              apellidos = `${parts[0]} ${parts[1]}`;
+                              nombres = parts.slice(2).join(' ');
+                            } else if (parts.length === 2) {
+                              apellidos = parts[0];
+                              nombres = parts[1];
+                            } else {
+                              apellidos = '';
+                              nombres = parts[0] || '';
+                            }
+                            return (
+                              <>
+                                <span className="emp-name__top" style={{ fontSize: '0.75rem', color: 'var(--color-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                                  <span style={{ fontWeight: 'bold', color: 'var(--color-ink)', marginRight: '4px' }}>#{emp.num_empleado}</span>
+                                  {apellidos}
+                                </span>
+                                <span className="emp-name__bottom" style={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  {nombres}
+                                  {emp.en_incapacidad && (
+                                    <Badge variant="amber">
+                                      <HeartPulse size={11} aria-hidden="true" />
+                                      INCAPACIDAD
+                                    </Badge>
+                                  )}
+                                  {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
+                                    <Badge variant="coral">
+                                      PRÓXIMO INGRESO
+                                    </Badge>
+                                  )}
+                                </span>
+                              </>
+                            );
+                          })()}
                         </span>
                       </div>
                     </div>

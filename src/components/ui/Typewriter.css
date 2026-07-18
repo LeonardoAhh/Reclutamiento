@@ -1,0 +1,22 @@
+.typewriter {
+  font-family: var(--font-display);
+  font-weight: 400; /* Regular weight for elegance */
+  letter-spacing: 0.15em; /* Wide spacing for premium look */
+  color: var(--color-ink);
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.typewriter span {
+  display: inline-block;
+  white-space: pre;
+}
+
+.typewriter-cursor {
+  font-weight: 300;
+  color: var(--color-primary); /* Brand accent */
+  margin-left: 4px;
+}

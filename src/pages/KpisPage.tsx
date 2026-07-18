@@ -791,7 +791,7 @@
                             </span>
                           )}
                           {projectionTotals.proximosStarlite > 0 && (
-                            <span className="projection-chip projection-chip--starlite" style={{ backgroundColor: '#fef3c7', color: '#b45309' }}>
+                            <span className="projection-chip projection-chip--starlite">
                               ★ {projectionTotals.proximosStarlite} starlite
                             </span>
                           )}

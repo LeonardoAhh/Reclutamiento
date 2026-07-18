@@ -1,0 +1,183 @@
+/* ── SmartDatePicker.css ────────────────────────────────────────── */
+
+.smart-datepicker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.smart-datepicker__presets {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.smart-datepicker__preset-btn {
+  font-size: var(--type-caption-sm-size);
+  padding: 2px 10px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: var(--font-medium);
+}
+
+.smart-datepicker__preset-btn:hover:not(:disabled) {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-muted);
+}
+
+.smart-datepicker__preset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.smart-datepicker__trigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.smart-datepicker__trigger:hover:not(:disabled) {
+  border-color: var(--color-muted);
+}
+
+.smart-datepicker__trigger:focus-visible {
+  outline: none;
+  border-color: var(--color-focus-ring);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
+}
+
+.smart-datepicker__trigger--muted {
+  color: var(--color-muted);
+}
+
+.smart-datepicker__trigger--disabled {
+  background: var(--color-surface-soft);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.smart-datepicker__icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-muted);
+}
+
+.smart-datepicker__popover {
+  padding: 0;
+  width: auto;
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+}
+
+.smart-datepicker__content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .smart-datepicker__content--with-time {
+    flex-direction: row;
+  }
+}
+
+.smart-datepicker__calendar-wrapper {
+  padding: var(--spacing-sm);
+}
+
+.smart-datepicker__time-wrapper {
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+@media (min-width: 640px) {
+  .smart-datepicker__time-wrapper {
+    border-top: none;
+    border-left: 1px solid var(--color-border);
+    width: 160px;
+  }
+}
+
+.smart-datepicker__time-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.smart-datepicker__time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xs);
+}
+
+@media (min-width: 640px) {
+  .smart-datepicker__time-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px; /* for scrollbar */
+  }
+  
+  /* Custom scrollbar for time grid */
+  .smart-datepicker__time-grid::-webkit-scrollbar {
+    width: 4px;
+  }
+  .smart-datepicker__time-grid::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 4px;
+  }
+}
+
+.smart-datepicker__time-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.smart-datepicker__time-btn:hover:not(.smart-datepicker__time-btn--selected) {
+  border-color: var(--color-muted);
+  background: var(--color-surface-sunken);
+}
+
+.smart-datepicker__time-btn--selected {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border-color: var(--color-primary);
+  font-weight: var(--font-semibold);
+}

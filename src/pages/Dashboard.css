@@ -536,18 +536,21 @@
   font-weight: 500;
   color: var(--color-ink);
   font-size: var(--type-caption-md-size);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   max-width: 100%;
 }
 
-.emp-meta {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
+.emp-name__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
 }
+
+
 
 .search-dropdown-item__actions {
   display: inline-flex;

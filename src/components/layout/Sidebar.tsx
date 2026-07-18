@@ -23,6 +23,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { useFeedback } from '@/hooks/useFeedback';
+import { useLoader } from '@/hooks/useLoader';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -63,6 +64,7 @@ type SidebarProps = {
  */
 export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProps) {
   const { user, username, signOut } = useAuth();
+  const loader = useLoader();
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
   const location = useLocation();
@@ -100,13 +102,14 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     if (signingOut) return;
     setSigningOut(true);
     trigger('light');
+    loader.flash({ title: 'Cerrando sesión...', hint: 'Nos vemos pronto', duration: 2500 });
     try {
       trigger('success');
       await signOut();
     } finally {
       setSigningOut(false);
     }
-  }, [signingOut, signOut, trigger]);
+  }, [signingOut, signOut, trigger, loader]);
 
   /** Iniciales del usuario para el avatar. */
   const userInitials = useMemo(() => {

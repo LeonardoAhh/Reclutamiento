@@ -1,7 +1,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { LoaderOverlay } from '@/components/ui/LoaderOverlay';
+
 import { AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { PWAStatus } from '@/components/ui/PWAStatus';
@@ -10,7 +10,7 @@ import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { PositionsProvider } from '@/lib/positions';
-import { SplashScreen } from '@/components/ui/SplashScreen';
+import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Vacantes } from '@/pages/Vacantes';
@@ -24,7 +24,7 @@ import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 
 function AdminGuard({ children }: { children: ReactNode }) {
   const { profile, loading } = useAuth();
-  if (loading || !profile) return <LoaderOverlay tone="route" />;
+  if (loading || !profile) return null;
   if (profile.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
@@ -43,22 +43,17 @@ function ProtectedShell({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  /* La splash se muestra una sola vez por sesión de pestaña. */
-  const [splashDone, setSplashDone] = useState(
-    () => typeof sessionStorage !== 'undefined' && sessionStorage.getItem('splash_shown') === '1'
-  );
+  const [splashDone, setSplashDone] = useState(false);
 
   const handleSplashDone = useCallback(() => {
-    sessionStorage.setItem('splash_shown', '1');
     setSplashDone(true);
   }, []);
 
   return (
     <>
-      {/* Splash: aparece sobre todo hasta que se complete */}
       <AnimatePresence>
         {!splashDone && (
-          <SplashScreen key="splash" onDone={handleSplashDone} />
+          <SplashTypewriter key="splash-typewriter" onDone={handleSplashDone} />
         )}
       </AnimatePresence>
 

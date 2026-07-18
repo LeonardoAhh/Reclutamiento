@@ -3,6 +3,7 @@ import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
+import { SmartDatePicker } from './SmartDatePicker';
 import {
   TRANSPORTE_NA,
   TRANSPORTE_PARADAS,
@@ -258,11 +259,10 @@ export function EmployeeSheet({
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
-        <input
-          id="emp-fecha"
-          type="date"
+        <SmartDatePicker
           value={form.fecha_ingreso}
-          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
+          presets="past"
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="employee-sheet__future-warning">
@@ -274,43 +274,7 @@ export function EmployeeSheet({
     </>
   );
 
-  const fieldsTransporte = (
-    <>
-      <div className="form-group">
-        <label htmlFor="emp-ruta">Ruta</label>
-        <CustomSelect
-          id="emp-ruta"
-          value={form.ruta}
-          onChange={(val) => {
-            if (val === TRANSPORTE_NA) {
-              setForm({ ...form, ruta: val, parada: TRANSPORTE_NA });
-            } else if (val === '') {
-              setForm({ ...form, ruta: '', parada: '' });
-            } else {
-              const nextParada = form.parada === TRANSPORTE_NA ? '' : form.parada;
-              setForm({ ...form, ruta: val, parada: nextParada });
-            }
-          }}
-          options={[
-            { value: TRANSPORTE_NA, label: 'N/A — no toma transporte' },
-            ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))
-          ]}
-          placeholder="Sin asignar"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-parada">Parada</label>
-        <CustomSelect
-          id="emp-parada"
-          value={form.parada}
-          onChange={(val) => setForm({ ...form, parada: val })}
-          options={TRANSPORTE_PARADAS.map((p) => ({ value: p, label: p }))}
-          placeholder="Sin asignar"
-          disabled={!form.ruta || form.ruta === TRANSPORTE_NA}
-        />
-      </div>
-    </>
-  );
+  const fieldsTransporte = null;
 
   const errorNotice = errorMsg ? (
     <p className="form-error" role="alert">{errorMsg}</p>
@@ -322,7 +286,7 @@ export function EmployeeSheet({
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
   const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
-  const subtitle = isAdd ? 'Alta de Empleado' : undefined;
+  const subtitle = undefined;
 
   const deleteContent = (
     <div className="delete-flow">
@@ -343,12 +307,10 @@ export function EmployeeSheet({
       <div className="form-grid employee-sheet__baja-grid">
         <div className="form-group">
           <label htmlFor="baja-fecha">Fecha de Baja</label>
-          <input
-            id="baja-fecha"
-            type="date"
-            required
+          <SmartDatePicker
             value={bajaForm.fecha_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
+            onChange={(val) => setBajaForm({ ...bajaForm, fecha_baja: val })}
+            presets="past"
           />
         </div>
         <div className="form-group">
@@ -398,7 +360,7 @@ export function EmployeeSheet({
           className="btn-primary"
           disabled={!isAddValid || submitting}
         >
-          {submitting ? 'Guardando…' : 'Guardar empleado'}
+          {submitting ? 'Guardando…' : 'Guardar'}
         </button>
       ) : (
         <button
@@ -459,7 +421,7 @@ export function EmployeeSheet({
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isAddValid}
-            submitLabel="Guardar empleado"
+            submitLabel="Guardar"
             submittingLabel="Guardando…"
             notice={errorNotice}
             steps={[

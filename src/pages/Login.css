@@ -1,232 +1,192 @@
-/* ================================================================
-   Login — Mobile-First, Notion-inspired
-   ================================================================ */
+/* ========================================
+   LOGIN (Split Layout)
+   ======================================== */
 
-/* ── Raíz (Mobile Base) ────────────────────────────────────────── */
 .login {
-  min-height: 100vh;
+  display: grid;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-canvas-soft); /* Warm paper base */
-  overflow-x: hidden;
-  overflow-y: auto;
+  background: var(--color-canvas);
+  /* Mobile default: stacked */
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
 }
 
-/* ================================================================
-   PANEL IZQUIERDO (Hero) — Mobile Base
-   Fondo: --color-secondary (Deep Indigo)
-   ================================================================ */
-.login__panel {
-  position: relative;
-  background: var(--color-surface-dark); /* Revertido a neutro en lugar de indigo */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: var(--spacing-lg);
-  padding: calc(var(--spacing-xxl) + var(--safe-area-top)) var(--spacing-xl) calc(var(--spacing-2xl) + var(--spacing-lg));
-  overflow: hidden;
+@media (min-width: 1024px) {
+  .login {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
 }
 
-/* Ocultar la grid de profundidad en móvil (reservada para PC) */
-.login__panel-grid {
-  display: none;
-}
-
-/* ── Decoraciones / Stickers (Mobile) ── */
-.login__stickers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.login__sticker {
-  position: absolute;
-  border-radius: var(--rounded-full);
-  opacity: 0.8;
-  filter: blur(1px);
-}
-
-.login__sticker--pink {
-  width: 12px; height: 12px;
-  background: var(--color-accent-pink);
-  top: 20%; left: 15%;
-}
-
-.login__sticker--sky {
-  width: 8px; height: 8px;
-  background: var(--color-accent-sky);
-  top: 15%; right: 20%;
-}
-
-.login__sticker--orange {
-  width: 16px; height: 16px;
-  background: var(--color-accent-orange);
-  bottom: 25%; left: 30%;
-}
-
-/* ── Header del panel ── */
-.login__panel-header {
-  position: relative;
-  z-index: 1;
-}
-
-.login__brand {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  border: 1px solid color-mix(in srgb, var(--color-on-dark) 18%, transparent);
-  border-radius: var(--rounded-full);
-  background: color-mix(in srgb, var(--color-on-dark) 5%, transparent);
-}
-
-.login__brand-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-on-dark);
-}
-
-/* ── Cuerpo central ── */
-.login__panel-body {
-  position: relative;
-  z-index: 1;
-  flex: 0 0 auto;
+/* ── Left Panel (Brand) ── */
+.login__brand-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: var(--spacing-2xl);
+  /* Subtle dark gradient matching Acme image */
+  background: linear-gradient(145deg, #1f1f1f 0%, #111111 100%);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 1024px) {
+  .login__brand-panel {
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4rem;
+  }
+}
+
+.login__brand-content {
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.login__brand-logo {
+  display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-2xl);
 }
 
-/* Wordmark principal */
-.login__wordmark {
-  margin: 0;
+.login__brand-circle {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ffffff;
+  border-radius: var(--rounded-full);
+}
+
+.login__brand-name {
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 10vw, 3.8rem);
-  font-weight: 400;
-  line-height: 1;
+  font-size: var(--type-heading-sm-size);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.login__brand-title {
+  font-family: var(--font-display);
+  font-size: var(--type-display-md-size);
+  font-weight: 600;
+  line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--color-on-dark);
+  margin-bottom: var(--spacing-md);
+  color: #ffffff;
 }
 
-/* Tagline */
-.login__tagline {
-  margin: 0;
+.login__brand-tagline {
+  font-size: var(--type-body-md-size);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+
+/* ── Right Panel (Action) ── */
+.login__action-panel {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid color-mix(in srgb, var(--color-on-dark) 12%, transparent);
-}
-
-.login__tagline-year {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-on-dark) 60%, transparent);
-}
-
-.login__tagline p {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-style: italic;
-  line-height: 1.65;
-  color: color-mix(in srgb, var(--color-on-dark) 80%, transparent);
-  text-align: center;
-}
-
-/* Footer innecesario en mobile */
-.login__panel-footer {
-  display: none;
-}
-
-/* ================================================================
-   PANEL DERECHO — Formulario (Tarjeta Flotante en Móvil)
-   Fondo: --color-surface (blanco puro)
-   ================================================================ */
-.login__form-panel {
-  position: relative;
-  z-index: 10;
-  background: var(--color-surface);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--spacing-xl) var(--spacing-lg);
-  padding-bottom: calc(var(--spacing-xl) + var(--safe-area-bottom));
-  margin: calc(-1 * var(--spacing-2xl)) var(--spacing-md) var(--spacing-xl);
-  display: flex;
   justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background: var(--color-canvas);
 }
 
-.login__form-wrap {
+.login__action-content {
   width: 100%;
-  max-width: 100%;
+  max-width: 360px;
+}
+
+.login__header {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.login__title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-xs);
+}
+
+.login__subtitle {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+}
+
+/* ── Initial Reveal Actions ── */
+.login__actions-initial {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
 }
 
-/* ── Encabezado ── */
-.login__header {
+.login__divider {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.login__eyebrow {
-  font-family: var(--font-body);
+  align-items: center;
+  text-align: center;
+  color: var(--color-muted-soft);
   font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
+  font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
-.login__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 6vw, 2rem);
-  font-weight: var(--font-bold);
-  line-height: 1.15;
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-ink);
+.login__divider::before,
+.login__divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-hairline);
 }
 
-/* ── Formulario ── */
+.login__divider span {
+  padding: 0 var(--spacing-md);
+}
+
+.login__btn-reveal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  padding: var(--control-padding-y) var(--control-padding-x);
+  height: var(--control-height-lg);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.login__btn-reveal:hover {
+  opacity: 0.9;
+}
+
+.login__btn-reveal:active {
+  transform: scale(0.98);
+}
+
+
+/* ── Form Styles (Kept from original) ── */
 .login__form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
+  overflow: hidden; /* For smooth height transitions */
 }
 
 .login__field {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-xs);
 }
 
 .login__field-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
-  cursor: default;
-  transition: color var(--transition-fast);
-}
-
-.login__field:focus-within .login__field-label {
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: 600;
   color: var(--color-ink);
 }
 
@@ -236,296 +196,119 @@
   align-items: center;
 }
 
-/* ── Input — Strict rounded.xs (4px) ── */
 .login__input {
   width: 100%;
-  min-height: var(--touch-target-min);
-  padding: 0 var(--control-padding-x);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-xs);
+  height: var(--control-height-lg);
+  padding: 0 var(--spacing-md);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size); /* Evita zoom automático en iOS */
+  font-size: var(--type-body-md-size);
   color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-  appearance: none;
 }
 
 .login__input::placeholder {
   color: var(--color-muted-soft);
 }
 
-.login__input:hover:not(:disabled) {
-  border-color: var(--color-charcoal);
-}
-
 .login__input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
-}
-
-.login__input:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  background: var(--color-surface-soft);
-}
-
-.login__input[aria-invalid="true"] {
-  border-color: var(--color-error);
-}
-
-.login__input[aria-invalid="true"]:focus {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent);
+  box-shadow: var(--shadow-focus);
 }
 
 .login__input--padded-r {
-  padding-right: calc(var(--control-padding-x) + var(--touch-target-min));
+  padding-right: 40px;
 }
 
-/* ── Toggle de contraseña ── */
 .login__visibility {
   position: absolute;
-  right: var(--spacing-xxs);
-  top: 50%;
-  transform: translateY(-50%);
-  border-color: transparent !important;
-  background: transparent !important;
-  color: var(--color-muted);
-  transition: color var(--transition-fast);
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
+  right: var(--spacing-sm);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-sm);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
 .login__visibility:hover {
   color: var(--color-ink);
+  background: rgba(128, 128, 128, 0.1);
 }
 
-/* ── Mensaje de error ── */
+/* Actions Row (Checkbox + Button) */
+.login__actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: calc(var(--spacing-xs) * -1);
+}
+
+.login__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.login__checkbox-text {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.login__checkbox-label:hover .login__checkbox-text {
+  color: var(--color-ink);
+}
+
+/* Error */
 .login__error {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  overflow: hidden;
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  background: color-mix(in srgb, var(--color-error) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-error) 20%, transparent);
+  background: var(--color-error-tint);
   color: var(--color-error);
   font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  border-radius: var(--rounded-sm);
 }
 
-/* ── Botón Submit ──────────── */
+/* Submit Button */
 .login__submit {
-  width: 100%;
-  min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--control-padding-x);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  width: auto;
+  min-width: 140px;
+  padding: 0 var(--spacing-xl);
+  height: var(--control-height-lg);
+  background: var(--color-ink);
+  color: var(--color-canvas);
   border: none;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: 500;
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    transform var(--transition-fast);
-  will-change: transform;
+  transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
-.login__submit:hover:not(:disabled) {
-  background: var(--color-primary-active);
+.login__submit:hover {
+  opacity: 0.9;
 }
 
-.login__submit:disabled {
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-/* ================================================================
-   RESPONSIVE — PC / Desktop (>= 768px)
-   ================================================================ */
-@media (min-width: 768px) {
-  .login {
-    flex-direction: row;
-    display: grid;
-    grid-template-columns: 40fr 60fr;
-    background: var(--color-canvas-soft); /* Para evitar saltos visuales detrás de la tarjeta */
-    padding: var(--spacing-lg); /* Separa todo de los bordes de la ventana */
-    gap: var(--spacing-xl); /* Crea un espacio entre el panel oscuro y el claro */
-  }
-
-  /* Restaurar Panel Izquierdo como una gran tarjeta */
-  .login__panel {
-    background: var(--color-surface-dark); /* Forzar el fondo oscuro del hero panel */
-    align-items: flex-start;
-    justify-content: space-between;
-    text-align: left;
-    padding: var(--spacing-xxl) var(--spacing-lg);
-    border-radius: var(--rounded-xl); /* Quita la línea recta completa de arriba a abajo */
-    overflow: hidden; /* Evita que la grid decorativa se salga de los bordes curvos */
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* Mostrar grid decorativa de PC */
-  .login__panel-grid {
-    display: block;
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 79px,
-        color-mix(in srgb, var(--color-on-dark) 3%, transparent) 80px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 79px,
-        color-mix(in srgb, var(--color-on-dark) 2%, transparent) 80px
-      );
-    pointer-events: none;
-  }
-
-  /* Mostrar y reposicionar stickers en PC para dar profundidad */
-  .login__stickers {
-    display: block;
-  }
-  
-  .login__sticker--pink {
-    top: 30%; left: 15%;
-    width: 16px; height: 16px;
-  }
-
-  .login__sticker--sky {
-    top: 20%; right: 20%;
-    width: 12px; height: 12px;
-  }
-
-  .login__sticker--orange {
-    bottom: 35%; left: 45%;
-    width: 24px; height: 24px;
-  }
-
-  .login__brand-label {
-    color: color-mix(in srgb, var(--color-on-dark) 55%, transparent);
-  }
-
-  .login__panel-body {
-    align-items: flex-start;
-    gap: var(--spacing-xl);
-    position: relative;
-    z-index: 2;
-  }
-
-  .login__wordmark {
-    font-size: clamp(2.2rem, 4vw, 3.5rem);
-  }
-
-  .login__tagline {
-    align-items: flex-start;
-    border-top: none;
-    padding-top: 0;
-    border-left: 2px solid color-mix(in srgb, var(--color-on-dark) 18%, transparent);
-    padding-left: var(--spacing-md);
-  }
-
-  .login__tagline-year {
-    color: color-mix(in srgb, var(--color-on-dark) 40%, transparent);
-  }
-
-  .login__tagline p {
-    text-align: left;
-    color: color-mix(in srgb, var(--color-on-dark) 48%, transparent);
-  }
-
-  /* Restaurar Footer */
-  .login__panel-footer {
-    display: block;
-    position: relative;
-    z-index: 2;
-  }
-
-  .login__panel-copy {
-    font-family: var(--font-body);
-    font-size: var(--type-caption-sm-size);
-    color: color-mix(in srgb, var(--color-on-dark) 28%, transparent);
-  }
-
-  /* Panel Derecho: El escritorio cálido */
-  .login__form-panel {
-    margin: 0;
-    padding: 0; /* Quitamos padding excesivo porque ahora hay gap en .login */
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none; /* Quitamos la línea vertical */
-    background: transparent; /* Hereda canvas-soft de .login */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* La Tarjeta Blanca Flotante */
-  .login__form-wrap {
-    width: 100%;
-    max-width: 420px;
-    background: var(--color-surface);
-    padding: var(--spacing-2xl) var(--spacing-xl);
-    border-radius: var(--rounded-lg);
-    box-shadow: var(--shadow-sm); /* Sombras super sutiles de Notion */
-  }
-
-  .login__title {
-    font-size: clamp(1.75rem, 2.8vw, 2.5rem);
-  }
-
-  .login__input {
-    font-size: var(--type-body-sm-size); /* Restaurar tamaño de PC */
-  }
-}
-
-@media (min-width: 1024px) {
-  .login {
-    grid-template-columns: 42fr 58fr;
-  }
-}
-
-@media (min-width: 1440px) {
-  .login__panel {
-    padding: calc(var(--spacing-xxl) * 1.5) calc(var(--spacing-xxl) * 1.25);
-  }
-
-  .login__form-panel {
-    padding: calc(var(--spacing-xxl) * 1.5) calc(var(--spacing-xxl) * 1.25);
-  }
-
-  .login__wordmark {
-    font-size: clamp(4rem, 4.5vw, 6.5rem);
-  }
-
-  .login__form-wrap {
-    padding: calc(var(--spacing-2xl) * 1.2) var(--spacing-2xl);
-    max-width: 480px;
-  }
-}
-
-/* ================================================================
-   ACCESIBILIDAD
-   ================================================================ */
-@media (prefers-reduced-motion: reduce) {
-  .login__input,
-  .login__submit,
-  .login__visibility,
-  .login__field-label {
-    transition: none;
-  }
+.login__submit:active {
+  transform: scale(0.98);
 }

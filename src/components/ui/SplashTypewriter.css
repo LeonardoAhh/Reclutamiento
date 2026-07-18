@@ -1,0 +1,29 @@
+.splash-typewriter {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash, 9999);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  /* Mobile-first padding */
+  padding: var(--spacing-md);
+  text-align: center;
+}
+
+.splash-typewriter__text {
+  font-size: var(--type-heading-sm-size);
+}
+
+@media (min-width: 768px) {
+  .splash-typewriter__text {
+    font-size: var(--type-heading-md-size);
+  }
+}
+
+@media (min-width: 1024px) {
+  .splash-typewriter__text {
+    font-size: var(--type-heading-lg-size);
+  }
+}

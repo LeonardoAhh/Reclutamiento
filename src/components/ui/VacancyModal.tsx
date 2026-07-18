@@ -556,7 +556,7 @@ export function VacancyModal({
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isFormValid}
-            submitLabel={isAdd ? 'Crear vacante' : 'Guardar cambios'}
+            submitLabel={isAdd ? 'Crear' : 'Guardar'}
             submittingLabel="Guardando…"
             notice={errorNotice}
             steps={[
@@ -592,7 +592,7 @@ export function VacancyModal({
     <AnimatedSubmitButton
       isSubmitting={submitting}
       isSuccess={isSuccess}
-      idleText={isAdd ? 'Crear vacante' : 'Guardar cambios'}
+      idleText={isAdd ? 'Crear' : 'Guardar'}
       loadingText="Guardando..."
       successText="¡Guardado!"
       idleIcon={Save}

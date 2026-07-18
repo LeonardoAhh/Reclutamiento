@@ -136,13 +136,11 @@ export function Bajas() {
               const res = await importBajas(raw);
               if (res.ok) {
                 sileo.success({
-                  title: 'Bajas importadas',
-                  description: `${res.inserted} registradas${res.skipped ? ` · ${res.skipped} omitidas` : ''}`,
+                  title: 'Bajas registradas',
                 });
               } else {
                 sileo.error({
-                  title: 'No se pudo importar',
-                  description: 'Revisa el archivo e intenta de nuevo.',
+                  title: 'Error al procesar archivo',
                 });
               }
               return res;

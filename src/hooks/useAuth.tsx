@@ -97,7 +97,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
             sileo.error({
               title: 'Sesión expirada',
-              description: 'Vuelve a iniciar sesión para continuar.',
             });
           }
         }

@@ -6,9 +6,9 @@
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
-     Notion: single blue accent (#0075de) reserved for CTAs / links / focus. */
-  --color-primary: #0075de;
-  --color-primary-active: #005bab;
+     Notion-style: true-black primary for CTAs. Clean, authoritative. */
+  --color-primary: #000000;
+  --color-primary-active: #2d2d2d;
   --color-primary-disabled: #e6e6e6;
 
   /* Deep indigo "night" band background — signature single-hero moment. */
@@ -60,6 +60,7 @@
   --color-accent-brown: #523410;
 
   /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  --color-brand-whatsapp: #25D366;
   --color-brand-accent: var(--color-primary);
   --color-badge-orange: var(--color-accent-orange);
   --color-badge-pink: var(--color-accent-pink);
@@ -72,21 +73,21 @@
   --color-accent-amber-rgb: 221 91 0;
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 0 117 222;
+  --color-primary-rgb: 0 0 0;
   --color-error-rgb: 239 68 68;
   --color-success-rgb: 26 174 57;
   --color-ink-rgb: 0 0 0;
   --color-canvas-rgb: 246 245 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  --color-focus-ring: rgba(0, 117, 222, 0.35);
+  --color-focus-ring: rgba(0, 0, 0, 0.2);
   --color-modal-scrim: rgba(0, 0, 0, 0.32);
   --color-vacancy-tint: rgba(239, 68, 68, 0.05);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
   --color-success-tint: rgba(26, 174, 57, 0.1);
   --color-error-tint: rgba(239, 68, 68, 0.1);
   --color-warning-tint: rgba(221, 91, 0, 0.1);
-  --color-primary-tint: rgba(0, 117, 222, 0.08);
+  --color-primary-tint: rgba(0, 0, 0, 0.06);
   --color-header-glass: rgba(246, 245, 244, 0.92);
 
   /* ── Typography ─────────────────────────────────────────────────
@@ -162,10 +163,10 @@
   --type-caption-up-line: 1.33;
   --type-caption-up-tracking: 0.06em;
 
-  /* button — Notion: 16 / 500 (label size 15/600 en utility) */
-  --type-button-size: 15px;
-  --type-button-weight: 600;
-  --type-button-line: 1.2;
+  /* button — Notion: 16 / 500 (design.md {typography.button}) */
+  --type-button-size: 16px;
+  --type-button-weight: 500;
+  --type-button-line: 1.5;
   --type-button-tracking: 0;
 
   /* code */
@@ -341,13 +342,13 @@
   --color-on-dark: #191817;
   --color-on-dark-soft: #8f8a83;
 
-  /* Notion blue slightly lifted for dark surfaces */
-  --color-primary: #4ca3f4;
-  --color-on-primary: #ffffff;
-  --color-primary-active: #62aef0;
+  /* Primary invertido para dark: blanco sobre oscuro (espejo del negro sobre claro) */
+  --color-primary: #f6f5f4;
+  --color-on-primary: #191817;
+  --color-primary-active: #d5d3d1;
   --color-primary-disabled: #3a3735;
 
-  --color-primary-rgb: 76 163 244;
+  --color-primary-rgb: 246 245 244;
   --color-ink-rgb: 246 245 244;
   --color-canvas-rgb: 25 24 23;
 
@@ -359,14 +360,14 @@
   --color-accent-amber: #fbbf24;
   --color-accent-amber-rgb: 251 191 36;
 
-  --color-focus-ring: rgba(76, 163, 244, 0.4);
+  --color-focus-ring: rgba(246, 245, 244, 0.25);
   --color-modal-scrim: rgba(0, 0, 0, 0.72);
   --color-vacancy-tint: rgba(239, 68, 68, 0.1);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
   --color-success-tint: rgba(26, 174, 57, 0.15);
   --color-error-tint: rgba(239, 68, 68, 0.15);
   --color-warning-tint: rgba(221, 91, 0, 0.18);
-  --color-primary-tint: rgba(76, 163, 244, 0.12);
+  --color-primary-tint: rgba(246, 245, 244, 0.08);
   --color-header-glass: rgba(25, 24, 23, 0.88);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -836,7 +837,6 @@ code:not(pre code) {
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
   line-height: var(--type-button-line);
-  border-radius: var(--rounded-full);
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -847,10 +847,23 @@ code:not(pre code) {
     box-shadow var(--transition-fast);
 }
 
+/* Primary CTAs — pill shape (design.md: button-primary) */
+.btn-primary {
+  border-radius: var(--rounded-full);
+}
+
+/* Utility buttons — tighter rounded rect (design.md: button-utility, button-secondary) */
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  border-radius: var(--rounded-md);
+}
+
 .btn-sm {
   height: 32px;
   padding: 0 var(--spacing-md);
   font-size: var(--type-caption-sm-size);
+  font-weight: 500;
 }
 
 .btn-primary:focus-visible,
@@ -1203,23 +1216,32 @@ code:not(pre code) {
 }
 
 .modal-close {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--rounded-full);
-  color: var(--color-charcoal);
-  border: 1px solid var(--color-hairline-strong);
-  background: var(--color-canvas);
+  color: var(--color-ink);
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+@media (min-width: 768px) {
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .modal-close:hover {
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  border-color: var(--color-charcoal);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.modal-close:active {
+  transform: scale(0.9);
 }
 
 .modal-close:focus-visible {
