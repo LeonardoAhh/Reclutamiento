@@ -1107,27 +1107,28 @@ export function Pipeline() {
             </div>
 
             <div className="pipeline-mobile-detail__actions">
+              <div className="pipeline-mobile-detail__quick-row">
               {selectedMobileCandidate.telefono ? (
                 <motion.a
                   href={`https://wa.me/52${selectedMobileCandidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${selectedMobileCandidate.puesto}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="pipeline__whatsapp-link pipeline-mobile-detail__whatsapp"
-                  title="Enviar WhatsApp"
+                  title="Contactar por WhatsApp"
+                  aria-label="Contactar por WhatsApp"
                   whileTap={{ scale: 0.95 }}
                 >
                   <MessageCircle size={18} aria-hidden="true" />
-                  <span>Contactar por WhatsApp</span>
+                  <span>WhatsApp</span>
                 </motion.a>
               ) : (
                 <div className="pipeline-mobile-detail__no-whatsapp">
-                  Sin número registrado
+                  Sin número
                 </div>
               )}
 
               <div className="pipeline-mobile-detail__status-select">
-                <span className="pipeline-mobile-detail__info-label" style={{ marginBottom: 'var(--spacing-xs)', display: 'block' }}>Estado</span>
-                <div className="pipeline__cell-status" data-status={selectedMobileCandidate.status} style={{ width: '100%', maxWidth: 'none', justifySelf: 'auto' }}>
+                <div className="pipeline__cell-status pipeline-mobile-detail__status-cell" data-status={selectedMobileCandidate.status}>
                   <CustomSelect
                     id={`mobile-status-${selectedMobileCandidate.id}`}
                     value={selectedMobileCandidate.status}
@@ -1140,10 +1141,9 @@ export function Pipeline() {
                     aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
                     customTrigger={
                       <motion.span
-                        className="pipeline__status-tag"
+                        className="pipeline__status-tag pipeline-mobile-detail__status-tag"
                         data-status={selectedMobileCandidate.status}
                         whileTap={{ scale: 0.95 }}
-                        style={{ width: '100%', justifyContent: 'space-between' }}
                       >
                         <span className="pipeline__status-tag__label">
                           {CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}
@@ -1154,34 +1154,32 @@ export function Pipeline() {
                   />
                 </div>
               </div>
+              </div>
 
               <div className="pipeline-mobile-detail__row-actions">
-                <span className="pipeline-mobile-detail__info-label" style={{ marginBottom: 'var(--spacing-xs)', display: 'block' }}>Acciones</span>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--spacing-sm)' }}>
+                <span className="pipeline-mobile-detail__info-label pipeline-mobile-detail__actions-label">Acciones</span>
+                <div className="pipeline-mobile-detail__actions-grid">
                   <button
-                    className="btn-secondary"
+                    className="btn-secondary pipeline-mobile-detail__action-btn"
                     title="Editar candidato"
                     onClick={() => openEdit(selectedMobileCandidate)}
-                    style={{ padding: 'var(--spacing-sm)' }}
                   >
                     <Pencil size={16} aria-hidden="true" />
                     <span>Editar</span>
                   </button>
                   <button
-                    className="btn-secondary"
+                    className="btn-secondary pipeline-mobile-detail__action-btn"
                     title="Ver notas"
                     onClick={() => setNotesTarget(selectedMobileCandidate)}
-                    style={{ padding: 'var(--spacing-sm)' }}
                   >
                     <MessageSquare size={16} aria-hidden="true" />
                     <span>Notas ({notesCount(selectedMobileCandidate)})</span>
                   </button>
                   {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
                     <button
-                      className="btn-primary"
+                      className="btn-primary pipeline-mobile-detail__action-btn"
                       title="Contratar"
                       onClick={() => openHire(selectedMobileCandidate)}
-                      style={{ padding: 'var(--spacing-sm)' }}
                     >
                       <BadgeCheck size={16} aria-hidden="true" />
                       <span>Contratar</span>
@@ -1189,13 +1187,12 @@ export function Pipeline() {
                   )}
                   {isAdmin && (
                     <button
-                      className="btn-secondary"
+                      className="btn-secondary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--full pipeline-mobile-detail__action-btn--danger"
                       title="Eliminar candidato"
                       onClick={() => {
                         openDelete(selectedMobileCandidate);
                         setSelectedMobileCandidate(null);
                       }}
-                      style={{ padding: 'var(--spacing-sm)', color: 'var(--color-error)' }}
                     >
                       <Trash2 size={16} aria-hidden="true" />
                       <span>Eliminar</span>
