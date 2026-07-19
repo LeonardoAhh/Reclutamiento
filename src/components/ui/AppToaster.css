@@ -35,22 +35,15 @@
 .app-toaster-title {
   font-family: var(--font-body) !important;
   font-size: var(--type-body-sm-strong-size) !important;
-  font-weight: 500 !important;
+  font-weight: var(--font-medium) !important;
   /* Forzamos el texto a ser del color de la tinta principal (blanco o negro según el tema) 
      en lugar del verde/rojo fosforescente que trae por defecto */
   color: var(--color-ink) !important;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-snug);
 }
 
 .app-toaster-badge {
   width: 22px !important;
   height: 22px !important;
   /* El icono se verá ligeramente más sólido */
-}
-
-.app-toaster-description {
-  font-family: var(--font-body) !important;
-  font-size: var(--type-body-sm-size) !important;
-  color: var(--color-muted) !important;
-  margin-top: 2px !important;
 }

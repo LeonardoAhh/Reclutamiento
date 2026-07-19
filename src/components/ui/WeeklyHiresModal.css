@@ -272,14 +272,26 @@
 .weekly-hires-modal__mobile-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: var(--spacing-sm);
 }
 
 .weekly-hires-modal__mobile-name {
-  font-weight: var(--type-body-strong-weight);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.weekly-hires-modal__mobile-apellidos {
+  font-weight: var(--font-bold);
   color: var(--color-ink);
   font-size: var(--type-body-sm-size);
+}
+
+.weekly-hires-modal__mobile-nombres {
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
 }
 
 .weekly-hires-modal__mobile-date {

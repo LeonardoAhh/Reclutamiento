@@ -31,7 +31,6 @@ import {
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { notifyResult, sileo } from '@/lib/notify';
-import { humanizeStatus } from '@/lib/types';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
@@ -362,7 +361,6 @@ export function Pipeline() {
       id ? updateCandidate(id, payload) : addCandidate(payload),
       {
         success: id ? 'Candidato actualizado' : 'Candidato agregado',
-        successDescription: payload.nombre,
         error: id ? 'No se pudo actualizar el candidato' : 'No se pudo agregar el candidato',
       }
     );
@@ -372,7 +370,6 @@ export function Pipeline() {
     if (!c.id || c.status === status) return;
     await notifyResult(setCandidateStatus(c.id, status), {
       success: 'Estado actualizado',
-      successDescription: `${c.nombre} → ${humanizeStatus(status)}`,
       error: 'No se pudo cambiar el estado',
     });
   }
@@ -1074,7 +1071,15 @@ export function Pipeline() {
                 />
               </div>
               <div className="pipeline-mobile-detail__title">
-                <h2 className="pipeline-mobile-detail__name">{selectedMobileCandidate.nombre.toUpperCase()}</h2>
+                {(() => {
+                  const { apellidos, nombres } = splitCandidateName(selectedMobileCandidate.nombre);
+                  return (
+                    <h2 className="pipeline-mobile-detail__name">
+                      <span className="pipeline-mobile-detail__name-apellidos">{apellidos.toUpperCase()}</span>
+                      {nombres && <span className="pipeline-mobile-detail__name-nombres">{nombres.toUpperCase()}</span>}
+                    </h2>
+                  );
+                })()}
                 <div className="pipeline-mobile-detail__puesto">
                   {selectedMobileCandidate.puesto}
                   {selectedMobileCandidate.seccion?.trim() && ` - ${selectedMobileCandidate.seccion.trim()}`}

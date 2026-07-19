@@ -3,6 +3,7 @@ import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
+import { splitCandidateName } from '@/lib/names';
 import './CandidatesCitedTodayModal.css';
 
 interface CandidatesCitedTodayModalProps {
@@ -32,18 +33,31 @@ export function CandidatesCitedTodayModal({
 
   const renderAreaContent = (items: Candidate[]) => (
     <ul className="candidates-cited-today-modal__list">
-      {items.map((c) => (
-        <li key={c.id ?? c.nombre} className="candidates-cited-today-modal__item">
-          <div className="candidates-cited-today-modal__main">
-            <span className="candidates-cited-today-modal__name">{c.nombre}</span>
-            <span className="candidates-cited-today-modal__puesto">{c.puesto}</span>
-            <span className="candidates-cited-today-modal__seccion">{c.seccion ?? '—'}</span>
-          </div>
-          <div className="candidates-cited-today-modal__meta">
-            <span className="candidates-cited-today-modal__reclutador">{c.reclutador ?? '—'}</span>
-          </div>
-        </li>
-      ))}
+      {items.map((c) => {
+        const { apellidos, nombres } = splitCandidateName(c.nombre);
+        const detalle = [c.puesto, c.seccion]
+          .map((v) => v?.trim())
+          .filter(Boolean)
+          .join(' · ');
+        return (
+          <li key={c.id ?? c.nombre} className="candidates-cited-today-modal__item">
+            <div className="candidates-cited-today-modal__main">
+              <span className="candidates-cited-today-modal__name">
+                <span className="candidates-cited-today-modal__apellidos">{apellidos.toUpperCase()}</span>
+                {nombres && <span className="candidates-cited-today-modal__nombres">{nombres.toUpperCase()}</span>}
+              </span>
+              {detalle && (
+                <span className="candidates-cited-today-modal__puesto">{detalle}</span>
+              )}
+            </div>
+            {c.reclutador && (
+              <div className="candidates-cited-today-modal__meta">
+                <span className="candidates-cited-today-modal__reclutador">{c.reclutador}</span>
+              </div>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 

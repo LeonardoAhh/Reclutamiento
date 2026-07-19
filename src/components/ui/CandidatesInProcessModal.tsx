@@ -53,12 +53,16 @@ export function CandidatesInProcessModal({
           key={`${g.puesto}||${g.seccion}`}
           className="candidates-in-process-modal__puesto-item"
         >
-          <span className="candidates-in-process-modal__puesto-name">
-            {g.puesto}
-          </span>
-          <span className="candidates-in-process-modal__puesto-seccion">
-            {g.seccion}
-          </span>
+          <div className="candidates-in-process-modal__puesto-main">
+            <span className="candidates-in-process-modal__puesto-name">
+              {g.puesto}
+            </span>
+            {g.seccion && (
+              <span className="candidates-in-process-modal__puesto-seccion">
+                {g.seccion}
+              </span>
+            )}
+          </div>
           <span className="candidates-in-process-modal__puesto-count">
             {g.count}
           </span>

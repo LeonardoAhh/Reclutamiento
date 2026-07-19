@@ -5,6 +5,7 @@ import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Baja, Employee } from '@/lib/types';
 import { formatShortDate, type IsoWeekRange } from '@/lib/dates';
+import { splitCandidateName } from '@/lib/names';
 import './WeeklyHiresModal.css';
 
 interface WeeklyHiresModalProps {
@@ -110,10 +111,15 @@ export function WeeklyHiresModal({
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
         <div className="weekly-hires-modal__mobile-list">
-          {hiresToRender.map((e) => (
+          {hiresToRender.map((e) => {
+            const { apellidos, nombres } = splitCandidateName(e.nombre);
+            return (
             <div key={e.num_empleado} className="weekly-hires-modal__mobile-card">
               <div className="weekly-hires-modal__mobile-card-header">
-                <span className="weekly-hires-modal__mobile-name">{e.nombre}</span>
+                <span className="weekly-hires-modal__mobile-name">
+                  <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
+                  {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
@@ -123,7 +129,8 @@ export function WeeklyHiresModal({
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">
@@ -170,10 +177,15 @@ export function WeeklyHiresModal({
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
         <div className="weekly-hires-modal__mobile-list">
-          {bajasToRender.map((b) => (
+          {bajasToRender.map((b) => {
+            const { apellidos, nombres } = splitCandidateName(b.nombre);
+            return (
             <div key={`${b.num_empleado}-${b.fecha_baja}`} className="weekly-hires-modal__mobile-card">
               <div className="weekly-hires-modal__mobile-card-header">
-                <span className="weekly-hires-modal__mobile-name">{b.nombre}</span>
+                <span className="weekly-hires-modal__mobile-name">
+                  <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
+                  {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(b.fecha_baja)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
@@ -182,7 +194,8 @@ export function WeeklyHiresModal({
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">

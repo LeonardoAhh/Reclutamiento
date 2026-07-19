@@ -22,7 +22,7 @@ export function AnimatedCheck({ size = 16 }: { size?: number }) {
             pathLength: 1, 
             opacity: 1,
             transition: { 
-              pathLength: { type: "spring", duration: 1.5, bounce: 0 },
+              pathLength: { type: "spring", duration: 0.5, bounce: 0 },
               opacity: { duration: 0.1 }
             } 
           }
