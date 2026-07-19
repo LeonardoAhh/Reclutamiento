@@ -635,6 +635,31 @@
   color: var(--color-ink);
 }
 
+/* ── Título del sidebar (Plantilla / Features) ──────────────────
+   Mobile: el sidebar cubre toda la pantalla como menú → el título
+   actúa como título de página y usa la escala unificada.
+   Desktop (≥ 768px): el sidebar es un rail estrecho → título compacto. */
+.config-sidebar__title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  color: var(--color-ink);
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+@media (min-width: 768px) {
+  .config-sidebar__title {
+    font-size: var(--type-heading-sm-size);
+    font-weight: var(--type-heading-sm-weight);
+    line-height: var(--type-heading-sm-line);
+    letter-spacing: var(--type-heading-sm-tracking);
+  }
+}
+
 .config-sidebar__nav {
   display: flex;
   flex-direction: row;

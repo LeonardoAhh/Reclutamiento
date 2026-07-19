@@ -321,7 +321,7 @@ export function Dashboard() {
       <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
         <header className="config-sidebar__header" style={{ marginBottom: 'var(--spacing-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-xs)', flexWrap: 'wrap', width: '100%' }}>
-            <h1 className="type-heading-sm m-0" style={{flex: 1}}>Plantilla</h1>
+            <h1 className="config-sidebar__title">Plantilla</h1>
             <div className="dashboard__hero-actions" style={{ display: 'flex', gap: '8px' }}>
               <button
                 type="button"
