@@ -549,9 +549,8 @@ const fieldsPosicion = (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className={`candidate-modal modal-fullscreen-mobile${
-        useWizard ? ' modal-wizard-mobile' : ''
-      }`}
+      className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
+      fullscreenMobile={!isDelete}
       icon={icon}
       title={title}
       subtitle={subtitle}
