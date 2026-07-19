@@ -83,15 +83,6 @@ function emptyForm(): FormState {
   };
 }
 
-function formatDateTimeLocal(val: string | null | undefined): string {
-  if (!val) return '';
-  // If it already has a T, return up to minutes
-  if (val.includes('T')) return val.slice(0, 16);
-  // If it's just a date YYYY-MM-DD, append T12:00
-  if (val.length === 10) return `${val}T12:00`;
-  return val;
-}
-
 function fromCandidate(c: Candidate): FormState {
   return {
     nombre: c.nombre ?? '',
@@ -107,7 +98,7 @@ function fromCandidate(c: Candidate): FormState {
     fecha_aplicacion: c.fecha_aplicacion
       ? isoToLocalDateString(c.fecha_aplicacion)
       : localTodayIso(),
-    fecha_cita: formatDateTimeLocal(c.fecha_cita),
+    fecha_cita: c.fecha_cita ? isoToLocalDateString(c.fecha_cita) : '',
     is_starlite: c.is_starlite ?? false,
   };
 }
@@ -520,12 +511,11 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-fecha-cita">Fecha y Hora de entrevista</label>
+        <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
         <SmartDatePicker
           value={form.fecha_cita}
           onChange={(val) => setForm({ ...form, fecha_cita: val })}
           disabled={isEdit && !canEditCitaAndSource}
-          withTime
           placeholder="Sin fecha agendada"
           presets="future"
         />
