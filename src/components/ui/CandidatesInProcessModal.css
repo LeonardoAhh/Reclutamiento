@@ -70,7 +70,7 @@
 }
 
 .candidates-in-process-modal__puesto-name {
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--color-ink);
 }
 
@@ -81,7 +81,7 @@
 
 .candidates-in-process-modal__puesto-count {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   min-width: 28px;
   text-align: right;
   color: var(--color-primary);

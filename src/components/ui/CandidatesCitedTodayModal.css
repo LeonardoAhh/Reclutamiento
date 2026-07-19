@@ -11,31 +11,34 @@
 .candidates-cited-today-modal__big-number {
   font-family: var(--font-display);
   font-size: var(--type-display-xl-size);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--color-ink);
 }
 
 .candidates-cited-today-modal__big-label {
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 .candidates-cited-today-modal__list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  gap: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
 }
 
 .candidates-cited-today-modal__item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-sm);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.candidates-cited-today-modal__list > .candidates-cited-today-modal__item:last-child {
+  border-bottom: none;
 }
 
 .candidates-cited-today-modal__main {
@@ -46,11 +49,27 @@
 }
 
 .candidates-cited-today-modal__name {
-  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.candidates-cited-today-modal__apellidos {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
   color: var(--color-ink);
   white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.candidates-cited-today-modal__nombres {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .candidates-cited-today-modal__puesto {
@@ -58,15 +77,11 @@
   color: var(--color-muted);
 }
 
-.candidates-cited-today-modal__seccion {
+.candidates-cited-today-modal__reclutador {
   font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
-}
-
-.candidates-cited-today-modal__reclutador {
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
   text-align: right;
+  white-space: nowrap;
 }
 
 .candidates-cited-today-modal__empty {
@@ -79,7 +94,7 @@
 
 .candidates-cited-today-modal__area-title {
   font-size: var(--type-heading-sm-size);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   margin: 0 0 var(--spacing-sm) 0;
   display: flex;
   align-items: center;
@@ -88,6 +103,6 @@
 
 .candidates-cited-today-modal__area-count {
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   font-size: var(--type-caption-md-size);
 }
