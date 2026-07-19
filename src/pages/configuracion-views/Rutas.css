@@ -81,6 +81,17 @@
   .rutas-layout[data-mobile-view="list"] .rutas-detail-pane {
     display: none;
   }
+
+  /* Al ver el detalle de una ruta ocultamos la cabecera de la página
+     (título + subtítulo) y el "Volver" superior del feature para dar
+     todo el espacio al detalle. El botón "Todas las rutas" se conserva. */
+  .rutas-page[data-mobile-view="detail"] .rutas-header {
+    display: none;
+  }
+
+  .config-main:has(.rutas-page[data-mobile-view="detail"]) .config-mobile-back {
+    display: none;
+  }
 }
 
 /* ── Back button (mobile only) ── */
