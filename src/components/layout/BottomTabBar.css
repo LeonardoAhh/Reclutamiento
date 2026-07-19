@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────
    BottomTabBar — navbar inferior minimalista
    Solo visible en móvil/tablet (≤1023px). Centrada y flotante.
-   Sin sombras (el sistema usa borde + glass).
+   Elevación sutil: borde hairline + sombra en capas (design.md).
    z-index: 90 (bajo el header: 100).
 ───────────────────────────────────────────── */
 
@@ -52,7 +52,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: var(--spacing-xxs);
     min-width: var(--touch-target-min);
     min-height: var(--mobile-nav-height);
     padding: var(--spacing-xs) var(--spacing-lg);
@@ -142,7 +142,7 @@
     height: 10px;
     border-radius: var(--rounded-full);
     background: var(--color-error);
-    border: 2px solid var(--color-surface-card);
+    border: 2px solid var(--color-surface);
   }
 
   .bottom-nav__fab--active .bottom-nav__badge {
@@ -179,7 +179,7 @@
 
 /* ─────────────────────────────────────────────
    Bottom Sheet (menú "Más") — Full-screen
-   z-index: 1000 — por encima de todo.
+   z-index: 9999 — por encima de todo.
 ───────────────────────────────────────────── */
 
 .bottom-sheet-overlay {
@@ -292,7 +292,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  min-height: 56px;
+  min-height: var(--mobile-nav-height);
   padding: 0 var(--spacing-lg);
   text-decoration: none;
   background: transparent;
@@ -302,7 +302,7 @@
 
 .bottom-sheet__list-item:hover,
 .bottom-sheet__list-item:focus-visible {
-  background: var(--color-surface-hover, var(--color-hairline-soft));
+  background: var(--color-surface-soft);
   outline: none;
 }
 
