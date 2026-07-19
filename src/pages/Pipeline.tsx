@@ -1074,7 +1074,15 @@ export function Pipeline() {
                 />
               </div>
               <div className="pipeline-mobile-detail__title">
-                <h2 className="pipeline-mobile-detail__name">{selectedMobileCandidate.nombre.toUpperCase()}</h2>
+                {(() => {
+                  const { apellidos, nombres } = splitCandidateName(selectedMobileCandidate.nombre);
+                  return (
+                    <h2 className="pipeline-mobile-detail__name">
+                      <span className="pipeline-mobile-detail__name-apellidos">{apellidos.toUpperCase()}</span>
+                      {nombres && <span className="pipeline-mobile-detail__name-nombres">{nombres.toUpperCase()}</span>}
+                    </h2>
+                  );
+                })()}
                 <div className="pipeline-mobile-detail__puesto">
                   {selectedMobileCandidate.puesto}
                   {selectedMobileCandidate.seccion?.trim() && ` - ${selectedMobileCandidate.seccion.trim()}`}

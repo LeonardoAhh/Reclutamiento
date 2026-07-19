@@ -1941,12 +1941,26 @@
 }
 
 .pipeline-mobile-detail__name {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+
+.pipeline-mobile-detail__name-apellidos {
   font-family: var(--font-display);
   font-size: var(--type-heading-sm-size);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--color-ink);
-  margin: 0;
-  line-height: 1.2;
+  line-height: var(--type-heading-sm-line);
+  word-wrap: break-word;
+}
+
+.pipeline-mobile-detail__name-nombres {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  line-height: var(--type-body-sm-line);
   word-wrap: break-word;
 }
 
@@ -2136,12 +2150,26 @@
 }
 
 .pipeline-mobile-detail__name {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+
+.pipeline-mobile-detail__name-apellidos {
   font-family: var(--font-display);
   font-size: var(--type-heading-sm-size);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--color-ink);
-  margin: 0;
-  line-height: 1.2;
+  line-height: var(--type-heading-sm-line);
+  word-wrap: break-word;
+}
+
+.pipeline-mobile-detail__name-nombres {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  line-height: var(--type-body-sm-line);
   word-wrap: break-word;
 }
 
