@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────
    BottomTabBar — navbar inferior minimalista
    Solo visible en móvil/tablet (≤1023px). Centrada y flotante.
-   Sin sombras (el sistema usa borde + glass).
+   Elevación sutil: borde hairline + sombra en capas (design.md).
    z-index: 90 (bajo el header: 100).
 ───────────────────────────────────────────── */
 
@@ -52,7 +52,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: var(--spacing-xxs);
     min-width: var(--touch-target-min);
     min-height: var(--mobile-nav-height);
     padding: var(--spacing-xs) var(--spacing-lg);
@@ -142,7 +142,7 @@
     height: 10px;
     border-radius: var(--rounded-full);
     background: var(--color-error);
-    border: 2px solid var(--color-surface-card);
+    border: 2px solid var(--color-surface);
   }
 
   .bottom-nav__fab--active .bottom-nav__badge {
@@ -179,7 +179,7 @@
 
 /* ─────────────────────────────────────────────
    Bottom Sheet (menú "Más") — Full-screen
-   z-index: 1000 — por encima de todo.
+   z-index: 9999 — por encima de todo.
 ───────────────────────────────────────────── */
 
 .bottom-sheet-overlay {
@@ -207,7 +207,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
-  padding: var(--safe-area-top) var(--spacing-md) var(--spacing-sm);
+  padding: var(--safe-area-top) var(--spacing-lg) var(--spacing-sm);
   margin-top: var(--spacing-md);
 }
 
@@ -292,7 +292,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  min-height: 56px;
+  min-height: var(--mobile-nav-height);
   padding: 0 var(--spacing-lg);
   text-decoration: none;
   background: transparent;
@@ -302,7 +302,7 @@
 
 .bottom-sheet__list-item:hover,
 .bottom-sheet__list-item:focus-visible {
-  background: var(--color-surface-hover, var(--color-hairline-soft));
+  background: var(--color-surface-soft);
   outline: none;
 }
 
@@ -366,7 +366,7 @@
 }
 
 .bottom-sheet__footer {
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   padding-bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
   border-top: 1px solid var(--color-hairline);
 }
@@ -383,6 +383,9 @@
   gap: var(--spacing-sm);
   min-height: var(--touch-target-min);
   padding: 0 var(--spacing-xs);
+  /* Compensa el padding interno para que el texto alinee con los
+     chevrons de la lista y la X del header (mismo gutter de 16px). */
+  margin-right: calc(-1 * var(--spacing-xs));
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-error);

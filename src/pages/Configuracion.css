@@ -1197,6 +1197,92 @@
   vertical-align: middle;
 }
 
+/* ── Tabulador · tarjetas para móvil ──────────────────────────────
+   En escritorio se muestra la tabla; en móvil se sustituye por
+   tarjetas para evitar el scroll horizontal y la densidad de datos. */
+.tabulador-cards {
+  display: none;
+}
+
+.tabulador-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.tabulador-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.tabulador-card__puesto {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-semibold);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+}
+
+.tabulador-card__tipo {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+}
+
+.tabulador-card__figures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin: 0;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.tabulador-card__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.tabulador-card__label {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-muted-soft);
+}
+
+.tabulador-card__value {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--font-semibold);
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabulador-card__value--primary {
+  color: var(--color-primary);
+}
+
+@media (max-width: 767px) {
+  .tabulador-desktop-table {
+    display: none;
+  }
+
+  .tabulador-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
 @media (min-width: 768px) {
   .tabulador-header {
     flex-direction: row;

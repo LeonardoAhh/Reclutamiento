@@ -478,7 +478,7 @@ export function RutasView() {
   };
 
   return (
-    <section className="rutas-page config-page__content" id="main-content" tabIndex={-1}>
+    <section className="rutas-page config-page__content" id="main-content" data-mobile-view={mobileView} tabIndex={-1}>
       <header className="config-page__header rutas-header">
         <div className="rutas-header__copy">
           <h2 className="config-page__title">Rutas de transporte</h2>
