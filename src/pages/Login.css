@@ -110,9 +110,9 @@
 .login__title {
   font-family: var(--font-display);
   font-size: var(--type-heading-lg-size);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--color-ink);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-snug);
   margin-bottom: var(--spacing-xs);
 }
 
@@ -134,8 +134,8 @@
   text-align: center;
   color: var(--color-muted-soft);
   font-size: var(--type-caption-up-size);
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .login__divider::before,
@@ -193,7 +193,7 @@
 
 .login__field-label {
   font-size: var(--type-body-sm-strong-size);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--color-ink);
 }
 
@@ -248,7 +248,7 @@
 
 .login__visibility:hover {
   color: var(--color-ink);
-  background: rgba(128, 128, 128, 0.1);
+  background: var(--color-surface-soft);
 }
 
 /* Actions Row (Checkbox + Button) */
@@ -271,7 +271,7 @@
 .login__checkbox-text {
   font-size: var(--type-body-sm-size);
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   transition: color var(--transition-fast);
 }
 
@@ -288,7 +288,7 @@
   background: var(--color-error-tint);
   color: var(--color-error);
   font-size: var(--type-body-sm-size);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   border-radius: var(--rounded-sm);
 }
 
@@ -307,7 +307,7 @@
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-strong-size);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.1s ease;
 }
