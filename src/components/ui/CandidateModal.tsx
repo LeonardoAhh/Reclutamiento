@@ -5,7 +5,7 @@ import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
-import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
+import { localTodayIso, localDateToIso, isoToLocalDateString, formatDateTimeMx } from '@/lib/dates';
 import { X, Search } from 'lucide-react';
 import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
@@ -533,11 +533,11 @@ const fieldsPosicion = (
       <div className="candidate-modal__audit-grid">
         <div>
           <span className="candidate-modal__audit-label">Fecha de Creación:</span>
-          <span>{candidate.created_at ? new Date(candidate.created_at).toLocaleString() : 'N/A'}</span>
+          <span>{formatDateTimeMx(candidate.created_at)}</span>
         </div>
         <div>
           <span className="candidate-modal__audit-label">Última Modificación:</span>
-          <span>{candidate.updated_at ? new Date(candidate.updated_at).toLocaleString() : 'N/A'}</span>
+          <span>{formatDateTimeMx(candidate.updated_at)}</span>
         </div>
       </div>
     </div>

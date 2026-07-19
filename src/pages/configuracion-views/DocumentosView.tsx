@@ -4,6 +4,7 @@ import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
 import { DatosGenerales } from '@/components/documentos/DatosGenerales';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { localTodayIso } from '@/lib/dates';
 
 type DocumentId = 'constancia' | 'salud' | 'generales';
 
@@ -105,7 +106,7 @@ export function DocumentosView() {
       });
 
       /* ✅ Nombre genérico — sin depender de propiedades inexistentes en Profile */
-      const timestamp = new Date().toISOString().split('T')[0];
+      const timestamp = localTodayIso();
       let prefix = 'constancia_fiscal';
       if (activeDoc === 'salud') prefix = 'cuestionario_salud';
       if (activeDoc === 'generales') prefix = 'datos_generales';

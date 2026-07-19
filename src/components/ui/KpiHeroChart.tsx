@@ -14,6 +14,7 @@ import './KpiHeroChart.css';
 import { useMemo, useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { localTodayIso } from '@/lib/dates';
 import {
   ResponsiveContainer,
   Bar,
@@ -577,7 +578,7 @@ export function KpiHeroChart({
   const visibleCards = useMemo(() => {
     if (!isMobile || presentation) return chartData;
     if (chartData.length === 0) return chartData;
-    const todayIso = new Date().toISOString().slice(0, 10);
+    const todayIso = localTodayIso();
     const todayCard = chartData.find((d) => d.dateIso?.slice(0, 10) === todayIso);
     return todayCard ? [todayCard] : [chartData[chartData.length - 1]];
   }, [chartData, isMobile, presentation]);
