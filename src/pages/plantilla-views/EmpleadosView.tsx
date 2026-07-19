@@ -147,11 +147,6 @@ export function EmpleadosView() {
       .sort((a, b) => a.area.localeCompare(b.area, 'es'));
   }, [employees, searchTerm]);
 
-  const totalShown = useMemo(
-    () => groups.reduce((sum, g) => sum + g.empleados.length, 0),
-    [groups]
-  );
-
   // Mantiene un departamento válido seleccionado en PC. Cuando hay búsqueda,
   // salta al primer grupo con coincidencias.
   useEffect(() => {
@@ -232,7 +227,6 @@ export function EmpleadosView() {
         <section className="empleados__hero">
           <div>
             <h1 className="empleados__title">Empleados</h1>
-            <Skeleton variant="text" width={180} />
           </div>
           <Skeleton width="100%" height={40} radius="var(--rounded-md)" />
         </section>
@@ -266,11 +260,6 @@ export function EmpleadosView() {
       <section className="empleados__hero">
         <div>
           <h1 className="empleados__title">Empleados</h1>
-          <p className="empleados__sub">
-            {totalShown} {totalShown === 1 ? 'empleado' : 'empleados'} ·{' '}
-            {groups.length}{' '}
-            {groups.length === 1 ? 'departamento' : 'departamentos'}
-          </p>
         </div>
         <label className="empleados__search">
           <Search size={16} aria-hidden="true" />

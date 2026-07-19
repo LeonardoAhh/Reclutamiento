@@ -232,7 +232,6 @@ export function BusquedaView() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <header className="config-page__header">
             <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
-            <p className="config-page__subtitle">Encuentra y gestiona a los colaboradores activos e inactivos.</p>
           </header>
 
           {employeesError && (

@@ -144,9 +144,6 @@ export function TabuladorView() {
             <Wallet size={24} className="text-primary" aria-hidden="true" />
             Tabulador de salarios
           </h2>
-          <p className="config-page__subtitle">
-            Consulta los salarios diarios y mensuales vigentes agrupados por área.
-          </p>
         </div>
 
         <div className="tabulador-tabs" role="tablist" aria-label="Tipo de tabulador">

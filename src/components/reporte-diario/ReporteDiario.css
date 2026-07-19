@@ -89,20 +89,29 @@
 
 .reporte-title {
   font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
   color: var(--color-ink);
   margin: 0;
 }
 
 @media (min-width: 768px) {
   .reporte-title {
-    font-size: var(--type-heading-xl-size, 1.5rem);
-    font-weight: var(--type-heading-xl-weight, 700);
-    line-height: var(--type-heading-xl-line, 1.2);
-    letter-spacing: var(--type-heading-xl-tracking, 0);
+    font-size: var(--type-display-lg-size);
+    font-weight: var(--type-display-lg-weight);
+    line-height: var(--type-display-lg-line);
+    letter-spacing: var(--type-display-lg-tracking);
+  }
+}
+
+@media (min-width: 1024px) {
+  .reporte-title {
+    font-size: var(--type-display-xl-size);
+    font-weight: var(--type-display-xl-weight);
+    line-height: var(--type-display-xl-line);
+    letter-spacing: var(--type-display-xl-tracking);
   }
 }
 

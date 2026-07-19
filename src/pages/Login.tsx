@@ -119,7 +119,6 @@ export function Login() {
             <h1 id="login-heading" className="login__title">
               ¡Bienvenido de vuelta!
             </h1>
-            <p className="login__subtitle">Inicia sesión en tu cuenta</p>
           </header>
 
           <AnimatePresence mode="wait">
