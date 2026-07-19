@@ -53,6 +53,7 @@ import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatShortDate, startOfDayMxMs, endOfDayMxMs, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString, formatPhoneNumber } from '@/lib/utils';
+import { splitCandidateName } from '@/lib/names';
 import './Pipeline.css';
 
 const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
@@ -60,6 +61,13 @@ const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
 const formatDate = formatShortDate;
+
+/**
+ * Paleta semilla para los avatares generativos (boring-avatars "beam").
+ * No son tokens de diseño: son colores de la ilustración generada por
+ * el hash del nombre. Se centralizan aquí para no repetir literales.
+ */
+const AVATAR_PALETTE = ['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC'];
 
 /**
  * Status que cuentan como "citado" para el hero de reclutadores. Tras
@@ -741,11 +749,9 @@ export function Pipeline() {
                 };
 
                 const nameParts = c.nombre.trim().split(/\s+/);
+                const { apellidos, nombres } = splitCandidateName(c.nombre);
                 const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
-
-                const displayFullName = c.nombre.toUpperCase();
-                const firstName = nameParts[0] ? nameParts[0].toUpperCase() : '';
-                const restOfName = nameParts.slice(1).join(' ').toUpperCase();
+                const primerNombre = (nombres.split(' ')[0] || apellidos.split(' ')[0] || '').toUpperCase();
 
                 const rawPuesto = c.puesto || '';
                 const puestoLower = rawPuesto.toLowerCase();
@@ -767,7 +773,7 @@ export function Pipeline() {
                           size={36}
                           name={c.nombre}
                           variant="beam"
-                          colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                          colors={AVATAR_PALETTE}
                         />
                         <span
                           className="pipeline__status-dot pipeline__status-dot--avatar"
@@ -778,8 +784,8 @@ export function Pipeline() {
                       </div>
                       <div className="pipeline__name-details">
                         <span className="pipeline__name-text">
-                          <span className="pipeline__name-first">{firstName}</span>
-                          {restOfName && <span className="pipeline__name-rest"> {restOfName}</span>}
+                          <span className="pipeline__name-first">{apellidos.toUpperCase()}</span>
+                          {nombres && <span className="pipeline__name-rest">{nombres.toUpperCase()}</span>}
                         </span>
                         {c.reclutador && (
                           <div className="pipeline__recruiter" title={`Reclutador: ${c.reclutador}`}>
@@ -833,7 +839,7 @@ export function Pipeline() {
                     <div className="pipeline__ccard-contact-col">
                       {c.telefono ? (
                         <motion.a
-                          href={`https://wa.me/52${c.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${firstName}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
+                          href={`https://wa.me/52${c.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${primerNombre}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="pipeline__whatsapp-link"
@@ -1058,7 +1064,7 @@ export function Pipeline() {
                   size={56}
                   name={selectedMobileCandidate.nombre}
                   variant="beam"
-                  colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                  colors={AVATAR_PALETTE}
                 />
                 <span
                   className="pipeline__status-dot pipeline__status-dot--avatar pipeline-mobile-detail__status-dot"
