@@ -482,9 +482,6 @@ export function RutasView() {
       <header className="config-page__header rutas-header">
         <div className="rutas-header__copy">
           <h2 className="config-page__title">Rutas de transporte</h2>
-          <p className="config-page__subtitle">
-            Consulta rutas, paradas y capacidad de transporte por turno.
-          </p>
         </div>
       </header>
 

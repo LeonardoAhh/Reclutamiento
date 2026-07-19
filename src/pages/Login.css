@@ -110,15 +110,20 @@
 .login__title {
   font-family: var(--font-display);
   font-size: var(--type-heading-lg-size);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
   color: var(--color-ink);
-  letter-spacing: var(--tracking-snug);
-  margin-bottom: var(--spacing-xs);
+  margin: 0;
 }
 
-.login__subtitle {
-  font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
+@media (min-width: 768px) {
+  .login__title {
+    font-size: var(--type-display-lg-size);
+    font-weight: var(--type-display-lg-weight);
+    line-height: var(--type-display-lg-line);
+    letter-spacing: var(--type-display-lg-tracking);
+  }
 }
 
 /* ── Initial Reveal Actions ── */

@@ -12,34 +12,29 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .kpis-page {
-  padding-top: var(--spacing-lg);
   padding-bottom: var(--spacing-xxl);
 }
 
 /* ── Hero (título + acciones) ───────────────────────────────────────── */
 .kpis-page__hero {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-lg);
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-lg);
+  margin: 0 0 var(--spacing-md);
 }
 
 .kpis-page__title {
   font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-display-xl-weight);
-  letter-spacing: var(--tracking-snug);
-  line-height: 1.1;
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
   color: var(--color-ink);
   margin: 0;
-}
-
-.kpis-page__subtitle {
-  margin: var(--spacing-xs) 0 0;
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
 }
 
 .kpis-page__hero-actions {
@@ -256,22 +251,26 @@
 
 /* ── Tablet portrait (≥ 768px) — versión PC ─────────────────────────── */
 @media (min-width: 768px) {
-  .kpis-page {
-    padding-top: var(--spacing-xl);
-  }
-
   .kpis-page__hero {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
+    padding-block: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
   }
 
   .kpis-page__title {
+    font-size: var(--type-display-lg-size);
+    font-weight: var(--type-display-lg-weight);
+    line-height: var(--type-display-lg-line);
+    letter-spacing: var(--type-display-lg-tracking);
+  }
+}
+
+/* ── Desktop (≥ 1024px) ─────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .kpis-page__title {
     font-size: var(--type-display-xl-size);
-    letter-spacing: var(--tracking-tight);
+    font-weight: var(--type-display-xl-weight);
+    line-height: var(--type-display-xl-line);
+    letter-spacing: var(--type-display-xl-tracking);
   }
 }
 

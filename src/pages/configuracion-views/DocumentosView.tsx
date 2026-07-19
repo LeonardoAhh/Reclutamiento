@@ -207,9 +207,6 @@ export function DocumentosView() {
           <FileText size={24} className="text-primary" aria-hidden="true" />
           Documentos
         </h2>
-        <p className="config-page__subtitle">
-          Genera y descarga documentos oficiales para impresión o resguardo.
-        </p>
       </header>
 
       {hasError && (

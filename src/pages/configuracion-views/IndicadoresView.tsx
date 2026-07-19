@@ -148,7 +148,6 @@ export function IndicadoresView() {
     <section className="indicadores-view config-page__content" aria-label="Indicadores de Reclutamiento">
       <header className="config-page__header">
         <h2 className="config-page__title">Ingresos por Reclutador</h2>
-        <p className="config-page__subtitle">Resumen de contrataciones semanales y desempeño del equipo.</p>
       </header>
 
 
