@@ -101,9 +101,14 @@ export function Login() {
         transition={{ duration: 0.8 }}
       >
         <div className="login__brand-content">
-          <div className="login__brand-logo">
+          <div className="login__brand-mark">
             <div className="login__brand-circle" />
-            <span className="login__brand-name">RECLUTAMIENTO</span>
+          </div>
+          <div className="login__brand-heading">
+            <h2 className="login__brand-title">
+              VIÑOPLASTIC<br />PLANTA QUERÉTARO
+            </h2>
+            <p className="login__brand-eyebrow">Reclutamiento</p>
           </div>
         </div>
       </motion.section>
