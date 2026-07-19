@@ -9,10 +9,10 @@ import type { SileoOptions, SileoPosition } from 'sileo';
  */
 export const sileo = {
   ...originalSileo,
-  success: (opts: SileoOptions) => 
-    originalSileo.success({ icon: React.createElement(AnimatedCheck), ...opts }),
-  error: (opts: SileoOptions) => 
-    originalSileo.error({ icon: React.createElement(AnimatedError), ...opts }),
+  success: (opts: SileoOptions) =>
+    originalSileo.success({ ...opts, icon: React.createElement(AnimatedCheck), description: undefined }),
+  error: (opts: SileoOptions) =>
+    originalSileo.error({ ...opts, icon: React.createElement(AnimatedError), description: undefined }),
   promise: <T,>(promise: Promise<T> | (() => Promise<T>), opts: Parameters<typeof originalSileo.promise>[1]) =>
     originalSileo.promise(promise, opts),
 };
@@ -28,7 +28,6 @@ interface NotifyMessages {
   success: string;
   /** Título del toast de error (si la acción falla). */
   error?: string;
-  successDescription?: string;
 }
 
 /**
@@ -44,7 +43,6 @@ export async function notifyResult<T extends ActionResult>(
   if (res.ok) {
     sileo.success({
       title: messages.success,
-      description: messages.successDescription,
     });
   } else {
     sileo.error({
