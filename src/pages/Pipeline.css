@@ -767,21 +767,22 @@
   .pipeline__controls {
     gap: var(--spacing-sm);
   }
+  /* Fila 1: la búsqueda ocupa toda la línea */
   .pipeline__search {
-    flex: 1 1 200px;
+    flex: 1 1 100%;
   }
-  .pipeline__filter-btn {
-    margin-left: 0;
-  }
+  /* Contador oculto en móvil para un diseño más limpio */
   .pipeline__count {
-    order: 3;
-    width: auto;
-    margin-right: auto;
-    text-align: left;
+    display: none;
+  }
+  /* Fila 2: icono de filtros (izq) + paginación (der) en una sola línea */
+  .pipeline__filter-btn {
+    order: 2;
+    margin-left: 0;
   }
   .pipeline__pagination-controls {
-    order: 4;
-    margin-left: 0;
+    order: 3;
+    margin-left: auto;
   }
 }
 
