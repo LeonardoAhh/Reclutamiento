@@ -5,7 +5,7 @@ import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
-import { localTodayIso, localDateToIso, isoToLocalDateString } from '@/lib/dates';
+import { localTodayIso, localDateToIso, isoToLocalDateString, formatDateTimeMx } from '@/lib/dates';
 import { X, Search } from 'lucide-react';
 import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
@@ -83,15 +83,6 @@ function emptyForm(): FormState {
   };
 }
 
-function formatDateTimeLocal(val: string | null | undefined): string {
-  if (!val) return '';
-  // If it already has a T, return up to minutes
-  if (val.includes('T')) return val.slice(0, 16);
-  // If it's just a date YYYY-MM-DD, append T12:00
-  if (val.length === 10) return `${val}T12:00`;
-  return val;
-}
-
 function fromCandidate(c: Candidate): FormState {
   return {
     nombre: c.nombre ?? '',
@@ -107,7 +98,7 @@ function fromCandidate(c: Candidate): FormState {
     fecha_aplicacion: c.fecha_aplicacion
       ? isoToLocalDateString(c.fecha_aplicacion)
       : localTodayIso(),
-    fecha_cita: formatDateTimeLocal(c.fecha_cita),
+    fecha_cita: c.fecha_cita ? isoToLocalDateString(c.fecha_cita) : '',
     is_starlite: c.is_starlite ?? false,
   };
 }
@@ -520,12 +511,11 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-fecha-cita">Fecha y Hora de entrevista</label>
+        <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
         <SmartDatePicker
           value={form.fecha_cita}
           onChange={(val) => setForm({ ...form, fecha_cita: val })}
           disabled={isEdit && !canEditCitaAndSource}
-          withTime
           placeholder="Sin fecha agendada"
           presets="future"
         />
@@ -543,11 +533,11 @@ const fieldsPosicion = (
       <div className="candidate-modal__audit-grid">
         <div>
           <span className="candidate-modal__audit-label">Fecha de Creación:</span>
-          <span>{candidate.created_at ? new Date(candidate.created_at).toLocaleString() : 'N/A'}</span>
+          <span>{formatDateTimeMx(candidate.created_at)}</span>
         </div>
         <div>
           <span className="candidate-modal__audit-label">Última Modificación:</span>
-          <span>{candidate.updated_at ? new Date(candidate.updated_at).toLocaleString() : 'N/A'}</span>
+          <span>{formatDateTimeMx(candidate.updated_at)}</span>
         </div>
       </div>
     </div>
@@ -559,9 +549,8 @@ const fieldsPosicion = (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className={`candidate-modal modal-fullscreen-mobile${
-        useWizard ? ' modal-wizard-mobile' : ''
-      }`}
+      className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
+      fullscreenMobile={!isDelete}
       icon={icon}
       title={title}
       subtitle={subtitle}

@@ -7,6 +7,7 @@ import type {
     EmployeeSummary,
 } from "./retardos-types"
 import { SKIP_ANALYSIS_CODES, PUNCH_STATUS_LABELS } from "./retardos-constants"
+import { localTodayIso } from "@/lib/dates"
 
 // ─── Time utils ──────────────────────────────────────────────────────────────
 
@@ -400,7 +401,7 @@ export async function exportRetardosExcel(analyses: PunchAnalysis[]): Promise<vo
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = `retardos_${new Date().toISOString().slice(0, 10)}.xlsx`
+    link.download = `retardos_${localTodayIso()}.xlsx`
     link.click()
     URL.revokeObjectURL(url)
 }

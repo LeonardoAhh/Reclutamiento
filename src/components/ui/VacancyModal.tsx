@@ -610,6 +610,7 @@ export function VacancyModal({
       title={title}
       subtitle={subtitle}
       className={`vacancy-modal${!isDelete ? ' vacancy-modal--wide' : ''}`}
+      fullscreenMobile={!isDelete}
       footerActions={footerActions}
       size={isDelete ? 'md' : 'xl'}
     >

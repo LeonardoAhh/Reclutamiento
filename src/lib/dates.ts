@@ -356,23 +356,6 @@ export function formatIsoWeekRange(range: IsoWeekRange): string {
 }
 
 /**
- * Días completos entre `from` y `to` (por defecto `now`). TZ-agnóstico:
- * usa la diferencia absoluta en ms, sin importar la zona.
- */
-export function daysBetween(
-  from: string | Date | null | undefined,
-  to: string | Date | null | undefined = new Date()
-): number {
-  if (!from || !to) return 0;
-  const start = typeof from === 'string' ? new Date(from) : from;
-  const end = typeof to === 'string' ? new Date(to) : to;
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return 0;
-  const diffMs = end.getTime() - start.getTime();
-  if (diffMs <= 0) return 0;
-  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
-}
-
-/**
  * Días festivos de México (formato YYYY-MM-DD).
  * Solo incluye fechas fijas y los días festivos más comunes.
  * Nota: Algunos días festivos son móviles (como el tercer lunes de marzo para el natalicio de Benito Juárez).
@@ -637,12 +620,31 @@ export function getNextWednesdayIso(dateIso: string): string {
 }
 
 /**
+ * Fecha + hora legible (`18 feb 2026, 09:06`) evaluada en TZ MX. Para
+ * timestamps de auditoría / historial (`created_at`, `updated_at`,
+ * `changed_at`). Evita mostrar la hora en la zona del dispositivo.
+ */
+export function formatDateTimeMx(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleString('es-MX', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: TZ_MX,
+  });
+}
+
+/**
  * Formatea una fecha ISO para las tarjetas de proyección (ej. "Mié 16 Jun").
  */
 export function formatProjectionDate(dateIso: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateIso).slice(0, 10));
   if (!match) return dateIso;
-  const d = new Date(`${match[0]}T12:00:00-06:00`);
+  const d = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
   let label = d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ_MX }).replace(/\./g, '');
   return label.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
