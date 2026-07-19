@@ -311,13 +311,13 @@ export function AreaDetailView({
 
   return (
     <section className="area-detail-view config-page__content">
-      <header className="config-page__header" style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+      <header className="config-page__header area-detail__header">
         {onBack && (
           <button type="button" className="btn-icon area-detail__back-btn" onClick={onBack} aria-label="Volver al resumen">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
         )}
-        <h2 className="type-heading-md text-ink m-0">{dept.area}</h2>
+        <h2 className="config-page__title">{dept.area}</h2>
       </header>
 
       <section

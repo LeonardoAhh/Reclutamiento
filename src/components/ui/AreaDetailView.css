@@ -652,6 +652,12 @@
   align-items: center;
 }
 
+/* ── Header alineado (título + botón "volver") ── */
+.area-detail__header {
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* ── Hide back button on mobile (Dashboard provides global one) ── */
 @media (max-width: 1024px) {
   .area-detail__back-btn {
