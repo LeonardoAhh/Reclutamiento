@@ -236,7 +236,7 @@ export function TabuladorView() {
                       {area}
                     </h3>
 
-                    <div className="indicadores-card indicadores-table-card">
+                    <div className="indicadores-card indicadores-table-card tabulador-desktop-table">
                       <div className="table-responsive" tabIndex={0} role="region" aria-label={`Salarios del área ${area}`}>
                         <table className="indicadores-table tabulador-table">
                           <caption className="sr-only">Salarios vigentes del área {area}</caption>
@@ -268,6 +268,33 @@ export function TabuladorView() {
                         </table>
                       </div>
                     </div>
+
+                    {/* Móvil: tarjetas en lugar de la tabla (sin scroll horizontal) */}
+                    <ul className="tabulador-cards" role="list" aria-label={`Salarios del área ${area}`}>
+                      {puestos.map((puesto) => (
+                        <li
+                          key={`card-${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`}
+                          className="tabulador-card"
+                        >
+                          <div className="tabulador-card__head">
+                            <span className="tabulador-card__puesto">{puesto.PUESTO}</span>
+                            <span className="tabulador-card__tipo">{puesto.TIPO}</span>
+                          </div>
+                          <dl className="tabulador-card__figures">
+                            <div className="tabulador-card__figure">
+                              <dt className="tabulador-card__label">Salario diario 2026</dt>
+                              <dd className="tabulador-card__value">{puesto.SALARIO_DIARIO}</dd>
+                            </div>
+                            <div className="tabulador-card__figure">
+                              <dt className="tabulador-card__label">Sueldo mensual 2026</dt>
+                              <dd className="tabulador-card__value tabulador-card__value--primary">
+                                {puesto.SUELDO_MENSUAL}
+                              </dd>
+                            </div>
+                          </dl>
+                        </li>
+                      ))}
+                    </ul>
                   </section>
                 );
               })
