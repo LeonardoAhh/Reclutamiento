@@ -932,9 +932,26 @@
 }
 
 .pipeline__name-text {
-  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pipeline__name-first {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
   color: var(--color-ink);
-  line-height: 1.2;
+  line-height: var(--type-body-sm-line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipeline__name-rest {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  line-height: var(--type-caption-md-line);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2080,7 +2097,7 @@
   .pipeline__name-details {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--spacing-xxs);
   }
 
   .pipeline__name-text {
@@ -2090,14 +2107,14 @@
 
   .pipeline__name-first {
     font-size: var(--type-body-md-size);
-    font-weight: 700;
+    font-weight: var(--font-bold);
     color: var(--color-ink);
   }
 
   .pipeline__name-rest {
     font-size: var(--type-body-sm-size);
     color: var(--color-muted);
-    font-weight: 400;
+    font-weight: var(--font-regular);
   }
 
   /* Mobile date formatting inside card */
@@ -2275,7 +2292,7 @@
   .pipeline__name-details {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--spacing-xxs);
   }
 
   .pipeline__name-text {
@@ -2285,14 +2302,14 @@
 
   .pipeline__name-first {
     font-size: var(--type-body-md-size);
-    font-weight: 700;
+    font-weight: var(--font-bold);
     color: var(--color-ink);
   }
 
   .pipeline__name-rest {
     font-size: var(--type-body-sm-size);
     color: var(--color-muted);
-    font-weight: 400;
+    font-weight: var(--font-regular);
   }
 
   /* Mobile date formatting inside card */

@@ -177,15 +177,9 @@ export function WeeklyHiresModal({
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(b.fecha_baja)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
-                <div className="weekly-hires-modal__mobile-puesto">{b.puesto}</div>
                 <div className="weekly-hires-modal__mobile-area">
-                  {b.area} {b.seccion ? `· ${b.seccion}` : ''}
+                  {[b.seccion, b.turno].map((v) => v?.trim()).filter(Boolean).join(' · ') || '—'}
                 </div>
-                {b.tipo_baja && (
-                  <div className="weekly-hires-modal__mobile-tipo-baja">
-                    Baja: {b.tipo_baja}
-                  </div>
-                )}
               </div>
             </div>
           ))}
