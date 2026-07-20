@@ -22,8 +22,19 @@ const TIME_SLOTS = [
 ];
 
 // parse YYYY-MM-DD or YYYY-MM-DDTHH:mm to Date
+// Nota: `new Date("YYYY-MM-DD")` se interpreta como UTC medianoche por el spec
+// ES2015+, lo que en zonas horarias negativas (ej. UTC-6) devuelve el día
+// anterior en hora local. Para preservar el día que el usuario ve, parseamos
+// manualmente el formato date-only como fecha LOCAL. Los formatos con hora
+// (YYYY-MM-DDTHH:mm) sí se pueden delegar a `new Date` porque JS los trata
+// como hora local cuando no llevan zona horaria.
 function parseIsoToDate(iso: string): Date | undefined {
   if (!iso) return undefined;
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (dateOnly) {
+    const [, y, m, d] = dateOnly;
+    return new Date(Number(y), Number(m) - 1, Number(d));
+  }
   const parsed = new Date(iso);
   return isNaN(parsed.getTime()) ? undefined : parsed;
 }
