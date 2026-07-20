@@ -1,0 +1,33 @@
+/* StarliteBadge — pill minimalista para identificar registros Starlite.
+   Todos los valores derivan de tokens del sistema — sin hardcodes.
+   Se apoya en el token semántico `--color-accent-amber` (misma paleta que
+   ya usa el resto del sistema para marcar Starlite). */
+
+.starlite-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-warning-tint);
+  color: var(--color-accent-amber);
+  border: 1px solid currentColor;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.starlite-badge__label {
+  /* La estrella ya está en escala icon-only; separamos visualmente el texto
+     con el gap del contenedor. */
+}
+
+.starlite-badge--compact {
+  padding: var(--spacing-xxs);
+  gap: 0;
+}

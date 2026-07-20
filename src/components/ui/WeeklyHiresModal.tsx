@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { CalendarRange, Users } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
+import { StarliteBadge } from './StarliteBadge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Baja, Employee } from '@/lib/types';
 import { formatShortDate, type IsoWeekRange } from '@/lib/dates';
@@ -106,7 +107,11 @@ export function WeeklyHiresModal({
   const totalBajas = bajas.length + previousBajas.length;
   const netMovement = totalHires - totalBajas;
 
-  const renderHiresTable = (hiresToRender: Employee[], title?: string) => (
+  const renderHiresTable = (
+    hiresToRender: Employee[],
+    title?: string,
+    highlightStarlite = false,
+  ) => (
     <div className="weekly-hires-modal__section">
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
@@ -119,6 +124,7 @@ export function WeeklyHiresModal({
                 <span className="weekly-hires-modal__mobile-name">
                   <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
                   {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                  {highlightStarlite && e.is_starlite && <StarliteBadge compact />}
                 </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
               </div>
@@ -150,7 +156,12 @@ export function WeeklyHiresModal({
                   <td className="weekly-hires-modal__cell-mono">
                     {e.num_empleado}
                   </td>
-                  <td>{e.nombre}</td>
+                  <td>
+                    <span className="weekly-hires-modal__cell-name">
+                      <span>{e.nombre}</span>
+                      {highlightStarlite && e.is_starlite && <StarliteBadge />}
+                    </span>
+                  </td>
                   <td>{e.puesto}</td>
                   <td>
                     <div className="weekly-hires-modal__cell-area">
@@ -252,7 +263,7 @@ export function WeeklyHiresModal({
           Comparativo semanal {range.year}
         </span>
       }
-      size={isMobile ? 'md' : 'lg'}
+      size={isMobile ? 'md' : 'xl'}
       fullscreenMobile={true}
     >
       <div className="modal-body weekly-hires-modal__body">
@@ -390,7 +401,7 @@ export function WeeklyHiresModal({
             <p className="weekly-hires-modal__future-hint">
               Estos empleados están agendados para entrar esta semana.
             </p>
-            {renderHiresTable(sortedFutureHires)}
+            {renderHiresTable(sortedFutureHires, undefined, true)}
           </ExpandableSection>
         )}
       </div>
