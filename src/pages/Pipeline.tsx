@@ -684,7 +684,7 @@ export function Pipeline() {
                           <div className="search-dropdown-item__text">
                             <strong>{c.nombre}</strong>
                             <span className="search-dropdown-item__info">
-                              {c.telefono} • {c.reclutador}
+                              {c.telefono} • {c.reclutador} • {CANDIDATE_STATUS_LABEL[c.status]}
                             </span>
                           </div>
                         </button>
