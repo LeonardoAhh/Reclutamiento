@@ -1166,8 +1166,8 @@ export function Pipeline() {
                   );
                 })()}
                 <div className="pipeline-mobile-detail__puesto">
-                  {selectedMobileCandidate.puesto}
-                  {selectedMobileCandidate.seccion?.trim() && ` - ${selectedMobileCandidate.seccion.trim()}`}
+                  <div>{selectedMobileCandidate.puesto}</div>
+                  {selectedMobileCandidate.seccion?.trim() && <div>{selectedMobileCandidate.seccion.trim()}</div>}
                 </div>
               </div>
             </div>
@@ -1191,7 +1191,7 @@ export function Pipeline() {
                 </div>
               </div>
 
-              <div className="pipeline-mobile-detail__info-item">
+              <div className="pipeline-mobile-detail__info-item" style={{ gridColumn: '1 / -1' }}>
                 <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
                   <span className="pipeline-mobile-detail__info-label">Proyecto</span>
@@ -1273,7 +1273,8 @@ export function Pipeline() {
                   </button>
                   {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
                     <button
-                      className="btn-primary pipeline-mobile-detail__action-btn"
+                      className="btn-primary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--full"
+                      style={{ borderRadius: 'var(--rounded-md)' }}
                       title="Contratar"
                       onClick={() => openHire(selectedMobileCandidate)}
                     >

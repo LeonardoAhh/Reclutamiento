@@ -2136,7 +2136,7 @@
 
 .pipeline-mobile-detail__info-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-md);
 }
 
@@ -2442,6 +2442,10 @@
   height: 100%;
   min-height: var(--touch-target-min);
   padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  justify-content: center;
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
 }
 
 .pipeline-mobile-detail__status-cell {
@@ -2461,7 +2465,12 @@
   width: 100%;
   height: 100%;
   min-height: var(--touch-target-min);
-  justify-content: space-between;
+  justify-content: center;
+  border-radius: var(--rounded-md);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  text-transform: capitalize;
+  letter-spacing: normal;
 }
 
 /* Grid de acciones: 2 arriba (Editar · Notas) + 1 abajo full-width (Eliminar) */
