@@ -973,6 +973,7 @@ export default function ReporteDiarioContent() {
                                 loadingText="Guardando…"
                                 successText="¡Guardado!"
                                 idleIcon={Save}
+                                iconOnly
                                 className="btn-primary"
                                 onClick={handleSaveToDb}
                                 data-testid="save-report-btn"

@@ -13,6 +13,7 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   loadingText?: string;
   successText?: string;
   idleIcon?: LucideIcon;
+  iconOnly?: boolean;
 }
 
 type SubmitState = 'idle' | 'loading' | 'success';
@@ -24,6 +25,7 @@ export function AnimatedSubmitButton({
   loadingText = 'Guardando…',
   successText = '¡Guardado!',
   idleIcon: IdleIcon = Save,
+  iconOnly = false,
   className = '',
   disabled = false,
   type = 'submit',
@@ -53,6 +55,7 @@ export function AnimatedSubmitButton({
       disabled={isDisabled}
       aria-busy={state === 'loading' || undefined}
       aria-label={stateText}
+      title={iconOnly ? stateText : undefined}
       whileTap={reduceMotion || isDisabled ? undefined : { scale: 0.96 }}
       layout={!reduceMotion}
       transition={{
@@ -81,7 +84,7 @@ export function AnimatedSubmitButton({
           ) : (
             <>
               <IdleIcon size="1.2em" />
-              <span className="animated-submit-button__text">{idleText}</span>
+              {!iconOnly && <span className="animated-submit-button__text">{idleText}</span>}
             </>
           )}
         </motion.span>
