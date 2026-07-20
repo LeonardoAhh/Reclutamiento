@@ -72,6 +72,7 @@ export default function ReporteDiarioContent() {
     const saveSuccessTimerRef = useRef<number | null>(null)
     const [loadSuccess, setLoadSuccess] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
+    const [saveError, setSaveError] = useState<string | null>(null)
     const [panelCollapsed, setPanelCollapsed] = useState(hasCachedReport);
     const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
     const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
@@ -113,6 +114,13 @@ export default function ReporteDiarioContent() {
             if (saveSuccessTimerRef.current !== null) window.clearTimeout(saveSuccessTimerRef.current)
         }
     }, [])
+
+    useEffect(() => {
+        if (saveError) {
+            const timer = setTimeout(() => setSaveError(null), 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [saveError])
 
     // Recuperar último reporte parseado si se recarga la página por accidente
     useEffect(() => {
@@ -642,6 +650,8 @@ export default function ReporteDiarioContent() {
             }, SAVE_SUCCESS_DURATION_MS)
             const updated = await fetchSummaries()
             setSavedSummaries(updated)
+        } else {
+            setSaveError(result.message || "Error al guardar")
         }
     }, [currentMonth, rows, dbSaving, computeKpis, saveReport, fetchSummaries])
 
@@ -969,6 +979,8 @@ export default function ReporteDiarioContent() {
                                 type="button"
                                 isSubmitting={dbSaving}
                                 isSuccess={saveSuccess}
+                                isError={!!saveError}
+                                errorText={saveError || undefined}
                                 idleText={savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
                                 loadingText="Guardando…"
                                 successText="¡Guardado!"

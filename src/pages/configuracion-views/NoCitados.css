@@ -46,28 +46,6 @@
   margin-top: var(--spacing-sm);
 }
 
-/* ── Teléfono: wrapper + iconos de validación ──────────────── */
-.phone-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.phone-validation-icon {
-  position: absolute;
-  right: 10px;
-  pointer-events: none;
-  transition: opacity var(--transition-fast);
-}
-
-.phone-validation-icon.valid  { color: var(--color-success); }
-.phone-validation-icon.invalid { color: var(--color-error);  }
-
-.input-error {
-  border-color: var(--color-error) !important;
-  box-shadow: 0 0 0 1px var(--color-error) !important;
-}
-
 /* ── Tabla: contenedor ─────────────────────────────────────── */
 .no-citados-table-container {
   background: var(--color-surface);

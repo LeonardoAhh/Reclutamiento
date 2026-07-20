@@ -64,6 +64,7 @@ export function RegistroNoCitadosView() {
     notas: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const totalPages = Math.max(1, Math.ceil(records.length / ITEMS_PER_PAGE));
   const paginatedRecords = records.slice(
@@ -73,12 +74,16 @@ export function RegistroNoCitadosView() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+
     if (!formData.motivo) {
-      alert('Por favor selecciona un motivo');
+      setErrorMsg('Por favor selecciona un motivo');
+      setTimeout(() => setErrorMsg(null), 3000);
       return;
     }
     if (!formData.reclutador) {
-      alert('Por favor selecciona un reclutador');
+      setErrorMsg('Por favor selecciona un reclutador');
+      setTimeout(() => setErrorMsg(null), 3000);
       return;
     }
 
@@ -118,7 +123,8 @@ export function RegistroNoCitadosView() {
       }, 1500);
     } else {
       setStatus('idle');
-      alert(result.message || 'Ocurrió un error');
+      setErrorMsg(result.message || 'Ocurrió un error');
+      setTimeout(() => setErrorMsg(null), 3000);
     }
   };
 
@@ -157,6 +163,16 @@ export function RegistroNoCitadosView() {
     const sub = subOpts.find(s => s.value === subMotivoVal)?.label || subMotivoVal;
     return `${main} — ${sub}`;
   };
+
+  const missingRequiredFields = [
+    !formData.nombre.trim() && 'Nombre',
+    !isPhoneValid && 'Teléfono (10 dígitos)',
+    !formData.motivo && 'Motivo principal',
+    (formData.motivo && SUB_MOTIVOS_OPTIONS[formData.motivo]?.length > 0 && !formData.subMotivo) && 'Detalle del motivo',
+    !formData.reclutador && 'Reclutador'
+  ].filter(Boolean) as string[];
+
+  const isFormValid = missingRequiredFields.length === 0;
 
   const handlePrevPage = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
@@ -244,17 +260,22 @@ export function RegistroNoCitadosView() {
             >
               Cancelar
             </button>
-            <AnimatedSubmitButton
-              type="submit"
-              form="form-no-citados"
-              isSubmitting={status === 'loading'}
-              isSuccess={status === 'success'}
-              idleText="Registrar"
-              loadingText="Guardando..."
-              successText="¡Registrado!"
-              idleIcon={Save}
-              className="btn-primary"
-            />
+            <div title={!isFormValid ? "Faltan campos obligatorios" : undefined}>
+              <AnimatedSubmitButton
+                type="submit"
+                form="form-no-citados"
+                isSubmitting={status === 'loading'}
+                isSuccess={status === 'success'}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
+                idleText="Registrar"
+                loadingText="Guardando..."
+                successText="¡Registrado!"
+                idleIcon={Save}
+                className="btn-primary"
+                disabled={!isFormValid}
+              />
+            </div>
           </div>
         }
       >
@@ -278,7 +299,6 @@ export function RegistroNoCitadosView() {
             <input
               id="apellido"
               type="text"
-              required
               value={formData.apellido}
               onChange={(e) => handleChange('apellido', e.target.value)}
               placeholder="Ej. Pérez"

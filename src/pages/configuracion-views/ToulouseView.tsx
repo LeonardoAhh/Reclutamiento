@@ -4,6 +4,7 @@ import { Printer, Save, RefreshCw, Trash2, FileText, ClipboardCheck } from 'luci
 import { useAuth } from '@/hooks/useAuth';
 import { useToulouseSheets, type ToulouseSheetRecord } from '@/hooks/useToulouseSheets';
 import { ToulouseSheet, type ToulouseSheetData } from '@/components/toulouse/ToulouseSheet';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import {
   DEFAULT_TOULOUSE_CONFIG,
   buildFolio,
@@ -36,6 +37,8 @@ export function ToulouseView() {
   const [seed, setSeed] = useState(() => newSeed());
   const [variant, setVariant] = useState<Variant>('candidato');
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const sheetData: ToulouseSheetData = useMemo(
     () => ({
@@ -60,8 +63,10 @@ export function ToulouseView() {
   }
 
   async function handleSave() {
+    setErrorMsg(null);
     if (!candidato.trim()) {
-      sileo.error({ title: 'Falta el nombre del candidato' });
+      setErrorMsg('Falta el nombre del candidato');
+      setTimeout(() => setErrorMsg(null), 3000);
       return;
     }
     setSaving(true);
@@ -85,6 +90,8 @@ export function ToulouseView() {
     };
     const result = await save(record);
     setSaving(false);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
     sileo.success({
       title: 'Hoja guardada',
     });
@@ -260,16 +267,20 @@ export function ToulouseView() {
                 <RefreshCw size={16} aria-hidden="true" />
                 Nueva rejilla
               </button>
-              <button
+              <AnimatedSubmitButton
                 type="button"
                 className="btn-primary"
                 onClick={handleSave}
-                disabled={saving}
+                isSubmitting={saving}
+                isSuccess={saveSuccess}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
+                idleIcon={Save}
+                idleText="Guardar"
+                loadingText="Guardando…"
+                successText="¡Guardada!"
                 data-testid="tp-save"
-              >
-                <Save size={16} aria-hidden="true" />
-                {saving ? 'Guardando…' : 'Guardar'}
-              </button>
+              />
               <button
                 type="button"
                 className="btn-secondary"

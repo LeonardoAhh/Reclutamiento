@@ -158,7 +158,6 @@ export function useReporteDiario() {
             return { success: true }
         } catch (err) {
             const msg = describeSupabaseError(err)
-            sileo.error({ title: 'No se pudo eliminar el reporte' })
             return { success: false }
         } finally {
             setSaving(false)

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle, Loader2, Save, type LucideIcon } from 'lucide-react';
+import { CheckCircle, Loader2, Save, AlertCircle, type LucideIcon } from 'lucide-react';
 import type { HTMLMotionProps } from 'framer-motion';
 
 import { useFeedback } from '@/hooks/useFeedback';
@@ -12,18 +12,22 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   idleText?: string;
   loadingText?: string;
   successText?: string;
+  errorText?: string;
+  isError?: boolean;
   idleIcon?: LucideIcon;
   iconOnly?: boolean;
 }
 
-type SubmitState = 'idle' | 'loading' | 'success';
+type SubmitState = 'idle' | 'loading' | 'success' | 'error';
 
 export function AnimatedSubmitButton({
   isSubmitting,
   isSuccess,
+  isError,
   idleText = 'Guardar',
   loadingText = 'Guardando…',
   successText = '¡Guardado!',
+  errorText = 'Error',
   idleIcon: IdleIcon = Save,
   iconOnly = false,
   className = '',
@@ -33,16 +37,23 @@ export function AnimatedSubmitButton({
 }: AnimatedSubmitButtonProps) {
   const { trigger } = useFeedback();
   const reduceMotion = useReducedMotion();
-  const state: SubmitState = isSubmitting ? 'loading' : isSuccess ? 'success' : 'idle';
+  const state: SubmitState = isSubmitting ? 'loading' : isSuccess ? 'success' : isError ? 'error' : 'idle';
   const isDisabled = Boolean(disabled) || state !== 'idle';
-  const stateText = state === 'loading' ? loadingText : state === 'success' ? successText : idleText;
+  const stateText = state === 'loading' ? loadingText : state === 'success' ? successText : state === 'error' ? errorText : idleText;
 
   useEffect(() => {
-    if (state !== 'success') return;
-    try {
-      trigger('success');
-    } catch (error) {
-      console.warn('No se pudo reproducir el feedback de éxito:', error);
+    if (state === 'success') {
+      try {
+        trigger('success');
+      } catch (error) {
+        console.warn('No se pudo reproducir el feedback de éxito:', error);
+      }
+    } else if (state === 'error') {
+      try {
+        trigger('error');
+      } catch (error) {
+        console.warn('No se pudo reproducir el feedback de error:', error);
+      }
     }
   }, [state, trigger]);
 
@@ -79,6 +90,8 @@ export function AnimatedSubmitButton({
         >
           {state === 'success' ? (
             <CheckCircle size="1.25em" />
+          ) : state === 'error' ? (
+            <AlertCircle size="1.25em" />
           ) : state === 'loading' ? (
             <Loader2 size="1.25em" className="animated-submit-button__spinner" />
           ) : (

@@ -6,7 +6,7 @@ import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString, formatDateTimeMx } from '@/lib/dates';
-import { X, Search } from 'lucide-react';
+import { X, Search, CheckCircle2, XCircle } from 'lucide-react';
 import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
@@ -19,6 +19,7 @@ import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { Checkbox } from '@/components/ui/Checkbox';
 
 /**
  * Reclutadoras activas que pueden ser asignadas a un proceso.
@@ -125,7 +126,8 @@ export function CandidateModal({
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
-  const { employees, comments } = useSupabaseData();
+  const { employees, comments, noCitados } = useSupabaseData();
+  const [overrideDuplicate, setOverrideDuplicate] = useState(false);
 
   /**
    * Cobertura actual de cada puesto. Sirve para detectar qué puestos
@@ -202,13 +204,43 @@ export function CandidateModal({
       setErrorMsg(null);
       setIsSuccess(false);
       setSubmitting(false);
+      setOverrideDuplicate(false);
       setForm(candidate ? fromCandidate(candidate) : emptyForm());
     }
   }, [isOpen, candidate, mode]);
 
+  useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
+
+  useEffect(() => {
+    if (errorMsg) setErrorMsg(null);
+  }, [form]);
+
+  const telDigits = form.telefono.replace(/\D/g, '');
+  const isPhoneValid = telDigits.length === 10;
+  const showPhoneError = form.telefono.length > 0 && !isPhoneValid;
+
+  const duplicateSource = useMemo(() => {
+    if (telDigits.length !== 10) return null;
+    if (candidates.some(c => c.id !== candidate?.id && c.telefono?.replace(/\D/g, '') === telDigits)) return 'Candidatos';
+    if (noCitados.some(nc => nc.telefono?.replace(/\D/g, '') === telDigits)) return 'No Citados';
+    return null;
+  }, [telDigits, candidates, noCitados, candidate?.id]);
+
+  useEffect(() => {
+    if (!duplicateSource) {
+      setOverrideDuplicate(false);
+    }
+  }, [duplicateSource]);
+
   const missingRequiredFields = [
     !form.nombre.trim() && 'Nombre completo',
-    !form.telefono.trim() && 'Teléfono',
+    !isPhoneValid && 'Teléfono (10 dígitos)',
+    (duplicateSource && !overrideDuplicate) && `Teléfono duplicado en ${duplicateSource}`,
     !form.area && 'Área',
     !form.seccion && 'Sección',
     !form.puesto && 'Puesto',
@@ -232,21 +264,8 @@ export function CandidateModal({
           return;
         }
 
-        // Duplicate check (only check if changed or adding)
-        if (candidates.length > 0) {
-          const isDupPhone = candidates.some(c =>
-            c.id !== candidate?.id &&
-            c.telefono &&
-            c.telefono.replace(/\D/g, '') === telDigits &&
-            telDigits.length === 10
-          );
-          if (isDupPhone) {
-            setErrorMsg('Este número de teléfono ya está registrado en otro candidato.');
-            setSubmitting(false);
-            return;
-          }
-
-          if (form.email.trim()) {
+        // El chequeo de duplicados cruzados ahora es en tiempo real con duplicateSource y overrideDuplicate.
+        if (form.email.trim()) {
             const isDupEmail = candidates.some(c =>
               c.id !== candidate?.id &&
               c.email &&
@@ -258,13 +277,12 @@ export function CandidateModal({
               return;
             }
           }
-        }
       }
 
       if (mode === 'delete' && onDelete && candidate?.id) {
         // Retraso artificial para que se note la animación de "pensando"
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const result = await onDelete(candidate.id);
         if (result && result.ok === false) {
           setErrorMsg(result.message ?? 'No se pudo eliminar.');
@@ -295,7 +313,7 @@ export function CandidateModal({
           fecha_cita: form.fecha_cita ? form.fecha_cita : null,
           is_starlite: form.is_starlite,
         };
-        
+
         // Retraso artificial para que se note la animación de "pensando"
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -359,17 +377,45 @@ export function CandidateModal({
 
       <div className="form-group">
         <label htmlFor="cand-telefono">Teléfono</label>
-        <input
-          id="cand-telefono"
-          type="tel"
-          inputMode="tel"
-          value={form.telefono}
-          onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-          onBlur={() => setForm({ ...form, telefono: formatPhoneNumber(form.telefono) })}
-          placeholder="442 123 4567"
-          autoComplete="off"
-          disabled={isEdit}
-        />
+        <div className="phone-input-wrapper">
+          <input
+            id="cand-telefono"
+            type="tel"
+            inputMode="tel"
+            value={form.telefono}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, '');
+              if (onlyNums.length > 10) return;
+              // Mantenemos formato limpio al escribir para no confundir al usuario
+              setForm({ ...form, telefono: onlyNums });
+            }}
+            onBlur={() => setForm({ ...form, telefono: formatPhoneNumber(form.telefono) })}
+            placeholder="442 123 4567"
+            autoComplete="off"
+            disabled={isEdit}
+            className={showPhoneError ? 'input-error' : ''}
+          />
+          {isPhoneValid && (
+            <CheckCircle2 size={18} className="phone-validation-icon valid" />
+          )}
+          {showPhoneError && (
+            <XCircle size={18} className="phone-validation-icon invalid" />
+          )}
+        </div>
+        {duplicateSource && (
+          <div className="candidate-modal__dup-warning">
+            <span className="candidate-modal__dup-text">
+              Registrado en {duplicateSource}
+            </span>
+            <label className="candidate-modal__dup-override">
+              <Checkbox
+                checked={overrideDuplicate}
+                onChange={(e) => setOverrideDuplicate(e.target.checked)}
+              />
+              <span>Ignorar</span>
+            </label>
+          </div>
+        )}
       </div>
 
       <div className="form-group">
@@ -516,16 +562,14 @@ const fieldsPosicion = (
           value={form.fecha_cita}
           onChange={(val) => setForm({ ...form, fecha_cita: val })}
           disabled={isEdit && !canEditCitaAndSource}
-          placeholder="Sin fecha agendada"
+          placeholder="Sin fecha"
           presets="future"
         />
       </div>
     </>
   );
 
-  const errorNotice = errorMsg ? (
-    <p className="form-error" role="alert">{errorMsg}</p>
-  ) : null;
+  const errorNotice = null;
 
   const auditNotice = (isAdmin && isEdit && candidate) ? (
     <div className="form-group form-group--span-2 candidate-modal__audit">
@@ -626,6 +670,8 @@ const fieldsPosicion = (
               <AnimatedSubmitButton
                 isSubmitting={submitting}
                 isSuccess={isSuccess}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
                 idleText="Eliminar"
                 loadingText="Eliminando..."
                 successText="¡Eliminado!"
@@ -639,6 +685,8 @@ const fieldsPosicion = (
                     <AnimatedSubmitButton
                       isSubmitting={submitting}
                       isSuccess={isSuccess}
+                      isError={!!errorMsg}
+                      errorText={errorMsg || undefined}
                       idleText="Guardar"
                       loadingText="Guardando..."
                       successText="¡Guardado!"
@@ -653,6 +701,8 @@ const fieldsPosicion = (
               <AnimatedSubmitButton
                 isSubmitting={submitting}
                 isSuccess={isSuccess}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
                 idleText="Guardar"
                 loadingText="Guardando..."
                 successText="¡Guardado!"

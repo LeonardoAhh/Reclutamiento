@@ -190,6 +190,17 @@ export function EmployeeModal({
     }
   }, [isOpen, mode, employee, vacancyOptions]);
 
+  useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
+
+  useEffect(() => {
+    if (errorMsg) setErrorMsg(null);
+  }, [form, bajaForm]);
+
   const isAddValid =
     form.num_empleado.trim().length > 0 &&
     form.nombre.trim().length > 0 &&
@@ -442,9 +453,7 @@ export function EmployeeModal({
     </div>
   );
 
-  const errorNotice = errorMsg ? (
-    <p className="form-error" role="alert">{errorMsg}</p>
-  ) : null;
+  const errorNotice = null;
 
   const icon = isAdd ? (
     <UserPlus size={20} className="color-primary" aria-hidden="true" />
@@ -518,6 +527,8 @@ export function EmployeeModal({
         <AnimatedSubmitButton
           isSubmitting={submitting}
           isSuccess={isSuccess}
+          isError={!!errorMsg}
+          errorText={errorMsg || undefined}
           idleText="Guardar"
           loadingText="Guardando..."
           successText="¡Guardado!"
@@ -529,6 +540,8 @@ export function EmployeeModal({
         <AnimatedSubmitButton
           isSubmitting={submitting}
           isSuccess={isSuccess}
+          isError={!!errorMsg}
+          errorText={errorMsg || undefined}
           idleText="Registrar Baja"
           loadingText="Registrando baja..."
           successText="¡Baja registrada!"

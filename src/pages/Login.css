@@ -284,18 +284,6 @@
   color: var(--color-ink);
 }
 
-/* Error */
-.login__error {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-error-tint);
-  color: var(--color-error);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
-  border-radius: var(--rounded-sm);
-}
 
 /* Submit Button */
 .login__submit {

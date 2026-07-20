@@ -166,6 +166,17 @@ export function VacancyModal({
   }, [isOpen, vacancy, mode]);
 
   useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
+
+  useEffect(() => {
+    if (errorMsg) setErrorMsg(null);
+  }, [form]);
+
+  useEffect(() => {
     if (form.fecha_apertura && form.dias_sla > 0) {
       const fechaObjetivo = addBusinessDays(form.fecha_apertura, form.dias_sla);
       if (fechaObjetivo && fechaObjetivo !== form.fecha_objetivo) {
@@ -506,11 +517,7 @@ export function VacancyModal({
       </div>
     ) : null;
 
-  const errorNotice = errorMsg ? (
-    <p className="form-error" role="alert">
-      {errorMsg}
-    </p>
-  ) : null;
+  const errorNotice = null;
 
   const deleteContent = (
     <div className="delete-warning">
@@ -592,6 +599,8 @@ export function VacancyModal({
     <AnimatedSubmitButton
       isSubmitting={submitting}
       isSuccess={isSuccess}
+      isError={!!errorMsg}
+      errorText={errorMsg || undefined}
       idleText={isAdd ? 'Crear' : 'Guardar'}
       loadingText="Guardando..."
       successText="¡Guardado!"
@@ -631,6 +640,8 @@ export function VacancyModal({
               <AnimatedSubmitButton
                 isSubmitting={submitting}
                 isSuccess={isSuccess}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
                 idleText="Eliminar"
                 loadingText="Eliminando..."
                 successText="¡Eliminado!"

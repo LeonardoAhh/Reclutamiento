@@ -34,7 +34,6 @@ export function Login() {
   const [submitting, setSubmitting]   = useState(false);
   const [isSuccess, setIsSuccess]     = useState(false);
   const [error, setError]             = useState<string | null>(null);
-  const [shakeKey, setShakeKey]       = useState(0);
 
   const [showForm, setShowForm]       = useState(false);
 
@@ -52,6 +51,19 @@ export function Login() {
     }
   }, []);
 
+  // Limpiar error después de 3 segundos
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  // Limpiar error si el usuario empieza a escribir de nuevo
+  useEffect(() => {
+    if (error) setError(null);
+  }, [username, password]);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -59,11 +71,9 @@ export function Login() {
 
     const u = username.trim();
     if (!u) {
-      setShakeKey(k => k + 1);
       return setError('Ingresa tu correo electrónico.');
     }
     if (!password) {
-      setShakeKey(k => k + 1);
       return setError('Ingresa tu contraseña.');
     }
 
@@ -72,9 +82,7 @@ export function Login() {
 
     if (!result.ok) {
       setSubmitting(false);
-      setShakeKey(k => k + 1);
       setError(result.message ?? 'No se pudo iniciar sesión. Revisa tus credenciales.');
-      sileo.error({ title: 'No se pudo iniciar sesión' });
       return;
     }
 
@@ -221,25 +229,7 @@ export function Login() {
                     </div>
                   </motion.div>
 
-                  {/* Error inline animado (ahora arriba de los botones) */}
-                  <AnimatePresence>
-                    {error && (
-                      <motion.div
-                        id={errorId}
-                        data-testid="login-error-message"
-                        className="login__error"
-                        role="alert"
-                        aria-live="assertive"
-                        initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                        animate={{ opacity: 1, height: 'auto', marginBottom: 12 }}
-                        exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <AlertCircle size={14} aria-hidden="true" />
-                        <span>{error}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* Error inline animado eliminado, ahora se maneja en el botón */}
 
                   {/* Acciones Finales: Recuérdame + Botón */}
                   <motion.div className="login__actions-row" variants={staggerItem}>
@@ -256,6 +246,8 @@ export function Login() {
                     <AnimatedSubmitButton
                       isSubmitting={submitting}
                       isSuccess={isSuccess}
+                      isError={!!error}
+                      errorText={error || undefined}
                       idleText="Ingresar"
                       loadingText="Verificando..."
                       successText="¡Bienvenido!"
