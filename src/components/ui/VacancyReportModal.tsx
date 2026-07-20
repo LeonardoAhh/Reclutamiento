@@ -102,11 +102,18 @@ function toTitleCase(str: string): string {
 function buildWhatsappMessageBlock(
   title: string,
   groups: AreaGroup[],
-  type: 'general' | 'starlite'
+  type: 'general' | 'starlite',
+  excludeKeys?: ReadonlySet<string>
 ): string {
   const filteredGroups = groups.map(g => ({
     ...g,
-    rows: g.rows.filter(r => type === 'general' ? (r.vacantesAutorizada > 0 || r.vacantesBackup > 0 || r.proximosIngresos > 0) : (r.starliteUrgentes > 0))
+    rows: g.rows.filter(r => {
+      // Fix B2: en Starlite no repetir puestos ya listados en el bloque General.
+      if (excludeKeys?.has(`${r.area}|${r.seccion}|${r.puesto}`)) return false;
+      return type === 'general'
+        ? (r.vacantesAutorizada > 0 || r.vacantesBackup > 0 || r.proximosIngresos > 0)
+        : (r.starliteUrgentes > 0);
+    })
   })).filter(g => g.rows.length > 0);
 
   if (filteredGroups.length === 0) return '';
@@ -155,11 +162,22 @@ function buildWhatsappMessageBlock(
             cleanSeccion = cleanSeccion.substring(1).trim();
           }
         }
-        
-        let seccionLabel = r.turno && !cleanSeccion.toUpperCase().includes(r.turno)
-          ? `${cleanSeccion} (${r.turno})`
-          : r.turno ? r.turno : cleanSeccion || 'General';
-          
+
+        // Construir el label preservando toda la información:
+        //   · Sin sección → sólo turno (o "General").
+        //   · Sección sin turno → agregar el turno entre paréntesis.
+        //   · Sección que YA contiene el turno → usar la sección completa
+        //     (evita que la lógica anterior descarte "Calidad" de
+        //     "Calidad 1er. Turno").
+        let seccionLabel: string;
+        if (!cleanSeccion) {
+          seccionLabel = r.turno || 'General';
+        } else if (r.turno && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
+          seccionLabel = `${cleanSeccion} (${r.turno})`;
+        } else {
+          seccionLabel = cleanSeccion;
+        }
+
         seccionLabel = toTitleCase(seccionLabel);
 
         const detalle: string[] = [];
@@ -200,12 +218,29 @@ function buildWhatsappMessage(allGroups: AreaGroup[], dismissedKeys: Set<string>
   })).filter(g => g.rows.length > 0);
 
   const fecha = formatShortDate(new Date().toISOString());
-  
+
+  // Fix B2: recolectar las claves puesto/sección que ya salen en el bloque
+  // "Generales" para excluirlas del bloque "Starlite" (evita repetir la misma
+  // fila área/puesto/turno en ambos bloques).
+  const generalKeys = new Set<string>();
+  for (const g of groups) {
+    for (const r of g.rows) {
+      if (r.vacantesAutorizada > 0 || r.vacantesBackup > 0 || r.proximosIngresos > 0) {
+        generalKeys.add(`${r.area}|${r.seccion}|${r.puesto}`);
+      }
+    }
+  }
+
   const blocks: string[] = [];
   const generales = buildWhatsappMessageBlock(`*Resumen de Vacantes Generales* — ${fecha}`, groups, 'general');
   if (generales) blocks.push(generales);
 
-  const starlite = buildWhatsappMessageBlock(`*Resumen Proyecto Starlite*${!generales ? ` — ${fecha}` : ''}`, groups, 'starlite');
+  const starlite = buildWhatsappMessageBlock(
+    `*Resumen Proyecto Starlite*${!generales ? ` — ${fecha}` : ''}`,
+    groups,
+    'starlite',
+    generalKeys
+  );
   if (starlite) blocks.push(starlite);
 
   if (blocks.length === 0) {
