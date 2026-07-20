@@ -175,17 +175,28 @@ function buildWhatsappMessageBlock(
           }
         }
 
-        let seccionLabel = r.turno && !cleanSeccion.toUpperCase().includes(r.turno)
-          ? `${cleanSeccion} (${r.turno})`
-          : r.turno ? r.turno : cleanSeccion || 'General';
+        // Construir el label preservando toda la información:
+        //   · Sin sección → sólo turno (o "General").
+        //   · Sección sin turno → agregar el turno entre paréntesis.
+        //   · Sección que YA contiene el turno → usar la sección completa
+        //     (evita que la lógica anterior descarte "Calidad" de
+        //     "Calidad 1er. Turno").
+        let seccionLabel: string;
+        if (!cleanSeccion) {
+          seccionLabel = r.turno || 'General';
+        } else if (r.turno && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
+          seccionLabel = `${cleanSeccion} (${r.turno})`;
+        } else {
+          seccionLabel = cleanSeccion;
+        }
 
         seccionLabel = toTitleCase(seccionLabel);
 
         const detalle: string[] = [];
         if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`Docs: ${r.e2}`);
-        if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
-        if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
+        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
+        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
+        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
 
         lines.push(`   - ${seccionLabel}: ${r.total} activos (${detalle.join(' · ')})`);
       }
