@@ -651,7 +651,7 @@ export default function ReporteDiarioContent() {
             const updated = await fetchSummaries()
             setSavedSummaries(updated)
         } else {
-            setSaveError(result.message || "Error al guardar")
+            setSaveError(result.error || "Error al guardar")
         }
     }, [currentMonth, rows, dbSaving, computeKpis, saveReport, fetchSummaries])
 
