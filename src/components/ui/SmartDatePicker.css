@@ -2,8 +2,8 @@
 
 .smart-datepicker {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--spacing-xs);
   width: 100%;
 }

@@ -106,7 +106,7 @@
   top: auto;
   left: auto;
   width: auto;
-  z-index: 1200;
+  z-index: 10050;
 }
 
 /* Cuando no hay espacio suficiente abajo, el menú abre hacia arriba

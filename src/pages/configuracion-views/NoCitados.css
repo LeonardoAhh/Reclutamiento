@@ -46,6 +46,149 @@
   margin-top: var(--spacing-sm);
 }
 
+/* ── Chart Card (Recharts) ────────────────────────────────── */
+.no-citados-chart-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+  margin-bottom: var(--spacing-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.no-citados-chart-header {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 640px) {
+  .no-citados-chart-header {
+    flex-direction: row;
+    align-items: stretch;
+  }
+}
+
+.no-citados-chart-title-group {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+@media (min-width: 640px) {
+  .no-citados-chart-title-group {
+    padding-bottom: var(--spacing-lg);
+  }
+}
+
+.no-citados-chart-title {
+  font-size: var(--type-heading-3-size);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.no-citados-chart-description {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.no-citados-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-canvas);
+}
+
+@media (min-width: 640px) {
+  .no-citados-chart-legend {
+    border-top: none;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+.no-citados-chart-legend-item {
+  display: flex;
+  flex: 1;
+  min-width: 120px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-right: 1px solid var(--color-border);
+}
+
+.no-citados-chart-legend-item:last-child {
+  border-right: none;
+}
+
+.no-citados-chart-legend-color {
+  width: 12px;
+  height: 4px;
+  border-radius: var(--rounded-sm);
+}
+
+.no-citados-chart-legend-label {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-ink);
+  font-weight: var(--font-medium);
+}
+
+.no-citados-chart-content {
+  padding: var(--spacing-sm) var(--spacing-xs);
+}
+
+@media (min-width: 640px) {
+  .no-citados-chart-content {
+    padding: var(--spacing-lg);
+  }
+}
+
+.no-citados-chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 150px;
+}
+
+.no-citados-chart-tooltip-date {
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--spacing-xs);
+}
+
+.no-citados-chart-tooltip-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.no-citados-chart-tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-citados-chart-tooltip-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.no-citados-chart-tooltip-name {
+  flex: 1;
+  color: var(--color-muted);
+}
+
+.no-citados-chart-tooltip-value {
+  font-weight: var(--font-medium);
+  font-family: var(--font-mono);
+}
+
 /* ── Tabla: contenedor ─────────────────────────────────────── */
 .no-citados-table-container {
   background: var(--color-surface);
@@ -147,6 +290,72 @@
 /* Sin separador en la última fila */
 .no-citados-desktop-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* ── Badges y Tooltips para Tabla ──────────────────────────── */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--rounded-full);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.badge-pill--gray {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline-strong);
+}
+
+/* ── Animaciones para Iconos de Notas ───────────────────────── */
+.notas-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--rounded-full);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.notas-icon-wrapper.has-notas {
+  cursor: help;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.notas-icon-wrapper.has-notas:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-primary);
+}
+
+.notas-icon-wrapper.has-notas:hover .notas-icon {
+  animation: gentle-wiggle 0.5s ease-in-out;
+}
+
+.notas-icon-wrapper.empty-notas {
+  background-color: var(--color-canvas);
+  border-color: transparent;
+  color: var(--color-ink-faint);
+  opacity: 0.7;
+}
+
+.notas-icon-wrapper.empty-notas:hover {
+  opacity: 1;
+  background-color: var(--color-surface-soft);
+}
+
+@keyframes gentle-wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
 }
 
 /* Row hover suave — Notion barely-there */

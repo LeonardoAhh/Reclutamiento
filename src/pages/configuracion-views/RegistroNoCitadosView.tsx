@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Pencil, Trash2, MessageSquare, CheckCircle2, XCircle, Inbox } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Pencil, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, Info, FileSpreadsheet, Filter, X } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Modal } from '@/components/ui/Modal';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
+import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { NoCitadosChart } from './NoCitadosChart';
 import type { NoCitado } from '@/lib/types';
 import './NoCitados.css';
 
@@ -17,6 +22,15 @@ const MOTIVOS_OPTIONS = [
   { value: 'horario', label: 'Sin turno disponible' },
   { value: 'otro', label: 'Otro motivo' },
 ];
+
+const MOTIVOS_SHORT_LABELS: Record<string, string> = {
+  no_contesta: 'No contesta',
+  ya_trabaja: 'Ya trabaja',
+  distancia: 'Distancia',
+  sueldo: 'Sueldo',
+  horario: 'Horario',
+  otro: 'Otro',
+};
 
 const SUB_MOTIVOS_OPTIONS: Record<string, Array<{ value: string; label: string }>> = {
   no_contesta: [
@@ -45,9 +59,10 @@ const RECLUTADORES_OPTIONS = RECLUTADORES_ACTIVOS.map((r) => ({
   label: r.charAt(0) + r.slice(1).toLowerCase(),
 }));
 
-const ITEMS_PER_PAGE = 5;
-
 export function RegistroNoCitadosView() {
+  const isMobile = useIsMobile();
+  const ITEMS_PER_PAGE = isMobile ? 5 : 5;
+
   const { noCitados: records, addNoCitado, updateNoCitado, deleteNoCitado, loading } = useSupabaseData();
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,8 +81,23 @@ export function RegistroNoCitadosView() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const totalPages = Math.max(1, Math.ceil(records.length / ITEMS_PER_PAGE));
-  const paginatedRecords = records.slice(
+  const [filterDate, setFilterDate] = useState('');
+  const [filterReclutador, setFilterReclutador] = useState('');
+
+  const filteredRecords = useMemo(() => {
+    return records.filter((r) => {
+      const matchDate = filterDate ? r.fecha === filterDate : true;
+      const matchRec = filterReclutador ? r.reclutador === filterReclutador : true;
+      return matchDate && matchRec;
+    });
+  }, [records, filterDate, filterReclutador]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterDate, filterReclutador]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / ITEMS_PER_PAGE));
+  const paginatedRecords = filteredRecords.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -88,7 +118,7 @@ export function RegistroNoCitadosView() {
     }
 
     setStatus('loading');
-    
+
     let result;
     if (editingId) {
       result = await updateNoCitado(editingId, {
@@ -136,7 +166,7 @@ export function RegistroNoCitadosView() {
         if (onlyNums.length > 10) return prev; // Limit to 10 digits
         return { ...prev, [field]: onlyNums };
       }
-      
+
       // Auto-capitalize first letter of each word for nombre and apellido
       if (field === 'nombre' || field === 'apellido') {
         const capitalized = value
@@ -145,7 +175,7 @@ export function RegistroNoCitadosView() {
           .join(' ');
         return { ...prev, [field]: capitalized };
       }
-      
+
       if (field === 'motivo') {
         return { ...prev, motivo: value, subMotivo: '' };
       }
@@ -416,12 +446,81 @@ export function RegistroNoCitadosView() {
         </form>
       </Modal>
 
+      <NoCitadosChart data={filteredRecords} />
+
       <div className="no-citados-table-container">
         <div className="no-citados-table-header">
           <h3 className="type-heading-3 m-0">
-            Registros (<AnimatedNumber value={records.length} />)
+            Registros (<AnimatedNumber value={filteredRecords.length} />)
           </h3>
           <div className="no-citados-pagination">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="btn-secondary btn-icon"
+                  title="Filtrar"
+                  aria-label="Filtrar"
+                  style={{ marginRight: '4px', position: 'relative' }}
+                >
+                  <Filter size={16} className="color-primary" />
+                  {(filterDate || filterReclutador) && (
+                    <span style={{
+                      position: 'absolute', top: -2, right: -2, width: 8, height: 8,
+                      borderRadius: '50%', backgroundColor: 'var(--color-accent-orange)',
+                      border: '1px solid var(--color-surface)'
+                    }}></span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" style={{ width: 260, padding: 'var(--spacing-md)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="type-body-sm" style={{ fontWeight: 'var(--font-semibold)' }}>Filtros</span>
+                    {(filterDate || filterReclutador) && (
+                      <button
+                        className="btn-secondary btn-sm"
+                        style={{ padding: '4px 8px', fontSize: '12px', height: 'auto' }}
+                        onClick={() => { setFilterDate(''); setFilterReclutador(''); }}
+                      >
+                        Limpiar
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontSize: 'var(--type-caption-sm-size)' }}>Fecha de registro</label>
+                    <SmartDatePicker
+                      value={filterDate}
+                      onChange={setFilterDate}
+                      placeholder="Selecciona"
+                      presets="past"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontSize: 'var(--type-caption-sm-size)' }}>Reclutador</label>
+                    <CustomSelect
+                      id="filter-reclutador"
+                      value={filterReclutador}
+                      onChange={setFilterReclutador}
+                      options={RECLUTADORES_OPTIONS}
+                      placeholder="Todos"
+                    />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <button
+              type="button"
+              className="btn-secondary btn-icon"
+              title="Exportar a Excel"
+              aria-label="Exportar a Excel"
+              style={{ marginRight: 'var(--spacing-md)' }}
+            >
+              <FileSpreadsheet size={16} className="color-primary" />
+            </button>
             <button
               type="button"
               className="btn-secondary btn-icon"
@@ -465,17 +564,24 @@ export function RegistroNoCitadosView() {
                   </div>
                   <div className="no-citado-mobile-card__phone">{r.telefono}</div>
                   <div className="no-citado-mobile-card__meta">
-                    <span className="no-citado-mobile-card__motivo">
-                      {getMotivoLabel(r.motivo, r.sub_motivo || undefined)}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="badge-pill badge-pill--gray">
+                        {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
+                      </span>
+                      {r.sub_motivo && (
+                        <span style={{ fontSize: '12px', color: 'var(--color-ink-faint)' }}>
+                          {SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}
+                        </span>
+                      )}
+                    </div>
                     <span className="no-citado-mobile-card__reclutador">
                       {getReclutadorLabel(r.reclutador)}
                     </span>
                   </div>
                   {r.notas && (
-                    <div className="no-citado-mobile-card__notas">
-                      <MessageSquare size={12} style={{ marginTop: '2px', flexShrink: 0 }} />
-                      <span>{r.notas}</span>
+                    <div className="no-citado-mobile-card__notas" style={{ fontStyle: 'normal' }}>
+                      <MessageSquare size={14} className="color-primary" style={{ marginTop: '2px', flexShrink: 0 }} />
+                      <span style={{ fontSize: 'var(--type-caption-sm-size)' }}>{r.notas}</span>
                     </div>
                   )}
                   <div className="no-citado-mobile-card__actions">
@@ -502,7 +608,7 @@ export function RegistroNoCitadosView() {
                   <th>Teléfono</th>
                   <th>Reclutador</th>
                   <th>Motivo</th>
-                  <th>Notas</th>
+                  <th style={{ textAlign: 'center' }}>Notas</th>
                   <th style={{ textAlign: 'right' }}>Acciones</th>
                 </tr>
               </thead>
@@ -513,9 +619,30 @@ export function RegistroNoCitadosView() {
                     <td>{r.nombre} {r.apellido}</td>
                     <td>{r.telefono}</td>
                     <td>{getReclutadorLabel(r.reclutador)}</td>
-                    <td>{getMotivoLabel(r.motivo, r.sub_motivo || undefined)}</td>
-                    <td className="td-notas" title={r.notas || ''}>
-                      {r.notas || '-'}
+                    <td>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <span className="badge-pill badge-pill--gray">
+                          {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
+                        </span>
+                        {r.sub_motivo && (
+                          <Tooltip content={SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}>
+                            <Info size={14} className="color-ink-faint" style={{ cursor: 'help' }} />
+                          </Tooltip>
+                        )}
+                      </div>
+                    </td>
+                    <td className="td-notas" style={{ textAlign: 'center' }}>
+                      {r.notas ? (
+                        <Tooltip content={<div style={{ maxWidth: '250px', whiteSpace: 'pre-wrap', textAlign: 'left' }}>{r.notas}</div>}>
+                          <div className="notas-icon-wrapper has-notas">
+                            <MessageSquare size={14} className="color-primary notas-icon" />
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <div className="notas-icon-wrapper empty-notas" title="Sin notas">
+                          <MessageSquareDashed size={14} className="notas-icon" />
+                        </div>
+                      )}
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
