@@ -1,8 +1,8 @@
 {
-  "version": "0.4.7",
-  "fecha": "2026-07-19",
+  "version": "0.5.0.1",
+  "fecha": "2026-07-20",
   "nivel": "success",
   "titulo": "Nueva versión disponible",
-  "mensaje": "Correcciones de errores y mejoras de rendimiento.",
+  "mensaje": "Correcciones de errores, mejoras de rendimiento y actualizacion de rutas.",
   "notificar": true
 }

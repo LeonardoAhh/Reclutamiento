@@ -293,14 +293,11 @@ export function BusquedaView() {
           </span>
         )}
         {searchQuery.length < 2 ? (
-          <div className="config-initial-state">
-            <div className="config-initial-state__icon">
-              <Search size={32} color="var(--color-muted-soft)" aria-hidden="true" />
+          <div className="animated-empty-state">
+            <div className="animated-empty-state__icon">
+              <Search aria-hidden="true" />
             </div>
-            <h3 className="type-heading-md text-ink">Listo para buscar</h3>
-            <p className="type-body-md text-muted config-initial-state__copy">
-              Escribe el nombre, apellidos o número de nómina en la barra superior.
-            </p>
+            <div className="animated-empty-state__title">Listo para buscar</div>
           </div>
         ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">

@@ -9,6 +9,7 @@ import {
   Search,
   Sparkles,
   Wallet,
+  UserX,
   type LucideIcon,
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -18,9 +19,10 @@ import { IndicadoresView } from './configuracion-views/IndicadoresView';
 import { RutasView } from './configuracion-views/RutasView';
 import { TabuladorView } from './configuracion-views/TabuladorView';
 import { ToulouseView } from './configuracion-views/ToulouseView';
+import { RegistroNoCitadosView } from './configuracion-views/RegistroNoCitadosView';
 import './Configuracion.css';
 
-type FeatureId = 'busqueda' | 'documentos' | 'indicadores' | 'rutas' | 'tabulador' | 'toulouse';
+type FeatureId = 'busqueda' | 'documentos' | 'indicadores' | 'rutas' | 'tabulador' | 'toulouse' | 'nocitados';
 
 interface FeatureItem {
   id: FeatureId;
@@ -35,6 +37,7 @@ const FEATURES: FeatureItem[] = [
   { id: 'rutas', label: 'Rutas', icon: Bus },
   { id: 'tabulador', label: 'Tabulador', icon: Wallet },
   { id: 'toulouse', label: 'Toulouse', icon: ClipboardCheck },
+  { id: 'nocitados', label: 'No Citados', icon: UserX },
 ];
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
@@ -44,6 +47,7 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   rutas: <RutasView />,
   tabulador: <TabuladorView />,
   toulouse: <ToulouseView />,
+  nocitados: <RegistroNoCitadosView />,
 };
 
 export function Configuracion() {

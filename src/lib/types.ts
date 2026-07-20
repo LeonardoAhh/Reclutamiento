@@ -64,6 +64,22 @@ export interface Baja {
   cubierta_reclutador?: string | null;
 }
 
+/**
+ * Candidato que no fue citado a entrevista.
+ */
+export interface NoCitado {
+  id: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  motivo: string;
+  sub_motivo?: string | null;
+  reclutador: string;
+  notas?: string | null;
+  fecha: string;
+  created_at?: string;
+}
+
 /** Forma cruda del JSON de bajas (claves con espacios al final permitidas). */
 export interface BajaRaw {
   'Num Empleado'?: string;

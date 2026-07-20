@@ -1396,6 +1396,53 @@ code:not(pre code) {
 }
 
 /* ========================================
+   GLOBAL EMPTY STATE ANIMADO
+   ======================================== */
+.animated-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  color: var(--color-muted);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animated-empty-state__icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-hairline-strong);
+}
+
+.animated-empty-state__icon svg {
+  width: 100%;
+  height: 100%;
+  animation: floatEmpty 3s ease-in-out infinite;
+}
+
+.animated-empty-state__title {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-medium);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.animated-empty-state__subtitle {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  max-width: 300px;
+}
+
+@keyframes floatEmpty {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ========================================
    SCROLLBAR
    ======================================== */
 

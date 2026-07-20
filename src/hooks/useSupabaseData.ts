@@ -9,6 +9,7 @@ import type {
   PositionComment,
   TransporteAssignment,
   TurnoAssignment,
+  NoCitado,
 } from '@/lib/types';
 
 /**
@@ -54,6 +55,7 @@ const STORAGE_KEYS = {
    * haya re-fetcheado Supabase.
    */
   bajas: 'reclutamiento_bajas',
+  no_citados: 'reclutamiento_no_citados',
 };
 
 function loadLocal<T>(key: string, fallback: T): T {
@@ -99,6 +101,9 @@ export function useSupabaseData() {
   const [comments, setComments] = useState<PositionComment[]>(() =>
     loadLocal(STORAGE_KEYS.comments, [])
   );
+  const [noCitados, setNoCitados] = useState<NoCitado[]>(() =>
+    loadLocal(STORAGE_KEYS.no_citados, [])
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -115,21 +120,27 @@ export function useSupabaseData() {
       try {
         setLoading(true);
 
-        const [empResult, commResult] = await Promise.all([
+        const [empResult, commResult, noCitadosResult] = await Promise.all([
           supabase.from('empleados').select('*'),
           supabase.from('comentarios_reclutamiento').select('*'),
+          supabase.from('no_citados').select('*').order('created_at', { ascending: false }),
         ]);
 
         if (empResult.error) throw empResult.error;
         if (commResult.error) throw commResult.error;
+        if (noCitadosResult.error) throw noCitadosResult.error;
 
         const empData = empResult.data as Employee[];
         const commData = commResult.data as PositionComment[];
+        const noCitadosData = noCitadosResult.data as NoCitado[];
 
         setEmployees(empData);
         setComments(commData);
+        setNoCitados(noCitadosData);
+        
         saveLocal(STORAGE_KEYS.employees, empData);
         saveLocal(STORAGE_KEYS.comments, commData);
+        saveLocal(STORAGE_KEYS.no_citados, noCitadosData);
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase fetch failed, using localStorage:', msg, err);
@@ -565,6 +576,113 @@ export function useSupabaseData() {
     }
   }, [isConfigured, comments]);
 
+  /** Insert a NoCitado record. */
+  const addNoCitado = useCallback(async (record: Omit<NoCitado, 'id'>): Promise<{ ok: boolean; message?: string }> => {
+    // Generate a local ID for optimistic update
+    const id = crypto.randomUUID();
+    const newRecord: NoCitado = {
+      ...record,
+      id,
+      created_at: new Date().toISOString(),
+    };
+
+    const updated = [newRecord, ...noCitados];
+    setNoCitados(updated);
+    saveLocal(STORAGE_KEYS.no_citados, updated);
+
+    if (!isConfigured) {
+      flashSaved();
+      return { ok: true };
+    }
+
+    try {
+      setSaveStatus('saving');
+      const { error: err } = await supabase
+        .from('no_citados')
+        .insert(newRecord);
+      if (err) throw err;
+      flashSaved();
+      return { ok: true };
+    } catch (err) {
+      const message = formatSupabaseError(err);
+      console.warn('Supabase insert failed, reverting local insert:', message, err);
+      setNoCitados(noCitados);
+      saveLocal(STORAGE_KEYS.no_citados, noCitados);
+      setSaveStatus('error');
+      return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+    }
+  }, [isConfigured, noCitados]);
+
+  /** Update an existing NoCitado record. */
+  const updateNoCitado = useCallback(
+    async (id: string, fields: Partial<NoCitado>): Promise<{ ok: boolean; message?: string }> => {
+      const idx = noCitados.findIndex((r) => r.id === id);
+      if (idx < 0) return { ok: false, message: 'Registro no encontrado.' };
+
+      const updated = noCitados.slice();
+      updated[idx] = { ...updated[idx], ...fields };
+      setNoCitados(updated);
+      saveLocal(STORAGE_KEYS.no_citados, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('no_citados')
+          .update(fields)
+          .eq('id', id);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('Supabase update failed, reverting local change:', message, err);
+        setNoCitados(noCitados);
+        saveLocal(STORAGE_KEYS.no_citados, noCitados);
+        setSaveStatus('error');
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      }
+    },
+    [isConfigured, noCitados]
+  );
+
+  /** Delete a NoCitado record. */
+  const deleteNoCitado = useCallback(
+    async (id: string): Promise<{ ok: boolean; message?: string }> => {
+      const updated = noCitados.filter((r) => r.id !== id);
+      setNoCitados(updated);
+      saveLocal(STORAGE_KEYS.no_citados, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('no_citados')
+          .delete()
+          .eq('id', id);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('Supabase delete failed, reverting local change:', message, err);
+        setNoCitados(noCitados);
+        saveLocal(STORAGE_KEYS.no_citados, noCitados);
+        setSaveStatus('error');
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      }
+    },
+    [isConfigured, noCitados]
+  );
+
   /**
    * Destructivo: borra TODOS los empleados de Supabase y limpia el caché
    * local. Pensado para el botón de "Borrar plantilla" del Dashboard. El
@@ -885,6 +1003,7 @@ export function useSupabaseData() {
   return {
     employees,
     comments,
+    noCitados,
     loading,
     error,
     isConfigured,
@@ -900,5 +1019,8 @@ export function useSupabaseData() {
     purgeAllEmployees,
     assignTransporte,
     assignTurnos,
+    addNoCitado,
+    updateNoCitado,
+    deleteNoCitado,
   };
 }

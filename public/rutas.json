@@ -8,14 +8,6 @@
     "parada": "PARADA EN LA IGLESIA"
   },
   {
-    "numero empleado": "54",
-    "nombre": "URIAS SANCHEZ ARMANDO",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
     "numero empleado": "645",
     "nombre": "PACHECO CORDOBA MA DE LOS ANGELES",
     "turno": "1",
@@ -113,7 +105,7 @@
   },
   {
     "numero empleado": "1671",
-    "nombre": "AMADOR FRANCO IVAN GUILLERMO ",
+    "nombre": "AMADOR FRANCO IVAN GUILLEERMO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
@@ -1466,7 +1458,7 @@
   {
     "numero empleado": "4040",
     "nombre": "VAZQUEZ IRETA SOFIA GUADALUPE ",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
@@ -2216,14 +2208,6 @@
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
-    "numero empleado": "4257",
-    "nombre": "MENDOZA RAMIREZ MINERLI JAZMIN",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "5 E FEBRERO ",
-    "parada": "PARADA EN EL PUENTE PEOATONAL DE TREMEC"
-  },
-  {
     "numero empleado": "4259",
     "nombre": "BECERRA NUÑEZ SUSANA",
     "turno": "2",
@@ -2256,20 +2240,20 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
+    "numero empleado": "4265",
+    "nombre": "RIVERA MONROY SELENE",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "AV. PEDREGAL",
+    "parada": "SEGUNDA PARADA DE CAMIONES"
+  },
+  {
     "numero empleado": "4267",
     "nombre": "MARTINEZ FLORES ARELY GUADALUPE",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
-  },
-  {
-    "numero empleado": "4269",
-    "nombre": "GUTIERREZ ROBLES BERENICE",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ ",
-    "parada": "PARADA EN EL PUENTE PEATONAL"
   },
   {
     "numero empleado": "4270",
@@ -2328,11 +2312,35 @@
     "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
-    "numero empleado": "4265",
-    "nombre": "RIVERA MONROY SELENE",
+    "numero empleado": "4279",
+    "nombre": "LOPEZ MONROY ERIKA YANEI",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4280",
+    "nombre": "ARREDONDO MENDOZA MA. GUADALUPE",
     "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "AV. PEDREGAL",
-    "parada": "SEGUNDA PARADA DE CAMIONES"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "BUENAVISTA",
+    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
+  },
+  {
+    "numero empleado": "4281",
+    "nombre": "LAZARO VELAZQUEZ MARIA CONCEPCION",
+    "turno": "3",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+  },
+  {
+    "numero empleado": "4282",
+    "nombre": "CHAVEZ ALONSO NADIA VANESSA",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
   }
 ]

@@ -1,0 +1,301 @@
+/* ══════════════════════════════════════════════════════════════
+   Registro de No Citados — estilos alineados a design.md
+   Tokens: --color-*, --spacing-*, --rounded-*, --shadow-*,
+   --type-*, --tracking-*
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Vista general ─────────────────────────────────────────── */
+.no-citados-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* ── Form card (legacy, por si se usa fuera del modal) ─────── */
+.no-citados-form-card {
+  background: var(--color-surface);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-hairline);
+  max-width: 600px;
+  width: 100%;
+}
+
+.no-citados-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 480px) {
+  .no-citados-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Inputs del modal: {rounded.xs} = 4px (design.md, nunca pill) */
+.no-citados-form .form-group input,
+.no-citados-form .form-group select,
+.no-citados-form .custom-select-trigger {
+  border-radius: var(--rounded-xs);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm);
+}
+
+/* ── Teléfono: wrapper + iconos de validación ──────────────── */
+.phone-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.phone-validation-icon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.phone-validation-icon.valid  { color: var(--color-success); }
+.phone-validation-icon.invalid { color: var(--color-error);  }
+
+.input-error {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 1px var(--color-error) !important;
+}
+
+/* ── Tabla: contenedor ─────────────────────────────────────── */
+.no-citados-table-container {
+  background: var(--color-surface);
+  border-radius: var(--rounded-lg);
+  /* Level 1: hairline + barely-there shadow */
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-xs);
+  width: 100%;
+  overflow: hidden;         /* evita que tabla desborde el rounded */
+}
+
+/* ── Tabla: encabezado (título + paginación) ───────────────── */
+.no-citados-table-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-hairline);
+  flex-wrap: wrap;
+}
+
+/* ── Paginación ────────────────────────────────────────────── */
+.no-citados-pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.no-citados-pagination__label {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  color: var(--color-muted);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+}
+
+/* ── Botones icono (paginación + acciones de fila) ─────────── */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-md);
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.btn-icon:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Vista Desktop: tabla tradicional ──────────────────────── */
+.no-citados-desktop-table {
+  display: none;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.no-citados-desktop-table th {
+  text-align: left;
+  padding: var(--spacing-sm) var(--spacing-xl);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+
+  /* Eyebrow / caption-uppercase — design.md */
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.no-citados-desktop-table td {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-hairline-soft);
+
+  /* body-sm — design.md */
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-body);
+  vertical-align: middle;
+}
+
+/* Sin separador en la última fila */
+.no-citados-desktop-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row hover suave — Notion barely-there */
+.no-citados-desktop-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.no-citados-desktop-table tbody tr:hover {
+  background: var(--color-surface-soft);
+}
+
+/* Columna de acciones: alineada a la derecha */
+.no-citados-desktop-table th:last-child,
+.no-citados-desktop-table td:last-child {
+  text-align: right;
+}
+
+/* Columna Notas: truncar en una línea */
+.no-citados-desktop-table .td-notas {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Vista Móvil: tarjetas ─────────────────────────────────── */
+.no-citados-mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+}
+
+.no-citado-mobile-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline-soft);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.no-citado-mobile-card:hover {
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Nombre + fecha */
+.no-citado-mobile-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.no-citado-mobile-card__name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-semibold);
+  color: var(--color-ink);
+  line-height: var(--type-body-sm-line);
+}
+
+.no-citado-mobile-card__date {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Teléfono */
+.no-citado-mobile-card__phone {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+/* Motivo + reclutador */
+.no-citado-mobile-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.no-citado-mobile-card__motivo {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-medium);
+  color: var(--color-primary);
+}
+
+.no-citado-mobile-card__reclutador {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+/* Notas */
+.no-citado-mobile-card__notas {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: flex-start;
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+  font-style: italic;
+  margin-top: var(--spacing-xs);
+}
+
+/* Divider + botones de acción */
+.no-citado-mobile-card__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+/* ── Responsive: qué mostrar según breakpoint ──────────────── */
+@media (min-width: 768px) {
+  .no-citados-mobile-list {
+    display: none;
+  }
+
+  .no-citados-desktop-table {
+    display: table;
+  }
+}
+
+
