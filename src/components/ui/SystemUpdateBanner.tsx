@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info, CheckCircle2, Wrench, X, RefreshCw } from 'lucide-react';
+import { Info, CheckCircle2, Wrench, RefreshCw, Download } from 'lucide-react';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
+import { AnimatedSubmitButton } from './AnimatedSubmitButton';
 import './SystemUpdateBanner.css';
 
 const LEVEL_ICON: Record<SystemNotiLevel, typeof Info> = {
@@ -30,27 +32,34 @@ export function SystemUpdateBanner() {
   const Icon = LEVEL_ICON[level];
   const requiresReload = level === 'mantenimiento';
 
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const handleReload = () => {
-    dismiss();
-    if (swUpdateFn) {
-      swUpdateFn();
-    } else {
-      window.location.reload();
-    }
+    setIsUpdating(true);
+    setTimeout(() => {
+      dismiss();
+      if (swUpdateFn) {
+        swUpdateFn();
+      } else {
+        window.location.reload();
+      }
+    }, 1200);
   };
 
   return (
     <AnimatePresence>
       {visible && info && (
+        <div className="system-update-overlay">
           <motion.aside
             key={info.version}
             className={`system-update system-update--${level}`}
-            role="status"
-            aria-live="polite"
-            initial={{ y: 50, opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+            role="alertdialog"
+            aria-modal="true"
+            aria-live="assertive"
+            initial={{ y: 20, opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
             animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ y: 30, opacity: 0, scale: 0.9, filter: 'blur(10px)', transition: { duration: 0.2 } }}
-            transition={{ type: 'spring', damping: 20, stiffness: 400, mass: 0.8 }}
+            exit={{ y: 20, opacity: 0, scale: 0.95, filter: 'blur(10px)', transition: { duration: 0.2 } }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.8 }}
             data-testid="system-update-banner"
           >
             <div className="system-update__icon-wrapper">
@@ -59,55 +68,32 @@ export function SystemUpdateBanner() {
               </span>
             </div>
 
-          <div className="system-update__body">
-            <div className="system-update__heading">
-              <strong className="system-update__title">{info.titulo}</strong>
-              <span className="system-update__tag">
-                {LEVEL_LABEL[level]} · v{info.version}
-              </span>
+            <div className="system-update__body">
+              <div className="system-update__heading">
+                <strong className="system-update__title">{info.titulo}</strong>
+                <span className="system-update__tag">
+                  {LEVEL_LABEL[level]} · v{info.version}
+                </span>
+              </div>
+              {info.mensaje && (
+                <p className="system-update__desc">{info.mensaje}</p>
+              )}
+              
+              {/* Update Action Button placed below the text */}
+              <div className="system-update__action-container">
+                <AnimatedSubmitButton
+                  isSubmitting={false}
+                  isSuccess={isUpdating}
+                  idleText={requiresReload ? 'Actualizar y recargar' : 'Actualizar app'}
+                  successText="Actualizando..."
+                  idleIcon={requiresReload ? RefreshCw : Download}
+                  onClick={handleReload}
+                  className={requiresReload ? 'system-update__action system-update__action--mantenimiento' : 'system-update__btn-update'}
+                />
+              </div>
             </div>
-            {info.mensaje && (
-              <p className="system-update__desc">{info.mensaje}</p>
-            )}
-            
-            {/* Update Action Button placed below the text */}
-            {!requiresReload && (
-              <div className="system-update__action-container">
-                <button
-                  type="button"
-                  className="system-update__btn-update"
-                  onClick={handleReload}
-                >
-                  Actualizar app
-                </button>
-              </div>
-            )}
-            
-            {requiresReload && (
-              <div className="system-update__action-container">
-                <button
-                  type="button"
-                  className="system-update__action system-update__action--mantenimiento"
-                  onClick={handleReload}
-                  data-testid="system-update-reload"
-                >
-                  <RefreshCw size={14} aria-hidden="true" />
-                  Actualizar y recargar
-                </button>
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="system-update__close"
-            onClick={dismiss}
-            aria-label="Entendido, cerrar aviso"
-            data-testid="system-update-dismiss"
-          >
-            <X size={16} aria-hidden="true" />
-          </button>
-        </motion.aside>
+          </motion.aside>
+        </div>
       )}
     </AnimatePresence>
   );

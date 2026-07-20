@@ -5,24 +5,33 @@
    Niveles: cada modificador setea --su-accent + --su-tint semánticos.
    ================================================================ */
 
+.system-update-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  pointer-events: auto; /* Bloquea clics debajo */
+}
+
 .system-update {
   /* Color por nivel (default = info). Los modificadores lo sobreescriben. */
   --su-accent: var(--color-accent-teal);
   --su-tint: rgba(var(--color-accent-teal-rgb), 0.15);
 
-  position: fixed;
-  z-index: 1100;
-
-  /* Mobile-first: barra inferior full-width, respeta safe-area + tab bar */
-  left: var(--spacing-md);
-  right: var(--spacing-md);
-  bottom: calc(var(--safe-area-bottom) + var(--tab-bar-height) + var(--spacing-md));
-
+  position: relative; /* Cambiado a relativo dentro del overlay flex */
+  width: min(420px, 100%);
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-md);
 
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-xl);
 
   /* Glassmorphism & Shadows */
   background: rgba(255, 255, 255, 0.85);
@@ -63,33 +72,38 @@
 }
 
 .system-update__btn-update {
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline-strong);
-  color: var(--color-ink);
+  background: var(--su-accent);
+  border: 1px solid var(--su-accent);
+  color: var(--color-on-primary, #ffffff);
   font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: var(--rounded-md);
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--rounded-full);
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: transform 0.2s, filter 0.2s;
+  box-shadow: 0 4px 12px var(--su-tint);
+  animation: btn-update-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
 }
 
 .system-update__btn-update:hover {
-  background: var(--color-surface-soft);
-  border-color: var(--color-muted-soft);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
-[data-theme="dark"] .system-update__btn-update {
-  background: var(--color-surface-dark);
-  color: var(--color-on-dark);
+@keyframes btn-update-pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--su-accent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
 }
 
-[data-theme="dark"] .system-update__btn-update:hover {
-  background: var(--color-surface-dark-elevated);
-  border-color: var(--color-muted);
-}
+/* ── Dark Mode Adaptations ya no afectan al botón sólido ── */
 
 /* ── Icono ────────────────────────────────────────────────────── */
 .system-update__icon-wrapper {
@@ -210,18 +224,19 @@
   border: none;
   border-radius: var(--rounded-full);
   background: var(--su-accent);
-  color: var(--color-on-primary);
+  color: var(--color-on-primary, #ffffff);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-strong-size);
   font-weight: var(--type-body-sm-strong-weight);
   line-height: var(--type-body-sm-strong-line);
   white-space: nowrap;
   cursor: pointer;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  transition: filter var(--transition-fast), transform var(--transition-fast);
+  animation: btn-update-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
 }
 
 .system-update__action:hover {
-  opacity: 0.9;
+  filter: brightness(1.1);
 }
 
 .system-update__action:active {
@@ -236,10 +251,12 @@
 /* ── Desktop / pantallas grandes: tarjeta flotante a la derecha ── */
 @media (min-width: 768px) {
   .system-update {
-    left: auto;
-    right: var(--spacing-lg);
-    bottom: calc(var(--safe-area-bottom) + var(--spacing-lg));
-    width: min(420px, calc(100vw - var(--spacing-lg) * 2));
+    flex-direction: row; /* En desktop icono al lado */
+    align-items: flex-start;
+  }
+  
+  .system-update__icon-wrapper {
+    margin-top: 2px;
   }
 }
 
