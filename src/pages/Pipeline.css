@@ -693,10 +693,153 @@
     box-shadow var(--transition-fast);
 }
 
+/* ── Banner Flotante Búsqueda ── */
+.pipeline__search-banner {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 12px;
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  padding: 6px 12px;
+  border-radius: var(--rounded-full);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  pointer-events: none;
+  min-width: 250px;
+  justify-content: center;
+}
+
+.pipeline__search-banner-text {
+  animation: slideUpFadeBanner 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
+}
+
+@keyframes slideUpFadeBanner {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pipeline__search-banner-arrow {
+  position: absolute;
+  bottom: -4px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-ink);
+  transform: rotate(45deg);
+}
+
+@media (max-width: 768px) {
+  .pipeline__search-banner {
+    display: none;
+  }
+}
+
 .pipeline__search-input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: var(--shadow-focus);
+}
+
+/* ── Búsqueda Dropdown ── */
+.pipeline__search-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-xs));
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-level-2);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+  animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Evita que herede justify-content: space-between o center de botones globales */
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-hairline);
+  transition: background-color 0.15s ease;
+}
+
+.search-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.search-dropdown-item:hover,
+.search-dropdown-item:focus {
+  background-color: var(--color-canvas-soft);
+  outline: none;
+}
+
+.search-dropdown-item__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary-faint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--type-caption-sm-size);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.search-dropdown-item__text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md);
+  overflow: hidden;
+  flex: 1;
+}
+
+.search-dropdown-item__text strong {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-dropdown-item__info {
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.search-dropdown-item__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--color-muted-soft);
+  font-size: var(--type-body-sm-size);
 }
 
 .pipeline__count {
@@ -2173,7 +2316,93 @@
     padding: 2px 6px;
     background: var(--color-surface-soft);
     border-radius: var(--rounded-sm);
-  }
+}
+
+/* ── Quick Profile Mini Modal (Minimalista) ── */
+.quick-profile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; /* Overlay invisible para no distraer */
+}
+
+.quick-profile-card {
+  background-color: #1a1a1c; /* Fondo oscuro muy elegante */
+  color: white;
+  padding: 12px 16px 12px 24px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.quick-profile__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-profile__info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f1f1f1;
+  letter-spacing: -0.01em;
+}
+
+.quick-profile__info p {
+  margin: 0;
+  font-size: 13px;
+  color: #a1a1aa;
+}
+
+.quick-profile__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff512f, #dd2476); /* Gradiente vibrante tipo instagram */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.quick-profile__edit-btn {
+  position: absolute;
+  right: -40px;
+  background: #1a1a1c;
+  color: #a1a1aa;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.quick-profile-card:hover .quick-profile__edit-btn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.quick-profile__edit-btn:hover {
+  color: white;
+  background: #2a2a2c;
 }
 
 @media (prefers-reduced-motion: reduce) {

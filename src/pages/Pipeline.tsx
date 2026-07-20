@@ -27,9 +27,11 @@ import {
   Star,
   Pencil,
   Trash2,
+  Info,
 } from 'lucide-react';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, sileo } from '@/lib/notify';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
@@ -103,6 +105,31 @@ const VinoplasticBadge = () => (
   </span>
 );
 
+const SEARCH_TIPS = [
+  "✨ Verifica si un teléfono ya está registrado",
+  "💡 Pega el número de teléfono del candidato",
+];
+
+function SearchBanner() {
+  const [tipIndex, setTipIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTipIndex((current) => (current + 1) % SEARCH_TIPS.length);
+    }, 4000); // Cambia cada 4 segundos
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="pipeline__search-banner">
+      <span key={tipIndex} className="pipeline__search-banner-text">
+        {SEARCH_TIPS[tipIndex]}
+      </span>
+      <div className="pipeline__search-banner-arrow"></div>
+    </div>
+  );
+}
+
 export function Pipeline() {
   const {
     candidates,
@@ -127,6 +154,7 @@ export function Pipeline() {
   const ITEMS_PER_PAGE = 10;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
+  const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
   const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
@@ -269,7 +297,6 @@ export function Pipeline() {
   }, [candidates]);
 
   const filtered = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
     // Filtros de rango anclados a TZ MX para evitar desfases del visor.
     const desde = startOfDayMxMs(filters.fechaDesde);
     const hasta = endOfDayMxMs(filters.fechaHasta);
@@ -282,12 +309,6 @@ export function Pipeline() {
       if (filters.source && (c.source ?? '') !== filters.source) return false;
 
       if (desde || hasta) {
-        // Filtramos por **fecha de entrevista** (`fecha_cita`).
-        // El valor guardado puede venir como `YYYY-MM-DD` (date) o como
-        // `YYYY-MM-DDTHH:MM` (datetime-local sin TZ): en ambos casos
-        // representa hora local MX. Nos quedamos con el día calendario
-        // y lo comparamos contra los bordes MX (start/endOfDayMxMs ya
-        // anclados a UTC-6) → comparación TZ-agnóstica.
         if (!c.fecha_cita) return false;
         const dayStr = String(c.fecha_cita).slice(0, 10);
         const ts = startOfDayMxMs(dayStr);
@@ -295,23 +316,53 @@ export function Pipeline() {
         if (desde && ts < desde) return false;
         if (hasta && ts > hasta) return false;
       }
-
-      if (q) {
-        const haystack = [c.nombre, c.puesto, c.area, c.reclutador, c.source, c.email]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
-
       return true;
     });
-  }, [candidates, searchTerm, filters]);
+  }, [candidates, filters]);
+
+  // Resultados exclusivos para el Dropdown de Búsqueda
+  const searchResults = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return [];
+
+    const digitsOnly = q.replace(/\D/g, '');
+    const isPhoneQuery = digitsOnly.length >= 10;
+    const phoneToSearch = isPhoneQuery ? digitsOnly.slice(-10) : digitsOnly;
+    const isNumericQuery = digitsOnly.length > 0 && q.replace(/[\s-]/g, '') === digitsOnly;
+
+    return candidates.filter((c) => {
+      const telStr = c.telefono ? String(c.telefono) : '';
+      const cleanTel = telStr.replace(/\D/g, '');
+
+      const haystack = [
+        c.nombre,
+        c.puesto,
+        c.area,
+        c.reclutador,
+        c.source,
+        c.email,
+        telStr,
+        cleanTel
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      // Búsqueda estricta de teléfono
+      if (isPhoneQuery) {
+        return cleanTel.includes(phoneToSearch) || haystack.includes(phoneToSearch);
+      }
+
+      if (isNumericQuery) {
+        return cleanTel.includes(digitsOnly) || haystack.includes(digitsOnly);
+      }
+
+      // Búsqueda normal de texto
+      return haystack.includes(q);
+    }).slice(0, 5); // Limitamos a 5 resultados
+  }, [candidates, searchTerm]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filters]);
+  }, [filters]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginatedCandidates = filtered.slice(
@@ -432,7 +483,7 @@ export function Pipeline() {
             <Skeleton height={100} radius="var(--rounded-xl)" style={{ marginBottom: '12px' }} />
             <Skeleton height={100} radius="var(--rounded-xl)" style={{ marginBottom: '12px' }} />
           </aside>
-          
+
           <div className="pipeline__main">
             <section className="pipeline__controls">
               <Skeleton
@@ -445,7 +496,7 @@ export function Pipeline() {
                 <Skeleton width={80} height={32} radius="16px" />
               </div>
             </section>
-            
+
             <SkeletonTable
               rows={8}
               columns={['26%', '22%', '20%', '18%', '14%']}
@@ -594,22 +645,61 @@ export function Pipeline() {
 
           {/* ── Search ── */}
           <section className="pipeline__controls">
-            <div className="pipeline__search">
-              <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
-              <label htmlFor="pipeline-search" className="sr-only">
-                Buscar candidato
-              </label>
-              <input
-                id="pipeline-search"
-                type="search"
-                inputMode="search"
-                placeholder="Buscar por nombre, puesto, área, reclutador, fuente…"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pipeline__search-input"
-                autoComplete="off"
-              />
+            <div style={{ position: 'relative', flex: '1 1 260px', zIndex: 100 }}>
+              {/* Banner flotante de nueva función rotativo */}
+              <SearchBanner />
+
+              <div className="pipeline__search" style={{ width: '100%' }}>
+                <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
+                <label htmlFor="pipeline-search" className="sr-only">
+                  Buscar candidato
+                </label>
+                <input
+                  id="pipeline-search"
+                  type="search"
+                  inputMode="search"
+                  placeholder="Buscar por nombre, puesto, teléfono..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pipeline__search-input"
+                  autoComplete="off"
+                />
+
+                {/* ── Dropdown de Resultados ── */}
+                {searchTerm.trim().length > 0 && (
+                  <div className="pipeline__search-dropdown">
+                    {searchResults.length > 0 ? (
+                      searchResults.map(c => (
+                        <button
+                          key={c.id}
+                          className="search-dropdown-item"
+                          onClick={() => {
+                            setSearchTerm('');
+                            setQuickProfile(c);
+                          }}
+                        >
+                          <div className="search-dropdown-item__avatar">
+                            {(c.nombre ?? '?').charAt(0)}
+                          </div>
+                          <div className="search-dropdown-item__text">
+                            <strong>{c.nombre}</strong>
+                            <span className="search-dropdown-item__info">
+                              {c.telefono} • {c.reclutador}
+                            </span>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="search-dropdown-item__empty">
+                        <UserX size={16} />
+                        <span>No hay coincidencias</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
+
             <span className="pipeline__count">
               {filtered.length} de {candidates.length}
             </span>
@@ -682,32 +772,27 @@ export function Pipeline() {
                   </button>
                 </>
               ) : (
-                <>
-                  <h2>Sin resultados</h2>
-                  <p>Ningún candidato coincide con la búsqueda o los filtros actuales.</p>
-                  <div className="pipeline__empty-actions">
-                    {searchTerm && (
-                      <button
-                        type="button"
-                        className="btn-secondary"
-                        onClick={() => setSearchTerm('')}
-                        title="Limpiar búsqueda"
-                      >
-                        <UserX size={16} aria-hidden="true" />
-                      </button>
-                    )}
-                    {activeFiltersCount > 0 && (
-                      <button
-                        type="button"
-                        className="btn-secondary"
-                        onClick={resetFilters}
-                        title="Limpiar filtros"
-                      >
-                        <SlidersHorizontal size={16} aria-hidden="true" />
-                      </button>
-                    )}
+                <div className="animated-empty-state" style={{ marginTop: 'var(--spacing-xxl)' }}>
+                  <div className="animated-empty-state__icon">
+                    <UserX aria-hidden="true" />
                   </div>
-                </>
+                  <div className="animated-empty-state__title">Sin resultados</div>
+                  <div style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-sm-size)', marginTop: '4px' }}>
+                    Ningún candidato coincide con los filtros actuales.
+                  </div>
+                  {activeFiltersCount > 0 && (
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={resetFilters}
+                      title="Limpiar filtros"
+                      style={{ marginTop: 'var(--spacing-md)' }}
+                    >
+                      <SlidersHorizontal size={16} aria-hidden="true" />
+                      Limpiar filtros
+                    </button>
+                  )}
+                </div>
               )}
             </section>
           ) : (
@@ -842,8 +927,8 @@ export function Pipeline() {
                           className="pipeline__whatsapp-link"
                           title="Enviar WhatsApp"
                           initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ 
-                            opacity: 1, 
+                          animate={{
+                            opacity: 1,
                             scale: 1,
                             boxShadow: [
                               "0px 0px 0px 0px rgba(0, 0, 0, 0)",
@@ -853,7 +938,7 @@ export function Pipeline() {
                           }}
                           whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
                           whileTap={{ scale: 0.95 }}
-                          transition={{ 
+                          transition={{
                             opacity: { duration: 0.2 },
                             scale: { type: 'spring', stiffness: 400, damping: 15 },
                             boxShadow: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }
@@ -879,8 +964,8 @@ export function Pipeline() {
                           data-source={normalizeString(c.source).toLowerCase()}
                           title={`Fuente: ${c.source}`}
                           initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ 
-                            opacity: 1, 
+                          animate={{
+                            opacity: 1,
                             scale: 1,
                             boxShadow: [
                               "0px 0px 0px 0px rgba(0, 0, 0, 0)",
@@ -890,7 +975,7 @@ export function Pipeline() {
                           }}
                           whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
                           whileTap={{ scale: 0.95 }}
-                          transition={{ 
+                          transition={{
                             opacity: { duration: 0.2 },
                             scale: { type: 'spring', stiffness: 400, damping: 15 },
                             boxShadow: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
@@ -923,8 +1008,8 @@ export function Pipeline() {
                             className="pipeline__status-tag"
                             data-status={c.status}
                             initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ 
-                              opacity: 1, 
+                            animate={{
+                              opacity: 1,
                               scale: 1,
                               boxShadow: [
                                 "0px 0px 0px 0px rgba(0, 0, 0, 0)",
@@ -934,7 +1019,7 @@ export function Pipeline() {
                             }}
                             whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
                             whileTap={{ scale: 0.95 }}
-                            transition={{ 
+                            transition={{
                               opacity: { duration: 0.2 },
                               scale: { type: 'spring', stiffness: 400, damping: 15 },
                               boxShadow: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }
@@ -1045,8 +1130,8 @@ export function Pipeline() {
       {/* ── Drill-down Detail View (Mobile) ── */}
       {selectedMobileCandidate && (
         <div className="pipeline-mobile-detail-container">
-          <button 
-            className="config-mobile-back" 
+          <button
+            className="config-mobile-back"
             onClick={() => setSelectedMobileCandidate(null)}
             aria-label="Volver a Candidatos"
           >
@@ -1095,7 +1180,7 @@ export function Pipeline() {
                   <span className="pipeline-mobile-detail__info-value">{selectedMobileCandidate.reclutador || '—'}</span>
                 </div>
               </div>
-              
+
               <div className="pipeline-mobile-detail__info-item">
                 <CalendarDays size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
@@ -1213,6 +1298,36 @@ export function Pipeline() {
               </div>
             </div>
           </article>
+        </div>
+      )}
+
+      {/* ── Quick Profile (Mini Modal Minimalista) ── */}
+      {quickProfile && (
+        <div className="quick-profile-overlay" onClick={() => setQuickProfile(null)}>
+          <div
+            className="quick-profile-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="quick-profile__info">
+              <h3>{quickProfile.nombre}</h3>
+              <p>{quickProfile.telefono} • {quickProfile.puesto}</p>
+            </div>
+            <div className="quick-profile__avatar">
+              {(quickProfile.nombre ?? '?').charAt(0)}
+            </div>
+
+            <button
+              className="quick-profile__edit-btn"
+              onClick={() => {
+                const target = quickProfile;
+                setQuickProfile(null);
+                openEdit(target);
+              }}
+              title="Editar candidato"
+            >
+              <Pencil size={14} />
+            </button>
+          </div>
         </div>
       )}
 
