@@ -129,30 +129,6 @@ export default defineConfig({
     allowedHosts: true,
   },
   build: {
-    chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'vendor-react';
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
-            }
-            if (id.includes('@supabase')) {
-              return 'vendor-supabase';
-            }
-            if (id.includes('html2canvas')) {
-              return 'vendor-html2canvas';
-            }
-            if (id.includes('jspdf')) {
-              return 'vendor-jspdf';
-            }
-            return 'vendor'; // el resto de dependencias
-          }
-        }
-      }
-    }
+    chunkSizeWarningLimit: 2500
   }
 })
