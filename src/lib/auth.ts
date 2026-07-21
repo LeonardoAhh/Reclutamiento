@@ -50,7 +50,7 @@ export async function signInWithUsername(
   password: string
 ): Promise<SignInResult> {
   const email = usernameToEmail(username);
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     // Mapea los errores comunes de Supabase a mensajes en español más claros.
     const msg = error.message.toLowerCase();
@@ -66,6 +66,15 @@ export async function signInWithUsername(
     }
     return { ok: false, message: error.message };
   }
+
+  // Si el login fue exitoso, actualizamos last_login_at
+  if (data?.session?.user) {
+    await supabase
+      .from('profiles')
+      .update({ last_login_at: new Date().toISOString() })
+      .eq('id', data.session.user.id);
+  }
+
   return { ok: true };
 }
 

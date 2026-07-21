@@ -42,7 +42,10 @@
 
 .session-card {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 
+    "name name"
+    "role status";
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   border-radius: var(--rounded-md);
@@ -53,6 +56,7 @@
 @media (min-width: 600px) {
   .session-card {
     grid-template-columns: 2fr 1.5fr 1fr;
+    grid-template-areas: "name role status";
     gap: var(--spacing-md);
     align-items: center;
   }
@@ -61,24 +65,21 @@
 .session-name-col {
   display: flex;
   align-items: center;
+  grid-area: name;
 }
 
 .session-role-col {
   display: flex;
   align-items: center;
+  grid-area: role;
 }
 
 .session-status-col {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
+  grid-area: status;
   min-width: 0;
-}
-
-@media (min-width: 600px) {
-  .session-status-col {
-    justify-content: flex-end;
-  }
 }
 
 .session-username {
