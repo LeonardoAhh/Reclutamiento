@@ -81,25 +81,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* ── Sesión expirada detectada por fetch interceptor ─────────────────
      Cualquier respuesta 401/403 de Supabase con cuerpo tipo "JWT expired"
-     o `PGRST301` dispara `AUTH_JWT_EXPIRED_EVENT`. Aquí intentamos un
-     refresh de última milla; si falla → signOut local → AuthGuard redirige
-     a /login. Así los guardados dejan de fallar en silencio. */
+     o `PGRST303` dispara `AUTH_JWT_EXPIRED_EVENT`. Aquí **NO** intentamos
+     refresh silencioso: si llegamos a este punto es porque una request
+     ya se disparó con un token muerto (Supabase-JS no reintenta el
+     request al refrescar → el guardado se pierde). Es más honesto cerrar
+     sesión y avisar → el usuario re-loguea y vuelve a guardar sabiendo
+     que su último cambio no llegó. El refresh proactivo (60s antes de
+     `expires_at`) sigue cubriendo el caso normal sin fricción. */
   useEffect(() => {
     const handler = async () => {
-      if (!sessionRef.current) return; // No estamos logueados: ignora.
-      try {
-        const { data, error } = await supabase.auth.refreshSession();
-        if (error || !data.session) throw error ?? new Error('refresh failed');
-        setSession(data.session);
-      } catch {
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-        setSession(null);
-        if (!expiredNotifiedRef.current) {
-          expiredNotifiedRef.current = true;
-          sileo.error({
-            title: 'Sesión expirada. Vuelve a iniciar sesión.',
-          });
-        }
+      if (!sessionRef.current) return; // Ya cerrada o nunca abierta.
+      await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+      setSession(null);
+      if (!expiredNotifiedRef.current) {
+        expiredNotifiedRef.current = true;
+        sileo.error({
+          title: 'Sesión expirada. Vuelve a iniciar sesión.',
+        });
       }
     };
     window.addEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
