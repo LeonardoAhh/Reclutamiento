@@ -43,10 +43,13 @@ async function authAwareFetch(
       lower.includes('jwt expired') ||
       lower.includes('token is expired') ||
       lower.includes('token has expired') ||
-      lower.includes('"code":"pgrst301"') || // PostgREST: JWT expired
+      lower.includes('"code":"pgrst301"') || // PostgREST: JWT expired (viejo)
       lower.includes('"code":"pgrst302"') || // PostgREST: JWT invalid
+      lower.includes('"code":"pgrst303"') || // PostgREST v12+: JWT expired
       lower.includes('invalid_token') ||
-      lower.includes('token_expired');
+      lower.includes('token_expired') ||
+      // Red final: cualquier 401/403 de Supabase con "expired" en el body.
+      lower.includes('expired');
 
     if (isExpired && typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(AUTH_JWT_EXPIRED_EVENT));

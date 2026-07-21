@@ -208,6 +208,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .single();
         if (cancelled) return;
         if (error) {
+          const msg = (error.message || '').toLowerCase();
+          const code = ((error as { code?: string }).code || '').toLowerCase();
+          // Red de seguridad: si el error de profile es JWT expirado y el
+          // interceptor de fetch no lo cazó por lo que sea, forzamos el
+          // handler de sesión expirada.
+          if (
+            msg.includes('jwt expired') ||
+            msg.includes('expired') ||
+            code === 'pgrst301' ||
+            code === 'pgrst302' ||
+            code === 'pgrst303'
+          ) {
+            window.dispatchEvent(new CustomEvent(AUTH_JWT_EXPIRED_EVENT));
+          }
           console.warn('Profile fetch error:', error.message);
           setProfile(null);
           return;
