@@ -4,11 +4,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
 import { sileo } from '@/lib/notify';
 import {
   signInWithUsername as signInLib,
@@ -48,6 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  // Ref con la session actual, accesible dentro de handlers sin re-suscribir.
+  const sessionRef = useRef<Session | null>(null);
+  // Evita spamear el toast de "Sesión expirada" si múltiples requests fallan.
+  const expiredNotifiedRef = useRef(false);
+
+  useEffect(() => {
+    sessionRef.current = session;
+    if (session) expiredNotifiedRef.current = false;
+  }, [session]);
 
   // Carga inicial de la session + suscripción a cambios.
   useEffect(() => {
@@ -68,6 +78,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, []);
+
+  /* ── Sesión expirada detectada por fetch interceptor ─────────────────
+     Cualquier respuesta 401/403 de Supabase con cuerpo tipo "JWT expired"
+     o `PGRST301` dispara `AUTH_JWT_EXPIRED_EVENT`. Aquí intentamos un
+     refresh de última milla; si falla → signOut local → AuthGuard redirige
+     a /login. Así los guardados dejan de fallar en silencio. */
+  useEffect(() => {
+    const handler = async () => {
+      if (!sessionRef.current) return; // No estamos logueados: ignora.
+      try {
+        const { data, error } = await supabase.auth.refreshSession();
+        if (error || !data.session) throw error ?? new Error('refresh failed');
+        setSession(data.session);
+      } catch {
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        setSession(null);
+        if (!expiredNotifiedRef.current) {
+          expiredNotifiedRef.current = true;
+          sileo.error({
+            title: 'Sesión expirada. Vuelve a iniciar sesión.',
+          });
+        }
+      }
+    };
+    window.addEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
+    return () => window.removeEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
+  }, []);
+
+  /* ── Refresh proactivo del JWT ────────────────────────────────────────
+     Programa un refresh 60s ANTES de que expire el token. Si el refresh
+     falla, cerramos sesión local con aviso → AuthGuard redirige.
+     Esto evita el caso "usuario lleva 1h capturando un formulario en primer
+     plano, el token expira, hace Guardar y falla en silencio". */
+  useEffect(() => {
+    const expiresAt = session?.expires_at;
+    if (!expiresAt) return;
+
+    const nowMs = Date.now();
+    const expMs = expiresAt * 1000;
+    const leadMs = 60_000; // refrescar 1 min antes
+    const delay = Math.max(0, expMs - nowMs - leadMs);
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const { data, error } = await supabase.auth.refreshSession();
+        if (error || !data.session) throw error ?? new Error('refresh failed');
+        setSession(data.session);
+      } catch {
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        setSession(null);
+        if (!expiredNotifiedRef.current) {
+          expiredNotifiedRef.current = true;
+          sileo.error({
+            title: 'Sesión expirada. Vuelve a iniciar sesión.',
+          });
+        }
+      }
+    }, delay);
+
+    return () => window.clearTimeout(timer);
+  }, [session?.expires_at]);
 
   /* ── Revalidación de sesión al volver a la app ─────────────────────
      Los timers de auto-refresh de Supabase se CONGELAN cuando la
@@ -95,9 +166,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sess = error ? null : refreshed.session;
           if (!sess) {
             await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-            sileo.error({
-              title: 'Sesión expirada',
-            });
+            if (!expiredNotifiedRef.current) {
+              expiredNotifiedRef.current = true;
+              sileo.error({
+                title: 'Sesión expirada. Vuelve a iniciar sesión.',
+              });
+            }
           }
         }
         setSession(sess);

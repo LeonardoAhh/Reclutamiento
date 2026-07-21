@@ -1,6 +1,14 @@
 # PRD — Reclutamiento (React + Vite + Supabase)
 
-## 2026-07-02 (sesión actual) — Auditoría sidebar/navbar + fixes consola circle + JWT expirado
+## 2026-07-21 — Fix JWT expirado (sesión zombie): interceptor 401 + refresh proactivo
+- **Problema**: al expirar el JWT en primer plano (sesión larga) o si el refresh de Supabase falla silencioso, las mutaciones fallaban con 401/`PGRST301` "JWT expired" y el usuario perdía los cambios sin darse cuenta — nunca se redirigía a /login.
+- **Fix en 2 capas**:
+  1. `src/lib/supabase.ts`: cliente ahora usa `global.fetch = authAwareFetch` — inspecciona respuestas 401/403 en un `res.clone()` (sin consumir el body) y, si el cuerpo contiene señales claras de expiración (`jwt expired`, `token is expired`, `PGRST301`/`PGRST302`, `invalid_token`, `token_expired`) dispara `window.dispatchEvent(new CustomEvent('auth:jwt-expired'))`. Se filtra `invalid_grant`/`invalid login credentials` para no matar el flujo de login. Constantes `auth: { persistSession, autoRefreshToken, detectSessionInUrl }` explícitas.
+  2. `src/hooks/useAuth.tsx`: (a) escucha `AUTH_JWT_EXPIRED_EVENT` → intenta `refreshSession()`; si falla → `signOut({scope:'local'})` + `setSession(null)` + toast "Sesión expirada. Vuelve a iniciar sesión." (b) **Timer proactivo**: al montar/cambiar `session.expires_at`, programa un refresh 60s ANTES de expirar; si falla, mismo camino. (c) Toast anti-spam vía `expiredNotifiedRef` (se resetea al recuperar sesión). El listener de focus/visibility/online se conserva y usa el mismo mensaje.
+- Efecto: cualquier request Supabase que devuelva JWT expirado cierra sesión y `AuthGuard` redirige a `/login` inmediatamente. Además, casi nunca se llega a ese punto porque el refresh proactivo mantiene el token vivo.
+- `tsc --noEmit` y `vite build` OK. **Sin validación en vivo** (usuario pidió no correr testing_agent en este pod — sin `VITE_SUPABASE_*` no hay login posible aquí).
+
+## 2026-07-02 — Auditoría sidebar/navbar + fixes consola circle + JWT expirado
 - **Sidebar (PC)**: transición suave de colapso (width/padding + margin del main, `--transition-base`, respeta reduced-motion); anchos 248/76px unificados en `.app-shell` (`--_sidebar-w-*`); CSS muerto `__brand-mark/text` eliminado.
 - **BottomTabBar**: icono Toulouse → ClipboardCheck; `font-size:11px` → `--text-xs`; focus trap + foco inicial en bottom-sheet (dialog); items del sheet ahora `<NavLink>` (aria-current nativo); comentarios ≤767px→≤1023px.
 - **Header**: eliminado nav con dropdowns que nunca se mostraba (display:none en todos los breakpoints) + su CSS; header queda brand+acciones solo <1024px.
