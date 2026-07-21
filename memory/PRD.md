@@ -1,6 +1,14 @@
 # PRD — Reclutamiento (React + Vite + Supabase)
 
-## 2026-07-02 (sesión actual) — Auditoría sidebar/navbar + fixes consola circle + JWT expirado
+## 2026-07-21 — Fix JWT expirado (sesión zombie): interceptor 401 + refresh proactivo
+- **Problema**: al expirar el JWT en primer plano, las mutaciones fallaban con 401/`PGRST303` "JWT expired" pero los hooks (`useSupabaseData`, `useBajas`, `useCandidates`, etc.) tragaban el error y devolvían `localStorage` cacheado → el usuario nunca se enteraba y perdía los cambios.
+- **Fix en 3 capas**:
+  1. `src/lib/supabase.ts`: cliente con `global.fetch = authAwareFetch` — inspecciona 401/403 en `res.clone()` y ante señales de expiración (`jwt expired`, `token is expired`, `PGRST301/302/303`, `invalid_token`, `token_expired`, o cualquier `expired` como red final) dispara `window.dispatchEvent(new CustomEvent('auth:jwt-expired'))`. Filtra `invalid_grant`/`invalid login credentials` para no romper login. Auth options explícitas (`persistSession/autoRefreshToken/detectSessionInUrl`).
+  2. `src/hooks/useAuth.tsx`: (a) escucha `AUTH_JWT_EXPIRED_EVENT` → `refreshSession()`; si falla → `signOut({scope:'local'})` + `setSession(null)` + toast "Sesión expirada. Vuelve a iniciar sesión." (b) **Timer proactivo 60s antes de `expires_at`** con el mismo camino de fallo. (c) Anti-spam toast vía `expiredNotifiedRef`. (d) **Red de seguridad en `fetchProfile`**: si el error de profile es JWT expired (msg o `code=PGRST30x`), dispara el evento como redundancia por si el interceptor no lo cazó.
+- **Nota clave**: el interceptor corre ANTES del `.catch()` de los hooks (fallback a localStorage). Timeline: fetch 401 → interceptor dispara evento → hook cae en catch (fallback local) → paralelamente, listener refresca y si falla, signOut + redirect. Aunque el hook devuelva datos cacheados, la sesión se cierra igual.
+- `tsc --noEmit` y `vite build` OK. **Requiere REBUILD/REDEPLOY** — el bundle `index-Cq4UstGH.js` que reportó el usuario es previo al fix. Validación en vivo pendiente del usuario (sin `VITE_SUPABASE_*` en este pod).
+
+## 2026-07-02 — Auditoría sidebar/navbar + fixes consola circle + JWT expirado
 - **Sidebar (PC)**: transición suave de colapso (width/padding + margin del main, `--transition-base`, respeta reduced-motion); anchos 248/76px unificados en `.app-shell` (`--_sidebar-w-*`); CSS muerto `__brand-mark/text` eliminado.
 - **BottomTabBar**: icono Toulouse → ClipboardCheck; `font-size:11px` → `--text-xs`; focus trap + foco inicial en bottom-sheet (dialog); items del sheet ahora `<NavLink>` (aria-current nativo); comentarios ≤767px→≤1023px.
 - **Header**: eliminado nav con dropdowns que nunca se mostraba (display:none en todos los breakpoints) + su CSS; header queda brand+acciones solo <1024px.
