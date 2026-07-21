@@ -9,6 +9,7 @@ import { SystemUpdateBanner } from '@/components/ui/SystemUpdateBanner';
 import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
+import { MaintenanceGuard } from '@/components/auth/MaintenanceGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
 import { Dashboard } from '@/pages/Dashboard';
@@ -35,7 +36,9 @@ function ProtectedShell({ children }: { children: ReactNode }) {
   return (
     <AuthGuard>
       <PositionsProvider>
-        <AppShell>{children}</AppShell>
+        <MaintenanceGuard>
+          <AppShell>{children}</AppShell>
+        </MaintenanceGuard>
         <TopRecruiterModal />
       </PositionsProvider>
     </AuthGuard>
