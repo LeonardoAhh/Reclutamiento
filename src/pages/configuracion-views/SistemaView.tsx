@@ -73,12 +73,7 @@ export function SistemaView() {
   return (
     <div className="view-container">
       <header className="view-header">
-        <div>
-          <h2 className="type-heading-md m-0">Sistema</h2>
-          <p className="type-body-sm text-muted mt-1">
-            Configuraciones globales del sistema.
-          </p>
-        </div>
+        <h2 className="type-heading-md m-0">Sistema</h2>
       </header>
 
       <section className="sistema-view-section">
@@ -94,7 +89,7 @@ export function SistemaView() {
           <button
             onClick={toggleMaintenance}
             disabled={loading}
-            className={`type-button sistema-btn ${isMaintenance ? 'sistema-btn--active' : 'sistema-btn--inactive'}`}
+            className={`type-button ${isMaintenance ? 'btn-primary' : 'btn-secondary'}`}
           >
             {loading ? 'Cargando...' : isMaintenance ? 'Desactivar Mantenimiento' : 'Activar Mantenimiento'}
           </button>
