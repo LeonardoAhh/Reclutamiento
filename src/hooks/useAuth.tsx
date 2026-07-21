@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
+import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
 import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
 import { sileo } from '@/lib/notify';
 import {
@@ -188,14 +188,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Carga el profile cuando hay session.
+  // Carga el profile y establece presencia según el usuario.
   useEffect(() => {
-    if (!session?.user) {
+    const userId = session?.user?.id;
+    if (!userId) {
       setProfile(null);
       return;
     }
 
     let cancelled = false;
+    let presenceChannel: RealtimeChannel | null = null;
 
     async function fetchProfile() {
       try {
@@ -225,6 +227,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         setProfile(data as Profile);
+
+        // Iniciar presencia
+        presenceChannel = supabase.channel('online-users');
+        presenceChannel
+          .on('presence', { event: 'sync' }, () => {
+            if (!presenceChannel) return;
+            const state = presenceChannel.presenceState();
+            const onlineIds = new Set<string>();
+            for (const id of Object.keys(state)) {
+              const presences = state[id] as any[];
+              for (const p of presences) {
+                if (p.user_id) onlineIds.add(p.user_id);
+              }
+            }
+            window.dispatchEvent(new CustomEvent('app_presence_update', { detail: onlineIds }));
+          })
+          .subscribe(async (status) => {
+            if (status === 'SUBSCRIBED' && !cancelled) {
+              await presenceChannel?.track({
+                user_id: data.id,
+                username: data.username,
+                role: data.role,
+                online_at: new Date().toISOString()
+              });
+            }
+          });
+
       } catch (err) {
         console.warn('Profile fetch threw:', err);
       }
@@ -233,8 +262,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchProfile();
     return () => {
       cancelled = true;
+      if (presenceChannel) {
+        supabase.removeChannel(presenceChannel);
+      }
     };
-  }, [session]);
+  }, [session?.user?.id]);
 
   const signIn = useCallback(
     (username: string, password: string) => signInLib(username, password),

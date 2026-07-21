@@ -63,3 +63,9 @@
   color: var(--color-ink);
 }
 
+.badge--purple {
+  background: var(--color-accent-purple);
+  color: var(--color-ink);
+  border-color: var(--color-accent-purple);
+}
+

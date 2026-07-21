@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
 import { sileo } from '@/lib/notify';
+import { ActiveSessions } from './components/ActiveSessions';
 import './SistemaView.css';
 
 export function SistemaView() {
@@ -71,30 +72,31 @@ export function SistemaView() {
   }
 
   return (
-    <div className="view-container">
-      <header className="view-header">
-        <h2 className="type-heading-md m-0">Sistema</h2>
+    <section className="config-page__content" aria-labelledby="sistema-title">
+      <header className="config-page__header">
+        <h2 id="sistema-title" className="config-page__title">Sistema</h2>
       </header>
 
-      <section className="sistema-view-section">
-        <div className="sistema-icon-wrap">
-          <ShieldAlert className="sistema-icon" size={20} />
-        </div>
-        <div className="sistema-content">
-          <h3 className="type-heading-sm">Modo Mantenimiento</h3>
-          <p className="type-body-md text-muted">
-            Al activar esta opción, se bloqueará el acceso a la aplicación para todos los usuarios excepto tú (<code>leonardo@reclutamiento.local</code>). Usa esto antes de hacer un despliegue de nueva versión.
-          </p>
-          
-          <button
-            onClick={toggleMaintenance}
-            disabled={loading}
-            className={`type-button ${isMaintenance ? 'btn-primary' : 'btn-secondary'}`}
-          >
-            {loading ? 'Cargando...' : isMaintenance ? 'Desactivar Mantenimiento' : 'Activar Mantenimiento'}
-          </button>
-        </div>
-      </section>
-    </div>
+      <div className="sistema-grid">
+        <section className="sistema-view-section">
+          <div className="sistema-icon-wrap">
+            <ShieldAlert className="sistema-icon" size={20} />
+          </div>
+          <div className="sistema-content">
+            <h3 className="type-heading-sm">Modo Mantenimiento</h3>
+            
+            <button
+              onClick={toggleMaintenance}
+              disabled={loading}
+              className={`type-button ${isMaintenance ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              {loading ? 'Cargando...' : isMaintenance ? 'Desactivar Mantenimiento' : 'Activar Mantenimiento'}
+            </button>
+          </div>
+        </section>
+
+        <ActiveSessions />
+      </div>
+    </section>
   );
 }

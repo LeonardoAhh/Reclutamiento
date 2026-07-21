@@ -1,3 +1,16 @@
+.sistema-grid {
+  display: grid;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+@media (min-width: 1024px) {
+  .sistema-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
 .sistema-view-section {
   background-color: var(--color-surface);
   border: 1px solid var(--color-hairline);
@@ -6,7 +19,6 @@
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
 }
 
 .sistema-icon-wrap {
