@@ -18,6 +18,7 @@ interface CustomSelectProps {
   disabled?: boolean;
   'aria-label'?: string;
   customTrigger?: React.ReactNode;
+  searchable?: boolean;
 }
 
 interface DropdownPos {
@@ -42,8 +43,10 @@ export function CustomSelect({
   disabled = false,
   'aria-label': ariaLabel,
   customTrigger,
+  searchable = false,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [pos, setPos] = useState<DropdownPos | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -105,7 +108,14 @@ export function CustomSelect({
   const handleSelect = (val: string) => {
     onChange(val);
     setIsOpen(false);
+    setSearchQuery('');
   };
+
+  const filteredOptions = searchable
+    ? options.filter((o) =>
+        o.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : options;
 
   return (
     <div className={`custom-select-container ${className}`} ref={rootRef}>
@@ -144,7 +154,21 @@ export function CustomSelect({
             }}
           >
             <div className="custom-select-list">
-              {placeholder && (
+              {searchable && (
+                <div className="custom-select-search">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar..."
+                    className="custom-select-search-input"
+                    onClick={(e) => e.stopPropagation()}
+                    autoFocus
+                  />
+                </div>
+              )}
+
+              {placeholder && !searchQuery && (
                 <button
                   type="button"
                   className={`custom-select-option ${value === '' ? 'is-selected' : ''}`}
@@ -157,19 +181,23 @@ export function CustomSelect({
                 </button>
               )}
 
-              {options.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`custom-select-option ${value === opt.value ? 'is-selected' : ''}`}
-                  onClick={() => handleSelect(opt.value)}
-                  role="option"
-                  aria-selected={value === opt.value}
-                >
-                  <span className="custom-select-option-label">{opt.label}</span>
-                  {value === opt.value && <Check size={16} className="custom-select-check" />}
-                </button>
-              ))}
+              {filteredOptions.length === 0 && searchable ? (
+                <div className="custom-select-no-results">No se encontraron resultados</div>
+              ) : (
+                filteredOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`custom-select-option ${value === opt.value ? 'is-selected' : ''}`}
+                    onClick={() => handleSelect(opt.value)}
+                    role="option"
+                    aria-selected={value === opt.value}
+                  >
+                    <span className="custom-select-option-label">{opt.label}</span>
+                    {value === opt.value && <Check size={16} className="custom-select-check" />}
+                  </button>
+                ))
+              )}
             </div>
           </div>,
           document.body

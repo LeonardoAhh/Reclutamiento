@@ -1,8 +1,8 @@
 {
-  "version": "0.6.0",
+  "version": "0.6.1",
   "fecha": "2026-07-22",
   "nivel": "success",
   "titulo": "Actualización",
-  "mensaje": "Corrección de errores y mejoras de estabilidad",
+  "mensaje": "Nuevas funciones y mejoras de estabilidad.",
   "notificar": true
 }

@@ -75,6 +75,7 @@ export interface NoCitado {
   motivo: string;
   sub_motivo?: string | null;
   reclutador: string;
+  puesto?: string | null;
   notas?: string | null;
   fuente?: string | null;
   fecha: string;

@@ -10,6 +10,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { usePositions } from '@/lib/positions';
 import { NoCitadosChart } from './NoCitadosChart';
 import { type NoCitado, CANDIDATE_SOURCES } from '@/lib/types';
 import './NoCitados.css';
@@ -69,6 +70,12 @@ export function RegistroNoCitadosView() {
   const ITEMS_PER_PAGE = isMobile ? 5 : 5;
 
   const { noCitados: records, addNoCitado, updateNoCitado, deleteNoCitado, loading } = useSupabaseData();
+  const { positions } = usePositions();
+
+  const PUESTOS_OPTIONS = useMemo(() => {
+    const unique = Array.from(new Set(positions.map((p) => p.puesto))).sort();
+    return unique.map((p) => ({ value: p, label: p }));
+  }, [positions]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -82,6 +89,7 @@ export function RegistroNoCitadosView() {
     subMotivo: '',
     reclutador: '',
     fuente: '',
+    puesto: '',
     notas: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -135,6 +143,7 @@ export function RegistroNoCitadosView() {
         sub_motivo: formData.subMotivo || null,
         reclutador: formData.reclutador,
         fuente: formData.fuente || null,
+        puesto: formData.puesto || null,
         notas: formData.notas || null,
       });
     } else {
@@ -146,6 +155,7 @@ export function RegistroNoCitadosView() {
         sub_motivo: formData.subMotivo || null,
         reclutador: formData.reclutador,
         fuente: formData.fuente || null,
+        puesto: formData.puesto || null,
         notas: formData.notas || null,
         fecha: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       });
@@ -155,7 +165,7 @@ export function RegistroNoCitadosView() {
       setStatus('success');
       setTimeout(() => {
         setStatus('idle');
-        setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', notas: '' });
+        setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
         setIsModalOpen(false); // Close modal on success
         setEditingId(null);
       }, 1500);
@@ -228,7 +238,7 @@ export function RegistroNoCitadosView() {
 
   const openNewModal = () => {
     setEditingId(null);
-    setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', notas: '' });
+    setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
     setIsModalOpen(true);
   };
 
@@ -242,6 +252,7 @@ export function RegistroNoCitadosView() {
       subMotivo: record.sub_motivo || '',
       reclutador: record.reclutador,
       fuente: record.fuente || '',
+      puesto: record.puesto || '',
       notas: record.notas || '',
     });
     setIsModalOpen(true);
@@ -409,6 +420,18 @@ export function RegistroNoCitadosView() {
               onChange={(val) => handleChange('fuente', val)}
               options={FUENTES_OPTIONS}
               placeholder="Selecciona una fuente..."
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="puesto">Puesto</label>
+            <CustomSelect
+              id="puesto"
+              value={formData.puesto}
+              onChange={(val) => handleChange('puesto', val)}
+              options={PUESTOS_OPTIONS}
+              placeholder="Selecciona un puesto..."
+              searchable
             />
           </div>
 
