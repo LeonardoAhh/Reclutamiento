@@ -339,6 +339,20 @@
   color: var(--color-muted);
 }
 
+.weekly-hires-modal__future-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.weekly-hires-modal__future-hint {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+}
+
 .weekly-hires-modal__cell-area {
   font-size: var(--type-body-sm-size);
   color: var(--color-ink);

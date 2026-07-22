@@ -142,17 +142,15 @@ function toTitleCase(str: string): string {
 
 function buildWhatsappMessageBlock(
   title: string,
-  candidates: Candidate[],
-  showRecruiters: boolean
+  candidates: Candidate[]
 ): string {
   if (candidates.length === 0) return '';
   const groups = buildPuestoGroups(candidates);
-  const recruiters = buildRecruiterRows(candidates);
   const totalActivos = candidates.length;
 
   const lines: string[] = [
     title,
-    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)}${showRecruiters ? ` · Reclutadores: ${recruiters.filter((r) => r.total > 0).length}` : ''}`,
+    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)}`,
     '',
   ];
 
@@ -204,22 +202,6 @@ function buildWhatsappMessageBlock(
     lines.push('');
   }
 
-  if (showRecruiters) {
-    const activeRecruiters = recruiters.filter((r) => r.total > 0);
-    if (activeRecruiters.length > 0) {
-      lines.push('*Por reclutador*');
-      for (const r of activeRecruiters) {
-        const detalle: string[] = [];
-        if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
-        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
-        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
-        lines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
-      }
-      lines.push('');
-    }
-  }
-
   return lines.join('\n').trim();
 }
 
@@ -232,18 +214,36 @@ function buildWhatsappMessage(active: Candidate[]): string {
   const blocks: string[] = [];
 
   if (generales.length > 0) {
-    blocks.push(buildWhatsappMessageBlock(`*Resumen de Candidatos Generales* — ${fecha}`, generales, true));
+    blocks.push(buildWhatsappMessageBlock(`*Resumen de Candidatos Generales* — ${fecha}`, generales));
   }
 
   if (starlite.length > 0) {
-    blocks.push(buildWhatsappMessageBlock(`*Resumen Proyecto Starlite*${generales.length === 0 ? ` — ${fecha}` : ''}`, starlite, false));
+    blocks.push(buildWhatsappMessageBlock(`*Resumen Proyecto Starlite*${generales.length === 0 ? ` — ${fecha}` : ''}`, starlite));
   }
 
   if (blocks.length === 0) {
     return `*Resumen de Candidatos* — ${fecha}\n\nSin candidatos activos.`;
   }
 
-  return blocks.join('\n\n-----------------------------------\n\n');
+  const allRecruiters = buildRecruiterRows(active);
+  const activeRecruiters = allRecruiters.filter((r) => r.total > 0);
+
+  let finalMessage = blocks.join('\n\n-----------------------------------\n\n');
+
+  if (activeRecruiters.length > 0) {
+    const recruiterLines = ['*Por reclutador (Total)*'];
+    for (const r of activeRecruiters) {
+      const detalle: string[] = [];
+      if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
+      if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
+      if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
+      if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
+      recruiterLines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
+    }
+    finalMessage += '\n\n-----------------------------------\n\n' + recruiterLines.join('\n');
+  }
+
+  return finalMessage;
 }
 
 const containerVariants: Variants = {

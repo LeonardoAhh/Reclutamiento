@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CalendarRange, Users } from 'lucide-react';
+import { CalendarRange, Users, Copy } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { StarliteBadge } from './StarliteBadge';
@@ -398,9 +398,34 @@ export function WeeklyHiresModal({
             badge={`${futureHires.length} empleados`}
             variant="card"
           >
-            <p className="weekly-hires-modal__future-hint">
-              Estos empleados están agendados para entrar esta semana.
-            </p>
+            <div className="weekly-hires-modal__future-header">
+              <p className="weekly-hires-modal__future-hint">
+                Estos empleados están agendados para entrar esta semana.
+              </p>
+              <button 
+                className="btn-secondary btn-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const map = new Map<string, number>();
+                  for (const emp of sortedFutureHires) {
+                    const starliteTag = emp.is_starlite ? ' ★ Starlite' : '';
+                    let turno = 'General';
+                    if (emp.seccion) {
+                      const match = emp.seccion.match(/\b(?:1ER|1RA|2DO|2DA|3ER|3RA|4TO|4TA|[1-9]O|[1-9]A|NOCTURNO|DIURNO|MATUTINO|VESPERTINO)\.?\s*TURNO\b/i);
+                      if (match) turno = match[0].toUpperCase().replace(/\s+/g, ' ').trim();
+                    }
+                    const key = `${emp.area || 'Sin área'} - ${turno} - ${emp.puesto}${starliteTag}`;
+                    map.set(key, (map.get(key) || 0) + 1);
+                  }
+                  const text = Array.from(map.entries()).map(([k, v]) => `${k}: ${v}`).join('\n');
+                  navigator.clipboard.writeText(`Próximos ingresos programados:\n\n${text}`);
+                }}
+                title="Copiar resumen simplificado"
+              >
+                <Copy size={16} />
+                <span className="sr-only">Copiar</span>
+              </button>
+            </div>
             {renderHiresTable(sortedFutureHires, undefined, true)}
           </ExpandableSection>
         )}
