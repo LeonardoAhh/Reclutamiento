@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
 import { formatMes } from '@/components/reporte-diario/helpers';
-import type { ReporteRow } from '@/components/reporte-diario/types';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import {
@@ -10,10 +10,10 @@ import {
   type ReporteDiarioSummary,
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
-import { formatReadableDate } from '@/lib/dates';
+import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
 import { toTitleCase } from '@/lib/utils';
 import { Search, CircleUser, X } from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
+import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
 
@@ -30,7 +30,6 @@ function displayValue(value: unknown) {
   const text = String(value ?? '').trim();
   return text ? toTitleCase(text) : 'Sin información';
 }
-
 
 function describeCalendarCode(code?: string) {
   if (!code || code === '-' || code === 'X') return 'Sin registro';
@@ -113,17 +112,70 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
   );
 }
 
+function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber: string, allReports: ReporteDiarioRecord[] }) {
+  const history = useMemo(() => {
+    if (!allReports.length) return [];
+    const res: { mes: string, incidents: Record<string, number> }[] = [];
+    const sortedReports = [...allReports].sort((a, b) => b.mes.localeCompare(a.mes));
+    
+    for (const report of sortedReports) {
+      const row = report.data.find((r: any) => r.numero_empleado === employeeNumber) as any;
+      if (row && row.days) {
+        const incidents = Object.entries(row.days)
+          .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code as string))
+          .reduce((acc, [, code]) => {
+            const label = INCIDENCIA_LABELS[code as string] || (code as string);
+            acc[label] = (acc[label] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+        
+        if (Object.keys(incidents).length > 0) {
+          res.push({ mes: report.mes, incidents });
+        }
+      }
+    }
+    return res;
+  }, [allReports, employeeNumber]);
+
+  if (history.length === 0) return null;
+
+  return (
+    <aside className="config-card__history-section" aria-label="Historial general de incidencias" style={{ gridColumn: '1 / -1', borderTop: '1px solid var(--color-hairline-soft)', paddingTop: 'var(--spacing-xl)' }}>
+      <h4 className="type-caption-up text-muted" style={{ margin: '0 0 var(--spacing-md) 0' }}>
+        Historial General de Incidencias
+      </h4>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--spacing-xl)' }}>
+        {history.map((h) => (
+          <div key={h.mes}>
+            <span className="type-body-sm-strong text-charcoal" style={{ display: 'block', marginBottom: 'var(--spacing-xs)' }}>
+              {toTitleCase(formatMes(h.mes))}
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
+              {Object.entries(h.incidents).map(([label, count]) => (
+                <span key={label} className="config-incidence-list__label">
+                  {label}: <strong style={{ fontWeight: 600 }}>{count}</strong>
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 export function BusquedaView() {
   const { loading: authLoading } = useAuth();
   const { employees, loading: employeesLoading, error: employeesError } = useSupabaseData();
   const { bajas, loading: bajasLoading } = useBajas();
-  const { fetchByMes, fetchSummaries } = useReporteDiario();
+  const { fetchByMes, fetchSummaries, fetchByMesList } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [summaries, setSummaries] = useState<ReporteDiarioSummary[]>([]);
   const [summariesLoading, setSummariesLoading] = useState(true);
+  const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportError, setReportError] = useState('');
   const [selectedMes, setSelectedMes] = useState<string>('');
@@ -136,6 +188,9 @@ export function BusquedaView() {
       setSummaries(data);
       if (data.length > 0) {
         setSelectedMes(data[0].mes);
+        fetchByMesList(data.map(s => s.mes)).then(reps => {
+          if (active) setAllReports(reps);
+        });
       }
     }).finally(() => {
       if (active) setSummariesLoading(false);
@@ -143,7 +198,7 @@ export function BusquedaView() {
     return () => {
       active = false;
     };
-  }, [fetchSummaries]);
+  }, [fetchSummaries, fetchByMesList]);
 
   useEffect(() => {
     if (!selectedMes) {
@@ -172,15 +227,19 @@ export function BusquedaView() {
 
   const reportRows = useMemo(() => {
     if (!currentReport) return [];
-    return currentReport.data.filter((row): row is ReporteRow => {
+    return currentReport.data.filter((row: any): boolean => {
       if (!row || typeof row !== 'object') return false;
-      const candidate = row as Partial<ReporteRow>;
+      const candidate = row;
       return typeof candidate.numero_empleado === 'string' && Boolean(candidate.days && typeof candidate.days === 'object');
     });
   }, [currentReport]);
 
   const employeeDaysByNumber = useMemo(() => {
-    return new Map(reportRows.map((row) => [row.numero_empleado, row.days]));
+    const map = new Map<string, Record<string, string>>();
+    for (const r of reportRows) {
+      map.set(r.numero_empleado, r.days);
+    }
+    return map;
   }, [reportRows]);
 
   const searchQuery = searchTerm.trim();
@@ -333,6 +392,7 @@ export function BusquedaView() {
                           <span className="text-muted-soft" style={{ fontWeight: 'normal' }}>#{employeeNumber}</span>
                           <span>{employeeName}</span>
                           {emp.isBaja && <Badge variant="error">Baja</Badge>}
+                          {'is_starlite' in emp && emp.is_starlite && <StarliteBadge />}
                         </h3>
                       </div>
                     </header>
@@ -355,6 +415,20 @@ export function BusquedaView() {
                           <dt className="notion-prop__label type-body-sm text-muted">Fecha de ingreso</dt>
                           <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate(emp.fecha_ingreso))}</dd>
                         </div>
+                        {(() => {
+                          if (emp.isBaja) return null;
+                          const today = localTodayIso();
+                          const renewalDate = addDaysToIso(emp.fecha_ingreso, 90);
+                          if (renewalDate && renewalDate >= today) {
+                            return (
+                              <div className="notion-prop">
+                                <dt className="notion-prop__label type-body-sm text-muted">Renov. contrato</dt>
+                                <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate(renewalDate))}</dd>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                         {emp.isBaja && 'fecha_baja' in emp && (
                           <div className="notion-prop">
                             <dt className="notion-prop__label type-body-sm text-muted">Fecha de baja</dt>
@@ -385,7 +459,7 @@ export function BusquedaView() {
 
                       <aside className="config-card__calendar-section" aria-label={`Incidencias de ${employeeName}`}>
                         <div className="config-calendar-header-actions">
-                          <span className="notion-prop__label type-caption-up text-muted">Incidencias</span>
+                          <span className="notion-prop__label type-caption-up text-muted">Calendario</span>
 
                           {summariesLoading ? (
                             <span className="type-caption-sm text-muted" role="status">Cargando reportes…</span>
@@ -434,44 +508,20 @@ export function BusquedaView() {
                               );
                             }
 
-                            const parsedIncidents = Object.entries(empDays || {})
-                              .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code as string))
-                              .map(([day, code]) => ({
-                                day,
-                                code: code as string,
-                                label: INCIDENCIA_LABELS[code as string] || (code as string),
-                              }))
-                              .sort((a, b) => parseInt(a.day) - parseInt(b.day));
-
                             return (
-                              <>
-                                <div className="config-calendar-details">
-                                  {parsedIncidents.length > 0 ? (
-                                    <ul className="config-incidence-list">
-                                      {parsedIncidents.map(inc => (
-                                        <li key={inc.day} className="config-incidence-list__item">
-                                          <span className="config-incidence-list__day">{inc.day}</span>
-                                          <span className="config-incidence-list__label">{inc.label}</span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  ) : (
-                                    <div className="config-incidence-list--empty">
-                                      <span className="type-caption-sm text-muted-soft">Mes sin incidencias registradas.</span>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="config-calendar-grid-container">
-                                  <MiniCalendar
-                                    mesStr={selectedMes}
-                                    days={empDays}
-                                  />
-                                </div>
-                              </>
+                              <div className="config-calendar-grid-container" style={{ marginTop: 'var(--spacing-md)' }}>
+                                <MiniCalendar
+                                  mesStr={selectedMes}
+                                  days={empDays}
+                                />
+                              </div>
                             );
                           })()}
                         </div>
                       </aside>
+
+                      {/* Historial global de todas las incidencias */}
+                      <GlobalIncidenceHistory employeeNumber={employeeNumber} allReports={allReports} />
                     </div>
                   </article>
                 );

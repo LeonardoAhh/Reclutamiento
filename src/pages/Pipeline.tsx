@@ -29,6 +29,7 @@ import {
   Trash2,
   Info,
 } from 'lucide-react';
+import { Badge, StarliteBadge, VinoplasticBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -92,18 +93,6 @@ type RecruiterStats = {
   no_asistio: number;
 };
 
-const StarliteBadge = () => (
-  <span className="pipeline__starlite-badge" title="Proyecto: Starlite">
-    <Star size="1em" className="pipeline__starlite-icon" aria-hidden="true" />
-    <span>Starlite</span>
-  </span>
-);
-
-const VinoplasticBadge = () => (
-  <span className="pipeline__vinoplastic-badge" title="Proyecto: ViñoPlastic">
-    ViñoPlastic
-  </span>
-);
 
 const SEARCH_TIPS = [
   "✨ Verifica si un teléfono ya está registrado",

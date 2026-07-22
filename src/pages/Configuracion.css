@@ -532,6 +532,7 @@
 @media (hover: hover) {
   .config-calendar__day:hover {
     transform: scale(1.2);
+    z-index: 1;
   }
 }
 

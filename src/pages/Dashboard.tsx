@@ -38,6 +38,7 @@ import {
 } from '@/lib/utils';
 import { localTodayIso, formatShortDate } from '@/lib/dates';
 import { computeAutoVacancies, filterUnreservedVacancies } from '@/lib/autoVacancies';
+import { notifyResult } from '@/lib/notify';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useCandidates } from '@/hooks/useCandidates';
@@ -65,6 +66,7 @@ export function Dashboard() {
     promoteEmployee,
     coverBajaForPosition,
     assignTurnos,
+    purgeAllEmployees,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests();
@@ -335,6 +337,7 @@ export function Dashboard() {
               >
                 <UserPlusIcon size={16} aria-hidden="true" />
               </button>
+
               <span style={{ display: 'none' }}>
                 <JsonImporter onImport={handleImport} />
               </span>

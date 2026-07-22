@@ -113,8 +113,8 @@ export function AreaDetailView({
     if (!dept) return map;
     const deptArea = (dept.area ?? '').trim();
 
-    const incr = (seccion: string, puestoNorm: string) => {
-      const key = `${seccion}\u0000${puestoNorm}`;
+    const incr = (seccion: string, puestoNorm: string, isStarlite: boolean) => {
+      const key = `${seccion}\u0000${puestoNorm}\u0000${isStarlite}`;
       map.set(key, (map.get(key) ?? 0) + 1);
     };
 
@@ -124,8 +124,9 @@ export function AreaDetailView({
       const puestoNorm = normalizePuesto(c.puesto);
       if (!puestoNorm) continue;
       const cSeccion = (c.seccion ?? '').trim();
+      const isStarlite = !!c.is_starlite;
       if (cSeccion) {
-        incr(cSeccion, puestoNorm);
+        incr(cSeccion, puestoNorm, isStarlite);
       } else {
         // Sin sección -> contribuye a todas las secciones del depto donde
         // ese puesto esté autorizado. Así, un candidato genérico para
@@ -133,7 +134,7 @@ export function AreaDetailView({
         // en cada turno (1ER / 2DO / 3ER / 4TO).
         for (const p of dept.puestos) {
           if (normalizePuesto(p.puesto) === puestoNorm) {
-            incr(p.seccion, puestoNorm);
+            incr(p.seccion, puestoNorm, isStarlite);
           }
         }
       }
@@ -223,11 +224,11 @@ export function AreaDetailView({
     );
 
   /** Badge de estado del puesto (reutilizado por tabla y tarjetas móviles). */
-  const renderEstado = (pos: Puesto) => {
+  const renderEstado = (pos: Puesto, isStarlite: boolean) => {
     const posComments = commentsFor(pos);
     const latestComment = posComments[posComments.length - 1];
     const activeCount =
-      candidatesByPuesto.get(`${pos.seccion}\u0000${normalizePuesto(pos.puesto)}`) ?? 0;
+      candidatesByPuesto.get(`${pos.seccion}\u0000${normalizePuesto(pos.puesto)}\u0000${isStarlite}`) ?? 0;
 
     if (latestComment) {
       return (
@@ -437,53 +438,72 @@ export function AreaDetailView({
           </div>
         ) : isMobile ? (
           <ul className="area-detail-modal__cards">
-            {visiblePuestos.map((pos) => (
+            {visiblePuestos.flatMap((pos) => {
+              const rows = [];
+              const starliteTotal = (pos.starlite_empleados || 0) + (pos.starlite_proximos || 0);
+              const starliteAut = pos.urgentes || 0;
+              
+              const regularReal = pos.plantilla_real - (pos.starlite_empleados || 0);
+              
+              rows.push({
+                isStarlite: false,
+                originalPos: pos,
+                displayPuesto: pos.puesto,
+                plantilla_real: regularReal,
+                plantilla_autorizada: pos.plantilla_autorizada,
+                vacantes: pos.vacantes_plantilla + pos.vacantes_backup,
+              });
+
+              if (starliteAut > 0 || starliteTotal > 0) {
+                rows.push({
+                  isStarlite: true,
+                  originalPos: pos,
+                  displayPuesto: `${pos.puesto} (STARLITE)`,
+                  plantilla_real: pos.starlite_empleados || 0,
+                  plantilla_autorizada: starliteAut,
+                  vacantes: pos.vacantes_starlite,
+                });
+              }
+              return rows;
+            }).map((row, index) => {
+              const pos = row.originalPos;
+              return (
               <li
-                key={`${pos.area}-${pos.seccion}-${pos.puesto}`}
-                className={`area-detail-modal__card${pos.vacantes > 0 ? ' area-detail-modal__card--vac' : ''}${pos.urgentes > 0 ? ' area-detail-modal__card--urgent' : ''}`}
+                key={`${pos.area}-${pos.seccion}-${pos.puesto}-${index}`}
+                className={`area-detail-modal__card${row.vacantes > 0 ? ' area-detail-modal__card--vac' : ''}`}
               >
                 <div className="area-detail-modal__card-top">
                   <div className="area-detail-modal__card-id">
-                    <span className="area-detail-modal__card-name">{pos.puesto}</span>
+                    <span className="area-detail-modal__card-name">{row.displayPuesto}</span>
                     {activeTab === ALL_TAB && (
                       <span className="area-detail-modal__card-sec">{pos.seccion}</span>
                     )}
                   </div>
                 </div>
-                {renderFlags(pos)}
+                {!row.isStarlite && renderFlags(pos)}
                 <div className="area-detail-modal__card-meta">
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
-                      {pos.plantilla_real}
+                      {row.plantilla_real}
                       <span className="area-detail-modal__stat-sep">/</span>
-                      {pos.plantilla_autorizada}
+                      {row.plantilla_autorizada}
                     </span>
                     <span className="area-detail-modal__card-metric-label">Real / Aut.</span>
                   </span>
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
-                      {pos.vacantes > 0 ? (
-                        <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{pos.vacantes}</span>
+                      {row.vacantes > 0 ? (
+                        <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{row.vacantes}</span>
                       ) : (
                         <span className="no-vacancy">—</span>
                       )}
                     </span>
                     <span className="area-detail-modal__card-metric-label">Vacantes</span>
                   </span>
-                  <span className="area-detail-modal__card-metric">
-                    <span className="area-detail-modal__card-metric-value">
-                      {pos.urgentes > 0 ? (
-                        <span style={{ color: '#d97706', fontWeight: 600 }}>{(pos.starlite_empleados || 0) + (pos.starlite_proximos || 0)} / {pos.urgentes}</span>
-                      ) : (
-                        <span className="no-vacancy">—</span>
-                      )}
-                    </span>
-                    <span className="area-detail-modal__card-metric-label">Starlite</span>
-                  </span>
-                  <span className="area-detail-modal__card-estado">{renderEstado(pos)}</span>
+                  <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite)}</span>
                 </div>
               </li>
-            ))}
+            )})}
           </ul>
         ) : (
           <div className="dept-card__table-wrapper area-detail-modal__table-wrapper">
@@ -495,13 +515,53 @@ export function AreaDetailView({
                   <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
                   <th scope="col" className="text-center hide-on-mobile">Real</th>
                   <th scope="col" className="text-center">Vacantes</th>
-                  <th scope="col" className="text-center">Starlite</th>
                   <th scope="col" className="hide-on-mobile">Cobertura</th>
                   <th scope="col" className="text-center">Estado</th>
                 </tr>
               </thead>
               <tbody>
-                {visiblePuestos.map((pos) => {
+                {visiblePuestos.flatMap((pos) => {
+                  const rows = [];
+                  const starliteTotal = (pos.starlite_empleados || 0) + (pos.starlite_proximos || 0);
+                  const starliteAut = pos.urgentes || 0;
+                  
+                  const regularReal = pos.plantilla_real - (pos.starlite_empleados || 0);
+                  const regularProximos = pos.proximos_ingresos - (pos.starlite_proximos || 0);
+                  const regularTotal = regularReal + regularProximos;
+                  const regularObj = pos.plantilla_autorizada + pos.backup;
+                  const regularCobertura = regularObj > 0 ? Math.round((regularTotal / regularObj) * 100) : 0;
+
+                  rows.push({
+                    isStarlite: false,
+                    originalPos: pos,
+                    displayPuesto: pos.puesto,
+                    plantilla_real: regularReal,
+                    plantilla_autorizada: pos.plantilla_autorizada,
+                    vacantes: pos.vacantes_plantilla + pos.vacantes_backup,
+                    porcentaje_cobertura: regularCobertura,
+                    backup: pos.backup,
+                    excedente_critico: pos.excedente_critico,
+                    excedente_backup: pos.excedente_backup,
+                  });
+
+                  if (starliteAut > 0 || starliteTotal > 0) {
+                    const starliteCobertura = starliteAut > 0 ? Math.round((starliteTotal / starliteAut) * 100) : 0;
+                    rows.push({
+                      isStarlite: true,
+                      originalPos: pos,
+                      displayPuesto: `${pos.puesto} (STARLITE)`,
+                      plantilla_real: pos.starlite_empleados || 0,
+                      plantilla_autorizada: starliteAut,
+                      vacantes: pos.vacantes_starlite,
+                      porcentaje_cobertura: starliteCobertura,
+                      backup: 0,
+                      excedente_critico: 0,
+                      excedente_backup: 0,
+                    });
+                  }
+                  return rows;
+                }).map((row, index) => {
+                  const pos = row.originalPos;
                   const posComments = comments.filter(
                     (c) =>
                       c.area === pos.area &&
@@ -511,30 +571,27 @@ export function AreaDetailView({
                   const latestComment = posComments[posComments.length - 1];
 
                   const rowClass = [
-                    pos.vacantes > 0 ? 'row--has-vacancy' : '',
-                    pos.urgentes > 0 ? 'row--urgent' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ');
+                    row.vacantes > 0 ? 'row--has-vacancy' : '',
+                  ].filter(Boolean).join(' ');
 
                   return (
                     <tr
-                      key={`${pos.area}-${pos.seccion}-${pos.puesto}`}
+                      key={`${pos.area}-${pos.seccion}-${pos.puesto}-${index}`}
                       className={rowClass}
                     >
                       <td className="cell-puesto">
                         <div className="cell-puesto__inner">
-                          <span className="cell-puesto__name">{pos.puesto}</span>
+                          <span className="cell-puesto__name">{row.displayPuesto}</span>
                           <div className="cell-puesto__flags">
-                            {pos.excedente_critico > 0 && (
+                            {row.excedente_critico > 0 && (
                               <Badge variant="amber">
-                                +{pos.excedente_critico} excede
+                                +{row.excedente_critico} excede
                               </Badge>
                             )}
-                            {pos.excedente_backup > 0 && (
+                            {row.excedente_backup > 0 && (
                               <Badge variant="teal">
                                 <Shield size={11} aria-hidden="true" />
-                                +{pos.excedente_backup} back-up
+                                +{row.excedente_backup} back-up
                               </Badge>
                             )}
                           </div>
@@ -544,13 +601,13 @@ export function AreaDetailView({
                         <td className="cell-seccion hide-on-mobile">{pos.seccion}</td>
                       )}
                       <td className="text-center hide-on-mobile">
-                        {pos.plantilla_autorizada}
-                        {pos.backup > 0 && (
+                        {row.plantilla_autorizada}
+                        {row.backup > 0 && (
                           <Tooltip
                             content={
                               <div style={{ whiteSpace: 'pre-line' }}>
                                 <div style={{ fontWeight: 600, marginBottom: '4px' }}>
-                                  Buffer de {pos.backup} personas
+                                  Buffer de {row.backup} personas
                                 </div>
                                 <div>{pos.notas || 'Excedentes autorizados'}</div>
                               </div>
@@ -559,82 +616,24 @@ export function AreaDetailView({
                             delayMs={200}
                           >
                             <span className="cell-backup-hint">
-                              {' '}+{pos.backup}
+                              {' '}+{row.backup}
                             </span>
                           </Tooltip>
                         )}
                       </td>
-                      <td className="text-center font-strong hide-on-mobile">{pos.plantilla_real}</td>
+                      <td className="text-center font-strong hide-on-mobile">{row.plantilla_real}</td>
                       <td className="text-center">
-                        {pos.vacantes > 0 ? (
-                          <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{pos.vacantes}</span>
+                        {row.vacantes > 0 ? (
+                          <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{row.vacantes}</span>
                         ) : (
                           <span className="no-vacancy">—</span>
                         )}
                       </td>
-                      <td className="text-center">
-                        {pos.urgentes > 0 ? (
-                          <span style={{ color: '#d97706', fontWeight: 600 }}>{(pos.starlite_empleados || 0) + (pos.starlite_proximos || 0)} / {pos.urgentes}</span>
-                        ) : (
-                          <span className="no-vacancy">—</span>
-                        )}
-                      </td>
-                      <td className="hide-on-mobile" style={{ color: getCoverageColor(pos.porcentaje_cobertura), fontWeight: 600 }}>
-                        {pos.porcentaje_cobertura}%
+                      <td className="hide-on-mobile" style={{ color: getCoverageColor(row.porcentaje_cobertura), fontWeight: 600 }}>
+                        {row.porcentaje_cobertura}%
                       </td>
                       <td className="text-center">
-                        {(() => {
-                          // Cuenta de candidatos activos del row.
-                          const activeCount =
-                            candidatesByPuesto.get(
-                              `${pos.seccion}\u0000${normalizePuesto(pos.puesto)}`
-                            ) ?? 0;
-
-                          if (latestComment) {
-                            return (
-                              <span style={{ color: latestComment.tipo === 'proceso_activo' ? '#d97706' : latestComment.tipo === 'entrevista' ? '#0d9488' : '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
-                                {COMMENT_TYPE_LABELS[latestComment.tipo]}
-                              </span>
-                            );
-                          }
-                          if (pos.vacantes > 0 && activeCount > 0) {
-                            // Hay vacante abierta y candidatos en pipeline activos:
-                            // el puesto SÍ está en proceso aunque no haya
-                            // comentario manual capturado.
-                            return (
-                              <div className="area-detail-modal__badge-stack" style={{ gap: '2px' }}>
-                                <span style={{ color: '#0d9488', fontWeight: 600, fontSize: '0.8125rem' }}>
-                                  Proceso ({activeCount})
-                                </span>
-                                {pos.proximos_ingresos > 0 && (
-                                  <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
-                                    Ingreso ({pos.proximos_ingresos})
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          }
-                          if (pos.vacantes > 0) {
-                            return (
-                              <div className="area-detail-modal__badge-stack" style={{ gap: '2px' }}>
-                                <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>Sin proceso</span>
-                                {pos.proximos_ingresos > 0 && (
-                                  <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
-                                    Ingreso ({pos.proximos_ingresos})
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          }
-                          if (pos.proximos_ingresos > 0) {
-                            return (
-                              <span style={{ color: '#e11d48', fontWeight: 600, fontSize: '0.8125rem' }}>
-                                Ingreso ({pos.proximos_ingresos})
-                              </span>
-                            );
-                          }
-                          return <span className="no-vacancy">—</span>;
-                        })()}
+                        {renderEstado(pos, row.isStarlite)}
                       </td>
                     </tr>
                   );

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Users, Search, HeartPulse, CloudOff, ChevronDown } from 'lucide-react';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
+import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
@@ -77,6 +78,11 @@ function EmployeeCards({
                 Incapacidad
               </span>
             )}
+            {emp.is_starlite && (
+              <div className="empleados-table__cell-badge" style={{ marginTop: 'var(--spacing-xxs)' }}>
+                <StarliteBadge />
+              </div>
+            )}
           </div>
           <EmployeeRowActions
             employee={emp}
@@ -105,6 +111,7 @@ export function EmpleadosView() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [showOnlyStarlite, setShowOnlyStarlite] = useState(false);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Employee | null>(null);
@@ -121,6 +128,9 @@ export function EmpleadosView() {
     const byArea = new Map<string, Employee[]>();
 
     for (const emp of employees) {
+      if (showOnlyStarlite && !emp.is_starlite) {
+        continue;
+      }
       if (
         term &&
         !emp.nombre.toUpperCase().includes(term) &&
@@ -145,7 +155,7 @@ export function EmpleadosView() {
         ),
       }))
       .sort((a, b) => a.area.localeCompare(b.area, 'es'));
-  }, [employees, searchTerm]);
+  }, [employees, searchTerm, showOnlyStarlite]);
 
   // Mantiene un departamento válido seleccionado en PC. Cuando hay búsqueda,
   // salta al primer grupo con coincidencias.
@@ -261,16 +271,26 @@ export function EmpleadosView() {
         <div>
           <h1 className="empleados__title">Empleados</h1>
         </div>
-        <label className="empleados__search">
-          <Search size={16} aria-hidden="true" />
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar por nombre, número, puesto o área…"
-            aria-label="Buscar empleados"
-          />
-        </label>
+        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', flexWrap: 'wrap' }}>
+          <label className="empleados__search">
+            <Search size={16} aria-hidden="true" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar por nombre, número, puesto o área…"
+              aria-label="Buscar empleados"
+            />
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', cursor: 'pointer', flexShrink: 0 }}>
+            <input 
+              type="checkbox" 
+              checked={showOnlyStarlite}
+              onChange={(e) => setShowOnlyStarlite(e.target.checked)}
+            />
+            <span className="type-body-sm color-ink">Solo Starlite</span>
+          </label>
+        </div>
       </section>
 
       {!isConfigured && employees.length > 0 && (

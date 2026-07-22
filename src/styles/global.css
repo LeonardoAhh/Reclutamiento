@@ -6,9 +6,9 @@
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
-     Notion-style: true-black primary for CTAs. Clean, authoritative. */
-  --color-primary: #000000;
-  --color-primary-active: #2d2d2d;
+     Notion-style: single blue structural accent. */
+  --color-primary: #0075de;
+  --color-primary-active: #005bab;
   --color-primary-disabled: #e6e6e6;
 
   /* Deep indigo "night" band background — signature single-hero moment. */
@@ -27,9 +27,9 @@
   --color-document-paper: #ffffff;         /* Salida oficial imprimible, independiente del tema */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #e6e6e6;
-  --color-hairline-soft: #f0efee;
-  --color-hairline-strong: #d5d3d1;
+  --color-hairline: #d5d3d1;
+  --color-hairline-soft: #e6e6e6;
+  --color-hairline-strong: #a39e98;
 
   /* ── Text ───────────────────────────────────────────────────── */
   --color-ink: #000000;                    /* Notion true-black (soft via alpha en usos) */
@@ -73,7 +73,7 @@
   --color-accent-amber-rgb: 221 91 0;
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 0 0 0;
+  --color-primary-rgb: 0 117 222;
   --color-error-rgb: 239 68 68;
   --color-success-rgb: 26 174 57;
   --color-ink-rgb: 0 0 0;

@@ -59,6 +59,36 @@
   color: var(--color-ink);
 }
 
+/* ── Project Badges ── */
+
+.project-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--type-caption-up-size);
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  letter-spacing: var(--tracking-wider);
+}
+
+.project-badge--starlite {
+  font-weight: var(--font-bold);
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
+  gap: var(--spacing-xs);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.project-badge--vinoplastic {
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.project-badge__icon {
+  fill: currentColor;
+}
+
 [data-theme="dark"] .badge--amber {
   color: var(--color-ink);
 }

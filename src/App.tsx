@@ -21,6 +21,7 @@ import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Configuracion } from '@/pages/Configuracion';
+
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 
 function AdminGuard({ children }: { children: ReactNode }) {
@@ -81,6 +82,7 @@ function App() {
       <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
       <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
       <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
+      <Route path="/asistencia" element={<Navigate to="/features" replace />} />
       <Route path="/rutas" element={<Navigate to="/features" replace />} />
       <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
       <Route path="/documentos" element={<Navigate to="/features" replace />} />

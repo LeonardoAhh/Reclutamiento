@@ -163,8 +163,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-xs) calc(var(--spacing-lg) - var(--spacing-md));
+  border-bottom: 1px solid var(--color-hairline-strong);
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
@@ -353,10 +353,10 @@
 
   .area-detail-modal__summary {
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(260px, 360px);
+    grid-template-columns: auto minmax(260px, 360px);
     gap: var(--spacing-lg);
     padding: var(--spacing-lg);
-    align-items: start;
+    align-items: center;
   }
 
   /* El heading ocupa toda la fila superior del grid; stats y cobertura
@@ -368,8 +368,8 @@
   }
 
   .area-detail-modal__summary-stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: nowrap;
     gap: var(--spacing-sm);
   }
 
