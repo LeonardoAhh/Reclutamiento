@@ -14,10 +14,12 @@ export function Tooltip({ content, children, side = 'top', delayMs = 200 }: Tool
     <TooltipPrimitive.Provider delayDuration={delayMs}>
       <TooltipPrimitive.Root>
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-        <TooltipPrimitive.Content side={side} className="tooltip-content">
-          {content}
-          <TooltipPrimitive.Arrow className="tooltip-arrow" />
-        </TooltipPrimitive.Content>
+        <TooltipPrimitive.Portal>
+          <TooltipPrimitive.Content side={side} className="tooltip-content">
+            {content}
+            <TooltipPrimitive.Arrow className="tooltip-arrow" />
+          </TooltipPrimitive.Content>
+        </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>
   );

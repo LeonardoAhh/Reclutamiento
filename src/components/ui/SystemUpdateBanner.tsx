@@ -72,7 +72,8 @@ export function SystemUpdateBanner() {
               <div className="system-update__heading">
                 <strong className="system-update__title">{info.titulo}</strong>
                 <span className="system-update__tag">
-                  {LEVEL_LABEL[level]} · v{info.version}
+                  {!info.titulo.toLowerCase().includes(LEVEL_LABEL[level].toLowerCase()) && `${LEVEL_LABEL[level]} · `}
+                  v{info.version}
                 </span>
               </div>
               {info.mensaje && (
@@ -90,6 +91,11 @@ export function SystemUpdateBanner() {
                   onClick={handleReload}
                   className={requiresReload ? 'system-update__action system-update__action--mantenimiento' : 'system-update__btn-update'}
                 />
+                
+                <p className="system-update__hint" style={{ marginTop: 'var(--spacing-sm)', fontSize: '12px', color: 'var(--color-muted)', textAlign: 'left' }}>
+                  <strong style={{ color: 'var(--color-primary)', display: 'block', marginBottom: '2px' }}>Sugerencia:</strong> 
+                  Usa Ctrl + Shift + R para forzar borrado de caché
+                </p>
               </div>
             </div>
           </motion.aside>

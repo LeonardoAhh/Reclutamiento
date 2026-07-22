@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pencil, AlertCircle } from 'lucide-react';
+import { Pencil, AlertCircle, Edit2 } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
+import { Tooltip } from './Tooltip';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
 import { SmartDatePicker } from './SmartDatePicker';
@@ -148,14 +149,37 @@ export function EditEmployeeModal({
           >
             Cancelar
           </button>
-          <button
-            type="submit"
-            form="edit-employee-form"
-            className="btn-primary"
-            disabled={!isValid || submitting}
-          >
-            {submitting ? 'Guardando…' : 'Guardar'}
-          </button>
+          {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 ? (
+            <Tooltip
+              side="top"
+              content={
+                <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
+                  <AlertCircle size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span></span>
+                </span>
+              }
+            >
+              <span style={{ display: 'inline-block' }}>
+                <button
+                  type="submit"
+                  form="edit-employee-form"
+                  className="btn-primary"
+                  disabled={!isValid || submitting}
+                >
+                  {submitting ? 'Guardando…' : 'Guardar'}
+                </button>
+              </span>
+            </Tooltip>
+          ) : (
+            <button
+              type="submit"
+              form="edit-employee-form"
+              className="btn-primary"
+              disabled={!isValid || submitting}
+            >
+              {submitting ? 'Guardando…' : 'Guardar'}
+            </button>
+          )}
         </>
       }
     >
@@ -230,12 +254,6 @@ export function EditEmployeeModal({
                 setForm({ ...form, fecha_ingreso: val })
               }
             />
-            {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-              <p className="form-notice form-notice--warning">
-                <AlertCircle size={14} aria-hidden="true" />
-                <span>Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.</span>
-              </p>
-            )}
           </div>
         </div>
 

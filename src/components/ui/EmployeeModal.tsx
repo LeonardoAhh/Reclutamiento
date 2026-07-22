@@ -20,6 +20,7 @@ import {
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
+import { Tooltip } from './Tooltip';
 import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
@@ -349,12 +350,6 @@ export function EmployeeModal({
           onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
           presets="past"
         />
-        {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-          <p className="form-notice form-notice--warning">
-            <AlertCircle size={14} aria-hidden="true" />
-            <span>Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.</span>
-          </p>
-        )}
       </div>
     </>
   );
@@ -419,12 +414,6 @@ export function EmployeeModal({
           onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
           presets="past"
         />
-        {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-          <p className="form-notice form-notice--warning">
-            <AlertCircle size={14} aria-hidden="true" />
-            <span>Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.</span>
-          </p>
-        )}
       </div>
     </>
   ) : null;
@@ -524,18 +513,45 @@ export function EmployeeModal({
         Cancelar
       </button>
       {isAdd ? (
-        <AnimatedSubmitButton
-          isSubmitting={submitting}
-          isSuccess={isSuccess}
-          isError={!!errorMsg}
-          errorText={errorMsg || undefined}
-          idleText="Guardar"
-          loadingText="Guardando..."
-          successText="¡Guardado!"
-          idleIcon={Save}
-          className="btn-primary"
-          disabled={!isAddValid}
-        />
+        String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 ? (
+          <Tooltip
+            side="top"
+            content={
+              <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
+                <AlertCircle size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span>No contará en KPIs ni Dashboard.</span>
+              </span>
+            }
+          >
+            <span style={{ display: 'inline-block' }}>
+              <AnimatedSubmitButton
+                isSubmitting={submitting}
+                isSuccess={isSuccess}
+                isError={!!errorMsg}
+                errorText={errorMsg || undefined}
+                idleText="Guardar"
+                loadingText="Guardando..."
+                successText="¡Guardado!"
+                idleIcon={Save}
+                className="btn-primary"
+                disabled={!isAddValid}
+              />
+            </span>
+          </Tooltip>
+        ) : (
+          <AnimatedSubmitButton
+            isSubmitting={submitting}
+            isSuccess={isSuccess}
+            isError={!!errorMsg}
+            errorText={errorMsg || undefined}
+            idleText="Guardar"
+            loadingText="Guardando..."
+            successText="¡Guardado!"
+            idleIcon={Save}
+            className="btn-primary"
+            disabled={!isAddValid}
+          />
+        )
       ) : (
         <AnimatedSubmitButton
           isSubmitting={submitting}

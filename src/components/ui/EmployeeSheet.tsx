@@ -267,7 +267,7 @@ export function EmployeeSheet({
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="employee-sheet__future-warning">
             <AlertCircle size={14} aria-hidden="true" />
-            Iniciará en el futuro. No contará en KPIs ni Dashboard hasta esta fecha.
+            No contará en KPIs ni Dashboard.
           </p>
         )}
       </div>

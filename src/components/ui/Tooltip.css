@@ -7,7 +7,7 @@
   line-height: var(--type-caption-md-line);
   font-weight: 500;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 9999;
   animation: tooltipFadeIn 150ms ease-out;
   white-space: normal;
   max-width: 280px;
