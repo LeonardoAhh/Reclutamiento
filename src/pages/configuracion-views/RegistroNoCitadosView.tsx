@@ -11,7 +11,7 @@ import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { NoCitadosChart } from './NoCitadosChart';
-import type { NoCitado } from '@/lib/types';
+import { type NoCitado, CANDIDATE_SOURCES } from '@/lib/types';
 import './NoCitados.css';
 
 const MOTIVOS_OPTIONS = [
@@ -59,6 +59,11 @@ const RECLUTADORES_OPTIONS = RECLUTADORES_ACTIVOS.map((r) => ({
   label: r.charAt(0) + r.slice(1).toLowerCase(),
 }));
 
+const FUENTES_OPTIONS = CANDIDATE_SOURCES.map((s) => ({
+  value: s,
+  label: s,
+}));
+
 export function RegistroNoCitadosView() {
   const isMobile = useIsMobile();
   const ITEMS_PER_PAGE = isMobile ? 5 : 5;
@@ -76,6 +81,7 @@ export function RegistroNoCitadosView() {
     motivo: '',
     subMotivo: '',
     reclutador: '',
+    fuente: '',
     notas: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -128,6 +134,7 @@ export function RegistroNoCitadosView() {
         motivo: formData.motivo,
         sub_motivo: formData.subMotivo || null,
         reclutador: formData.reclutador,
+        fuente: formData.fuente || null,
         notas: formData.notas || null,
       });
     } else {
@@ -138,6 +145,7 @@ export function RegistroNoCitadosView() {
         motivo: formData.motivo,
         sub_motivo: formData.subMotivo || null,
         reclutador: formData.reclutador,
+        fuente: formData.fuente || null,
         notas: formData.notas || null,
         fecha: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       });
@@ -147,7 +155,7 @@ export function RegistroNoCitadosView() {
       setStatus('success');
       setTimeout(() => {
         setStatus('idle');
-        setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', notas: '' });
+        setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', notas: '' });
         setIsModalOpen(false); // Close modal on success
         setEditingId(null);
       }, 1500);
@@ -220,7 +228,7 @@ export function RegistroNoCitadosView() {
 
   const openNewModal = () => {
     setEditingId(null);
-    setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', notas: '' });
+    setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', notas: '' });
     setIsModalOpen(true);
   };
 
@@ -233,6 +241,7 @@ export function RegistroNoCitadosView() {
       motivo: record.motivo,
       subMotivo: record.sub_motivo || '',
       reclutador: record.reclutador,
+      fuente: record.fuente || '',
       notas: record.notas || '',
     });
     setIsModalOpen(true);
@@ -389,6 +398,17 @@ export function RegistroNoCitadosView() {
               onChange={(val) => handleChange('reclutador', val)}
               options={RECLUTADORES_OPTIONS}
               placeholder="Selecciona un reclutador..."
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="fuente">Fuente</label>
+            <CustomSelect
+              id="fuente"
+              value={formData.fuente}
+              onChange={(val) => handleChange('fuente', val)}
+              options={FUENTES_OPTIONS}
+              placeholder="Selecciona una fuente..."
             />
           </div>
 
@@ -577,6 +597,11 @@ export function RegistroNoCitadosView() {
                     <span className="no-citado-mobile-card__reclutador">
                       {getReclutadorLabel(r.reclutador)}
                     </span>
+                    {r.fuente && (
+                      <span className="no-citado-mobile-card__fuente" style={{ fontSize: '12px', color: 'var(--color-ink-faint)', marginLeft: 'auto' }}>
+                        {r.fuente}
+                      </span>
+                    )}
                   </div>
                   {r.notas && (
                     <div className="no-citado-mobile-card__notas" style={{ fontStyle: 'normal' }}>
@@ -607,6 +632,7 @@ export function RegistroNoCitadosView() {
                   <th>Candidato</th>
                   <th>Teléfono</th>
                   <th>Reclutador</th>
+                  <th>Fuente</th>
                   <th>Motivo</th>
                   <th style={{ textAlign: 'center' }}>Notas</th>
                   <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -619,6 +645,7 @@ export function RegistroNoCitadosView() {
                     <td>{r.nombre} {r.apellido}</td>
                     <td>{r.telefono}</td>
                     <td>{getReclutadorLabel(r.reclutador)}</td>
+                    <td>{r.fuente || '-'}</td>
                     <td>
                       <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                         <span className="badge-pill badge-pill--gray">
