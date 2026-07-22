@@ -227,7 +227,7 @@ export function BusquedaView() {
 
   const reportRows = useMemo(() => {
     if (!currentReport) return [];
-    return currentReport.data.filter((row: any): boolean => {
+    return currentReport.data.filter((row: any): row is any => {
       if (!row || typeof row !== 'object') return false;
       const candidate = row;
       return typeof candidate.numero_empleado === 'string' && Boolean(candidate.days && typeof candidate.days === 'object');
@@ -236,7 +236,7 @@ export function BusquedaView() {
 
   const employeeDaysByNumber = useMemo(() => {
     const map = new Map<string, Record<string, string>>();
-    for (const r of reportRows) {
+    for (const r of reportRows as any[]) {
       map.set(r.numero_empleado, r.days);
     }
     return map;
