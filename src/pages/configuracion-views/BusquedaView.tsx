@@ -13,8 +13,19 @@ import { useBajas } from '@/hooks/useBajas';
 import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
 import type { Baja, Employee } from '@/lib/types';
 import { toTitleCase } from '@/lib/utils';
-import { Search, CircleUser, X } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  CircleUser,
+  LayoutGrid,
+  List,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  X,
+} from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
+import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
 
@@ -31,11 +42,41 @@ type ReportEmployeeRow = {
   days: Record<string, string>;
 };
 
+type SearchStatusFilter = 'all' | 'active' | 'inactive';
+type SearchViewMode = 'detail' | 'compact';
+
+const ALL_FILTER_VALUE = 'all';
+
+function normalizeFilterValue(value: string) {
+  return value.trim().toLocaleLowerCase('es');
+}
+
+function uniqueFilterValues(results: EmployeeSearchResult[], field: 'area' | 'turno') {
+  const values = new Map<string, string>();
+
+  for (const result of results) {
+    const display = String(result[field] ?? '').trim();
+    if (!display) continue;
+    const normalized = normalizeFilterValue(display);
+    if (!values.has(normalized)) values.set(normalized, displayValue(display));
+  }
+
+  return Array.from(values, ([value, label]) => ({ value, label }))
+    .sort((first, second) => first.label.localeCompare(second.label, 'es'));
+}
+
 function isReportEmployeeRow(value: unknown): value is ReportEmployeeRow {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Record<string, unknown>;
   return typeof candidate.numero_empleado === 'string' &&
     Boolean(candidate.days && typeof candidate.days === 'object' && !Array.isArray(candidate.days));
+}
+
+function getEmployeeResultId(employee: EmployeeSearchResult) {
+  const resultKind = employee.isBaja ? 'baja' : 'activo';
+  const identity = employee.id || (employee.isBaja ? employee.fecha_baja : employee.fecha_ingreso);
+  const rawId = `${resultKind}-${employee.num_empleado}-${identity}`;
+  return rawId.replace(/[^a-zA-Z0-9_-]/g, '-');
 }
 
 function getStickerTone(numEmpleado: string) {
@@ -182,36 +223,67 @@ function GlobalIncidenceHistory({
     return res;
   }, [allReports, employeeNumber]);
 
+  const totalIncidents = history.reduce(
+    (total, month) => total + Object.values(month.incidents).reduce(
+      (monthTotal, incident) => monthTotal + incident.count,
+      0,
+    ),
+    0,
+  );
+
   if (history.length === 0) return null;
 
   return (
     <section className="config-card__history-section" aria-labelledby={titleId}>
-      <h4 id={titleId} className="config-history__title type-caption-up text-muted">
-        Historial general de incidencias
-      </h4>
+      <header className="config-history__header">
+        <div>
+          <h4 id={titleId} className="config-history__title type-caption-up text-muted">
+            Historial general de incidencias
+          </h4>
+          <p className="config-history__summary type-body-sm text-muted">
+            {history.length} {history.length === 1 ? 'mes' : 'meses'} · {totalIncidents} {totalIncidents === 1 ? 'incidencia' : 'incidencias'}
+          </p>
+        </div>
+      </header>
+
       <ul className="config-history__months">
-        {history.map((h) => (
-          <li key={h.mes} className="config-history__month-item">
-            <h5 className="config-history__month type-body-sm-strong text-charcoal">
-              {toTitleCase(formatMes(h.mes))}
-            </h5>
-            <ul className="config-history__incidents">
-              {Object.entries(h.incidents).map(([label, info]) => {
-                const daysText = info.days.length === 1 ? `Día ${info.days[0]}` : `Días ${info.days.join(', ')}`;
-                return (
-                  <li key={label} className="config-incidence-list__item">
-                    <span className="config-incidence-list__label" title={daysText}>
-                      {label}: <strong className="config-history__count">{info.count}</strong>
-                      <span className="config-history__days">
-                        ({daysText})
+        {history.map((h) => {
+          const monthTotal = Object.values(h.incidents).reduce(
+            (total, incident) => total + incident.count,
+            0,
+          );
+
+          return (
+            <li key={h.mes} className="config-history__month-item">
+              <header className="config-history__month-header">
+                <h5 className="config-history__month type-body-sm-strong text-charcoal">
+                  {toTitleCase(formatMes(h.mes))}
+                </h5>
+                <span className="config-history__month-total type-caption-sm text-muted">
+                  {monthTotal} {monthTotal === 1 ? 'registro' : 'registros'}
+                </span>
+              </header>
+
+              <ul className="config-history__incidents">
+                {Object.entries(h.incidents).map(([label, info]) => {
+                  const daysText = info.days.length === 1 ? `Día ${info.days[0]}` : `Días ${info.days.join(', ')}`;
+                  return (
+                    <li key={label} className="config-incidence-list__item">
+                      <span className="config-incidence-list__marker" aria-hidden="true" />
+                      <span className="config-incidence-list__content">
+                        <span className="config-incidence-list__label">{label}</span>
+                        <span className="config-incidence-list__days">{daysText}</span>
                       </span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </li>
-        ))}
+                      <span className="config-incidence-list__count" aria-label={`${info.count} ${info.count === 1 ? 'registro' : 'registros'}`}>
+                        {info.count}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );
@@ -224,6 +296,11 @@ export function BusquedaView() {
   const { fetchByMes, fetchSummaries, fetchByMesList } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<SearchStatusFilter>('all');
+  const [departmentFilter, setDepartmentFilter] = useState(ALL_FILTER_VALUE);
+  const [shiftFilter, setShiftFilter] = useState(ALL_FILTER_VALUE);
+  const [viewMode, setViewMode] = useState<SearchViewMode>('detail');
+  const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(() => new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [summaries, setSummaries] = useState<ReporteDiarioSummary[]>([]);
@@ -293,7 +370,7 @@ export function BusquedaView() {
 
   const searchQuery = searchTerm.trim();
 
-  const filteredEmployees = useMemo<EmployeeSearchResult[]>(() => {
+  const searchMatches = useMemo<EmployeeSearchResult[]>(() => {
     const query = searchQuery.toLocaleLowerCase('es');
     if (query.length < 2) return [];
 
@@ -309,6 +386,47 @@ export function BusquedaView() {
 
     return [...activeMatches, ...bajaMatches].slice(0, 10);
   }, [searchQuery, employees, bajas]);
+
+  const departmentOptions = useMemo(
+    () => uniqueFilterValues(searchMatches, 'area'),
+    [searchMatches],
+  );
+  const shiftOptions = useMemo(
+    () => uniqueFilterValues(searchMatches, 'turno'),
+    [searchMatches],
+  );
+
+  const filteredEmployees = useMemo(() => {
+    return searchMatches.filter((employee) => {
+      if (statusFilter === 'active' && employee.isBaja) return false;
+      if (statusFilter === 'inactive' && !employee.isBaja) return false;
+      if (
+        departmentFilter !== ALL_FILTER_VALUE &&
+        normalizeFilterValue(employee.area) !== departmentFilter
+      ) return false;
+      if (
+        shiftFilter !== ALL_FILTER_VALUE &&
+        normalizeFilterValue(employee.turno ?? '') !== shiftFilter
+      ) return false;
+      return true;
+    });
+  }, [searchMatches, statusFilter, departmentFilter, shiftFilter]);
+
+  const hasActiveFilters = statusFilter !== 'all' ||
+    departmentFilter !== ALL_FILTER_VALUE ||
+    shiftFilter !== ALL_FILTER_VALUE;
+  const canUseCompactView = searchMatches.length > 1;
+
+  useEffect(() => {
+    setStatusFilter('all');
+    setDepartmentFilter(ALL_FILTER_VALUE);
+    setShiftFilter(ALL_FILTER_VALUE);
+    setExpandedResultIds(new Set<string>());
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!canUseCompactView && viewMode === 'compact') setViewMode('detail');
+  }, [canUseCompactView, viewMode]);
 
   if (authLoading || employeesLoading || bajasLoading) {
     return (
@@ -330,6 +448,26 @@ export function BusquedaView() {
   const handleClearSearch = () => {
     setSearchTerm('');
     searchInputRef.current?.focus();
+  };
+
+  const handleClearFilters = () => {
+    setStatusFilter('all');
+    setDepartmentFilter(ALL_FILTER_VALUE);
+    setShiftFilter(ALL_FILTER_VALUE);
+  };
+
+  const handleViewModeChange = (mode: SearchViewMode) => {
+    setViewMode(mode);
+    if (mode === 'detail') setExpandedResultIds(new Set<string>());
+  };
+
+  const handleToggleCompactResult = (resultId: string) => {
+    setExpandedResultIds((current) => {
+      const next = new Set(current);
+      if (next.has(resultId)) next.delete(resultId);
+      else next.add(resultId);
+      return next;
+    });
   };
 
   const showHelperText = searchQuery.length === 1;
@@ -408,25 +546,126 @@ export function BusquedaView() {
             <div className="animated-empty-state__title">Busca un colaborador</div>
             <p className="animated-empty-state__subtitle">Consulta su información laboral, asistencia e historial de incidencias.</p>
           </div>
-        ) : filteredEmployees.length > 0 ? (
+        ) : searchMatches.length > 0 ? (
           <div className="config-results-wrapper">
             <h3 className="sr-only">Resultados de búsqueda</h3>
+
+            <section className="config-results-controls" aria-label="Filtros y vista de resultados">
+              <div className="config-results-controls__heading">
+                <SlidersHorizontal aria-hidden="true" />
+                <span className="type-body-sm-strong text-charcoal">Filtrar resultados</span>
+              </div>
+
+              <div className="config-results-controls__filters">
+                <fieldset className="config-filter-group">
+                  <legend className="config-filter-label type-caption-sm text-muted">Estado</legend>
+                  <div className="config-segmented-control">
+                    {([
+                      ['all', 'Todos'],
+                      ['active', 'Activos'],
+                      ['inactive', 'Bajas'],
+                    ] as const).map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`config-segmented-control__button${statusFilter === value ? ' is-active' : ''}`}
+                        onClick={() => setStatusFilter(value)}
+                        aria-pressed={statusFilter === value}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <label className="config-filter-field">
+                  <span className="config-filter-label type-caption-sm text-muted">Departamento</span>
+                  <select
+                    value={departmentFilter}
+                    onChange={(event) => setDepartmentFilter(event.target.value)}
+                    className="config-filter-select"
+                  >
+                    <option value={ALL_FILTER_VALUE}>Todos</option>
+                    {departmentOptions.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="config-filter-field">
+                  <span className="config-filter-label type-caption-sm text-muted">Turno</span>
+                  <select
+                    value={shiftFilter}
+                    onChange={(event) => setShiftFilter(event.target.value)}
+                    className="config-filter-select"
+                  >
+                    <option value={ALL_FILTER_VALUE}>Todos</option>
+                    {shiftOptions.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+
+                {hasActiveFilters && (
+                  <ButtonUtility
+                    type="button"
+                    className="config-filter-reset"
+                    icon={<RotateCcw aria-hidden="true" />}
+                    onClick={handleClearFilters}
+                  >
+                    Limpiar
+                  </ButtonUtility>
+                )}
+              </div>
+
+              {canUseCompactView && (
+                <div className="config-view-switch" role="group" aria-label="Vista de resultados">
+                  <button
+                    type="button"
+                    className={`config-view-switch__button${viewMode === 'detail' ? ' is-active' : ''}`}
+                    onClick={() => handleViewModeChange('detail')}
+                    aria-pressed={viewMode === 'detail'}
+                  >
+                    <List aria-hidden="true" />
+                    Detallada
+                  </button>
+                  <button
+                    type="button"
+                    className={`config-view-switch__button${viewMode === 'compact' ? ' is-active' : ''}`}
+                    onClick={() => handleViewModeChange('compact')}
+                    aria-pressed={viewMode === 'compact'}
+                  >
+                    <LayoutGrid aria-hidden="true" />
+                    Compacta
+                  </button>
+                </div>
+              )}
+            </section>
+
             <p className="config-results__count type-caption-sm text-muted" aria-live="polite">
-              {filteredEmployees.length} resultado{filteredEmployees.length !== 1 ? 's' : ''} para “{searchQuery}”
+              {hasActiveFilters
+                ? `${filteredEmployees.length} de ${searchMatches.length} resultados para “${searchQuery}”`
+                : `${searchMatches.length} resultado${searchMatches.length !== 1 ? 's' : ''} para “${searchQuery}”`}
             </p>
 
-            <div className="config-results">
-              {filteredEmployees.map((emp, resultIndex) => {
+            <div className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}>
+              {filteredEmployees.length > 0 ? filteredEmployees.map((emp) => {
                 const employeeName = displayValue(emp.nombre);
                 const employeeNumber = displayValue(emp.num_empleado);
                 const stickerTone = getStickerTone(employeeNumber);
-                const resultKind = emp.isBaja ? 'baja' : 'activo';
-                const employeeDomId = `${resultKind}-${employeeNumber.replace(/[^a-zA-Z0-9_-]/g, '-')}-${resultIndex}`;
+                const employeeDomId = getEmployeeResultId(emp);
                 const monthSelectId = `config-month-select-${employeeDomId}`;
                 const employeeTitleId = `employee-card-title-${employeeDomId}`;
+                const isCompactResult = viewMode === 'compact';
+                const isExpanded = expandedResultIds.has(employeeDomId);
+                const compactDetailsId = `compact-details-${employeeDomId}`;
 
                 return (
-                  <article key={employeeDomId} className="config-card" aria-labelledby={employeeTitleId}>
+                  <article
+                    key={employeeDomId}
+                    className={`config-card${isCompactResult ? ' config-card--compact' : ''}${isExpanded ? ' is-expanded' : ''}`}
+                    aria-labelledby={employeeTitleId}
+                  >
                     <header className="config-card__header">
                       <div
                         className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
@@ -444,7 +683,40 @@ export function BusquedaView() {
                       </div>
                     </header>
 
-                    <div className="config-card__body">
+                    {isCompactResult && (
+                      <div className="config-compact-summary">
+                        <dl className="config-compact-summary__facts">
+                          <div>
+                            <dt>Puesto</dt>
+                            <dd>{displayValue(emp.puesto)}</dd>
+                          </div>
+                          <div>
+                            <dt>Departamento</dt>
+                            <dd>{displayValue(emp.area)}</dd>
+                          </div>
+                          <div>
+                            <dt>Turno</dt>
+                            <dd>{emp.turno ? displayValue(emp.turno) : 'Sin información'}</dd>
+                          </div>
+                        </dl>
+                        <ButtonUtility
+                          type="button"
+                          className="config-compact-summary__toggle"
+                          icon={isExpanded ? <ChevronUp aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
+                          onClick={() => handleToggleCompactResult(employeeDomId)}
+                          aria-expanded={isExpanded}
+                          aria-controls={compactDetailsId}
+                        >
+                          {isExpanded ? 'Ocultar detalle' : 'Ver detalle'}
+                        </ButtonUtility>
+                      </div>
+                    )}
+
+                    {(!isCompactResult || isExpanded) && (
+                    <div
+                      id={isCompactResult ? compactDetailsId : undefined}
+                      className="config-card__body"
+                    >
                       <section className="config-card__details" aria-labelledby={`details-${employeeDomId}`}>
                         <h4 id={`details-${employeeDomId}`} className="config-card__section-title type-caption-up text-muted">
                           Información laboral
@@ -586,9 +858,24 @@ export function BusquedaView() {
                         titleId={`history-${employeeDomId}`}
                       />
                     </div>
+                    )}
                   </article>
                 );
-              })}
+              }) : (
+                <div className="config-filter-empty" role="status">
+                  <Search aria-hidden="true" />
+                  <p className="type-body-md text-muted">
+                    No hay colaboradores que coincidan con los filtros seleccionados.
+                  </p>
+                  <ButtonUtility
+                    type="button"
+                    icon={<RotateCcw aria-hidden="true" />}
+                    onClick={handleClearFilters}
+                  >
+                    Limpiar filtros
+                  </ButtonUtility>
+                </div>
+              )}
             </div>
           </div>
         ) : (

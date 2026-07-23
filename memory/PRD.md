@@ -263,3 +263,12 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Historial convertido a listas semánticas por mes; badge de turno neutral y colores sticker limitados al icono decorativo.
 - Eliminadas reglas duplicadas, estilos inline y medidas visuales directas del bloque; se reutilizan tokens y patrones existentes.
 - No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.
+
+
+## 2026-07-23 — Búsqueda global: vista compacta, filtros e historial
+- Añadidos filtros locales combinables por estado, departamento y turno, con opciones derivadas de los resultados y acción de limpieza; no se agregaron consultas ni mutaciones.
+- Añadido selector Detallada/Compacta cuando existen varios resultados. La vista compacta resume puesto, departamento y turno, y permite expandir una ficha individual sin cambiar las demás.
+- Rediseñado el historial sin alterar su cálculo: resumen de meses/incidencias, tarjetas por mes y filas por tipo. Cada fila mantiene visible `Día N` o `Días N, N`, con conteo separado y color semántico reducido a un indicador puntual.
+- Layout mobile-first: controles apilados, selects y botones con touch target; filtros en columnas para tablet y tarjetas compactas a dos columnas en PC.
+- Implementación semántica con `fieldset`, `legend`, listas, encabezados jerárquicos, `aria-pressed`, `aria-expanded` y regiones live existentes.
+- No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.
