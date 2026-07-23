@@ -56,6 +56,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const sessionRef = useRef<Session | null>(null);
   // Evita spamear el toast de "Sesión expirada" si múltiples requests fallan.
   const expiredNotifiedRef = useRef(false);
+  // Impide que respuestas 401 concurrentes ejecuten varios cierres a la vez.
+  const expiryHandlingRef = useRef(false);
+
+  const expireSession = useCallback(async () => {
+    if (expiryHandlingRef.current) return;
+    expiryHandlingRef.current = true;
+
+    // Cortamos la sesión en memoria primero para que AuthGuard redirija a
+    // /login inmediatamente, sin esperar a que Supabase termine signOut.
+    sessionRef.current = null;
+    setSession(null);
+    setProfile(null);
+    setProfileLoading(false);
+
+    if (!expiredNotifiedRef.current) {
+      expiredNotifiedRef.current = true;
+      sileo.error({
+        title: 'Sesión expirada. Vuelve a iniciar sesión.',
+      });
+    }
+
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // La sesión ya se eliminó de la UI; un fallo del SDK no debe bloquear
+      // la redirección ni dejar al usuario trabajando con datos obsoletos.
+    } finally {
+      expiryHandlingRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     sessionRef.current = session;
@@ -68,12 +98,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
+      sessionRef.current = data.session;
       setSession(data.session);
       setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
+      sessionRef.current = sess;
       setSession(sess);
+      if (!sess) {
+        setProfile(null);
+        setProfileLoading(false);
+      }
     });
 
     return () => {
@@ -92,20 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      que su último cambio no llegó. El refresh proactivo (60s antes de
      `expires_at`) sigue cubriendo el caso normal sin fricción. */
   useEffect(() => {
-    const handler = async () => {
-      if (!sessionRef.current) return; // Ya cerrada o nunca abierta.
-      await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-      setSession(null);
-      if (!expiredNotifiedRef.current) {
-        expiredNotifiedRef.current = true;
-        sileo.error({
-          title: 'Sesión expirada. Vuelve a iniciar sesión.',
-        });
-      }
+    const handler = () => {
+      if (!sessionRef.current) return;
+      void expireSession();
     };
     window.addEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
     return () => window.removeEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
-  }, []);
+  }, [expireSession]);
 
   /* ── Refresh proactivo del JWT ────────────────────────────────────────
      Programa un refresh 60s ANTES de que expire el token. Si el refresh
@@ -127,19 +156,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error || !data.session) throw error ?? new Error('refresh failed');
         setSession(data.session);
       } catch {
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-        setSession(null);
-        if (!expiredNotifiedRef.current) {
-          expiredNotifiedRef.current = true;
-          sileo.error({
-            title: 'Sesión expirada. Vuelve a iniciar sesión.',
-          });
-        }
+        await expireSession();
       }
     }, delay);
 
     return () => window.clearTimeout(timer);
-  }, [session?.expires_at]);
+  }, [session?.expires_at, expireSession]);
 
   /* ── Revalidación de sesión al volver a la app ─────────────────────
      Los timers de auto-refresh de Supabase se CONGELAN cuando la
@@ -166,13 +188,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const { data: refreshed, error } = await supabase.auth.refreshSession();
           sess = error ? null : refreshed.session;
           if (!sess) {
-            await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
-            if (!expiredNotifiedRef.current) {
-              expiredNotifiedRef.current = true;
-              sileo.error({
-                title: 'Sesión expirada. Vuelve a iniciar sesión.',
-              });
-            }
+            await expireSession();
+            return;
           }
         }
         setSession(sess);
@@ -189,7 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       document.removeEventListener('visibilitychange', revalidate);
       window.removeEventListener('online', revalidate);
     };
-  }, []);
+  }, [expireSession]);
 
   // Carga el profile y establece presencia según el usuario.
   useEffect(() => {
