@@ -144,7 +144,15 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
   );
 }
 
-function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber: string, allReports: ReporteDiarioRecord[] }) {
+function GlobalIncidenceHistory({
+  employeeNumber,
+  allReports,
+  titleId,
+}: {
+  employeeNumber: string;
+  allReports: ReporteDiarioRecord[];
+  titleId: string;
+}) {
   const history = useMemo(() => {
     if (!allReports.length) return [];
     const res: { mes: string, incidents: Record<string, { count: number, days: string[] }> }[] = [];
@@ -177,33 +185,35 @@ function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber
   if (history.length === 0) return null;
 
   return (
-    <aside className="config-card__history-section" aria-label="Historial general de incidencias">
-      <h4 className="config-history__title type-caption-up text-muted">
-        Historial General de Incidencias
+    <section className="config-card__history-section" aria-labelledby={titleId}>
+      <h4 id={titleId} className="config-history__title type-caption-up text-muted">
+        Historial general de incidencias
       </h4>
-      <div className="config-history__months">
+      <ul className="config-history__months">
         {history.map((h) => (
-          <div key={h.mes}>
-            <span className="config-history__month type-body-sm-strong text-charcoal">
+          <li key={h.mes} className="config-history__month-item">
+            <h5 className="config-history__month type-body-sm-strong text-charcoal">
               {toTitleCase(formatMes(h.mes))}
-            </span>
-            <div className="config-history__incidents">
+            </h5>
+            <ul className="config-history__incidents">
               {Object.entries(h.incidents).map(([label, info]) => {
                 const daysText = info.days.length === 1 ? `Día ${info.days[0]}` : `Días ${info.days.join(', ')}`;
                 return (
-                  <span key={label} className="config-incidence-list__label" title={daysText}>
-                    {label}: <strong className="config-history__count">{info.count}</strong>
-                    <span className="config-history__days">
-                      ({daysText})
+                  <li key={label} className="config-incidence-list__item">
+                    <span className="config-incidence-list__label" title={daysText}>
+                      {label}: <strong className="config-history__count">{info.count}</strong>
+                      <span className="config-history__days">
+                        ({daysText})
+                      </span>
                     </span>
-                  </span>
+                  </li>
                 );
               })}
-            </div>
-          </div>
+            </ul>
+          </li>
         ))}
-      </div>
-    </aside>
+      </ul>
+    </section>
   );
 }
 
@@ -339,7 +349,7 @@ export function BusquedaView() {
           )}
         </div>
 
-        <section className="config-page__toolbar" aria-label="Herramientas de búsqueda">
+        <section className="config-page__toolbar" role="search" aria-label="Buscar colaboradores">
           <div className="form-group config-search">
             <label htmlFor="config-search-input" className="sr-only">
               Buscar empleado
@@ -391,20 +401,17 @@ export function BusquedaView() {
           </span>
         )}
         {searchQuery.length < 2 ? (
-          <div className="animated-empty-state">
+          <div className="animated-empty-state busqueda-view__empty">
             <div className="animated-empty-state__icon">
               <Search aria-hidden="true" />
             </div>
-            <div className="animated-empty-state__title">Listo para buscar</div>
+            <div className="animated-empty-state__title">Busca un colaborador</div>
+            <p className="animated-empty-state__subtitle">Consulta su información laboral, asistencia e historial de incidencias.</p>
           </div>
         ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">
             <h3 className="sr-only">Resultados de búsqueda</h3>
-            <p
-              className="config-results__count type-caption-sm text-muted"
-              role="status"
-              aria-live="polite"
-            >
+            <p className="config-results__count type-caption-sm text-muted" aria-live="polite">
               {filteredEmployees.length} resultado{filteredEmployees.length !== 1 ? 's' : ''} para “{searchQuery}”
             </p>
 
@@ -438,7 +445,11 @@ export function BusquedaView() {
                     </header>
 
                     <div className="config-card__body">
-                      <dl className="config-card__properties">
+                      <section className="config-card__details" aria-labelledby={`details-${employeeDomId}`}>
+                        <h4 id={`details-${employeeDomId}`} className="config-card__section-title type-caption-up text-muted">
+                          Información laboral
+                        </h4>
+                        <dl className="config-card__properties">
                         <div className="notion-prop">
                           <dt className="notion-prop__label type-body-sm text-muted">Puesto</dt>
                           <dd className="notion-prop__value type-body-sm-strong text-charcoal">{displayValue(emp.puesto)}</dd>
@@ -488,18 +499,19 @@ export function BusquedaView() {
                             <dt className="notion-prop__label type-body-sm text-muted">Turno</dt>
                             <dd className="notion-prop__value">
                               {emp.turno ? (
-                                <Badge variant="teal">{emp.turno}</Badge>
+                                <Badge>{emp.turno}</Badge>
                               ) : (
                                 <span className="type-body-sm-strong text-muted">N/A</span>
                               )}
                             </dd>
                           </div>
                         )}
-                      </dl>
+                        </dl>
+                      </section>
 
-                      <aside className="config-card__calendar-section" aria-label={`Incidencias de ${employeeName}`}>
+                      <section className="config-card__calendar-section" aria-labelledby={`calendar-${employeeDomId}`}>
                         <div className="config-calendar-header-actions">
-                          <span className="notion-prop__label type-caption-up text-muted">Calendario</span>
+                          <h4 id={`calendar-${employeeDomId}`} className="config-card__section-title type-caption-up text-muted">Calendario</h4>
 
                           {summariesLoading ? (
                             <span className="type-caption-sm text-muted" role="status">Cargando reportes…</span>
@@ -548,6 +560,14 @@ export function BusquedaView() {
                               );
                             }
 
+                            if (!selectedMes) {
+                              return (
+                                <p className="config-calendar-empty type-body-sm text-muted" role="status">
+                                  Aún no hay reportes guardados para consultar.
+                                </p>
+                              );
+                            }
+
                             return (
                               <div className="config-calendar-grid-container config-calendar-grid-container--spaced">
                                 <MiniCalendar
@@ -558,10 +578,13 @@ export function BusquedaView() {
                             );
                           })()}
                         </div>
-                      </aside>
+                      </section>
 
-                      {/* Historial global de todas las incidencias */}
-                      <GlobalIncidenceHistory employeeNumber={employeeNumber} allReports={allReports} />
+                      <GlobalIncidenceHistory
+                        employeeNumber={employeeNumber}
+                        allReports={allReports}
+                        titleId={`history-${employeeDomId}`}
+                      />
                     </div>
                   </article>
                 );

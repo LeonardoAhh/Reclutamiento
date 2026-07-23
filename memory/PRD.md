@@ -254,3 +254,12 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Reemplazados `any` por tipos discriminados (`Employee | Baja`) y un type guard para filas de reportes; el acceso a fecha/motivo de baja queda seguro.
 - Eliminados estilos inline y valores visuales directos de la vista; la presentación vive en `Configuracion.css` con tokens y clases reutilizables.
 - No se ejecutaron pruebas ni agentes por instrucción explícita del usuario; no requiere nuevas claves ni cambios de Supabase.
+
+
+## 2026-07-23 — `/features` · Búsqueda global mobile-first
+- Confirmado repositorio en `main`; el commit de producción `a180484` es ancestro del HEAD local `c770bfb`.
+- Rediseñada la ficha como composición mobile-first: bloques de información y calendario apilados, dos columnas equilibradas en PC y ancho centrado mediante tokens.
+- Calendario fluido sin anchos mínimos, buscador/selector con touch targets accesibles, estado sin reportes y estado inicial con orientación útil.
+- Historial convertido a listas semánticas por mes; badge de turno neutral y colores sticker limitados al icono decorativo.
+- Eliminadas reglas duplicadas, estilos inline y medidas visuales directas del bloque; se reutilizan tokens y patrones existentes.
+- No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.

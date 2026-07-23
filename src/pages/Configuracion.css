@@ -104,7 +104,7 @@
   }
 
   .config-page__header-container .config-page__toolbar {
-    width: 400px;
+    width: min(100%, var(--feature-result-card-min));
     flex-shrink: 0;
   }
 }
@@ -134,9 +134,11 @@
 }
 
 .config-search input {
-  height: var(--control-height);
+  min-height: var(--touch-target-min);
   padding-left: calc(var(--spacing-xl) + var(--spacing-xs)) !important;
-  padding-right: calc(var(--control-height) + var(--spacing-xs)) !important;
+  padding-right: calc(var(--touch-target-min) + var(--spacing-xs)) !important;
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface);
 }
 
 .config-search input[type="search"]::-webkit-search-cancel-button,
@@ -166,6 +168,12 @@
 
 /* ── Resultados de búsqueda ───────────────────────────────────── */
 
+.config-results-wrapper {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
 .config-results__count {
   margin: 0 0 var(--spacing-md);
   overflow-wrap: anywhere;
@@ -179,35 +187,18 @@
   width: 100%;
 }
 
-@media (min-width: 1400px) {
-  .config-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-result-card-min)), 1fr));
-    align-items: start;
-  }
-}
-
 .config-card {
   container-type: inline-size;
   container-name: config-card;
   min-width: 0;
   width: 100%;
-
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
-  gap: var(--spacing-lg);
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
-}
-
-@media (hover: hover) {
-  .config-card:hover {
-    border-color: var(--color-hairline-strong);
-    box-shadow: var(--shadow-sm);
-  }
 }
 
 @media (min-width: 768px) {
@@ -218,18 +209,22 @@
 
 .config-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-md);
-  padding-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
 .config-card__avatar {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
+  flex: 0 0 var(--touch-target-min);
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  font-size: var(--type-heading-lg-size);
 }
 
 .config-card__avatar--tone-0 { color: var(--color-accent-sky); }
@@ -241,8 +236,10 @@
 .config-card__title-group {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: var(--spacing-xxs);
   min-width: 0;
+  min-height: var(--touch-target-min);
 }
 
 .config-card__title-group h3,
@@ -250,18 +247,16 @@
   margin: 0;
 }
 
-.config-card__title-group h3 {
-  overflow-wrap: anywhere;
-}
-
 .config-card__employee-title {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs) var(--spacing-sm);
+  overflow-wrap: anywhere;
 }
 
 .config-card__employee-number {
+  width: 100%;
   font-weight: var(--font-regular);
 }
 
@@ -273,24 +268,29 @@
 }
 
 .config-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-lg);
 }
 
-@container config-card (min-width: 620px) {
+.config-card__details,
+.config-card__calendar-section {
+  min-width: 0;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+}
+
+@media (min-width: 1024px) {
   .config-card__body {
-    display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: start;
   }
+}
 
-  .config-card .config-card__calendar-section {
-    padding-top: 0;
-    padding-left: var(--spacing-xl);
-    border-top: none;
-    border-left: 1px solid var(--color-hairline-soft);
-  }
+.config-card__section-title {
+  margin: 0;
 }
 
 /* ── Propiedades estilo Notion ────────────────────────────────── */
@@ -298,28 +298,20 @@
 .config-card__properties {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  margin: 0;
+  margin: var(--spacing-md) 0 0;
 }
 
 .notion-prop {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-calendar-column-min)), 1fr));
+  gap: var(--spacing-xxs) var(--spacing-md);
+  padding-block: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline-soft);
 }
 
-@container config-card (min-width: 380px) {
-  .notion-prop {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-
-  .notion-prop__label {
-    width: 40%;
-    max-width: min(40%, 9rem);
-    flex-shrink: 0;
-  }
+.notion-prop:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .notion-prop__label {
@@ -328,7 +320,6 @@
 }
 
 .notion-prop__value {
-  flex: 1;
   min-width: 0;
   display: flex;
   align-items: center;
@@ -338,46 +329,45 @@
 
 /* ── Sección de calendario ────────────────────────────────────── */
 
-.config-card__calendar-section {
-  container-type: inline-size;
-  container-name: config-calendar-section;
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-hairline-soft);
-  min-width: 0;
-}
-
 .config-calendar-header-actions {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
 }
 
 .config-calendar-header-actions > :last-child {
-  margin-left: auto;
   max-width: 100%;
+}
+
+@media (min-width: 600px) {
+  .config-calendar-header-actions > :last-child {
+    margin-left: auto;
+  }
+}
+
+.config-month-select {
+  min-height: var(--touch-target-min);
+  max-width: 100%;
+  padding: var(--spacing-xs) var(--spacing-xl) var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-xs);
+  font-size: var(--type-body-sm-size);
+}
+
+.config-month-select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
 }
 
 .config-calendar-layout {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-}
-
-@container config-calendar-section (min-width: 26rem) {
-  .config-calendar-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(var(--feature-calendar-column-min), var(--feature-calendar-column-max));
-    align-items: start;
-  }
-}
-
-.config-calendar-details {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 .config-calendar-grid-container {
@@ -392,7 +382,8 @@
 
 .config-card__history-section {
   grid-column: 1 / -1;
-  padding-top: var(--spacing-xl);
+  min-width: 0;
+  padding-top: var(--spacing-lg);
   border-top: 1px solid var(--color-hairline-soft);
 }
 
@@ -400,15 +391,29 @@
   margin: 0 0 var(--spacing-md);
 }
 
+.config-history__months,
+.config-history__incidents {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .config-history__months {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-calendar-column-max)), 1fr));
-  gap: var(--spacing-xl);
+  gap: var(--spacing-lg);
+}
+
+.config-history__month-item {
+  min-width: 0;
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
 }
 
 .config-history__month {
-  display: block;
-  margin-bottom: var(--spacing-xs);
+  margin: 0 0 var(--spacing-sm);
 }
 
 .config-history__incidents {
@@ -426,48 +431,21 @@
   font-weight: var(--font-regular);
 }
 
-.config-incidence-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
 .config-incidence-list__item {
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  font-size: var(--type-caption-sm-size);
-  line-height: var(--type-caption-sm-line);
-}
-
-.config-incidence-list__day {
-  font-weight: var(--font-bold);
-  color: var(--color-ink);
-  background: var(--color-canvas-soft);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  padding: var(--spacing-xxs) var(--spacing-xs);
-  font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
+  min-width: 0;
 }
 
 .config-incidence-list__label {
   min-width: 0;
+  padding: var(--spacing-xxs) var(--spacing-sm);
   color: var(--color-error);
   background: var(--color-error-tint);
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-sm-size);
   font-weight: var(--font-medium);
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  line-height: var(--type-caption-sm-line);
   overflow-wrap: anywhere;
-}
-
-.config-incidence-list--empty {
-  display: flex;
-  align-items: center;
-  height: 100%;
 }
 
 
@@ -518,45 +496,40 @@
   margin: 0;
 }
 
-/* ── Wrapper principal del calendario ──
-   Ahora es un card real: llena el ancho de su columna padre en vez
-   de topearse a 208px. El límite de --feature-calendar-column-max
-   ya no aplica aquí — ese token es para otro contexto (layout de
-   columnas), no para el tamaño final del widget. */
+/* ── Calendario ──────────────────────────────────────────────── */
 .config-calendar-wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
   width: 100%;
   min-width: 0;
-  background: var(--color-surface-card);
+  padding: var(--spacing-md);
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
+  border-radius: var(--rounded-md);
 }
 
-/* ── Cabecera (L, M, M, J...) ── */
-.config-calendar-header {
+.config-calendar-header,
+.config-calendar {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: var(--spacing-xs);
+}
+
+.config-calendar-header {
   margin-bottom: var(--spacing-xxs);
 }
 
 .config-calendar-header__abbr {
+  color: var(--color-muted-soft);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--font-semibold);
-  color: var(--color-muted-soft);
   text-align: center;
   text-decoration: none;
   cursor: default;
 }
 
-/* ── Cuadrícula principal de días ── */
 .config-calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--spacing-xs);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -564,12 +537,11 @@
 
 .config-calendar__day {
   position: relative;
+  min-width: 0;
   aspect-ratio: 1;
-  min-width: 32px;   /* evita celdas demasiado chicas en columnas muy angostas */
+  border: 1px solid transparent;
   border-radius: var(--rounded-sm);
   background: var(--color-canvas-soft);
-  border: 1.5px solid transparent;
-  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .config-calendar__day::after {
@@ -585,6 +557,11 @@
 
 .config-calendar__day--blank {
   background: transparent;
+  pointer-events: none;
+}
+
+.config-calendar__day--blank::after {
+  content: none;
 }
 
 .config-calendar__day--active {
@@ -594,46 +571,15 @@
 
 .config-calendar__day--incident {
   background: var(--color-error-tint);
-  border-style: dashed;
   border-color: var(--color-error);
+  border-style: dashed;
 }
 
-.config-calendar__day--incident::after,
-.config-calendar__day--active::after {
+.config-calendar__day--active::after,
+.config-calendar__day--incident::after {
   font-weight: var(--font-semibold);
 }
 
-@media (hover: hover) {
-  .config-calendar__day:not(.config-calendar__day--blank):hover {
-    transform: scale(1.08);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .config-calendar__day {
-    transition: none;
-  }
-  .config-calendar__day:hover {
-    transform: none;
-  }
-}
-
-/* A partir de tablet, con más aire disponible, subimos un poco el tamaño
-   tipográfico y el gap para que el widget respire mejor en vez de quedar
-   comprimido a la fuerza a un ancho fijo pequeño. */
-@media (min-width: 768px) {
-  .config-calendar,
-  .config-calendar-header {
-    gap: var(--spacing-sm);
-  }
-
-  .config-calendar__day::after,
-  .config-calendar-header__abbr {
-    font-size: var(--type-body-sm-size);
-  }
-}
-
-/* ── Leyenda ── */
 .config-calendar-legend {
   display: flex;
   flex-wrap: wrap;
@@ -647,16 +593,17 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
 }
 
 .config-calendar-legend__swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: var(--rounded-xs);
-  border: 1.5px solid transparent;
+  width: var(--spacing-md);
+  height: var(--spacing-md);
   flex-shrink: 0;
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: var(--rounded-xs);
 }
 
 .config-calendar-legend__swatch--active {
@@ -666,72 +613,8 @@
 
 .config-calendar-legend__swatch--incident {
   background: var(--color-error-tint);
-  border-style: dashed;
   border-color: var(--color-error);
-}
-
-@media (hover: hover) {
-  .config-calendar__day:hover {
-    transform: scale(1.2);
-    z-index: 1;
-  }
-}
-
-.config-calendar__day--active::after,
-.config-calendar__day--incident::after {
-  color: var(--color-ink);
-}
-
-.config-calendar__day--blank {
-  background: transparent !important;
-  pointer-events: none;
-}
-
-.config-calendar__day--blank::after {
-  content: none;
-}
-
-.config-calendar__day--active {
-  background: var(--color-success-tint);
-  box-shadow: inset 0 0 0 1px var(--color-success);
-}
-
-.config-calendar__day--incident {
-  background: var(--color-error-tint);
-  box-shadow: inset 0 0 0 1px var(--color-error);
-}
-
-.config-calendar-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xs);
-}
-
-.config-calendar-legend__item {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: var(--type-caption-sm-size);
-  color: var(--color-muted);
-}
-
-.config-calendar-legend__swatch {
-  width: var(--spacing-md);
-  height: var(--spacing-md);
-  border-radius: var(--rounded-xs);
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.config-calendar-legend__swatch--active {
-  background: var(--color-success-tint);
-  box-shadow: inset 0 0 0 1px var(--color-success);
-}
-
-.config-calendar-legend__swatch--incident {
-  background: var(--color-error-tint);
-  box-shadow: inset 0 0 0 1px var(--color-error);
+  border-style: dashed;
 }
 
 /* Layout Sidebar */
@@ -1241,6 +1124,22 @@
   gap: var(--spacing-xl);
 }
 
+.busqueda-view > .config-page__header-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
+.busqueda-view__empty {
+  min-height: var(--skeleton-card-height);
+  padding-inline: var(--spacing-lg);
+}
+
+.busqueda-view__empty .animated-empty-state__subtitle {
+  max-width: var(--feature-result-card-min);
+  margin: 0;
+}
+
 .busqueda-view .config-initial-state,
 .busqueda-view .config-empty {
   padding-block: var(--spacing-2xl);
@@ -1562,6 +1461,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .tabulador-tab,
+  .config-sidebar__link,
+  .indicadores-mobile-list__btn {
+    transition: none;
+  }
+}
+uced-motion: reduce) {
   .tabulador-tab,
   .config-sidebar__link,
   .indicadores-mobile-list__btn {
