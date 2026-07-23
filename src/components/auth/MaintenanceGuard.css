@@ -1,167 +1,104 @@
-/* ========================================
-   MAINTENANCE GUARD
-   Overlay de mantenimiento — alineado con design tokens
-   ======================================== */
-
 .maintenance-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  background-color: var(--color-canvas-soft);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xl);
+  z-index: var(--layer-maintenance);
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: max(var(--spacing-lg), var(--safe-area-top)) max(var(--spacing-lg), var(--safe-area-right)) max(var(--spacing-lg), var(--safe-area-bottom)) max(var(--spacing-lg), var(--safe-area-left));
   text-align: center;
+  background: var(--color-canvas-soft);
 }
 
 .maintenance-card {
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-elevated);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-xxl);
-  max-width: 28rem; /* 448px ≈ 450px, pero en rem */
-  width: 100%;
-  border: 1px solid var(--color-hairline);
+  width: min(100%, var(--feature-result-card-min));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xl);
-}
-
-/* Mobile: ajustar padding y max-width */
-@media (max-width: 640px) {
-  .maintenance-card {
-    padding: var(--spacing-xl);
-    margin: var(--spacing-lg);
-    max-width: 100%;
-  }
-
-  .maintenance-overlay {
-    padding: var(--spacing-lg);
-  }
+  padding: var(--spacing-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-xl);
+  box-shadow: var(--shadow-elevated);
 }
 
 .maintenance-icon-wrap {
-  width: 64px;
-  height: 64px;
+  width: calc(var(--touch-target-min) + var(--spacing-lg));
+  height: calc(var(--touch-target-min) + var(--spacing-lg));
+  display: grid;
+  place-items: center;
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
   border-radius: var(--rounded-full);
-  background-color: var(--color-primary-tint);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .maintenance-icon {
-  width: 32px;
-  height: 32px;
-  color: var(--color-charcoal);
+  width: var(--spacing-xxl);
+  height: var(--spacing-xxl);
 }
 
 .maintenance-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
   align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.maintenance-title {
-  margin: 0;
-  color: var(--color-ink);
+.maintenance-eyebrow {
+  color: var(--color-primary);
 }
 
-.maintenance-text {
+.maintenance-title,
+.maintenance-text,
+.maintenance-meta {
   margin: 0;
-  color: var(--color-muted);
 }
 
 .maintenance-text-wrapper {
-  height: 24px; /* Ocupar el espacio exacto de una línea para evitar brincos en la card */
-  display: flex;
+  min-height: calc(var(--type-body-md-size) * var(--type-body-md-line) * 3);
+  display: grid;
+  place-items: center;
+}
+
+.maintenance-text {
+  max-width: var(--feature-result-card-min);
+  color: var(--color-muted);
+}
+
+.maintenance-meta {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-xs);
 }
 
-/* El botón hereda .btn-secondary del sistema global.
-   Solo agregamos overrides mínimos específicos del contexto. */
+.maintenance-meta svg,
+.maintenance-button svg {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  flex-shrink: 0;
+}
+
 .maintenance-button {
-  margin-top: var(--spacing-sm);
-}
-
-/* Asegurar que el botón tenga touch target mínimo en caso de que
-   las clases globales no estén cargadas (defensa en profundidad) */
-.maintenance-button:not(.btn-secondary):not(.btn-primary):not(.btn-ghost):not(.btn-danger) {
   min-height: var(--touch-target-min);
-  min-width: var(--touch-target-min);
-  padding: var(--control-padding-y) var(--control-padding-x);
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-button-line);
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
-.maintenance-button:not(.btn-secondary):not(.btn-primary):not(.btn-ghost):not(.btn-danger):hover {
-  background-color: var(--color-surface-soft);
-  border-color: var(--color-charcoal);
+@media (min-width: 600px) {
+  .maintenance-card {
+    padding: var(--spacing-xxl);
+  }
 }
 
-/* Reduced motion: respetar preferencia del usuario */
 @media (prefers-reduced-motion: reduce) {
   .maintenance-overlay,
-  .maintenance-card {
-    transition: none !important;
+  .maintenance-card,
+  .maintenance-text {
+    animation: none;
+    transition: none;
   }
-  .glitch-text {
-    animation: none !important;
-  }
-}
-
-/* ========================================
-   GLITCH EFFECT
-   ======================================== */
-@keyframes glitch-anim {
-  0% { transform: translate(0); opacity: 1; color: var(--color-ink); text-shadow: none; }
-  2% { transform: translate(-2px, 1px) skewX(2deg); opacity: 0.8; color: var(--color-error); text-shadow: 2px 0 var(--color-error), -2px 0 var(--color-accent-sky); }
-  4% { transform: translate(2px, -1px) skewX(-2deg); opacity: 1; color: var(--color-ink); text-shadow: none; }
-  6% { transform: translate(0); opacity: 1; }
-  35% { transform: translate(0); opacity: 1; }
-  36% { transform: translate(-1px, 2px); opacity: 0.5; }
-  37% { transform: translate(1px, -2px); opacity: 1; }
-  38% { transform: translate(0); opacity: 1; }
-  60% { transform: translate(0); opacity: 1; text-shadow: none; }
-  61% { transform: translate(2px, 0); text-shadow: -2px 0 var(--color-error); }
-  62% { transform: translate(-2px, 0); text-shadow: 2px 0 var(--color-accent-sky); }
-  63% { transform: translate(0); text-shadow: none; }
-  100% { transform: translate(0); }
-}
-
-.glitch-text {
-  animation: glitch-anim 3.5s infinite;
-  display: inline-block;
-}
-
-/* ========================================
-   FAILING ICON EFFECT
-   ======================================== */
-@keyframes icon-flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: drop-shadow(0 0 8px var(--color-error)); }
-  20%, 22%, 24%, 55% { opacity: 0.2; filter: none; }
-}
-
-.failing-icon-wrap {
-  animation: icon-flicker 2.5s infinite;
-  background-color: var(--color-error-soft);
-}
-
-.failing-icon-wrap .maintenance-icon {
-  color: var(--color-error);
 }

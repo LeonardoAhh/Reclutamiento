@@ -10,6 +10,7 @@ import {
 } from 'react';
 import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
 import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
+import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
 import { sileo } from '@/lib/notify';
 import {
   signInWithUsername as signInLib,
@@ -31,6 +32,7 @@ export interface AuthState {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
+  profileLoading: boolean;
   /** Username derivado del profile o, como fallback, del email sintético. */
   username: string;
   loading: boolean;
@@ -48,6 +50,7 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   // Ref con la session actual, accesible dentro de handlers sin re-suscribir.
   const sessionRef = useRef<Session | null>(null);
@@ -193,9 +196,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userId = session?.user?.id;
     if (!userId) {
       setProfile(null);
+      setProfileLoading(false);
       return;
     }
 
+    setProfileLoading(true);
     let cancelled = false;
     let presenceChannel: RealtimeChannel | null = null;
 
@@ -233,15 +238,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         presenceChannel
           .on('presence', { event: 'sync' }, () => {
             if (!presenceChannel) return;
-            const state = presenceChannel.presenceState();
-            const onlineIds = new Set<string>();
-            for (const id of Object.keys(state)) {
-              const presences = state[id] as any[];
-              for (const p of presences) {
-                if (p.user_id) onlineIds.add(p.user_id);
-              }
-            }
-            window.dispatchEvent(new CustomEvent('app_presence_update', { detail: onlineIds }));
+            publishOnlineUserIds(extractOnlineUserIds(presenceChannel.presenceState()));
           })
           .subscribe(async (status) => {
             if (status === 'SUBSCRIBED' && !cancelled) {
@@ -256,6 +253,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       } catch (err) {
         console.warn('Profile fetch threw:', err);
+      } finally {
+        if (!cancelled) setProfileLoading(false);
       }
     }
 
@@ -285,12 +284,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       profile,
+      profileLoading,
       username,
       loading,
       signIn,
       signOut,
     };
-  }, [session, profile, loading, signIn, signOut]);
+  }, [session, profile, profileLoading, loading, signIn, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

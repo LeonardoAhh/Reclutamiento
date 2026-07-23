@@ -1,37 +1,57 @@
 .active-sessions-section {
-  background-color: var(--color-surface);
+  min-width: 0;
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-xl);
 }
 
 .active-sessions-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
   border-bottom: 1px solid var(--color-hairline);
 }
 
 .active-sessions-title-wrap {
+  min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-sm);
 }
 
-.active-sessions-icon {
-  color: var(--color-primary);
+.active-sessions-title-wrap h3,
+.active-sessions-caption,
+.active-sessions-state p {
+  margin: 0;
+}
+
+.active-sessions-caption {
+  margin-top: var(--spacing-xxs);
+}
+
+.active-sessions-icon,
+.status-pill__icon {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  flex-shrink: 0;
+  color: var(--color-muted);
 }
 
 .active-sessions-count {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-caption-md-weight);
-  background-color: var(--color-success-tint);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--spacing-xl);
+  padding-inline: var(--spacing-sm);
   color: var(--color-success);
-  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-success-tint);
   border-radius: var(--rounded-full);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-semibold);
 }
 
 .active-sessions-list {
@@ -40,97 +60,103 @@
   gap: var(--spacing-sm);
 }
 
-.session-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas: 
-    "name name"
-    "role status";
+.active-sessions-state {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+  background: var(--color-surface-soft);
   border-radius: var(--rounded-md);
-  background-color: var(--color-canvas-soft);
-  border: 1px solid var(--color-hairline);
 }
 
-@media (min-width: 600px) {
-  .session-card {
-    grid-template-columns: 2fr 1.5fr 1fr;
-    grid-template-areas: "name role status";
-    gap: var(--spacing-md);
-    align-items: center;
-  }
+.session-card {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name status"
+    "role role";
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
 }
 
 .session-name-col {
-  display: flex;
-  align-items: center;
   grid-area: name;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
 }
 
 .session-role-col {
+  grid-area: role;
+  min-width: 0;
   display: flex;
   align-items: center;
-  grid-area: role;
 }
 
 .session-status-col {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
   grid-area: status;
   min-width: 0;
+  display: flex;
+  justify-content: flex-end;
 }
 
-.session-username {
-  text-transform: capitalize;
+.session-username,
+.session-handle,
+.status-pill__text {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  background-color: var(--color-surface);
-  color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
-  padding: 4px 8px;
-  border-radius: var(--rounded-full);
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.33;
-}
-
-.role-badge::before {
-  content: '';
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--rounded-full);
-  background-color: var(--color-muted);
-}
-
-.role-badge--admin::before { background-color: var(--color-accent-purple); }
-.role-badge--reclutador::before { background-color: var(--color-accent-teal); }
-.role-badge--gerente::before { background-color: var(--color-accent-orange); }
-.role-badge--auditor::before { background-color: var(--color-accent-sky); }
-
-.session-role {
-  text-transform: capitalize;
-}
-
+.role-badge,
 .status-pill {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background-color: var(--color-surface);
+  min-height: var(--spacing-xl);
+  padding-inline: var(--spacing-sm);
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline);
-  padding: 4px 10px;
   border-radius: var(--rounded-full);
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.33;
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.role-badge {
+  color: var(--color-ink);
+  font-weight: var(--font-semibold);
+}
+
+.role-badge::before,
+.status-pill__dot {
+  content: '';
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+}
+
+.role-badge::before {
+  background: var(--color-muted-soft);
+}
+
+.role-badge--admin::before { background: var(--color-accent-purple); }
+.role-badge--reclutador::before { background: var(--color-accent-teal); }
+.role-badge--gerente::before { background: var(--color-accent-orange); }
+.role-badge--auditor::before { background: var(--color-accent-sky); }
+
+.status-pill {
+  max-width: 100%;
+  color: var(--color-muted);
+  font-weight: var(--font-medium);
 }
 
 .status-pill--online {
@@ -138,23 +164,17 @@
 }
 
 .status-pill__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--rounded-full);
-  background-color: var(--color-accent-green);
-  animation: premium-pulse 2.5s infinite ease-in-out;
+  background: var(--color-success);
 }
 
-@keyframes premium-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(26, 174, 57, 0.35); }
-  50% { box-shadow: 0 0 0 4px rgba(26, 174, 57, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(26, 174, 57, 0); }
-}
+@media (min-width: 600px) {
+  .active-sessions-section {
+    padding: var(--spacing-xl);
+  }
 
-.status-pill--offline {
-  color: var(--color-muted);
-}
-
-.status-pill__icon {
-  color: var(--color-muted-soft);
+  .session-card {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-areas: "name role status";
+    gap: var(--spacing-md);
+  }
 }

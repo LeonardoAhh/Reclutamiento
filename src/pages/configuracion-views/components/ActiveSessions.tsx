@@ -1,135 +1,148 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { listProfiles } from '@/lib/users';
+import { useEffect, useMemo, useState } from 'react';
+import { listProfiles, ROLE_LABEL } from '@/lib/users';
+import { subscribeOnlineUserIds } from '@/lib/presence';
 import type { Profile } from '@/hooks/useAuth';
+import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { Activity, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import './ActiveSessions.css';
 
-interface OnlineUser {
-  user_id: string;
-  username: string;
-  role: string;
-  online_at: string;
-}
 
+function formatLastAccess(value: string | null | undefined) {
+  if (!value) return 'Sin accesos registrados';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Último acceso no disponible';
+  return `Último acceso ${formatDistanceToNow(date, { addSuffix: true, locale: es })}`;
+}
 export function ActiveSessions() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
+  const [onlineUsers, setOnlineUsers] = useState<Set<string>>(() => new Set());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
+    setLoading(true);
+    setError('');
 
     async function fetchData() {
       try {
         const data = await listProfiles();
-        if (mounted) {
-          setProfiles(data);
-          setLoading(false);
-        }
+        if (mounted) setProfiles(data);
       } catch (err) {
         console.warn('Error fetching profiles', err);
+        if (mounted) setError('No fue posible cargar la lista de usuarios.');
+      } finally {
         if (mounted) setLoading(false);
       }
     }
 
-    fetchData();
-
-    // En lugar de suscribirnos otra vez al canal (lo que causa error en Supabase),
-    // escuchamos el evento que emite useAuth.tsx
-    const handlePresence = (e: CustomEvent<Set<string>>) => {
-      if (mounted) {
-        setOnlineUsers(e.detail);
-      }
-    };
-    
-    window.addEventListener('app_presence_update', handlePresence as EventListener);
-
-    // Intentar leer el estado inicial si el canal ya está activo
-    const existingChannel = supabase.getChannels().find(c => c.topic.includes('online-users'));
-    if (existingChannel) {
-      const state = existingChannel.presenceState();
-      const onlineIds = new Set<string>();
-      for (const id of Object.keys(state)) {
-        const presences = state[id] as any[];
-        for (const p of presences) {
-          if (p.user_id) onlineIds.add(p.user_id);
-        }
-      }
-      if (mounted) {
-        setOnlineUsers(onlineIds);
-      }
-    }
+    void fetchData();
+    const unsubscribe = subscribeOnlineUserIds((userIds) => {
+      if (mounted) setOnlineUsers(userIds);
+    });
 
     return () => {
       mounted = false;
-      window.removeEventListener('app_presence_update', handlePresence as EventListener);
+      unsubscribe();
     };
-  }, []);
+  }, [reloadKey]);
 
-  if (loading) {
-    return null;
-  }
-
-  // Ordenar para que los online aparezcan arriba
-  const sortedProfiles = [...profiles].sort((a, b) => {
+  const sortedProfiles = useMemo(() => [...profiles].sort((a, b) => {
     const aOnline = onlineUsers.has(a.id);
     const bOnline = onlineUsers.has(b.id);
-    if (aOnline && !bOnline) return -1;
-    if (!aOnline && bOnline) return 1;
-    return 0;
-  });
+    if (aOnline !== bOnline) return aOnline ? -1 : 1;
+    return (a.display_name || a.username).localeCompare(
+      b.display_name || b.username,
+      'es',
+    );
+  }), [profiles, onlineUsers]);
+
+  const onlineCount = useMemo(
+    () => profiles.filter((profile) => onlineUsers.has(profile.id)).length,
+    [profiles, onlineUsers],
+  );
+
+  if (loading) {
+    return (
+      <section className="active-sessions-section" aria-busy="true">
+        <p className="active-sessions-state type-body-sm text-muted" role="status">
+          Cargando sesiones…
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section className="active-sessions-section">
       <header className="active-sessions-header">
         <div className="active-sessions-title-wrap">
-          <Activity className="active-sessions-icon" size={20} />
-          <h3 className="type-heading-sm m-0">Sesiones Activas</h3>
+          <Activity className="active-sessions-icon" aria-hidden="true" />
+          <div>
+            <h3 className="type-heading-sm m-0">Actividad de usuarios</h3>
+            <p className="active-sessions-caption type-caption-sm text-muted">
+              Presencia en tiempo real y último inicio de sesión.
+            </p>
+          </div>
         </div>
-        {onlineUsers.size > 0 && (
+        {onlineCount > 0 && (
           <span className="active-sessions-count">
-            {onlineUsers.size} en línea
+            {onlineCount} en línea
           </span>
         )}
       </header>
       
       <div className="active-sessions-list">
+        {error && (
+          <div className="active-sessions-state" role="alert">
+            <p className="type-body-sm text-muted">{error}</p>
+            <ButtonUtility type="button" onClick={() => setReloadKey((current) => current + 1)}>
+              Reintentar
+            </ButtonUtility>
+          </div>
+        )}
+        {!error && sortedProfiles.length === 0 && (
+          <p className="active-sessions-state type-body-sm text-muted">
+            No hay perfiles disponibles.
+          </p>
+        )}
         {sortedProfiles.map(profile => {
           const isOnline = onlineUsers.has(profile.id);
-          const lastLogin = profile.last_login_at 
-            ? formatDistanceToNow(new Date(profile.last_login_at), { addSuffix: true, locale: es })
-            : 'Nunca';
+          const lastAccess = formatLastAccess(profile.last_login_at);
+          const roleLabel = ROLE_LABEL[profile.role] ?? profile.role;
 
           return (
-            <div key={profile.id} className="session-card">
+            <article key={profile.id} className="session-card">
               <div className="session-name-col">
                 <span className="session-username type-body-md-bold">
                   {profile.display_name || profile.username}
                 </span>
+                <span className="session-handle type-caption-sm text-muted">
+                  @{profile.username}
+                </span>
               </div>
               <div className="session-role-col">
-                <span className={`role-badge role-badge--${profile.role?.toLowerCase() || 'default'}`}>
-                  <span className="session-role">{profile.role}</span>
+                <span className={`role-badge role-badge--${profile.role || 'default'}`}>
+                  <span className="session-role">{roleLabel}</span>
                 </span>
               </div>
               
               <div className="session-status-col">
                 {isOnline ? (
                   <span className="status-pill status-pill--online">
-                    <span className="status-pill__dot"></span>
-                    <span className="status-pill__text">En línea</span>
+                    <span className="status-pill__dot" aria-hidden="true" />
+                    <span className="status-pill__text">En línea ahora</span>
                   </span>
                 ) : (
                   <span className="status-pill status-pill--offline">
-                    <Clock size={12} className="status-pill__icon" />
-                    <span className="status-pill__text">{lastLogin}</span>
+                    <Clock aria-hidden="true" className="status-pill__icon" />
+                    <span className="status-pill__text">{lastAccess}</span>
                   </span>
                 )}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
