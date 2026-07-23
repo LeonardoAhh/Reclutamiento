@@ -1,0 +1,460 @@
+# Auditoría de navegación responsive
+
+> **Documento de implementación para Gemini 3.1 Pro High**  
+> Alcance: Sidebar PC, Header y BottomTabBar móvil/tablet  
+> Fecha: 23 de julio de 2026
+
+## Estado de la auditoría
+
+- **Revisión estática completada** contra `AGENTS.md` y `desing.md`
+- **Validación visual en vivo bloqueada**
+- No se modificó código funcional, CSS, lógica, datos, rutas ni `rutas-app`
+- No se crearon mocks, usuarios, sesiones ni tokens
+
+### Bloqueo técnico
+
+No debe afirmarse que la navegación fue validada visualmente en vivo:
+
+- Supervisor apunta a `/app/frontend` y `/app/backend`, pero la aplicación Vite está en `/app`
+- No existe `/app/memory/test_credentials.md`
+- Faltan variables y credenciales Supabase
+- No se encontró una URL desplegada accesible
+
+La evidencia de este documento procede de la revisión de React, CSS, rutas, tokens, accesibilidad y comportamiento deducible del código.
+
+---
+
+## Implementación actual
+
+### PC: Sidebar
+
+- Visible desde `1024px`
+- Ancho expandido: `248px`
+- Ancho colapsado: `76px`
+- Rutas:
+  1. Reclutamiento
+  2. Reporte Diario
+  3. Candidatos
+  4. Plantilla
+  5. Vacantes
+  6. Features
+- Incluye estado activo, tooltips, usuario, cambio de tema y cierre de sesión
+
+### Móvil/tablet: Header + BottomTabBar
+
+- Visibles hasta `1023px`
+- Header: marca y avatar
+- Accesos principales:
+  1. Reclutamiento
+  2. Candidatos
+- Menú secundario:
+  1. Plantilla
+  2. Reporte Diario
+  3. Vacantes
+  4. Features
+
+### Breakpoint
+
+La pareja `max-width: 1023px` / `min-width: 1024px` evita solapamiento CSS. Sin embargo, `BottomTabBar` continúa montado en React al entrar a desktop, lo que produce el P0 descrito abajo.
+
+---
+
+## Aspectos correctos que deben preservarse
+
+- Uso mayoritario de tokens para colores, spacing, radios y tipografía
+- Cambio exclusivo entre navegación móvil y Sidebar en `1024px`
+- `aside`, `nav`, listas, enlaces y botones nativos
+- Nombres accesibles en botones de icono
+- Sheet móvil con Escape, focus trap, bloqueo de scroll y restauración de foco
+- Uso de `VisualViewport` para reducir saltos en iOS
+- Reserva inferior para evitar que la barra flotante tape contenido
+- Estado activo con indicador visual adicional al color
+- Targets principales basados en `--touch-target-min` y `--mobile-nav-height`
+
+---
+
+# Correcciones requeridas
+
+## P0 — Cerrar el menú móvil al entrar a desktop
+
+**Archivos:**
+
+- `src/components/layout/BottomTabBar.tsx`
+- `src/components/layout/BottomTabBar.css`
+
+### Problema
+
+Si el sheet está abierto y el viewport cambia de `1023px` a `1024px`:
+
+- `sheetOpen` continúa en `true`
+- El overlay fullscreen puede seguir visible
+- `body.style.overflow` continúa en `hidden`
+- La Sidebar puede quedar tapada y la página bloqueada
+
+### Corrección
+
+1. Detectar el cambio a `min-width: 1024px`
+2. Ejecutar `setSheetOpen(false)` al entrar a desktop
+3. Permitir que el cleanup actual restaure el overflow y el foco
+4. Agregar una defensa CSS en desktop que fuerce el overlay a permanecer oculto
+5. No cambiar rutas, autenticación ni lógica de cierre de sesión
+
+### Aceptación
+
+1. Abrir Menú a `1023px`
+2. Cambiar el viewport a `1024px`
+3. Confirmar:
+   - Sidebar visible
+   - Overlay ausente
+   - `body` desplazable
+   - Foco lógico
+4. Volver a `1023px`
+5. Confirmar que el sheet permanece cerrado
+
+---
+
+## P1 — Cumplir targets táctiles mínimos
+
+**Archivos:**
+
+- `src/components/layout/Header.css`
+- `src/components/ui/ThemeToggle.tsx`
+- `src/components/ui/ThemeToggle.css`
+
+### Problema
+
+- `ThemeToggle` mide `52×28px`, por debajo de la altura táctil mínima
+- El enlace de marca del Header contiene un logo de 26px y no garantiza un área de interacción de al menos `48×48px`
+
+### Corrección
+
+- Mantener visualmente el carril del switch en `52×28px`
+- Ampliar la caja interactiva del switch a un mínimo de `48×48px`
+- Dar al enlace de marca `min-width` y `min-height` basados en `--touch-target-min`
+- No deformar el switch ni cambiar la altura visual del Header
+- No introducir números nuevos cuando exista un token
+
+### Aceptación
+
+En viewports de `390px` y `768px`, ambos controles deben tener un rectángulo interactivo computado mínimo de `48×48px` sin alterar su alineación.
+
+---
+
+## P1 — Reparar focus y elevación del popover de usuario
+
+**Archivo:** `src/components/layout/Sidebar.css`
+
+### Problema
+
+Se utilizan tokens que no existen:
+
+- `var(--color-accent)` en el focus del trigger
+- `var(--shadow-lg)` en el popover
+
+El navegador descarta esas declaraciones, por lo que puede perderse el focus visible y la elevación esperada.
+
+### Corrección
+
+- Usar `var(--shadow-focus)` para focus visible
+- Usar `var(--shadow-elevated)` o `var(--shadow-prominent)` para el popover
+- Conservar el hairline
+- No crear aliases innecesarios
+- No usar colores de la paleta sticker como estructura
+
+### Aceptación
+
+El trigger debe mostrar focus visible en tema claro y oscuro. El popover debe conservar borde y sombra sutil tokenizada.
+
+---
+
+## P1 — Corregir el patrón accesible del popover
+
+**Archivo:** `src/components/layout/Sidebar.tsx`
+
+### Problema
+
+El popover declara `role="menu"`, pero mezcla:
+
+- Un `role="menuitem"`
+- Un `role="switch"`
+
+Además:
+
+- No mueve el foco al abrir
+- No cierra con Escape
+- No restaura explícitamente el foco después del cierre por interacción exterior
+
+### Corrección recomendada
+
+Usar un popover semántico normal para acciones mixtas:
+
+- Eliminar `role="menu"` y `role="menuitem"`
+- Mantener botones nativos y el switch
+- Mover el foco al primer control al abrir
+- Cerrar con Escape
+- Restaurar el foco al trigger al cerrar
+
+No implementar un patrón ARIA menu completo salvo que sea realmente necesario, porque sería una solución más invasiva.
+
+### Aceptación
+
+Secuencia de teclado:
+
+1. Foco en trigger
+2. Enter
+3. Foco dentro del popover
+4. Tab entre acciones
+5. Escape
+6. Popover cerrado y foco restaurado en el trigger
+
+---
+
+## P1 — Respetar realmente `prefers-reduced-motion`
+
+**Archivos:**
+
+- `src/components/layout/Sidebar.tsx`
+- `src/components/layout/BottomTabBar.tsx`
+- `src/components/ui/ThemeToggle.tsx`
+
+### Problema
+
+Las media queries CSS eliminan algunas transiciones, pero no detienen las animaciones inline de Framer Motion:
+
+- Indicadores con `layoutId`
+- Entrada y salida del popover
+- Icono de logout
+- ThemeToggle
+
+### Corrección
+
+Usar `useReducedMotion` de Framer Motion o una utilidad existente. Con reducción activa:
+
+- Duración `0`
+- Sin spring
+- Sin scale
+- Sin rotate
+- Conservar estados finales y funcionalidad
+
+### Aceptación
+
+Al emular `prefers-reduced-motion: reduce`, navegación, popover, logout y tema deben cambiar sin desplazamientos, escalas ni rotaciones animadas.
+
+---
+
+## P2 — Unificar fuente y orden de navegación
+
+**Archivos:**
+
+- `src/components/layout/Sidebar.tsx`
+- `src/components/layout/BottomTabBar.tsx`
+- Posible nuevo archivo: `src/components/layout/navigation.ts`
+
+### Problema
+
+Sidebar y navegación móvil duplican rutas, labels e iconos. El orden también cambia:
+
+- Sidebar: Reclutamiento → Reporte Diario → Candidatos → Plantilla → Vacantes → Features
+- Móvil: Reclutamiento → Candidatos
+- Sheet: Plantilla → Reporte Diario → Vacantes → Features
+
+### Corrección
+
+Crear una configuración tipada compartida con:
+
+- Ruta
+- Label
+- Icono
+- `end`
+- Prioridad móvil
+- Grupo
+
+Mantener Reclutamiento y Candidatos como accesos móviles principales. Ordenar el resto del sheet según el orden global:
+
+1. Reporte Diario
+2. Plantilla
+3. Vacantes
+4. Features
+
+### Aceptación
+
+Ambas superficies deben exponer las mismas seis rutas, labels e iconos. Solo cambia la agrupación móvil. No modificar rutas de `App.tsx`.
+
+---
+
+## P2 — Completar safe areas laterales
+
+**Archivos:**
+
+- `src/components/layout/BottomTabBar.css`
+- `src/components/layout/Sidebar.css`, solo si aplica a PWA desktop
+
+### Problema
+
+Se contemplan safe areas verticales, pero navbar y sheet usan spacing fijo en los laterales. En landscape con notch, los controles pueden entrar en el área insegura.
+
+### Corrección
+
+Combinar spacing con:
+
+- `--safe-area-left`
+- `--safe-area-right`
+- `max()`
+
+Aplicarlo en:
+
+- Navbar inferior
+- Header del sheet
+- Filas del sheet
+- Footer del sheet
+
+### Aceptación
+
+Con insets laterales emulados, ningún texto o control invade el área insegura y la barra continúa centrada.
+
+---
+
+## P2 — Limpiar código muerto y duplicación
+
+**Archivos:**
+
+- `src/components/layout/Sidebar.tsx`
+- `src/components/layout/Sidebar.css`
+- `src/components/layout/BottomTabBar.tsx`
+- `src/components/layout/BottomTabBar.css`
+
+### Problema
+
+Hay elementos sin uso o inalcanzables:
+
+- Variable `user`
+- Varios imports de iconos
+- `createPortal`
+- `sileo` en Sidebar
+- Markup duplicado de Features
+- Selectores sin markup correspondiente
+- Badge de documentos inalcanzable porque `/documentos` no está en las listas
+
+### Corrección
+
+- Retirar solo código confirmado como muerto
+- Renderizar Features mediante el mismo patrón compartido del resto de rutas
+- No refactorizar fuera de navegación
+- No cambiar comportamiento, rutas ni datos
+
+### Aceptación
+
+Lint sin imports o variables muertas en estos archivos y comportamiento idéntico.
+
+---
+
+## P2 — Proteger el acceso a `window` en inicialización
+
+**Archivo:** `src/components/layout/AppShell.tsx`
+
+### Problema
+
+`useState(readSidebarCollapsed)` accede a `window` durante la inicialización. Funciona en el cliente Vite, pero dificulta SSR y pruebas no-browser.
+
+### Corrección
+
+- Proteger con `typeof window === "undefined"`
+- O mover la lectura a una utilidad/browser effect sin producir un flash perceptible
+- Mantener la clave `sidebar-collapsed`
+- Mantener la persistencia actual
+
+---
+
+## Decisión pendiente — Color primario global
+
+`desing.md` define azul `#0075de` como único acento estructural, pero `global.css` define:
+
+```css
+--color-primary: #000000;
+```
+
+Esta contradicción es global y no debe corregirse como efecto colateral de la navegación.
+
+**Gemini debe:**
+
+- Mantener la navegación consumiendo `var(--color-primary)`
+- No hardcodear azul dentro de los componentes
+- Pedir confirmación antes de cambiar el token global
+
+---
+
+# Plan exacto para Gemini 3.1 Pro High
+
+1. Leer `/app/AGENTS.md`, `/app/desing.md` y este documento
+2. No abrir, analizar ni modificar `/app/rutas-app`
+3. No cambiar autenticación, Supabase, datos, rutas, localStorage, logout ni lógica del badge
+4. Implementar primero el P0 y probarlo de forma aislada
+5. Implementar las correcciones P1 de accesibilidad
+6. Implementar las correcciones P2 locales sin refactor amplio
+7. No cambiar el valor global de `--color-primary` sin confirmación
+8. Ejecutar TypeScript, ESLint y build
+9. Investigar la resolución del binario antes de editar `tsconfig` si falla `ignoreDeprecations`
+10. Validar visualmente solo con URL y credenciales reales
+11. No inventar ni mockear una sesión
+12. Entregar un diff limitado a navegación
+
+## Archivos previstos
+
+```text
+/app/src/components/layout/AppShell.tsx
+/app/src/components/layout/Sidebar.tsx
+/app/src/components/layout/Sidebar.css
+/app/src/components/layout/BottomTabBar.tsx
+/app/src/components/layout/BottomTabBar.css
+/app/src/components/layout/Header.css
+/app/src/components/ui/ThemeToggle.tsx
+/app/src/components/ui/ThemeToggle.css
+/app/src/components/layout/navigation.ts  # solo si se extrae configuración compartida
+```
+
+---
+
+# Matriz mínima de pruebas
+
+| Viewport | Navegación esperada | Validaciones |
+|---|---|---|
+| 390×844 | Header + BottomTabBar | Targets, overflow, sheet, Escape, foco, safe bottom |
+| 768×1024 | Header + BottomTabBar | Barra centrada, contenido visible, rutas y orden |
+| 1023×800 → 1024×800 | Cambio a Sidebar | Cierre del sheet, unlock del body, overlay ausente |
+| 1024×800 | Sidebar | Colapso, activo, popover por teclado, margen de contenido |
+| 1440×900 | Sidebar | Alineación, tooltips, usuario, tema claro/oscuro |
+| 1920×900 | Sidebar | Sin clipping, popover dentro del viewport |
+| Landscape con insets | Navegación fuera del notch | Safe areas laterales |
+| Reduced motion | Estados sin movimiento | Sin spring, scale o rotate |
+
+---
+
+# Checklist de aceptación final
+
+- [ ] Solo se modificó navegación
+- [ ] No se tocó `rutas-app`
+- [ ] El sheet no sobrevive al cambio a desktop
+- [ ] `body` no queda con scroll bloqueado
+- [ ] No existe overlap en 1023/1024px
+- [ ] Todos los controles móviles alcanzan 48×48px
+- [ ] Sidebar colapsada y expandida quedan alineadas
+- [ ] Estado activo correcto en las seis rutas
+- [ ] Labels, iconos y destinos coinciden entre PC y móvil
+- [ ] Popover funciona completamente por teclado
+- [ ] Focus visible funciona en claro y oscuro
+- [ ] Reduced motion detiene también Framer Motion
+- [ ] Safe areas verticales y laterales están cubiertas
+- [ ] No hay overflow, clipping ni texto roto
+- [ ] No quedan imports, variables, selectores o markup muertos
+- [ ] No se introducen colores, spacing, radios o sombras fuera de tokens
+- [ ] No cambió autenticación, datos, rutas o integraciones
+- [ ] TypeScript, lint y build finalizan correctamente
+- [ ] La evidencia distingue revisión estática de validación visual en vivo
+
+---
+
+# Instrucción lista para Gemini
+
+```text
+Lee primero /app/AGENTS.md, /app/desing.md y /app/auditoria-navegacion-gemini.md. Implementa solo las correcciones P0, P1 y P2 descritas para Sidebar PC, Header y BottomTabBar. No toques /app/rutas-app, autenticación, Supabase, rutas ni lógica de negocio. Conserva el diseño actual y usa exclusivamente tokens existentes. Corrige primero el sheet abierto al cruzar a desktop, luego accesibilidad y consistencia. No cambies el valor global de --color-primary sin preguntarme. Ejecuta TypeScript, lint, build y pruebas visuales en todos los viewports indicados; si faltan URL o credenciales, reporta el bloqueo sin simular sesión.
+```
