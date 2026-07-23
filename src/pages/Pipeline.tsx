@@ -35,6 +35,7 @@ import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, sileo } from '@/lib/notify';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
+import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
@@ -130,6 +131,7 @@ export function Pipeline() {
     markCandidateHired,
     deleteCandidate,
     addCandidateNote,
+    error,
   } = useCandidates();
 
   const { profile } = useAuth();
@@ -249,6 +251,7 @@ export function Pipeline() {
 
   function resetFilters() {
     changeFilters(EMPTY_FILTERS);
+    setSearchTerm('');
   }
 
   const activeFiltersCount = (
@@ -639,20 +642,20 @@ export function Pipeline() {
               <SearchBanner />
 
               <div className="pipeline__search" style={{ width: '100%' }}>
-                <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
-                <label htmlFor="pipeline-search" className="sr-only">
-                  Buscar candidato
-                </label>
-                <input
-                  id="pipeline-search"
-                  type="search"
-                  inputMode="search"
-                  placeholder="Buscar por nombre, puesto, teléfono..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pipeline__search-input"
-                  autoComplete="off"
-                />
+                <div className="pipeline__search-wrapper">
+                  <label htmlFor="pipeline-search-input" className="sr-only">Buscar candidato</label>
+                  <Search size={18} className="pipeline__search-icon" aria-hidden="true" />
+                  <input
+                    id="pipeline-search-input"
+                    type="search"
+                    inputMode="search"
+                    placeholder="Buscar por nombre, puesto, teléfono..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pipeline__search-input"
+                    autoComplete="off"
+                  />
+                </div>
 
                 {/* ── Dropdown de Resultados ── */}
                 {searchTerm.trim().length > 0 && (
@@ -748,7 +751,22 @@ export function Pipeline() {
           )}
 
           {/* ── Vista (tabla o kanban) ── */}
-          {filtered.length === 0 ? (
+          {error ? (
+            <section className="pipeline__empty">
+              <div className="animated-empty-state" style={{ marginTop: 'var(--spacing-xxl)' }}>
+                <div className="animated-empty-state__icon" style={{ color: 'var(--color-error)' }}>
+                  <UserX aria-hidden="true" />
+                </div>
+                <div className="animated-empty-state__title" style={{ color: 'var(--color-error)' }}>Error al cargar</div>
+                <div style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-sm-size)', marginTop: '4px', maxWidth: '400px', marginInline: 'auto' }}>
+                  {error}
+                </div>
+                <button type="button" className="btn-secondary" onClick={() => refetch()} style={{ marginTop: 'var(--spacing-md)' }}>
+                  Reintentar
+                </button>
+              </div>
+            </section>
+          ) : filtered.length === 0 ? (
             <section className="pipeline__empty">
               {candidates.length === 0 ? (
                 <>
@@ -756,7 +774,7 @@ export function Pipeline() {
                   <p>
                     Empieza agregando tu primer candidato a la base de datos de reclutamiento.
                   </p>
-                  <button type="button" className="btn-primary" onClick={openAdd} title="Agregar primer candidato">
+                  <button type="button" className="btn-primary" onClick={openAdd} aria-label="Agregar primer candidato" title="Agregar primer candidato">
                     <UserPlus size={16} aria-hidden="true" />
                   </button>
                 </>
@@ -769,7 +787,7 @@ export function Pipeline() {
                   <div style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-sm-size)', marginTop: '4px' }}>
                     Ningún candidato coincide con los filtros actuales.
                   </div>
-                  {activeFiltersCount > 0 && (
+                  {(activeFiltersCount > 0 || searchTerm.trim().length > 0) && (
                     <button
                       type="button"
                       className="btn-secondary"
@@ -778,7 +796,7 @@ export function Pipeline() {
                       style={{ marginTop: 'var(--spacing-md)' }}
                     >
                       <SlidersHorizontal size={16} aria-hidden="true" />
-                      Limpiar filtros
+                      Limpiar filtros y búsqueda
                     </button>
                   )}
                 </div>
@@ -791,9 +809,8 @@ export function Pipeline() {
             >
               <header className="pipeline__card-list-header" aria-hidden="true">
                 <span>Candidato</span>
-                <span>Proyecto</span>
                 <span>Puesto</span>
-                <span>Contacto</span>
+                <span>Proyecto</span>
                 <span>Fuente</span>
                 <span>Estado</span>
                 <span>Entrevista</span>
@@ -832,9 +849,20 @@ export function Pipeline() {
                   <article
                     key={c.id ?? c.nombre + c.fecha_aplicacion}
                     className={`pipeline__ccard pipeline__ccard--${c.status}`}
-                    onClick={(e) => {
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Ver detalles de ${c.nombre}`}
+                    onClick={() => {
                       if (window.innerWidth <= 1024) {
                         setSelectedMobileCandidate(c);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (window.innerWidth <= 1024) {
+                          setSelectedMobileCandidate(c);
+                        }
                       }
                     }}
                   >
@@ -891,14 +919,6 @@ export function Pipeline() {
                       </div>
                     </div>
 
-                    <div className="pipeline__ccard-project-col">
-                      {c.is_starlite ? (
-                        <StarliteBadge />
-                      ) : (
-                        <VinoplasticBadge />
-                      )}
-                    </div>
-
                     <div className="pipeline__ccard-puesto-col">
                       <div className="pipeline__puesto">
                         <div>{c.puesto}</div>
@@ -907,45 +927,15 @@ export function Pipeline() {
                         )}
                       </div>
                     </div>
-                    <div className="pipeline__ccard-contact-col">
-                      {c.telefono ? (
-                        <motion.a
-                          href={`https://wa.me/52${c.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${primerNombre}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="pipeline__whatsapp-link"
-                          title="Enviar WhatsApp"
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{
-                            opacity: 1,
-                            scale: 1,
-                            boxShadow: [
-                              "0px 0px 0px 0px rgba(0, 0, 0, 0)",
-                              "0px 0px 12px 2px rgba(130, 130, 130, 0.25)",
-                              "0px 0px 0px 0px rgba(0, 0, 0, 0)"
-                            ]
-                          }}
-                          whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{
-                            opacity: { duration: 0.2 },
-                            scale: { type: 'spring', stiffness: 400, damping: 15 },
-                            boxShadow: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }
-                          }}
-                        >
-                          <MessageCircle size={14} aria-hidden="true" />
-                          <span>WhatsApp</span>
-                        </motion.a>
+
+                    <div className="pipeline__ccard-project-col">
+                      {c.is_starlite ? (
+                        <StarliteBadge />
                       ) : (
-                        <span className="pipeline__muted">—</span>
-                      )}
-                      {totalNotas > 0 && (
-                        <div className="pipeline__contact-item pipeline__contact-item--notes" title="Tiene notas">
-                          <MessageSquare size={13} aria-hidden="true" />
-                          <span>{totalNotas} nota{totalNotas !== 1 ? 's' : ''}</span>
-                        </div>
+                        <VinoplasticBadge />
                       )}
                     </div>
+
                     <div className="pipeline__ccard-source-col">
                       {c.source ? (
                         <motion.span
@@ -993,9 +983,7 @@ export function Pipeline() {
                         }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
                         customTrigger={
-                          <motion.span
-                            className="pipeline__status-tag"
-                            data-status={c.status}
+                          <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{
                               opacity: 1,
@@ -1013,16 +1001,10 @@ export function Pipeline() {
                               scale: { type: 'spring', stiffness: 400, damping: 15 },
                               boxShadow: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }
                             }}
+                            style={{ display: 'inline-flex' }}
                           >
-                            <span className="pipeline__status-tag__label">
-                              {CANDIDATE_STATUS_LABEL[c.status]}
-                            </span>
-                            <ChevronDown
-                              size={14}
-                              aria-hidden="true"
-                              className="pipeline__status-tag__chevron"
-                            />
-                          </motion.span>
+                            <CandidateStatusBadge status={c.status} showCaret />
+                          </motion.div>
                         }
                       />
                     </div>
@@ -1225,16 +1207,14 @@ export function Pipeline() {
                     }))}
                     aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
                     customTrigger={
-                      <motion.span
-                        className="pipeline__status-tag pipeline-mobile-detail__status-tag"
-                        data-status={selectedMobileCandidate.status}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <span className="pipeline__status-tag__label">
-                          {CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}
-                        </span>
-                        <ChevronDown size={16} aria-hidden="true" className="pipeline__status-tag__chevron" />
-                      </motion.span>
+                      <motion.div whileTap={{ scale: 0.95 }} style={{ display: 'flex', width: '100%' }}>
+                        <CandidateStatusBadge 
+                          status={selectedMobileCandidate.status} 
+                          showCaret 
+                          compact
+                          className="pipeline-mobile-detail__status-badge"
+                        />
+                      </motion.div>
                     }
                   />
                 </div>
@@ -1293,9 +1273,16 @@ export function Pipeline() {
 
       {/* ── Quick Profile (Mini Modal Minimalista) ── */}
       {quickProfile && (
-        <div className="quick-profile-overlay" onClick={() => setQuickProfile(null)}>
+        <div 
+          className="quick-profile-overlay" 
+          onClick={() => setQuickProfile(null)}
+          aria-hidden="true"
+        >
           <div
             className="quick-profile-card"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Perfil rápido de ${quickProfile.nombre}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="quick-profile__info">
@@ -1307,6 +1294,7 @@ export function Pipeline() {
             </div>
 
             <button
+              type="button"
               className="quick-profile__edit-btn"
               onClick={() => {
                 const target = quickProfile;
@@ -1314,8 +1302,9 @@ export function Pipeline() {
                 openEdit(target);
               }}
               title="Editar candidato"
+              aria-label={`Editar candidato ${quickProfile.nombre}`}
             >
-              <Pencil size={14} />
+              <Pencil size={14} aria-hidden="true" />
             </button>
           </div>
         </div>

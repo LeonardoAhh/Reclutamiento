@@ -135,7 +135,7 @@
 
 .config-search input {
   min-height: var(--touch-target-min);
-  padding-left: calc(var(--spacing-xl) + var(--spacing-xs)) !important;
+  padding-left: calc(var(--spacing-xl) + var(--spacing-md)) !important;
   padding-right: calc(var(--touch-target-min) + var(--spacing-xs)) !important;
   border-radius: var(--rounded-xs);
   background: var(--color-surface);

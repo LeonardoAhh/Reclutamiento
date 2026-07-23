@@ -35,7 +35,12 @@
 .app-header__brand {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--spacing-sm);
+
+  /* Touch target mínimo accesible */
+  min-width: max(48px, var(--touch-target-min));
+  min-height: max(48px, var(--touch-target-min));
 
   text-decoration: none;
   color: var(--color-ink);

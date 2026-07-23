@@ -110,7 +110,7 @@
   height: var(--control-height);
   padding: 0 var(--spacing-md) 0 calc(var(--spacing-md) + var(--spacing-lg));
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-xs);
   font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   color: var(--color-ink);

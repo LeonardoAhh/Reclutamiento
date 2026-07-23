@@ -201,9 +201,6 @@ export function RecruiterStatsModal({
         )
       }
       title={title}
-      subtitle={
-        mode !== 'global' ? 'Desempeño semanal por reclutador' : 'Vista general del equipo'
-      }
       size={mode === 'global' ? 'xl' : isMobile ? 'md' : 'lg'}
     >
       <div className="modal-body recruiter-stats-modal__body">

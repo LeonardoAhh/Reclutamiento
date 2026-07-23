@@ -230,8 +230,10 @@ export function Asistencia() {
 
           <div className="asistencia-toolbar">
             <div className="form-group search-group">
-              <Search size={16} className="search-icon" />
+              <label htmlFor="asistencia-search" className="sr-only">Buscar asistencia</label>
+              <Search size={16} className="search-icon" aria-hidden="true" />
               <input
+                id="asistencia-search"
                 type="text"
                 placeholder="Buscar por nombre o número..."
                 value={searchTerm}

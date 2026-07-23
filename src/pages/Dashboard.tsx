@@ -369,6 +369,7 @@ export function Dashboard() {
 
         <div className="config-search" style={{ padding: '0 var(--spacing-sm)', marginBottom: 'var(--spacing-md)' }}>
           <div className="config-search__wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <label htmlFor="search-input" className="sr-only">Buscar en la plantilla</label>
             <Search size={16} className="text-muted" style={{ position: 'absolute', left: 'var(--spacing-sm)', pointerEvents: 'none' }} aria-hidden="true" />
             <input
               id="search-input"

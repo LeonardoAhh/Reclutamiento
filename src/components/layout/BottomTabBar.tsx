@@ -1,51 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-  BarChart3,
-  Users,
   Menu,
   X,
-  LayoutDashboard,
-  CalendarRange,
-  Briefcase,
-  Contact,
-  Map,
-  ClipboardCheck,
   LogOut,
-  FileText,
-  Settings,
   ChevronRight,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './BottomTabBar.css';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
-type TabItem = {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-  end?: boolean;
-};
+import { NAV_ITEMS } from './navigation';
 
-/** Dos accesos principales, siempre visibles en la barra. */
-const PRIMARY_TABS: ReadonlyArray<TabItem> = [
-  { to: '/', label: 'Reclutamiento', icon: BarChart3, end: true },
-  { to: '/pipeline', label: 'Candidatos', icon: Users },
-];
-
-/** Resto de accesos, dentro del menú desplegable. */
-const MENU_TABS: ReadonlyArray<TabItem> = [
-  { to: '/plantilla', label: 'Plantilla', icon: LayoutDashboard },
-  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
-  { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/features',       label: 'Features',       icon: Settings },
-];
+const PRIMARY_TABS = NAV_ITEMS.filter((t) => t.mobilePriority);
+const MENU_TABS = NAV_ITEMS.filter((t) => !t.mobilePriority);
 
 /**
  * Navbar inferior minimalista para móvil/tablet (≤1023px). Centrada, flotante.
@@ -58,7 +30,8 @@ const MENU_TABS: ReadonlyArray<TabItem> = [
  */
 export function BottomTabBar() {
   const location = useLocation();
-  const { user, username, signOut } = useAuth();
+  const shouldReduceMotion = useReducedMotion();
+  const { username, signOut } = useAuth();
   const { fetchSummaries } = useReporteDiario();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -105,6 +78,18 @@ export function BottomTabBar() {
   useEffect(() => {
     setSheetOpen(false);
   }, [location.pathname]);
+
+  // Cierre automático al cambiar a viewport de PC (>=1024px) para evitar el bug P0
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        setSheetOpen(false);
+      }
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   // Scroll-lock + foco inicial en el diálogo + focus trap (Tab) + Esc + restaurar foco.
   useEffect(() => {
@@ -243,7 +228,7 @@ export function BottomTabBar() {
                         layoutId="bottom-nav-pill"
                         className="bottom-nav__pill"
                         aria-hidden="true"
-                        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                        transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 420, damping: 34 }}
                       />
                     )}
                     <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />

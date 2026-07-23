@@ -162,6 +162,7 @@ export function CustomSelect({
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Buscar..."
                     className="custom-select-search-input"
+                    aria-label="Buscar opciones"
                     onClick={(e) => e.stopPropagation()}
                     autoFocus
                   />

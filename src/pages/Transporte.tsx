@@ -188,12 +188,14 @@ export function Transporte() {
             <h2>Empleados asignados</h2>
           </div>
           <div className="transporte__search">
+            <label htmlFor="transporte-search-input" className="sr-only">Buscar empleados</label>
             <Search
               size={16}
               aria-hidden="true"
               className="transporte__search-icon"
             />
             <input
+              id="transporte-search-input"
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

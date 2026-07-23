@@ -1,30 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
-  BarChart3,
-  Users,
-  LayoutDashboard,
-  Briefcase,
-  CalendarRange,
-  Contact,
-  Map,
-  ClipboardCheck,
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
   Loader,
-  FileText,
   ChevronUp,
-  Sparkles,
-  Settings,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { useFeedback } from '@/hooks/useFeedback';
 import { useLoader } from '@/hooks/useLoader';
-import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { AVATAR_COLORS } from '@/lib/avatar';
@@ -33,21 +20,7 @@ import { BrandLogo } from '@/components/ui/BrandLogo';
 // @ts-ignore
 import Avatar from 'boring-avatars';
 
-type NavItem = {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-  end?: boolean;
-};
-
-/** Navegación plana (sin grupos): orden por frecuencia de uso esperada. */
-const NAV_ITEMS: ReadonlyArray<NavItem> = [
-  { to: '/',               label: 'Reclutamiento',           icon: BarChart3,       end: true },
-  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
-  { to: '/pipeline',       label: 'Candidatos',     icon: Users },
-  { to: '/plantilla',      label: 'Plantilla',      icon: LayoutDashboard },
-  { to: '/vacantes',       label: 'Vacantes',       icon: Briefcase },
-];
+import { NAV_ITEMS } from './navigation';
 
 type SidebarProps = {
   collapsed: boolean;
@@ -63,7 +36,8 @@ type SidebarProps = {
  * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
  */
 export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProps) {
-  const { user, username, signOut } = useAuth();
+  const { username, signOut } = useAuth();
+  const shouldReduceMotion = useReducedMotion();
   const loader = useLoader();
   const { version } = useSystemVersion();
   const [signingOut, setSigningOut] = useState(false);
@@ -85,6 +59,17 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
     };
     document.addEventListener('pointerdown', onPointerDown);
     return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [menuOpen]);
+
+  // Manejo de foco para el popover de usuario
+  useEffect(() => {
+    if (menuOpen) {
+      requestAnimationFrame(() => {
+        const popover = document.getElementById('user-menu-popover');
+        const firstAction = popover?.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        firstAction?.focus();
+      });
+    }
   }, [menuOpen]);
 
   /* ── Auto-colapso al navegar ─────────────────────────────────────────
@@ -173,7 +158,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                     layoutId="sidebar-active-indicator"
                     className="sidebar__item-active-indicator"
                     aria-hidden="true"
-                    transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                    transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 480, damping: 34 }}
                   />
                 )}
                 <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
@@ -197,66 +182,30 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
             );
           })}
 
-          <li key="/features">
-            {collapsed ? (
-              <Tooltip content="Features" side="right" delayMs={0}>
-                <NavLink
-                  to="/features"
-                  className={`sidebar__item${
-                    location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''
-                  }`}
-                  aria-label="Features"
-                  data-testid="sidebar-nav-features"
-                >
-                  {location.pathname.startsWith('/features') && (
-                    <motion.span
-                      layoutId="sidebar-active-indicator"
-                      className="sidebar__item-active-indicator"
-                      aria-hidden="true"
-                      transition={{ type: 'spring', stiffness: 480, damping: 34 }}
-                    />
-                  )}
-                  <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
-                  <span className="sidebar__item-label">Features</span>
-                </NavLink>
-              </Tooltip>
-            ) : (
-              <NavLink
-                to="/features"
-                className={`sidebar__item${
-                  location.pathname.startsWith('/features') ? ' sidebar__item--active' : ''
-                }`}
-                aria-label="Features"
-                data-testid="sidebar-nav-features"
-              >
-                {location.pathname.startsWith('/features') && (
-                  <motion.span
-                    layoutId="sidebar-active-indicator"
-                    className="sidebar__item-active-indicator"
-                    aria-hidden="true"
-                    transition={{ type: 'spring', stiffness: 480, damping: 34 }}
-                  />
-                )}
-                <Settings size={20} aria-hidden="true" className="sidebar__item-icon" />
-                <span className="sidebar__item-label">Features</span>
-              </NavLink>
-            )}
-          </li>
+
         </ul>
       </nav>
 
       {/* Footer: Avatar Popover Minimalista */}
-      <div className="sidebar__footer" ref={userMenuRef}>
+      <div 
+        className="sidebar__footer" 
+        ref={userMenuRef} 
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && menuOpen) {
+            setMenuOpen(false);
+            document.getElementById('user-menu-trigger')?.focus();
+          }
+        }}
+      >
         <AnimatePresence>
           {menuOpen && (
             <motion.div
               id="user-menu-popover"
               className="sidebar__popover"
-              role="menu"
-              initial={{ opacity: 0, y: collapsed ? 0 : 10, x: collapsed ? 0 : "-50%", scale: 0.95 }}
+              initial={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
               animate={{ opacity: 1, y: 0, x: collapsed ? 12 : "-50%", scale: 1 }}
-              exit={{ opacity: 0, y: collapsed ? 0 : 10, x: collapsed ? 0 : "-50%", scale: 0.95 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
             >
               <div className="sidebar__popover-actions">
                 <button
@@ -264,15 +213,14 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                   className="sidebar__popover-item sidebar__popover-item--danger"
                   onClick={handleSignOut}
                   disabled={signingOut}
-                  role="menuitem"
                 >
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.span
                       key={signingOut ? "loading" : "idle"}
-                      initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
-                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                      exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
-                      transition={{ duration: 0.2 }}
+                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.5, rotate: -90 }}
+                      animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, rotate: 0 }}
+                      exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.5, rotate: 90 }}
+                      transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                       className="sidebar__popover-icon"
                     >
                       {signingOut
@@ -300,7 +248,6 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           type="button"
           className="sidebar__user-trigger"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-haspopup="menu"
           aria-expanded={menuOpen}
           aria-controls={menuOpen ? "user-menu-popover" : undefined}
           aria-label="Opciones de usuario"

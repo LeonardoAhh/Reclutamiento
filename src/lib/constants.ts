@@ -306,9 +306,9 @@ export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
  * Comment type labels for display
  */
 export const COMMENT_TYPE_LABELS: Record<string, string> = {
-  proceso_activo: 'Proceso Activo',
-  entrevista: 'En Entrevista',
-  entrega_documentos: 'Entrega de Documentos',
+  proceso_activo: 'Proceso activo',
+  entrevista: 'Entrevista',
+  entrega_documentos: 'Entrega de documentos',
   otro: 'Otro',
 };
 

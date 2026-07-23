@@ -6,6 +6,7 @@ import { BottomTabBar } from './BottomTabBar';
 const STORAGE_KEY = 'sidebar-collapsed';
 
 function readSidebarCollapsed() {
+  if (typeof window === 'undefined') return false;
   try {
     return window.localStorage.getItem(STORAGE_KEY) === 'true';
   } catch {
