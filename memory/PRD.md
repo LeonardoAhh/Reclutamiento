@@ -246,3 +246,29 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
   - Apartado on-page (`<details>` con 2 tarjetas: evaluador + candidato) en `Toulouse.tsx`.
   - Hoja del candidato (impresa) ahora incluye consigna + 6 reglas (2 columnas). Plantilla de corrección incluye la fórmula PD = A − (E + O).
 - Verificación: `tsc` + `vite build` OK; render visual de ambas hojas validado (consigna+reglas y clave con fórmula, caben en una página carta). Impresión real pendiente de validar en vivo (sin Supabase/login local).
+
+
+
+## 2026-07-23 — Búsqueda global: identidad estable y limpieza UI/UX
+- Corregida la colisión de `key` e IDs accesibles cuando un mismo número aparece en plantilla activa y bajas; cada resultado ahora incorpora tipo e índice estable de la lista renderizada.
+- Reemplazados `any` por tipos discriminados (`Employee | Baja`) y un type guard para filas de reportes; el acceso a fecha/motivo de baja queda seguro.
+- Eliminados estilos inline y valores visuales directos de la vista; la presentación vive en `Configuracion.css` con tokens y clases reutilizables.
+- No se ejecutaron pruebas ni agentes por instrucción explícita del usuario; no requiere nuevas claves ni cambios de Supabase.
+
+
+## 2026-07-23 — `/features` · Búsqueda global mobile-first
+- Confirmado repositorio en `main`; el commit de producción `a180484` es ancestro del HEAD local `c770bfb`.
+- Rediseñada la ficha como composición mobile-first: bloques de información y calendario apilados, dos columnas equilibradas en PC y ancho centrado mediante tokens.
+- Calendario fluido sin anchos mínimos, buscador/selector con touch targets accesibles, estado sin reportes y estado inicial con orientación útil.
+- Historial convertido a listas semánticas por mes; badge de turno neutral y colores sticker limitados al icono decorativo.
+- Eliminadas reglas duplicadas, estilos inline y medidas visuales directas del bloque; se reutilizan tokens y patrones existentes.
+- No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.
+
+
+## 2026-07-23 — Búsqueda global: vista compacta, filtros e historial
+- Añadidos filtros locales combinables por estado, departamento y turno, con opciones derivadas de los resultados y acción de limpieza; no se agregaron consultas ni mutaciones.
+- Añadido selector Detallada/Compacta cuando existen varios resultados. La vista compacta resume puesto, departamento y turno, y permite expandir una ficha individual sin cambiar las demás.
+- Rediseñado el historial sin alterar su cálculo: resumen de meses/incidencias, tarjetas por mes y filas por tipo. Cada fila mantiene visible `Día N` o `Días N, N`, con conteo separado y color semántico reducido a un indicador puntual.
+- Layout mobile-first: controles apilados, selects y botones con touch target; filtros en columnas para tablet y tarjetas compactas a dos columnas en PC.
+- Implementación semántica con `fieldset`, `legend`, listas, encabezados jerárquicos, `aria-pressed`, `aria-expanded` y regiones live existentes.
+- No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.
