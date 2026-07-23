@@ -11,6 +11,7 @@ import {
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
 import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
+import type { Baja, Employee } from '@/lib/types';
 import { toTitleCase } from '@/lib/utils';
 import { Search, CircleUser, X } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
@@ -20,6 +21,22 @@ import '../Configuracion.css';
 const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"]);
 
 const STICKER_TONES = 5;
+
+type EmployeeSearchResult =
+  | (Employee & { isBaja: false })
+  | (Baja & { isBaja: true });
+
+type ReportEmployeeRow = {
+  numero_empleado: string;
+  days: Record<string, string>;
+};
+
+function isReportEmployeeRow(value: unknown): value is ReportEmployeeRow {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Record<string, unknown>;
+  return typeof candidate.numero_empleado === 'string' &&
+    Boolean(candidate.days && typeof candidate.days === 'object' && !Array.isArray(candidate.days));
+}
 
 function getStickerTone(numEmpleado: string) {
   const numVal = parseInt(numEmpleado.replace(/\D/g, '') || '0', 10);
@@ -134,12 +151,15 @@ function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber
     const sortedReports = [...allReports].sort((a, b) => b.mes.localeCompare(a.mes));
 
     for (const report of sortedReports) {
-      const row = report.data.find((r: any) => r.numero_empleado === employeeNumber) as any;
-      if (row && row.days) {
+      const row = report.data.find(
+        (candidate): candidate is ReportEmployeeRow =>
+          isReportEmployeeRow(candidate) && candidate.numero_empleado === employeeNumber,
+      );
+      if (row) {
         const incidents = Object.entries(row.days)
-          .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code as string))
+          .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code))
           .reduce((acc, [dayStr, code]) => {
-            const label = INCIDENCIA_LABELS[code as string] || (code as string);
+            const label = INCIDENCIA_LABELS[code] || code;
             if (!acc[label]) acc[label] = { count: 0, days: [] };
             acc[label].count += 1;
             acc[label].days.push(Number(dayStr).toString());
@@ -157,23 +177,23 @@ function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber
   if (history.length === 0) return null;
 
   return (
-    <aside className="config-card__history-section" aria-label="Historial general de incidencias" style={{ gridColumn: '1 / -1', borderTop: '1px solid var(--color-hairline-soft)', paddingTop: 'var(--spacing-xl)' }}>
-      <h4 className="type-caption-up text-muted" style={{ margin: '0 0 var(--spacing-md) 0' }}>
+    <aside className="config-card__history-section" aria-label="Historial general de incidencias">
+      <h4 className="config-history__title type-caption-up text-muted">
         Historial General de Incidencias
       </h4>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--spacing-xl)' }}>
+      <div className="config-history__months">
         {history.map((h) => (
           <div key={h.mes}>
-            <span className="type-body-sm-strong text-charcoal" style={{ display: 'block', marginBottom: 'var(--spacing-xs)' }}>
+            <span className="config-history__month type-body-sm-strong text-charcoal">
               {toTitleCase(formatMes(h.mes))}
             </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
+            <div className="config-history__incidents">
               {Object.entries(h.incidents).map(([label, info]) => {
                 const daysText = info.days.length === 1 ? `Día ${info.days[0]}` : `Días ${info.days.join(', ')}`;
                 return (
                   <span key={label} className="config-incidence-list__label" title={daysText}>
-                    {label}: <strong style={{ fontWeight: 600 }}>{info.count}</strong>
-                    <span style={{ fontWeight: 400, opacity: 0.85, marginLeft: '4px' }}>
+                    {label}: <strong className="config-history__count">{info.count}</strong>
+                    <span className="config-history__days">
                       ({daysText})
                     </span>
                   </span>
@@ -250,36 +270,32 @@ export function BusquedaView() {
 
   const reportRows = useMemo(() => {
     if (!currentReport) return [];
-    return currentReport.data.filter((row: any): row is any => {
-      if (!row || typeof row !== 'object') return false;
-      const candidate = row;
-      return typeof candidate.numero_empleado === 'string' && Boolean(candidate.days && typeof candidate.days === 'object');
-    });
+    return currentReport.data.filter(isReportEmployeeRow);
   }, [currentReport]);
 
   const employeeDaysByNumber = useMemo(() => {
     const map = new Map<string, Record<string, string>>();
-    for (const r of reportRows as any[]) {
-      map.set(r.numero_empleado, r.days);
+    for (const row of reportRows) {
+      map.set(row.numero_empleado, row.days);
     }
     return map;
   }, [reportRows]);
 
   const searchQuery = searchTerm.trim();
 
-  const filteredEmployees = useMemo(() => {
+  const filteredEmployees = useMemo<EmployeeSearchResult[]>(() => {
     const query = searchQuery.toLocaleLowerCase('es');
     if (query.length < 2) return [];
 
-    const activeMatches = employees.filter((employee) => {
+    const activeMatches: EmployeeSearchResult[] = employees.filter((employee) => {
       return employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
              employee.nombre.toLocaleLowerCase('es').includes(query);
-    }).map(e => ({ ...e, isBaja: false }));
+    }).map(employee => ({ ...employee, isBaja: false as const }));
 
-    const bajaMatches = bajas.filter((employee) => {
+    const bajaMatches: EmployeeSearchResult[] = bajas.filter((employee) => {
       return employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
              employee.nombre.toLocaleLowerCase('es').includes(query);
-    }).map(e => ({ ...e, isBaja: true }));
+    }).map(employee => ({ ...employee, isBaja: true as const }));
 
     return [...activeMatches, ...bajaMatches].slice(0, 10);
   }, [searchQuery, employees, bajas]);
@@ -311,7 +327,7 @@ export function BusquedaView() {
   return (
     <section className="busqueda-view config-page__content" aria-labelledby="busqueda-title">
       <div className="config-page__header-container">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="config-page__heading-group">
           <header className="config-page__header">
             <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
           </header>
@@ -393,16 +409,17 @@ export function BusquedaView() {
             </p>
 
             <div className="config-results">
-              {filteredEmployees.map(emp => {
+              {filteredEmployees.map((emp, resultIndex) => {
                 const employeeName = displayValue(emp.nombre);
                 const employeeNumber = displayValue(emp.num_empleado);
                 const stickerTone = getStickerTone(employeeNumber);
-                const employeeDomId = employeeNumber.replace(/[^a-zA-Z0-9_-]/g, '-');
+                const resultKind = emp.isBaja ? 'baja' : 'activo';
+                const employeeDomId = `${resultKind}-${employeeNumber.replace(/[^a-zA-Z0-9_-]/g, '-')}-${resultIndex}`;
                 const monthSelectId = `config-month-select-${employeeDomId}`;
                 const employeeTitleId = `employee-card-title-${employeeDomId}`;
 
                 return (
-                  <article key={employeeNumber} className="config-card" aria-labelledby={employeeTitleId}>
+                  <article key={employeeDomId} className="config-card" aria-labelledby={employeeTitleId}>
                     <header className="config-card__header">
                       <div
                         className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
@@ -411,8 +428,8 @@ export function BusquedaView() {
                         <CircleUser size="1em" aria-hidden="true" />
                       </div>
                       <div className="config-card__title-group">
-                        <h3 id={employeeTitleId} className="type-heading-sm text-ink" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                          <span className="text-muted-soft" style={{ fontWeight: 'normal' }}>#{employeeNumber}</span>
+                        <h3 id={employeeTitleId} className="config-card__employee-title type-heading-sm text-ink">
+                          <span className="config-card__employee-number text-muted-soft">#{employeeNumber}</span>
                           <span>{employeeName}</span>
                           {emp.isBaja && <Badge variant="error">Baja</Badge>}
                           {'is_starlite' in emp && emp.is_starlite && <StarliteBadge />}
@@ -452,17 +469,17 @@ export function BusquedaView() {
                           }
                           return null;
                         })()}
-                        {emp.isBaja && 'fecha_baja' in emp && (
+                        {emp.isBaja && (
                           <div className="notion-prop">
                             <dt className="notion-prop__label type-body-sm text-muted">Fecha de baja</dt>
-                            <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate((emp as any).fecha_baja))}</dd>
+                            <dd className="notion-prop__value type-body-sm-strong text-charcoal">{toTitleCase(formatReadableDate(emp.fecha_baja))}</dd>
                           </div>
                         )}
-                        {emp.isBaja && 'motivo_baja' in emp && (
+                        {emp.isBaja && (
                           <div className="notion-prop">
                             <dt className="notion-prop__label type-body-sm text-muted">Motivo de baja</dt>
-                            <dd className="notion-prop__value type-body-sm-strong text-charcoal" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={String((emp as any).motivo_baja || '')}>
-                              {displayValue((emp as any).motivo_baja)}
+                            <dd className="notion-prop__value config-card__truncate type-body-sm-strong text-charcoal" title={emp.motivo_baja}>
+                              {displayValue(emp.motivo_baja)}
                             </dd>
                           </div>
                         )}
@@ -532,7 +549,7 @@ export function BusquedaView() {
                             }
 
                             return (
-                              <div className="config-calendar-grid-container" style={{ marginTop: 'var(--spacing-md)' }}>
+                              <div className="config-calendar-grid-container config-calendar-grid-container--spaced">
                                 <MiniCalendar
                                   mesStr={selectedMes}
                                   days={empDays}

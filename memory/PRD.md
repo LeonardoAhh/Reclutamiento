@@ -246,3 +246,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
   - Apartado on-page (`<details>` con 2 tarjetas: evaluador + candidato) en `Toulouse.tsx`.
   - Hoja del candidato (impresa) ahora incluye consigna + 6 reglas (2 columnas). Plantilla de corrección incluye la fórmula PD = A − (E + O).
 - Verificación: `tsc` + `vite build` OK; render visual de ambas hojas validado (consigna+reglas y clave con fórmula, caben en una página carta). Impresión real pendiente de validar en vivo (sin Supabase/login local).
+
+
+
+## 2026-07-23 — Búsqueda global: identidad estable y limpieza UI/UX
+- Corregida la colisión de `key` e IDs accesibles cuando un mismo número aparece en plantilla activa y bajas; cada resultado ahora incorpora tipo e índice estable de la lista renderizada.
+- Reemplazados `any` por tipos discriminados (`Employee | Baja`) y un type guard para filas de reportes; el acceso a fecha/motivo de baja queda seguro.
+- Eliminados estilos inline y valores visuales directos de la vista; la presentación vive en `Configuracion.css` con tokens y clases reutilizables.
+- No se ejecutaron pruebas ni agentes por instrucción explícita del usuario; no requiere nuevas claves ni cambios de Supabase.

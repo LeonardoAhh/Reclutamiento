@@ -66,6 +66,11 @@
   }
 }
 
+.config-page__heading-group {
+  display: flex;
+  flex-direction: column;
+}
+
 .config-page__header-container {
   display: flex;
   flex-direction: column;
@@ -249,6 +254,24 @@
   overflow-wrap: anywhere;
 }
 
+.config-card__employee-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.config-card__employee-number {
+  font-weight: var(--font-regular);
+}
+
+.config-card__truncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .config-card__body {
   display: flex;
   flex-direction: column;
@@ -361,6 +384,46 @@
   width: 100%;
   min-width: 0;
   align-self: start;
+}
+
+.config-calendar-grid-container--spaced {
+  margin-top: var(--spacing-md);
+}
+
+.config-card__history-section {
+  grid-column: 1 / -1;
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.config-history__title {
+  margin: 0 0 var(--spacing-md);
+}
+
+.config-history__months {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-calendar-column-max)), 1fr));
+  gap: var(--spacing-xl);
+}
+
+.config-history__month {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.config-history__incidents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.config-history__count {
+  font-weight: var(--font-semibold);
+}
+
+.config-history__days {
+  margin-left: var(--spacing-xs);
+  font-weight: var(--font-regular);
 }
 
 .config-incidence-list {
