@@ -410,5 +410,6 @@ export function useCandidates() {
     markCandidateHired,
     deleteCandidate,
     addCandidateNote,
+    refetch,
   };
 }

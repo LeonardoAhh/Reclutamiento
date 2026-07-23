@@ -132,6 +132,7 @@ export function Pipeline() {
     deleteCandidate,
     addCandidateNote,
     error,
+    refetch,
   } = useCandidates();
 
   const { profile } = useAuth();
