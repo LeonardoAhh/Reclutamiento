@@ -39,17 +39,21 @@ function describeCalendarCode(code?: string) {
   return INCIDENCIA_LABELS[code] || code;
 }
 
-function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefined, mesStr: string }) {
+function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefined; mesStr: string }) {
   if (!mesStr) return null;
+
   const [yearStr, monthStr] = mesStr.split('-');
   const year = parseInt(yearStr, 10);
   const month = parseInt(monthStr, 10) - 1;
+
+  // Guard: mesStr mal formado no debe romper el render
+  if (Number.isNaN(year) || Number.isNaN(month)) return null;
 
   const firstDay = new Date(year, month, 1).getDay();
   const startOffset = firstDay === 0 ? 6 : firstDay - 1;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const blanks = Array.from({ length: startOffset }, (_, i) => i);
+  const blanks = Array.from({ length: startOffset }, (_, i) => `blank-${i}`);
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => {
     const dayStr = String(i + 1).padStart(2, '0');
     return { dayStr, code: days?.[dayStr] };
@@ -67,44 +71,55 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
 
   return (
     <div className="config-calendar-wrapper">
-      <span className="sr-only">Calendario de asistencia e incidencias de {formatMes(mesStr)}.</span>
+      <span className="sr-only">
+        Calendario de asistencia e incidencias de {formatMes(mesStr)}.
+      </span>
+
+      {/* Cabecera (días de la semana) — decorativa, ya descrita por el sr-only de arriba y por cada celda */}
       <div className="config-calendar-header" aria-hidden="true">
-        {weekdays.map((d, i) => (
-          <abbr key={i} title={d.full} className="config-calendar-header__abbr">
+        {weekdays.map((d) => (
+          <abbr key={d.full} title={d.full} className="config-calendar-header__abbr">
             {d.short}
           </abbr>
         ))}
       </div>
-      <div className="config-calendar" role="list" aria-label={`Calendario de ${formatMes(mesStr)}`}>
-        {blanks.map(b => <div key={`blank-${b}`} className="config-calendar__day config-calendar__day--blank" role="presentation" />)}
-        {monthDays.map(d => {
+
+      {/* Cuadrícula de días — <ul>/<li> nativos: estructura de lista válida,
+          incluyendo los huecos iniciales como listitem vacíos (nunca role="presentation"
+          suelto dentro de role="list", que rompe el conteo de items para el lector de pantalla) */}
+      <ul className="config-calendar" aria-label={`Calendario de ${formatMes(mesStr)}`}>
+        {blanks.map((key) => (
+          <li key={key} className="config-calendar__day config-calendar__day--blank" aria-hidden="true" />
+        ))}
+        {monthDays.map((d) => {
           const hasCode = !!d.code;
           const isAttendance = d.code === 'A';
           const isIncident = hasCode && !NON_INCIDENT_CODES.has(d.code as string);
 
-          let className = "config-calendar__day";
-          if (isIncident) className += " config-calendar__day--incident";
-          else if (isAttendance) className += " config-calendar__day--active";
+          let className = 'config-calendar__day';
+          if (isIncident) className += ' config-calendar__day--incident';
+          else if (isAttendance) className += ' config-calendar__day--active';
 
           return (
-            <div
+            <li
               key={d.dayStr}
               className={className}
               data-day={d.dayStr}
-              role="listitem"
               title={`${d.dayStr}: ${describeCalendarCode(d.code)}`}
               aria-label={`Día ${Number(d.dayStr)}: ${describeCalendarCode(d.code)}`}
             />
           );
         })}
-      </div>
+      </ul>
+
+      {/* Leyenda inferior */}
       <div className="config-calendar-legend">
         <span className="config-calendar-legend__item">
-          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--active" />
+          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--active" aria-hidden="true" />
           Asistencia
         </span>
         <span className="config-calendar-legend__item">
-          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--incident" />
+          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--incident" aria-hidden="true" />
           Incidencia
         </span>
       </div>
@@ -115,20 +130,22 @@ function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefin
 function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber: string, allReports: ReporteDiarioRecord[] }) {
   const history = useMemo(() => {
     if (!allReports.length) return [];
-    const res: { mes: string, incidents: Record<string, number> }[] = [];
+    const res: { mes: string, incidents: Record<string, { count: number, days: string[] }> }[] = [];
     const sortedReports = [...allReports].sort((a, b) => b.mes.localeCompare(a.mes));
-    
+
     for (const report of sortedReports) {
       const row = report.data.find((r: any) => r.numero_empleado === employeeNumber) as any;
       if (row && row.days) {
         const incidents = Object.entries(row.days)
           .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code as string))
-          .reduce((acc, [, code]) => {
+          .reduce((acc, [dayStr, code]) => {
             const label = INCIDENCIA_LABELS[code as string] || (code as string);
-            acc[label] = (acc[label] || 0) + 1;
+            if (!acc[label]) acc[label] = { count: 0, days: [] };
+            acc[label].count += 1;
+            acc[label].days.push(Number(dayStr).toString());
             return acc;
-          }, {} as Record<string, number>);
-        
+          }, {} as Record<string, { count: number, days: string[] }>);
+
         if (Object.keys(incidents).length > 0) {
           res.push({ mes: report.mes, incidents });
         }
@@ -151,11 +168,17 @@ function GlobalIncidenceHistory({ employeeNumber, allReports }: { employeeNumber
               {toTitleCase(formatMes(h.mes))}
             </span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
-              {Object.entries(h.incidents).map(([label, count]) => (
-                <span key={label} className="config-incidence-list__label">
-                  {label}: <strong style={{ fontWeight: 600 }}>{count}</strong>
-                </span>
-              ))}
+              {Object.entries(h.incidents).map(([label, info]) => {
+                const daysText = info.days.length === 1 ? `Día ${info.days[0]}` : `Días ${info.days.join(', ')}`;
+                return (
+                  <span key={label} className="config-incidence-list__label" title={daysText}>
+                    {label}: <strong style={{ fontWeight: 600 }}>{info.count}</strong>
+                    <span style={{ fontWeight: 400, opacity: 0.85, marginLeft: '4px' }}>
+                      ({daysText})
+                    </span>
+                  </span>
+                );
+              })}
             </div>
           </div>
         ))}
