@@ -99,3 +99,33 @@
   border-color: var(--color-accent-purple);
 }
 
+/* ── Role Badges ── */
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: var(--spacing-xl);
+  padding-inline: var(--spacing-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-ink);
+  font-weight: var(--font-semibold);
+}
+
+.role-badge::before {
+  content: '';
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-muted-soft);
+}
+
+.role-badge--admin::before { background: var(--color-accent-purple); }
+.role-badge--reclutador::before { background: var(--color-accent-teal); }
+.role-badge--gerente::before { background: var(--color-accent-orange); }
+.role-badge--auditor::before { background: var(--color-accent-sky); }

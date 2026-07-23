@@ -6,14 +6,18 @@ import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { Activity, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { RoleBadge } from '@/components/ui/Badge';
 import './ActiveSessions.css';
 
 
 function formatLastAccess(value: string | null | undefined) {
-  if (!value) return 'Sin accesos registrados';
+  if (!value) return 'Sin acceso';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'Último acceso no disponible';
-  return `Último acceso ${formatDistanceToNow(date, { addSuffix: true, locale: es })}`;
+  if (Number.isNaN(date.getTime())) return 'Desconocido';
+  
+  let distance = formatDistanceToNow(date, { addSuffix: true, locale: es });
+  distance = distance.replace(/alrededor de |casi |más de /g, '');
+  return distance.charAt(0).toUpperCase() + distance.slice(1);
 }
 export function ActiveSessions() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -119,21 +123,16 @@ export function ActiveSessions() {
                 <span className="session-username type-body-md-bold">
                   {profile.display_name || profile.username}
                 </span>
-                <span className="session-handle type-caption-sm text-muted">
-                  @{profile.username}
-                </span>
               </div>
               <div className="session-role-col">
-                <span className={`role-badge role-badge--${profile.role || 'default'}`}>
-                  <span className="session-role">{roleLabel}</span>
-                </span>
+                <RoleBadge role={profile.role || 'default'} label={roleLabel} />
               </div>
               
               <div className="session-status-col">
                 {isOnline ? (
                   <span className="status-pill status-pill--online">
                     <span className="status-pill__dot" aria-hidden="true" />
-                    <span className="status-pill__text">En línea ahora</span>
+                    <span className="status-pill__text">En línea</span>
                   </span>
                 ) : (
                   <span className="status-pill status-pill--offline">

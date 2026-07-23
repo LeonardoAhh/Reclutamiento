@@ -26,3 +26,17 @@ export const VinoplasticBadge = () => (
     ViñoPlastic
   </span>
 );
+
+interface RoleBadgeProps {
+  role?: string;
+  label?: string;
+}
+
+export function RoleBadge({ role = 'default', label }: RoleBadgeProps) {
+  const displayLabel = label || role;
+  return (
+    <span className={`role-badge role-badge--${role.toLowerCase()}`}>
+      <span className="session-role">{displayLabel}</span>
+    </span>
+  );
+}

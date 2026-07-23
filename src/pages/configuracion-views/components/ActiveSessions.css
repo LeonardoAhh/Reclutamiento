@@ -75,11 +75,12 @@
 .session-card {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "name status"
-    "role role";
-  align-items: center;
+    "name"
+    "role"
+    "status";
+  align-items: start;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   background: var(--color-surface-soft);
@@ -106,17 +107,25 @@
   grid-area: status;
   min-width: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
-.session-username,
 .session-handle,
 .status-pill__text {
   min-width: 0;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.role-badge,
+.session-username {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -130,12 +139,6 @@
   line-height: var(--type-caption-sm-line);
 }
 
-.role-badge {
-  color: var(--color-ink);
-  font-weight: var(--font-semibold);
-}
-
-.role-badge::before,
 .status-pill__dot {
   content: '';
   width: var(--spacing-sm);
@@ -143,15 +146,6 @@
   flex-shrink: 0;
   border-radius: var(--rounded-full);
 }
-
-.role-badge::before {
-  background: var(--color-muted-soft);
-}
-
-.role-badge--admin::before { background: var(--color-accent-purple); }
-.role-badge--reclutador::before { background: var(--color-accent-teal); }
-.role-badge--gerente::before { background: var(--color-accent-orange); }
-.role-badge--auditor::before { background: var(--color-accent-sky); }
 
 .status-pill {
   max-width: 100%;
@@ -176,5 +170,10 @@
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
     grid-template-areas: "name role status";
     gap: var(--spacing-md);
+    align-items: center;
+  }
+
+  .session-status-col {
+    justify-content: flex-end;
   }
 }
