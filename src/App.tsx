@@ -25,9 +25,9 @@ import { Configuracion } from '@/pages/Configuracion';
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 
 function AdminGuard({ children }: { children: ReactNode }) {
-  const { profile, loading } = useAuth();
-  if (loading || !profile) return null;
-  if (profile.role !== 'admin') {
+  const { profile, profileLoading, loading } = useAuth();
+  if (loading || profileLoading) return null;
+  if (!profile || profile.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;

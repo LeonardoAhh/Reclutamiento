@@ -33,14 +33,13 @@ supabase db push
 | `005_auth_profiles.sql` | Tabla `profiles` (1:1 con `auth.users`), trigger `on_auth_user_created`, y endurecimiento de RLS en todas las tablas existentes (`anon` → `authenticated`). Auth login con usuario+password vía email sintético `${usuario}@reclutamiento.local`. | PR I |
 | `015_candidates_status_v2.sql` | Reemplaza el CHECK legacy de `candidates.status` por los 5 status vigentes (`entrevista`, `entrega_documentos`, `faltan_documentos`, `contratado`, `rechazado`) + backfill de filas viejas + cambio de DEFAULT a `entrevista`. Sin esto, los INSERT/UPDATE del pipeline fallaban en silencio y los KPIs divergían entre devices. | — |
 | `019_reportes_diarios.sql` | Tabla `reportes_diarios` (1 registro por `mes`, UNIQUE) para guardar e historizar el **Reporte Diario** de asistencia: `data` jsonb con las filas crudas + columnas resumen (`total_empleados`, `total_incidencias`, `tasa_asistencia`, `dias_disponibles`, `total_ausentismo`, `pct_ausentismo`) + `uploaded_by`, `created_at`, `updated_at` (trigger). RLS permisiva para `authenticated`. Consumido por `useReporteDiario.ts`. | Reporte Diario |
+| `022_system_maintenance.sql` | Tabla/configuración global `config.main`, lectura para usuarios autenticados, actualización exclusiva por rol `admin` y publicación Realtime para propagar mantenimiento a sesiones abiertas. | Sistema |
 
 ## RLS
 
-Todas las tablas tienen RLS habilitada con políticas permisivas (`using (true)`)
-para mantener compatibilidad con el frontend actual, que usa solo la anon key.
+La mayoría de tablas históricas conservan políticas permisivas para `authenticated` por compatibilidad. Las configuraciones sensibles deben aplicar políticas por rol; por ejemplo, `022_system_maintenance.sql` permite leer el estado a usuarios autenticados pero solo perfiles `admin` pueden actualizarlo.
 
-Cuando se agregue auth + roles (Tier 4 del roadmap), las políticas se cambian
-a algo como:
+Patrón de referencia para endurecer otras tablas por rol:
 
 ```sql
 drop policy "candidates_all" on public.candidates;
