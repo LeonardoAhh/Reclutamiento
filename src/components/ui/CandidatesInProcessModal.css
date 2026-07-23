@@ -76,6 +76,13 @@
   min-width: 0;
 }
 
+.candidates-in-process-modal__puesto-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
 .candidates-in-process-modal__puesto-name {
   font-weight: var(--font-medium);
   color: var(--color-ink);
@@ -84,6 +91,13 @@
 .candidates-in-process-modal__puesto-seccion {
   color: var(--color-muted-soft);
   font-size: var(--type-caption-md-size);
+}
+
+.candidates-in-process-modal__puesto-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xxs);
 }
 
 .candidates-in-process-modal__puesto-count {

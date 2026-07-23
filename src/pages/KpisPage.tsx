@@ -11,6 +11,9 @@
   import { KpiHeroChart, DailyKpiData } from '@/components/ui/KpiHeroChart';
   import { useDismissedPositions } from '@/hooks/useDismissedPositions';
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
+  import { FutureHiresModal } from '@/components/ui/FutureHiresModal';
+  import { ButtonUtility } from '@/components/ui/ButtonUtility';
+  import { Badge } from '@/components/ui/Badge';
   import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
   import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
   import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
@@ -60,6 +63,7 @@
   /** IDs de cards que siempre se muestran sin blur. */
   const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
     'kpi-ingresos-semana',
+    'kpi-proximos-ingresos',
     'stat-pipeline-citados-hoy',
     'stat-pipeline-activo',
   ]);
@@ -80,6 +84,7 @@
 
   const CARD_GROUP_BY_ID: Record<string, KpiGroupId> = {
     'kpi-ingresos-semana': 'semana',
+    'kpi-proximos-ingresos': 'semana',
     'stat-pipeline-citados-hoy': 'semana',
     'stat-pipeline-activo': 'semana',
     'stat-vac-abiertas': 'vacantes',
@@ -100,9 +105,9 @@
     'kpi-solo-induccion': 'bajas',
   };
 
-  /** Cards que abren un modal de detalle. */
   const MODAL_CARD_IDS: ReadonlySet<string> = new Set([
     'kpi-ingresos-semana',
+    'kpi-proximos-ingresos',
     'stat-pipeline-activo',
     'stat-pipeline-citados-hoy',
     'stat-vac-ttf',
@@ -125,7 +130,7 @@
 
   interface KpiDescriptor {
     id: string;
-    label: string;
+    label: string | React.ReactNode;
     value: string | number;
     subtitle?: string;
     accentColor: string;
@@ -157,6 +162,7 @@
     const isDesktop = useMediaQuery('(min-width: 768px)');
     const [activeGroup, setActiveGroup] = useState<KpiGroupId>('semana');
     const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
+    const [futureHiresModalOpen, setFutureHiresModalOpen] = useState(false);
     const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
     const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
     const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
@@ -187,6 +193,12 @@
           .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek) && String(e.fecha_ingreso).localeCompare(today) <= 0)
           .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso)));
     }, [employees, currentWeek]);
+    const weeklyHiresDateBadge = useMemo(() => {
+      if (weeklyHires.length === 0) return null;
+      const dates = Array.from(new Set(weeklyHires.map(e => String(e.fecha_ingreso)))).sort();
+      if (dates.length === 1) return formatProjectionDate(dates[0]);
+      return `${formatProjectionDate(dates[0])} - ${formatProjectionDate(dates[dates.length - 1])}`;
+    }, [weeklyHires]);
     const weeklyBajas: Baja[] = useMemo(
       () =>
         bajas
@@ -214,6 +226,12 @@
           .filter((e) => isInIsoWeek(e.fecha_ingreso, currentWeek) && String(e.fecha_ingreso).localeCompare(today) > 0)
           .sort((a, b) => String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso)));
     }, [employees, currentWeek]);
+    const futureHiresDateBadge = useMemo(() => {
+      if (weeklyFutureHires.length === 0) return null;
+      const dates = Array.from(new Set(weeklyFutureHires.map(e => String(e.fecha_ingreso)))).sort();
+      if (dates.length === 1) return formatProjectionDate(dates[0]);
+      return `${formatProjectionDate(dates[0])} - ${formatProjectionDate(dates[dates.length - 1])}`;
+    }, [weeklyFutureHires]);
     const weeklyHiresSubtitle = useMemo(() => {
       const diff = weeklyHires.length - previousWeekHires.length;
       const sign = diff > 0 ? '+' : '';
@@ -316,20 +334,20 @@
 
         realTotal += pos.plantilla_real;
         objetivoGlobal += pos.plantilla_objetivo;
-        
+
         const urgentes = pos.urgentes ?? 0;
         const backup = pos.backup ?? 0;
         const starliteEmpleados = pos.starlite_empleados || 0;
-        
+
         const vStarlite = Math.max(0, urgentes - starliteEmpleados);
         const starliteSpillover = Math.max(0, starliteEmpleados - urgentes);
-        
+
         const empleadosRegulares = pos.plantilla_real - starliteEmpleados;
         const disponiblesParaRegular = empleadosRegulares + starliteSpillover;
-        
+
         const vPlantilla = Math.max(0, pos.plantilla_autorizada - disponiblesParaRegular);
         const vBackup = Math.max(0, backup - Math.max(0, disponiblesParaRegular - pos.plantilla_autorizada));
-        
+
         vacantesPlantilla += vPlantilla;
         vacantesBackup += vBackup;
         vacantesStarlite += vStarlite;
@@ -471,21 +489,46 @@
       () => [
         {
           id: 'kpi-ingresos-semana',
-          label: 'Ingresos',
+          label: (
+            <span className="kpis-page__label-with-badge">
+              Ingresos
+              {weeklyHiresDateBadge && (
+                <span className="kpis-page__date-badge">{weeklyHiresDateBadge}</span>
+              )}
+            </span>
+          ),
           value: weeklyHires.length,
           accentColor: 'var(--color-primary)',
           origin: 'Bajas',
         },
         {
+          id: 'kpi-proximos-ingresos',
+          label: (
+            <span className="kpis-page__label-with-badge">
+              Ingresos
+              {futureHiresDateBadge && (
+                <span className="kpis-page__date-badge">{futureHiresDateBadge}</span>
+              )}
+            </span>
+          ),
+          value: weeklyFutureHires.length,
+          accentColor: 'var(--color-primary)',
+          origin: 'Bajas',
+        },
+        {
           id: 'stat-pipeline-citados-hoy',
-          label: 'Procesos hoy',
+          label: (
+            <span className="kpis-page__label-with-badge">
+              Entrevistas <span className="kpis-page__date-badge">{formatProjectionDate(todayIso)}</span>
+            </span>
+          ),
           value: candidateTotals.citadosHoy,
           accentColor: 'var(--color-accent-teal)',
           origin: 'Candidatos',
         },
         {
           id: 'stat-pipeline-activo',
-          label: 'Procesos',
+          label: 'Procesos por cerrar',
           value: candidateTotals.enProceso,
           accentColor: 'var(--color-primary)',
           origin: 'Candidatos',
@@ -626,6 +669,7 @@
 
     function openCardModal(id: string) {
       if (id === 'kpi-ingresos-semana') setWeeklyModalOpen(true);
+      else if (id === 'kpi-proximos-ingresos') setFutureHiresModalOpen(true);
       else if (id === 'stat-pipeline-activo') setCandidatesModalOpen(true);
       else if (id === 'stat-pipeline-citados-hoy') setCitedTodayModalOpen(true);
       else if (id === 'stat-vac-ttf') setTtfHistoryModalOpen(true);
@@ -838,8 +882,7 @@
                         variant={card.variant}
                       />
                       {hasModal && revealed && (
-                        <button
-                          type="button"
+                        <ButtonUtility
                           className="kpis-page__detail-btn"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -855,10 +898,10 @@
                               ? 'Ver histórico mensual de TTF'
                               : 'Ver puestos en proceso del pipeline'
                           }
+                          icon={<Eye size={14} aria-hidden="true" />}
                         >
-                          <Eye size={14} aria-hidden="true" />
                           Detalle
-                        </button>
+                        </ButtonUtility>
                       )}
                     </div>
                   </KpiReveal>
@@ -906,7 +949,7 @@
                   <motion.div
                     key={card.id}
                     variants={staggerItem}
-                    className="kpis-page__m-card"
+                    className={`kpis-page__m-card ${hasModal ? 'kpis-page__m-card--has-action' : ''}`}
                     data-testid={`kpis-mobile-card-${card.id}`}
                   >
                     <StatCard
@@ -966,6 +1009,11 @@
           previousRangeLabel={previousWeekLabel}
           previousHires={previousWeekHires}
           previousBajas={previousWeekBajas}
+        />
+
+        <FutureHiresModal
+          isOpen={futureHiresModalOpen}
+          onClose={() => setFutureHiresModalOpen(false)}
           futureHires={weeklyFutureHires}
         />
 

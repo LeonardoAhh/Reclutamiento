@@ -3,6 +3,9 @@
   border-radius: var(--rounded-lg);
   cursor: pointer;
   outline: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   transition:
     box-shadow var(--transition-base),
     transform var(--transition-base);
@@ -18,7 +21,9 @@
 }
 
 .kpi-reveal__inner {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   border-radius: var(--rounded-lg);
   transition:
     filter var(--transition-base),

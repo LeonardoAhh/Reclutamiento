@@ -1,24 +1,18 @@
 import type { CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUS_LABEL } from '@/lib/types';
-import { Badge } from './Badge';
 
-const VARIANT: Record<
-  CandidateStatus,
-  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
-> = {
-  entrevista: 'amber',
-  entrega_documentos: 'amber',
-  faltan_documentos: 'amber',
-  feedback_pendiente: 'coral',
-  contratado: 'success',
-  rechazado: 'error',
-  no_asistio: 'error',
-};
+import './CandidateStatusBadge.css';
 
 interface CandidateStatusBadgeProps {
   status: CandidateStatus;
+  count?: number;
 }
 
-export function CandidateStatusBadge({ status }: CandidateStatusBadgeProps) {
-  return <Badge variant={VARIANT[status]}>{CANDIDATE_STATUS_LABEL[status]}</Badge>;
+export function CandidateStatusBadge({ status, count }: CandidateStatusBadgeProps) {
+  return (
+    <span className="candidate-status-badge" data-status={status}>
+      {CANDIDATE_STATUS_LABEL[status]}
+      {count !== undefined && count > 0 && ` (${count})`}
+    </span>
+  );
 }

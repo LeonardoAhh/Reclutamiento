@@ -2,7 +2,8 @@ import { Activity } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import type { Candidate } from '@/lib/types';
+import type { Candidate, CandidateStatus } from '@/lib/types';
+import { CandidateStatusBadge } from './CandidateStatusBadge';
 import './CandidatesInProcessModal.css';
 
 interface CandidatesInProcessModalProps {
@@ -15,6 +16,7 @@ interface PuestoSeccionCount {
   puesto: string;
   seccion: string;
   count: number;
+  statuses: Partial<Record<CandidateStatus, number>>;
 }
 
 function groupByPuestoSeccion(candidates: Candidate[]): PuestoSeccionCount[] {
@@ -23,12 +25,13 @@ function groupByPuestoSeccion(candidates: Candidate[]): PuestoSeccionCount[] {
     const puesto = (c.puesto ?? '').trim() || '—';
     const seccion = (c.seccion ?? '').trim() || '—';
     const key = `${puesto}||${seccion}`;
-    const prev = map.get(key);
-    if (prev) {
-      prev.count += 1;
-    } else {
-      map.set(key, { puesto, seccion, count: 1 });
+    let entry = map.get(key);
+    if (!entry) {
+      entry = { puesto, seccion, count: 0, statuses: {} };
+      map.set(key, entry);
     }
+    entry.count += 1;
+    entry.statuses[c.status] = (entry.statuses[c.status] || 0) + 1;
   }
   return Array.from(map.values()).sort(
     (a, b) =>
@@ -54,14 +57,28 @@ export function CandidatesInProcessModal({
           className="candidates-in-process-modal__puesto-item"
         >
           <div className="candidates-in-process-modal__puesto-main">
-            <span className="candidates-in-process-modal__puesto-name">
-              {g.puesto}
-            </span>
-            {g.seccion && (
-              <span className="candidates-in-process-modal__puesto-seccion">
-                {g.seccion}
+            <div className="candidates-in-process-modal__puesto-header">
+              <span className="candidates-in-process-modal__puesto-name">
+                {g.puesto}
               </span>
-            )}
+              {g.seccion && (
+                <span className="candidates-in-process-modal__puesto-seccion">
+                  {g.seccion}
+                </span>
+              )}
+            </div>
+            <div className="candidates-in-process-modal__puesto-badges">
+              {Object.entries(g.statuses)
+                // sort by count desc so most common status is first
+                .sort(([, countA], [, countB]) => (countB as number) - (countA as number))
+                .map(([status, count]) => (
+                  <CandidateStatusBadge
+                    key={status}
+                    status={status as CandidateStatus}
+                    count={count as number}
+                  />
+                ))}
+            </div>
           </div>
           <span className="candidates-in-process-modal__puesto-count">
             {g.count}
@@ -77,7 +94,7 @@ export function CandidatesInProcessModal({
       onClose={onClose}
       className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
-      title="Candidatos en proceso"
+      title="Procesos por cerrar"
       subtitle="Activos en página de candidatos"
       size={isMobile ? 'md' : 'lg'}
       fullscreenMobile={true}
@@ -111,7 +128,7 @@ export function CandidatesInProcessModal({
             aria-label="Resumen por puesto y sección"
           >
             <h3 className="candidates-in-process-modal__section-title">
-              Puestos con procesos  
+              Puestos con procesos
             </h3>
             {renderList()}
           </section>

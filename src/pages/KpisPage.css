@@ -121,6 +121,11 @@
   flex: 1;
 }
 
+/* Evitar que el label se encime con el botón de detalle en móvil */
+.kpis-page__m-card--has-action .stat-card__label {
+  padding-right: calc(var(--control-height) + var(--spacing-xs));
+}
+
 /* Botón de detalle compacto (móvil): icono en esquina superior derecha. */
 .kpis-page__m-detail {
   position: absolute;
@@ -203,6 +208,23 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: 1;
+}
+
+.kpis-page__label-with-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxs);
+}
+
+.kpis-page__date-badge {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  background: var(--color-surface-sunken);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-full);
 }
 
 /* Botón de detalle (PC, visible cuando la card está revelada). */
@@ -210,36 +232,7 @@
   position: absolute;
   right: var(--spacing-md);
   bottom: var(--spacing-md);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xxs);
-  min-height: var(--touch-target-min);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-pill);
-  border: 1px solid var(--color-hairline);
-  background: var(--color-surface-card);
-  color: var(--color-primary);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-button-weight);
-  cursor: pointer;
-  box-shadow: var(--shadow-subtle);
-  transition:
-    background var(--transition-fast),
-    color var(--transition-fast),
-    box-shadow var(--transition-fast);
   z-index: 2;
-}
-
-.kpis-page__detail-btn:hover {
-  background: var(--color-primary);
-  color: var(--color-surface-card);
-  box-shadow: var(--shadow-card);
-}
-
-.kpis-page__detail-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 /* ── Grid de KPIs (PC) ──────────────────────────────────────────────── */

@@ -1,0 +1,43 @@
+.btn-utility {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 4px 14px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-utility:hover {
+  background: var(--color-surface-soft);
+  box-shadow: var(--shadow-subtle);
+}
+
+.btn-utility:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn-utility:active {
+  transform: scale(0.98);
+}
+
+.btn-utility__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+}

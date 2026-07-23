@@ -67,7 +67,7 @@ export function CandidatesCitedTodayModal({
       onClose={onClose}
       className="candidates-cited-today-modal"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
-      title="Personal citado"
+      title="Detalle entrevistas"
       subtitle="Detalle de candidatos citados"
       size={isMobile ? 'md' : 'lg'}
       fullscreenMobile={true}

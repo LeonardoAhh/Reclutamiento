@@ -69,7 +69,7 @@ export function useKpiReveal(): KpiRevealContext {
 
 interface KpiRevealProps {
   id: string;
-  label: string;
+  label: string | React.ReactNode;
   revealed: boolean;
   onReveal: () => void;
   onHide: () => void;

@@ -3,7 +3,7 @@ import { AnimatedNumber } from './AnimatedNumber';
 
 interface StatCardProps {
   id: string;
-  label: string;
+  label: string | React.ReactNode;
   value: string | number;
   subtitle?: string;
   accentColor?: string;

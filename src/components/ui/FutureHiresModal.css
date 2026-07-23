@@ -1,0 +1,177 @@
+/* ========================================
+   FUTURE HIRES MODAL
+   ======================================== */
+
+.future-hires-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.future-hires-modal__header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.future-hires-modal__hint {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.future-hires-modal__empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-lg);
+  font-size: var(--type-body-md-size);
+}
+
+.future-hires-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* ── Tablas PC ── */
+.future-hires-modal__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+}
+
+.future-hires-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--type-caption-md-size);
+  text-align: left;
+}
+
+.future-hires-modal__table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+  white-space: nowrap;
+}
+
+.future-hires-modal__table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-ink);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  vertical-align: middle;
+}
+
+.future-hires-modal__table tr:last-child td {
+  border-bottom: none;
+}
+
+.future-hires-modal__cell-mono {
+  font-family: var(--font-mono);
+  color: var(--color-body);
+  white-space: nowrap;
+}
+
+.future-hires-modal__cell-name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.future-hires-modal__name-text {
+  font-weight: 500;
+}
+
+.future-hires-modal__cell-area {
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.future-hires-modal__cell-seccion {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  margin-top: 2px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ── Tarjetas Móvil ── */
+.future-hires-modal__mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.future-hires-modal__mobile-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  gap: var(--spacing-sm);
+  box-shadow: var(--shadow-subtle);
+}
+
+.future-hires-modal__mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.future-hires-modal__mobile-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.future-hires-modal__mobile-apellidos {
+  font-size: var(--type-body-sm-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.2;
+}
+
+.future-hires-modal__mobile-nombres {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-body);
+  line-height: 1.2;
+}
+
+.future-hires-modal__mobile-date {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.future-hires-modal__mobile-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.future-hires-modal__mobile-puesto {
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.future-hires-modal__mobile-area {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+}

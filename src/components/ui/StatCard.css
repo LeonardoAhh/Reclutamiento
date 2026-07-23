@@ -3,6 +3,7 @@
 .stat-card {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: var(--spacing-xs);
   padding: var(--spacing-lg);
   border-radius: var(--rounded-lg);
