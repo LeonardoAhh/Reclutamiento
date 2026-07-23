@@ -223,6 +223,12 @@
   border: 0;
 }
 
+.config-filter-group > legend {
+  float: none;
+  width: 100%;
+  padding: 0;
+}
+
 .config-filter-field {
   display: flex;
   flex-direction: column;
@@ -230,12 +236,17 @@
 }
 
 .config-filter-label {
-  display: block;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  line-height: var(--type-caption-sm-line);
 }
 
 .config-segmented-control,
 .config-view-switch {
   display: grid;
+  height: var(--touch-target-min);
   padding: var(--spacing-xxs);
   background: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
@@ -252,7 +263,9 @@
 
 .config-segmented-control__button,
 .config-view-switch__button {
-  min-height: var(--touch-target-min);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -277,6 +290,7 @@
 
 .config-filter-select {
   width: 100%;
+  height: var(--touch-target-min);
   min-height: var(--touch-target-min);
   padding: var(--spacing-xs) var(--spacing-xl) var(--spacing-xs) var(--spacing-sm);
   color: var(--color-ink);
@@ -315,11 +329,13 @@
   }
 
   .config-results-controls__heading {
-    align-self: center;
+    min-height: var(--touch-target-min);
+    align-self: end;
   }
 
   .config-view-switch {
     min-width: var(--feature-calendar-column-max);
+    align-self: end;
   }
 }
 

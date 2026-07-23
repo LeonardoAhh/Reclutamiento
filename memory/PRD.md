@@ -272,3 +272,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Layout mobile-first: controles apilados, selects y botones con touch target; filtros en columnas para tablet y tarjetas compactas a dos columnas en PC.
 - Implementación semántica con `fieldset`, `legend`, listas, encabezados jerárquicos, `aria-pressed`, `aria-expanded` y regiones live existentes.
 - No se ejecutaron pruebas ni agentes por instrucción del usuario; Supabase, datos y `rutas-app` permanecen sin cambios.
+
+
+## 2026-07-23 — Alineación PC y robustecimiento de reglas
+- Normalizada la barra de filtros de Búsqueda en PC: labels sin estilos nativos residuales, selects y controles segmentados con la misma altura exterior (`--touch-target-min`) y alineación al borde inferior de la fila de controles.
+- `Filtrar resultados` ahora reserva la misma altura que los campos y se alinea con Estado/Departamento/Turno/Vista, sin alterar el layout mobile-first.
+- Reescrito `AGENTS.md` como contrato operativo: alcance, jerarquía, preflight, preservación funcional, tokens, responsive, alineación obligatoria, accesibilidad, reutilización, calidad, estados, decisión segura y checklist final.
+- Corregida la referencia de la fuente visual al nombre real `desing.md`.
+- No se ejecutaron pruebas ni agentes por instrucción del usuario; no se modificaron Supabase, datos ni `rutas-app`.
