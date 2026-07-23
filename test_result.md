@@ -13,3 +13,9 @@ Verificar que al expirar el JWT la sesión se invalide inmediatamente y AuthGuar
 ## Incorporate User Feedback
 - Responder en español y directo al punto.
 - No afirmar validación en vivo si faltan credenciales.
+
+## Auditoría actual — navegación responsive (solo lectura)
+- Revisar Sidebar en PC, Header y BottomTabBar en móvil/tablet contra `AGENTS.md` y `desing.md`.
+- No modificar componentes, estilos, lógica, datos ni `rutas-app`.
+- Validar en vivo solo si existe una instancia accesible y credenciales válidas; no crear ni simular sesión.
+- Entregable permitido: un informe HTML para implementación posterior por Gemini 3.1 Pro High.
