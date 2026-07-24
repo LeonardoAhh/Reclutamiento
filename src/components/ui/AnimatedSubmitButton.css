@@ -12,13 +12,13 @@
 .animated-submit-button[data-state="success"] {
   background: var(--color-success) !important;
   border-color: var(--color-success) !important;
-  color: #ffffff !important;
+  color: var(--color-on-primary) !important;
 }
 
 .animated-submit-button[data-state="error"] {
   background: var(--color-error) !important;
   border-color: var(--color-error) !important;
-  color: #ffffff !important;
+  color: var(--color-on-primary) !important;
   animation: animated-submit-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 

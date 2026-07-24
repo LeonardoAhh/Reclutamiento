@@ -185,6 +185,17 @@
   box-shadow: var(--shadow-focus);
 }
 
+@media (max-width: 1024px) {
+  .pipeline__sidebar-toggle {
+    display: none;
+  }
+  
+  /* Aseguramos que el sidebar no se muestre en móvil ya que no hay botón para controlarlo */
+  .pipeline__sidebar {
+    display: none !important;
+  }
+}
+
 .pipeline__sidebar::-webkit-scrollbar {
   width: 4px;
 }
@@ -666,10 +677,14 @@
   text-align: center;
 }
 
-.pipeline__search {
-  position: relative;
+.pipeline__search-container {
   flex: 1 1 260px;
   min-width: 0;
+}
+
+.pipeline__search {
+  position: relative;
+  width: 100%;
 }
 
 .pipeline__search-icon {
@@ -939,13 +954,14 @@
   box-shadow: inset 0 0 0 2px var(--color-primary);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .pipeline__controls {
     gap: var(--spacing-sm);
   }
   /* Fila 1: la búsqueda ocupa toda la línea */
-  .pipeline__search {
+  .pipeline__search-container {
     flex: 1 1 100%;
+    order: 1;
   }
   /* Contador oculto en móvil para un diseño más limpio */
   .pipeline__count {
@@ -955,6 +971,7 @@
   .pipeline__filter-btn {
     order: 2;
     margin-left: 0;
+    min-height: var(--touch-target-min);
   }
   .pipeline__pagination-controls {
     order: 3;

@@ -187,8 +187,8 @@
   padding: 2px 6px;
   background-color: var(--color-primary);
   color: var(--color-on-primary);
-  font-size: 0.65rem;
-  font-weight: 800;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   border-radius: var(--rounded-full);
   margin-left: auto;
   line-height: 1;
@@ -216,8 +216,8 @@
   width: auto;
   height: auto;
   padding: 2px 5px;
-  font-size: 0.55rem;
-  font-weight: 800;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   color: var(--color-on-primary);
   background-color: var(--color-error);
   border: none;
@@ -315,10 +315,11 @@
 /* Popover */
 .sidebar__popover {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + var(--spacing-sm));
   left: 50%;
   transform: translateX(-50%);
-  width: 220px;
+  min-width: 200px;
+  width: max-content;
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
@@ -373,7 +374,7 @@
 
 .sidebar__popover-divider-vertical {
   width: 1px;
-  height: 24px;
+  align-self: stretch;
   background: var(--color-hairline);
   margin: 0 var(--spacing-xs);
 }
@@ -414,7 +415,7 @@
 
 .sidebar__popover-version {
   text-align: center;
-  font-size: 0.65rem;
+  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
   margin-top: var(--spacing-xs);
   padding-bottom: var(--spacing-xs);

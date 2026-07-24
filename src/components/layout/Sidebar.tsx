@@ -201,6 +201,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           {menuOpen && (
             <motion.div
               id="user-menu-popover"
+              role="menu"
               className="sidebar__popover"
               initial={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
               animate={{ opacity: 1, y: 0, x: collapsed ? 12 : "-50%", scale: 1 }}
@@ -210,6 +211,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
               <div className="sidebar__popover-actions">
                 <button
                   type="button"
+                  role="menuitem"
                   className="sidebar__popover-item sidebar__popover-item--danger"
                   onClick={handleSignOut}
                   disabled={signingOut}
@@ -250,6 +252,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           onClick={() => setMenuOpen(!menuOpen)}
           aria-expanded={menuOpen}
           aria-controls={menuOpen ? "user-menu-popover" : undefined}
+          aria-haspopup="menu"
           aria-label="Opciones de usuario"
         >
           <span className="sidebar__avatar" aria-hidden="true" title={username}>

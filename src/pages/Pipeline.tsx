@@ -638,7 +638,7 @@ export function Pipeline() {
 
           {/* ── Search ── */}
           <section className="pipeline__controls">
-            <div style={{ position: 'relative', flex: '1 1 260px', zIndex: 100 }}>
+            <div className="pipeline__search-container" style={{ position: 'relative', zIndex: 100 }}>
               {/* Banner flotante de nueva función rotativo */}
               <SearchBanner />
 
@@ -705,6 +705,7 @@ export function Pipeline() {
               title="Filtros avanzados"
             >
               <SlidersHorizontal size={16} aria-hidden="true" />
+              <span>Filtros</span>
               {activeFiltersCount > 0 && (
                 <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
                   {activeFiltersCount}
