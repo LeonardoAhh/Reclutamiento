@@ -95,6 +95,7 @@
   letter-spacing: var(--type-heading-lg-tracking);
   color: var(--color-ink);
   margin: 0;
+  text-transform: none;
 }
 
 @media (min-width: 768px) {
@@ -296,7 +297,7 @@ button.reporte-card:focus-visible,
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
@@ -3552,7 +3553,7 @@ button.ras-card:focus-visible {
   width: 100%;
 }
 
-/* Variant "labeled" del trigger — usado en el hero y en el grid 2x2 */
+/* Variant "labeled" del trigger — usado en el hero y en el grid */
 .reporte-saved__trigger--labeled {
   display: inline-flex;
   align-items: center;
@@ -3560,7 +3561,7 @@ button.ras-card:focus-visible {
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   min-height: 40px;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface);
   color: var(--color-ink);
@@ -3607,21 +3608,15 @@ button.ras-card:focus-visible {
 }
 
 /* ============================================================================
-   HEADER CON DATOS — Grid 2x2 (2 arriba, 2 abajo) con textos reducidos.
-   Sustituye a .reporte-head__meta cuando hay 4 chips que se rompen en fila.
+   HEADER CON DATOS — Flex layout para fluidez de los banners/botones
    ============================================================================ */
 
 .reporte-head__grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--spacing-sm);
   margin-top: var(--spacing-sm);
-}
-
-@media (min-width: 420px) {
-  .reporte-head__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .reporte-incidents__empty--padded,
@@ -3655,8 +3650,8 @@ button.ras-card:focus-visible {
   flex-shrink: 0;
 }
 
-/* Los dialogs (Comparison, Guardados) en el grid 2x2 ocupan la celda completa */
+/* Los dialogs (Comparison, Guardados) en el grid ya no forzan 100% de width */
 .reporte-head__grid .reporte-saved__trigger--labeled {
-  width: 100%;
+  width: auto;
 }
 
