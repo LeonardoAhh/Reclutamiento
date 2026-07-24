@@ -1,8 +1,8 @@
 {
-  "version": "0.6.5.7",
+  "version": "1.0.0",
   "fecha": "2026-07-24",
   "nivel": "success",
   "titulo": "Actualización",
-  "mensaje": "Actualización de rutas.",
+  "mensaje": "Correccion en la base de datos y mejoras en la interfaz de usuario.",
   "notificar": true
 }

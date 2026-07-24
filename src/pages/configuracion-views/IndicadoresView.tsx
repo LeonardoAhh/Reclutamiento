@@ -39,6 +39,12 @@ export function IndicadoresView() {
   const [error, setError] = useState('');
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [selectedMobileRecruiter, setSelectedMobileRecruiter] = useState<string | null>(null);
+  
+  // Month filter state (defaults to current month)
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -75,8 +81,25 @@ export function IndicadoresView() {
 
     data.forEach(record => {
       const date = record["Fecha Ingreso"] || 'Sin Fecha';
+      const parsed = parseDate(date);
+      
+      // Filter by selected month
+      if (
+        parsed.getMonth() !== selectedMonth.getMonth() || 
+        parsed.getFullYear() !== selectedMonth.getFullYear()
+      ) {
+        return;
+      }
+
       let rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
-      const recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
+      let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
+
+      if (recruiter !== 'Sin Reclutador') {
+        recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
+        if (recruiter === 'Nayeli') {
+          recruiter = 'Alexandra';
+        }
+      }
 
       recruiterSet.add(recruiter);
 
@@ -111,7 +134,7 @@ export function IndicadoresView() {
       tableData: formattedData,
       kpi: { totalIngresos, promedio, topRecruiter, diasObjetivo, recruiterTotals }
     };
-  }, [data]);
+  }, [data, selectedMonth]);
 
   const selectedRecruiterIndex = selectedMobileRecruiter
     ? recruiters.indexOf(selectedMobileRecruiter)
@@ -143,6 +166,21 @@ export function IndicadoresView() {
       </div>
     );
   }
+
+  const handlePrevMonth = () => {
+    setSelectedMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setSelectedMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const isCurrentMonth = () => {
+    const now = new Date();
+    return selectedMonth.getMonth() === now.getMonth() && selectedMonth.getFullYear() === now.getFullYear();
+  };
+
+  const monthLabel = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
 
   return (
     <section className="indicadores-view config-page__content" aria-label="Indicadores de Reclutamiento">
@@ -185,6 +223,27 @@ export function IndicadoresView() {
       <div className="indicadores-card indicadores-table-card">
         <div className="indicadores-table-header">
           <h3 className="type-heading-sm text-ink m-0">Desglose Detallado</h3>
+          
+          <div className="indicadores-month-nav">
+            <button 
+              className="btn-icon"
+              onClick={handlePrevMonth}
+              aria-label="Mes anterior"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="indicadores-month-nav__label type-body-md text-ink font-medium capitalize">
+              {monthLabel}
+            </span>
+            <button 
+              className="btn-icon"
+              onClick={handleNextMonth}
+              disabled={isCurrentMonth()}
+              aria-label="Mes siguiente"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
           <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y fecha">
@@ -225,10 +284,15 @@ export function IndicadoresView() {
                   </th>
                   {tableData.map(row => {
                     const val = row[recruiter];
+                    let valClass = "text-warning";
+                    if (val && val >= 7) {
+                      valClass = "text-success";
+                    }
+                    
                     return (
                       <td key={row.date}>
                         {val ? (
-                          <span className={`indicador-value ${getRecruiterTone(index)}`}>
+                          <span className={`indicador-value font-bold ${valClass}`}>
                             {val}
                           </span>
                         ) : (
@@ -237,10 +301,19 @@ export function IndicadoresView() {
                       </td>
                     );
                   })}
-                  <td className="text-right font-bold text-ink">
-                    <span className="indicador-value indicador-value--total">
-                      {kpi?.recruiterTotals[index]?.total ?? 0}
-                    </span>
+                  <td className="text-right font-bold">
+                    {(() => {
+                      const totalRecruiter = kpi?.recruiterTotals[index]?.total ?? 0;
+                      let classColor = "text-warning";
+                      if (totalRecruiter >= 28) {
+                        classColor = "text-success";
+                      }
+                      return (
+                        <span className={`indicador-value indicador-value--total ${classColor}`}>
+                          {totalRecruiter}
+                        </span>
+                      );
+                    })()}
                   </td>
                 </motion.tr>
               ))}
@@ -249,13 +322,33 @@ export function IndicadoresView() {
               <tfoot>
                 <tr>
                   <th scope="row">Total por Fecha</th>
-                  {tableData.map(row => (
-                    <td key={row.date} className="font-bold">
-                      <span className="indicador-value">{row.total}</span>
-                    </td>
-                  ))}
-                  <td className="text-right font-bold text-primary type-heading-sm">
-                    {kpi?.totalIngresos ?? 0}
+                  {tableData.map(row => {
+                    const teamGoal = 7 * recruiters.length;
+                    let totalClass = "text-warning";
+                    if (row.total >= teamGoal) {
+                      totalClass = "text-success";
+                    }
+                    
+                    return (
+                      <td key={row.date} className="font-bold">
+                        <span className={`indicador-value ${totalClass}`}>{row.total}</span>
+                      </td>
+                    );
+                  })}
+                  <td className="text-right font-bold type-heading-sm">
+                    {(() => {
+                      const totalGeneral = kpi?.totalIngresos ?? 0;
+                      const teamMonthlyGoal = 28 * recruiters.length;
+                      let classColor = "text-warning";
+                      if (totalGeneral >= teamMonthlyGoal) {
+                        classColor = "text-success";
+                      }
+                      return (
+                        <span className={classColor}>
+                          {totalGeneral}
+                        </span>
+                      );
+                    })()}
                   </td>
                 </tr>
               </tfoot>
@@ -288,12 +381,17 @@ export function IndicadoresView() {
               <ul className="indicadores-mobile-detail__list">
                 {tableData.map(row => {
                   const val = row[selectedMobileRecruiter];
+                  let valClass = "text-warning";
+                  if (val && val >= 7) {
+                    valClass = "text-success";
+                  }
+
                   return (
                     <li key={row.date} className="indicadores-mobile-detail__item">
                       <span className="type-body-sm font-medium">{row.date}</span>
                       <span className="type-body-sm text-ink font-bold">
                         {val ? (
-                          <span className={`indicadores-tone-value ${getRecruiterTone(selectedRecruiterIndex)}`}>
+                          <span className={valClass}>
                             {val} ingresos
                           </span>
                         ) : (

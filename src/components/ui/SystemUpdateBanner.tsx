@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info, CheckCircle2, Wrench, RefreshCw, Download } from 'lucide-react';
+import { Info, CheckCircle2, Wrench, RefreshCw, Download, X } from 'lucide-react';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { AnimatedSubmitButton } from './AnimatedSubmitButton';
@@ -46,19 +46,27 @@ export function SystemUpdateBanner() {
     }, 1200);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && visible) dismiss();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [visible, dismiss]);
+
   return (
     <AnimatePresence>
       {visible && info && (
-        <div className="system-update-overlay">
+        <div className={`system-update-overlay ${requiresReload ? 'system-update-overlay--blocking' : ''}`}>
           <motion.aside
             key={info.version}
             className={`system-update system-update--${level}`}
             role="alertdialog"
             aria-modal="true"
             aria-live="assertive"
-            initial={{ y: 20, opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ y: 20, opacity: 0, scale: 0.95, filter: 'blur(10px)', transition: { duration: 0.2 } }}
+            initial={{ y: 100, opacity: 0, scale: 1 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 100, opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
             transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.8 }}
             data-testid="system-update-banner"
           >
@@ -79,25 +87,28 @@ export function SystemUpdateBanner() {
               {info.mensaje && (
                 <p className="system-update__desc">{info.mensaje}</p>
               )}
-              
+
               {/* Update Action Button placed below the text */}
               <div className="system-update__action-container">
                 <AnimatedSubmitButton
                   isSubmitting={false}
                   isSuccess={isUpdating}
-                  idleText={requiresReload ? 'Actualizar y recargar' : 'Actualizar app'}
+                  idleText={requiresReload ? 'Actualizar y recargar' : 'Actualizar sistema'}
                   successText="Actualizando..."
                   idleIcon={requiresReload ? RefreshCw : Download}
                   onClick={handleReload}
-                  className={requiresReload ? 'system-update__action system-update__action--mantenimiento' : 'system-update__btn-update'}
+                  className="btn-primary"
                 />
-                
-                <p className="system-update__hint" style={{ marginTop: 'var(--spacing-sm)', fontSize: '12px', color: 'var(--color-muted)', textAlign: 'left' }}>
-                  <strong style={{ color: 'var(--color-primary)', display: 'block', marginBottom: '2px' }}>Sugerencia:</strong> 
-                  Usa Ctrl + Shift + R para forzar borrado de caché
-                </p>
               </div>
             </div>
+
+            <button
+              className="system-update__close"
+              onClick={dismiss}
+              aria-label="Cerrar aviso"
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
           </motion.aside>
         </div>
       )}

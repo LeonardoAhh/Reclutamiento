@@ -1,9 +1,9 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { EASE_OUT } from '@/lib/motion';
-import { Clock3, LogOut, ShieldCheck } from 'lucide-react';
+import { Clock3, LogOut, ShieldCheck, Loader2 } from 'lucide-react';
 import './MaintenanceGuard.css';
 
 const curtainVariants: Variants = {
@@ -31,6 +31,17 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
     refresh: refreshMaintenance,
   } = useMaintenanceMode();
   const isAdmin = profile?.role === 'admin';
+  const [isChecking, setIsChecking] = useState(false);
+
+  const handleCheck = async () => {
+    setIsChecking(true);
+    // Add artificial delay so the user can perceive the action
+    await Promise.all([
+      refreshMaintenance({ silent: true }),
+      new Promise(resolve => setTimeout(resolve, 800))
+    ]);
+    setIsChecking(false);
+  };
 
   if (authLoading || maintenanceLoading || (isMaintenance && profileLoading)) {
     return null;
@@ -79,16 +90,25 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
 
             <div className="maintenance-actions">
               <button
-                onClick={() => void refreshMaintenance({ silent: true })}
+                onClick={handleCheck}
                 className="btn-primary maintenance-button"
                 type="button"
+                disabled={isChecking}
               >
-                Comprobar disponibilidad
+                {isChecking ? (
+                  <>
+                    <Loader2 className="animate-spin" aria-hidden="true" />
+                    Comprobando...
+                  </>
+                ) : (
+                  'Comprobar disponibilidad'
+                )}
               </button>
               <button
                 onClick={signOut}
                 className="btn-secondary maintenance-button"
                 type="button"
+                disabled={isChecking}
               >
                 <LogOut aria-hidden="true" />
                 Cerrar sesión

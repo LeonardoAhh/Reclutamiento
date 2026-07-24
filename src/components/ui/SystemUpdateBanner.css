@@ -9,13 +9,17 @@
   position: fixed;
   inset: 0;
   z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  pointer-events: none; /* No bloquea clics debajo por defecto */
+}
+
+.system-update-overlay--blocking {
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-md);
   pointer-events: auto; /* Bloquea clics debajo */
 }
 
@@ -25,13 +29,15 @@
   --su-tint: rgba(var(--color-accent-teal-rgb), 0.15);
 
   position: relative; /* Cambiado a relativo dentro del overlay flex */
-  width: min(420px, 100%);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-md);
 
   padding: var(--spacing-xl);
+  padding-bottom: max(var(--spacing-xl), var(--safe-area-bottom));
+  pointer-events: auto; /* El banner sí recibe clics */
 
   /* Glassmorphism & Shadows */
   background: rgba(255, 255, 255, 0.85);
@@ -39,8 +45,9 @@
   -webkit-backdrop-filter: blur(16px);
   
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--rounded-2xl, 16px);
-  box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-bottom: none;
+  border-radius: var(--rounded-2xl) var(--rounded-2xl) 0 0;
+  box-shadow: 0 -4px 24px var(--su-tint), 0 -4px 12px rgba(0, 0, 0, 0.05);
 
   font-family: var(--font-body);
 }
@@ -65,45 +72,6 @@
   border-color: var(--color-hairline);
   box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
-
-/* ── Botón de Actualizar ────────────────────────────────────── */
-.system-update__action-container {
-  margin-top: var(--spacing-sm);
-}
-
-.system-update__btn-update {
-  background: var(--su-accent);
-  border: 1px solid var(--su-accent);
-  color: var(--color-on-primary, #ffffff);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: var(--rounded-full);
-  cursor: pointer;
-  transition: transform 0.2s, filter 0.2s;
-  box-shadow: 0 4px 12px var(--su-tint);
-  animation: btn-update-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
-}
-
-.system-update__btn-update:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
-}
-
-@keyframes btn-update-pulse {
-  0% {
-    box-shadow: 0 0 0 0 var(--su-accent);
-  }
-  70% {
-    box-shadow: 0 0 0 10px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-/* ── Dark Mode Adaptations ya no afectan al botón sólido ── */
 
 /* ── Icono ────────────────────────────────────────────────────── */
 .system-update__icon-wrapper {
@@ -188,6 +156,9 @@
 
 /* ── Cerrar ───────────────────────────────────────────────────── */
 .system-update__close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -213,46 +184,24 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Acción primaria (nivel mantenimiento): forzar recarga ──────── */
-.system-update__action {
-  flex-shrink: 0;
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border: none;
-  border-radius: var(--rounded-full);
-  background: var(--su-accent);
-  color: var(--color-on-primary, #ffffff);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: filter var(--transition-fast), transform var(--transition-fast);
-  animation: btn-update-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
-}
 
-.system-update__action:hover {
-  filter: brightness(1.1);
-}
-
-.system-update__action:active {
-  transform: scale(0.97);
-}
-
-.system-update__action:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
 
 /* ── Desktop / pantallas grandes: tarjeta flotante a la derecha ── */
 @media (min-width: 768px) {
+  .system-update-overlay {
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: var(--spacing-xl);
+  }
+
   .system-update {
+    width: 420px;
     flex-direction: row; /* En desktop icono al lado */
     align-items: flex-start;
+    border-radius: var(--rounded-2xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding-bottom: var(--spacing-xl);
+    box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   
   .system-update__icon-wrapper {

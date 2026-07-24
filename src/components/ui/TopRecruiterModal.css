@@ -3,17 +3,15 @@
 .top-recruiter-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  background: var(--color-modal-scrim);
   padding: var(--spacing-lg);
+  z-index: var(--layer-maintenance);
 }
 
 .top-recruiter-modal {
-  /* Semantics: Surface color, subtle border, large shadow for elevation */
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-xl);
@@ -21,7 +19,7 @@
   width: 100%;
   max-width: 420px;
   position: relative;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-prominent);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,14 +37,13 @@
   border: none;
   cursor: pointer;
   color: var(--color-muted);
-  width: 40px;
-  height: 40px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--rounded-full);
-  transition: background-color 0.2s, color 0.2s;
-  z-index: 10; /* Above confetti */
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .top-recruiter-modal__close:hover,
@@ -57,24 +54,26 @@
 }
 
 .top-recruiter-modal__icon-wrapper {
-  /* Using the sticker palette for decoration as per design.md */
   color: var(--color-warning);
   background: var(--color-warning-tint);
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border-radius: var(--rounded-full);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: var(--spacing-xs);
-  z-index: 10;
+}
+
+.top-recruiter-modal__icon-wrapper--personal {
+  color: var(--color-success);
+  background: var(--color-success-tint);
 }
 
 .top-recruiter-modal__content {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  z-index: 10;
 }
 
 .top-recruiter-modal__title {
@@ -87,44 +86,25 @@
   margin: 0;
 }
 
+.top-recruiter-modal__kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+  margin-block: var(--spacing-sm);
+}
+
+.top-recruiter-modal__kpi-text {
+  color: var(--color-muted);
+  margin: 0;
+}
+
 .top-recruiter-modal__highlight {
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
-.top-recruiter-modal__action {
+.top-recruiter-modal .btn-primary {
   width: 100%;
-  margin-top: var(--spacing-md);
-  z-index: 10;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: var(--rounded-md);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px 0 rgba(0, 117, 222, 0.39);
-}
-
-.top-recruiter-modal__action:hover,
-.top-recruiter-modal__action:focus-visible {
-  background-color: var(--color-primary-active);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 117, 222, 0.23);
-  outline: none;
-}
-
-.top-recruiter-modal__action:active {
-  transform: translateY(1px);
-}
-
-/* Confetti Container */
-.top-recruiter-modal__confetti {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
+  margin-top: var(--spacing-sm);
 }
