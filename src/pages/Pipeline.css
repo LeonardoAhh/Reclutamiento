@@ -1222,7 +1222,6 @@
 .pipeline__area {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
-  text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
   margin-top: 2px;
   line-height: 1.3;

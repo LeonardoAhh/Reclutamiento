@@ -52,7 +52,7 @@
   --color-accent-sky: #62aef0;
   --color-accent-purple: #d6b6f6;
   --color-accent-purple-deep: #391c57;
-  --color-accent-pink: #ff64c8;
+
   --color-accent-orange: #dd5b00;
   --color-accent-orange-deep: #793400;
   --color-accent-teal: #2a9d99;
@@ -63,7 +63,7 @@
   --color-brand-whatsapp: #25D366;
   --color-brand-accent: var(--color-primary);
   --color-badge-orange: var(--color-accent-orange);
-  --color-badge-pink: var(--color-accent-pink);
+
   --color-badge-violet: var(--color-accent-purple);
   --color-badge-emerald: var(--color-accent-green);
 
@@ -831,7 +831,7 @@ code:not(pre code) {
   height: var(--control-height);
   padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-xs);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   color: var(--color-ink);
@@ -846,7 +846,7 @@ code:not(pre code) {
   height: auto;
   min-height: 88px;
   resize: vertical;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--rounded-xs);
 }
 
 .form-group input::placeholder,
@@ -942,7 +942,7 @@ code:not(pre code) {
 
 /* Primary CTAs — pill shape (design.md: button-primary) */
 .btn-primary {
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
 }
 
 /* Utility buttons — tighter rounded rect (design.md: button-utility, button-secondary) */

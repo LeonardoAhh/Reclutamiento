@@ -1,13 +1,12 @@
 import type { VacancyType } from '@/lib/autoVacancies';
-import { Badge } from './Badge';
+import { Badge, StarliteBadge } from './Badge';
 
 const VACANCY_TYPE_VARIANT: Record<
-  VacancyType,
-  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'purple'
+  Exclude<VacancyType, 'starlite'>,
+  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
 > = {
   autorizado: 'success',
   backup: 'teal',
-  starlite: 'purple',
 };
 
 const VACANCY_TYPE_LABEL: Record<VacancyType, string> = {
@@ -17,6 +16,10 @@ const VACANCY_TYPE_LABEL: Record<VacancyType, string> = {
 };
 
 export function VacancyTypeBadge({ type }: { type: VacancyType }) {
+  if (type === 'starlite') {
+    return <StarliteBadge />;
+  }
+  
   return (
     <Badge variant={VACANCY_TYPE_VARIANT[type]}>
       {VACANCY_TYPE_LABEL[type]}

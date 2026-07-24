@@ -5,11 +5,10 @@ import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Modal } from '@/components/ui/Modal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
-import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { useIsMobile } from '@/hooks/useIsMobile';
+
 import { usePositions } from '@/lib/positions';
 import { NoCitadosChart } from './NoCitadosChart';
 import { type NoCitado, CANDIDATE_SOURCES } from '@/lib/types';
@@ -66,8 +65,7 @@ const FUENTES_OPTIONS = CANDIDATE_SOURCES.map((s) => ({
 }));
 
 export function RegistroNoCitadosView() {
-  const isMobile = useIsMobile();
-  const ITEMS_PER_PAGE = isMobile ? 5 : 5;
+  const ITEMS_PER_PAGE = 5;
 
   const { noCitados: records, addNoCitado, updateNoCitado, deleteNoCitado, loading } = useSupabaseData();
   const { positions } = usePositions();
@@ -76,6 +74,27 @@ export function RegistroNoCitadosView() {
     const unique = Array.from(new Set(positions.map((p) => p.puesto))).sort();
     return unique.map((p) => ({ value: p, label: p }));
   }, [positions]);
+  
+  const formatName = (nombre: string, apellido: string) => {
+    const formatWord = (w: string) => w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '';
+    const first = nombre?.split(' ').map(formatWord).join(' ') || '';
+    const last = apellido?.split(' ').map(formatWord).join(' ') || '';
+    return `${first} ${last}`.trim();
+  };
+
+  const formatPhone = (phone: string) => {
+    if (phone?.length === 10) {
+      return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6)}`;
+    }
+    return phone;
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -189,7 +208,7 @@ export function RegistroNoCitadosView() {
       if (field === 'nombre' || field === 'apellido') {
         const capitalized = value
           .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '')
           .join(' ');
         return { ...prev, [field]: capitalized };
       }
@@ -281,7 +300,7 @@ export function RegistroNoCitadosView() {
 
   return (
     <section className="no-citados-view config-page__content">
-      <header className="config-page__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="config-page__header no-citados-header">
         <h2 className="config-page__title">
           <UserX size={24} className="text-primary" aria-hidden="true" />
           Registro de No Citados
@@ -291,7 +310,7 @@ export function RegistroNoCitadosView() {
           className="btn-primary"
           onClick={openNewModal}
         >
-          <Plus size={16} aria-hidden="true" style={{ marginRight: '8px' }} />
+          <Plus size={16} aria-hidden="true" className="no-citados-icon-mr-xs" />
           Nuevo
         </button>
       </header>
@@ -302,7 +321,7 @@ export function RegistroNoCitadosView() {
         title={editingId ? "Editar candidato" : "Registrar candidato"}
         icon={<UserPlus size={20} className="text-primary" />}
         footerActions={
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', width: '100%' }}>
+          <div className="no-citados-modal-footer">
             <button
               type="button"
               className="btn-secondary"
@@ -310,7 +329,7 @@ export function RegistroNoCitadosView() {
             >
               Cancelar
             </button>
-            <div title={!isFormValid ? "Faltan campos obligatorios" : undefined}>
+            <div>
               <AnimatedSubmitButton
                 type="submit"
                 form="form-no-citados"
@@ -367,6 +386,8 @@ export function RegistroNoCitadosView() {
                 placeholder="Ej. 442 123 4567"
                 required
                 className={showPhoneError ? 'input-error' : ''}
+                aria-describedby={showPhoneError ? "telefono-error" : undefined}
+                aria-invalid={showPhoneError}
               />
               {isPhoneValid && (
                 <CheckCircle2 size={18} className="phone-validation-icon valid" />
@@ -375,6 +396,11 @@ export function RegistroNoCitadosView() {
                 <XCircle size={18} className="phone-validation-icon invalid" />
               )}
             </div>
+            {showPhoneError && (
+              <span id="telefono-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                El teléfono debe tener 10 dígitos.
+              </span>
+            )}
           </div>
 
           <div className="form-group">
@@ -435,7 +461,7 @@ export function RegistroNoCitadosView() {
             />
           </div>
 
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+          <div className="form-group no-citados-form-full-width">
             <label htmlFor="notas">Notas / Comentarios</label>
             <textarea
               id="notas"
@@ -452,7 +478,7 @@ export function RegistroNoCitadosView() {
         isOpen={deletingId !== null}
         onClose={() => setDeletingId(null)}
         title="Eliminar registro"
-        icon={<Trash2 size={20} className="color-error" aria-hidden="true" />}
+        icon={<Trash2 size={20} aria-hidden="true" />}
         fullscreenMobile={false}
       >
         <form
@@ -480,9 +506,9 @@ export function RegistroNoCitadosView() {
             </button>
             <button
               type="submit"
-              className="btn-danger"
+              className="btn-secondary"
             >
-              <Trash2 size={16} style={{ marginRight: '4px' }} />
+              <Trash2 size={16} className="no-citados-icon-mr-xxs" />
               Eliminar
             </button>
           </footer>
@@ -501,29 +527,23 @@ export function RegistroNoCitadosView() {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="btn-secondary btn-icon"
+                  className="btn-secondary btn-icon no-citados-filter-trigger"
                   title="Filtrar"
                   aria-label="Filtrar"
-                  style={{ marginRight: '4px', position: 'relative' }}
                 >
                   <Filter size={16} className="color-primary" />
                   {(filterDate || filterReclutador) && (
-                    <span style={{
-                      position: 'absolute', top: -2, right: -2, width: 8, height: 8,
-                      borderRadius: '50%', backgroundColor: 'var(--color-accent-orange)',
-                      border: '1px solid var(--color-surface)'
-                    }}></span>
+                    <span className="no-citados-filter-indicator"></span>
                   )}
                 </button>
               </PopoverTrigger>
-              <PopoverContent align="end" style={{ width: 260, padding: 'var(--spacing-md)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span className="type-body-sm" style={{ fontWeight: 'var(--font-semibold)' }}>Filtros</span>
+              <PopoverContent align="end" className="no-citados-filter-popover">
+                <div className="no-citados-filter-content">
+                  <div className="no-citados-filter-header">
+                    <span className="type-body-sm no-citados-filter-title">Filtros</span>
                     {(filterDate || filterReclutador) && (
                       <button
-                        className="btn-secondary btn-sm"
-                        style={{ padding: '4px 8px', fontSize: '12px', height: 'auto' }}
+                        className="btn-secondary btn-sm no-citados-btn-clear"
                         onClick={() => { setFilterDate(''); setFilterReclutador(''); }}
                       >
                         Limpiar
@@ -532,17 +552,16 @@ export function RegistroNoCitadosView() {
                   </div>
 
                   <div className="form-group">
-                    <label style={{ fontSize: 'var(--type-caption-sm-size)' }}>Fecha de registro</label>
-                    <SmartDatePicker
+                    <label className="no-citados-label-sm">Fecha de registro</label>
+                    <input
+                      type="date"
                       value={filterDate}
-                      onChange={setFilterDate}
-                      placeholder="Selecciona"
-                      presets="past"
+                      onChange={(e) => setFilterDate(e.target.value)}
                     />
                   </div>
 
                   <div className="form-group">
-                    <label style={{ fontSize: 'var(--type-caption-sm-size)' }}>Reclutador</label>
+                    <label className="no-citados-label-sm">Reclutador</label>
                     <CustomSelect
                       id="filter-reclutador"
                       value={filterReclutador}
@@ -557,34 +576,36 @@ export function RegistroNoCitadosView() {
 
             <button
               type="button"
-              className="btn-secondary btn-icon"
+              className="btn-secondary btn-icon no-citados-export-btn"
               title="Exportar a Excel"
               aria-label="Exportar a Excel"
-              style={{ marginRight: 'var(--spacing-md)' }}
             >
               <FileSpreadsheet size={16} className="color-primary" />
             </button>
-            <button
-              type="button"
-              className="btn-secondary btn-icon"
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              aria-label="Página anterior"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <span className="no-citados-pagination__label">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              type="button"
-              className="btn-secondary btn-icon"
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              aria-label="Página siguiente"
-            >
-              <ChevronRight size={16} />
-            </button>
+
+            <div className="no-citados-pagination-group">
+              <button
+                type="button"
+                className="btn-secondary btn-icon"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                aria-label="Página anterior"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span className="no-citados-pagination__label">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                type="button"
+                className="btn-secondary btn-icon"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                aria-label="Página siguiente"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -602,17 +623,17 @@ export function RegistroNoCitadosView() {
               {paginatedRecords.map((r) => (
                 <div key={r.id} className="no-citado-mobile-card">
                   <div className="no-citado-mobile-card__header">
-                    <span className="no-citado-mobile-card__name">{r.nombre} {r.apellido}</span>
-                    <span className="no-citado-mobile-card__date">{r.fecha}</span>
+                    <span className="no-citado-mobile-card__name">{formatName(r.nombre, r.apellido)}</span>
+                    <span className="no-citado-mobile-card__date">{formatDate(r.fecha)}</span>
                   </div>
-                  <div className="no-citado-mobile-card__phone">{r.telefono}</div>
+                  <div className="no-citado-mobile-card__phone">{formatPhone(r.telefono)}</div>
                   <div className="no-citado-mobile-card__meta">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="no-citados-motivo-wrapper">
                       <span className="badge-pill badge-pill--gray">
                         {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
                       </span>
                       {r.sub_motivo && (
-                        <span style={{ fontSize: '12px', color: 'var(--color-ink-faint)' }}>
+                        <span className="no-citados-subtext">
                           {SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}
                         </span>
                       )}
@@ -621,24 +642,24 @@ export function RegistroNoCitadosView() {
                       {getReclutadorLabel(r.reclutador)}
                     </span>
                     {r.fuente && (
-                      <span className="no-citado-mobile-card__fuente" style={{ fontSize: '12px', color: 'var(--color-ink-faint)', marginLeft: 'auto' }}>
+                      <span className="no-citado-mobile-card__fuente no-citados-subtext no-citados-subtext--right">
                         {r.fuente}
                       </span>
                     )}
                   </div>
                   {r.notas && (
                     <div className="no-citado-mobile-card__notas" style={{ fontStyle: 'normal' }}>
-                      <MessageSquare size={14} className="color-primary" style={{ marginTop: '2px', flexShrink: 0 }} />
-                      <span style={{ fontSize: 'var(--type-caption-sm-size)' }}>{r.notas}</span>
+                      <MessageSquare size={14} className="color-primary no-citados-icon-mt" />
+                      <span className="no-citados-notas-text">{r.notas}</span>
                     </div>
                   )}
                   <div className="no-citado-mobile-card__actions">
                     <button type="button" className="btn-secondary btn-sm" onClick={() => openEditModal(r)}>
-                      <Pencil size={14} style={{ marginRight: '4px' }} />
+                      <Pencil size={14} className="no-citados-icon-mr-xxs" />
                       Editar
                     </button>
-                    <button type="button" className="btn-danger btn-sm" onClick={() => requestDelete(r.id)}>
-                      <Trash2 size={14} style={{ marginRight: '4px' }} />
+                    <button type="button" className="btn-secondary btn-sm" onClick={() => requestDelete(r.id)}>
+                      <Trash2 size={14} className="no-citados-icon-mr-xxs" />
                       Eliminar
                     </button>
 
@@ -657,33 +678,33 @@ export function RegistroNoCitadosView() {
                   <th>Reclutador</th>
                   <th>Fuente</th>
                   <th>Motivo</th>
-                  <th style={{ textAlign: 'center' }}>Notas</th>
-                  <th style={{ textAlign: 'right' }}>Acciones</th>
+                  <th>Notas</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedRecords.map((r) => (
                   <tr key={r.id}>
-                    <td>{r.fecha}</td>
-                    <td>{r.nombre} {r.apellido}</td>
-                    <td>{r.telefono}</td>
+                    <td>{formatDate(r.fecha)}</td>
+                    <td>{formatName(r.nombre, r.apellido)}</td>
+                    <td>{formatPhone(r.telefono)}</td>
                     <td>{getReclutadorLabel(r.reclutador)}</td>
                     <td>{r.fuente || '-'}</td>
                     <td>
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <div className="no-citados-inline-badge">
                         <span className="badge-pill badge-pill--gray">
                           {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
                         </span>
                         {r.sub_motivo && (
                           <Tooltip content={SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}>
-                            <Info size={14} className="color-ink-faint" style={{ cursor: 'help' }} />
+                            <Info size={14} className="color-ink-faint no-citados-info-icon" />
                           </Tooltip>
                         )}
                       </div>
                     </td>
-                    <td className="td-notas" style={{ textAlign: 'center' }}>
+                    <td className="td-notas">
                       {r.notas ? (
-                        <Tooltip content={<div style={{ maxWidth: '250px', whiteSpace: 'pre-wrap', textAlign: 'left' }}>{r.notas}</div>}>
+                        <Tooltip content={<div className="no-citados-tooltip-notas">{r.notas}</div>}>
                           <div className="notas-icon-wrapper has-notas">
                             <MessageSquare size={14} className="color-primary notas-icon" />
                           </div>
@@ -695,11 +716,11 @@ export function RegistroNoCitadosView() {
                       )}
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                      <div className="no-citados-table-actions">
                         <button type="button" className="btn-secondary btn-icon" onClick={() => openEditModal(r)} title="Editar" aria-label="Editar">
                           <Pencil size={16} />
                         </button>
-                        <button type="button" className="btn-danger btn-icon" onClick={() => requestDelete(r.id)} title="Eliminar" aria-label="Eliminar">
+                        <button type="button" className="btn-secondary btn-icon" onClick={() => requestDelete(r.id)} title="Eliminar" aria-label="Eliminar">
                           <Trash2 size={16} />
                         </button>
                       </div>

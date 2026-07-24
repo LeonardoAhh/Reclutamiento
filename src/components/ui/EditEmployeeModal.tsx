@@ -6,7 +6,6 @@ import { localTodayIso } from '@/lib/dates';
 import { Tooltip } from './Tooltip';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
-import { SmartDatePicker } from './SmartDatePicker';
 import './EditEmployeeModal.css';
 
 interface EditEmployeeModalProps {
@@ -246,13 +245,12 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-fecha">Fecha de Ingreso</label>
-            <SmartDatePicker
-              id="edit-emp-fecha"
+            <label htmlFor="edit-fecha">Fecha de Ingreso</label>
+            <input
+              id="edit-fecha"
+              type="date"
               value={form.fecha_ingreso}
-              onChange={(val) =>
-                setForm({ ...form, fecha_ingreso: val })
-              }
+              onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
             />
           </div>
         </div>

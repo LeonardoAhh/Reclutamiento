@@ -143,7 +143,7 @@ export function Pipeline() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 8;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
@@ -520,6 +520,7 @@ export function Pipeline() {
             whileTap={{ scale: 0.97 }}
           >
             <ClipboardList size={16} aria-hidden="true" />
+            <span>Resumen</span>
           </motion.button>
           <button
             type="button"
@@ -529,6 +530,7 @@ export function Pipeline() {
             title="Nuevo candidato"
           >
             <UserPlus size={16} aria-hidden="true" />
+            <span>Nuevo</span>
           </button>
         </div>
       </section>
@@ -786,9 +788,6 @@ export function Pipeline() {
                     <UserX aria-hidden="true" />
                   </div>
                   <div className="animated-empty-state__title">Sin resultados</div>
-                  <div style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-sm-size)', marginTop: '4px' }}>
-                    Ningún candidato coincide con los filtros actuales.
-                  </div>
                   {(activeFiltersCount > 0 || searchTerm.trim().length > 0) && (
                     <button
                       type="button"
@@ -798,7 +797,7 @@ export function Pipeline() {
                       style={{ marginTop: 'var(--spacing-md)' }}
                     >
                       <SlidersHorizontal size={16} aria-hidden="true" />
-                      Limpiar filtros y búsqueda
+                      Limpiar filtros
                     </button>
                   )}
                 </div>
@@ -1210,9 +1209,9 @@ export function Pipeline() {
                     aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
                     customTrigger={
                       <motion.div whileTap={{ scale: 0.95 }} style={{ display: 'flex', width: '100%' }}>
-                        <CandidateStatusBadge 
-                          status={selectedMobileCandidate.status} 
-                          showCaret 
+                        <CandidateStatusBadge
+                          status={selectedMobileCandidate.status}
+                          showCaret
                           compact
                           className="pipeline-mobile-detail__status-badge"
                         />
@@ -1275,8 +1274,8 @@ export function Pipeline() {
 
       {/* ── Quick Profile (Mini Modal Minimalista) ── */}
       {quickProfile && (
-        <div 
-          className="quick-profile-overlay" 
+        <div
+          className="quick-profile-overlay"
           onClick={() => setQuickProfile(null)}
           aria-hidden="true"
         >

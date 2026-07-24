@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Activity } from 'lucide-react';
 import { CartesianGrid, Line, LineChart, XAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import type { NoCitado } from '@/lib/types';
 
@@ -7,12 +8,12 @@ interface NoCitadosChartProps {
 }
 
 const COLORS = [
-  'var(--color-primary)',
+  'var(--color-accent-purple)',
+  'var(--color-accent-sky)',
   'var(--color-accent-pink)',
   'var(--color-accent-teal)',
   'var(--color-accent-orange)',
-  'var(--color-accent-purple)',
-  'var(--color-accent-blue)',
+  'var(--color-accent-green)',
 ];
 
 export function NoCitadosChart({ data }: NoCitadosChartProps) {
@@ -44,7 +45,26 @@ export function NoCitadosChart({ data }: NoCitadosChartProps) {
   }, [data]);
 
   if (chartData.length === 0) {
-    return null;
+    return (
+      <div className="no-citados-chart-card">
+        <div className="no-citados-chart-header">
+          <div className="no-citados-chart-title-group">
+            <h4 className="no-citados-chart-title">Tendencia de No Citados</h4>
+            <p className="no-citados-chart-description">
+              Total de registros en el periodo: 0
+            </p>
+          </div>
+        </div>
+        <div className="no-citados-chart-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '250px' }}>
+          <div className="animated-empty-state">
+            <div className="animated-empty-state__icon">
+              <Activity aria-hidden="true" />
+            </div>
+            <div className="animated-empty-state__title">Aún no hay registros en este periodo</div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Calculate totals for the header
@@ -139,8 +159,8 @@ export function NoCitadosChart({ data }: NoCitadosChartProps) {
                 name={rec}
                 stroke={COLORS[index % COLORS.length]}
                 strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4, strokeWidth: 0, fill: COLORS[index % COLORS.length] }}
+                dot={{ r: 3, strokeWidth: 1.5, fill: 'var(--color-surface)' }}
+                activeDot={{ r: 5, strokeWidth: 0, fill: COLORS[index % COLORS.length] }}
               />
             ))}
           </LineChart>

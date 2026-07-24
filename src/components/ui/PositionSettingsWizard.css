@@ -1,21 +1,63 @@
 .pos-settings__summary {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 12px 14px;
-  margin-bottom: 16px;
-  border-radius: var(--rounded-md, 12px);
-  background: var(--surface-2, rgba(0, 0, 0, 0.04));
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
 }
 
 .pos-settings__summary-puesto {
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
+  font-weight: var(--font-semibold);
+  font-size: var(--type-body-strong-size);
+  letter-spacing: var(--type-body-strong-tracking);
+  color: var(--color-ink);
 }
 
 .pos-settings__summary-sub {
-  font-size: 0.8rem;
-  color: var(--text-muted, #6b7280);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-ink-muted);
+}
+
+/* Custom 3-column grid for numeric inputs to fit on one line */
+.pos-settings-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.pos-settings-metrics-grid .form-group {
+  margin-bottom: 0;
+}
+
+.pos-settings-metrics-grid label {
+  font-size: var(--type-caption-sm-size);
+  line-height: 1.2;
+  height: 2.8em; /* Reserve height for wrapping long labels like 'Plantilla autorizada *' */
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: var(--spacing-xxs);
+}
+
+.pos-settings-notas-wrap {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .pos-settings-metrics-grid {
+    gap: var(--spacing-md);
+  }
+  .pos-settings-metrics-grid label {
+    font-size: var(--type-body-sm-size);
+    height: auto;
+    display: block;
+    align-items: stretch;
+    padding-bottom: 0;
+  }
+  .pos-settings-notas-wrap {
+    display: block;
+  }
 }

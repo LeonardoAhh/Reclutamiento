@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardList,
@@ -10,17 +10,20 @@ import {
   ArrowRightLeft,
   Calendar,
   Clock,
+  ChevronLeft,
+  ChevronRight,
   ChevronDown,
   SlidersHorizontal,
   Trash2,
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useAuth } from '@/hooks/useAuth';
 import { usePositions } from '@/lib/positions';
-import { calculatePositionCoverage, normalizeString, normalizePuesto } from '@/lib/utils';
+import { calculatePositionCoverage, normalizeString, normalizePuesto, toTitleCase } from '@/lib/utils';
 import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
 import { notifyResult, sileo } from '@/lib/notify';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -63,7 +66,18 @@ export function Vacantes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
   const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, typeFilter]);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AutoVacancy | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const [toggleTarget, setToggleTarget] = useState<AutoVacancy | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => typeof localStorage !== 'undefined' && localStorage.getItem('vac_sidebar_collapsed') === '1'
   );
@@ -85,9 +99,6 @@ export function Vacantes() {
     [bajas, employees, positions]
   );
 
-  // 8 KPIs (Modelo B — plantilla real): cada métrica dividida en
-  // AUTORIZADO (plantilla autorizada A) vs BACKUP (buffer B definido en código).
-  // Ocupados/vacantes/cobertura se calculan por puesto contra los empleados reales.
   const split = useMemo(() => {
     const cov = calculatePositionCoverage(employees, comments, positions);
     let autorizada = 0;
@@ -98,7 +109,7 @@ export function Vacantes() {
       autorizada += p.plantilla_autorizada;
       backup += p.backup;
       ocupadosAut += Math.min(p.plantilla_real, p.plantilla_autorizada);
-      ocupadosBackup += p.excedente_backup; // ocupados dentro de la banda backup
+      ocupadosBackup += p.excedente_backup;
     }
     const vacAut = Math.max(0, autorizada - ocupadosAut);
     const vacBackup = Math.max(0, backup - ocupadosBackup);
@@ -143,9 +154,6 @@ export function Vacantes() {
           .toLowerCase();
         return haystack.includes(q);
       })
-      // 1º Estado: Abiertas primero, Cubiertas después.
-      // 2º Tipo: Plantilla Autorizada antes que Backup (dentro del mismo estado).
-      // 3º Urgencia: más días primero (dentro del mismo estado y tipo).
       .sort((a, b) => {
         if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
         if (a.vacancyType !== b.vacancyType)
@@ -154,28 +162,44 @@ export function Vacantes() {
       });
   }, [vacancies, searchTerm, statusFilter, typeFilter]);
 
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginated = useMemo(() => {
+    return filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [filtered, currentPage]);
+
   async function handleReclutador(v: AutoVacancy, value: string) {
-    if (!v.baja) return; // vacante estructural: sin baja a la cual asignar
+    if (!v.baja) return;
     await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
       success: value ? 'Reclutador asignado' : 'Reclutador quitado',
       error: 'No se pudo guardar el reclutador',
     });
   }
 
-  async function handleToggleManual(v: AutoVacancy) {
-    if (!v.baja) return; // vacante estructural: no se puede cubrir a mano
-    if (v.coberturaTipo === 'manual') {
-      const res = await desmarcarCubierta(v.baja.num_empleado);
-      if (res.ok) sileo.info({ title: 'Vacante reabierta' });
-      else sileo.error({ title: 'No se pudo reabrir la vacante' });
-    } else {
-      const res = await marcarCubierta(v.baja.num_empleado, localTodayIso());
-      if (res.ok) sileo.success({ title: 'Vacante cubierta' });
-      else sileo.error({ title: 'No se pudo marcar la vacante' });
+  async function confirmToggleManual() {
+    if (!toggleTarget || isToggling || !toggleTarget.baja) return;
+    setIsToggling(true);
+
+    try {
+      if (toggleTarget.coberturaTipo === 'manual') {
+        const res = await desmarcarCubierta(toggleTarget.baja.num_empleado);
+        if (res.ok) sileo.info({ title: 'Vacante reabierta' });
+        else sileo.error({ title: 'No se pudo reabrir la vacante' });
+      } else {
+        const res = await marcarCubierta(toggleTarget.baja.num_empleado, localTodayIso());
+        if (res.ok) sileo.success({ title: 'Vacante cubierta' });
+        else sileo.error({ title: 'No se pudo marcar la vacante' });
+      }
+    } finally {
+      setIsToggling(false);
+      setToggleTarget(null);
     }
   }
 
-  /** Devuelve la posición custom (creada desde la UI) que coincide con la vacante, si existe. */
+  function handleToggleManualClick(v: AutoVacancy) {
+    if (!v.baja) return;
+    setToggleTarget(v);
+  }
+
   function findCustomPosition(v: AutoVacancy) {
     const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
     return customPositions.find(
@@ -183,63 +207,56 @@ export function Vacantes() {
     );
   }
 
-  /** ¿Se puede quitar esta vacante desde la página? (estructural: custom o backup) */
   function canRemoveStructural(v: AutoVacancy): boolean {
-    if (v.baja) return false; // las vacantes por baja se gestionan con cobertura, no se borran
+    if (v.baja) return false;
     return Boolean(findCustomPosition(v)) || v.vacancyType === 'backup';
   }
 
-  async function handleRemoveStructural(v: AutoVacancy) {
+  async function confirmRemoveStructural() {
+    if (!deleteTarget || isDeleting) return;
+    setIsDeleting(true);
+
+    try {
+      const v = deleteTarget;
+      const cp = findCustomPosition(v);
+
+      if (cp) {
+        await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
+          success: 'Posición personalizada eliminada',
+          error: 'No se pudo eliminar la posición',
+        });
+      } else if (v.vacancyType === 'backup') {
+        const existing = positions.find(
+          (p) =>
+            normalizeString(p.area) === normalizeString(v.area) &&
+            normalizeString(p.seccion) === normalizeString(v.seccion || '') &&
+            normalizePuesto(p.puesto) === normalizePuesto(v.puesto)
+        );
+        
+        await notifyResult(
+          upsertPositionSetting({
+            area: v.area,
+            seccion: v.seccion || '',
+            puesto: v.puesto,
+            backup: 0,
+            plantilla_autorizada: existing?.plantilla_autorizada ?? null,
+            urgentes: existing?.urgentes ?? 0,
+          }),
+          {
+            success: 'Configuración de backup actualizada a 0',
+            error: 'No se pudo actualizar el backup',
+          }
+        );
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
+    }
+  }
+
+  function handleRemoveStructuralClick(v: AutoVacancy) {
     if (v.baja) return;
-    const ubicacion = `${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`;
-    const cp = findCustomPosition(v);
-
-    // Caso 1: posición personalizada → se elimina por completo (BD + local).
-    if (cp) {
-      if (
-        !window.confirm(
-          `¿Eliminar la posición personalizada "${v.puesto}" (${ubicacion})?\n\nEsta acción no se puede deshacer.`
-        )
-      ) {
-        return;
-      }
-      await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
-        success: 'Posición personalizada eliminada',
-        error: 'No se pudo eliminar la posición',
-      });
-      return;
-    }
-
-    // Caso 2: vacante de backup del catálogo estático → se pone el backup en 0
-    // (override reversible desde "Configurar plantilla/backup").
-    if (v.vacancyType !== 'backup') return;
-    if (
-      !window.confirm(
-        `Esta es una vacante de backup del catálogo "${v.puesto}" (${ubicacion}).\n\n¿Quitarla? Su backup se pondrá en 0 (reversible desde "Configurar plantilla/backup").`
-      )
-    ) {
-      return;
-    }
-    const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
-    const cur = positionSettings.find(
-      (s) => `${normalizeString(s.area)}::${normalizeString(s.seccion)}::${normalizePuesto(s.puesto)}` === key
-    );
-    await notifyResult(
-      upsertPositionSetting({
-        area: v.area,
-        seccion: v.seccion,
-        puesto: v.puesto,
-        plantilla_autorizada: cur?.plantilla_autorizada ?? null,
-        backup: 0,
-        urgentes: cur?.urgentes ?? 0,
-        notas: cur?.notas ?? null,
-        updated_by: profile?.username ?? null,
-      }),
-      {
-        success: 'Vacante de backup quitada (backup = 0)',
-        error: 'No se pudo actualizar el backup',
-      }
-    );
+    setDeleteTarget(v);
   }
 
   const hasData = bajas.length > 0 || employees.length > 0 || positions.length > 0;
@@ -259,7 +276,6 @@ export function Vacantes() {
 
   return (
     <main className="pipeline vacantes-page">
-      {/* ── Hero ── */}
       <section className="pipeline__hero">
         <div className="pipeline__hero-content">
           <h1>Vacantes</h1>
@@ -285,89 +301,158 @@ export function Vacantes() {
         />
       )}
 
+      <Modal
+        isOpen={!!deleteTarget}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
+        icon={<AlertTriangle size={20} className="color-error" aria-hidden="true" />}
+        title={deleteTarget ? (findCustomPosition(deleteTarget) ? 'Eliminar posición' : 'Quitar backup') : ''}
+        size="md"
+        fullscreenMobile={false}
+      >
+        {deleteTarget && (
+          <div className="modal-body">
+            <p>
+              {findCustomPosition(deleteTarget)
+                ? `¿Estás seguro de que quieres eliminar permanentemente la posición personalizada "${toTitleCase(deleteTarget.puesto)}"?`
+                : `¿Quieres quitar esta vacante de backup para "${toTitleCase(deleteTarget.puesto)}"? Su configuración de backup se ajustará a 0.`}
+            </p>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setDeleteTarget(null)}
+                disabled={isDeleting}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={confirmRemoveStructural}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Eliminando...' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={!!toggleTarget}
+        onClose={() => !isToggling && setToggleTarget(null)}
+        icon={<AlertTriangle size={20} className="color-warning" aria-hidden="true" />}
+        title={toggleTarget?.coberturaTipo === 'manual' ? '¿Reabrir vacante?' : '¿Marcar como cubierta?'}
+        size="md"
+        fullscreenMobile={false}
+      >
+        {toggleTarget && (
+          <div className="modal-body">
+            <p>
+              {toggleTarget.coberturaTipo === 'manual'
+                ? `"${toTitleCase(toggleTarget.puesto)}" volverá a contar como vacante activa.`
+                : `"${toTitleCase(toggleTarget.puesto)}" dejará de contar como vacante activa.`}
+            </p>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setToggleTarget(null)}
+                disabled={isToggling}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={confirmToggleManual}
+                disabled={isToggling}
+              >
+                {isToggling ? 'Guardando...' : 'Confirmar'}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
       <div className="pipeline__layout" data-collapsed={sidebarCollapsed ? 'true' : undefined}>
         <aside className="pipeline__sidebar" aria-hidden={sidebarCollapsed}>
-          {/* ── Resumen: vacantes por tipo (autorizado vs backup) ── */}
           <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
-        <div className="vacantes__split-head" role="row">
-          <span className="vacantes__split-corner" />
-          <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
-          <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
-        </div>
-        {kpiRows.map((row) => (
-          <div
-            key={row.id}
-            className={`vacantes__split-row${
-              'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
-            }`}
-            role="row"
-            data-testid={`vac-split-${row.id}`}
-          >
-            <span className="vacantes__split-label">{row.label}</span>
-            <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
-              <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
-            </span>
-            <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
-              <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
-            </span>
-          </div>
-        ))}
-      </section>
-
-      {/* Sección de filtros minimalista: Estado + Tipo */}
-      <section className="vacantes__filters" aria-label="Filtros de vacantes">
-        {/* Filtro de Estado */}
-        <div className="vacantes__filter-group">
-          <label className="vacantes__filter-label">Estado</label>
-          <div className="vacantes__filter-options" role="tablist">
-            {([
-              { id: 'todas', label: 'Todas' },
-              { id: 'abierta', label: 'Abiertas' },
-              { id: 'cubierta', label: 'Cubiertas' },
-            ] as const).map((s) => (
-              <button
-                key={`status-${s.id}`}
-                type="button"
-                role="tab"
-                aria-selected={statusFilter === s.id}
-                className={`vacantes__filter-btn${statusFilter === s.id ? ' vacantes__filter-btn--active' : ''}`}
-                onClick={() => setStatusFilter(s.id)}
-                data-testid={`vac-filter-status-${s.id}`}
+            <div className="vacantes__split-head" role="row">
+              <span className="vacantes__split-corner" />
+              <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
+              <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
+            </div>
+            {kpiRows.map((row) => (
+              <div
+                key={row.id}
+                className={`vacantes__split-row${
+                  'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
+                }`}
+                role="row"
+                data-testid={`vac-split-${row.id}`}
               >
-                {s.label}
-              </button>
+                <span className="vacantes__split-label">{row.label}</span>
+                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
+                  <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
+                </span>
+                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
+                  <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
+                </span>
+              </div>
             ))}
-          </div>
-        </div>
+          </section>
 
-        {/* Filtro de Tipo */}
-        <div className="vacantes__filter-group">
-          <label className="vacantes__filter-label">Tipo</label>
-          <div className="vacantes__filter-options" role="tablist">
-            {([
-              { id: 'todos', label: 'Todos' },
-              { id: 'autorizado', label: 'Plantilla' },
-              { id: 'backup', label: 'Backup' },
-            ] as const).map((t) => (
-              <button
-                key={`type-${t.id}`}
-                type="button"
-                role="tab"
-                aria-selected={typeFilter === t.id}
-                className={`vacantes__filter-btn${typeFilter === t.id ? ' vacantes__filter-btn--active' : ''}`}
-                onClick={() => setTypeFilter(t.id as VacancyTypeFilter)}
-                data-testid={`vac-filter-type-${t.id}`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+          <section className="vacantes__filters" aria-label="Filtros de vacantes">
+            <div className="vacantes__filter-group">
+              <label className="vacantes__filter-label">Estado</label>
+              <div className="vacantes__filter-options" role="tablist">
+                {([
+                  { id: 'todas', label: 'Todas' },
+                  { id: 'abierta', label: 'Abiertas' },
+                  { id: 'cubierta', label: 'Cubiertas' },
+                ] as const).map((s) => (
+                  <button
+                    key={`status-${s.id}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={statusFilter === s.id}
+                    className={`vacantes__filter-btn${statusFilter === s.id ? ' vacantes__filter-btn--active' : ''}`}
+                    onClick={() => setStatusFilter(s.id)}
+                    data-testid={`vac-filter-status-${s.id}`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="vacantes__filter-group">
+              <label className="vacantes__filter-label">Tipo</label>
+              <div className="vacantes__filter-options" role="tablist">
+                {([
+                  { id: 'todos', label: 'Todos' },
+                  { id: 'autorizado', label: 'Plantilla' },
+                  { id: 'backup', label: 'Backup' },
+                ] as const).map((t) => (
+                  <button
+                    key={`type-${t.id}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={typeFilter === t.id}
+                    className={`vacantes__filter-btn${typeFilter === t.id ? ' vacantes__filter-btn--active' : ''}`}
+                    onClick={() => setTypeFilter(t.id as VacancyTypeFilter)}
+                    data-testid={`vac-filter-type-${t.id}`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
         </aside>
 
         <div className="pipeline__content">
-          {/* ── Toggle sidebar ── */}
           <button
             type="button"
             className="vacantes__sidebar-toggle"
@@ -382,219 +467,176 @@ export function Vacantes() {
             <span>{sidebarCollapsed ? 'KPIs' : 'Ocultar'}</span>
           </button>
 
-          {/* ── Controles (búsqueda) ── */}
           <section className="pipeline__controls">
-            <div className="pipeline__search">
-              <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
-              <label htmlFor="vac-search" className="sr-only">
-                Buscar vacante
-              </label>
-              <input
-                id="vac-search"
-                type="text"
-                placeholder="Buscar por puesto, área, persona, reclutador…"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pipeline__search-input"
-                autoComplete="off"
-                data-testid="vac-search-input"
-              />
+            <div className="pipeline__search-container">
+              <div className="pipeline__search">
+                <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
+                <label htmlFor="vac-search" className="sr-only">
+                  Buscar vacante
+                </label>
+                <input
+                  id="vac-search"
+                  type="text"
+                  placeholder="Buscar por puesto, área, persona, reclutador…"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pipeline__search-input"
+                  autoComplete="off"
+                  data-testid="vac-search-input"
+                />
+              </div>
             </div>
-            <span className="pipeline__count">
-              {filtered.length} de {vacancies.length}
-            </span>
+
+            {totalPages > 1 && (
+              <div className="pipeline__pagination-controls">
+                <button
+                  type="button"
+                  className="btn-icon"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                  aria-label="Página anterior"
+                  title="Página anterior"
+                >
+                  <ChevronLeft size={16} aria-hidden="true" />
+                </button>
+                <span className="pipeline__pagination-text">
+                  Página {currentPage} de {totalPages}
+                </span>
+                <button
+                  type="button"
+                  className="btn-icon"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  aria-label="Página siguiente"
+                  title="Página siguiente"
+                >
+                  <ChevronRight size={16} aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </section>
 
-          {/* ── Lista ── */}
-      {filtered.length === 0 ? (
-        <section className="pipeline__empty">
-          <div className="pipeline__empty-icon" aria-hidden="true">
-            <ClipboardList size={28} />
-          </div>
-          <h2 className="pipeline__empty-title">
-            {vacancies.length === 0
-              ? 'No hay bajas registradas todavía'
-              : 'Sin vacantes que coincidan'}
-          </h2>
-          <p className="pipeline__empty-lead">
-            {vacancies.length === 0
-              ? 'Importa las bajas para generar las vacantes automáticamente.'
-              : 'Prueba con otro filtro o término de búsqueda.'}
-          </p>
-        </section>
-      ) : (
-        <>
-          {/* Mobile: tarjetas */}
-          <section className="vacantes__cards" aria-label="Lista de vacantes">
-            {filtered.map((v) => (
-              <VacancyCard
-                key={v.key}
-                v={v}
-                onReclutador={(val) => handleReclutador(v, val)}
-                onToggleManual={() => handleToggleManual(v)}
-                canDelete={canRemoveStructural(v)}
-                onDelete={() => handleRemoveStructural(v)}
-              />
-            ))}
-          </section>
-
-          {/* Desktop: tabla */}
-          <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
-            <table className="pipeline__table" aria-labelledby="vac-table-caption">
-              <caption id="vac-table-caption" className="sr-only">
-                Listado de vacantes — {filtered.length} de {vacancies.length}
-              </caption>
-              <colgroup>
-                <col className="vac-col--baja" />
-                <col className="vac-col--puesto" />
-                <col className="vac-col--area" />
-                <col className="vac-col--tipo" />
-                <col className="vac-col--sla" />
-                <col className="vac-col--reclutador" />
-                <col className="vac-col--accion" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th scope="col" id="vac-th-baja">Baja</th>
-                  <th scope="col" id="vac-th-puesto">Puesto</th>
-                  <th scope="col" id="vac-th-area">Área</th>
-                  <th scope="col" id="vac-th-tipo">Tipo</th>
-                  <th scope="col" id="vac-th-sla" title="Días hábiles desde la baja · SLA 12 días">
-                    Días · SLA
-                  </th>
-                  <th scope="col" id="vac-th-reclutador">Reclutador</th>
-                  <th scope="col" id="vac-th-accion" className="pipeline__th--actions">
-                    Acción
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+          {filtered.length === 0 ? (
+            <section className="pipeline__empty">
+              <div className="pipeline__empty-icon" aria-hidden="true">
+                <ClipboardList size={28} />
+              </div>
+              <h2 className="pipeline__empty-title">
+                {vacancies.length === 0
+                  ? 'No hay bajas registradas todavía'
+                  : 'Sin vacantes que coincidan'}
+              </h2>
+              <p className="pipeline__empty-lead">
+                {vacancies.length === 0
+                  ? 'Importa las bajas para generar las vacantes automáticamente.'
+                  : 'Prueba con otro filtro o término de búsqueda.'}
+              </p>
+            </section>
+          ) : (
+            <>
+              <section className="vacantes__cards" aria-label="Lista de vacantes">
                 {filtered.map((v) => (
-                  <tr
+                  <VacancyCard
                     key={v.key}
-                    className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}
-                  >
-                    {/* BAJA — orden: #num → nombre → fecha */}
-                    <td headers="vac-th-baja">
-                      {v.baja ? (
-                        <>
-                          <div className="vacantes__cell-emp">#{v.baja.num_empleado}</div>
-                          <div className="pipeline__area">{v.baja.nombre}</div>
-                          <div className="vacantes__cell-strong">{formatShortDate(v.fechaBaja)}</div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="vacantes__cell-strong">—</div>
-                          <div className="pipeline__area">Vacante estructural</div>
-                        </>
-                      )}
-                    </td>
+                    v={v}
+                    onReclutador={(val) => handleReclutador(v, val)}
+                    onToggleManual={() => handleToggleManualClick(v)}
+                    canDelete={canRemoveStructural(v)}
+                    onDelete={() => handleRemoveStructuralClick(v)}
+                  />
+                ))}
+              </section>
 
-                    {/* PUESTO */}
-                    <td headers="vac-th-puesto">
-                      <div className="pipeline__puesto">{v.puesto}</div>
-                    </td>
-
-                    {/* ÁREA */}
-                    <td headers="vac-th-area">
-                      <div className="pipeline__area">
-                        {v.area}
-                        {v.seccion ? ` · ${v.seccion}` : ''}
-                      </div>
-                    </td>
-
-                    {/* TIPO */}
-                    <td headers="vac-th-tipo">
-                      <VacancyTypeBadge type={v.vacancyType} />
-                    </td>
-
-                    {/* DÍAS · SLA */}
-                    <td headers="vac-th-sla">
-                      <div className="vacantes__sla-cell">
-                        {v.baja ? (
-                          <>
-                            <span
-                              className={`vacantes__sla ${
-                                v.status === 'cubierta'
-                                  ? 'vacantes__sla--done'
-                                  : 'vacantes__sla--overdue'
-                              }`}
+              <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
+                <table className="pipeline__table" aria-labelledby="vac-table-caption">
+                  <caption id="vac-table-caption" className="sr-only">
+                    Listado de vacantes — {filtered.length} de {vacancies.length}
+                  </caption>
+                  <colgroup>
+                    <col className="vac-col--baja" />
+                    <col className="vac-col--posicion" />
+                    <col className="vac-col--tipo" />
+                    <col className="vac-col--sla" />
+                    <col className="vac-col--reclutador" />
+                    <col className="vac-col--accion" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col" id="vac-th-baja">Baja</th>
+                      <th scope="col" id="vac-th-puesto">Posición</th>
+                      <th scope="col" id="vac-th-tipo">Tipo</th>
+                      <th scope="col" id="vac-th-sla">SLA</th>
+                      <th scope="col" id="vac-th-reclutador">Reclutador</th>
+                      <th scope="col" id="vac-th-accion" className="pipeline__th--actions">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginated.map((v) => (
+                      <tr key={v.key} className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}>
+                        <td headers="vac-th-baja">
+                          {v.baja ? (
+                            <>
+                              <div className="vacantes__cell-strong" title={v.baja.nombre}>{toTitleCase(v.baja.nombre)}</div>
+                              <div className="vacantes__cell-emp">#{v.baja.num_empleado} · {formatShortDate(v.fechaBaja)}</div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="vacantes__cell-strong">—</div>
+                              <div className="vacantes__cell-emp">Vacante estructural</div>
+                            </>
+                          )}
+                        </td>
+                        <td headers="vac-th-puesto">
+                          <div className="pipeline__puesto" title={v.puesto}>{toTitleCase(v.puesto)}</div>
+                          <div className="pipeline__area" title={`${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`}>
+                            {toTitleCase(v.area)}{v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+                          </div>
+                        </td>
+                        <td headers="vac-th-tipo"><VacancyTypeBadge type={v.vacancyType} /></td>
+                        <td headers="vac-th-sla">
+                          <div className="vacantes__sla-cell">
+                            {v.baja ? (
+                              <SlaBadge v={v} />
+                            ) : <span className="vacantes__sla">—</span>}
+                          </div>
+                        </td>
+                        <td headers="vac-th-reclutador">
+                          <CustomSelect
+                            id={`vac-rec-${v.key}`}
+                            value={v.reclutador ?? ''}
+                            onChange={(val) => handleReclutador(v, val)}
+                            options={RECLUTADOR_OPTIONS}
+                            aria-label={`Reclutador para ${v.puesto}`}
+                            disabled={!v.baja}
+                          />
+                        </td>
+                        <td headers="vac-th-accion" className="pipeline__cell-actions">
+                          <button
+                            type="button"
+                            className="pipeline__icon-btn"
+                            onClick={() => handleToggleManualClick(v)}
+                            disabled={!v.baja}
+                            title={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                          >
+                            {v.coberturaTipo === 'manual' ? <ArrowRightLeft size={16} /> : <CheckCircle2 size={16} />}
+                          </button>
+                          {canRemoveStructural(v) && (
+                            <button
+                              type="button"
+                              className="pipeline__icon-btn vacantes__del-btn"
+                              onClick={() => handleRemoveStructuralClick(v)}
+                              title={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}
+                              data-testid={`vac-delete-${v.key}`}
                             >
-                              {v.dias}/{v.slaDays}
-                            </span>
-                            <SlaBadge v={v} />
-                          </>
-                        ) : (
-                          <span className="vacantes__sla">—</span>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* RECLUTADOR */}
-                    <td headers="vac-th-reclutador">
-                      <CustomSelect
-                        id={`vac-rec-${v.key}`}
-                        value={v.reclutador ?? ''}
-                        onChange={(val) => handleReclutador(v, val)}
-                        options={RECLUTADOR_OPTIONS}
-                        aria-label={`Reclutador para ${v.puesto}`}
-                        disabled={!v.baja}
-                      />
-                    </td>
-
-                    {/* ACCIONES */}
-                    <td headers="vac-th-accion" className="pipeline__cell-actions">
-                      <button
-                        type="button"
-                        className="pipeline__icon-btn"
-                        onClick={() => handleToggleManual(v)}
-                        disabled={!v.baja}
-                        title={
-                          !v.baja
-                            ? 'Vacante estructural (sin baja)'
-                            : v.coberturaTipo === 'manual'
-                              ? 'Reabrir vacante'
-                              : 'Marcar cubierta a mano (interna)'
-                        }
-                        aria-label={
-                          v.coberturaTipo === 'manual'
-                            ? 'Reabrir vacante'
-                            : 'Marcar cubierta a mano'
-                        }
-                        data-testid={`vac-manual-${v.key}`}
-                      >
-                        {v.coberturaTipo === 'manual' ? (
-                          <ArrowRightLeft size={16} aria-hidden="true" />
-                        ) : (
-                          <CheckCircle2 size={16} aria-hidden="true" />
-                        )}
-                      </button>
-                      {canRemoveStructural(v) && (
-                        <button
-                          type="button"
-                          className="pipeline__icon-btn vacantes__del-btn"
-                          onClick={() => handleRemoveStructural(v)}
-                          title={
-                            findCustomPosition(v)
-                              ? 'Eliminar posición personalizada'
-                              : 'Quitar vacante de backup'
-                          }
-                          aria-label={
-                            findCustomPosition(v)
-                              ? `Eliminar posición personalizada ${v.puesto}`
-                              : `Quitar vacante de backup ${v.puesto}`
-                          }
-                          data-testid={`vac-delete-${v.key}`}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </button>
-                      )}
-                    </td>
+                              <Trash2 size={16} aria-hidden="true" />
+                            </button>
+                          )}
+                        </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </section>
+                  </tbody>
+                </table>
+              </section>
         </>
       )}
         </div>
@@ -661,7 +703,7 @@ function CoverageInfo({ v }: { v: AutoVacancy }) {
   );
 }
 
-/** Tarjeta mobile expandible (acordeón inline) de una vacante automática. */
+/** Tarjeta mobile (abre modal de detalle) de una vacante automática. */
 function VacancyCard({
   v,
   onReclutador,
@@ -680,7 +722,6 @@ function VacancyCard({
   const cardCls = [
     'vacantes__card',
     v.status === 'abierta' ? 'vacantes__card--overdue' : '',
-    open ? 'vacantes__card--open' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -693,135 +734,129 @@ function VacancyCard({
       : v.coberturaTipo === 'manual'
         ? `Cobertura interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
         : v.coveredBy
-          ? `${v.coveredBy.nombre}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+          ? `${toTitleCase(v.coveredBy.nombre)}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
           : 'Plantilla completa';
 
   return (
-    <article className={cardCls} aria-label={`Vacante de ${v.puesto}`}>
-      {/* Cabecera: tap para expandir */}
-      <button
-        type="button"
-        className="vacantes__card-head"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        data-testid={`vac-card-toggle-${v.key}`}
+    <>
+      <article className={cardCls} aria-label={`Vacante de ${v.puesto}`}>
+        {/* Cabecera: tap para abrir detalle */}
+        <button
+          type="button"
+          className="vacantes__card-head"
+          onClick={() => setOpen(true)}
+          data-testid={`vac-card-toggle-${v.key}`}
+        >
+          <div className="vacantes__card-title">
+            <div className="vacantes__card-puesto">{toTitleCase(v.puesto)}</div>
+            <div className="vacantes__card-sub">
+              {toTitleCase(v.area)}
+              {v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+            </div>
+          </div>
+          <div className="vacantes__card-head-right">
+            <ChevronRight
+              size={18}
+              className="vacantes__chevron"
+              aria-hidden="true"
+            />
+          </div>
+        </button>
+      </article>
+
+      {/* Modal de detalle (pantalla completa en móvil) */}
+      <Modal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title={toTitleCase(v.puesto)}
+        fullscreenMobile={true}
+        size="md"
+        className="vacantes__mobile-modal"
       >
-        <div className="vacantes__card-title">
-          <div className="vacantes__card-puesto">{v.puesto}</div>
-          <div className="vacantes__card-sub">
-            {v.area}
-            {v.seccion ? ` · ${v.seccion}` : ''}
+        <div className="vacantes__modal-inner">
+          <div className="vacantes__modal-header-meta">
+            {toTitleCase(v.area)}{v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+          </div>
+
+          <div className="vacantes__modal-badges">
+            <VacancyStatusBadge status={v.status} />
+            <VacancyTypeBadge type={v.vacancyType} />
+            {v.baja && <SlaBadge v={v} />}
+          </div>
+
+          <div className="vacantes__detail-grid">
+            <div className="vacantes__detail-label-col">
+              <UserPlus size={16} aria-hidden="true" />
+              <span>Cobertura</span>
+            </div>
+            <div className="vacantes__detail-value-col vacantes__detail-value-col--strong">
+              {coberturaText}
+            </div>
+
+            <div className="vacantes__detail-label-col">
+              <Calendar size={16} aria-hidden="true" />
+              <span>Baja</span>
+            </div>
+            <div className="vacantes__detail-value-col">
+              {v.baja
+                ? `${toTitleCase(v.baja.nombre)} (#${v.baja.num_empleado}) · ${formatShortDate(v.fechaBaja)}`
+                : 'Sin baja asociada'}
+            </div>
+
+            <div className="vacantes__detail-label-col">
+              <Clock size={16} aria-hidden="true" />
+              <span>Tiempo</span>
+            </div>
+            <div className="vacantes__detail-value-col">
+              {v.baja
+                ? `${v.dias} días ${v.status === 'cubierta' ? 'para cubrir' : 'abierta'}`
+                : '—'}
+            </div>
+          </div>
+
+          <div className="vacantes__detail-actions">
+            <div className="vacantes__detail-action-primary">
+              <label htmlFor={`vac-rec-card-${v.key}`} className="sr-only">Asignar Reclutador</label>
+              <CustomSelect
+                id={`vac-rec-card-${v.key}`}
+                value={v.reclutador ?? ''}
+                onChange={onReclutador}
+                options={RECLUTADOR_OPTIONS}
+                aria-label={`Reclutador para ${v.puesto}`}
+                disabled={!v.baja}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-secondary vacantes__detail-btn"
+              onClick={onToggleManual}
+              disabled={!v.baja}
+              title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+              aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+              data-testid={`vac-manual-card-${v.key}`}
+            >
+              {v.coberturaTipo === 'manual' ? (
+                <ArrowRightLeft size={16} aria-hidden="true" />
+              ) : (
+                <CheckCircle2 size={16} aria-hidden="true" />
+              )}
+            </button>
+            {canDelete && onDelete && (
+              <button
+                type="button"
+                className="btn btn-secondary vacantes__detail-btn vacantes__del-btn"
+                onClick={onDelete}
+                title="Eliminar o quitar backup"
+                aria-label="Eliminar o quitar backup"
+                data-testid={`vac-delete-card-${v.key}`}
+              >
+                <Trash2 size={16} aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
-        <div className="vacantes__card-head-right">
-          <VacancyStatusBadge status={v.status} />
-          <span
-            className={`vacantes__sla ${
-              v.status === 'cubierta' ? 'vacantes__sla--done' : 'vacantes__sla--overdue'
-            }`}
-          >
-            {v.baja ? `${v.dias}d` : '—'}
-          </span>
-          <ChevronDown
-            size={18}
-            className={`vacantes__chevron${open ? ' vacantes__chevron--open' : ''}`}
-            aria-hidden="true"
-          />
-        </div>
-      </button>
-
-      {/* Fila resumen siempre visible: cumplimiento de SLA + días + tipo */}
-      <div className="vacantes__card-quick">
-        <VacancyTypeBadge type={v.vacancyType} />
-        {v.baja ? (
-          <>
-            <SlaBadge v={v} />
-            <span className="vacantes__quick-days">
-              {v.dias}/{v.slaDays} días
-            </span>
-          </>
-        ) : (
-          <span className="vacantes__quick-days">Sin baja asociada</span>
-        )}
-      </div>
-
-      {/* Detalle inline (acordeón) */}
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="detail"
-            className="vacantes__card-detail"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: EASE_OUT }}
-          >
-            <div className="vacantes__detail-inner">
-              <div className="vacantes__detail-row">
-                <UserPlus size={15} aria-hidden="true" />
-                <span className="vacantes__detail-label">Cobertura</span>
-                <span className="vacantes__detail-value">{coberturaText}</span>
-              </div>
-              <div className="vacantes__detail-row">
-                <Calendar size={15} aria-hidden="true" />
-                <span className="vacantes__detail-label">Baja</span>
-                <span className="vacantes__detail-value">
-                  {v.baja
-                    ? `${v.baja.nombre} (#${v.baja.num_empleado}) · ${formatShortDate(v.fechaBaja)}`
-                    : 'Sin baja asociada'}
-                </span>
-              </div>
-              <div className="vacantes__detail-row">
-                <Clock size={15} aria-hidden="true" />
-                <span className="vacantes__detail-label">Tiempo</span>
-                <span className="vacantes__detail-value">
-                  {v.baja
-                    ? `${v.dias} días ${v.status === 'cubierta' ? 'para cubrir' : 'abierta'}`
-                    : '—'}
-                </span>
-              </div>
-
-              <div className="vacantes__detail-actions">
-                <CustomSelect
-                  id={`vac-rec-card-${v.key}`}
-                  value={v.reclutador ?? ''}
-                  onChange={onReclutador}
-                  options={RECLUTADOR_OPTIONS}
-                  aria-label={`Reclutador para ${v.puesto}`}
-                  disabled={!v.baja}
-                />
-                <button
-                  type="button"
-                  className="pipeline__icon-btn"
-                  onClick={onToggleManual}
-                  disabled={!v.baja}
-                  title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-                  aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-                  data-testid={`vac-manual-card-${v.key}`}
-                >
-                  {v.coberturaTipo === 'manual' ? (
-                    <ArrowRightLeft size={16} aria-hidden="true" />
-                  ) : (
-                    <CheckCircle2 size={16} aria-hidden="true" />
-                  )}
-                </button>
-                {canDelete && (
-                  <button
-                    type="button"
-                    className="pipeline__icon-btn vacantes__del-btn"
-                    onClick={onDelete}
-                    title="Quitar vacante"
-                    aria-label={`Quitar vacante ${v.puesto}`}
-                    data-testid={`vac-delete-card-${v.key}`}
-                  >
-                    <Trash2 size={16} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </article>
+      </Modal>
+    </>
   );
 }

@@ -3,7 +3,6 @@ import { UserPlus, Trash2, AlertCircle } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
-import { SmartDatePicker } from './SmartDatePicker';
 import {
   TRANSPORTE_NA,
   TRANSPORTE_PARADAS,
@@ -259,10 +258,11 @@ export function EmployeeSheet({
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
-        <SmartDatePicker
+        <input
+          id="emp-fecha"
+          type="date"
           value={form.fecha_ingreso}
-          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
-          presets="past"
+          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="employee-sheet__future-warning">
@@ -307,10 +307,11 @@ export function EmployeeSheet({
       <div className="form-grid employee-sheet__baja-grid">
         <div className="form-group">
           <label htmlFor="baja-fecha">Fecha de Baja</label>
-          <SmartDatePicker
+          <input
+            id="baja-fecha"
+            type="date"
             value={bajaForm.fecha_baja}
-            onChange={(val) => setBajaForm({ ...bajaForm, fecha_baja: val })}
-            presets="past"
+            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
           />
         </div>
         <div className="form-group">

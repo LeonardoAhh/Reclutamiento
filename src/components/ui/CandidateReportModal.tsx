@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Copy, Check, Share2, Users } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
-import { ExpandableSection } from './ExpandableSection';
+import { StatCard } from './StatCard';
+import { Badge, StarliteBadge } from './Badge';
 import { formatShortDate } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import './CandidateReportModal.css';
 
@@ -268,7 +268,6 @@ export function CandidateReportModal({
   onClose,
   candidates,
 }: CandidateReportModalProps) {
-  const isMobile = useIsMobile();
   const active = useMemo(
     () => candidates.filter((c) => ACTIVE_STATUSES.has(c.status)),
     [candidates],
@@ -342,13 +341,9 @@ export function CandidateReportModal({
           </div>
           <div className="candidate-report-modal__badges">
             {row.starlite > 0 && (
-              <span className="candidate-report-modal__badge candidate-report-modal__badge--starlite">
-                ★ {row.starlite}
-              </span>
+              <Badge variant="amber">★ {row.starlite}</Badge>
             )}
-            <span className="candidate-report-modal__badge candidate-report-modal__badge--total">
-              {row.total}
-            </span>
+            <Badge variant="default">{row.total}</Badge>
           </div>
         </li>
       ))}
@@ -362,51 +357,43 @@ export function CandidateReportModal({
       className="candidate-report-modal"
       icon={<Users size={20} aria-hidden="true" />}
       title="Resumen de candidatos"
-      size={isMobile ? 'md' : 'lg'}
+      size="lg"
       fullscreenMobile={true}
     >
       <div className="modal-body candidate-report-modal__body">
-        <motion.header
-          className="candidate-report-modal__summary"
+        <motion.div
+          className="candidate-report-modal__stats-grid"
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
         >
-          <div className="candidate-report-modal__stat">
-            <div className="candidate-report-modal__big-number">{totalActivos}</div>
-            <p className="candidate-report-modal__big-label">
-              candidato{totalActivos === 1 ? '' : 's'} activo{totalActivos === 1 ? '' : 's'}
-            </p>
-          </div>
+          <StatCard
+            id="stat-activos"
+            value={totalActivos}
+            label={`candidato${totalActivos === 1 ? '' : 's'} activo${totalActivos === 1 ? '' : 's'}`}
+          />
           {totalStarlite > 0 && (
-            <div className="candidate-report-modal__stat">
-              <div className="candidate-report-modal__big-number" style={{ color: '#d97706' }}>
-                {totalStarlite}
-              </div>
-              <p className="candidate-report-modal__big-label">
-                starlite
-              </p>
-            </div>
+            <StatCard
+              id="stat-starlite"
+              value={totalStarlite}
+              label="starlite"
+              accentColor="var(--color-warning)"
+            />
           )}
-          <div className="candidate-report-modal__stat">
-            <div className="candidate-report-modal__big-number candidate-report-modal__big-number--alt">
-              {totalPuestos}
-            </div>
-            <p className="candidate-report-modal__big-label">
-              puesto{totalPuestos === 1 ? '' : 's'}
-            </p>
-          </div>
-          {!isMobile && (
-            <div className="candidate-report-modal__stat">
-              <div className="candidate-report-modal__big-number candidate-report-modal__big-number--muted">
-                {reclutadoresActivos}
-              </div>
-              <p className="candidate-report-modal__big-label">
-                reclutador{reclutadoresActivos === 1 ? '' : 'es'}
-              </p>
-            </div>
-          )}
-        </motion.header>
+          <StatCard
+            id="stat-puestos"
+            value={totalPuestos}
+            label={`puesto${totalPuestos === 1 ? '' : 's'}`}
+            accentColor="var(--color-accent-teal)"
+          />
+          <StatCard
+            id="stat-reclutadores"
+            value={reclutadoresActivos}
+            label={`reclutador${reclutadoresActivos === 1 ? '' : 'es'}`}
+            accentColor="var(--color-muted)"
+          />
+        </motion.div>
+
 
         {empty ? (
           <motion.p
@@ -419,135 +406,59 @@ export function CandidateReportModal({
           </motion.p>
         ) : (
           <>
-            {isMobile ? (
-              <>
-                <section
-                  className="candidate-report-modal__groups candidate-report-modal__groups--mobile"
-                  aria-label="Candidatos agrupados por puesto"
+            <motion.section
+              className="candidate-report-modal__groups"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              aria-label="Candidatos agrupados por puesto"
+            >
+              <h3 className="candidate-report-modal__section-title">Por puesto</h3>
+              {groups.map((group) => (
+                <motion.article
+                  key={group.area}
+                  className="feature-card"
+                  variants={itemVariants}
                 >
-                  <h3 className="candidate-report-modal__section-title">Por puesto</h3>
-                  {groups.map((group) => (
-                    <ExpandableSection
-                      key={group.area}
-                      title={group.area}
-                      badge={`${group.total} candidatos`}
-                      variant="list"
-                    >
-                      {renderGroupContent(group)}
-                    </ExpandableSection>
-                  ))}
-                </section>
+                  <header className="candidate-report-modal__row" style={{ background: 'var(--color-surface-soft)', borderBottom: '1px solid var(--color-hairline)' }}>
+                    <h4 className="candidate-report-modal__group-title">{group.area}</h4>
+                    <span className="candidate-report-modal__group-count">
+                      {group.total} candidato{group.total === 1 ? '' : 's'}
+                    </span>
+                  </header>
+                  {renderGroupContent(group)}
+                </motion.article>
+              ))}
+            </motion.section>
 
-                <section
-                  className="candidate-report-modal__recruiters candidate-report-modal__recruiters--mobile"
-                  aria-label="Conteo por reclutador"
-                >
-                  <h3 className="candidate-report-modal__section-title">Por reclutador</h3>
-                  {recruiters.filter((r) => r.total > 0).map((r) => (
-                    <ExpandableSection
-                      key={r.name}
-                      title={r.name}
-                      badge={`${r.total} activos`}
-                      variant="list"
-                    >
-                      <div className="candidate-report-modal__recruiter-detail">
-                        {r.e1 > 0 && <p>Entrevista: {r.e1}</p>}
-                        {r.e2 > 0 && <p>Entrega de documentos: {r.e2}</p>}
-                        {r.fd > 0 && <p>Faltan documentos: {r.fd}</p>}
-                        {r.fp > 0 && <p>Feedback pendiente: {r.fp}</p>}
-                      </div>
-                    </ExpandableSection>
-                  ))}
-                </section>
-              </>
-            ) : (
-              <>
-                <motion.section
-                  className="candidate-report-modal__groups"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  aria-label="Candidatos agrupados por puesto"
-                >
-                  <h3 className="candidate-report-modal__section-title">Por puesto</h3>
-                  {groups.map((group) => (
-                    <motion.article
-                      key={group.area}
-                      className="candidate-report-modal__group"
-                      variants={itemVariants}
-                    >
-                      <header className="candidate-report-modal__group-header">
-                        <h4 className="candidate-report-modal__group-title">{group.area}</h4>
-                        <span className="candidate-report-modal__group-count">
-                          {group.total} candidato{group.total === 1 ? '' : 's'}
-                        </span>
-                      </header>
-                      {renderGroupContent(group)}
-                    </motion.article>
-                  ))}
-                </motion.section>
+            <motion.section
+              className="candidate-report-modal__recruiters"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              aria-label="Conteo por reclutador"
+            >
+              <h3 className="candidate-report-modal__section-title">Por reclutador</h3>
+              <ul className="feature-card" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                {recruiters.filter(r => r.total > 0).map((r) => (
+                  <motion.li
+                    key={r.name}
+                    className="candidate-report-modal__row"
+                    variants={itemVariants}
+                  >
+                    <span className="candidate-report-modal__recruiter-name">{r.name}</span>
+                    <div className="candidate-report-modal__badges">
+                      {r.e1 > 0 && <Badge variant="amber">E1: {r.e1}</Badge>}
+                      {r.e2 > 0 && <Badge variant="teal">E2: {r.e2}</Badge>}
+                      {r.fp > 0 && <Badge variant="amber">FP: {r.fp}</Badge>}
+                      <Badge variant="default">{r.total}</Badge>
+                    </div>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.section>
 
-                <motion.section
-                  className="candidate-report-modal__recruiters"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  aria-label="Conteo por reclutador"
-                >
-                  <h3 className="candidate-report-modal__section-title">Por reclutador</h3>
-                  <ul className="candidate-report-modal__recruiter-list">
-                    {recruiters.map((r) => (
-                      <motion.li
-                        key={r.name}
-                        className={`candidate-report-modal__recruiter ${
-                          r.total === 0 ? 'candidate-report-modal__recruiter--empty' : ''
-                        }`}
-                        variants={itemVariants}
-                      >
-                        <span className="candidate-report-modal__recruiter-name">{r.name}</span>
-                        <div className="candidate-report-modal__recruiter-badges">
-                          {r.e1 > 0 && (
-                            <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
-                              E1: {r.e1}
-                            </span>
-                          )}
-                          {r.e2 > 0 && (
-                            <span className="candidate-report-modal__badge candidate-report-modal__badge--e2">
-                              E2: {r.e2}
-                            </span>
-                          )}
-                          {r.fp > 0 && (
-                            <span className="candidate-report-modal__badge candidate-report-modal__badge--e1">
-                              FP: {r.fp}
-                            </span>
-                          )}
-                          <span
-                            className={`candidate-report-modal__badge candidate-report-modal__badge--total ${
-                              r.total === 0 ? 'candidate-report-modal__badge--total-muted' : ''
-                            }`}
-                          >
-                            {r.total}
-                          </span>
-                        </div>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </motion.section>
 
-                <motion.section
-                  className="candidate-report-modal__preview"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  aria-label="Vista previa del mensaje"
-                >
-                  <h4 className="candidate-report-modal__preview-title">
-                    Mensaje para WhatsApp
-                  </h4>
-                  <pre className="candidate-report-modal__preview-text">{message}</pre>
-                </motion.section>
-              </>
-            )}
           </>
         )}
       </div>
@@ -582,7 +493,7 @@ export function CandidateReportModal({
                 transition={{ duration: 0.18 }}
               >
                 <Copy size={16} aria-hidden="true" />
-                {isMobile ? 'Copiar' : 'Copiar texto'}
+                Copiar texto
               </motion.span>
             )}
           </AnimatePresence>
@@ -596,7 +507,7 @@ export function CandidateReportModal({
           whileTap={{ scale: empty ? 1 : 0.97 }}
         >
           <Share2 size={16} aria-hidden="true" />
-          {isMobile ? 'WhatsApp' : 'Enviar por WhatsApp'}
+          WhatsApp
         </motion.button>
       </footer>
     </Modal>

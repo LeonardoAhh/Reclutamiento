@@ -21,7 +21,6 @@ import {
   TRANSPORTE_RUTAS,
 } from '@/lib/transporte-routes';
 import { Tooltip } from './Tooltip';
-import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -345,10 +344,11 @@ export function EmployeeModal({
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
-        <SmartDatePicker
+        <input
+          id="emp-fecha"
+          type="date"
           value={form.fecha_ingreso}
-          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
-          presets="past"
+          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
         />
       </div>
     </>
@@ -409,10 +409,11 @@ export function EmployeeModal({
       </div>
       <div className="form-group">
         <label htmlFor="emp-vac-fecha">Fecha de Ingreso</label>
-        <SmartDatePicker
+        <input
+          id="emp-vac-fecha"
+          type="date"
           value={form.fecha_ingreso}
-          onChange={(val) => setForm({ ...form, fecha_ingreso: val })}
-          presets="past"
+          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
         />
       </div>
     </>
@@ -465,10 +466,11 @@ export function EmployeeModal({
       <div className="form-grid employee-modal__baja-grid">
         <div className="form-group">
           <label htmlFor="baja-fecha">Fecha de Baja</label>
-          <SmartDatePicker
+          <input
+            id="baja-fecha"
+            type="date"
             value={bajaForm.fecha_baja}
-            onChange={(val) => setBajaForm({ ...bajaForm, fecha_baja: val })}
-            presets="past"
+            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
           />
         </div>
         <div className="form-group">

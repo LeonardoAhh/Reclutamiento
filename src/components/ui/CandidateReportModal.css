@@ -1,7 +1,4 @@
-/* CandidateReportModal — resumen de candidatos activos, por puesto y por
-   reclutador. Animaciones manejadas por framer-motion en el TSX; aquí solo
-   layout/estilos cohesivos con VacancyReportModal / WeeklyHiresModal.
-*/
+/* CandidateReportModal — layout unificado, responsive y mobile-first */
 
 @media (min-width: 768px) {
   .modal-content.candidate-report-modal {
@@ -20,63 +17,20 @@
   gap: var(--spacing-lg);
 }
 
-/* ── Encabezado: 3 stats lado a lado ─────────────────────────────────── */
-
-.candidate-report-modal__summary {
+/* ── Stats Grid (Mobile First: 2 columnas -> Desktop: 4 columnas) ── */
+.candidate-report-modal__stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
 }
 
-.candidate-report-modal__stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-  min-width: 0;
-}
-
-.candidate-report-modal__stat + .candidate-report-modal__stat {
-  border-left: 1px solid var(--color-hairline);
-  padding-left: var(--spacing-md);
-}
-
-.candidate-report-modal__big-number {
-  font-family: var(--font-display);
-  font-size: var(--type-display-xl-size);
-  font-weight: var(--type-display-xl-weight);
-  color: var(--color-primary);
-  line-height: 1;
-}
-
-.candidate-report-modal__big-number--alt {
-  color: var(--color-accent-teal);
-}
-
-.candidate-report-modal__big-number--success {
-  color: var(--color-success);
-}
-
-.candidate-report-modal__big-number--muted {
-  color: var(--color-ink);
-}
-
-.candidate-report-modal__big-label {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-}
-
-@media (max-width: 720px) {
-  .candidate-report-modal__summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (min-width: 768px) {
+  .candidate-report-modal__stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-/* ── Secciones ───────────────────────────────────────────────────────── */
-
+/* ── Secciones y títulos ── */
 .candidate-report-modal__empty {
   text-align: center;
   color: var(--color-muted);
@@ -93,52 +47,14 @@
   letter-spacing: var(--tracking-wider);
 }
 
-/* ── Por puesto (cards agrupadas por área) ───────────────────────────── */
-
-.candidate-report-modal__groups {
+.candidate-report-modal__groups,
+.candidate-report-modal__recruiters {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-.candidate-report-modal__group {
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
-  overflow: hidden;
-}
-
-.candidate-report-modal__group-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-soft);
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.candidate-report-modal__group-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  color: var(--color-ink);
-  letter-spacing: var(--tracking-wider);
-}
-
-.candidate-report-modal__group-count {
-  color: var(--color-muted);
-  font-size: var(--type-caption-md-size);
-  white-space: nowrap;
-}
-
-.candidate-report-modal__rows {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
+/* ── Elementos dentro de los feature-cards ── */
 .candidate-report-modal__row {
   display: flex;
   align-items: center;
@@ -177,6 +93,13 @@
   justify-content: flex-end;
 }
 
+.candidate-report-modal__recruiter-name {
+  font-weight: 500;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-wider);
+}
+
 @media (max-width: 520px) {
   .candidate-report-modal__row {
     flex-direction: column;
@@ -187,151 +110,9 @@
   }
 }
 
-/* ── Badges (E1 / E2 / total) ────────────────────────────────────────── */
 
-.candidate-report-modal__badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  font-family: var(--font-display);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  letter-spacing: var(--tracking-wider);
-  white-space: nowrap;
-}
 
-.candidate-report-modal__badge--e1 {
-  background: rgb(var(--color-accent-amber-rgb) / 0.18);
-  color: var(--color-accent-amber);
-}
-
-.candidate-report-modal__badge--e2 {
-  background: rgb(var(--color-accent-teal-rgb) / 0.18);
-  color: var(--color-accent-teal);
-}
-
-.candidate-report-modal__badge--starlite {
-  background: var(--color-warning-tint);
-  color: color-mix(in srgb, var(--color-accent-orange) 75%, var(--color-ink));
-}
-
-.candidate-report-modal__badge--total {
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
-}
-
-.candidate-report-modal__badge--total-muted {
-  color: var(--color-muted-soft);
-}
-
-.candidate-report-modal__badge--hired {
-  background: var(--color-success-tint);
-  color: var(--color-success);
-}
-
-.candidate-report-modal__contratados {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-/* ── Por reclutador (lista plana) ────────────────────────────────────── */
-
-.candidate-report-modal__recruiters {
-  display: flex;
-  flex-direction: column;
-}
-
-.candidate-report-modal__recruiter-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
-  overflow: hidden;
-}
-
-.candidate-report-modal__recruiter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.candidate-report-modal__recruiter:last-child {
-  border-bottom: 0;
-}
-
-.candidate-report-modal__recruiter--empty {
-  opacity: 0.6;
-}
-
-.candidate-report-modal__recruiter-name {
-  font-weight: 500;
-  color: var(--color-ink);
-  font-family: var(--font-display);
-  letter-spacing: var(--tracking-wider);
-}
-
-.candidate-report-modal__recruiter-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xxs);
-  justify-content: flex-end;
-}
-
-@media (max-width: 520px) {
-  .candidate-report-modal__recruiter {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .candidate-report-modal__recruiter-badges {
-    justify-content: flex-start;
-  }
-}
-
-/* ── Vista previa del mensaje WhatsApp ───────────────────────────────── */
-
-.candidate-report-modal__preview {
-  border-top: 1px dashed var(--color-hairline);
-  padding-top: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.candidate-report-modal__preview-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-}
-
-.candidate-report-modal__preview-text {
-  margin: 0;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  font-family: var(--font-code);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 220px;
-  overflow-y: auto;
-}
-
-/* ── Footer ──────────────────────────────────────────────────────────── */
-
+/* ── Footer ── */
 .candidate-report-modal__footer {
   gap: var(--spacing-sm);
 }
@@ -345,91 +126,3 @@
   align-items: center;
   gap: var(--spacing-xs);
 }
-
-/* ── Toggle de alcance (contratados: general / semana) ───────────────── */
-
-.candidate-report-modal__scope {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-}
-
-.candidate-report-modal__scope-label {
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-}
-
-.candidate-report-modal__scope-toggle {
-  display: inline-flex;
-  padding: 2px;
-  gap: 2px;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
-}
-
-.candidate-report-modal__scope-btn {
-  appearance: none;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-sm);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  color: var(--color-muted);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.candidate-report-modal__scope-btn:hover {
-  color: var(--color-body-strong);
-}
-
-.candidate-report-modal__scope-btn--active {
-  background: var(--color-surface);
-  color: var(--color-primary);
-  box-shadow: var(--shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.08));
-}
-
-.candidate-report-modal__scope-range {
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-}
-
-.candidate-report-modal__section-note {
-  text-transform: none;
-  letter-spacing: normal;
-  color: var(--color-muted);
-  font-weight: 500;
-}
-
-/* ── Mobile: recruiter detail (dentro de ExpandableSection) ── */
-.candidate-report-modal__recruiter-detail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.candidate-report-modal__recruiter-detail p {
-  margin: 0;
-  font-size: var(--type-body-sm-size);
-  color: var(--color-body);
-  padding: var(--spacing-xxs) 0;
-  border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.candidate-report-modal__recruiter-detail p:last-child {
-  border-bottom: none;
-}
-
-.candidate-report-modal__groups--mobile,
-.candidate-report-modal__recruiters--mobile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Users, Search, AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
+import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
 import './Asistencia.css';
@@ -15,14 +15,14 @@ interface AsistenciaRecord {
   proyecto?: string;
 }
 
-function getVariantForIncidencia(tipo: string): "default" | "coral" | "teal" | "amber" | "success" | "error" | "purple" {
+function getVariantForIncidencia(tipo: string): "default" | "coral" | "teal" | "amber" | "success" | "error" {
   switch (tipo) {
     case 'A': return 'success';
     case 'F': return 'error';
     case 'FJ': return 'coral';
     case 'P':
     case 'PH': return 'amber';
-    case 'I': return 'purple';
+    case 'I': return 'teal';
     case 'CT':
     case 'V':
     case 'TXT': return 'teal';
@@ -273,7 +273,13 @@ export function Asistencia() {
                     <td>{item.turno}</td>
                     <td>{item.sección}</td>
                     <td>{(item.puesto || '').replace(/\s+[A-Z]$/i, '').trim() || '-'}</td>
-                    <td>{item.proyecto ? <Badge variant="purple">{item.proyecto}</Badge> : '-'}</td>
+                    <td>
+                      {item.proyecto ? (
+                        item.proyecto.toLowerCase() === 'starlite' 
+                          ? <StarliteBadge /> 
+                          : <Badge>{item.proyecto}</Badge>
+                      ) : '-'}
+                    </td>
                     <td style={{ textAlign: 'center' }}>
                       <Badge variant={getVariantForIncidencia(item.tipo)}>
                         {INCIDENCIA_LABELS[item.tipo] || item.tipo || '-'}

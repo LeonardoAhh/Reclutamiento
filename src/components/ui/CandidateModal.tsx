@@ -7,7 +7,6 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
 import { localTodayIso, localDateToIso, isoToLocalDateString, formatDateTimeMx } from '@/lib/dates';
 import { X, Search, CheckCircle2, XCircle } from 'lucide-react';
-import { SmartDatePicker } from './SmartDatePicker';
 import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
@@ -440,11 +439,9 @@ const fieldsPosicion = (
       <div className="form-group">
         <label htmlFor="cand-area">
           Área
-          {restrictToOpen && (
+          {restrictToOpen && noOpenPositions && (
             <span className="candidate-modal__hint" role="note">
-              {noOpenPositions
-                ? <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
-                : <>Solo puestos con vacante abierta</>}
+              <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
             </span>
           )}
         </label>
@@ -511,59 +508,49 @@ const fieldsPosicion = (
 
       <div className="form-group">
         <label htmlFor="cand-source">Fuente</label>
-        <input
+        <CustomSelect
           id="cand-source"
-          type="text"
           value={form.source}
-          onChange={(e) => setForm({ ...form, source: e.target.value })}
-          placeholder="LinkedIn · Indeed · Referido…"
-          autoComplete="off"
-          list="cand-source-suggestions"
+          onChange={(val) => setForm({ ...form, source: val })}
+          options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccione fuente…"
           disabled={isEdit && !canEditCitaAndSource}
-          data-testid="cand-source-input"
         />
-        <datalist id="cand-source-suggestions">
-          {CANDIDATE_SOURCES.map((s) => <option key={s} value={s} />)}
-        </datalist>
       </div>
 
-      <div className="form-group candidate-modal__starlite-toggle">
-        <label htmlFor="cand-starlite" className="starlite-label">
-          Etiqueta Starlite
-        </label>
-        <div className="starlite-switch-container">
-          <label className="switch">
-            <input
-              id="cand-starlite"
-              type="checkbox"
-              checked={form.is_starlite}
-              onChange={(e) => setForm({ ...form, is_starlite: e.target.checked })}
-              disabled={isEdit && !isAdmin}
-            />
-            <span className="slider round"></span>
-          </label>
-          <span className="starlite-text">{form.is_starlite ? 'Sí (Candidato Starlite)' : 'No'}</span>
-        </div>
+      <div className="form-group">
+        <label htmlFor="cand-starlite">Etiqueta Starlite</label>
+        <CustomSelect
+          id="cand-starlite"
+          value={form.is_starlite ? 'true' : 'false'}
+          onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+          options={[
+            { value: 'false', label: 'No' },
+            { value: 'true', label: 'Sí' }
+          ]}
+          disabled={isEdit && !isAdmin}
+        />
       </div>
 
       <div className="form-group">
         <label htmlFor="cand-fecha">Fecha de contacto</label>
-        <SmartDatePicker
+        <input
+          id="cand-fecha"
+          type="date"
           value={form.fecha_aplicacion}
-          onChange={(val) => setForm({ ...form, fecha_aplicacion: val })}
+          onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
           disabled={isEdit}
-          presets="past"
         />
       </div>
 
       <div className="form-group">
         <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
-        <SmartDatePicker
+        <input
+          id="cand-fecha-cita"
+          type="date"
           value={form.fecha_cita}
-          onChange={(val) => setForm({ ...form, fecha_cita: val })}
+          onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
           disabled={isEdit && !canEditCitaAndSource}
-          placeholder="Sin fecha"
-          presets="future"
         />
       </div>
     </>

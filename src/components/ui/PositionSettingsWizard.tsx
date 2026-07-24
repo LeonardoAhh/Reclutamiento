@@ -100,7 +100,11 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     }
   }
 
-  // Validación del paso 4: todos los campos numéricos deben ser ≥ 0.
+  // Validación del paso 4: todos los campos numéricos deben ser >= 0.
+  const isPlantillaError = plantilla !== '' && (Number.isNaN(Number(plantilla)) || Number(plantilla) < 0);
+  const isBackupError = backup !== '' && (Number.isNaN(Number(backup)) || Number(backup) < 0);
+  const isUrgentesError = urgentes !== '' && (Number.isNaN(Number(urgentes)) || Number(urgentes) < 0);
+
   const valoresValidos = useMemo(() => {
     const plantillaNum = Number(plantilla);
     const backupNum = Number(backup);
@@ -170,8 +174,9 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
       onClose={handleClose}
       icon={<SlidersHorizontal size={20} className="color-primary" aria-hidden="true" />}
       title="Plantilla / Backup"
-      className="pos-settings-modal modal-fullscreen-mobile modal-wizard-mobile"
-      size="lg"
+      className="pos-settings-modal modal-wizard-mobile"
+      size="md"
+      fullscreenMobile={false}
     >
       <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
         <FormWizard
@@ -183,63 +188,51 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
           notice={errorNotice}
           steps={[
             {
-              id: 'area',
-              title: 'Área',
-              isValid: area.length > 0,
-              content: (
-                <div className="form-group" data-testid="pos-settings-step-area">
-                  <label htmlFor="pos-area">Área *</label>
-                  <CustomSelect
-                    id="pos-area"
-                    value={area}
-                    onChange={(v) => {
-                      setArea(v);
-                      setSeccion('');
-                      setPuesto('');
-                    }}
-                    options={areaOptions}
-                    placeholder="Seleccionar área…"
-                    aria-label="Área"
-                  />
-                </div>
-              ),
-            },
-            {
-              id: 'seccion',
-              title: 'Sección',
-              isValid: seccion.length > 0,
-              content: (
-                <div className="form-group" data-testid="pos-settings-step-seccion">
-                  <label htmlFor="pos-seccion">Sección *</label>
-                  <CustomSelect
-                    id="pos-seccion"
-                    value={seccion}
-                    onChange={(v) => {
-                      setSeccion(v);
-                      setPuesto('');
-                    }}
-                    options={seccionOptions}
-                    placeholder="Seleccionar sección…"
-                    aria-label="Sección"
-                  />
-                </div>
-              ),
-            },
-            {
-              id: 'puesto',
+              id: 'seleccion',
               title: 'Puesto',
-              isValid: puesto.length > 0,
+              isValid: area.length > 0 && seccion.length > 0 && puesto.length > 0,
               content: (
-                <div className="form-group" data-testid="pos-settings-step-puesto">
-                  <label htmlFor="pos-puesto">Puesto *</label>
-                  <CustomSelect
-                    id="pos-puesto"
-                    value={puesto}
-                    onChange={handlePuestoChange}
-                    options={puestoOptions}
-                    placeholder="Seleccionar puesto…"
-                    aria-label="Puesto"
-                  />
+                <div data-testid="pos-settings-step-seleccion">
+                  <div className="form-group">
+                    <label htmlFor="pos-area">Área *</label>
+                    <CustomSelect
+                      id="pos-area"
+                      value={area}
+                      onChange={(v) => {
+                        setArea(v);
+                        setSeccion('');
+                        setPuesto('');
+                      }}
+                      options={areaOptions}
+                      placeholder="Seleccionar área…"
+                      aria-label="Área"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="pos-seccion">Sección *</label>
+                    <CustomSelect
+                      id="pos-seccion"
+                      value={seccion}
+                      onChange={(v) => {
+                        setSeccion(v);
+                        setPuesto('');
+                      }}
+                      options={seccionOptions}
+                      placeholder="Seleccionar sección…"
+                      aria-label="Sección"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="pos-puesto">Puesto *</label>
+                    <CustomSelect
+                      id="pos-puesto"
+                      value={puesto}
+                      onChange={handlePuestoChange}
+                      options={puestoOptions}
+                      placeholder="Seleccionar puesto…"
+                      aria-label="Puesto"
+                    />
+                  </div>
                 </div>
               ),
             },
@@ -265,7 +258,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                       </span>
                     </div>
                   )}
-                  <div className="form-grid">
+                  <div className="pos-settings-metrics-grid">
                     <div className="form-group">
                       <label htmlFor="pos-plantilla">Plantilla autorizada *</label>
                       <input
@@ -275,8 +268,16 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={plantilla}
                         onChange={(e) => setPlantilla(e.target.value)}
                         data-testid="pos-settings-plantilla"
+                        className={isPlantillaError ? 'input-error' : ''}
+                        aria-invalid={isPlantillaError}
+                        aria-describedby={isPlantillaError ? "pos-plantilla-error" : undefined}
                         required
                       />
+                      {isPlantillaError && (
+                        <span id="pos-plantilla-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                          Debe ser 0 o mayor
+                        </span>
+                      )}
                     </div>
                     <div className="form-group">
                       <label htmlFor="pos-backup">Backup *</label>
@@ -287,8 +288,16 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={backup}
                         onChange={(e) => setBackup(e.target.value)}
                         data-testid="pos-settings-backup"
+                        className={isBackupError ? 'input-error' : ''}
+                        aria-invalid={isBackupError}
+                        aria-describedby={isBackupError ? "pos-backup-error" : undefined}
                         required
                       />
+                      {isBackupError && (
+                        <span id="pos-backup-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                          Debe ser 0 o mayor
+                        </span>
+                      )}
                     </div>
                     <div className="form-group">
                       <label htmlFor="pos-urgentes">Starlite *</label>
@@ -299,20 +308,28 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         value={urgentes}
                         onChange={(e) => setUrgentes(e.target.value)}
                         data-testid="pos-settings-urgentes"
+                        className={isUrgentesError ? 'input-error' : ''}
+                        aria-invalid={isUrgentesError}
+                        aria-describedby={isUrgentesError ? "pos-urgentes-error" : undefined}
                         required
                       />
+                      {isUrgentesError && (
+                        <span id="pos-urgentes-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                          Debe ser 0 o mayor
+                        </span>
+                      )}
                     </div>
-                    <div className="form-group form-group--span-2">
-                      <label htmlFor="pos-notas">Notas</label>
-                      <textarea
-                        id="pos-notas"
-                        rows={3}
-                        value={notas}
-                        onChange={(e) => setNotas(e.target.value)}
-                        placeholder="Motivo del backup / contexto…"
-                        data-testid="pos-settings-notas"
-                      />
-                    </div>
+                  </div>
+                  <div className="form-group pos-settings-notas-wrap">
+                    <label htmlFor="pos-notas">Notas</label>
+                    <textarea
+                      id="pos-notas"
+                      rows={3}
+                      value={notas}
+                      onChange={(e) => setNotas(e.target.value)}
+                      placeholder="Motivo del backup / contexto…"
+                      data-testid="pos-settings-notas"
+                    />
                   </div>
                 </div>
               ),

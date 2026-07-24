@@ -26,7 +26,8 @@
   background: var(--color-surface-soft);
 }
 
-.custom-select-trigger:focus-visible {
+.custom-select-trigger:focus-visible,
+.custom-select-trigger[aria-expanded="true"] {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: var(--shadow-focus);
@@ -96,7 +97,7 @@
   left: 0;
   width: 100%;
   z-index: 50;
-  background: var(--color-canvas);
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-elevated);
@@ -206,7 +207,8 @@
 }
 
 .custom-select-option:hover,
-.custom-select-option:focus-visible {
+.custom-select-option:focus-visible,
+.custom-select-option.is-highlighted {
   background: var(--color-surface-soft);
   outline: none;
 }
