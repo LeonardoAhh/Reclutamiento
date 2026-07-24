@@ -76,15 +76,15 @@ export function TopRecruiterModal() {
 
         const topNameLower = actualTopRecruiter.name.toLowerCase();
         const expectedEmail = emailMap[topNameLower];
+        const userEmailLower = user.email.toLowerCase();
         
         const isTop = expectedEmail 
-          ? user.email?.toLowerCase() === expectedEmail
-          : (user.email?.toLowerCase().includes(topNameLower) && topNameLower !== 'nadie');
+          ? userEmailLower === expectedEmail
+          : (userEmailLower.includes(topNameLower) && topNameLower !== 'nadie');
 
         // Determinar estadísticas del usuario actual
         let currentUserTotal = 0;
         let currentUserName = '';
-        const userEmailLower = user.email?.toLowerCase() || '';
 
         for (const r of totalsArray) {
           const recNameLower = r.name.toLowerCase();
