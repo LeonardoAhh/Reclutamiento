@@ -15,6 +15,7 @@ interface IndicadorRecord {
   "Ubicacion": string;
   "Fuente de Reclutamiento": string;
   "Reclutador": string;
+  "Fecha Baja"?: string;
 }
 
 const RECRUITER_TONES = 5;
@@ -78,16 +79,31 @@ export function IndicadoresView() {
 
     const groupedByDate: Record<string, Record<string, number>> = {};
     const recruiterSet = new Set<string>();
+    
+    let totalBajasMes = 0;
+    let totalDiasPermanenciaMes = 0;
+    let bajasCountMes = 0;
+    let prevMonthTotalIngresos = 0;
+
+    const prevMonthDate = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1, 1);
+    const recruiterStats: Record<string, { totalIngresos: number; totalBajas: number; totalDiasPermanencia: number }> = {};
+    
+    // Lista para mostrar el detalle de las personas inhabilitadas
+    const bajasList: { nombre: string; reclutador: string; fechaIngreso: string; fechaBaja: string; dias: number }[] = [];
 
     data.forEach(record => {
       const date = record["Fecha Ingreso"] || 'Sin Fecha';
       const parsed = parseDate(date);
       
-      // Filter by selected month
-      if (
-        parsed.getMonth() !== selectedMonth.getMonth() || 
-        parsed.getFullYear() !== selectedMonth.getFullYear()
-      ) {
+      const isCurrentMonth = parsed.getMonth() === selectedMonth.getMonth() && parsed.getFullYear() === selectedMonth.getFullYear();
+      const isPrevMonth = parsed.getMonth() === prevMonthDate.getMonth() && parsed.getFullYear() === prevMonthDate.getFullYear();
+
+      if (!isCurrentMonth && !isPrevMonth) {
+        return;
+      }
+
+      if (isPrevMonth) {
+        prevMonthTotalIngresos += 1;
         return;
       }
 
@@ -106,6 +122,35 @@ export function IndicadoresView() {
       if (!groupedByDate[date]) groupedByDate[date] = {};
       if (!groupedByDate[date][recruiter]) groupedByDate[date][recruiter] = 0;
       groupedByDate[date][recruiter] += 1;
+      
+      if (!recruiterStats[recruiter]) {
+        recruiterStats[recruiter] = { totalIngresos: 0, totalBajas: 0, totalDiasPermanencia: 0 };
+      }
+      recruiterStats[recruiter].totalIngresos += 1;
+
+      const rawFechaBaja = record["Fecha Baja"]?.trim();
+      if (rawFechaBaja && rawFechaBaja !== '-' && rawFechaBaja.toLowerCase() !== 'sin fecha') {
+        const fechaBaja = parseDate(rawFechaBaja);
+        if (!isNaN(fechaBaja.getTime()) && !isNaN(parsed.getTime())) {
+          const msDiff = fechaBaja.getTime() - parsed.getTime();
+          const diasPermanencia = Math.max(0, Math.floor(msDiff / (1000 * 60 * 60 * 24)));
+          
+          recruiterStats[recruiter].totalBajas += 1;
+          recruiterStats[recruiter].totalDiasPermanencia += diasPermanencia;
+          
+          totalBajasMes += 1;
+          totalDiasPermanenciaMes += diasPermanencia;
+          bajasCountMes += 1;
+          
+          bajasList.push({
+            nombre: record["Nombre"] || 'Sin Nombre',
+            reclutador: recruiter,
+            fechaIngreso: date,
+            fechaBaja: rawFechaBaja,
+            dias: diasPermanencia
+          });
+        }
+      }
     });
 
     const recruiterList = Array.from(recruiterSet).sort();
@@ -126,13 +171,25 @@ export function IndicadoresView() {
       tone: getRecruiterTone(recruiterList.indexOf(rec))
     }));
     const topRecruiter = recruiterTotals.length ? recruiterTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
-    const diasObjetivo = formattedData.filter(row => row.total >= 7).length;
+    const reclutadoresEnMeta = recruiterTotals.filter(r => r.total >= 28).length;
+    const promedioPermanenciaGlobal = bajasCountMes > 0 ? Math.round(totalDiasPermanenciaMes / bajasCountMes) : 0;
 
     return {
       chartData: formattedData,
       recruiters: recruiterList,
       tableData: formattedData,
-      kpi: { totalIngresos, promedio, topRecruiter, diasObjetivo, recruiterTotals }
+      kpi: { 
+        totalIngresos, 
+        promedio, 
+        topRecruiter, 
+        reclutadoresEnMeta, 
+        recruiterTotals,
+        totalBajasMes,
+        promedioPermanenciaGlobal,
+        recruiterStats,
+        prevMonthTotalIngresos,
+        bajasList
+      }
     };
   }, [data, selectedMonth]);
 
@@ -195,7 +252,19 @@ export function IndicadoresView() {
         <div className="indicadores-kpi-grid" role="region" aria-label="Resumen de indicadores">
           <div className="indicadores-kpi-card">
             <span className="indicadores-kpi-label">Total Ingresos</span>
-            <span className="indicadores-kpi-value">{kpi.totalIngresos}</span>
+            <span className="indicadores-kpi-value">
+              {kpi.totalIngresos}
+              {kpi.prevMonthTotalIngresos > 0 && (
+                <span 
+                  className={`type-caption-sm font-bold ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'text-success' : 'text-error'}`}
+                  style={{ marginLeft: 'var(--spacing-sm)' }}
+                  title={`Mes anterior: ${kpi.prevMonthTotalIngresos} ingresos`}
+                >
+                  {kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? '↑ +' : '↓ -'} 
+                  {Math.abs(kpi.totalIngresos - kpi.prevMonthTotalIngresos)}
+                </span>
+              )}
+            </span>
             <span className="indicadores-kpi-sub">{tableData.length} fechas registradas</span>
           </div>
           <div className="indicadores-kpi-card">
@@ -211,9 +280,12 @@ export function IndicadoresView() {
             <span className="indicadores-kpi-sub">{kpi.topRecruiter?.total} ingresos</span>
           </div>
           <div className="indicadores-kpi-card">
-            <span className="indicadores-kpi-label">Días Objetivo</span>
-            <span className="indicadores-kpi-value">{kpi.diasObjetivo}</span>
-            <span className="indicadores-kpi-sub">Meta: 7 ingresos</span>
+            <span className="indicadores-kpi-label">Meta Mensual</span>
+            <span className="indicadores-kpi-value">
+              {kpi.reclutadoresEnMeta}
+              <span className="type-caption-sm text-muted font-normal" style={{ marginLeft: 'var(--spacing-xs)' }}>/ {kpi.recruiterTotals.length}</span>
+            </span>
+            <span className="indicadores-kpi-sub">Reclutadores con ≥ 28 ingresos</span>
           </div>
         </div>
       )}
@@ -439,6 +511,162 @@ export function IndicadoresView() {
           )}
         </div>
       </div>
+
+      {/* ── Sección de Retención y Efectividad ──────────────────── */}
+      <header className="config-page__header" style={{ marginTop: 'var(--spacing-xl)' }}>
+        <h2 className="config-page__title">Efectividad y Retención</h2>
+      </header>
+
+      {kpi && (
+        <>
+          <div className="indicadores-kpi-grid" role="region" aria-label="Resumen de bajas">
+            <div className="indicadores-kpi-card">
+              <span className="indicadores-kpi-label">Total Bajas</span>
+              <span className="indicadores-kpi-value text-error">
+                {kpi.totalBajasMes}
+              </span>
+              <span className="indicadores-kpi-sub">Personal inactivo</span>
+            </div>
+            <div className="indicadores-kpi-card">
+              <span className="indicadores-kpi-label">Promedio Permanencia</span>
+              <span className="indicadores-kpi-value">
+                {kpi.promedioPermanenciaGlobal}
+              </span>
+              <span className="indicadores-kpi-sub">Días antes de baja</span>
+            </div>
+          </div>
+
+          <div className="indicadores-card indicadores-table-card">
+            <div className="indicadores-table-header">
+              <h3 className="type-heading-sm text-ink m-0">Desempeño por Reclutador</h3>
+            </div>
+            <div className="table-responsive indicadores-desktop-only">
+              <table className="indicadores-table" aria-label="Efectividad por reclutador">
+                <caption className="sr-only">Resumen de retención por reclutador</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" className="indicadores-table-sticky">Reclutador</th>
+                    <th scope="col" className="text-right">Ingresos</th>
+                    <th scope="col" className="text-right">Bajas</th>
+                    <th scope="col" className="text-right">Retención (%)</th>
+                    <th scope="col" className="text-right">Prom. Días</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recruiters.map((recruiter, index) => {
+                    const stats = kpi.recruiterStats[recruiter];
+                    if (!stats) return null;
+                    const retention = stats.totalIngresos > 0 
+                      ? Math.round(((stats.totalIngresos - stats.totalBajas) / stats.totalIngresos) * 100) 
+                      : 100;
+                    const avgDays = stats.totalBajas > 0 
+                      ? Math.round(stats.totalDiasPermanencia / stats.totalBajas) 
+                      : '-';
+
+                    return (
+                      <tr key={`retention-${recruiter}`}>
+                        <th scope="row" className="indicadores-table-row-header">
+                          <span
+                            className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
+                            aria-hidden="true"
+                          />
+                          {recruiter}
+                        </th>
+                        <td className="text-right font-medium">{stats.totalIngresos}</td>
+                        <td className="text-right font-bold text-error">{stats.totalBajas > 0 ? stats.totalBajas : '-'}</td>
+                        <td className="text-right">
+                          <span className={`indicador-value ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
+                            {retention}%
+                          </span>
+                        </td>
+                        <td className="text-right text-muted">{avgDays}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* ── Mobile View for Retention ── */}
+            <div className="indicadores-mobile-only">
+              <ul className="indicadores-mobile-list" aria-label="Retención por reclutador">
+                {recruiters.map((recruiter, index) => {
+                  const stats = kpi.recruiterStats[recruiter];
+                  if (!stats) return null;
+                  const retention = stats.totalIngresos > 0 
+                    ? Math.round(((stats.totalIngresos - stats.totalBajas) / stats.totalIngresos) * 100) 
+                    : 100;
+                  const avgDays = stats.totalBajas > 0 
+                    ? Math.round(stats.totalDiasPermanencia / stats.totalBajas) 
+                    : '-';
+
+                  return (
+                    <li key={`retention-mob-${recruiter}`}>
+                      <div className="indicadores-mobile-list__btn" style={{ cursor: 'default' }}>
+                        <div className="indicadores-mobile-list__info">
+                          <span
+                            className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
+                            aria-hidden="true"
+                          />
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+                            <span className="type-body-sm font-medium text-ink">{recruiter}</span>
+                            <span className="type-caption-sm text-muted">Ingresos: {stats.totalIngresos} &nbsp;|&nbsp; Bajas: <span className="text-error font-medium">{stats.totalBajas}</span></span>
+                          </div>
+                        </div>
+                        <div className="indicadores-mobile-list__right" style={{ flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--spacing-xs)' }}>
+                          <span className={`type-body-sm font-bold ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
+                            {retention}%
+                          </span>
+                          <span className="type-caption-sm text-muted">
+                            Prom. {avgDays}d
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+
+          {kpi.bajasList.length > 0 && (
+            <div className="indicadores-card indicadores-table-card" style={{ marginTop: 'var(--spacing-lg)' }}>
+              <div className="indicadores-table-header">
+                <h3 className="type-heading-sm text-ink m-0">Detalle de Personal Inactivo</h3>
+              </div>
+              <div className="indicadores-bajas-grid">
+                {recruiters.map(recruiter => {
+                  const bajasOfRecruiter = kpi.bajasList.filter(b => b.reclutador === recruiter);
+                  if (bajasOfRecruiter.length === 0) return null;
+                  
+                  return (
+                    <div key={`bajas-col-${recruiter}`} className="indicadores-bajas-col">
+                      <h4 className="indicadores-bajas-header type-body-sm font-bold uppercase">{recruiter}</h4>
+                      <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
+                        {bajasOfRecruiter.map((baja, i) => (
+                          <li key={`baja-detail-${i}`} style={{ borderBottom: '1px solid var(--color-hairline)', padding: 'var(--spacing-md)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span className="type-body-sm font-medium text-ink">{baja.nombre}</span>
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-md)', marginTop: 'var(--spacing-xs)' }}>
+                                <span className="type-caption-sm text-muted">
+                                  <strong>Ingreso:</strong> {baja.fechaIngreso}
+                                </span>
+                                <span className="type-caption-sm text-error font-medium">
+                                  <strong>Baja:</strong> {baja.fechaBaja} ({baja.dias} días)
+                                </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </section>
   );
 }
