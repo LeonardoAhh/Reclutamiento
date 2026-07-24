@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, Clock, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { getShortName } from '@/lib/names';
 import { useRutas, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -153,7 +154,6 @@ interface ShiftBarsProps {
 
 function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleados = [], empleadosPrev = [], animKey }: ShiftBarsProps) {
   const entries = Object.entries(turnosCount)
-    .filter(([turno]) => turno !== '4')
     .sort(([a], [b]) => a.localeCompare(b));
 
   return (
@@ -179,21 +179,21 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
           <div className="trend-tooltip">
             {added.length > 0 && (
               <div className="trend-tooltip__section">
-                <strong className="text-success" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <strong className="trend-tooltip__title trend-tooltip__title--success">
                   <TrendingUp size={12} /> Altas ({added.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
-                  {added.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
+                  {added.map(e => <li key={e.numeroEmpleado}>{getShortName(e.nombre)}</li>)}
                 </ul>
               </div>
             )}
             {removed.length > 0 && (
-              <div className="trend-tooltip__section" style={{ marginTop: added.length > 0 ? 'var(--spacing-sm)' : 0 }}>
-                <strong className="text-danger" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div className="trend-tooltip__section">
+                <strong className="trend-tooltip__title trend-tooltip__title--danger">
                   <TrendingDown size={12} /> Bajas ({removed.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
-                  {removed.map(e => <li key={e.numeroEmpleado}>{e.nombre}</li>)}
+                  {removed.map(e => <li key={e.numeroEmpleado}>{getShortName(e.nombre)}</li>)}
                 </ul>
               </div>
             )}

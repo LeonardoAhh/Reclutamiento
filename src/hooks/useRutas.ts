@@ -25,7 +25,12 @@ const ROUTE_CAPACITIES = [
   { "TURNO": "3", "RUTAS": "R2- SAN JOSE ITURBIDE", "CAPACIDAD": "21" },
   { "TURNO": "3", "RUTAS": "R4-SANTA ROSA", "CAPACIDAD": "21" },
   { "TURNO": "3", "RUTAS": "R5- QUERETARO-AV. DE LA LUZ", "CAPACIDAD": "21" },
-  { "TURNO": "3", "RUTAS": "R6- AV. DE LA LUZ - PASEOS QUERETARO", "CAPACIDAD": "21" }
+  { "TURNO": "3", "RUTAS": "R6- AV. DE LA LUZ - PASEOS QUERETARO", "CAPACIDAD": "21" },
+  { "TURNO": "4", "RUTAS": "R1- QUERETARO- PIE DE LA CUESTA", "CAPACIDAD": "21" },
+  { "TURNO": "4", "RUTAS": "R2- SAN JOSE ITURBIDE", "CAPACIDAD": "21" },
+  { "TURNO": "4", "RUTAS": "R4-SANTA ROSA", "CAPACIDAD": "21" },
+  { "TURNO": "4", "RUTAS": "R5- QUERETARO-AV. DE LA LUZ", "CAPACIDAD": "21" },
+  { "TURNO": "4", "RUTAS": "R6- AV. DE LA LUZ - PASEOS QUERETARO", "CAPACIDAD": "21" }
 ];
 
 /* ─── Raw shape from JSON ─── */
@@ -97,9 +102,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
     group.empleados.push(emp);
     group.totalEmpleados += 1;
     if (!group.paradas.includes(emp.parada)) group.paradas.push(emp.parada);
-    if (emp.turno !== '4') {
-      group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
-    }
+    group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
     
     // Add to daily capacity based on shift schedule. Turno 4 is variable,
     // so it contributes to the day-by-day passenger load but is not shown as
@@ -113,7 +116,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
   }
 
   for (const empPrev of empleadosPrev) {
-    if (map.has(empPrev.nombreRuta) && empPrev.turno !== '4') {
+    if (map.has(empPrev.nombreRuta)) {
       const group = map.get(empPrev.nombreRuta)!;
       group.empleadosPrev.push(empPrev);
       group.turnosCountPrev[empPrev.turno] = (group.turnosCountPrev[empPrev.turno] ?? 0) + 1;

@@ -1105,6 +1105,27 @@
   flex-direction: column;
   padding: var(--spacing-xs);
   min-width: 150px;
+  gap: var(--spacing-sm);
+}
+
+.trend-tooltip__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.trend-tooltip__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+.trend-tooltip__title--success {
+  color: var(--color-accent-green);
+}
+
+.trend-tooltip__title--danger {
+  color: var(--color-accent-orange);
 }
 
 .trend-tooltip__list {
@@ -1112,8 +1133,7 @@
   padding: 0;
   list-style: none;
   font-size: var(--type-caption-sm-size);
-  color: var(--color-on-surface);
-  margin-top: 4px;
+  color: var(--color-canvas);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1128,5 +1148,5 @@
   content: "•";
   position: absolute;
   left: 0;
-  color: var(--color-on-surface-soft);
+  color: var(--color-ink-faint);
 }
