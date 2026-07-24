@@ -225,6 +225,7 @@
   background: var(--color-surface-sunken);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--rounded-full);
+  white-space: nowrap;
 }
 
 /* Botón de detalle (PC, visible cuando la card está revelada). */

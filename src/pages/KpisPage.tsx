@@ -195,10 +195,8 @@
     }, [employees, currentWeek]);
     const weeklyHiresDateBadge = useMemo(() => {
       if (weeklyHires.length === 0) return null;
-      const dates = Array.from(new Set(weeklyHires.map(e => String(e.fecha_ingreso)))).sort();
-      if (dates.length === 1) return formatProjectionDate(dates[0]);
-      return `${formatProjectionDate(dates[0])} - ${formatProjectionDate(dates[dates.length - 1])}`;
-    }, [weeklyHires]);
+      return `Semana ${currentWeek.week}`;
+    }, [weeklyHires, currentWeek.week]);
     const weeklyBajas: Baja[] = useMemo(
       () =>
         bajas
@@ -228,10 +226,8 @@
     }, [employees, currentWeek]);
     const futureHiresDateBadge = useMemo(() => {
       if (weeklyFutureHires.length === 0) return null;
-      const dates = Array.from(new Set(weeklyFutureHires.map(e => String(e.fecha_ingreso)))).sort();
-      if (dates.length === 1) return formatProjectionDate(dates[0]);
-      return `${formatProjectionDate(dates[0])} - ${formatProjectionDate(dates[dates.length - 1])}`;
-    }, [weeklyFutureHires]);
+      return `Semana ${currentWeek.week}`;
+    }, [weeklyFutureHires, currentWeek.week]);
     const weeklyHiresSubtitle = useMemo(() => {
       const diff = weeklyHires.length - previousWeekHires.length;
       const sign = diff > 0 ? '+' : '';
@@ -505,7 +501,7 @@
           id: 'kpi-proximos-ingresos',
           label: (
             <span className="kpis-page__label-with-badge">
-              Ingresos
+              Proximos Ingresos
               {futureHiresDateBadge && (
                 <span className="kpis-page__date-badge">{futureHiresDateBadge}</span>
               )}
