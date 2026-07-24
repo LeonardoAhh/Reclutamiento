@@ -1024,14 +1024,6 @@
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
-    "numero empleado": "3587",
-    "nombre": "AVILA ALDANA KEVIN ULISES",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "EN EL OXXO DE LOS PILARES"
-  },
-  {
     "numero empleado": "3593",
     "nombre": "DE LA CRUZ BECERRA ENRIQUE",
     "turno": "4",
@@ -1856,14 +1848,6 @@
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
-    "numero empleado": "4183",
-    "nombre": "PEREZ CORDOVA AMPARO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
     "numero empleado": "4184",
     "nombre": "MARTINEZ MARTINEZ ALEJANDRA",
     "turno": "4",
@@ -2296,22 +2280,6 @@
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
-    "numero empleado": "4277",
-    "nombre": "HERNANDEZ SANCHEZ MARIA GUADALUPE",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4278",
-    "nombre": "PERUCHO TLALAPANGO JESSICA NAYELLI",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
-  },
-  {
     "numero empleado": "4279",
     "nombre": "LOPEZ MONROY ERIKA YANEI",
     "turno": "2",
@@ -2334,5 +2302,21 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+  },
+  {
+    "numero empleado": "4282",
+    "nombre": "BAUTISTA GALINDO ROSA AVELINA",
+    "turno": "3",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4283",
+    "nombre": "TORRES DIAZ RAFAEL",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   }
 ]

@@ -105,7 +105,7 @@
   },
   {
     "numero empleado": "1671",
-    "nombre": "AMADOR FRANCO IVAN GUILLEERMO",
+    "nombre": "AMADOR FRANCO IVAN GUILLERMO ",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
@@ -198,14 +198,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SALITRE",
     "parada": "FRENTE AL JARDIN"
-  },
-  {
-    "numero empleado": "2038",
-    "nombre": "FLORES GARCIA JAVIER ISRAEL",
-    "turno": "2",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "2043",
@@ -418,7 +410,7 @@
   {
     "numero empleado": "2440",
     "nombre": "GALLARDO DIAZ CIUNELY YETZABEL",
-    "turno": "2",
+    "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
@@ -570,7 +562,7 @@
   {
     "numero empleado": "2777",
     "nombre": "ROSAS ALMANZA MARIA ALEJANDRA",
-    "turno": "3",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
@@ -746,7 +738,7 @@
   {
     "numero empleado": "3163",
     "nombre": "SILVA CARMONA MARIAN ITZEL",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
@@ -762,7 +754,7 @@
   {
     "numero empleado": "3190",
     "nombre": "HERNANDEZ DE LA CRUZ GUADALUPE",
-    "turno": "3",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
@@ -994,7 +986,7 @@
   {
     "numero empleado": "3551",
     "nombre": "ZARRABAL DIAZ JORGE JAVIER",
-    "turno": "4",
+    "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
@@ -1026,7 +1018,7 @@
   {
     "numero empleado": "3593",
     "nombre": "DE LA CRUZ BECERRA ENRIQUE",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
@@ -1160,14 +1152,6 @@
     "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
-    "numero empleado": "3772",
-    "nombre": "MORENO ROMERO OSMAR",
-    "turno": "4",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero empleado": "3773",
     "nombre": "PEREZ UGALDE KARLA MARIANA",
     "turno": "1",
@@ -1290,7 +1274,7 @@
   {
     "numero empleado": "3881",
     "nombre": "GARCIA  DE LA CRUZ VICTORIA EDITH",
-    "turno": "1",
+    "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
@@ -1450,7 +1434,7 @@
   {
     "numero empleado": "4040",
     "nombre": "VAZQUEZ IRETA SOFIA GUADALUPE ",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
@@ -1520,14 +1504,6 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
-    "numero empleado": "4065",
-    "nombre": "SERRANO  RODRIGUEZ JOSE ALEJANDRO",
-    "turno": "2",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
     "numero empleado": "4077",
     "nombre": "VILLANUEVA LUCIANO MARIA DEL CARMEN",
     "turno": "4",
@@ -1538,7 +1514,7 @@
   {
     "numero empleado": "4078",
     "nombre": "SUSANO TEODORO YOSELIN",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "OBRERA",
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
@@ -1674,7 +1650,7 @@
   {
     "numero empleado": "4117",
     "nombre": "GUZMAN MENDOZA LAURA ROMINA",
-    "turno": "1",
+    "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
@@ -1842,7 +1818,7 @@
   {
     "numero empleado": "4180",
     "nombre": "HERNANDEZ VILLA MARIA FERNANDA",
-    "turno": "3",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
@@ -1882,7 +1858,7 @@
   {
     "numero empleado": "4192",
     "nombre": "BALDERAS HERNANDEZ RENE",
-    "turno": "2",
+    "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -1894,14 +1870,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PEÑAFLOR",
     "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
-    "numero empleado": "4194",
-    "nombre": "SALDIVAR AGUILAR ALAN",
-    "turno": "4",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "MONTENEGRO",
-    "parada": "LONCHERIA LILI"
   },
   {
     "numero empleado": "4200",
@@ -2066,7 +2034,7 @@
   {
     "numero empleado": "4234",
     "nombre": "ARCADIO CRUZ INGRID ALEJANDRA",
-    "turno": "2",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
@@ -2264,6 +2232,14 @@
     "parada": "PARADA DE AUTOBUSES SECUNDARIA"
   },
   {
+    "numero empleado": "4274",
+    "nombre": "ANTONIO SABINO JOSE ROBERTO",
+    "turno": "2",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+  },
+  {
     "numero empleado": "4275",
     "nombre": "GUDIÑO LOPEZ MARIA GABRIELA",
     "turno": "1",
@@ -2318,5 +2294,13 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+  },
+  {
+    "numero empleado": "4287",
+    "nombre": "VARGAS LARA JACIM ALDAIR",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "FRACC. MONTENEGRO",
+    "parada": "PARADA DE CAMIONES HUIZACHE"
   }
 ]

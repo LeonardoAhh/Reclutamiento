@@ -1,8 +1,8 @@
 {
-  "version": "0.6.5.3",
-  "fecha": "2026-07-23",
+  "version": "0.6.5.7",
+  "fecha": "2026-07-24",
   "nivel": "success",
   "titulo": "Actualización",
-  "mensaje": "Mejoras de estabilidad y rediseño.",
+  "mensaje": "Actualización de rutas.",
   "notificar": true
 }
