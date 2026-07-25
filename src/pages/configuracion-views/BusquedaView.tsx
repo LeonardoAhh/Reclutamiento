@@ -89,6 +89,10 @@ function displayValue(value: unknown) {
   return text ? toTitleCase(text) : 'Sin información';
 }
 
+function normalizeEmpNum(num: string) {
+  return String(parseInt(num.replace(/\D/g, '') || '0', 10));
+}
+
 function describeCalendarCode(code?: string) {
   if (!code || code === '-' || code === 'X') return 'Sin registro';
   if (code === 'A') return 'Asistencia';
@@ -202,7 +206,7 @@ function GlobalIncidenceHistory({
     for (const report of sortedReports) {
       const row = report.data.find(
         (candidate): candidate is ReportEmployeeRow =>
-          isReportEmployeeRow(candidate) && candidate.numero_empleado === employeeNumber,
+          isReportEmployeeRow(candidate) && normalizeEmpNum(candidate.numero_empleado) === normalizeEmpNum(employeeNumber),
       );
       if (row) {
         const incidents = Object.entries(row.days)
@@ -363,7 +367,7 @@ export function BusquedaView() {
   const employeeDaysByNumber = useMemo(() => {
     const map = new Map<string, Record<string, string>>();
     for (const row of reportRows) {
-      map.set(row.numero_empleado, row.days);
+      map.set(normalizeEmpNum(row.numero_empleado), row.days);
     }
     return map;
   }, [reportRows]);
@@ -812,7 +816,7 @@ export function BusquedaView() {
 
                         <div className="config-calendar-layout">
                           {(() => {
-                            const empDays = employeeDaysByNumber.get(employeeNumber);
+                            const empDays = employeeDaysByNumber.get(normalizeEmpNum(employeeNumber));
 
                             if (reportLoading) {
                               return (

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IndicadorRecord {
@@ -163,6 +164,10 @@ export function IndicadoresView() {
 
     formattedData.sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime());
 
+    const isBeforeJune2026 = selectedMonth.getFullYear() < 2026 || (selectedMonth.getFullYear() === 2026 && selectedMonth.getMonth() < 5);
+    const metaMensual = isBeforeJune2026 ? 13 : 28;
+    const metaSemanal = isBeforeJune2026 ? null : 7;
+
     const totalIngresos = formattedData.reduce((acc, row) => acc + row.total, 0);
     const promedio = formattedData.length ? Math.round((totalIngresos / formattedData.length) * 10) / 10 : 0;
     const recruiterTotals = recruiterList.map(rec => ({
@@ -171,7 +176,7 @@ export function IndicadoresView() {
       tone: getRecruiterTone(recruiterList.indexOf(rec))
     }));
     const topRecruiter = recruiterTotals.length ? recruiterTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
-    const reclutadoresEnMeta = recruiterTotals.filter(r => r.total >= 28).length;
+    const reclutadoresEnMeta = recruiterTotals.filter(r => r.total >= metaMensual).length;
     const promedioPermanenciaGlobal = bajasCountMes > 0 ? Math.round(totalDiasPermanenciaMes / bajasCountMes) : 0;
 
     return {
@@ -188,10 +193,82 @@ export function IndicadoresView() {
         promedioPermanenciaGlobal,
         recruiterStats,
         prevMonthTotalIngresos,
-        bajasList
+        bajasList,
+        metaMensual,
+        metaSemanal
       }
     };
   }, [data, selectedMonth]);
+
+  const historicalGoals = useMemo(() => {
+    const statsByMonthRecruiter: Record<string, Record<string, number>> = {};
+    const recruiterSet = new Set<string>();
+    
+    data.forEach(record => {
+      const dateStr = record["Fecha Ingreso"];
+      if (!dateStr) return;
+      const parsed = parseDate(dateStr);
+      if (isNaN(parsed.getTime())) return;
+      
+      const year = parsed.getFullYear();
+      const month = parsed.getMonth();
+      const monthKey = `${year}-${month}`;
+      
+      let rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
+      let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
+      
+      if (recruiter !== 'Sin Reclutador') {
+        recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
+        if (recruiter === 'Nayeli') {
+          recruiter = 'Alexandra';
+        }
+      }
+      if (recruiter === 'Sin Reclutador') return;
+      
+      recruiterSet.add(recruiter);
+      
+      if (!statsByMonthRecruiter[monthKey]) statsByMonthRecruiter[monthKey] = {};
+      if (!statsByMonthRecruiter[monthKey][recruiter]) statsByMonthRecruiter[monthKey][recruiter] = 0;
+      
+      statsByMonthRecruiter[monthKey][recruiter] += 1;
+    });
+    
+    const recruiterMonthsCompleted: Record<string, { total: number, details: { monthName: string, meta: number, count: number }[] }> = {};
+    Array.from(recruiterSet).forEach(rec => recruiterMonthsCompleted[rec] = { total: 0, details: [] });
+    
+    const sortedMonths = Object.entries(statsByMonthRecruiter).sort((a, b) => {
+      const [yearA, monthA] = a[0].split('-').map(Number);
+      const [yearB, monthB] = b[0].split('-').map(Number);
+      return yearA !== yearB ? yearA - yearB : monthA - monthB;
+    });
+
+    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+    sortedMonths.forEach(([monthKey, recruiters]) => {
+      const [yearStr, monthStr] = monthKey.split('-');
+      const y = parseInt(yearStr, 10);
+      const m = parseInt(monthStr, 10);
+      
+      const isBeforeJune2026 = y < 2026 || (y === 2026 && m < 5);
+      const meta = isBeforeJune2026 ? 13 : 28;
+      const monthName = `${monthNames[m]} ${y}`;
+      
+      Object.entries(recruiters).forEach(([rec, count]) => {
+         if (count >= meta) {
+             recruiterMonthsCompleted[rec].total += 1;
+             recruiterMonthsCompleted[rec].details.push({ monthName, meta, count });
+         }
+      });
+    });
+    
+    const recruiterList = Array.from(recruiterSet).sort();
+    return recruiterList.map((name, index) => ({
+      name,
+      tone: getRecruiterTone(index),
+      monthsCompleted: recruiterMonthsCompleted[name].total,
+      details: recruiterMonthsCompleted[name].details
+    })).sort((a, b) => b.monthsCompleted - a.monthsCompleted);
+  }, [data]);
 
   const selectedRecruiterIndex = selectedMobileRecruiter
     ? recruiters.indexOf(selectedMobileRecruiter)
@@ -285,7 +362,47 @@ export function IndicadoresView() {
               {kpi.reclutadoresEnMeta}
               <span className="type-caption-sm text-muted font-normal" style={{ marginLeft: 'var(--spacing-xs)' }}>/ {kpi.recruiterTotals.length}</span>
             </span>
-            <span className="indicadores-kpi-sub">Reclutadores con ≥ 28 ingresos</span>
+            <span className="indicadores-kpi-sub">Reclutadores con ≥ {kpi.metaMensual} ingresos</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Historial de Metas ──────────────────────────────────── */}
+      {historicalGoals && historicalGoals.length > 0 && (
+        <div className="indicadores-historical-grid" role="region" aria-label="Historial de metas logradas">
+          <div className="indicadores-historical-list">
+            {historicalGoals.map(rec => (
+              <Tooltip
+                key={rec.name}
+                content={
+                  <div className="trend-tooltip">
+                    <div className="trend-tooltip__section">
+                      <strong className="trend-tooltip__title trend-tooltip__title--success">
+                        Meses logrados ({rec.details.length}):
+                      </strong>
+                      <ul className="trend-tooltip__list">
+                        {rec.details.map(d => (
+                          <li key={d.monthName}>
+                            {d.monthName}: {d.count} / {d.meta}
+                          </li>
+                        ))}
+                      </ul>
+                      {rec.details.length === 0 && (
+                        <ul className="trend-tooltip__list">
+                          <li>Aún no ha logrado la meta.</li>
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                }
+              >
+                <div className="indicadores-historical-card">
+                  <span className={`indicadores-recruiter-dot ${rec.tone}`} aria-hidden="true" />
+                  <span className="indicadores-historical-card__name">{rec.name}</span>
+                  <span className="indicadores-historical-card__value">{rec.monthsCompleted} {rec.monthsCompleted === 1 ? 'mes' : 'meses'}</span>
+                </div>
+              </Tooltip>
+            ))}
           </div>
         </div>
       )}
@@ -356,9 +473,13 @@ export function IndicadoresView() {
                   </th>
                   {tableData.map(row => {
                     const val = row[recruiter];
-                    let valClass = "text-warning";
-                    if (val && val >= 7) {
-                      valClass = "text-success";
+                    let valClass = "";
+                    if (val) {
+                      if (kpi && kpi.metaSemanal !== null) {
+                        valClass = val >= kpi.metaSemanal ? "text-success" : "text-warning";
+                      } else {
+                        valClass = "text-ink";
+                      }
                     }
                     
                     return (
@@ -377,7 +498,7 @@ export function IndicadoresView() {
                     {(() => {
                       const totalRecruiter = kpi?.recruiterTotals[index]?.total ?? 0;
                       let classColor = "text-warning";
-                      if (totalRecruiter >= 28) {
+                      if (kpi && totalRecruiter >= kpi.metaMensual) {
                         classColor = "text-success";
                       }
                       return (
@@ -395,10 +516,14 @@ export function IndicadoresView() {
                 <tr>
                   <th scope="row">Total por Fecha</th>
                   {tableData.map(row => {
-                    const teamGoal = 7 * recruiters.length;
                     let totalClass = "text-warning";
-                    if (row.total >= teamGoal) {
-                      totalClass = "text-success";
+                    if (kpi?.metaSemanal !== null) {
+                      const teamGoal = kpi!.metaSemanal * recruiters.length;
+                      if (row.total >= teamGoal) {
+                        totalClass = "text-success";
+                      }
+                    } else {
+                      totalClass = "text-body";
                     }
                     
                     return (
@@ -410,10 +535,12 @@ export function IndicadoresView() {
                   <td className="text-right font-bold type-heading-sm">
                     {(() => {
                       const totalGeneral = kpi?.totalIngresos ?? 0;
-                      const teamMonthlyGoal = 28 * recruiters.length;
                       let classColor = "text-warning";
-                      if (totalGeneral >= teamMonthlyGoal) {
-                        classColor = "text-success";
+                      if (kpi) {
+                        const teamMonthlyGoal = kpi.metaMensual * recruiters.length;
+                        if (totalGeneral >= teamMonthlyGoal) {
+                          classColor = "text-success";
+                        }
                       }
                       return (
                         <span className={classColor}>
@@ -454,8 +581,12 @@ export function IndicadoresView() {
                 {tableData.map(row => {
                   const val = row[selectedMobileRecruiter];
                   let valClass = "text-warning";
-                  if (val && val >= 7) {
-                    valClass = "text-success";
+                  if (kpi?.metaSemanal !== null) {
+                    if (val && val >= kpi!.metaSemanal) {
+                      valClass = "text-success";
+                    }
+                  } else {
+                    valClass = "text-body";
                   }
 
                   return (

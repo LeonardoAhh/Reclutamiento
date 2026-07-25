@@ -53,10 +53,15 @@
 /* -------------------------------------------------------------------------- */
 
 @media (min-width: 1024px) {
-  /* Cuando el sidebar está presente, la variable --global-sidebar-w existirá en el :root.
-     Empujamos el toaster a la derecha para que se alinee con el centro del main. */
-  [data-sileo-viewport] {
-    transform: translateX(calc(-50% + (var(--global-sidebar-w, 0px) / 2))) !important;
+  /* Cuando el sidebar está montado, el viewport del toaster respeta su ancho 
+     para mantenerse centrado con el main content */
+  body:not([data-sidebar-collapsed="true"]) [data-sileo-viewport] {
+    transform: translateX(calc(-50% + (var(--layout-sidebar-w-expanded, 248px) / 2))) !important;
+  }
+  
+  body[data-sidebar-collapsed="true"] [data-sileo-viewport] {
+    transform: translateX(calc(-50% + (var(--layout-sidebar-w-collapsed, 76px) / 2))) !important;
   }
 }
+
 

@@ -35,13 +35,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     persistSidebarCollapsed(collapsed);
-    // Expose sidebar width to global scope for Toaster alignment
-    const width = collapsed ? '76px' : '248px';
-    document.documentElement.style.setProperty('--global-sidebar-w', width);
-    
-    return () => {
-      document.documentElement.style.removeProperty('--global-sidebar-w');
-    };
+    document.body.setAttribute('data-sidebar-collapsed', String(collapsed));
   }, [collapsed]);
 
   const toggleCollapse = useCallback(() => setCollapsed((v) => !v), []);

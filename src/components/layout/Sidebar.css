@@ -444,17 +444,20 @@
   }
 }
 
+:root {
+  --layout-sidebar-w-expanded: 248px;
+  --layout-sidebar-w-collapsed: 76px;
+}
+
 /* App shell: layout sidebar + contenido.
    Fuente única de verdad para los anchos del sidebar (los consume
    .sidebar por herencia de custom properties). */
 .app-shell {
-  --_sidebar-w-expanded: 248px;
-  --_sidebar-w-collapsed: 76px;
-  --_app-sidebar-w: var(--_sidebar-w-expanded);
+  --_app-sidebar-w: var(--layout-sidebar-w-expanded);
 }
 
 .app-shell[data-collapsed='true'] {
-  --_app-sidebar-w: var(--_sidebar-w-collapsed);
+  --_app-sidebar-w: var(--layout-sidebar-w-collapsed);
 }
 
 @media (min-width: 1024px) {
