@@ -37,17 +37,14 @@ export function useDismissedPositions() {
   }, []);
 
   const toggleDismiss = useCallback((key: string) => {
-    setDismissedKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      updateGlobalState(next);
-      return next;
-    });
-  }, [updateGlobalState]);
+    const next = new Set(dismissedKeys);
+    if (next.has(key)) {
+      next.delete(key);
+    } else {
+      next.add(key);
+    }
+    updateGlobalState(next);
+  }, [dismissedKeys, updateGlobalState]);
 
   const clearDismissed = useCallback(() => {
     updateGlobalState(new Set());

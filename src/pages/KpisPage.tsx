@@ -611,7 +611,6 @@
           label: '% Cobertura Global',
           value: `${dashboardTotals.cobertura}%`,
           accentColor: getCoverageColor(dashboardTotals.cobertura),
-          variant: 'dark',
           origin: 'Dashboard',
         },
         {
@@ -795,7 +794,7 @@
                       <span className="projection-label">Vacantes Backup</span>
                     </div>
                     <div className="projection-metric">
-                      <span className="projection-value text-starlite" style={{ color: '#d97706' }}><AnimatedNumber value={projectionTotals.vacantesStarlite} /></span>
+                      <span className="projection-value text-starlite color-warning"><AnimatedNumber value={projectionTotals.vacantesStarlite} /></span>
                       <span className="projection-label">Vacantes Starlite</span>
                     </div>
                     <div className="projection-metric">

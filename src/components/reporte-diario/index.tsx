@@ -730,7 +730,7 @@ export default function ReporteDiarioContent() {
                 <header className="reporte-card reporte-head">
                     <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
-                            <h1 className="reporte-title">Asistencia</h1>
+                            <h1 className="reporte-title">Reporte Diario</h1>
                         </div>
                     </div>
                 </header>
@@ -769,7 +769,7 @@ export default function ReporteDiarioContent() {
                     <header className="reporte-hero__intro">
                         <span className="reporte-hero__eyebrow" aria-hidden="true">
                             <BarChart2 size={25} />
-                            Asistencia
+                            Reporte Diario
                         </span>
                     </header>
 
@@ -971,7 +971,7 @@ export default function ReporteDiarioContent() {
                 <header className="reporte-card reporte-head">
                     <div className="reporte-head__row">
                         <div className="reporte-title-wrapper">
-                            <h1 className="reporte-title">Asistencia</h1>
+                            <h1 className="reporte-title">Reporte</h1>
                         </div>
 
                         {hasData && (

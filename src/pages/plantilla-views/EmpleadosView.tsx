@@ -79,7 +79,7 @@ function EmployeeCards({
               </span>
             )}
             {emp.is_starlite && (
-              <div className="empleados-table__cell-badge" style={{ marginTop: 'var(--spacing-xxs)' }}>
+              <div className="empleados-table__cell-badge empleados-table__cell-badge--spaced">
                 <StarliteBadge />
               </div>
             )}
@@ -249,7 +249,7 @@ export function EmpleadosView() {
                     key={i}
                     height={34}
                     radius="var(--rounded-md)"
-                    style={{ margin: '2px 0' }}
+                    className="empleados__rail-skeleton"
                   />
                 ))}
               </div>
@@ -271,7 +271,7 @@ export function EmpleadosView() {
         <div>
           <h1 className="empleados__title">Empleados</h1>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="empleados__filters">
           <label className="empleados__search">
             <Search size={16} aria-hidden="true" />
             <input
@@ -282,7 +282,7 @@ export function EmpleadosView() {
               aria-label="Buscar empleados"
             />
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', cursor: 'pointer', flexShrink: 0 }}>
+          <label className="empleados__starlite-filter">
             <input 
               type="checkbox" 
               checked={showOnlyStarlite}

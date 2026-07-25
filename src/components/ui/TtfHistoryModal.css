@@ -80,12 +80,18 @@
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
   color: var(--color-ink);
   margin: 0;
 }
 
 .ttf-history-modal__month-count {
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
+  letter-spacing: var(--type-caption-md-tracking);
   color: var(--color-muted);
 }
 
@@ -100,8 +106,9 @@
   font-family: var(--font-display);
   font-size: var(--type-display-xl-size);
   font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
   color: var(--color-primary);
-  line-height: 1;
 }
 
 /* Badges de tendencia */
@@ -109,22 +116,24 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  font-family: var(--font-display);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  padding: 0 var(--spacing-xs);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  padding: var(--spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-sm);
   background: var(--color-surface-soft);
 }
 
 .ttf-history-modal__month-trend--up {
   color: var(--color-error);
-  background: color-mix(in srgb, var(--color-error) 12%, transparent);
+  background: var(--color-error-tint);
 }
 
 .ttf-history-modal__month-trend--down {
   color: var(--color-success);
-  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  background: var(--color-success-tint);
 }
 
 .ttf-history-modal__month-trend--neutral {
@@ -146,14 +155,14 @@
 .ttf-history-modal__table td {
   text-align: left;
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-bottom: 1px solid var(--color-hairline-soft);
+  border-bottom: 1px solid var(--color-hairline);
   vertical-align: top;
 }
 
 .ttf-history-modal__table thead th {
   background: var(--color-surface-soft);
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--type-caption-md-weight);
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   font-size: var(--type-caption-md-size);
@@ -166,7 +175,7 @@
 .ttf-history-modal__table-dias {
   text-align: right;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--color-primary);
   white-space: nowrap;
 }

@@ -299,7 +299,7 @@ export function Dashboard() {
           <Skeleton
             height={40}
             radius="var(--rounded-md)"
-            style={{ flex: '1 1 260px' }}
+            className="dashboard__hero-skeleton"
           />
           <Skeleton height={40} width={140} radius="var(--rounded-md)" />
         </section>
@@ -321,10 +321,10 @@ export function Dashboard() {
   return (
     <div className="config-layout plantilla-layout">
       <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
-        <header className="config-sidebar__header" style={{ marginBottom: 'var(--spacing-md)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-xs)', flexWrap: 'wrap', width: '100%' }}>
+        <header className="config-sidebar__header dashboard-sidebar__header">
+          <div className="dashboard-sidebar__header-content">
             <h1 className="config-sidebar__title">Plantilla</h1>
-            <div className="dashboard__hero-actions" style={{ display: 'flex', gap: '8px' }}>
+            <div className="dashboard__hero-actions">
               <button
                 type="button"
                 className="btn-primary"
@@ -333,12 +333,12 @@ export function Dashboard() {
                   setEmpModalMode('add');
                 }}
                 title="Nuevo empleado"
-                style={{ padding: '0 var(--spacing-sm)' }}
               >
                 <UserPlusIcon size={16} aria-hidden="true" />
               </button>
 
-              <span style={{ display: 'none' }}>
+              {/*
+              <span className="dashboard__import-wrapper">
                 <JsonImporter onImport={handleImport} />
               </span>
               <motion.button
@@ -348,10 +348,10 @@ export function Dashboard() {
                 title="Importar turnos por clave de horario"
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                style={{ padding: '0 var(--spacing-sm)' }}
               >
                 <Clock size={16} aria-hidden="true" />
               </motion.button>
+              */}
               <motion.button
                 type="button"
                 className="btn-secondary dashboard__report-btn"
@@ -359,7 +359,6 @@ export function Dashboard() {
                 title="Resumen de vacantes"
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                style={{ padding: '0 var(--spacing-sm)' }}
               >
                 <ClipboardList size={16} aria-hidden="true" />
               </motion.button>
@@ -367,18 +366,17 @@ export function Dashboard() {
           </div>
         </header>
 
-        <div className="config-search" style={{ padding: '0 var(--spacing-sm)', marginBottom: 'var(--spacing-md)' }}>
-          <div className="config-search__wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div className="config-search dashboard-sidebar__search">
+          <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
             <label htmlFor="search-input" className="sr-only">Buscar en la plantilla</label>
-            <Search size={16} className="text-muted" style={{ position: 'absolute', left: 'var(--spacing-sm)', pointerEvents: 'none' }} aria-hidden="true" />
+            <Search size={16} className="text-muted dashboard-sidebar__search-icon" aria-hidden="true" />
             <input
               id="search-input"
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="dashboard__search-input"
-              style={{ width: '100%', paddingLeft: 'calc(var(--spacing-lg) + var(--spacing-xs))' }}
+              className="dashboard__search-input dashboard-sidebar__search-input"
               autoComplete="off"
               aria-haspopup="listbox"
               aria-expanded={showSearchDropdown}
@@ -395,11 +393,11 @@ export function Dashboard() {
                           size={32}
                           name={emp.nombre}
                           variant="beam"
-                          colors={['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC']}
+                          colors={['var(--color-sticker-yellow)', 'var(--color-sticker-blue)', 'var(--color-sticker-green)', 'var(--color-sticker-orange)', 'var(--color-sticker-purple)']}
                         />
                       </div>
                       <div className="search-dropdown-item__text">
-                        <span className="emp-name" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+                        <span className="emp-name">
                           {(() => {
                             const parts = emp.nombre.trim().split(/\s+/);
                             let apellidos = '';
@@ -416,11 +414,11 @@ export function Dashboard() {
                             }
                             return (
                               <>
-                                <span className="emp-name__top" style={{ fontSize: '0.75rem', color: 'var(--color-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
-                                  <span style={{ fontWeight: 'bold', color: 'var(--color-ink)', marginRight: '4px' }}>#{emp.num_empleado}</span>
+                                <span className="emp-name__top">
+                                  <span className="emp-name__id">#{emp.num_empleado}</span>
                                   {apellidos}
                                 </span>
-                                <span className="emp-name__bottom" style={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span className="emp-name__bottom">
                                   {nombres}
                                   {emp.en_incapacidad && (
                                     <Badge variant="amber">
@@ -496,7 +494,7 @@ export function Dashboard() {
             onClick={() => handleTabClick('general')}
           >
             <Users size={18} aria-hidden="true" />
-            <span>Plantilla Activa</span>
+            <span>Departamentos</span>
           </button>
           <button
             className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
@@ -509,8 +507,8 @@ export function Dashboard() {
       </aside>
 
       <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
-        <button 
-          className="config-mobile-back" 
+        <button
+          className="config-mobile-back"
           onClick={() => {
             if (activeTab !== 'general' && activeTab !== 'empleados') {
               setActiveTab('general');
@@ -531,36 +529,43 @@ export function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%', padding: 'var(--spacing-md)' }}
+            className="dashboard__content-area"
           >
             {activeTab === 'general' && (
-              <section className="dashboard__departments" id="dashboard-departments">
-        {filteredDepts.length === 0 && employees.length === 0 && (
-          <div className="dashboard__empty" id="dashboard-empty">
-            <Users size={48} strokeWidth={1} />
-            <h3>Sin datos cargados</h3>
-            <p>Importa un archivo JSON o crea un empleado para comenzar.</p>
-          </div>
-        )}
+              <>
+                <header className="dashboard__hero" style={{ paddingBlock: 0 }}>
+                  <div className="dashboard__hero-content">
+                    <h1>Departamentos</h1>
+                  </div>
+                </header>
+                <section className="dashboard__departments" id="dashboard-departments">
+                  {filteredDepts.length === 0 && employees.length === 0 && (
+                    <div className="dashboard__empty" id="dashboard-empty">
+                      <Users size={48} strokeWidth={1} />
+                      <h3>Sin datos cargados</h3>
+                      <p>Importa un archivo JSON o crea un empleado para comenzar.</p>
+                    </div>
+                  )}
 
-        {filteredDepts.length === 0 && employees.length > 0 && (
-          <div className="dashboard__empty" id="dashboard-no-results">
-            <Search size={48} strokeWidth={1} />
-            <h3>Sin resultados</h3>
-            <p>No se encontraron coincidencias para tu búsqueda.</p>
-          </div>
-        )}
+                  {filteredDepts.length === 0 && employees.length > 0 && (
+                    <div className="dashboard__empty" id="dashboard-no-results">
+                      <Search size={48} strokeWidth={1} />
+                      <h3>Sin resultados</h3>
+                      <p>No se encontraron coincidencias para tu búsqueda.</p>
+                    </div>
+                  )}
 
-        {filteredDepts.map((dept) => (
-          <DepartmentCard
-            key={dept.area}
-            dept={dept}
-            onOpen={() => setActiveTab(dept.area)}
-            getCoverageBadge={getCoverageBadge}
-            incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
-          />
-        ))}
-      </section>
+                  {filteredDepts.map((dept) => (
+                    <DepartmentCard
+                      key={dept.area}
+                      dept={dept}
+                      onOpen={() => setActiveTab(dept.area)}
+                      getCoverageBadge={getCoverageBadge}
+                      incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
+                    />
+                  ))}
+                </section>
+              </>
             )}
             {activeTab === 'empleados' && <EmpleadosView />}
             {activeTab !== 'general' && activeTab !== 'empleados' && (

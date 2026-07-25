@@ -600,7 +600,7 @@ export function KpiHeroChart({
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
         background: PALETTE.surface,
-        borderRadius: presentation ? 'var(--rounded-xl)' : 'var(--rounded-lg)',
+        borderRadius: 'var(--rounded-lg)',
         border: `1px solid ${PALETTE.border}`,
         padding: presentation ? '28px 32px 24px' : '16px 12px 14px',
         boxSizing: 'border-box',
@@ -804,11 +804,14 @@ export function KpiHeroChart({
 
           <p
             style={{
-              fontSize: presentation ? 13 : 11,
+              fontFamily: 'var(--font-mono)',
+              fontSize: 'var(--type-caption-sm-size)',
+              fontWeight: 'var(--type-caption-sm-weight)',
+              lineHeight: 'var(--type-caption-sm-line)',
+              letterSpacing: 'var(--type-caption-sm-tracking)',
               color: PALETTE.textMuted,
-              margin: `${presentation ? 14 : 10}px 0 0`,
+              margin: 'var(--spacing-md) 0 0',
               textAlign: 'right',
-              fontWeight: 400,
             }}
           >
             KPI RECLUTAMIENTO

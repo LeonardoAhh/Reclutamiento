@@ -25,15 +25,15 @@
   justify-content: center;
   padding: var(--spacing-2xl);
   /* Subtle dark gradient matching Acme image */
-  background: linear-gradient(145deg, #1f1f1f 0%, #111111 100%);
-  color: #ffffff;
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
 }
 
 @media (min-width: 1024px) {
   .login__brand-panel {
     display: flex; /* Show on desktop */
     border-bottom: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: none;
     padding: 4rem;
   }
 }
@@ -58,7 +58,7 @@
 .login__brand-circle {
   width: 40px;
   height: 40px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--color-on-dark);
   border-radius: var(--rounded-full);
 }
 
@@ -75,7 +75,7 @@
   font-weight: var(--font-semibold);
   line-height: var(--type-display-lg-line);
   letter-spacing: var(--tracking-tight);
-  color: #ffffff;
+  color: var(--color-on-dark);
   margin: 0;
 }
 
@@ -84,7 +84,7 @@
   font-weight: var(--font-semibold);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-on-dark-soft);
   margin: 0;
 }
 
@@ -165,7 +165,7 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
   border: none;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   font-family: var(--font-body);
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
@@ -217,7 +217,7 @@
   color: var(--color-ink);
   background: var(--color-surface);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-xs);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 

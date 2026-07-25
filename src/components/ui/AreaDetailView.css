@@ -29,8 +29,9 @@
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
   background: var(--color-surface-soft);
-  border-bottom: 1px solid var(--color-hairline-soft);
+  border-bottom: 1px solid var(--color-hairline);
   flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
 }
 
 /* ── Métricas en tiles ── */
@@ -49,7 +50,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   min-width: 84px;
   background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
   line-height: 1.1;
   transition: border-color var(--transition-fast);
@@ -155,7 +156,7 @@
    garantizamos las esquinas redondeadas dentro de este modal. */
 .area-detail-modal__coverage .coverage-bar__track,
 .area-detail-modal__coverage .coverage-bar__fill {
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-xs);
 }
 
 /* ── Tabs ── */
@@ -163,7 +164,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  padding: var(--spacing-xs) calc(var(--spacing-lg) - var(--spacing-md));
+  padding: 0 calc(var(--spacing-lg) - var(--spacing-md));
   border-bottom: 1px solid var(--color-hairline-strong);
   overflow-x: auto;
   overflow-y: hidden;
@@ -193,6 +194,7 @@
   cursor: pointer;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
   transition:
     color var(--transition-fast),
     background var(--transition-fast),
@@ -212,7 +214,6 @@
 .area-detail-modal__tab.is-active {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
-  background: var(--color-surface-soft);
 }
 
 .area-detail-modal__tab-count {
@@ -222,7 +223,7 @@
   min-width: 22px;
   padding: 0 var(--spacing-xs);
   height: 18px;
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-xs);
   background: var(--color-hairline);
   color: var(--color-charcoal);
   font-family: var(--font-body);
@@ -242,7 +243,7 @@
   gap: var(--spacing-xxs);
   height: 18px;
   padding: 0 var(--spacing-xs);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-xs);
   background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
   color: var(--color-accent-amber);
   font-family: var(--font-body);
@@ -407,7 +408,7 @@
   }
 
   .area-detail-modal__table-wrapper {
-    border: 1px solid var(--color-hairline-soft);
+    border: 1px solid var(--color-hairline);
     border-radius: var(--rounded-lg);
     /* "auto", no "hidden": el wrapper debe poder scrollear (vertical con
        muchos puestos, horizontal en ventanas angostas) y sólo recortar
@@ -431,7 +432,7 @@
     padding: var(--spacing-sm) var(--spacing-md);
     text-align: left;
     vertical-align: middle;
-    border-bottom: 1px solid var(--color-hairline-soft);
+    border-bottom: 1px solid var(--color-hairline);
   }
 
   .dept-card__table th.text-center,
@@ -483,7 +484,7 @@
     justify-content: center;
     min-width: var(--control-height);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--rounded-pill);
+    border-radius: var(--rounded-xs);
     background: var(--color-surface-soft);
     color: var(--color-ink);
     font-weight: var(--font-semibold);
@@ -621,7 +622,7 @@
   flex-wrap: wrap;
   gap: var(--spacing-md);
   padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--color-hairline-soft);
+  border-top: 1px solid var(--color-hairline);
 }
 
 .area-detail-modal__card-metric {
@@ -663,4 +664,19 @@
   .area-detail__back-btn {
     display: none !important;
   }
+}
+
+/* ── Refactored classes from AreaDetailView.tsx inline styles ── */
+.vacancy-highlight {
+  color: var(--color-error);
+  font-weight: var(--font-semibold);
+}
+
+.tooltip-preline {
+  white-space: pre-line;
+}
+
+.tooltip-title {
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--spacing-xxs);
 }

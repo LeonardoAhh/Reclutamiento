@@ -158,7 +158,7 @@
   font-weight: var(--font-semibold);
   color: var(--color-on-dark);
   background: var(--color-ink);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-xs);
   line-height: 1.6;
 }
 
@@ -506,4 +506,28 @@
   .empleados__acc-trigger {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
+}
+
+/* ── Refactored classes from EmpleadosView.tsx inline styles ── */
+.empleados-table__cell-badge--spaced {
+  margin-top: var(--spacing-xxs);
+}
+
+.empleados__rail-skeleton {
+  margin: 2px 0;
+}
+
+.empleados__filters {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.empleados__starlite-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  flex-shrink: 0;
 }

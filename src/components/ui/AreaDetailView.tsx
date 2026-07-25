@@ -493,7 +493,7 @@ export function AreaDetailView({
                   <span className="area-detail-modal__card-metric">
                     <span className="area-detail-modal__card-metric-value">
                       {row.vacantes > 0 ? (
-                        <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{row.vacantes}</span>
+                        <span className="vacancy-highlight">{row.vacantes}</span>
                       ) : (
                         <span className="no-vacancy">—</span>
                       )}
@@ -605,8 +605,8 @@ export function AreaDetailView({
                         {row.backup > 0 && (
                           <Tooltip
                             content={
-                              <div style={{ whiteSpace: 'pre-line' }}>
-                                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                              <div className="tooltip-preline">
+                                <div className="tooltip-title">
                                   Buffer de {row.backup} personas
                                 </div>
                                 <div>{pos.notas || 'Excedentes autorizados'}</div>
@@ -624,12 +624,12 @@ export function AreaDetailView({
                       <td className="text-center font-strong hide-on-mobile">{row.plantilla_real}</td>
                       <td className="text-center">
                         {row.vacantes > 0 ? (
-                          <span style={{ color: 'var(--color-error)', fontWeight: 600 }}>{row.vacantes}</span>
+                          <span className="vacancy-highlight">{row.vacantes}</span>
                         ) : (
                           <span className="no-vacancy">—</span>
                         )}
                       </td>
-                      <td className="hide-on-mobile" style={{ color: getCoverageColor(row.porcentaje_cobertura), fontWeight: 600 }}>
+                      <td className="hide-on-mobile font-strong" style={{ color: getCoverageColor(row.porcentaje_cobertura) }}>
                         {row.porcentaje_cobertura}%
                       </td>
                       <td className="text-center">

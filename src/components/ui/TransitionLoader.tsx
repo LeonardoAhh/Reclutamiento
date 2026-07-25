@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -12,81 +13,17 @@ export function TransitionLoader({
 }: TransitionLoaderProps) {
   return (
     <div className="transition-loader" role="status" aria-live="polite">
-      {/* ── Enhanced Monochrome Loader (KokonutUI Port) ── */}
-      <motion.div
-        animate={{ scale: [1, 1.02, 1] }}
-        className="transition-loader__ring-container"
-        transition={{
-          duration: 4,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: [0.4, 0, 0.6, 1],
-        }}
-      >
-        {/* Outer elegant ring with shimmer */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          className="transition-loader__ring transition-loader__ring--outer"
-          transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-        />
-
-        {/* Primary animated ring with gradient */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          className="transition-loader__ring transition-loader__ring--primary"
-          transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, ease: [0.4, 0, 0.6, 1] }}
-        />
-
-        {/* Secondary elegant ring - counter rotation */}
-        <motion.div
-          animate={{ rotate: [0, -360] }}
-          className="transition-loader__ring transition-loader__ring--secondary"
-          transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: [0.4, 0, 0.6, 1] }}
-        />
-
-        {/* Accent particles */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          className="transition-loader__ring transition-loader__ring--accent"
-          transition={{ duration: 3.5, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-        />
-      </motion.div>
-
-      {/* Enhanced Typography with Breathing Animation */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         initial={{ opacity: 0, y: 12 }}
-        transition={{ delay: 0.4, duration: 1, ease: [0.4, 0, 0.2, 1] }}
-        className="transition-loader__text-container"
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        className="transition-loader__content"
       >
-        <motion.h1
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 12 }}
-          transition={{ delay: 0.6, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-          className="transition-loader__title"
-        >
-          <motion.span
-            animate={{ opacity: [0.9, 0.7, 0.9] }}
-            transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: [0.4, 0, 0.6, 1] }}
-          >
-            {title}
-          </motion.span>
-        </motion.h1>
-
-        {hint && (
-          <motion.p
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 8 }}
-            transition={{ delay: 0.8, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="transition-loader__hint"
-          >
-            <motion.span
-              animate={{ opacity: [0.6, 0.4, 0.6] }}
-              transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: [0.4, 0, 0.6, 1] }}
-            >
-              {hint}
-            </motion.span>
-          </motion.p>
-        )}
+        <Loader2 className="transition-loader__spinner" aria-hidden="true" />
+        <div className="transition-loader__text-container">
+          <h1 className="transition-loader__title">{title}</h1>
+          {hint && <p className="transition-loader__hint">{hint}</p>}
+        </div>
       </motion.div>
     </div>
   );
