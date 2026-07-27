@@ -2286,5 +2286,13 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA EN EL MODELORAMA SOBRE CARRETERA"
+  },
+  {
+    "numero empleado": "4290",
+    "nombre": "DOMINGUEZ LOPEZ GUADALUPE",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE LA ALAMEDA"
   }
 ]
