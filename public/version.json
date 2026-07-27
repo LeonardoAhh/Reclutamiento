@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
-  "fecha": "2026-07-25",
+  "version": "1.0.2",
+  "fecha": "2026-07-27",
   "nivel": "success",
   "titulo": "Actualización",
   "mensaje": "Correccion en la base de datos y mejoras en la interfaz de usuario.",

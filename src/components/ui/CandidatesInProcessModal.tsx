@@ -4,6 +4,7 @@ import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CandidateStatusBadge } from './CandidateStatusBadge';
+import { StarliteBadge } from './Badge';
 import './CandidatesInProcessModal.css';
 
 interface CandidatesInProcessModalProps {
@@ -15,6 +16,7 @@ interface CandidatesInProcessModalProps {
 interface PuestoSeccionCount {
   puesto: string;
   seccion: string;
+  isStarlite: boolean;
   count: number;
   statuses: Partial<Record<CandidateStatus, number>>;
 }
@@ -24,10 +26,11 @@ function groupByPuestoSeccion(candidates: Candidate[]): PuestoSeccionCount[] {
   for (const c of candidates) {
     const puesto = (c.puesto ?? '').trim() || '—';
     const seccion = (c.seccion ?? '').trim() || '—';
-    const key = `${puesto}||${seccion}`;
+    const isStarlite = !!c.is_starlite;
+    const key = `${puesto}||${seccion}||${isStarlite}`;
     let entry = map.get(key);
     if (!entry) {
-      entry = { puesto, seccion, count: 0, statuses: {} };
+      entry = { puesto, seccion, isStarlite, count: 0, statuses: {} };
       map.set(key, entry);
     }
     entry.count += 1;
@@ -53,13 +56,18 @@ export function CandidatesInProcessModal({
     <ul className="candidates-in-process-modal__puesto-list">
       {grouped.map((g) => (
         <li
-          key={`${g.puesto}||${g.seccion}`}
+          key={`${g.puesto}||${g.seccion}||${g.isStarlite}`}
           className="candidates-in-process-modal__puesto-item"
         >
           <div className="candidates-in-process-modal__puesto-main">
             <div className="candidates-in-process-modal__puesto-header">
               <span className="candidates-in-process-modal__puesto-name">
                 {g.puesto}
+                {g.isStarlite && (
+                  <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                    <StarliteBadge compact />
+                  </span>
+                )}
               </span>
               {g.seccion && (
                 <span className="candidates-in-process-modal__puesto-seccion">

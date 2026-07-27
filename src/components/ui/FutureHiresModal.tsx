@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Copy, Users } from 'lucide-react';
 import { Modal } from './Modal';
-import { StarliteBadge } from './StarliteBadge';
+import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
 import { formatShortDate } from '@/lib/dates';

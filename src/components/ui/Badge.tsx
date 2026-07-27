@@ -14,10 +14,10 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
   );
 }
 
-export const StarliteBadge = () => (
-  <span className="project-badge project-badge--starlite" title="Proyecto: Starlite">
+export const StarliteBadge = ({ compact = false }: { compact?: boolean } = {}) => (
+  <span className={`project-badge project-badge--starlite${compact ? ' project-badge--compact' : ''}`} title="Proyecto: Starlite">
     <Star size="1em" className="project-badge__icon" aria-hidden="true" />
-    <span>Starlite</span>
+    {!compact && <span>Starlite</span>}
   </span>
 );
 

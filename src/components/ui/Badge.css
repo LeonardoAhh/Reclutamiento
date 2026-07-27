@@ -81,6 +81,13 @@
   border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
+.project-badge--compact {
+  padding: 0 4px;
+  width: 20px;
+  justify-content: center;
+  gap: 0;
+}
+
 .project-badge--vinoplastic {
   color: var(--color-primary);
   background: var(--color-primary-tint);

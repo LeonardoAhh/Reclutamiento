@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { CalendarRange, Users, Copy } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
-import { StarliteBadge } from './StarliteBadge';
+import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Baja, Employee } from '@/lib/types';
 import { formatShortDate, type IsoWeekRange } from '@/lib/dates';
@@ -25,18 +25,20 @@ interface WeeklyHiresModalProps {
 interface PuestoCount {
   puesto: string;
   area: string;
+  isStarlite: boolean;
   count: number;
 }
 
 function groupByPuesto(hires: Employee[]): PuestoCount[] {
   const map = new Map<string, PuestoCount>();
   for (const e of hires) {
-    const key = `${e.area}||${e.puesto}`;
+    const isStarlite = !!e.is_starlite;
+    const key = `${e.area}||${e.puesto}||${isStarlite}`;
     const prev = map.get(key);
     if (prev) {
       prev.count += 1;
     } else {
-      map.set(key, { puesto: e.puesto, area: e.area, count: 1 });
+      map.set(key, { puesto: e.puesto, area: e.area, isStarlite, count: 1 });
     }
   }
   return Array.from(map.values()).sort(
@@ -173,7 +175,7 @@ export function WeeklyHiresModal({
     </div>
   );
 
-  const renderBajasTable = (bajasToRender: Baja[], title?: string) => (
+  const renderBajasTable = (bajasToRender: Baja[], title?: string, highlightStarlite = false) => (
     <div className="weekly-hires-modal__section">
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
@@ -186,6 +188,7 @@ export function WeeklyHiresModal({
                 <span className="weekly-hires-modal__mobile-name">
                   <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
                   {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                  {highlightStarlite && b.is_starlite && <StarliteBadge compact />}
                 </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(b.fecha_baja)}</span>
               </div>
@@ -217,7 +220,12 @@ export function WeeklyHiresModal({
                   <td className="weekly-hires-modal__cell-mono">
                     {b.num_empleado}
                   </td>
-                  <td>{b.nombre}</td>
+                  <td>
+                    <span className="weekly-hires-modal__cell-name">
+                      <span>{b.nombre}</span>
+                      {highlightStarlite && b.is_starlite && <StarliteBadge />}
+                    </span>
+                  </td>
                   <td>{b.puesto}</td>
                   <td>
                     <div className="weekly-hires-modal__cell-area">
@@ -317,8 +325,15 @@ export function WeeklyHiresModal({
                 <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
                 <ul className="weekly-hires-modal__puesto-list">
                   {groupedHires.map((g) => (
-                    <li key={`${g.area}-${g.puesto}`} className="weekly-hires-modal__puesto-item">
-                      <span className="weekly-hires-modal__puesto-name">{g.puesto}</span>
+                    <li key={`${g.area}-${g.puesto}-${g.isStarlite}`} className="weekly-hires-modal__puesto-item">
+                      <span className="weekly-hires-modal__puesto-name">
+                        {g.puesto}
+                        {g.isStarlite && (
+                          <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                            <StarliteBadge compact />
+                          </span>
+                        )}
+                      </span>
                       <span className="weekly-hires-modal__puesto-area">{g.area}</span>
                       <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                     </li>
@@ -327,8 +342,8 @@ export function WeeklyHiresModal({
               </div>
             )}
 
-            {hires.length > 0 && renderHiresTable(sortedHires, 'Detalle de ingresos')}
-            {bajas.length > 0 && renderBajasTable(bajas, 'Detalle de bajas')}
+            {hires.length > 0 && renderHiresTable(sortedHires, 'Detalle de ingresos', true)}
+            {bajas.length > 0 && renderBajasTable(bajas, 'Detalle de bajas', true)}
           </div>
         </ExpandableSection>
 
@@ -359,8 +374,15 @@ export function WeeklyHiresModal({
                 <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
                 <ul className="weekly-hires-modal__puesto-list">
                   {groupedPreviousHires.map((g) => (
-                    <li key={`${g.area}-${g.puesto}`} className="weekly-hires-modal__puesto-item">
-                      <span className="weekly-hires-modal__puesto-name">{g.puesto}</span>
+                    <li key={`${g.area}-${g.puesto}-${g.isStarlite}`} className="weekly-hires-modal__puesto-item">
+                      <span className="weekly-hires-modal__puesto-name">
+                        {g.puesto}
+                        {g.isStarlite && (
+                          <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                            <StarliteBadge compact />
+                          </span>
+                        )}
+                      </span>
                       <span className="weekly-hires-modal__puesto-area">{g.area}</span>
                       <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                     </li>
@@ -375,9 +397,10 @@ export function WeeklyHiresModal({
                 if (cmpArea !== 0) return cmpArea;
                 return (a.seccion || '').localeCompare(b.seccion || '');
               }),
-              'Detalle de ingresos'
+              'Detalle de ingresos',
+              true
             )}
-            {previousBajas.length > 0 && renderBajasTable(previousBajas, 'Detalle de bajas')}
+            {previousBajas.length > 0 && renderBajasTable(previousBajas, 'Detalle de bajas', true)}
           </div>
         </ExpandableSection>
       </div>

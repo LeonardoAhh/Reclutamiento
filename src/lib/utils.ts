@@ -217,7 +217,7 @@ export function calculatePositionCoverage(
       ? Math.round(((totalEmpleados) / objetivo) * 100)
       : 0;
 
-    const excedente = Math.max(0, (totalEmpleados) - pos.plantilla_autorizada);
+    const excedente = Math.max(0, disponiblesParaRegular - pos.plantilla_autorizada);
     const excedenteBackup = Math.min(excedente, backup);
     const excedenteCritico = Math.max(0, excedente - backup);
 

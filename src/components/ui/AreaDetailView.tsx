@@ -5,7 +5,7 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Badge } from './Badge';
+import { Badge, StarliteBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -224,7 +224,7 @@ export function AreaDetailView({
     );
 
   /** Badge de estado del puesto (reutilizado por tabla y tarjetas móviles). */
-  const renderEstado = (pos: Puesto, isStarlite: boolean) => {
+  const renderEstado = (pos: Puesto, isStarlite: boolean, rowVacantes: number, rowProximos: number) => {
     const posComments = commentsFor(pos);
     const latestComment = posComments[posComments.length - 1];
     const activeCount =
@@ -247,28 +247,28 @@ export function AreaDetailView({
         </Badge>
       );
     }
-    if (pos.vacantes > 0 && activeCount > 0) {
+    if (rowVacantes > 0 && activeCount > 0) {
       return (
         <div className="area-detail-modal__badge-stack">
           <Badge variant="teal">Proceso ({activeCount})</Badge>
-          {pos.proximos_ingresos > 0 && (
-            <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>
+          {rowProximos > 0 && (
+            <Badge variant="coral">Ingreso ({rowProximos})</Badge>
           )}
         </div>
       );
     }
-    if (pos.vacantes > 0) {
+    if (rowVacantes > 0) {
       return (
         <div className="area-detail-modal__badge-stack">
           <Badge variant="error">Sin proceso</Badge>
-          {pos.proximos_ingresos > 0 && (
-            <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>
+          {rowProximos > 0 && (
+            <Badge variant="coral">Ingreso ({rowProximos})</Badge>
           )}
         </div>
       );
     }
-    if (pos.proximos_ingresos > 0) {
-      return <Badge variant="coral">Ingreso ({pos.proximos_ingresos})</Badge>;
+    if (rowProximos > 0) {
+      return <Badge variant="coral">Ingreso ({rowProximos})</Badge>;
     }
     return <span className="no-vacancy">—</span>;
   };
@@ -444,6 +444,7 @@ export function AreaDetailView({
               const starliteAut = pos.urgentes || 0;
               
               const regularReal = pos.plantilla_real - (pos.starlite_empleados || 0);
+              const regularProximos = pos.proximos_ingresos - (pos.starlite_proximos || 0);
               
               rows.push({
                 isStarlite: false,
@@ -452,16 +453,18 @@ export function AreaDetailView({
                 plantilla_real: regularReal,
                 plantilla_autorizada: pos.plantilla_autorizada,
                 vacantes: pos.vacantes_plantilla + pos.vacantes_backup,
+                proximosIngresos: regularProximos,
               });
 
               if (starliteAut > 0 || starliteTotal > 0) {
                 rows.push({
                   isStarlite: true,
                   originalPos: pos,
-                  displayPuesto: `${pos.puesto} (STARLITE)`,
+                  displayPuesto: pos.puesto,
                   plantilla_real: pos.starlite_empleados || 0,
                   plantilla_autorizada: starliteAut,
                   vacantes: pos.vacantes_starlite,
+                  proximosIngresos: pos.starlite_proximos || 0,
                 });
               }
               return rows;
@@ -474,7 +477,14 @@ export function AreaDetailView({
               >
                 <div className="area-detail-modal__card-top">
                   <div className="area-detail-modal__card-id">
-                    <span className="area-detail-modal__card-name">{row.displayPuesto}</span>
+                    <span className="area-detail-modal__card-name">
+                      {row.displayPuesto}
+                      {row.isStarlite && (
+                        <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                          <StarliteBadge />
+                        </span>
+                      )}
+                    </span>
                     {activeTab === ALL_TAB && (
                       <span className="area-detail-modal__card-sec">{pos.seccion}</span>
                     )}
@@ -500,7 +510,7 @@ export function AreaDetailView({
                     </span>
                     <span className="area-detail-modal__card-metric-label">Vacantes</span>
                   </span>
-                  <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite)}</span>
+                  <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}</span>
                 </div>
               </li>
             )})}
@@ -542,6 +552,7 @@ export function AreaDetailView({
                     backup: pos.backup,
                     excedente_critico: pos.excedente_critico,
                     excedente_backup: pos.excedente_backup,
+                    proximosIngresos: regularProximos,
                   });
 
                   if (starliteAut > 0 || starliteTotal > 0) {
@@ -549,7 +560,7 @@ export function AreaDetailView({
                     rows.push({
                       isStarlite: true,
                       originalPos: pos,
-                      displayPuesto: `${pos.puesto} (STARLITE)`,
+                      displayPuesto: pos.puesto,
                       plantilla_real: pos.starlite_empleados || 0,
                       plantilla_autorizada: starliteAut,
                       vacantes: pos.vacantes_starlite,
@@ -557,6 +568,7 @@ export function AreaDetailView({
                       backup: 0,
                       excedente_critico: 0,
                       excedente_backup: 0,
+                      proximosIngresos: pos.starlite_proximos || 0,
                     });
                   }
                   return rows;
@@ -581,7 +593,14 @@ export function AreaDetailView({
                     >
                       <td className="cell-puesto">
                         <div className="cell-puesto__inner">
-                          <span className="cell-puesto__name">{row.displayPuesto}</span>
+                          <span className="cell-puesto__name">
+                            {row.displayPuesto}
+                            {row.isStarlite && (
+                              <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                                <StarliteBadge />
+                              </span>
+                            )}
+                          </span>
                           <div className="cell-puesto__flags">
                             {row.excedente_critico > 0 && (
                               <Badge variant="amber">
@@ -633,7 +652,7 @@ export function AreaDetailView({
                         {row.porcentaje_cobertura}%
                       </td>
                       <td className="text-center">
-                        {renderEstado(pos, row.isStarlite)}
+                        {renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}
                       </td>
                     </tr>
                   );

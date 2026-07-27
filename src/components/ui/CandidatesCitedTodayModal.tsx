@@ -1,5 +1,6 @@
 import { CalendarCheck } from 'lucide-react';
 import { Modal } from './Modal';
+import { Badge, StarliteBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
@@ -50,9 +51,12 @@ export function CandidatesCitedTodayModal({
                 <span className="candidates-cited-today-modal__puesto">{detalle}</span>
               )}
             </div>
-            {c.reclutador && (
+            {(c.reclutador || c.is_starlite) && (
               <div className="candidates-cited-today-modal__meta">
-                <span className="candidates-cited-today-modal__reclutador">{c.reclutador}</span>
+                {c.is_starlite && <StarliteBadge compact />}
+                {c.reclutador && (
+                  <span className="candidates-cited-today-modal__reclutador">{c.reclutador}</span>
+                )}
               </div>
             )}
           </li>

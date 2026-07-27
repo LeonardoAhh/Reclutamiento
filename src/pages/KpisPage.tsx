@@ -13,7 +13,7 @@
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
   import { FutureHiresModal } from '@/components/ui/FutureHiresModal';
   import { ButtonUtility } from '@/components/ui/ButtonUtility';
-  import { Badge } from '@/components/ui/Badge';
+  import { Badge, StarliteBadge } from '@/components/ui/Badge';
   import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
   import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
   import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
@@ -830,8 +830,11 @@
                             </span>
                           )}
                           {projectionTotals.proximosStarlite > 0 && (
-                            <span className="projection-chip projection-chip--starlite">
-                              ★ {projectionTotals.proximosStarlite} starlite
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+                              <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+                                {projectionTotals.proximosStarlite}
+                              </span>
+                              <StarliteBadge />
                             </span>
                           )}
                         </span>
