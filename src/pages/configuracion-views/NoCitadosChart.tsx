@@ -8,9 +8,7 @@ interface NoCitadosChartProps {
 }
 
 const COLORS = [
-  'var(--color-accent-purple)',
   'var(--color-accent-sky)',
-  'var(--color-accent-pink)',
   'var(--color-accent-teal)',
   'var(--color-accent-orange)',
   'var(--color-accent-green)',
