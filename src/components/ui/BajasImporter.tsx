@@ -28,9 +28,9 @@ export function BajasImporter({ onImport }: BajasImporterProps) {
         const arr: BajaRaw[] = Array.isArray(json) ? json : [json];
 
         const getKey = (obj: BajaRaw, key: string): string | undefined => {
-          if (obj[key] !== undefined) return obj[key];
+          if (obj[key] !== undefined) return obj[key] as string;
           const variant = Object.keys(obj).find((k) => k.trim() === key);
-          return variant ? obj[variant] : undefined;
+          return variant ? obj[variant] as string : undefined;
         };
 
         const valid = arr.every(

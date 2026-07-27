@@ -42,6 +42,7 @@ export interface Baja {
   area: string;
   seccion: string;
   puesto: string;
+  is_starlite?: boolean;
   /** Turno del empleado al momento de la baja */
   turno?: string;
   /** `YYYY-MM-DD` */
@@ -89,12 +90,13 @@ export interface BajaRaw {
   Area?: string;
   Seccion?: string;
   Puesto?: string;
+  is_starlite?: boolean;
   Turno?: string;
   'Fecha Ingreso'?: string;
   'Fecha Baja'?: string;
   'Tipo de Baja'?: string;
   'Motivo de Baja'?: string;
-  [key: string]: string | undefined;
+  [key: string]: string | boolean | undefined;
 }
 
 /**
