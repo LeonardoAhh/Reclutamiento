@@ -1591,7 +1591,7 @@
     "Puesto": "OPERADOR DE ACABADOS GP-12 D",
     "Turno": "1",
     "Fecha Ingreso": "27/05/2026",
-    "Fecha Baja": "-",
+    "Fecha Baja": "28/07/2025",
     "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
     "Parada": "SAN JOSE ITURBIDE",
     "Ubicacion": "PARADA DEL MA. TERESA",
@@ -2377,5 +2377,44 @@
     "Ubicacion": "PARADA DE LA ALAMEDA",
     "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4291",
+    "Nombre": "LINARES VELEZ FRANCISCO DAYANN",
+    "Puesto": "TÉCNICO DE MOLDES B",
+    "Turno": "5",
+    "Fecha Ingreso": "29/07/2026",
+    "Fecha Baja": "",
+    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "Parada": "PIE DE LA CUESTA ",
+    "Ubicacion": "FRENTE AL ELECTRA",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4292",
+    "Nombre": "ARRIAGA RUIZ GUADALUPE YAZMIN",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "3",
+    "Fecha Ingreso": "29/07/2026",
+    "Fecha Baja": "",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4293",
+    "Nombre": "SAUCEDO LOPEZ INES IREM",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "29/07/2026",
+    "Fecha Baja": "",
+    "Nombre Ruta": "R4-SANTA ROSA",
+    "Parada": "SANTA ROSA",
+    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]
