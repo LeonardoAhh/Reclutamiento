@@ -424,22 +424,17 @@ export function EmployeeModal({
   const fieldsExtra = (
     <div className="form-group employee-modal__starlite-toggle">
       <label htmlFor="emp-starlite" className="starlite-label">
-        Starlite
+        Etiqueta Starlite
       </label>
-      <div className="starlite-switch-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', height: 'var(--control-height)' }}>
-        <label className="switch">
-          <input
-            id="emp-starlite"
-            type="checkbox"
-            checked={form.is_starlite}
-            onChange={(e) => setForm({ ...form, is_starlite: e.target.checked })}
-          />
-          <span className="slider round"></span>
-        </label>
-        <span className="starlite-text" style={{ fontSize: '13px', color: 'var(--color-body)' }}>
-          {form.is_starlite ? 'Si' : 'No'}
-        </span>
-      </div>
+      <CustomSelect
+        id="emp-starlite"
+        value={form.is_starlite ? 'true' : 'false'}
+        onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+        options={[
+          { value: 'false', label: 'No' },
+          { value: 'true', label: 'Sí' }
+        ]}
+      />
     </div>
   );
 

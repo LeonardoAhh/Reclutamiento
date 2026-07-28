@@ -42,15 +42,20 @@ export function NoCitadosChart({ data }: NoCitadosChartProps) {
     return Array.from(recruiters).sort();
   }, [data]);
 
+  const recruiterTotals = useMemo(() => {
+    const totals: Record<string, number> = {};
+    data.forEach(r => {
+      totals[r.reclutador] = (totals[r.reclutador] || 0) + 1;
+    });
+    return totals;
+  }, [data]);
+
   if (chartData.length === 0) {
     return (
       <div className="no-citados-chart-card">
         <div className="no-citados-chart-header">
           <div className="no-citados-chart-title-group">
             <h4 className="no-citados-chart-title">Tendencia de No Citados</h4>
-            <p className="no-citados-chart-description">
-              Total de registros en el periodo: 0
-            </p>
           </div>
         </div>
         <div className="no-citados-chart-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '250px' }}>
@@ -73,9 +78,6 @@ export function NoCitadosChart({ data }: NoCitadosChartProps) {
       <div className="no-citados-chart-header">
         <div className="no-citados-chart-title-group">
           <h4 className="no-citados-chart-title">Tendencia de No Citados</h4>
-          <p className="no-citados-chart-description">
-            Total de registros en el periodo: {total}
-          </p>
         </div>
         <div className="no-citados-chart-legend">
           {activeRecruiters.map((rec, index) => (
@@ -86,6 +88,9 @@ export function NoCitadosChart({ data }: NoCitadosChartProps) {
               />
               <span className="no-citados-chart-legend-label">
                 {rec.charAt(0).toUpperCase() + rec.slice(1).toLowerCase()}
+                <span className="no-citados-chart-legend-count">
+                  {recruiterTotals[rec]}
+                </span>
               </span>
             </div>
           ))}

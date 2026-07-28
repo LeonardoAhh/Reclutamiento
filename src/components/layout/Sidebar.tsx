@@ -164,7 +164,9 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                 <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
                 <span className="sidebar__item-label">{label}</span>
                 {to === '/documentos' && (
-                  <span className="sidebar__new-badge" title="¡Nuevo!">Nuevo</span>
+                  <Tooltip content="Nuevo">
+                    <span className="sidebar__new-badge">Nuevo</span>
+                  </Tooltip>
                 )}
               </NavLink>
             );

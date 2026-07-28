@@ -3,7 +3,7 @@ import { Copy, Check, Share2, Users } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
 import { StatCard } from './StatCard';
-import { Badge, StarliteBadge } from './Badge';
+import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { formatShortDate } from '@/lib/dates';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString } from '@/lib/utils';
@@ -446,7 +446,9 @@ export function CandidateReportModal({
                     className="candidate-report-modal__row"
                     variants={itemVariants}
                   >
-                    <span className="candidate-report-modal__recruiter-name">{r.name}</span>
+                    <span className="candidate-report-modal__recruiter-name">
+                      <ReclutadorBadge nombre={r.name} showRole={true} />
+                    </span>
                     <div className="candidate-report-modal__badges">
                       {r.e1 > 0 && <Badge variant="amber">E1: {r.e1}</Badge>}
                       {r.e2 > 0 && <Badge variant="teal">E2: {r.e2}</Badge>}

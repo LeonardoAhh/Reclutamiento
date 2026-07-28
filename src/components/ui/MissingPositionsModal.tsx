@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { AlertCircle, Star } from 'lucide-react';
 import { Modal } from './Modal';
+import { Tooltip } from './Tooltip';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useDismissedPositions } from '@/hooks/useDismissedPositions';
@@ -263,24 +264,29 @@ export function MissingPositionsModal({
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col"
-                      title="Vacantes en plantilla autorizada"
                     >
-                      Plantilla
+                      <Tooltip content="En plantilla">
+                        <span>Plantilla</span>
+                      </Tooltip>
                     </th>
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col"
-                      title="Vacantes en buffer de backup"
                     >
-                      Backup
+                      <Tooltip content="En backup">
+                        <span>Backup</span>
+                      </Tooltip>
                     </th>
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col missing-positions-modal__starlite-col"
-                      title="Vacantes del programa Starlite"
                     >
-                      <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" style={{ marginRight: '2px' }} />
-                      Starlite
+                      <Tooltip content="Starlite">
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" style={{ marginRight: '2px' }} />
+                          Starlite
+                        </div>
+                      </Tooltip>
                     </th>
                     <th
                       scope="col"
@@ -331,12 +337,11 @@ export function MissingPositionsModal({
                           </span>
                           {r.proximos > 0 && (
                             <div className="missing-positions-modal__prox-details">
-                              <span
-                                className="missing-positions-modal__puesto-note"
-                                title="Vacantes ya cubiertas por empleados con fecha de ingreso futura, descontadas del total."
-                              >
-                                −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
-                              </span>
+                              <Tooltip content="Cubiertas (ingreso futuro)">
+                                <span className="missing-positions-modal__puesto-note">
+                                  −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
+                                </span>
+                              </Tooltip>
                               {(() => {
                                 const starliteDisp = pos.starlite_proximos;
                                 const regularDisp = Math.max(0, r.proximos - starliteDisp);

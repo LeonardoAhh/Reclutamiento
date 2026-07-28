@@ -13,7 +13,7 @@
   import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
   import { FutureHiresModal } from '@/components/ui/FutureHiresModal';
   import { ButtonUtility } from '@/components/ui/ButtonUtility';
-  import { Badge, StarliteBadge } from '@/components/ui/Badge';
+  import { Badge, StarliteBadge, PlantillaBadge, BackupBadge } from '@/components/ui/Badge';
   import { CandidatesInProcessModal } from '@/components/ui/CandidatesInProcessModal';
   import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayModal';
   import { TtfHistoryModal } from '@/components/ui/TtfHistoryModal';
@@ -820,13 +820,19 @@
                       {projectionTotals.proximosIngresos > 0 && (
                         <span className="projection-sublabel">
                           {projectionTotals.proximosPlantilla > 0 && (
-                            <span className="projection-chip projection-chip--plantilla">
-                              {projectionTotals.proximosPlantilla} plantilla
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+                              <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+                                {projectionTotals.proximosPlantilla}
+                              </span>
+                              <PlantillaBadge />
                             </span>
                           )}
                           {projectionTotals.proximosBackup > 0 && (
-                            <span className="projection-chip projection-chip--backup">
-                              {projectionTotals.proximosBackup} backup
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+                              <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+                                {projectionTotals.proximosBackup}
+                              </span>
+                              <BackupBadge />
                             </span>
                           )}
                           {projectionTotals.proximosStarlite > 0 && (

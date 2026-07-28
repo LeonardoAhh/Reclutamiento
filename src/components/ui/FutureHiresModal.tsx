@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Copy, Users } from 'lucide-react';
 import { Modal } from './Modal';
+import { Tooltip } from './Tooltip';
 import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
@@ -133,14 +134,15 @@ export function FutureHiresModal({
               <p className="future-hires-modal__hint">
                 Procesos cerrados con caratula y fecha de ingreso programada.
               </p>
-              <button
-                type="button"
-                className="btn-secondary btn-sm"
-                onClick={handleCopy}
-                title="Copiar resumen"
-              >
-                <Copy size={16} aria-hidden="true" />
-              </button>
+              <Tooltip content="Copiar">
+                <button
+                  type="button"
+                  className="btn-secondary btn-sm"
+                  onClick={handleCopy}
+                >
+                  <Copy size={16} aria-hidden="true" />
+                </button>
+              </Tooltip>
             </div>
             {renderHiresTable(sortedFutureHires)}
           </>

@@ -1,11 +1,11 @@
-/* CandidateRowActions — menú kebab por fila */
+/* NoCitadoRowActions — menú kebab por fila para Registro de No Citados */
 
-.candidate-row-actions {
+.no-citado-row-actions {
   position: relative;
   display: inline-flex;
 }
 
-.candidate-row-actions__trigger {
+.no-citado-row-actions__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,19 +22,19 @@
     border-color var(--transition-fast);
 }
 
-.candidate-row-actions__trigger:hover,
-.candidate-row-actions__trigger[aria-expanded='true'] {
+.no-citado-row-actions__trigger:hover,
+.no-citado-row-actions__trigger[aria-expanded='true'] {
   color: var(--color-ink);
   background: var(--color-surface-soft);
   border-color: var(--color-hairline-soft);
 }
 
-.candidate-row-actions__trigger:focus-visible {
+.no-citado-row-actions__trigger:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
 }
 
-.candidate-row-actions__menu {
+.no-citado-row-actions__menu {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -46,7 +46,7 @@
   box-shadow: var(--shadow-elevated);
 }
 
-.candidate-row-actions__item {
+.no-citado-row-actions__item {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -65,38 +65,38 @@
     background var(--transition-fast);
 }
 
-.candidate-row-actions__item svg {
+.no-citado-row-actions__item svg {
   flex-shrink: 0;
 }
 
-.candidate-row-actions__item:hover,
-.candidate-row-actions__item:focus-visible {
+.no-citado-row-actions__item:hover,
+.no-citado-row-actions__item:focus-visible {
   color: var(--color-ink);
   background: var(--color-surface-soft);
   outline: none;
 }
 
-.candidate-row-actions__item--primary {
+.no-citado-row-actions__item--primary {
   color: var(--color-primary);
 }
 
-.candidate-row-actions__item--primary:hover,
-.candidate-row-actions__item--primary:focus-visible {
+.no-citado-row-actions__item--primary:hover,
+.no-citado-row-actions__item--primary:focus-visible {
   color: var(--color-on-primary);
   background: var(--color-primary);
 }
 
-.candidate-row-actions__item--danger {
+.no-citado-row-actions__item--danger {
   color: var(--color-error);
 }
 
-.candidate-row-actions__item--danger:hover,
-.candidate-row-actions__item--danger:focus-visible {
+.no-citado-row-actions__item--danger:hover,
+.no-citado-row-actions__item--danger:focus-visible {
   color: var(--color-error);
   background: var(--color-error-tint, color-mix(in srgb, var(--color-error) 10%, var(--color-canvas)));
 }
 
-.candidate-row-actions__divider {
+.no-citado-row-actions__divider {
   height: 1px;
   margin: var(--spacing-xxs) 0;
   background: var(--color-hairline);

@@ -196,6 +196,21 @@ export const RECLUTADORES_ACTIVOS = [
   'LEONARDO',
 ] as const;
 
+export type ReclutadorNombre = (typeof RECLUTADORES_ACTIVOS)[number];
+
+export type ReclutadorRol = 'reclutadora' | 'coordinador';
+
+/**
+ * RECLUTADORES_INFO — Rol de cada persona del equipo de reclutamiento.
+ * Usado por ReclutadorBadge para diferenciar visualmente reclutadoras
+ * de coordinadores. Mantener sincronizado con RECLUTADORES_ACTIVOS.
+ */
+export const RECLUTADORES_INFO: Record<ReclutadorNombre, { rol: ReclutadorRol }> = {
+  ALEXANDRA: { rol: 'reclutadora' },
+  DANIELA:   { rol: 'reclutadora' },
+  LEONARDO:  { rol: 'coordinador' },
+};
+
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
   {
     area: 'ALMACÉN',

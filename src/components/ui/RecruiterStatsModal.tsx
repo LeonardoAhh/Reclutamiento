@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Users, TrendingUp, Copy, Check } from 'lucide-react';
 import { sileo } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
+import { Badge, ReclutadorBadge } from '@/components/ui/Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { isoWeekOf } from '@/lib/dates';
 import './RecruiterStatsModal.css';
@@ -165,20 +167,21 @@ export function RecruiterStatsModal({
                   {effectiveness}%
                 </td>
                 <td className="recruiter-stats-modal__table-copy-col">
-                  <button
-                    type="button"
-                    onClick={() => handleCopyRow(stat, tueWeek)}
-                    className={`recruiter-stats-modal__copy-btn${isCopied ? ' is-copied' : ''}`}
-                    aria-label={`Copiar Semana ${tueWeek}: ${stat.total} citados, ${stat.contratados} contratados`}
-                    title="Copiar citados y contratados para Excel"
-                    data-testid={`copy-week-${tueWeek}-btn`}
-                  >
-                    {isCopied ? (
-                      <Check size={16} aria-hidden="true" />
-                    ) : (
-                      <Copy size={16} aria-hidden="true" />
-                    )}
-                  </button>
+                  <Tooltip content="Copiar">
+                    <button
+                      type="button"
+                      onClick={() => handleCopyRow(stat, tueWeek)}
+                      className={`recruiter-stats-modal__copy-btn${isCopied ? ' is-copied' : ''}`}
+                      aria-label={`Copiar Semana ${tueWeek}: ${stat.total} citados, ${stat.contratados} contratados`}
+                      data-testid={`copy-week-${tueWeek}-btn`}
+                    >
+                      {isCopied ? (
+                        <Check size={16} aria-hidden="true" />
+                      ) : (
+                        <Copy size={16} aria-hidden="true" />
+                      )}
+                    </button>
+                  </Tooltip>
                 </td>
               </tr>
             );
@@ -216,11 +219,10 @@ export function RecruiterStatsModal({
               return (
                 <article key={r.name} className="recruiter-stats-modal__card">
                   <header className="recruiter-stats-modal__card-head">
-                    <div className="recruiter-stats-modal__card-avatar">
-                      {r.name.slice(0, 2)}
-                    </div>
                     <div className="recruiter-stats-modal__card-meta">
-                      <h3 className="recruiter-stats-modal__card-name">{r.name}</h3>
+                      <h3 className="recruiter-stats-modal__card-name">
+                        <ReclutadorBadge nombre={r.name} showRole />
+                      </h3>
                       <span className="recruiter-stats-modal__card-total">
                         {r.total} candidato{r.total === 1 ? '' : 's'}
                       </span>

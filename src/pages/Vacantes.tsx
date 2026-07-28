@@ -18,6 +18,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { Modal } from '@/components/ui/Modal';
 import { useBajas } from '@/hooks/useBajas';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -31,6 +32,7 @@ import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { VacancyStatusBadge } from '@/components/ui/VacancyStatusBadge';
 import { VacancyTypeBadge } from '@/components/ui/VacancyTypeBadge';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { ReclutadorBadge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { formatShortDate, localTodayIso } from '@/lib/dates';
@@ -43,7 +45,6 @@ type StatusFilter = 'todas' | 'abierta' | 'cubierta';
 type VacancyTypeFilter = 'todos' | 'autorizado' | 'backup';
 
 const RECLUTADOR_OPTIONS = [
-  { value: '', label: 'Sin asignar' },
   ...RECLUTADORES_ACTIVOS.map((r) => ({
     value: r,
     label: r.charAt(0) + r.slice(1).toLowerCase(),
@@ -592,7 +593,9 @@ export function Vacantes() {
                             {toTitleCase(v.area)}{v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
                           </div>
                         </td>
-                        <td headers="vac-th-tipo"><VacancyTypeBadge type={v.vacancyType} /></td>
+                        <td headers="vac-th-tipo">
+                          <VacancyTypeBadge type={v.vacancyType} />
+                        </td>
                         <td headers="vac-th-sla">
                           <div className="vacantes__sla-cell">
                             {v.baja ? (
@@ -606,30 +609,45 @@ export function Vacantes() {
                             value={v.reclutador ?? ''}
                             onChange={(val) => handleReclutador(v, val)}
                             options={RECLUTADOR_OPTIONS}
+                            placeholder="Sin asignar"
                             aria-label={`Reclutador para ${v.puesto}`}
                             disabled={!v.baja}
+                            customTrigger={
+                              v.reclutador && v.reclutador !== 'Sin asignar' ? (
+                                <ReclutadorBadge nombre={v.reclutador} showCaret />
+                              ) : (
+                                <span className="reclutador-badge" style={{ color: 'var(--color-muted)' }}>
+                                  <span>Sin asignar</span>
+                                  <ChevronDown size={14} style={{ opacity: 0.6, marginLeft: 2 }} aria-hidden="true" />
+                                </span>
+                              )
+                            }
                           />
                         </td>
                         <td headers="vac-th-accion" className="pipeline__cell-actions">
-                          <button
-                            type="button"
-                            className="pipeline__icon-btn"
-                            onClick={() => handleToggleManualClick(v)}
-                            disabled={!v.baja}
-                            title={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-                          >
-                            {v.coberturaTipo === 'manual' ? <ArrowRightLeft size={16} /> : <CheckCircle2 size={16} />}
-                          </button>
-                          {canRemoveStructural(v) && (
+                          <Tooltip content={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}>
                             <button
                               type="button"
-                              className="pipeline__icon-btn vacantes__del-btn"
-                              onClick={() => handleRemoveStructuralClick(v)}
-                              title={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}
-                              data-testid={`vac-delete-${v.key}`}
+                              className="pipeline__icon-btn"
+                              onClick={() => handleToggleManualClick(v)}
+                              disabled={!v.baja}
+                              aria-label={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
                             >
-                              <Trash2 size={16} aria-hidden="true" />
+                              {v.coberturaTipo === 'manual' ? <ArrowRightLeft size={16} /> : <CheckCircle2 size={16} />}
                             </button>
+                          </Tooltip>
+                          {canRemoveStructural(v) && (
+                            <Tooltip content={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}>
+                              <button
+                                type="button"
+                                className="pipeline__icon-btn vacantes__del-btn"
+                                onClick={() => handleRemoveStructuralClick(v)}
+                                data-testid={`vac-delete-${v.key}`}
+                                aria-label={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}
+                              >
+                                <Trash2 size={16} aria-hidden="true" />
+                              </button>
+                            </Tooltip>
                           )}
                         </td>
                   </tr>
@@ -679,27 +697,33 @@ function CoverageInfo({ v }: { v: AutoVacancy }) {
   }
   if (v.coberturaTipo === 'manual') {
     return (
-      <span className="vacantes__cover" title={v.baja?.cubierta_nota ?? 'Cobertura interna'}>
-        <ArrowRightLeft size={13} aria-hidden="true" />
-        Interna{v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
-      </span>
+      <Tooltip content={v.baja?.cubierta_nota ?? 'Cobertura interna'}>
+        <span className="vacantes__cover">
+          <ArrowRightLeft size={13} aria-hidden="true" />
+          Interna{v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
+        </span>
+      </Tooltip>
     );
   }
   if (!v.coveredBy) {
     // Baja absorbida: el puesto ya está cubierto por la plantilla vigente.
     return (
-      <span className="vacantes__cover" title="Puesto cubierto por la plantilla actual">
-        <UserPlus size={13} aria-hidden="true" />
-        Plantilla completa
-      </span>
+      <Tooltip content="Cubierto">
+        <span className="vacantes__cover">
+          <UserPlus size={13} aria-hidden="true" />
+          Plantilla completa
+        </span>
+      </Tooltip>
     );
   }
   return (
-    <span className="vacantes__cover" title={`Ingreso: ${v.coveredBy?.fecha_ingreso ?? ''}`}>
-      <UserPlus size={13} aria-hidden="true" />
-      {v.coveredBy?.nombre}
-      {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
-    </span>
+    <Tooltip content={`Ingreso: ${v.coveredBy?.fecha_ingreso ?? ''}`}>
+      <span className="vacantes__cover">
+        <UserPlus size={13} aria-hidden="true" />
+        {v.coveredBy?.nombre}
+        {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
+      </span>
+    </Tooltip>
   );
 }
 
@@ -822,8 +846,19 @@ function VacancyCard({
                 value={v.reclutador ?? ''}
                 onChange={onReclutador}
                 options={RECLUTADOR_OPTIONS}
+                placeholder="Sin asignar"
                 aria-label={`Reclutador para ${v.puesto}`}
                 disabled={!v.baja}
+                customTrigger={
+                  v.reclutador && v.reclutador !== 'Sin asignar' ? (
+                    <ReclutadorBadge nombre={v.reclutador} showCaret />
+                  ) : (
+                    <span className="reclutador-badge" style={{ color: 'var(--color-muted)' }}>
+                      <span>Sin asignar</span>
+                      <ChevronDown size={14} style={{ opacity: 0.6, marginLeft: 2 }} aria-hidden="true" />
+                    </span>
+                  )
+                }
               />
             </div>
 

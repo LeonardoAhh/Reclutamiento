@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Pencil, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, Info, FileSpreadsheet, Filter, X } from 'lucide-react';
+import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, FileSpreadsheet, Filter } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Modal } from '@/components/ui/Modal';
@@ -11,6 +11,8 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 
 import { usePositions } from '@/lib/positions';
 import { NoCitadosChart } from './NoCitadosChart';
+import { NoCitadoRowActions } from '@/components/ui/NoCitadoRowActions';
+import { ReclutadorBadge } from '@/components/ui/Badge';
 import { type NoCitado, CANDIDATE_SOURCES } from '@/lib/types';
 import './NoCitados.css';
 
@@ -22,15 +24,6 @@ const MOTIVOS_OPTIONS = [
   { value: 'horario', label: 'Sin turno disponible' },
   { value: 'otro', label: 'Otro motivo' },
 ];
-
-const MOTIVOS_SHORT_LABELS: Record<string, string> = {
-  no_contesta: 'No contesta',
-  ya_trabaja: 'Ya trabaja',
-  distancia: 'Distancia',
-  sueldo: 'Sueldo',
-  horario: 'Horario',
-  otro: 'Otro',
-};
 
 const SUB_MOTIVOS_OPTIONS: Record<string, Array<{ value: string; label: string }>> = {
   no_contesta: [
@@ -82,17 +75,9 @@ export function RegistroNoCitadosView() {
     return `${first} ${last}`.trim();
   };
 
-  const formatPhone = (phone: string) => {
-    if (phone?.length === 10) {
-      return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6)}`;
-    }
-    return phone;
-  };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+  const formatTitle = (title: string | null | undefined) => {
+    if (!title) return '';
+    return title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -222,14 +207,6 @@ export function RegistroNoCitadosView() {
 
   const isPhoneValid = formData.telefono.length === 10;
   const showPhoneError = formData.telefono.length > 0 && !isPhoneValid;
-
-  const getMotivoLabel = (motivoVal: string, subMotivoVal?: string) => {
-    const main = MOTIVOS_OPTIONS.find(m => m.value === motivoVal)?.label || motivoVal;
-    if (!subMotivoVal) return main;
-    const subOpts = SUB_MOTIVOS_OPTIONS[motivoVal] || [];
-    const sub = subOpts.find(s => s.value === subMotivoVal)?.label || subMotivoVal;
-    return `${main} — ${sub}`;
-  };
 
   const missingRequiredFields = [
     !formData.nombre.trim() && 'Nombre',
@@ -624,23 +601,16 @@ export function RegistroNoCitadosView() {
                 <div key={r.id} className="no-citado-mobile-card">
                   <div className="no-citado-mobile-card__header">
                     <span className="no-citado-mobile-card__name">{formatName(r.nombre, r.apellido)}</span>
-                    <span className="no-citado-mobile-card__date">{formatDate(r.fecha)}</span>
                   </div>
-                  <div className="no-citado-mobile-card__phone">{formatPhone(r.telefono)}</div>
                   <div className="no-citado-mobile-card__meta">
-                    <div className="no-citados-motivo-wrapper">
-                      <span className="badge-pill badge-pill--gray">
-                        {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
-                      </span>
-                      {r.sub_motivo && (
-                        <span className="no-citados-subtext">
-                          {SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}
-                        </span>
-                      )}
-                    </div>
                     <span className="no-citado-mobile-card__reclutador">
-                      {getReclutadorLabel(r.reclutador)}
+                      <ReclutadorBadge nombre={r.reclutador} />
                     </span>
+                    {r.puesto && (
+                      <span className="no-citado-mobile-card__puesto no-citados-subtext">
+                        {formatTitle(r.puesto)}
+                      </span>
+                    )}
                     {r.fuente && (
                       <span className="no-citado-mobile-card__fuente no-citados-subtext no-citados-subtext--right">
                         {r.fuente}
@@ -654,15 +624,11 @@ export function RegistroNoCitadosView() {
                     </div>
                   )}
                   <div className="no-citado-mobile-card__actions">
-                    <button type="button" className="btn-secondary btn-sm" onClick={() => openEditModal(r)}>
-                      <Pencil size={14} className="no-citados-icon-mr-xxs" />
-                      Editar
-                    </button>
-                    <button type="button" className="btn-secondary btn-sm" onClick={() => requestDelete(r.id)}>
-                      <Trash2 size={14} className="no-citados-icon-mr-xxs" />
-                      Eliminar
-                    </button>
-
+                    <NoCitadoRowActions
+                      noCitado={r}
+                      onEdit={openEditModal}
+                      onDelete={(n) => requestDelete(n.id)}
+                    />
                   </div>
                 </div>
               ))}
@@ -672,12 +638,10 @@ export function RegistroNoCitadosView() {
             <table className="no-citados-desktop-table">
               <thead>
                 <tr>
-                  <th>Fecha</th>
                   <th>Candidato</th>
-                  <th>Teléfono</th>
                   <th>Reclutador</th>
+                  <th>Puesto</th>
                   <th>Fuente</th>
-                  <th>Motivo</th>
                   <th>Notas</th>
                   <th>Acciones</th>
                 </tr>
@@ -685,23 +649,10 @@ export function RegistroNoCitadosView() {
               <tbody>
                 {paginatedRecords.map((r) => (
                   <tr key={r.id}>
-                    <td>{formatDate(r.fecha)}</td>
                     <td>{formatName(r.nombre, r.apellido)}</td>
-                    <td>{formatPhone(r.telefono)}</td>
-                    <td>{getReclutadorLabel(r.reclutador)}</td>
+                    <td><ReclutadorBadge nombre={r.reclutador} /></td>
+                    <td>{formatTitle(r.puesto) || '-'}</td>
                     <td>{r.fuente || '-'}</td>
-                    <td>
-                      <div className="no-citados-inline-badge">
-                        <span className="badge-pill badge-pill--gray">
-                          {MOTIVOS_SHORT_LABELS[r.motivo] || r.motivo}
-                        </span>
-                        {r.sub_motivo && (
-                          <Tooltip content={SUB_MOTIVOS_OPTIONS[r.motivo]?.find(s => s.value === r.sub_motivo)?.label || r.sub_motivo}>
-                            <Info size={14} className="color-ink-faint no-citados-info-icon" />
-                          </Tooltip>
-                        )}
-                      </div>
-                    </td>
                     <td className="td-notas">
                       {r.notas ? (
                         <Tooltip content={<div className="no-citados-tooltip-notas">{r.notas}</div>}>
@@ -710,20 +661,19 @@ export function RegistroNoCitadosView() {
                           </div>
                         </Tooltip>
                       ) : (
-                        <div className="notas-icon-wrapper empty-notas" title="Sin notas">
-                          <MessageSquareDashed size={14} className="notas-icon" />
-                        </div>
+                        <Tooltip content="Sin notas">
+                          <div className="notas-icon-wrapper empty-notas">
+                            <MessageSquareDashed size={14} className="notas-icon" />
+                          </div>
+                        </Tooltip>
                       )}
                     </td>
                     <td>
-                      <div className="no-citados-table-actions">
-                        <button type="button" className="btn-secondary btn-icon" onClick={() => openEditModal(r)} title="Editar" aria-label="Editar">
-                          <Pencil size={16} />
-                        </button>
-                        <button type="button" className="btn-secondary btn-icon" onClick={() => requestDelete(r.id)} title="Eliminar" aria-label="Eliminar">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                      <NoCitadoRowActions
+                        noCitado={r}
+                        onEdit={openEditModal}
+                        onDelete={(n) => requestDelete(n.id)}
+                      />
                     </td>
                   </tr>
                 ))}

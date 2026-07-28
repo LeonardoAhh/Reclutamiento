@@ -5,7 +5,7 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Badge, StarliteBadge } from './Badge';
+import { Badge, StarliteBadge, BackupBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -281,10 +281,12 @@ export function AreaDetailView({
           <Badge variant="amber">+{pos.excedente_critico} excede</Badge>
         )}
         {pos.excedente_backup > 0 && (
-          <Badge variant="teal">
-            <Shield size={11} aria-hidden="true" />
-            +{pos.excedente_backup} back-up
-          </Badge>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+            <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+              +{pos.excedente_backup}
+            </span>
+            <BackupBadge />
+          </span>
         )}
       </div>
     );
@@ -608,10 +610,12 @@ export function AreaDetailView({
                               </Badge>
                             )}
                             {row.excedente_backup > 0 && (
-                              <Badge variant="teal">
-                                <Shield size={11} aria-hidden="true" />
-                                +{row.excedente_backup} back-up
-                              </Badge>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+                                <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+                                  +{row.excedente_backup}
+                                </span>
+                                <BackupBadge />
+                              </span>
                             )}
                           </div>
                         </div>

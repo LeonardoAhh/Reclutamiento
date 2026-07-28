@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { MoreVertical, Pencil, Trash2, StickyNote, BadgeCheck, MessageCircle } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { Candidate } from '@/lib/types';
 import './CandidateRowActions.css';
 
@@ -21,30 +22,6 @@ export function CandidateRowActions({
   onHire,
 }: CandidateRowActionsProps) {
   const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const close = () => {
-      setOpen(false);
-      triggerRef.current?.focus();
-    };
-    const onPointer = (e: PointerEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
-    };
-
-    document.addEventListener('pointerdown', onPointer);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('pointerdown', onPointer);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
 
   function run(action: (c: Candidate) => void) {
     setOpen(false);
@@ -59,25 +36,25 @@ export function CandidateRowActions({
   const puestoMsg = puestoLower ? puestoLower.charAt(0).toUpperCase() + puestoLower.slice(1) : '';
 
   return (
-    <div className="candidate-row-actions" ref={rootRef}>
-      <button
-        ref={triggerRef}
-        type="button"
-        className="candidate-row-actions__trigger"
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={`Acciones de ${candidate.nombre}`}
-        title="Acciones"
-      >
-        <MoreVertical size={16} aria-hidden="true" />
-      </button>
+    <div className="candidate-row-actions">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className="candidate-row-actions__trigger"
+            aria-label={`Acciones de ${candidate.nombre}`}
+            title="Acciones"
+          >
+            <MoreVertical size={16} aria-hidden="true" />
+          </button>
+        </PopoverTrigger>
 
-      {open && (
-        <div
+        <PopoverContent 
+          side="bottom" 
+          align="end" 
+          sideOffset={4}
           className="candidate-row-actions__menu"
-          role="menu"
-          aria-label={`Acciones para ${candidate.nombre}`}
+          style={{ padding: 'var(--spacing-xs)', border: '1px solid var(--color-hairline)' }}
         >
           {candidate.telefono && (
             <a
@@ -139,8 +116,8 @@ export function CandidateRowActions({
               </button>
             </>
           )}
-        </div>
-      )}
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

@@ -715,6 +715,12 @@
   color: var(--color-ink);
 }
 
+.vacantes__reclutador-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* Trigger del select de reclutador en mobile */
 .vacantes__rec-trigger {
   display: inline-flex;

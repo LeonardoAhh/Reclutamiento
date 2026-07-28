@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
-import Avatar from 'boring-avatars';
+
 import {
   UserPlus,
   UserX,
@@ -29,7 +29,7 @@ import {
   Trash2,
   Info,
 } from 'lucide-react';
-import { Badge, StarliteBadge, VinoplasticBadge } from '@/components/ui/Badge';
+import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -64,13 +64,6 @@ const FILTERS_STORAGE_KEY = 'pipeline_filters_v1';
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
 const formatDate = formatShortDate;
-
-/**
- * Paleta semilla para los avatares generativos (boring-avatars "beam").
- * No son tokens de diseño: son colores de la ilustración generada por
- * el hash del nombre. Se centralizan aquí para no repetir literales.
- */
-const AVATAR_PALETTE = ['#0F172A', '#334155', '#3B82F6', '#06B6D4', '#F8FAFC'];
 
 /**
  * Status que cuentan como "citado" para el hero de reclutadores. Tras
@@ -143,7 +136,7 @@ export function Pipeline() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 10;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
@@ -778,9 +771,11 @@ export function Pipeline() {
                   <p>
                     Empieza agregando tu primer candidato a la base de datos de reclutamiento.
                   </p>
-                  <button type="button" className="btn-primary" onClick={openAdd} aria-label="Agregar primer candidato" title="Agregar primer candidato">
-                    <UserPlus size={16} aria-hidden="true" />
-                  </button>
+                  <Tooltip content="Agregar candidato">
+                    <button type="button" className="btn-primary" onClick={openAdd} aria-label="Agregar primer candidato">
+                      <UserPlus size={16} aria-hidden="true" />
+                    </button>
+                  </Tooltip>
                 </>
               ) : (
                 <div className="animated-empty-state" style={{ marginTop: 'var(--spacing-xxl)' }}>
@@ -869,29 +864,18 @@ export function Pipeline() {
                   >
                     <div className="pipeline__ccard-name-col">
                       <div className="pipeline__ccard-avatar">
-                        <Avatar
-                          size={36}
-                          name={c.nombre}
-                          variant="beam"
-                          colors={AVATAR_PALETTE}
-                        />
-                        <span
-                          className="pipeline__status-dot pipeline__status-dot--avatar"
-                          data-status={c.status}
-                          aria-label={`Estado: ${CANDIDATE_STATUS_LABEL[c.status]}`}
-                          title={CANDIDATE_STATUS_LABEL[c.status]}
-                        />
+                        {c.reclutador ? (
+                          <ReclutadorBadge nombre={c.reclutador} variant="icon-only" className="pipeline__ccard-avatar-badge" />
+                        ) : (
+                          <div className="pipeline__ccard-avatar-placeholder" />
+                        )}
                       </div>
                       <div className="pipeline__name-details">
                         <span className="pipeline__name-text">
                           <span className="pipeline__name-first">{apellidos.toUpperCase()}</span>
                           {nombres && <span className="pipeline__name-rest">{nombres.toUpperCase()}</span>}
                         </span>
-                        {c.reclutador && (
-                          <div className="pipeline__recruiter" title={`Reclutador: ${c.reclutador}`}>
-                            <span>{c.reclutador.toUpperCase()}</span>
-                          </div>
-                        )}
+
                       </div>
 
                       {/* Bloque visible solo en mobile (<=1024) que resume
@@ -905,10 +889,7 @@ export function Pipeline() {
                         </div>
                         <div className="pipeline__ccard-mobile-info__meta">
                           {c.reclutador && (
-                            <span className="pipeline__ccard-mobile-info__chip">
-                              <UserRound size={11} aria-hidden="true" />
-                              {c.reclutador}
-                            </span>
+                            <ReclutadorBadge nombre={c.reclutador} size="sm" />
                           )}
                           {fechaCitaFmt && (
                             <span className="pipeline__ccard-mobile-info__chip">
@@ -1114,18 +1095,11 @@ export function Pipeline() {
           <article className="pipeline-mobile-detail__card">
             <div className="pipeline-mobile-detail__header">
               <div className="pipeline-mobile-detail__avatar-wrapper">
-                <Avatar
-                  size={56}
-                  name={selectedMobileCandidate.nombre}
-                  variant="beam"
-                  colors={AVATAR_PALETTE}
-                />
-                <span
-                  className="pipeline__status-dot pipeline__status-dot--avatar pipeline-mobile-detail__status-dot"
-                  data-status={selectedMobileCandidate.status}
-                  aria-label={`Estado: ${CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}`}
-                  title={CANDIDATE_STATUS_LABEL[selectedMobileCandidate.status]}
-                />
+                {selectedMobileCandidate.reclutador ? (
+                  <ReclutadorBadge nombre={selectedMobileCandidate.reclutador} variant="icon-only" className="pipeline__ccard-avatar-badge" />
+                ) : (
+                  <div className="pipeline__ccard-avatar-placeholder" />
+                )}
               </div>
               <div className="pipeline-mobile-detail__title">
                 {(() => {

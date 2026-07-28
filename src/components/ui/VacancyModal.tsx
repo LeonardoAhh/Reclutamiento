@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Tooltip } from './Tooltip';
 import {
   ClipboardList,
   Pencil,
@@ -386,28 +387,30 @@ export function VacancyModal({
       </div>
       <div className="form-group">
         <label htmlFor="vac-sla">SLA (días hábiles)</label>
-        <input
-          id="vac-sla"
-          type="number"
-          min={1}
-          max={365}
-          step={1}
-          value={form.dias_sla}
-          disabled
-          readOnly
-          title="Días hábiles para cubrir la vacante (lunes a viernes, excluyendo festivos)"
-        />
+        <Tooltip content="SLA (días hábiles)">
+          <input
+            id="vac-sla"
+            type="number"
+            min={1}
+            max={365}
+            step={1}
+            value={form.dias_sla}
+            disabled
+            readOnly
+          />
+        </Tooltip>
       </div>
       <div className="form-group">
         <label htmlFor="vac-objetivo">Fecha objetivo (calculada)</label>
-        <input
-          id="vac-objetivo"
-          type="date"
-          value={form.fecha_objetivo}
-          disabled
-          readOnly
-          title="Se calcula automáticamente: Fecha de apertura + SLA días hábiles"
-        />
+        <Tooltip content="Cálculo automático: Apertura + SLA">
+          <input
+            id="vac-objetivo"
+            type="date"
+            value={form.fecha_objetivo}
+            disabled
+            readOnly
+          />
+        </Tooltip>
       </div>
       {form.status === 'cubierta' && (
         <div className="form-group">

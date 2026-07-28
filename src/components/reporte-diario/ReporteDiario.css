@@ -34,26 +34,6 @@
   width: 100%;
 }
 
-/* Forzar mayúsculas en todo el dashboard y modales, incluyendo inputs y botones */
-.reporte-layout,
-.reporte-layout button,
-.reporte-layout input,
-.reporte-layout select,
-.reporte-layout textarea,
-.top-emp-modal,
-.top-emp-modal button,
-.top-emp-modal input,
-.reporte-page,
-.reporte-page button,
-.reporte-page input {
-  text-transform: uppercase;
-}
-
-.reporte-layout input::placeholder,
-.top-emp-modal input::placeholder,
-.reporte-page input::placeholder {
-  text-transform: uppercase;
-}
 
 @media (min-width: 768px) {
   .reporte-container {
@@ -1028,7 +1008,7 @@ button.reporte-card:focus-visible,
   gap: var(--spacing-sm);
   padding: var(--spacing-xs) var(--spacing-md);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-surface-card);
   cursor: pointer;
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
@@ -1411,7 +1391,7 @@ button.reporte-card:focus-visible,
   gap: var(--spacing-xs);
   min-height: var(--control-height);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   color: var(--color-charcoal);
@@ -1625,7 +1605,7 @@ button.reporte-card:focus-visible,
 .reporte-chip {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
   padding: var(--spacing-xxs) var(--spacing-sm);
   font-size: var(--type-caption-sm-size);
@@ -1637,7 +1617,7 @@ button.reporte-card:focus-visible,
 .reporte-inc-badge {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   padding: var(--spacing-xxs) var(--spacing-sm);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
@@ -1914,7 +1894,7 @@ button.reporte-card:focus-visible,
   padding: var(--spacing-xs) var(--spacing-md);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--font-medium);
@@ -1978,7 +1958,7 @@ button.reporte-card:focus-visible,
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-primary);
   background: var(--color-surface-card);
   color: var(--color-primary);
@@ -2423,7 +2403,7 @@ button.reporte-card:focus-visible,
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   color: var(--color-charcoal);
@@ -2584,7 +2564,7 @@ button.reporte-card:focus-visible,
   color: var(--color-warning);
   background: var(--color-warning-tint);
   border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   padding: var(--spacing-xxs) var(--spacing-sm);
 }
 
@@ -2593,7 +2573,7 @@ button.reporte-card:focus-visible,
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   color: var(--color-charcoal);
@@ -2781,7 +2761,7 @@ button.ras-card:focus-visible {
   align-items: center;
   gap: var(--spacing-xxs);
   padding: var(--spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: var(--type-caption-sm-size);
@@ -3036,7 +3016,7 @@ button.ras-card:focus-visible {
   gap: var(--spacing-2xs);
   margin-top: var(--spacing-xs);
   padding: var(--spacing-2xs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   color: var(--color-charcoal);
@@ -3147,7 +3127,7 @@ button.ras-card:focus-visible {
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-canvas);
   color: var(--color-ink);
@@ -3454,7 +3434,7 @@ button.ras-card:focus-visible {
   align-items: center;
   padding: var(--spacing-xs) var(--spacing-sm);
   padding-left: var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
   flex-direction: row;
   gap: var(--spacing-xs);

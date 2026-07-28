@@ -137,6 +137,18 @@
   font-size: var(--type-caption-md-size);
   color: var(--color-ink);
   font-weight: var(--font-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.no-citados-chart-legend-count {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  font-weight: var(--font-semibold);
+  background: var(--color-surface-soft);
+  padding: 0 4px;
+  border-radius: var(--rounded-xs);
 }
 
 .no-citados-chart-content {
@@ -433,7 +445,7 @@
   color: var(--color-muted);
 }
 
-/* Motivo + reclutador */
+/* Candidato: reclutador, puesto, fuente */
 .no-citado-mobile-card__meta {
   display: flex;
   justify-content: space-between;
@@ -451,6 +463,11 @@
 .no-citado-mobile-card__reclutador {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
+}
+
+.no-citado-mobile-card__puesto {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-ink-faint);
 }
 
 /* Notas */

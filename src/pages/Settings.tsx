@@ -20,6 +20,7 @@ import {
   type AppRole,
 } from '@/lib/users';
 import { formatShortDate } from '@/lib/dates';
+import { Tooltip } from '@/components/ui/Tooltip';
 import './Settings.css';
 
 interface FormState {
@@ -444,9 +445,11 @@ export function Settings() {
                         {p.last_login_at && (
                           <>
                             {' · '}
-                            <span title="Último ingreso">
-                              {formatShortDate(p.last_login_at)}
-                            </span>
+                            <Tooltip content="Último ingreso">
+                              <span>
+                                {formatShortDate(p.last_login_at)}
+                              </span>
+                            </Tooltip>
                           </>
                         )}
                       </p>

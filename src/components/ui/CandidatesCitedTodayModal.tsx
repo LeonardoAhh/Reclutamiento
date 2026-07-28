@@ -1,6 +1,6 @@
 import { CalendarCheck } from 'lucide-react';
 import { Modal } from './Modal';
-import { Badge, StarliteBadge } from './Badge';
+import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
@@ -55,7 +55,7 @@ export function CandidatesCitedTodayModal({
               <div className="candidates-cited-today-modal__meta">
                 {c.is_starlite && <StarliteBadge compact />}
                 {c.reclutador && (
-                  <span className="candidates-cited-today-modal__reclutador">{c.reclutador}</span>
+                  <ReclutadorBadge nombre={c.reclutador} size="sm" />
                 )}
               </div>
             )}
