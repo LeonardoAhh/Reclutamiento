@@ -5,7 +5,7 @@ import {
   MessageSquare,
   Shield,
 } from 'lucide-react';
-import { Badge, StarliteBadge, BackupBadge } from './Badge';
+import { Badge, StarliteBadge, BackupBadge, AreaStatusBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -250,9 +250,9 @@ export function AreaDetailView({
     if (rowVacantes > 0 && activeCount > 0) {
       return (
         <div className="area-detail-modal__badge-stack">
-          <Badge variant="teal">Proceso ({activeCount})</Badge>
+          <AreaStatusBadge type="proceso" count={activeCount} />
           {rowProximos > 0 && (
-            <Badge variant="coral">Ingreso ({rowProximos})</Badge>
+            <AreaStatusBadge type="ingreso" count={rowProximos} />
           )}
         </div>
       );
@@ -260,15 +260,15 @@ export function AreaDetailView({
     if (rowVacantes > 0) {
       return (
         <div className="area-detail-modal__badge-stack">
-          <Badge variant="error">Sin proceso</Badge>
+          <AreaStatusBadge type="sin_proceso" />
           {rowProximos > 0 && (
-            <Badge variant="coral">Ingreso ({rowProximos})</Badge>
+            <AreaStatusBadge type="ingreso" count={rowProximos} />
           )}
         </div>
       );
     }
     if (rowProximos > 0) {
-      return <Badge variant="coral">Ingreso ({rowProximos})</Badge>;
+      return <AreaStatusBadge type="ingreso" count={rowProximos} />;
     }
     return <span className="no-vacancy">—</span>;
   };

@@ -64,22 +64,18 @@
 .project-badge {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding: 0 var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  font-size: var(--type-caption-up-size, 11px);
-  font-weight: var(--font-semibold, 600);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--rounded-md);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: var(--font-medium, 500);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
   white-space: nowrap;
 }
 
-.project-badge--starlite {
-  color: var(--color-warning);
-  background: var(--color-warning-tint);
-  gap: 4px;
-  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
-}
+
 
 .project-badge--compact {
   padding: 0 4px;
@@ -90,8 +86,7 @@
 
 .project-badge--vinoplastic {
   color: var(--color-primary);
-  background: var(--color-primary-tint);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .project-badge__icon {
@@ -250,4 +245,29 @@
 
 .status-badge--backup .status-badge__icon {
   color: var(--color-accent-orange);
+}
+
+.status-badge--starlite .status-badge__icon {
+  color: var(--color-warning);
+}
+
+/* ── AreaStatusBadge dots ── */
+.status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
+.status-badge--proceso .status-badge__dot {
+  background: var(--color-accent-teal);
+}
+
+.status-badge--ingreso .status-badge__dot {
+  background: var(--color-accent-orange);
+}
+
+.status-badge--sin_proceso .status-badge__dot {
+  background: var(--color-error);
 }

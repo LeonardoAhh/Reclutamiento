@@ -23,6 +23,7 @@ export function CandidateStatusBadge({ status, count, showCaret, className = '',
 
   return (
     <span className={`candidate-status-badge ${className}`.trim()} data-status={status}>
+      <span className="candidate-status-badge__dot" aria-hidden="true" />
       {label}
       {count !== undefined && count > 0 && ` (${count})`}
       {showCaret && <ChevronDown size={12} className="candidate-status-caret" aria-hidden="true" />}

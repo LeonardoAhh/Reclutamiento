@@ -1333,61 +1333,61 @@
 .pipeline__source-badge {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding: 0 var(--spacing-xs);
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px 0 6px;
   margin-top: 4px;
-  border-radius: var(--rounded-sm);
-  /* Base: contraste claramente legible sobre la card.
-     Cada `data-source` lo personaliza más abajo. */
-  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  border-radius: var(--rounded-md);
+  /* Base style: clean outline */
+  background: var(--color-surface);
   color: var(--color-ink);
-  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
-  font-size: var(--type-caption-up-size, 11px);
-  font-weight: var(--font-semibold, 600);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: var(--font-medium, 500);
+  text-transform: capitalize;
   white-space: nowrap;
   width: max-content;
+}
+
+/* ── Punto decorativo (dot) para indicar la fuente ── */
+.pipeline__source-badge::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  background: var(--color-muted); /* Fallback */
+  flex-shrink: 0;
 }
 
 /* ── Variantes por fuente ──────────────────────────────
    Color-coded para identificación de un vistazo. Todos
    los tonos vienen de tokens del sistema. */
 
-.pipeline__source-badge[data-source="pauta"] {
-  background: color-mix(in srgb, var(--color-accent-amber) 18%, transparent);
-  color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-accent-amber) 35%, transparent);
+.pipeline__source-badge[data-source="pauta"]::before {
+  background: var(--color-accent-amber);
 }
 
-.pipeline__source-badge[data-source="computrabajo"] {
-  background: color-mix(in srgb, var(--color-accent-teal) 16%, transparent);
-  color: color-mix(in srgb, var(--color-accent-teal) 78%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-accent-teal) 32%, transparent);
+.pipeline__source-badge[data-source="computrabajo"]::before {
+  background: var(--color-accent-teal);
 }
 
-.pipeline__source-badge[data-source="referido"] {
-  background: var(--color-success-tint);
-  color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-success) 32%, transparent);
+.pipeline__source-badge[data-source="referido"]::before {
+  background: var(--color-success);
 }
 
-.pipeline__source-badge[data-source="linkedin"],
-.pipeline__source-badge[data-source="indeed"],
-.pipeline__source-badge[data-source="occ"],
-.pipeline__source-badge[data-source="facebook"] {
+.pipeline__source-badge[data-source="linkedin"]::before,
+.pipeline__source-badge[data-source="indeed"]::before,
+.pipeline__source-badge[data-source="occ"]::before,
+.pipeline__source-badge[data-source="facebook"]::before {
   /* Plataformas externas: tinte neutral más fuerte */
-  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
-  color: var(--color-ink);
-  border-color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  background: var(--color-ink-muted);
 }
 
-.pipeline__source-badge[data-source="volanteo"],
-.pipeline__source-badge[data-source="lona"] {
+.pipeline__source-badge[data-source="volanteo"]::before,
+.pipeline__source-badge[data-source="lona"]::before {
   /* Captación física: warm amber suave */
-  background: var(--color-warning-tint);
-  color: color-mix(in srgb, var(--color-warning) 80%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
+  background: var(--color-warning);
 }
 
 .pipeline__icon-badge {

@@ -1,52 +1,31 @@
 .candidate-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: 0 var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  background: color-mix(in srgb, var(--color-muted) 10%, transparent);
-  color: color-mix(in srgb, var(--color-muted) 85%, var(--color-ink));
-  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-  font-size: var(--type-caption-up-size, 11px);
-  font-weight: var(--font-semibold, 600);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px 0 6px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: var(--font-medium, 500);
   white-space: nowrap;
 }
 
+.candidate-status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
 /* Variantes de color por estado */
-.candidate-status-badge[data-status="entrevista"] {
-  background: color-mix(in srgb, var(--color-accent-amber) 14%, transparent);
-  color: color-mix(in srgb, var(--color-accent-amber) 70%, var(--color-ink));
-}
-
-.candidate-status-badge[data-status="entrega_documentos"] {
-  background: color-mix(in srgb, var(--color-accent-teal) 14%, transparent);
-  color: color-mix(in srgb, var(--color-accent-teal) 70%, var(--color-ink));
-}
-
-.candidate-status-badge[data-status="faltan_documentos"] {
-  background: color-mix(in srgb, var(--color-warning) 14%, transparent);
-  color: color-mix(in srgb, var(--color-warning) 80%, var(--color-ink));
-}
-
-.candidate-status-badge[data-status="feedback_pendiente"] {
-  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-  color: var(--color-ink);
-}
-
-.candidate-status-badge[data-status="contratado"] {
-  background: var(--color-success-tint);
-  color: color-mix(in srgb, var(--color-success) 70%, var(--color-ink));
-}
-
-.candidate-status-badge[data-status="rechazado"] {
-  background: var(--color-error-tint);
-  color: color-mix(in srgb, var(--color-error) 70%, var(--color-ink));
-}
-
-.candidate-status-badge[data-status="no_asistio"] {
-  background: color-mix(in srgb, var(--color-muted) 12%, transparent);
-  color: color-mix(in srgb, var(--color-muted) 90%, var(--color-ink));
-}
+.candidate-status-badge[data-status="entrevista"] .candidate-status-badge__dot { background: var(--color-accent-amber); }
+.candidate-status-badge[data-status="entrega_documentos"] .candidate-status-badge__dot { background: var(--color-accent-teal); }
+.candidate-status-badge[data-status="faltan_documentos"] .candidate-status-badge__dot { background: var(--color-warning); }
+.candidate-status-badge[data-status="feedback_pendiente"] .candidate-status-badge__dot { background: var(--color-primary); }
+.candidate-status-badge[data-status="contratado"] .candidate-status-badge__dot { background: var(--color-success); }
+.candidate-status-badge[data-status="rechazado"] .candidate-status-badge__dot { background: var(--color-error); }
+.candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot { background: var(--color-ink-faint); }

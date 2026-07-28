@@ -16,14 +16,27 @@ export function Badge({ children, variant = 'default' }: BadgeProps) {
   );
 }
 
-export const StarliteBadge = ({ compact = false }: { compact?: boolean } = {}) => (
-  <Tooltip content="Starlite">
-    <span className={`project-badge project-badge--starlite${compact ? ' project-badge--compact' : ''}`}>
-      <Star size="1em" className="project-badge__icon" aria-hidden="true" />
-      {!compact && <span>Starlite</span>}
+export const StarliteBadge = ({ compact = false }: { compact?: boolean } = {}) => {
+  const Icon = Star;
+  const label = "Starlite";
+
+  if (compact) {
+    return (
+      <Tooltip content={label}>
+        <span className="status-badge status-badge--starlite status-badge--icon-only" aria-label={label} role="img">
+          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+        </span>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <span className="status-badge status-badge--starlite">
+      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+      <span>{label}</span>
     </span>
-  </Tooltip>
-);
+  );
+};
 
 export const VinoplasticBadge = () => (
   <Tooltip content="ViñoPlastic">
@@ -98,6 +111,21 @@ export function BackupBadge({ iconOnly = false, className = '' }: StatusBadgePro
     <span className={`status-badge status-badge--backup ${className}`.trim()}>
       <Icon size={14} className="status-badge__icon" aria-hidden="true" />
       <span>{label}</span>
+    </span>
+  );
+}
+
+export interface AreaStatusBadgeProps {
+  type: 'proceso' | 'ingreso' | 'sin_proceso';
+  count?: number;
+}
+
+export function AreaStatusBadge({ type, count }: AreaStatusBadgeProps) {
+  const label = type === 'proceso' ? 'Proceso' : type === 'ingreso' ? 'Ingreso' : 'Sin proceso';
+  return (
+    <span className={`status-badge status-badge--${type}`}>
+      <span className="status-badge__dot" aria-hidden="true" />
+      <span>{label}{count !== undefined && count > 0 ? ` (${count})` : ''}</span>
     </span>
   );
 }
