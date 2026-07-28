@@ -10,7 +10,10 @@ import type {
   TransporteAssignment,
   TurnoAssignment,
   NoCitado,
+  SpeechTemplate,
+  SpeechCategory,
 } from '@/lib/types';
+import { compressImage } from '@/lib/images';
 
 /**
  * Normaliza una fecha al formato ISO `YYYY-MM-DD` que las columnas `date`
@@ -56,6 +59,7 @@ const STORAGE_KEYS = {
    */
   bajas: 'reclutamiento_bajas',
   no_citados: 'reclutamiento_no_citados',
+  speech_templates: 'reclutamiento_speech_templates',
 };
 
 function loadLocal<T>(key: string, fallback: T): T {
@@ -104,6 +108,9 @@ export function useSupabaseData() {
   const [noCitados, setNoCitados] = useState<NoCitado[]>(() =>
     loadLocal(STORAGE_KEYS.no_citados, [])
   );
+  const [speechTemplates, setSpeechTemplates] = useState<SpeechTemplate[]>(() =>
+    loadLocal(STORAGE_KEYS.speech_templates, [])
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -120,27 +127,32 @@ export function useSupabaseData() {
       try {
         setLoading(true);
 
-        const [empResult, commResult, noCitadosResult] = await Promise.all([
+        const [empResult, commResult, noCitadosResult, speechResult] = await Promise.all([
           supabase.from('empleados').select('*'),
           supabase.from('comentarios_reclutamiento').select('*'),
           supabase.from('no_citados').select('*').order('created_at', { ascending: false }),
+          supabase.from('speech_templates').select('*').order('created_at', { ascending: true }),
         ]);
 
         if (empResult.error) throw empResult.error;
         if (commResult.error) throw commResult.error;
         if (noCitadosResult.error) throw noCitadosResult.error;
+        if (speechResult.error) throw speechResult.error;
 
         const empData = empResult.data as Employee[];
         const commData = commResult.data as PositionComment[];
         const noCitadosData = noCitadosResult.data as NoCitado[];
+        const speechData = speechResult.data as SpeechTemplate[];
 
         setEmployees(empData);
         setComments(commData);
         setNoCitados(noCitadosData);
-        
+        setSpeechTemplates(speechData);
+
         saveLocal(STORAGE_KEYS.employees, empData);
         saveLocal(STORAGE_KEYS.comments, commData);
         saveLocal(STORAGE_KEYS.no_citados, noCitadosData);
+        saveLocal(STORAGE_KEYS.speech_templates, speechData);
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase fetch failed, using localStorage:', msg, err);
@@ -683,6 +695,116 @@ export function useSupabaseData() {
     [isConfigured, noCitados]
   );
 
+  /** Insert a new SpeechTemplate. */
+  const addSpeechTemplate = useCallback(
+    async (
+      record: Omit<SpeechTemplate, 'id' | 'created_at' | 'updated_at'>
+    ): Promise<{ ok: boolean; message?: string }> => {
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      const newRecord: SpeechTemplate = { ...record, id, created_at: now, updated_at: now };
+
+      const updated = [...speechTemplates, newRecord];
+      setSpeechTemplates(updated);
+      saveLocal(STORAGE_KEYS.speech_templates, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase.from('speech_templates').insert(newRecord);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('Supabase insert speech_template failed, reverting:', message, err);
+        setSpeechTemplates(speechTemplates);
+        saveLocal(STORAGE_KEYS.speech_templates, speechTemplates);
+        setSaveStatus('error');
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      }
+    },
+    [isConfigured, speechTemplates]
+  );
+
+  /** Update an existing SpeechTemplate. */
+  const updateSpeechTemplate = useCallback(
+    async (
+      id: string,
+      fields: Partial<Omit<SpeechTemplate, 'id' | 'created_at'>>
+    ): Promise<{ ok: boolean; message?: string }> => {
+      const idx = speechTemplates.findIndex((t) => t.id === id);
+      if (idx < 0) return { ok: false, message: 'Plantilla no encontrada.' };
+
+      const payload = { ...fields, updated_at: new Date().toISOString() };
+      const updated = speechTemplates.slice();
+      updated[idx] = { ...updated[idx], ...payload };
+      setSpeechTemplates(updated);
+      saveLocal(STORAGE_KEYS.speech_templates, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('speech_templates')
+          .update(payload)
+          .eq('id', id);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('Supabase update speech_template failed, reverting:', message, err);
+        setSpeechTemplates(speechTemplates);
+        saveLocal(STORAGE_KEYS.speech_templates, speechTemplates);
+        setSaveStatus('error');
+        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      }
+    },
+    [isConfigured, speechTemplates]
+  );
+
+  /** Delete a SpeechTemplate. Solo admins deben poder invocar esto (la vista lo controla). */
+  const deleteSpeechTemplate = useCallback(
+    async (id: string): Promise<{ ok: boolean; message?: string }> => {
+      const updated = speechTemplates.filter((t) => t.id !== id);
+      setSpeechTemplates(updated);
+      saveLocal(STORAGE_KEYS.speech_templates, updated);
+
+      if (!isConfigured) {
+        flashSaved();
+        return { ok: true };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { error: err } = await supabase
+          .from('speech_templates')
+          .delete()
+          .eq('id', id);
+        if (err) throw err;
+        flashSaved();
+        return { ok: true };
+      } catch (err) {
+        const message = formatSupabaseError(err);
+        console.warn('Supabase delete speech_template failed, reverting:', message, err);
+        setSpeechTemplates(speechTemplates);
+        saveLocal(STORAGE_KEYS.speech_templates, speechTemplates);
+        setSaveStatus('error');
+        return { ok: false, message: `No se pudo eliminar en Supabase: ${message}` };
+      }
+    },
+    [isConfigured, speechTemplates]
+  );
+
   /**
    * Destructivo: borra TODOS los empleados de Supabase y limpia el caché
    * local. Pensado para el botón de "Borrar plantilla" del Dashboard. El
@@ -1000,10 +1122,57 @@ export function useSupabaseData() {
     [employees, isConfigured]
   );
 
+  const uploadSpeechImages = useCallback(async (files: File[]): Promise<string[]> => {
+    if (!isConfigured || files.length === 0) return [];
+    
+    setSaveStatus('saving');
+    const uploadedUrls: string[] = [];
+
+    try {
+      for (let file of files) {
+        if (file.type.startsWith('image/')) {
+          try {
+            file = await compressImage(file, 1024, 0.7);
+          } catch (e) {
+            console.warn('Compression failed, using original file', e);
+          }
+        }
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('imagenes-transporte')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          console.warn('Error uploading image to Supabase:', uploadError);
+          continue;
+        }
+
+        const { data } = supabase.storage
+          .from('imagenes-transporte')
+          .getPublicUrl(fileName);
+
+        if (data?.publicUrl) {
+          uploadedUrls.push(data.publicUrl);
+        }
+      }
+      
+      setSaveStatus('saved');
+      return uploadedUrls;
+    } catch (err) {
+      console.warn('Unexpected error in uploadSpeechImages:', err);
+      setSaveStatus('error');
+      return uploadedUrls;
+    }
+  }, [isConfigured]);
+
   return {
     employees,
     comments,
     noCitados,
+    speechTemplates,
     loading,
     error,
     isConfigured,
@@ -1022,5 +1191,9 @@ export function useSupabaseData() {
     addNoCitado,
     updateNoCitado,
     deleteNoCitado,
+    addSpeechTemplate,
+    updateSpeechTemplate,
+    deleteSpeechTemplate,
+    uploadSpeechImages,
   };
 }

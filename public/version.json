@@ -1,8 +1,8 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "fecha": "2026-07-28",
   "nivel": "success",
   "titulo": "Actualización",
-  "mensaje": "Correccion en la base de datos y mejoras en la interfaz de usuario.",
+  "mensaje": "Nuevas funciones y optimización de rendimiento.",
   "notificar": true
 }

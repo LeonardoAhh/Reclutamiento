@@ -571,3 +571,48 @@ export const CANDIDATE_SOURCES = [
   'Lona',
 ] as const;
 
+/* ────────────────────────────────────────────────────────────────────────
+ * Speech / Plantillas de WhatsApp (tabla `speech_templates`)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Categorías de plantilla de mensaje para WhatsApp.
+ * Cada categoría agrupa los mensajes por su propósito en el proceso.
+ */
+export const SPEECH_CATEGORIES = [
+  'vacante',
+  'transporte',
+  'requisitos',
+  'fechas_ingreso',
+  'flyers',
+] as const;
+
+export type SpeechCategory = (typeof SPEECH_CATEGORIES)[number];
+
+export const SPEECH_CATEGORY_LABEL: Record<SpeechCategory, string> = {
+  vacante: 'Vacante',
+  transporte: 'Transporte',
+  requisitos: 'Requisitos',
+  fechas_ingreso: 'Ingreso y nómina',
+  flyers: 'Flyer\'s',
+};
+
+/**
+ * Plantilla de mensaje de WhatsApp compartida entre reclutadores.
+ * Persiste en la tabla `speech_templates` de Supabase.
+ */
+export interface SpeechTemplate {
+  id: string;
+  titulo: string;
+  categoria: SpeechCategory;
+  contenido: string;
+  /** Puesto al que aplica esta plantilla. Null = aplica a todos. */
+  puesto?: string | null;
+  /** Reclutador que creó la plantilla. */
+  created_by?: string | null;
+  /** URLs de imágenes asociadas a la plantilla (para categoría Transporte) */
+  image_urls?: string[] | null;
+  created_at?: string;
+  updated_at?: string;
+}
+

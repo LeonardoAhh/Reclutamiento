@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ClipboardCheck,
   FileText,
+  MessageSquare,
   Search,
   Sparkles,
   Wallet,
@@ -22,9 +23,10 @@ import { TabuladorView } from './configuracion-views/TabuladorView';
 import { ToulouseView } from './configuracion-views/ToulouseView';
 import { RegistroNoCitadosView } from './configuracion-views/RegistroNoCitadosView';
 import { SistemaView } from './configuracion-views/SistemaView';
+import { SpeechView } from './configuracion-views/SpeechView';
 import './Configuracion.css';
 
-type FeatureId = 'busqueda' | 'documentos' | 'indicadores' | 'rutas' | 'tabulador' | 'toulouse' | 'nocitados' | 'sistema';
+type FeatureId = 'busqueda' | 'documentos' | 'indicadores' | 'rutas' | 'tabulador' | 'toulouse' | 'nocitados' | 'sistema' | 'speech';
 
 interface FeatureItem {
   id: FeatureId;
@@ -40,6 +42,7 @@ const FEATURES: FeatureItem[] = [
   { id: 'tabulador', label: 'Tabulador', icon: Wallet },
   { id: 'toulouse', label: 'Toulouse', icon: ClipboardCheck },
   { id: 'nocitados', label: 'No Citados', icon: UserX },
+  { id: 'speech', label: 'Speech WA', icon: MessageSquare },
   { id: 'sistema', label: 'Sistema', icon: Settings },
 ];
 
@@ -51,6 +54,7 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   tabulador: <TabuladorView />,
   toulouse: <ToulouseView />,
   nocitados: <RegistroNoCitadosView />,
+  speech: <SpeechView />,
   sistema: <SistemaView />,
 };
 

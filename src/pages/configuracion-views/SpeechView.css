@@ -1,0 +1,539 @@
+/* ── SpeechView — Speech / Plantillas WhatsApp ───────────────────────────── */
+
+.speech-view {
+  gap: var(--spacing-lg);
+}
+
+/* Banner modo semilla */
+.speech-seed-banner {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-warning-tint);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--rounded-md);
+}
+
+.speech-seed-banner p {
+  margin: 0;
+  color: var(--color-accent-orange-deep);
+}
+
+/* Skeleton */
+.speech-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Navegación de categorías (Segmented / Pills) ────────────────────────── */
+
+.speech-category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.speech-category-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.speech-category-btn:hover:not(.is-active) {
+  background: var(--color-surface-soft);
+  color: var(--color-charcoal);
+}
+
+.speech-category-btn.is-active {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  box-shadow: var(--shadow-sm);
+}
+
+.speech-category-btn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Grupos ───────────────────────────────────────────────────────────────── */
+
+.speech-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.speech-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.speech-group__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.speech-group__icon {
+  font-size: var(--type-heading-sm-size);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.speech-group__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.speech-group__count {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Lista de plantillas ─────────────────────────────────────────────────── */
+
+.speech-template-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ── Tarjeta individual ──────────────────────────────────────────────────── */
+
+.speech-template-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  transition: border-color var(--transition-base);
+}
+
+.speech-template-card:hover {
+  border-color: var(--color-hairline-strong);
+}
+
+.speech-template-card__body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.speech-template-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.speech-template-card__header-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.speech-template-card__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.speech-template-card__sub-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.speech-template-card__puesto,
+.speech-template-card__author {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.speech-template-card__preview {
+  margin: 0;
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-lg);
+  border-top-left-radius: 4px;
+  border: 1px solid var(--color-hairline);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-charcoal);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+/* ── Formato WhatsApp (interno a la preview) ─────────────────────────────── */
+
+.whatsapp-quote {
+  border-left: var(--spacing-xs) solid var(--color-hairline-strong);
+  padding-left: var(--spacing-sm);
+  margin: var(--spacing-xs) 0;
+  color: var(--color-muted);
+}
+
+.whatsapp-code {
+  font-family: var(--font-code);
+  background: var(--color-surface-soft);
+  padding: 2px 4px;
+  border-radius: var(--rounded-xs);
+  font-size: var(--type-code-sm-size);
+}
+
+/* ── Footer de la tarjeta ────────────────────────────────────────────────── */
+
+/* ── Botones de acción (minimizados) ─────────────────────────────────────── */
+
+.speech-template-card__buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.speech-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.speech-action-btn:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-charcoal);
+}
+
+.speech-action-btn.is-copied {
+  color: var(--color-success);
+  background: var(--color-success-tint);
+}
+
+.speech-action-btn--danger:hover:not(:disabled) {
+  color: var(--color-error);
+  background: var(--color-error-tint);
+}
+
+.speech-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.speech-action-btn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Estado vacío ────────────────────────────────────────────────────────── */
+
+.speech-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  min-height: var(--skeleton-card-height);
+}
+
+.speech-empty p {
+  margin: 0;
+}
+
+/* ── Formulario modal ────────────────────────────────────────────────────── */
+
+.speech-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.speech-form__full-width {
+  width: 100%;
+}
+
+.speech-form__optional {
+  margin-left: var(--spacing-xs);
+}
+
+/* ── Modal y Formulario ──────────────────────────────────────────────────── */
+
+.whatsapp-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xxs) 0;
+  margin-bottom: var(--spacing-xs);
+}
+
+.whatsapp-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-sm);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.whatsapp-toolbar-btn:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.whatsapp-toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-hairline-strong);
+  margin: 0 var(--spacing-xs);
+}
+
+.speech-form__full-width textarea {
+  width: 100%;
+  resize: vertical;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* ── Adjuntos e imágenes (Transporte) ────────────────────────────────────── */
+
+.speech-template-card__images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.speech-template-card__image-wrapper {
+  position: relative;
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-soft);
+  aspect-ratio: 4/3;
+}
+
+.speech-template-card__image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.speech-template-card__image-wrapper:hover img {
+  transform: scale(1.03);
+}
+
+/* ── Diseño especial para Flyers (Estilo Galería) ────────────────────────── */
+
+.speech-template-card--flyer .speech-template-card__body {
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.speech-template-card--flyer .speech-template-card__meta {
+  padding: var(--spacing-md);
+}
+
+.speech-template-card--flyer .speech-template-card__images {
+  margin-top: 0;
+}
+
+.speech-template-card--flyer .speech-template-card__image-wrapper {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--color-hairline);
+  aspect-ratio: 1 / 1;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+
+.speech-image-overlay-actions {
+  position: absolute;
+  bottom: var(--spacing-xs);
+  right: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  transition: all var(--transition-base);
+}
+
+.speech-template-card__image-wrapper:hover .speech-image-overlay-actions {
+  opacity: 1;
+}
+
+.speech-image-action {
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  border-radius: var(--rounded-md);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  backdrop-filter: blur(4px);
+}
+
+.speech-image-action:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.05);
+}
+
+.speech-template-card__image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.speech-image-uploader {
+  margin-top: var(--spacing-xs);
+}
+
+.speech-image-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.speech-image-preview {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+  overflow: hidden;
+  background: var(--color-surface-soft);
+}
+
+.speech-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.speech-image-preview.is-new {
+  border-style: dashed;
+}
+
+.speech-image-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-error);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.speech-image-preview:hover .speech-image-remove {
+  opacity: 1;
+}
+
+.speech-image-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--rounded-md);
+  border: 1px dashed var(--color-muted-soft);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  gap: var(--spacing-xxs);
+}
+
+.speech-image-add:hover,
+.speech-image-add:focus-within {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+/* ── Footer del modal ────────────────────────────────────────────────────── */
+
+.speech-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+
+@media (min-width: 768px) {
+  .speech-template-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+    gap: var(--spacing-md);
+  }
+}
