@@ -225,7 +225,7 @@ export function useSupabaseData() {
   const updateEmployee = useCallback(
     async (
       num_empleado: string,
-      fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada'>>
+      fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada' | 'is_starlite' | 'reclutador'>>
     ): Promise<{ ok: boolean; message?: string }> => {
       const idx = employees.findIndex((e) => e.num_empleado === num_empleado);
       if (idx < 0) return { ok: false, message: 'Empleado no encontrado.' };

@@ -3,6 +3,7 @@ import { Pencil, AlertCircle, Edit2 } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
+import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
@@ -14,7 +15,7 @@ interface EditEmployeeModalProps {
   onClose: () => void;
   onSave: (
     num_empleado: string,
-    fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada'>>
+    fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada' | 'is_starlite' | 'reclutador'>>
   ) => Promise<{ ok: boolean; message?: string }>;
 }
 
@@ -24,6 +25,8 @@ type FormState = Pick<
 > & {
   ruta: string;
   parada: string;
+  is_starlite: boolean;
+  reclutador: string;
 };
 
 export function EditEmployeeModal({
@@ -42,6 +45,8 @@ export function EditEmployeeModal({
     fecha_ingreso: '',
     ruta: '',
     parada: '',
+    is_starlite: false,
+    reclutador: '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -86,6 +91,8 @@ export function EditEmployeeModal({
       fecha_ingreso: employee.fecha_ingreso,
       ruta: employee.ruta ?? '',
       parada: employee.parada ?? '',
+      is_starlite: employee.is_starlite ?? false,
+      reclutador: employee.reclutador ?? '',
     });
   }, [isOpen, employee]);
 
@@ -112,6 +119,8 @@ export function EditEmployeeModal({
         fecha_ingreso: form.fecha_ingreso,
         ruta: form.ruta || null,
         parada: form.parada || null,
+        is_starlite: form.is_starlite,
+        reclutador: form.reclutador || null,
       });
       if (result && result.ok === false) {
         setErrorMsg(result.message ?? 'No se pudo guardar.');
@@ -245,12 +254,37 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
+            <label htmlFor="edit-emp-starlite">Etiqueta Starlite</label>
+            <CustomSelect
+              id="edit-emp-starlite"
+              value={form.is_starlite ? 'true' : 'false'}
+              onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+              options={[
+                { value: 'false', label: 'No' },
+                { value: 'true', label: 'Sí' }
+              ]}
+            />
+          </div>
+          <div className="form-group">
             <label htmlFor="edit-fecha">Fecha de Ingreso</label>
             <input
               id="edit-fecha"
               type="date"
               value={form.fecha_ingreso}
               onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-reclutador">Reclutador</label>
+            <CustomSelect
+              id="edit-emp-reclutador"
+              value={form.reclutador}
+              onChange={(val) => setForm({ ...form, reclutador: val })}
+              placeholder="Sin asignar"
+              options={RECLUTADORES_ACTIVOS.map((r) => ({ 
+                value: r.toUpperCase(), 
+                label: RECLUTADORES_INFO[r].nombre_completo 
+              }))}
             />
           </div>
         </div>

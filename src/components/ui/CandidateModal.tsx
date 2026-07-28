@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { ShieldAlert } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
 
 /**
  * Reclutadoras activas que pueden ser asignadas a un proceso.
@@ -28,11 +29,11 @@ import { Checkbox } from '@/components/ui/Checkbox';
  * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
  * El `label` se muestra en formato amigable en el select.
  */
-const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> = [
-  { value: 'ALEXANDRA', label: 'Alexandra' },
-  { value: 'DANIELA', label: 'Daniela' },
-  { value: 'LEONARDO', label: 'Leonardo' },
-];
+const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> = 
+  RECLUTADORES_ACTIVOS.map((r) => ({
+    value: r.toUpperCase(),
+    label: RECLUTADORES_INFO[r].nombre_completo
+  }));
 
 type Mode = 'add' | 'edit' | 'delete';
 

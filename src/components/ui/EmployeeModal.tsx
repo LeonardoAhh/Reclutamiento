@@ -13,7 +13,7 @@ import type { Employee } from '@/lib/types';
 import type { AutoVacancy } from '@/lib/autoVacancies';
 import { usePositions } from '@/lib/positions';
 import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
-import { CATEGORIAS } from '@/lib/constants';
+import { CATEGORIAS, RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
 import { localTodayIso } from '@/lib/dates';
 import {
   TRANSPORTE_NA,
@@ -48,6 +48,7 @@ type FormState = Pick<
   ruta: string;
   parada: string;
   is_starlite: boolean;
+  reclutador: string;
 };
 
 function emptyForm(): FormState {
@@ -63,6 +64,7 @@ function emptyForm(): FormState {
     ruta: '',
     parada: '',
     is_starlite: false,
+    reclutador: '',
   };
 }
 
@@ -161,6 +163,7 @@ export function EmployeeModal({
         ruta: employee.ruta ?? '',
         parada: employee.parada ?? '',
         is_starlite: employee.is_starlite ?? false,
+        reclutador: employee.reclutador ?? '',
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
@@ -183,6 +186,7 @@ export function EmployeeModal({
           ruta: '',
           parada: '',
           is_starlite: false,
+          reclutador: '',
         });
       } else {
         setForm(emptyForm());
@@ -225,6 +229,7 @@ export function EmployeeModal({
           ...form,
           ruta: form.ruta ? form.ruta : null,
           parada: form.parada ? form.parada : null,
+          reclutador: form.reclutador ? form.reclutador : null,
         };
 
         // Retraso artificial para que se note la animación
@@ -289,6 +294,23 @@ export function EmployeeModal({
     </>
   );
 
+  const starliteField = (
+    <div className="form-group employee-modal__starlite-toggle">
+      <label htmlFor="emp-starlite" className="starlite-label">
+        Etiqueta Starlite
+      </label>
+      <CustomSelect
+        id="emp-starlite"
+        value={form.is_starlite ? 'true' : 'false'}
+        onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+        options={[
+          { value: 'false', label: 'No' },
+          { value: 'true', label: 'Sí' }
+        ]}
+      />
+    </div>
+  );
+
   const fieldsPosicion =
     // Si hay vacantes disponibles y estamos en modo 'add', no mostrar selectores
     // porque se pre-llenan del selector de vacante
@@ -315,32 +337,35 @@ export function EmployeeModal({
           disabled={!form.area}
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="emp-puesto">Puesto</label>
-        <CustomSelect
-          id="emp-puesto"
-          value={form.puesto}
-          onChange={(val) => setForm({ ...form, puesto: val })}
-          options={puestosForSection.map((p) => ({ value: p, label: p }))}
-          placeholder="Seleccione puesto…"
-          disabled={!form.seccion}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-turno">Turno</label>
-        <CustomSelect
-          id="emp-turno"
-          value={form.turno}
-          onChange={(val) => setForm({ ...form, turno: val })}
-          options={[
-            { value: '1', label: '1' },
-            { value: '2', label: '2' },
-            { value: '3', label: '3' },
-            { value: '4', label: '4' },
-            { value: 'Mixto', label: 'Mixto' },
-          ]}
-          placeholder="Turno..."
-        />
+      <div className="form-group--span-2 form-grid form-grid--3-cols">
+        <div className="form-group">
+          <label htmlFor="emp-puesto">Puesto</label>
+          <CustomSelect
+            id="emp-puesto"
+            value={form.puesto}
+            onChange={(val) => setForm({ ...form, puesto: val })}
+            options={puestosForSection.map((p) => ({ value: p, label: p }))}
+            placeholder="Seleccione puesto…"
+            disabled={!form.seccion}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="emp-turno">Turno</label>
+          <CustomSelect
+            id="emp-turno"
+            value={form.turno}
+            onChange={(val) => setForm({ ...form, turno: val })}
+            options={[
+              { value: '1', label: '1' },
+              { value: '2', label: '2' },
+              { value: '3', label: '3' },
+              { value: '4', label: '4' },
+              { value: 'Mixto', label: 'Mixto' },
+            ]}
+            placeholder="Turno..."
+          />
+        </div>
+        {starliteField}
       </div>
       <div className="form-group">
         <label htmlFor="emp-fecha">Fecha de Ingreso</label>
@@ -381,31 +406,34 @@ export function EmployeeModal({
   // selector de vacante, `fieldsPosicion` ya incluye su propia Fecha de Ingreso.
   const fieldsFecha = showVacancySelector ? (
     <>
-      <div className="form-group">
-        <label htmlFor="emp-vac-categoria">Categoría</label>
-        <CustomSelect
-          id="emp-vac-categoria"
-          value={form.categoria}
-          onChange={(val) => setForm({ ...form, categoria: val })}
-          options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
-          placeholder="Categoría..."
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-vac-turno">Turno</label>
-        <CustomSelect
-          id="emp-vac-turno"
-          value={form.turno}
-          onChange={(val) => setForm({ ...form, turno: val })}
-          options={[
-            { value: '1', label: '1' },
-            { value: '2', label: '2' },
-            { value: '3', label: '3' },
-            { value: '4', label: '4' },
-            { value: 'Mixto', label: 'Mixto' },
-          ]}
-          placeholder="Turno..."
-        />
+      <div className="form-group--span-2 form-grid form-grid--3-cols">
+        <div className="form-group">
+          <label htmlFor="emp-vac-categoria">Categoría</label>
+          <CustomSelect
+            id="emp-vac-categoria"
+            value={form.categoria}
+            onChange={(val) => setForm({ ...form, categoria: val })}
+            options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
+            placeholder="Categoría..."
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="emp-vac-turno">Turno</label>
+          <CustomSelect
+            id="emp-vac-turno"
+            value={form.turno}
+            onChange={(val) => setForm({ ...form, turno: val })}
+            options={[
+              { value: '1', label: '1' },
+              { value: '2', label: '2' },
+              { value: '3', label: '3' },
+              { value: '4', label: '4' },
+              { value: 'Mixto', label: 'Mixto' },
+            ]}
+            placeholder="Turno..."
+          />
+        </div>
+        {starliteField}
       </div>
       <div className="form-group">
         <label htmlFor="emp-vac-fecha">Fecha de Ingreso</label>
@@ -422,20 +450,21 @@ export function EmployeeModal({
   const fieldsTransporte = null;
 
   const fieldsExtra = (
-    <div className="form-group employee-modal__starlite-toggle">
-      <label htmlFor="emp-starlite" className="starlite-label">
-        Etiqueta Starlite
-      </label>
-      <CustomSelect
-        id="emp-starlite"
-        value={form.is_starlite ? 'true' : 'false'}
-        onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
-        options={[
-          { value: 'false', label: 'No' },
-          { value: 'true', label: 'Sí' }
-        ]}
-      />
-    </div>
+    <>
+      <div className="form-group">
+        <label htmlFor="emp-reclutador">Reclutador</label>
+        <CustomSelect
+          id="emp-reclutador"
+          value={form.reclutador}
+          onChange={(val) => setForm({ ...form, reclutador: val })}
+          placeholder="Sin asignar"
+          options={RECLUTADORES_ACTIVOS.map((r) => ({ 
+            value: r.toUpperCase(), 
+            label: RECLUTADORES_INFO[r].nombre_completo 
+          }))}
+        />
+      </div>
+    </>
   );
 
   const errorNotice = null;

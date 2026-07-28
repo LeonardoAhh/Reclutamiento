@@ -19,6 +19,12 @@
   }
 }
 
+@media (min-width: 640px) {
+  .edit-employee-modal .form-grid.form-grid--3-cols {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
 /* ── Controles: nunca desborden la celda ── */
 .edit-employee-modal .form-group {
   min-width: 0;

@@ -29,6 +29,8 @@ export interface Employee {
    * Determina si el empleado forma parte del proyecto especial Starlite.
    */
   is_starlite?: boolean;
+  /** Reclutador asignado o que gestionó el alta del empleado */
+  reclutador?: string | null;
 }
 
 /**
