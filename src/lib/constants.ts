@@ -134,7 +134,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
 
   // ── PRODUCCIÓN MONTAJE ──
   { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'SUPERVISOR DE MONTAJE DE MOLDES', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'MONTADOR DE MOLDES', plantilla_autorizada: 7, bono: true, bono_monto: 345 },
+  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'MONTADOR DE MOLDES', plantilla_autorizada: 8, bono: true, bono_monto: 345 },
 
   // ── PROYECTOS ──
   { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'LIDER DE PROYECTOS', plantilla_autorizada: 3 },
