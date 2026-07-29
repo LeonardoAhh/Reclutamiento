@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { getISOWeek } from 'date-fns';
 import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -179,10 +180,26 @@ export function IndicadoresView() {
     const reclutadoresEnMeta = recruiterTotals.filter(r => r.total >= metaMensual).length;
     const promedioPermanenciaGlobal = bajasCountMes > 0 ? Math.round(totalDiasPermanenciaMes / bajasCountMes) : 0;
 
+    const groupedByWeek: Record<string, any> = {};
+    formattedData.forEach(row => {
+      if (row.date === 'Sin Fecha') return; // opcional: si quieres agrupar "Sin Fecha" como "Semana NaN", mejor omitir o manejar.
+      const weekNum = getISOWeek(row.parsedDate);
+      const weekKey = `Semana ${weekNum}`;
+      if (!groupedByWeek[weekKey]) {
+        groupedByWeek[weekKey] = { date: weekKey, parsedDate: row.parsedDate, total: 0 };
+      }
+      groupedByWeek[weekKey].total += row.total;
+      recruiterList.forEach(rec => {
+        if (!groupedByWeek[weekKey][rec]) groupedByWeek[weekKey][rec] = 0;
+        groupedByWeek[weekKey][rec] += (row[rec] || 0);
+      });
+    });
+    const tableDataByWeek = Object.values(groupedByWeek).sort((a: any, b: any) => a.parsedDate.getTime() - b.parsedDate.getTime());
+
     return {
       chartData: formattedData,
       recruiters: recruiterList,
-      tableData: formattedData,
+      tableData: tableDataByWeek,
       kpi: { 
         totalIngresos, 
         promedio, 
@@ -342,12 +359,12 @@ export function IndicadoresView() {
                 </span>
               )}
             </span>
-            <span className="indicadores-kpi-sub">{tableData.length} fechas registradas</span>
+            <span className="indicadores-kpi-sub">{tableData.length} semanas registradas</span>
           </div>
           <div className="indicadores-kpi-card">
             <span className="indicadores-kpi-label">Promedio Semanal</span>
             <span className="indicadores-kpi-value">{kpi.promedio}</span>
-            <span className="indicadores-kpi-sub">Ingresos por fecha</span>
+            <span className="indicadores-kpi-sub">Ingresos por semana</span>
           </div>
           <div className="indicadores-kpi-card">
             <span className="indicadores-kpi-label">Top Reclutador</span>
@@ -408,7 +425,7 @@ export function IndicadoresView() {
       )}
 
 
-      {/* ── Tabla transpuesta: Reclutadores × Fechas ────────────── */}
+      {/* ── Tabla transpuesta: Reclutadores × Semanas ────────────── */}
       <div className="indicadores-card indicadores-table-card">
         <div className="indicadores-table-header">
           <h3 className="type-heading-sm text-ink m-0">Desglose Detallado</h3>
@@ -435,8 +452,8 @@ export function IndicadoresView() {
           </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
-          <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y fecha">
-            <caption className="sr-only">Desglose detallado de ingresos por reclutador y fecha</caption>
+          <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y semana">
+            <caption className="sr-only">Desglose detallado de ingresos por reclutador y semana</caption>
             <thead>
               <tr>
                 <th scope="col" className="indicadores-table-sticky">Reclutador</th>
@@ -514,7 +531,7 @@ export function IndicadoresView() {
             {tableData.length > 0 && (
               <tfoot>
                 <tr>
-                  <th scope="row">Total por Fecha</th>
+                  <th scope="row">Total por Semana</th>
                   {tableData.map(row => {
                     let totalClass = "text-warning";
                     if (kpi?.metaSemanal !== null) {

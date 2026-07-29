@@ -1,8 +1,8 @@
 {
-  "version": "1.0.5",
-  "fecha": "2026-07-28",
+  "version": "1.0.5.1",
+  "fecha": "2026-07-29",
   "nivel": "success",
   "titulo": "Actualización",
-  "mensaje": "Nuevas funciones y optimización de rendimiento.",
+  "mensaje": "Coreccion de errores y mejoras de rendimiento.",
   "notificar": true
 }
