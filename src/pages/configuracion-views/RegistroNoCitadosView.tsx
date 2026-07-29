@@ -1,13 +1,15 @@
 import { useState, useMemo, useEffect } from 'react';
-import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, FileSpreadsheet, Filter } from 'lucide-react';
+import { UserX, Save, ChevronLeft, ChevronRight, Plus, UserPlus, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, FileSpreadsheet, Filter, AlertTriangle } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Modal } from '@/components/ui/Modal';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useCandidates } from '@/hooks/useCandidates';
 
 import { usePositions } from '@/lib/positions';
 import { NoCitadosChart } from './NoCitadosChart';
@@ -61,6 +63,7 @@ export function RegistroNoCitadosView() {
   const ITEMS_PER_PAGE = 5;
 
   const { noCitados: records, addNoCitado, updateNoCitado, deleteNoCitado, loading } = useSupabaseData();
+  const { candidates } = useCandidates();
   const { positions } = usePositions();
 
   const PUESTOS_OPTIONS = useMemo(() => {
@@ -84,6 +87,7 @@ export function RegistroNoCitadosView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [keepOpen, setKeepOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -170,8 +174,13 @@ export function RegistroNoCitadosView() {
       setTimeout(() => {
         setStatus('idle');
         setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
-        setIsModalOpen(false); // Close modal on success
         setEditingId(null);
+        if (!keepOpen) {
+          setIsModalOpen(false); // Close modal on success
+        } else {
+          // Focus the first input (nombre)
+          setTimeout(() => document.getElementById('nombre')?.focus(), 100);
+        }
       }, 1500);
     } else {
       setStatus('idle');
@@ -208,12 +217,26 @@ export function RegistroNoCitadosView() {
   const isPhoneValid = formData.telefono.length === 10;
   const showPhoneError = formData.telefono.length > 0 && !isPhoneValid;
 
+  const duplicateInNoCitados = useMemo(() => {
+    if (!isPhoneValid) return null;
+    return records.find(r => r.telefono === formData.telefono && r.id !== editingId);
+  }, [formData.telefono, records, editingId, isPhoneValid]);
+
+  const duplicateInPipeline = useMemo(() => {
+    if (!isPhoneValid) return null;
+    return candidates.find(c => {
+      const cleanPhone = String(c.telefono || '').replace(/\D/g, '');
+      return cleanPhone === formData.telefono;
+    });
+  }, [formData.telefono, candidates, isPhoneValid]);
+
   const missingRequiredFields = [
-    !formData.nombre.trim() && 'Nombre',
+    (!formData.nombre.trim() || formData.nombre.trim().length < 2) && 'Nombre (min. 2 letras)',
     !isPhoneValid && 'Teléfono (10 dígitos)',
     !formData.motivo && 'Motivo principal',
     (formData.motivo && SUB_MOTIVOS_OPTIONS[formData.motivo]?.length > 0 && !formData.subMotivo) && 'Detalle del motivo',
-    !formData.reclutador && 'Reclutador'
+    !formData.reclutador && 'Reclutador',
+    !formData.fuente && 'Fuente'
   ].filter(Boolean) as string[];
 
   const isFormValid = missingRequiredFields.length === 0;
@@ -298,15 +321,26 @@ export function RegistroNoCitadosView() {
         title={editingId ? "Editar candidato" : "Registrar candidato"}
         icon={<UserPlus size={20} className="text-primary" />}
         footerActions={
-          <div className="no-citados-modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancelar
-            </button>
-            <div>
+          <div className="no-citados-modal-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: 'var(--spacing-sm)' }}>
+            <label htmlFor="keepOpenToggle" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', cursor: 'pointer', userSelect: 'none' }}>
+              <Checkbox 
+                id="keepOpenToggle"
+                checked={keepOpen} 
+                onChange={e => setKeepOpen(e.target.checked)} 
+              />
+              <span style={{ fontSize: 'var(--type-caption-sm-size)', color: 'var(--color-ink-muted)', fontWeight: 500 }}>
+                Modo ráfaga
+              </span>
+            </label>
+            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <div>
               <AnimatedSubmitButton
                 type="submit"
                 form="form-no-citados"
@@ -314,15 +348,16 @@ export function RegistroNoCitadosView() {
                 isSuccess={status === 'success'}
                 isError={!!errorMsg}
                 errorText={errorMsg || undefined}
-                idleText="Registrar"
+                idleText={(duplicateInNoCitados || duplicateInPipeline) ? "Forzar registro" : "Registrar"}
                 loadingText="Guardando..."
-                successText="¡Registrado!"
+                successText="Listo"
                 idleIcon={Save}
                 className="btn-primary"
                 disabled={!isFormValid}
               />
             </div>
           </div>
+        </div>
         }
       >
         <div className="modal-body">
@@ -366,7 +401,7 @@ export function RegistroNoCitadosView() {
                 aria-describedby={showPhoneError ? "telefono-error" : undefined}
                 aria-invalid={showPhoneError}
               />
-              {isPhoneValid && (
+              {isPhoneValid && !duplicateInNoCitados && !duplicateInPipeline && (
                 <CheckCircle2 size={18} className="phone-validation-icon valid" />
               )}
               {showPhoneError && (
@@ -377,6 +412,39 @@ export function RegistroNoCitadosView() {
               <span id="telefono-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
                 El teléfono debe tener 10 dígitos.
               </span>
+            )}
+            
+            {/* Alertas de Duplicados */}
+            {isPhoneValid && duplicateInNoCitados && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: 'var(--spacing-xs)', color: 'var(--color-accent-orange)', fontSize: 'var(--type-caption-sm-size)', fontWeight: 500 }}>
+                <AlertTriangle size={14} />
+                <span>Ya registrado ({duplicateInNoCitados.fecha})</span>
+              </div>
+            )}
+            
+            {isPhoneValid && !duplicateInNoCitados && duplicateInPipeline && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginTop: 'var(--spacing-xs)' }}>
+                <span style={{ color: 'var(--color-primary)', fontSize: 'var(--type-caption-sm-size)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <UserPlus size={14} /> Candidato activo
+                </span>
+                <button 
+                  type="button" 
+                  style={{ background: 'none', border: 'none', color: 'var(--color-ink-muted)', textDecoration: 'underline', cursor: 'pointer', fontSize: 'var(--type-caption-sm-size)', padding: 0 }}
+                  onClick={() => {
+                    const [first, ...rest] = (duplicateInPipeline.nombre || '').split(' ');
+                    setFormData(prev => ({
+                      ...prev,
+                      nombre: first || prev.nombre,
+                      apellido: rest.join(' ') || prev.apellido,
+                      reclutador: duplicateInPipeline.reclutador || prev.reclutador,
+                      fuente: duplicateInPipeline.source || prev.fuente,
+                      puesto: duplicateInPipeline.puesto || prev.puesto
+                    }));
+                  }}
+                >
+                  Autocompletar datos
+                </button>
+              </div>
             )}
           </div>
 
