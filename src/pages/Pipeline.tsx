@@ -40,6 +40,7 @@ import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Modal } from '@/components/ui/Modal';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
@@ -1246,44 +1247,46 @@ export function Pipeline() {
         </div>
       )}
 
-      {/* ── Quick Profile (Mini Modal Minimalista) ── */}
-      {quickProfile && (
-        <div
-          className="quick-profile-overlay"
-          onClick={() => setQuickProfile(null)}
-          aria-hidden="true"
-        >
-          <div
-            className="quick-profile-card"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Perfil rápido de ${quickProfile.nombre}`}
-            onClick={(e) => e.stopPropagation()}
+      {/* ── Quick Profile (Modal) ── */}
+      <Modal
+        isOpen={!!quickProfile}
+        onClose={() => setQuickProfile(null)}
+        title="Vista Previa"
+        size="md"
+        fullscreenMobile={false}
+        footerActions={
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ width: '100%', justifyContent: 'center' }}
+            onClick={() => {
+              if (!quickProfile) return;
+              const target = quickProfile;
+              setQuickProfile(null);
+              openEdit(target);
+            }}
           >
-            <div className="quick-profile__info">
-              <h3>{quickProfile.nombre}</h3>
-              <p>{quickProfile.telefono} • {quickProfile.puesto}</p>
+            Editar Perfil Completo
+          </button>
+        }
+      >
+        {quickProfile && (
+          <div className="modal-body">
+            <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+              <div className="quick-profile__avatar">
+                {(quickProfile.nombre ?? '?').charAt(0)}
+              </div>
+              <div className="quick-profile__info">
+                <h3>{quickProfile.nombre}</h3>
+                <p>{quickProfile.telefono} • {quickProfile.puesto}</p>
+                <div style={{ marginTop: 'var(--spacing-xs)' }}>
+                  <CandidateStatusBadge status={quickProfile.status} />
+                </div>
+              </div>
             </div>
-            <div className="quick-profile__avatar">
-              {(quickProfile.nombre ?? '?').charAt(0)}
-            </div>
-
-            <button
-              type="button"
-              className="quick-profile__edit-btn"
-              onClick={() => {
-                const target = quickProfile;
-                setQuickProfile(null);
-                openEdit(target);
-              }}
-              title="Editar candidato"
-              aria-label={`Editar candidato ${quickProfile.nombre}`}
-            >
-              <Pencil size={14} aria-hidden="true" />
-            </button>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
       {/* ── Modals de KPIs de reclutadores ── */}
       <RecruiterStatsModal

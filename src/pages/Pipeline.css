@@ -2302,14 +2302,14 @@
   margin: 0;
   font-size: var(--type-body-md-size);
   font-weight: 600;
-  color: var(--color-on-dark);
+  color: var(--color-ink);
   letter-spacing: -0.01em;
 }
 
 .quick-profile__info p {
   margin: 0;
   font-size: var(--type-caption-md-size);
-  color: var(--color-on-dark-soft);
+  color: var(--color-ink-muted);
 }
 
 .quick-profile__avatar {

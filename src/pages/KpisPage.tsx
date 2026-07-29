@@ -313,7 +313,6 @@
 
     /* ── Proyección Estratégica ─────────────────────────────────────────────── */
     const todayIso = useMemo(() => localTodayIso(), []);
-    const nextWednesdayIso = useMemo(() => getNextWednesdayIso(todayIso), [todayIso]);
 
     const { dismissedKeys, toggleDismiss } = useDismissedPositions();
 
@@ -349,12 +348,9 @@
         vacantesStarlite += vStarlite;
       }
 
-      // Próximos ingresos en la ventana [hoy, próximo miércoles].
+      // Próximos ingresos en cualquier fecha futura
       const upcomingHires = employees
-        .filter(e => {
-          const ing = String(e.fecha_ingreso);
-          return ing > todayIso && ing <= nextWednesdayIso;
-        })
+        .filter(e => String(e.fecha_ingreso) > todayIso)
         .sort((a, b) =>
           String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso))
         );
@@ -411,9 +407,10 @@
         proximosPlantilla,
         proximosBackup,
         proximosStarlite,
-        coberturaProyectada
+        coberturaProyectada,
+        nextHireDate: upcomingHires.length > 0 ? String(upcomingHires[0].fecha_ingreso) : null
       };
-    }, [currentPositionCoverage, employees, todayIso, nextWednesdayIso, dismissedKeys]);
+    }, [currentPositionCoverage, employees, todayIso, dismissedKeys]);
 
     /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
     const heroChartData = useMemo<DailyKpiData[]>(() => {
@@ -810,8 +807,10 @@
 
                <div className="kpis-page__projection-card projection-card--future">
                   <header>
-                    <h3 className="projection-title">Proyección Semanal</h3>
-                    <span className="projection-date">Ingreso: {formatProjectionDate(nextWednesdayIso)}</span>
+                    <h3 className="projection-title">Proyección</h3>
+                    {projectionTotals.nextHireDate && (
+                      <span className="projection-date">Próx. Ingreso: {formatProjectionDate(projectionTotals.nextHireDate)}</span>
+                    )}
                   </header>
                   <div className="projection-metrics">
                     <div className="projection-metric">
