@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
 
@@ -101,93 +102,6 @@ function describeCalendarCode(code?: string) {
   return INCIDENCIA_LABELS[code] || code;
 }
 
-function MiniCalendar({ days, mesStr }: { days: Record<string, string> | undefined; mesStr: string }) {
-  if (!mesStr) return null;
-
-  const [yearStr, monthStr] = mesStr.split('-');
-  const year = parseInt(yearStr, 10);
-  const month = parseInt(monthStr, 10) - 1;
-
-  // Guard: mesStr mal formado no debe romper el render
-  if (Number.isNaN(year) || Number.isNaN(month)) return null;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  const blanks = Array.from({ length: startOffset }, (_, i) => `blank-${i}`);
-  const monthDays = Array.from({ length: daysInMonth }, (_, i) => {
-    const dayStr = String(i + 1).padStart(2, '0');
-    return { dayStr, code: days?.[dayStr] };
-  });
-
-  const weekdays = [
-    { short: 'L', full: 'Lunes' },
-    { short: 'M', full: 'Martes' },
-    { short: 'M', full: 'Miércoles' },
-    { short: 'J', full: 'Jueves' },
-    { short: 'V', full: 'Viernes' },
-    { short: 'S', full: 'Sábado' },
-    { short: 'D', full: 'Domingo' },
-  ];
-
-  return (
-    <div className="config-calendar-wrapper">
-      <span className="sr-only">
-        Calendario de asistencia e incidencias de {formatMes(mesStr)}.
-      </span>
-
-      {/* Cabecera (días de la semana) — decorativa, ya descrita por el sr-only de arriba y por cada celda */}
-      <div className="config-calendar-header" aria-hidden="true">
-        {weekdays.map((d) => (
-          <abbr key={d.full} title={d.full} className="config-calendar-header__abbr">
-            {d.short}
-          </abbr>
-        ))}
-      </div>
-
-      {/* Cuadrícula de días — <ul>/<li> nativos: estructura de lista válida,
-          incluyendo los huecos iniciales como listitem vacíos (nunca role="presentation"
-          suelto dentro de role="list", que rompe el conteo de items para el lector de pantalla) */}
-      <ul className="config-calendar" aria-label={`Calendario de ${formatMes(mesStr)}`}>
-        {blanks.map((key) => (
-          <li key={key} className="config-calendar__day config-calendar__day--blank" aria-hidden="true" />
-        ))}
-        {monthDays.map((d) => {
-          const hasCode = !!d.code;
-          const isAttendance = d.code === 'A';
-          const isIncident = hasCode && !NON_INCIDENT_CODES.has(d.code as string);
-
-          let className = 'config-calendar__day';
-          if (isIncident) className += ' config-calendar__day--incident';
-          else if (isAttendance) className += ' config-calendar__day--active';
-
-          return (
-            <li
-              key={d.dayStr}
-              className={className}
-              data-day={d.dayStr}
-              title={`${d.dayStr}: ${describeCalendarCode(d.code)}`}
-              aria-label={`Día ${Number(d.dayStr)}: ${describeCalendarCode(d.code)}`}
-            />
-          );
-        })}
-      </ul>
-
-      {/* Leyenda inferior */}
-      <div className="config-calendar-legend">
-        <span className="config-calendar-legend__item">
-          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--active" aria-hidden="true" />
-          Asistencia
-        </span>
-        <span className="config-calendar-legend__item">
-          <span className="config-calendar-legend__swatch config-calendar-legend__swatch--incident" aria-hidden="true" />
-          Incidencia
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function GlobalIncidenceHistory({
   employeeNumber,
@@ -297,7 +211,7 @@ export function BusquedaView() {
   const { loading: authLoading } = useAuth();
   const { employees, loading: employeesLoading, error: employeesError } = useSupabaseData();
   const { bajas, loading: bajasLoading } = useBajas();
-  const { fetchByMes, fetchSummaries, fetchByMesList } = useReporteDiario();
+  const { fetchSummaries, fetchByMesList } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<SearchStatusFilter>('all');
@@ -310,10 +224,6 @@ export function BusquedaView() {
   const [summaries, setSummaries] = useState<ReporteDiarioSummary[]>([]);
   const [summariesLoading, setSummariesLoading] = useState(true);
   const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
-  const [reportLoading, setReportLoading] = useState(false);
-  const [reportError, setReportError] = useState('');
-  const [selectedMes, setSelectedMes] = useState<string>('');
-  const [currentReport, setCurrentReport] = useState<ReporteDiarioRecord | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -321,7 +231,6 @@ export function BusquedaView() {
       if (!active) return;
       setSummaries(data);
       if (data.length > 0) {
-        setSelectedMes(data[0].mes);
         fetchByMesList(data.map(s => s.mes)).then(reps => {
           if (active) setAllReports(reps);
         });
@@ -333,44 +242,6 @@ export function BusquedaView() {
       active = false;
     };
   }, [fetchSummaries, fetchByMesList]);
-
-  useEffect(() => {
-    if (!selectedMes) {
-      setCurrentReport(null);
-      setReportError('');
-      setReportLoading(false);
-      return;
-    }
-    let active = true;
-    setCurrentReport(null);
-    setReportError('');
-    setReportLoading(true);
-    fetchByMes(selectedMes).then((report) => {
-      if (!active) return;
-      setCurrentReport(report);
-      if (!report) setReportError('No fue posible cargar las incidencias del mes seleccionado.');
-    }).catch(() => {
-      if (active) setReportError('No fue posible cargar las incidencias del mes seleccionado.');
-    }).finally(() => {
-      if (active) setReportLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, [selectedMes, fetchByMes]);
-
-  const reportRows = useMemo(() => {
-    if (!currentReport) return [];
-    return currentReport.data.filter(isReportEmployeeRow);
-  }, [currentReport]);
-
-  const employeeDaysByNumber = useMemo(() => {
-    const map = new Map<string, Record<string, string>>();
-    for (const row of reportRows) {
-      map.set(normalizeEmpNum(row.numero_empleado), row.days);
-    }
-    return map;
-  }, [reportRows]);
 
   const searchQuery = searchTerm.trim();
 
@@ -535,11 +406,11 @@ export function BusquedaView() {
         id="config-search-results"
         className="config-page__content"
         aria-label="Resultados de búsqueda"
-        aria-busy={summariesLoading || reportLoading}
+        aria-busy={summariesLoading}
       >
-        {(summariesLoading || reportLoading) && (
+        {summariesLoading && (
           <span className="sr-only" role="status" aria-live="polite">
-            {summariesLoading ? 'Cargando reportes disponibles…' : 'Actualizando incidencias del mes seleccionado…'}
+            Cargando reportes disponibles…
           </span>
         )}
         {searchQuery.length < 2 ? (
@@ -555,9 +426,12 @@ export function BusquedaView() {
             <h3 className="sr-only">Resultados de búsqueda</h3>
 
             <section className="config-results-controls" aria-label="Filtros y vista de resultados">
-              <div className="config-results-controls__heading">
-                <SlidersHorizontal aria-hidden="true" />
-                <span className="type-body-sm-strong text-charcoal">Filtrar resultados</span>
+              <div className="config-results-controls__heading config-filter-field">
+                <span className="config-filter-label type-caption-sm text-muted" aria-hidden="true">&nbsp;</span>
+                <div className="config-results-controls__heading-content">
+                  <SlidersHorizontal aria-hidden="true" />
+                  <span className="type-body-sm-strong text-charcoal">Filtrar resultados</span>
+                </div>
               </div>
 
               <div className="config-results-controls__filters">
@@ -584,30 +458,26 @@ export function BusquedaView() {
 
                 <label className="config-filter-field">
                   <span className="config-filter-label type-caption-sm text-muted">Departamento</span>
-                  <select
+                  <CustomSelect
                     value={departmentFilter}
-                    onChange={(event) => setDepartmentFilter(event.target.value)}
-                    className="config-filter-select"
-                  >
-                    <option value={ALL_FILTER_VALUE}>Todos</option>
-                    {departmentOptions.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
+                    onChange={setDepartmentFilter}
+                    options={[
+                      { value: ALL_FILTER_VALUE, label: 'Todos' },
+                      ...departmentOptions
+                    ]}
+                  />
                 </label>
 
                 <label className="config-filter-field">
                   <span className="config-filter-label type-caption-sm text-muted">Turno</span>
-                  <select
+                  <CustomSelect
                     value={shiftFilter}
-                    onChange={(event) => setShiftFilter(event.target.value)}
-                    className="config-filter-select"
-                  >
-                    <option value={ALL_FILTER_VALUE}>Todos</option>
-                    {shiftOptions.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
+                    onChange={setShiftFilter}
+                    options={[
+                      { value: ALL_FILTER_VALUE, label: 'Todos' },
+                      ...shiftOptions
+                    ]}
+                  />
                 </label>
 
                 {hasActiveFilters && (
@@ -785,76 +655,6 @@ export function BusquedaView() {
                         </dl>
                       </section>
 
-                      <section className="config-card__calendar-section" aria-labelledby={`calendar-${employeeDomId}`}>
-                        <div className="config-calendar-header-actions">
-                          <h4 id={`calendar-${employeeDomId}`} className="config-card__section-title type-caption-up text-muted">Calendario</h4>
-
-                          {summariesLoading ? (
-                            <span className="type-caption-sm text-muted" role="status">Cargando reportes…</span>
-                          ) : summaries.length > 1 ? (
-                            <>
-                              <label htmlFor={monthSelectId} className="sr-only">
-                                Seleccionar mes para {employeeName}
-                              </label>
-                              <select
-                                id={monthSelectId}
-                                value={selectedMes}
-                                onChange={e => setSelectedMes(e.target.value)}
-                                className="config-month-select"
-                              >
-                                {summaries.map(summary => (
-                                  <option key={summary.mes} value={summary.mes}>{formatMes(summary.mes)}</option>
-                                ))}
-                              </select>
-                            </>
-                          ) : summaries.length === 1 ? (
-                            <span className="type-caption-sm text-muted">{formatMes(selectedMes)}</span>
-                          ) : (
-                            <span className="type-caption-sm text-muted">Sin reportes</span>
-                          )}
-                        </div>
-
-                        <div className="config-calendar-layout">
-                          {(() => {
-                            const empDays = employeeDaysByNumber.get(normalizeEmpNum(employeeNumber));
-
-                            if (reportLoading) {
-                              return (
-                                <div className="config-incidence-loading" role="status" aria-live="polite">
-                                  <Skeleton variant="text" width="60%" height="var(--type-caption-sm-size)" />
-                                  <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-md)" />
-                                  <span className="sr-only">Cargando incidencias de {employeeName}…</span>
-                                </div>
-                              );
-                            }
-
-                            if (reportError) {
-                              return (
-                                <p className="config-incidence-error type-caption-sm" role="alert">
-                                  {reportError}
-                                </p>
-                              );
-                            }
-
-                            if (!selectedMes) {
-                              return (
-                                <p className="config-calendar-empty type-body-sm text-muted" role="status">
-                                  Aún no hay reportes guardados para consultar.
-                                </p>
-                              );
-                            }
-
-                            return (
-                              <div className="config-calendar-grid-container config-calendar-grid-container--spaced">
-                                <MiniCalendar
-                                  mesStr={selectedMes}
-                                  days={empDays}
-                                />
-                              </div>
-                            );
-                          })()}
-                        </div>
-                      </section>
 
                       <GlobalIncidenceHistory
                         employeeNumber={employeeNumber}

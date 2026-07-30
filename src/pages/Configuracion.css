@@ -217,10 +217,10 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--rounded-md);
 }
 
 .config-results-controls__heading,
@@ -230,13 +230,14 @@
   min-width: 0;
 }
 
-.config-results-controls__heading {
+.config-results-controls__heading-content {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  height: var(--control-height);
 }
 
-.config-results-controls__heading svg,
+.config-results-controls__heading-content svg,
 .config-view-switch svg,
 .config-filter-reset svg,
 .config-compact-summary__toggle svg,
@@ -284,11 +285,11 @@
 .config-segmented-control,
 .config-view-switch {
   display: grid;
-  height: var(--touch-target-min);
+  height: var(--control-height);
   padding: var(--spacing-xxs);
   background: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-xs);
 }
 
 .config-segmented-control {
@@ -310,7 +311,7 @@
   gap: var(--spacing-xs);
   padding-inline: var(--spacing-sm);
   color: var(--color-muted);
-  border-radius: var(--rounded-md);
+  border-radius: calc(var(--rounded-xs) - 1px);
 }
 
 .config-segmented-control__button.is-active,
@@ -345,7 +346,7 @@
 
 .config-filter-reset {
   width: 100%;
-  min-height: var(--touch-target-min);
+  min-height: var(--control-height);
   align-self: end;
 }
 
@@ -367,8 +368,7 @@
   }
 
   .config-results-controls__heading {
-    min-height: var(--touch-target-min);
-    align-self: end;
+    /* El alineamiento y altura ahora los maneja config-filter-field */
   }
 
   .config-view-switch {
@@ -583,20 +583,12 @@
   gap: var(--spacing-lg);
 }
 
-.config-card__details,
-.config-card__calendar-section {
+.config-card__details {
   min-width: 0;
   padding: var(--spacing-lg);
   border: 1px solid var(--color-hairline-soft);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-soft);
-}
-
-@media (min-width: 1024px) {
-  .config-card__body {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
-  }
 }
 
 .config-card__section-title {
@@ -606,9 +598,22 @@
 /* ── Propiedades estilo Notion ────────────────────────────────── */
 
 .config-card__properties {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 var(--spacing-xl);
   margin: var(--spacing-md) 0 0;
+}
+
+@media (min-width: 768px) {
+  .config-card__properties {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .config-card__properties {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 .notion-prop {
@@ -812,7 +817,7 @@
 
 @media (min-width: 600px) {
   .config-history__months {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-calendar-column-max)), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -870,6 +875,8 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   width: 100%;
+  max-width: 340px;
+  margin-inline: auto;
   min-width: 0;
   padding: var(--spacing-md);
   background: var(--color-surface);
