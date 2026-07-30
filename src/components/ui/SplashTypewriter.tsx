@@ -8,6 +8,8 @@ interface SplashTypewriterProps {
 
 export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
   const shouldReduceMotion = useReducedMotion();
+  const entrance = shouldReduceMotion ? false : { opacity: 0, y: 10 };
+  const exit = shouldReduceMotion ? undefined : { opacity: 0 };
 
   useEffect(() => {
     // Mantener en pantalla unos 2.2 segundos para que sea legible y luego desaparecer
@@ -22,14 +24,14 @@ export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
       aria-label="Iniciando la aplicación de reclutamiento"
       aria-live="polite"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      exit={exit}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: 'easeOut' }}
     >
       <motion.h1
         className="splash-typewriter__text"
-        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+        initial={entrance}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
+        transition={{ duration: shouldReduceMotion ? 0 : 1, ease: 'easeOut' }}
       >
         RECLUTAMIENTO QUERÉTARO
       </motion.h1>

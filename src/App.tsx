@@ -60,39 +60,42 @@ function App() {
         )}
       </AnimatePresence>
 
-      <PWAStatus />
-      <SystemUpdateBanner />
-      <AppToaster />
-      <ThemeTransitionOverlay />
-      <Routes>
-      <Route
-        path="/login"
-        element={
-          <RedirectIfAuthed>
-            <Login />
-          </RedirectIfAuthed>
-        }
-      />
-      <Route path="/" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
-      <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
-      <Route path="/pipeline" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
-      <Route path="/vacantes" element={<ProtectedShell><Vacantes /></ProtectedShell>} />
-      <Route path="/toulouse" element={<Navigate to="/features" replace />} />
-      <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
-      <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
-      <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
-      <Route path="/asistencia" element={<Navigate to="/features" replace />} />
-      <Route path="/rutas" element={<Navigate to="/features" replace />} />
-      <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
-      <Route path="/documentos" element={<Navigate to="/features" replace />} />
-      <Route path="/features" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
-      <Route path="/configuracion" element={<Navigate to="/features" replace />} />
-      <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
-      <Route path="/kpis" element={<Navigate to="/" replace />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      
-      {splashDone && <TopRecruiterModal />}
+      {splashDone && (
+        <>
+          <PWAStatus />
+          <SystemUpdateBanner />
+          <AppToaster />
+          <ThemeTransitionOverlay />
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                <RedirectIfAuthed>
+                  <Login />
+                </RedirectIfAuthed>
+              }
+            />
+            <Route path="/" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
+            <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
+            <Route path="/pipeline" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
+            <Route path="/vacantes" element={<ProtectedShell><Vacantes /></ProtectedShell>} />
+            <Route path="/toulouse" element={<Navigate to="/features" replace />} />
+            <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
+            <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
+            <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
+            <Route path="/asistencia" element={<Navigate to="/features" replace />} />
+            <Route path="/rutas" element={<Navigate to="/features" replace />} />
+            <Route path="/reporte-diario" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
+            <Route path="/documentos" element={<Navigate to="/features" replace />} />
+            <Route path="/features" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
+            <Route path="/configuracion" element={<Navigate to="/features" replace />} />
+            <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
+            <Route path="/kpis" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <TopRecruiterModal />
+        </>
+      )}
     </>
   );
 }
