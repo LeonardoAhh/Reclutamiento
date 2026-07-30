@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { Typewriter } from './Typewriter';
+import { useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import './SplashTypewriter.css';
 
 interface SplashTypewriterProps {
@@ -7,6 +7,14 @@ interface SplashTypewriterProps {
 }
 
 export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    // Mantener en pantalla unos 2.2 segundos para que sea legible y luego desaparecer
+    const timer = setTimeout(onDone, 2200);
+    return () => clearTimeout(timer);
+  }, [onDone]);
+
   return (
     <motion.div
       className="splash-typewriter"
@@ -17,16 +25,14 @@ export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
     >
-      <Typewriter
-        text="RECLUTAMIENTO QUERÉTARO"
-        speed={0.06}
-        delay={0.2}
+      <motion.h1
         className="splash-typewriter__text"
-        onComplete={() => {
-          // Add a short delay after typing finishes before dismissing
-          setTimeout(onDone, 800);
-        }}
-      />
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: 'easeOut' }}
+      >
+        RECLUTAMIENTO QUERÉTARO
+      </motion.h1>
     </motion.div>
   );
 }
