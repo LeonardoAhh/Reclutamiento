@@ -63,15 +63,15 @@ export function TopRecruiterModal() {
 
   useEffect(() => {
     // Solo mostramos el modal una vez por sesión
-    // if (sessionStorage.getItem('hasSeenTopRecruiterModal') === 'true') return;
+    if (sessionStorage.getItem('hasSeenTopRecruiterModal') === 'true') return;
 
-    // if (!user || !user.email) return;
+    if (!user || !user.email) return;
 
-    const userEmailLower = user && user.email ? user.email.toLowerCase() : '';
+    const userEmailLower = user.email.toLowerCase();
 
     // Restringir el modal exclusivamente a los reclutadores
-    // const allowedRecruiters = ['alexandra@reclutamiento.local', 'daniela@reclutamiento.local'];
-    // if (!allowedRecruiters.includes(userEmailLower)) return;
+    const allowedRecruiters = ['alexandra@reclutamiento.local', 'daniela@reclutamiento.local'];
+    if (!allowedRecruiters.includes(userEmailLower)) return;
 
     fetch('/indicador.json')
       .then(res => res.ok ? res.json() : null)
@@ -156,16 +156,10 @@ export function TopRecruiterModal() {
            currentUserName = fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1);
         }
 
-        // --- MODO PRUEBA FORZADO ---
-        currentUserName = 'Usuario de Prueba';
-        currentUserTotal = 30; // Para forzar el confeti (> 28)
-        actualTopRecruiter = { name: 'Usuario de Prueba', total: 30 };
-        // ---------------------------
-
         setTopRecruiter(actualTopRecruiter);
-        setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop: true });
+        setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop });
         setIsOpen(true);
-        // sessionStorage.setItem('hasSeenTopRecruiterModal', 'true');
+        sessionStorage.setItem('hasSeenTopRecruiterModal', 'true');
       })
       .catch(console.error);
   }, [user]);
