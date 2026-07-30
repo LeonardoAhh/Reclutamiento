@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Copy, Users } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Copy, Users, Check } from 'lucide-react';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import { StarliteBadge } from './Badge';
@@ -21,6 +21,7 @@ export function FutureHiresModal({
   futureHires,
 }: FutureHiresModalProps) {
   const isMobile = useIsMobile();
+  const [copied, setCopied] = useState(false);
 
   const sortedFutureHires = useMemo(() => {
     return [...futureHires].sort((a, b) => {
@@ -32,19 +33,66 @@ export function FutureHiresModal({
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const map = new Map<string, number>();
+
+    const capitalizeTitle = (str: string) => {
+      return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    };
+
+    const groupedByArea: Record<string, Record<string, number>> = {};
+
     for (const emp of sortedFutureHires) {
-      const starliteTag = emp.is_starlite ? ' ★ Starlite' : '';
-      let turno = 'General';
+      const area = emp.area ? capitalizeTitle(emp.area) : 'Sin área';
+      const puesto = emp.is_starlite ? 'Starlite' : capitalizeTitle(emp.puesto);
+      let turnoStr = '';
+
       if (emp.seccion) {
         const match = emp.seccion.match(/\b(?:1ER|1RA|2DO|2DA|3ER|3RA|4TO|4TA|[1-9]O|[1-9]A|NOCTURNO|DIURNO|MATUTINO|VESPERTINO)\.?\s*TURNO\b/i);
-        if (match) turno = match[0].toUpperCase().replace(/\s+/g, ' ').trim();
+        if (match) {
+          let t = match[0].toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim();
+          t = t.replace('1er turno', '1er. Turno')
+               .replace('2do turno', '2do. Turno')
+               .replace('3er turno', '3er. Turno')
+               .replace('4to turno', '4to. Turno')
+               .replace('nocturno', 'Nocturno')
+               .replace('diurno', 'Diurno')
+               .replace('matutino', 'Matutino')
+               .replace('vespertino', 'Vespertino');
+          turnoStr = ` - ${t.charAt(0).toUpperCase() + t.slice(1)}`;
+        }
       }
-      const key = `${emp.area || 'Sin área'} - ${turno} - ${emp.puesto}${starliteTag}`;
-      map.set(key, (map.get(key) || 0) + 1);
+
+      const key = `${puesto}${turnoStr}`;
+
+      if (!groupedByArea[area]) {
+        groupedByArea[area] = {};
+      }
+      groupedByArea[area][key] = (groupedByArea[area][key] || 0) + 1;
     }
-    const text = Array.from(map.entries()).map(([k, v]) => `${k}: ${v}`).join('\n');
-    navigator.clipboard.writeText(`Próximos ingresos programados:\n\n${text}`);
+
+    const fecha = sortedFutureHires.length > 0 ? formatShortDate(sortedFutureHires[0].fecha_ingreso) : '';
+    const textParts = [`Próximos Ingresos: ${fecha}`];
+
+    for (const [area, roles] of Object.entries(groupedByArea)) {
+      textParts.push('');
+      textParts.push(area);
+
+      for (const [roleKey, count] of Object.entries(roles)) {
+        const plural = count === 1 ? 'Ingreso' : 'Ingresos';
+        textParts.push(`${roleKey}: ${count} ${plural}`);
+      }
+    }
+
+    if (sortedFutureHires.length > 0) {
+      textParts.push('');
+      textParts.push(`Total: ${sortedFutureHires.length}`);
+    }
+
+    navigator.clipboard.writeText(textParts.join('\n'));
+
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const renderHiresTable = (hiresToRender: Employee[]) => (
@@ -134,13 +182,17 @@ export function FutureHiresModal({
               <p className="future-hires-modal__hint">
                 Procesos cerrados con caratula y fecha de ingreso programada.
               </p>
-              <Tooltip content="Copiar">
+              <Tooltip content={copied ? "Copiado" : "Copiar"}>
                 <button
                   type="button"
                   className="btn-secondary btn-sm"
                   onClick={handleCopy}
                 >
-                  <Copy size={16} aria-hidden="true" />
+                  {copied ? (
+                    <Check size={16} aria-hidden="true" />
+                  ) : (
+                    <Copy size={16} aria-hidden="true" />
+                  )}
                 </button>
               </Tooltip>
             </div>

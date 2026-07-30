@@ -111,48 +111,37 @@ function buildWhatsappMessageBlock(
 
   const totalActivas = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesAutorizada, 0), 0);
   const totalBackup = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesBackup, 0), 0);
-  const totalStarliteVacantes = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesStarlite, 0), 0);
   const totalProximos = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + (type === 'general' ? (r.proximosIngresos - r.starliteProximos) : r.starliteProximos), 0), 0);
   const totalStarliteUrgentes = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteUrgentes, 0), 0);
   const totalStarliteEmpleados = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteEmpleados, 0), 0);
   
-  const totalVacantes = type === 'general' ? totalActivas + totalBackup : totalStarliteVacantes;
+  const totalVacantes = type === 'general' ? totalActivas + totalBackup : filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesStarlite, 0), 0);
   
   const vacantesNetas = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => {
-    const req = type === 'general' ? r.vacantesAutorizada + r.vacantesBackup : r.vacantesStarlite;
+    const req = type === 'general' ? r.vacantesAutorizada + r.vacantesBackup : r.starliteUrgentes - r.starliteEmpleados;
     const prox = type === 'general' ? r.proximosIngresos - r.starliteProximos : r.starliteProximos;
     return s + Math.max(0, req - prox);
   }, 0), 0);
   
-  const ingresosAsignados = filteredGroups.reduce((sum, g) => sum + g.rows.reduce((s, r) => {
-    const req = type === 'general' ? r.vacantesAutorizada + r.vacantesBackup : r.vacantesStarlite;
-    const prox = type === 'general' ? r.proximosIngresos - r.starliteProximos : r.starliteProximos;
-    return s + Math.min(req, prox);
-  }, 0), 0);
-  const ingresosExtra = totalProximos - ingresosAsignados;
-
   const lines: string[] = [ title, '' ];
 
   if (type === 'general') {
-    lines.push(`Total vacantes: ${totalVacantes} (activas: ${totalActivas} · backup: ${totalBackup})`);
+    lines.push(`Total: ${totalVacantes} (${totalActivas} activas · ${totalBackup} backup)`);
+    lines.push(`Ingresos: ${totalProximos}`);
+    lines.push(`Balance: Faltan ${vacantesNetas} por cubrir`);
   } else {
-    lines.push(`Total vacantes: ${totalVacantes}`);
-  }
-  
-  const proximosText = ingresosExtra > 0
-    ? `Próximos ingresos: ${totalProximos} (${ingresosAsignados} cubren vacante · ${ingresosExtra} exceden su puesto)`
-    : `Próximos ingresos: ${totalProximos}`;
-  lines.push(proximosText);
-  lines.push(`*Balance estimado: ${vacantesNetas} vacantes por cubrir*`);
-  
-  if (type === 'starlite') {
-    lines.push(`*Meta Starlite: ${totalStarliteEmpleados} contratados / ${totalStarliteUrgentes}*`);
+    lines.push(`Avance: ${totalStarliteEmpleados}/${totalStarliteUrgentes} contratados`);
+    const ingMsg = totalProximos > 1 ? ` (${totalProximos} ingresos programados)` : totalProximos === 1 ? ` (1 ingreso programado)` : '';
+    lines.push(`Balance: Faltan ${vacantesNetas} por cubrir${ingMsg}`);
   }
   
   lines.push('');
 
   for (const g of filteredGroups) {
-    lines.push(`*${g.area}*`);
+    if (type === 'general') {
+      lines.push(`*${g.area.toUpperCase()}*`);
+    }
+
     const puestosMap = new Map<string, typeof g.rows>();
     for (const r of g.rows) {
       if (!puestosMap.has(r.puesto)) puestosMap.set(r.puesto, []);
@@ -160,7 +149,6 @@ function buildWhatsappMessageBlock(
     }
 
     for (const [puesto, filas] of puestosMap.entries()) {
-      lines.push(`• ${toTitleCase(puesto)}`);
       for (const r of filas) {
         let cleanSeccion = r.seccion;
         if (cleanSeccion.toUpperCase().startsWith(g.area.toUpperCase())) {
@@ -170,52 +158,58 @@ function buildWhatsappMessageBlock(
           }
         }
 
-        let seccionLabel: string;
-        if (!cleanSeccion) {
-          seccionLabel = r.turno || 'General';
-        } else if (r.turno && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
+        let seccionLabel = cleanSeccion || r.turno || '';
+        if (r.turno && cleanSeccion && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
           seccionLabel = `${cleanSeccion} (${r.turno})`;
-        } else {
-          seccionLabel = cleanSeccion;
         }
-
         seccionLabel = toTitleCase(seccionLabel);
+        
+        const puestoName = toTitleCase(puesto);
+        const namePart = seccionLabel ? `${puestoName} - ${seccionLabel}` : puestoName;
 
-        const detalle: string[] = [];
         let ingresosDisponibles = type === 'general' ? r.proximosIngresos - r.starliteProximos : r.starliteProximos;
         
+        let faltanTexto = '';
         if (type === 'general') {
-          if (r.vacantesAutorizada > 0) {
-            const cubiertas = Math.min(ingresosDisponibles, r.vacantesAutorizada);
-            ingresosDisponibles -= cubiertas;
-            detalle.push(`Activas (${cubiertas}/${r.vacantesAutorizada})`);
-          }
-          
-          if (r.vacantesBackup > 0) {
-            const cubiertas = Math.min(ingresosDisponibles, r.vacantesBackup);
-            ingresosDisponibles -= cubiertas;
-            detalle.push(`Backup (${cubiertas}/${r.vacantesBackup})`);
-          }
-          
-          if (ingresosDisponibles > 0) {
-            detalle.push(`+${ingresosDisponibles} ingresos extra`);
-          }
+            const reqTotal = r.vacantesAutorizada + r.vacantesBackup;
+            if (reqTotal > 0) {
+               const faltan = Math.max(0, reqTotal - ingresosDisponibles);
+               if (faltan > 0) {
+                   if (r.vacantesAutorizada === 0) {
+                       faltanTexto = faltan === 1 ? `Falta 1 backup` : `Faltan ${faltan} backup`;
+                   } else if (r.vacantesBackup === 0) {
+                       faltanTexto = faltan === 1 ? `Falta 1 activa` : `Faltan ${faltan} activas`;
+                   } else {
+                       faltanTexto = `Faltan ${faltan}`;
+                   }
+               } else {
+                   faltanTexto = `Cubierto`;
+               }
+            } else if (ingresosDisponibles > 0) {
+               faltanTexto = ingresosDisponibles === 1 ? `1 ingreso extra` : `${ingresosDisponibles} ingresos extra`;
+            }
         } else {
-          detalle.push(`★ Starlite (${r.starliteEmpleados}/${r.starliteUrgentes})`);
-          if (ingresosDisponibles > 0) {
-            detalle.push(`+${ingresosDisponibles} ingresos extra`);
-          }
+            const faltan = Math.max(0, r.starliteUrgentes - r.starliteEmpleados - ingresosDisponibles);
+            if (faltan > 0) {
+                faltanTexto = `Faltan ${faltan}`;
+            } else if (ingresosDisponibles > 0) {
+                faltanTexto = ingresosDisponibles === 1 ? `1 ingreso extra` : `${ingresosDisponibles} ingresos extra`;
+            } else {
+                faltanTexto = `Cubierto`;
+            }
         }
 
-        const faltan = type === 'general' 
-          ? Math.max(0, (r.vacantesAutorizada + r.vacantesBackup) - (r.proximosIngresos - r.starliteProximos))
-          : Math.max(0, r.vacantesStarlite - r.starliteProximos);
-        const reqTotal = type === 'general' ? r.vacantesAutorizada + r.vacantesBackup : r.vacantesStarlite;
-        const balanceStr = faltan > 0 ? ` ➔ Faltan ${faltan}` : (reqTotal > 0 ? ` ➔ Cubierto` : '');
-        lines.push(`   - ${seccionLabel}: ${detalle.join(' · ')}${balanceStr}`);
+        lines.push(`${namePart}: ${faltanTexto}`);
       }
     }
-    lines.push('');
+    
+    if (type === 'general') {
+       lines.push('');
+    }
+  }
+
+  while (lines.length > 0 && lines[lines.length - 1] === '') {
+    lines.pop();
   }
 
   return lines.join('\n').trim();
@@ -231,14 +225,14 @@ function buildWhatsappMessage(allGroups: AreaGroup[], dismissedKeys: Set<string>
 
   const blocks: string[] = [];
   const generales = buildWhatsappMessageBlock(
-    `*Resumen de Vacantes Generales* — ${fecha}`, 
+    `*Resumen de Vacantes* — ${fecha}`, 
     groups, 
     'general'
   );
   if (generales) blocks.push(generales);
 
   const starlite = buildWhatsappMessageBlock(
-    `*Resumen Proyecto Starlite*${!generales ? ` — ${fecha}` : ''}`,
+    `*★ PROYECTO STARLITE*`,
     groups,
     'starlite'
   );

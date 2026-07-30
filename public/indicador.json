@@ -2481,5 +2481,31 @@
     "Ubicacion": "EN EL PUENTE DE LA CRUZ ",
     "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4299",
+    "Nombre": "MENDEZ MORALES MA. DE LOS ANGELES",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "31/07/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4300",
+    "Nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "31/07/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "PUERTO CARROZA",
+    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA",
+    "Fuente de Reclutamiento": "REFERIDO",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]

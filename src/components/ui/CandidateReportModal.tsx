@@ -155,7 +155,7 @@ function buildWhatsappMessageBlock(
   ];
 
   for (const g of groups) {
-    lines.push(`*${g.area}* — ${g.total} candidatos`);
+    lines.push(`*${g.area.toUpperCase()}* (${g.total} candidatos)`);
     const puestosMap = new Map<string, typeof g.rows>();
     for (const r of g.rows) {
       if (!puestosMap.has(r.puesto)) puestosMap.set(r.puesto, []);
@@ -163,7 +163,6 @@ function buildWhatsappMessageBlock(
     }
 
     for (const [puesto, filas] of puestosMap.entries()) {
-      lines.push(`• ${toTitleCase(puesto)}`);
       for (const r of filas) {
         let cleanSeccion = r.seccion;
         if (cleanSeccion.toUpperCase().startsWith(g.area.toUpperCase())) {
@@ -173,33 +172,29 @@ function buildWhatsappMessageBlock(
           }
         }
 
-        // Construir el label preservando toda la información:
-        //   · Sin sección → sólo turno (o "General").
-        //   · Sección sin turno → agregar el turno entre paréntesis.
-        //   · Sección que YA contiene el turno → usar la sección completa
-        //     (evita que la lógica anterior descarte "Calidad" de
-        //     "Calidad 1er. Turno").
-        let seccionLabel: string;
-        if (!cleanSeccion) {
-          seccionLabel = r.turno || 'General';
-        } else if (r.turno && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
+        let seccionLabel = cleanSeccion || r.turno || '';
+        if (r.turno && cleanSeccion && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
           seccionLabel = `${cleanSeccion} (${r.turno})`;
-        } else {
-          seccionLabel = cleanSeccion;
         }
-
         seccionLabel = toTitleCase(seccionLabel);
+        
+        const puestoName = toTitleCase(puesto);
+        const namePart = seccionLabel ? `${puestoName} - ${seccionLabel}` : puestoName;
 
         const detalle: string[] = [];
         if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
-        if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
-        if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
+        if (r.e2 > 0) detalle.push(`Entrega docs: ${r.e2}`);
+        if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
+        if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
 
-        lines.push(`   - ${seccionLabel}: ${r.total} activos (${detalle.join(' · ')})`);
+        lines.push(`${namePart}: ${r.total} activos (${detalle.join(' · ')})`);
       }
     }
     lines.push('');
+  }
+
+  while (lines.length > 0 && lines[lines.length - 1] === '') {
+    lines.pop();
   }
 
   return lines.join('\n').trim();
@@ -214,11 +209,11 @@ function buildWhatsappMessage(active: Candidate[]): string {
   const blocks: string[] = [];
 
   if (generales.length > 0) {
-    blocks.push(buildWhatsappMessageBlock(`*Resumen de Candidatos Generales* — ${fecha}`, generales));
+    blocks.push(buildWhatsappMessageBlock(`*Resumen de Candidatos* — ${fecha}`, generales));
   }
 
   if (starlite.length > 0) {
-    blocks.push(buildWhatsappMessageBlock(`*Resumen Proyecto Starlite*${generales.length === 0 ? ` — ${fecha}` : ''}`, starlite));
+    blocks.push(buildWhatsappMessageBlock(`*★ PROYECTO STARLITE*`, starlite));
   }
 
   if (blocks.length === 0) {
@@ -231,14 +226,14 @@ function buildWhatsappMessage(active: Candidate[]): string {
   let finalMessage = blocks.join('\n\n-----------------------------------\n\n');
 
   if (activeRecruiters.length > 0) {
-    const recruiterLines = ['*Por reclutador (Total)*'];
+    const recruiterLines = ['*Por reclutador*'];
     for (const r of activeRecruiters) {
       const detalle: string[] = [];
       if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-      if (r.e2 > 0) detalle.push(`Entrega de documentos: ${r.e2}`);
-      if (r.fd > 0) detalle.push(`Faltan documentos: ${r.fd}`);
-      if (r.fp > 0) detalle.push(`Feedback pendiente: ${r.fp}`);
-      recruiterLines.push(`• ${r.name} — ${r.total} (${detalle.join(' · ')})`);
+      if (r.e2 > 0) detalle.push(`Entrega docs: ${r.e2}`);
+      if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
+      if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
+      recruiterLines.push(`• ${toTitleCase(r.name)}: ${r.total} (${detalle.join(' · ')})`);
     }
     finalMessage += '\n\n-----------------------------------\n\n' + recruiterLines.join('\n');
   }
