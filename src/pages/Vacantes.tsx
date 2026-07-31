@@ -35,7 +35,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { ReclutadorBadge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
-import { formatShortDate, localTodayIso } from '@/lib/dates';
+import { formatShortDate, localTodayIso, formatMonthLabel } from '@/lib/dates';
 import { PositionSettingsWizard } from '@/components/ui/PositionSettingsWizard';
 import { EASE_OUT } from '@/lib/motion';
 import './Pipeline.css';
@@ -82,6 +82,8 @@ export function Vacantes() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => typeof localStorage !== 'undefined' && localStorage.getItem('vac_sidebar_collapsed') === '1'
   );
+  
+  const [monthlyModalOpen, setMonthlyModalOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarCollapsed((prev) => {
@@ -162,6 +164,31 @@ export function Vacantes() {
         return b.dias - a.dias;
       });
   }, [vacancies, searchTerm, statusFilter, typeFilter]);
+
+  const vacanciesByMonth = useMemo(() => {
+    const counts: Record<string, { total: number; abierta: number; cubierta: number; puestos: Record<string, { abierta: number; cubierta: number }> }> = {};
+    for (const v of vacancies) {
+      const isStructural = !v.baja || !v.fechaBaja;
+      const month = isStructural ? 'Estructurales' : v.fechaBaja.slice(0, 7);
+      if (!counts[month]) counts[month] = { total: 0, abierta: 0, cubierta: 0, puestos: {} };
+      counts[month].total++;
+      if (v.status === 'abierta') counts[month].abierta++;
+      else counts[month].cubierta++;
+      
+      // Normalize puesto name to group categories/shifts (e.g., "Operador de Máquina D" -> "Operador de Máquina")
+      const rawPuesto = v.puesto.trim();
+      const normalizedPuesto = rawPuesto.replace(/\s+[A-Za-z]$/, '').trim();
+      const puestoKey = toTitleCase(normalizedPuesto);
+      if (!counts[month].puestos[puestoKey]) counts[month].puestos[puestoKey] = { abierta: 0, cubierta: 0 };
+      if (v.status === 'abierta') counts[month].puestos[puestoKey].abierta++;
+      else counts[month].puestos[puestoKey].cubierta++;
+    }
+    return Object.entries(counts).sort((a, b) => {
+      if (a[0] === 'Estructurales') return 1;
+      if (b[0] === 'Estructurales') return -1;
+      return b[0].localeCompare(a[0]);
+    });
+  }, [vacancies]);
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const paginated = useMemo(() => {
@@ -281,18 +308,28 @@ export function Vacantes() {
         <div className="pipeline__hero-content">
           <h1>Vacantes</h1>
         </div>
-        {isAdmin && (
-          <div className="pipeline__hero-actions">
+        <div className="pipeline__hero-actions">
+          <button
+            type="button"
+            className="btn-secondary vacantes__config-btn"
+            onClick={() => setMonthlyModalOpen(true)}
+            title="Ver vacantes por mes"
+            aria-label="Ver vacantes por mes"
+          >
+            <Calendar size={16} aria-hidden="true" />
+          </button>
+          {isAdmin && (
             <button
               type="button"
               className="btn-secondary vacantes__config-btn"
               onClick={() => setWizardOpen(true)}
               data-testid="vac-config-btn"
+              aria-label="Configuración de posiciones"
             >
               <SlidersHorizontal size={16} aria-hidden="true" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {isAdmin && (
@@ -374,6 +411,62 @@ export function Vacantes() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isOpen={monthlyModalOpen}
+        onClose={() => setMonthlyModalOpen(false)}
+        icon={<Calendar size={20} className="color-primary" aria-hidden="true" />}
+        title="Vacantes por mes"
+        size="md"
+        fullscreenMobile={false}
+      >
+        <div className="modal-body vacantes__monthly-body">
+          {vacanciesByMonth.length === 0 ? (
+            <p className="color-muted" style={{ textAlign: 'center', padding: 'var(--spacing-lg) 0' }}>No hay datos disponibles.</p>
+          ) : (
+            <ul className="vacantes__monthly-list">
+              {vacanciesByMonth.map(([monthKey, counts]) => (
+                <li key={monthKey} className="vacantes__monthly-item">
+                  <div className="vacantes__monthly-header">
+                    <span className="vacantes__monthly-label">
+                      {monthKey === 'Estructurales' ? 'Estructurales' : formatMonthLabel(monthKey)}
+                    </span>
+                    <span className="vacantes__monthly-total">{counts.total}</span>
+                  </div>
+                  <div className="vacantes__monthly-bars">
+                    <div className="vacantes__monthly-bar" style={{ flex: counts.abierta || 0 }}>
+                      {counts.abierta > 0 && <span className="vacantes__monthly-val color-error">{counts.abierta} ab.</span>}
+                    </div>
+                    <div className="vacantes__monthly-bar" style={{ flex: counts.cubierta || 0 }}>
+                      {counts.cubierta > 0 && <span className="vacantes__monthly-val color-success">{counts.cubierta} cub.</span>}
+                    </div>
+                  </div>
+                  <div className="vacantes__monthly-puestos">
+                    <div className="vacantes__monthly-puestos-header">
+                      <span className="vacantes__monthly-col-puesto">Puesto</span>
+                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--open">Ab.</span>
+                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--done">Cub.</span>
+                    </div>
+                    {Object.entries(counts.puestos)
+                      .sort((a, b) => (b[1].abierta + b[1].cubierta) - (a[1].abierta + a[1].cubierta))
+                      .map(([puesto, cnt]) => (
+                        <div key={puesto} className="vacantes__monthly-puesto-row">
+                          <span className="vacantes__monthly-col-puesto">{puesto}</span>
+                          <span className="vacantes__monthly-col-num vacantes__monthly-col-num--open">
+                            {cnt.abierta > 0 ? cnt.abierta : <span className="vacantes__monthly-col-zero">—</span>}
+                          </span>
+                          <span className="vacantes__monthly-col-num vacantes__monthly-col-num--done">
+                            {cnt.cubierta > 0 ? cnt.cubierta : <span className="vacantes__monthly-col-zero">—</span>}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </Modal>
 
       <div className="pipeline__layout" data-collapsed={sidebarCollapsed ? 'true' : undefined}>

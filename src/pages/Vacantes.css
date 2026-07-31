@@ -798,7 +798,6 @@
   gap: 4px;
 }
 
-
 /* Fila del hero con botón de configuración (admin). */
 .vacantes__hero-row {
   display: flex;
@@ -895,7 +894,7 @@
   .vacantes-page .pipeline__sidebar {
     display: none !important;
   }
-  
+
   /* Restaurar grid normal en móvil independientemente del collapsed */
   .vacantes-page .pipeline__layout,
   .vacantes-page .pipeline__layout[data-collapsed="true"] {
@@ -1015,6 +1014,181 @@
   height: 100%;
 }
 
+/* ── Resumen Mensual (Modal) ────────────────────────────────────── */
+.vacantes__monthly-body {
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
+}
 
+.vacantes__monthly-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
 
+.vacantes__monthly-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
 
+.vacantes__monthly-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vacantes__monthly-label {
+  font-weight: 600;
+  font-size: var(--type-body-md-size, 15px);
+  color: var(--color-ink);
+  text-transform: capitalize;
+}
+
+.vacantes__monthly-total {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-ink);
+}
+
+.vacantes__monthly-bars {
+  display: flex;
+  gap: 2px;
+  height: 24px;
+  border-radius: var(--rounded-sm);
+  overflow: hidden;
+  background: var(--color-hairline);
+  margin-top: 4px;
+}
+
+.vacantes__monthly-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: flex 0.3s ease;
+  min-width: 0;
+}
+
+.vacantes__monthly-val {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.vacantes__monthly-bar:first-child {
+  background: var(--color-error-tint);
+}
+
+.vacantes__monthly-bar:last-child {
+  background: var(--color-success-tint);
+}
+
+.vacantes__monthly-puestos {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-xs);
+  border-top: 1px dashed var(--color-hairline);
+}
+
+.vacantes__monthly-puestos-header {
+  display: grid;
+  grid-template-columns: 1fr 40px 44px;
+  gap: var(--spacing-xs);
+  padding: 4px var(--spacing-xs);
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 2px;
+}
+
+.vacantes__monthly-puestos-header .vacantes__monthly-col-puesto {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider, 0.06em);
+  color: var(--color-muted);
+}
+
+.vacantes__monthly-puestos-header .vacantes__monthly-col-num {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider, 0.06em);
+  text-align: right;
+}
+
+.vacantes__monthly-puesto-row {
+  display: grid;
+  grid-template-columns: 1fr 40px 44px;
+  gap: var(--spacing-xs);
+  align-items: center;
+  padding: 3px var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+}
+
+.vacantes__monthly-puesto-row:hover {
+  background: var(--color-surface-card);
+}
+
+.vacantes__monthly-col-puesto {
+  font-size: var(--type-caption-md-size, 12px);
+  color: var(--color-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vacantes__monthly-col-num {
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.vacantes__monthly-col-num--open {
+  color: var(--color-error);
+}
+
+.vacantes__monthly-col-num--done {
+  color: var(--color-success);
+}
+
+.vacantes__monthly-col-zero {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.vacantes__monthly-puesto-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.vacantes__monthly-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--rounded-sm, 4px);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.vacantes__monthly-badge--open {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+
+.vacantes__monthly-badge--done {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
