@@ -1586,19 +1586,6 @@
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
-    "No.": "4218",
-    "Nombre": "PEREZ PACHECO SAMANTHA KARITINA",
-    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
-    "Turno": "1",
-    "Fecha Ingreso": "27/05/2026",
-    "Fecha Baja": "28/07/2025",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA",
-    "Fuente de Reclutamiento": "FACEBOOK - PUBLICIDAD",
-    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
-  },
-  {
     "No.": "4219",
     "Nombre": "COELLO CRISTINO DIANA LAURA",
     "Puesto": "OPERADOR DE MÁQUINA D",
@@ -2432,16 +2419,16 @@
   },
   {
     "No.": "4295",
-    "Nombre": "BARRIOS ESTEVEZ REYNA MARIA",
+    "Nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
     "Puesto": "OPERADOR DE MÁQUINA D",
     "Turno": "1",
     "Fecha Ingreso": "31/07/2026",
     "Fecha Baja": "-",
     "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA",
-    "Fuente de Reclutamiento": "LONA",
-    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+    "Parada": "PUERTO CARROZA",
+    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA",
+    "Fuente de Reclutamiento": "REFERIDO",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
   {
     "No.": "4296",
@@ -2497,15 +2484,28 @@
   },
   {
     "No.": "4300",
-    "Nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
+    "Nombre": "SANCHEZ AGUILAR MARIA CRUZ",
     "Puesto": "OPERADOR DE MÁQUINA D",
     "Turno": "1",
-    "Fecha Ingreso": "31/07/2026",
+    "Fecha Ingreso": "05/08/2026",
     "Fecha Baja": "-",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA",
-    "Fuente de Reclutamiento": "REFERIDO",
+    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "Parada": "COREA",
+    "Ubicacion": "PARADA DE CAMIONES",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4301",
+    "Nombre": "ALANIS GUERRERO ADRIANA",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "05/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "Parada": "COREA",
+    "Ubicacion": "PARADA DE CAMIONES",
+    "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]

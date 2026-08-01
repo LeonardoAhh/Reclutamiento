@@ -39,6 +39,7 @@ function ProtectedShell({ children }: { children: ReactNode }) {
       <PositionsProvider>
         <MaintenanceGuard>
           <AppShell>{children}</AppShell>
+          <TopRecruiterModal />
         </MaintenanceGuard>
       </PositionsProvider>
     </AuthGuard>
@@ -93,7 +94,6 @@ function App() {
             <Route path="/kpis" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <TopRecruiterModal />
         </>
       )}
     </>

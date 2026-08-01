@@ -930,8 +930,8 @@
   {
     "numero empleado": "3466",
     "nombre": "AGUILAR GUERRERO JOSE ALONSO",
-    "turno": "2",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "LA BARRETA",
     "parada": "TIENDA EN LA ENTRADA"
   },
@@ -1058,7 +1058,7 @@
   {
     "numero empleado": "3637",
     "nombre": "AGUILAR VICENCIO DAVID",
-    "turno": "3",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -1210,7 +1210,7 @@
   {
     "numero empleado": "3801",
     "nombre": "MORALES PARRA EDUARDO",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
@@ -1366,6 +1366,14 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "CRUZ ROJA MEXICANA"
+  },
+  {
+    "numero empleado": "3959",
+    "nombre": "LOPEZ YAÑEZ DIEGO",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "BUENAVISTA ",
+    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "3960",
@@ -1642,7 +1650,7 @@
   {
     "numero empleado": "4115",
     "nombre": "REYES MONROY FRANCISCO ALEJANDRO",
-    "turno": "3",
+    "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "OBRERA",
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
@@ -1866,7 +1874,7 @@
   {
     "numero empleado": "4192",
     "nombre": "BALDERAS HERNANDEZ RENE",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -1994,7 +2002,7 @@
   {
     "numero empleado": "4231",
     "nombre": "TABOADA GARCIA EMMANUEL",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "PARADA DE CAMIONES ESQ. MAYAS"
@@ -2152,14 +2160,6 @@
     "parada": "SEGUNDA PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4267",
-    "nombre": "MARTINEZ FLORES ARELY GUADALUPE",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
-  },
-  {
     "numero empleado": "4270",
     "nombre": "SANDOVAL BELLO JESUS",
     "turno": "2",
@@ -2248,6 +2248,14 @@
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
+    "numero empleado": "4284",
+    "nombre": "SOTO HUERTA AILYN MONSERRAT",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "PLAZA DEL SOL",
+    "parada": "EN EL KFC"
+  },
+  {
     "numero empleado": "4287",
     "nombre": "VARGAS LARA JACIM ALDAIR",
     "turno": "2",
@@ -2297,11 +2305,11 @@
   },
   {
     "numero empleado": "4295",
-    "nombre": "BARRIOS ESTEVEZ REYNA MARIA",
+    "nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "colonia": "PUERTO CARROZA",
+    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4296",
@@ -2312,20 +2320,12 @@
     "parada": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
-    "numero empleado": "4297",
-    "nombre": "JIMENEZ GONZALEZ MIGUEL ANTONIO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
-  },
-  {
     "numero empleado": "4298",
     "nombre": "CHAVEZ BALDERAS ROSA MARIA",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4299",
@@ -2337,11 +2337,18 @@
   },
   {
     "numero empleado": "4300",
-    "nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
+    "nombre": "SANCHEZ AGUILAR MARIA CRUZ",
     "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4301",
+    "nombre": "ALANIS GUERRERO ADRIANA",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
   }
-
 ]

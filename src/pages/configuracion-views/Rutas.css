@@ -317,13 +317,13 @@
 .ruta-card__match-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: var(--rounded-pill);
-  background: rgb(var(--color-primary-rgb) / 0.1);
-  color: var(--color-primary);
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-soft);
+  color: var(--color-charcoal);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
-  font-weight: 600;
+  font-weight: var(--font-medium);
   white-space: nowrap;
   flex-shrink: 0;
   animation: badge-pop 0.25s var(--ease-spring) both;
@@ -1084,16 +1084,7 @@
 
 .ruta-section__title-btn {
   margin-left: auto;
-  height: 28px;
-  width: auto;
-  padding: 0 var(--spacing-md);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-semibold);
-  border-radius: var(--rounded-full);
 }
 
 

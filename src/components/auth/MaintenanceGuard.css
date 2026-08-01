@@ -24,13 +24,9 @@
 }
 
 .maintenance-icon-wrap {
-  width: calc(var(--touch-target-min) + var(--spacing-lg));
-  height: calc(var(--touch-target-min) + var(--spacing-lg));
   display: grid;
   place-items: center;
   color: var(--color-primary);
-  background: var(--color-primary-tint);
-  border-radius: var(--rounded-full);
 }
 
 .maintenance-icon {
@@ -96,6 +92,39 @@
   gap: var(--spacing-sm);
 }
 
+.maintenance-button--unavailable {
+  background: var(--color-error) !important;
+  border-color: var(--color-error) !important;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* ── Dots loader ────────────────────────────────── */
+.maintenance-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.maintenance-dots__label {
+  margin-left: var(--spacing-xxs);
+}
+
+.maintenance-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--rounded-full);
+  background: currentColor;
+  animation: maintenance-bounce 0.9s ease-in-out infinite;
+}
+
+.maintenance-dot:nth-child(2) { animation-delay: 0.15s; }
+.maintenance-dot:nth-child(3) { animation-delay: 0.30s; }
+
+@keyframes maintenance-bounce {
+  0%, 100% { transform: translateY(0);   opacity: 0.45; }
+  50%       { transform: translateY(-4px); opacity: 1;    }
+}
+
 @media (min-width: 600px) {
   .maintenance-actions {
     flex-direction: row;
@@ -114,5 +143,10 @@
   .maintenance-text {
     animation: none;
     transition: none;
+  }
+
+  .maintenance-dot {
+    animation: none;
+    opacity: 1;
   }
 }

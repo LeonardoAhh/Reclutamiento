@@ -42,7 +42,7 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
       <span className="ruta-card__title type-heading-sm">{ruta.nombreRuta.split('-')[0].trim()}</span>
       {matchCount !== undefined && matchCount > 0 && (
         <span className="ruta-card__match-badge">
-          {matchCount} encontrado{matchCount === 1 ? '' : 's'}
+          {matchCount}
         </span>
       )}
       <ChevronRight size={18} aria-hidden="true" className="ruta-card__chevron" />
@@ -341,7 +341,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
               {ruta.nombreRuta}
               <button
                 type="button"
-                className="btn-secondary ruta-section__title-btn"
+                className="btn-secondary btn-sm ruta-section__title-btn"
                 onClick={onOpenEmployeesModal}
                 title="Ver empleados"
                 aria-label="Ver empleados"
@@ -487,7 +487,7 @@ export function RutasView() {
 
       {/* ── Search bar & Horarios ── */}
       <section className="config-page__toolbar" aria-label="Herramientas de rutas">
-        <div className="rutas-toolbar-flex" style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center', width: '100%' }}>
+        <div className="rutas-toolbar-flex" style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'flex-start', width: '100%' }}>
           <div className="form-group config-search" style={{ flex: 1, minWidth: 0, margin: 0 }}>
             <label htmlFor="rutas-search-input" className="sr-only">
               Buscar empleado por número o nombre
@@ -530,12 +530,12 @@ export function RutasView() {
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary"
-            style={{ flexShrink: 0 }}
+            style={{ flexShrink: 0, height: 'var(--touch-target-min)' }}
             title="Ver horarios"
             aria-label="Ver horarios"
           >
             <Clock size={16} aria-hidden="true" />
-            <span className="ruta-btn-text">Horarios</span>
+            Horarios
           </a>
         </div>
       </section>

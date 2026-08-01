@@ -934,6 +934,7 @@ code:not(pre code) {
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
   transition:
     background var(--transition-fast),
     border-color var(--transition-fast),

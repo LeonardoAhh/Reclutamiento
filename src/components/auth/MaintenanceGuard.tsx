@@ -3,7 +3,7 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { EASE_OUT } from '@/lib/motion';
-import { Clock3, LogOut, ShieldCheck, Loader2 } from 'lucide-react';
+import { LogOut, ShieldCheck, X } from 'lucide-react';
 import './MaintenanceGuard.css';
 
 const curtainVariants: Variants = {
@@ -32,15 +32,19 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
   } = useMaintenanceMode();
   const isAdmin = profile?.role === 'admin';
   const [isChecking, setIsChecking] = useState(false);
+  const [checkResult, setCheckResult] = useState<'idle' | 'unavailable'>('idle');
 
   const handleCheck = async () => {
     setIsChecking(true);
-    // Add artificial delay so the user can perceive the action
+    setCheckResult('idle');
     await Promise.all([
       refreshMaintenance({ silent: true }),
-      new Promise(resolve => setTimeout(resolve, 800))
+      new Promise(resolve => setTimeout(resolve, 900))
     ]);
     setIsChecking(false);
+    // Si el componente sigue montado, el mantenimiento continúa activo
+    setCheckResult('unavailable');
+    setTimeout(() => setCheckResult('idle'), 2000);
   };
 
   if (authLoading || maintenanceLoading || (isMaintenance && profileLoading)) {
@@ -73,32 +77,35 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
             </div>
 
             <div className="maintenance-content">
-              <span className="maintenance-eyebrow type-caption-up">Mantenimiento programado</span>
               <h1 id="maintenance-title" className="maintenance-title type-heading-lg">
                 Volvemos en breve
               </h1>
-              <div className="maintenance-text-wrapper">
-                <p className="type-body-md maintenance-text">
-                  Estamos realizando ajustes programados para mantener el sistema estable. Tu información permanece protegida y el acceso se restaurará automáticamente al finalizar.
-                </p>
-              </div>
-              <div className="maintenance-meta type-body-sm text-muted">
-                <Clock3 aria-hidden="true" />
-                <span>No necesitas actualizar la página.</span>
-              </div>
+              <p className="type-body-md maintenance-text">
+                Sistema en mantenimiento. Regresamos pronto.
+              </p>
             </div>
 
             <div className="maintenance-actions">
               <button
                 onClick={handleCheck}
-                className="btn-primary maintenance-button"
+                className={[
+                  'btn-primary maintenance-button',
+                  checkResult === 'unavailable' ? 'maintenance-button--unavailable' : ''
+                ].join(' ').trim()}
                 type="button"
-                disabled={isChecking}
+                disabled={isChecking || checkResult === 'unavailable'}
               >
                 {isChecking ? (
+                  <span className="maintenance-dots" aria-label="Comprobando">
+                    <span className="maintenance-dot" />
+                    <span className="maintenance-dot" />
+                    <span className="maintenance-dot" />
+                    <span className="maintenance-dots__label">Comprobando</span>
+                  </span>
+                ) : checkResult === 'unavailable' ? (
                   <>
-                    <Loader2 className="animate-spin" aria-hidden="true" />
-                    Comprobando...
+                    <X size={16} aria-hidden="true" />
+                    Aún no disponible
                   </>
                 ) : (
                   'Comprobar disponibilidad'
