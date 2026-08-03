@@ -2374,5 +2374,13 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero empleado": "4306",
+    "nombre": "AGUSTIN RAMIREZ MARIELA",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
+    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   }
 ]
