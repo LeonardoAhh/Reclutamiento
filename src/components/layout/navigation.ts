@@ -1,10 +1,10 @@
 import {
-  BarChart3,
-  Users,
-  LayoutDashboard,
-  CalendarRange,
+  LayoutGrid,
+  Contact,
+  Calendar,
+  Building2,
   Briefcase,
-  Settings,
+  SlidersHorizontal,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -17,10 +17,10 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: ReadonlyArray<NavItem> = [
-  { to: '/', label: 'Reclutamiento', icon: BarChart3, end: true, mobilePriority: true },
-  { to: '/pipeline', label: 'Candidatos', icon: Users, mobilePriority: true },
-  { to: '/reporte-diario', label: 'Reporte Diario', icon: CalendarRange },
-  { to: '/plantilla', label: 'Plantilla', icon: LayoutDashboard },
+  { to: '/resumen', label: 'Resumen', icon: LayoutGrid, end: false, mobilePriority: true },
+  { to: '/candidatos', label: 'Candidatos', icon: Contact, mobilePriority: true },
+  { to: '/reportes', label: 'Reportes', icon: Calendar },
+  { to: '/plantilla', label: 'Plantilla', icon: Building2 },
   { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/features', label: 'Features', icon: Settings },
+  { to: '/configuracion', label: 'Configuración', icon: SlidersHorizontal },
 ];

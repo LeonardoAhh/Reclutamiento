@@ -1,4 +1,4 @@
-import { Star, UserRound, Briefcase, Users, LifeBuoy } from 'lucide-react';
+import { Star, UserRound, Briefcase, Users, LifeBuoy, HeartPulse, CalendarClock } from 'lucide-react';
 import type { RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import './Badge.css';
@@ -6,11 +6,12 @@ import './Badge.css';
 interface BadgeProps {
   children: React.ReactNode;
   variant?: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error';
+  minimal?: boolean;
 }
 
-export function Badge({ children, variant = 'default' }: BadgeProps) {
+export function Badge({ children, variant = 'default', minimal = false }: BadgeProps) {
   return (
-    <span className={`badge badge--${variant}`}>
+    <span className={`badge badge--${variant} ${minimal ? 'badge--minimal' : ''}`.trim()}>
       {children}
     </span>
   );
@@ -126,6 +127,50 @@ export function AreaStatusBadge({ type, count }: AreaStatusBadgeProps) {
     <span className={`status-badge status-badge--${type}`}>
       <span className="status-badge__dot" aria-hidden="true" />
       <span>{label}{count !== undefined && count > 0 ? ` (${count})` : ''}</span>
+    </span>
+  );
+}
+
+export function IncapacidadBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
+  const Icon = HeartPulse;
+  const label = "Incapacidad";
+
+  if (iconOnly) {
+    return (
+      <Tooltip content={label}>
+        <span className={`status-badge status-badge--incapacidad status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
+          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+        </span>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <span className={`status-badge status-badge--incapacidad ${className}`.trim()}>
+      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+      <span>{label}</span>
+    </span>
+  );
+}
+
+export function ProximoIngresoBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
+  const Icon = CalendarClock;
+  const label = "Próximo ingreso";
+
+  if (iconOnly) {
+    return (
+      <Tooltip content={label}>
+        <span className={`status-badge status-badge--proximo-ingreso status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
+          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+        </span>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <span className={`status-badge status-badge--proximo-ingreso ${className}`.trim()}>
+      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
+      <span>{label}</span>
     </span>
   );
 }

@@ -17,6 +17,7 @@ import {
   Trash2,
   PanelLeftClose,
   PanelLeftOpen,
+  BarChart3,
 } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Modal } from '@/components/ui/Modal';
@@ -79,21 +80,8 @@ export function Vacantes() {
 
   const [toggleTarget, setToggleTarget] = useState<AutoVacancy | null>(null);
   const [isToggling, setIsToggling] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    () => typeof localStorage !== 'undefined' && localStorage.getItem('vac_sidebar_collapsed') === '1'
-  );
-  
+  const [metricsModalOpen, setMetricsModalOpen] = useState(false);
   const [monthlyModalOpen, setMonthlyModalOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setSidebarCollapsed((prev) => {
-      const next = !prev;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('vac_sidebar_collapsed', next ? '1' : '0');
-      }
-      return next;
-    });
-  };
 
   const loading = bajasLoading || empLoading || positionsLoading;
 
@@ -298,6 +286,8 @@ export function Vacantes() {
           <Skeleton height={40} radius="var(--rounded-md)" style={{ flex: '1 1 260px' }} />
         </section>
         <SkeletonTable rows={8} columns={['30%', '16%', '24%', '16%', '14%']} />
+
+
       </main>
     );
   }
@@ -309,6 +299,16 @@ export function Vacantes() {
           <h1>Vacantes</h1>
         </div>
         <div className="pipeline__hero-actions">
+          <button
+            type="button"
+            className="btn-secondary vacantes__config-btn"
+            onClick={() => setMetricsModalOpen(true)}
+            title="Ver KPIs y Filtros"
+            aria-label="Ver KPIs"
+          >
+            <BarChart3 size={16} aria-hidden="true" />
+            <span style={{ marginLeft: 'var(--spacing-xs)' }}>KPIs</span>
+          </button>
           <button
             type="button"
             className="btn-secondary vacantes__config-btn"
@@ -469,97 +469,8 @@ export function Vacantes() {
         </div>
       </Modal>
 
-      <div className="pipeline__layout" data-collapsed={sidebarCollapsed ? 'true' : undefined}>
-        <aside className="pipeline__sidebar" aria-hidden={sidebarCollapsed}>
-          <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
-            <div className="vacantes__split-head" role="row">
-              <span className="vacantes__split-corner" />
-              <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
-              <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
-            </div>
-            {kpiRows.map((row) => (
-              <div
-                key={row.id}
-                className={`vacantes__split-row${
-                  'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
-                }`}
-                role="row"
-                data-testid={`vac-split-${row.id}`}
-              >
-                <span className="vacantes__split-label">{row.label}</span>
-                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
-                  <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
-                </span>
-                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
-                  <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
-                </span>
-              </div>
-            ))}
-          </section>
-
-          <section className="vacantes__filters" aria-label="Filtros de vacantes">
-            <div className="vacantes__filter-group">
-              <label className="vacantes__filter-label">Estado</label>
-              <div className="vacantes__filter-options" role="tablist">
-                {([
-                  { id: 'todas', label: 'Todas' },
-                  { id: 'abierta', label: 'Abiertas' },
-                  { id: 'cubierta', label: 'Cubiertas' },
-                ] as const).map((s) => (
-                  <button
-                    key={`status-${s.id}`}
-                    type="button"
-                    role="tab"
-                    aria-selected={statusFilter === s.id}
-                    className={`vacantes__filter-btn${statusFilter === s.id ? ' vacantes__filter-btn--active' : ''}`}
-                    onClick={() => setStatusFilter(s.id)}
-                    data-testid={`vac-filter-status-${s.id}`}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="vacantes__filter-group">
-              <label className="vacantes__filter-label">Tipo</label>
-              <div className="vacantes__filter-options" role="tablist">
-                {([
-                  { id: 'todos', label: 'Todos' },
-                  { id: 'autorizado', label: 'Plantilla' },
-                  { id: 'backup', label: 'Backup' },
-                ] as const).map((t) => (
-                  <button
-                    key={`type-${t.id}`}
-                    type="button"
-                    role="tab"
-                    aria-selected={typeFilter === t.id}
-                    className={`vacantes__filter-btn${typeFilter === t.id ? ' vacantes__filter-btn--active' : ''}`}
-                    onClick={() => setTypeFilter(t.id as VacancyTypeFilter)}
-                    data-testid={`vac-filter-type-${t.id}`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-        </aside>
-
+      <div className="pipeline__layout">
         <div className="pipeline__content">
-          <button
-            type="button"
-            className="vacantes__sidebar-toggle"
-            onClick={toggleSidebar}
-            aria-pressed={sidebarCollapsed}
-            aria-label={sidebarCollapsed ? 'Mostrar panel de KPIs' : 'Ocultar panel de KPIs'}
-            data-testid="vac-sidebar-toggle"
-          >
-            {sidebarCollapsed
-              ? <PanelLeftOpen size={16} aria-hidden="true" />
-              : <PanelLeftClose size={16} aria-hidden="true" />}
-            <span>{sidebarCollapsed ? 'KPIs' : 'Ocultar'}</span>
-          </button>
 
           <section className="pipeline__controls">
             <div className="pipeline__search-container">
@@ -752,6 +663,45 @@ export function Vacantes() {
       )}
         </div>
       </div>
+
+      {/* ── Modal de Menú de Métricas y Filtros ── */}
+      <Modal
+        isOpen={metricsModalOpen}
+        onClose={() => setMetricsModalOpen(false)}
+        title="Métricas y KPIs"
+        size="md"
+        fullscreenMobile={false}
+      >
+        <div className="modal-body">
+          <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
+            <div className="vacantes__split-head" role="row">
+              <span className="vacantes__split-corner" />
+              <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
+              <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
+            </div>
+            {kpiRows.map((row) => (
+              <div
+                key={row.id}
+                className={`vacantes__split-row${
+                  'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
+                }`}
+                role="row"
+                data-testid={`vac-split-${row.id}`}
+              >
+                <span className="vacantes__split-label">{row.label}</span>
+                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
+                  <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
+                </span>
+                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
+                  <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
+                </span>
+              </div>
+            ))}
+          </section>
+
+
+        </div>
+      </Modal>
     </main>
   );
 }

@@ -1586,6 +1586,19 @@
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
+    "No.": "4218",
+    "Nombre": "PEREZ PACHECO SAMANTHA KARITINA",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "27/05/2026",
+    "Fecha Baja": "28/07/2025",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DEL MA. TERESA",
+    "Fuente de Reclutamiento": "FACEBOOK - PUBLICIDAD",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
     "No.": "4219",
     "Nombre": "COELLO CRISTINO DIANA LAURA",
     "Puesto": "OPERADOR DE MÁQUINA D",
@@ -2397,7 +2410,7 @@
     "Puesto": "OPERADOR DE ACABADOS GP-12 D",
     "Turno": "1",
     "Fecha Ingreso": "29/07/2026",
-    "Fecha Baja": "-",
+    "Fecha Baja": "01/08/2026",
     "Nombre Ruta": "R4-SANTA ROSA",
     "Parada": "SANTA ROSA",
     "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA",
@@ -2440,19 +2453,6 @@
     "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "Parada": "PEÑAFLOR",
     "Ubicacion": "BODEGA AURRERA, PEÑAFLOR",
-    "Fuente de Reclutamiento": "PAUTA",
-    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
-  },
-  {
-    "No.": "4297",
-    "Nombre": "JIMENEZ GONZALEZ MIGUEL ANTONIO",
-    "Puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
-    "Fecha Ingreso": "31/07/2026",
-    "Fecha Baja": "-",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO",
     "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
@@ -2505,6 +2505,58 @@
     "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "Parada": "COREA",
     "Ubicacion": "PARADA DE CAMIONES",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4302",
+    "Nombre": "RAMIREZ ACOSTA LUIS MANUEL",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "05/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "Parada": "COREA",
+    "Ubicacion": "PARADA DE CAMIONES",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4303",
+    "Nombre": "JUAREZ GUTIERREZ ARLETTE ESMERALDA",
+    "Puesto": "OPERADOR DE MÁQUINA C",
+    "Turno": "1",
+    "Fecha Ingreso": "05/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "OJO DE AGUA",
+    "Ubicacion": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4304",
+    "Nombre": "GUADALUPE RIOS URIEL",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "05/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R4-SANTA ROSA",
+    "Parada": "SANTA ROSA",
+    "Ubicacion": "EN EL PUENTE DE LA CRUZ ",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4305",
+    "Nombre": "GONZALEZ VELAZQUEZ ANA ROSA",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "05/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "Parada": "PIE DE LA CUESTA",
+    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ",
     "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }

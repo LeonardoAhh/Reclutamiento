@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { BottomTabBar } from './BottomTabBar';
+import { NAV_ITEMS } from './navigation';
 
 const STORAGE_KEY = 'sidebar-collapsed';
 
@@ -32,6 +34,17 @@ function persistSidebarCollapsed(collapsed: boolean) {
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentNavItem = NAV_ITEMS.find((item) => {
+      if (item.end) return location.pathname === item.to;
+      return location.pathname.startsWith(item.to);
+    });
+
+    const pageTitle = currentNavItem ? currentNavItem.label : 'App';
+    document.title = `${pageTitle} — Reclutamiento`;
+  }, [location.pathname]);
 
   useEffect(() => {
     persistSidebarCollapsed(collapsed);

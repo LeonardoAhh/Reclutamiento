@@ -8,7 +8,7 @@ import {
   FileText,
   MessageSquare,
   Search,
-  Sparkles,
+  SlidersHorizontal,
   Wallet,
   UserX,
   Settings,
@@ -86,8 +86,8 @@ export function Configuracion() {
         aria-labelledby="features-navigation-title"
       >
         <header className="config-sidebar__header">
-          <Sparkles size={24} aria-hidden="true" className="text-primary" />
-          <h1 id="features-navigation-title" className="type-heading-sm m-0">Features</h1>
+          <SlidersHorizontal size={24} aria-hidden="true" />
+          <h1 id="features-navigation-title" className="type-heading-sm m-0">Configuración</h1>
         </header>
         <nav className="config-sidebar__nav" aria-label="Subpáginas de features">
           {FEATURES.map(({ id, label, icon: Icon }) => (

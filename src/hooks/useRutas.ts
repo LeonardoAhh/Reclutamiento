@@ -34,8 +34,12 @@ const ROUTE_CAPACITIES = [
 ];
 
 /* ─── Raw shape from JSON ─── */
+// NOTE: rutas.json uses 'numero_empleado' (underscore);
+//       rutas-anterior.json uses 'numero empleado' (space).
+//       Both are declared as optional so TypeScript accepts either format.
 interface EmpleadoRutaRaw {
-  'numero empleado': string;
+  numero_empleado?: string;
+  'numero empleado'?: string;
   nombre: string;
   turno: string;
   'nombre ruta': string;
@@ -69,8 +73,9 @@ const RUTAS_URL = '/rutas.json';
 const RUTAS_PREV_URL = '/rutas-anterior.json';
 
 function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
+  const numEmp = raw.numero_empleado ?? raw['numero empleado'] ?? '';
   return {
-    numeroEmpleado: raw['numero empleado'],
+    numeroEmpleado: String(numEmp).trim(),
     nombre: raw.nombre,
     turno: mapClaveHorarioToTurno(raw.turno), // Normalizar clave de horario a turno canónico
     nombreRuta: raw['nombre ruta'],

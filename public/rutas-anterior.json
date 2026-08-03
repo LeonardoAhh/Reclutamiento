@@ -2297,11 +2297,11 @@
   },
   {
     "numero empleado": "4295",
-    "nombre": "BARRIOS ESTEVEZ REYNA MARIA",
+    "nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "colonia": "PUERTO CARROZA",
+    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4296",
@@ -2334,14 +2334,5 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "4300",
-    "nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   }
-
 ]

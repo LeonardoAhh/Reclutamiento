@@ -103,111 +103,12 @@
    ≤1024: colapsa a una sola columna.
    ───────────────────────────────────────────────────────────────────────── */
 .pipeline__layout {
-  display: grid;
-  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-  gap: var(--spacing-xl);
-  align-items: start;
-  transition: grid-template-columns var(--transition-base, 0.25s ease),
-              gap              var(--transition-base, 0.25s ease);
-}
-
-.pipeline__sidebar {
-  position: sticky;
-  top: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  min-width: 0;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-hairline) transparent;
 }
 
-/* ── Lógica de colapso del sidebar ── */
-.pipeline__layout[data-collapsed="true"] {
-  grid-template-columns: 0px minmax(0, 1fr);
-  gap: 0;
-}
 
-@media (min-width: 1025px) {
-  .pipeline__sidebar {
-    overflow: hidden;
-    transition: opacity var(--transition-base, 0.25s ease);
-  }
-
-  .pipeline__layout[data-collapsed="true"] .pipeline__sidebar {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-@media (max-width: 1024px) {
-  .pipeline__layout[data-collapsed="true"] .pipeline__sidebar {
-    display: none;
-  }
-  /* Restaurar grid normal en móvil independientemente del collapsed */
-  .pipeline__layout,
-  .pipeline__layout[data-collapsed="true"] {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-  }
-}
-
-/* ── Botón Toggle Sidebar ── */
-.pipeline__sidebar-toggle {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  min-height: var(--touch-target-min);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size, 13px);
-  font-weight: var(--font-medium, 500);
-  color: var(--color-body);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color var(--transition-fast), background var(--transition-fast);
-}
-
-.pipeline__sidebar-toggle:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
-}
-
-.pipeline__sidebar-toggle:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-@media (max-width: 1024px) {
-  .pipeline__sidebar-toggle {
-    display: none;
-  }
-  
-  /* Aseguramos que el sidebar no se muestre en móvil ya que no hay botón para controlarlo */
-  .pipeline__sidebar {
-    display: none !important;
-  }
-}
-
-.pipeline__sidebar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.pipeline__sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.pipeline__sidebar::-webkit-scrollbar-thumb {
-  background: var(--color-hairline);
-  border-radius: var(--rounded-pill);
-}
 
 /* ── Sidebar Header ── */
 .pipeline__sidebar-header {
@@ -238,10 +139,8 @@
 
 .pipeline__sidebar-section__label {
   padding: 0 var(--spacing-xs);
-  font-size: var(--type-caption-md-size);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  font-size: var(--type-caption-sm-size);
+  font-weight: 500;
   color: var(--color-muted);
 }
 
@@ -252,25 +151,16 @@
   gap: var(--spacing-md);
   width: 100%;
   padding: var(--spacing-md);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-soft);
+  border: none;
   border-radius: var(--rounded-lg);
   cursor: pointer;
   text-align: left;
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
 .pipeline__kpi-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-card);
-  transform: translateY(-1px);
-}
-
-.pipeline__kpi-card:active {
-  transform: translateY(0);
+  background: var(--color-hairline-soft);
 }
 
 .pipeline__kpi-card__icon {
@@ -342,7 +232,6 @@
 
 .pipeline__kpi-row:hover {
   background: var(--color-surface-soft);
-  border-color: var(--color-hairline);
 }
 
 .pipeline__kpi-row__meta {

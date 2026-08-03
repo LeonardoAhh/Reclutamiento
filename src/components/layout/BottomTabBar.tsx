@@ -12,7 +12,7 @@ import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpe
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import './BottomTabBar.css';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 import { NAV_ITEMS } from './navigation';
 
@@ -209,40 +209,38 @@ export function BottomTabBar() {
   return (
     <>
       <nav className="bottom-nav" aria-label="Navegación inferior" ref={navRef}>
-        <div className="bottom-nav__group">
-          <div className="bottom-nav__bar">
-            {PRIMARY_TABS.map(({ to, label, icon: Icon, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `bottom-nav__btn${isActive ? ' bottom-nav__btn--active' : ''}`
-                }
-                data-testid={`bottom-nav-${to.replace('/', '') || 'kpis'}`}
-              >
-                {({ isActive }) => (
-                  <>
-                    {isActive && (
-                      <motion.span
-                        layoutId="bottom-nav-pill"
-                        className="bottom-nav__pill"
-                        aria-hidden="true"
-                        transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 420, damping: 34 }}
-                      />
-                    )}
-                    <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
-                    <span className="bottom-nav__label">{label}</span>
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </div>
+        <div className="bottom-nav__bar">
+          {PRIMARY_TABS.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                `bottom-nav__btn${isActive ? ' bottom-nav__btn--active' : ''}`
+              }
+              data-testid={`bottom-nav-${to.replace('/', '') || 'kpis'}`}
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.span
+                      layoutId="bottom-nav-pill"
+                      className="bottom-nav__pill"
+                      aria-hidden="true"
+                      transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <Icon size={20} aria-hidden="true" className="bottom-nav__icon" />
+                  <span className="bottom-nav__label">{label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
 
           <button
             ref={triggerRef}
             type="button"
-            className={`bottom-nav__fab${menuActive || sheetOpen ? ' bottom-nav__fab--active' : ''}`}
+            className={`bottom-nav__btn bottom-nav__menu-btn${menuActive || sheetOpen ? ' bottom-nav__btn--active' : ''}`}
             aria-expanded={sheetOpen}
             aria-haspopup="dialog"
             aria-controls="bottom-nav-sheet"
@@ -250,7 +248,16 @@ export function BottomTabBar() {
             onClick={() => setSheetOpen((v) => !v)}
             data-testid="bottom-nav-menu-btn"
           >
-            <Menu size={22} aria-hidden="true" className="bottom-nav__icon" />
+            {(menuActive || sheetOpen) && (
+              <motion.span
+                layoutId="bottom-nav-pill"
+                className="bottom-nav__pill"
+                aria-hidden="true"
+                transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 420, damping: 34 }}
+              />
+            )}
+            <Menu size={20} aria-hidden="true" className="bottom-nav__icon" />
+            <span className="bottom-nav__label">Menú</span>
             {showReporteBadge && (
               <span className="bottom-nav__badge" aria-hidden="true" data-testid="bottom-nav-badge" />
             )}
@@ -258,23 +265,33 @@ export function BottomTabBar() {
         </div>
       </nav>
 
-      <div
-        className="bottom-sheet-overlay"
-        data-open={sheetOpen || undefined}
-        role="presentation"
-        onMouseDown={(e) => {
-          if (e.target === e.currentTarget) setSheetOpen(false);
-        }}
-      >
-        <div
-          id="bottom-nav-sheet"
-          className="bottom-sheet"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Menú de navegación"
-          ref={sheetRef}
-        >
-          <header className="bottom-sheet__header">
+      <AnimatePresence>
+        {sheetOpen && (
+          <motion.div
+            className="bottom-sheet-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+            role="presentation"
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) setSheetOpen(false);
+            }}
+          >
+            <motion.div
+              id="bottom-nav-sheet"
+              className="bottom-sheet"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: shouldReduceMotion ? false : 'tween', ease: 'circOut', duration: 0.3 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menú de navegación"
+              ref={sheetRef}
+            >
+              <div className="bottom-sheet__handle" aria-hidden="true" />
+              <header className="bottom-sheet__header">
             <div className="bottom-sheet__session">
               <p className="bottom-sheet__session-label">Sesión activa</p>
               <p className="bottom-sheet__session-name" title={username}>{username}</p>
@@ -307,9 +324,6 @@ export function BottomTabBar() {
                         <>
                           <div className="bottom-sheet__list-icon-wrapper">
                             <Icon size={22} aria-hidden="true" className="bottom-sheet__list-icon" />
-                            {to === '/documentos' && (
-                              <span className="bottom-sheet__list-badge">N</span>
-                            )}
                           </div>
                           <span className="bottom-sheet__list-label">
                             {label}
@@ -343,8 +357,10 @@ export function BottomTabBar() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
+      )}
+      </AnimatePresence>
     </>
   );
 }

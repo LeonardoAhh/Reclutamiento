@@ -14,16 +14,9 @@
   display: block;
 }
 
-/* El badge se invierte solo entre claro/oscuro vía tokens. */
-.brand-logo__tile {
-  fill: var(--color-ink);
-}
-
-.brand-logo__glyph {
-  fill: var(--color-canvas);
-  font-family: var(--font-display);
-  font-weight: var(--font-semibold);
-  letter-spacing: var(--tracking-snug);
+.brand-logo__svg {
+  display: block;
+  color: var(--color-ink);
 }
 
 .brand-logo__text {

@@ -183,7 +183,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
                   <TrendingUp size={12} /> Altas ({added.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
-                  {added.map(e => <li key={e.numeroEmpleado}>{getShortName(e.nombre)}</li>)}
+                  {added.map(e => <li key={e.numeroEmpleado}>{e.numeroEmpleado} &middot; {getShortName(e.nombre)}</li>)}
                 </ul>
               </div>
             )}
@@ -193,7 +193,7 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
                   <TrendingDown size={12} /> Bajas ({removed.length}):
                 </strong>
                 <ul className="trend-tooltip__list">
-                  {removed.map(e => <li key={e.numeroEmpleado}>{getShortName(e.nombre)}</li>)}
+                  {removed.map(e => <li key={e.numeroEmpleado}>{e.numeroEmpleado} &middot; {getShortName(e.nombre)}</li>)}
                 </ul>
               </div>
             )}

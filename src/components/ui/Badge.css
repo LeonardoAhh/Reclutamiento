@@ -11,47 +11,46 @@
   font-weight: var(--type-body-sm-strong-weight);
   white-space: nowrap;
   line-height: 1;
-  border: 1px solid transparent;
 }
 
 .badge svg {
   flex-shrink: 0;
 }
 
+.badge--minimal {
+  background: transparent !important;
+  padding: 0;
+  gap: 4px;
+}
+
 .badge--default {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-  border-color: var(--color-hairline);
 }
 
 .badge--coral {
   background: var(--color-primary-tint);
   color: var(--color-primary);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .badge--teal {
   background: color-mix(in srgb, var(--color-accent-teal) 15%, transparent);
   color: color-mix(in srgb, var(--color-accent-teal) 80%, black);
-  border-color: color-mix(in srgb, var(--color-accent-teal) 30%, transparent);
 }
 
 .badge--amber {
   background: var(--color-warning-tint);
   color: var(--color-warning);
-  border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .badge--success {
   background: var(--color-success-tint);
   color: color-mix(in srgb, var(--color-success) 80%, black);
-  border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
 }
 
 .badge--error {
   background: var(--color-error-tint);
   color: var(--color-error);
-  border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
 }
 
 /* Adjustments para dark theme */
@@ -69,9 +68,8 @@
   border-radius: var(--rounded-md);
   font-size: var(--type-caption-md-size, 12px);
   font-weight: var(--font-medium, 500);
-  background: var(--color-surface);
+  background: var(--color-surface-soft);
   color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
   white-space: nowrap;
 }
 
@@ -105,8 +103,7 @@
   gap: var(--spacing-xs);
   min-height: var(--spacing-xl);
   padding-inline: var(--spacing-sm);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-soft);
   border-radius: var(--rounded-full);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
@@ -141,8 +138,7 @@
   font-weight: var(--font-semibold);
   line-height: 1.33;
   white-space: nowrap;
-  border: 1px solid var(--color-hairline);
-  background: var(--color-surface);
+  background: var(--color-surface-soft);
   color: var(--color-ink);
   user-select: none;
 }
@@ -221,8 +217,7 @@
   font-weight: var(--font-semibold);
   line-height: 1.33;
   white-space: nowrap;
-  border: 1px solid var(--color-hairline);
-  background: var(--color-surface);
+  background: var(--color-surface-soft);
   color: var(--color-ink);
   user-select: none;
 }
@@ -249,6 +244,14 @@
 
 .status-badge--starlite .status-badge__icon {
   color: var(--color-warning);
+}
+
+.status-badge--incapacidad .status-badge__icon {
+  color: var(--color-warning);
+}
+
+.status-badge--proximo-ingreso .status-badge__icon {
+  color: var(--color-primary);
 }
 
 /* ── AreaStatusBadge dots ── */

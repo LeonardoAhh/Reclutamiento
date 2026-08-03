@@ -2288,14 +2288,6 @@
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
-    "numero empleado": "4293",
-    "nombre": "SAUCEDO LOPEZ INES IREM",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
-  },
-  {
     "numero empleado": "4294",
     "nombre": "NIETO ZAVALA CARMEN KARINA",
     "turno": "3",
@@ -2350,5 +2342,37 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4302",
+    "nombre": "RAMIREZ ACOSTA LUIS MANUEL",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4303",
+    "nombre": "JUAREZ GUTIERREZ ARLETTE ESMERALDA",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "OJO DE AGUA",
+    "parada": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+  },
+  {
+    "numero empleado": "4304",
+    "nombre": "GUADALUPE RIOS URIEL",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "EN EL PUENTE DE LA CRUZ "
+  },
+  {
+    "numero empleado": "4305",
+    "nombre": "GONZALEZ VELAZQUEZ ANA ROSA",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   }
 ]

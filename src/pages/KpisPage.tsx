@@ -672,7 +672,7 @@
         <main className="kpis-page container" id="page-kpis">
           <section className="kpis-page__hero">
             <div>
-              <h1 className="kpis-page__title">Reclutamiento</h1>
+              <h1 className="kpis-page__title">Resumen</h1>
             </div>
             {isDesktop && (
               <div className="kpis-page__hero-actions">
@@ -746,7 +746,7 @@
 
         <section className="kpis-page__hero">
           <div>
-            <h1 className="kpis-page__title">Reclutamiento</h1>
+            <h1 className="kpis-page__title">Resumen</h1>
           </div>
           {isDesktop && (
             <div className="kpis-page__hero-actions">

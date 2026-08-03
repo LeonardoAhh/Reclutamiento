@@ -1,9 +1,7 @@
+import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-// @ts-ignore
-import Avatar from 'boring-avatars';
 import { BrandLogo } from '@/components/ui/BrandLogo';
-import { AVATAR_COLORS } from '@/lib/avatar';
 import './Header.css';
 
 /**
@@ -13,6 +11,14 @@ import './Header.css';
  */
 export function Header() {
   const { username } = useAuth();
+
+  const userInitials = useMemo(() => {
+    if (!username) return '';
+    const base = username.split('@')[0] ?? '';
+    const parts = base.split(/[._\-\s]+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return base.slice(0, 2).toUpperCase();
+  }, [username]);
 
   return (
     <header className="app-header" id="main-header">
@@ -30,13 +36,7 @@ export function Header() {
         {username && (
           <div className="app-header__actions">
             <span className="app-header__avatar" aria-hidden="true" title={username}>
-              {/* @ts-ignore */}
-              <Avatar 
-                size={32} 
-                name={username} 
-                variant="beam" 
-                colors={AVATAR_COLORS} 
-              />
+              {userInitials || 'U'}
             </span>
           </div>
         )}

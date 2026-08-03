@@ -16,7 +16,12 @@ import {
   Contact,
 } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
-import { Badge } from '@/components/ui/Badge';
+import {
+  AreaStatusBadge,
+  Badge,
+  IncapacidadBadge,
+  ProximoIngresoBadge,
+} from '@/components/ui/Badge';
 import { CommentModal } from '@/components/ui/CommentModal';
 import { JsonImporter } from '@/components/ui/JsonImporter';
 import { TurnosImporter } from '@/components/turnos/TurnosImporter';
@@ -323,11 +328,14 @@ export function Dashboard() {
       <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
         <header className="config-sidebar__header dashboard-sidebar__header">
           <div className="dashboard-sidebar__header-content">
-            <h1 className="config-sidebar__title">Plantilla</h1>
+            <div className="dashboard-sidebar__title-group">
+              <Users size={24} aria-hidden="true" />
+              <h1 className="config-sidebar__title">Plantilla</h1>
+            </div>
             <div className="dashboard__hero-actions">
               <button
                 type="button"
-                className="btn-primary"
+                className="btn-secondary"
                 onClick={() => {
                   setSelectedEmployee(null);
                   setEmpModalMode('add');
@@ -336,32 +344,14 @@ export function Dashboard() {
               >
                 <UserPlusIcon size={16} aria-hidden="true" />
               </button>
-
-              {/*
-              <span className="dashboard__import-wrapper">
-                <JsonImporter onImport={handleImport} />
-              </span>
-              <motion.button
-                type="button"
-                className="btn-secondary dashboard__report-btn"
-                onClick={() => setTurnosImporterOpen(true)}
-                title="Importar turnos por clave de horario"
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <Clock size={16} aria-hidden="true" />
-              </motion.button>
-              */}
-              <motion.button
+              <button
                 type="button"
                 className="btn-secondary dashboard__report-btn"
                 onClick={() => setVacancyReportOpen(true)}
                 title="Resumen de vacantes"
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.97 }}
               >
                 <ClipboardList size={16} aria-hidden="true" />
-              </motion.button>
+              </button>
             </div>
           </div>
         </header>
@@ -389,12 +379,7 @@ export function Dashboard() {
                   <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
                     <div className="search-dropdown-item__info">
                       <div className="search-dropdown-item__avatar" aria-hidden="true">
-                        <Avatar
-                          size={32}
-                          name={emp.nombre}
-                          variant="beam"
-                          colors={['var(--color-sticker-yellow)', 'var(--color-sticker-blue)', 'var(--color-sticker-green)', 'var(--color-sticker-orange)', 'var(--color-sticker-purple)']}
-                        />
+                        {emp.nombre ? emp.nombre.charAt(0).toUpperCase() : 'U'}
                       </div>
                       <div className="search-dropdown-item__text">
                         <span className="emp-name">
@@ -402,15 +387,17 @@ export function Dashboard() {
                             const parts = emp.nombre.trim().split(/\s+/);
                             let apellidos = '';
                             let nombres = emp.nombre;
+                            const capitalizeWords = (str: string) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                            
                             if (parts.length >= 3) {
-                              apellidos = `${parts[0]} ${parts[1]}`;
-                              nombres = parts.slice(2).join(' ');
+                              apellidos = capitalizeWords(`${parts[0]} ${parts[1]}`);
+                              nombres = capitalizeWords(parts.slice(2).join(' '));
                             } else if (parts.length === 2) {
-                              apellidos = parts[0];
-                              nombres = parts[1];
+                              apellidos = capitalizeWords(parts[0]);
+                              nombres = capitalizeWords(parts[1]);
                             } else {
                               apellidos = '';
-                              nombres = parts[0] || '';
+                              nombres = capitalizeWords(parts[0] || '');
                             }
                             return (
                               <>
@@ -421,15 +408,10 @@ export function Dashboard() {
                                 <span className="emp-name__bottom">
                                   {nombres}
                                   {emp.en_incapacidad && (
-                                    <Badge variant="amber">
-                                      <HeartPulse size={11} aria-hidden="true" />
-                                      INCAPACIDAD
-                                    </Badge>
+                                    <IncapacidadBadge iconOnly />
                                   )}
                                   {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-                                    <Badge variant="coral">
-                                      PRÓXIMO INGRESO
-                                    </Badge>
+                                    <ProximoIngresoBadge iconOnly />
                                   )}
                                 </span>
                               </>

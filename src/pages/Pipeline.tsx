@@ -159,20 +159,7 @@ export function Pipeline() {
   );
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    () => typeof localStorage !== 'undefined' && localStorage.getItem('pipeline_sidebar_collapsed') === '1'
-  );
-
-  const toggleSidebar = () => {
-    setSidebarCollapsed((prev) => {
-      const next = !prev;
-      if (typeof localStorage !== 'undefined') {
-        if (next) localStorage.setItem('pipeline_sidebar_collapsed', '1');
-        else localStorage.removeItem('pipeline_sidebar_collapsed');
-      }
-      return next;
-    });
-  };
+  const [metricsModalOpen, setMetricsModalOpen] = useState(false);
 
   const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
     const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
@@ -504,6 +491,16 @@ export function Pipeline() {
           <h1>Candidatos</h1>
         </div>
         <div className="pipeline__hero-actions">
+          <button
+            type="button"
+            className="btn-secondary pipeline__report-btn"
+            onClick={() => setMetricsModalOpen(true)}
+            aria-label="Abrir métricas y KPIs"
+            title="Métricas y KPIs"
+          >
+            <BarChart3 size={16} aria-hidden="true" />
+            <span>Métricas</span>
+          </button>
           <motion.button
             type="button"
             className="btn-secondary pipeline__report-btn"
@@ -529,108 +526,8 @@ export function Pipeline() {
         </div>
       </section>
 
-      <div className="pipeline__layout" data-collapsed={sidebarCollapsed}>
-        <aside className="pipeline__sidebar">
-          {/* Header del sidebar */}
-          <div className="pipeline__sidebar-header">
-            <BarChart3 size={18} aria-hidden="true" />
-            <span>Métricas y KPIs</span>
-          </div>
-
-          {/* Card resumen global */}
-          <button
-            type="button"
-            className="pipeline__kpi-card pipeline__kpi-card--global"
-            onClick={() => setKpiModalOpen('global')}
-          >
-            <div className="pipeline__kpi-card__icon">
-              <Users size={20} aria-hidden="true" />
-            </div>
-            <div className="pipeline__kpi-card__body">
-              <span className="pipeline__kpi-card__label">Resumen General</span>
-              <span className="pipeline__kpi-card__hint">
-                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} citados
-              </span>
-            </div>
-            <ChevronRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-          </button>
-
-          {/* Divider */}
-          <div className="pipeline__sidebar-divider" />
-
-          {/* Sección: Detalle por Reclutador */}
-          <div className="pipeline__sidebar-section">
-            <span className="pipeline__sidebar-section__label">Detalle por Reclutador</span>
-
-            <div className="pipeline__recruiters">
-              <button
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => setKpiModalOpen('pauta')}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
-                  <span className="pipeline__kpi-row__name">Pauta</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {pautaStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => setKpiModalOpen('alexandra')}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--alexandra" />
-                  <span className="pipeline__kpi-row__name">Alexandra</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {alexandraStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => setKpiModalOpen('daniela')}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--daniela" />
-                  <span className="pipeline__kpi-row__name">Daniela</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {danielaStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
-                </div>
-              </button>
-            </div>
-          </div>
-        </aside>
-
+      <div className="pipeline__layout">
         <div className="pipeline__content">
-          {/* ── Toggle sidebar ── */}
-          <button
-            type="button"
-            className="pipeline__sidebar-toggle"
-            onClick={toggleSidebar}
-            aria-pressed={sidebarCollapsed}
-            aria-label={sidebarCollapsed ? 'Mostrar panel de KPIs' : 'Ocultar panel de KPIs'}
-          >
-            {sidebarCollapsed
-              ? <PanelLeftOpen size={16} aria-hidden="true" />
-              : <PanelLeftClose size={16} aria-hidden="true" />}
-            <span>{sidebarCollapsed ? 'KPIs' : 'Ocultar'}</span>
-          </button>
 
           {/* ── Search ── */}
           <section className="pipeline__controls">
@@ -1298,6 +1195,106 @@ export function Pipeline() {
         alexandraStats={alexandraStats}
         danielaStats={danielaStats}
       />
+      {/* ── Modal de Menú de Métricas ── */}
+      <Modal
+        isOpen={metricsModalOpen}
+        onClose={() => setMetricsModalOpen(false)}
+        title="Métricas y KPIs"
+        size="md"
+        fullscreenMobile={false}
+      >
+        <div className="modal-body pipeline__metrics-menu">
+          {/* Card resumen global */}
+          <button
+            type="button"
+            className="pipeline__kpi-card pipeline__kpi-card--global"
+            onClick={() => {
+              setMetricsModalOpen(false);
+              setKpiModalOpen('global');
+            }}
+          >
+            <div className="pipeline__kpi-card__icon">
+              <Users size={20} aria-hidden="true" />
+            </div>
+            <div className="pipeline__kpi-card__body">
+              <span className="pipeline__kpi-card__label">Resumen General</span>
+              <span className="pipeline__kpi-card__hint">
+                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} citados
+              </span>
+            </div>
+            <ChevronRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
+          </button>
+
+          <div className="pipeline__sidebar-divider" />
+
+          {/* Sección: Detalle por Reclutador */}
+          <div className="pipeline__sidebar-section">
+            <span className="pipeline__sidebar-section__label">Detalle por Reclutador</span>
+            <div className="pipeline__recruiters">
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => {
+                  setMetricsModalOpen(false);
+                  setKpiModalOpen('pauta');
+                }}
+              >
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
+                  <span className="pipeline__kpi-row__name">Pauta</span>
+                </div>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {pautaStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => {
+                  setMetricsModalOpen(false);
+                  setKpiModalOpen('alexandra');
+                }}
+              >
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--alexandra" />
+                  <span className="pipeline__kpi-row__name">Alexandra</span>
+                </div>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {alexandraStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="pipeline__kpi-row"
+                onClick={() => {
+                  setMetricsModalOpen(false);
+                  setKpiModalOpen('daniela');
+                }}
+              >
+                <div className="pipeline__kpi-row__meta">
+                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--daniela" />
+                  <span className="pipeline__kpi-row__name">Daniela</span>
+                </div>
+                <div className="pipeline__kpi-row__stats">
+                  <span className="pipeline__kpi-row__value">
+                    {danielaStats.reduce((a, s) => a + s.total, 0)}
+                  </span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
       </main>
     </MotionConfig>
   );

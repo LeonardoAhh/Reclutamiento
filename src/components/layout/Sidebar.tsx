@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronsLeft,
+  Menu,
   LogOut,
   Loader,
   ChevronUp,
@@ -14,11 +14,8 @@ import { useFeedback } from '@/hooks/useFeedback';
 import { useLoader } from '@/hooks/useLoader';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { AVATAR_COLORS } from '@/lib/avatar';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
-// @ts-ignore
-import Avatar from 'boring-avatars';
 
 import { NAV_ITEMS } from './navigation';
 
@@ -132,8 +129,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           data-testid="sidebar-collapse-toggle"
         >
           {collapsed
-            ? <PanelLeftOpen size={18} aria-hidden="true" />
-            : <PanelLeftClose size={18} aria-hidden="true" />}
+            ? <Menu size={18} aria-hidden="true" />
+            : <ChevronsLeft size={18} aria-hidden="true" />}
         </button>
       </div>
 
@@ -153,21 +150,8 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                 aria-label={label}
                 data-testid={`sidebar-nav-${to.replace('/', '') || 'kpis'}`}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="sidebar-active-indicator"
-                    className="sidebar__item-active-indicator"
-                    aria-hidden="true"
-                    transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 480, damping: 34 }}
-                  />
-                )}
                 <Icon size={20} aria-hidden="true" className="sidebar__item-icon" />
                 <span className="sidebar__item-label">{label}</span>
-                {to === '/documentos' && (
-                  <Tooltip content="Nuevo">
-                    <span className="sidebar__new-badge">Nuevo</span>
-                  </Tooltip>
-                )}
               </NavLink>
             );
 
@@ -203,17 +187,33 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           {menuOpen && (
             <motion.div
               id="user-menu-popover"
-              role="menu"
               className="sidebar__popover"
               initial={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
               animate={{ opacity: 1, y: 0, x: collapsed ? 12 : "-50%", scale: 1 }}
               exit={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
             >
+              <div className="sidebar__popover-header">
+                <span className="sidebar__session-name" title={username}>{username}</span>
+                {version && (
+                  <span className="sidebar__popover-version">v{version}</span>
+                )}
+              </div>
+              
+              <div className="sidebar__popover-divider" />
+              
               <div className="sidebar__popover-actions">
+                <div className="sidebar__popover-row">
+                  <span className="sidebar__popover-row-label">
+                    Tema visual
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                <div className="sidebar__popover-divider" />
+
                 <button
                   type="button"
-                  role="menuitem"
                   className="sidebar__popover-item sidebar__popover-item--danger"
                   onClick={handleSignOut}
                   disabled={signingOut}
@@ -234,15 +234,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                   </AnimatePresence>
                   <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
                 </button>
-                <div className="sidebar__popover-divider-vertical" />
-                
-
-                <ThemeToggle />
               </div>
-
-              {version && (
-                <p className="sidebar__popover-version">v{version}</p>
-              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -258,13 +250,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           aria-label="Opciones de usuario"
         >
           <span className="sidebar__avatar" aria-hidden="true" title={username}>
-            {/* @ts-ignore - boring-avatars no trae tipos por defecto */}
-            <Avatar
-              size={40}
-              name={username}
-              variant="marble"
-              colors={AVATAR_COLORS}
-            />
+            {userInitials || 'U'}
           </span>
           {!collapsed && (
             <div className="sidebar__trigger-info">
