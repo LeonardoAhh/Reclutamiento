@@ -255,7 +255,7 @@ export function getRecruiterAccessCardName(
  */
 export const CANDIDATE_ACCESS_CARD_CONFIG = {
   cardTitle: 'PASE DE ENTREVISTA',
-  cardSubtitle: 'PASE DE INGRESO A ENTREVISTA',
+  cardSubtitle: 'VIÑOPLASTIC INYECCIÓN S.A. DE C.V.',
   accessNotice: 'Válido para un solo acceso · Personal e intransferible',
   identificationNotice: 'Presenta tu INE original en caseta de vigilancia',
   locationName: 'Parque Industrial Querétaro',
