@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, FileSpreadsheet, Filter, Inbox, MessageSquare, MessageSquareDashed, Plus, Save, Trash2, UserPlus, UserX, XCircle } from 'lucide-react';
+import { UserX, ChevronLeft, ChevronRight, Plus, UserPlus, Trash2, MessageSquare, MessageSquareDashed, CheckCircle2, XCircle, Inbox, FileSpreadsheet, Filter, AlertTriangle } from 'lucide-react';
+import { Save as SaveIconData } from 'lucide';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Modal } from '@/components/ui/Modal';
@@ -390,7 +391,7 @@ export function RegistroNoCitadosView() {
                 idleText={(duplicateInNoCitados || duplicateInPipeline) ? "Forzar registro" : "Registrar"}
                 loadingText="Guardando..."
                 successText="Listo"
-                idleIcon={Save}
+                idleIcon={SaveIconData}
                 className="btn-primary"
                 disabled={!isFormValid}
               />

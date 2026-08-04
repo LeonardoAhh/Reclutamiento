@@ -67,11 +67,6 @@
 .expandable-section__icon {
   flex-shrink: 0;
   color: var(--color-muted);
-  transition: transform var(--transition-base);
-}
-
-.expandable-section--expanded .expandable-section__icon {
-  transform: rotate(180deg);
 }
 
 /* ── Content (área que se expande/colapsa) ── */
@@ -127,8 +122,7 @@
 
 /* ── Accessibility ── */
 @media (prefers-reduced-motion: reduce) {
-  .expandable-section__content,
-  .expandable-section__icon {
+  .expandable-section__content {
     transition: none;
   }
 }

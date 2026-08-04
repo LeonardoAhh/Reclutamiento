@@ -8,9 +8,27 @@ import { sileo } from "@/lib/notify"
 import { format, getISOWeek } from "date-fns"
 import { es } from "date-fns/locale"
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton'
-import { AlertCircle, BarChart2, Calendar, CheckCircle2, ChevronLeft, ChevronRight, CloudUpload, FileJson, Loader2, PanelLeftClose, PanelLeftOpen, Save, Search, X } from 'lucide-react'
+import {
+    CloudUpload,
+    Calendar,
+    AlertCircle,
+    Loader2,
+    X,
+    ChevronRight,
+    ChevronLeft,
+    FileJson,
+    Search,
+    BarChart2,
+} from "lucide-react"
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
+import {
+    Check as CheckIconData,
+    PanelLeftClose,
+    PanelLeftOpen,
+    Save as SaveIconData,
+} from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
@@ -879,7 +897,7 @@ export default function ReporteDiarioContent() {
                                 isSuccess={loadSuccess}
                                 idleText="Sí, cargar datos"
                                 successText="¡Cargado!"
-                                idleIcon={CheckCircle2}
+                                idleIcon={CheckIconData}
                                 className="btn-primary"
                                 onClick={confirmLoad}
                             />
@@ -989,7 +1007,7 @@ export default function ReporteDiarioContent() {
                                 idleText={savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
                                 loadingText="Guardando…"
                                 successText="¡Guardado!"
-                                idleIcon={Save}
+                                idleIcon={SaveIconData}
                                 iconOnly
                                 className="btn-primary"
                                 onClick={handleSaveToDb}
@@ -1151,9 +1169,10 @@ export default function ReporteDiarioContent() {
                     title={panelCollapsed ? 'Mostrar controles' : 'Ocultar controles'}
                     data-testid="reporte-panel-toggle"
                 >
-                    {panelCollapsed
-                        ? <PanelLeftOpen size={16} aria-hidden="true" />
-                        : <PanelLeftClose size={16} aria-hidden="true" />}
+                    <MorphingIcon
+                        icon={panelCollapsed ? PanelLeftOpen : PanelLeftClose}
+                        size={16}
+                    />
                     <span>{panelCollapsed ? 'Controles' : 'Ocultar'}</span>
                 </button>
 
@@ -1344,7 +1363,7 @@ export default function ReporteDiarioContent() {
                             isSuccess={loadSuccess}
                             idleText="Sí, cargar datos"
                             successText="¡Cargado!"
-                            idleIcon={CheckCircle2}
+                            idleIcon={CheckIconData}
                             className="btn-primary"
                             onClick={confirmLoad}
                         />

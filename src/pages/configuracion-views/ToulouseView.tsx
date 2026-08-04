@@ -1,6 +1,7 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { CheckCircle2, ClipboardCheck, FileText, Printer, RefreshCw, Save, Trash2 } from 'lucide-react';
+import { Printer, RefreshCw, Trash2, FileText, ClipboardCheck } from 'lucide-react';
+import { Save as SaveIconData } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
 import { useToulouseSheets, type ToulouseSheetRecord } from '@/hooks/useToulouseSheets';
 import { ToulouseSheet, type ToulouseSheetData } from '@/components/toulouse/ToulouseSheet';
@@ -275,7 +276,7 @@ export function ToulouseView() {
                 isSuccess={saveSuccess}
                 isError={!!errorMsg}
                 errorText={errorMsg || undefined}
-                idleIcon={Save}
+                idleIcon={SaveIconData}
                 idleText="Guardar"
                 loadingText="Guardando…"
                 successText="¡Guardada!"

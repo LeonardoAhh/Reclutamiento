@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertCircle, Bus, Calendar, CheckCircle2, Save, Trash2, UserCheck, UserPlus } from 'lucide-react';
+import {
+  UserPlus,
+  Trash2,
+  Calendar,
+  UserCheck,
+  AlertCircle,
+  Bus,
+} from 'lucide-react';
+import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import type { Employee } from '@/lib/types';
 import type { AutoVacancy } from '@/lib/autoVacancies';
@@ -550,7 +558,7 @@ export function EmployeeModal({
                 idleText="Guardar"
                 loadingText="Guardando..."
                 successText="¡Guardado!"
-                idleIcon={Save}
+                idleIcon={SaveIconData}
                 className="btn-primary"
                 disabled={!isAddValid}
               />
@@ -565,7 +573,7 @@ export function EmployeeModal({
             idleText="Guardar"
             loadingText="Guardando..."
             successText="¡Guardado!"
-            idleIcon={Save}
+            idleIcon={SaveIconData}
             className="btn-primary"
             disabled={!isAddValid}
           />
@@ -579,7 +587,7 @@ export function EmployeeModal({
           idleText="Registrar Baja"
           loadingText="Registrando baja..."
           successText="¡Baja registrada!"
-          idleIcon={Trash2}
+          idleIcon={Trash2IconData}
           className="btn-danger"
           disabled={!isDeleteValid}
         />

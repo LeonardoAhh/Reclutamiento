@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Copy, MessageCircle, Share2 } from 'lucide-react';
+import { MessageCircle, Share2 } from 'lucide-react';
+import { Check, Copy } from 'lucide';
 import { CANDIDATE_ACCESS_CARD_CONFIG } from '@/lib/constants';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import {
   createCandidateAccessCardBlob,
   getCandidateAccessCardFilename,
@@ -229,7 +231,7 @@ export function CandidateAccessCard({
           onClick={handleCopy}
           disabled={!imageBlob}
         >
-          {copied ? <CheckCircle2 size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+          <MorphingIcon icon={copied ? Check : Copy} size={18} />
           {copied ? 'Copiada' : 'Copiar imagen'}
         </button>
         <button

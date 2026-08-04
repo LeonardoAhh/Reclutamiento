@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, Copy, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
+import { Check, Copy } from 'lucide';
+import { MorphingIcon } from './MorphingIcon';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import { StarliteBadge } from './Badge';
@@ -188,11 +190,7 @@ export function FutureHiresModal({
                   className="btn-secondary btn-sm"
                   onClick={handleCopy}
                 >
-                  {copied ? (
-                    <CheckCircle2 size={16} aria-hidden="true" />
-                  ) : (
-                    <Copy size={16} aria-hidden="true" />
-                  )}
+                  <MorphingIcon icon={copied ? Check : Copy} size={16} />
                 </button>
               </Tooltip>
             </div>

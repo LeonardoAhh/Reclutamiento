@@ -292,7 +292,7 @@
 
 .sidebar__trigger-icon {
   color: var(--color-muted);
-  transition: transform var(--transition-base), color var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .sidebar__user-trigger:hover .sidebar__trigger-icon {
@@ -300,7 +300,6 @@
 }
 
 .sidebar__trigger-icon--open {
-  transform: rotate(180deg);
   color: var(--color-ink);
 }
 

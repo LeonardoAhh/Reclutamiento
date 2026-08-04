@@ -1,7 +1,8 @@
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Moon, Sun } from 'lucide';
 import { useTheme } from '@/hooks/useTheme';
 import { useFeedback } from '@/hooks/useFeedback';
-import { CheckCircle2, Moon, Sun } from 'lucide-react';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './ThemeToggle.css';
 
 /**
@@ -37,18 +38,12 @@ export function ThemeToggle() {
         layout
         transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 500, damping: 30 }}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            className="theme-toggle__icon"
-            key={isDark ? 'moon' : 'sun'}
-            initial={shouldReduceMotion ? { opacity: 0 } : { scale: 0, rotate: -90 }}
-            animate={shouldReduceMotion ? { opacity: 1 } : { scale: 1, rotate: 0 }}
-            exit={shouldReduceMotion ? { opacity: 0 } : { scale: 0, rotate: 90 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
-          >
-            {isDark ? <Moon size={14} strokeWidth={2.5} /> : <Sun size={14} strokeWidth={2.5} />}
-          </motion.span>
-        </AnimatePresence>
+        <MorphingIcon
+          icon={isDark ? Moon : Sun}
+          size={14}
+          strokeWidth={2.5}
+          className="theme-toggle__icon"
+        />
       </motion.span>
     </button>
   );

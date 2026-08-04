@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
+import { CircleCheckBig as CheckCircleIconData } from 'lucide';
 import { Modal } from './Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import type { Baja } from '@/lib/types';
@@ -107,7 +108,7 @@ export function CubrirVacanteSheet({
         idleText={isMarcada ? 'Actualizar' : 'Marcar cubierta'}
         loadingText="Guardando..."
         successText="¡Guardado!"
-        idleIcon={CheckCircle2}
+        idleIcon={CheckCircleIconData}
         className="btn-primary"
         form="cubrir-vacante-form"
       />

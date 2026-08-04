@@ -1,12 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { CheckCircle2, ChevronUp, ChevronsLeft, Loader, LogOut, Menu } from 'lucide-react';
+import {
+  LogOut,
+  Loader,
+} from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronsLeft, Menu } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { useFeedback } from '@/hooks/useFeedback';
 import { useLoader } from '@/hooks/useLoader';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Tooltip } from '@/components/ui/Tooltip';
 import './Sidebar.css';
 import { BrandLogo } from '@/components/ui/BrandLogo';
@@ -122,9 +127,10 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
           data-testid="sidebar-collapse-toggle"
         >
-          {collapsed
-            ? <Menu size={18} aria-hidden="true" />
-            : <ChevronsLeft size={18} aria-hidden="true" />}
+          <MorphingIcon
+            icon={collapsed ? Menu : ChevronsLeft}
+            size={18}
+          />
         </button>
       </div>
 
@@ -249,10 +255,10 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
           {!collapsed && (
             <div className="sidebar__trigger-info">
               <span className="sidebar__trigger-name">{username.split('@')[0]}</span>
-              <ChevronUp
+              <MorphingIcon
+                icon={menuOpen ? ChevronDown : ChevronUp}
                 size={16}
                 className={`sidebar__trigger-icon ${menuOpen ? 'sidebar__trigger-icon--open' : ''}`}
-                aria-hidden="true"
               />
             </div>
           )}

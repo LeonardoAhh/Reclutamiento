@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
-import { CheckCircle2, Download, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { Download as DownloadIconData } from 'lucide';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
 import { DatosGenerales } from '@/components/documentos/DatosGenerales';
@@ -243,7 +244,7 @@ export function DocumentosView() {
           onClick={handleDownload}
           isSubmitting={isLoading}
           isSuccess={isSuccess}
-          idleIcon={Download}
+          idleIcon={DownloadIconData}
           idleText={activeDoc === 'constancia' ? 'Guardar imagen' : 'Descargar PDF'}
           loadingText="Generando…"
           successText="¡Listo!"

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Copy, Share2, Users } from 'lucide-react';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { Share2, Users } from 'lucide-react';
+import { Check, Copy } from 'lucide';
+import { motion, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
+import { MorphingIcon } from './MorphingIcon';
 import { StatCard } from './StatCard';
 import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { formatShortDate } from '@/lib/dates';
@@ -467,33 +469,10 @@ export function CandidateReportModal({
           onClick={handleCopy}
           disabled={empty}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            {copied ? (
-              <motion.span
-                key="copied"
-                className="candidate-report-modal__action-inner"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
-              >
-                <CheckCircle2 size={16} aria-hidden="true" />
-                Copiado
-              </motion.span>
-            ) : (
-              <motion.span
-                key="copy"
-                className="candidate-report-modal__action-inner"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
-              >
-                <Copy size={16} aria-hidden="true" />
-                Copiar texto
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <span className="candidate-report-modal__action-inner">
+            <MorphingIcon icon={copied ? Check : Copy} size={16} />
+            {copied ? 'Copiado' : 'Copiar texto'}
+          </span>
         </button>
         <motion.button
           type="button"

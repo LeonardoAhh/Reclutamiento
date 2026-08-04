@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, Download, Info, RefreshCw, Wrench, X } from 'lucide-react';
+import { Info, CheckCircle2, Wrench, X } from 'lucide-react';
+import { Download as DownloadIconData, RefreshCw as RefreshCwIconData } from 'lucide';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { AnimatedSubmitButton } from './AnimatedSubmitButton';
@@ -95,7 +96,7 @@ export function SystemUpdateBanner() {
                   isSuccess={isUpdating}
                   idleText={requiresReload ? 'Actualizar y recargar' : 'Actualizar sistema'}
                   successText="Actualizando..."
-                  idleIcon={requiresReload ? RefreshCw : Download}
+                  idleIcon={requiresReload ? RefreshCwIconData : DownloadIconData}
                   onClick={handleReload}
                   className="btn-primary"
                 />

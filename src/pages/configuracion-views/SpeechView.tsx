@@ -1,5 +1,28 @@
 import { useState, useMemo, useRef } from 'react';
-import { Bold, Briefcase, Bus, Calendar, CheckCircle2, Code, Copy, Download, FileText, ImagePlus, Italic, List, ListOrdered, MessageSquare, Pencil, Plus, Quote, Save, ShieldAlert, Strikethrough, Trash2, X } from 'lucide-react';
+import {
+  MessageSquare,
+  Plus,
+  Copy as CopyIcon,
+  Pencil,
+  Trash2,
+  ShieldAlert,
+  Briefcase,
+  Bus,
+  FileText,
+  Calendar,
+  Bold,
+  Italic,
+  Strikethrough,
+  Code,
+  List,
+  ListOrdered,
+  Quote,
+  ImagePlus,
+  X,
+  Download,
+} from 'lucide-react';
+import { Check, Copy, Save as SaveIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Modal } from '@/components/ui/Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CustomSelect } from '@/components/ui/CustomSelect';
@@ -597,7 +620,10 @@ export function SpeechView() {
                             title={copiedId === template.id ? 'Copiado' : 'Copiar al portapapeles'}
                             disabled={isSeedMode}
                           >
-                            {copiedId === template.id ? <CheckCircle2 size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+                            <MorphingIcon
+                              icon={copiedId === template.id ? Check : Copy}
+                              size={16}
+                            />
                           </button>
 
                           {!isSeedMode && (
@@ -656,7 +682,7 @@ export function SpeechView() {
                                   title="Copiar imagen al portapapeles"
                                   aria-label="Copiar imagen"
                                 >
-                                  <Copy size={18} />
+                                  <CopyIcon size={18} />
                                 </button>
                                 <button 
                                   className="speech-image-action" 
@@ -717,7 +743,7 @@ export function SpeechView() {
               idleText={editingId ? 'Guardar cambios' : 'Crear plantilla'}
               loadingText="Guardando…"
               successText="¡Guardado!"
-              idleIcon={Save}
+              idleIcon={SaveIconData}
               className="btn-primary"
               disabled={!isFormValid}
             />
