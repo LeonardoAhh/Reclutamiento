@@ -25,6 +25,12 @@
   --color-surface-dark: #191817;           /* Superficies oscuras (login panel, footer) */
   --color-surface-dark-elevated: #232120;  /* Cards anidadas sobre superficie oscura */
   --color-document-paper: #ffffff;         /* Salida oficial imprimible, independiente del tema */
+  --color-document-ink: #000000;           /* Texto de salidas oficiales */
+  --color-document-muted: #615d59;         /* Texto secundario de salidas oficiales */
+  --color-document-soft: #f6f5f4;          /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d5d3d1;      /* Bordes de salidas oficiales */
+  --color-document-primary: #000000;       /* Encabezado de salidas oficiales */
+  --color-document-on-primary: #ffffff;    /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #d5d3d1;

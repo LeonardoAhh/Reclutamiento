@@ -211,6 +211,24 @@ export const RECLUTADORES_INFO: Record<ReclutadorNombre, { rol: ReclutadorRol; n
   LEONARDO:  { rol: 'coordinador', nombre_completo: 'Leonardo Ahmed Hernández Herrera' },
 };
 
+/**
+ * Configuración central del pase de entrevista que recibe el candidato.
+ * Mantener aquí los datos operativos para que la vista y la imagen compartida
+ * siempre utilicen la misma fuente de verdad.
+ */
+export const CANDIDATE_ACCESS_CARD_CONFIG = {
+  cardTitle: 'PASE DE ENTREVISTA',
+  cardSubtitle: 'ACCESO A CASETA DE VIGILANCIA',
+  locationName: 'Parque Industrial Querétaro',
+  address: 'Av. La Montaña 98, 76220 Santa Rosa Jáuregui, Qro.',
+  filePrefix: 'pase-entrevista',
+  shareTitle: 'Pase de entrevista',
+  whatsappCountryCode: '52',
+  whatsappBaseUrl: 'https://wa.me',
+  whatsappPasteMessage: 'Te comparto tu pase de entrevista. Pega la imagen copiada en este chat y preséntala al llegar a caseta de vigilancia.',
+  whatsappAttachMessage: 'Te comparto tu pase de entrevista. Adjunta la imagen descargada en este chat y preséntala al llegar a caseta de vigilancia.',
+} as const;
+
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
   {
     area: 'ALMACÉN',

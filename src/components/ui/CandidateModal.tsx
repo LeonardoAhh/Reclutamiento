@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UserPlus, Pencil, Trash2, Save } from 'lucide-react';
+import { CheckCircle2, Pencil, Save, ShieldAlert, Trash2, UserPlus, XCircle } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
-import { localTodayIso, localDateToIso, isoToLocalDateString, formatDateTimeMx } from '@/lib/dates';
-import { X, Search, CheckCircle2, XCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { formatDateTimeMx, formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -16,8 +14,9 @@ import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
-import { ShieldAlert } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
+import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
 
@@ -123,6 +122,10 @@ export function CandidateModal({
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [accessCard, setAccessCard] = useState<{
+    data: CandidateAccessCardData;
+    phone: string;
+  } | null>(null);
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
@@ -205,6 +208,7 @@ export function CandidateModal({
       setIsSuccess(false);
       setSubmitting(false);
       setOverrideDuplicate(false);
+      setAccessCard(null);
       setForm(candidate ? fromCandidate(candidate) : emptyForm());
     }
   }, [isOpen, candidate, mode]);
@@ -244,6 +248,7 @@ export function CandidateModal({
     !form.area && 'Área',
     !form.seccion && 'Sección',
     !form.puesto && 'Puesto',
+    !form.reclutador && 'Reclutador',
   ].filter(Boolean) as string[];
 
   const isFormValid = missingRequiredFields.length === 0;
@@ -323,7 +328,27 @@ export function CandidateModal({
           setSubmitting(false);
           return;
         }
+
         setIsSuccess(true);
+        if (mode === 'add') {
+          const recruiterName = RECLUTADORES_DISPONIBLES.find(
+            (recruiter) => recruiter.value === form.reclutador,
+          )?.label ?? form.reclutador;
+          setAccessCard({
+            data: {
+              candidateName: payload.nombre,
+              recruiterName,
+              position: payload.puesto,
+              interviewDate: payload.fecha_cita
+                ? formatReadableDate(payload.fecha_cita)
+                : null,
+            },
+            phone: form.telefono,
+          });
+          setSubmitting(false);
+          return;
+        }
+
         setTimeout(() => onClose(), 1500);
       }
     } catch (err) {
@@ -338,7 +363,9 @@ export function CandidateModal({
 
 
 
-  const icon = isDelete ? (
+  const icon = accessCard ? (
+    <CheckCircle2 size={20} className="color-success" aria-hidden="true" />
+  ) : isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
     <Pencil size={20} className="color-primary" aria-hidden="true" />
@@ -346,11 +373,13 @@ export function CandidateModal({
     <UserPlus size={20} className="color-primary" aria-hidden="true" />
   );
 
-  const title = isDelete
-    ? 'Eliminar candidato'
-    : isEdit
-      ? 'Editar candidato'
-      : 'Nuevo candidato';
+  const title = accessCard
+    ? 'Pase de entrevista'
+    : isDelete
+      ? 'Eliminar candidato'
+      : isEdit
+        ? 'Editar candidato'
+        : 'Nuevo candidato';
 
   const subtitle = undefined;
 
@@ -503,7 +532,7 @@ const fieldsPosicion = (
           placeholder="Quién lleva el proceso"
           options={RECLUTADORES_DISPONIBLES}
           disabled={isEdit}
-          aria-label="Reclutador a cargo del proceso"
+          aria-label="Reclutador a cargo del proceso, obligatorio"
         />
       </div>
 
@@ -575,7 +604,7 @@ const fieldsPosicion = (
     </div>
   ) : null;
 
-  const useWizard = !isDelete && isMobile;
+  const useWizard = !isDelete && !accessCard && isMobile;
 
   return (
     <Modal
@@ -587,7 +616,13 @@ const fieldsPosicion = (
       title={title}
       subtitle={subtitle}
     >
-      {useWizard ? (
+      {accessCard ? (
+        <CandidateAccessCard
+          data={accessCard.data}
+          phone={accessCard.phone}
+          onDone={onClose}
+        />
+      ) : useWizard ? (
         /* ── Móvil: registro por pasos ── */
         <form
           onSubmit={handleSubmit}
@@ -617,6 +652,7 @@ const fieldsPosicion = (
               {
                 id: 'proceso',
                 title: 'Proceso',
+                isValid: form.reclutador.length > 0,
                 content: <div className="form-grid">
                   {fieldsProceso}
                   {auditNotice}
