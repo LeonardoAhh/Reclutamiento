@@ -255,7 +255,9 @@ export function getRecruiterAccessCardName(
  */
 export const CANDIDATE_ACCESS_CARD_CONFIG = {
   cardTitle: 'PASE DE ENTREVISTA',
-  cardSubtitle: 'ACCESO A CASETA DE VIGILANCIA',
+  cardSubtitle: 'PASE DE INGRESO A ENTREVISTA',
+  accessNotice: 'Válido para un solo acceso · Personal e intransferible',
+  identificationNotice: 'Presenta tu INE original en caseta de vigilancia',
   locationName: 'Parque Industrial Querétaro',
   address: 'Av. La Montaña 98, 76220 Santa Rosa Jáuregui, Qro.',
   filePrefix: 'pase-entrevista',

@@ -191,6 +191,8 @@ export function CandidateAccessCard({
     `para el puesto ${data.position}`,
     data.interviewDate ? `el ${data.interviewDate}` : null,
     `en ${CANDIDATE_ACCESS_CARD_CONFIG.locationName}, ${CANDIDATE_ACCESS_CARD_CONFIG.address}`,
+    CANDIDATE_ACCESS_CARD_CONFIG.accessNotice,
+    CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
   ].filter(Boolean).join(', ');
 
   return (

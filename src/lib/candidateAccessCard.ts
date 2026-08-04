@@ -223,7 +223,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     drawInformationBlock(context, {
       label: 'Fecha de entrevista',
       value: data.interviewDate,
-      y: 945,
+      y: 915,
       textColor: ink,
       mutedColor: muted,
       fontFamily,
@@ -231,8 +231,8 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     });
   }
 
-  const locationTop = data.interviewDate ? 1055 : 950;
-  const locationHeight = height - locationTop - padding;
+  const locationTop = data.interviewDate ? 1015 : 900;
+  const locationHeight = 210;
   context.fillStyle = surfaceSoft;
   roundedRect(context, padding, locationTop, width - padding * 2, locationHeight, panelRadius);
   context.fill();
@@ -241,22 +241,36 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   context.stroke();
 
   context.fillStyle = muted;
-  setFont(context, 600, CARD_LAYOUT.labelSize, fontFamily);
-  context.fillText('UBICACIÓN', padding * 1.5, locationTop + 56);
+  setFont(context, 600, 24, fontFamily);
+  context.fillText('UBICACIÓN', padding * 1.5, locationTop + 48);
 
   context.fillStyle = ink;
-  setFont(context, 700, 38, fontFamily);
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.locationName, padding * 1.5, locationTop + 112);
-  setFont(context, 500, 31, fontFamily);
+  setFont(context, 700, 34, fontFamily);
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.locationName, padding * 1.5, locationTop + 98);
+  setFont(context, 500, 28, fontFamily);
   drawWrappedText(
     context,
     CANDIDATE_ACCESS_CARD_CONFIG.address,
     padding * 1.5,
-    locationTop + 162,
+    locationTop + 143,
     width - padding * 3,
-    42,
+    36,
     2,
   );
+
+  const noticeTop = data.interviewDate ? 1260 : 1165;
+  context.textAlign = 'center';
+  context.fillStyle = ink;
+  setFont(context, 700, 25, fontFamily);
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.accessNotice, width / 2, noticeTop);
+  context.fillStyle = muted;
+  setFont(context, 500, 24, fontFamily);
+  context.fillText(
+    CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
+    width / 2,
+    noticeTop + 42,
+  );
+  context.textAlign = 'left';
 
   context.strokeStyle = hairline;
   context.lineWidth = 2;
