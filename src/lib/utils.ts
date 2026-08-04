@@ -36,6 +36,29 @@ export function toTitleCase(str: string | null | undefined): string {
 }
 
 /**
+ * Capitalización editorial para contenido en español. Mantiene partículas
+ * gramaticales en minúscula y conserva siglas o claves con números.
+ */
+export function toNaturalCase(
+  str: string | null | undefined,
+  options: { preserveAcronyms?: boolean } = {},
+): string {
+  if (!str) return '';
+  const { preserveAcronyms = true } = options;
+  const minorWords = new Set(['a', 'al', 'de', 'del', 'el', 'en', 'la', 'las', 'los', 'y']);
+  const words = str.trim().split(/\s+/);
+
+  return words.map((word, index) => {
+    const lower = word.toLocaleLowerCase('es-MX');
+    if (index > 0 && minorWords.has(lower)) return lower;
+    if (/\d/.test(word) || (preserveAcronyms && /^[A-ZÁÉÍÓÚÜÑ]{2,4}$/.test(word) && !minorWords.has(lower))) {
+      return word.toLocaleUpperCase('es-MX');
+    }
+    return `${lower.charAt(0).toLocaleUpperCase('es-MX')}${lower.slice(1)}`;
+  }).join(' ');
+}
+
+/**
  * Normalize string by stripping accents and trimming
  */
 export function normalizeString(text: string): string {

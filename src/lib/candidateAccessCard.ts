@@ -1,4 +1,5 @@
 import { CANDIDATE_ACCESS_CARD_CONFIG } from './constants';
+import { toNaturalCase } from './utils';
 
 export interface CandidateAccessCardData {
   candidateName: string;
@@ -178,6 +179,10 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   const onPrimary = readCssToken('--color-document-on-primary');
   const hairline = readCssToken('--color-document-hairline');
   const fontFamily = readCssToken('--font-body');
+  const displayCandidateName = toNaturalCase(data.candidateName, {
+    preserveAcronyms: false,
+  });
+  const displayPosition = toNaturalCase(data.position);
 
   context.save();
   roundedRect(context, 0, 0, width, height, cornerRadius);
@@ -213,7 +218,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
 
   context.fillStyle = ink;
   setFont(context, 700, CARD_LAYOUT.candidateSize, fontFamily);
-  const candidateLines = wrapText(context, data.candidateName, width - padding * 2, 2);
+  const candidateLines = wrapText(context, displayCandidateName, width - padding * 2, 2);
   candidateLines.forEach((line, index) => {
     context.fillText(line, width / 2, 368 + index * 62);
   });
@@ -237,7 +242,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
 
   drawInformationBlock(context, {
     label: 'Puesto',
-    value: data.position,
+    value: displayPosition,
     y: 690,
     textColor: ink,
     mutedColor: muted,
