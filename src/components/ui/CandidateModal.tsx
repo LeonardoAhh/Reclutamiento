@@ -28,11 +28,15 @@ import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
  * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
  * El `label` se muestra en formato amigable en el select.
  */
-const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> = 
-  RECLUTADORES_ACTIVOS.map((r) => ({
-    value: r.toUpperCase(),
-    label: RECLUTADORES_INFO[r].nombre_completo
-  }));
+const RECLUTADORES_DISPONIBLES: Array<{
+  value: string;
+  label: string;
+  accessCardName: string;
+}> = RECLUTADORES_ACTIVOS.map((r) => ({
+  value: r.toUpperCase(),
+  label: RECLUTADORES_INFO[r].nombre_completo,
+  accessCardName: RECLUTADORES_INFO[r].nombre_pase,
+}));
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -333,7 +337,7 @@ export function CandidateModal({
         if (mode === 'add') {
           const recruiterName = RECLUTADORES_DISPONIBLES.find(
             (recruiter) => recruiter.value === form.reclutador,
-          )?.label ?? form.reclutador;
+          )?.accessCardName ?? `Lic. ${form.reclutador}`;
           setAccessCard({
             data: {
               candidateName: payload.nombre,

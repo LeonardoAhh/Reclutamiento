@@ -205,10 +205,25 @@ export type ReclutadorRol = 'reclutadora' | 'coordinador';
  * Usado por ReclutadorBadge para diferenciar visualmente reclutadoras
  * de coordinadores. Mantener sincronizado con RECLUTADORES_ACTIVOS.
  */
-export const RECLUTADORES_INFO: Record<ReclutadorNombre, { rol: ReclutadorRol; nombre_completo: string }> = {
-  ALEXANDRA: { rol: 'reclutadora', nombre_completo: 'Nayeli Alexandra Hernández Hernández' },
-  DANIELA:   { rol: 'reclutadora', nombre_completo: 'Daniela De Santiago Ramírez' },
-  LEONARDO:  { rol: 'coordinador', nombre_completo: 'Leonardo Ahmed Hernández Herrera' },
+export const RECLUTADORES_INFO: Record<
+  ReclutadorNombre,
+  { rol: ReclutadorRol; nombre_completo: string; nombre_pase: string }
+> = {
+  ALEXANDRA: {
+    rol: 'reclutadora',
+    nombre_completo: 'Nayeli Alexandra Hernández Hernández',
+    nombre_pase: 'Lic. Alexandra Hernández',
+  },
+  DANIELA: {
+    rol: 'reclutadora',
+    nombre_completo: 'Daniela De Santiago Ramírez',
+    nombre_pase: 'Lic. Daniela De Santiago',
+  },
+  LEONARDO: {
+    rol: 'coordinador',
+    nombre_completo: 'Leonardo Ahmed Hernández Herrera',
+    nombre_pase: 'Lic. Leonardo Hernández',
+  },
 };
 
 /**
