@@ -160,9 +160,9 @@ export function calculatePositionCoverage(
 ): PositionCoverage[] {
   const allUniqueEmployees = dedupeEmployees(employees);
   const targetDate = asOfDate || localTodayIso();
-  const uniqueEmployees = allUniqueEmployees.filter(
-    (emp) => String(emp.fecha_ingreso).localeCompare(targetDate) <= 0
-  );
+  
+  // Se quitó la restricción de fecha_ingreso; todos los empleados registrados se cuentan como REAL.
+  const uniqueEmployees = allUniqueEmployees;
 
   return positions.map((pos) => {
     const matchedEmployees = uniqueEmployees.filter(
@@ -174,14 +174,9 @@ export function calculatePositionCoverage(
     const real = matchedEmployees.length;
     const starliteEmpleados = matchedEmployees.filter((emp) => emp.is_starlite).length;
 
-    const proximosList = allUniqueEmployees.filter(
-      (emp) =>
-        String(emp.fecha_ingreso).localeCompare(targetDate) > 0 &&
-        matchesText(emp.area, pos.area) &&
-        matchesText(emp.seccion, pos.seccion) &&
-        matchesPuesto(emp.puesto, pos.puesto)
-    );
-    const proximosIngresos = proximosList.length;
+    // Como ya contamos a todos en "real", dejamos proximosList vacío para no duplicar ni generar confusión.
+    const proximosList: Employee[] = [];
+    const proximosIngresos = 0;
     const proximoIngresoFecha =
       proximosList.length > 0
         ? proximosList

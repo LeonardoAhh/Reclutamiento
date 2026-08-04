@@ -159,7 +159,8 @@ function buildWhatsappMessageBlock(
         }
 
         let seccionLabel = cleanSeccion || r.turno || '';
-        if (r.turno && cleanSeccion && !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())) {
+        const normalizeForMatch = (s: string) => s.toUpperCase().replace(/[\.\s]/g, '');
+        if (r.turno && cleanSeccion && !normalizeForMatch(cleanSeccion).includes(normalizeForMatch(r.turno))) {
           seccionLabel = `${cleanSeccion} (${r.turno})`;
         }
         seccionLabel = toTitleCase(seccionLabel);
@@ -363,15 +364,30 @@ export function VacancyReportModal({
             <span className="vacancy-report-modal__puesto">{row.puesto}</span>
             <span className="vacancy-report-modal__seccion">
               {row.seccion}
-              {row.turno && !row.seccion.toUpperCase().includes(row.turno) && (
+              {row.turno && !row.seccion.toUpperCase().replace(/[.\s]/g, '').includes(row.turno.toUpperCase().replace(/[.\s]/g, '')) && (
                 <> · {row.turno}</>
               )}
             </span>
           </div>
           <div className="vacancy-report-modal__badges" style={{ gap: '6px' }}>
             {row.starliteUrgentes > 0 && (
-              <span style={{ color: '#d97706', fontWeight: 600, fontSize: '0.8125rem' }}>
-                ★ STARLITE {row.starliteEmpleados || 0}/{row.starliteUrgentes}
+              <span
+                className="vacancy-report-modal__badge"
+                style={
+                  row.vacantesStarlite === 0
+                    ? {
+                        color: 'var(--color-success)',
+                        backgroundColor: 'color-mix(in srgb, var(--color-success) 12%, var(--color-canvas))',
+                      }
+                    : {
+                        color: 'var(--color-accent-orange)',
+                        backgroundColor: 'color-mix(in srgb, var(--color-accent-orange) 12%, var(--color-canvas))',
+                      }
+                }
+              >
+                <span style={{ marginRight: '4px' }}>★</span>
+                STARLITE {row.starliteEmpleados || 0}/{row.starliteUrgentes}
+                {row.vacantesStarlite === 0 ? ' (Cubierto)' : ''}
               </span>
             )}
             {row.vacantesAutorizada > 0 && (
@@ -428,7 +444,7 @@ export function VacancyReportModal({
           </div>
           {totalStarliteUrgentes > 0 && (
             <div className="vacancy-report-modal__stat">
-              <div className="vacancy-report-modal__big-number" style={{ color: '#d97706' }}>
+              <div className="vacancy-report-modal__big-number" style={{ color: totalStarliteEmpleados >= totalStarliteUrgentes ? 'var(--color-success)' : '#d97706' }}>
                 {totalStarliteEmpleados}/{totalStarliteUrgentes}
               </div>
               <p className="vacancy-report-modal__big-label">

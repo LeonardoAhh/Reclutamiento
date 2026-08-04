@@ -255,6 +255,45 @@ export function RegistroNoCitadosView() {
     return RECLUTADORES_OPTIONS.find(m => m.value === val)?.label || val;
   };
 
+  const getSubMotivoLabel = (motivo: string, subMotivo: string | null | undefined) => {
+    if (!subMotivo) return 'N/A';
+    const options = SUB_MOTIVOS_OPTIONS[motivo] || [];
+    return options.find(o => o.value === subMotivo)?.label || subMotivo;
+  };
+
+  const handleExportExcel = () => {
+    const exportData = records.filter(r => r.motivo === 'distancia');
+    
+    if (exportData.length === 0) {
+      alert('No hay registros con el motivo "Le queda lejos / Sin transporte" para exportar.');
+      return;
+    }
+
+    const bom = '\uFEFF';
+    const headers = ['Candidato', 'Reclutador', 'Puesto', 'Motivo principal', 'Detalle del motivo'].join(',');
+    
+    const rows = exportData.map(r => {
+      const candidato = `"${formatName(r.nombre, r.apellido)}"`;
+      const reclutador = `"${getReclutadorLabel(r.reclutador)}"`;
+      const puesto = `"${formatTitle(r.puesto) || 'N/A'}"`;
+      const motivo = '"Le queda lejos / Sin transporte"';
+      const detalle = `"${getSubMotivoLabel(r.motivo, r.sub_motivo)}"`;
+      return [candidato, reclutador, puesto, motivo, detalle].join(',');
+    });
+
+    const csvContent = bom + [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `reporte_lejos_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const openNewModal = () => {
     setEditingId(null);
     setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
@@ -622,8 +661,9 @@ export function RegistroNoCitadosView() {
             <button
               type="button"
               className="btn-secondary btn-icon no-citados-export-btn"
-              title="Exportar a Excel"
-              aria-label="Exportar a Excel"
+              title="Exportar reporte"
+              aria-label="Exportar reporte"
+              onClick={handleExportExcel}
             >
               <FileSpreadsheet size={16} className="color-primary" />
             </button>

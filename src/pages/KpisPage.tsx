@@ -381,16 +381,15 @@
         const key = `${e.area}|${e.seccion}|${e.puesto}`;
         const pos = posState.get(key);
         if (pos) {
-          if (e.is_starlite && pos.starliteFaltantes > 0) {
+          if (e.is_starlite) {
             proximosStarlite += 1;
-            pos.starliteFaltantes -= 1;
           } else {
-            if (pos.disponiblesReg < pos.autorizada) {
+            // Si la cantidad de regulares es menor a la autorizada, entra a plantilla; si no, a backup
+            if (pos.disponiblesReg <= pos.autorizada) {
               proximosPlantilla += 1;
             } else {
               proximosBackup += 1;
             }
-            pos.disponiblesReg += 1;
           }
         }
       }

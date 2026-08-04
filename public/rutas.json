@@ -2032,14 +2032,6 @@
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
-    "numero empleado": "4239",
-    "nombre": "CALTZONTZI RUIZ VERONICA",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
-  },
-  {
     "numero empleado": "4240",
     "nombre": "VARGAS MEJIA ANA KAREN",
     "turno": "2",
@@ -2094,14 +2086,6 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
-    "numero empleado": "4252",
-    "nombre": "DE LA CRUZ NAVOR JESUS SANTIAGO",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "5 E FEBRERO ",
-    "parada": "PARADA EN EL PUENTE PEOATONAL DE TREMEC"
   },
   {
     "numero empleado": "4253",
@@ -2272,14 +2256,6 @@
     "parada": "PARADA EN EL MODELORAMA SOBRE CARRETERA"
   },
   {
-    "numero empleado": "4290",
-    "nombre": "DOMINGUEZ LOPEZ GUADALUPE",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE LA ALAMEDA"
-  },
-  {
     "numero empleado": "4292",
     "nombre": "ARRIAGA RUIZ GUADALUPE YAZMIN",
     "turno": "3",
@@ -2310,14 +2286,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PEÑAFLOR",
     "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
-    "numero empleado": "4298",
-    "nombre": "CHAVEZ BALDERAS ROSA MARIA",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4299",

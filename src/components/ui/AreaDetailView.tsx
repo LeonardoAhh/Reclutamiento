@@ -188,13 +188,20 @@ export function AreaDetailView({
     return match[1].replace(/\./g, '').replace(/\s+/g, ' ').toUpperCase();
   };
 
-  const sectionTabs = secciones.map((s) => ({
-    id: s,
-    label: s,
-    displayLabel: formatSeccionTabLabel(s),
-    count: dept.puestos.filter((p) => p.seccion === s).length,
-    incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
-  }));
+  const sectionTabs = secciones.map((s) => {
+    const puestosInSection = dept.puestos.filter((p) => p.seccion === s);
+    const count = puestosInSection.reduce((acc, pos) => {
+      return acc + (pos.vacantes || 0);
+    }, 0);
+
+    return {
+      id: s,
+      label: s,
+      displayLabel: formatSeccionTabLabel(s),
+      count: count,
+      incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
+    };
+  });
   const tabs = sectionTabs;
 
   // El resumen superior es la vista de ÁREA (totales del departamento), coherente
@@ -525,6 +532,7 @@ export function AreaDetailView({
                   <th scope="col">Puesto</th>
                   {activeTab === ALL_TAB && <th scope="col" className="hide-on-mobile">Sección</th>}
                   <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
+                  <th scope="col" className="text-center hide-on-mobile">Backup</th>
                   <th scope="col" className="text-center hide-on-mobile">Real</th>
                   <th scope="col" className="text-center">Vacantes</th>
                   <th scope="col" className="hide-on-mobile">Cobertura</th>
@@ -623,9 +631,11 @@ export function AreaDetailView({
                       {activeTab === ALL_TAB && (
                         <td className="cell-seccion hide-on-mobile">{pos.seccion}</td>
                       )}
-                      <td className="text-center hide-on-mobile">
+                      <td className="text-center hide-on-mobile font-mono">
                         {row.plantilla_autorizada}
-                        {row.backup > 0 && (
+                      </td>
+                      <td className="text-center hide-on-mobile font-mono">
+                        {row.backup > 0 ? (
                           <Tooltip
                             content={
                               <div className="tooltip-preline">
@@ -638,10 +648,12 @@ export function AreaDetailView({
                             side="top"
                             delayMs={200}
                           >
-                            <span className="cell-backup-hint">
-                              {' '}+{row.backup}
+                            <span className="color-primary" style={{ cursor: 'help' }}>
+                              {row.backup}
                             </span>
                           </Tooltip>
+                        ) : (
+                          <span className="color-ink-faint">—</span>
                         )}
                       </td>
                       <td className="text-center font-strong hide-on-mobile">{row.plantilla_real}</td>
