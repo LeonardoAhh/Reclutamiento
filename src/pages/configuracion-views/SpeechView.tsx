@@ -5,7 +5,6 @@ import {
   Copy as CopyIcon,
   Pencil,
   Trash2,
-  Save,
   ShieldAlert,
   Briefcase,
   Bus,
@@ -22,7 +21,7 @@ import {
   X,
   Download,
 } from 'lucide-react';
-import { Check, Copy } from 'lucide';
+import { Check, Copy, Save as SaveIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Modal } from '@/components/ui/Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
@@ -744,7 +743,7 @@ export function SpeechView() {
               idleText={editingId ? 'Guardar cambios' : 'Crear plantilla'}
               loadingText="Guardando…"
               successText="¡Guardado!"
-              idleIcon={Save}
+              idleIcon={SaveIconData}
               className="btn-primary"
               disabled={!isFormValid}
             />

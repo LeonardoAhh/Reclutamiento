@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Pencil, Save, ShieldAlert, Trash2, UserPlus, XCircle } from 'lucide-react';
+import { CheckCircle2, Pencil, ShieldAlert, Trash2, UserPlus, XCircle } from 'lucide-react';
+import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
@@ -702,7 +703,7 @@ const fieldsPosicion = (
                 idleText="Eliminar"
                 loadingText="Eliminando..."
                 successText="¡Eliminado!"
-                idleIcon={Trash2}
+                idleIcon={Trash2IconData}
                 className="btn-danger"
               />
             ) : !isFormValid ? (
@@ -717,7 +718,7 @@ const fieldsPosicion = (
                       idleText="Guardar"
                       loadingText="Guardando..."
                       successText="¡Guardado!"
-                      idleIcon={Save}
+                      idleIcon={SaveIconData}
                       className="btn-primary"
                       disabled={true}
                     />
@@ -733,7 +734,7 @@ const fieldsPosicion = (
                 idleText="Guardar"
                 loadingText="Guardando..."
                 successText="¡Guardado!"
-                idleIcon={Save}
+                idleIcon={SaveIconData}
                 className="btn-primary"
                 disabled={false}
               />

@@ -1,5 +1,6 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
-import { Eye, EyeOff, ArrowRight, AlertCircle, ChevronRight } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ChevronRight } from 'lucide-react';
+import { ArrowRight as ArrowRightIconData } from 'lucide';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useAuth } from '@/hooks/useAuth';
@@ -251,7 +252,7 @@ export function Login() {
                       idleText="Ingresar"
                       loadingText="Verificando..."
                       successText="¡Bienvenido!"
-                      idleIcon={ArrowRight}
+                      idleIcon={ArrowRightIconData}
                       className="login__submit"
                       data-testid="login-submit-button"
                     />

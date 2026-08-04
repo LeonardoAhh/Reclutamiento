@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle, Loader2, Save, AlertCircle, type LucideIcon } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import {
+  CircleAlert,
+  CircleCheckBig,
+  LoaderCircle,
+  Save,
+} from 'lucide';
+import type { IconInput } from 'morphicons/react';
 import type { HTMLMotionProps } from 'framer-motion';
 
 import { useFeedback } from '@/hooks/useFeedback';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './AnimatedSubmitButton.css';
 
 export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
@@ -14,7 +21,7 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   successText?: string;
   errorText?: string;
   isError?: boolean;
-  idleIcon?: LucideIcon;
+  idleIcon?: IconInput;
   iconOnly?: boolean;
 }
 
@@ -28,7 +35,7 @@ export function AnimatedSubmitButton({
   loadingText = 'Guardando…',
   successText = '¡Guardado!',
   errorText = 'Error',
-  idleIcon: IdleIcon = Save,
+  idleIcon = Save,
   iconOnly = false,
   className = '',
   disabled = false,
@@ -40,6 +47,13 @@ export function AnimatedSubmitButton({
   const state: SubmitState = isSubmitting ? 'loading' : isSuccess ? 'success' : isError ? 'error' : 'idle';
   const isDisabled = Boolean(disabled) || state !== 'idle';
   const stateText = state === 'loading' ? loadingText : state === 'success' ? successText : state === 'error' ? errorText : idleText;
+  const stateIcon = state === 'loading'
+    ? LoaderCircle
+    : state === 'success'
+      ? CircleCheckBig
+      : state === 'error'
+        ? CircleAlert
+        : idleIcon;
 
   useEffect(() => {
     if (state === 'success') {
@@ -78,30 +92,16 @@ export function AnimatedSubmitButton({
         {stateText}
       </span>
 
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-          key={state}
-          className="animated-submit-button__content"
-          aria-hidden="true"
-          initial={reduceMotion ? false : { y: 15, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={reduceMotion ? undefined : { y: -15, opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
-        >
-          {state === 'success' ? (
-            <CheckCircle size="1.25em" />
-          ) : state === 'error' ? (
-            <AlertCircle size="1.25em" />
-          ) : state === 'loading' ? (
-            <Loader2 size="1.25em" className="animated-submit-button__spinner" />
-          ) : (
-            <>
-              <IdleIcon size="1.2em" />
-              {!iconOnly && <span className="animated-submit-button__text">{idleText}</span>}
-            </>
-          )}
-        </motion.span>
-      </AnimatePresence>
+      <span className="animated-submit-button__content" aria-hidden="true">
+        <MorphingIcon
+          icon={stateIcon}
+          size="1.25em"
+          className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
+        />
+        {state === 'idle' && !iconOnly && (
+          <span className="animated-submit-button__text">{idleText}</span>
+        )}
+      </span>
     </motion.button>
   );
 }

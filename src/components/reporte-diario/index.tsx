@@ -14,8 +14,6 @@ import {
     AlertCircle,
     Loader2,
     X,
-    Save,
-    Check,
     ChevronRight,
     ChevronLeft,
     FileJson,
@@ -24,7 +22,12 @@ import {
 } from "lucide-react"
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
-import { PanelLeftClose, PanelLeftOpen } from 'lucide';
+import {
+    Check as CheckIconData,
+    PanelLeftClose,
+    PanelLeftOpen,
+    Save as SaveIconData,
+} from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
@@ -894,7 +897,7 @@ export default function ReporteDiarioContent() {
                                 isSuccess={loadSuccess}
                                 idleText="Sí, cargar datos"
                                 successText="¡Cargado!"
-                                idleIcon={Check}
+                                idleIcon={CheckIconData}
                                 className="btn-primary"
                                 onClick={confirmLoad}
                             />
@@ -984,7 +987,7 @@ export default function ReporteDiarioContent() {
                                 idleText={savedSummaries.some((s) => s.mes === currentMonth) ? "Actualizar" : "Guardar"}
                                 loadingText="Guardando…"
                                 successText="¡Guardado!"
-                                idleIcon={Save}
+                                idleIcon={SaveIconData}
                                 iconOnly
                                 className="btn-primary"
                                 onClick={handleSaveToDb}
@@ -1340,7 +1343,7 @@ export default function ReporteDiarioContent() {
                             isSuccess={loadSuccess}
                             idleText="Sí, cargar datos"
                             successText="¡Cargado!"
-                            idleIcon={Check}
+                            idleIcon={CheckIconData}
                             className="btn-primary"
                             onClick={confirmLoad}
                         />

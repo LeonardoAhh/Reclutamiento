@@ -260,3 +260,12 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Sileo conserva sus iconos semánticos; no se aplicó morph donde no existe una instancia persistente.
 - Verificación local: TypeScript PASS, lint PASS y build PASS.
 - No se invocaron agentes de pruebas para esta integración, por instrucción del usuario.
+
+## Animated Submit Morph
+- Sustituida la animación de intercambio vertical por una instancia persistente de Morphicons.
+- Flujo global: icono de acción → `LoaderCircle` → `CircleCheckBig` o `CircleAlert`.
+- Migrados los `idleIcon` de los 18 usos a datos tipados de `lucide`.
+- Conservados: bloqueo de doble envío, `aria-busy`, región `aria-live`, feedback háptico, colores semánticos y shake exclusivo de error.
+- `prefers-reduced-motion` continúa respetado por Morphicons y el spinner CSS.
+- Verificación local: TypeScript PASS, lint PASS y build PASS.
+- No se invocaron agentes de pruebas, por instrucción del usuario.

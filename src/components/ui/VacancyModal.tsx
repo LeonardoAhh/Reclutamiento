@@ -9,8 +9,8 @@ import {
   ArrowRight,
   Info,
   AlertTriangle,
-  Save,
 } from 'lucide-react';
+import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
 import type {
   VacancyRequest,
   VacancyStatus,
@@ -607,7 +607,7 @@ export function VacancyModal({
       idleText={isAdd ? 'Crear' : 'Guardar'}
       loadingText="Guardando..."
       successText="¡Guardado!"
-      idleIcon={Save}
+      idleIcon={SaveIconData}
       className="btn-primary"
       disabled={!isFormValid}
       form="vacancy-form"
@@ -648,7 +648,7 @@ export function VacancyModal({
                 idleText="Eliminar"
                 loadingText="Eliminando..."
                 successText="¡Eliminado!"
-                idleIcon={Trash2}
+                idleIcon={Trash2IconData}
                 className="btn-danger"
               />
             </footer>
