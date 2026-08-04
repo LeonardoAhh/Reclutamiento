@@ -24,6 +24,95 @@ En `/candidatos`, después de registrar un candidato se debe generar una imagen 
 - Lint JavaScript/TypeScript: PASS.
 - Pruebas de interfaz: pendientes de autorización del usuario.
 
+## Dark Theme Accessibility Fix
+- Ajustado `--color-muted-soft` dark a `#8d8881`: 5.04:1 sobre canvas y 4.56:1 sobre surface.
+- Definidas variantes dark AA de success, warning, error y toda la paleta accent usada como texto/icono.
+- Restaurada coherencia de aliases: `accent-amber = warning` y `accent-green = success`, incluidos canales RGB.
+- Actualizados tints semánticos dark a partir de los nuevos colores.
+- Corregido el comentario de `.btn-primary`; el radio `rounded.md` no cambió.
+- Verificación local: contraste >= 4.5:1, TypeScript PASS, lint PASS y build PASS.
+- **Verificación por agente de testing (2025-01-XX): COMPLETADA ✓**
+
+### Static Verification Results — Testing Agent
+
+#### 1. Contrast Ratios (WCAG AA 4.5:1 minimum)
+**✅ ALL PASS (22/22 checks)**
+
+**--color-muted-soft (#8d8881):**
+- vs canvas (#191817): **5.04:1** ✓
+- vs surface (#232120): **4.56:1** ✓
+
+**Semantic colors vs canvas:**
+- success (#4ade80): **10.18:1** ✓
+- warning (#fbbf24): **10.62:1** ✓
+- error (#fb7185): **6.59:1** ✓
+
+**Semantic colors vs surface:**
+- success (#4ade80): **9.20:1** ✓
+- warning (#fbbf24): **9.60:1** ✓
+- error (#fb7185): **5.96:1** ✓
+
+**Accent palette vs canvas:**
+- sky (#7dd3fc): **10.63:1** ✓
+- purple (#c4b5fd): **9.60:1** ✓
+- purple-deep (#a78bfa): **6.52:1** ✓
+- orange (#fdba74): **10.51:1** ✓
+- orange-deep (#fb923c): **7.83:1** ✓
+- teal (#5eead4): **11.99:1** ✓
+- brown (#d6b98c): **9.44:1** ✓
+
+**Accent palette vs surface:**
+- sky (#7dd3fc): **9.62:1** ✓
+- purple (#c4b5fd): **8.68:1** ✓
+- purple-deep (#a78bfa): **5.89:1** ✓
+- orange (#fdba74): **9.51:1** ✓
+- orange-deep (#fb923c): **7.08:1** ✓
+- teal (#5eead4): **10.84:1** ✓
+- brown (#d6b98c): **8.53:1** ✓
+
+#### 2. Alias Coherence
+**✅ VERIFIED**
+
+**Light theme (lines 78-79):**
+- `--color-accent-amber = var(--color-warning)` ✓
+- `--color-accent-amber-rgb = var(--color-warning-rgb)` ✓
+
+**Dark theme (lines 385-388):**
+- `--color-accent-green = var(--color-success)` ✓
+- `--color-accent-amber = var(--color-warning)` ✓
+- `--color-accent-amber-rgb = var(--color-warning-rgb)` ✓
+- `--color-accent-teal-rgb: 94 234 212` ✓
+
+#### 3. Button Radius & Comment
+**✅ VERIFIED**
+
+- `.btn-primary` border-radius: `var(--rounded-md)` (line 972) ✓
+- Comment (line 970): "Primary CTA — rounded rect" ✓
+- No mention of "pill" ✓
+
+#### 4. TypeScript & Build
+**✅ PASS**
+
+```
+$ yarn tsc -b --pretty false
+✓ No type errors
+
+$ yarn vite build
+✓ 4042 modules transformed
+✓ Built in 15.08s
+```
+
+### Conclusion
+**NO REGRESSIONS DETECTED**
+
+All accessibility requirements met:
+- ✅ --color-muted-soft achieves WCAG AA 4.5:1 against both canvas and surface dark
+- ✅ Success, warning, error and all accent colors have explicit dark variants with AA contrast
+- ✅ Aliases accent-amber=warning and accent-green=success are coherent, including RGB channels
+- ✅ .btn-primary radius unchanged (var(--rounded-md)), comment corrected (no "pill")
+- ✅ TypeScript compilation successful
+- ✅ Vite build successful
+
 ## Static Code Review - Testing Agent (2025-01-XX)
 
 ### Verification Scope
