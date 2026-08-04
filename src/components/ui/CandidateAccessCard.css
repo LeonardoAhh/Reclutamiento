@@ -39,7 +39,7 @@
 .candidate-access-card__preview {
   display: grid;
   width: 100%;
-  max-width: var(--feature-result-card-min);
+  max-width: var(--candidate-access-preview-max-mobile);
   aspect-ratio: 4 / 5;
   align-self: center;
   overflow: hidden;
@@ -121,6 +121,10 @@
 @media (min-width: 600px) {
   .candidate-access-card {
     padding: var(--spacing-xl);
+  }
+
+  .candidate-access-card__preview {
+    max-width: var(--candidate-access-preview-max);
   }
 
   .candidate-access-card__actions {
