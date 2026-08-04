@@ -14,8 +14,6 @@ import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
 import type { Baja, Employee } from '@/lib/types';
 import { toTitleCase } from '@/lib/utils';
 import {
-  ChevronDown,
-  ChevronUp,
   CircleUser,
   LayoutGrid,
   List,
@@ -24,6 +22,8 @@ import {
   SlidersHorizontal,
   X,
 } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
@@ -576,7 +576,12 @@ export function BusquedaView() {
                         <ButtonUtility
                           type="button"
                           className="config-compact-summary__toggle"
-                          icon={isExpanded ? <ChevronUp aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
+                          icon={(
+                            <MorphingIcon
+                              icon={isExpanded ? ChevronUp : ChevronDown}
+                              size={16}
+                            />
+                          )}
                           onClick={() => handleToggleCompactResult(employeeDomId)}
                           aria-expanded={isExpanded}
                           aria-controls={compactDetailsId}

@@ -2,8 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import {
   MessageSquare,
   Plus,
-  Copy,
-  Check,
+  Copy as CopyIcon,
   Pencil,
   Trash2,
   Save,
@@ -23,6 +22,8 @@ import {
   X,
   Download,
 } from 'lucide-react';
+import { Check, Copy } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Modal } from '@/components/ui/Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CustomSelect } from '@/components/ui/CustomSelect';
@@ -620,7 +621,10 @@ export function SpeechView() {
                             title={copiedId === template.id ? 'Copiado' : 'Copiar al portapapeles'}
                             disabled={isSeedMode}
                           >
-                            {copiedId === template.id ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+                            <MorphingIcon
+                              icon={copiedId === template.id ? Check : Copy}
+                              size={16}
+                            />
                           </button>
 
                           {!isSeedMode && (
@@ -679,7 +683,7 @@ export function SpeechView() {
                                   title="Copiar imagen al portapapeles"
                                   aria-label="Copiar imagen"
                                 >
-                                  <Copy size={18} />
+                                  <CopyIcon size={18} />
                                 </button>
                                 <button 
                                   className="speech-image-action" 

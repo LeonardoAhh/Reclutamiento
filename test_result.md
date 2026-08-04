@@ -249,3 +249,14 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - ✅ TypeScript estricto sin errores
 
 **NO SE DETECTARON BLOQUEOS NI REGRESIONES**
+
+
+## Morphicons Integration
+- Añadidas dependencias `morphicons` y `lucide` mediante Yarn.
+- Creada primitiva reutilizable `MorphingIcon` para centralizar física, props SVG y accesibilidad.
+- Móvil/tablet: menú inferior `Menu ↔ X`.
+- PC: sidebar `Menu ↔ ChevronsLeft`, menú de usuario `ChevronUp ↔ ChevronDown` y panel de reporte `PanelLeftOpen ↔ PanelLeftClose`.
+- Compartido: tema `Sun ↔ Moon`, secciones expandibles, detalle de búsqueda y estados `Copy ↔ Check` en pase, reportes, próximos ingresos y plantillas WhatsApp.
+- Sileo conserva sus iconos semánticos; no se aplicó morph donde no existe una instancia persistente.
+- Verificación local: TypeScript PASS, lint PASS y build PASS.
+- No se invocaron agentes de pruebas para esta integración, por instrucción del usuario.

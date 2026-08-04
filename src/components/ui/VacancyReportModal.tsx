@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ClipboardList, Copy, Check, Share2 } from 'lucide-react';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { ClipboardList, Share2 } from 'lucide-react';
+import { Check, Copy } from 'lucide';
+import { motion, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
+import { MorphingIcon } from './MorphingIcon';
 import { ExpandableSection } from './ExpandableSection';
 import { formatShortDate } from '@/lib/dates';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -553,33 +555,10 @@ export function VacancyReportModal({
           onClick={handleCopy}
           disabled={empty}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            {copied ? (
-              <motion.span
-                key="copied"
-                className="vacancy-report-modal__action-inner"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
-              >
-                <Check size={16} aria-hidden="true" />
-                Copiado
-              </motion.span>
-            ) : (
-              <motion.span
-                key="copy"
-                className="vacancy-report-modal__action-inner"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
-              >
-                <Copy size={16} aria-hidden="true" />
-                {isMobile ? 'Copiar' : 'Copiar texto'}
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <span className="vacancy-report-modal__action-inner">
+            <MorphingIcon icon={copied ? Check : Copy} size={16} />
+            {copied ? 'Copiado' : isMobile ? 'Copiar' : 'Copiar texto'}
+          </span>
         </button>
         <motion.button
           type="button"

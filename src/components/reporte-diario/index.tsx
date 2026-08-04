@@ -16,8 +16,6 @@ import {
     X,
     Save,
     Check,
-    PanelLeftClose,
-    PanelLeftOpen,
     ChevronRight,
     ChevronLeft,
     FileJson,
@@ -26,6 +24,8 @@ import {
 } from "lucide-react"
 
 import { INCIDENT_TABS, INCIDENCIA_LABELS, SECTION_CONFIGS, VISIBLE_SECTIONS } from "./constants"
+import { PanelLeftClose, PanelLeftOpen } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { formatMes, daysInMonth, parseReporteJSON, isIncidence, isIncidentTab, getMexicoHolidayLabels } from "./helpers"
 import type { IncidentTab, AreaStaffSummary, ReporteRow, EmployeeRef } from "./types"
 
@@ -1146,9 +1146,10 @@ export default function ReporteDiarioContent() {
                     title={panelCollapsed ? 'Mostrar controles' : 'Ocultar controles'}
                     data-testid="reporte-panel-toggle"
                 >
-                    {panelCollapsed
-                        ? <PanelLeftOpen size={16} aria-hidden="true" />
-                        : <PanelLeftClose size={16} aria-hidden="true" />}
+                    <MorphingIcon
+                        icon={panelCollapsed ? PanelLeftOpen : PanelLeftClose}
+                        size={16}
+                    />
                     <span>{panelCollapsed ? 'Controles' : 'Ocultar'}</span>
                 </button>
 

@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-  Menu,
-  X,
+  X as XIcon,
   LogOut,
   ChevronRight,
 } from 'lucide-react';
+import { Menu, X } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
 import { sileo } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './BottomTabBar.css';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
@@ -256,7 +257,11 @@ export function BottomTabBar() {
                 transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 420, damping: 34 }}
               />
             )}
-            <Menu size={20} aria-hidden="true" className="bottom-nav__icon" />
+            <MorphingIcon
+              icon={sheetOpen ? X : Menu}
+              size={20}
+              className="bottom-nav__icon"
+            />
             <span className="bottom-nav__label">Menú</span>
             {showReporteBadge && (
               <span className="bottom-nav__badge" aria-hidden="true" data-testid="bottom-nav-badge" />
@@ -303,7 +308,7 @@ export function BottomTabBar() {
                 onClick={() => setSheetOpen(false)}
                 aria-label="Cerrar menú"
               >
-                <X size={20} aria-hidden="true" />
+                <XIcon size={20} aria-hidden="true" />
               </button>
             </div>
           </header>

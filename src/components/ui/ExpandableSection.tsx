@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './ExpandableSection.css';
 
 interface ExpandableSectionProps {
@@ -52,10 +53,10 @@ export function ExpandableSection({
           <span className="expandable-section__title">{title}</span>
           {badge && <span className="expandable-section__badge">{badge}</span>}
         </span>
-        <ChevronDown
+        <MorphingIcon
+          icon={isExpanded ? ChevronUp : ChevronDown}
           size={16}
           className="expandable-section__icon"
-          aria-hidden="true"
         />
       </button>
       <div
