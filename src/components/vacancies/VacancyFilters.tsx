@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { X } from 'lucide-react';
+import { CheckCircle2, X } from 'lucide-react';
 import { usePositions } from '@/lib/positions';
 import {
   VACANCY_STATUSES,

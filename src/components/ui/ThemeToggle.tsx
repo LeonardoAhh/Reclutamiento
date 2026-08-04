@@ -1,7 +1,7 @@
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { useFeedback } from '@/hooks/useFeedback';
-import { Sun, Moon } from 'lucide-react';
+import { CheckCircle2, Moon, Sun } from 'lucide-react';
 import './ThemeToggle.css';
 
 /**

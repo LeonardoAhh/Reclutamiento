@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Activity, ShieldAlert } from 'lucide-react';
+import { Activity, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { sileo } from '@/lib/notify';

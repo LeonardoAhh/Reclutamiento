@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowUpCircle, ListChecks, Plus } from 'lucide-react';
+import { ArrowUpCircle, CheckCircle2, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
 import { Modal } from './Modal';

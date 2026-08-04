@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ClipboardList, Copy, Check, Share2 } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Copy, Share2 } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
@@ -563,7 +563,7 @@ export function VacancyReportModal({
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.18 }}
               >
-                <Check size={16} aria-hidden="true" />
+                <CheckCircle2 size={16} aria-hidden="true" />
                 Copiado
               </motion.span>
             ) : (

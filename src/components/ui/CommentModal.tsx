@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MessageSquarePlus, MessageSquare } from 'lucide-react';
+import { CheckCircle2, MessageSquare, MessageSquarePlus } from 'lucide-react';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';

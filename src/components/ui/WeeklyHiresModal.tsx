@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CalendarRange, Users, Copy } from 'lucide-react';
+import { CalendarRange, CheckCircle2, Copy, Users } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { StarliteBadge } from './Badge';

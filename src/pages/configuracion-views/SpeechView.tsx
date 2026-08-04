@@ -1,28 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
-import {
-  MessageSquare,
-  Plus,
-  Copy,
-  Check,
-  Pencil,
-  Trash2,
-  Save,
-  ShieldAlert,
-  Briefcase,
-  Bus,
-  FileText,
-  Calendar,
-  Bold,
-  Italic,
-  Strikethrough,
-  Code,
-  List,
-  ListOrdered,
-  Quote,
-  ImagePlus,
-  X,
-  Download,
-} from 'lucide-react';
+import { Bold, Briefcase, Bus, Calendar, CheckCircle2, Code, Copy, Download, FileText, ImagePlus, Italic, List, ListOrdered, MessageSquare, Pencil, Plus, Quote, Save, ShieldAlert, Strikethrough, Trash2, X } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CustomSelect } from '@/components/ui/CustomSelect';
@@ -620,7 +597,7 @@ export function SpeechView() {
                             title={copiedId === template.id ? 'Copiado' : 'Copiar al portapapeles'}
                             disabled={isSeedMode}
                           >
-                            {copiedId === template.id ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+                            {copiedId === template.id ? <CheckCircle2 size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
                           </button>
 
                           {!isSeedMode && (

@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  AlertCircle,
-  HeartPulse,
-  MessageSquare,
-  Shield,
-} from 'lucide-react';
+import { AlertCircle, CheckCircle2, HeartPulse, MessageSquare, Shield } from 'lucide-react';
 import { Badge, StarliteBadge, BackupBadge, AreaStatusBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';

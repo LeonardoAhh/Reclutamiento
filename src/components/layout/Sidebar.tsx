@@ -1,13 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import {
-  ChevronsLeft,
-  Menu,
-  LogOut,
-  Loader,
-  ChevronUp,
-} from 'lucide-react';
+import { CheckCircle2, ChevronUp, ChevronsLeft, Loader, LogOut, Menu } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { useFeedback } from '@/hooks/useFeedback';

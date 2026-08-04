@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle, Loader2, Save, AlertCircle, type LucideIcon } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, Save, type LucideIcon } from 'lucide-react';
 import type { HTMLMotionProps } from 'framer-motion';
 
 import { useFeedback } from '@/hooks/useFeedback';
@@ -89,11 +89,20 @@ export function AnimatedSubmitButton({
           transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
         >
           {state === 'success' ? (
-            <CheckCircle size="1.25em" />
+            <>
+              <CheckCircle2 size="1.25em" />
+              {!iconOnly && <span className="animated-submit-button__text">{successText}</span>}
+            </>
           ) : state === 'error' ? (
-            <AlertCircle size="1.25em" />
+            <>
+              <AlertCircle size="1.25em" />
+              {!iconOnly && <span className="animated-submit-button__text">{errorText}</span>}
+            </>
           ) : state === 'loading' ? (
-            <Loader2 size="1.25em" className="animated-submit-button__spinner" />
+            <>
+              <Loader2 size="1.25em" className="animated-submit-button__spinner" />
+              {!iconOnly && <span className="animated-submit-button__text">{loadingText}</span>}
+            </>
           ) : (
             <>
               <IdleIcon size="1.2em" />

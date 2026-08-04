@@ -1,13 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  UserPlus,
-  Trash2,
-  Calendar,
-  UserCheck,
-  AlertCircle,
-  Bus,
-  Save,
-} from 'lucide-react';
+import { AlertCircle, Bus, Calendar, CheckCircle2, Save, Trash2, UserCheck, UserPlus } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import type { Employee } from '@/lib/types';
 import type { AutoVacancy } from '@/lib/autoVacancies';

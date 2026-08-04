@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info, CheckCircle2, Wrench, RefreshCw, Download, X } from 'lucide-react';
+import { CheckCircle2, Download, Info, RefreshCw, Wrench, X } from 'lucide-react';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { AnimatedSubmitButton } from './AnimatedSubmitButton';

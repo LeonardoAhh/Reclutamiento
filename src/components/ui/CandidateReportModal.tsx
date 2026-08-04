@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Copy, Check, Share2, Users } from 'lucide-react';
+import { CheckCircle2, Copy, Share2, Users } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Modal } from './Modal';
 import { StatCard } from './StatCard';
@@ -477,7 +477,7 @@ export function CandidateReportModal({
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.18 }}
               >
-                <Check size={16} aria-hidden="true" />
+                <CheckCircle2 size={16} aria-hidden="true" />
                 Copiado
               </motion.span>
             ) : (

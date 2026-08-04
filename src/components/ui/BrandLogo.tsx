@@ -1,4 +1,4 @@
-import { Command } from 'lucide-react';
+import { CheckCircle2, Command } from 'lucide-react';
 import './BrandLogo.css';
 
 type BrandLogoProps = {

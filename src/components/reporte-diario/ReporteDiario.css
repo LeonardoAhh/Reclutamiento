@@ -3300,7 +3300,6 @@ button.ras-card:focus-visible {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  padding: var(--spacing-md) 0;
 }
 
 /* Card destacada con nombre del archivo y meta info */

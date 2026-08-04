@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Upload, FileJson, Check, AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, FileJson, Upload } from 'lucide-react';
 import type { BajaRaw } from '@/lib/types';
 import './JsonImporter.css';
 
@@ -88,7 +88,7 @@ export function BajasImporter({ onImport }: BajasImporterProps) {
         <div className={`json-importer__status json-importer__status--${status}`} role="status">
           {status === 'success' ? (
             <>
-              <Check size={14} aria-hidden="true" />
+              <CheckCircle2 size={14} aria-hidden="true" />
               <FileJson size={14} aria-hidden="true" />
               <span>{count} registros</span>
             </>

@@ -1,6 +1,6 @@
 import type { CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUS_LABEL } from '@/lib/types';
-import { ChevronDown } from 'lucide-react';
+import { CheckCircle2, ChevronDown } from 'lucide-react';
 
 import './CandidateStatusBadge.css';
 

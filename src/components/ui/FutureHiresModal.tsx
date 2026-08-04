@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Copy, Users, Check } from 'lucide-react';
+import { CheckCircle2, Copy, Users } from 'lucide-react';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import { StarliteBadge } from './Badge';
@@ -189,7 +189,7 @@ export function FutureHiresModal({
                   onClick={handleCopy}
                 >
                   {copied ? (
-                    <Check size={16} aria-hidden="true" />
+                    <CheckCircle2 size={16} aria-hidden="true" />
                   ) : (
                     <Copy size={16} aria-hidden="true" />
                   )}

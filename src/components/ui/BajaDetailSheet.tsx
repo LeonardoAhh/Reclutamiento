@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, FileText, ClipboardList } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ClipboardList, FileText } from 'lucide-react';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import type { BajaWithCobertura } from '@/lib/bajas';

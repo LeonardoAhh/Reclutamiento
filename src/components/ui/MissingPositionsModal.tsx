@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { AlertCircle, Star } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';

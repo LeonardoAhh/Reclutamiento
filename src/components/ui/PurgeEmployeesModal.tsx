@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertOctagon, Download, Loader2, CheckCircle2 } from 'lucide-react';
+import { AlertOctagon, CheckCircle2, Download, Loader2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Employee } from '@/lib/types';
 import { formatMxStamp } from '@/lib/dates';

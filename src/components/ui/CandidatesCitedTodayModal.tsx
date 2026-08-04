@@ -1,4 +1,4 @@
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';

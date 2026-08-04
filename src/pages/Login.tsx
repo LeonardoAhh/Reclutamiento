@@ -1,5 +1,5 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
-import { Eye, EyeOff, ArrowRight, AlertCircle, ChevronRight } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useAuth } from '@/hooks/useAuth';

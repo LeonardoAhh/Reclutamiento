@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Activity } from 'lucide-react';
+import { Activity, CheckCircle2 } from 'lucide-react';
 import { CartesianGrid, Line, LineChart, XAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import type { NoCitado } from '@/lib/types';
 

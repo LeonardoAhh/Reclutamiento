@@ -1,6 +1,6 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { Printer, Save, RefreshCw, Trash2, FileText, ClipboardCheck } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, FileText, Printer, RefreshCw, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToulouseSheets, type ToulouseSheetRecord } from '@/hooks/useToulouseSheets';
 import { ToulouseSheet, type ToulouseSheetData } from '@/components/toulouse/ToulouseSheet';

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Check, Copy, MessageCircle, Share2 } from 'lucide-react';
+import { CheckCircle2, Copy, MessageCircle, Share2 } from 'lucide-react';
 import { CANDIDATE_ACCESS_CARD_CONFIG } from '@/lib/constants';
 import {
   createCandidateAccessCardBlob,
@@ -222,19 +222,19 @@ export function CandidateAccessCard({
         </p>
       )}
 
-      <div className="candidate-access-card__actions" aria-label="Acciones de la tarjeta">
+      <footer className="modal-footer" aria-label="Acciones de la tarjeta">
         <button
           type="button"
-          className="btn-secondary candidate-access-card__action"
+          className="btn-secondary"
           onClick={handleCopy}
           disabled={!imageBlob}
         >
-          {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+          {copied ? <CheckCircle2 size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
           {copied ? 'Copiada' : 'Copiar imagen'}
         </button>
         <button
           type="button"
-          className="btn-secondary candidate-access-card__action"
+          className="btn-secondary"
           onClick={handleShare}
           disabled={!imageBlob}
         >
@@ -243,14 +243,14 @@ export function CandidateAccessCard({
         </button>
         <button
           type="button"
-          className="btn-primary candidate-access-card__action"
+          className="btn-primary"
           onClick={handleWhatsApp}
           disabled={!imageBlob}
         >
           <MessageCircle size={18} aria-hidden="true" />
           WhatsApp
         </button>
-      </div>
+      </footer>
     </section>
   );
 }

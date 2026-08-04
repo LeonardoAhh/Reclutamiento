@@ -1,5 +1,5 @@
 import './ReporteDiario.css';
-import { Database, ChevronRight, Calendar, Trash2 } from "lucide-react"
+import { Calendar, CheckCircle2, ChevronRight, Database, Trash2 } from 'lucide-react'
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 

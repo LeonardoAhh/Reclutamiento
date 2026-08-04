@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Trash2, AlertCircle, AlertTriangle } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle2, Trash2 } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Employee } from '@/lib/types';
 import './DeleteEmployeeConfirmModal.css';

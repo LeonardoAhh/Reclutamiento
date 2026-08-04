@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Users, Search, HeartPulse, CloudOff, ChevronDown } from 'lucide-react';
+import { CheckCircle2, ChevronDown, CloudOff, HeartPulse, Search, Users } from 'lucide-react';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';

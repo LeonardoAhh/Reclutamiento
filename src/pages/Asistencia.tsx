@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Users, Search, AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Search, Users } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';

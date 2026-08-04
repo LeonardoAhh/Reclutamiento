@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { SlidersHorizontal } from 'lucide-react';
+import { CheckCircle2, SlidersHorizontal } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect, type Option } from './CustomSelect';

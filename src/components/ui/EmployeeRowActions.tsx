@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { MoreVertical, Pencil, Trash2, HeartPulse } from 'lucide-react';
+import { CheckCircle2, HeartPulse, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import './EmployeeRowActions.css';
 

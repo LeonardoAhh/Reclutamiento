@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
-import { Download, FileText } from 'lucide-react';
+import { CheckCircle2, Download, FileText } from 'lucide-react';
 import { ConstanciaFiscal } from '@/components/documentos/ConstanciaFiscal';
 import { CuestionarioSalud } from '@/components/documentos/CuestionarioSalud';
 import { DatosGenerales } from '@/components/documentos/DatosGenerales';

@@ -1,15 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import {
-  AlertCircle,
-  CheckCircle2,
-  Eye,
-  EyeOff,
-  Loader2,
-  RefreshCw,
-  UserPlus,
-} from 'lucide-react';
+import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, RefreshCw, UserPlus } from 'lucide-react';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import {
   APP_ROLES,

@@ -13,17 +13,7 @@ import { useBajas } from '@/hooks/useBajas';
 import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
 import type { Baja, Employee } from '@/lib/types';
 import { toTitleCase } from '@/lib/utils';
-import {
-  ChevronDown,
-  ChevronUp,
-  CircleUser,
-  LayoutGrid,
-  List,
-  RotateCcw,
-  Search,
-  SlidersHorizontal,
-  X,
-} from 'lucide-react';
+import { CheckCircle2, ChevronDown, ChevronUp, CircleUser, LayoutGrid, List, RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';

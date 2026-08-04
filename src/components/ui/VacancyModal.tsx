@@ -1,16 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tooltip } from './Tooltip';
-import {
-  ClipboardList,
-  Pencil,
-  Trash2,
-  AlertCircle,
-  History,
-  ArrowRight,
-  Info,
-  AlertTriangle,
-  Save,
-} from 'lucide-react';
+import { AlertCircle, AlertTriangle, ArrowRight, CheckCircle2, ClipboardList, History, Info, Pencil, Save, Trash2 } from 'lucide-react';
 import type {
   VacancyRequest,
   VacancyStatus,
