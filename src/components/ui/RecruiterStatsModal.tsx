@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, TrendingUp, Copy, Check } from 'lucide-react';
+import { CheckCircle2, Copy, TrendingUp, Users } from 'lucide-react';
 import { sileo } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -176,7 +176,7 @@ export function RecruiterStatsModal({
                       data-testid={`copy-week-${tueWeek}-btn`}
                     >
                       {isCopied ? (
-                        <Check size={16} aria-hidden="true" />
+                        <CheckCircle2 size={16} aria-hidden="true" />
                       ) : (
                         <Copy size={16} aria-hidden="true" />
                       )}

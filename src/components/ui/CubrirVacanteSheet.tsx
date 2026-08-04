@@ -51,10 +51,10 @@ export function CubrirVacanteSheet({
     }
     try {
       setSubmitting(true);
-      
+
       // Retraso artificial para que se note la animación de pensando
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       const res = await onSave(baja.num_empleado, fecha, nota.trim() || null);
       if (!res.ok) {
         setErrorMsg(res.message ?? 'No se pudo guardar.');

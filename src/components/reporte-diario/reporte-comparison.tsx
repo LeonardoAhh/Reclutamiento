@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BarChart3, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { BarChart3, CheckCircle2, ChevronRight, Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { Modal } from "@/components/ui/Modal";
 

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IndicadorRecord {
   "No.": string;

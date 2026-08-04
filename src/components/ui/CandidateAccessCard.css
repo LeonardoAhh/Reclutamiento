@@ -82,22 +82,7 @@
   color: var(--color-error);
 }
 
-.candidate-access-card__actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-sm);
-  padding-top: var(--spacing-lg);
-  border-top: var(--border-width) solid var(--color-hairline);
-}
 
-.candidate-access-card__action {
-  display: inline-flex;
-  min-width: 0;
-  min-height: var(--touch-target-min);
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-}
 
 @media (min-width: 600px) {
   .candidate-access-card {
@@ -108,12 +93,4 @@
     max-width: var(--candidate-access-preview-max);
   }
 
-  .candidate-access-card__actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .candidate-access-card__action {
-    width: auto;
-  }
 }

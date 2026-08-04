@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserRound, Crown, ChevronDown } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Crown, UserRound } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import {
   RECLUTADORES_INFO,

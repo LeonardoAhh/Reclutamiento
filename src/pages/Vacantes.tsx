@@ -1,24 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  ClipboardList,
-  Search,
-  CheckCircle2,
-  Check,
-  AlertTriangle,
-  UserPlus,
-  ArrowRightLeft,
-  Calendar,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  SlidersHorizontal,
-  Trash2,
-  PanelLeftClose,
-  PanelLeftOpen,
-  BarChart3,
-} from 'lucide-react';
+import { AlertTriangle, ArrowRightLeft, BarChart3, Calendar, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Clock, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, Trash2, UserPlus } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Modal } from '@/components/ui/Modal';
 import { useBajas } from '@/hooks/useBajas';
@@ -711,11 +693,11 @@ function SlaBadge({ v }: { v: AutoVacancy }) {
   const covered = v.status === 'cubierta';
   let tone: 'ok' | 'warn' | 'bad' | 'neutral';
   let label: string;
-  let Icon: typeof Check;
+  let Icon: typeof CheckCircle2;
   if (covered) {
     tone = v.enTiempo ? 'ok' : 'warn';
     label = v.enTiempo ? 'En tiempo' : 'Tarde';
-    Icon = v.enTiempo ? Check : AlertTriangle;
+    Icon = v.enTiempo ? CheckCircle2 : AlertTriangle;
   } else {
     tone = v.enTiempo ? 'neutral' : 'bad';
     label = v.enTiempo ? 'En SLA' : 'Vencida';

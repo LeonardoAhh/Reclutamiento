@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { CheckCircle2, X } from 'lucide-react';
 import { EASE_OUT } from '@/lib/motion';
 
 interface ModalProps {

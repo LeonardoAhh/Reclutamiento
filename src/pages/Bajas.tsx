@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  Filter,
-  CloudOff,
-  RefreshCw,
-  ChevronRight,
-} from 'lucide-react';
+import { CheckCircle2, ChevronRight, CloudOff, Filter, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';

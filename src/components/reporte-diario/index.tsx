@@ -905,19 +905,39 @@ export default function ReporteDiarioContent() {
                     }
                 >
                     {previewData && (
-                        <div className="reporte-preview">
-                            <div className="reporte-preview__card">
-                                <span className="reporte-preview__icon" aria-hidden="true">
-                                    <FileJson size={20} />
-                                </span>
-                                <div className="reporte-preview__body">
-                                    <p className="reporte-preview__filename" title={previewData.fileName}>
-                                        {previewData.fileName}
-                                    </p>
-                                    <p className="reporte-preview__meta">
-                                        {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
-                                    </p>
+                        <div className="modal-body">
+                            <div className="reporte-preview">
+                                <div className="reporte-preview__card">
+                                    <span className="reporte-preview__icon" aria-hidden="true">
+                                        <FileJson size={20} />
+                                    </span>
+                                    <div className="reporte-preview__body">
+                                        <p className="reporte-preview__filename" title={previewData.fileName}>
+                                            {previewData.fileName}
+                                        </p>
+                                        <p className="reporte-preview__meta">
+                                            {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
+                                        </p>
+                                    </div>
                                 </div>
+                                <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">
+                                            {previewData.rows.length.toLocaleString('es-MX')}
+                                        </span>
+                                        <span className="reporte-preview__stat-label">Registros</span>
+                                    </li>
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">
+                                            {formatMes(previewData.mes)}
+                                        </span>
+                                        <span className="reporte-preview__stat-label">Periodo</span>
+                                    </li>
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">JSON</span>
+                                        <span className="reporte-preview__stat-label">Formato</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     )}
@@ -1351,39 +1371,41 @@ export default function ReporteDiarioContent() {
                 }
             >
                 {previewData && (
-                    <div className="reporte-preview">
-                        <div className="reporte-preview__card">
-                            <span className="reporte-preview__icon" aria-hidden="true">
-                                <FileJson size={20} />
-                            </span>
-                            <div className="reporte-preview__body">
-                                <p className="reporte-preview__filename" title={previewData.fileName}>
-                                    {previewData.fileName}
-                                </p>
-                                <p className="reporte-preview__meta">
-                                    {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
-                                </p>
+                        <div className="modal-body">
+                            <div className="reporte-preview">
+                                <div className="reporte-preview__card">
+                                    <span className="reporte-preview__icon" aria-hidden="true">
+                                        <FileJson size={20} />
+                                    </span>
+                                    <div className="reporte-preview__body">
+                                        <p className="reporte-preview__filename" title={previewData.fileName}>
+                                            {previewData.fileName}
+                                        </p>
+                                        <p className="reporte-preview__meta">
+                                            {previewData.rows.length.toLocaleString('es-MX')} registros · {formatMes(previewData.mes)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">
+                                            {previewData.rows.length.toLocaleString('es-MX')}
+                                        </span>
+                                        <span className="reporte-preview__stat-label">Registros</span>
+                                    </li>
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">
+                                            {formatMes(previewData.mes)}
+                                        </span>
+                                        <span className="reporte-preview__stat-label">Periodo</span>
+                                    </li>
+                                    <li className="reporte-preview__stat">
+                                        <span className="reporte-preview__stat-value">JSON</span>
+                                        <span className="reporte-preview__stat-label">Formato</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        <ul className="reporte-preview__stats" aria-label="Resumen del archivo">
-                            <li className="reporte-preview__stat">
-                                <span className="reporte-preview__stat-value">
-                                    {previewData.rows.length.toLocaleString('es-MX')}
-                                </span>
-                                <span className="reporte-preview__stat-label">Registros</span>
-                            </li>
-                            <li className="reporte-preview__stat">
-                                <span className="reporte-preview__stat-value">
-                                    {formatMes(previewData.mes)}
-                                </span>
-                                <span className="reporte-preview__stat-label">Periodo</span>
-                            </li>
-                            <li className="reporte-preview__stat">
-                                <span className="reporte-preview__stat-value">JSON</span>
-                                <span className="reporte-preview__stat-label">Formato</span>
-                            </li>
-                        </ul>
-                    </div>
                 )}
             </Modal>
 

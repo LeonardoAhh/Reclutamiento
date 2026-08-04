@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import './Checkbox.css';
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -15,7 +15,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           {...props}
         />
         <span className="ui-checkbox__indicator">
-          <Check size={12} strokeWidth={3} />
+          <CheckCircle2 size={12} strokeWidth={3} />
         </span>
       </div>
     );

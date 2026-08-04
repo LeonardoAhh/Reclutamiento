@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { CheckCircle2, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { NoCitado } from '@/lib/types';
 import './NoCitadoRowActions.css';

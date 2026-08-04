@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, FileJson, Check, AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, FileJson, Upload } from 'lucide-react';
 import type { EmployeeRaw } from '@/lib/types';
 import './JsonImporter.css';
 
@@ -72,7 +72,7 @@ export function JsonImporter({ onImport }: JsonImporterProps) {
         <div className={`json-importer__status json-importer__status--${status}`}>
           {status === 'success' ? (
             <>
-              <Check size={14} />
+              <CheckCircle2 size={14} />
               <FileJson size={14} />
               <span>{count} registros</span>
             </>

@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { MapPin, Bus, Users, CalendarDays, ChevronLeft, ChevronRight, Clock, Search, X, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Bus, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, MapPin, Minus, Search, TrendingDown, TrendingUp, Users, X } from 'lucide-react';
 import { getShortName } from '@/lib/names';
 import { useRutas, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';

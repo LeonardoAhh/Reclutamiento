@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Search, Wallet, X } from 'lucide-react';
+import { CheckCircle2, Search, Wallet, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
 

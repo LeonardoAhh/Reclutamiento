@@ -3,7 +3,7 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { EASE_OUT } from '@/lib/motion';
-import { LogOut, ShieldCheck, X } from 'lucide-react';
+import { CheckCircle2, LogOut, ShieldCheck, X } from 'lucide-react';
 import './MaintenanceGuard.css';
 
 const curtainVariants: Variants = {

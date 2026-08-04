@@ -1,20 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Users,
-  ChevronRight,
-  ChevronLeft,
-  HeartPulse,
-  Search,
-  Filter,
-  UserPlus as UserPlusIcon,
-  Trash2,
-  ArrowUpCircle,
-  Pencil,
-  ClipboardList,
-  Clock,
-  Contact,
-} from 'lucide-react';
+import { ArrowUpCircle, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, Clock, Contact, Filter, HeartPulse, Pencil, Search, Trash2, UserPlus as UserPlusIcon, Users } from 'lucide-react';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import {
   AreaStatusBadge,

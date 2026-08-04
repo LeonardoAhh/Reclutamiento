@@ -1,19 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  BarChart2,
-  Bus,
-  ChevronLeft,
-  ClipboardCheck,
-  FileText,
-  MessageSquare,
-  Search,
-  SlidersHorizontal,
-  Wallet,
-  UserX,
-  Settings,
-  type LucideIcon,
-} from 'lucide-react';
+import { BarChart2, Bus, CheckCircle2, ChevronLeft, ClipboardCheck, FileText, MessageSquare, Search, Settings, SlidersHorizontal, UserX, Wallet, type LucideIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BusquedaView } from './configuracion-views/BusquedaView';
 import { DocumentosView } from './configuracion-views/DocumentosView';

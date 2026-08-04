@@ -224,10 +224,10 @@ export function CandidateAccessCard({
         </p>
       )}
 
-      <div className="candidate-access-card__actions" aria-label="Acciones de la tarjeta">
+      <footer className="modal-footer" aria-label="Acciones de la tarjeta">
         <button
           type="button"
-          className="btn-secondary candidate-access-card__action"
+          className="btn-secondary"
           onClick={handleCopy}
           disabled={!imageBlob}
         >
@@ -236,7 +236,7 @@ export function CandidateAccessCard({
         </button>
         <button
           type="button"
-          className="btn-secondary candidate-access-card__action"
+          className="btn-secondary"
           onClick={handleShare}
           disabled={!imageBlob}
         >
@@ -245,14 +245,14 @@ export function CandidateAccessCard({
         </button>
         <button
           type="button"
-          className="btn-primary candidate-access-card__action"
+          className="btn-primary"
           onClick={handleWhatsApp}
           disabled={!imageBlob}
         >
           <MessageCircle size={18} aria-hidden="true" />
           WhatsApp
         </button>
-      </div>
+      </footer>
     </section>
   );
 }

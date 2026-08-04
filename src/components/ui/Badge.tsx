@@ -1,4 +1,4 @@
-import { Star, UserRound, Briefcase, Users, LifeBuoy, HeartPulse, CalendarClock } from 'lucide-react';
+import { Briefcase, CalendarClock, CheckCircle2, HeartPulse, LifeBuoy, Star, UserRound, Users } from 'lucide-react';
 import type { RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import './Badge.css';

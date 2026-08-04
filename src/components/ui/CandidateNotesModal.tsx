@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StickyNote, MessageSquarePlus } from 'lucide-react';
+import { CheckCircle2, MessageSquarePlus, StickyNote } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Candidate, CandidateNote } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';

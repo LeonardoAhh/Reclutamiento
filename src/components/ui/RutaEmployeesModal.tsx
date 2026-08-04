@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Users } from 'lucide-react';
+import { CheckCircle2, Search, Users } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { RutaAgrupada, EmpleadoRuta } from '@/hooks/useRutas';
 import './RutaEmployeesModal.css';

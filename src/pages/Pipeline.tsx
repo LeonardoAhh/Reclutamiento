@@ -3,32 +3,7 @@ import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import {
-  UserPlus,
-  UserX,
-  Search,
-  Table2,
-  LayoutGrid,
-  SlidersHorizontal,
-  BadgeCheck,
-  ClipboardList,
-  BarChart3,
-  Users,
-  UserRound,
-  CalendarDays,
-  ChevronDown,
-  ChevronRight,
-  ChevronLeft,
-  PanelLeftOpen,
-  PanelLeftClose,
-  Phone,
-  MessageSquare,
-  MessageCircle,
-  Star,
-  Pencil,
-  Trash2,
-  Info,
-} from 'lucide-react';
+import { BadgeCheck, BarChart3, CalendarDays, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, Pencil, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserPlus, UserRound, UserX, Users } from 'lucide-react';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';

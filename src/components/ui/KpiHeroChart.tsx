@@ -12,7 +12,7 @@
 
 import './KpiHeroChart.css';
 import { useMemo, useId } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { localTodayIso } from '@/lib/dates';
 import {

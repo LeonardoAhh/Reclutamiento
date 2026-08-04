@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Users, TrendingDown, TrendingUp, ChevronRight, Moon } from "lucide-react";
+import { CheckCircle2, ChevronRight, Moon, TrendingDown, TrendingUp, Users } from 'lucide-react';
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
 import { PLANTILLA_AUTORIZADA } from "@/lib/constants";

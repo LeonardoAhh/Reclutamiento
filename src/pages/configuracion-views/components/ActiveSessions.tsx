@@ -3,7 +3,7 @@ import { listProfiles, ROLE_LABEL } from '@/lib/users';
 import { subscribeOnlineUserIds } from '@/lib/presence';
 import type { Profile } from '@/hooks/useAuth';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
-import { Activity, Clock } from 'lucide-react';
+import { Activity, CheckCircle2, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RoleBadge } from '@/components/ui/Badge';

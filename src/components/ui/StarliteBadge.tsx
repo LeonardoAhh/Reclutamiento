@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { CheckCircle2, Star } from 'lucide-react';
 import './StarliteBadge.css';
 
 interface StarliteBadgeProps {

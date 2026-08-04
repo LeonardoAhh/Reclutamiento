@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pencil, AlertCircle, Edit2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Edit2, Pencil } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';

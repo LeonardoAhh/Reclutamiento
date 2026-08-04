@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HeartPulse, AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, HeartPulse } from 'lucide-react';
 import { Modal } from './Modal';
 import type { Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';

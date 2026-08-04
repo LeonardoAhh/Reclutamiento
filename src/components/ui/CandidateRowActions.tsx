@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  BadgeCheck,
-  FileImage,
-  MessageCircle,
-  MoreVertical,
-  Pencil,
-  StickyNote,
-  Trash2,
-} from 'lucide-react';
+import { BadgeCheck, CheckCircle2, FileImage, MessageCircle, MoreVertical, Pencil, StickyNote, Trash2 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { Candidate } from '@/lib/types';
 import './CandidateRowActions.css';

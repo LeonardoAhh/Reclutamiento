@@ -2,7 +2,7 @@
   import { motion } from 'framer-motion';
   import { useAuth } from '@/hooks/useAuth';
   import { useMediaQuery } from '@/hooks/useMediaQuery';
-  import { Eye } from 'lucide-react';
+  import { CheckCircle2, Eye } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
   import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
   import { Reveal } from '@/components/ui/Reveal';

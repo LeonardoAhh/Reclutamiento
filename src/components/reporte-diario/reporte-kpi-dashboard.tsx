@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Users, CalendarX, MapPin } from "lucide-react";
+import { CalendarX, CheckCircle2, MapPin, Users } from 'lucide-react';
 import { formatMes, isIncidence } from "./helpers";
 import type { ReporteRow } from "./types";
 

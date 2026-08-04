@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, Check } from 'lucide-react';
+import { CheckCircle2, ChevronDown } from 'lucide-react';
 import './CustomSelect.css';
 
 export interface Option {
@@ -295,7 +295,7 @@ export function CustomSelect({
                     aria-selected={value === opt.value}
                   >
                     <span className="custom-select-option-label">{opt.label}</span>
-                    {value === opt.value && <Check size={16} className="custom-select-check" />}
+                    {value === opt.value && <CheckCircle2 size={16} className="custom-select-check" />}
                   </button>
                 ))
               )}

@@ -1,11 +1,5 @@
 import { motion } from 'framer-motion';
-import {
-  Briefcase,
-  ClipboardCheck,
-  Search,
-  UserCheck,
-  Users,
-} from 'lucide-react';
+import { Briefcase, CheckCircle2, ClipboardCheck, Search, UserCheck, Users } from 'lucide-react';
 import './RecruitmentHero.css';
 
 const STAGES = [

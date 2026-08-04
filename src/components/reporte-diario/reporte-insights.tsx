@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { AlertTriangle, TrendingUp, CheckCircle2, Sparkles, ChevronRight } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronRight, Sparkles, TrendingUp } from 'lucide-react';
 import type { ReporteRow } from "./types";
 import { Modal } from "@/components/ui/Modal";
 
