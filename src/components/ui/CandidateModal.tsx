@@ -18,7 +18,11 @@ import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
+import {
+  getRecruiterAccessCardName,
+  RECLUTADORES_ACTIVOS,
+  RECLUTADORES_INFO,
+} from '@/lib/constants';
 
 /**
  * Reclutadoras activas que pueden ser asignadas a un proceso.
@@ -28,15 +32,11 @@ import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
  * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
  * El `label` se muestra en formato amigable en el select.
  */
-const RECLUTADORES_DISPONIBLES: Array<{
-  value: string;
-  label: string;
-  accessCardName: string;
-}> = RECLUTADORES_ACTIVOS.map((r) => ({
-  value: r.toUpperCase(),
-  label: RECLUTADORES_INFO[r].nombre_completo,
-  accessCardName: RECLUTADORES_INFO[r].nombre_pase,
-}));
+const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> =
+  RECLUTADORES_ACTIVOS.map((r) => ({
+    value: r.toUpperCase(),
+    label: RECLUTADORES_INFO[r].nombre_completo,
+  }));
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -335,9 +335,8 @@ export function CandidateModal({
 
         setIsSuccess(true);
         if (mode === 'add') {
-          const recruiterName = RECLUTADORES_DISPONIBLES.find(
-            (recruiter) => recruiter.value === form.reclutador,
-          )?.accessCardName ?? `Lic. ${form.reclutador}`;
+          const recruiterName =
+            getRecruiterAccessCardName(form.reclutador) ?? form.reclutador;
           setAccessCard({
             data: {
               candidateName: payload.nombre,
@@ -624,7 +623,7 @@ const fieldsPosicion = (
         <CandidateAccessCard
           data={accessCard.data}
           phone={accessCard.phone}
-          onDone={onClose}
+          heading="Candidato registrado"
         />
       ) : useWizard ? (
         /* ── Móvil: registro por pasos ── */

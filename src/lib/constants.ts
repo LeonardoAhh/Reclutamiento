@@ -227,6 +227,28 @@ export const RECLUTADORES_INFO: Record<
 };
 
 /**
+ * Devuelve el nombre breve y formal que se imprime en el pase. Los valores
+ * canónicos usan una variante explícita para respetar apellidos compuestos;
+ * el fallback solo cubre registros legados de texto libre.
+ */
+export function getRecruiterAccessCardName(
+  value: string | null | undefined,
+): string | null {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+
+  const canonicalName = RECLUTADORES_ACTIVOS.find(
+    (name) => name === trimmed.toUpperCase(),
+  );
+  if (canonicalName) return RECLUTADORES_INFO[canonicalName].nombre_pase;
+
+  const nameParts = trimmed.split(/\s+/);
+  const firstName = nameParts[0];
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+  return `Lic. ${firstName}${lastName ? ` ${lastName}` : ''}`;
+}
+
+/**
  * Configuración central del pase de entrevista que recibe el candidato.
  * Mantener aquí los datos operativos para que la vista y la imagen compartida
  * siempre utilicen la misma fuente de verdad.

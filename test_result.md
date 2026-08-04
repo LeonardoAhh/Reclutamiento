@@ -12,9 +12,14 @@ En `/candidatos`, después de registrar un candidato se debe generar una imagen 
 ## Implementation Status
 - Implementada generación de PNG con Canvas nativo y configuración central.
 - Implementada vista posterior al guardado con acciones Copiar imagen, Compartir y WhatsApp.
+- Implementada acción `Ver pase` para candidatos con reclutador y puesto, reutilizando el mismo generador.
+- El nombre del reclutador usa `Lic.` y una variante breve centralizada.
+- El modal no muestra un botón redundante `Finalizar`; se cierra mediante la X accesible.
+- Las acciones son mobile-first: apiladas en móvil y alineadas al final en escritorio, con WhatsApp como única CTA primaria.
 - Reclutador obligatorio; fecha de entrevista opcional.
 - `yarn tsc -b --pretty false`: PASS.
 - `yarn vite build`: PASS.
+- Lint JavaScript/TypeScript: PASS.
 - Pruebas de interfaz: pendientes de autorización del usuario.
 
 ## Static Code Review - Testing Agent (2025-01-XX)

@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
+import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, sileo } from '@/lib/notify';
@@ -54,8 +55,8 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatShortDate, startOfDayMxMs, endOfDayMxMs, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
-import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
+import { formatReadableDate, formatShortDate, startOfDayMxMs, endOfDayMxMs, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
+import { getRecruiterAccessCardName, RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { normalizeString, formatPhoneNumber } from '@/lib/utils';
 import { splitCandidateName } from '@/lib/names';
 import './Pipeline.css';
@@ -142,6 +143,7 @@ export function Pipeline() {
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
   const [notesTarget, setNotesTarget] = useState<Candidate | null>(null);
+  const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
   const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'alexandra' | 'daniela' | null>(null);
@@ -160,6 +162,21 @@ export function Pipeline() {
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
   const [metricsModalOpen, setMetricsModalOpen] = useState(false);
+
+  const accessCardData = useMemo(() => {
+    if (!accessCardTarget?.reclutador || !accessCardTarget.puesto) return null;
+    const recruiterName = getRecruiterAccessCardName(accessCardTarget.reclutador);
+    if (!recruiterName) return null;
+
+    return {
+      candidateName: accessCardTarget.nombre,
+      recruiterName,
+      position: accessCardTarget.puesto,
+      interviewDate: accessCardTarget.fecha_cita
+        ? formatReadableDate(accessCardTarget.fecha_cita)
+        : null,
+    };
+  }, [accessCardTarget]);
 
   const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
     const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
@@ -919,6 +936,11 @@ export function Pipeline() {
                         onEdit={openEdit}
                         onDelete={isAdmin ? openDelete : undefined}
                         onNotes={() => setNotesTarget(c)}
+                        onAccessCard={
+                          c.reclutador && c.puesto
+                            ? () => setAccessCardTarget(c)
+                            : undefined
+                        }
                         onHire={
                           c.status === 'contratado' && !c.employee_num
                             ? () => openHire(c)
@@ -947,6 +969,21 @@ export function Pipeline() {
               })
             }
           />
+
+          <Modal
+            isOpen={accessCardData !== null}
+            onClose={() => setAccessCardTarget(null)}
+            className="candidate-access-card-modal"
+            title="Pase de entrevista"
+            icon={<BadgeCheck size={20} className="color-success" aria-hidden="true" />}
+          >
+            {accessCardData && (
+              <CandidateAccessCard
+                data={accessCardData}
+                phone={accessCardTarget?.telefono ?? ''}
+              />
+            )}
+          </Modal>
 
           <CandidateNotesModal
             isOpen={notesTarget !== null}

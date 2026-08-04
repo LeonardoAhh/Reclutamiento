@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { MoreVertical, Pencil, Trash2, StickyNote, BadgeCheck, MessageCircle } from 'lucide-react';
+import {
+  BadgeCheck,
+  FileImage,
+  MessageCircle,
+  MoreVertical,
+  Pencil,
+  StickyNote,
+  Trash2,
+} from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { Candidate } from '@/lib/types';
 import './CandidateRowActions.css';
@@ -10,6 +18,7 @@ interface CandidateRowActionsProps {
   onEdit: (c: Candidate) => void;
   onDelete?: (c: Candidate) => void;
   onNotes: (c: Candidate) => void;
+  onAccessCard?: (c: Candidate) => void;
   onHire?: (c: Candidate) => void;
 }
 
@@ -19,6 +28,7 @@ export function CandidateRowActions({
   onEdit,
   onDelete,
   onNotes,
+  onAccessCard,
   onHire,
 }: CandidateRowActionsProps) {
   const [open, setOpen] = useState(false);
@@ -54,7 +64,6 @@ export function CandidateRowActions({
           align="end" 
           sideOffset={4}
           className="candidate-row-actions__menu"
-          style={{ padding: 'var(--spacing-xs)', border: '1px solid var(--color-hairline)' }}
         >
           {candidate.telefono && (
             <a
@@ -69,6 +78,18 @@ export function CandidateRowActions({
               <span>WhatsApp</span>
             </a>
           )}
+          {onAccessCard && (
+            <button
+              type="button"
+              className="candidate-row-actions__item"
+              role="menuitem"
+              onClick={() => run(onAccessCard)}
+            >
+              <FileImage size={14} aria-hidden="true" />
+              <span>Ver pase</span>
+            </button>
+          )}
+
           {onHire && (
             <button
               type="button"

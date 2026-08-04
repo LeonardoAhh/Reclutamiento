@@ -11,7 +11,7 @@ import './CandidateAccessCard.css';
 interface CandidateAccessCardProps {
   data: CandidateAccessCardData;
   phone: string;
-  onDone: () => void;
+  heading?: string;
 }
 
 type Feedback = {
@@ -41,7 +41,11 @@ function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === 'AbortError';
 }
 
-export function CandidateAccessCard({ data, phone, onDone }: CandidateAccessCardProps) {
+export function CandidateAccessCard({
+  data,
+  phone,
+  heading = 'Pase listo para compartir',
+}: CandidateAccessCardProps) {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(true);
@@ -192,7 +196,7 @@ export function CandidateAccessCard({ data, phone, onDone }: CandidateAccessCard
   return (
     <section className="candidate-access-card" aria-labelledby="candidate-access-card-heading">
       <div className="candidate-access-card__intro">
-        <h3 id="candidate-access-card-heading">Candidato registrado</h3>
+        <h3 id="candidate-access-card-heading">{heading}</h3>
         <p>Comparte esta imagen para que la presente en caseta de vigilancia.</p>
       </div>
 
@@ -245,10 +249,6 @@ export function CandidateAccessCard({ data, phone, onDone }: CandidateAccessCard
           WhatsApp
         </button>
       </div>
-
-      <button type="button" className="candidate-access-card__done" onClick={onDone}>
-        Finalizar
-      </button>
     </section>
   );
 }
