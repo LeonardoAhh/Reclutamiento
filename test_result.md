@@ -16,6 +16,8 @@ En `/candidatos`, después de registrar un candidato se debe generar una imagen 
 - El nombre del reclutador usa `Lic.` y una variante breve centralizada.
 - El modal no muestra un botón redundante `Finalizar`; se cierra mediante la X accesible.
 - Las acciones son mobile-first: apiladas en móvil y alineadas al final en escritorio, con WhatsApp como única CTA primaria.
+- El pase usa composición editorial institucional en PNG 1080×1350, con jerarquía tipográfica, hairlines, panel de ubicación y distintivo de un solo uso.
+- El pase informa que es personal e intransferible y solicita INE original en caseta.
 - Reclutador obligatorio; fecha de entrevista opcional.
 - `yarn tsc -b --pretty false`: PASS.
 - `yarn vite build`: PASS.
