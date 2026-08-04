@@ -2350,5 +2350,13 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+  },
+    {
+    "numero empleado": "4307",
+    "nombre": "GARCIA OLALDE MARIA GUADALUPE",
+    "turno": "2",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "LA MONJA",
+    "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
   }
 ]
