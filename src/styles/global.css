@@ -76,12 +76,13 @@
   /* Accent RGB channels (usados por gradientes/tintes en la app) */
   --color-accent-teal-rgb: 42 157 153;
   --color-accent-amber: var(--color-warning);
-  --color-accent-amber-rgb: 221 91 0;
+  --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
   --color-primary-rgb: 0 0 0;
   --color-error-rgb: 239 68 68;
   --color-success-rgb: 26 174 57;
+  --color-warning-rgb: 221 91 0;
   --color-ink-rgb: 0 0 0;
   --color-canvas-rgb: 246 245 244;
 
@@ -348,7 +349,7 @@
   --color-body: #c9c5c0;
   --color-charcoal: #c9c5c0;
   --color-muted: #8f8a83;
-  --color-muted-soft: #615d59;
+  --color-muted-soft: #8d8881;
   --color-on-dark: #191817;
   --color-on-dark-soft: #8f8a83;
 
@@ -365,18 +366,34 @@
   --color-secondary: #4a5cc4;
   --color-secondary-rgb: 74 92 196;
 
-  --color-accent-teal: #2dd4bf;
-  --color-accent-teal-rgb: 45 212 191;
-  --color-accent-amber: #fbbf24;
-  --color-accent-amber-rgb: 251 191 36;
+  /* Semánticos dark: legibles como texto/icono sobre canvas y surface. */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #fb7185;
+  --color-success-rgb: 74 222 128;
+  --color-warning-rgb: 251 191 36;
+  --color-error-rgb: 251 113 133;
+
+  /* Sticker palette dark: misma función, mayor luminancia para contraste AA. */
+  --color-accent-sky: #7dd3fc;
+  --color-accent-purple: #c4b5fd;
+  --color-accent-purple-deep: #a78bfa;
+  --color-accent-orange: #fdba74;
+  --color-accent-orange-deep: #fb923c;
+  --color-accent-teal: #5eead4;
+  --color-accent-teal-rgb: 94 234 212;
+  --color-accent-green: var(--color-success);
+  --color-accent-brown: #d6b98c;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: var(--color-warning-rgb);
 
   --color-focus-ring: rgba(246, 245, 244, 0.25);
   --color-modal-scrim: rgba(0, 0, 0, 0.72);
   --color-vacancy-tint: rgba(239, 68, 68, 0.1);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
-  --color-success-tint: rgba(26, 174, 57, 0.15);
-  --color-error-tint: rgba(239, 68, 68, 0.15);
-  --color-warning-tint: rgba(221, 91, 0, 0.18);
+  --color-success-tint: rgba(74, 222, 128, 0.15);
+  --color-error-tint: rgba(251, 113, 133, 0.15);
+  --color-warning-tint: rgba(251, 191, 36, 0.18);
   --color-primary-tint: rgba(246, 245, 244, 0.08);
   --color-header-glass: rgba(25, 24, 23, 0.88);
 
@@ -950,7 +967,7 @@ code:not(pre code) {
     box-shadow var(--transition-fast);
 }
 
-/* Primary CTAs — pill shape (design.md: button-primary) */
+/* Primary CTA — rounded rect (design.md: button-primary) */
 .btn-primary {
   border-radius: var(--rounded-md);
 }
