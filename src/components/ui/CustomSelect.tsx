@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { CheckCircle2, ChevronDown } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './CustomSelect.css';
 
 export interface Option {
@@ -241,7 +243,12 @@ export function CustomSelect({
         ) : (
           <>
             <span className="custom-select-value">{displayValue}</span>
-            <ChevronDown size={16} aria-hidden="true" className="custom-select-icon" />
+            <MorphingIcon
+              icon={isOpen ? ChevronUp : ChevronDown}
+              size={16}
+              aria-hidden="true"
+              className="custom-select-icon"
+            />
           </>
         )}
       </button>

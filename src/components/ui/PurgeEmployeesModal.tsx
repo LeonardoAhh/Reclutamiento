@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertOctagon, CheckCircle2, Download, Loader2 } from 'lucide-react';
+import { AlertOctagon, CheckCircle2, Download } from 'lucide-react';
+import { AlertOctagon as AlertOctagonIcon, Loader2 } from 'lucide';
 import { Modal } from './Modal';
+import { MorphingIcon } from './MorphingIcon';
 import type { Employee } from '@/lib/types';
 import { formatMxStamp } from '@/lib/dates';
 import './PurgeEmployeesModal.css';
@@ -249,22 +251,19 @@ export function PurgeEmployeesModal({
                     className="purge-employees-modal__danger-btn"
                     onClick={handleConfirmPurge}
                     disabled={!canConfirm}
+                    aria-busy={isPurging}
                   >
-                    {isPurging ? (
-                      <>
-                        <Loader2
-                          size={14}
-                          aria-hidden="true"
-                          className="purge-employees-modal__spinner"
-                        />
-                        Borrando…
-                      </>
-                    ) : (
-                      <>
-                        <AlertOctagon size={14} aria-hidden="true" />
-                        Borrar plantilla
-                      </>
-                    )}
+                    <MorphingIcon
+                      icon={isPurging ? Loader2 : AlertOctagonIcon}
+                      size={14}
+                      aria-hidden="true"
+                      className={
+                        isPurging
+                          ? 'purge-employees-modal__spinner'
+                          : undefined
+                      }
+                    />
+                    {isPurging ? 'Borrando…' : 'Borrar plantilla'}
                   </button>
                 </div>
               </li>

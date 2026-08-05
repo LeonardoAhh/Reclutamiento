@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, RefreshCw, UserPlus } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, RefreshCw, UserPlus } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  Loader2 as Loader2IconData,
+  UserPlus as UserPlusIconData,
+} from 'lucide';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import {
   APP_ROLES,
@@ -13,6 +19,7 @@ import {
 } from '@/lib/users';
 import { formatShortDate } from '@/lib/dates';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './Settings.css';
 
 interface FormState {
@@ -284,11 +291,11 @@ export function Settings() {
                   }
                   disabled={submitting}
                 >
-                  {showPassword ? (
-                    <EyeOff size={14} aria-hidden="true" />
-                  ) : (
-                    <Eye size={14} aria-hidden="true" />
-                  )}
+                  <MorphingIcon
+                    icon={showPassword ? EyeOff : Eye}
+                    size={14}
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </div>
@@ -344,21 +351,13 @@ export function Settings() {
               whileTap={!submitting ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             >
-              {submitting ? (
-                <>
-                  <Loader2
-                    size={14}
-                    className="settings__spinner"
-                    aria-hidden="true"
-                  />
-                  Creando…
-                </>
-              ) : (
-                <>
-                  <UserPlus size={14} aria-hidden="true" />
-                  Crear usuario
-                </>
-              )}
+              <MorphingIcon
+                icon={submitting ? Loader2IconData : UserPlusIconData}
+                size={14}
+                className={submitting ? 'settings__spinner' : undefined}
+                aria-hidden="true"
+              />
+              {submitting ? 'Creando…' : 'Crear usuario'}
             </motion.button>
           </form>
         </section>

@@ -211,6 +211,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .purge-employees-modal__spinner {
+    animation: none;
+  }
+}
+
 .purge-employees-modal__error {
   margin: 0 0 var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);

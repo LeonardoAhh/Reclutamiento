@@ -1633,6 +1633,12 @@ code:not(pre code) {
   animation: spin 1s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
 /* Asegura que todos los botones tengan touch target mínimo en móvil */
 @media (max-width: 768px) {
   .btn-primary,

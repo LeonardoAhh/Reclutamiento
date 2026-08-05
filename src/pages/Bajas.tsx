@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, ChevronRight, CloudOff, Filter, RefreshCw } from 'lucide-react';
+import { RefreshCw as RefreshCwIconData, LoaderCircle as LoaderCircleIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
@@ -158,7 +160,12 @@ export function Bajas() {
             disabled={saveStatus === 'saving'}
             title="Reintentar sync"
           >
-            <RefreshCw size={14} aria-hidden="true" />
+            <MorphingIcon
+              icon={saveStatus === 'saving' ? LoaderCircleIconData : RefreshCwIconData}
+              size={14}
+              className={saveStatus === 'saving' ? 'bajas__spin' : ''}
+              aria-hidden="true"
+            />
           </button>
         </div>
       )}

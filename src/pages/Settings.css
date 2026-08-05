@@ -233,6 +233,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .settings__spinner {
+    animation: none;
+  }
+}
+
 /* ── Banner de feedback ──────────────────────────────────────────── */
 .settings__banner {
   display: flex;

@@ -2,10 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   X as XIcon,
-  LogOut,
   ChevronRight,
 } from 'lucide-react';
-import { Menu, X } from 'lucide';
+import { Loader, LogOut, Menu, X } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
 import { useReporteDiario } from '@/hooks/useReporteDiario';
 import { parseReporteJSON, isIncidence } from '@/components/reporte-diario/helpers';
@@ -355,7 +354,12 @@ export function BottomTabBar() {
                 aria-label="Cerrar sesión"
                 title="Cerrar sesión"
               >
-                <LogOut size={20} aria-hidden="true" className="bottom-sheet__signout-icon" />
+                <MorphingIcon
+                  icon={signingOut ? Loader : LogOut}
+                  size={20}
+                  aria-hidden="true"
+                  className={`bottom-sheet__signout-icon${signingOut ? ' sidebar__spin' : ''}`}
+                />
                 <span className="bottom-sheet__signout-label">
                   {signingOut ? 'Saliendo…' : 'Salir'}
                 </span>

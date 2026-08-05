@@ -1,7 +1,8 @@
 import { useState, type FormEvent, useId, useEffect } from 'react';
-import { Eye, EyeOff, AlertCircle, ChevronRight } from 'lucide-react';
-import { ArrowRight as ArrowRightIconData } from 'lucide';
+import { AlertCircle, ChevronRight } from 'lucide-react';
+import { ArrowRight as ArrowRightIconData, Eye, EyeOff } from 'lucide';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { sileo } from '@/lib/notify';
@@ -223,9 +224,11 @@ export function Login() {
                         aria-pressed={showPassword}
                         disabled={submitting || isSuccess}
                       >
-                        {showPassword
-                          ? <EyeOff size={16} aria-hidden="true" />
-                          : <Eye   size={16} aria-hidden="true" />}
+                        <MorphingIcon
+                          icon={showPassword ? EyeOff : Eye}
+                          size={16}
+                          aria-hidden="true"
+                        />
                       </button>
                     </div>
                   </motion.div>

@@ -4,6 +4,8 @@ import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict }
 import { es } from 'date-fns/locale';
 
 import { BadgeCheck, BarChart3, CalendarDays, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, Pencil, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserPlus, UserRound, UserX, Users } from 'lucide-react';
+import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -527,10 +529,22 @@ export function Pipeline() {
               {/* Banner flotante de nueva función rotativo */}
               <SearchBanner />
 
-              <div className="pipeline__search" style={{ width: '100%' }}>
-                <div className="pipeline__search-wrapper">
-                  <label htmlFor="pipeline-search-input" className="sr-only">Buscar candidato</label>
-                  <Search size={18} className="pipeline__search-icon" aria-hidden="true" />
+              <div className="pipeline__search">
+                <button
+                  type="button"
+                  className="pipeline__search-clear-btn"
+                  onClick={() => setSearchTerm('')}
+                  disabled={!searchTerm}
+                  aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                  tabIndex={searchTerm ? 0 : -1}
+                >
+                  <MorphingIcon 
+                    icon={searchTerm ? XIconData : SearchIconData} 
+                    size={16} 
+                    className="pipeline__search-icon"
+                  />
+                </button>
+                <label htmlFor="pipeline-search-input" className="sr-only">Buscar candidato</label>
                   <input
                     id="pipeline-search-input"
                     type="search"
@@ -541,7 +555,6 @@ export function Pipeline() {
                     className="pipeline__search-input"
                     autoComplete="off"
                   />
-                </div>
 
                 {/* ── Dropdown de Resultados ── */}
                 {searchTerm.trim().length > 0 && (
@@ -583,14 +596,15 @@ export function Pipeline() {
             </span>
             <button
               type="button"
-              className={`btn-secondary pipeline__filter-btn${showFilters ? ' pipeline__filter-btn--active' : ''}`}
-              onClick={() => setShowFilters((v) => !v)}
+              className={`btn-secondary pipeline__config-btn${showFilters ? ' pipeline__config-btn--active' : ''}`}
+              onClick={() => setShowFilters((prev) => !prev)}
+              title={showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
+              aria-label={showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
               aria-expanded={showFilters}
-              aria-controls="pipeline-filters"
-              title="Filtros avanzados"
+              aria-controls="pipeline-filters-panel"
+              data-testid="pipeline-filters-btn"
             >
-              <SlidersHorizontal size={16} aria-hidden="true" />
-              <span>Filtros</span>
+              <MorphingIcon icon={showFilters ? XIconData : SlidersHorizontalIconData} size={16} />
               {activeFiltersCount > 0 && (
                 <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
                   {activeFiltersCount}

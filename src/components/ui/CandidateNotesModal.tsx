@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, MessageSquarePlus, StickyNote } from 'lucide-react';
+import { StickyNote } from 'lucide-react';
+import { Loader2, MessageSquarePlus } from 'lucide';
 import { Modal } from './Modal';
+import { MorphingIcon } from './MorphingIcon';
 import type { Candidate, CandidateNote } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
 import './CommentModal.css';
@@ -143,8 +145,16 @@ export function CandidateNotesModal({
             type="submit"
             className="btn-primary"
             disabled={!texto.trim() || submitting || !candidate.id}
+            aria-busy={submitting}
           >
-            <MessageSquarePlus size={16} aria-hidden="true" />
+            <MorphingIcon
+              icon={submitting ? Loader2 : MessageSquarePlus}
+              size={16}
+              aria-hidden="true"
+              className={
+                submitting ? 'spin' : undefined
+              }
+            />
             {submitting ? 'Guardando…' : 'Agregar nota'}
           </button>
         </div>

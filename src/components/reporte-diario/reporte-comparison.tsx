@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { BarChart3, CheckCircle2, ChevronRight, Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { BarChart3, CheckCircle2, Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide';
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { Modal } from "@/components/ui/Modal";
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -241,7 +243,12 @@ export default function ReporteComparisonDialog({
                                             </span>
                                         </span>
                                         {prev && <TrendDelta diff={incDiff} />}
-                                        <ChevronRight size={18} className="reporte-incidents__chevron" aria-hidden="true" />
+                                        <MorphingIcon
+                                            icon={isOpenRow ? ChevronDown : ChevronRight}
+                                            size={18}
+                                            className="reporte-incidents__chevron"
+                                            aria-hidden="true"
+                                        />
                                     </button>
 
                                     {isOpenRow && (

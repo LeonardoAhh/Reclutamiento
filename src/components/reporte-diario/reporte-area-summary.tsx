@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, ChevronRight, Moon, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { CheckCircle2, Moon, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide';
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
 import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
 import { Modal } from "@/components/ui/Modal";
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -248,7 +250,12 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                                     </span>
                                 </span>
                                 <span className="reporte-chip">T{row.turno}</span>
-                                <ChevronRight size={18} className="reporte-incidents__chevron" aria-hidden="true" />
+                                <MorphingIcon
+                                    icon={isOpen ? ChevronDown : ChevronRight}
+                                    size={18}
+                                    className="reporte-incidents__chevron"
+                                    aria-hidden="true"
+                                />
                             </button>
 
                             {isOpen && (

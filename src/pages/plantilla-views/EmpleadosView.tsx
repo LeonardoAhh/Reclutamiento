@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChevronDown, CloudOff, HeartPulse, Search, Users } from 'lucide-react';
+import { CheckCircle2, CloudOff, HeartPulse, Search, Users } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
@@ -7,6 +8,7 @@ import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfir
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable, SkeletonCardList } from '@/components/ui/PageSkeletons';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatShortDate } from '@/lib/dates';
@@ -381,12 +383,11 @@ export function EmpleadosView() {
                     <span className="empleados__acc-count">
                       {group.empleados.length}
                     </span>
-                    <ChevronDown
+                    <MorphingIcon
+                      icon={expanded ? ChevronUp : ChevronDown}
                       size={16}
                       aria-hidden="true"
-                      className={`empleados__acc-chevron${
-                        expanded ? ' empleados__acc-chevron--open' : ''
-                      }`}
+                      className="empleados__acc-chevron"
                     />
                   </button>
                 </h2>

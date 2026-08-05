@@ -1571,11 +1571,6 @@ button.reporte-card:focus-visible,
 .reporte-incidents__chevron {
   flex-shrink: 0;
   color: var(--color-muted);
-  transition: transform var(--transition-fast);
-}
-
-.reporte-incidents__card-summary[aria-expanded="true"] .reporte-incidents__chevron {
-  transform: rotate(90deg);
 }
 
 .reporte-incidents__card-detail {
@@ -1841,7 +1836,6 @@ button.reporte-card:focus-visible,
 
 /* ── Reduced motion ───────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .reporte-incidents__chevron,
   .reporte-card,
   .reporte-tab-trigger,
   .reporte-cal__cell,

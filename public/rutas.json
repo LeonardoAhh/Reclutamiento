@@ -2336,14 +2336,6 @@
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
-    "numero empleado": "4305",
-    "nombre": "GONZALEZ VELAZQUEZ ANA ROSA",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
-  },
-  {
     "numero empleado": "4306",
     "nombre": "AGUSTIN RAMIREZ MARIELA",
     "turno": "1",
@@ -2351,7 +2343,7 @@
     "colonia": "PIE DE LA CUESTA ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
-    {
+  {
     "numero empleado": "4307",
     "nombre": "GARCIA OLALDE MARIA GUADALUPE",
     "turno": "2",

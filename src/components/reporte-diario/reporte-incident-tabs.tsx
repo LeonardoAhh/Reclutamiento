@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronRight, CircleAlert, X } from 'lucide-react';
+import { CheckCircle2, CircleAlert, X } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide';
 import { INCIDENT_TABS, INCIDENCIA_LABELS } from "./constants";
 import type { IncidentTab, EmployeeRef } from "./types";
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -108,7 +110,12 @@ function MobileCards({ rows }: { rows: EmployeeRef[] }) {
                                 <span className="reporte-incidents__card-sub">{row.area}</span>
                             </span>
                             <span className="reporte-chip">{row.turno}</span>
-                            <ChevronRight size={18} className="reporte-incidents__chevron" aria-hidden="true" />
+                            <MorphingIcon
+                                icon={isOpen ? ChevronDown : ChevronRight}
+                                size={18}
+                                className="reporte-incidents__chevron"
+                                aria-hidden="true"
+                            />
                         </button>
 
                         {isOpen && (

@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import {
-  LogOut,
-  Loader,
-} from 'lucide-react';
-import { ChevronDown, ChevronUp, ChevronsLeft, Menu } from 'lucide';
+import { ChevronDown, ChevronUp, ChevronsLeft, Loader, LogOut, Menu } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { useFeedback } from '@/hooks/useFeedback';
@@ -218,20 +214,12 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
                   onClick={handleSignOut}
                   disabled={signingOut}
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={signingOut ? "loading" : "idle"}
-                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.5, rotate: -90 }}
-                      animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, rotate: 0 }}
-                      exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.5, rotate: 90 }}
-                      transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-                      className="sidebar__popover-icon"
-                    >
-                      {signingOut
-                        ? <Loader size={16} className="sidebar__spin" aria-hidden="true" />
-                        : <LogOut size={16} aria-hidden="true" />}
-                    </motion.span>
-                  </AnimatePresence>
+                  <MorphingIcon
+                    icon={signingOut ? Loader : LogOut}
+                    size={16}
+                    className={`sidebar__popover-icon${signingOut ? ' sidebar__spin' : ''}`}
+                    aria-hidden="true"
+                  />
                   <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
                 </button>
               </div>

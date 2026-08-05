@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, MessageSquare, MessageSquarePlus } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
+import { Loader2, MessageSquarePlus } from 'lucide';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
+import { MorphingIcon } from './MorphingIcon';
 import './CommentModal.css';
 
 interface CommentModalProps {
@@ -130,8 +132,16 @@ export function CommentModal({
             type="submit"
             className="btn-primary"
             disabled={!comentario.trim() || submitting}
+            aria-busy={submitting}
           >
-            <MessageSquarePlus size={16} aria-hidden="true" />
+            <MorphingIcon
+              icon={submitting ? Loader2 : MessageSquarePlus}
+              size={16}
+              aria-hidden="true"
+              className={
+                submitting ? 'spin' : undefined
+              }
+            />
             {submitting ? 'Guardando…' : 'Guardar'}
           </button>
         </div>

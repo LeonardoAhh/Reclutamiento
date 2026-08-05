@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, ArrowRightLeft, BarChart3, Calendar, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Clock, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, Trash2, UserPlus } from 'lucide-react';
+import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
+import { ArrowRightLeft as ArrowRightLeftIconData, CheckCircle2 as CheckCircle2IconData } from 'lucide';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Modal } from '@/components/ui/Modal';
 import { useBajas } from '@/hooks/useBajas';
@@ -17,6 +19,7 @@ import { VacancyTypeBadge } from '@/components/ui/VacancyTypeBadge';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { ReclutadorBadge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { formatShortDate, localTodayIso, formatMonthLabel } from '@/lib/dates';
 import { PositionSettingsWizard } from '@/components/ui/PositionSettingsWizard';
@@ -308,7 +311,7 @@ export function Vacantes() {
               data-testid="vac-config-btn"
               aria-label="Configuración de posiciones"
             >
-              <SlidersHorizontal size={16} aria-hidden="true" />
+              <MorphingIcon icon={wizardOpen ? XIconData : SlidersHorizontalIconData} size={16} />
             </button>
           )}
         </div>
@@ -457,7 +460,20 @@ export function Vacantes() {
           <section className="pipeline__controls">
             <div className="pipeline__search-container">
               <div className="pipeline__search">
-                <Search size={16} className="pipeline__search-icon" aria-hidden="true" />
+                <button
+                  type="button"
+                  className="pipeline__search-clear-btn"
+                  onClick={() => setSearchTerm('')}
+                  disabled={!searchTerm}
+                  aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                  tabIndex={searchTerm ? 0 : -1}
+                >
+                  <MorphingIcon 
+                    icon={searchTerm ? XIconData : SearchIconData} 
+                    size={16} 
+                    className="pipeline__search-icon"
+                  />
+                </button>
                 <label htmlFor="vac-search" className="sr-only">
                   Buscar vacante
                 </label>
@@ -619,7 +635,11 @@ export function Vacantes() {
                               disabled={!v.baja}
                               aria-label={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
                             >
-                              {v.coberturaTipo === 'manual' ? <ArrowRightLeft size={16} /> : <CheckCircle2 size={16} />}
+                              <MorphingIcon
+                                icon={v.coberturaTipo === 'manual' ? ArrowRightLeftIconData : CheckCircle2IconData}
+                                size={16}
+                                aria-hidden="true"
+                              />
                             </button>
                           </Tooltip>
                           {canRemoveStructural(v) && (
@@ -896,11 +916,11 @@ function VacancyCard({
               aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
               data-testid={`vac-manual-card-${v.key}`}
             >
-              {v.coberturaTipo === 'manual' ? (
-                <ArrowRightLeft size={16} aria-hidden="true" />
-              ) : (
-                <CheckCircle2 size={16} aria-hidden="true" />
-              )}
+              <MorphingIcon
+                icon={v.coberturaTipo === 'manual' ? ArrowRightLeftIconData : CheckCircle2IconData}
+                size={16}
+                aria-hidden="true"
+              />
             </button>
             {canDelete && onDelete && (
               <button

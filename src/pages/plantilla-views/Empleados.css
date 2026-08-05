@@ -376,11 +376,6 @@
 .empleados__acc-chevron {
   flex-shrink: 0;
   color: var(--color-muted);
-  transition: transform var(--transition-fast);
-}
-
-.empleados__acc-chevron--open {
-  transform: rotate(180deg);
 }
 
 .empleados__acc-panel {

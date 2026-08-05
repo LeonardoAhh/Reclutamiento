@@ -76,12 +76,6 @@
 .custom-select-icon {
   color: var(--color-muted);
   flex: 0 0 auto;
-  transition: transform 0.15s ease;
-}
-
-/* Chevron gira cuando el modal/dropdown está abierto */
-.custom-select-trigger[aria-expanded="true"] .custom-select-icon {
-  transform: rotate(180deg);
 }
 
 /* ── Contenedor ───────────────────────────────────────────── */

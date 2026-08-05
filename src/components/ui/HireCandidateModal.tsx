@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, UserPlus } from 'lucide-react';
+import { Loader2, UserPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
+import { MorphingIcon } from './MorphingIcon';
 import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import { CustomSelect } from './CustomSelect';
@@ -208,8 +210,16 @@ export function HireCandidateModal({
               type="submit"
               className="btn-primary"
               disabled={submitting || !form.num_empleado.trim()}
+              aria-busy={submitting}
             >
-              <UserPlus size={16} aria-hidden="true" />
+              <MorphingIcon
+                icon={submitting ? Loader2 : UserPlusIcon}
+                size={16}
+                aria-hidden="true"
+                className={
+                  submitting ? 'spin' : undefined
+                }
+              />
               {submitting ? 'Contratando…' : 'Contratar'}
             </button>
           </footer>
