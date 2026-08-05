@@ -1,68 +1,61 @@
 import { useEffect, useState } from 'react';
-import { Toaster } from 'sileo';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, AlertTriangle, Info, LoaderCircle, AlertCircle } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { toastStore, type ToastState } from '@/lib/notify';
 import './AppToaster.css';
 
-type Theme = 'light' | 'dark';
-
-function readTheme(): Theme {
-  if (typeof document === 'undefined') return 'light';
-  return document.documentElement.getAttribute('data-theme') === 'dark'
-    ? 'dark'
-    : 'light';
-}
-
-function useIsMobile(breakpoint = 768): boolean {
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia(`(max-width: ${breakpoint - 1}px)`).matches;
-  });
-
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener('change', handler);
-    setIsMobile(mql.matches);
-    return () => mql.removeEventListener('change', handler);
-  }, [breakpoint]);
-
-  return isMobile;
+function ToastItem({ toast }: { toast: ToastState }) {
+  let iconData;
+  switch (toast.type) {
+    case 'success': iconData = CheckCircle2; break;
+    case 'error': iconData = AlertTriangle; break;
+    case 'info': iconData = Info; break;
+    case 'warning': iconData = AlertCircle; break;
+    case 'loading': iconData = LoaderCircle; break;
+    default: iconData = Info; break;
+  }
+  
+  return (
+    <motion.li
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      className={`app-toaster__item app-toaster__item--${toast.type}`}
+    >
+      <div className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}>
+        <MorphingIcon icon={iconData} size={18} aria-hidden="true" />
+      </div>
+      <div className="app-toaster__content">
+        <span className="app-toaster__title">{toast.title}</span>
+        {toast.hint && <span className="app-toaster__hint">{toast.hint}</span>}
+      </div>
+    </motion.li>
+  );
 }
 
 /**
- * Host de notificaciones (sileo) montado una sola vez en la raíz de la app.
- *
- * - Móvil (<768px): `top-center` — bajo el notch, centrado.
- * - Desktop (≥768px): `top-center` — centrado arriba.
- * - Sincroniza su tema con el `data-theme` del documento vía MutationObserver.
- * - `offset.top` respeta el safe-area de iOS.
+ * Host de notificaciones personalizado.
+ * Se suscribe a `toastStore` y usa `framer-motion` + `Morphicons` para animar estados.
  */
 export function AppToaster() {
-  const [theme, setTheme] = useState<Theme>(readTheme);
-  const isMobile = useIsMobile();
+  const [toasts, setToasts] = useState<ToastState[]>([]);
 
   useEffect(() => {
-    const obs = new MutationObserver(() => setTheme(readTheme()));
-    obs.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
+    return toastStore.subscribe((newToasts) => {
+      setToasts(newToasts);
     });
-    return () => obs.disconnect();
   }, []);
 
   return (
-    <Toaster
-      position="top-center"
-      theme={theme}
-      offset={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
-      options={{ 
-        duration: 4000,
-        fill: 'var(--color-surface)',
-        roundness: 8,
-        styles: {
-          title: 'app-toaster-title',
-          badge: 'app-toaster-badge',
-        }
-      }}
-    />
+    <ul className="app-toaster" aria-live="polite" aria-atomic="true">
+      <AnimatePresence>
+        {toasts.map((t) => (
+          <ToastItem key={t.id} toast={t} />
+        ))}
+      </AnimatePresence>
+    </ul>
   );
 }

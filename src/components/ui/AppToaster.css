@@ -1,67 +1,92 @@
-/* -------------------------------------------------------------------------- */
-/* Ajustes Globales de Sileo                                                  */
-/* Integración con el Sistema de Diseño (Variables)                           */
-/* -------------------------------------------------------------------------- */
-
-:root {
-  /* Forzamos a Sileo a usar exactamente nuestra paleta de colores semánticos */
-  --sileo-state-success: var(--color-success) !important;
-  --sileo-state-error: var(--color-error) !important;
-  --sileo-state-warning: var(--color-warning) !important;
-  --sileo-state-info: var(--color-primary) !important;
+.app-toaster {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  max-width: calc(100vw - var(--spacing-lg) * 2);
 }
 
-/* Ajustes a la figura SVG (píldora) del toast */
-[data-sileo-svg] path {
-  /* Agregamos el borde sutil que usamos en todos los componentes */
-  stroke: var(--color-hairline-strong) !important;
-  stroke-width: 1px !important;
-  /* Una sombra más dramática y elegante para elevarlo sobre el contenido */
-  filter: drop-shadow(var(--shadow-lg)) !important;
-}
-
-/* Fix para asegurar que el contenido (descripciones y botones) no se quede invisible por culpa del morphing de Sileo */
-[data-sileo-content], [data-sileo-description] {
-  opacity: 1 !important;
-  visibility: visible !important;
-  content-visibility: visible !important;
-  contain: none !important;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Clases Inyectadas a los Elementos Internos                                 */
-/* -------------------------------------------------------------------------- */
-
-.app-toaster-title {
-  font-family: var(--font-body) !important;
-  font-size: var(--type-body-sm-strong-size) !important;
-  font-weight: var(--font-medium) !important;
-  /* Forzamos el texto a ser del color de la tinta principal (blanco o negro según el tema) 
-     en lugar del verde/rojo fosforescente que trae por defecto */
-  color: var(--color-ink) !important;
-  letter-spacing: var(--tracking-snug);
-}
-
-.app-toaster-badge {
-  width: 22px !important;
-  height: 22px !important;
-  /* El icono se verá ligeramente más sólido */
-}
-
-/* -------------------------------------------------------------------------- */
-/* Alineación Responsiva con Sidebar                                          */
-/* -------------------------------------------------------------------------- */
-
-@media (min-width: 1024px) {
-  /* Cuando el sidebar está montado, el viewport del toaster respeta su ancho 
-     para mantenerse centrado con el main content */
-  body:not([data-sidebar-collapsed="true"]) [data-sileo-viewport] {
-    transform: translateX(calc(-50% + (var(--layout-sidebar-w-expanded, 248px) / 2))) !important;
-  }
-  
-  body[data-sidebar-collapsed="true"] [data-sileo-viewport] {
-    transform: translateX(calc(-50% + (var(--layout-sidebar-w-collapsed, 76px) / 2))) !important;
+@media (min-width: 768px) {
+  .app-toaster {
+    top: auto;
+    bottom: var(--spacing-xl);
+    left: auto;
+    right: var(--spacing-xl);
+    transform: none;
+    align-items: flex-end;
+    /* Al alinear al final, las notificaciones crecen hacia arriba. */
+    flex-direction: column-reverse; 
   }
 }
 
+.app-toaster__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-lg); /* Removed pill shape, aligned to cards */
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+  min-width: 280px;
+  background-color: var(--color-ink);
+  color: var(--color-canvas);
+  border: 1px solid var(--color-border);
+}
 
+.app-toaster__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.app-toaster__title {
+  font-family: var(--font-body);
+  font-weight: var(--font-semibold);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.app-toaster__hint {
+  font-family: var(--font-body);
+  font-weight: var(--font-regular);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  opacity: 0.8;
+}
+
+.app-toaster__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* We use CSS variables to map semantic colors for both light/dark */
+[data-theme='light'] .app-toaster__item--success .app-toaster__icon { color: #4ade80; } /* green-400 */
+[data-theme='light'] .app-toaster__item--error .app-toaster__icon { color: #f87171; } /* red-400 */
+[data-theme='light'] .app-toaster__item--warning .app-toaster__icon { color: #fbbf24; } /* amber-400 */
+[data-theme='light'] .app-toaster__item--info .app-toaster__icon { color: #60a5fa; } /* blue-400 */
+[data-theme='light'] .app-toaster__item--loading .app-toaster__icon { color: #94a3b8; } /* slate-400 */
+
+[data-theme='dark'] .app-toaster__item--success .app-toaster__icon { color: #15803d; } /* green-700 */
+[data-theme='dark'] .app-toaster__item--error .app-toaster__icon { color: #b91c1c; } /* red-700 */
+[data-theme='dark'] .app-toaster__item--warning .app-toaster__icon { color: #b45309; } /* amber-700 */
+[data-theme='dark'] .app-toaster__item--info .app-toaster__icon { color: #1d4ed8; } /* blue-700 */
+[data-theme='dark'] .app-toaster__item--loading .app-toaster__icon { color: #475569; } /* slate-600 */
+
+/* Loading spin animation */
+.app-toaster__icon--spin {
+  animation: toaster-spin 1.5s linear infinite;
+}
+
+@keyframes toaster-spin {
+  to { transform: rotate(360deg); }
+}
