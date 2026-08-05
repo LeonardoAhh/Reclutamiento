@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info, CheckCircle2, Wrench, X } from 'lucide-react';
-import { Download as DownloadIconData, RefreshCw as RefreshCwIconData } from 'lucide';
+import { Info as InfoData, CheckCircle2 as CheckCircle2Data, Wrench as WrenchData, X as XData, Download as DownloadIconData, RefreshCw as RefreshCwIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import type { SystemNotiLevel } from '@/hooks/useSystemVersion';
 import { useSystemVersion } from '@/hooks/useSystemVersion';
 import { AnimatedSubmitButton } from './AnimatedSubmitButton';
 import './SystemUpdateBanner.css';
 
-const LEVEL_ICON: Record<SystemNotiLevel, typeof Info> = {
-  info: Info,
-  success: CheckCircle2,
-  mantenimiento: Wrench,
+import type { IconInput } from 'morphicons/react';
+
+const LEVEL_ICON: Record<SystemNotiLevel, IconInput> = {
+  info: InfoData,
+  success: CheckCircle2Data,
+  mantenimiento: WrenchData,
 };
 
 const LEVEL_LABEL: Record<SystemNotiLevel, string> = {
@@ -73,7 +75,7 @@ export function SystemUpdateBanner() {
           >
             <div className="system-update__icon-wrapper">
               <span className="system-update__badge" aria-hidden="true">
-                <Icon size={20} strokeWidth={2.5} />
+                <MorphingIcon icon={Icon} size={20} />
               </span>
             </div>
 
@@ -85,9 +87,6 @@ export function SystemUpdateBanner() {
                   v{info.version}
                 </span>
               </div>
-              {info.mensaje && (
-                <p className="system-update__desc">{info.mensaje}</p>
-              )}
 
               {/* Update Action Button placed below the text */}
               <div className="system-update__action-container">
@@ -99,6 +98,7 @@ export function SystemUpdateBanner() {
                   idleIcon={requiresReload ? RefreshCwIconData : DownloadIconData}
                   onClick={handleReload}
                   className="btn-primary"
+                  iconOnly={true}
                 />
               </div>
             </div>
@@ -108,7 +108,7 @@ export function SystemUpdateBanner() {
               onClick={dismiss}
               aria-label="Cerrar aviso"
             >
-              <X size={20} aria-hidden="true" />
+              <MorphingIcon icon={XData} size={20} aria-hidden="true" />
             </button>
           </motion.aside>
         </div>

@@ -34,20 +34,17 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-md);
-
-  padding: var(--spacing-xl);
-  padding-bottom: max(var(--spacing-xl), var(--safe-area-bottom));
+  padding: var(--spacing-lg);
+  padding-bottom: max(var(--spacing-lg), var(--safe-area-bottom));
   pointer-events: auto; /* El banner sí recibe clics */
 
-  /* Glassmorphism & Shadows */
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* Solid surface per design.md (no glassmorphism) */
+  background: var(--color-surface);
   
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--color-hairline);
   border-bottom: none;
   border-radius: var(--rounded-2xl) var(--rounded-2xl) 0 0;
-  box-shadow: 0 -4px 24px var(--su-tint), 0 -4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4px 24px var(--su-tint), var(--shadow-md);
 
   font-family: var(--font-body);
 }
@@ -68,9 +65,10 @@
 
 /* ── Dark Mode Adaptations ────────────────────────────────────── */
 [data-theme="dark"] .system-update {
-  background: var(--color-surface-card);
+  /* En dark mode, surface card ya suele ser el token correcto */
+  background: var(--color-surface);
   border-color: var(--color-hairline);
-  box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 40px -12px var(--su-tint), var(--shadow-md);
 }
 
 /* ── Icono ────────────────────────────────────────────────────── */
@@ -79,7 +77,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2px;
 }
 
 .system-update__badge {
@@ -94,22 +91,6 @@
   background: var(--su-tint);
   color: var(--su-accent);
   z-index: 1;
-}
-
-/* Efecto de latido en el icono para llamar la atención suavemente */
-.system-update__badge::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--su-accent);
-  z-index: -1;
-  animation: su-pulse 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-@keyframes su-pulse {
-  0% { transform: scale(1); opacity: 0.2; }
-  70%, 100% { transform: scale(1.6); opacity: 0; }
 }
 
 /* ── Texto ────────────────────────────────────────────────────── */
@@ -145,13 +126,6 @@
   font-size: var(--text-xs);
   font-weight: var(--type-body-sm-strong-weight);
   white-space: nowrap;
-}
-
-.system-update__desc {
-  margin: 0;
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--color-muted);
 }
 
 /* ── Cerrar ───────────────────────────────────────────────────── */
@@ -195,17 +169,26 @@
   }
 
   .system-update {
-    width: 420px;
-    flex-direction: row; /* En desktop icono al lado */
-    align-items: flex-start;
-    border-radius: var(--rounded-2xl);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    padding-bottom: var(--spacing-xl);
-    box-shadow: 0 12px 40px -12px var(--su-tint), 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: auto; /* Se ajusta al contenido */
+    max-width: 600px;
+    flex-direction: row; /* Icono al lado */
+    align-items: center; /* Centrado vertical */
+    border-radius: var(--rounded-lg);
+    border-bottom: 1px solid var(--color-hairline);
+    padding: var(--spacing-lg);
+    padding-right: calc(var(--spacing-xl) + var(--spacing-lg)); /* Espacio extra para la X */
+    box-shadow: 0 12px 40px -12px var(--su-tint), var(--shadow-lg);
   }
   
-  .system-update__icon-wrapper {
-    margin-top: 2px;
+  .system-update__body {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-lg);
+  }
+
+  .system-update__close {
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
