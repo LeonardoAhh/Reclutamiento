@@ -2350,5 +2350,37 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "LA MONJA",
     "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
+  },
+  {
+    "numero empleado": "4308",
+    "nombre": "ORTIZ HERNANDEZ MARIELA",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "SAN ISIDRO",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4309",
+    "nombre": "PEREZ SANCHEZ JOSE LUIS",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4310",
+    "nombre": "INIESTRA SANCHEZ ANGEL DANIEL",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
+    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+  },
+  {
+    "numero empleado": "4311",
+    "nombre": "AGUIRRE IBARRA CAROLINA ESMERALDA",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   }
 ]

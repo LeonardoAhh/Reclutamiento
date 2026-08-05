@@ -2572,5 +2572,57 @@
     "Ubicacion": "SOBRE CARR EN EL PUENTE PEATONAL",
     "Fuente de Reclutamiento": "LONA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4308",
+    "Nombre": "ORTIZ HERNANDEZ MARIELA",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "07/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "Parada": "SAN ISIDRO",
+    "Ubicacion": "PARADA DE CAMIONES",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4309",
+    "Nombre": "PEREZ SANCHEZ JOSE LUIS",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "07/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4310",
+    "Nombre": "INIESTRA SANCHEZ ANGEL DANIEL",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "Fecha Ingreso": "07/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "Parada": "PIE DE LA CUESTA",
+    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
+  },
+  {
+    "No.": "4311",
+    "Nombre": "AGUIRRE IBARRA CAROLINA ESMERALDA",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "07/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "Parada": "PASEOS QUERETARO",
+    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]
