@@ -10,10 +10,11 @@
   inset: 0;
   z-index: 1100;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start; /* Cambiado a top para no chocar con BottomTabBar */
   justify-content: center;
-  padding: 0;
-  pointer-events: none; /* No bloquea clics debajo por defecto */
+  padding: var(--spacing-md);
+  padding-top: max(var(--spacing-md), var(--safe-area-top));
+  pointer-events: none;
 }
 
 .system-update-overlay--blocking {
@@ -28,23 +29,22 @@
   --su-accent: var(--color-accent-teal);
   --su-tint: rgba(var(--color-accent-teal-rgb), 0.15);
 
-  position: relative; /* Cambiado a relativo dentro del overlay flex */
-  width: 100%;
+  position: relative;
+  width: max-content;
+  max-width: calc(100vw - (var(--spacing-md) * 2));
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  padding-bottom: max(var(--spacing-lg), var(--safe-area-bottom));
-  pointer-events: auto; /* El banner sí recibe clics */
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+  pointer-events: auto;
 
-  /* Solid surface per design.md (no glassmorphism) */
+  /* Solid surface per design.md */
   background: var(--color-surface);
   
   border: 1px solid var(--color-hairline);
-  border-bottom: none;
-  border-radius: var(--rounded-2xl) var(--rounded-2xl) 0 0;
-  box-shadow: 0 -4px 24px var(--su-tint), var(--shadow-md);
+  border-radius: var(--rounded-xl);
+  box-shadow: 0 8px 32px var(--su-tint), var(--shadow-lg);
 
   font-family: var(--font-body);
 }
@@ -98,12 +98,15 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
 }
 
 .system-update__heading {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--spacing-xs) var(--spacing-sm);
@@ -128,11 +131,7 @@
   white-space: nowrap;
 }
 
-/* ── Cerrar ───────────────────────────────────────────────────── */
 .system-update__close {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -160,7 +159,7 @@
 
 
 
-/* ── Desktop / pantallas grandes: tarjeta flotante a la derecha ── */
+/* ── Desktop / pantallas grandes ── */
 @media (min-width: 768px) {
   .system-update-overlay {
     align-items: flex-end;
@@ -169,26 +168,14 @@
   }
 
   .system-update {
-    width: auto; /* Se ajusta al contenido */
-    max-width: 600px;
-    flex-direction: row; /* Icono al lado */
-    align-items: center; /* Centrado vertical */
+    width: auto;
     border-radius: var(--rounded-lg);
-    border-bottom: 1px solid var(--color-hairline);
-    padding: var(--spacing-lg);
-    padding-right: calc(var(--spacing-xl) + var(--spacing-lg)); /* Espacio extra para la X */
-    box-shadow: 0 12px 40px -12px var(--su-tint), var(--shadow-lg);
   }
   
-  .system-update__body {
+  .system-update__heading {
     flex-direction: row;
-    align-items: center;
-    gap: var(--spacing-lg);
-  }
-
-  .system-update__close {
-    top: 50%;
-    transform: translateY(-50%);
+    align-items: baseline;
+    gap: var(--spacing-xs) var(--spacing-sm);
   }
 }
 

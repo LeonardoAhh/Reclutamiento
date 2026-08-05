@@ -591,9 +591,6 @@ export function Pipeline() {
               </div>
             </div>
 
-            <span className="pipeline__count">
-              {filtered.length} de {candidates.length}
-            </span>
             <button
               type="button"
               className={`btn-secondary pipeline__config-btn${showFilters ? ' pipeline__config-btn--active' : ''}`}

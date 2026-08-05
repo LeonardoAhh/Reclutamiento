@@ -754,16 +754,8 @@
   font-size: var(--type-body-sm-size);
 }
 
-.pipeline__count {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 
-.pipeline__filter-btn {
+.pipeline__config-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
@@ -782,7 +774,7 @@
   font-size: var(--type-body-sm-size);
 }
 
-.pipeline__filter-btn--active {
+.pipeline__config-btn--active {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -857,12 +849,9 @@
     flex: 1 1 100%;
     order: 1;
   }
-  /* Contador oculto en móvil para un diseño más limpio */
-  .pipeline__count {
-    display: none;
-  }
+
   /* Fila 2: icono de filtros (izq) + paginación (der) en una sola línea */
-  .pipeline__filter-btn {
+  .pipeline__config-btn {
     order: 2;
     margin-left: 0;
     min-height: var(--touch-target-min);
