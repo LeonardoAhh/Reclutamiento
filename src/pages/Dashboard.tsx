@@ -1,49 +1,66 @@
-import { useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpCircle, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, Clock, Contact, Filter, HeartPulse, Pencil, Trash2, UserPlus as UserPlusIcon, Users } from 'lucide-react';
-import { Search as SearchData, X as XIconData } from 'lucide';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { CoverageBar } from '@/components/ui/CoverageBar';
+import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowUpCircle,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  Contact,
+  Filter,
+  HeartPulse,
+  Pencil,
+  Trash2,
+  UserPlus as UserPlusIcon,
+  Users,
+} from "lucide-react";
+import { Search as SearchData, X as XIconData } from "lucide";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { CoverageBar } from "@/components/ui/CoverageBar";
 import {
   AreaStatusBadge,
   Badge,
   IncapacidadBadge,
   ProximoIngresoBadge,
-} from '@/components/ui/Badge';
-import { CommentModal } from '@/components/ui/CommentModal';
-import { JsonImporter } from '@/components/ui/JsonImporter';
-import { TurnosImporter } from '@/components/turnos/TurnosImporter';
-import { EmployeeModal } from '@/components/ui/EmployeeModal';
-import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
-import { AreaDetailView } from '@/components/ui/AreaDetailView';
-import { EmpleadosView } from '@/pages/plantilla-views/EmpleadosView';
-import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
-import Avatar from 'boring-avatars';
-import { PromoteEmployeeModal } from '@/components/ui/PromoteEmployeeModal';
-import { CustomSelect } from '@/components/ui/CustomSelect';
-import { VacancyReportModal } from '@/components/ui/VacancyReportModal';
-import { Skeleton } from '@/components/ui/Skeleton';
+} from "@/components/ui/Badge";
+import { CommentModal } from "@/components/ui/CommentModal";
+import { JsonImporter } from "@/components/ui/JsonImporter";
+import { TurnosImporter } from "@/components/turnos/TurnosImporter";
+import { EmployeeModal } from "@/components/ui/EmployeeModal";
+import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
+import { AreaDetailView } from "@/components/ui/AreaDetailView";
+import { EmpleadosView } from "@/pages/plantilla-views/EmpleadosView";
+import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
+import Avatar from "boring-avatars";
+import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
+import { Skeleton } from "@/components/ui/Skeleton";
 import {
   transformEmployeeData,
   calculatePositionCoverage,
   calculateDepartmentCoverage,
   getCoverageColor,
-} from '@/lib/utils';
-import { localTodayIso, formatShortDate } from '@/lib/dates';
-import { computeAutoVacancies, filterUnreservedVacancies } from '@/lib/autoVacancies';
-import { notifyResult } from '@/lib/notify';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { useVacancyRequests } from '@/hooks/useVacancyRequests';
-import { useCandidates } from '@/hooks/useCandidates';
-import { useBajas } from '@/hooks/useBajas';
-import { usePositions } from '@/lib/positions';
+} from "@/lib/utils";
+import { localTodayIso, formatShortDate } from "@/lib/dates";
+import {
+  computeAutoVacancies,
+  filterUnreservedVacancies,
+} from "@/lib/autoVacancies";
+import { notifyResult } from "@/lib/notify";
+import { useSupabaseData } from "@/hooks/useSupabaseData";
+import { useVacancyRequests } from "@/hooks/useVacancyRequests";
+import { useCandidates } from "@/hooks/useCandidates";
+import { useBajas } from "@/hooks/useBajas";
+import { usePositions } from "@/lib/positions";
 import type {
   Employee,
   EmployeeRaw,
   PositionComment,
   DepartmentCoverage,
-} from '@/lib/types';
-import './Dashboard.css';
+} from "@/lib/types";
+import "./Dashboard.css";
 
 export function Dashboard() {
   const {
@@ -77,17 +94,17 @@ export function Dashboard() {
     () =>
       filterUnreservedVacancies(
         computeAutoVacancies(bajas, employees, positions).filter(
-          (v) => v.status === 'abierta'
+          (v) => v.status === "abierta",
         ),
         employees,
-        positions
+        positions,
       ),
-    [bajas, employees, positions]
+    [bajas, employees, positions],
   );
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterArea, setFilterArea] = useState('');
-  const [activeTab, setActiveTab] = useState<string>('general');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterArea, setFilterArea] = useState("");
+  const [activeTab, setActiveTab] = useState<string>("general");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
@@ -101,9 +118,15 @@ export function Dashboard() {
   };
 
   // Employee Modal State
-  const [empModalMode, setEmpModalMode] = useState<'add' | 'delete' | null>(null);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-  const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
+  const [empModalMode, setEmpModalMode] = useState<"add" | "delete" | null>(
+    null,
+  );
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
+  const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(
+    null,
+  );
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
@@ -111,12 +134,12 @@ export function Dashboard() {
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
-    [employees, comments, positions]
+    [employees, comments, positions],
   );
 
   const departmentCoverage = useMemo(
     () => calculateDepartmentCoverage(positionCoverage),
-    [positionCoverage]
+    [positionCoverage],
   );
 
   const filteredDepts = useMemo(() => {
@@ -133,7 +156,7 @@ export function Dashboard() {
             (p) =>
               p.puesto.toUpperCase().includes(term) ||
               p.seccion.toUpperCase().includes(term) ||
-              p.area.toUpperCase().includes(term)
+              p.area.toUpperCase().includes(term),
           ),
         }))
         .filter((dept) => dept.puestos.length > 0);
@@ -148,14 +171,14 @@ export function Dashboard() {
       .filter(
         (e) =>
           e.nombre.toUpperCase().includes(term) ||
-          e.num_empleado.includes(term)
+          e.num_empleado.includes(term),
       )
       .slice(0, 5);
   }, [employees, searchTerm]);
 
   const areas = useMemo(
     () => departmentCoverage.map((d) => d.area),
-    [departmentCoverage]
+    [departmentCoverage],
   );
 
   // Conteos de empleados en incapacidad por área y por área+sección.
@@ -169,7 +192,10 @@ export function Dashboard() {
       inner.set(e.seccion, (inner.get(e.seccion) ?? 0) + 1);
       porAreaSeccion.set(e.area, inner);
     }
-    return { incapacidadPorArea: porArea, incapacidadPorAreaSeccion: porAreaSeccion };
+    return {
+      incapacidadPorArea: porArea,
+      incapacidadPorAreaSeccion: porAreaSeccion,
+    };
   }, [employees]);
 
   async function handleImport(rawData: EmployeeRaw[]) {
@@ -181,16 +207,16 @@ export function Dashboard() {
       const prev = prevByNum.get(base.num_empleado);
       return prev
         ? {
-          ...base,
-          en_incapacidad: prev.en_incapacidad ?? false,
-          incapacidad_hasta: prev.incapacidad_hasta ?? null,
-        }
+            ...base,
+            en_incapacidad: prev.en_incapacidad ?? false,
+            incapacidad_hasta: prev.incapacidad_hasta ?? null,
+          }
         : base;
     });
     const incoming = transformed.filter((e) => !prevByNum.has(e.num_empleado));
     await upsertEmployees(transformed);
     for (const emp of incoming) {
-      await coverVacancyForEmployee(emp, { source: 'json-import' });
+      await coverVacancyForEmployee(emp, { source: "json-import" });
     }
   }
 
@@ -200,16 +226,16 @@ export function Dashboard() {
   }
 
   function getCoverageBadge(pct: number) {
-    if (pct >= 100) return 'success' as const;
-    if (pct >= 75) return 'teal' as const;
-    if (pct >= 50) return 'amber' as const;
-    return 'error' as const;
+    if (pct >= 100) return "success" as const;
+    if (pct >= 75) return "teal" as const;
+    if (pct >= 50) return "amber" as const;
+    return "error" as const;
   }
 
   async function handleSaveEmployee(emp: Employee) {
     const result = await addSingleEmployee(emp);
     if (result.ok) {
-      await coverVacancyForEmployee(emp, { source: 'dashboard-add' });
+      await coverVacancyForEmployee(emp, { source: "dashboard-add" });
     }
     return result;
   }
@@ -222,18 +248,18 @@ export function Dashboard() {
    */
   async function handleDeleteEmployee(
     num_empleado: string,
-    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string },
   ) {
     const result = await deleteEmployee(num_empleado, bajaData);
     if (result.ok) {
-      setSearchTerm('');
+      setSearchTerm("");
     }
     return result;
   }
 
   function openDeleteFor(emp: Employee) {
     setSelectedEmployee(emp);
-    setEmpModalMode('delete');
+    setEmpModalMode("delete");
   }
 
   function openEditFor(emp: Employee) {
@@ -242,11 +268,24 @@ export function Dashboard() {
 
   async function handleUpdateEmployee(
     num_empleado: string,
-    fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada'>>
+    fields: Partial<
+      Pick<
+        Employee,
+        | "nombre"
+        | "area"
+        | "seccion"
+        | "puesto"
+        | "categoria"
+        | "turno"
+        | "fecha_ingreso"
+        | "ruta"
+        | "parada"
+      >
+    >,
   ) {
     const result = await updateEmployee(num_empleado, fields);
     if (result.ok) {
-      setSearchTerm('');
+      setSearchTerm("");
     }
     return result;
   }
@@ -257,14 +296,14 @@ export function Dashboard() {
 
   async function handlePromote(
     emp: Employee,
-    target: { area: string; seccion: string; puesto: string }
+    target: { area: string; seccion: string; puesto: string },
   ): Promise<{ ok: boolean; message?: string }> {
     const result = await promoteEmployee(emp.num_empleado, target);
     if (result.ok) {
       // Si la promoción cubre una vacante abierta del nuevo puesto, ciérrala.
       await coverVacancyForEmployee(
         { ...emp, ...target },
-        { source: 'dashboard-promote' }
+        { source: "dashboard-promote" },
       );
       // Además, si había una baja abierta del mismo puesto (la que dejó
       // libre el cupo que estamos llenando), márcala cubierta también.
@@ -273,9 +312,9 @@ export function Dashboard() {
       // `fecha_ingreso` original, así que nunca dispara ese match.
       await coverBajaForPosition(target, {
         num_empleado: emp.num_empleado,
-        source: 'dashboard-promote',
+        source: "dashboard-promote",
       });
-      setSearchTerm('');
+      setSearchTerm("");
     }
     return result;
   }
@@ -313,18 +352,21 @@ export function Dashboard() {
 
   return (
     <div className="config-layout plantilla-layout">
-      <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
-                <nav className="config-sidebar__nav">
+      <aside
+        className={`config-sidebar ${!isMobileMenuOpen ? "mobile-hidden" : ""}`}
+        aria-label="Menú de Plantilla"
+      >
+        <nav className="config-sidebar__nav">
           <button
-            className={`config-sidebar__link ${activeTab === 'general' ? 'active' : ''}`}
-            onClick={() => handleTabClick('general')}
+            className={`config-sidebar__link ${activeTab === "general" ? "active" : ""}`}
+            onClick={() => handleTabClick("general")}
           >
             <Users size={18} aria-hidden="true" />
             <span>Departamentos</span>
           </button>
           <button
-            className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
-            onClick={() => handleTabClick('empleados')}
+            className={`config-sidebar__link ${activeTab === "empleados" ? "active" : ""}`}
+            onClick={() => handleTabClick("empleados")}
           >
             <Contact size={18} aria-hidden="true" />
             <span>Empleados</span>
@@ -332,12 +374,15 @@ export function Dashboard() {
         </nav>
       </aside>
 
-      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
+      <main
+        className={`config-main ${isMobileMenuOpen ? "mobile-hidden" : ""}`}
+        aria-label="Contenido principal"
+      >
         <button
           className="config-mobile-back"
           onClick={() => {
-            if (activeTab !== 'general' && activeTab !== 'empleados') {
-              setActiveTab('general');
+            if (activeTab !== "general" && activeTab !== "empleados") {
+              setActiveTab("general");
             } else {
               setIsMobileMenuOpen(true);
             }
@@ -357,187 +402,252 @@ export function Dashboard() {
             transition={{ duration: 0.2 }}
             className="dashboard__content-area"
           >
-            {activeTab === 'general' && (
+            {activeTab === "general" && (
               <>
                 <header className="dashboard__hero" style={{ paddingBlock: 0 }}>
-                  <div className="dashboard__hero-content" style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                    
-<div className="config-search dashboard-sidebar__search">
-          <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
-            <label htmlFor="search-input" className="sr-only">Buscar en la plantilla</label>
-            <button
-              type="button"
-              className="dashboard-sidebar__search-icon"
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                color: 'inherit',
-                cursor: searchTerm ? 'pointer' : 'default',
-                zIndex: 1
-              }}
-              onClick={() => setSearchTerm('')}
-              disabled={!searchTerm}
-              aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
-              tabIndex={searchTerm ? 0 : -1}
-            >
-              <MorphingIcon 
-                icon={searchTerm ? XIconData : SearchData} 
-                size={16} 
-                className="text-muted" 
-                aria-hidden="true" 
-              />
-            </button>
-            <input
-              id="search-input"
-              type="text"
-              placeholder="Buscar..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="dashboard__search-input dashboard-sidebar__search-input"
-              autoComplete="off"
-              aria-haspopup="listbox"
-              aria-expanded={showSearchDropdown}
-              aria-label="Buscar en la plantilla"
-            />
-            {showSearchDropdown && (
-              <div className="dashboard__search-dropdown" role="listbox" aria-label="Resultados de búsqueda">
-                <div className="search-dropdown__head" aria-hidden="true">Resultados de búsqueda</div>
-                {matchingEmployees.map((emp) => (
-                  <div key={emp.num_empleado} className="search-dropdown-item" role="option" aria-selected="false">
-                    <div className="search-dropdown-item__info">
-                      <div className="search-dropdown-item__avatar" aria-hidden="true">
-                        {emp.nombre ? emp.nombre.charAt(0).toUpperCase() : 'U'}
+                  <div
+                    className="dashboard__hero-content"
+                    style={{
+                      flexDirection: "row",
+                      width: "100%",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "var(--spacing-md)",
+                    }}
+                  >
+                    <div className="config-search dashboard-sidebar__search">
+                      <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
+                        <label htmlFor="search-input" className="sr-only">
+                          Buscar en la plantilla
+                        </label>
+                        <button
+                          type="button"
+                          className="dashboard-sidebar__search-icon"
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            color: "inherit",
+                            cursor: searchTerm ? "pointer" : "default",
+                            zIndex: 1,
+                          }}
+                          onClick={() => setSearchTerm("")}
+                          disabled={!searchTerm}
+                          aria-label={
+                            searchTerm ? "Limpiar búsqueda" : "Buscar"
+                          }
+                          tabIndex={searchTerm ? 0 : -1}
+                        >
+                          <MorphingIcon
+                            icon={searchTerm ? XIconData : SearchData}
+                            size={16}
+                            className="text-muted"
+                            aria-hidden="true"
+                          />
+                        </button>
+                        <input
+                          id="search-input"
+                          type="text"
+                          placeholder="Buscar..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="dashboard__search-input dashboard-sidebar__search-input"
+                          autoComplete="off"
+                          aria-haspopup="listbox"
+                          aria-expanded={showSearchDropdown}
+                          aria-label="Buscar en la plantilla"
+                        />
+                        {showSearchDropdown && (
+                          <div
+                            className="dashboard__search-dropdown"
+                            role="listbox"
+                            aria-label="Resultados de búsqueda"
+                          >
+                            <div
+                              className="search-dropdown__head"
+                              aria-hidden="true"
+                            >
+                              Resultados de búsqueda
+                            </div>
+                            {matchingEmployees.map((emp) => (
+                              <div
+                                key={emp.num_empleado}
+                                className="search-dropdown-item"
+                                role="option"
+                                aria-selected="false"
+                              >
+                                <div className="search-dropdown-item__info">
+                                  <div
+                                    className="search-dropdown-item__avatar"
+                                    aria-hidden="true"
+                                  >
+                                    {emp.nombre
+                                      ? emp.nombre.charAt(0).toUpperCase()
+                                      : "U"}
+                                  </div>
+                                  <div className="search-dropdown-item__text">
+                                    <span className="emp-name">
+                                      {(() => {
+                                        const parts = emp.nombre
+                                          .trim()
+                                          .split(/\s+/);
+                                        let apellidos = "";
+                                        let nombres = emp.nombre;
+                                        const capitalizeWords = (str: string) =>
+                                          str
+                                            .toLowerCase()
+                                            .replace(/\b\w/g, (c) =>
+                                              c.toUpperCase(),
+                                            );
+
+                                        if (parts.length >= 3) {
+                                          apellidos = capitalizeWords(
+                                            `${parts[0]} ${parts[1]}`,
+                                          );
+                                          nombres = capitalizeWords(
+                                            parts.slice(2).join(" "),
+                                          );
+                                        } else if (parts.length === 2) {
+                                          apellidos = capitalizeWords(parts[0]);
+                                          nombres = capitalizeWords(parts[1]);
+                                        } else {
+                                          apellidos = "";
+                                          nombres = capitalizeWords(
+                                            parts[0] || "",
+                                          );
+                                        }
+                                        return (
+                                          <>
+                                            <span className="emp-name__top">
+                                              <span className="emp-name__id">
+                                                #{emp.num_empleado}
+                                              </span>
+                                              {apellidos}
+                                            </span>
+                                            <span className="emp-name__bottom">
+                                              {nombres}
+                                              {emp.en_incapacidad && (
+                                                <IncapacidadBadge iconOnly />
+                                              )}
+                                              {String(
+                                                emp.fecha_ingreso,
+                                              ).localeCompare(localTodayIso()) >
+                                                0 && (
+                                                <ProximoIngresoBadge iconOnly />
+                                              )}
+                                            </span>
+                                          </>
+                                        );
+                                      })()}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="search-dropdown-item__actions">
+                                  <button
+                                    type="button"
+                                    className="search-dropdown-item__edit"
+                                    onClick={() => openEditFor(emp)}
+                                    aria-label={`Editar a ${emp.nombre}`}
+                                    title="Editar empleado"
+                                  >
+                                    <Pencil size={14} aria-hidden="true" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="search-dropdown-item__promote"
+                                    onClick={() => openPromoteFor(emp)}
+                                    aria-label={`Promover a ${emp.nombre}`}
+                                    title="Promover a otro puesto"
+                                  >
+                                    <ArrowUpCircle
+                                      size={14}
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? " is-active" : ""}`}
+                                    onClick={() => setIncapacidadTarget(emp)}
+                                    aria-label={`Marcar incapacidad de ${emp.nombre}`}
+                                    aria-pressed={Boolean(emp.en_incapacidad)}
+                                    title={
+                                      emp.en_incapacidad
+                                        ? "Editar / quitar incapacidad"
+                                        : "Marcar en incapacidad"
+                                    }
+                                  >
+                                    <HeartPulse size={14} aria-hidden="true" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="search-dropdown-item__delete"
+                                    onClick={() => openDeleteFor(emp)}
+                                    aria-label={`Eliminar a ${emp.nombre}`}
+                                    title="Eliminar"
+                                  >
+                                    <Trash2 size={14} aria-hidden="true" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <div className="search-dropdown-item__text">
-                        <span className="emp-name">
-                          {(() => {
-                            const parts = emp.nombre.trim().split(/\s+/);
-                            let apellidos = '';
-                            let nombres = emp.nombre;
-                            const capitalizeWords = (str: string) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-                            
-                            if (parts.length >= 3) {
-                              apellidos = capitalizeWords(`${parts[0]} ${parts[1]}`);
-                              nombres = capitalizeWords(parts.slice(2).join(' '));
-                            } else if (parts.length === 2) {
-                              apellidos = capitalizeWords(parts[0]);
-                              nombres = capitalizeWords(parts[1]);
-                            } else {
-                              apellidos = '';
-                              nombres = capitalizeWords(parts[0] || '');
-                            }
-                            return (
-                              <>
-                                <span className="emp-name__top">
-                                  <span className="emp-name__id">#{emp.num_empleado}</span>
-                                  {apellidos}
-                                </span>
-                                <span className="emp-name__bottom">
-                                  {nombres}
-                                  {emp.en_incapacidad && (
-                                    <IncapacidadBadge iconOnly />
-                                  )}
-                                  {String(emp.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
-                                    <ProximoIngresoBadge iconOnly />
-                                  )}
-                                </span>
-                              </>
-                            );
-                          })()}
+                    </div>
+
+                    <div className="dashboard__hero-actions">
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => {
+                          setSelectedEmployee(null);
+                          setEmpModalMode("add");
+                        }}
+                        title="Nuevo empleado"
+                      >
+                        <UserPlusIcon size={16} aria-hidden="true" />
+                        <span className="dashboard__report-btn-label">
+                          Nuevo
                         </span>
-                      </div>
-                    </div>
-                    <div className="search-dropdown-item__actions">
-                      <button
-                        type="button"
-                        className="search-dropdown-item__edit"
-                        onClick={() => openEditFor(emp)}
-                        aria-label={`Editar a ${emp.nombre}`}
-                        title="Editar empleado"
-                      >
-                        <Pencil size={14} aria-hidden="true" />
                       </button>
                       <button
                         type="button"
-                        className="search-dropdown-item__promote"
-                        onClick={() => openPromoteFor(emp)}
-                        aria-label={`Promover a ${emp.nombre}`}
-                        title="Promover a otro puesto"
+                        className="btn-secondary dashboard__report-btn"
+                        onClick={() => setVacancyReportOpen(true)}
+                        title="Resumen de vacantes"
                       >
-                        <ArrowUpCircle size={14} aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? ' is-active' : ''}`}
-                        onClick={() => setIncapacidadTarget(emp)}
-                        aria-label={`Marcar incapacidad de ${emp.nombre}`}
-                        aria-pressed={Boolean(emp.en_incapacidad)}
-                        title={
-                          emp.en_incapacidad
-                            ? 'Editar / quitar incapacidad'
-                            : 'Marcar en incapacidad'
-                        }
-                      >
-                        <HeartPulse size={14} aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        className="search-dropdown-item__delete"
-                        onClick={() => openDeleteFor(emp)}
-                        aria-label={`Eliminar a ${emp.nombre}`}
-                        title="Eliminar empleado"
-                      >
-                        <Trash2 size={14} aria-hidden="true" />
+                        <ClipboardList size={16} aria-hidden="true" />
+                        <span className="dashboard__report-btn-label">
+                          Reporte
+                        </span>
                       </button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="dashboard__hero-actions">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => {
-                  setSelectedEmployee(null);
-                  setEmpModalMode('add');
-                }}
-                title="Nuevo empleado"
-              >
-                <UserPlusIcon size={16} aria-hidden="true" />
-                <span className="dashboard__report-btn-label">Nuevo</span>
-              </button>
-              <button
-                type="button"
-                className="btn-secondary dashboard__report-btn"
-                onClick={() => setVacancyReportOpen(true)}
-                title="Resumen de vacantes"
-              >
-                <ClipboardList size={16} aria-hidden="true" />
-                <span className="dashboard__report-btn-label">Reporte</span>
-              </button>
-            </div>
-
                   </div>
                 </header>
-                <section className="dashboard__departments" id="dashboard-departments">
+                <section
+                  className="dashboard__departments"
+                  id="dashboard-departments"
+                >
                   {filteredDepts.length === 0 && employees.length === 0 && (
                     <div className="dashboard__empty" id="dashboard-empty">
                       <Users size={48} strokeWidth={1} />
                       <h3>Sin datos cargados</h3>
-                      <p>Importa un archivo JSON o crea un empleado para comenzar.</p>
+                      <p>
+                        Importa un archivo JSON o crea un empleado para
+                        comenzar.
+                      </p>
                     </div>
                   )}
 
                   {filteredDepts.length === 0 && employees.length > 0 && (
                     <div className="dashboard__empty" id="dashboard-no-results">
-                      <MorphingIcon icon={SearchData} size={48} strokeWidth={1} />
+                      <MorphingIcon
+                        icon={SearchData}
+                        size={48}
+                        strokeWidth={1}
+                      />
                       <h3>Sin resultados</h3>
                       <p>No se encontraron coincidencias para tu búsqueda.</p>
                     </div>
@@ -555,8 +665,8 @@ export function Dashboard() {
                 </section>
               </>
             )}
-            {activeTab === 'empleados' && <EmpleadosView />}
-            {activeTab !== 'general' && activeTab !== 'empleados' && (
+            {activeTab === "empleados" && <EmpleadosView />}
+            {activeTab !== "general" && activeTab !== "empleados" && (
               <AreaDetailView
                 dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
                 comments={comments}
@@ -564,86 +674,90 @@ export function Dashboard() {
                 onOpenComment={(area, seccion, puesto) =>
                   setCommentTarget({ area, seccion, puesto })
                 }
-                onBack={() => setActiveTab('general')}
+                onBack={() => setActiveTab("general")}
                 getCoverageBadge={getCoverageBadge}
                 incapacidadPorSeccion={
-                  activeTab !== 'general' ? incapacidadPorAreaSeccion.get(activeTab) ?? null : null
+                  activeTab !== "general"
+                    ? (incapacidadPorAreaSeccion.get(activeTab) ?? null)
+                    : null
                 }
                 incapacidadAreaTotal={
-                  activeTab !== 'general' ? incapacidadPorArea.get(activeTab) ?? 0 : 0
+                  activeTab !== "general"
+                    ? (incapacidadPorArea.get(activeTab) ?? 0)
+                    : 0
                 }
               />
             )}
           </motion.div>
         </AnimatePresence>
 
-      {/* ── Incapacidad Modal ── */}
-      <IncapacidadModal
-        isOpen={incapacidadTarget !== null}
-        employee={incapacidadTarget}
-        onClose={() => setIncapacidadTarget(null)}
-        onSave={updateEmployeeIncapacidad}
-      />
+        {/* ── Incapacidad Modal ── */}
+        <IncapacidadModal
+          isOpen={incapacidadTarget !== null}
+          employee={incapacidadTarget}
+          onClose={() => setIncapacidadTarget(null)}
+          onSave={updateEmployeeIncapacidad}
+        />
 
-      {/* ── Comment Modal ── */}
-      <CommentModal
-        isOpen={commentTarget !== null}
-        area={commentTarget?.area ?? ''}
-        seccion={commentTarget?.seccion ?? ''}
-        puesto={commentTarget?.puesto ?? ''}
-        existingComments={comments.filter(
-          (c) =>
-            commentTarget !== null &&
-            c.area === commentTarget.area &&
-            c.seccion === commentTarget.seccion &&
-            c.puesto === commentTarget.puesto
-        )}
-        onClose={() => setCommentTarget(null)}
-        onSave={handleSaveComment}
-      />
+        {/* ── Comment Modal ── */}
+        <CommentModal
+          isOpen={commentTarget !== null}
+          area={commentTarget?.area ?? ""}
+          seccion={commentTarget?.seccion ?? ""}
+          puesto={commentTarget?.puesto ?? ""}
+          existingComments={comments.filter(
+            (c) =>
+              commentTarget !== null &&
+              c.area === commentTarget.area &&
+              c.seccion === commentTarget.seccion &&
+              c.puesto === commentTarget.puesto,
+          )}
+          onClose={() => setCommentTarget(null)}
+          onSave={handleSaveComment}
+        />
 
-      {/* ── Employee Modal (Add / Delete) ── */}
-      <EmployeeModal
-        isOpen={empModalMode !== null}
-        mode={empModalMode ?? 'add'}
-        employee={selectedEmployee}
-        onClose={() => setEmpModalMode(null)}
-        onSave={handleSaveEmployee}
-        onDelete={handleDeleteEmployee}
-        openVacancies={openVacancies}
-      />
+        {/* ── Employee Modal (Add / Delete) ── */}
+        <EmployeeModal
+          isOpen={empModalMode !== null}
+          mode={empModalMode ?? "add"}
+          employee={selectedEmployee}
+          onClose={() => setEmpModalMode(null)}
+          onSave={handleSaveEmployee}
+          onDelete={handleDeleteEmployee}
+          openVacancies={openVacancies}
+        />
 
-      {/* ── Edit Employee Modal ── */}
-      <EditEmployeeModal
-        isOpen={editTarget !== null}
-        employee={editTarget}
-        onClose={() => setEditTarget(null)}
-        onSave={handleUpdateEmployee}
-      />
+        {/* ── Edit Employee Modal ── */}
+        <EditEmployeeModal
+          isOpen={editTarget !== null}
+          employee={editTarget}
+          onClose={() => setEditTarget(null)}
+          onSave={handleUpdateEmployee}
+        />
 
-      {/* ── Promote Employee Modal ── */}
-      <PromoteEmployeeModal
-        isOpen={promoteTarget !== null}
-        employee={promoteTarget}
-        onClose={() => setPromoteTarget(null)}
-        onPromote={handlePromote}
-        onCreatePosition={createPosition}
-      />
+        {/* ── Promote Employee Modal ── */}
+        <PromoteEmployeeModal
+          isOpen={promoteTarget !== null}
+          employee={promoteTarget}
+          onClose={() => setPromoteTarget(null)}
+          onPromote={handlePromote}
+          onCreatePosition={createPosition}
+        />
 
-      {/* ── Vacancy Report Modal (WhatsApp-ready) ── */}
-      <VacancyReportModal
-        isOpen={vacancyReportOpen}
-        onClose={() => setVacancyReportOpen(false)}
-        positions={positionCoverage}
-      />
+        {/* ── Vacancy Report Modal (WhatsApp-ready) ── */}
+        <VacancyReportModal
+          isOpen={vacancyReportOpen}
+          onClose={() => setVacancyReportOpen(false)}
+          positions={positionCoverage}
+        />
 
-      {/* ── Turnos Importer (clave de horario por num_empleado) ── */}
-      <TurnosImporter
-        isOpen={turnosImporterOpen}
-        onClose={() => setTurnosImporterOpen(false)}
-        employees={employees}
-        onConfirm={assignTurnos}
-      />
+        {/* ── Turnos Importer (clave de horario por num_empleado) ── */}
+        <TurnosImporter
+          isOpen={turnosImporterOpen}
+          onClose={() => setTurnosImporterOpen(false)}
+          employees={employees}
+          onConfirm={assignTurnos}
+        />
       </main>
     </div>
   );
@@ -654,7 +768,7 @@ export function Dashboard() {
 interface DepartmentCardProps {
   dept: DepartmentCoverage;
   onOpen: () => void;
-  getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
+  getCoverageBadge: (pct: number) => "success" | "teal" | "amber" | "error";
   incapacidadCount: number;
 }
 
@@ -668,9 +782,9 @@ function DepartmentCard({
   const hasUrgentes = dept.urgentes > 0;
   const hasAlert = hasVacancies || hasUrgentes;
 
-  const cardClass = ['dept-card', hasAlert ? 'dept-card--alert' : '']
+  const cardClass = ["dept-card", hasAlert ? "dept-card--alert" : ""]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <article className={cardClass} data-area={dept.area}>
@@ -690,14 +804,15 @@ function DepartmentCard({
                 {incapacidadCount}
               </Badge>
             )}
-
           </div>
           <div className="dept-card__header-right">
             <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
               {dept.porcentaje_cobertura}%
             </Badge>
             {hasVacancies && (
-              <span className="dept-card__vacancy-badge">{dept.vacantes} vacantes</span>
+              <span className="dept-card__vacancy-badge">
+                {dept.vacantes} vacantes
+              </span>
             )}
           </div>
         </div>
@@ -712,7 +827,7 @@ function DepartmentCard({
           <div className="dept-card__body-row">
             <span className="dept-card__stat-label">Urgentes</span>
             <span className="dept-card__stat-value">
-              {dept.urgentes || '—'}
+              {dept.urgentes || "—"}
             </span>
           </div>
           <CoverageBar

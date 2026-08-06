@@ -300,7 +300,7 @@ export function EmployeeSheet({
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
-  const title = isAdd ? "Nuevo Empleado" : "Eliminar Empleado";
+  const title = isAdd ? "Nuevo Empleado" : "Eliminar";
   const subtitle = undefined;
 
   const deleteContent = (

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { AlertCircle, AlertTriangle, CheckCircle2, Trash2 } from 'lucide-react';
-import { Modal } from './Modal';
-import type { Employee } from '@/lib/types';
-import './DeleteEmployeeConfirmModal.css';
+import { useEffect, useState } from "react";
+import { AlertCircle, AlertTriangle, CheckCircle2, Trash2 } from "lucide-react";
+import { Modal } from "./Modal";
+import type { Employee } from "@/lib/types";
+import "./DeleteEmployeeConfirmModal.css";
 
 interface DeleteEmployeeConfirmModalProps {
   isOpen: boolean;
   employee: Employee | null;
   onClose: () => void;
   onConfirm: (
-    num_empleado: string
+    num_empleado: string,
   ) => Promise<{ ok: boolean; message?: string }>;
 }
 
@@ -24,13 +24,13 @@ export function DeleteEmployeeConfirmModal({
   onClose,
   onConfirm,
 }: DeleteEmployeeConfirmModalProps) {
-  const [typed, setTyped] = useState('');
+  const [typed, setTyped] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
-    setTyped('');
+    setTyped("");
     setErrorMsg(null);
     setSubmitting(false);
   }, [isOpen, employee]);
@@ -48,7 +48,7 @@ export function DeleteEmployeeConfirmModal({
       setSubmitting(true);
       const result = await onConfirm(employee.num_empleado);
       if (result.ok === false) {
-        setErrorMsg(result.message ?? 'No se pudo eliminar.');
+        setErrorMsg(result.message ?? "No se pudo eliminar.");
         return;
       }
       onClose();
@@ -70,7 +70,7 @@ export function DeleteEmployeeConfirmModal({
           aria-hidden="true"
         />
       }
-      title="Eliminar empleado"
+      title="Eliminar"
       subtitle={`${employee.nombre} · #${employee.num_empleado}`}
     >
       <form onSubmit={handleSubmit} className="modal-body" noValidate>
@@ -93,10 +93,10 @@ export function DeleteEmployeeConfirmModal({
 
         <div className="form-group">
           <label htmlFor="delete-confirm-input">
-            Escribe el número de empleado{' '}
+            Escribe el número de empleado{" "}
             <strong className="delete-employee-modal__token">
               {employee.num_empleado}
-            </strong>{' '}
+            </strong>{" "}
             para confirmar
           </label>
           <input
@@ -131,7 +131,7 @@ export function DeleteEmployeeConfirmModal({
             className="btn-danger"
             disabled={submitting || !matches}
           >
-            {submitting ? 'Eliminando…' : 'Eliminar empleado'}
+            {submitting ? "Eliminando…" : "Eliminar"}
           </button>
         </div>
       </form>
