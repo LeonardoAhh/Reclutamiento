@@ -17,20 +17,20 @@
 
   /* ── Surface ────────────────────────────────────────────────────
      Warm paper canvas over pure white. Cards on pure white to lift from canvas. */
-  --color-canvas: #f6f5f4;                /* Warm off-white (paper) — page background */
-  --color-canvas-soft: #f6f5f4;            /* Alias explícito Notion */
-  --color-surface: #ffffff;                /* Cards, panels, form fields */
-  --color-surface-soft: #f6f5f4;           /* Nav pills, dividers suaves */
-  --color-surface-card: #ffffff;           /* Cards de feature/testimonial */
-  --color-surface-dark: #191817;           /* Superficies oscuras (login panel, footer) */
-  --color-surface-dark-elevated: #232120;  /* Cards anidadas sobre superficie oscura */
-  --color-document-paper: #ffffff;         /* Salida oficial imprimible, independiente del tema */
-  --color-document-ink: #000000;           /* Texto de salidas oficiales */
-  --color-document-muted: #615d59;         /* Texto secundario de salidas oficiales */
-  --color-document-soft: #f6f5f4;          /* Panel secundario de salidas oficiales */
-  --color-document-hairline: #d5d3d1;      /* Bordes de salidas oficiales */
-  --color-document-primary: #000000;       /* Encabezado de salidas oficiales */
-  --color-document-on-primary: #ffffff;    /* Texto sobre encabezado oficial */
+  --color-canvas: #f6f5f4; /* Warm off-white (paper) — page background */
+  --color-canvas-soft: #f6f5f4; /* Alias explícito Notion */
+  --color-surface: #ffffff; /* Cards, panels, form fields */
+  --color-surface-soft: #f6f5f4; /* Nav pills, dividers suaves */
+  --color-surface-card: #ffffff; /* Cards de feature/testimonial */
+  --color-surface-dark: #191817; /* Superficies oscuras (login panel, footer) */
+  --color-surface-dark-elevated: #232120; /* Cards anidadas sobre superficie oscura */
+  --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
+  --color-document-ink: #000000; /* Texto de salidas oficiales */
+  --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
+  --color-document-soft: #f6f5f4; /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d5d3d1; /* Bordes de salidas oficiales */
+  --color-document-primary: #000000; /* Encabezado de salidas oficiales */
+  --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #d5d3d1;
@@ -38,19 +38,19 @@
   --color-hairline-strong: #a39e98;
 
   /* ── Text ───────────────────────────────────────────────────── */
-  --color-ink: #000000;                    /* Notion true-black (soft via alpha en usos) */
+  --color-ink: #000000; /* Notion true-black (soft via alpha en usos) */
   --color-body-strong: #000000;
-  --color-body: #31302e;                   /* Warm charcoal — body copy */
+  --color-body: #31302e; /* Warm charcoal — body copy */
   --color-charcoal: #31302e;
-  --color-muted: #615d59;                  /* Stone — supporting copy */
-  --color-muted-soft: #a39e98;             /* Ash — captions, placeholders */
+  --color-muted: #615d59; /* Stone — supporting copy */
+  --color-muted-soft: #a39e98; /* Ash — captions, placeholders */
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
   --color-on-dark-soft: #b8b6b3;
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: #1aae39;                /* Sticker green como affirmative */
-  --color-warning: #dd5b00;                /* Sticker orange como warning */
+  --color-success: #1aae39; /* Sticker green como affirmative */
+  --color-warning: #dd5b00; /* Sticker orange como warning */
   --color-error: #ef4444;
 
   /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
@@ -66,7 +66,7 @@
   --color-accent-brown: #523410;
 
   /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
-  --color-brand-whatsapp: #25D366;
+  --color-brand-whatsapp: #25d366;
   --color-brand-accent: var(--color-primary);
   --color-badge-orange: var(--color-accent-orange);
 
@@ -100,9 +100,13 @@
   /* ── Typography ─────────────────────────────────────────────────
      Notion sets everything in tuned Inter. Weight 700 for display,
      weight 400 for body — the primary expressive lever. */
-  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+  --font-display:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code:
+    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas,
+    monospace;
 
   /* display-xl — hero headline (Notion: 64px 700, tight tracking) */
   --type-display-xl-size: 40px;
@@ -221,7 +225,7 @@
   --transition-base: 250ms ease;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-max: 1200px;
+  --container-max: 1700px;
   --container-padding: var(--spacing-xl);
   --container-padding-mobile: var(--spacing-lg);
   --feature-result-card-min: 34rem;
@@ -291,29 +295,25 @@
   /* Shadows — Notion barely-there layered stack.
      Level 0 = flat (hairline only). Level 1 = soft. Level 2 = elevated. */
   --shadow-xs:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
-    0 0.8px 2.925px rgba(0, 0, 0, 0.02);
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02);
   --shadow-sm:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
-    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
     0 2.025px 7.847px rgba(0, 0, 0, 0.027);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-sm);
   --shadow-elevated:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
-    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
-    0 4px 18px rgba(0, 0, 0, 0.04);
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
   --shadow-prominent:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01),
-    0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027),
-    0 4px 18px rgba(0, 0, 0, 0.04),
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04),
     0 23px 52px rgba(0, 0, 0, 0.05);
 
   --header-height: 64px;
   --mobile-nav-height: 56px;
-  --mobile-nav-content-space: calc(var(--mobile-nav-height) + var(--spacing-2xl));
+  --mobile-nav-content-space: calc(
+    var(--mobile-nav-height) + var(--spacing-2xl)
+  );
   --transition-slow: 350ms ease;
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-theme-in: 300ms;
@@ -466,13 +466,21 @@ body {
 }
 
 @keyframes theme-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes theme-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Accesibilidad: usuarios con reduce-motion no ven animación. */
@@ -928,8 +936,12 @@ code:not(pre code) {
   transition: opacity var(--transition-fast);
 }
 
-.phone-validation-icon.valid  { color: var(--color-success); }
-.phone-validation-icon.invalid { color: var(--color-error);  }
+.phone-validation-icon.valid {
+  color: var(--color-success);
+}
+.phone-validation-icon.invalid {
+  color: var(--color-error);
+}
 
 .input-error {
   border-color: var(--color-error) !important;
@@ -1262,7 +1274,8 @@ code:not(pre code) {
   /* Cualquier contenedor de contenido (no header/footer) es el área scrollable.
      Robusto aunque el wrapper no use la clase .modal-body. iOS: min-height:0 +
      -webkit-overflow-scrolling + overscroll-behavior para permitir el pan. */
-  .modal-content.modal-fullscreen-mobile > *:not(.modal-header):not(.modal-footer) {
+  .modal-content.modal-fullscreen-mobile
+    > *:not(.modal-header):not(.modal-footer) {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
@@ -1346,7 +1359,9 @@ code:not(pre code) {
   border: none;
   background: rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: transform var(--transition-fast), background var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
 }
 
 @media (min-width: 768px) {
@@ -1487,9 +1502,15 @@ code:not(pre code) {
 }
 
 @keyframes floatEmpty {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 /* ========================================
@@ -1549,7 +1570,6 @@ code:not(pre code) {
 .color-primary {
   color: var(--color-primary);
 }
-
 
 /* ========================================
    DOCUMENTOS PAGE

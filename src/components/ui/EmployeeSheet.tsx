@@ -1,34 +1,41 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AlertCircle, CheckCircle2, Trash2, UserPlus } from 'lucide-react';
-import type { Employee } from '@/lib/types';
-import { usePositions } from '@/lib/positions';
-import { localTodayIso } from '@/lib/dates';
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, CheckCircle2, Trash2, UserPlus } from "lucide-react";
+import type { Employee } from "@/lib/types";
+import { usePositions } from "@/lib/positions";
+import { localTodayIso } from "@/lib/dates";
 import {
   TRANSPORTE_NA,
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
-} from '@/lib/transporte-routes';
-import { Modal } from './Modal';
-import { FormWizard } from './FormWizard';
-import { useIsMobile } from '@/hooks/useIsMobile';
-import { CustomSelect } from './CustomSelect';
-import './EmployeeSheet.css';
+} from "@/lib/transporte-routes";
+import { Modal } from "./Modal";
+import { FormWizard } from "./FormWizard";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { CustomSelect } from "./CustomSelect";
+import "./EmployeeSheet.css";
 
 interface EmployeeSheetProps {
   isOpen: boolean;
-  mode: 'add' | 'delete';
+  mode: "add" | "delete";
   employee?: Employee | null;
   onClose: () => void;
   onSave?: (emp: Employee) => Promise<{ ok: boolean; message?: string }> | void;
   onDelete?: (
     num_empleado: string,
-    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string },
   ) => Promise<{ ok: boolean; message?: string }> | void;
 }
 
 type FormState = Pick<
   Employee,
-  'num_empleado' | 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso'
+  | "num_empleado"
+  | "nombre"
+  | "area"
+  | "seccion"
+  | "puesto"
+  | "categoria"
+  | "turno"
+  | "fecha_ingreso"
 > & {
   /**
    * `''` = sin asignar (se persiste como `null`).
@@ -42,16 +49,16 @@ type FormState = Pick<
 
 function emptyForm(): FormState {
   return {
-    num_empleado: '',
-    nombre: '',
-    area: '',
-    seccion: '',
-    puesto: '',
-    categoria: 'N/A',
-    turno: '1',
+    num_empleado: "",
+    nombre: "",
+    area: "",
+    seccion: "",
+    puesto: "",
+    categoria: "N/A",
+    turno: "1",
     fecha_ingreso: localTodayIso(),
-    ruta: '',
-    parada: '',
+    ruta: "",
+    parada: "",
   };
 }
 
@@ -68,8 +75,8 @@ export function EmployeeSheet({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [bajaForm, setBajaForm] = useState({
     fecha_baja: localTodayIso(),
-    tipo_baja: 'Renuncia Voluntaria',
-    motivo_baja: '',
+    tipo_baja: "Renuncia Voluntaria",
+    motivo_baja: "",
   });
   const isMobile = useIsMobile();
 
@@ -77,27 +84,27 @@ export function EmployeeSheet({
   const { positions } = usePositions();
   const areas = useMemo(
     () => Array.from(new Set(positions.map((p) => p.area))),
-    [positions]
+    [positions],
   );
   const sectionsForArea = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
-        )
+          positions.filter((p) => p.area === form.area).map((p) => p.seccion),
+        ),
       ),
-    [positions, form.area]
+    [positions, form.area],
   );
   const puestosForSection = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter(
-            (p) => p.area === form.area && p.seccion === form.seccion
-          ).map((p) => p.puesto)
-        )
+          positions
+            .filter((p) => p.area === form.area && p.seccion === form.seccion)
+            .map((p) => p.puesto),
+        ),
       ),
-    [positions, form.area, form.seccion]
+    [positions, form.area, form.seccion],
   );
 
   useEffect(() => {
@@ -105,7 +112,7 @@ export function EmployeeSheet({
     setErrorMsg(null);
     setSubmitting(false);
 
-    if (mode === 'delete' && employee) {
+    if (mode === "delete" && employee) {
       setForm({
         num_empleado: employee.num_empleado,
         nombre: employee.nombre,
@@ -115,13 +122,13 @@ export function EmployeeSheet({
         categoria: employee.categoria,
         turno: employee.turno,
         fecha_ingreso: employee.fecha_ingreso,
-        ruta: employee.ruta ?? '',
-        parada: employee.parada ?? '',
+        ruta: employee.ruta ?? "",
+        parada: employee.parada ?? "",
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
-        tipo_baja: 'Renuncia Voluntaria',
-        motivo_baja: '',
+        tipo_baja: "Renuncia Voluntaria",
+        motivo_baja: "",
       });
     } else {
       setForm(emptyForm());
@@ -136,9 +143,9 @@ export function EmployeeSheet({
     form.puesto.length > 0;
 
   const isDeleteValid =
-    bajaForm.fecha_baja !== '' &&
-    bajaForm.tipo_baja !== '' &&
-    bajaForm.motivo_baja.trim() !== '';
+    bajaForm.fecha_baja !== "" &&
+    bajaForm.tipo_baja !== "" &&
+    bajaForm.motivo_baja.trim() !== "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -147,7 +154,7 @@ export function EmployeeSheet({
 
     try {
       setSubmitting(true);
-      if (mode === 'add' && onSave) {
+      if (mode === "add" && onSave) {
         // `ruta`/`parada` vacíos = null en Supabase (sin asignar).
         const payload: Employee = {
           ...form,
@@ -156,14 +163,14 @@ export function EmployeeSheet({
         };
         const result = await onSave(payload);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setErrorMsg(result.message ?? "No se pudo guardar.");
           return;
         }
         onClose();
-      } else if (mode === 'delete' && onDelete && form.num_empleado) {
+      } else if (mode === "delete" && onDelete && form.num_empleado) {
         const result = await onDelete(form.num_empleado, bajaForm);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          setErrorMsg(result.message ?? "No se pudo eliminar.");
           return;
         }
         onClose();
@@ -173,7 +180,7 @@ export function EmployeeSheet({
     }
   }
 
-  const isAdd = mode === 'add';
+  const isAdd = mode === "add";
 
   /* ── Campos del alta, agrupados para componer ambos layouts ──────────
      PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
@@ -188,7 +195,9 @@ export function EmployeeSheet({
           inputMode="numeric"
           required
           value={form.num_empleado}
-          onChange={(e) => setForm({ ...form, num_empleado: e.target.value.trim() })}
+          onChange={(e) =>
+            setForm({ ...form, num_empleado: e.target.value.trim() })
+          }
           placeholder="Ej. 1234"
           autoComplete="off"
         />
@@ -200,7 +209,9 @@ export function EmployeeSheet({
           type="text"
           required
           value={form.nombre}
-          onChange={(e) => setForm({ ...form, nombre: e.target.value.toUpperCase() })}
+          onChange={(e) =>
+            setForm({ ...form, nombre: e.target.value.toUpperCase() })
+          }
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
         />
@@ -215,7 +226,9 @@ export function EmployeeSheet({
         <CustomSelect
           id="emp-area"
           value={form.area}
-          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+          onChange={(val) =>
+            setForm({ ...form, area: val, seccion: "", puesto: "" })
+          }
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
         />
@@ -225,7 +238,7 @@ export function EmployeeSheet({
         <CustomSelect
           id="emp-seccion"
           value={form.seccion}
-          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+          onChange={(val) => setForm({ ...form, seccion: val, puesto: "" })}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
           placeholder="Seleccione sección…"
           disabled={!form.area}
@@ -249,10 +262,10 @@ export function EmployeeSheet({
           value={form.turno}
           onChange={(val) => setForm({ ...form, turno: val })}
           options={[
-            { value: '1', label: '1' },
-            { value: '2', label: '2' },
-            { value: '3', label: '3' },
-            { value: '4', label: '4' },
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
           ]}
         />
       </div>
@@ -277,7 +290,9 @@ export function EmployeeSheet({
   const fieldsTransporte = null;
 
   const errorNotice = errorMsg ? (
-    <p className="form-error" role="alert">{errorMsg}</p>
+    <p className="form-error" role="alert">
+      {errorMsg}
+    </p>
   ) : null;
 
   const icon = isAdd ? (
@@ -285,23 +300,25 @@ export function EmployeeSheet({
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
-  const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
+  const title = isAdd ? "Nuevo Empleado" : "Eliminar Empleado";
   const subtitle = undefined;
 
   const deleteContent = (
     <div className="delete-flow">
       <div className="delete-warning">
         <p className="delete-warning__title">
-          ¿Registrar baja de{' '}
-          <span className="delete-warning__name">{form.nombre || 'este empleado'}</span>?
+          ¿Registrar baja de{" "}
+          <span className="delete-warning__name">
+            {form.nombre || "este empleado"}
+          </span>
+          ?
         </p>
         <dl className="delete-warning__meta">
           <div className="delete-warning__meta-row">
             <dt>Núm.</dt>
-            <dd>{form.num_empleado || '—'}</dd>
+            <dd>{form.num_empleado || "—"}</dd>
           </div>
         </dl>
-        <p className="delete-warning__sub">Esta acción no se puede deshacer.</p>
       </div>
 
       <div className="form-grid employee-sheet__baja-grid">
@@ -311,7 +328,9 @@ export function EmployeeSheet({
             id="baja-fecha"
             type="date"
             value={bajaForm.fecha_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
+            onChange={(e) =>
+              setBajaForm({ ...bajaForm, fecha_baja: e.target.value })
+            }
           />
         </div>
         <div className="form-group">
@@ -321,11 +340,14 @@ export function EmployeeSheet({
             value={bajaForm.tipo_baja}
             onChange={(val) => setBajaForm({ ...bajaForm, tipo_baja: val })}
             options={[
-              { value: 'Renuncia', label: 'Renuncia' },
-              { value: 'Ausentismo', label: 'Ausentismo' },
-              { value: 'Rescisión de Contrato', label: 'Rescisión de Contrato' },
-              { value: 'Termino de Contrato', label: 'Termino de Contrato' },
-              { value: 'Solo Inducción', label: 'Solo Inducción' },
+              { value: "Renuncia", label: "Renuncia" },
+              { value: "Ausentismo", label: "Ausentismo" },
+              {
+                value: "Rescisión de Contrato",
+                label: "Rescisión de Contrato",
+              },
+              { value: "Termino de Contrato", label: "Termino de Contrato" },
+              { value: "Solo Inducción", label: "Solo Inducción" },
             ]}
           />
         </div>
@@ -337,7 +359,9 @@ export function EmployeeSheet({
             required
             placeholder="Especifica el motivo..."
             value={bajaForm.motivo_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, motivo_baja: e.target.value })}
+            onChange={(e) =>
+              setBajaForm({ ...bajaForm, motivo_baja: e.target.value })
+            }
             autoComplete="off"
           />
         </div>
@@ -361,7 +385,7 @@ export function EmployeeSheet({
           className="btn-primary"
           disabled={!isAddValid || submitting}
         >
-          {submitting ? 'Guardando…' : 'Guardar'}
+          {submitting ? "Guardando…" : "Guardar"}
         </button>
       ) : (
         <button
@@ -369,7 +393,7 @@ export function EmployeeSheet({
           className="btn-danger"
           disabled={!isDeleteValid || submitting}
         >
-          {submitting ? 'Registrando baja…' : 'Registrar Baja'}
+          {submitting ? "Registrando baja…" : "Registrar Baja"}
         </button>
       )}
     </>
@@ -409,7 +433,7 @@ export function EmployeeSheet({
       isOpen={isOpen}
       onClose={onClose}
       className={`employee-sheet employee-modal modal-fullscreen-mobile${
-        isAdd ? ' modal-wizard-mobile' : ''
+        isAdd ? " modal-wizard-mobile" : ""
       }`}
       icon={icon}
       title={title}
@@ -427,16 +451,16 @@ export function EmployeeSheet({
             notice={errorNotice}
             steps={[
               {
-                id: 'identidad',
-                title: 'Identidad',
+                id: "identidad",
+                title: "Identidad",
                 isValid:
                   form.num_empleado.trim().length > 0 &&
                   form.nombre.trim().length > 0,
                 content: <div className="form-grid">{fieldsIdentidad}</div>,
               },
               {
-                id: 'posicion',
-                title: 'Posición',
+                id: "posicion",
+                title: "Posición",
                 isValid:
                   form.area.length > 0 &&
                   form.seccion.length > 0 &&
@@ -444,8 +468,8 @@ export function EmployeeSheet({
                 content: <div className="form-grid">{fieldsPosicion}</div>,
               },
               {
-                id: 'transporte',
-                title: 'Transporte',
+                id: "transporte",
+                title: "Transporte",
                 content: <div className="form-grid">{fieldsTransporte}</div>,
               },
             ]}

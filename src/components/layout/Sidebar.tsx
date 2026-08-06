@@ -226,18 +226,16 @@ export function Sidebar({
                       setModalOpen(true);
                     }}
                   >
+                    <span>Avatar</span>
                     <ImagePlus
                       size={16}
                       className="app-header__popover-icon"
                       aria-hidden="true"
                     />
-                    <span>Cambiar foto de perfil</span>
                   </button>
 
                   <div className="app-header__popover-row">
-                    <span className="app-header__popover-row-label">
-                      Tema visual
-                    </span>
+                    <span className="app-header__popover-row-label">Tema</span>
                     <ThemeToggle />
                   </div>
 

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { NAV_ITEMS } from "./navigation";
@@ -47,7 +48,7 @@ export function Header({ onMobileMenuToggle }: HeaderProps = {}) {
               onClick={onMobileMenuToggle}
               aria-label="Abrir menú"
             >
-              {/* Mobile menu icon handled by parent */}
+              <Menu size={24} aria-hidden="true" />
             </button>
           )}
 

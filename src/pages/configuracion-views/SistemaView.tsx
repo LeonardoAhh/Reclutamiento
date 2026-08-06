@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Activity, CheckCircle2, ShieldAlert } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
-import { sileo } from '@/lib/notify';
-import { Modal } from '@/components/ui/Modal';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { ActiveSessions } from './components/ActiveSessions';
-import './SistemaView.css';
+import { useState } from "react";
+import { Activity, CheckCircle2, ShieldAlert } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { sileo } from "@/lib/notify";
+import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { ActiveSessions } from "./components/ActiveSessions";
+import "./SistemaView.css";
 
 export function SistemaView() {
   const { profile, profileLoading, loading: authLoading } = useAuth();
@@ -20,9 +20,10 @@ export function SistemaView() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === "admin";
   const loading = authLoading || profileLoading || maintenanceLoading;
-  const configurationUnavailable = Boolean(maintenanceError) && !maintenanceLoading;
+  const configurationUnavailable =
+    Boolean(maintenanceError) && !maintenanceLoading;
 
   const confirmMaintenanceChange = async () => {
     setSaving(true);
@@ -37,15 +38,22 @@ export function SistemaView() {
 
     setShowConfirmation(false);
     sileo.success({
-      title: nextValue ? 'Mantenimiento activado' : 'Mantenimiento desactivado',
+      title: nextValue ? "Mantenimiento activado" : "Mantenimiento desactivado",
     });
   };
 
   if (authLoading || profileLoading) {
     return (
       <section className="config-page" aria-busy="true">
-        <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-lg)" />
-        <span className="sr-only" role="status">Cargando configuración del sistema…</span>
+        <Skeleton
+          variant="rect"
+          width="100%"
+          height="var(--skeleton-card-height)"
+          radius="var(--rounded-lg)"
+        />
+        <span className="sr-only" role="status">
+          Cargando configuración del sistema…
+        </span>
       </section>
     );
   }
@@ -55,7 +63,9 @@ export function SistemaView() {
       <section className="config-page">
         <div className="sistema-permission-state" role="status">
           <ShieldAlert aria-hidden="true" />
-          <p className="type-body-md text-muted">Esta sección está disponible solo para administradores.</p>
+          <p className="type-body-md text-muted">
+            Esta sección está disponible solo para administradores.
+          </p>
         </div>
       </section>
     );
@@ -63,25 +73,31 @@ export function SistemaView() {
 
   return (
     <section className="config-page">
-
       <div className="sistema-grid">
-        <section className="sistema-view-section" aria-labelledby="maintenance-title">
+        <section
+          className="sistema-view-section"
+          aria-labelledby="maintenance-title"
+        >
           <header className="sistema-section-header">
             <div className="sistema-icon-wrap" aria-hidden="true">
               <ShieldAlert className="sistema-icon" />
             </div>
             <div>
-              <h3 id="maintenance-title" className="type-heading-sm">Modo mantenimiento</h3>
-              <span className={`sistema-status${isMaintenance ? ' is-active' : ''}`}>
+              <h3 id="maintenance-title" className="type-heading-sm">
+                Modo mantenimiento
+              </h3>
+              <span
+                className={`sistema-status${isMaintenance ? " is-active" : ""}`}
+              >
                 <span className="sistema-status__dot" aria-hidden="true" />
-                {isMaintenance ? 'Activo' : 'Inactivo'}
+                {isMaintenance ? "Activo" : "Inactivo"}
               </span>
             </div>
           </header>
 
           <div className="sistema-content">
             <p className="type-body-sm text-muted">
-              Al activarlo, los administradores conservan acceso y el resto de usuarios verá la página de mantenimiento.
+              Solo los administradores tendrán acceso al sistema.
             </p>
 
             {maintenanceError && (
@@ -104,15 +120,15 @@ export function SistemaView() {
               type="button"
               onClick={() => setShowConfirmation(true)}
               disabled={loading || configurationUnavailable}
-              className={`type-button ${isMaintenance ? 'btn-secondary' : 'btn-primary'} sistema-maintenance-action`}
+              className={`type-button ${isMaintenance ? "btn-secondary" : "btn-primary"} sistema-maintenance-action`}
             >
               {configurationUnavailable
-                ? 'Configuración no disponible'
+                ? "Configuración no disponible"
                 : loading
-                  ? 'Consultando estado…'
+                  ? "Consultando estado…"
                   : isMaintenance
-                    ? 'Desactivar mantenimiento'
-                    : 'Activar mantenimiento'}
+                    ? "Desactivar"
+                    : "Activar"}
             </button>
           </div>
         </section>
@@ -122,7 +138,7 @@ export function SistemaView() {
 
       <Modal
         isOpen={showConfirmation}
-        title={isMaintenance ? 'Desactivar mantenimiento' : 'Activar mantenimiento'}
+        title={isMaintenance ? "Desactivar" : "Activar"}
         onClose={() => !saving && setShowConfirmation(false)}
         fullscreenMobile={false}
         className="sistema-confirmation-modal"
@@ -138,11 +154,11 @@ export function SistemaView() {
             </button>
             <button
               type="button"
-              className={isMaintenance ? 'btn-secondary' : 'btn-primary'}
+              className={isMaintenance ? "btn-secondary" : "btn-primary"}
               onClick={confirmMaintenanceChange}
               disabled={saving}
             >
-              {saving ? 'Guardando…' : 'Confirmar'}
+              {saving ? "Guardando…" : "Confirmar"}
             </button>
           </>
         }
@@ -151,8 +167,8 @@ export function SistemaView() {
           <Activity aria-hidden="true" />
           <p className="type-body-md text-charcoal">
             {isMaintenance
-              ? 'El acceso normal se restaurará para todos los usuarios conectados.'
-              : 'Los usuarios no administradores pasarán inmediatamente a la página de mantenimiento.'}
+              ? "Se restaurará el acceso normal."
+              : "Se activará el modo mantenimiento."}
           </p>
         </div>
       </Modal>

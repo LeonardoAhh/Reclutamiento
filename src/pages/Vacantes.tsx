@@ -1,34 +1,63 @@
-import { useMemo, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, ArrowRightLeft, BarChart3, Calendar, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Clock, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, Trash2, UserPlus } from 'lucide-react';
-import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
-import { ArrowRightLeft as ArrowRightLeftIconData, CheckCircle2 as CheckCircle2IconData } from 'lucide';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Modal } from '@/components/ui/Modal';
-import { useBajas } from '@/hooks/useBajas';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { useAuth } from '@/hooks/useAuth';
-import { usePositions } from '@/lib/positions';
-import { calculatePositionCoverage, normalizeString, normalizePuesto, toTitleCase } from '@/lib/utils';
-import { computeAutoVacancies, type AutoVacancy } from '@/lib/autoVacancies';
-import { notifyResult, sileo } from '@/lib/notify';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { SkeletonTable } from '@/components/ui/PageSkeletons';
-import { VacancyStatusBadge } from '@/components/ui/VacancyStatusBadge';
-import { VacancyTypeBadge } from '@/components/ui/VacancyTypeBadge';
-import { CustomSelect } from '@/components/ui/CustomSelect';
-import { ReclutadorBadge } from '@/components/ui/Badge';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
-import { formatShortDate, localTodayIso, formatMonthLabel } from '@/lib/dates';
-import { PositionSettingsWizard } from '@/components/ui/PositionSettingsWizard';
-import { EASE_OUT } from '@/lib/motion';
-import './Pipeline.css';
-import './Vacantes.css';
+import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  AlertTriangle,
+  ArrowRightLeft,
+  BarChart3,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
+  SlidersHorizontal,
+  Trash2,
+  UserPlus,
+} from "lucide-react";
+import {
+  Search as SearchIconData,
+  SlidersHorizontal as SlidersHorizontalIconData,
+  X as XIconData,
+} from "lucide";
+import {
+  ArrowRightLeft as ArrowRightLeftIconData,
+  CheckCircle2 as CheckCircle2IconData,
+} from "lucide";
+import { Tooltip } from "@/components/ui/Tooltip";
+import { Modal } from "@/components/ui/Modal";
+import { useBajas } from "@/hooks/useBajas";
+import { useSupabaseData } from "@/hooks/useSupabaseData";
+import { useAuth } from "@/hooks/useAuth";
+import { usePositions } from "@/lib/positions";
+import {
+  calculatePositionCoverage,
+  normalizeString,
+  normalizePuesto,
+  toTitleCase,
+} from "@/lib/utils";
+import { computeAutoVacancies, type AutoVacancy } from "@/lib/autoVacancies";
+import { notifyResult, sileo } from "@/lib/notify";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { SkeletonTable } from "@/components/ui/PageSkeletons";
+import { VacancyStatusBadge } from "@/components/ui/VacancyStatusBadge";
+import { VacancyTypeBadge } from "@/components/ui/VacancyTypeBadge";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ReclutadorBadge } from "@/components/ui/Badge";
+import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { RECLUTADORES_ACTIVOS } from "@/lib/constants";
+import { formatShortDate, localTodayIso, formatMonthLabel } from "@/lib/dates";
+import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
+import { EASE_OUT } from "@/lib/motion";
+import "./Pipeline.css";
+import "./Vacantes.css";
 
-type StatusFilter = 'todas' | 'abierta' | 'cubierta';
-type VacancyTypeFilter = 'todos' | 'autorizado' | 'backup';
+type StatusFilter = "todas" | "abierta" | "cubierta";
+type VacancyTypeFilter = "todos" | "autorizado" | "backup";
 
 const RECLUTADOR_OPTIONS = [
   ...RECLUTADORES_ACTIVOS.map((r) => ({
@@ -46,13 +75,20 @@ export function Vacantes() {
     desmarcarCubierta,
   } = useBajas();
   const { employees, comments, loading: empLoading } = useSupabaseData();
-  const { positions, customPositions, positionSettings, deletePosition, upsertPositionSetting, loading: positionsLoading } = usePositions();
+  const {
+    positions,
+    customPositions,
+    positionSettings,
+    deletePosition,
+    upsertPositionSetting,
+    loading: positionsLoading,
+  } = usePositions();
   const { profile } = useAuth();
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === "admin";
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
-  const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>('todos');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("todas");
+  const [typeFilter, setTypeFilter] = useState<VacancyTypeFilter>("todos");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -72,7 +108,7 @@ export function Vacantes() {
 
   const vacancies = useMemo(
     () => computeAutoVacancies(bajas, employees, positions),
-    [bajas, employees, positions]
+    [bajas, employees, positions],
   );
 
   const split = useMemo(() => {
@@ -89,31 +125,50 @@ export function Vacantes() {
     }
     const vacAut = Math.max(0, autorizada - ocupadosAut);
     const vacBackup = Math.max(0, backup - ocupadosBackup);
-    const pct = (c: number, t: number) => (t > 0 ? Math.round((c / t) * 100) : 0);
+    const pct = (c: number, t: number) =>
+      t > 0 ? Math.round((c / t) * 100) : 0;
     return {
       plantilla: { autorizado: autorizada, backup },
       ocupados: { autorizado: ocupadosAut, backup: ocupadosBackup },
       vacantes: { autorizado: vacAut, backup: vacBackup },
-      cobertura: { autorizado: pct(ocupadosAut, autorizada), backup: pct(ocupadosBackup, backup) },
+      cobertura: {
+        autorizado: pct(ocupadosAut, autorizada),
+        backup: pct(ocupadosBackup, backup),
+      },
     };
   }, [employees, comments, positions]);
 
   const kpiRows = useMemo(
     () =>
       [
-        { id: 'plantilla', label: 'Plantilla', pair: split.plantilla },
-        { id: 'ocupados', label: 'Ocupados', pair: split.ocupados, tone: 'done' as const },
-        { id: 'vacantes', label: 'Vacantes', pair: split.vacantes, tone: 'open' as const },
-        { id: 'cobertura', label: 'Cobertura', pair: split.cobertura, suffix: '%' },
+        { id: "plantilla", label: "Plantilla", pair: split.plantilla },
+        {
+          id: "ocupados",
+          label: "Ocupados",
+          pair: split.ocupados,
+          tone: "done" as const,
+        },
+        {
+          id: "vacantes",
+          label: "Vacantes",
+          pair: split.vacantes,
+          tone: "open" as const,
+        },
+        {
+          id: "cobertura",
+          label: "Cobertura",
+          pair: split.cobertura,
+          suffix: "%",
+        },
       ] as const,
-    [split]
+    [split],
   );
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return vacancies
-      .filter((v) => statusFilter === 'todas' || v.status === statusFilter)
-      .filter((v) => typeFilter === 'todos' || v.vacancyType === typeFilter)
+      .filter((v) => statusFilter === "todas" || v.status === statusFilter)
+      .filter((v) => typeFilter === "todos" || v.vacancyType === typeFilter)
       .filter((v) => {
         if (!q) return true;
         const haystack = [
@@ -126,53 +181,66 @@ export function Vacantes() {
           v.reclutador,
         ]
           .filter(Boolean)
-          .join(' ')
+          .join(" ")
           .toLowerCase();
         return haystack.includes(q);
       })
       .sort((a, b) => {
-        if (a.status !== b.status) return a.status === 'abierta' ? -1 : 1;
+        if (a.status !== b.status) return a.status === "abierta" ? -1 : 1;
         if (a.vacancyType !== b.vacancyType)
-          return a.vacancyType === 'autorizado' ? -1 : 1;
+          return a.vacancyType === "autorizado" ? -1 : 1;
         return b.dias - a.dias;
       });
   }, [vacancies, searchTerm, statusFilter, typeFilter]);
 
   const vacanciesByMonth = useMemo(() => {
-    const counts: Record<string, { total: number; abierta: number; cubierta: number; puestos: Record<string, { abierta: number; cubierta: number }> }> = {};
+    const counts: Record<
+      string,
+      {
+        total: number;
+        abierta: number;
+        cubierta: number;
+        puestos: Record<string, { abierta: number; cubierta: number }>;
+      }
+    > = {};
     for (const v of vacancies) {
       const isStructural = !v.baja || !v.fechaBaja;
-      const month = isStructural ? 'Estructurales' : v.fechaBaja.slice(0, 7);
-      if (!counts[month]) counts[month] = { total: 0, abierta: 0, cubierta: 0, puestos: {} };
+      const month = isStructural ? "Estructurales" : v.fechaBaja.slice(0, 7);
+      if (!counts[month])
+        counts[month] = { total: 0, abierta: 0, cubierta: 0, puestos: {} };
       counts[month].total++;
-      if (v.status === 'abierta') counts[month].abierta++;
+      if (v.status === "abierta") counts[month].abierta++;
       else counts[month].cubierta++;
-      
+
       // Normalize puesto name to group categories/shifts (e.g., "Operador de Máquina D" -> "Operador de Máquina")
       const rawPuesto = v.puesto.trim();
-      const normalizedPuesto = rawPuesto.replace(/\s+[A-Za-z]$/, '').trim();
+      const normalizedPuesto = rawPuesto.replace(/\s+[A-Za-z]$/, "").trim();
       const puestoKey = toTitleCase(normalizedPuesto);
-      if (!counts[month].puestos[puestoKey]) counts[month].puestos[puestoKey] = { abierta: 0, cubierta: 0 };
-      if (v.status === 'abierta') counts[month].puestos[puestoKey].abierta++;
+      if (!counts[month].puestos[puestoKey])
+        counts[month].puestos[puestoKey] = { abierta: 0, cubierta: 0 };
+      if (v.status === "abierta") counts[month].puestos[puestoKey].abierta++;
       else counts[month].puestos[puestoKey].cubierta++;
     }
     return Object.entries(counts).sort((a, b) => {
-      if (a[0] === 'Estructurales') return 1;
-      if (b[0] === 'Estructurales') return -1;
+      if (a[0] === "Estructurales") return 1;
+      if (b[0] === "Estructurales") return -1;
       return b[0].localeCompare(a[0]);
     });
   }, [vacancies]);
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const paginated = useMemo(() => {
-    return filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    return filtered.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    );
   }, [filtered, currentPage]);
 
   async function handleReclutador(v: AutoVacancy, value: string) {
     if (!v.baja) return;
     await notifyResult(setBajaReclutador(v.baja.num_empleado, value || null), {
-      success: value ? 'Reclutador asignado' : 'Reclutador quitado',
-      error: 'No se pudo guardar el reclutador',
+      success: value ? "Reclutador asignado" : "Reclutador quitado",
+      error: "No se pudo guardar el reclutador",
     });
   }
 
@@ -181,14 +249,17 @@ export function Vacantes() {
     setIsToggling(true);
 
     try {
-      if (toggleTarget.coberturaTipo === 'manual') {
+      if (toggleTarget.coberturaTipo === "manual") {
         const res = await desmarcarCubierta(toggleTarget.baja.num_empleado);
-        if (res.ok) sileo.info({ title: 'Vacante reabierta' });
-        else sileo.error({ title: 'No se pudo reabrir la vacante' });
+        if (res.ok) sileo.info({ title: "Vacante reabierta" });
+        else sileo.error({ title: "No se pudo reabrir la vacante" });
       } else {
-        const res = await marcarCubierta(toggleTarget.baja.num_empleado, localTodayIso());
-        if (res.ok) sileo.success({ title: 'Vacante cubierta' });
-        else sileo.error({ title: 'No se pudo marcar la vacante' });
+        const res = await marcarCubierta(
+          toggleTarget.baja.num_empleado,
+          localTodayIso(),
+        );
+        if (res.ok) sileo.success({ title: "Vacante cubierta" });
+        else sileo.error({ title: "No se pudo marcar la vacante" });
       }
     } finally {
       setIsToggling(false);
@@ -204,13 +275,15 @@ export function Vacantes() {
   function findCustomPosition(v: AutoVacancy) {
     const key = `${normalizeString(v.area)}::${normalizeString(v.seccion)}::${normalizePuesto(v.puesto)}`;
     return customPositions.find(
-      (p) => `${normalizeString(p.area)}::${normalizeString(p.seccion)}::${normalizePuesto(p.puesto)}` === key
+      (p) =>
+        `${normalizeString(p.area)}::${normalizeString(p.seccion)}::${normalizePuesto(p.puesto)}` ===
+        key,
     );
   }
 
   function canRemoveStructural(v: AutoVacancy): boolean {
     if (v.baja) return false;
-    return Boolean(findCustomPosition(v)) || v.vacancyType === 'backup';
+    return Boolean(findCustomPosition(v)) || v.vacancyType === "backup";
   }
 
   async function confirmRemoveStructural() {
@@ -222,31 +295,38 @@ export function Vacantes() {
       const cp = findCustomPosition(v);
 
       if (cp) {
-        await notifyResult(deletePosition({ area: cp.area, seccion: cp.seccion, puesto: cp.puesto }), {
-          success: 'Posición personalizada eliminada',
-          error: 'No se pudo eliminar la posición',
-        });
-      } else if (v.vacancyType === 'backup') {
+        await notifyResult(
+          deletePosition({
+            area: cp.area,
+            seccion: cp.seccion,
+            puesto: cp.puesto,
+          }),
+          {
+            success: "Posición personalizada eliminada",
+            error: "No se pudo eliminar la posición",
+          },
+        );
+      } else if (v.vacancyType === "backup") {
         const existing = positions.find(
           (p) =>
             normalizeString(p.area) === normalizeString(v.area) &&
-            normalizeString(p.seccion) === normalizeString(v.seccion || '') &&
-            normalizePuesto(p.puesto) === normalizePuesto(v.puesto)
+            normalizeString(p.seccion) === normalizeString(v.seccion || "") &&
+            normalizePuesto(p.puesto) === normalizePuesto(v.puesto),
         );
-        
+
         await notifyResult(
           upsertPositionSetting({
             area: v.area,
-            seccion: v.seccion || '',
+            seccion: v.seccion || "",
             puesto: v.puesto,
             backup: 0,
             plantilla_autorizada: existing?.plantilla_autorizada ?? null,
             urgentes: existing?.urgentes ?? 0,
           }),
           {
-            success: 'Configuración de backup actualizada a 0',
-            error: 'No se pudo actualizar el backup',
-          }
+            success: "Configuración de backup actualizada a 0",
+            error: "No se pudo actualizar el backup",
+          },
         );
       }
     } finally {
@@ -260,19 +340,20 @@ export function Vacantes() {
     setDeleteTarget(v);
   }
 
-  const hasData = bajas.length > 0 || employees.length > 0 || positions.length > 0;
+  const hasData =
+    bajas.length > 0 || employees.length > 0 || positions.length > 0;
   if (loading && !hasData) {
     return (
       <main className="pipeline container">
-        <section className="pipeline__hero">
-
-        </section>
+        <section className="pipeline__hero"></section>
         <section className="pipeline__controls">
-          <Skeleton height={40} radius="var(--rounded-md)" style={{ flex: '1 1 260px' }} />
+          <Skeleton
+            height={40}
+            radius="var(--rounded-md)"
+            style={{ flex: "1 1 260px" }}
+          />
         </section>
-        <SkeletonTable rows={8} columns={['30%', '16%', '24%', '16%', '14%']} />
-
-
+        <SkeletonTable rows={8} columns={["30%", "16%", "24%", "16%", "14%"]} />
       </main>
     );
   }
@@ -290,7 +371,7 @@ export function Vacantes() {
             aria-label="Ver KPIs"
           >
             <BarChart3 size={16} aria-hidden="true" />
-            <span style={{ marginLeft: 'var(--spacing-xs)' }}>KPIs</span>
+            <span style={{ marginLeft: "var(--spacing-xs)" }}>KPIs</span>
           </button>
           <button
             type="button"
@@ -300,6 +381,7 @@ export function Vacantes() {
             aria-label="Ver vacantes por mes"
           >
             <Calendar size={16} aria-hidden="true" />
+            <span style={{ marginLeft: "var(--spacing-xs)" }}>Analisis</span>
           </button>
           {isAdmin && (
             <button
@@ -309,7 +391,10 @@ export function Vacantes() {
               data-testid="vac-config-btn"
               aria-label="Configuración de posiciones"
             >
-              <MorphingIcon icon={wizardOpen ? XIconData : SlidersHorizontalIconData} size={16} />
+              <MorphingIcon
+                icon={wizardOpen ? XIconData : SlidersHorizontalIconData}
+                size={16}
+              />
             </button>
           )}
         </div>
@@ -325,8 +410,16 @@ export function Vacantes() {
       <Modal
         isOpen={!!deleteTarget}
         onClose={() => !isDeleting && setDeleteTarget(null)}
-        icon={<AlertTriangle size={20} className="color-error" aria-hidden="true" />}
-        title={deleteTarget ? (findCustomPosition(deleteTarget) ? 'Eliminar posición' : 'Quitar backup') : ''}
+        icon={
+          <AlertTriangle size={20} className="color-error" aria-hidden="true" />
+        }
+        title={
+          deleteTarget
+            ? findCustomPosition(deleteTarget)
+              ? "Eliminar posición"
+              : "Quitar backup"
+            : ""
+        }
         size="md"
         fullscreenMobile={false}
       >
@@ -352,7 +445,7 @@ export function Vacantes() {
                 onClick={confirmRemoveStructural}
                 disabled={isDeleting}
               >
-                {isDeleting ? 'Eliminando...' : 'Eliminar'}
+                {isDeleting ? "Eliminando..." : "Eliminar"}
               </button>
             </div>
           </div>
@@ -362,15 +455,25 @@ export function Vacantes() {
       <Modal
         isOpen={!!toggleTarget}
         onClose={() => !isToggling && setToggleTarget(null)}
-        icon={<AlertTriangle size={20} className="color-warning" aria-hidden="true" />}
-        title={toggleTarget?.coberturaTipo === 'manual' ? '¿Reabrir vacante?' : '¿Marcar como cubierta?'}
+        icon={
+          <AlertTriangle
+            size={20}
+            className="color-warning"
+            aria-hidden="true"
+          />
+        }
+        title={
+          toggleTarget?.coberturaTipo === "manual"
+            ? "¿Reabrir vacante?"
+            : "¿Marcar como cubierta?"
+        }
         size="md"
         fullscreenMobile={false}
       >
         {toggleTarget && (
           <div className="modal-body">
             <p>
-              {toggleTarget.coberturaTipo === 'manual'
+              {toggleTarget.coberturaTipo === "manual"
                 ? `"${toTitleCase(toggleTarget.puesto)}" volverá a contar como vacante activa.`
                 : `"${toTitleCase(toggleTarget.puesto)}" dejará de contar como vacante activa.`}
             </p>
@@ -389,7 +492,7 @@ export function Vacantes() {
                 onClick={confirmToggleManual}
                 disabled={isToggling}
               >
-                {isToggling ? 'Guardando...' : 'Confirmar'}
+                {isToggling ? "Guardando..." : "Confirmar"}
               </button>
             </div>
           </div>
@@ -399,48 +502,101 @@ export function Vacantes() {
       <Modal
         isOpen={monthlyModalOpen}
         onClose={() => setMonthlyModalOpen(false)}
-        icon={<Calendar size={20} className="color-primary" aria-hidden="true" />}
+        icon={
+          <Calendar size={20} className="color-primary" aria-hidden="true" />
+        }
         title="Vacantes por mes"
         size="md"
         fullscreenMobile={false}
       >
         <div className="modal-body vacantes__monthly-body">
           {vacanciesByMonth.length === 0 ? (
-            <p className="color-muted" style={{ textAlign: 'center', padding: 'var(--spacing-lg) 0' }}>No hay datos disponibles.</p>
+            <p
+              className="color-muted"
+              style={{ textAlign: "center", padding: "var(--spacing-lg) 0" }}
+            >
+              No hay datos disponibles.
+            </p>
           ) : (
             <ul className="vacantes__monthly-list">
               {vacanciesByMonth.map(([monthKey, counts]) => (
                 <li key={monthKey} className="vacantes__monthly-item">
                   <div className="vacantes__monthly-header">
                     <span className="vacantes__monthly-label">
-                      {monthKey === 'Estructurales' ? 'Estructurales' : formatMonthLabel(monthKey)}
+                      {monthKey === "Estructurales"
+                        ? "Estructurales"
+                        : formatMonthLabel(monthKey)}
                     </span>
-                    <span className="vacantes__monthly-total">{counts.total}</span>
+                    <span className="vacantes__monthly-total">
+                      {counts.total}
+                    </span>
                   </div>
                   <div className="vacantes__monthly-bars">
-                    <div className="vacantes__monthly-bar" style={{ flex: counts.abierta || 0 }}>
-                      {counts.abierta > 0 && <span className="vacantes__monthly-val color-error">{counts.abierta} ab.</span>}
+                    <div
+                      className="vacantes__monthly-bar"
+                      style={{ flex: counts.abierta || 0 }}
+                    >
+                      {counts.abierta > 0 && (
+                        <span className="vacantes__monthly-val color-error">
+                          {counts.abierta} ab.
+                        </span>
+                      )}
                     </div>
-                    <div className="vacantes__monthly-bar" style={{ flex: counts.cubierta || 0 }}>
-                      {counts.cubierta > 0 && <span className="vacantes__monthly-val color-success">{counts.cubierta} cub.</span>}
+                    <div
+                      className="vacantes__monthly-bar"
+                      style={{ flex: counts.cubierta || 0 }}
+                    >
+                      {counts.cubierta > 0 && (
+                        <span className="vacantes__monthly-val color-success">
+                          {counts.cubierta} cub.
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="vacantes__monthly-puestos">
                     <div className="vacantes__monthly-puestos-header">
-                      <span className="vacantes__monthly-col-puesto">Puesto</span>
-                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--open">Ab.</span>
-                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--done">Cub.</span>
+                      <span className="vacantes__monthly-col-puesto">
+                        Puesto
+                      </span>
+                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--open">
+                        Ab.
+                      </span>
+                      <span className="vacantes__monthly-col-num vacantes__monthly-col-num--done">
+                        Cub.
+                      </span>
                     </div>
                     {Object.entries(counts.puestos)
-                      .sort((a, b) => (b[1].abierta + b[1].cubierta) - (a[1].abierta + a[1].cubierta))
+                      .sort(
+                        (a, b) =>
+                          b[1].abierta +
+                          b[1].cubierta -
+                          (a[1].abierta + a[1].cubierta),
+                      )
                       .map(([puesto, cnt]) => (
-                        <div key={puesto} className="vacantes__monthly-puesto-row">
-                          <span className="vacantes__monthly-col-puesto">{puesto}</span>
+                        <div
+                          key={puesto}
+                          className="vacantes__monthly-puesto-row"
+                        >
+                          <span className="vacantes__monthly-col-puesto">
+                            {puesto}
+                          </span>
                           <span className="vacantes__monthly-col-num vacantes__monthly-col-num--open">
-                            {cnt.abierta > 0 ? cnt.abierta : <span className="vacantes__monthly-col-zero">—</span>}
+                            {cnt.abierta > 0 ? (
+                              cnt.abierta
+                            ) : (
+                              <span className="vacantes__monthly-col-zero">
+                                —
+                              </span>
+                            )}
                           </span>
                           <span className="vacantes__monthly-col-num vacantes__monthly-col-num--done">
-                            {cnt.cubierta > 0 ? cnt.cubierta : <span className="vacantes__monthly-col-zero">—</span>}
+                            {cnt.cubierta > 0 ? (
+                              cnt.cubierta
+                            ) : (
+                              <span className="vacantes__monthly-col-zero">
+                                —
+                              </span>
+                            )}
                           </span>
                         </div>
                       ))}
@@ -454,21 +610,20 @@ export function Vacantes() {
 
       <div className="pipeline__layout">
         <div className="pipeline__content">
-
           <section className="pipeline__controls">
             <div className="pipeline__search-container">
               <div className="pipeline__search">
                 <button
                   type="button"
                   className="pipeline__search-clear-btn"
-                  onClick={() => setSearchTerm('')}
+                  onClick={() => setSearchTerm("")}
                   disabled={!searchTerm}
-                  aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                  aria-label={searchTerm ? "Limpiar búsqueda" : "Buscar"}
                   tabIndex={searchTerm ? 0 : -1}
                 >
-                  <MorphingIcon 
-                    icon={searchTerm ? XIconData : SearchIconData} 
-                    size={16} 
+                  <MorphingIcon
+                    icon={searchTerm ? XIconData : SearchIconData}
+                    size={16}
                     className="pipeline__search-icon"
                   />
                 </button>
@@ -524,18 +679,21 @@ export function Vacantes() {
               </div>
               <h2 className="pipeline__empty-title">
                 {vacancies.length === 0
-                  ? 'No hay bajas registradas todavía'
-                  : 'Sin vacantes que coincidan'}
+                  ? "No hay bajas registradas todavía"
+                  : "Sin vacantes que coincidan"}
               </h2>
               <p className="pipeline__empty-lead">
                 {vacancies.length === 0
-                  ? 'Importa las bajas para generar las vacantes automáticamente.'
-                  : 'Prueba con otro filtro o término de búsqueda.'}
+                  ? "Importa las bajas para generar las vacantes automáticamente."
+                  : "Prueba con otro filtro o término de búsqueda."}
               </p>
             </section>
           ) : (
             <>
-              <section className="vacantes__cards" aria-label="Lista de vacantes">
+              <section
+                className="vacantes__cards"
+                aria-label="Lista de vacantes"
+              >
                 {filtered.map((v) => (
                   <VacancyCard
                     key={v.key}
@@ -548,10 +706,17 @@ export function Vacantes() {
                 ))}
               </section>
 
-              <section className="pipeline__table-wrap vacantes__table" aria-label="Tabla de vacantes">
-                <table className="pipeline__table" aria-labelledby="vac-table-caption">
+              <section
+                className="pipeline__table-wrap vacantes__table"
+                aria-label="Tabla de vacantes"
+              >
+                <table
+                  className="pipeline__table"
+                  aria-labelledby="vac-table-caption"
+                >
                   <caption id="vac-table-caption" className="sr-only">
-                    Listado de vacantes — {filtered.length} de {vacancies.length}
+                    Listado de vacantes — {filtered.length} de{" "}
+                    {vacancies.length}
                   </caption>
                   <colgroup>
                     <col className="vac-col--baja" />
@@ -563,34 +728,71 @@ export function Vacantes() {
                   </colgroup>
                   <thead>
                     <tr>
-                      <th scope="col" id="vac-th-baja">Baja</th>
-                      <th scope="col" id="vac-th-puesto">Posición</th>
-                      <th scope="col" id="vac-th-tipo">Tipo</th>
-                      <th scope="col" id="vac-th-sla">SLA</th>
-                      <th scope="col" id="vac-th-reclutador">Reclutador</th>
-                      <th scope="col" id="vac-th-accion" className="pipeline__th--actions">Acción</th>
+                      <th scope="col" id="vac-th-baja">
+                        Baja
+                      </th>
+                      <th scope="col" id="vac-th-puesto">
+                        Posición
+                      </th>
+                      <th scope="col" id="vac-th-tipo">
+                        Tipo
+                      </th>
+                      <th scope="col" id="vac-th-sla">
+                        SLA
+                      </th>
+                      <th scope="col" id="vac-th-reclutador">
+                        Reclutador
+                      </th>
+                      <th
+                        scope="col"
+                        id="vac-th-accion"
+                        className="pipeline__th--actions"
+                      >
+                        Acción
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {paginated.map((v) => (
-                      <tr key={v.key} className={v.status === 'abierta' ? 'vacantes__row--overdue' : ''}>
+                      <tr
+                        key={v.key}
+                        className={
+                          v.status === "abierta" ? "vacantes__row--overdue" : ""
+                        }
+                      >
                         <td headers="vac-th-baja">
                           {v.baja ? (
                             <>
-                              <div className="vacantes__cell-strong" title={v.baja.nombre}>{toTitleCase(v.baja.nombre)}</div>
-                              <div className="vacantes__cell-emp">#{v.baja.num_empleado} · {formatShortDate(v.fechaBaja)}</div>
+                              <div
+                                className="vacantes__cell-strong"
+                                title={v.baja.nombre}
+                              >
+                                {toTitleCase(v.baja.nombre)}
+                              </div>
+                              <div className="vacantes__cell-emp">
+                                #{v.baja.num_empleado} ·{" "}
+                                {formatShortDate(v.fechaBaja)}
+                              </div>
                             </>
                           ) : (
                             <>
                               <div className="vacantes__cell-strong">—</div>
-                              <div className="vacantes__cell-emp">Vacante estructural</div>
+                              <div className="vacantes__cell-emp">
+                                Vacante estructural
+                              </div>
                             </>
                           )}
                         </td>
                         <td headers="vac-th-puesto">
-                          <div className="pipeline__puesto" title={v.puesto}>{toTitleCase(v.puesto)}</div>
-                          <div className="pipeline__area" title={`${v.area}${v.seccion ? ` · ${v.seccion}` : ''}`}>
-                            {toTitleCase(v.area)}{v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+                          <div className="pipeline__puesto" title={v.puesto}>
+                            {toTitleCase(v.puesto)}
+                          </div>
+                          <div
+                            className="pipeline__area"
+                            title={`${v.area}${v.seccion ? ` · ${v.seccion}` : ""}`}
+                          >
+                            {toTitleCase(v.area)}
+                            {v.seccion ? ` · ${toTitleCase(v.seccion)}` : ""}
                           </div>
                         </td>
                         <td headers="vac-th-tipo">
@@ -600,67 +802,110 @@ export function Vacantes() {
                           <div className="vacantes__sla-cell">
                             {v.baja ? (
                               <SlaBadge v={v} />
-                            ) : <span className="vacantes__sla">—</span>}
+                            ) : (
+                              <span className="vacantes__sla">—</span>
+                            )}
                           </div>
                         </td>
                         <td headers="vac-th-reclutador">
                           <CustomSelect
                             id={`vac-rec-${v.key}`}
-                            value={v.reclutador ?? ''}
+                            value={v.reclutador ?? ""}
                             onChange={(val) => handleReclutador(v, val)}
                             options={RECLUTADOR_OPTIONS}
                             placeholder="Sin asignar"
                             aria-label={`Reclutador para ${v.puesto}`}
                             disabled={!v.baja}
                             customTrigger={
-                              v.reclutador && v.reclutador !== 'Sin asignar' ? (
-                                <ReclutadorBadge nombre={v.reclutador} showCaret />
+                              v.reclutador && v.reclutador !== "Sin asignar" ? (
+                                <ReclutadorBadge
+                                  nombre={v.reclutador}
+                                  showCaret
+                                />
                               ) : (
-                                <span className="reclutador-badge" style={{ color: 'var(--color-muted)' }}>
+                                <span
+                                  className="reclutador-badge"
+                                  style={{ color: "var(--color-muted)" }}
+                                >
                                   <span>Sin asignar</span>
-                                  <ChevronDown size={14} style={{ opacity: 0.6, marginLeft: 2 }} aria-hidden="true" />
+                                  <ChevronDown
+                                    size={14}
+                                    style={{ opacity: 0.6, marginLeft: 2 }}
+                                    aria-hidden="true"
+                                  />
                                 </span>
                               )
                             }
                           />
                         </td>
-                        <td headers="vac-th-accion" className="pipeline__cell-actions">
-                          <Tooltip content={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}>
+                        <td
+                          headers="vac-th-accion"
+                          className="pipeline__cell-actions"
+                        >
+                          <Tooltip
+                            content={
+                              !v.baja
+                                ? "Vacante estructural"
+                                : v.coberturaTipo === "manual"
+                                  ? "Reabrir vacante"
+                                  : "Marcar cubierta a mano"
+                            }
+                          >
                             <button
                               type="button"
                               className="pipeline__icon-btn"
                               onClick={() => handleToggleManualClick(v)}
                               disabled={!v.baja}
-                              aria-label={!v.baja ? 'Vacante estructural' : v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+                              aria-label={
+                                !v.baja
+                                  ? "Vacante estructural"
+                                  : v.coberturaTipo === "manual"
+                                    ? "Reabrir vacante"
+                                    : "Marcar cubierta a mano"
+                              }
                             >
                               <MorphingIcon
-                                icon={v.coberturaTipo === 'manual' ? ArrowRightLeftIconData : CheckCircle2IconData}
+                                icon={
+                                  v.coberturaTipo === "manual"
+                                    ? ArrowRightLeftIconData
+                                    : CheckCircle2IconData
+                                }
                                 size={16}
                                 aria-hidden="true"
                               />
                             </button>
                           </Tooltip>
                           {canRemoveStructural(v) && (
-                            <Tooltip content={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}>
+                            <Tooltip
+                              content={
+                                findCustomPosition(v)
+                                  ? "Eliminar posición"
+                                  : "Quitar vacante de backup"
+                              }
+                            >
                               <button
                                 type="button"
                                 className="pipeline__icon-btn vacantes__del-btn"
                                 onClick={() => handleRemoveStructuralClick(v)}
                                 data-testid={`vac-delete-${v.key}`}
-                                aria-label={findCustomPosition(v) ? 'Eliminar posición' : 'Quitar vacante de backup'}
+                                aria-label={
+                                  findCustomPosition(v)
+                                    ? "Eliminar posición"
+                                    : "Quitar vacante de backup"
+                                }
                               >
                                 <Trash2 size={16} aria-hidden="true" />
                               </button>
                             </Tooltip>
                           )}
                         </td>
-                  </tr>
-                ))}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </section>
-        </>
-      )}
+            </>
+          )}
         </div>
       </div>
 
@@ -673,33 +918,52 @@ export function Vacantes() {
         fullscreenMobile={false}
       >
         <div className="modal-body">
-          <section className="vacantes__split" aria-label="Resumen de vacantes por tipo">
+          <section
+            className="vacantes__split"
+            aria-label="Resumen de vacantes por tipo"
+          >
             <div className="vacantes__split-head" role="row">
               <span className="vacantes__split-corner" />
-              <span className="vacantes__split-colhead vacantes__split-colhead--aut">Autorizado</span>
-              <span className="vacantes__split-colhead vacantes__split-colhead--bak">Backup</span>
+              <span className="vacantes__split-colhead vacantes__split-colhead--aut">
+                Autorizado
+              </span>
+              <span className="vacantes__split-colhead vacantes__split-colhead--bak">
+                Backup
+              </span>
             </div>
             {kpiRows.map((row) => (
               <div
                 key={row.id}
                 className={`vacantes__split-row${
-                  'tone' in row && row.tone ? ` vacantes__split-row--${row.tone}` : ''
+                  "tone" in row && row.tone
+                    ? ` vacantes__split-row--${row.tone}`
+                    : ""
                 }`}
                 role="row"
                 data-testid={`vac-split-${row.id}`}
               >
                 <span className="vacantes__split-label">{row.label}</span>
-                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-aut`}>
-                  <AnimatedNumber value={row.pair.autorizado} suffix={'suffix' in row ? row.suffix : ''} />
+                <span
+                  className="vacantes__split-cell"
+                  data-testid={`vac-split-${row.id}-aut`}
+                >
+                  <AnimatedNumber
+                    value={row.pair.autorizado}
+                    suffix={"suffix" in row ? row.suffix : ""}
+                  />
                 </span>
-                <span className="vacantes__split-cell" data-testid={`vac-split-${row.id}-bak`}>
-                  <AnimatedNumber value={row.pair.backup} suffix={'suffix' in row ? row.suffix : ''} />
+                <span
+                  className="vacantes__split-cell"
+                  data-testid={`vac-split-${row.id}-bak`}
+                >
+                  <AnimatedNumber
+                    value={row.pair.backup}
+                    suffix={"suffix" in row ? row.suffix : ""}
+                  />
                 </span>
               </div>
             ))}
           </section>
-
-
         </div>
       </Modal>
     </main>
@@ -708,17 +972,17 @@ export function Vacantes() {
 
 /** Badge minimalista de cumplimiento de SLA (12 días hábiles). */
 function SlaBadge({ v }: { v: AutoVacancy }) {
-  const covered = v.status === 'cubierta';
-  let tone: 'ok' | 'warn' | 'bad' | 'neutral';
+  const covered = v.status === "cubierta";
+  let tone: "ok" | "warn" | "bad" | "neutral";
   let label: string;
   let Icon: typeof CheckCircle2;
   if (covered) {
-    tone = v.enTiempo ? 'ok' : 'warn';
-    label = v.enTiempo ? 'En tiempo' : 'Tarde';
+    tone = v.enTiempo ? "ok" : "warn";
+    label = v.enTiempo ? "En tiempo" : "Tarde";
     Icon = v.enTiempo ? CheckCircle2 : AlertTriangle;
   } else {
-    tone = v.enTiempo ? 'neutral' : 'bad';
-    label = v.enTiempo ? 'En SLA' : 'Vencida';
+    tone = v.enTiempo ? "neutral" : "bad";
+    label = v.enTiempo ? "En SLA" : "Vencida";
     Icon = v.enTiempo ? Clock : AlertTriangle;
   }
   return (
@@ -735,15 +999,20 @@ function SlaBadge({ v }: { v: AutoVacancy }) {
 
 /** Texto de cobertura: quién la cubrió y cómo. */
 function CoverageInfo({ v }: { v: AutoVacancy }) {
-  if (v.status === 'abierta') {
-    return <span className="vacantes__cover vacantes__cover--pending">Pendiente</span>;
-  }
-  if (v.coberturaTipo === 'manual') {
+  if (v.status === "abierta") {
     return (
-      <Tooltip content={v.baja?.cubierta_nota ?? 'Cobertura interna'}>
+      <span className="vacantes__cover vacantes__cover--pending">
+        Pendiente
+      </span>
+    );
+  }
+  if (v.coberturaTipo === "manual") {
+    return (
+      <Tooltip content={v.baja?.cubierta_nota ?? "Cobertura interna"}>
         <span className="vacantes__cover">
           <ArrowRightLeft size={13} aria-hidden="true" />
-          Interna{v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
+          Interna
+          {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ""}
         </span>
       </Tooltip>
     );
@@ -760,11 +1029,11 @@ function CoverageInfo({ v }: { v: AutoVacancy }) {
     );
   }
   return (
-    <Tooltip content={`Ingreso: ${v.coveredBy?.fecha_ingreso ?? ''}`}>
+    <Tooltip content={`Ingreso: ${v.coveredBy?.fecha_ingreso ?? ""}`}>
       <span className="vacantes__cover">
         <UserPlus size={13} aria-hidden="true" />
         {v.coveredBy?.nombre}
-        {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}
+        {v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ""}
       </span>
     </Tooltip>
   );
@@ -787,22 +1056,22 @@ function VacancyCard({
   const [open, setOpen] = useState(false);
 
   const cardCls = [
-    'vacantes__card',
-    v.status === 'abierta' ? 'vacantes__card--overdue' : '',
+    "vacantes__card",
+    v.status === "abierta" ? "vacantes__card--overdue" : "",
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   const coberturaText =
-    v.status === 'abierta'
+    v.status === "abierta"
       ? v.baja
-        ? 'Sin cubrir'
-        : 'Vacante estructural'
-      : v.coberturaTipo === 'manual'
-        ? `Cobertura interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
+        ? "Sin cubrir"
+        : "Vacante estructural"
+      : v.coberturaTipo === "manual"
+        ? `Cobertura interna${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ""}`
         : v.coveredBy
-          ? `${toTitleCase(v.coveredBy.nombre)}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ''}`
-          : 'Plantilla completa';
+          ? `${toTitleCase(v.coveredBy.nombre)}${v.fechaCubierta ? ` · ${formatShortDate(v.fechaCubierta)}` : ""}`
+          : "Plantilla completa";
 
   return (
     <>
@@ -818,7 +1087,7 @@ function VacancyCard({
             <div className="vacantes__card-puesto">{toTitleCase(v.puesto)}</div>
             <div className="vacantes__card-sub">
               {toTitleCase(v.area)}
-              {v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+              {v.seccion ? ` · ${toTitleCase(v.seccion)}` : ""}
             </div>
           </div>
           <div className="vacantes__card-head-right">
@@ -842,7 +1111,8 @@ function VacancyCard({
       >
         <div className="vacantes__modal-inner">
           <div className="vacantes__modal-header-meta">
-            {toTitleCase(v.area)}{v.seccion ? ` · ${toTitleCase(v.seccion)}` : ''}
+            {toTitleCase(v.area)}
+            {v.seccion ? ` · ${toTitleCase(v.seccion)}` : ""}
           </div>
 
           <div className="vacantes__modal-badges">
@@ -867,7 +1137,7 @@ function VacancyCard({
             <div className="vacantes__detail-value-col">
               {v.baja
                 ? `${toTitleCase(v.baja.nombre)} (#${v.baja.num_empleado}) · ${formatShortDate(v.fechaBaja)}`
-                : 'Sin baja asociada'}
+                : "Sin baja asociada"}
             </div>
 
             <div className="vacantes__detail-label-col">
@@ -876,29 +1146,38 @@ function VacancyCard({
             </div>
             <div className="vacantes__detail-value-col">
               {v.baja
-                ? `${v.dias} días ${v.status === 'cubierta' ? 'para cubrir' : 'abierta'}`
-                : '—'}
+                ? `${v.dias} días ${v.status === "cubierta" ? "para cubrir" : "abierta"}`
+                : "—"}
             </div>
           </div>
 
           <div className="vacantes__detail-actions">
             <div className="vacantes__detail-action-primary">
-              <label htmlFor={`vac-rec-card-${v.key}`} className="sr-only">Asignar Reclutador</label>
+              <label htmlFor={`vac-rec-card-${v.key}`} className="sr-only">
+                Asignar Reclutador
+              </label>
               <CustomSelect
                 id={`vac-rec-card-${v.key}`}
-                value={v.reclutador ?? ''}
+                value={v.reclutador ?? ""}
                 onChange={onReclutador}
                 options={RECLUTADOR_OPTIONS}
                 placeholder="Sin asignar"
                 aria-label={`Reclutador para ${v.puesto}`}
                 disabled={!v.baja}
                 customTrigger={
-                  v.reclutador && v.reclutador !== 'Sin asignar' ? (
+                  v.reclutador && v.reclutador !== "Sin asignar" ? (
                     <ReclutadorBadge nombre={v.reclutador} showCaret />
                   ) : (
-                    <span className="reclutador-badge" style={{ color: 'var(--color-muted)' }}>
+                    <span
+                      className="reclutador-badge"
+                      style={{ color: "var(--color-muted)" }}
+                    >
                       <span>Sin asignar</span>
-                      <ChevronDown size={14} style={{ opacity: 0.6, marginLeft: 2 }} aria-hidden="true" />
+                      <ChevronDown
+                        size={14}
+                        style={{ opacity: 0.6, marginLeft: 2 }}
+                        aria-hidden="true"
+                      />
                     </span>
                   )
                 }
@@ -910,12 +1189,24 @@ function VacancyCard({
               className="btn btn-secondary vacantes__detail-btn"
               onClick={onToggleManual}
               disabled={!v.baja}
-              title={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
-              aria-label={v.coberturaTipo === 'manual' ? 'Reabrir vacante' : 'Marcar cubierta a mano'}
+              title={
+                v.coberturaTipo === "manual"
+                  ? "Reabrir vacante"
+                  : "Marcar cubierta a mano"
+              }
+              aria-label={
+                v.coberturaTipo === "manual"
+                  ? "Reabrir vacante"
+                  : "Marcar cubierta a mano"
+              }
               data-testid={`vac-manual-card-${v.key}`}
             >
               <MorphingIcon
-                icon={v.coberturaTipo === 'manual' ? ArrowRightLeftIconData : CheckCircle2IconData}
+                icon={
+                  v.coberturaTipo === "manual"
+                    ? ArrowRightLeftIconData
+                    : CheckCircle2IconData
+                }
                 size={16}
                 aria-hidden="true"
               />

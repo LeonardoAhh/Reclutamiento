@@ -1,43 +1,42 @@
-import { useEffect, useMemo, useState } from 'react';
-import { listProfiles, ROLE_LABEL } from '@/lib/users';
-import { subscribeOnlineUserIds } from '@/lib/presence';
-import type { Profile } from '@/hooks/useAuth';
-import { ButtonUtility } from '@/components/ui/ButtonUtility';
-import { Activity, CheckCircle2, Clock } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { RoleBadge } from '@/components/ui/Badge';
-import './ActiveSessions.css';
-
+import { useEffect, useMemo, useState } from "react";
+import { listProfiles, ROLE_LABEL } from "@/lib/users";
+import { subscribeOnlineUserIds } from "@/lib/presence";
+import type { Profile } from "@/hooks/useAuth";
+import { ButtonUtility } from "@/components/ui/ButtonUtility";
+import { Activity, CheckCircle2, Clock } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
+import { RoleBadge } from "@/components/ui/Badge";
+import "./ActiveSessions.css";
 
 function formatLastAccess(value: string | null | undefined) {
-  if (!value) return 'Sin acceso';
+  if (!value) return "Sin acceso";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'Desconocido';
-  
+  if (Number.isNaN(date.getTime())) return "Desconocido";
+
   let distance = formatDistanceToNow(date, { addSuffix: true, locale: es });
-  distance = distance.replace(/alrededor de |casi |más de /g, '');
+  distance = distance.replace(/alrededor de |casi |más de /g, "");
   return distance.charAt(0).toUpperCase() + distance.slice(1);
 }
 export function ActiveSessions() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(() => new Set());
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    setError('');
+    setError("");
 
     async function fetchData() {
       try {
         const data = await listProfiles();
         if (mounted) setProfiles(data);
       } catch (err) {
-        console.warn('Error fetching profiles', err);
-        if (mounted) setError('No fue posible cargar la lista de usuarios.');
+        console.warn("Error fetching profiles", err);
+        if (mounted) setError("No fue posible cargar la lista de usuarios.");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -54,15 +53,19 @@ export function ActiveSessions() {
     };
   }, [reloadKey]);
 
-  const sortedProfiles = useMemo(() => [...profiles].sort((a, b) => {
-    const aOnline = onlineUsers.has(a.id);
-    const bOnline = onlineUsers.has(b.id);
-    if (aOnline !== bOnline) return aOnline ? -1 : 1;
-    return (a.display_name || a.username).localeCompare(
-      b.display_name || b.username,
-      'es',
-    );
-  }), [profiles, onlineUsers]);
+  const sortedProfiles = useMemo(
+    () =>
+      [...profiles].sort((a, b) => {
+        const aOnline = onlineUsers.has(a.id);
+        const bOnline = onlineUsers.has(b.id);
+        if (aOnline !== bOnline) return aOnline ? -1 : 1;
+        return (a.display_name || a.username).localeCompare(
+          b.display_name || b.username,
+          "es",
+        );
+      }),
+    [profiles, onlineUsers],
+  );
 
   const onlineCount = useMemo(
     () => profiles.filter((profile) => onlineUsers.has(profile.id)).length,
@@ -72,7 +75,10 @@ export function ActiveSessions() {
   if (loading) {
     return (
       <section className="active-sessions-section" aria-busy="true">
-        <p className="active-sessions-state type-body-sm text-muted" role="status">
+        <p
+          className="active-sessions-state type-body-sm text-muted"
+          role="status"
+        >
           Cargando sesiones…
         </p>
       </section>
@@ -86,23 +92,22 @@ export function ActiveSessions() {
           <Activity className="active-sessions-icon" aria-hidden="true" />
           <div>
             <h3 className="type-heading-sm m-0">Actividad de usuarios</h3>
-            <p className="active-sessions-caption type-caption-sm text-muted">
-              Presencia en tiempo real y último inicio de sesión.
-            </p>
+            <p className="active-sessions-caption type-caption-sm text-muted"></p>
           </div>
         </div>
         {onlineCount > 0 && (
-          <span className="active-sessions-count">
-            {onlineCount} en línea
-          </span>
+          <span className="active-sessions-count">{onlineCount} en línea</span>
         )}
       </header>
-      
+
       <div className="active-sessions-list">
         {error && (
           <div className="active-sessions-state" role="alert">
             <p className="type-body-sm text-muted">{error}</p>
-            <ButtonUtility type="button" onClick={() => setReloadKey((current) => current + 1)}>
+            <ButtonUtility
+              type="button"
+              onClick={() => setReloadKey((current) => current + 1)}
+            >
               Reintentar
             </ButtonUtility>
           </div>
@@ -112,7 +117,7 @@ export function ActiveSessions() {
             No hay perfiles disponibles.
           </p>
         )}
-        {sortedProfiles.map(profile => {
+        {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
           const lastAccess = formatLastAccess(profile.last_login_at);
           const roleLabel = ROLE_LABEL[profile.role] ?? profile.role;
@@ -125,9 +130,9 @@ export function ActiveSessions() {
                 </span>
               </div>
               <div className="session-role-col">
-                <RoleBadge role={profile.role || 'default'} label={roleLabel} />
+                <RoleBadge role={profile.role || "default"} label={roleLabel} />
               </div>
-              
+
               <div className="session-status-col">
                 {isOnline ? (
                   <span className="status-pill status-pill--online">

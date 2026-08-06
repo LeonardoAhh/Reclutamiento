@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpCircle, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, Clock, Contact, Filter, HeartPulse, Pencil, Search, Trash2, UserPlus as UserPlusIcon, Users } from 'lucide-react';
+import { ArrowUpCircle, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, Clock, Contact, Filter, HeartPulse, Pencil, Trash2, UserPlus as UserPlusIcon, Users } from 'lucide-react';
+import { Search as SearchData, X as XIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { CoverageBar } from '@/components/ui/CoverageBar';
 import {
   AreaStatusBadge,
@@ -363,7 +365,31 @@ export function Dashboard() {
 <div className="config-search dashboard-sidebar__search">
           <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
             <label htmlFor="search-input" className="sr-only">Buscar en la plantilla</label>
-            <Search size={16} className="text-muted dashboard-sidebar__search-icon" aria-hidden="true" />
+            <button
+              type="button"
+              className="dashboard-sidebar__search-icon"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                color: 'inherit',
+                cursor: searchTerm ? 'pointer' : 'default',
+                zIndex: 1
+              }}
+              onClick={() => setSearchTerm('')}
+              disabled={!searchTerm}
+              aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+              tabIndex={searchTerm ? 0 : -1}
+            >
+              <MorphingIcon 
+                icon={searchTerm ? XIconData : SearchData} 
+                size={16} 
+                className="text-muted" 
+                aria-hidden="true" 
+              />
+            </button>
             <input
               id="search-input"
               type="text"
@@ -511,7 +537,7 @@ export function Dashboard() {
 
                   {filteredDepts.length === 0 && employees.length > 0 && (
                     <div className="dashboard__empty" id="dashboard-no-results">
-                      <Search size={48} strokeWidth={1} />
+                      <MorphingIcon icon={SearchData} size={48} strokeWidth={1} />
                       <h3>Sin resultados</h3>
                       <p>No se encontraron coincidencias para tu búsqueda.</p>
                     </div>

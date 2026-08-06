@@ -135,7 +135,8 @@
 
 .sistema-confirmation-copy {
   display: flex;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   gap: var(--spacing-md);
 }
 

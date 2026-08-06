@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { CheckCircle2, Search, Wallet, X } from 'lucide-react';
+import { CheckCircle2, Wallet } from 'lucide-react';
+import { Search as SearchData, X as XIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Skeleton } from '@/components/ui/Skeleton';
 import '../Configuracion.css';
 
@@ -162,28 +164,41 @@ export function TabuladorView() {
               Buscar puesto o área
             </label>
             <div className="config-search__wrapper">
-              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <button
+                type="button"
+                className="config-search__icon"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'inherit',
+                  cursor: searchTerm ? 'pointer' : 'default',
+                  zIndex: 1
+                }}
+                onClick={handleClearSearch}
+                disabled={!searchTerm}
+                aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                tabIndex={searchTerm ? 0 : -1}
+              >
+                <MorphingIcon 
+                  icon={searchTerm ? XIconData : SearchData} 
+                  size={18} 
+                  className="text-muted" 
+                  aria-hidden="true" 
+                />
+              </button>
               <input
                 id="tabulador-search-input"
                 ref={searchInputRef}
-                type="search"
+                type="text"
                 placeholder="Buscar puesto o área…"
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 autoComplete="off"
                 aria-describedby="tabulador-results-status"
               />
-              {searchTerm && (
-                <button
-                  type="button"
-                  className="btn-icon config-search__clear"
-                  onClick={handleClearSearch}
-                  aria-label="Limpiar búsqueda"
-                  title="Limpiar búsqueda"
-                >
-                  <X size={16} aria-hidden="true" />
-                </button>
-              )}
             </div>
           </div>
         )}

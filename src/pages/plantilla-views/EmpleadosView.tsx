@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, CloudOff, HeartPulse, Search, Users } from 'lucide-react';
+import { CheckCircle2, CloudOff, HeartPulse, Users } from 'lucide-react';
+import { Search as SearchData, X as XIconData, ToggleLeft, ToggleRight } from 'lucide';
+
 import { ChevronDown, ChevronUp } from 'lucide';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
@@ -270,24 +272,60 @@ export function EmpleadosView() {
       <section className="empleados__hero">
         <div />
         <div className="empleados__filters">
-          <label className="empleados__search">
-            <Search size={16} aria-hidden="true" />
+          <div className="empleados__search">
+            <button
+              type="button"
+              onClick={() => setSearchTerm('')}
+              disabled={!searchTerm}
+              aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+              tabIndex={searchTerm ? 0 : -1}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                color: 'inherit',
+                cursor: searchTerm ? 'pointer' : 'default',
+              }}
+            >
+              <MorphingIcon 
+                icon={searchTerm ? XIconData : SearchData} 
+                size={16} 
+                aria-hidden="true" 
+              />
+            </button>
+            <label htmlFor="empleados-search" className="sr-only">Buscar empleados</label>
             <input
-              type="search"
+              id="empleados-search"
+              type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por nombre, número, puesto o área…"
-              aria-label="Buscar empleados"
+              autoComplete="off"
             />
-          </label>
-          <label className="empleados__starlite-filter">
-            <input 
-              type="checkbox" 
-              checked={showOnlyStarlite}
-              onChange={(e) => setShowOnlyStarlite(e.target.checked)}
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={showOnlyStarlite}
+            onClick={() => setShowOnlyStarlite(!showOnlyStarlite)}
+            className="empleados__starlite-filter"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              fontFamily: 'inherit',
+              color: 'inherit',
+            }}
+          >
+            <MorphingIcon 
+              icon={showOnlyStarlite ? ToggleRight : ToggleLeft} 
+              size={20} 
+              className={showOnlyStarlite ? 'text-primary' : 'color-muted'} 
             />
-            <span className="type-body-sm color-ink">Solo Starlite</span>
-          </label>
+            <StarliteBadge />
+          </button>
         </div>
       </section>
 

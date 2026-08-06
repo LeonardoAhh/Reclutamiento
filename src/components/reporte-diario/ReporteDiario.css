@@ -13,15 +13,7 @@
   padding-bottom: var(--spacing-lg);
 }
 
-/* Remove any inline margins/paddings so the report occupies the full content area
-   adjacent to the app sidebar. This keeps changes local to the reporte page. */
-.reporte-page {
-  padding-inline: 0 !important;
-  margin-inline: 0 !important;
-  max-width: none !important;
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
+
 
 @media (min-width: 768px) {
   .reporte-page {
@@ -44,17 +36,6 @@
   width: 100%;
 }
 
-.reporte-container {
-  padding-inline: 0 !important;
-  margin-inline: 0 !important;
-  max-width: none !important;
-}
-
-.reporte-main {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-  width: 100% !important;
-}
 
 @media (min-width: 768px) {
   .reporte-container {
@@ -92,14 +73,14 @@
 .reporte-head__grid {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--spacing-sm);
   flex-wrap: nowrap;
 }
 
-/* Center the header controls block and allow it to stretch across available space */
+/* Allow the controls block to span and align right */
 .reporte-head__grid {
-  width: min(1200px, 100%);
-  margin-inline: auto;
+  width: 100%;
 }
 
 /* Hide the left placeholder (title removed) so it doesn't reserve space */
@@ -129,28 +110,6 @@
   min-width: 140px;
 }
 
-/* -------------------------------------------------------------------------
-   FORCE SINGLE COLUMN — make every report internal grid a single column
-   so the page displays as a single vertical column occupying full width.
-   This overrides the responsive grid templates used elsewhere on this page.
-   ------------------------------------------------------------------------- */
-.reporte-page .reporte__layout,
-.reporte-page .reporte__layout--halves,
-.reporte-page .reporte__layout--thirds,
-.reporte-page .reporte__layout--quarters,
-.reporte-page .reporte-layout,
-.reporte-page .reporte-kpi-grid,
-.reporte-page .reporte-cards-grid {
-  grid-template-columns: 1fr !important;
-}
-
-/* Allow cards and main to stretch full width of the available content area */
-.reporte-page .reporte-main,
-.reporte-page .reporte-container,
-.reporte-page .reporte-card {
-  width: 100%;
-  max-width: none;
-}
 
 /* Evitar que la apariencia de 'card' se aplique al header */
 .reporte-header__top .reporte-card {
@@ -2050,12 +2009,6 @@ button.reporte-card:focus-visible,
   /* On small screens the layout stacks; panel remains visible */
 }
 
-/* ── Reporte Diario ocupa todo el ancho del área (pegado a la sidebar) ──────
-   Anula el cap de 1200px y el centrado de .container solo en esta página. */
-.reporte-page.container {
-  max-width: none;
-  margin-inline: 0;
-}
 
 /* ── Acciones del header del calendario ─────────────────────────────────── */
 .reporte-cal-actions {
@@ -3015,7 +2968,7 @@ button.ras-card:focus-visible {
   align-items: center;
   gap: var(--spacing-xl);
   width: 100%;
-  max-width: 720px;
+  max-width: 600px;
   margin-inline: auto;
   padding: var(--spacing-xl) var(--spacing-md);
 }
@@ -3041,9 +2994,9 @@ button.ras-card:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-2xs) var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
   color: var(--color-muted);
   font-family: var(--font-body);
@@ -3100,7 +3053,7 @@ button.ras-card:focus-visible {
   width: 100%;
   padding: var(--spacing-xl) var(--spacing-lg);
   border: 2px dashed var(--color-hairline-strong);
-  border-radius: var(--rounded-xl, var(--rounded-lg));
+  border-radius: var(--rounded-lg);
   background: var(--color-surface-soft);
   cursor: pointer;
   transition:
@@ -3136,8 +3089,7 @@ button.ras-card:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  padding: var(--spacing-md);
   border-radius: var(--rounded-full);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
@@ -3366,9 +3318,17 @@ button.ras-card:focus-visible {
 }
 
 .reporte-status-banner--file {
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border-color: var(--color-hairline);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+}
+
+.reporte-status-banner--file .text-primary {
+  color: inherit !important;
 }
 
 /* Ocultar el toggle Ocultar en móvil (no aplica cuando el layout es apilado) */
@@ -3724,16 +3684,16 @@ button.ras-card:focus-visible {
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  min-height: 40px;
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
   border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: 1.2;
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
   cursor: pointer;
   transition:
     border-color var(--transition-fast),

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   UserPlus,
   Trash2,
@@ -6,44 +6,55 @@ import {
   UserCheck,
   AlertCircle,
   Bus,
-} from 'lucide-react';
-import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
-import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
-import type { Employee } from '@/lib/types';
-import type { AutoVacancy } from '@/lib/autoVacancies';
-import { usePositions } from '@/lib/positions';
-import { canonicalizeKeyPart, canonicalizePuesto } from '@/lib/utils';
-import { CATEGORIAS, RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
-import { localTodayIso } from '@/lib/dates';
+} from "lucide-react";
+import { Save as SaveIconData, Trash2 as Trash2IconData } from "lucide";
+import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
+import type { Employee } from "@/lib/types";
+import type { AutoVacancy } from "@/lib/autoVacancies";
+import { usePositions } from "@/lib/positions";
+import { canonicalizeKeyPart, canonicalizePuesto } from "@/lib/utils";
+import {
+  CATEGORIAS,
+  RECLUTADORES_ACTIVOS,
+  RECLUTADORES_INFO,
+} from "@/lib/constants";
+import { localTodayIso } from "@/lib/dates";
 import {
   TRANSPORTE_NA,
   TRANSPORTE_PARADAS,
   TRANSPORTE_RUTAS,
-} from '@/lib/transporte-routes';
-import { Tooltip } from './Tooltip';
-import { supabase } from '@/lib/supabase';
-import { Modal } from './Modal';
-import { FormWizard } from './FormWizard';
-import { useIsMobile } from '@/hooks/useIsMobile';
-import { CustomSelect } from './CustomSelect';
-import './EmployeeModal.css';
+} from "@/lib/transporte-routes";
+import { Tooltip } from "./Tooltip";
+import { supabase } from "@/lib/supabase";
+import { Modal } from "./Modal";
+import { FormWizard } from "./FormWizard";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { CustomSelect } from "./CustomSelect";
+import "./EmployeeModal.css";
 
 interface EmployeeModalProps {
   isOpen: boolean;
-  mode: 'add' | 'delete';
+  mode: "add" | "delete";
   employee?: Employee | null;
   onClose: () => void;
   onSave?: (emp: Employee) => Promise<{ ok: boolean; message?: string }> | void;
   onDelete?: (
     num_empleado: string,
-    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string }
+    bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string },
   ) => Promise<{ ok: boolean; message?: string }> | void;
   openVacancies?: AutoVacancy[];
 }
 
 type FormState = Pick<
   Employee,
-  'num_empleado' | 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso'
+  | "num_empleado"
+  | "nombre"
+  | "area"
+  | "seccion"
+  | "puesto"
+  | "categoria"
+  | "turno"
+  | "fecha_ingreso"
 > & {
   ruta: string;
   parada: string;
@@ -53,24 +64,24 @@ type FormState = Pick<
 
 function emptyForm(): FormState {
   return {
-    num_empleado: '',
-    nombre: '',
-    area: '',
-    seccion: '',
-    puesto: '',
-    categoria: 'N/A',
-    turno: '1',
+    num_empleado: "",
+    nombre: "",
+    area: "",
+    seccion: "",
+    puesto: "",
+    categoria: "N/A",
+    turno: "1",
     fecha_ingreso: localTodayIso(),
-    ruta: '',
-    parada: '',
+    ruta: "",
+    parada: "",
     is_starlite: false,
-    reclutador: '',
+    reclutador: "",
   };
 }
 
 /** Quita el sufijo de categoría (A/B/C/D) del puesto, preservando el resto. */
 function stripCategoria(puesto: string): string {
-  return puesto.replace(/\s+[A-D]$/i, '').trim();
+  return puesto.replace(/\s+[A-D]$/i, "").trim();
 }
 
 interface VacancyOption {
@@ -94,8 +105,8 @@ export function EmployeeModal({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [bajaForm, setBajaForm] = useState({
     fecha_baja: localTodayIso(),
-    tipo_baja: 'Renuncia Voluntaria',
-    motivo_baja: '',
+    tipo_baja: "Renuncia Voluntaria",
+    motivo_baja: "",
   });
   const [selectedVacancyIndex, setSelectedVacancyIndex] = useState(0);
   const isMobile = useIsMobile();
@@ -103,27 +114,27 @@ export function EmployeeModal({
   const { positions } = usePositions();
   const areas = useMemo(
     () => Array.from(new Set(positions.map((p) => p.area))),
-    [positions]
+    [positions],
   );
   const sectionsForArea = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
-        )
+          positions.filter((p) => p.area === form.area).map((p) => p.seccion),
+        ),
       ),
-    [positions, form.area]
+    [positions, form.area],
   );
   const puestosForSection = useMemo(
     () =>
       Array.from(
         new Set(
-          positions.filter(
-            (p) => p.area === form.area && p.seccion === form.seccion
-          ).map((p) => p.puesto)
-        )
+          positions
+            .filter((p) => p.area === form.area && p.seccion === form.seccion)
+            .map((p) => p.puesto),
+        ),
       ),
-    [positions, form.area, form.seccion]
+    [positions, form.area, form.seccion],
   );
 
   // Vacantes seleccionables: deduplicadas por área+sección+puesto (ignorando la
@@ -134,11 +145,15 @@ export function EmployeeModal({
     const list: VacancyOption[] = [];
     for (const v of openVacancies) {
       const key = `${canonicalizeKeyPart(v.area)}|${canonicalizeKeyPart(
-        v.seccion
+        v.seccion,
       )}|${canonicalizePuesto(v.puesto)}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      list.push({ area: v.area, seccion: v.seccion, puesto: stripCategoria(v.puesto) });
+      list.push({
+        area: v.area,
+        seccion: v.seccion,
+        puesto: stripCategoria(v.puesto),
+      });
     }
     return list;
   }, [openVacancies]);
@@ -150,7 +165,7 @@ export function EmployeeModal({
     setIsSuccess(false);
     setSelectedVacancyIndex(0);
 
-    if (mode === 'delete' && employee) {
+    if (mode === "delete" && employee) {
       setForm({
         num_empleado: employee.num_empleado,
         nombre: employee.nombre,
@@ -160,33 +175,33 @@ export function EmployeeModal({
         categoria: employee.categoria,
         turno: employee.turno,
         fecha_ingreso: employee.fecha_ingreso,
-        ruta: employee.ruta ?? '',
-        parada: employee.parada ?? '',
+        ruta: employee.ruta ?? "",
+        parada: employee.parada ?? "",
         is_starlite: employee.is_starlite ?? false,
-        reclutador: employee.reclutador ?? '',
+        reclutador: employee.reclutador ?? "",
       });
       setBajaForm({
         fecha_baja: localTodayIso(),
-        tipo_baja: 'Renuncia Voluntaria',
-        motivo_baja: '',
+        tipo_baja: "Renuncia Voluntaria",
+        motivo_baja: "",
       });
     } else {
       // En modo 'add', pre-llenar con la primera vacante disponible
       if (vacancyOptions.length > 0) {
         const vacancy = vacancyOptions[0];
         setForm({
-          num_empleado: '',
-          nombre: '',
+          num_empleado: "",
+          nombre: "",
           area: vacancy.area,
           seccion: vacancy.seccion,
           puesto: vacancy.puesto,
-          categoria: 'N/A',
-          turno: '1',
+          categoria: "N/A",
+          turno: "1",
           fecha_ingreso: localTodayIso(),
-          ruta: '',
-          parada: '',
+          ruta: "",
+          parada: "",
           is_starlite: false,
-          reclutador: '',
+          reclutador: "",
         });
       } else {
         setForm(emptyForm());
@@ -213,9 +228,9 @@ export function EmployeeModal({
     form.puesto.length > 0;
 
   const isDeleteValid =
-    bajaForm.fecha_baja !== '' &&
-    bajaForm.tipo_baja !== '' &&
-    bajaForm.motivo_baja.trim() !== '';
+    bajaForm.fecha_baja !== "" &&
+    bajaForm.tipo_baja !== "" &&
+    bajaForm.motivo_baja.trim() !== "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -224,7 +239,7 @@ export function EmployeeModal({
 
     try {
       setSubmitting(true);
-      if (mode === 'add' && onSave) {
+      if (mode === "add" && onSave) {
         const payload: Employee = {
           ...form,
           ruta: form.ruta ? form.ruta : null,
@@ -233,23 +248,23 @@ export function EmployeeModal({
         };
 
         // Retraso artificial para que se note la animación
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const result = await onSave(payload);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setErrorMsg(result.message ?? "No se pudo guardar.");
           setSubmitting(false);
           return;
         }
         setIsSuccess(true);
         setTimeout(() => onClose(), 1500);
-      } else if (mode === 'delete' && onDelete && form.num_empleado) {
+      } else if (mode === "delete" && onDelete && form.num_empleado) {
         // Retraso artificial para que se note la animación
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const result = await onDelete(form.num_empleado, bajaForm);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          setErrorMsg(result.message ?? "No se pudo eliminar.");
           setSubmitting(false);
           return;
         }
@@ -257,12 +272,12 @@ export function EmployeeModal({
         setTimeout(() => onClose(), 1500);
       }
     } catch (err) {
-      setErrorMsg('Error inesperado.');
+      setErrorMsg("Error inesperado.");
       setSubmitting(false);
     }
   }
 
-  const isAdd = mode === 'add';
+  const isAdd = mode === "add";
 
   const fieldsIdentidad = (
     <>
@@ -274,7 +289,9 @@ export function EmployeeModal({
           inputMode="numeric"
           required
           value={form.num_empleado}
-          onChange={(e) => setForm({ ...form, num_empleado: e.target.value.trim() })}
+          onChange={(e) =>
+            setForm({ ...form, num_empleado: e.target.value.trim() })
+          }
           placeholder="Ej. 1234"
           autoComplete="off"
         />
@@ -286,7 +303,9 @@ export function EmployeeModal({
           type="text"
           required
           value={form.nombre}
-          onChange={(e) => setForm({ ...form, nombre: e.target.value.toUpperCase() })}
+          onChange={(e) =>
+            setForm({ ...form, nombre: e.target.value.toUpperCase() })
+          }
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
         />
@@ -301,11 +320,11 @@ export function EmployeeModal({
       </label>
       <CustomSelect
         id="emp-starlite"
-        value={form.is_starlite ? 'true' : 'false'}
-        onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+        value={form.is_starlite ? "true" : "false"}
+        onChange={(val) => setForm({ ...form, is_starlite: val === "true" })}
         options={[
-          { value: 'false', label: 'No' },
-          { value: 'true', label: 'Sí' }
+          { value: "false", label: "No" },
+          { value: "true", label: "Sí" },
         ]}
       />
     </div>
@@ -314,72 +333,76 @@ export function EmployeeModal({
   const fieldsPosicion =
     // Si hay vacantes disponibles y estamos en modo 'add', no mostrar selectores
     // porque se pre-llenan del selector de vacante
-    vacancyOptions.length > 0 && mode === 'add' ? null : (
-    <>
-      <div className="form-group">
-        <label htmlFor="emp-area">Área</label>
-        <CustomSelect
-          id="emp-area"
-          value={form.area}
-          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
-          options={areas.map((a) => ({ value: a, label: a }))}
-          placeholder="Seleccione área…"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-seccion">Sección</label>
-        <CustomSelect
-          id="emp-seccion"
-          value={form.seccion}
-          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
-          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccione sección…"
-          disabled={!form.area}
-        />
-      </div>
-      <div className="form-group--span-2 form-grid form-grid--3-cols">
+    vacancyOptions.length > 0 && mode === "add" ? null : (
+      <>
         <div className="form-group">
-          <label htmlFor="emp-puesto">Puesto</label>
+          <label htmlFor="emp-area">Área</label>
           <CustomSelect
-            id="emp-puesto"
-            value={form.puesto}
-            onChange={(val) => setForm({ ...form, puesto: val })}
-            options={puestosForSection.map((p) => ({ value: p, label: p }))}
-            placeholder="Seleccione puesto…"
-            disabled={!form.seccion}
+            id="emp-area"
+            value={form.area}
+            onChange={(val) =>
+              setForm({ ...form, area: val, seccion: "", puesto: "" })
+            }
+            options={areas.map((a) => ({ value: a, label: a }))}
+            placeholder="Seleccione área…"
           />
         </div>
         <div className="form-group">
-          <label htmlFor="emp-turno">Turno</label>
+          <label htmlFor="emp-seccion">Sección</label>
           <CustomSelect
-            id="emp-turno"
-            value={form.turno}
-            onChange={(val) => setForm({ ...form, turno: val })}
-            options={[
-              { value: '1', label: '1' },
-              { value: '2', label: '2' },
-              { value: '3', label: '3' },
-              { value: '4', label: '4' },
-              { value: 'Mixto', label: 'Mixto' },
-            ]}
-            placeholder="Turno..."
+            id="emp-seccion"
+            value={form.seccion}
+            onChange={(val) => setForm({ ...form, seccion: val, puesto: "" })}
+            options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+            placeholder="Seleccione sección…"
+            disabled={!form.area}
           />
         </div>
-        {starliteField}
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-fecha">Fecha de Ingreso</label>
-        <input
-          id="emp-fecha"
-          type="date"
-          value={form.fecha_ingreso}
-          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
-        />
-      </div>
-    </>
-  );
+        <div className="form-group--span-2 form-grid form-grid--3-cols">
+          <div className="form-group">
+            <label htmlFor="emp-puesto">Puesto</label>
+            <CustomSelect
+              id="emp-puesto"
+              value={form.puesto}
+              onChange={(val) => setForm({ ...form, puesto: val })}
+              options={puestosForSection.map((p) => ({ value: p, label: p }))}
+              placeholder="Seleccione puesto…"
+              disabled={!form.seccion}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="emp-turno">Turno</label>
+            <CustomSelect
+              id="emp-turno"
+              value={form.turno}
+              onChange={(val) => setForm({ ...form, turno: val })}
+              options={[
+                { value: "1", label: "1" },
+                { value: "2", label: "2" },
+                { value: "3", label: "3" },
+                { value: "4", label: "4" },
+                { value: "Mixto", label: "Mixto" },
+              ]}
+              placeholder="Turno..."
+            />
+          </div>
+          {starliteField}
+        </div>
+        <div className="form-group">
+          <label htmlFor="emp-fecha">Fecha de Ingreso</label>
+          <input
+            id="emp-fecha"
+            type="date"
+            value={form.fecha_ingreso}
+            onChange={(e) =>
+              setForm({ ...form, fecha_ingreso: e.target.value })
+            }
+          />
+        </div>
+      </>
+    );
 
-  const showVacancySelector = vacancyOptions.length > 0 && mode === 'add';
+  const showVacancySelector = vacancyOptions.length > 0 && mode === "add";
 
   const fieldsVacancySelector = showVacancySelector ? (
     <div className="form-group form-group--span-2">
@@ -391,7 +414,12 @@ export function EmployeeModal({
           const idx = parseInt(val);
           setSelectedVacancyIndex(idx);
           const vacancy = vacancyOptions[idx];
-          setForm({ ...form, area: vacancy.area, seccion: vacancy.seccion, puesto: vacancy.puesto });
+          setForm({
+            ...form,
+            area: vacancy.area,
+            seccion: vacancy.seccion,
+            puesto: vacancy.puesto,
+          });
         }}
         options={vacancyOptions.map((v, i) => ({
           value: i.toString(),
@@ -424,11 +452,11 @@ export function EmployeeModal({
             value={form.turno}
             onChange={(val) => setForm({ ...form, turno: val })}
             options={[
-              { value: '1', label: '1' },
-              { value: '2', label: '2' },
-              { value: '3', label: '3' },
-              { value: '4', label: '4' },
-              { value: 'Mixto', label: 'Mixto' },
+              { value: "1", label: "1" },
+              { value: "2", label: "2" },
+              { value: "3", label: "3" },
+              { value: "4", label: "4" },
+              { value: "Mixto", label: "Mixto" },
             ]}
             placeholder="Turno..."
           />
@@ -458,9 +486,9 @@ export function EmployeeModal({
           value={form.reclutador}
           onChange={(val) => setForm({ ...form, reclutador: val })}
           placeholder="Sin asignar"
-          options={RECLUTADORES_ACTIVOS.map((r) => ({ 
-            value: r.toUpperCase(), 
-            label: RECLUTADORES_INFO[r].nombre_completo 
+          options={RECLUTADORES_ACTIVOS.map((r) => ({
+            value: r.toUpperCase(),
+            label: RECLUTADORES_INFO[r].nombre_completo,
           }))}
         />
       </div>
@@ -474,17 +502,19 @@ export function EmployeeModal({
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
-  const title = isAdd ? 'Nuevo Empleado' : 'Eliminar Empleado';
+  const title = isAdd ? "Nuevo Empleado" : "Eliminar Empleado";
   const subtitle = undefined;
 
   const deleteContent = (
     <div className="employee-modal__delete">
       <div className="delete-warning">
         <p className="delete-warning__title">
-          ¿Registrar baja de{' '}
-          <span className="delete-warning__name">{form.nombre || 'este empleado'}</span>?
+          ¿Registrar baja de{" "}
+          <span className="delete-warning__name">
+            {form.nombre || "este empleado"}
+          </span>
+          ?
         </p>
-        <p className="delete-warning__sub">Esta acción no se puede deshacer.</p>
       </div>
 
       <div className="form-grid employee-modal__baja-grid">
@@ -494,7 +524,9 @@ export function EmployeeModal({
             id="baja-fecha"
             type="date"
             value={bajaForm.fecha_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, fecha_baja: e.target.value })}
+            onChange={(e) =>
+              setBajaForm({ ...bajaForm, fecha_baja: e.target.value })
+            }
           />
         </div>
         <div className="form-group">
@@ -504,11 +536,14 @@ export function EmployeeModal({
             value={bajaForm.tipo_baja}
             onChange={(val) => setBajaForm({ ...bajaForm, tipo_baja: val })}
             options={[
-              { value: 'Renuncia', label: 'Renuncia' },
-              { value: 'Ausentismo', label: 'Ausentismo' },
-              { value: 'Rescisión de Contrato', label: 'Rescisión de Contrato' },
-              { value: 'Termino de Contrato', label: 'Termino de Contrato' },
-              { value: 'Solo Inducción', label: 'Solo Inducción' },
+              { value: "Renuncia", label: "Renuncia" },
+              { value: "Ausentismo", label: "Ausentismo" },
+              {
+                value: "Rescisión de Contrato",
+                label: "Rescisión de Contrato",
+              },
+              { value: "Termino de Contrato", label: "Termino de Contrato" },
+              { value: "Solo Inducción", label: "Solo Inducción" },
             ]}
           />
         </div>
@@ -520,7 +555,9 @@ export function EmployeeModal({
             required
             placeholder="Especifica el motivo..."
             value={bajaForm.motivo_baja}
-            onChange={(e) => setBajaForm({ ...bajaForm, motivo_baja: e.target.value })}
+            onChange={(e) =>
+              setBajaForm({ ...bajaForm, motivo_baja: e.target.value })
+            }
             autoComplete="off"
           />
         </div>
@@ -543,13 +580,24 @@ export function EmployeeModal({
           <Tooltip
             side="top"
             content={
-              <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
-                <AlertCircle size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span
+                style={{
+                  display: "flex",
+                  gap: "var(--spacing-xs)",
+                  alignItems: "flex-start",
+                  textAlign: "left",
+                }}
+              >
+                <AlertCircle
+                  size={14}
+                  className="color-warning"
+                  style={{ flexShrink: 0, marginTop: "2px" }}
+                />
                 <span>No contará en KPIs ni Dashboard.</span>
               </span>
             }
           >
-            <span style={{ display: 'inline-block' }}>
+            <span style={{ display: "inline-block" }}>
               <AnimatedSubmitButton
                 isSubmitting={submitting}
                 isSuccess={isSuccess}
@@ -615,16 +663,16 @@ export function EmployeeModal({
             notice={errorNotice}
             steps={[
               {
-                id: 'identidad',
-                title: 'Identidad',
+                id: "identidad",
+                title: "Identidad",
                 isValid:
                   form.num_empleado.trim().length > 0 &&
                   form.nombre.trim().length > 0,
                 content: <div className="form-grid">{fieldsIdentidad}</div>,
               },
               {
-                id: 'posicion',
-                title: 'Posición',
+                id: "posicion",
+                title: "Posición",
                 isValid:
                   form.area.length > 0 &&
                   form.seccion.length > 0 &&
@@ -638,8 +686,8 @@ export function EmployeeModal({
                 ),
               },
               {
-                id: 'transporte',
-                title: 'Transporte',
+                id: "transporte",
+                title: "Transporte",
                 content: (
                   <div className="form-grid">
                     {fieldsTransporte}
@@ -662,7 +710,7 @@ export function EmployeeModal({
       icon={icon}
       title={title}
       subtitle={subtitle}
-      size={isAdd ? 'lg' : 'md'}
+      size={isAdd ? "lg" : "md"}
     >
       <form onSubmit={handleSubmit} className="modal-body" noValidate>
         {isAdd ? (

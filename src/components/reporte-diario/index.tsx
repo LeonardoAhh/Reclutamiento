@@ -17,7 +17,6 @@ import {
   ChevronRight,
   ChevronLeft,
   FileJson,
-  Search,
   BarChart2,
 } from "lucide-react";
 
@@ -66,7 +65,6 @@ const SAVE_SUCCESS_DURATION_MS = 1500;
 export default function ReporteDiarioContent() {
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
-  const [search, setSearch] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [empDetailOpen, setEmpDetailOpen] = useState(false);
   const [departamentoFilter, setDepartamentoFilter] = useState("");
@@ -269,7 +267,6 @@ export default function ReporteDiarioContent() {
   }, [allMonthsRows, rows]);
 
   const selectedRows = useMemo(() => {
-    const lower = search.toLowerCase();
     return rows
       .filter((r) => r.mes === currentMonth)
       .filter(
@@ -280,22 +277,9 @@ export default function ReporteDiarioContent() {
         if (departamentoFilter && r.departamento !== departamentoFilter)
           return false;
         if (turnoFilter && r.turno !== turnoFilter) return false;
-        if (!lower) return true;
-        return (
-          r.nombre.toLowerCase().includes(lower) ||
-          r.numero_empleado.toLowerCase().includes(lower) ||
-          r.departamento.toLowerCase().includes(lower) ||
-          r.area.toLowerCase().includes(lower)
-        );
+        return true;
       });
-  }, [rows, currentMonth, search, departamentoFilter, turnoFilter]);
-
-  const searchResults = useMemo(() => {
-    if (!search.trim() || !currentMonth) return [];
-    return selectedRows.slice(0, 12);
-  }, [search, selectedRows, currentMonth]);
-
-  const clearSearch = useCallback(() => setSearch(""), []);
+  }, [rows, currentMonth, departamentoFilter, turnoFilter]);
 
   const openEmployeeModal = useCallback((employeeId: string) => {
     setSelectedEmployee(employeeId);
@@ -950,7 +934,7 @@ export default function ReporteDiarioContent() {
         >
           <header className="reporte-hero__intro">
             <span className="reporte-hero__eyebrow" aria-hidden="true">
-              <BarChart2 size={25} />
+              <BarChart2 size={14} />
               Reporte Diario
             </span>
           </header>
@@ -1012,7 +996,7 @@ export default function ReporteDiarioContent() {
                     <CloudUpload size={34} />
                   </span>
                   <h3 className="reporte-hero__dropzone-title">
-                    Selecciona un archivo <FileJson size={18} />
+                    Selecciona un archivo
                   </h3>
                 </motion.div>
               )}
@@ -1203,38 +1187,6 @@ export default function ReporteDiarioContent() {
           className="reporte-head__grid"
           aria-label="Información del reporte cargado"
         >
-          {/* Search moved here */}
-          <div className="reporte-search">
-            <div className="reporte-search__field-wrap">
-              <label htmlFor="reporte-search" className="sr-only">
-                Buscar empleado
-              </label>
-              <Search
-                size={16}
-                className="reporte-search__icon"
-                aria-hidden="true"
-              />
-              <input
-                id="reporte-search"
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar por nombre, número o área"
-                className="reporte-search__input"
-                aria-label="Buscar empleado por nombre, número o área"
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={clearSearch}
-                  className="reporte-search__clear"
-                  aria-label="Limpiar búsqueda"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          </div>
           {fileName && !processStep && (
             <div
               className="reporte-status-banner reporte-status-banner--file"
@@ -1254,17 +1206,6 @@ export default function ReporteDiarioContent() {
               </button>
             </div>
           )}
-
-          <span
-            className="reporte-status-banner reporte-status-banner--warn"
-            aria-label={`${heroKpis.totalIncidencias} incidencias detectadas`}
-          >
-            <AlertCircle size={16} aria-hidden="true" />
-            <span className="reporte-head__grid-value">
-              {heroKpis.totalIncidencias}
-            </span>
-            <span className="reporte-head__grid-text">incidencias</span>
-          </span>
 
           {savedSummaries.length >= 2 && (
             <ReporteComparison
@@ -1298,7 +1239,6 @@ export default function ReporteDiarioContent() {
               loadingText="Guardando…"
               successText="¡Guardado!"
               idleIcon={SaveIconData}
-              iconOnly
               className="btn-primary"
               onClick={handleSaveToDb}
               data-testid="save-report-btn"
@@ -1748,9 +1688,7 @@ export default function ReporteDiarioContent() {
                           selectedTopEmpKey === emp.numero_empleado;
                         const detailId = `top-emp-detail-${emp.numero_empleado}`;
                         const maxTotal = topIncidenceEmployees[0].total;
-                        const barPct = Math.round(
-                          (emp.total / maxTotal) * 100,
-                        );
+                        const barPct = Math.round((emp.total / maxTotal) * 100);
 
                         return (
                           <li
@@ -1806,10 +1744,7 @@ export default function ReporteDiarioContent() {
                             </button>
 
                             {isOpen && (
-                              <div
-                                id={detailId}
-                                className="top-emp-detail"
-                              >
+                              <div id={detailId} className="top-emp-detail">
                                 <section
                                   aria-labelledby={`type-heading-${emp.numero_empleado}`}
                                 >
@@ -1836,8 +1771,7 @@ export default function ReporteDiarioContent() {
                                             {code}
                                           </span>
                                           <span className="top-emp-modal__code-label">
-                                            {INCIDENCIA_LABELS[code] ??
-                                              code}
+                                            {INCIDENCIA_LABELS[code] ?? code}
                                           </span>
                                           <span className="top-emp-modal__code-count">
                                             {count}
@@ -1861,9 +1795,7 @@ export default function ReporteDiarioContent() {
                                     role="list"
                                   >
                                     {Object.entries(emp.byMes)
-                                      .sort(([a], [b]) =>
-                                        a.localeCompare(b),
-                                      )
+                                      .sort(([a], [b]) => a.localeCompare(b))
                                       .map(([mes, count]) => {
                                         const pct = Math.round(
                                           (count / emp.total) * 100,
@@ -1875,8 +1807,7 @@ export default function ReporteDiarioContent() {
                                             className="top-emp-modal__month-row top-emp-modal__month-row--btn"
                                             onClick={() =>
                                               setDrillDownMonth({
-                                                empKey:
-                                                  emp.numero_empleado,
+                                                empKey: emp.numero_empleado,
                                                 mes,
                                               })
                                             }

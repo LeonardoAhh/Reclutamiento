@@ -1,5 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { Bus, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, MapPin, Minus, Search, TrendingDown, TrendingUp, Users, X } from 'lucide-react';
+import { Bus, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, MapPin, Minus, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { Search as SearchData, X as XIconData } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { getShortName } from '@/lib/names';
 import { useRutas, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
 import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
@@ -488,7 +490,31 @@ export function RutasView() {
               Buscar empleado por número o nombre
             </label>
             <div className="config-search__wrapper">
-              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <button
+                type="button"
+                className="config-search__icon"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'inherit',
+                  cursor: searchTerm ? 'pointer' : 'default',
+                  zIndex: 1
+                }}
+                onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
+                disabled={!searchTerm}
+                aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                tabIndex={searchTerm ? 0 : -1}
+              >
+                <MorphingIcon 
+                  icon={searchTerm ? XIconData : SearchData} 
+                  size={18} 
+                  className="text-muted" 
+                  aria-hidden="true" 
+                />
+              </button>
               <input
                 id="rutas-search-input"
                 ref={searchInputRef}
@@ -499,17 +525,6 @@ export function RutasView() {
                 aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
                 autoComplete="off"
               />
-              {searchTerm && (
-                <button
-                  type="button"
-                  className="btn-icon config-search__clear"
-                  onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
-                  aria-label="Limpiar búsqueda"
-                  title="Limpiar búsqueda"
-                >
-                  <X size={16} aria-hidden="true" />
-                </button>
-              )}
             </div>
             {searchNorm && (
               <p id="rutas-search-status" className="config-search__hint text-muted mt-xs" role="status" aria-live="polite">

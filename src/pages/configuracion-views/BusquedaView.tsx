@@ -18,10 +18,9 @@ import {
   LayoutGrid,
   List,
   RotateCcw,
-  Search,
   SlidersHorizontal,
-  X,
 } from 'lucide-react';
+import { Search as SearchData, X as XIconData } from 'lucide';
 import { ChevronDown, ChevronUp } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
@@ -357,11 +356,35 @@ export function BusquedaView() {
               Buscar empleado
             </label>
             <div className="config-search__wrapper">
-              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <button
+                type="button"
+                className="config-search__icon"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'inherit',
+                  cursor: searchTerm.length > 0 ? 'pointer' : 'default',
+                  zIndex: 1
+                }}
+                onClick={handleClearSearch}
+                disabled={searchTerm.length === 0}
+                aria-label={searchTerm.length > 0 ? 'Limpiar búsqueda' : 'Buscar'}
+                tabIndex={searchTerm.length > 0 ? 0 : -1}
+              >
+                <MorphingIcon 
+                  icon={searchTerm.length > 0 ? XIconData : SearchData} 
+                  size={18} 
+                  className="text-muted" 
+                  aria-hidden="true" 
+                />
+              </button>
               <input
                 id="config-search-input"
                 ref={searchInputRef}
-                type="search"
+                type="text"
                 inputMode="search"
                 placeholder="Buscar empleado por nombre o número…"
                 value={searchTerm}
@@ -370,17 +393,6 @@ export function BusquedaView() {
                 aria-controls="config-search-results"
                 aria-describedby={showHelperText ? "config-search-hint" : undefined}
               />
-              {searchTerm.length > 0 && (
-                <button
-                  type="button"
-                  className="btn-icon config-search__clear"
-                  onClick={handleClearSearch}
-                  aria-label="Limpiar búsqueda"
-                  title="Limpiar búsqueda"
-                >
-                  <X size={16} aria-hidden="true" />
-                </button>
-              )}
             </div>
             {showHelperText && (
               <p id="config-search-hint" className="config-search__hint type-caption-sm text-muted-soft">
@@ -402,7 +414,7 @@ export function BusquedaView() {
         {searchQuery.length < 2 ? (
           <div className="animated-empty-state busqueda-view__empty">
             <div className="animated-empty-state__icon">
-              <Search aria-hidden="true" />
+              <MorphingIcon icon={SearchData} aria-hidden="true" />
             </div>
             <div className="animated-empty-state__title">Busca un colaborador</div>
             <p className="animated-empty-state__subtitle">Consulta su información laboral, asistencia e historial de incidencias.</p>
@@ -658,7 +670,7 @@ export function BusquedaView() {
                 );
               }) : (
                 <div className="config-filter-empty" role="status">
-                  <Search aria-hidden="true" />
+                  <MorphingIcon icon={SearchData} aria-hidden="true" />
                   <p className="type-body-md text-muted">
                     No hay colaboradores que coincidan con los filtros seleccionados.
                   </p>
@@ -675,7 +687,7 @@ export function BusquedaView() {
           </div>
         ) : (
           <div className="config-empty" role="status">
-            <Search size={32} className="text-muted-soft config-empty__icon" aria-hidden="true" />
+            <MorphingIcon icon={SearchData} size={32} className="text-muted-soft config-empty__icon" aria-hidden="true" />
             <p className="type-body-md text-muted config-empty__copy">No se encontraron resultados para “{searchQuery}”.</p>
           </div>
         )}

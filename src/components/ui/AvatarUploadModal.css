@@ -95,8 +95,11 @@
 }
 
 .avatar-modal__select-btn {
-  width: 100%;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: var(--spacing-xs);
+  width: 100%;
   margin-top: var(--spacing-sm);
 }
 
