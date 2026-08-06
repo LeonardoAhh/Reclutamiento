@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { motion } from 'framer-motion';
-import { CheckCircle2, X } from 'lucide-react';
-import { EASE_OUT } from '@/lib/motion';
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
+import { CheckCircle2, X } from "lucide-react";
+import { EASE_OUT } from "@/lib/motion";
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ interface ModalProps {
   labelledById?: string;
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
-  size?: 'md' | 'lg' | 'xl';
+  size?: "md" | "lg" | "xl";
   /** Si es true, el modal será fullscreen en móvil. Por defecto true, excepto para confirmaciones pequeñas. */
   fullscreenMobile?: boolean;
 }
@@ -34,10 +34,10 @@ export function Modal({
   icon,
   onClose,
   children,
-  className = '',
-  labelledById = 'modal-title',
+  className = "",
+  labelledById = "modal-title",
   footerActions,
-  size = 'md',
+  size = "md",
   fullscreenMobile = true,
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -52,24 +52,24 @@ export function Modal({
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     const { body } = document;
     const prevOverflow = body.style.overflow;
-    body.style.overflow = 'hidden';
+    body.style.overflow = "hidden";
 
     // Focus the first focusable element inside the modal
     const focusable = contentRef.current?.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
     );
     focusable?.[0]?.focus();
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         e.stopPropagation();
         onCloseRef.current();
         return;
       }
-      if (e.key !== 'Tab' || !contentRef.current) return;
+      if (e.key !== "Tab" || !contentRef.current) return;
 
       const items = contentRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
       if (items.length === 0) return;
       const first = items[0];
@@ -84,9 +84,9 @@ export function Modal({
       }
     }
 
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener("keydown", onKeyDown);
       body.style.overflow = prevOverflow;
       previousFocusRef.current?.focus?.();
     };
@@ -95,13 +95,13 @@ export function Modal({
   if (!isOpen) return null;
 
   const contentClasses = [
-    'modal-content',
+    "modal-content",
     `modal-content--${size}`,
-    fullscreenMobile ? 'modal-fullscreen-mobile' : '',
+    fullscreenMobile ? "modal-fullscreen-mobile" : "",
     className,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return createPortal(
     <motion.div
@@ -109,7 +109,7 @@ export function Modal({
       role="presentation"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -143,12 +143,10 @@ export function Modal({
         </header>
         {children}
         {footerActions && (
-          <footer className="modal-footer">
-            {footerActions}
-          </footer>
+          <footer className="modal-footer">{footerActions}</footer>
         )}
       </motion.div>
     </motion.div>,
-    document.body
+    document.body,
   );
 }

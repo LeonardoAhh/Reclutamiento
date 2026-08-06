@@ -26,7 +26,7 @@
     padding var(--transition-base);
 }
 
-.sidebar[data-mobile-open='true'] {
+.sidebar[data-mobile-open="true"] {
   transform: translateX(0);
 }
 
@@ -38,15 +38,13 @@
   animation: fadeIn var(--transition-base) ease-out forwards;
 }
 
-
-
 @media (max-width: 1023px) {
   .sidebar {
     width: var(--layout-sidebar-w-expanded) !important;
     padding-inline: var(--spacing-lg) var(--spacing-md) !important;
     box-shadow: var(--shadow-elevated);
   }
-  .sidebar[data-collapsed='true'] .sidebar__top {
+  .sidebar[data-collapsed="true"] .sidebar__top {
     flex-direction: row;
     gap: var(--spacing-sm);
   }
@@ -55,8 +53,9 @@
   }
 }
 
-.sidebar[data-collapsed='true'] {
-  padding-inline: max(var(--spacing-sm), var(--safe-area-left)) var(--spacing-sm);
+.sidebar[data-collapsed="true"] {
+  padding-inline: max(var(--spacing-sm), var(--safe-area-left))
+    var(--spacing-sm);
 }
 
 .sidebar__top {
@@ -68,7 +67,7 @@
   margin-bottom: var(--spacing-xl);
 }
 
-.sidebar[data-collapsed='true'] .sidebar__top {
+.sidebar[data-collapsed="true"] .sidebar__top {
   flex-direction: column;
   gap: var(--spacing-md);
 }
@@ -165,9 +164,10 @@ button.sidebar__collapse-btn {
   padding-top: var(--spacing-xl);
   display: flex;
   align-items: center;
+  position: relative; /* allow absolute popover positioned relative to footer */
 }
 
-.sidebar[data-collapsed='true'] .sidebar__footer {
+.sidebar[data-collapsed="true"] .sidebar__footer {
   justify-content: center;
 }
 
@@ -183,7 +183,42 @@ button.sidebar__collapse-btn {
   transition: opacity var(--transition-fast);
 }
 
-.sidebar__brand:hover { opacity: 0.7; }
+.sidebar__brand:hover {
+  opacity: 0.7;
+}
+
+/* User trigger inside sidebar footer */
+.sidebar__user {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.sidebar__user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-md);
+}
+.sidebar__user-trigger:hover {
+  background: var(--color-surface-soft);
+}
+
+/* Position the popover above the footer and keep it within the sidebar */
+.sidebar__footer .app-header__popover {
+  position: absolute;
+  /* ensure previous 'top' or 'right' values don't interfere */
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(100% + var(--spacing-xs));
+  left: 0;
+  z-index: 1100;
+  min-width: 220px;
+  transform: none !important;
+}
 
 .sidebar__brand:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -207,20 +242,27 @@ button.sidebar__collapse-btn {
 }
 
 @keyframes sidebar-pulse-new {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.95); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
 }
 
-.sidebar[data-collapsed='true'] .sidebar__item {
+.sidebar[data-collapsed="true"] .sidebar__item {
   justify-content: center;
   padding-inline: 0;
 }
 
-.sidebar[data-collapsed='true'] .sidebar__item-label {
+.sidebar[data-collapsed="true"] .sidebar__item-label {
   display: none;
 }
 
-.sidebar[data-collapsed='true'] .sidebar__new-badge {
+.sidebar[data-collapsed="true"] .sidebar__new-badge {
   position: absolute;
   top: 2px;
   right: 6px;
@@ -236,15 +278,13 @@ button.sidebar__collapse-btn {
   animation: sidebar-pulse-new 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.sidebar[data-collapsed='true'] .sidebar__new-badge::after {
+.sidebar[data-collapsed="true"] .sidebar__new-badge::after {
   display: none;
 }
 
-.sidebar[data-collapsed='true'] .sidebar__item-active-indicator {
+.sidebar[data-collapsed="true"] .sidebar__item-active-indicator {
   inset-block: 25%;
 }
-
-
 
 :root {
   --layout-sidebar-w-expanded: 248px;
@@ -258,7 +298,7 @@ button.sidebar__collapse-btn {
   --_app-sidebar-w: var(--layout-sidebar-w-expanded);
 }
 
-.app-shell[data-collapsed='true'] {
+.app-shell[data-collapsed="true"] {
   --_app-sidebar-w: var(--layout-sidebar-w-collapsed);
 }
 
@@ -274,5 +314,7 @@ button.sidebar__collapse-btn {
 }
 
 @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
-  .app-shell__main { transition: none; }
+  .app-shell__main {
+    transition: none;
+  }
 }

@@ -1,0 +1,157 @@
+/* Modal styles aligned with AGENTS.md tokens and accessibility */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: var(--color-modal-scrim);
+  z-index: var(--layer-maintenance);
+}
+
+.modal-content {
+  width: calc(100% - (var(--spacing-lg) * 2));
+  max-width: 680px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-elevated);
+  overflow: auto;
+  max-height: calc(100vh - (var(--spacing-lg) * 2));
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+/* Sizes */
+.modal-content--md {
+  max-width: 640px;
+}
+.modal-content--lg {
+  max-width: 880px;
+}
+.modal-content--xl {
+  max-width: 1120px;
+}
+
+/* Fullscreen behaviour on mobile when requested */
+.modal-fullscreen-mobile {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modal-title__text h2 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  color: var(--color-body-strong);
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  padding: var(--spacing-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-sm);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  color: var(--color-body);
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline);
+  justify-content: flex-end;
+}
+
+/* Specific styles for the reporte-top-emp list inside the modal */
+.reporte-top-emp ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.reporte-top-emp li {
+  padding: calc(var(--spacing-sm) * 0.75) 0;
+  border-bottom: 1px dashed var(--color-hairline-soft);
+}
+.reporte-top-emp__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+.reporte-top-emp__meta {
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  margin-top: var(--spacing-xs);
+}
+.reporte-top-emp__count {
+  font-family: var(--font-display);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+/* Make buttons inside modal full-width and accessible */
+.reporte-top-emp button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: var(--spacing-sm) 0;
+  cursor: pointer;
+}
+.reporte-top-emp button:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Responsive: ensure modal is centered on larger viewports */
+@media (min-width: 768px) {
+  .modal-overlay {
+    padding: var(--spacing-xl);
+  }
+  .modal-content {
+    border-radius: var(--rounded-xl);
+  }
+  .modal-fullscreen-mobile {
+    width: auto;
+    height: auto;
+  }
+}

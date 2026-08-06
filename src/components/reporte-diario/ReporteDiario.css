@@ -13,6 +13,16 @@
   padding-bottom: var(--spacing-lg);
 }
 
+/* Remove any inline margins/paddings so the report occupies the full content area
+   adjacent to the app sidebar. This keeps changes local to the reporte page. */
+.reporte-page {
+  padding-inline: 0 !important;
+  margin-inline: 0 !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
 @media (min-width: 768px) {
   .reporte-page {
     padding-top: var(--spacing-xl);
@@ -34,6 +44,17 @@
   width: 100%;
 }
 
+.reporte-container {
+  padding-inline: 0 !important;
+  margin-inline: 0 !important;
+  max-width: none !important;
+}
+
+.reporte-main {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  width: 100% !important;
+}
 
 @media (min-width: 768px) {
   .reporte-container {
@@ -54,10 +75,88 @@
 @media (min-width: 768px) {
   .reporte-header__top {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: var(--spacing-lg);
   }
+}
+
+/* Asegurar que el header ocupe todo el ancho y los controles se alineen en una sola fila */
+.reporte-header__top {
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  margin: 0;
+}
+
+.reporte-head__grid {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: nowrap;
+}
+
+/* Center the header controls block and allow it to stretch across available space */
+.reporte-head__grid {
+  width: min(1200px, 100%);
+  margin-inline: auto;
+}
+
+/* Hide the left placeholder (title removed) so it doesn't reserve space */
+.reporte-head__left {
+  display: none;
+}
+
+/* Make the search field flexible and prefer available space */
+.reporte-head__grid > .reporte-search {
+  flex: 1 1 420px;
+  min-width: 260px;
+  max-width: none;
+}
+
+/* Ensure other controls keep their intrinsic size */
+.reporte-head__grid > *:not(.reporte-search) {
+  flex: 0 0 auto;
+}
+
+/* Make the search input fill its container */
+.reporte-search__field-wrap {
+  width: 100%;
+}
+
+.reporte-search__input {
+  width: 100%;
+  min-width: 140px;
+}
+
+/* -------------------------------------------------------------------------
+   FORCE SINGLE COLUMN — make every report internal grid a single column
+   so the page displays as a single vertical column occupying full width.
+   This overrides the responsive grid templates used elsewhere on this page.
+   ------------------------------------------------------------------------- */
+.reporte-page .reporte__layout,
+.reporte-page .reporte__layout--halves,
+.reporte-page .reporte__layout--thirds,
+.reporte-page .reporte__layout--quarters,
+.reporte-page .reporte-layout,
+.reporte-page .reporte-kpi-grid,
+.reporte-page .reporte-cards-grid {
+  grid-template-columns: 1fr !important;
+}
+
+/* Allow cards and main to stretch full width of the available content area */
+.reporte-page .reporte-main,
+.reporte-page .reporte-container,
+.reporte-page .reporte-card {
+  width: 100%;
+  max-width: none;
+}
+
+/* Evitar que la apariencia de 'card' se aplique al header */
+.reporte-header__top .reporte-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .reporte-title-wrapper {
@@ -356,7 +455,6 @@ button.reporte-card:focus-visible,
 
 /* ── Primary button — uses global .btn-primary ─────────────────────────────── */
 
-
 .reporte-search-card {
   padding: var(--spacing-md);
 }
@@ -372,6 +470,7 @@ button.reporte-card:focus-visible,
   display: flex;
   align-items: center;
   width: 100%;
+  height: var(--control-height);
 }
 
 .reporte-search__icon {
@@ -382,15 +481,18 @@ button.reporte-card:focus-visible,
 
 .reporte-search__input {
   width: 100%;
+  height: var(--control-height);
   min-height: var(--control-height);
-  padding: 0 var(--spacing-md) 0 calc(var(--spacing-md) + var(--spacing-xl));
+  padding: 0 var(--control-padding-x) 0
+    calc(var(--control-padding-x) + var(--spacing-sm));
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--rounded-md);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
+  box-sizing: border-box;
 }
 
 .reporte-search__input::-ms-clear,
@@ -519,7 +621,9 @@ button.reporte-card:focus-visible,
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
   cursor: pointer;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .reporte-employee-detail__tab:hover {
@@ -908,8 +1012,12 @@ button.reporte-card:focus-visible,
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
-.reporte-cmp__table tbody tr:last-child { border-bottom: none; }
-.reporte-cmp__table tbody tr:hover { background: var(--color-surface-soft); }
+.reporte-cmp__table tbody tr:last-child {
+  border-bottom: none;
+}
+.reporte-cmp__table tbody tr:hover {
+  background: var(--color-surface-soft);
+}
 
 .reporte-cmp__table td {
   padding: var(--spacing-sm) var(--spacing-md);
@@ -918,11 +1026,22 @@ button.reporte-card:focus-visible,
   overflow-wrap: anywhere;
 }
 
-.reporte-cmp__num { text-align: right; font-variant-numeric: tabular-nums; }
-.reporte-cmp__table th.reporte-cmp__num { text-align: right; }
-.reporte-cmp__mes { font-weight: var(--type-body-strong-weight); }
-.reporte-cmp__strong { font-weight: var(--type-body-strong-weight); }
-.reporte-cmp__muted { color: var(--color-muted); }
+.reporte-cmp__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.reporte-cmp__table th.reporte-cmp__num {
+  text-align: right;
+}
+.reporte-cmp__mes {
+  font-weight: var(--type-body-strong-weight);
+}
+.reporte-cmp__strong {
+  font-weight: var(--type-body-strong-weight);
+}
+.reporte-cmp__muted {
+  color: var(--color-muted);
+}
 
 .reporte-cmp__trend {
   display: inline-flex;
@@ -933,10 +1052,15 @@ button.reporte-card:focus-visible,
   white-space: nowrap;
 }
 
-
-.reporte-cmp__trend--error { color: var(--color-error); }
-.reporte-cmp__trend--success { color: var(--color-success); }
-.reporte-cmp__trend--muted { color: var(--color-muted); }
+.reporte-cmp__trend--error {
+  color: var(--color-error);
+}
+.reporte-cmp__trend--success {
+  color: var(--color-success);
+}
+.reporte-cmp__trend--muted {
+  color: var(--color-muted);
+}
 
 .reporte-cmp__quarters {
   display: grid;
@@ -980,9 +1104,15 @@ button.reporte-card:focus-visible,
   font-weight: var(--font-bold);
 }
 
-.reporte-cmp__quarter-value--ok { color: var(--color-success); }
-.reporte-cmp__quarter-value--warn { color: var(--color-warning); }
-.reporte-cmp__quarter-value--error { color: var(--color-error); }
+.reporte-cmp__quarter-value--ok {
+  color: var(--color-success);
+}
+.reporte-cmp__quarter-value--warn {
+  color: var(--color-warning);
+}
+.reporte-cmp__quarter-value--error {
+  color: var(--color-error);
+}
 
 .reporte-cmp__cards {
   display: flex;
@@ -994,8 +1124,12 @@ button.reporte-card:focus-visible,
 }
 
 @media (min-width: 768px) {
-  .reporte-cmp__cards { display: none; }
-  .reporte-cmp__table-wrap { display: block; }
+  .reporte-cmp__cards {
+    display: none;
+  }
+  .reporte-cmp__table-wrap {
+    display: block;
+  }
 }
 
 /* ============================================================================
@@ -1011,7 +1145,9 @@ button.reporte-card:focus-visible,
   border-radius: var(--rounded-md);
   background: var(--color-surface-card);
   cursor: pointer;
-  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .reporte-saved__trigger:hover {
@@ -1210,7 +1346,9 @@ button.reporte-card:focus-visible,
   background: none;
   color: var(--color-muted);
   cursor: pointer;
-  transition: color var(--transition-fast), background-color var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .reporte-saved__delete:hover:not(:disabled) {
@@ -1271,13 +1409,12 @@ button.reporte-card:focus-visible,
 
 .reporte-kpi__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: var(--spacing-sm);
 }
 
 @media (min-width: 768px) {
   .reporte-kpi__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--spacing-md);
   }
 }
@@ -1293,7 +1430,9 @@ button.reporte-card:focus-visible,
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-sm);
   min-width: 0;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .reporte-kpi__card:hover {
@@ -1310,12 +1449,12 @@ button.reporte-card:focus-visible,
   margin-top: 2px;
 }
 
-.reporte-kpi__card--warning .reporte-kpi__icon-box { 
-  color: var(--color-warning); 
+.reporte-kpi__card--warning .reporte-kpi__icon-box {
+  color: var(--color-warning);
 }
 
-.reporte-kpi__card--destructive .reporte-kpi__icon-box { 
-  color: var(--color-error); 
+.reporte-kpi__card--destructive .reporte-kpi__icon-box {
+  color: var(--color-error);
 }
 
 .reporte-kpi__content {
@@ -1349,7 +1488,10 @@ button.reporte-card:focus-visible,
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-sm-line);
   color: var(--color-ink);
-  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
 }
 
 @media (min-width: 768px) {
@@ -1359,7 +1501,9 @@ button.reporte-card:focus-visible,
   }
 }
 
-.reporte-kpi__card--destructive .reporte-kpi__value { color: var(--color-error); }
+.reporte-kpi__card--destructive .reporte-kpi__value {
+  color: var(--color-error);
+}
 
 .reporte-kpi__sub {
   margin: 0;
@@ -1620,10 +1764,22 @@ button.reporte-card:focus-visible,
   white-space: nowrap;
 }
 
-.reporte-inc-badge--error { background: var(--color-error-tint); color: var(--color-error); }
-.reporte-inc-badge--warn { background: var(--color-warning-tint); color: var(--color-warning); }
-.reporte-inc-badge--ok { background: var(--color-success-tint); color: var(--color-success); }
-.reporte-inc-badge--info { background: var(--color-surface-soft); color: var(--color-charcoal); }
+.reporte-inc-badge--error {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+.reporte-inc-badge--warn {
+  background: var(--color-warning-tint);
+  color: var(--color-warning);
+}
+.reporte-inc-badge--ok {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+.reporte-inc-badge--info {
+  background: var(--color-surface-soft);
+  color: var(--color-charcoal);
+}
 
 .reporte-incidents__card-tags {
   display: flex;
@@ -1763,9 +1919,15 @@ button.reporte-card:focus-visible,
   border-color: var(--color-primary);
 }
 
-.reporte-cal__cell--crit { border-color: var(--color-error); }
-.reporte-cal__cell--warn { border-color: var(--color-warning); }
-.reporte-cal__cell--ok { border-color: var(--color-success); }
+.reporte-cal__cell--crit {
+  border-color: var(--color-error);
+}
+.reporte-cal__cell--warn {
+  border-color: var(--color-warning);
+}
+.reporte-cal__cell--ok {
+  border-color: var(--color-success);
+}
 
 .reporte-cal__top {
   display: flex;
@@ -1847,29 +2009,16 @@ button.reporte-card:focus-visible,
 /* ── Layout 2 paneles: controles (izq) + reporte (der) ───────────── */
 .reporte-layout {
   display: grid;
-  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+  /* Single-column layout now: main content occupies full width */
+  grid-template-columns: 1fr;
   gap: var(--spacing-xl);
   align-items: start;
-  transition: grid-template-columns var(--transition-base), gap var(--transition-base);
-}
-
-.reporte-layout[data-collapsed="true"] {
-  grid-template-columns: 0 minmax(0, 1fr);
-  gap: 0;
+  transition: gap var(--transition-base);
 }
 
 .reporte-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  min-width: 0;
-  overflow: hidden;
-  transition: opacity var(--transition-base);
-}
-
-.reporte-layout[data-collapsed="true"] .reporte-panel {
-  opacity: 0;
-  pointer-events: none;
+  /* Panel kept in DOM for legacy but hidden — controls moved to header */
+  display: none;
 }
 
 .reporte-main {
@@ -1879,33 +2028,7 @@ button.reporte-card:focus-visible,
   gap: var(--spacing-lg);
 }
 
-/* Botón para mostrar/ocultar el panel de controles */
-.reporte-panel-toggle {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
-  color: var(--color-body);
-  cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast);
-}
-
-.reporte-panel-toggle:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
-}
-
-.reporte-panel-toggle:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
+/* Panel is always visible — collapse removed */
 
 .reporte-main-empty {
   display: flex;
@@ -1920,14 +2043,11 @@ button.reporte-card:focus-visible,
 
 /* Móvil/tablet: apilado en una columna */
 @media (max-width: 900px) {
-  .reporte-layout,
-  .reporte-layout[data-collapsed="true"] {
+  .reporte-layout {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
   }
-  .reporte-layout[data-collapsed="true"] .reporte-panel {
-    display: none;
-  }
+  /* On small screens the layout stacks; panel remains visible */
 }
 
 /* ── Reporte Diario ocupa todo el ancho del área (pegado a la sidebar) ──────
@@ -2406,7 +2526,9 @@ button.reporte-card:focus-visible,
   font-weight: var(--type-body-strong-weight);
   cursor: pointer;
   align-self: flex-start;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .top-emp-drill-back:hover {
@@ -2489,8 +2611,12 @@ button.reporte-card:focus-visible,
 }
 
 @media (min-width: 768px) {
-  .reporte-area-grid--calidad { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .reporte-area-grid--prod    { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .reporte-area-grid--calidad {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .reporte-area-grid--prod {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* ================================================================
@@ -2575,7 +2701,9 @@ button.reporte-card:focus-visible,
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .ras__clear-btn:hover {
@@ -2636,24 +2764,32 @@ button.reporte-card:focus-visible,
 .ras__grid {
   display: grid;
   gap: var(--spacing-sm);
-  grid-template-columns: 1fr;             /* 1 col mobile */
+  grid-template-columns: 1fr; /* 1 col mobile */
   align-items: start;
 }
 
 @media (min-width: 480px) {
-  .ras__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ras__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 768px) {
-  .ras__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ras__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1024px) {
-  .ras__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ras__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1400px) {
-  .ras__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .ras__grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 /* ── Tarjeta de sección ─── */
@@ -2667,8 +2803,10 @@ button.reporte-card:focus-visible,
   border-radius: var(--rounded-lg);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
-              transform var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   min-width: 0;
   overflow: hidden;
 }
@@ -2690,17 +2828,26 @@ button.ras-card:focus-visible {
 .ras-card--selected {
   border-color: var(--color-primary);
   background: var(--color-surface-soft);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-primary) 10%, transparent);
   transform: translateY(-1px);
 }
 
 /* Estados persistentes sin animación infinita. */
 .ras-card--has-incidents:not(.ras-card--selected) {
-  border-color: color-mix(in srgb, var(--color-error) 25%, var(--color-hairline));
+  border-color: color-mix(
+    in srgb,
+    var(--color-error) 25%,
+    var(--color-hairline)
+  );
 }
 
 .ras-card--no-incidents:not(.ras-card--selected) {
-  border-color: color-mix(in srgb, var(--color-success) 20%, var(--color-hairline));
+  border-color: color-mix(
+    in srgb,
+    var(--color-success) 20%,
+    var(--color-hairline)
+  );
 }
 
 /* Header de la tarjeta */
@@ -2744,10 +2891,18 @@ button.ras-card:focus-visible {
   line-height: 1;
 }
 
-.ras-card__badge--muted { color: var(--color-muted); }
-.ras-card__badge--error { color: var(--color-error); }
-.ras-card__badge--warning { color: var(--color-warning); }
-.ras-card__badge--primary { color: var(--color-primary); }
+.ras-card__badge--muted {
+  color: var(--color-muted);
+}
+.ras-card__badge--error {
+  color: var(--color-error);
+}
+.ras-card__badge--warning {
+  color: var(--color-warning);
+}
+.ras-card__badge--primary {
+  color: var(--color-primary);
+}
 
 /* Chip de descanso */
 .ras-card__descanso {
@@ -2841,10 +2996,12 @@ button.ras-card:focus-visible {
   flex-shrink: 0;
 }
 
-.ras-card__trend--critical { color: var(--color-error); }
-.ras-card__trend--stable { color: var(--color-success); }
-
-
+.ras-card__trend--critical {
+  color: var(--color-error);
+}
+.ras-card__trend--stable {
+  color: var(--color-success);
+}
 
 /* ============================================================================
    REDISEÑO — Empty state "Onboarding-first" (Idea A)
@@ -3046,7 +3203,9 @@ button.ras-card:focus-visible {
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 @media (min-width: 640px) {
@@ -3176,6 +3335,40 @@ button.ras-card:focus-visible {
 
 .reporte-head__meta > * {
   min-width: 0;
+}
+
+.reporte-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.reporte-top-bar > * {
+  min-width: 0;
+}
+
+.reporte-controls-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.reporte-controls-group > * {
+  min-width: 0;
+}
+
+.reporte-search-container {
+  flex: 1;
+  min-width: min(100%, 250px);
+}
+
+.reporte-status-banner--file {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Ocultar el toggle Ocultar en móvil (no aplica cuando el layout es apilado) */
@@ -3503,7 +3696,6 @@ button.ras-card:focus-visible {
   margin-bottom: var(--spacing-lg);
 }
 
-
 /* ============================================================================
    HERO — Acciones "reportes guardados" con botones etiquetados.
    ============================================================================ */
@@ -3586,10 +3778,12 @@ button.ras-card:focus-visible {
 
 .reporte-head__grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* prevent controls from wrapping to next line */
   align-items: center;
   gap: var(--spacing-sm);
   margin-top: var(--spacing-sm);
+  overflow-x: auto; /* allow horizontal scroll instead of wrapping */
+  -webkit-overflow-scrolling: touch;
 }
 
 .reporte-incidents__empty--padded,
@@ -3627,4 +3821,3 @@ button.ras-card:focus-visible {
 .reporte-head__grid .reporte-saved__trigger--labeled {
   width: auto;
 }
-
