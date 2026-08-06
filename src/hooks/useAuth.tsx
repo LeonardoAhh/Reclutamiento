@@ -26,6 +26,7 @@ export interface Profile {
   role: 'admin' | 'reclutador' | 'gerente' | 'auditor';
   created_at?: string;
   last_login_at?: string | null;
+  avatar_url?: string | null;
 }
 
 export interface AuthState {
@@ -38,6 +39,7 @@ export interface AuthState {
   loading: boolean;
   signIn: (username: string, password: string) => Promise<SignInResult>;
   signOut: () => Promise<void>;
+  updateAvatarUrl: (url: string | null) => void;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -225,7 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, username, display_name, role, created_at, last_login_at')
+          .select('id, username, display_name, role, created_at, last_login_at, avatar_url')
           .eq('id', session!.user.id)
           .single();
         if (cancelled) return;
@@ -294,6 +296,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
   }, []);
 
+  const updateAvatarUrl = useCallback((url: string | null) => {
+    setProfile((prev) => (prev ? { ...prev, avatar_url: url } : prev));
+  }, []);
+
   const value = useMemo<AuthState>(() => {
     const username =
       profile?.username ?? emailToUsername(session?.user?.email ?? '');
@@ -306,8 +312,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signIn,
       signOut,
+      updateAvatarUrl,
     };
-  }, [session, profile, profileLoading, loading, signIn, signOut]);
+  }, [session, profile, profileLoading, loading, signIn, signOut, updateAvatarUrl]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

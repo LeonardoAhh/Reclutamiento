@@ -339,12 +339,8 @@ export function RegistroNoCitadosView() {
   };
 
   return (
-    <section className="no-citados-view config-page__content">
+    <section className="no-citados-view config-page">
       <header className="config-page__header no-citados-header">
-        <h2 className="config-page__title">
-          <UserX size={24} className="text-primary" aria-hidden="true" />
-          Registro de No Citados
-        </h2>
         <button
           type="button"
           className="btn-primary"

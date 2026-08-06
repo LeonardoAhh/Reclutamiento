@@ -1,12 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChevronDown, ChevronUp, ChevronsLeft, Loader, LogOut, Menu } from 'lucide';
+import { ChevronsLeft, Menu } from 'lucide';
 import { useAuth } from '@/hooks/useAuth';
-import { useSystemVersion } from '@/hooks/useSystemVersion';
-import { useFeedback } from '@/hooks/useFeedback';
-import { useLoader } from '@/hooks/useLoader';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Tooltip } from '@/components/ui/Tooltip';
 import './Sidebar.css';
@@ -17,106 +12,41 @@ import { NAV_ITEMS } from './navigation';
 type SidebarProps = {
   collapsed: boolean;
   onToggleCollapse: () => void;
-  /** Forzar colapso (sin toggle). Se usa para auto-colapsar al navegar. */
-  onCollapse?: () => void;
+  mobileMenuOpen?: boolean;
+  onCloseMobileMenu?: () => void;
 };
 
 /**
- * Sidebar de escritorio (≥1024px). Fija a la izquierda, colapsable a iconos.
- * Al navegar entre páginas se contrae automáticamente para dar más espacio
- * al contenido; el usuario puede volver a expandir con el botón toggle.
+ * Sidebar de escritorio (>=1024px). Fija a la izquierda, colapsable a iconos.
  * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
+ * Nota: El menú de usuario se ha movido al Header.
  */
-export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProps) {
-  const { username, signOut } = useAuth();
-  const shouldReduceMotion = useReducedMotion();
-  const loader = useLoader();
-  const { version } = useSystemVersion();
-  const [signingOut, setSigningOut] = useState(false);
+export function Sidebar({ collapsed, onToggleCollapse, mobileMenuOpen, onCloseMobileMenu }: SidebarProps) {
+  const { username } = useAuth();
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement>(null);
-
-  const { trigger } = useFeedback();
-
-  // Cerrar popover al hacer click fuera
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onPointerDown = (e: PointerEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, [menuOpen]);
-
-  // Manejo de foco para el popover de usuario
-  useEffect(() => {
-    if (menuOpen) {
-      requestAnimationFrame(() => {
-        const popover = document.getElementById('user-menu-popover');
-        const firstAction = popover?.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        firstAction?.focus();
-      });
-    }
-  }, [menuOpen]);
-
-  /* ── Auto-colapso al navegar ─────────────────────────────────────────
-     Cuando cambia la ruta (por click, URL bar o browser back), colapsamos
-     el sidebar para dar más espacio al contenido. Usamos un ref para
-     detectar cambio real de ruta (no reaccionamos a `collapsed`, lo que
-     provocaría un loop al intentar expandir manualmente). */
+  /* Cerrar menú móvil al navegar */
   useEffect(() => {
     if (prevPathRef.current === location.pathname) return;
     prevPathRef.current = location.pathname;
-    onCollapse?.();
-  }, [location.pathname, onCollapse]);
-
-  const handleSignOut = useCallback(async () => {
-    if (signingOut) return;
-    setSigningOut(true);
-    trigger('light');
-    loader.flash({ title: 'Cerrando sesión...', hint: 'Nos vemos pronto', duration: 2500 });
-    try {
-      trigger('success');
-      await signOut();
-    } finally {
-      setSigningOut(false);
-    }
-  }, [signingOut, signOut, trigger, loader]);
-
-  /** Iniciales del usuario para el avatar. */
-  const userInitials = useMemo(() => {
-    if (!username) return '';
-    const base = username.split('@')[0] ?? '';
-    const parts = base.split(/[._\-\s]+/).filter(Boolean);
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return base.slice(0, 2).toUpperCase();
-  }, [username]);
-
+    onCloseMobileMenu?.();
+  }, [location.pathname, onCloseMobileMenu]);
   if (!username) return null;
 
   return (
     <aside
       className="sidebar"
       data-collapsed={collapsed}
+      data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
       data-testid="app-sidebar"
     >
-      {/* Top: marca + colapsar */}
+      {/* Top: colapsar */}
       <div className="sidebar__top">
-        {!collapsed && (
-          <NavLink to="/" className="sidebar__brand" aria-label="Reclutamiento, ir al inicio">
-            <BrandLogo showText={!collapsed} />
-          </NavLink>
-        )}
-
         <button
           type="button"
-          className="sidebar__collapse"
+          className="sidebar__item sidebar__collapse-btn"
           onClick={onToggleCollapse}
           aria-pressed={collapsed}
           aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
@@ -125,8 +55,10 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
         >
           <MorphingIcon
             icon={collapsed ? Menu : ChevronsLeft}
-            size={18}
+            size={20}
+            className="sidebar__item-icon"
           />
+          <span className="sidebar__item-label">Colapsar</span>
         </button>
       </div>
 
@@ -163,94 +95,14 @@ export function Sidebar({ collapsed, onToggleCollapse, onCollapse }: SidebarProp
               </li>
             );
           })}
-
-
         </ul>
       </nav>
 
-      {/* Footer: Avatar Popover Minimalista */}
-      <div 
-        className="sidebar__footer" 
-        ref={userMenuRef} 
-        onKeyDown={(e) => {
-          if (e.key === 'Escape' && menuOpen) {
-            setMenuOpen(false);
-            document.getElementById('user-menu-trigger')?.focus();
-          }
-        }}
-      >
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              id="user-menu-popover"
-              className="sidebar__popover"
-              initial={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
-              animate={{ opacity: 1, y: 0, x: collapsed ? 12 : "-50%", scale: 1 }}
-              exit={{ opacity: 0, y: collapsed || shouldReduceMotion ? 0 : 10, x: collapsed ? 0 : "-50%", scale: shouldReduceMotion ? 1 : 0.95 }}
-              transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
-            >
-              <div className="sidebar__popover-header">
-                <span className="sidebar__session-name" title={username}>{username}</span>
-                {version && (
-                  <span className="sidebar__popover-version">v{version}</span>
-                )}
-              </div>
-              
-              <div className="sidebar__popover-divider" />
-              
-              <div className="sidebar__popover-actions">
-                <div className="sidebar__popover-row">
-                  <span className="sidebar__popover-row-label">
-                    Tema visual
-                  </span>
-                  <ThemeToggle />
-                </div>
-
-                <div className="sidebar__popover-divider" />
-
-                <button
-                  type="button"
-                  className="sidebar__popover-item sidebar__popover-item--danger"
-                  onClick={handleSignOut}
-                  disabled={signingOut}
-                >
-                  <MorphingIcon
-                    icon={signingOut ? Loader : LogOut}
-                    size={16}
-                    className={`sidebar__popover-icon${signingOut ? ' sidebar__spin' : ''}`}
-                    aria-hidden="true"
-                  />
-                  <span>{signingOut ? 'Cerrando...' : 'Cerrar sesión'}</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <button
-          id="user-menu-trigger"
-          type="button"
-          className="sidebar__user-trigger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-expanded={menuOpen}
-          aria-controls={menuOpen ? "user-menu-popover" : undefined}
-          aria-haspopup="menu"
-          aria-label="Opciones de usuario"
-        >
-          <span className="sidebar__avatar" aria-hidden="true" title={username}>
-            {userInitials || 'U'}
-          </span>
-          {!collapsed && (
-            <div className="sidebar__trigger-info">
-              <span className="sidebar__trigger-name">{username.split('@')[0]}</span>
-              <MorphingIcon
-                icon={menuOpen ? ChevronDown : ChevronUp}
-                size={16}
-                className={`sidebar__trigger-icon ${menuOpen ? 'sidebar__trigger-icon--open' : ''}`}
-              />
-            </div>
-          )}
-        </button>
+      {/* Footer: logo del sistema */}
+      <div className="sidebar__footer">
+        <NavLink to="/" className="sidebar__brand" aria-label="Reclutamiento, ir al inicio">
+          <BrandLogo showText={!collapsed || mobileMenuOpen} />
+        </NavLink>
       </div>
     </aside>
   );

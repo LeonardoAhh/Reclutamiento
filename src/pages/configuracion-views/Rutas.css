@@ -141,7 +141,7 @@
 
 @media (min-width: 769px) {
   .rutas-list {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: var(--spacing-md);
   }
 }

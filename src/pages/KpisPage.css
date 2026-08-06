@@ -93,8 +93,8 @@
 
 /* ── Grid móvil del grupo activo ────────────────────────────────────── */
 .kpis-page__m-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
   animation: kpis-panel-in var(--transition-base) both;
@@ -121,42 +121,32 @@
   flex: 1;
 }
 
-/* Evitar que el label se encime con el botón de detalle en móvil */
-.kpis-page__m-card--has-action .stat-card__label {
-  padding-right: calc(var(--control-height) + var(--spacing-xs));
-}
-
-/* Botón de detalle compacto (móvil): icono en esquina superior derecha. */
-.kpis-page__m-detail {
-  position: absolute;
-  top: var(--spacing-xs);
-  right: var(--spacing-xs);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--control-height);
-  height: var(--control-height);
-  padding: 0;
-  border-radius: var(--rounded-full);
-  border: 1px solid var(--color-hairline);
-  background: var(--color-surface-card);
-  color: var(--color-primary);
+/* ── Estilos interactivos de tarjeta móvil (chevron) ──────────────── */
+.kpis-page__m-card--interactive {
   cursor: pointer;
-  box-shadow: var(--shadow-subtle);
-  transition:
-    background var(--transition-fast),
-    color var(--transition-fast);
-  z-index: 2;
+  border-radius: var(--rounded-lg);
 }
 
-.kpis-page__m-detail:active {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+.kpis-page__m-card--interactive > .stat-card {
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  padding-right: var(--spacing-xxl); /* Dar espacio al chevron */
 }
 
-.kpis-page__m-detail:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+.kpis-page__m-card--interactive:hover > .stat-card {
+  background-color: var(--color-surface-hover);
+}
+
+.kpis-page__m-card--interactive:active > .stat-card {
+  transform: scale(0.98);
+}
+
+.kpis-page__m-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-sm);
+  transform: translateY(-50%);
+  color: var(--color-muted);
+  pointer-events: none;
 }
 
 /* ── Gráfica semanal colapsable (móvil) ─────────────────────────────── */

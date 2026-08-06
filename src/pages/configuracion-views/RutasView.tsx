@@ -478,12 +478,7 @@ export function RutasView() {
   };
 
   return (
-    <section className="rutas-page config-page__content" id="main-content" data-mobile-view={mobileView} tabIndex={-1}>
-      <header className="config-page__header rutas-header">
-        <div className="rutas-header__copy">
-          <h2 className="config-page__title">Rutas de transporte</h2>
-        </div>
-      </header>
+    <section className="rutas-page config-page" id="main-content" data-mobile-view={mobileView} tabIndex={-1}>
 
       {/* ── Search bar & Horarios ── */}
       <section className="config-page__toolbar" aria-label="Herramientas de rutas">

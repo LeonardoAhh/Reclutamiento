@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { BottomTabBar } from './BottomTabBar';
 import { NAV_ITEMS } from './navigation';
 
 const STORAGE_KEY = 'sidebar-collapsed';
@@ -28,12 +27,12 @@ function persistSidebarCollapsed(collapsed: boolean) {
 /**
  * Shell de la app autenticada.
  *  - Desktop (>=1024px): Sidebar fijo a la izquierda + contenido desplazado.
- *  - Tablet/movil (<1024px): Header superior + BottomTabBar (sin sidebar).
- * El estado de colapso del sidebar persiste en localStorage.
- * Al navegar entre páginas el sidebar se contrae automáticamente.
+ *  - Tablet/movil (<1024px): Header superior + Sidebar deslizable.
+ * El estado de colapso del sidebar en escritorio persiste en localStorage.
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -52,21 +51,39 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [collapsed]);
 
   const toggleCollapse = useCallback(() => setCollapsed((v) => !v), []);
-  const collapse = useCallback(() => setCollapsed(true), []);
+  const toggleMobileMenu = useCallback(() => setMobileMenuOpen((v) => !v), []);
+
+  // Cerrar menú móvil con Escape
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
 
   return (
     <div className="app-shell" data-collapsed={collapsed}>
       <Sidebar
         collapsed={collapsed}
         onToggleCollapse={toggleCollapse}
-        onCollapse={collapse}
+        mobileMenuOpen={mobileMenuOpen}
+        onCloseMobileMenu={() => setMobileMenuOpen(false)}
       />
+      {mobileMenuOpen && (
+        <div 
+          className="sidebar-mobile-overlay" 
+          onClick={() => setMobileMenuOpen(false)} 
+          aria-hidden="true" 
+        />
+      )}
 
       <div className="app-shell__main">
-        <Header />
+        <Header onMobileMenuToggle={toggleMobileMenu} />
         {children}
-        <div className="bottom-nav-spacer" aria-hidden="true" />
-        <BottomTabBar />
       </div>
     </div>
   );

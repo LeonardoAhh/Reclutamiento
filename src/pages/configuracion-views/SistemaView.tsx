@@ -43,10 +43,7 @@ export function SistemaView() {
 
   if (authLoading || profileLoading) {
     return (
-      <section className="config-page__content" aria-busy="true">
-        <header className="config-page__header">
-          <Skeleton variant="text" width="var(--skeleton-title-width)" height="var(--type-heading-lg-size)" />
-        </header>
+      <section className="config-page" aria-busy="true">
         <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-lg)" />
         <span className="sr-only" role="status">Cargando configuración del sistema…</span>
       </section>
@@ -55,10 +52,7 @@ export function SistemaView() {
 
   if (!isAdmin) {
     return (
-      <section className="config-page__content" aria-labelledby="sistema-title">
-        <header className="config-page__header">
-          <h2 id="sistema-title" className="config-page__title">Sistema</h2>
-        </header>
+      <section className="config-page">
         <div className="sistema-permission-state" role="status">
           <ShieldAlert aria-hidden="true" />
           <p className="type-body-md text-muted">Esta sección está disponible solo para administradores.</p>
@@ -68,10 +62,7 @@ export function SistemaView() {
   }
 
   return (
-    <section className="config-page__content" aria-labelledby="sistema-title">
-      <header className="config-page__header">
-        <h2 id="sistema-title" className="config-page__title">Sistema</h2>
-      </header>
+    <section className="config-page">
 
       <div className="sistema-grid">
         <section className="sistema-view-section" aria-labelledby="maintenance-title">

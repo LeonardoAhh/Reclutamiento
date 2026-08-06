@@ -101,9 +101,7 @@ export function Bajas() {
     return (
       <main className="bajas container" id="page-bajas">
         <section className="bajas__hero">
-          <div>
-            <h1 className="bajas__title">Downsizing</h1>
-          </div>
+          <div />
         </section>
         <section className="bajas__filters" aria-hidden="true">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -124,9 +122,7 @@ export function Bajas() {
   return (
     <main className="bajas container" id="page-bajas">
       <section className="bajas__hero">
-        <div>
-          <h1 className="bajas__title">Downsizing</h1>
-        </div>
+        <div />
         <div className="bajas__hero-actions" style={{ display: 'none' }}>
           <BajasImporter
             onImport={async (raw) => {

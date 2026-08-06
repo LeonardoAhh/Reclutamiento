@@ -117,16 +117,12 @@ export function TabuladorView() {
         : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + TAB_OPTIONS.length) % TAB_OPTIONS.length;
     const nextId = TAB_OPTIONS[nextIndex].id;
     setTabuladorType(nextId);
-    requestAnimationFrame(() => document.getElementById(`tabulador-tab-${nextId}`)?.focus());
+    requestAnimationFrame(() => document.getElementById(`config-tab-${nextId}`)?.focus());
   };
 
   if (loading) {
     return (
-      <section className="tabulador-view config-page__content" aria-busy="true">
-        <header className="config-page__header">
-          <Skeleton variant="text" width="250px" height="28px" />
-          <Skeleton variant="text" width="60%" height="20px" className="mt-sm" />
-        </header>
+      <section className="tabulador-view config-page" aria-busy="true">
         <div className="tabulador-skeleton" aria-hidden="true">
           <Skeleton variant="rect" width="100%" height="48px" radius="8px" />
           <Skeleton variant="rect" width="100%" height="200px" radius="8px" />
@@ -137,24 +133,17 @@ export function TabuladorView() {
   }
 
   return (
-    <section className="tabulador-view config-page__content" aria-labelledby="tabulador-title">
+    <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
       <header className="config-page__header tabulador-header">
-        <div className="tabulador-heading">
-          <h2 id="tabulador-title" className="config-page__title">
-            <Wallet size={24} className="text-primary" aria-hidden="true" />
-            Tabulador de salarios
-          </h2>
-        </div>
-
-        <div className="tabulador-tabs" role="tablist" aria-label="Tipo de tabulador">
+        <div className="config-tabs" role="tablist" aria-label="Tipo de tabulador">
           {TAB_OPTIONS.map(({ id, label }) => {
             const isActive = tabuladorType === id;
             return (
               <button
                 key={id}
                 type="button"
-                id={`tabulador-tab-${id}`}
-                className={`tabulador-tab${isActive ? ' tabulador-tab--active' : ''}`}
+                id={`config-tab-${id}`}
+                className={`config-tab${isActive ? ' config-tab--active' : ''}`}
                 role="tab"
                 aria-selected={isActive}
                 aria-controls="tabulador-panel"
@@ -167,6 +156,37 @@ export function TabuladorView() {
             );
           })}
         </div>
+        {!loadError && (
+          <div className="form-group config-search tabulador-search-header">
+            <label htmlFor="tabulador-search-input" className="sr-only">
+              Buscar puesto o área
+            </label>
+            <div className="config-search__wrapper">
+              <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
+              <input
+                id="tabulador-search-input"
+                ref={searchInputRef}
+                type="search"
+                placeholder="Buscar puesto o área…"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                autoComplete="off"
+                aria-describedby="tabulador-results-status"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="btn-icon config-search__clear"
+                  onClick={handleClearSearch}
+                  aria-label="Limpiar búsqueda"
+                  title="Limpiar búsqueda"
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {loadError ? (
@@ -175,43 +195,11 @@ export function TabuladorView() {
         </div>
       ) : (
         <>
-          <section className="config-page__toolbar" aria-label="Buscador de puestos">
-            <div className="form-group config-search">
-              <label htmlFor="tabulador-search-input" className="sr-only">
-                Buscar puesto o área
-              </label>
-              <div className="config-search__wrapper">
-                <Search size={18} className="config-search__icon text-muted" aria-hidden="true" />
-                <input
-                  id="tabulador-search-input"
-                  ref={searchInputRef}
-                  type="search"
-                  placeholder="Buscar puesto o área…"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  autoComplete="off"
-                  aria-describedby="tabulador-results-status"
-                />
-                {searchTerm.length > 0 && (
-                  <button
-                    type="button"
-                    className="btn-icon config-search__clear"
-                    onClick={handleClearSearch}
-                    aria-label="Limpiar búsqueda"
-                    title="Limpiar búsqueda"
-                  >
-                    <X size={16} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </section>
-
           <section
             id="tabulador-panel"
             className="tabulador-results"
             role="tabpanel"
-            aria-labelledby={`tabulador-tab-${tabuladorType}`}
+            aria-labelledby={`config-tab-${tabuladorType}`}
             tabIndex={0}
           >
             <p id="tabulador-results-status" className="sr-only" role="status" aria-live="polite">
@@ -235,7 +223,7 @@ export function TabuladorView() {
 
                     <div className="indicadores-card indicadores-table-card tabulador-desktop-table">
                       <div className="table-responsive" tabIndex={0} role="region" aria-label={`Salarios del área ${area}`}>
-                        <table className="indicadores-table tabulador-table">
+                        <table className="indicadores-table config-table">
                           <caption className="sr-only">Salarios vigentes del área {area}</caption>
                           <thead>
                             <tr>

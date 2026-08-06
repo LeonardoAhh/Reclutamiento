@@ -121,10 +121,7 @@ export function ToulouseView() {
   }
 
   return (
-    <section className="tp-page config-page__content">
-      <header className="config-page__header tp-no-print">
-        <h2 className="config-page__title">Toulouse-Piéron</h2>
-      </header>
+    <section className="tp-page config-page">
 
       {/* ── Apartado de instrucciones (evaluador + candidato) ── */}
       <details className="tp-instructions tp-no-print" open>

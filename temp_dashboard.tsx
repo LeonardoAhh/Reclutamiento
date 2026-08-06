@@ -312,55 +312,37 @@ export function Dashboard() {
   return (
     <div className="config-layout plantilla-layout">
       <aside className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Menú de Plantilla">
-                <nav className="config-sidebar__nav">
-          <button
-            className={`config-sidebar__link ${activeTab === 'general' ? 'active' : ''}`}
-            onClick={() => handleTabClick('general')}
-          >
-            <Users size={18} aria-hidden="true" />
-            <span>Departamentos</span>
-          </button>
-          <button
-            className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
-            onClick={() => handleTabClick('empleados')}
-          >
-            <Contact size={18} aria-hidden="true" />
-            <span>Empleados</span>
-          </button>
-        </nav>
-      </aside>
+        <header className="config-sidebar__header dashboard-sidebar__header">
+          <div className="dashboard-sidebar__header-content">
+            <div className="dashboard-sidebar__title-group">
+              <Users size={24} aria-hidden="true" />
+              <h1 className="config-sidebar__title">Plantilla</h1>
+            </div>
+            <div className="dashboard__hero-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setSelectedEmployee(null);
+                  setEmpModalMode('add');
+                }}
+                title="Nuevo empleado"
+              >
+                <UserPlusIcon size={16} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="btn-secondary dashboard__report-btn"
+                onClick={() => setVacancyReportOpen(true)}
+                title="Resumen de vacantes"
+              >
+                <ClipboardList size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </header>
 
-      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
-        <button
-          className="config-mobile-back"
-          onClick={() => {
-            if (activeTab !== 'general' && activeTab !== 'empleados') {
-              setActiveTab('general');
-            } else {
-              setIsMobileMenuOpen(true);
-            }
-          }}
-          aria-label="Volver"
-        >
-          <ChevronLeft size={20} />
-          <span>Volver</span>
-        </button>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="dashboard__content-area"
-          >
-            {activeTab === 'general' && (
-              <>
-                <header className="dashboard__hero" style={{ paddingBlock: 0 }}>
-                  <div className="dashboard__hero-content" style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-                    
-<div className="config-search dashboard-sidebar__search">
+        <div className="config-search dashboard-sidebar__search">
           <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
             <label htmlFor="search-input" className="sr-only">Buscar en la plantilla</label>
             <Search size={16} className="text-muted dashboard-sidebar__search-icon" aria-hidden="true" />
@@ -474,30 +456,54 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="dashboard__hero-actions">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => {
-                  setSelectedEmployee(null);
-                  setEmpModalMode('add');
-                }}
-                title="Nuevo empleado"
-              >
-                <UserPlusIcon size={16} aria-hidden="true" />
-                <span className="dashboard__report-btn-label">Nuevo</span>
-              </button>
-              <button
-                type="button"
-                className="btn-secondary dashboard__report-btn"
-                onClick={() => setVacancyReportOpen(true)}
-                title="Resumen de vacantes"
-              >
-                <ClipboardList size={16} aria-hidden="true" />
-                <span className="dashboard__report-btn-label">Reporte</span>
-              </button>
-            </div>
+        <nav className="config-sidebar__nav">
+          <button
+            className={`config-sidebar__link ${activeTab === 'general' ? 'active' : ''}`}
+            onClick={() => handleTabClick('general')}
+          >
+            <Users size={18} aria-hidden="true" />
+            <span>Departamentos</span>
+          </button>
+          <button
+            className={`config-sidebar__link ${activeTab === 'empleados' ? 'active' : ''}`}
+            onClick={() => handleTabClick('empleados')}
+          >
+            <Contact size={18} aria-hidden="true" />
+            <span>Empleados</span>
+          </button>
+        </nav>
+      </aside>
 
+      <main className={`config-main ${isMobileMenuOpen ? 'mobile-hidden' : ''}`} aria-label="Contenido principal">
+        <button
+          className="config-mobile-back"
+          onClick={() => {
+            if (activeTab !== 'general' && activeTab !== 'empleados') {
+              setActiveTab('general');
+            } else {
+              setIsMobileMenuOpen(true);
+            }
+          }}
+          aria-label="Volver"
+        >
+          <ChevronLeft size={20} />
+          <span>Volver</span>
+        </button>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="dashboard__content-area"
+          >
+            {activeTab === 'general' && (
+              <>
+                <header className="dashboard__hero" style={{ paddingBlock: 0 }}>
+                  <div className="dashboard__hero-content">
+                    <h1>Departamentos</h1>
                   </div>
                 </header>
                 <section className="dashboard__departments" id="dashboard-departments">

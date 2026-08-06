@@ -776,7 +776,6 @@
 
 .dashboard-sidebar__search {
   padding: 0 var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
 }
 
 .dashboard-sidebar__search-wrapper {
@@ -793,6 +792,8 @@
 
 .dashboard-sidebar__search-input {
   width: 100%;
+  min-height: var(--control-height) !important;
+  height: var(--control-height);
   padding-left: calc(var(--spacing-lg) + var(--spacing-xs));
 }
 

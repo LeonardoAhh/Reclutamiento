@@ -235,11 +235,9 @@ export function EmpleadosView() {
 
   if (loading && employees.length === 0) {
     return (
-      <section className="empleados config-page__content" id="page-empleados">
+      <section className="empleados config-page" id="page-empleados">
         <section className="empleados__hero">
-          <div>
-            <h1 className="empleados__title">Empleados</h1>
-          </div>
+          <div />
           <Skeleton width="100%" height={40} radius="var(--rounded-md)" />
         </section>
         {isDesktop ? (
@@ -268,11 +266,9 @@ export function EmpleadosView() {
   }
 
   return (
-    <section className="empleados config-page__content" id="page-empleados">
+    <section className="empleados config-page" id="page-empleados">
       <section className="empleados__hero">
-        <div>
-          <h1 className="empleados__title">Empleados</h1>
-        </div>
+        <div />
         <div className="empleados__filters">
           <label className="empleados__search">
             <Search size={16} aria-hidden="true" />

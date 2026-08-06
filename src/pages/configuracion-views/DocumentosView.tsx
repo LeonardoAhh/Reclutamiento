@@ -202,13 +202,7 @@ export function DocumentosView() {
   };
 
   return (
-    <section className="documentos-view config-page__content">
-      <header className="config-page__header">
-        <h2 className="config-page__title">
-          <FileText size={24} className="text-primary" aria-hidden="true" />
-          Documentos
-        </h2>
-      </header>
+    <section className="documentos-view config-page">
 
       {hasError && (
         <div role="alert" aria-live="assertive" className="documentos-error">
@@ -217,7 +211,7 @@ export function DocumentosView() {
       )}
 
       <div className="documentos-toolbar">
-        <div className="documentos-tabs" role="tablist" aria-label="Tipo de documento">
+        <div className="config-tabs" role="tablist" aria-label="Tipo de documento">
           {DOCUMENT_OPTIONS.map(({ id, label }) => {
             const isActive = activeDoc === id;
             return (
@@ -225,7 +219,7 @@ export function DocumentosView() {
                 key={id}
                 type="button"
                 id={`documentos-tab-${id}`}
-                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
+                className={`config-tab${isActive ? ' config-tab--active' : ''}`}
                 role="tab"
                 aria-selected={isActive}
                 aria-controls="documentos-panel"

@@ -2,7 +2,7 @@
   import { motion } from 'framer-motion';
   import { useAuth } from '@/hooks/useAuth';
   import { useMediaQuery } from '@/hooks/useMediaQuery';
-  import { CheckCircle2, Eye } from 'lucide-react';
+  import { CheckCircle2, Eye, ChevronRight } from 'lucide-react';
   import { StatCard } from '@/components/ui/StatCard';
   import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
   import { Reveal } from '@/components/ui/Reveal';
@@ -23,7 +23,7 @@
   import { useBajas } from '@/hooks/useBajas';
   import { computeAutoVacancies, autoVacancyToRequest } from '@/lib/autoVacancies';
   import { usePositions } from '@/lib/positions';
-  import { KpiGridSkeleton } from '@/components/ui/PageSkeletons';
+  import { KpiGridSkeleton, StatCardSkeleton } from '@/components/ui/PageSkeletons';
   import { Skeleton } from '@/components/ui/Skeleton';
   import {
     calculatePositionCoverage,
@@ -670,9 +670,7 @@
       return (
         <main className="kpis-page container" id="page-kpis">
           <section className="kpis-page__hero">
-            <div>
-              <h1 className="kpis-page__title">Resumen</h1>
-            </div>
+            <div />
             {isDesktop && (
               <div className="kpis-page__hero-actions">
                 <button type="button" className="btn-secondary" disabled>
@@ -735,7 +733,36 @@
             </>
           )}
 
-          <KpiGridSkeleton count={isDesktop ? cards.length : 4} />
+          {isDesktop ? (
+            <KpiGridSkeleton count={cards.length} />
+          ) : (
+            <>
+              <nav
+                className="kpis-page__tabs"
+                aria-hidden="true"
+                style={{ opacity: 0.6, pointerEvents: 'none' }}
+              >
+                {KPI_GROUPS.map((group) => (
+                  <div
+                    key={group.id}
+                    className={`kpis-page__tab${
+                      activeGroup === group.id ? ' kpis-page__tab--active' : ''
+                    }`}
+                  >
+                    {group.label}
+                  </div>
+                ))}
+              </nav>
+
+              <section className="kpis-page__m-grid" aria-hidden="true">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="kpis-page__m-card">
+                    <StatCardSkeleton />
+                  </div>
+                ))}
+              </section>
+            </>
+          )}
         </main>
       );
     }
@@ -744,9 +771,7 @@
       <main className="kpis-page container" id="page-kpis">
 
         <section className="kpis-page__hero">
-          <div>
-            <h1 className="kpis-page__title">Resumen</h1>
-          </div>
+          <div />
           {isDesktop && (
             <div className="kpis-page__hero-actions">
               <button
@@ -951,7 +976,17 @@
                   <motion.div
                     key={card.id}
                     variants={staggerItem}
-                    className={`kpis-page__m-card ${hasModal ? 'kpis-page__m-card--has-action' : ''}`}
+                    className={`kpis-page__m-card ${hasModal ? 'kpis-page__m-card--interactive' : ''}`}
+                    onClick={hasModal ? () => openCardModal(card.id) : undefined}
+                    role={hasModal ? 'button' : undefined}
+                    tabIndex={hasModal ? 0 : undefined}
+                    onKeyDown={hasModal ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openCardModal(card.id);
+                      }
+                    } : undefined}
+                    aria-label={hasModal ? `Ver detalle de ${card.label}` : undefined}
                     data-testid={`kpis-mobile-card-${card.id}`}
                   >
                     <StatCard
@@ -963,15 +998,9 @@
                       variant={card.variant}
                     />
                     {hasModal && (
-                      <button
-                        type="button"
-                        className="kpis-page__m-detail"
-                        onClick={() => openCardModal(card.id)}
-                        aria-label={`Ver detalle de ${card.label}`}
-                        data-testid={`kpis-mobile-detail-${card.id}`}
-                      >
-                        <Eye size={16} aria-hidden="true" />
-                      </button>
+                      <div className="kpis-page__m-chevron" aria-hidden="true">
+                        <ChevronRight size={20} />
+                      </div>
                     )}
                   </motion.div>
                 );

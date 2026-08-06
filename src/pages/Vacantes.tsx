@@ -265,7 +265,7 @@ export function Vacantes() {
     return (
       <main className="pipeline container">
         <section className="pipeline__hero">
-          <h1>Vacantes</h1>
+
         </section>
         <section className="pipeline__controls">
           <Skeleton height={40} radius="var(--rounded-md)" style={{ flex: '1 1 260px' }} />
@@ -280,9 +280,7 @@ export function Vacantes() {
   return (
     <main className="pipeline vacantes-page">
       <section className="pipeline__hero">
-        <div className="pipeline__hero-content">
-          <h1>Vacantes</h1>
-        </div>
+        <div />
         <div className="pipeline__hero-actions">
           <button
             type="button"

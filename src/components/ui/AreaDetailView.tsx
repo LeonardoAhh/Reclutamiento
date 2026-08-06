@@ -315,7 +315,7 @@ export function AreaDetailView({
   const coverageColor = getCoverageColor(dept.porcentaje_cobertura);
 
   return (
-    <section className="area-detail-view config-page__content">
+    <section className="area-detail-view config-page">
       <header className="config-page__header area-detail__header">
         {onBack && (
           <button type="button" className="btn-icon area-detail__back-btn" onClick={onBack} aria-label="Volver al resumen">
@@ -326,7 +326,7 @@ export function AreaDetailView({
       </header>
 
       <section
-        className="area-detail-modal__summary mt-md"
+        className="area-detail-modal__summary"
         aria-labelledby="area-detail-summary-title"
       >
         <div className="area-detail-modal__summary-heading">

@@ -432,9 +432,7 @@ export function Pipeline() {
     return (
       <main className="pipeline">
         <section className="pipeline__hero">
-          <div className="pipeline__hero-content">
-            <h1>Candidatos</h1>
-          </div>
+          <div />
           <div className="pipeline__hero-actions">
             <Skeleton variant="circle" width={36} height={36} />
             <Skeleton width={130} height={36} radius="var(--rounded-md)" />
@@ -481,9 +479,7 @@ export function Pipeline() {
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
         <section className="pipeline__hero">
-        <div className="pipeline__hero-content">
-          <h1>Candidatos</h1>
-        </div>
+        <div />
         <div className="pipeline__hero-actions">
           <button
             type="button"

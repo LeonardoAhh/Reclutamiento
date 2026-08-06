@@ -46,6 +46,8 @@ export function CandidateRowActions({
             className="candidate-row-actions__trigger"
             aria-label={`Acciones de ${candidate.nombre}`}
             title="Acciones"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
           >
             <MoreVertical size={16} aria-hidden="true" />
           </button>

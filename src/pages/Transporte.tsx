@@ -93,9 +93,7 @@ export function Transporte() {
     return (
       <main className="transporte container">
         <header className="transporte__hero">
-          <div className="transporte__hero-content">
-            <h1>Transporte</h1>
-          </div>
+
         </header>
         <section className="transporte__stats" aria-hidden="true">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -119,9 +117,7 @@ export function Transporte() {
   return (
     <main className="transporte container">
       <header className="transporte__hero">
-        <div className="transporte__hero-content">
-          <h1>Transporte</h1>
-        </div>
+        <div />
         <div className="transporte__hero-actions">
           <button
             type="button"

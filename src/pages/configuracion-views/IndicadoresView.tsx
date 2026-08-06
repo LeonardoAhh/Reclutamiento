@@ -293,11 +293,7 @@ export function IndicadoresView() {
 
   if (loading) {
     return (
-      <section className="indicadores-view">
-        <header className="config-page__header">
-          <Skeleton variant="text" width="200px" height="28px" />
-          <Skeleton variant="text" width="60%" height="20px" className="mt-sm" />
-        </header>
+      <section className="indicadores-view config-page">
         <div className="indicadores-kpi-grid">
           {[1,2,3,4].map(i => (
             <div key={i} className="indicadores-kpi-card">
@@ -334,10 +330,7 @@ export function IndicadoresView() {
   const monthLabel = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
 
   return (
-    <section className="indicadores-view config-page__content" aria-label="Indicadores de Reclutamiento">
-      <header className="config-page__header">
-        <h2 className="config-page__title">Ingresos por Reclutador</h2>
-      </header>
+    <section className="indicadores-view config-page" aria-label="Indicadores de Reclutamiento">
 
 
 
@@ -661,9 +654,6 @@ export function IndicadoresView() {
       </div>
 
       {/* ── Sección de Retención y Efectividad ──────────────────── */}
-      <header className="config-page__header" style={{ marginTop: 'var(--spacing-xl)' }}>
-        <h2 className="config-page__title">Efectividad y Retención</h2>
-      </header>
 
       {kpi && (
         <>

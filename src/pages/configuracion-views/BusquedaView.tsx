@@ -305,11 +305,7 @@ export function BusquedaView() {
 
   if (authLoading || employeesLoading || bajasLoading) {
     return (
-      <section className="busqueda-view" aria-busy="true">
-        <header className="config-page__header">
-          <Skeleton variant="text" width="var(--skeleton-title-width)" height="var(--type-heading-lg-size)" />
-          <Skeleton variant="text" width="60%" height="var(--type-body-md-size)" className="mt-sm" />
-        </header>
+      <section className="busqueda-view config-page" aria-busy="true">
 
         <div className="busqueda-skeleton" aria-hidden="true">
            <Skeleton variant="rect" width="100%" height="var(--touch-target-min)" radius="var(--rounded-md)" />
@@ -348,19 +344,12 @@ export function BusquedaView() {
   const showHelperText = searchQuery.length === 1;
 
   return (
-    <section className="busqueda-view config-page__content" aria-labelledby="busqueda-title">
-      <div className="config-page__header-container">
-        <div className="config-page__heading-group">
-          <header className="config-page__header">
-            <h2 id="busqueda-title" className="config-page__title">Búsqueda global</h2>
-          </header>
-
+    <section className="busqueda-view config-page" aria-labelledby="busqueda-title">
           {employeesError && (
             <p className="config-search-error type-body-sm mt-sm" role="alert">
               No fue posible actualizar la lista de colaboradores. Se muestran los datos disponibles.
             </p>
           )}
-        </div>
 
         <section className="config-page__toolbar" role="search" aria-label="Buscar colaboradores">
           <div className="form-group config-search">
@@ -400,11 +389,8 @@ export function BusquedaView() {
             )}
           </div>
         </section>
-      </div>
-
       <section
         id="config-search-results"
-        className="config-page__content"
         aria-label="Resultados de búsqueda"
         aria-busy={summariesLoading}
       >

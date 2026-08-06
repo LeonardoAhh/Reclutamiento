@@ -509,10 +509,7 @@ export function SpeechView() {
 
   if (authLoading || loading) {
     return (
-      <section className="speech-view config-page__content" aria-busy="true">
-        <header className="config-page__header">
-          <Skeleton variant="text" width="var(--skeleton-title-width)" height="var(--type-heading-lg-size)" />
-        </header>
+      <section className="speech-view config-page" aria-busy="true">
         <div className="speech-skeleton" aria-hidden="true">
           <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-lg)" />
           <Skeleton variant="rect" width="100%" height="var(--skeleton-card-height)" radius="var(--rounded-lg)" />
@@ -525,19 +522,9 @@ export function SpeechView() {
   const deletingTemplate = effectiveTemplates.find((t) => t.id === deletingId);
 
   return (
-    <section className="speech-view config-page__content" aria-labelledby="speech-title">
+    <section className="speech-view config-page" aria-labelledby="speech-title">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <header className="config-page__header">
-        <h2 id="speech-title" className="config-page__title">
-          <MessageSquare size={24} className="text-primary" aria-hidden="true" />
-          Speech WhatsApp
-        </h2>
-        <button type="button" className="btn-primary" onClick={openNew}>
-          <Plus size={16} aria-hidden="true" />
-          Nueva plantilla
-        </button>
-      </header>
 
       {/* ── Banner de modo semilla ─────────────────────────────────────────── */}
       {isSeedMode && (

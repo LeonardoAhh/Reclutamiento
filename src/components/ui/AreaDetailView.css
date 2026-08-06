@@ -656,6 +656,7 @@
 /* ── Header alineado (título + botón "volver") ── */
 .area-detail__header {
   align-items: center;
+  justify-content: flex-start !important;
   gap: var(--spacing-sm);
 }
 

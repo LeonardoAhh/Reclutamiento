@@ -2,7 +2,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-lg);
   gap: var(--spacing-xl);
   width: 100%;
 }
@@ -14,8 +13,6 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--spacing-md);
-  padding-block: var(--spacing-lg);
-  margin: 0 0 var(--spacing-md);
 }
 
 .config-page__title {
@@ -70,11 +67,6 @@
 }
 
 @media (min-width: 768px) {
-  .config-page__header {
-    padding-block: var(--spacing-xl);
-    margin-bottom: var(--spacing-lg);
-  }
-
   .config-page__title {
     font-size: var(--type-display-lg-size);
     font-weight: var(--type-display-lg-weight);
@@ -98,11 +90,6 @@
   flex-direction: column;
 }
 
-@media (min-width: 1024px) {
-  .config-page {
-    padding: var(--spacing-2xl);
-  }
-}
 
 .config-page__heading-group {
   display: flex;
@@ -1011,7 +998,7 @@
 /* Sidebar */
 .config-sidebar {
   width: 100%;
-  background-color: var(--color-surface);
+  background-color: var(--color-canvas);
   border-bottom: 1px solid var(--color-hairline);
   padding: var(--spacing-lg);
   display: flex;
@@ -1593,18 +1580,7 @@
   width: 100%;
 }
 
-.documentos-tabs {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-sm);
-  width: 100%;
-}
 
-.documentos-tabs .btn {
-  width: 100%;
-  min-height: var(--touch-target-min);
-  justify-content: center;
-}
 
 .documentos-preview {
   overflow: auto;
@@ -1628,22 +1604,18 @@
     justify-content: space-between;
   }
 
-  .documentos-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    width: auto;
-  }
-
-  .documentos-tabs .btn {
-    width: auto;
-  }
 }
-
-/* ── Tabulador View ───────────────────────────────────────────── */
 
 .tabulador-header {
   gap: var(--spacing-lg);
 }
+
+@media (min-width: 640px) {
+  .tabulador-search-header {
+    width: 320px;
+  }
+}
+
 
 .tabulador-heading {
   display: flex;
@@ -1651,7 +1623,7 @@
   gap: var(--spacing-xs);
 }
 
-.tabulador-tabs {
+.config-tabs {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
@@ -1662,7 +1634,7 @@
   background: var(--color-surface-soft);
 }
 
-.tabulador-tab {
+.config-tab {
   min-height: var(--touch-target-min);
   padding-inline: var(--spacing-md);
   border-radius: var(--rounded-md);
@@ -1673,11 +1645,11 @@
     box-shadow var(--transition-fast);
 }
 
-.tabulador-tab:hover {
+.config-tab:hover {
   color: var(--color-ink);
 }
 
-.tabulador-tab--active {
+.config-tab--active {
   color: var(--color-ink);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
@@ -1706,7 +1678,7 @@
   display: block;
 }
 
-.tabulador-table tbody th {
+.config-table tbody th {
   padding: var(--spacing-xs) var(--spacing-md);
   border-bottom: 1px solid var(--color-hairline-soft);
   text-align: left;
@@ -1806,7 +1778,7 @@
     justify-content: space-between;
   }
 
-  .tabulador-tabs {
+  .config-tabs {
     display: flex;
     flex-shrink: 0;
   }
@@ -1874,7 +1846,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tabulador-tab,
+  .config-tab,
   .config-sidebar__link,
   .indicadores-mobile-list__btn {
     transition: none;

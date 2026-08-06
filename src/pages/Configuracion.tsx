@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { BarChart2, Bus, CheckCircle2, ChevronLeft, ClipboardCheck, FileText, MessageSquare, Search, Settings, SlidersHorizontal, UserX, Wallet, type LucideIcon } from 'lucide-react';
+import { BarChart2, Bus, CheckCircle2, ChevronLeft, ChevronRight, ClipboardCheck, FileText, MessageSquare, Search, Settings, SlidersHorizontal, UserX, Wallet, type LucideIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BusquedaView } from './configuracion-views/BusquedaView';
 import { DocumentosView } from './configuracion-views/DocumentosView';
@@ -21,7 +22,7 @@ interface FeatureItem {
   icon: LucideIcon;
 }
 
-const FEATURES: FeatureItem[] = [
+export const FEATURES: FeatureItem[] = [
   { id: 'busqueda', label: 'Búsqueda', icon: Search },
   { id: 'documentos', label: 'Documentos', icon: FileText },
   { id: 'indicadores', label: 'Indicadores', icon: BarChart2 },
@@ -48,7 +49,10 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
 export function Configuracion() {
   const { loading } = useAuth();
   const reduceMotion = useReducedMotion();
-  const [activeTab, setActiveTab] = useState<FeatureId>('busqueda');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as FeatureId | null;
+  const activeTab = tabParam && FEATURES.some(f => f.id === tabParam) ? tabParam : 'busqueda';
+  
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
   if (loading) {
@@ -62,7 +66,7 @@ export function Configuracion() {
   }
 
   const handleTabClick = (tab: FeatureId) => {
-    setActiveTab(tab);
+    setSearchParams({ tab });
     setIsMobileMenuOpen(false);
   };
 
@@ -70,12 +74,8 @@ export function Configuracion() {
     <div className="config-layout">
       <aside
         className={`config-sidebar ${!isMobileMenuOpen ? 'mobile-hidden' : ''}`}
-        aria-labelledby="features-navigation-title"
+        aria-label="Configuración"
       >
-        <header className="config-sidebar__header">
-          <SlidersHorizontal size={24} aria-hidden="true" />
-          <h1 id="features-navigation-title" className="type-heading-sm m-0">Configuración</h1>
-        </header>
         <nav className="config-sidebar__nav" aria-label="Subpáginas de features">
           {FEATURES.map(({ id, label, icon: Icon }) => (
             <button

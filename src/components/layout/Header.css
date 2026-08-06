@@ -1,24 +1,18 @@
 /* ─────────────────────────────────────────────
-   App Header — solo móvil/tablet (<1024px).
+   App Header — Visible en todas las resoluciones.
    Lienzo plano (canvas) + hairline inferior de 1px.
-   Sin glass, sin blur, sin sombras: la profundidad es la línea.
-   Brand a la izquierda, acciones a la derecha; la navegación
-   se delega al BottomTabBar. En >=1024px se oculta (Sidebar).
 ───────────────────────────────────────────── */
 
 .app-header {
-  --_h: var(--mobile-nav-height);
+  --_h: var(--mobile-nav-height, 60px);
 
-  /* Posicionamiento */
   position: sticky;
   top: 0;
   z-index: 100;
 
-  /* Box model */
   height: calc(var(--_h) + var(--safe-area-top));
   padding-top: var(--safe-area-top);
 
-  /* Visual — canvas sólido + hairline (desing.md: primary-nav) */
   background: var(--color-canvas);
   border-bottom: 1px solid var(--color-hairline);
 }
@@ -29,6 +23,8 @@
   justify-content: space-between;
   height: var(--_h);
   gap: var(--spacing-lg);
+  padding: 0 max(var(--container-padding, 24px), var(--safe-area-right));
+  position: relative;
 }
 
 /* ── Brand (enlace a inicio) ─────────────────── */
@@ -38,14 +34,13 @@
   justify-content: flex-start;
   gap: var(--spacing-sm);
 
-  /* Touch target mínimo accesible */
-  min-width: max(48px, var(--touch-target-min));
-  min-height: max(48px, var(--touch-target-min));
+  min-width: max(48px, var(--touch-target-min, 44px));
+  min-height: max(48px, var(--touch-target-min, 44px));
 
   text-decoration: none;
   color: var(--color-ink);
   border-radius: var(--rounded-sm);
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-fast, 0.2s);
 }
 
 .app-header__brand:hover {
@@ -57,32 +52,207 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* ── Acciones (derecha) ──────────────────────── */
+/* Escritorio (>=1024px): 
+   En PC, ocultamos el Brand del Header porque ya existe en el Sidebar. */
+@media (min-width: 1024px) {
+  .app-header__brand {
+    display: none;
+  }
+}
+
+/* ── Título de Página y Menú ────────────────────────── */
+.app-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.app-header__mobile-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-ink);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  margin-left: calc(var(--spacing-xs) * -1);
+  border-radius: var(--rounded-md);
+  transition: background-color var(--transition-fast);
+}
+
+.app-header__mobile-menu-btn:hover,
+.app-header__mobile-menu-btn:focus-visible {
+  background-color: var(--color-surface-hover);
+}
+
+.app-header__page-title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--font-semibold);
+  color: var(--color-ink);
+  margin: 0;
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .app-header__mobile-menu-btn {
+    display: none;
+  }
+  .app-header__page-title {
+    display: block;
+  }
+}
+
+/* ── Acciones (Menú Usuario) ─────────────────── */
 .app-header__actions {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--spacing-xs);
 }
 
-.app-header__avatar {
+.app-header__user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: none;
+  min-height: var(--touch-target-min, 44px);
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition: background var(--transition-fast, 0.2s);
+}
+
+.app-header__user-trigger:hover {
+  background: var(--color-surface-soft);
+}
+
+.app-header__user-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+
+
+.app-header__trigger-icon {
+  color: var(--color-muted);
+}
+
+/* ── Popover ─────────────────────────────────── */
+.app-header__popover {
+  position: absolute;
+  top: calc(100% + var(--spacing-xs));
+  right: 0;
+  min-width: 240px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-elevated);
+  padding: var(--spacing-xs);
+  z-index: 1000;
+}
+
+.app-header__popover-header {
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.app-header__session-name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+
+.app-header__popover-version {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+}
+
+.app-header__popover-divider {
+  height: 1px;
+  background: var(--color-hairline-soft);
+  margin: var(--spacing-xs) 0;
+}
+
+.app-header__popover-actions {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xs);
+  gap: var(--spacing-xxs);
+}
+
+.app-header__popover-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  min-height: var(--control-height, 32px);
+}
+
+.app-header__popover-row-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-body);
+}
+
+.app-header__popover-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-sm);
+  width: 100%;
+  min-height: var(--control-height, 32px);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  color: var(--color-body);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.app-header__popover-item:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.app-header__popover-item--danger:hover {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+
+.app-header__popover-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--rounded-full);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  font-weight: var(--font-medium);
-  font-size: var(--text-sm);
-  flex-shrink: 0;
-  text-transform: uppercase;
 }
 
-/* Desktop (>=1024px): la navegacion vive en el Sidebar; ocultamos el Header. */
-@media (min-width: 1024px) {
-  .app-header {
-    display: none;
+.app-header__spin {
+  animation: app-header-spin 0.8s linear infinite;
+}
+
+@keyframes app-header-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-header__spin {
+    animation: none;
   }
 }
