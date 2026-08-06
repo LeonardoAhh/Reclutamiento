@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
-import { MessageCircle, Share2 } from 'lucide-react';
-import { Check, Copy } from 'lucide';
-import { CANDIDATE_ACCESS_CARD_CONFIG } from '@/lib/constants';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { useEffect, useMemo, useState } from "react";
+import { MessageCircle, Share2 } from "lucide-react";
+import { Check, Copy } from "lucide";
+import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import {
   createCandidateAccessCardBlob,
   getCandidateAccessCardFilename,
   type CandidateAccessCardData,
-} from '@/lib/candidateAccessCard';
-import './CandidateAccessCard.css';
+} from "@/lib/candidateAccessCard";
+import "./CandidateAccessCard.css";
 
 interface CandidateAccessCardProps {
   data: CandidateAccessCardData;
@@ -17,13 +17,13 @@ interface CandidateAccessCardProps {
 }
 
 type Feedback = {
-  tone: 'success' | 'error' | 'info';
+  tone: "success" | "error" | "info";
   message: string;
 } | null;
 
 function downloadImage(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
+  const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = filename;
   document.body.appendChild(anchor);
@@ -33,20 +33,20 @@ function downloadImage(blob: Blob, filename: string): void {
 }
 
 async function copyImage(blob: Blob): Promise<void> {
-  if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
-    throw new Error('Este navegador no permite copiar imágenes.');
+  if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+    throw new Error("Este navegador no permite copiar imágenes.");
   }
-  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+  await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
 }
 
 function isAbortError(error: unknown): boolean {
-  return error instanceof DOMException && error.name === 'AbortError';
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
 export function CandidateAccessCard({
   data,
   phone,
-  heading = 'Pase listo para compartir',
+  heading = "Pase listo para compartir",
 }: CandidateAccessCardProps) {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -75,8 +75,11 @@ export function CandidateAccessCard({
       .catch((error: unknown) => {
         if (!active) return;
         setFeedback({
-          tone: 'error',
-          message: error instanceof Error ? error.message : 'No fue posible generar la tarjeta.',
+          tone: "error",
+          message:
+            error instanceof Error
+              ? error.message
+              : "No fue posible generar la tarjeta.",
         });
       })
       .finally(() => {
@@ -97,24 +100,28 @@ export function CandidateAccessCard({
 
   const getFile = () => {
     if (!imageBlob) return null;
-    return new File([imageBlob], filename, { type: 'image/png' });
+    return new File([imageBlob], filename, { type: "image/png" });
   };
 
   const canShareFile = (file: File): boolean =>
-    typeof navigator.share === 'function'
-    && typeof navigator.canShare === 'function'
-    && navigator.canShare({ files: [file] });
+    typeof navigator.share === "function" &&
+    typeof navigator.canShare === "function" &&
+    navigator.canShare({ files: [file] });
 
   const handleCopy = async () => {
     if (!imageBlob) return;
     try {
       await copyImage(imageBlob);
       setCopied(true);
-      setFeedback({ tone: 'success', message: 'Imagen copiada. Ya puedes pegarla en un chat.' });
+      setFeedback({
+        tone: "success",
+        message: "Imagen copiada. Ya puedes pegarla en un chat.",
+      });
     } catch {
       setFeedback({
-        tone: 'error',
-        message: 'Tu navegador no permite copiar la imagen. Usa Compartir para enviarla.',
+        tone: "error",
+        message:
+          "Tu navegador no permite copiar la imagen. Usa Compartir para enviarla.",
       });
     }
   };
@@ -129,18 +136,22 @@ export function CandidateAccessCard({
           files: [file],
           title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
         });
-        setFeedback({ tone: 'success', message: 'Tarjeta compartida.' });
+        setFeedback({ tone: "success", message: "Tarjeta compartida." });
         return;
       }
 
       downloadImage(imageBlob, filename);
       setFeedback({
-        tone: 'info',
-        message: 'La imagen se descargó porque este navegador no ofrece el menú para compartir.',
+        tone: "info",
+        message:
+          "La imagen se descargó porque este navegador no ofrece el menú para compartir.",
       });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
-        setFeedback({ tone: 'error', message: 'No fue posible compartir la tarjeta.' });
+        setFeedback({
+          tone: "error",
+          message: "No fue posible compartir la tarjeta.",
+        });
       }
     }
   };
@@ -151,7 +162,10 @@ export function CandidateAccessCard({
 
     try {
       if (canShareFile(file)) {
-        setFeedback({ tone: 'info', message: 'Selecciona WhatsApp y el contacto del candidato.' });
+        setFeedback({
+          tone: "info",
+          message: "Selecciona WhatsApp y el contacto del candidato.",
+        });
         await navigator.share({
           files: [file],
           title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
@@ -167,22 +181,25 @@ export function CandidateAccessCard({
         downloadImage(imageBlob, filename);
       }
 
-      const digits = phone.replace(/\D/g, '');
+      const digits = phone.replace(/\D/g, "");
       const recipient = `${CANDIDATE_ACCESS_CARD_CONFIG.whatsappCountryCode}${digits}`;
       const message = imageReady
         ? CANDIDATE_ACCESS_CARD_CONFIG.whatsappPasteMessage
         : CANDIDATE_ACCESS_CARD_CONFIG.whatsappAttachMessage;
       const whatsappUrl = `${CANDIDATE_ACCESS_CARD_CONFIG.whatsappBaseUrl}/${recipient}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
       setFeedback({
-        tone: 'info',
+        tone: "info",
         message: imageReady
-          ? 'La imagen está copiada. Pégala en el chat que se abrió.'
-          : 'La imagen se descargó. Adjunta el archivo en el chat que se abrió.',
+          ? "La imagen está copiada. Pégala en el chat que se abrió."
+          : "La imagen se descargó. Adjunta el archivo en el chat que se abrió.",
       });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
-        setFeedback({ tone: 'error', message: 'No fue posible preparar el envío por WhatsApp.' });
+        setFeedback({
+          tone: "error",
+          message: "No fue posible preparar el envío por WhatsApp.",
+        });
       }
     }
   };
@@ -195,13 +212,20 @@ export function CandidateAccessCard({
     `en ${CANDIDATE_ACCESS_CARD_CONFIG.locationName}, ${CANDIDATE_ACCESS_CARD_CONFIG.address}`,
     CANDIDATE_ACCESS_CARD_CONFIG.accessNotice,
     CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
-  ].filter(Boolean).join(', ');
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
-    <section className="candidate-access-card" aria-labelledby="candidate-access-card-heading">
+    <section
+      className="candidate-access-card"
+      aria-labelledby="candidate-access-card-heading"
+    >
       <div className="candidate-access-card__intro">
         <h3 id="candidate-access-card-heading">{heading}</h3>
-        <p>Comparte esta imagen para que la presente en caseta de vigilancia.</p>
+        <p>
+          Comparte esta imagen para que la presente en caseta de vigilancia.
+        </p>
       </div>
 
       <div className="candidate-access-card__preview" aria-busy={isGenerating}>
@@ -209,7 +233,7 @@ export function CandidateAccessCard({
           <img src={previewUrl} alt={previewAlt} />
         ) : (
           <div className="candidate-access-card__placeholder" role="status">
-            {isGenerating ? 'Generando tarjeta…' : 'Vista previa no disponible'}
+            {isGenerating ? "Generando tarjeta…" : "Vista previa no disponible"}
           </div>
         )}
       </div>
@@ -218,7 +242,7 @@ export function CandidateAccessCard({
         <p
           className="candidate-access-card__feedback"
           data-tone={feedback.tone}
-          role={feedback.tone === 'error' ? 'alert' : 'status'}
+          role={feedback.tone === "error" ? "alert" : "status"}
         >
           {feedback.message}
         </p>
@@ -232,7 +256,7 @@ export function CandidateAccessCard({
           disabled={!imageBlob}
         >
           <MorphingIcon icon={copied ? Check : Copy} size={18} />
-          {copied ? 'Copiada' : 'Copiar imagen'}
+          {copied ? "Copiada" : "Copiar"}
         </button>
         <button
           type="button"

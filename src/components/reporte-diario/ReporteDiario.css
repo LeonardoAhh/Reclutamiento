@@ -13,8 +13,6 @@
   padding-bottom: var(--spacing-lg);
 }
 
-
-
 @media (min-width: 768px) {
   .reporte-page {
     padding-top: var(--spacing-xl);
@@ -35,7 +33,6 @@
   gap: var(--spacing-lg);
   width: 100%;
 }
-
 
 @media (min-width: 768px) {
   .reporte-container {
@@ -75,12 +72,25 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--spacing-sm);
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-sm);
 }
 
 /* Allow the controls block to span and align right */
 .reporte-head__grid {
   width: 100%;
+}
+
+@media (max-width: 640px) {
+  .reporte-head__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reporte-head__grid > * {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Hide the left placeholder (title removed) so it doesn't reserve space */
@@ -109,7 +119,6 @@
   width: 100%;
   min-width: 140px;
 }
-
 
 /* Evitar que la apariencia de 'card' se aplique al header */
 .reporte-header__top .reporte-card {
@@ -2009,7 +2018,6 @@ button.reporte-card:focus-visible,
   /* On small screens the layout stacks; panel remains visible */
 }
 
-
 /* ── Acciones del header del calendario ─────────────────────────────────── */
 .reporte-cal-actions {
   display: flex;
@@ -3736,15 +3744,6 @@ button.ras-card:focus-visible {
    HEADER CON DATOS — Flex layout para fluidez de los banners/botones
    ============================================================================ */
 
-.reporte-head__grid {
-  display: flex;
-  flex-wrap: nowrap; /* prevent controls from wrapping to next line */
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
-  overflow-x: auto; /* allow horizontal scroll instead of wrapping */
-  -webkit-overflow-scrolling: touch;
-}
 
 .reporte-incidents__empty--padded,
 .reporte-incidents__detail-list {

@@ -694,7 +694,7 @@ export function Vacantes() {
                 className="vacantes__cards"
                 aria-label="Lista de vacantes"
               >
-                {filtered.map((v) => (
+                {paginated.map((v) => (
                   <VacancyCard
                     key={v.key}
                     v={v}
@@ -848,7 +848,7 @@ export function Vacantes() {
                                 ? "Vacante estructural"
                                 : v.coberturaTipo === "manual"
                                   ? "Reabrir vacante"
-                                  : "Marcar cubierta a mano"
+                                  : "Marcar cubierta"
                             }
                           >
                             <button
@@ -861,7 +861,7 @@ export function Vacantes() {
                                   ? "Vacante estructural"
                                   : v.coberturaTipo === "manual"
                                     ? "Reabrir vacante"
-                                    : "Marcar cubierta a mano"
+                                    : "Marcar cubierta"
                               }
                             >
                               <MorphingIcon
@@ -1192,12 +1192,12 @@ function VacancyCard({
               title={
                 v.coberturaTipo === "manual"
                   ? "Reabrir vacante"
-                  : "Marcar cubierta a mano"
+                  : "Marcar cubierta"
               }
               aria-label={
                 v.coberturaTipo === "manual"
                   ? "Reabrir vacante"
-                  : "Marcar cubierta a mano"
+                  : "Marcar cubierta"
               }
               data-testid={`vac-manual-card-${v.key}`}
             >

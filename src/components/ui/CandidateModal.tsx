@@ -404,7 +404,7 @@ export function CandidateModal({
           }
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
-          disabled={isEdit}
+          disabled={isEdit && !isAdmin}
         />
       </div>
 
@@ -425,7 +425,7 @@ export function CandidateModal({
             onBlur={() => setForm({ ...form, telefono: formatPhoneNumber(form.telefono) })}
             placeholder="442 123 4567"
             autoComplete="off"
-            disabled={isEdit}
+            disabled={isEdit && !isAdmin}
             className={showPhoneError ? 'input-error' : ''}
           />
           {isPhoneValid && (
@@ -460,7 +460,7 @@ export function CandidateModal({
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           placeholder="candidato@correo.com"
           autoComplete="off"
-          disabled={isEdit}
+          disabled={isEdit && !isAdmin}
         />
       </div>
     </>
@@ -485,7 +485,7 @@ const fieldsPosicion = (
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
-          disabled={isEdit || noOpenPositions}
+          disabled={(isEdit && !isAdmin) || noOpenPositions}
         />
       </div>
 
@@ -497,7 +497,7 @@ const fieldsPosicion = (
           onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
           placeholder="Seleccione sección…"
-          disabled={!form.area || isEdit}
+          disabled={!form.area || (isEdit && !isAdmin)}
         />
       </div>
 
@@ -509,7 +509,7 @@ const fieldsPosicion = (
           onChange={(val) => setForm({ ...form, puesto: val })}
           options={puestosForSection.map((p) => ({ value: p, label: p }))}
           placeholder="Seleccione puesto…"
-          disabled={!form.seccion || isEdit}
+          disabled={!form.seccion || (isEdit && !isAdmin)}
         />
       </div>
     </>
@@ -535,7 +535,7 @@ const fieldsPosicion = (
           onChange={(val) => setForm({ ...form, reclutador: val })}
           placeholder="Quién lleva el proceso"
           options={RECLUTADORES_DISPONIBLES}
-          disabled={isEdit}
+          disabled={isEdit && !isAdmin}
           aria-label="Reclutador a cargo del proceso, obligatorio"
         />
       </div>
@@ -573,7 +573,7 @@ const fieldsPosicion = (
           type="date"
           value={form.fecha_aplicacion}
           onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
-          disabled={isEdit}
+          disabled={isEdit && !isAdmin}
         />
       </div>
 

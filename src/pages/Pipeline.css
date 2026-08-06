@@ -603,21 +603,21 @@
 /* ── Banner Flotante Búsqueda ── */
 .pipeline__search-banner {
   position: absolute;
-  bottom: calc(100% + 6px);
-  right: 12px;
+  bottom: calc(100% + var(--spacing-xs));
+  left: var(--spacing-sm);
   background-color: var(--color-ink);
   color: var(--color-surface);
-  padding: 6px 12px;
+  padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-full);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  gap: var(--spacing-xxs);
+  box-shadow: var(--shadow-elevated);
+  z-index: var(--z-index-tooltip, 10);
   pointer-events: none;
   min-width: 250px;
   justify-content: center;
@@ -641,10 +641,10 @@
 
 .pipeline__search-banner-arrow {
   position: absolute;
-  bottom: -4px;
-  right: 16px;
-  width: 8px;
-  height: 8px;
+  bottom: calc(var(--spacing-xxs) * -1);
+  left: var(--spacing-md);
+  width: var(--spacing-xs);
+  height: var(--spacing-xs);
   background-color: var(--color-ink);
   transform: rotate(45deg);
 }
