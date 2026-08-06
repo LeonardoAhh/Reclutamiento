@@ -711,7 +711,7 @@ export function VacancyReportModal({
           whileTap={{ scale: empty ? 1 : 0.97 }}
         >
           <Share2 size={16} aria-hidden="true" />
-          {isMobile ? "WhatsApp" : "Enviar por WhatsApp"}
+          {isMobile ? "WhatsApp" : "WhatsApp"}
         </motion.button>
       </footer>
     </Modal>

@@ -660,7 +660,7 @@ export function SpeechView() {
               </header>
 
               <ul
-                className="speech-template-list"
+                className={`speech-template-list ${cat === 'flyers' ? 'speech-template-list--flyers' : ''}`}
                 aria-label={`Plantillas de ${SPEECH_CATEGORY_LABEL[cat]}`}
               >
                 {list.map((template) => (

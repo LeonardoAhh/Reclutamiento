@@ -548,7 +548,7 @@ export function EmployeeModal({
           />
         </div>
         <div className="form-group form-group--span-2">
-          <label htmlFor="baja-motivo">Motivo de Baja</label>
+          <label htmlFor="baja-motivo">Descripción</label>
           <input
             id="baja-motivo"
             type="text"
@@ -632,7 +632,7 @@ export function EmployeeModal({
           isSuccess={isSuccess}
           isError={!!errorMsg}
           errorText={errorMsg || undefined}
-          idleText="Registrar Baja"
+          idleText="Registrar"
           loadingText="Registrando baja..."
           successText="¡Baja registrada!"
           idleIcon={Trash2IconData}

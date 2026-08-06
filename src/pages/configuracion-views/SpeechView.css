@@ -536,4 +536,8 @@
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
     gap: var(--spacing-md);
   }
+
+  .speech-template-list--flyers {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  }
 }
