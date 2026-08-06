@@ -97,7 +97,7 @@ export function Sidebar({
   return (
     <aside
       className="sidebar"
-      data-collapsed={collapsed}
+      data-collapsed={collapsed && !mobileMenuOpen}
       data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
       data-testid="app-sidebar"
