@@ -156,19 +156,21 @@ function toTitleCase(str: string): string {
 function buildWhatsappMessageBlock(
   title: string,
   candidates: Candidate[],
+  includeTotals: boolean = false
 ): string {
   if (candidates.length === 0) return "";
   const groups = buildPuestoGroups(candidates);
-  const totalActivos = candidates.length;
 
-  const lines: string[] = [
-    title,
-    `Activos: ${totalActivos} · Puestos: ${groups.reduce((s, g) => s + g.rows.length, 0)}`,
-    "",
-  ];
+  const lines: string[] = [title];
+  if (includeTotals) {
+    const totalActivos = candidates.length;
+    const totalPuestos = groups.reduce((s, g) => s + g.rows.length, 0);
+    lines.push(`Total: ${totalActivos} activos en ${totalPuestos} puestos`);
+  }
+  lines.push("");
 
   for (const g of groups) {
-    lines.push(`*${g.area.toUpperCase()}* (${g.total} candidatos)`);
+    lines.push(`*${g.area.toUpperCase()} (${g.total})*`);
     const puestosMap = new Map<string, typeof g.rows>();
     for (const r of g.rows) {
       if (!puestosMap.has(r.puesto)) puestosMap.set(r.puesto, []);
@@ -194,6 +196,11 @@ function buildWhatsappMessageBlock(
           seccionLabel = `${cleanSeccion} (${r.turno})`;
         }
         seccionLabel = toTitleCase(seccionLabel);
+        
+        // Acortar nombres comunes para WhatsApp
+        seccionLabel = seccionLabel.replace(/Turno/i, "T.");
+        seccionLabel = seccionLabel.replace(/1er /i, "1er ");
+        seccionLabel = seccionLabel.replace(/2do /i, "2do ");
 
         const puestoName = toTitleCase(puesto);
         const namePart = seccionLabel
@@ -201,12 +208,14 @@ function buildWhatsappMessageBlock(
           : puestoName;
 
         const detalle: string[] = [];
-        if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-        if (r.e2 > 0) detalle.push(`Entrega docs: ${r.e2}`);
-        if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
-        if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
+        if (r.e1 > 0) detalle.push(`${r.e1} Entrevista`);
+        if (r.e2 > 0) detalle.push(`${r.e2} Ent docs`);
+        if (r.fd > 0) detalle.push(`${r.fd} Faltan docs`);
+        if (r.fp > 0) detalle.push(`${r.fp} Feedback`);
 
-        lines.push(`${namePart}: ${r.total} activos (${detalle.join(" · ")})`);
+        const detalleStr = detalle.length > 0 ? " ```" + detalle.join(" | ") + "```" : ` \`\`\`${r.total} activos\`\`\``;
+
+        lines.push(`- ${namePart}:${detalleStr}`);
       }
     }
     lines.push("");
@@ -230,39 +239,35 @@ function buildWhatsappMessage(active: Candidate[]): string {
   if (generales.length > 0) {
     blocks.push(
       buildWhatsappMessageBlock(
-        `*Resumen de Candidatos* — ${fecha}`,
+        `*RESUMEN DIARIO* — ${fecha}`,
         generales,
+        true
       ),
     );
   }
 
   if (starlite.length > 0) {
-    blocks.push(buildWhatsappMessageBlock(`*★ PROYECTO STARLITE*`, starlite));
+    blocks.push(buildWhatsappMessageBlock(`*★ PROYECTO STARLITE*`, starlite, !generales.length));
   }
 
   if (blocks.length === 0) {
-    return `*Resumen de Candidatos* — ${fecha}\n\nSin candidatos activos.`;
+    return `*RESUMEN DIARIO* — ${fecha}\n\nSin candidatos activos.`;
   }
 
   const allRecruiters = buildRecruiterRows(active);
   const activeRecruiters = allRecruiters.filter((r) => r.total > 0);
 
-  let finalMessage = blocks.join("\n\n-----------------------------------\n\n");
+  let finalMessage = blocks.join("\n\n");
 
   if (activeRecruiters.length > 0) {
-    const recruiterLines = ["*Por reclutador*"];
+    const recruiterLines = ["*RECLUTADORES*"];
     for (const r of activeRecruiters) {
-      const detalle: string[] = [];
-      if (r.e1 > 0) detalle.push(`Entrevista: ${r.e1}`);
-      if (r.e2 > 0) detalle.push(`Entrega docs: ${r.e2}`);
-      if (r.fd > 0) detalle.push(`Faltan docs: ${r.fd}`);
-      if (r.fp > 0) detalle.push(`Feedback: ${r.fp}`);
       recruiterLines.push(
-        `• ${toTitleCase(r.name)}: ${r.total} (${detalle.join(" · ")})`,
+        `- *${toTitleCase(r.name)}:* \`\`\`${r.total} activos\`\`\``,
       );
     }
     finalMessage +=
-      "\n\n-----------------------------------\n\n" + recruiterLines.join("\n");
+      "\n\n" + recruiterLines.join("\n");
   }
 
   return finalMessage;
@@ -380,38 +385,6 @@ export function CandidateReportModal({
       fullscreenMobile={true}
     >
       <div className="modal-body candidate-report-modal__body">
-        <motion.div
-          className="candidate-report-modal__stats-grid"
-          initial={{ opacity: 0, y: -6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
-          <StatCard
-            id="stat-activos"
-            value={totalActivos}
-            label={`candidato${totalActivos === 1 ? "" : "s"} activo${totalActivos === 1 ? "" : "s"}`}
-          />
-          {totalStarlite > 0 && (
-            <StatCard
-              id="stat-starlite"
-              value={totalStarlite}
-              label="starlite"
-              accentColor="var(--color-warning)"
-            />
-          )}
-          <StatCard
-            id="stat-puestos"
-            value={totalPuestos}
-            label={`puesto${totalPuestos === 1 ? "" : "s"}`}
-            accentColor="var(--color-accent-teal)"
-          />
-          <StatCard
-            id="stat-reclutadores"
-            value={reclutadoresActivos}
-            label={`reclutador${reclutadoresActivos === 1 ? "" : "es"}`}
-            accentColor="var(--color-muted)"
-          />
-        </motion.div>
 
         {empty ? (
           <motion.p
@@ -457,42 +430,6 @@ export function CandidateReportModal({
                   {renderGroupContent(group)}
                 </motion.article>
               ))}
-            </motion.section>
-
-            <motion.section
-              className="candidate-report-modal__recruiters"
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              aria-label="Conteo por reclutador"
-            >
-              <h3 className="candidate-report-modal__section-title">
-                Por reclutador
-              </h3>
-              <ul
-                className="feature-card"
-                style={{ listStyle: "none", margin: 0, padding: 0 }}
-              >
-                {recruiters
-                  .filter((r) => r.total > 0)
-                  .map((r) => (
-                    <motion.li
-                      key={r.name}
-                      className="candidate-report-modal__row"
-                      variants={itemVariants}
-                    >
-                      <span className="candidate-report-modal__recruiter-name">
-                        <ReclutadorBadge nombre={r.name} showRole={true} />
-                      </span>
-                      <div className="candidate-report-modal__badges">
-                        {r.e1 > 0 && <Badge variant="amber">E1: {r.e1}</Badge>}
-                        {r.e2 > 0 && <Badge variant="teal">E2: {r.e2}</Badge>}
-                        {r.fp > 0 && <Badge variant="amber">FP: {r.fp}</Badge>}
-                        <Badge variant="default">{r.total}</Badge>
-                      </div>
-                    </motion.li>
-                  ))}
-              </ul>
             </motion.section>
           </>
         )}
