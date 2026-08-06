@@ -2382,5 +2382,13 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+  },
+  {
+    "numero empleado": "4312",
+    "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   }
 ]
