@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { CheckCircle2, Pencil, ShieldAlert, Trash2, UserPlus, XCircle } from 'lucide-react';
 import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
@@ -131,6 +131,11 @@ export function CandidateModal({
     data: CandidateAccessCardData;
     phone: string;
   } | null>(null);
+  
+  // UX State
+  const [touched, setTouched] = useState<Record<keyof FormState, boolean>>({
+    nombre: false, telefono: false, email: false, puesto: false, area: false, seccion: false, status: false, reclutador: false, source: false, cv_url: false, fecha_aplicacion: false, fecha_cita: false, is_starlite: false
+  });
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
@@ -215,6 +220,7 @@ export function CandidateModal({
       setOverrideDuplicate(false);
       setAccessCard(null);
       setForm(candidate ? fromCandidate(candidate) : emptyForm());
+      setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: false }), {} as Record<keyof FormState, boolean>));
     }
   }, [isOpen, candidate, mode]);
 
@@ -230,8 +236,13 @@ export function CandidateModal({
   }, [form]);
 
   const telDigits = form.telefono.replace(/\D/g, '');
-  const isPhoneValid = telDigits.length === 10;
-  const showPhoneError = form.telefono.length > 0 && !isPhoneValid;
+  const isSequentialOrRepeated = (tel: string) => {
+    if (tel.length !== 10) return false;
+    if (/^(\d)\1+$/.test(tel)) return true; // ej. 0000000000
+    if (/^1234567890$|^0987654321$/.test(tel)) return true;
+    return false;
+  };
+  const isPhoneValid = telDigits.length === 10 && !isSequentialOrRepeated(telDigits);
 
   const duplicateSource = useMemo(() => {
     if (telDigits.length !== 10) return null;
@@ -246,35 +257,62 @@ export function CandidateModal({
     }
   }, [duplicateSource]);
 
-  const missingRequiredFields = [
-    !form.nombre.trim() && 'Nombre completo',
-    !isPhoneValid && 'Teléfono (10 dígitos)',
-    (duplicateSource && !overrideDuplicate) && `Teléfono duplicado en ${duplicateSource}`,
-    !form.area && 'Área',
-    !form.seccion && 'Sección',
-    !form.puesto && 'Puesto',
-    !form.reclutador && 'Reclutador',
-  ].filter(Boolean) as string[];
+  // Validations
+  const isValidName = (name: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name) && name.trim().split(/\s+/).length >= 2;
+  const nombreError = !form.nombre.trim() 
+    ? 'El nombre completo es obligatorio.' 
+    : !isValidName(form.nombre) 
+      ? 'Debe contener al menos nombre y apellido (solo letras).' 
+      : null;
 
-  const isFormValid = missingRequiredFields.length === 0;
+  const telefonoError = telDigits.length === 0 
+    ? 'El teléfono es obligatorio.' 
+    : telDigits.length !== 10 
+      ? 'Debe tener exactamente 10 dígitos.' 
+      : isSequentialOrRepeated(telDigits) 
+        ? 'El número de teléfono parece ser falso o incorrecto.'
+        : (duplicateSource && !overrideDuplicate) 
+          ? `Teléfono duplicado en ${duplicateSource}` 
+          : null;
+
+  const isValidEmail = (email: string) => email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailError = !isValidEmail(form.email) ? 'El formato del correo electrónico no es válido.' : null;
+
+  const errors = {
+    nombre: nombreError,
+    telefono: telefonoError,
+    email: emailError,
+    area: !form.area ? 'Selecciona un área.' : null,
+    seccion: !form.seccion ? 'Selecciona una sección.' : null,
+    puesto: !form.puesto ? 'Selecciona un puesto.' : null,
+    reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
+    source: !form.source ? 'Selecciona la fuente del candidato.' : null,
+    fecha_aplicacion: !form.fecha_aplicacion ? 'La fecha de contacto es obligatoria.' : form.fecha_aplicacion > localTodayIso() ? 'La fecha de contacto no puede ser futura.' : null,
+    fecha_cita: !form.fecha_cita ? 'La fecha de entrevista es obligatoria.' : null,
+  };
+
+  const isFormValid = !Object.values(errors).some(Boolean);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
+
+    if (!isFormValid && mode !== 'delete') {
+      setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: true }), {} as Record<keyof FormState, boolean>));
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('.input-error, .form-error-text');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return;
+    }
+
     setErrorMsg(null);
 
     try {
       setSubmitting(true);
 
       if (mode === 'add' || mode === 'edit') {
-        const telDigits = form.telefono.replace(/\D/g, '');
-        if (telDigits && telDigits.length !== 10) {
-          setErrorMsg('El teléfono debe tener exactamente 10 dígitos.');
-          setSubmitting(false);
-          return;
-        }
-
-        // El chequeo de duplicados cruzados ahora es en tiempo real con duplicateSource y overrideDuplicate.
+        // Validation now handled by inline checks. We just check email dupes here.
         if (form.email.trim()) {
             const isDupEmail = candidates.some(c =>
               c.id !== candidate?.id &&
@@ -393,23 +431,29 @@ export function CandidateModal({
   const fieldsContacto = (
     <>
       <div className="form-group form-group--span-2">
-        <label htmlFor="cand-nombre">Nombre completo</label>
+        <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
         <input
           id="cand-nombre"
           type="text"
-          required
           value={form.nombre}
-          onChange={(e) =>
-            setForm({ ...form, nombre: e.target.value.toUpperCase() })
-          }
+          onChange={(e) => {
+            setForm({ ...form, nombre: e.target.value.toUpperCase() });
+            if (!touched.nombre) setTouched({ ...touched, nombre: true });
+          }}
+          onBlur={() => {
+            setForm({ ...form, nombre: form.nombre.trim().replace(/\s+/g, ' ') });
+            if (!touched.nombre) setTouched({ ...touched, nombre: true });
+          }}
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
           disabled={isEdit && !isAdmin}
+          className={touched.nombre && errors.nombre ? 'input-error' : ''}
         />
+        {touched.nombre && errors.nombre && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.nombre}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-telefono">Teléfono</label>
+        <label htmlFor="cand-telefono">Teléfono <span className="text-error">*</span></label>
         <div className="phone-input-wrapper">
           <input
             id="cand-telefono"
@@ -419,22 +463,26 @@ export function CandidateModal({
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, '');
               if (onlyNums.length > 10) return;
-              // Mantenemos formato limpio al escribir para no confundir al usuario
               setForm({ ...form, telefono: onlyNums });
+              if (!touched.telefono) setTouched({ ...touched, telefono: true });
             }}
-            onBlur={() => setForm({ ...form, telefono: formatPhoneNumber(form.telefono) })}
+            onBlur={() => {
+              setForm({ ...form, telefono: formatPhoneNumber(form.telefono) });
+              if (!touched.telefono) setTouched({ ...touched, telefono: true });
+            }}
             placeholder="442 123 4567"
             autoComplete="off"
             disabled={isEdit && !isAdmin}
-            className={showPhoneError ? 'input-error' : ''}
+            className={touched.telefono && errors.telefono ? 'input-error' : ''}
           />
           {isPhoneValid && (
             <CheckCircle2 size={18} className="phone-validation-icon valid" />
           )}
-          {showPhoneError && (
+          {touched.telefono && errors.telefono && (
             <XCircle size={18} className="phone-validation-icon invalid" />
           )}
         </div>
+        {touched.telefono && errors.telefono && !duplicateSource && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.telefono}</span>}
         {duplicateSource && (
           <div className="candidate-modal__dup-warning">
             <span className="candidate-modal__dup-text">
@@ -457,11 +505,19 @@ export function CandidateModal({
           id="cand-email"
           type="email"
           value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, email: e.target.value });
+            if (!touched.email) setTouched({ ...touched, email: true });
+          }}
+          onBlur={() => {
+            if (!touched.email) setTouched({ ...touched, email: true });
+          }}
           placeholder="candidato@correo.com"
           autoComplete="off"
           disabled={isEdit && !isAdmin}
+          className={touched.email && errors.email ? 'input-error' : ''}
         />
+        {touched.email && errors.email && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.email}</span>}
       </div>
     </>
   );
@@ -472,7 +528,7 @@ const fieldsPosicion = (
     <>
       <div className="form-group">
         <label htmlFor="cand-area">
-          Área
+          Área <span className="text-error">*</span>
           {restrictToOpen && noOpenPositions && (
             <span className="candidate-modal__hint" role="note">
               <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
@@ -482,35 +538,50 @@ const fieldsPosicion = (
         <CustomSelect
           id="cand-area"
           value={form.area}
-          onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+          onChange={(val) => {
+            setForm({ ...form, area: val, seccion: '', puesto: '' });
+            setTouched({ ...touched, area: true, seccion: false, puesto: false });
+          }}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
           disabled={(isEdit && !isAdmin) || noOpenPositions}
+          aria-invalid={touched.area && !!errors.area}
         />
+        {touched.area && errors.area && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.area}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-seccion">Sección</label>
+        <label htmlFor="cand-seccion">Sección <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-seccion"
           value={form.seccion}
-          onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+          onChange={(val) => {
+            setForm({ ...form, seccion: val, puesto: '' });
+            setTouched({ ...touched, seccion: true, puesto: false });
+          }}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
           placeholder="Seleccione sección…"
           disabled={!form.area || (isEdit && !isAdmin)}
+          aria-invalid={touched.seccion && !!errors.seccion}
         />
+        {touched.seccion && errors.seccion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.seccion}</span>}
       </div>
 
       <div className="form-group form-group--span-2">
-        <label htmlFor="cand-puesto">Puesto</label>
+        <label htmlFor="cand-puesto">Puesto <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-puesto"
           value={form.puesto}
-          onChange={(val) => setForm({ ...form, puesto: val })}
+          onChange={(val) => {
+            setForm({ ...form, puesto: val });
+            setTouched({ ...touched, puesto: true });
+          }}
           options={puestosForSection.map((p) => ({ value: p, label: p }))}
           placeholder="Seleccione puesto…"
           disabled={!form.seccion || (isEdit && !isAdmin)}
+          aria-invalid={touched.puesto && !!errors.puesto}
         />
+        {touched.puesto && errors.puesto && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.puesto}</span>}
       </div>
     </>
   );
@@ -528,28 +599,38 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-reclutador">Reclutador</label>
+        <label htmlFor="cand-reclutador">Reclutador <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-reclutador"
           value={form.reclutador}
-          onChange={(val) => setForm({ ...form, reclutador: val })}
+          onChange={(val) => {
+            setForm({ ...form, reclutador: val });
+            setTouched({ ...touched, reclutador: true });
+          }}
           placeholder="Quién lleva el proceso"
           options={RECLUTADORES_DISPONIBLES}
           disabled={isEdit && !isAdmin}
           aria-label="Reclutador a cargo del proceso, obligatorio"
+          aria-invalid={touched.reclutador && !!errors.reclutador}
         />
+        {touched.reclutador && errors.reclutador && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.reclutador}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-source">Fuente</label>
+        <label htmlFor="cand-source">Fuente <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-source"
           value={form.source}
-          onChange={(val) => setForm({ ...form, source: val })}
+          onChange={(val) => {
+            setForm({ ...form, source: val });
+            setTouched({ ...touched, source: true });
+          }}
           options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: s }))}
           placeholder="Seleccione fuente…"
           disabled={isEdit && !canEditCitaAndSource}
+          aria-invalid={touched.source && !!errors.source}
         />
+        {touched.source && errors.source && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.source}</span>}
       </div>
 
       <div className="form-group">
@@ -567,25 +648,35 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-fecha">Fecha de contacto</label>
+        <label htmlFor="cand-fecha">Fecha de contacto <span className="text-error">*</span></label>
         <input
           id="cand-fecha"
           type="date"
           value={form.fecha_aplicacion}
-          onChange={(e) => setForm({ ...form, fecha_aplicacion: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, fecha_aplicacion: e.target.value });
+            setTouched({ ...touched, fecha_aplicacion: true });
+          }}
           disabled={isEdit && !isAdmin}
+          className={touched.fecha_aplicacion && errors.fecha_aplicacion ? 'input-error' : ''}
         />
+        {touched.fecha_aplicacion && errors.fecha_aplicacion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.fecha_aplicacion}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-fecha-cita">Fecha de entrevista</label>
+        <label htmlFor="cand-fecha-cita">Fecha de entrevista <span className="text-error">*</span></label>
         <input
           id="cand-fecha-cita"
           type="date"
           value={form.fecha_cita}
-          onChange={(e) => setForm({ ...form, fecha_cita: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, fecha_cita: e.target.value });
+            setTouched({ ...touched, fecha_cita: true });
+          }}
           disabled={isEdit && !canEditCitaAndSource}
+          className={touched.fecha_cita && errors.fecha_cita ? 'input-error' : ''}
         />
+        {touched.fecha_cita && errors.fecha_cita && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.fecha_cita}</span>}
       </div>
     </>
   );
@@ -644,19 +735,19 @@ const fieldsPosicion = (
               {
                 id: 'contacto',
                 title: 'Contacto',
-                isValid: form.nombre.trim().length > 0,
+                isValid: !errors.nombre && !errors.telefono && !errors.email,
                 content: <div className="form-grid">{fieldsContacto}</div>,
               },
               {
                 id: 'posicion',
                 title: 'Posición',
-                isValid: form.area.length > 0 && form.puesto.length > 0,
+                isValid: !errors.area && !errors.seccion && !errors.puesto,
                 content: <div className="form-grid">{fieldsPosicion}</div>,
               },
               {
                 id: 'proceso',
                 title: 'Proceso',
-                isValid: form.reclutador.length > 0,
+                isValid: !errors.reclutador && !errors.source && !errors.fecha_aplicacion && !errors.fecha_cita,
                 content: <div className="form-grid">
                   {fieldsProceso}
                   {auditNotice}
@@ -706,25 +797,6 @@ const fieldsPosicion = (
                 idleIcon={Trash2IconData}
                 className="btn-danger"
               />
-            ) : !isFormValid ? (
-              <Tooltip content="Faltan campos obligatorios">
-                <span tabIndex={0} style={{ display: 'inline-block', cursor: 'not-allowed' }}>
-                  <div style={{ pointerEvents: 'none' }}>
-                    <AnimatedSubmitButton
-                      isSubmitting={submitting}
-                      isSuccess={isSuccess}
-                      isError={!!errorMsg}
-                      errorText={errorMsg || undefined}
-                      idleText="Guardar"
-                      loadingText="Guardando..."
-                      successText="¡Guardado!"
-                      idleIcon={SaveIconData}
-                      className="btn-primary"
-                      disabled={true}
-                    />
-                  </div>
-                </span>
-              </Tooltip>
             ) : (
               <AnimatedSubmitButton
                 isSubmitting={submitting}

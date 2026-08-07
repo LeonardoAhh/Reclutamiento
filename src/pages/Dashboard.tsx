@@ -600,7 +600,7 @@ export function Dashboard() {
                     <div className="dashboard__hero-actions">
                       <button
                         type="button"
-                        className="btn-secondary"
+                        className="btn-primary"
                         onClick={() => {
                           setSelectedEmployee(null);
                           setEmpModalMode("add");
@@ -632,7 +632,7 @@ export function Dashboard() {
                 >
                   {filteredDepts.length === 0 && employees.length === 0 && (
                     <div className="dashboard__empty" id="dashboard-empty">
-                      <Users size={48} strokeWidth={1} />
+                      <Users size={48} strokeWidth={2.5} />
                       <h3>Sin datos cargados</h3>
                       <p>
                         Importa un archivo JSON o crea un empleado para
@@ -646,7 +646,7 @@ export function Dashboard() {
                       <MorphingIcon
                         icon={SearchData}
                         size={48}
-                        strokeWidth={1}
+                        strokeWidth={2.5}
                       />
                       <h3>Sin resultados</h3>
                       <p>No se encontraron coincidencias para tu búsqueda.</p>

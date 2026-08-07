@@ -169,8 +169,9 @@ export function useCandidates() {
      Supabase. Si no lo está, simplemente nunca dispara — degradación segura. */
   useEffect(() => {
     if (!isConfigured) return;
+    const channelName = `candidates-changes-${Math.random().toString(36).substring(7)}`;
     const channel = supabase
-      .channel('realtime:candidates')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'candidates' },

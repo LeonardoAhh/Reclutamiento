@@ -101,6 +101,11 @@ export function RegistroNoCitadosView() {
     puesto: '',
     notas: '',
   });
+  
+  const emptyTouched = {
+    nombre: false, apellido: false, telefono: false, motivo: false, subMotivo: false, reclutador: false, fuente: false, puesto: false, notas: false
+  };
+  const [touched, setTouched] = useState(emptyTouched);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -127,16 +132,15 @@ export function RegistroNoCitadosView() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === 'loading') return;
     setErrorMsg(null);
 
-    if (!formData.motivo) {
-      setErrorMsg('Por favor selecciona un motivo');
-      setTimeout(() => setErrorMsg(null), 3000);
-      return;
-    }
-    if (!formData.reclutador) {
-      setErrorMsg('Por favor selecciona un reclutador');
-      setTimeout(() => setErrorMsg(null), 3000);
+    if (!isFormValid) {
+      setTouched(Object.keys(emptyTouched).reduce((acc, k) => ({ ...acc, [k]: true }), {} as typeof touched));
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('.input-error, .no-citados-subtext[style*="color: var(--color-accent-orange)"], .no-citados-subtext[style*="color: var(--color-error)"]');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
       return;
     }
 
@@ -169,12 +173,12 @@ export function RegistroNoCitadosView() {
         fecha: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       });
     }
-
     if (result.ok) {
       setStatus('success');
       setTimeout(() => {
         setStatus('idle');
         setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
+        setTouched(emptyTouched);
         setEditingId(null);
         if (!keepOpen) {
           setIsModalOpen(false); // Close modal on success
@@ -215,32 +219,49 @@ export function RegistroNoCitadosView() {
     });
   };
 
-  const isPhoneValid = formData.telefono.length === 10;
-  const showPhoneError = formData.telefono.length > 0 && !isPhoneValid;
+  const isSequentialOrRepeated = (tel: string) => {
+    if (tel.length !== 10) return false;
+    if (/^(\d)\1+$/.test(tel)) return true;
+    if (/^1234567890$|^0987654321$/.test(tel)) return true;
+    return false;
+  };
 
+  const isPhoneValid = formData.telefono.length === 10 && !isSequentialOrRepeated(formData.telefono);
   const duplicateInNoCitados = useMemo(() => {
-    if (!isPhoneValid) return null;
+    if (formData.telefono.length !== 10) return null;
     return records.find(r => r.telefono === formData.telefono && r.id !== editingId);
-  }, [formData.telefono, records, editingId, isPhoneValid]);
+  }, [formData.telefono, records, editingId]);
 
   const duplicateInPipeline = useMemo(() => {
-    if (!isPhoneValid) return null;
+    if (formData.telefono.length !== 10) return null;
     return candidates.find(c => {
       const cleanPhone = String(c.telefono || '').replace(/\D/g, '');
       return cleanPhone === formData.telefono;
     });
-  }, [formData.telefono, candidates, isPhoneValid]);
+  }, [formData.telefono, candidates]);
 
-  const missingRequiredFields = [
-    (!formData.nombre.trim() || formData.nombre.trim().length < 2) && 'Nombre (min. 2 letras)',
-    !isPhoneValid && 'Teléfono (10 dígitos)',
-    !formData.motivo && 'Motivo principal',
-    (formData.motivo && SUB_MOTIVOS_OPTIONS[formData.motivo]?.length > 0 && !formData.subMotivo) && 'Detalle del motivo',
-    !formData.reclutador && 'Reclutador',
-    !formData.fuente && 'Fuente'
-  ].filter(Boolean) as string[];
+  const isValidNameStr = (str: string) => str === '' || /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(str);
 
-  const isFormValid = missingRequiredFields.length === 0;
+  const isGibberish = (str: string) => {
+    if (/(.)\1{4,}/.test(str)) return true; // Rechaza 5+ caracteres repetidos seguidos (ej. "aaaaa")
+    const words = str.trim().split(/\s+/);
+    if (words.length < 3) return true; // Rechaza si escribieron 30 caracteres pero sin espacios (menos de 3 palabras)
+    return false;
+  };
+
+  const errors = {
+    nombre: !formData.nombre.trim() ? 'El nombre es obligatorio.' : formData.nombre.trim().length < 2 ? 'Debe tener al menos 2 letras.' : !isValidNameStr(formData.nombre) ? 'Solo letras permitidas.' : null,
+    apellido: !isValidNameStr(formData.apellido) ? 'Solo letras permitidas.' : null,
+    telefono: formData.telefono.length === 0 ? 'El teléfono es obligatorio.' : formData.telefono.length !== 10 ? 'Debe tener exactamente 10 dígitos.' : isSequentialOrRepeated(formData.telefono) ? 'El número parece falso.' : null,
+    motivo: !formData.motivo ? 'Selecciona un motivo.' : null,
+    subMotivo: (formData.motivo && SUB_MOTIVOS_OPTIONS[formData.motivo]?.length > 0 && !formData.subMotivo) ? 'Selecciona el detalle del motivo.' : null,
+    reclutador: !formData.reclutador ? 'Debes asignar un reclutador.' : null,
+    fuente: !formData.fuente ? 'Selecciona una fuente.' : null,
+    puesto: !formData.puesto ? 'Selecciona un puesto.' : null,
+    notas: !formData.notas.trim() ? 'Agrega una nota o comentario.' : formData.notas.trim().length < 20 ? `Debe tener al menos 20 caracteres (actual: ${formData.notas.trim().length}).` : isGibberish(formData.notas) ? 'Comentario inválido: usa palabras reales y evita repetir letras.' : null
+  };
+
+  const isFormValid = !Object.values(errors).some(Boolean);
 
   const handlePrevPage = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
@@ -298,6 +319,7 @@ export function RegistroNoCitadosView() {
   const openNewModal = () => {
     setEditingId(null);
     setFormData({ nombre: '', apellido: '', telefono: '', motivo: '', subMotivo: '', reclutador: '', fuente: '', puesto: '', notas: '' });
+    setTouched(emptyTouched);
     setIsModalOpen(true);
   };
 
@@ -314,6 +336,7 @@ export function RegistroNoCitadosView() {
       puesto: record.puesto || '',
       notas: record.notas || '',
     });
+    setTouched(emptyTouched);
     setIsModalOpen(true);
   };
 
@@ -399,16 +422,25 @@ export function RegistroNoCitadosView() {
         <div className="modal-body">
           <form id="form-no-citados" onSubmit={handleSubmit} className="no-citados-form">
           <div className="form-group">
-            <label htmlFor="nombre">Nombre</label>
+            <label htmlFor="nombre">Nombre <span className="text-error">*</span></label>
             <input
               id="nombre"
               type="text"
-              required
               value={formData.nombre}
-              onChange={(e) => handleChange('nombre', e.target.value)}
+              onChange={(e) => {
+                handleChange('nombre', e.target.value);
+                if (!touched.nombre) setTouched(t => ({ ...t, nombre: true }));
+              }}
+              onBlur={() => {
+                setFormData(prev => ({ ...prev, nombre: prev.nombre.trim().replace(/\s+/g, ' ') }));
+                if (!touched.nombre) setTouched(t => ({ ...t, nombre: true }));
+              }}
               placeholder="Ej. Juan"
               autoComplete="off"
+              className={touched.nombre && errors.nombre ? 'input-error' : ''}
+              aria-invalid={touched.nombre && !!errors.nombre}
             />
+            {touched.nombre && errors.nombre && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.nombre}</span>}
           </div>
 
           <div className="form-group">
@@ -417,36 +449,51 @@ export function RegistroNoCitadosView() {
               id="apellido"
               type="text"
               value={formData.apellido}
-              onChange={(e) => handleChange('apellido', e.target.value)}
+              onChange={(e) => {
+                handleChange('apellido', e.target.value);
+                if (!touched.apellido) setTouched(t => ({ ...t, apellido: true }));
+              }}
+              onBlur={() => {
+                setFormData(prev => ({ ...prev, apellido: prev.apellido.trim().replace(/\s+/g, ' ') }));
+                if (!touched.apellido) setTouched(t => ({ ...t, apellido: true }));
+              }}
               placeholder="Ej. Pérez"
               autoComplete="off"
+              className={touched.apellido && errors.apellido ? 'input-error' : ''}
+              aria-invalid={touched.apellido && !!errors.apellido}
             />
+            {touched.apellido && errors.apellido && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.apellido}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="telefono">Teléfono</label>
+            <label htmlFor="telefono">Teléfono <span className="text-error">*</span></label>
             <div className="phone-input-wrapper">
               <input
                 id="telefono"
                 type="tel"
                 value={formData.telefono}
-                onChange={(e) => handleChange('telefono', e.target.value)}
+                onChange={(e) => {
+                  handleChange('telefono', e.target.value);
+                  if (!touched.telefono) setTouched(t => ({ ...t, telefono: true }));
+                }}
+                onBlur={() => {
+                  if (!touched.telefono) setTouched(t => ({ ...t, telefono: true }));
+                }}
                 placeholder="Ej. 442 123 4567"
-                required
-                className={showPhoneError ? 'input-error' : ''}
-                aria-describedby={showPhoneError ? "telefono-error" : undefined}
-                aria-invalid={showPhoneError}
+                className={touched.telefono && errors.telefono ? 'input-error' : ''}
+                aria-describedby={touched.telefono && errors.telefono ? "telefono-error" : undefined}
+                aria-invalid={touched.telefono && !!errors.telefono}
               />
               {isPhoneValid && !duplicateInNoCitados && !duplicateInPipeline && (
                 <CheckCircle2 size={18} className="phone-validation-icon valid" />
               )}
-              {showPhoneError && (
+              {touched.telefono && errors.telefono && (
                 <XCircle size={18} className="phone-validation-icon invalid" />
               )}
             </div>
-            {showPhoneError && (
-              <span id="telefono-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
-                El teléfono debe tener 10 dígitos.
+            {touched.telefono && errors.telefono && !duplicateInNoCitados && (
+              <span id="telefono-error" className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                {errors.telefono}
               </span>
             )}
             
@@ -485,71 +532,102 @@ export function RegistroNoCitadosView() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="motivo">Motivo principal</label>
+            <label htmlFor="motivo">Motivo principal <span className="text-error">*</span></label>
             <CustomSelect
               id="motivo"
               value={formData.motivo}
-              onChange={(val) => handleChange('motivo', val)}
+              onChange={(val) => {
+                handleChange('motivo', val);
+                setTouched(t => ({ ...t, motivo: true, subMotivo: false }));
+              }}
               options={MOTIVOS_OPTIONS}
               placeholder="Selecciona un motivo..."
+              aria-invalid={touched.motivo && !!errors.motivo}
             />
+            {touched.motivo && errors.motivo && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.motivo}</span>}
           </div>
 
           {formData.motivo && SUB_MOTIVOS_OPTIONS[formData.motivo] && SUB_MOTIVOS_OPTIONS[formData.motivo].length > 0 && (
             <div className="form-group">
-              <label htmlFor="subMotivo">Detalle del motivo</label>
+              <label htmlFor="subMotivo">Detalle del motivo <span className="text-error">*</span></label>
               <CustomSelect
                 id="subMotivo"
                 value={formData.subMotivo}
-                onChange={(val) => handleChange('subMotivo', val)}
+                onChange={(val) => {
+                  handleChange('subMotivo', val);
+                  setTouched(t => ({ ...t, subMotivo: true }));
+                }}
                 options={SUB_MOTIVOS_OPTIONS[formData.motivo]}
                 placeholder="Selecciona el detalle..."
+                aria-invalid={touched.subMotivo && !!errors.subMotivo}
               />
+              {touched.subMotivo && errors.subMotivo && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.subMotivo}</span>}
             </div>
           )}
 
           <div className="form-group">
-            <label htmlFor="reclutador">Reclutador</label>
+            <label htmlFor="reclutador">Reclutador <span className="text-error">*</span></label>
             <CustomSelect
               id="reclutador"
               value={formData.reclutador}
-              onChange={(val) => handleChange('reclutador', val)}
+              onChange={(val) => {
+                handleChange('reclutador', val);
+                setTouched(t => ({ ...t, reclutador: true }));
+              }}
               options={RECLUTADORES_OPTIONS}
               placeholder="Selecciona un reclutador..."
+              aria-invalid={touched.reclutador && !!errors.reclutador}
             />
+            {touched.reclutador && errors.reclutador && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.reclutador}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="fuente">Fuente</label>
+            <label htmlFor="fuente">Fuente <span className="text-error">*</span></label>
             <CustomSelect
               id="fuente"
               value={formData.fuente}
-              onChange={(val) => handleChange('fuente', val)}
+              onChange={(val) => {
+                handleChange('fuente', val);
+                setTouched(t => ({ ...t, fuente: true }));
+              }}
               options={FUENTES_OPTIONS}
               placeholder="Selecciona una fuente..."
+              aria-invalid={touched.fuente && !!errors.fuente}
             />
+            {touched.fuente && errors.fuente && <span className="no-citados-subtext" style={{ color: 'var(--color-error)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>{errors.fuente}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="puesto">Puesto</label>
+            <label htmlFor="puesto">Puesto <span className="text-error">*</span></label>
             <CustomSelect
               id="puesto"
               value={formData.puesto}
-              onChange={(val) => handleChange('puesto', val)}
+              onChange={(val) => {
+                handleChange('puesto', val);
+                setTouched(t => ({ ...t, puesto: true }));
+              }}
               options={PUESTOS_OPTIONS}
               placeholder="Selecciona un puesto..."
               searchable
+              aria-invalid={touched.puesto && !!errors.puesto}
             />
+            {touched.puesto && errors.puesto && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.puesto}</span>}
           </div>
 
           <div className="form-group no-citados-form-full-width">
-            <label htmlFor="notas">Notas / Comentarios</label>
+            <label htmlFor="notas">Notas / Comentarios <span className="text-error">*</span></label>
             <textarea
               id="notas"
               value={formData.notas}
-              onChange={(e) => handleChange('notas', e.target.value)}
+              onChange={(e) => {
+                handleChange('notas', e.target.value);
+                setTouched(t => ({ ...t, notas: true }));
+              }}
               placeholder="Agrega comentarios adicionales..."
+              rows={3}
+              className={`no-citados-textarea ${touched.notas && errors.notas ? 'input-error' : ''}`}
             />
+            {touched.notas && errors.notas && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.notas}</span>}
           </div>
         </form>
         </div>

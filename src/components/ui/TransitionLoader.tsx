@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -19,7 +20,13 @@ export function TransitionLoader({
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="transition-loader__content"
       >
-        <Loader2 className="transition-loader__spinner" aria-hidden="true" />
+        <MorphingIcon 
+          icon={Loader2} 
+          size={32} 
+          strokeWidth={2} 
+          className="transition-loader__spinner" 
+          aria-hidden="true" 
+        />
         <div className="transition-loader__text-container">
           <h1 className="transition-loader__title">{title}</h1>
           {hint && <p className="transition-loader__hint">{hint}</p>}

@@ -82,7 +82,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="app-shell__main">
-        <Header onMobileMenuToggle={toggleMobileMenu} />
+        <Header 
+          onMobileMenuToggle={toggleMobileMenu} 
+          mobileMenuOpen={mobileMenuOpen} 
+        />
         {children}
       </div>
     </div>

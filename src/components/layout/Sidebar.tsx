@@ -13,7 +13,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Tooltip } from "@/components/ui/Tooltip";
 import "./Sidebar.css";
-import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";

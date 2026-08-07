@@ -879,7 +879,7 @@ export function SpeechView() {
               isSuccess={submitStatus === "success"}
               isError={!!errorMsg}
               errorText={errorMsg ?? undefined}
-              idleText={editingId ? "Guardar cambios" : "Crear plantilla"}
+              idleText={editingId ? "Guardar cambios" : "Crear"}
               loadingText="Guardando…"
               successText="¡Guardado!"
               idleIcon={SaveIconData}

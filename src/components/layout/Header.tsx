@@ -1,16 +1,17 @@
 import { useEffect, useMemo } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { Menu } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { BrandLogo } from "@/components/ui/BrandLogo";
+import { RemindersPanel } from "@/components/ui/RemindersPanel";
+import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import { NAV_ITEMS } from "./navigation";
 import "./Header.css";
 
 interface HeaderProps {
   onMobileMenuToggle?: () => void;
+  mobileMenuOpen?: boolean;
 }
 
-export function Header({ onMobileMenuToggle }: HeaderProps = {}) {
+export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderProps = {}) {
   const { username } = useAuth();
   const location = useLocation();
 
@@ -46,9 +47,10 @@ export function Header({ onMobileMenuToggle }: HeaderProps = {}) {
               type="button"
               className="app-header__mobile-menu-btn"
               onClick={onMobileMenuToggle}
-              aria-label="Abrir menú"
+              aria-expanded={mobileMenuOpen}
+              aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             >
-              <Menu size={24} aria-hidden="true" />
+              <MorphMenuIcon isOpen={mobileMenuOpen} size={24} />
             </button>
           )}
 
@@ -57,15 +59,8 @@ export function Header({ onMobileMenuToggle }: HeaderProps = {}) {
 
         <div style={{ flex: 1 }} />
 
-        {/* Sidebar footer (brand) moved to header area as requested */}
         <div className="app-header__actions">
-          <NavLink
-            to="/"
-            className="app-header__brand-link"
-            aria-label="Ir al inicio"
-          >
-            <BrandLogo showText={false} />
-          </NavLink>
+          <RemindersPanel />
         </div>
       </div>
     </header>

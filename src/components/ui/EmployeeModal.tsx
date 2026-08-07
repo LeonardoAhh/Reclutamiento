@@ -108,6 +108,14 @@ export function EmployeeModal({
     tipo_baja: "Renuncia Voluntaria",
     motivo_baja: "",
   });
+  const emptyTouchedAdd = {
+    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false
+  };
+  const emptyTouchedDelete = {
+    fecha_baja: false, tipo_baja: false, motivo_baja: false
+  };
+  const [touchedAdd, setTouchedAdd] = useState(emptyTouchedAdd);
+  const [touchedDelete, setTouchedDelete] = useState(emptyTouchedDelete);
   const [selectedVacancyIndex, setSelectedVacancyIndex] = useState(0);
   const isMobile = useIsMobile();
 
@@ -164,6 +172,8 @@ export function EmployeeModal({
     setSubmitting(false);
     setIsSuccess(false);
     setSelectedVacancyIndex(0);
+    setTouchedAdd(emptyTouchedAdd);
+    setTouchedDelete(emptyTouchedDelete);
 
     if (mode === "delete" && employee) {
       setForm({
@@ -220,22 +230,51 @@ export function EmployeeModal({
     if (errorMsg) setErrorMsg(null);
   }, [form, bajaForm]);
 
-  const isAddValid =
-    form.num_empleado.trim().length > 0 &&
-    form.nombre.trim().length > 0 &&
-    form.area.length > 0 &&
-    form.seccion.length > 0 &&
-    form.puesto.length > 0;
+  const isValidNameStr = (str: string) => str === '' || /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(str);
 
-  const isDeleteValid =
-    bajaForm.fecha_baja !== "" &&
-    bajaForm.tipo_baja !== "" &&
-    bajaForm.motivo_baja.trim() !== "";
+  const errorsAdd = {
+    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : null,
+    nombre: !form.nombre.trim() ? 'Obligatorio.' : form.nombre.trim().length < 2 ? 'Mín. 2 letras.' : !isValidNameStr(form.nombre) ? 'Solo letras.' : null,
+    area: !form.area ? 'Obligatorio.' : null,
+    seccion: !form.seccion ? 'Obligatorio.' : null,
+    puesto: !form.puesto ? 'Obligatorio.' : null,
+    fecha_ingreso: !form.fecha_ingreso ? 'Obligatorio.' : null,
+    categoria: !form.categoria || form.categoria === 'N/A' ? 'Selecciona categoría.' : null,
+    turno: !form.turno ? 'Selecciona turno.' : null,
+    reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
+  };
+
+  const errorsDelete = {
+    fecha_baja: !bajaForm.fecha_baja ? 'Obligatorio.' : null,
+    tipo_baja: !bajaForm.tipo_baja ? 'Obligatorio.' : null,
+    motivo_baja: !bajaForm.motivo_baja.trim() ? 'Obligatorio.' : null,
+  };
+
+  const isAddValid = !Object.values(errorsAdd).some(Boolean);
+  const isDeleteValid = !Object.values(errorsDelete).some(Boolean);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
     setErrorMsg(null);
+
+    if (mode === "add" && !isAddValid) {
+      setTouchedAdd(Object.keys(emptyTouchedAdd).reduce((acc, k) => ({ ...acc, [k]: true }), {} as typeof touchedAdd));
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('.input-error');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return;
+    }
+    
+    if (mode === "delete" && !isDeleteValid) {
+      setTouchedDelete(Object.keys(emptyTouchedDelete).reduce((acc, k) => ({ ...acc, [k]: true }), {} as typeof touchedDelete));
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('.input-error');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -282,33 +321,41 @@ export function EmployeeModal({
   const fieldsIdentidad = (
     <>
       <div className="form-group">
-        <label htmlFor="emp-num">Número de Empleado</label>
+        <label htmlFor="emp-num">Número de Empleado <span className="text-error">*</span></label>
         <input
           id="emp-num"
           type="text"
           inputMode="numeric"
-          required
           value={form.num_empleado}
-          onChange={(e) =>
-            setForm({ ...form, num_empleado: e.target.value.trim() })
-          }
+          onChange={(e) => {
+            setForm({ ...form, num_empleado: e.target.value.trim() });
+            if (!touchedAdd.num_empleado) setTouchedAdd(t => ({ ...t, num_empleado: true }));
+          }}
           placeholder="Ej. 1234"
           autoComplete="off"
+          className={touchedAdd.num_empleado && errorsAdd.num_empleado ? 'input-error' : ''}
         />
+        {touchedAdd.num_empleado && errorsAdd.num_empleado && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.num_empleado}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor="emp-name">Nombre Completo</label>
+        <label htmlFor="emp-name">Nombre Completo <span className="text-error">*</span></label>
         <input
           id="emp-name"
           type="text"
-          required
           value={form.nombre}
-          onChange={(e) =>
-            setForm({ ...form, nombre: e.target.value.toUpperCase() })
-          }
+          onChange={(e) => {
+            setForm({ ...form, nombre: e.target.value.toUpperCase() });
+            if (!touchedAdd.nombre) setTouchedAdd(t => ({ ...t, nombre: true }));
+          }}
+          onBlur={() => {
+            setForm(prev => ({ ...prev, nombre: prev.nombre.trim().replace(/\s+/g, ' ') }));
+            if (!touchedAdd.nombre) setTouchedAdd(t => ({ ...t, nombre: true }));
+          }}
           placeholder="APELLIDOS NOMBRE"
           autoComplete="off"
+          className={touchedAdd.nombre && errorsAdd.nombre ? 'input-error' : ''}
         />
+        {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.nombre}</span>}
       </div>
     </>
   );
@@ -336,46 +383,59 @@ export function EmployeeModal({
     vacancyOptions.length > 0 && mode === "add" ? null : (
       <>
         <div className="form-group">
-          <label htmlFor="emp-area">Área</label>
+          <label htmlFor="emp-area">Área <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-area"
             value={form.area}
-            onChange={(val) =>
-              setForm({ ...form, area: val, seccion: "", puesto: "" })
-            }
+            onChange={(val) => {
+              setForm({ ...form, area: val, seccion: "", puesto: "" });
+              setTouchedAdd(t => ({ ...t, area: true, seccion: false, puesto: false }));
+            }}
             options={areas.map((a) => ({ value: a, label: a }))}
             placeholder="Seleccione área…"
           />
+          {touchedAdd.area && errorsAdd.area && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.area}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="emp-seccion">Sección</label>
+          <label htmlFor="emp-seccion">Sección <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-seccion"
             value={form.seccion}
-            onChange={(val) => setForm({ ...form, seccion: val, puesto: "" })}
+            onChange={(val) => {
+              setForm({ ...form, seccion: val, puesto: "" });
+              setTouchedAdd(t => ({ ...t, seccion: true, puesto: false }));
+            }}
             options={sectionsForArea.map((s) => ({ value: s, label: s }))}
             placeholder="Seleccione sección…"
             disabled={!form.area}
           />
+          {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.seccion}</span>}
         </div>
         <div className="form-group--span-2 form-grid form-grid--3-cols">
           <div className="form-group">
-            <label htmlFor="emp-puesto">Puesto</label>
+            <label htmlFor="emp-puesto">Puesto <span className="text-error">*</span></label>
             <CustomSelect
               id="emp-puesto"
               value={form.puesto}
-              onChange={(val) => setForm({ ...form, puesto: val })}
+              onChange={(val) => {
+                setForm({ ...form, puesto: val });
+                setTouchedAdd(t => ({ ...t, puesto: true }));
+              }}
               options={puestosForSection.map((p) => ({ value: p, label: p }))}
               placeholder="Seleccione puesto…"
               disabled={!form.seccion}
             />
+            {touchedAdd.puesto && errorsAdd.puesto && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.puesto}</span>}
           </div>
           <div className="form-group">
-            <label htmlFor="emp-turno">Turno</label>
+            <label htmlFor="emp-turno">Turno <span className="text-error">*</span></label>
             <CustomSelect
               id="emp-turno"
               value={form.turno}
-              onChange={(val) => setForm({ ...form, turno: val })}
+              onChange={(val) => {
+                setForm({ ...form, turno: val });
+                setTouchedAdd(t => ({ ...t, turno: true }));
+              }}
               options={[
                 { value: "1", label: "1" },
                 { value: "2", label: "2" },
@@ -384,20 +444,25 @@ export function EmployeeModal({
                 { value: "Mixto", label: "Mixto" },
               ]}
               placeholder="Turno..."
+              aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
             />
+            {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.turno}</span>}
           </div>
           {starliteField}
         </div>
         <div className="form-group">
-          <label htmlFor="emp-fecha">Fecha de Ingreso</label>
+          <label htmlFor="emp-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
           <input
             id="emp-fecha"
             type="date"
             value={form.fecha_ingreso}
-            onChange={(e) =>
-              setForm({ ...form, fecha_ingreso: e.target.value })
-            }
+            onChange={(e) => {
+              setForm({ ...form, fecha_ingreso: e.target.value });
+              if (!touchedAdd.fecha_ingreso) setTouchedAdd(t => ({ ...t, fecha_ingreso: true }));
+            }}
+            className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
           />
+          {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.fecha_ingreso}</span>}
         </div>
       </>
     );
@@ -406,7 +471,7 @@ export function EmployeeModal({
 
   const fieldsVacancySelector = showVacancySelector ? (
     <div className="form-group form-group--span-2">
-      <label htmlFor="emp-vacancy">Vacante Disponible</label>
+      <label htmlFor="emp-vacancy">Vacante Disponible <span className="text-error">*</span></label>
       <CustomSelect
         id="emp-vacancy"
         value={selectedVacancyIndex.toString()}
@@ -420,6 +485,7 @@ export function EmployeeModal({
             seccion: vacancy.seccion,
             puesto: vacancy.puesto,
           });
+          setTouchedAdd(t => ({ ...t, area: true, seccion: true, puesto: true }));
         }}
         options={vacancyOptions.map((v, i) => ({
           value: i.toString(),
@@ -436,21 +502,29 @@ export function EmployeeModal({
     <>
       <div className="form-group--span-2 form-grid form-grid--3-cols">
         <div className="form-group">
-          <label htmlFor="emp-vac-categoria">Categoría</label>
+          <label htmlFor="emp-vac-categoria">Categoría <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-vac-categoria"
             value={form.categoria}
-            onChange={(val) => setForm({ ...form, categoria: val })}
+            onChange={(val) => {
+              setForm({ ...form, categoria: val });
+              setTouchedAdd(t => ({ ...t, categoria: true }));
+            }}
             options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
             placeholder="Categoría..."
+            aria-invalid={touchedAdd.categoria && !!errorsAdd.categoria}
           />
+          {touchedAdd.categoria && errorsAdd.categoria && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.categoria}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="emp-vac-turno">Turno</label>
+          <label htmlFor="emp-vac-turno">Turno <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-vac-turno"
             value={form.turno}
-            onChange={(val) => setForm({ ...form, turno: val })}
+            onChange={(val) => {
+              setForm({ ...form, turno: val });
+              setTouchedAdd(t => ({ ...t, turno: true }));
+            }}
             options={[
               { value: "1", label: "1" },
               { value: "2", label: "2" },
@@ -459,18 +533,25 @@ export function EmployeeModal({
               { value: "Mixto", label: "Mixto" },
             ]}
             placeholder="Turno..."
+            aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
           />
+          {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.turno}</span>}
         </div>
         {starliteField}
       </div>
       <div className="form-group">
-        <label htmlFor="emp-vac-fecha">Fecha de Ingreso</label>
+        <label htmlFor="emp-vac-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
         <input
           id="emp-vac-fecha"
           type="date"
           value={form.fecha_ingreso}
-          onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+          onChange={(e) => {
+            setForm({ ...form, fecha_ingreso: e.target.value });
+            if (!touchedAdd.fecha_ingreso) setTouchedAdd(t => ({ ...t, fecha_ingreso: true }));
+          }}
+          className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
         />
+        {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.fecha_ingreso}</span>}
       </div>
     </>
   ) : null;
@@ -480,17 +561,22 @@ export function EmployeeModal({
   const fieldsExtra = (
     <>
       <div className="form-group">
-        <label htmlFor="emp-reclutador">Reclutador</label>
+        <label htmlFor="emp-reclutador">Reclutador <span className="text-error">*</span></label>
         <CustomSelect
           id="emp-reclutador"
           value={form.reclutador}
-          onChange={(val) => setForm({ ...form, reclutador: val })}
+          onChange={(val) => {
+            setForm({ ...form, reclutador: val });
+            setTouchedAdd(t => ({ ...t, reclutador: true }));
+          }}
           placeholder="Sin asignar"
           options={RECLUTADORES_ACTIVOS.map((r) => ({
             value: r.toUpperCase(),
             label: RECLUTADORES_INFO[r].nombre_completo,
           }))}
+          aria-invalid={touchedAdd.reclutador && !!errorsAdd.reclutador}
         />
+        {touchedAdd.reclutador && errorsAdd.reclutador && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.reclutador}</span>}
       </div>
     </>
   );
@@ -519,22 +605,28 @@ export function EmployeeModal({
 
       <div className="form-grid employee-modal__baja-grid">
         <div className="form-group">
-          <label htmlFor="baja-fecha">Fecha de Baja</label>
+          <label htmlFor="baja-fecha">Fecha de Baja <span className="text-error">*</span></label>
           <input
             id="baja-fecha"
             type="date"
             value={bajaForm.fecha_baja}
-            onChange={(e) =>
-              setBajaForm({ ...bajaForm, fecha_baja: e.target.value })
-            }
+            onChange={(e) => {
+              setBajaForm({ ...bajaForm, fecha_baja: e.target.value });
+              if (!touchedDelete.fecha_baja) setTouchedDelete(t => ({ ...t, fecha_baja: true }));
+            }}
+            className={touchedDelete.fecha_baja && errorsDelete.fecha_baja ? 'input-error' : ''}
           />
+          {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.fecha_baja}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="baja-tipo">Tipo de Baja</label>
+          <label htmlFor="baja-tipo">Tipo de Baja <span className="text-error">*</span></label>
           <CustomSelect
             id="baja-tipo"
             value={bajaForm.tipo_baja}
-            onChange={(val) => setBajaForm({ ...bajaForm, tipo_baja: val })}
+            onChange={(val) => {
+              setBajaForm({ ...bajaForm, tipo_baja: val });
+              setTouchedDelete(t => ({ ...t, tipo_baja: true }));
+            }}
             options={[
               { value: "Renuncia", label: "Renuncia" },
               { value: "Ausentismo", label: "Ausentismo" },
@@ -546,20 +638,23 @@ export function EmployeeModal({
               { value: "Solo Inducción", label: "Solo Inducción" },
             ]}
           />
+          {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.tipo_baja}</span>}
         </div>
         <div className="form-group form-group--span-2">
-          <label htmlFor="baja-motivo">Descripción</label>
+          <label htmlFor="baja-motivo">Descripción <span className="text-error">*</span></label>
           <input
             id="baja-motivo"
             type="text"
-            required
             placeholder="Especifica el motivo..."
             value={bajaForm.motivo_baja}
-            onChange={(e) =>
-              setBajaForm({ ...bajaForm, motivo_baja: e.target.value })
-            }
+            onChange={(e) => {
+              setBajaForm({ ...bajaForm, motivo_baja: e.target.value });
+              if (!touchedDelete.motivo_baja) setTouchedDelete(t => ({ ...t, motivo_baja: true }));
+            }}
             autoComplete="off"
+            className={touchedDelete.motivo_baja && errorsDelete.motivo_baja ? 'input-error' : ''}
           />
+          {touchedDelete.motivo_baja && errorsDelete.motivo_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.motivo_baja}</span>}
         </div>
       </div>
     </div>
@@ -608,7 +703,6 @@ export function EmployeeModal({
                 successText="¡Guardado!"
                 idleIcon={SaveIconData}
                 className="btn-primary"
-                disabled={!isAddValid}
               />
             </span>
           </Tooltip>
@@ -623,7 +717,6 @@ export function EmployeeModal({
             successText="¡Guardado!"
             idleIcon={SaveIconData}
             className="btn-primary"
-            disabled={!isAddValid}
           />
         )
       ) : (
@@ -637,7 +730,6 @@ export function EmployeeModal({
           successText="¡Baja registrada!"
           idleIcon={Trash2IconData}
           className="btn-danger"
-          disabled={!isDeleteValid}
         />
       )}
     </>

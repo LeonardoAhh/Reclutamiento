@@ -8,12 +8,12 @@ interface SplashTypewriterProps {
 
 export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
   const shouldReduceMotion = useReducedMotion();
-  const entrance = shouldReduceMotion ? false : { opacity: 0, y: 10 };
+  const entrance = shouldReduceMotion ? false : { opacity: 0, scale: 0.95 };
   const exit = shouldReduceMotion ? undefined : { opacity: 0 };
 
   useEffect(() => {
-    // Mantener en pantalla unos 2.2 segundos para que sea legible y luego desaparecer
-    const timer = setTimeout(onDone, 2200);
+    // Reducido a 1.5s para no ser pesado y rápido
+    const timer = setTimeout(onDone, 1500);
     return () => clearTimeout(timer);
   }, [onDone]);
 
@@ -25,16 +25,18 @@ export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
       aria-live="polite"
       initial={{ opacity: 1 }}
       exit={exit}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: 'easeOut' }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: 'easeOut' }}
     >
-      <motion.h1
-        className="splash-typewriter__text"
+      <motion.div
+        className="splash-typewriter__content"
         initial={entrance}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: shouldReduceMotion ? 0 : 1, ease: 'easeOut' }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: 'easeOut' }}
       >
-        RECLUTAMIENTO QUERÉTARO
-      </motion.h1>
+        <h1 className="splash-typewriter__text">
+          RECLUTAMIENTO QUERÉTARO
+        </h1>
+      </motion.div>
     </motion.div>
   );
 }
