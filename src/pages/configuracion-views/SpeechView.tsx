@@ -586,7 +586,6 @@ export function SpeechView() {
 
   return (
     <section className="speech-view config-page" aria-labelledby="speech-title">
-
       {/* ── Banner de modo semilla ─────────────────────────────────────────── */}
       {isSeedMode && (
         <div className="speech-seed-banner" role="status">
@@ -617,11 +616,11 @@ export function SpeechView() {
             {getCategoryIcon(cat)} {SPEECH_CATEGORY_LABEL[cat]}
           </button>
         ))}
-        
+
         <button
           type="button"
           className="btn-primary"
-          style={{ marginLeft: 'auto' }}
+          style={{ marginLeft: "auto" }}
           onClick={() => {
             setFormData({ ...EMPTY_FORM });
             setEditingId(null);
@@ -660,7 +659,7 @@ export function SpeechView() {
               </header>
 
               <ul
-                className={`speech-template-list ${cat === 'flyers' ? 'speech-template-list--flyers' : ''}`}
+                className={`speech-template-list ${cat === "flyers" ? "speech-template-list--flyers" : ""}`}
                 aria-label={`Plantillas de ${SPEECH_CATEGORY_LABEL[cat]}`}
               >
                 {list.map((template) => (
@@ -797,7 +796,7 @@ export function SpeechView() {
                                       }
                                     }}
                                     title="Copiar imagen al portapapeles"
-                                    aria-label="Copiar imagen"
+                                    aria-label="Copiar"
                                   >
                                     <CopyIcon size={18} />
                                   </button>

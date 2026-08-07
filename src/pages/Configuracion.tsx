@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   BarChart2,
+  Bell,
   Bus,
   CheckCircle2,
   ChevronLeft,
@@ -27,6 +28,7 @@ import { ToulouseView } from "./configuracion-views/ToulouseView";
 import { RegistroNoCitadosView } from "./configuracion-views/RegistroNoCitadosView";
 import { SistemaView } from "./configuracion-views/SistemaView";
 import { SpeechView } from "./configuracion-views/SpeechView";
+import { RecordatoriosView } from "./configuracion-views/RecordatoriosView";
 import "./Configuracion.css";
 
 type FeatureId =
@@ -38,7 +40,8 @@ type FeatureId =
   | "toulouse"
   | "nocitados"
   | "sistema"
-  | "speech";
+  | "speech"
+  | "recordatorios";
 
 interface FeatureItem {
   id: FeatureId;
@@ -53,6 +56,7 @@ export const FEATURES: FeatureItem[] = [
   { id: "tabulador", label: "Tabulador", icon: Wallet },
   { id: "nocitados", label: "No Citados", icon: UserX },
   { id: "speech", label: "Speech WA", icon: MessageSquare },
+  { id: "recordatorios", label: "Recordatorios", icon: Bell },
   { id: "sistema", label: "Sistema", icon: Settings },
 ];
 
@@ -65,6 +69,7 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   toulouse: <ToulouseView />,
   nocitados: <RegistroNoCitadosView />,
   speech: <SpeechView />,
+  recordatorios: <RecordatoriosView />,
   sistema: <SistemaView />,
 };
 
