@@ -10,7 +10,7 @@ import { EASE_OUT } from '@/lib/motion';
 import type { Candidate } from '@/lib/types';
 import './RemindersPanel.css';
 
-function formatReminderDate(fecha: string) {
+function formatReminderDate(fecha: string | null | undefined) {
   if (!fecha) return '';
   const today = localTodayIso();
   const yesterday = addDaysToIso(today, -1);
