@@ -108,8 +108,6 @@
   gap: var(--spacing-md);
 }
 
-
-
 /* ── Sidebar Header ── */
 .pipeline__sidebar-header {
   display: flex;
@@ -248,10 +246,15 @@
   flex-shrink: 0;
 }
 
-.pipeline__kpi-row__dot--pauta { background: var(--color-warning); }
-.pipeline__kpi-row__dot--alexandra { background: var(--color-accent-teal); }
-.pipeline__kpi-row__dot--daniela { background: var(--color-primary); }
-
+.pipeline__kpi-row__dot--pauta {
+  background: var(--color-warning);
+}
+.pipeline__kpi-row__dot--alexandra {
+  background: var(--color-accent-teal);
+}
+.pipeline__kpi-row__dot--daniela {
+  background: var(--color-primary);
+}
 
 .pipeline__kpi-row__name {
   font-size: var(--type-body-sm-size);
@@ -754,7 +757,6 @@
   font-size: var(--type-body-sm-size);
 }
 
-
 .pipeline__config-btn {
   display: inline-flex;
   align-items: center;
@@ -1137,7 +1139,6 @@
   width: 100%;
 }
 
-
 .pipeline__cell-cv,
 .pipeline__cell-actions {
   text-align: right;
@@ -1314,7 +1315,11 @@
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
   cursor: pointer;
 }
 
@@ -1426,7 +1431,8 @@
 .pipeline__status-dot[data-status="contratado"] {
   background: var(--color-success);
   /* Halo sutil para destacar el "ganador" del proceso. */
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 22%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-success) 22%, transparent);
 }
 .pipeline__status-dot[data-status="rechazado"] {
   background: var(--color-error);
@@ -1514,7 +1520,8 @@
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
   text-decoration: none;
-  border: 1px solid color-mix(in srgb, var(--color-brand-whatsapp) 30%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-brand-whatsapp) 30%, transparent);
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
@@ -1522,7 +1529,11 @@
 .pipeline__whatsapp-link:hover {
   background: color-mix(in srgb, var(--color-brand-whatsapp) 20%, transparent);
   color: color-mix(in srgb, var(--color-brand-whatsapp) 80%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-brand-whatsapp) 50%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--color-brand-whatsapp) 50%,
+    transparent
+  );
   transform: translateY(-1px);
 }
 
@@ -1584,8 +1595,12 @@
 
 /* Hover/focus → revela chevron e indica que es editable */
 .pipeline__cell-status .custom-select-trigger:hover .candidate-status-badge,
-.pipeline__cell-status .custom-select-trigger:focus-visible .candidate-status-badge,
-.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .candidate-status-badge {
+.pipeline__cell-status
+  .custom-select-trigger:focus-visible
+  .candidate-status-badge,
+.pipeline__cell-status
+  .custom-select-trigger[aria-expanded="true"]
+  .candidate-status-badge {
   border-color: color-mix(in srgb, currentColor 24%, transparent);
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -1594,16 +1609,24 @@
 
 .pipeline__cell-status .custom-select-trigger .candidate-status-caret {
   opacity: 0;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .pipeline__cell-status .custom-select-trigger:hover .candidate-status-caret,
-.pipeline__cell-status .custom-select-trigger:focus-visible .candidate-status-caret,
-.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .candidate-status-caret {
+.pipeline__cell-status
+  .custom-select-trigger:focus-visible
+  .candidate-status-caret,
+.pipeline__cell-status
+  .custom-select-trigger[aria-expanded="true"]
+  .candidate-status-caret {
   opacity: 0.7;
 }
 
-.pipeline__cell-status .custom-select-trigger[aria-expanded="true"] .candidate-status-caret {
+.pipeline__cell-status
+  .custom-select-trigger[aria-expanded="true"]
+  .candidate-status-caret {
   transform: rotate(180deg);
 }
 
@@ -1643,8 +1666,6 @@
   white-space: nowrap;
 }
 
-
-
 @media (max-width: 480px) {
   .pipeline__icon-btn {
     width: 36px;
@@ -1670,7 +1691,7 @@
   padding: var(--spacing-lg);
   max-height: 70vh;
   overflow-y: auto;
-  overflow-x: auto;   /* ← permite scroll horizontal si algo se desborda */
+  overflow-x: auto; /* ← permite scroll horizontal si algo se desborda */
 }
 
 /* ── Grid Global: 3 columnas en desktop, 2 en tablet, 1 en mobile ── */
@@ -2097,7 +2118,10 @@
 @media (min-width: 1025px) {
   .pipeline__card-list-header {
     display: grid;
-    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
+    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(
+        100px,
+        1fr
+      ) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
     align-items: center;
     gap: var(--spacing-md);
     padding: 0 var(--spacing-md);
@@ -2113,14 +2137,17 @@
 
   .pipeline__ccard {
     display: grid;
-    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
+    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(
+        100px,
+        1fr
+      ) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
     cursor: default;
     text-align: left;
   }
-  
+
   .pipeline__ccard:active {
     transform: none;
   }
@@ -2139,7 +2166,7 @@
     display: flex;
     justify-content: flex-start;
   }
-  
+
   .pipeline__cell-actions {
     display: flex;
     justify-content: center;
@@ -2160,7 +2187,8 @@
 .quick-profile-card {
   background-color: var(--color-surface-dark-elevated);
   color: var(--color-on-dark);
-  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm)
+    var(--spacing-lg);
   border-radius: var(--rounded-full);
   display: flex;
   align-items: center;
@@ -2246,7 +2274,6 @@
     display: none !important;
   }
 }
-
 
 /* ========================================
    CANDIDATO · DETALLE MÓVIL — refinamientos
