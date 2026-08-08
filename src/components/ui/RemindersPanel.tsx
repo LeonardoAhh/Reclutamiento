@@ -97,7 +97,7 @@ export function RemindersPanel() {
                   {reminders.length === 0 ? (
                     <div className="reminders-empty" role="status">
                       <CheckCircle2 size={32} />
-                      <p>Al día. No hay recordatorios pendientes.</p>
+                      <p>Sin pendientes</p>
                     </div>
                   ) : (
                     <div className="reminders-list">
