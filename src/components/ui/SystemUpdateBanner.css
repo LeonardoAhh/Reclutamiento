@@ -228,7 +228,13 @@
   color: var(--color-muted);
   line-height: 1.5;
   margin: 0;
-  white-space: nowrap;
+  text-wrap: balance;
+}
+
+@media (min-width: 768px) {
+  .system-update-success-curtain__hint {
+    white-space: nowrap;
+  }
 }
 
 .system-update-success-curtain__kbd {

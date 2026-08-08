@@ -1,33 +1,16 @@
-import { useState, type FormEvent, useId, useEffect } from 'react';
-import { AlertCircle, ChevronRight } from 'lucide-react';
+import { useState, useRef, type FormEvent, useId, useEffect } from 'react';
 import { ArrowRight as ArrowRightIconData, Eye, EyeOff } from 'lucide';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useAuth } from '@/hooks/useAuth';
-import { sileo } from '@/lib/notify';
-import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
+import { useSystemVersion } from '@/hooks/useSystemVersion';
+import { MotionConfig, motion } from 'framer-motion';
 import './Login.css';
-
-// Framer Motion Variants
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-};
 
 export function Login() {
   const { signIn } = useAuth();
+  const { version } = useSystemVersion();
 
   const [username, setUsername]       = useState('');
   const [password, setPassword]       = useState('');
@@ -36,20 +19,27 @@ export function Login() {
   const [submitting, setSubmitting]   = useState(false);
   const [isSuccess, setIsSuccess]     = useState(false);
   const [error, setError]             = useState<string | null>(null);
+  const [capsLock, setCapsLock]       = useState(false);
 
-  const [showForm, setShowForm]       = useState(false);
+  const emailRef    = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const usernameId = useId();
   const passwordId = useId();
   const rememberId = useId();
   const errorId    = useId();
+  const capsId     = useId();
 
-  // Cargar email recordado (si existe)
+  // Cargar email recordado (si existe) + auto-focus inteligente
   useEffect(() => {
     const saved = localStorage.getItem('reclutamiento_saved_email');
     if (saved) {
       setUsername(saved);
       setRememberMe(true);
+      // Si ya tiene email guardado, focus directo a contraseña
+      requestAnimationFrame(() => passwordRef.current?.focus());
+    } else {
+      requestAnimationFrame(() => emailRef.current?.focus());
     }
   }, []);
 
@@ -65,6 +55,11 @@ export function Login() {
   useEffect(() => {
     if (error) setError(null);
   }, [username, password]);
+
+  // Detectar Caps Lock en el campo de contraseña
+  const handlePasswordKeyEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setCapsLock(e.getModifierState('CapsLock'));
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,171 +97,136 @@ export function Login() {
   return (
     <MotionConfig reducedMotion="user">
       <main className="login" aria-label="Inicio de sesión">
+        <motion.div
+          className="login__content"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <div className="login__card">
+            {/* ── Title ── */}
+            <h1 className="login__title">Reclutamiento Planta Qro</h1>
 
-      <motion.section 
-        className="login__brand-panel" 
-        aria-hidden="true"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="login__brand-content">
-          <div className="login__brand-mark">
-            <div className="login__brand-circle" />
-          </div>
-          <div className="login__brand-heading">
-            <h2 className="login__brand-title">
-              VIÑOPLASTIC<br />PLANTA QUERÉTARO
-            </h2>
-            <p className="login__brand-eyebrow">Reclutamiento</p>
-          </div>
-        </div>
-      </motion.section>
+            {/* ── Form ── */}
+            <form
+              className="login__form"
+              onSubmit={handleSubmit}
+              noValidate
+              aria-label="Formulario de inicio de sesión"
+            >
+            {/* Campo: correo */}
+            <div className="login__field">
+              <label htmlFor={usernameId} className="login__field-label">
+                Correo electrónico
+              </label>
+              <input
+                ref={emailRef}
+                id={usernameId}
+                data-testid="login-email-input"
+                className="login__input"
+                type="email"
+                autoComplete="username"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="usuario@empresa.com"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={submitting || isSuccess}
+                required
+                aria-required="true"
+                aria-describedby={error ? errorId : undefined}
+                aria-invalid={error ? 'true' : undefined}
+              />
+            </div>
 
-      <section className="login__action-panel">
-        <div className="login__action-content">
-          <header className="login__header">
-            <h1 id="login-heading" className="login__title">
-              ¡Bienvenido de vuelta!
-            </h1>
-          </header>
-
-          <AnimatePresence mode="wait">
-            {!showForm ? (
-              <motion.div
-                key="welcome-actions"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="login__actions-initial"
-              >
-                <div className="login__divider">
-                  <span>CONTINUAR CON CORREO</span>
-                </div>
-                
-                <button 
-                  className="login__btn-reveal"
-                  onClick={() => setShowForm(true)}
+            {/* Campo: contraseña */}
+            <div className="login__field">
+              <label htmlFor={passwordId} className="login__field-label">
+                Contraseña
+              </label>
+              <div className="login__input-wrap">
+                <input
+                  ref={passwordRef}
+                  id={passwordId}
+                  data-testid="login-password-input"
+                  className="login__input login__input--padded-r"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyUp={handlePasswordKeyEvent}
+                  onKeyDown={handlePasswordKeyEvent}
+                  disabled={submitting || isSuccess}
+                  required
+                  aria-required="true"
+                  aria-describedby={
+                    [error ? errorId : null, capsLock ? capsId : null]
+                      .filter(Boolean)
+                      .join(' ') || undefined
+                  }
+                  aria-invalid={error ? 'true' : undefined}
+                />
+                <button
+                  type="button"
+                  data-testid="login-toggle-password-button"
+                  className="login__visibility"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-pressed={showPassword}
+                  disabled={submitting || isSuccess}
                 >
-                  Ingresar con correo <ChevronRight size={18} />
+                  <MorphingIcon
+                    icon={showPassword ? EyeOff : Eye}
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
                 </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="login-form"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <motion.form
-                  className="login__form"
-                  onSubmit={handleSubmit}
-                  noValidate
-                  aria-label="Formulario de inicio de sesión"
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="show"
-                >
-                  {/* Campo: correo */}
-                  <motion.div className="login__field" variants={staggerItem}>
-                    <label htmlFor={usernameId} className="login__field-label">
-                      Correo electrónico
-                    </label>
-                    <input
-                      id={usernameId}
-                      data-testid="login-email-input"
-                      className="login__input"
-                      type="email"
-                      autoComplete="username"
-                      autoCapitalize="off"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      placeholder="usuario@empresa.com"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      disabled={submitting || isSuccess}
-                      required
-                      aria-required="true"
-                      aria-describedby={error ? errorId : undefined}
-                      aria-invalid={error ? 'true' : undefined}
-                    />
-                  </motion.div>
+              </div>
+              {capsLock && (
+                <p id={capsId} className="login__caps-warning" role="alert">
+                  Bloq Mayús activado
+                </p>
+              )}
+            </div>
 
-                  {/* Campo: contraseña */}
-                  <motion.div className="login__field" variants={staggerItem}>
-                    <label htmlFor={passwordId} className="login__field-label">
-                      Contraseña
-                    </label>
-                    <div className="login__input-wrap">
-                      <input
-                        id={passwordId}
-                        data-testid="login-password-input"
-                        className="login__input login__input--padded-r"
-                        type={showPassword ? 'text' : 'password'}
-                        autoComplete="current-password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        disabled={submitting || isSuccess}
-                        required
-                        aria-required="true"
-                        aria-describedby={error ? errorId : undefined}
-                        aria-invalid={error ? 'true' : undefined}
-                      />
-                      <button
-                        type="button"
-                        data-testid="login-toggle-password-button"
-                        className="login__visibility"
-                        onClick={() => setShowPassword((s) => !s)}
-                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        aria-pressed={showPassword}
-                        disabled={submitting || isSuccess}
-                      >
-                        <MorphingIcon
-                          icon={showPassword ? EyeOff : Eye}
-                          size={16}
-                          aria-hidden="true"
-                        />
-                      </button>
-                    </div>
-                  </motion.div>
+            {/* Acciones: Recuérdame + Botón */}
+            <div className="login__actions-row">
+              <label htmlFor={rememberId} className="login__checkbox-label">
+                <Checkbox
+                  id={rememberId}
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  disabled={submitting || isSuccess}
+                />
+                <span className="login__checkbox-text">Recuérdame</span>
+              </label>
 
-                  {/* Error inline animado eliminado, ahora se maneja en el botón */}
+              <AnimatedSubmitButton
+                isSubmitting={submitting}
+                isSuccess={isSuccess}
+                isError={!!error}
+                errorText={error || undefined}
+                idleText="Ingresar"
+                loadingText="Verificando..."
+                successText="¡Bienvenido!"
+                idleIcon={ArrowRightIconData}
+                className="login__submit"
+                data-testid="login-submit-button"
+              />
+            </div>
+            </form>
+          </div>
+        </motion.div>
 
-                  {/* Acciones Finales: Recuérdame + Botón */}
-                  <motion.div className="login__actions-row" variants={staggerItem}>
-                    <label htmlFor={rememberId} className="login__checkbox-label">
-                      <Checkbox
-                        id={rememberId}
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                        disabled={submitting || isSuccess}
-                      />
-                      <span className="login__checkbox-text">Recuérdame</span>
-                    </label>
-
-                    <AnimatedSubmitButton
-                      isSubmitting={submitting}
-                      isSuccess={isSuccess}
-                      isError={!!error}
-                      errorText={error || undefined}
-                      idleText="Ingresar"
-                      loadingText="Verificando..."
-                      successText="¡Bienvenido!"
-                      idleIcon={ArrowRightIconData}
-                      className="login__submit"
-                      data-testid="login-submit-button"
-                    />
-                  </motion.div>
-                </motion.form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
-
+        {/* ── Versión del sistema ── */}
+        {version && (
+          <span className="login__version" aria-label={`Versión ${version}`}>
+            v{version}
+          </span>
+        )}
       </main>
     </MotionConfig>
   );
