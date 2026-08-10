@@ -1,6 +1,6 @@
 {
-  "version": "1.4",
-  "fecha": "2026-08-08",
+  "version": "1.5",
+  "fecha": "2026-08-10",
   "nivel": "success",
   "titulo": "Actualización",
   "mensaje": "Mejoras de rendimiento y rediseño de la interfaz de usuario.",
