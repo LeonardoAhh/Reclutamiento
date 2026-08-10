@@ -223,6 +223,7 @@
   /* ── Transitions ─────────────────────────────────────────────── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+  --transition-progress: 1400ms ease-in-out;
 
   /* ── Container ───────────────────────────────────────────────── */
   --container-max: 1700px;
@@ -234,8 +235,12 @@
   --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;
+  --system-update-content-max: 22rem;
+  --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;
+  --layer-system-update: 1100;
+  --layer-system-update-curtain: 1200;
   --skeleton-title-width: 50%;
   --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));
 

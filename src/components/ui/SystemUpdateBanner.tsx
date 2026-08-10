@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Info as InfoData,
@@ -8,6 +8,7 @@ import {
   Download as DownloadIconData,
   RefreshCw as RefreshCwIconData,
 } from "lucide";
+import { SYSTEM_UPDATE_BANNER_CONFIG } from "@/lib/constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import type { SystemNotiLevel } from "@/hooks/useSystemVersion";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
@@ -43,17 +44,19 @@ export function SystemUpdateBanner() {
   const requiresReload = level === "mantenimiento";
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const reloadTimerRef = useRef<number | null>(null);
 
   const handleReload = () => {
+    if (isUpdating) return;
     setIsUpdating(true);
-    setTimeout(() => {
+    reloadTimerRef.current = window.setTimeout(() => {
       dismiss();
       if (swUpdateFn) {
         swUpdateFn();
       } else {
         window.location.reload();
       }
-    }, 4500); // Aumentado a 2.5s para que sea legible
+    }, SYSTEM_UPDATE_BANNER_CONFIG.reloadDelayMs);
   };
 
   useEffect(() => {
@@ -63,6 +66,14 @@ export function SystemUpdateBanner() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [visible, dismiss]);
+
+  useEffect(() => {
+    return () => {
+      if (reloadTimerRef.current !== null) {
+        window.clearTimeout(reloadTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <AnimatePresence>
@@ -143,32 +154,40 @@ export function SystemUpdateBanner() {
       )}
 
       {isUpdating && (
-        <motion.div
-          key="success-curtain"
-          className="system-update-success-curtain"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+        <div
+          key="update-curtain"
+          className="system-update-curtain"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-busy="true"
+          data-testid="system-update-curtain"
         >
-          <div className="system-update-success-curtain__content">
-            <MorphingIcon
-              icon={CheckCircle2Data}
-              size={56}
-              strokeWidth={2}
-              className="system-update-success-curtain__icon"
-            />
-            <h1 className="system-update-success-curtain__title">
-              ¡Actualización en progreso!
-            </h1>
-            <p className="system-update-success-curtain__hint">
-              Si los datos no se actualizan aplica{" "}
-              <kbd className="system-update-success-curtain__kbd">CTRL</kbd> +{" "}
-              <kbd className="system-update-success-curtain__kbd">SHIFT</kbd> +{" "}
-              <kbd className="system-update-success-curtain__kbd">R</kbd>.
-            </p>
+          <div className="system-update-curtain__content">
+            <span className="system-update-curtain__icon-frame" aria-hidden="true">
+              <MorphingIcon
+                icon={RefreshCwIconData}
+                className="system-update-curtain__icon"
+              />
+            </span>
+            <div className="system-update-curtain__copy">
+              <p className="system-update-curtain__title">
+                {SYSTEM_UPDATE_BANNER_CONFIG.updatingTitle}
+              </p>
+              <p className="system-update-curtain__hint">
+                {SYSTEM_UPDATE_BANNER_CONFIG.updatingHint}
+              </p>
+            </div>
+            <div
+              className="system-update-curtain__progress"
+              role="progressbar"
+              aria-label={SYSTEM_UPDATE_BANNER_CONFIG.updatingTitle}
+              aria-valuetext={SYSTEM_UPDATE_BANNER_CONFIG.updatingHint}
+            >
+              <span className="system-update-curtain__progress-fill" aria-hidden="true" />
+            </div>
           </div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
