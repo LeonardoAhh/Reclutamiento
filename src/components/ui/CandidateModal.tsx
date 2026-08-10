@@ -36,7 +36,7 @@ import {
 const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> =
   RECLUTADORES_ACTIVOS.map((r) => ({
     value: r.toUpperCase(),
-    label: RECLUTADORES_INFO[r].nombre_completo,
+    label: RECLUTADORES_INFO[r].nombre_corto,
   }));
 
 type Mode = 'add' | 'edit' | 'delete';

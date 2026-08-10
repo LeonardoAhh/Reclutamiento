@@ -207,22 +207,25 @@ export type ReclutadorRol = 'reclutadora' | 'coordinador';
  */
 export const RECLUTADORES_INFO: Record<
   ReclutadorNombre,
-  { rol: ReclutadorRol; nombre_completo: string; nombre_pase: string }
+  { rol: ReclutadorRol; nombre_completo: string; nombre_pase: string; nombre_corto: string }
 > = {
   ALEXANDRA: {
     rol: 'reclutadora',
     nombre_completo: 'Nayeli Alexandra Hernández Hernández',
     nombre_pase: 'Lic. Alexandra Hernández',
+    nombre_corto: 'Alexandra',
   },
   DANIELA: {
     rol: 'reclutadora',
     nombre_completo: 'Daniela De Santiago Ramírez',
     nombre_pase: 'Lic. Daniela De Santiago',
+    nombre_corto: 'Daniela',
   },
   LEONARDO: {
     rol: 'coordinador',
     nombre_completo: 'Leonardo Ahmed Hernández Herrera',
     nombre_pase: 'Lic. Leonardo Hernández',
+    nombre_corto: 'Leonardo',
   },
 };
 
