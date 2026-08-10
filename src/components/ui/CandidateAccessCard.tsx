@@ -233,7 +233,8 @@ export function CandidateAccessCard({
           <img src={previewUrl} alt={previewAlt} />
         ) : (
           <div className="candidate-access-card__placeholder" role="status">
-            {isGenerating ? "Generando tarjeta…" : "Vista previa no disponible"}
+            {isGenerating && <div className="candidate-access-card__skeleton" aria-hidden="true" />}
+            <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
           </div>
         )}
       </div>

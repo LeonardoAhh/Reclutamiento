@@ -962,7 +962,58 @@ Si cualquiera de estos puntos falla, el trabajo se considera **NO terminado**.
 
 ---
 
-## 33. Checklist obligatorio de cierre
+## 33. Imports y resolución de módulos
+
+- DEBE verificar que el paquete importado existe en el manifest (`package.json`) y que la ruta de importación es la correcta.
+- PROHIBIDO importar desde el nombre base de un paquete monorepo cuando se requiere el subpaquete específico del framework (ej. `'lucide'` vs `'lucide-react'`).
+- DEBE unificar imports del mismo paquete en una sola declaración; PROHIBIDO dejar imports duplicados del mismo símbolo desde rutas diferentes.
+- PROHIBIDO importar un símbolo que ya fue importado con otro alias o desde otra ruta del mismo paquete.
+- Si una librería ofrece variantes de framework, DEBE usarse la que corresponde al stack del proyecto (React, Vue, Svelte, etc.).
+- Los imports de tipos DEBEN usar `import type` cuando la herramienta de build lo soporte.
+
+---
+
+## 34. Keys y estabilidad en listas React
+
+- Las `key` en listas React DEBEN derivarse de identidad real y estable (ej. `id` persistente, `num_empleado`, UUID).
+- PROHIBIDO usar fechas, timestamps o valores mutables como parte de la `key`.
+- PROHIBIDO usar índices de array como `key` cuando existe identidad real.
+- Una `key` inestable causa remounts innecesarios, pérdida de estado local y regresiones de rendimiento.
+- Si la identidad real no está disponible, DEBE construirse un identificador estable a partir de campos inmutables, nunca de datos que cambien entre renders.
+
+---
+
+## 35. Efectos, derivación de estado y sincronización
+
+- PROHIBIDO usar `useEffect` para sincronizar estado derivado que puede calcularse directamente durante render o mediante `useMemo`.
+- PROHIBIDO usar dependencias de `useEffect` que cambien en cada render si el efecto resetea estado visible o interactivo del usuario (ej. filtros, selecciones, expansión).
+- DEBE preferir cálculo directo o `useMemo` sobre `useEffect` + `setState` para estado derivado.
+- Si un efecto debe reaccionar a entrada continua del usuario (typing, scroll, resize), DEBE aplicarse debounce o throttling cuando sea pertinente.
+- PROHIBIDO dejar efectos que causen loops de render o que reescriban estado que ya fue establecido por el usuario.
+
+---
+
+## 36. Herramientas de formato y calidad automática
+
+- Prettier y ESLint DEBEN estar configurados y ser la fuente de verdad para formato, indentación, comillas y orden de imports.
+- PROHIBIDO corregir indentación, comillas, espaciado u orden de imports manualmente cuando la herramienta puede hacerlo automáticamente.
+- El diff de entrega DEBE excluir cambios de formato puro si no son parte de la solicitud; en su lugar, DEBE ejecutarse el formatter sobre el archivo completo en un paso separado o previo.
+- PROHIBIDO introducir código que falle lint, typecheck o compilación existente.
+- Si una regla de lint o format debe modificarse, requiere autorización explícita y justificación documentada.
+
+---
+
+## 37. Tamaño de archivos y extracción de responsabilidades
+
+- Un componente, hook o vista NO DEBE exceder 300 líneas salvo justificación documentada en el propio archivo.
+- Cuando un archivo excede el límite, DEBE extraerse: helpers, subcomponentes, type guards, lógica de presentación y utilidades puras a archivos cohesivos dentro del mismo dominio.
+- PROHIBIDO acumular funciones puras, type guards o helpers de más de 50 líneas dentro de un componente si se usan en más de un lugar o si su lectura dificulta la navegación.
+- La extracción DEBE mantener el dominio funcional y NO DEBE crear dependencias circulares entre el componente padre y los archivos extraídos.
+- Los subcomponentes extraídos DEBEN mantener su tipado completo y no asumir props del padre mediante `any` o spreads indiscriminados.
+
+---
+
+## 38. Checklist obligatorio de cierre
 
 Antes de responder al usuario, confirmar:
 

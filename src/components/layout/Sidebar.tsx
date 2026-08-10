@@ -99,6 +99,7 @@ export function Sidebar({
       data-collapsed={collapsed && !mobileMenuOpen}
       data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
+      id="app-sidebar"
       data-testid="app-sidebar"
     >
       {/* Top: colapsar */}
@@ -186,6 +187,8 @@ export function Sidebar({
             {menuOpen && (
               <motion.div
                 id="sidebar-user-menu-popover"
+                role="menu"
+                aria-labelledby="sidebar-user-menu-trigger"
                 className="app-header__popover"
                 initial={{
                   opacity: 0,
@@ -219,6 +222,7 @@ export function Sidebar({
                 <div className="app-header__popover-actions">
                   <button
                     type="button"
+                    role="menuitem"
                     className="app-header__popover-item"
                     onClick={() => {
                       setMenuOpen(false);
@@ -242,6 +246,7 @@ export function Sidebar({
 
                   <button
                     type="button"
+                    role="menuitem"
                     className="app-header__popover-item app-header__popover-item--danger"
                     onClick={handleSignOut}
                     disabled={signingOut}

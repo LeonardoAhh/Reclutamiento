@@ -11,17 +11,17 @@ export interface CandidateAccessCardData {
 const CARD_LAYOUT = {
   width: 1080,
   height: 1350,
-  padding: 76,
-  headerHeight: 216,
-  cornerRadius: 28,
-  panelRadius: 20,
-  labelSize: 23,
-  bodySize: 40,
-  candidateSize: 54,
-  titleSize: 56,
-  subtitleSize: 23,
-  hairlineWidth: 2,
-  informationLineHeight: 50,
+  padding: 80,
+  headerHeight: 240,
+  cornerRadius: 48,
+  panelRadius: 32,
+  labelSize: 24,
+  bodySize: 42,
+  candidateSize: 64,
+  titleSize: 64,
+  subtitleSize: 24,
+  hairlineWidth: 3,
+  informationLineHeight: 56,
 } as const;
 
 function readCssToken(name: string): string {
@@ -35,8 +35,10 @@ function setFont(
   weight: number,
   size: number,
   family: string,
+  letterSpacing: string = '0px'
 ): void {
   context.font = `${weight} ${size}px ${family}`;
+  (context as any).letterSpacing = letterSpacing;
 }
 
 function roundedRect(
@@ -146,11 +148,11 @@ function drawInformationBlock(
   const { label, value, y, textColor, mutedColor, fontFamily, maxLines = 2 } = options;
 
   context.fillStyle = mutedColor;
-  setFont(context, 600, labelSize, fontFamily);
+  setFont(context, 600, labelSize, fontFamily, '+0.5px');
   context.fillText(label.toUpperCase(), padding, y);
 
   context.fillStyle = textColor;
-  setFont(context, 600, bodySize, fontFamily);
+  setFont(context, 600, bodySize, fontFamily, '-0.5px');
   drawWrappedText(
     context,
     value,
@@ -171,13 +173,13 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('No fue posible generar la imagen del pase.');
 
-  const primary = readCssToken('--color-document-primary');
-  const surface = readCssToken('--color-document-paper');
-  const surfaceSoft = readCssToken('--color-document-soft');
-  const ink = readCssToken('--color-document-ink');
-  const muted = readCssToken('--color-document-muted');
-  const onPrimary = readCssToken('--color-document-on-primary');
-  const hairline = readCssToken('--color-document-hairline');
+  const primary = readCssToken('--color-primary');
+  const surface = readCssToken('--color-surface');
+  const surfaceSoft = readCssToken('--color-canvas-soft');
+  const ink = readCssToken('--color-ink');
+  const muted = readCssToken('--color-muted');
+  const onPrimary = readCssToken('--color-on-primary');
+  const hairline = readCssToken('--color-hairline');
   const fontFamily = readCssToken('--font-body');
   const displayCandidateName = toNaturalCase(data.candidateName, {
     preserveAcronyms: false,
@@ -185,56 +187,65 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   const displayPosition = toNaturalCase(data.position);
 
   context.save();
+  // Main card clip
   roundedRect(context, 0, 0, width, height, cornerRadius);
   context.clip();
 
+  // Background
   context.fillStyle = surface;
   context.fillRect(0, 0, width, height);
 
+  // Header (Solid black block - design.md Rule 3: primary accent)
   context.fillStyle = primary;
   context.fillRect(0, 0, width, headerHeight);
 
+  // Header Typography
   context.fillStyle = onPrimary;
-  setFont(context, 600, CARD_LAYOUT.subtitleSize, fontFamily);
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle, padding, 68);
-  setFont(context, 700, CARD_LAYOUT.titleSize, fontFamily);
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardTitle, padding, 140);
+  setFont(context, 600, CARD_LAYOUT.subtitleSize, fontFamily, '1px');
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle, padding, 80);
+  setFont(context, 700, CARD_LAYOUT.titleSize, fontFamily, '-2.5px');
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardTitle, padding, 155);
 
-  const badgeWidth = 128;
-  const badgeHeight = 48;
+  // "1 USO" Badge (Pill shaped)
+  const badgeWidth = 140;
+  const badgeHeight = 56;
   const badgeX = width - padding - badgeWidth;
-  const badgeY = 48;
+  const badgeY = 60;
   context.strokeStyle = onPrimary;
   context.lineWidth = CARD_LAYOUT.hairlineWidth;
-  roundedRect(context, badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight / 2);
+  roundedRect(context, badgeX, badgeY, badgeWidth, badgeHeight, 9999);
   context.stroke();
   context.textAlign = 'center';
-  setFont(context, 600, 20, fontFamily);
-  context.fillText('1 USO', badgeX + badgeWidth / 2, badgeY + 32);
+  setFont(context, 600, 22, fontFamily, '1px');
+  context.fillText('1 USO', badgeX + badgeWidth / 2, badgeY + 38);
 
+  // Candidate Name
+  context.textAlign = 'center';
   context.fillStyle = muted;
-  setFont(context, 600, CARD_LAYOUT.labelSize, fontFamily);
-  context.fillText('CANDIDATO(A)', width / 2, 288);
+  setFont(context, 600, CARD_LAYOUT.labelSize, fontFamily, '1px');
+  context.fillText('CANDIDATO(A)', width / 2, 320);
 
   context.fillStyle = ink;
-  setFont(context, 700, CARD_LAYOUT.candidateSize, fontFamily);
+  setFont(context, 700, CARD_LAYOUT.candidateSize, fontFamily, '-1.5px');
   const candidateLines = wrapText(context, displayCandidateName, width - padding * 2, 2);
   candidateLines.forEach((line, index) => {
-    context.fillText(line, width / 2, 368 + index * 62);
+    context.fillText(line, width / 2, 400 + index * 70);
   });
   context.textAlign = 'left';
 
+  // Divider
   context.strokeStyle = hairline;
   context.lineWidth = CARD_LAYOUT.hairlineWidth;
   context.beginPath();
-  context.moveTo(padding, 472);
-  context.lineTo(width - padding, 472);
+  context.moveTo(padding, 510);
+  context.lineTo(width - padding, 510);
   context.stroke();
 
+  // Information Blocks
   drawInformationBlock(context, {
     label: 'Acude con',
     value: data.recruiterName,
-    y: 530,
+    y: 570,
     textColor: ink,
     mutedColor: muted,
     fontFamily,
@@ -243,7 +254,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   drawInformationBlock(context, {
     label: 'Puesto',
     value: displayPosition,
-    y: 690,
+    y: 730,
     textColor: ink,
     mutedColor: muted,
     fontFamily,
@@ -253,7 +264,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     drawInformationBlock(context, {
       label: 'Fecha de entrevista',
       value: data.interviewDate,
-      y: 850,
+      y: 890,
       textColor: ink,
       mutedColor: muted,
       fontFamily,
@@ -261,57 +272,68 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     });
   }
 
-  const locationTop = data.interviewDate ? 965 : 865;
-  const locationHeight = 190;
+  // Location panel with Notion-style micro-shadow
+  const locationTop = data.interviewDate ? 1000 : 890;
+  const locationHeight = 196;
+  
+  context.save();
+  context.shadowColor = 'rgba(0, 0, 0, 0.05)';
+  context.shadowBlur = 12;
+  context.shadowOffsetY = 4;
   context.fillStyle = surfaceSoft;
   roundedRect(context, padding, locationTop, width - padding * 2, locationHeight, panelRadius);
   context.fill();
+  context.restore();
+  
   context.strokeStyle = hairline;
   context.lineWidth = CARD_LAYOUT.hairlineWidth;
   context.stroke();
 
+  // Location text
   context.fillStyle = muted;
-  setFont(context, 600, 22, fontFamily);
-  context.fillText('UBICACIÓN', padding + 28, locationTop + 44);
+  setFont(context, 600, 22, fontFamily, '1px');
+  context.fillText('UBICACIÓN', padding + 36, locationTop + 52);
 
   context.fillStyle = ink;
-  setFont(context, 600, 32, fontFamily);
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.locationName, padding + 28, locationTop + 92);
-  setFont(context, 400, 27, fontFamily);
+  setFont(context, 600, 32, fontFamily, '-0.5px');
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.locationName, padding + 36, locationTop + 104);
+  setFont(context, 400, 27, fontFamily, '0px');
   drawWrappedText(
     context,
     CANDIDATE_ACCESS_CARD_CONFIG.address,
-    padding + 28,
-    locationTop + 137,
-    width - padding * 2 - 56,
-    34,
+    padding + 36,
+    locationTop + 150,
+    width - padding * 2 - 72,
+    36,
     2,
   );
 
-  const noticeTop = data.interviewDate ? 1215 : 1195;
+  // Bottom notices
+  const noticeTop = data.interviewDate ? 1250 : 1230;
   context.strokeStyle = hairline;
   context.beginPath();
-  context.moveTo(padding, noticeTop - 42);
-  context.lineTo(width - padding, noticeTop - 42);
+  context.moveTo(padding, noticeTop - 36);
+  context.lineTo(width - padding, noticeTop - 36);
   context.stroke();
 
   context.textAlign = 'center';
   context.fillStyle = ink;
-  setFont(context, 600, 25, fontFamily);
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.accessNotice, width / 2, noticeTop);
+  setFont(context, 600, 24, fontFamily, '-0.2px');
+  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.accessNotice, width / 2, noticeTop + 12);
   context.fillStyle = muted;
-  setFont(context, 400, 24, fontFamily);
+  setFont(context, 400, 22, fontFamily, '0px');
   context.fillText(
     CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
     width / 2,
-    noticeTop + 44,
+    noticeTop + 50,
   );
   context.textAlign = 'left';
   context.restore();
 
+  // Outer card stroke
   context.strokeStyle = hairline;
-  context.lineWidth = CARD_LAYOUT.hairlineWidth;
-  roundedRect(context, 1, 1, width - 2, height - 2, cornerRadius);
+  context.lineWidth = CARD_LAYOUT.hairlineWidth * 2; // double width because stroke is centered
+  roundedRect(context, 0, 0, width, height, cornerRadius);
   context.stroke();
 
   return canvas;

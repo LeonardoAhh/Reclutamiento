@@ -1972,3 +1972,57 @@
   border-bottom: 1px solid var(--color-hairline);
   color: var(--color-muted);
 }
+
+/* Nuevas clases para evitar estilos inline en IndicadoresView */
+.indicadores-kpi-trend {
+  margin-left: var(--spacing-sm);
+}
+
+.indicadores-kpi-total-suffix {
+  margin-left: var(--spacing-xs);
+}
+
+.indicadores-mobile-list__row {
+  cursor: default;
+}
+
+.indicadores-mobile-stat-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.indicadores-mobile-stat-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+}
+
+.indicadores-bajas-section {
+  margin-top: var(--spacing-lg);
+}
+
+.indicadores-bajas-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.indicadores-bajas-item {
+  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-md);
+}
+
+.indicadores-bajas-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.indicadores-bajas-item-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+}

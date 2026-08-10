@@ -81,12 +81,11 @@ export function SystemUpdateBanner() {
         <div
           className={`system-update-overlay ${requiresReload ? "system-update-overlay--blocking" : ""}`}
         >
-          <motion.aside
+          <motion.div
             key={info.version}
             className={`system-update system-update--${level}`}
             role="alertdialog"
-            aria-modal="true"
-            aria-live="assertive"
+            aria-modal={requiresReload ? true : undefined}
             initial={{ y: 100, opacity: 0, scale: 1 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{
@@ -149,7 +148,7 @@ export function SystemUpdateBanner() {
             >
               <MorphingIcon icon={XData} size={20} aria-hidden="true" />
             </button>
-          </motion.aside>
+          </motion.div>
         </div>
       )}
 

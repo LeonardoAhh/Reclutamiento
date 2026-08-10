@@ -1087,4 +1087,42 @@
   flex-shrink: 0;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES FOR RUTASVIEW
+═══════════════════════════════════════════════════════════ */
 
+.rutas-toolbar-flex {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.rutas-search-container {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.rutas-search-clear-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  z-index: 1;
+}
+
+.rutas-search-clear-btn--active {
+  cursor: pointer;
+}
+
+.rutas-search-clear-btn--inactive {
+  cursor: default;
+}
+
+.rutas-horarios-btn {
+  flex-shrink: 0;
+  height: var(--touch-target-min);
+}

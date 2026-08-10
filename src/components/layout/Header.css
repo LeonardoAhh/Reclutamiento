@@ -256,3 +256,7 @@
     animation: none;
   }
 }
+
+.app-header__spacer {
+  flex: 1;
+}

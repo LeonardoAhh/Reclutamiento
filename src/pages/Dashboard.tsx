@@ -356,8 +356,12 @@ export function Dashboard() {
         className={`config-sidebar ${!isMobileMenuOpen ? "mobile-hidden" : ""}`}
         aria-label="Menú de Plantilla"
       >
-        <nav className="config-sidebar__nav">
+        <nav className="config-sidebar__nav" role="tablist">
           <button
+            role="tab"
+            id="tab-general"
+            aria-selected={activeTab === "general"}
+            aria-controls="panel-general"
             className={`config-sidebar__link ${activeTab === "general" ? "active" : ""}`}
             onClick={() => handleTabClick("general")}
           >
@@ -365,6 +369,10 @@ export function Dashboard() {
             <span>Departamentos</span>
           </button>
           <button
+            role="tab"
+            id="tab-empleados"
+            aria-selected={activeTab === "empleados"}
+            aria-controls="panel-empleados"
             className={`config-sidebar__link ${activeTab === "empleados" ? "active" : ""}`}
             onClick={() => handleTabClick("empleados")}
           >
@@ -375,6 +383,9 @@ export function Dashboard() {
       </aside>
 
       <main
+        id={`panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
         className={`config-main ${isMobileMenuOpen ? "mobile-hidden" : ""}`}
         aria-label="Contenido principal"
       >
@@ -404,17 +415,8 @@ export function Dashboard() {
           >
             {activeTab === "general" && (
               <>
-                <header className="dashboard__hero" style={{ paddingBlock: 0 }}>
-                  <div
-                    className="dashboard__hero-content"
-                    style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "var(--spacing-md)",
-                    }}
-                  >
+                <header className="dashboard__hero dashboard-sidebar__hero">
+                  <div className="dashboard__hero-content dashboard-sidebar__hero-content">
                     <div className="config-search dashboard-sidebar__search">
                       <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
                         <label htmlFor="search-input" className="sr-only">
@@ -422,17 +424,7 @@ export function Dashboard() {
                         </label>
                         <button
                           type="button"
-                          className="dashboard-sidebar__search-icon"
-                          style={{
-                            background: "transparent",
-                            border: "none",
-                            padding: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            color: "inherit",
-                            cursor: searchTerm ? "pointer" : "default",
-                            zIndex: 1,
-                          }}
+                          className="dashboard-sidebar__search-icon dashboard-sidebar__search-clear"
                           onClick={() => setSearchTerm("")}
                           disabled={!searchTerm}
                           aria-label={

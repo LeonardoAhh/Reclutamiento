@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { Bus, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, MapPin, Minus, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { Bus, CalendarDays, ChevronLeft, ChevronRight, Clock, MapPin, Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import { Search as SearchData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { getShortName } from '@/lib/names';
@@ -377,7 +377,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
         {/* Route simulation */}
         <section className="ruta-section">
           <h3 className="ruta-section__title type-heading-sm">
-            <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" style={{ marginRight: 'var(--spacing-sm)' }} />
+            <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" />
             Paradas
           </h3>
           <RouteSvg paradas={ruta.paradas} animKey={animKey} />
@@ -388,7 +388,7 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
             <ul className="ruta-stops__list">
               {ruta.paradas.map((parada, i) => (
                 <li
-                  key={i}
+                  key={parada}
                   className="ruta-stops__item type-body-sm"
                   style={{ '--item-delay': `${0.05 + i * 0.06}s` } as React.CSSProperties}
                 >
@@ -484,25 +484,15 @@ export function RutasView() {
 
       {/* ── Search bar & Horarios ── */}
       <section className="config-page__toolbar" aria-label="Herramientas de rutas">
-        <div className="rutas-toolbar-flex" style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'flex-start', width: '100%' }}>
-          <div className="form-group config-search" style={{ flex: 1, minWidth: 0, margin: 0 }}>
+        <div className="rutas-toolbar-flex">
+          <div className="form-group config-search rutas-search-container">
             <label htmlFor="rutas-search-input" className="sr-only">
               Buscar empleado por número o nombre
             </label>
             <div className="config-search__wrapper">
               <button
                 type="button"
-                className="config-search__icon"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: 'inherit',
-                  cursor: searchTerm ? 'pointer' : 'default',
-                  zIndex: 1
-                }}
+                className={`config-search__icon rutas-search-clear-btn ${searchTerm ? 'rutas-search-clear-btn--active' : 'rutas-search-clear-btn--inactive'}`}
                 onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
                 disabled={!searchTerm}
                 aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
@@ -539,8 +529,7 @@ export function RutasView() {
             href="/horarios/index.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary"
-            style={{ flexShrink: 0, height: 'var(--touch-target-min)' }}
+            className="btn-secondary rutas-horarios-btn"
             title="Ver horarios"
             aria-label="Ver horarios"
           >
