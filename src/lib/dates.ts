@@ -130,7 +130,12 @@ export function localDateToIso(input: string | null | undefined): string | null 
  */
 export function isoToLocalDateString(iso: string | null | undefined): string {
   if (!iso) return '';
-  const d = new Date(iso);
+  const s = String(iso);
+  // Si ya es una fecha pura YYYY-MM-DD (sin componente horario), la devolvemos
+  // directamente. Parsearla con `new Date()` la trataría como UTC midnight, lo
+  // que en TZ MX (UTC-6) retrocedería un día (p.ej. "2026-08-10" → día 9).
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const d = new Date(s);
   if (Number.isNaN(d.getTime())) return '';
   const { year, month, day } = mxDateParts(d);
   return `${year}-${pad2(month)}-${pad2(day)}`;
