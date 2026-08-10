@@ -1,0 +1,93 @@
+/* ================================================================
+   RecordatoriosView — Configuración de Rutas para Exportación
+   Tokens: globals (colors, spacing, type, rounded).
+   ================================================================ */
+
+/* Controles de Filtro */
+.recordatorios-controls {
+  display: grid;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.recordatorios-filters-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--spacing-md);
+  align-items: end;
+}
+
+.recordatorios-filter-group {
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* Contenedor de Tabla */
+.recordatorios-table-wrapper {
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  overflow-x: auto;
+}
+
+.recordatorios-table-container {
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Utilidades para celdas */
+.recordatorios-cell-left {
+  text-align: left;
+}
+
+.recordatorios-cell-center {
+  text-align: center;
+}
+
+.recordatorios-error-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-error);
+}
+
+/*
+  Clases específicas para html-to-image (Exportación a WhatsApp)
+  Estos estilos fuerzan un look de tabla de Excel puro para la imagen,
+  PERO SOLO se aplican al momento de exportar (.exporting-image).
+*/
+.whatsapp-export-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.whatsapp-export-table thead {
+  background-color: var(--color-surface-soft);
+}
+
+.whatsapp-export-table th,
+.whatsapp-export-table td {
+  border: 1px solid var(--color-hairline);
+  padding: var(--spacing-sm);
+}
+
+.exporting-image {
+  background-color: #ffffff;
+}
+
+.exporting-image .whatsapp-export-table th,
+.exporting-image .whatsapp-export-table td {
+  border: 1px solid #000000 !important;
+  color: #000000 !important;
+}
+
+.exporting-image .whatsapp-export-table th {
+  font-weight: 700 !important;
+  background-color: #f6f5f4 !important; /* var(--color-canvas-soft) forzado */
+}
+
+.exporting-image .whatsapp-export-table td {
+  font-weight: 500 !important;
+  background-color: #ffffff !important;
+}
