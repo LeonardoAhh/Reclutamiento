@@ -164,15 +164,14 @@
   color: inherit;
   background: transparent;
   border: 0;
-  cursor: pointer;
-}
-
-.config-search__icon:disabled {
-  pointer-events: none;
   cursor: default;
 }
 
-.config-search__icon:focus-visible {
+.config-search__icon--action {
+  cursor: pointer;
+}
+
+.config-search__icon--action:focus-visible {
   outline: none;
   border-radius: var(--rounded-xs);
   box-shadow: var(--shadow-focus);
