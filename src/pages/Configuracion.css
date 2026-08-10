@@ -619,12 +619,17 @@
 
 @media (min-width: 1024px) {
   .config-card__body {
-    grid-template-columns: minmax(0, 1fr) minmax(var(--feature-calendar-column-min), var(--feature-calendar-surface-max));
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .config-card__details,
+  .config-card__calendar-section {
+    height: 100%;
   }
 
   .config-card__properties {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--feature-calendar-column-min)), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
