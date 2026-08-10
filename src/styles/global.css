@@ -233,6 +233,7 @@
   --candidate-access-preview-max-mobile: 15rem;
   --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
+  --feature-calendar-surface-max: 22rem;
   --layer-maintenance: 1000;
   --layer-splash: 1000;
   --skeleton-title-width: 50%;

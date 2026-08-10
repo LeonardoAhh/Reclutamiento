@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
+import { INCIDENCIA_LABELS, NON_INCIDENT_CODES } from '@/components/reporte-diario/constants';
 import { formatMes } from '@/components/reporte-diario/helpers';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -7,7 +7,6 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import {
   useReporteDiario,
   type ReporteDiarioRecord,
-  type ReporteDiarioSummary,
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
 import { formatReadableDate, addDaysToIso, localTodayIso } from '@/lib/dates';
@@ -27,20 +26,14 @@ import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { EmployeeIncidenceCalendar, findEmployeeReportRow } from './components/EmployeeIncidenceCalendar';
 import '../Configuracion.css';
-
-const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"]);
 
 const STICKER_TONES = 5;
 
 type EmployeeSearchResult =
   | (Employee & { isBaja: false })
   | (Baja & { isBaja: true });
-
-type ReportEmployeeRow = {
-  numero_empleado: string;
-  days: Record<string, string>;
-};
 
 type SearchStatusFilter = 'all' | 'active' | 'inactive';
 type SearchViewMode = 'detail' | 'compact';
@@ -65,13 +58,6 @@ function uniqueFilterValues(results: EmployeeSearchResult[], field: 'area' | 'tu
     .sort((first, second) => first.label.localeCompare(second.label, 'es'));
 }
 
-function isReportEmployeeRow(value: unknown): value is ReportEmployeeRow {
-  if (!value || typeof value !== 'object') return false;
-  const candidate = value as Record<string, unknown>;
-  return typeof candidate.numero_empleado === 'string' &&
-    Boolean(candidate.days && typeof candidate.days === 'object' && !Array.isArray(candidate.days));
-}
-
 function getEmployeeResultId(employee: EmployeeSearchResult) {
   const resultKind = employee.isBaja ? 'baja' : 'activo';
   const identity = employee.id || (employee.isBaja ? employee.fecha_baja : employee.fecha_ingreso);
@@ -89,19 +75,6 @@ function displayValue(value: unknown) {
   return text ? toTitleCase(text) : 'Sin información';
 }
 
-function normalizeEmpNum(num: string) {
-  return String(parseInt(num.replace(/\D/g, '') || '0', 10));
-}
-
-function describeCalendarCode(code?: string) {
-  if (!code || code === '-' || code === 'X') return 'Sin registro';
-  if (code === 'A') return 'Asistencia';
-  if (code === 'D' || code === 'DF') return 'Descanso';
-  if (code === 'B') return 'Baja';
-  return INCIDENCIA_LABELS[code] || code;
-}
-
-
 function GlobalIncidenceHistory({
   employeeNumber,
   allReports,
@@ -117,10 +90,7 @@ function GlobalIncidenceHistory({
     const sortedReports = [...allReports].sort((a, b) => b.mes.localeCompare(a.mes));
 
     for (const report of sortedReports) {
-      const row = report.data.find(
-        (candidate): candidate is ReportEmployeeRow =>
-          isReportEmployeeRow(candidate) && normalizeEmpNum(candidate.numero_empleado) === normalizeEmpNum(employeeNumber),
-      );
+      const row = findEmployeeReportRow(report, employeeNumber);
       if (row) {
         const incidents = Object.entries(row.days)
           .filter(([, code]) => code && !NON_INCIDENT_CODES.has(code))
@@ -220,23 +190,27 @@ export function BusquedaView() {
   const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(() => new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [summaries, setSummaries] = useState<ReporteDiarioSummary[]>([]);
   const [summariesLoading, setSummariesLoading] = useState(true);
   const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
 
   useEffect(() => {
     let active = true;
-    fetchSummaries().then(data => {
-      if (!active) return;
-      setSummaries(data);
-      if (data.length > 0) {
-        fetchByMesList(data.map(s => s.mes)).then(reps => {
-          if (active) setAllReports(reps);
-        });
+
+    const loadReports = async () => {
+      try {
+        const data = await fetchSummaries();
+        if (!active) return;
+
+        const reports = data.length > 0
+          ? await fetchByMesList(data.map((summary) => summary.mes))
+          : [];
+        if (active) setAllReports(reports);
+      } finally {
+        if (active) setSummariesLoading(false);
       }
-    }).finally(() => {
-      if (active) setSummariesLoading(false);
-    });
+    };
+
+    void loadReports();
     return () => {
       active = false;
     };
@@ -359,16 +333,6 @@ export function BusquedaView() {
               <button
                 type="button"
                 className="config-search__icon"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: 'inherit',
-                  cursor: searchTerm.length > 0 ? 'pointer' : 'default',
-                  zIndex: 1
-                }}
                 onClick={handleClearSearch}
                 disabled={searchTerm.length === 0}
                 aria-label={searchTerm.length > 0 ? 'Limpiar búsqueda' : 'Buscar'}
@@ -658,6 +622,15 @@ export function BusquedaView() {
                         </dl>
                       </section>
 
+
+                      <EmployeeIncidenceCalendar
+                        employeeName={employeeName}
+                        employeeNumber={employeeNumber}
+                        loading={summariesLoading}
+                        reports={allReports}
+                        selectId={monthSelectId}
+                        titleId={`calendar-${employeeDomId}`}
+                      />
 
                       <GlobalIncidenceHistory
                         employeeNumber={employeeNumber}
