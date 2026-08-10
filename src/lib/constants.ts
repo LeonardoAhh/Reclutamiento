@@ -251,6 +251,12 @@ export function getRecruiterAccessCardName(
   return `Lic. ${firstName}${lastName ? ` ${lastName}` : ''}`;
 }
 
+export const SYSTEM_UPDATE_BANNER_CONFIG = {
+  reloadDelayMs: 1800,
+  updatingTitle: 'Actualizando sistema',
+  updatingHint: 'Preparando la nueva versión…',
+} as const;
+
 /**
  * Configuración central del pase de entrevista que recibe el candidato.
  * Mantener aquí los datos operativos para que la vista y la imagen compartida

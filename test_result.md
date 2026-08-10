@@ -269,3 +269,10 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - `prefers-reduced-motion` continúa respetado por Morphicons y el spinner CSS.
 - Verificación local: TypeScript PASS, lint PASS y build PASS.
 - No se invocaron agentes de pruebas, por instrucción del usuario.
+
+## System Update Curtain Redesign
+- Sustituida la cortina de éxito anticipado por un estado minimalista de actualización en progreso.
+- Contenido reducido a título, ayuda breve e indicador indeterminado; eliminada la instrucción `CTRL + SHIFT + R`.
+- Configuración funcional y tokens visuales centralizados; actualización por Service Worker y recarga preservadas.
+- Verificación local: TypeScript PASS, lint PASS y build PASS.
+- Verificación de interfaz: pendiente.
