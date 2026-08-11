@@ -28,7 +28,7 @@ import { ToulouseView } from "./configuracion-views/ToulouseView";
 import { RegistroNoCitadosView } from "./configuracion-views/RegistroNoCitadosView";
 import { SistemaView } from "./configuracion-views/SistemaView";
 import { SpeechView } from "./configuracion-views/SpeechView";
-import { RecordatoriosView } from "./configuracion-views/RecordatoriosView";
+import { FormatosView } from "./configuracion-views/FormatosView";
 import "./Configuracion.css";
 
 type FeatureId =
@@ -41,7 +41,7 @@ type FeatureId =
   | "nocitados"
   | "sistema"
   | "speech"
-  | "recordatorios";
+  | "formatos";
 
 interface FeatureItem {
   id: FeatureId;
@@ -56,7 +56,7 @@ export const FEATURES: FeatureItem[] = [
   { id: "tabulador", label: "Tabulador", icon: Wallet },
   { id: "nocitados", label: "No Citados", icon: UserX },
   { id: "speech", label: "Speech WA", icon: MessageSquare },
-  { id: "recordatorios", label: "Recordatorios", icon: Bell },
+  { id: "formatos", label: "Formatos", icon: Bell },
   { id: "sistema", label: "Sistema", icon: Settings },
 ];
 
@@ -69,7 +69,7 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   toulouse: <ToulouseView />,
   nocitados: <RegistroNoCitadosView />,
   speech: <SpeechView />,
-  recordatorios: <RecordatoriosView />,
+  formatos: <FormatosView />,
   sistema: <SistemaView />,
 };
 

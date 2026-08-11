@@ -16,7 +16,7 @@ import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { sileo } from "@/lib/notify";
-import "./RecordatoriosView.css";
+import "./FormatosView.css";
 
 interface AvailableWeek {
   value: string;
@@ -45,7 +45,7 @@ function toAvailableWeek(range: IsoWeekRange): AvailableWeek {
   };
 }
 
-export function RecordatoriosView() {
+export function FormatosView() {
   const {
     employees,
     loading: employeesLoading,
@@ -109,7 +109,9 @@ export function RecordatoriosView() {
         .filter((employee) =>
           isInIsoWeek(employee.fecha_ingreso, selectedWeek.range),
         )
-        .sort((first, second) => first.nombre.localeCompare(second.nombre, "es")),
+        .sort((first, second) =>
+          first.nombre.localeCompare(second.nombre, "es"),
+        ),
     [employees, selectedWeek.range],
   );
 
@@ -118,8 +120,9 @@ export function RecordatoriosView() {
       .filter((employee) => employee.fecha_ingreso === selectedRouteDate)
       .filter(
         (employee) =>
-          String(employee.turno ?? "").trim().toLocaleLowerCase("es") !==
-          "mixto",
+          String(employee.turno ?? "")
+            .trim()
+            .toLocaleLowerCase("es") !== "mixto",
       )
       .map((employee) => {
         const numKey = String(employee.num_empleado).trim().replace(/^0+/, "");
@@ -207,7 +210,6 @@ export function RecordatoriosView() {
         )}
 
         <div className="config-results-wrapper">
-
           <section
             className="config-results-controls"
             aria-label="Seleccionar semana"
@@ -235,14 +237,21 @@ export function RecordatoriosView() {
             printDate={localTodayIso()}
           />
 
-          <section className="recordatorios-routes" aria-labelledby="recordatorios-routes-title">
+          <section
+            className="recordatorios-routes"
+            aria-labelledby="recordatorios-routes-title"
+          >
             <header className="recordatorios-routes__header">
               <div>
-                <h2 id="recordatorios-routes-title" className="recordatorios-routes__title">
+                <h2
+                  id="recordatorios-routes-title"
+                  className="recordatorios-routes__title"
+                >
                   Asignación de rutas
                 </h2>
                 <p className="recordatorios-routes__subtitle">
-                  Selecciona la fecha exacta de ingreso para preparar el listado.
+                  Selecciona la fecha exacta de ingreso para preparar el
+                  listado.
                 </p>
               </div>
             </header>
@@ -260,7 +269,9 @@ export function RecordatoriosView() {
                     type="date"
                     className="config-filter-select"
                     value={selectedRouteDate}
-                    onChange={(event) => setSelectedRouteDate(event.target.value)}
+                    onChange={(event) =>
+                      setSelectedRouteDate(event.target.value)
+                    }
                   />
                 </label>
 
@@ -276,85 +287,103 @@ export function RecordatoriosView() {
               </div>
             </section>
 
-          {filteredEmployees.length === 0 ? (
-            <div className="config-filter-empty" role="status">
-              <Bus size={32} aria-hidden="true" />
-              <p className="type-body-md text-charcoal">
-                No hay ingresos aplicables al listado de rutas para la fecha seleccionada.
-              </p>
-            </div>
-          ) : (
-            <div className="config-card">
-              <div
-                className="table-responsive recordatorios-table-region"
-                tabIndex={0}
-                role="region"
-                aria-label="Asignación de rutas"
-              >
-                <div ref={tableRef} className="recordatorios-export-canvas">
-                  <table className="config-table recordatorios-table">
-                    <caption className="sr-only">
-                      Asignación de rutas para {selectedRouteDate}
-                    </caption>
-                    <thead>
-                      <tr>
-                        <th scope="col" className="recordatorios-table__cell--left">
-                          No. Emp
-                        </th>
-                        <th scope="col" className="recordatorios-table__cell--left">
-                          Nombre
-                        </th>
-                        <th scope="col" className="recordatorios-table__cell--center">
-                          Turno
-                        </th>
-                        <th scope="col" className="recordatorios-table__cell--left">
-                          Nombre Ruta
-                        </th>
-                        <th scope="col" className="recordatorios-table__cell--left">
-                          Parada
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredEmployees.map((emp) => (
-                        <tr key={emp.id || emp.num_empleado}>
-                          <td className="type-body-sm font-medium text-ink recordatorios-table__cell--left">
-                            {emp.num_empleado}
-                          </td>
-                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
-                            {emp.nombre}
-                          </td>
-                          <td className="type-body-sm text-charcoal recordatorios-table__cell--center">
-                            {emp.turno || (
-                              <span className="text-error">Falta turno</span>
-                            )}
-                          </td>
-                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
-                            {emp.ruta_final ? (
-                              emp.ruta_final
-                            ) : (
-                              <span className="text-error recordatorios-missing-data">
-                                <AlertCircle size={14} aria-hidden="true" /> Faltan datos
-                              </span>
-                            )}
-                          </td>
-                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
-                            {emp.parada_final ? (
-                              emp.parada_final
-                            ) : (
-                              <span className="text-error recordatorios-missing-data">
-                                <AlertCircle size={14} aria-hidden="true" /> Faltan datos
-                              </span>
-                            )}
-                          </td>
+            {filteredEmployees.length === 0 ? (
+              <div className="config-filter-empty" role="status">
+                <Bus size={32} aria-hidden="true" />
+                <p className="type-body-md text-charcoal">
+                  No hay ingresos aplicables al listado de rutas para la fecha
+                  seleccionada.
+                </p>
+              </div>
+            ) : (
+              <div className="config-card">
+                <div
+                  className="table-responsive recordatorios-table-region"
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Asignación de rutas"
+                >
+                  <div ref={tableRef} className="recordatorios-export-canvas">
+                    <table className="config-table recordatorios-table">
+                      <caption className="sr-only">
+                        Asignación de rutas para {selectedRouteDate}
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th
+                            scope="col"
+                            className="recordatorios-table__cell--left"
+                          >
+                            No. Emp
+                          </th>
+                          <th
+                            scope="col"
+                            className="recordatorios-table__cell--left"
+                          >
+                            Nombre
+                          </th>
+                          <th
+                            scope="col"
+                            className="recordatorios-table__cell--center"
+                          >
+                            Turno
+                          </th>
+                          <th
+                            scope="col"
+                            className="recordatorios-table__cell--left"
+                          >
+                            Nombre Ruta
+                          </th>
+                          <th
+                            scope="col"
+                            className="recordatorios-table__cell--left"
+                          >
+                            Parada
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {filteredEmployees.map((emp) => (
+                          <tr key={emp.id || emp.num_empleado}>
+                            <td className="type-body-sm font-medium text-ink recordatorios-table__cell--left">
+                              {emp.num_empleado}
+                            </td>
+                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                              {emp.nombre}
+                            </td>
+                            <td className="type-body-sm text-charcoal recordatorios-table__cell--center">
+                              {emp.turno || (
+                                <span className="text-error">Falta turno</span>
+                              )}
+                            </td>
+                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                              {emp.ruta_final ? (
+                                emp.ruta_final
+                              ) : (
+                                <span className="text-error recordatorios-missing-data">
+                                  <AlertCircle size={14} aria-hidden="true" />{" "}
+                                  Faltan datos
+                                </span>
+                              )}
+                            </td>
+                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                              {emp.parada_final ? (
+                                emp.parada_final
+                              ) : (
+                                <span className="text-error recordatorios-missing-data">
+                                  <AlertCircle size={14} aria-hidden="true" />{" "}
+                                  Faltan datos
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
           </section>
         </div>
       </div>
