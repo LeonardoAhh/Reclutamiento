@@ -2,12 +2,40 @@
   margin-top: var(--spacing-lg);
 }
 
-.recordatorios-controls-grid {
+.recordatorios-week-controls,
+.recordatorios-route-controls__grid {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.recordatorios-week-field {
+.recordatorios-week-field,
+.recordatorios-route-date-field {
   width: 100%;
+}
+
+.recordatorios-routes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+.recordatorios-routes__title,
+.recordatorios-routes__subtitle {
+  margin: 0;
+}
+
+.recordatorios-routes__title {
+  color: var(--color-ink);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+}
+
+.recordatorios-routes__subtitle {
+  margin-top: var(--spacing-xs);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
 }
 
 .recordatorios-table-region {
@@ -18,32 +46,43 @@
 }
 
 .recordatorios-export-canvas {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  min-width: var(--recordatorios-route-table-min);
   padding: var(--spacing-sm);
   background: var(--color-surface);
 }
 
 .recordatorios-table {
   width: 100%;
+  min-width: var(--recordatorios-route-table-min);
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .recordatorios-table th,
 .recordatorios-table td {
+  padding: var(--spacing-sm);
+  overflow: visible;
   color: var(--color-ink);
   background: var(--color-surface);
   border: 1px solid var(--color-hairline-strong);
+  white-space: normal;
+  overflow-wrap: break-word;
+  vertical-align: middle;
 }
 
 .recordatorios-table th {
   color: var(--color-muted);
   background: var(--color-surface-soft);
+  font-size: var(--type-caption-sm-size);
   font-weight: var(--font-bold);
+  line-height: var(--type-caption-sm-line);
 }
 
 .recordatorios-table td {
+  font-size: var(--type-body-sm-size);
   font-weight: var(--font-medium);
+  line-height: var(--type-body-sm-line);
 }
 
 .recordatorios-export-canvas.is-exporting {
@@ -58,6 +97,11 @@
 }
 
 .recordatorios-export-canvas.is-exporting .recordatorios-table th {
+  color: var(--color-document-ink);
+}
+
+.recordatorios-export-canvas.is-exporting .recordatorios-missing-data,
+.recordatorios-export-canvas.is-exporting .text-error {
   color: var(--color-document-ink);
 }
 
@@ -240,8 +284,12 @@
 }
 
 @media (min-width: 600px) {
-  .recordatorios-controls-grid {
+  .recordatorios-route-controls__grid {
     grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .recordatorios-route-date-field {
+    max-width: var(--feature-calendar-column-max);
   }
 
   .weekly-formats__heading {
