@@ -9,12 +9,41 @@ import {
   isoWeekOf,
   localDateToIso,
   localTodayIso,
+  type IsoWeekRange,
 } from "@/lib/dates";
 import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocuments";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { sileo } from "@/lib/notify";
 import "./RecordatoriosView.css";
+
+interface AvailableWeek {
+  value: string;
+  label: string;
+  range: IsoWeekRange;
+}
+
+function getWeekRange(isoDate: string): IsoWeekRange | null {
+  const timestamp = localDateToIso(isoDate);
+  return timestamp ? isoWeekOf(timestamp) : null;
+}
+
+function getWeekKey(range: IsoWeekRange) {
+  return `${range.year}-W${String(range.week).padStart(2, "0")}`;
+}
+
+function getWeekLabel(range: IsoWeekRange) {
+  return `Semana ${range.week} · ${formatIsoWeekRange(range)} ${range.year}`;
+}
+
+function toAvailableWeek(range: IsoWeekRange): AvailableWeek {
+  return {
+    value: getWeekKey(range),
+    label: getWeekLabel(range),
+    range,
+  };
+}
 
 export function RecordatoriosView() {
   const {
@@ -24,7 +53,13 @@ export function RecordatoriosView() {
   } = useSupabaseData();
   const { rutas, loading: rutasLoading } = useRutas();
 
-  const [selectedDate, setSelectedDate] = useState(localTodayIso());
+  const currentWeek = useMemo(
+    () => getWeekRange(localTodayIso()) ?? isoWeekOf(new Date()),
+    [],
+  );
+  const [selectedWeekKey, setSelectedWeekKey] = useState(() =>
+    getWeekKey(currentWeek),
+  );
   const tableRef = useRef<HTMLDivElement>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
@@ -46,36 +81,51 @@ export function RecordatoriosView() {
     return lookup;
   }, [rutas]);
 
-  const filteredEmployees = useMemo(() => {
-    return employees
-      .filter((emp) => emp.fecha_ingreso === selectedDate)
-      .sort((a, b) => a.nombre.localeCompare(b.nombre))
-      .map((emp) => {
-        const numKey = String(emp.num_empleado).trim().replace(/^0+/, "");
-        const datosRuta = rutaLookup.get(numKey);
+  const availableWeeks = useMemo(() => {
+    const weeks = new Map<string, AvailableWeek>();
+    const current = toAvailableWeek(currentWeek);
+    weeks.set(current.value, current);
 
-        return {
-          ...emp,
-          ruta_final: emp.ruta || datosRuta?.nombreRuta || "",
-          parada_final: emp.parada || datosRuta?.parada || "",
-        };
-      });
-  }, [employees, selectedDate, rutaLookup]);
+    for (const employee of employees) {
+      const range = getWeekRange(employee.fecha_ingreso);
+      if (!range) continue;
+      const option = toAvailableWeek(range);
+      weeks.set(option.value, option);
+    }
 
-  const selectedWeek = useMemo(() => {
-    const selectedTimestamp = localDateToIso(selectedDate);
-    return isoWeekOf(selectedTimestamp ?? new Date());
-  }, [selectedDate]);
+    return Array.from(weeks.values()).sort((first, second) =>
+      second.value.localeCompare(first.value),
+    );
+  }, [currentWeek, employees]);
+
+  const selectedWeek =
+    availableWeeks.find((week) => week.value === selectedWeekKey) ??
+    toAvailableWeek(currentWeek);
 
   const weeklyEmployees = useMemo(
     () =>
       employees
-        .filter((employee) => isInIsoWeek(employee.fecha_ingreso, selectedWeek))
+        .filter((employee) =>
+          isInIsoWeek(employee.fecha_ingreso, selectedWeek.range),
+        )
         .sort((first, second) => first.nombre.localeCompare(second.nombre, "es")),
-    [employees, selectedWeek],
+    [employees, selectedWeek.range],
   );
 
-  const selectedWeekLabel = `Semana ${selectedWeek.week} · ${formatIsoWeekRange(selectedWeek)} ${selectedWeek.year}`;
+  const filteredEmployees = useMemo(() => {
+    return weeklyEmployees.map((employee) => {
+      const numKey = String(employee.num_empleado).trim().replace(/^0+/, "");
+      const routeData = rutaLookup.get(numKey);
+
+      return {
+        ...employee,
+        ruta_final: employee.ruta || routeData?.nombreRuta || "",
+        parada_final: employee.parada || routeData?.parada || "",
+      };
+    });
+  }, [rutaLookup, weeklyEmployees]);
+
+  const selectedWeekLabel = selectedWeek.label;
 
   const handleCopyImage = async () => {
     if (!tableRef.current) return;
@@ -148,19 +198,20 @@ export function RecordatoriosView() {
 
           <section
             className="config-results-controls"
-            aria-label="Filtros y exportación"
+            aria-label="Semana y exportación"
           >
             <div className="config-results-controls__filters recordatorios-controls-grid">
-              <label className="config-filter-field recordatorios-date-field">
+              <label className="config-filter-field recordatorios-week-field">
                 <span className="config-filter-label type-caption-sm text-muted">
-                  Fecha de ingreso
+                  Semana de ingreso
                 </span>
-                <input
-                  id="fecha-ingreso-filter"
-                  type="date"
-                  className="config-filter-select"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                <CustomSelect
+                  value={selectedWeek.value}
+                  onChange={setSelectedWeekKey}
+                  options={availableWeeks.map((week) => ({
+                    value: week.value,
+                    label: week.label,
+                  }))}
                 />
               </label>
 
@@ -186,7 +237,7 @@ export function RecordatoriosView() {
             <div className="config-filter-empty" role="status">
               <Bus size={32} aria-hidden="true" />
               <p className="type-body-md text-charcoal">
-                No hay ingresos registrados para la fecha seleccionada.
+                No hay ingresos registrados para la semana seleccionada.
               </p>
             </div>
           ) : (
@@ -200,7 +251,7 @@ export function RecordatoriosView() {
                 <div ref={tableRef} className="recordatorios-export-canvas">
                   <table className="indicadores-table config-table recordatorios-table">
                     <caption className="sr-only">
-                      Asignación de rutas para el {selectedDate}
+                      Asignación de rutas para {selectedWeekLabel}
                     </caption>
                     <thead>
                       <tr>
