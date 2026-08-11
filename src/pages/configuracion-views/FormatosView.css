@@ -603,11 +603,13 @@
 .weekly-doc__table--credential th:nth-child(1),
 .weekly-doc__table--credential td:nth-child(1) {
   width: 16%;
+  text-align: center;
 }
 
 .weekly-doc__table--credential th:nth-child(2),
 .weekly-doc__table--credential td:nth-child(2) {
   width: 12%;
+  text-align: center;
 }
 
 .weekly-doc__table--credential th:nth-child(3),
@@ -618,6 +620,7 @@
 .weekly-doc__table--credential th:nth-child(4),
 .weekly-doc__table--credential td:nth-child(4) {
   width: 25%;
+  text-align: center;
 }
 
 .weekly-doc__table--credential th:nth-child(5),
@@ -628,6 +631,7 @@
 .weekly-doc__table--contract th:nth-child(1),
 .weekly-doc__table--contract td:nth-child(1) {
   width: 16%;
+  text-align: center;
 }
 
 .weekly-doc__table--contract th:nth-child(2),
