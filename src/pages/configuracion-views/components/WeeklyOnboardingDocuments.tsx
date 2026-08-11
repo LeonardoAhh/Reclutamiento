@@ -188,13 +188,7 @@ function CredentialDocument({ employees, printDate }: { employees: Employee[]; p
   );
 }
 
-function ContractTable({
-  employees,
-  printDate,
-}: {
-  employees: Employee[];
-  printDate: string;
-}) {
+function ContractTable({ employees }: { employees: Employee[] }) {
   const minimumRows = ONBOARDING_DOCUMENT_CONFIG.contract.collectivePageCapacity;
   return (
     <table className="weekly-doc__table weekly-doc__table--contract">
@@ -211,7 +205,7 @@ function ContractTable({
           <tr key={employee?.id || employee?.num_empleado || `contract-blank-${index}`}>
             <td>{employee?.num_empleado ?? ''}</td>
             <td>{employee?.nombre ?? ''}</td>
-            <td>{employee ? formatDocumentDate(printDate) : ''}</td>
+            <td />
             <td aria-label={employee ? `Firma de ${employee.nombre}` : undefined} />
           </tr>
         ))}
@@ -240,7 +234,7 @@ function ContractDocument({
             {config.collectiveStatement}{' '}
             <strong>{weekLabel}</strong>.
           </p>
-          <ContractTable employees={pageEmployees} printDate={printDate} />
+          <ContractTable employees={pageEmployees} />
           <DocumentFooter />
         </section>
       ))}
