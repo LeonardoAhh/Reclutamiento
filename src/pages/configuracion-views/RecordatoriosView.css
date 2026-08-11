@@ -467,6 +467,24 @@
   background: var(--color-document-paper);
 }
 
+.weekly-doc__credential-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.weekly-doc__credential-logo,
+.weekly-doc__credential-header-spacer {
+  width: calc(var(--spacing-section) + var(--spacing-xl));
+}
+
+.weekly-doc__credential-logo {
+  height: var(--spacing-2xl);
+  object-fit: contain;
+  filter: grayscale(1);
+}
+
 .weekly-doc__title {
   margin: 0;
   font-family: var(--font-body);
@@ -689,8 +707,14 @@
     gap: 8mm;
   }
 
-  .weekly-doc__logo {
+  .weekly-doc__logo,
+  .weekly-doc__credential-logo,
+  .weekly-doc__credential-header-spacer {
     width: 34mm;
+  }
+
+  .weekly-doc__logo,
+  .weekly-doc__credential-logo {
     height: 16mm;
   }
 

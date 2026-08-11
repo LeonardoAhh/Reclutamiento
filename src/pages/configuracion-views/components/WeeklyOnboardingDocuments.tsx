@@ -54,6 +54,22 @@ function formatDocumentDate(isoDate: string) {
   });
 }
 
+function CredentialHeader() {
+  return (
+    <header className="weekly-doc__credential-header">
+      <img
+        className="weekly-doc__credential-logo"
+        src={ONBOARDING_DOCUMENT_CONFIG.logoPath}
+        alt="Viñoplastic"
+      />
+      <h1 className="weekly-doc__title">
+        {ONBOARDING_DOCUMENT_CONFIG.credential.title}
+      </h1>
+      <span className="weekly-doc__credential-header-spacer" aria-hidden="true" />
+    </header>
+  );
+}
+
 function CompanyHeader({ printDate }: { printDate: string }) {
   return (
     <header className="weekly-doc__company-header">
@@ -137,7 +153,7 @@ function CredentialDocument({ employees, printDate }: { employees: Employee[]; p
   return (
     <div className="weekly-doc weekly-doc--credential">
       <section className="weekly-doc__page weekly-doc__page--credential-main">
-        <h1 className="weekly-doc__title">{config.title}</h1>
+        <CredentialHeader />
         <p className="weekly-doc__date-line">
           {ONBOARDING_DOCUMENT_CONFIG.location} a {formatDocumentDate(printDate)}.
         </p>
@@ -160,7 +176,7 @@ function CredentialDocument({ employees, printDate }: { employees: Employee[]; p
           key={`credential-continuation-${pageIndex}`}
           className="weekly-doc__page weekly-doc__page--credential-continuation"
         >
-          <h1 className="weekly-doc__title">{config.title}</h1>
+          <CredentialHeader />
           <CredentialTable
             employees={pageEmployees}
             minimumRows={config.continuationPageCapacity}
