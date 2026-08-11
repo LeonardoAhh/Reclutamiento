@@ -113,16 +113,22 @@ export function RecordatoriosView() {
   );
 
   const filteredEmployees = useMemo(() => {
-    return weeklyEmployees.map((employee) => {
-      const numKey = String(employee.num_empleado).trim().replace(/^0+/, "");
-      const routeData = rutaLookup.get(numKey);
+    return weeklyEmployees
+      .filter(
+        (employee) =>
+          String(employee.turno ?? "").trim().toLocaleLowerCase("es") !==
+          "mixto",
+      )
+      .map((employee) => {
+        const numKey = String(employee.num_empleado).trim().replace(/^0+/, "");
+        const routeData = rutaLookup.get(numKey);
 
-      return {
-        ...employee,
-        ruta_final: employee.ruta || routeData?.nombreRuta || "",
-        parada_final: employee.parada || routeData?.parada || "",
-      };
-    });
+        return {
+          ...employee,
+          ruta_final: employee.ruta || routeData?.nombreRuta || "",
+          parada_final: employee.parada || routeData?.parada || "",
+        };
+      });
   }, [rutaLookup, weeklyEmployees]);
 
   const selectedWeekLabel = selectedWeek.label;
@@ -134,6 +140,7 @@ export function RecordatoriosView() {
       setIsGeneratingImage(true);
 
       const node = tableRef.current;
+      node.classList.add("is-exporting");
       const documentPaper = getComputedStyle(document.documentElement)
         .getPropertyValue("--color-document-paper")
         .trim();
@@ -156,6 +163,7 @@ export function RecordatoriosView() {
       console.error("Error generating or copying image:", err);
       sileo.error({ title: "Error al copiar la imagen" });
     } finally {
+      tableRef.current?.classList.remove("is-exporting");
       setIsGeneratingImage(false);
     }
   };
@@ -237,7 +245,7 @@ export function RecordatoriosView() {
             <div className="config-filter-empty" role="status">
               <Bus size={32} aria-hidden="true" />
               <p className="type-body-md text-charcoal">
-                No hay ingresos registrados para la semana seleccionada.
+                No hay ingresos aplicables al listado de rutas en la semana seleccionada.
               </p>
             </div>
           ) : (
