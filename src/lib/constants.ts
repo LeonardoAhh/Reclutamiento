@@ -284,13 +284,8 @@ export const ONBOARDING_DOCUMENT_CONFIG = {
     continuationPageCapacity: 30,
   },
   contract: {
-    collectiveTitle: 'Entrega de contratos',
     collectiveStatement:
       'Por medio de la presente se hace constar que se han entregado con esta fecha, la copia del contrato firmado por ambas partes (Empleado y Empleador) de los ingresos de la semana',
-    individualStatement:
-      'Por medio de la presente hago contar que se me ha entregado con esta fecha, la copia de mi contrato, firmado por ambas partes (Empleado y Empleador).',
-    employeeSignatureLabel: 'Nombre y firma del empleado',
-    delivererSignatureLabel: 'Nombre y firma de quien entrega',
     collectivePageCapacity: 9,
   },
 } as const;

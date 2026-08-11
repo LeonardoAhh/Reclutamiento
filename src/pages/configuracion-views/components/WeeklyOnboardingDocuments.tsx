@@ -222,31 +222,6 @@ function ContractDocument({
           <DocumentFooter />
         </section>
       ))}
-
-      {employees.map((employee) => (
-        <section
-          key={`contract-individual-${employee.id || employee.num_empleado}`}
-          className="weekly-doc__page weekly-doc__page--contract-individual"
-        >
-          <CompanyHeader printDate={printDate} />
-          <p className="weekly-doc__contract-statement weekly-doc__contract-statement--individual">
-            {config.individualStatement}
-          </p>
-          <div className="weekly-doc__signatures">
-            <div className="weekly-doc__signature">
-              <span className="weekly-doc__signature-name">{employee.nombre}</span>
-              <span className="weekly-doc__signature-line" aria-hidden="true" />
-              <span>{config.employeeSignatureLabel}</span>
-            </div>
-            <div className="weekly-doc__signature">
-              <span className="weekly-doc__signature-name" aria-hidden="true">&nbsp;</span>
-              <span className="weekly-doc__signature-line" aria-hidden="true" />
-              <span>{config.delivererSignatureLabel}</span>
-            </div>
-          </div>
-          <DocumentFooter />
-        </section>
-      ))}
     </div>
   );
 }
@@ -378,7 +353,7 @@ export function WeeklyOnboardingDocuments({
         <DocumentPreviewCard
           format="contracts"
           title="Entrega de contratos"
-          description="Constancia colectiva y recibo individual por empleado."
+          description="Constancia colectiva para firma de recibido."
           employees={employees}
           weekLabel={weekLabel}
           onPrint={setActivePrint}

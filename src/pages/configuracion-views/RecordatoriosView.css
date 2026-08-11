@@ -401,30 +401,6 @@
   text-align: center;
 }
 
-.weekly-doc__signatures {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.weekly-doc__signature {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.weekly-doc__signature-name {
-  min-height: var(--spacing-xl);
-  font-weight: var(--font-medium);
-}
-
-.weekly-doc__signature-line {
-  width: 100%;
-  border-bottom: 1px solid var(--color-document-ink);
-}
-
 @media print {
   @page {
     size: letter portrait;
@@ -547,20 +523,4 @@
     font-size: var(--type-caption-up-size);
   }
 
-  .weekly-doc__contract-statement--individual {
-    margin-top: 18mm;
-  }
-
-  .weekly-doc__signatures {
-    gap: 18mm;
-  }
-
-  .weekly-doc__signature {
-    gap: 3mm;
-    font-size: var(--type-caption-up-size);
-  }
-
-  .weekly-doc__signature-line {
-    min-height: 18mm;
-  }
 }
