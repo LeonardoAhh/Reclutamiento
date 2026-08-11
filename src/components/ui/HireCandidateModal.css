@@ -3,6 +3,39 @@
    Sin hardcoding - solo tokens CSS
    ======================================== */
 
+.hire-mode-tabs {
+  display: flex;
+  background: var(--color-canvas-soft);
+  padding: 4px;
+  border-radius: var(--rounded-md);
+  gap: 4px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.hire-mode-tabs button {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hire-mode-tabs button:hover:not(.hire-mode-active) {
+  color: var(--color-ink);
+}
+
+.hire-mode-tabs .hire-mode-active {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-elevated);
+}
+
 .hire-hint {
   margin-top: var(--spacing-md);
   padding: var(--spacing-md);
@@ -18,7 +51,8 @@
   font-family: var(--font-mono);
   font-size: var(--type-caption-md-size);
   padding: 2px var(--spacing-xxs);
-  background: var(--color-surface-cream-strong);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-xs);
   color: var(--color-ink);
 }

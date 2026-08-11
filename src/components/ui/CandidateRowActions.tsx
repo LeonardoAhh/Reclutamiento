@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { BadgeCheck, CheckCircle2, FileImage, MessageCircle, MoreVertical, Pencil, StickyNote, Trash2 } from 'lucide-react';
+import { BadgeCheck, CheckCircle2, FileImage, MoreVertical, Pencil, StickyNote, Trash2, User, UserMinus } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { Candidate } from '@/lib/types';
+import { ReclutadorBadge } from '@/components/ui/Badge';
 import './CandidateRowActions.css';
 
 interface CandidateRowActionsProps {
@@ -12,6 +13,7 @@ interface CandidateRowActionsProps {
   onNotes: (c: Candidate) => void;
   onAccessCard?: (c: Candidate) => void;
   onHire?: (c: Candidate) => void;
+  onBaja?: (c: Candidate) => void;
 }
 
 export function CandidateRowActions({
@@ -22,6 +24,7 @@ export function CandidateRowActions({
   onNotes,
   onAccessCard,
   onHire,
+  onBaja,
 }: CandidateRowActionsProps) {
   const [open, setOpen] = useState(false);
 
@@ -29,13 +32,6 @@ export function CandidateRowActions({
     setOpen(false);
     action(candidate);
   }
-
-  const rawFirstName = candidate.nombre.split(' ')[0] || '';
-  const firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
-
-  const rawPuesto = candidate.puesto || '';
-  const puestoLower = rawPuesto.toLowerCase();
-  const puestoMsg = puestoLower ? puestoLower.charAt(0).toUpperCase() + puestoLower.slice(1) : '';
 
   return (
     <div className="candidate-row-actions">
@@ -59,19 +55,16 @@ export function CandidateRowActions({
           sideOffset={4}
           className="candidate-row-actions__menu"
         >
-          {candidate.telefono && (
-            <a
-              href={`https://wa.me/52${candidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${firstName}, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${puestoMsg}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="candidate-row-actions__item"
-              role="menuitem"
-              onClick={() => setOpen(false)}
-            >
-              <MessageCircle size={14} aria-hidden="true" />
-              <span>WhatsApp</span>
-            </a>
+          {candidate.reclutador && (
+            <>
+              <div className="candidate-row-actions__info">
+                <span className="candidate-row-actions__info-label">Reclutador</span>
+                <ReclutadorBadge nombre={candidate.reclutador} />
+              </div>
+              <div className="candidate-row-actions__divider" role="separator" />
+            </>
           )}
+
           {onAccessCard && (
             <button
               type="button"
@@ -96,15 +89,6 @@ export function CandidateRowActions({
             </button>
           )}
 
-          <button
-            type="button"
-            className="candidate-row-actions__item"
-            role="menuitem"
-            onClick={() => run(onNotes)}
-          >
-            <StickyNote size={14} aria-hidden="true" />
-            <span>Notas {notesCount > 0 ? `(${notesCount})` : ''}</span>
-          </button>
 
           <button
             type="button"
@@ -115,6 +99,18 @@ export function CandidateRowActions({
             <Pencil size={14} aria-hidden="true" />
             <span>Editar</span>
           </button>
+
+          {onBaja && (
+            <button
+              type="button"
+              className="candidate-row-actions__item candidate-row-actions__item--danger"
+              role="menuitem"
+              onClick={() => run(onBaja)}
+            >
+              <UserMinus size={14} aria-hidden="true" />
+              <span>Baja</span>
+            </button>
+          )}
 
           {onDelete && (
             <>

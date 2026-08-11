@@ -66,14 +66,13 @@
   height: 24px;
   padding: 0 8px;
   border-radius: var(--rounded-md);
-  font-size: var(--type-caption-md-size, 12px);
-  font-weight: var(--font-medium, 500);
-  background: var(--color-surface-soft);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-surface);
   color: var(--color-ink);
+  border: 1px solid var(--color-hairline-soft);
   white-space: nowrap;
 }
-
-
 
 .project-badge--compact {
   padding: 0 4px;
@@ -84,7 +83,6 @@
 
 .project-badge--vinoplastic {
   color: var(--color-primary);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .project-badge__icon {
