@@ -1,11 +1,11 @@
-import type { AuthorizedPosition, PuestoHabilidades } from './types';
+import type { AuthorizedPosition, PuestoHabilidades } from "./types";
 
 /**
  * Categorías de puesto asignables manualmente al dar de alta un empleado.
  * NO se derivan del puesto: la cobertura de vacantes ignora la categoría, por
  * lo que un puesto se cubre sin importar la categoría seleccionada.
  */
- export const CATEGORIAS = ['N/A', 'A', 'B', 'C', 'D'] as const;
+export const CATEGORIAS = ["N/A", "A", "B", "C", "D"] as const;
 
 /**
  * PLANTILLA AUTORIZADA — Números inamovibles
@@ -48,120 +48,625 @@ import type { AuthorizedPosition, PuestoHabilidades } from './types';
  */
 export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   // ── ALMACÉN ──
-  { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'JEFE DE ALMACÉN', plantilla_autorizada: 1 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'CHOFER', plantilla_autorizada: 1 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN', puesto: 'AUXILIAR ADMINISTRATIVO DE ALMACÉN', plantilla_autorizada: 2 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 7, bono: true, bono_monto: 345 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 1ER TURNO', puesto: 'ALMACENISTA DE MATERIA PRIMA', plantilla_autorizada: 1, bono: true, bono_monto: 345 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'ALMACENISTA DE MATERIA PRIMA', plantilla_autorizada: 1, bono: true, bono_monto: 345 },
-  { area: 'ALMACÉN', seccion: 'ALMACÉN 2DO TURNO', puesto: 'AUXILIAR DE ALMACÉN', plantilla_autorizada: 5, bono: true, bono_monto: 345 },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN",
+    puesto: "JEFE DE ALMACÉN",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN",
+    puesto: "CHOFER",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN",
+    puesto: "AUXILIAR ADMINISTRATIVO DE ALMACÉN",
+    plantilla_autorizada: 2,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 1ER TURNO",
+    puesto: "AUXILIAR DE ALMACÉN",
+    plantilla_autorizada: 7,
+    bono: true,
+    bono_monto: 345,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 1ER TURNO",
+    puesto: "ALMACENISTA DE MATERIA PRIMA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 345,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 2DO TURNO",
+    puesto: "ALMACENISTA DE MATERIA PRIMA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 345,
+  },
+  {
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 2DO TURNO",
+    puesto: "AUXILIAR DE ALMACÉN",
+    plantilla_autorizada: 5,
+    bono: true,
+    bono_monto: 345,
+  },
 
   // ── CALIDAD ──
-  { area: 'CALIDAD', seccion: 'A. CALIDAD 1ER TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22, bono: true, bono_monto: 619, backup: 2 },
-  { area: 'CALIDAD', seccion: 'A. CALIDAD 2DO. TURNO', puesto: 'OPERADOR DE ACABADOS GP-12', plantilla_autorizada: 22, bono: true, bono_monto: 619, backup: 2 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'GERENTE DE CALIDAD', plantilla_autorizada: 1 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INGENIERO DE CALIDAD', plantilla_autorizada: 2 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'SUPERVISOR DE ACABADOS - GP12', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INSPECTOR RECIBO', plantilla_autorizada: 1 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'INSPECTOR DE CALIDAD', plantilla_autorizada: 15, notas: 'Backup autorizado 1 y 1 extra por maternidad de 4040 SOFIA.', backup: 2 },
-  { area: 'CALIDAD', seccion: 'CALIDAD ADMTVO', puesto: 'AUXILIAR DE CALIDAD', plantilla_autorizada: 1 },
-  { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'METRÓLOGO', plantilla_autorizada: 13 },
-  { area: 'CALIDAD', seccion: 'METROLOGÍA', puesto: 'AUXILIAR DE METROLOGÍA', plantilla_autorizada: 4 },
+  {
+    area: "CALIDAD",
+    seccion: "A. CALIDAD 1ER TURNO",
+    puesto: "OPERADOR DE ACABADOS GP-12",
+    plantilla_autorizada: 22,
+    bono: true,
+    bono_monto: 619,
+    backup: 2,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "A. CALIDAD 2DO. TURNO",
+    puesto: "OPERADOR DE ACABADOS GP-12",
+    plantilla_autorizada: 22,
+    bono: true,
+    bono_monto: 619,
+    backup: 2,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "GERENTE DE CALIDAD",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "INGENIERO DE CALIDAD",
+    plantilla_autorizada: 2,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "SUPERVISOR DE ACABADOS - GP12",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "INSPECTOR RECIBO",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "INSPECTOR DE CALIDAD",
+    plantilla_autorizada: 15,
+    notas: "Backup autorizado 1 y 1 extra por maternidad de 4040 SOFIA.",
+    backup: 2,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "AUXILIAR DE CALIDAD",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "METROLOGÍA",
+    puesto: "METRÓLOGO",
+    plantilla_autorizada: 13,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "METROLOGÍA",
+    puesto: "AUXILIAR DE METROLOGÍA",
+    plantilla_autorizada: 4,
+  },
 
   // ── GERENCIA ──
-  { area: 'GERENCIA', seccion: 'GERENCIA', puesto: 'GERENTE DE PLANTA', plantilla_autorizada: 1 },
+  {
+    area: "GERENCIA",
+    seccion: "GERENCIA",
+    puesto: "GERENTE DE PLANTA",
+    plantilla_autorizada: 1,
+  },
 
   // ── LOGISTICA ──
-  { area: 'LOGISTICA', seccion: 'LOGISTICA', puesto: 'JEFE DE LOGISTICA', plantilla_autorizada: 1 },
-  { area: 'LOGISTICA', seccion: 'LOGISTICA', puesto: 'SUPERVISOR DE LOGISTICA', plantilla_autorizada: 1 },
+  {
+    area: "LOGISTICA",
+    seccion: "LOGISTICA",
+    puesto: "JEFE DE LOGISTICA",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "LOGISTICA",
+    seccion: "LOGISTICA",
+    puesto: "SUPERVISOR DE LOGISTICA",
+    plantilla_autorizada: 1,
+  },
 
   // ── MANTENIMIENTO ──
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'JEFE DE MANTENIMIENTO', plantilla_autorizada: 1 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR ADMINISTRATIVO DE MANTENIMIENTO', plantilla_autorizada: 1 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO ESPECIALISTA DE MANTENIMIENTO', plantilla_autorizada: 1 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TECNICO DE MANTENIMIENTO DE EDIFICIOS', plantilla_autorizada: 1, bono: true, bono_monto: 345 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'TÉCNICO DE MANTENIMIENTO', plantilla_autorizada: 8, bono: true, bono_monto: 345 },
-  { area: 'MANTENIMIENTO', seccion: 'MANTENIMIENTO', puesto: 'AUXILIAR DE MANTENIMIENTO', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "JEFE DE MANTENIMIENTO",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "AUXILIAR ADMINISTRATIVO DE MANTENIMIENTO",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "TÉCNICO ESPECIALISTA DE MANTENIMIENTO",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "TECNICO DE MANTENIMIENTO DE EDIFICIOS",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 345,
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "TÉCNICO DE MANTENIMIENTO",
+    plantilla_autorizada: 8,
+    bono: true,
+    bono_monto: 345,
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "AUXILIAR DE MANTENIMIENTO",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
 
   // ── TALLER DE MOLDES ──
-  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'JEFE DE TALLER DE MOLDES', plantilla_autorizada: 1 },
-  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'AUXILIAR ADMINISTRATIVO DE TALLER DE MOLDES', plantilla_autorizada: 1 },
-  { area: 'TALLER DE MOLDES', seccion: 'MOLDES', puesto: 'TÉCNICO DE MOLDES', plantilla_autorizada: 13, bono: true, bono_monto: 345 },
+  {
+    area: "TALLER DE MOLDES",
+    seccion: "MOLDES",
+    puesto: "JEFE DE TALLER DE MOLDES",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "TALLER DE MOLDES",
+    seccion: "MOLDES",
+    puesto: "AUXILIAR ADMINISTRATIVO DE TALLER DE MOLDES",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "TALLER DE MOLDES",
+    seccion: "MOLDES",
+    puesto: "TÉCNICO DE MOLDES",
+    plantilla_autorizada: 13,
+    bono: true,
+    bono_monto: 345,
+  },
 
   // ── PRODUCCIÓN 1ER TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'AUXILIAR SCRAP', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 1ER. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32, backup: 5, notas: 'BackUp:', bono: true, bono_monto: 619, urgentes: 5 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "AUXILIAR DE SUPERVISOR",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "CHECK LIST",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "PREPARADOR",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "MATERIALISTA",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "AUXILIAR DE BÁSCULA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "CAPTURISTA RPS",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "AUXILIAR SCRAP",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: "BackUp:",
+    bono: true,
+    bono_monto: 619,
+    urgentes: 5,
+  },
 
   // ── PRODUCCIÓN 2o TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 2o. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32, backup: 5, notas: 'Back-up por ausentismo y rotación del turno.', bono: true, bono_monto: 619 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "AUXILIAR DE SUPERVISOR",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "CHECK LIST",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "PREPARADOR",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "MATERIALISTA",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "AUXILIAR DE BÁSCULA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "CAPTURISTA RPS",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: "Back-up por ausentismo y rotación del turno.",
+    bono: true,
+    bono_monto: 619,
+  },
 
   // ── PRODUCCIÓN 3ER TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 3ER. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32, backup: 5, notas: 'Back-up por ausentismo y rotación del turno.', bono: true, bono_monto: 619 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "AUXILIAR DE SUPERVISOR",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "CHECK LIST",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "PREPARADOR",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "MATERIALISTA",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "AUXILIAR DE BÁSCULA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: "Back-up por ausentismo y rotación del turno.",
+    bono: true,
+    bono_monto: 619,
+  },
 
   // ── PRODUCCIÓN 4o TURNO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE SUPERVISOR', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CHECK LIST', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'PREPARADOR', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'MATERIALISTA', plantilla_autorizada: 2, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'AUXILIAR DE BÁSCULA', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'CAPTURISTA RPS', plantilla_autorizada: 1, bono: true, bono_monto: 619 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN 4o. TURNO', puesto: 'OPERADOR DE MÁQUINA', plantilla_autorizada: 32, backup: 5, notas: 'Back-up por ausentismo y rotación del turno.', bono: true, bono_monto: 619 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "AUXILIAR DE SUPERVISOR",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "CHECK LIST",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "PREPARADOR",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "MATERIALISTA",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "AUXILIAR DE BÁSCULA",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "CAPTURISTA RPS",
+    plantilla_autorizada: 1,
+    bono: true,
+    bono_monto: 619,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    plantilla_autorizada: 32,
+    backup: 5,
+    notas: "Back-up por ausentismo y rotación del turno.",
+    bono: true,
+    bono_monto: 619,
+  },
 
   // ── PRODUCCIÓN ADMTVO ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'GERENTE DE PRODUCCION', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'JEFE DE PROCESO', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'INGENIERO DE PROCESO', plantilla_autorizada: 4 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'PLANEADOR DE PRODUCCIÓN', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'SUPERVISOR DE PRODUCCIÓN', plantilla_autorizada: 14 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN ADMTVO', puesto: 'ASISTENTE DE PRODUCCIÓN', plantilla_autorizada: 2 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "GERENTE DE PRODUCCION",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "JEFE DE PROCESO",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "INGENIERO DE PROCESO",
+    plantilla_autorizada: 4,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "PLANEADOR DE PRODUCCIÓN",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "SUPERVISOR DE PRODUCCIÓN",
+    plantilla_autorizada: 14,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "ASISTENTE DE PRODUCCIÓN",
+    plantilla_autorizada: 2,
+  },
 
   // ── PRODUCCIÓN MONTAJE ──
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'SUPERVISOR DE MONTAJE DE MOLDES', plantilla_autorizada: 1 },
-  { area: 'PRODUCCIÓN', seccion: 'PRODUCCIÓN MONTAJE', puesto: 'MONTADOR DE MOLDES', plantilla_autorizada: 8, bono: true, bono_monto: 345 },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN MONTAJE",
+    puesto: "SUPERVISOR DE MONTAJE DE MOLDES",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN MONTAJE",
+    puesto: "MONTADOR DE MOLDES",
+    plantilla_autorizada: 8,
+    bono: true,
+    bono_monto: 345,
+  },
 
   // ── PROYECTOS ──
-  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'LIDER DE PROYECTOS', plantilla_autorizada: 3 },
-  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'LIDER DE COTIZACIONES', plantilla_autorizada: 1 },
-  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'INGENIERO DE PROYECTOS', plantilla_autorizada: 4 },
-  { area: 'PROYECTOS', seccion: 'PROYECTOS', puesto: 'AUXILIAR DE PROYECTOS', plantilla_autorizada: 1 },
+  {
+    area: "PROYECTOS",
+    seccion: "PROYECTOS",
+    puesto: "LIDER DE PROYECTOS",
+    plantilla_autorizada: 3,
+  },
+  {
+    area: "PROYECTOS",
+    seccion: "PROYECTOS",
+    puesto: "LIDER DE COTIZACIONES",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "PROYECTOS",
+    seccion: "PROYECTOS",
+    puesto: "INGENIERO DE PROYECTOS",
+    plantilla_autorizada: 4,
+  },
+  {
+    area: "PROYECTOS",
+    seccion: "PROYECTOS",
+    puesto: "AUXILIAR DE PROYECTOS",
+    plantilla_autorizada: 1,
+  },
 
   // ── RECURSOS HUMANOS ──
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'JEFE DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'COORDINADOR DE RECLUTAMIENTO Y SELECCIÓN', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE SEGURIDAD E HIGIENE', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE CAPACITACIÓN', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE RECLUTAMIENTO Y SELECCIÓN', plantilla_autorizada: 2 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ANALISTA DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'ASISTENTE DE RECURSOS HUMANOS', plantilla_autorizada: 1 },
-  { area: 'RECURSOS HUMANOS', seccion: 'RECURSOS HUMANOS', puesto: 'AUXILIAR DE LIMPIEZA', plantilla_autorizada: 4, bono: true, bono_monto: 668 },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "JEFE DE RECURSOS HUMANOS",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "COORDINADOR DE RECLUTAMIENTO Y SELECCIÓN",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "ANALISTA DE SEGURIDAD E HIGIENE",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "ANALISTA DE CAPACITACIÓN",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "ANALISTA DE RECLUTAMIENTO Y SELECCIÓN",
+    plantilla_autorizada: 2,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "ANALISTA DE RECURSOS HUMANOS",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "ASISTENTE DE RECURSOS HUMANOS",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "RECURSOS HUMANOS",
+    seccion: "RECURSOS HUMANOS",
+    puesto: "AUXILIAR DE LIMPIEZA",
+    plantilla_autorizada: 4,
+    bono: true,
+    bono_monto: 668,
+  },
 
   // ── SGI ──
-  { area: 'SGI', seccion: 'SGI', puesto: 'COORDINADOR DE SGI', plantilla_autorizada: 1 },
-  { area: 'SGI', seccion: 'SGI', puesto: 'AUXILIAR DEL SGI', plantilla_autorizada: 1 },
+  {
+    area: "SGI",
+    seccion: "SGI",
+    puesto: "COORDINADOR DE SGI",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "SGI",
+    seccion: "SGI",
+    puesto: "AUXILIAR DEL SGI",
+    plantilla_autorizada: 1,
+  },
 
   // ── SISTEMAS ──
-  { area: 'SISTEMAS', seccion: 'SISTEMAS', puesto: 'COORDINADOR DE RPS', plantilla_autorizada: 1 },
-  { area: 'SISTEMAS', seccion: 'SISTEMAS', puesto: 'AUXILIAR PROGRAMADOR', plantilla_autorizada: 1 },
+  {
+    area: "SISTEMAS",
+    seccion: "SISTEMAS",
+    puesto: "COORDINADOR DE RPS",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "SISTEMAS",
+    seccion: "SISTEMAS",
+    puesto: "AUXILIAR PROGRAMADOR",
+    plantilla_autorizada: 1,
+  },
 
   // ── COMERCIAL ──
-  { area: 'COMERCIAL', seccion: 'VENTAS', puesto: 'GERENCIA COMERCIAL', plantilla_autorizada: 1 },
+  {
+    area: "COMERCIAL",
+    seccion: "VENTAS",
+    puesto: "GERENCIA COMERCIAL",
+    plantilla_autorizada: 1,
+  },
 ];
 
 /**
@@ -191,14 +696,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
  * (via normalizeString).
  */
 export const RECLUTADORES_ACTIVOS = [
-  'ALEXANDRA',
-  'DANIELA',
-  'LEONARDO',
+  "ALEXANDRA",
+  "DANIELA",
+  "LEONARDO",
 ] as const;
 
 export type ReclutadorNombre = (typeof RECLUTADORES_ACTIVOS)[number];
 
-export type ReclutadorRol = 'reclutadora' | 'coordinador';
+export type ReclutadorRol = "reclutadora" | "coordinador";
 
 /**
  * RECLUTADORES_INFO — Rol de cada persona del equipo de reclutamiento.
@@ -207,25 +712,30 @@ export type ReclutadorRol = 'reclutadora' | 'coordinador';
  */
 export const RECLUTADORES_INFO: Record<
   ReclutadorNombre,
-  { rol: ReclutadorRol; nombre_completo: string; nombre_pase: string; nombre_corto: string }
+  {
+    rol: ReclutadorRol;
+    nombre_completo: string;
+    nombre_pase: string;
+    nombre_corto: string;
+  }
 > = {
   ALEXANDRA: {
-    rol: 'reclutadora',
-    nombre_completo: 'Nayeli Alexandra Hernández Hernández',
-    nombre_pase: 'Lic. Alexandra Hernández',
-    nombre_corto: 'Alexandra',
+    rol: "reclutadora",
+    nombre_completo: "Nayeli Alexandra Hernández Hernández",
+    nombre_pase: "Lic. Alexandra Hernández",
+    nombre_corto: "Alexandra",
   },
   DANIELA: {
-    rol: 'reclutadora',
-    nombre_completo: 'Daniela De Santiago Ramírez',
-    nombre_pase: 'Lic. Daniela De Santiago',
-    nombre_corto: 'Daniela',
+    rol: "reclutadora",
+    nombre_completo: "Daniela De Santiago Ramírez",
+    nombre_pase: "Lic. Daniela De Santiago",
+    nombre_corto: "Daniela",
   },
   LEONARDO: {
-    rol: 'coordinador',
-    nombre_completo: 'Leonardo Ahmed Hernández Herrera',
-    nombre_pase: 'Lic. Leonardo Hernández',
-    nombre_corto: 'Leonardo',
+    rol: "coordinador",
+    nombre_completo: "Leonardo Ahmed Hernández Herrera",
+    nombre_pase: "Lic. Leonardo Hernández",
+    nombre_corto: "Leonardo",
   },
 };
 
@@ -247,14 +757,14 @@ export function getRecruiterAccessCardName(
 
   const nameParts = trimmed.split(/\s+/);
   const firstName = nameParts[0];
-  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
-  return `Lic. ${firstName}${lastName ? ` ${lastName}` : ''}`;
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+  return `Lic. ${firstName}${lastName ? ` ${lastName}` : ""}`;
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
   reloadDelayMs: 1800,
-  updatingTitle: 'Actualizando sistema',
-  updatingHint: 'Preparando la nueva versión…',
+  updatingTitle: "Actualizando sistema",
+  updatingHint: "Preparando la nueva versión…",
 } as const;
 
 /**
@@ -262,30 +772,30 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
  * conservan como aparecen en los documentos oficiales proporcionados por RH.
  */
 export const ONBOARDING_DOCUMENT_CONFIG = {
-  companyName: 'Viñoplastic Inyección SA de CV',
-  location: 'Santa Rosa Jáuregui, Qro.',
-  logoPath: '/logo-empresa.jpg',
+  companyName: "Viñoplastic Inyección SA de CV",
+  location: "Santa Rosa Jáuregui, Qro.",
+  logoPath: "/logo-empresa.jpg",
   addressFooter:
-    'Av. La Montaña N.98 Parque Industrial Querétaro, Tel: 55-63-26-5881 y 2-40-95-39 Ext. 300',
+    "Av. La Montaña N.98 Parque Industrial Querétaro, Tel: 55-63-26-5881 y 2-40-95-39 Ext. 300",
   credential: {
-    title: 'RESPONSIVA DE ENTREGA DE CREDENCIAL DE TABAJADOR',
+    title: "RESPONSIVA DE ENTREGA DE CREDENCIAL DE TABAJADOR",
     intro:
-      'Por medio de la presente carta responsiva, en virtud de que ingreso a laborar a esta empresa Viñoplastic inyección SA DE CV declaro que asumo la responsabilidad del resguardo y uso adecuado de mi credencial como trabajador de esta empresa:',
+      "Por medio de la presente carta responsiva, en virtud de que ingreso a laborar a esta empresa Viñoplastic Inyección S.A DE C.V declaro que asumo la responsabilidad del resguardo y uso adecuado de mi credencial como trabajador de esta empresa:",
     paragraphs: [
-      'Reconozco que esta credencial se encuentra bajo mi cuidado y custodia. Acepto utilizarla de manera adecuada y responsable, garantizando su buen estado durante mi relación laboral con la empresa.',
-      'Asimismo, me comprometo a devolver la credencial en la misma condición en que lo recibí, salvo el desgaste normal por el uso ordinario. Seré responsable de cualquier daño, pérdida o robo que pueda ocurrir durante el tiempo en que esté a mi cargo.',
-      'Me comprometo a notificar de inmediato cualquier incidencia o problema que afecte a la empresa.',
-      'La presente carta tiene validez a partir de la fecha de firma y hasta la finalización de mi relación laboral, lo que ocurra primero.',
+      "Reconozco que esta credencial se encuentra bajo mi cuidado y custodia. Acepto utilizarla de manera adecuada y responsable, garantizando su buen estado durante mi relación laboral con la empresa.",
+      "Asimismo, me comprometo a devolver la credencial en la misma condición en que lo recibí, salvo el desgaste normal por el uso ordinario. Seré responsable de cualquier daño, pérdida o robo que pueda ocurrir durante el tiempo en que esté a mi cargo.",
+      "Me comprometo a notificar de inmediato cualquier incidencia o problema que afecte a la empresa.",
+      "La presente carta tiene validez a partir de la fecha de firma y hasta la finalización de mi relación laboral, lo que ocurra primero.",
     ],
-    acknowledgement: 'Firmamos de enterados y recibida la credencial',
-    formCode: 'RG-REC-052',
-    revision: 'REV.0',
+    acknowledgement: "Firmamos de enterados y recibida la credencial",
+    formCode: "RG-REC-052",
+    revision: "REV.0",
     firstPageCapacity: 12,
     continuationPageCapacity: 30,
   },
   contract: {
     collectiveStatement:
-      'Por medio de la presente se hace constar que se han entregado con esta fecha, la copia del contrato firmado por ambas partes (Empleado y Empleador) de los ingresos de la semana',
+      "Por medio de la presente se hace constar que se han entregado con esta fecha, la copia del contrato firmado por ambas partes (Empleado y Empleador) de los ingresos de la semana",
     collectivePageCapacity: 9,
   },
 } as const;
@@ -296,124 +806,152 @@ export const ONBOARDING_DOCUMENT_CONFIG = {
  * siempre utilicen la misma fuente de verdad.
  */
 export const CANDIDATE_ACCESS_CARD_CONFIG = {
-  cardTitle: 'PASE DE ENTREVISTA',
-  cardSubtitle: 'VIÑOPLASTIC INYECCIÓN S.A. DE C.V.',
-  accessNotice: 'Válido para un solo acceso · Personal e intransferible',
-  identificationNotice: 'Presenta tu INE original en caseta de vigilancia',
-  locationName: 'Parque Industrial Querétaro',
-  address: 'Av. La Montaña 98, 76220 Santa Rosa Jáuregui, Qro.',
-  filePrefix: 'pase-entrevista',
-  shareTitle: 'Pase de entrevista',
-  whatsappCountryCode: '52',
-  whatsappBaseUrl: 'https://wa.me',
-  whatsappPasteMessage: 'Te comparto tu pase de entrevista. Pega la imagen copiada en este chat y preséntala al llegar a caseta de vigilancia.',
-  whatsappAttachMessage: 'Te comparto tu pase de entrevista. Adjunta la imagen descargada en este chat y preséntala al llegar a caseta de vigilancia.',
+  cardTitle: "PASE DE ENTREVISTA",
+  cardSubtitle: "VIÑOPLASTIC INYECCIÓN S.A. DE C.V.",
+  accessNotice: "Válido para un solo acceso · Personal e intransferible",
+  identificationNotice: "Presenta tu INE original en caseta de vigilancia",
+  locationName: "Parque Industrial Querétaro",
+  address: "Av. La Montaña 98, 76220 Santa Rosa Jáuregui, Qro.",
+  filePrefix: "pase-entrevista",
+  shareTitle: "Pase de entrevista",
+  whatsappCountryCode: "52",
+  whatsappBaseUrl: "https://wa.me",
+  whatsappPasteMessage:
+    "Te comparto tu pase de entrevista. Pega la imagen copiada en este chat y preséntala al llegar a caseta de vigilancia.",
+  whatsappAttachMessage:
+    "Te comparto tu pase de entrevista. Adjunta la imagen descargada en este chat y preséntala al llegar a caseta de vigilancia.",
 } as const;
 
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
   {
-    area: 'ALMACÉN',
-    seccion: 'ALMACÉN 1ER TURNO',
-    puesto: 'AUXILIAR DE ALMACÉN',
-    competencias: 'ORDENADO, RESPONSABLE Y PROACTIVO, TRABAJO BAJO PRESION, AGILIDAD MENTAL, TRATO CON PROVEEDORES, ACTITUD DE SERVICIO, HONESTO, PUNTUAL,DINÁMICO',
-    conocimientos_tecnicos: 'CONOCIMIENTO EN ENTRADAS Y SALIDAS DE MATERIAL, ACOMODO E IDENTIFICACION DE PRODUCTOS Y MATERIALES, CONOCIMIENTO DE INVENTARIOS',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CAPTURA ALFANUMÉRICA Y NUMÉRICA, CONOCIMIENTO DE FACTURAS, ORDENES DE PRODUCCIÓN, REQUISICIÓN DE MP, PT, E INSUMOS, CONOCIMIENTO DE ORDENES DE COMPRA, DEVOLUCIONES, NOTAS DE CREDITO, MANEJO DE MONTACARGAS, MANEJO DE EQUIPO DE COMPUTO,REALIZACION DE REPORTES, CONOCIMIENTO Y MANEJO DE SAE, CONOCIMIENTO DE FILOSOFIA 5´S',
-  },
-  {
-    area: 'ALMACÉN',
-    seccion: 'ALMACÉN 2DO TURNO',
-    puesto: 'AUXILIAR DE ALMACÉN',
-    competencias: 'ORDENADO, RESPONSABLE Y PROACTIVO, TRABAJO BAJO PRESION, AGILIDAD MENTAL, TRATO CON PROVEEDORES, ACTITUD DE SERVICIO, HONESTO, PUNTUAL,DINÁMICO',
-    conocimientos_tecnicos: 'CONOCIMIENTO EN ENTRADAS Y SALIDAS DE MATERIAL, ACOMODO E IDENTIFICACION DE PRODUCTOS Y MATERIALES, CONOCIMIENTO DE INVENTARIOS',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CAPTURA ALFANUMÉRICA Y NUMÉRICA, CONOCIMIENTO DE FACTURAS, ORDENES DE PRODUCCIÓN, REQUISICIÓN DE MP, PT, E INSUMOS, CONOCIMIENTO DE ORDENES DE COMPRA, DEVOLUCIONES, NOTAS DE CREDITO, MANEJO DE MONTACARGAS, MANEJO DE EQUIPO DE COMPUTO,REALIZACION DE REPORTES, CONOCIMIENTO Y MANEJO DE SAE, CONOCIMIENTO DE FILOSOFIA 5´S',
-  },
-  {
-    area: 'CALIDAD',
-    seccion: 'A. CALIDAD 1ER TURNO',
-    puesto: 'OPERADOR DE ACABADOS GP-12',
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 1ER TURNO",
+    puesto: "AUXILIAR DE ALMACÉN",
     competencias:
-      'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALÍTICO',
+      "ORDENADO, RESPONSABLE Y PROACTIVO, TRABAJO BAJO PRESION, AGILIDAD MENTAL, TRATO CON PROVEEDORES, ACTITUD DE SERVICIO, HONESTO, PUNTUAL,DINÁMICO",
     conocimientos_tecnicos:
-      'CONOCIMIENTOS BÁSICOS SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS',
-    escolaridad: 'SECUNDARIA',
-    experiencia: '',
+      "CONOCIMIENTO EN ENTRADAS Y SALIDAS DE MATERIAL, ACOMODO E IDENTIFICACION DE PRODUCTOS Y MATERIALES, CONOCIMIENTO DE INVENTARIOS",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CAPTURA ALFANUMÉRICA Y NUMÉRICA, CONOCIMIENTO DE FACTURAS, ORDENES DE PRODUCCIÓN, REQUISICIÓN DE MP, PT, E INSUMOS, CONOCIMIENTO DE ORDENES DE COMPRA, DEVOLUCIONES, NOTAS DE CREDITO, MANEJO DE MONTACARGAS, MANEJO DE EQUIPO DE COMPUTO,REALIZACION DE REPORTES, CONOCIMIENTO Y MANEJO DE SAE, CONOCIMIENTO DE FILOSOFIA 5´S",
   },
   {
-    area: 'CALIDAD',
-    seccion: 'A. CALIDAD 2DO TURNO',
-    puesto: 'OPERADOR DE ACABADOS GP-12',
-    competencias: 'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALÍTICO',
-    conocimientos_tecnicos:
-      'CONOCIMIENTOS BÁSICOS SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS',
-    escolaridad: 'SECUNDARIA',
-    experiencia: '',
-  },
-  {
-    area: 'CALIDAD',
-    seccion: 'CALIDAD ADMTVO',
-    puesto: 'INSPECTOR DE CALIDAD',
+    area: "ALMACÉN",
+    seccion: "ALMACÉN 2DO TURNO",
+    puesto: "AUXILIAR DE ALMACÉN",
     competencias:
-      'ORDENADO, OBSERVADOR, ANALITICO, DISCIPLINADO, ORIENTADO A RESULTADOS, COMUNICACIÓN EFECTIVA, PROACTIVO, TRABAJO BAJO PRESIÓN',
+      "ORDENADO, RESPONSABLE Y PROACTIVO, TRABAJO BAJO PRESION, AGILIDAD MENTAL, TRATO CON PROVEEDORES, ACTITUD DE SERVICIO, HONESTO, PUNTUAL,DINÁMICO",
     conocimientos_tecnicos:
-      'MANEJO Y ELABORACIÓN DE REPORTES, LINEAS DE PRODUCCIÓN, CONOCIMIENTO EN MAQUINAS DE INYECCION, NORMAS DE CALIDAD (6 MESES EN PUESTO SIMILAR)',
-    escolaridad: 'PREPARATORIA/ INGENIERIA',
-    experiencia: 'MANEJO DE MP, MUESTREO Y ANÁLISIS DE PP/PT, LÍNEAS DE PRODUCCIÓN Y CALIDAD DE PROCESOS. OPERACIÓN DE EQUIPO DE MEDICIÓN (CABINA DE LUZ, COMPARADOR ÓPTICO, ESPECTROFOTÓMETRO, CALIBRADORES DE ALTURA Y HUMEDAD, PERNOS CALIBRADOS). SEGUIMIENTO A RE-TRABAJOS, REPORTES, GRÁFICAS DE CONTROL Y MANEJO DE SAE. CONOCIMIENTO DE NORMAS ISO/TS 16949:2009 Y ANSI Z1.4-1993, FILOSOFÍA 5S Y AUDITORÍAS INTERNAS.',
+      "CONOCIMIENTO EN ENTRADAS Y SALIDAS DE MATERIAL, ACOMODO E IDENTIFICACION DE PRODUCTOS Y MATERIALES, CONOCIMIENTO DE INVENTARIOS",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CAPTURA ALFANUMÉRICA Y NUMÉRICA, CONOCIMIENTO DE FACTURAS, ORDENES DE PRODUCCIÓN, REQUISICIÓN DE MP, PT, E INSUMOS, CONOCIMIENTO DE ORDENES DE COMPRA, DEVOLUCIONES, NOTAS DE CREDITO, MANEJO DE MONTACARGAS, MANEJO DE EQUIPO DE COMPUTO,REALIZACION DE REPORTES, CONOCIMIENTO Y MANEJO DE SAE, CONOCIMIENTO DE FILOSOFIA 5´S",
   },
   {
-    area: 'PRODUCCIÓN',
-    seccion: 'PRODUCCIÓN 1ER. TURNO',
-    puesto: 'OPERADOR DE MÁQUINA',
-    competencias: 'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO',
-    conocimientos_tecnicos: 'CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
+    area: "CALIDAD",
+    seccion: "A. CALIDAD 1ER TURNO",
+    puesto: "OPERADOR DE ACABADOS GP-12",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALÍTICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICOS SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS",
+    escolaridad: "SECUNDARIA",
+    experiencia: "",
   },
   {
-    area: 'PRODUCCIÓN',
-    seccion: 'PRODUCCIÓN 2o. TURNO',
-    puesto: 'OPERADOR DE MÁQUINA',
-    competencias: 'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO',
-    conocimientos_tecnicos: 'CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
+    area: "CALIDAD",
+    seccion: "A. CALIDAD 2DO TURNO",
+    puesto: "OPERADOR DE ACABADOS GP-12",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALÍTICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICOS SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS",
+    escolaridad: "SECUNDARIA",
+    experiencia: "",
   },
   {
-    area: 'PRODUCCIÓN',
-    seccion: 'PRODUCCIÓN 3ER. TURNO',
-    puesto: 'OPERADOR DE MÁQUINA',
-    competencias: 'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO',
-    conocimientos_tecnicos: 'CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "INSPECTOR DE CALIDAD",
+    competencias:
+      "ORDENADO, OBSERVADOR, ANALITICO, DISCIPLINADO, ORIENTADO A RESULTADOS, COMUNICACIÓN EFECTIVA, PROACTIVO, TRABAJO BAJO PRESIÓN",
+    conocimientos_tecnicos:
+      "MANEJO Y ELABORACIÓN DE REPORTES, LINEAS DE PRODUCCIÓN, CONOCIMIENTO EN MAQUINAS DE INYECCION, NORMAS DE CALIDAD (6 MESES EN PUESTO SIMILAR)",
+    escolaridad: "PREPARATORIA/ INGENIERIA",
+    experiencia:
+      "MANEJO DE MP, MUESTREO Y ANÁLISIS DE PP/PT, LÍNEAS DE PRODUCCIÓN Y CALIDAD DE PROCESOS. OPERACIÓN DE EQUIPO DE MEDICIÓN (CABINA DE LUZ, COMPARADOR ÓPTICO, ESPECTROFOTÓMETRO, CALIBRADORES DE ALTURA Y HUMEDAD, PERNOS CALIBRADOS). SEGUIMIENTO A RE-TRABAJOS, REPORTES, GRÁFICAS DE CONTROL Y MANEJO DE SAE. CONOCIMIENTO DE NORMAS ISO/TS 16949:2009 Y ANSI Z1.4-1993, FILOSOFÍA 5S Y AUDITORÍAS INTERNAS.",
   },
   {
-    area: 'PRODUCCIÓN',
-    seccion: 'PRODUCCIÓN 4o. TURNO',
-    puesto: 'OPERADOR DE MÁQUINA',
-    competencias: 'ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO',
-    conocimientos_tecnicos: 'CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
-    escolaridad: 'SECUNDARIA',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S',
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
   },
   {
-    area: 'PRODUCCIÓN',
-    seccion: 'PRODUCCIÓN ADMTVO',
-    puesto: 'SUPERVISOR DE PRODUCCIÓN',
-    competencias: 'ACTITUD DE SERVICIO, RESPETUOSO, LIDERAZGO, DISCIPLINADO, ORDENADO, COMUNICACIÓN EFECTIVA, ANALITICO, TOMA DE DECISIONES, PROACTIVO, TRABAJO BAJO PRESIÓN',
-    conocimientos_tecnicos: 'MANEJO  MICROSSOFT OFFICE, MANEJO DE PERSONAL, LINEAS DE PRODUCCIÓN, CONOCIMIENTO DE MAQUINAS DE INYECCIÓN',
-    escolaridad: 'INGENIERIA CONCLUIDA',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE INSUMOS DEL AREA (MP), CALIDAD DE PROCESOS, CONOCIMIENTO DE MAQUINAS DE INYECCIÓN, EQUIPO PERIFERICO, LÍNEAS DE PROCESOS DE PRODUCCIÓN, MANEJO DE PERSONAL, HABILIDADES ADMINISTRATIVAS, MANEJO DE EQUIPO DE COMPUTO, REALIZACIÓN DE REPORTES, MANEJO DE SISTEMA RPS',
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 2o. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
   },
   {
-    area: 'MANTENIMIENTO',
-    seccion: 'MANTENIMIENTO',
-    puesto: 'TÉCNICO DE MANTENIMIENTO',
-    competencias: 'CONFIABLE ORDENADO, ORIENTADO A RESULTADOS, TRABAJO POR OBJETIVOS, TOMA DE DECISIONES, RESPONSABLE, PROACTIVO, TRABAJO BAJO PRESIÓN, ANALITICO, ACTITUD DE SERVICIO, HONESTO, ETICO, PUNTUAL',
-    conocimientos_tecnicos: 'MANEJO Y MANTENIMIENTO DE MAQUINARIAS DE INYECCIÓN, EQUIPO PERIFÉRICO, MANTENIMIENTO DE LA INFRAESTRUCTURA DE LA PLANTA',
-    escolaridad: 'CARRERA TÉCNICA MECANICO INDUSTRIAL CONCLUIDO O PASANTE',
-    experiencia: 'CONOCIMIENTO EN MANEJO DE INVENTARIOS E INSUMOS DE ÁREA, MANEJO DE MAQUINARIA ESPECIALIZADA,CONOCIMIETOS SOBRE MÁQUINAS DE INYECCIÓN Y EQUIPOS PERIFERICOS, CONOCIMIENTOS GENERALES EN MANTENIMIENTO DE INFRAESTRUCTURA, MANEJO DE EQUIPO DE CÓMPUTO, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE METODOLOGIA 5´S',
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 3ER. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 4o. TURNO",
+    puesto: "OPERADOR DE MÁQUINA",
+    competencias:
+      "ORDENADO, OBSERVADOR, PROACTIVO, TRABAJO BAJO PRESIÓN, TRABAJO POR OBJETIVOS, ACTITUD DE SERVICIO, ANALITICO",
+    conocimientos_tecnicos:
+      "CONOCIMIENTOS BÁSICO SOBRE MAQUINARIA DE INYECCIÓN, LÍNEAS DE PRODUCCIÓN, PROCESOS PRODUCTIVOS,CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+    escolaridad: "SECUNDARIA",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE MP DEL ÁREA, ANALISIS DE PRODUCTO,  TERMINADO, LINEAS DE PRODUCCIÓN, SEGUIMIENTO A RE-TRABAJOS, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE FILOSOFÍA 5´S",
+  },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN ADMTVO",
+    puesto: "SUPERVISOR DE PRODUCCIÓN",
+    competencias:
+      "ACTITUD DE SERVICIO, RESPETUOSO, LIDERAZGO, DISCIPLINADO, ORDENADO, COMUNICACIÓN EFECTIVA, ANALITICO, TOMA DE DECISIONES, PROACTIVO, TRABAJO BAJO PRESIÓN",
+    conocimientos_tecnicos:
+      "MANEJO  MICROSSOFT OFFICE, MANEJO DE PERSONAL, LINEAS DE PRODUCCIÓN, CONOCIMIENTO DE MAQUINAS DE INYECCIÓN",
+    escolaridad: "INGENIERIA CONCLUIDA",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE INSUMOS DEL AREA (MP), CALIDAD DE PROCESOS, CONOCIMIENTO DE MAQUINAS DE INYECCIÓN, EQUIPO PERIFERICO, LÍNEAS DE PROCESOS DE PRODUCCIÓN, MANEJO DE PERSONAL, HABILIDADES ADMINISTRATIVAS, MANEJO DE EQUIPO DE COMPUTO, REALIZACIÓN DE REPORTES, MANEJO DE SISTEMA RPS",
+  },
+  {
+    area: "MANTENIMIENTO",
+    seccion: "MANTENIMIENTO",
+    puesto: "TÉCNICO DE MANTENIMIENTO",
+    competencias:
+      "CONFIABLE ORDENADO, ORIENTADO A RESULTADOS, TRABAJO POR OBJETIVOS, TOMA DE DECISIONES, RESPONSABLE, PROACTIVO, TRABAJO BAJO PRESIÓN, ANALITICO, ACTITUD DE SERVICIO, HONESTO, ETICO, PUNTUAL",
+    conocimientos_tecnicos:
+      "MANEJO Y MANTENIMIENTO DE MAQUINARIAS DE INYECCIÓN, EQUIPO PERIFÉRICO, MANTENIMIENTO DE LA INFRAESTRUCTURA DE LA PLANTA",
+    escolaridad: "CARRERA TÉCNICA MECANICO INDUSTRIAL CONCLUIDO O PASANTE",
+    experiencia:
+      "CONOCIMIENTO EN MANEJO DE INVENTARIOS E INSUMOS DE ÁREA, MANEJO DE MAQUINARIA ESPECIALIZADA,CONOCIMIETOS SOBRE MÁQUINAS DE INYECCIÓN Y EQUIPOS PERIFERICOS, CONOCIMIENTOS GENERALES EN MANTENIMIENTO DE INFRAESTRUCTURA, MANEJO DE EQUIPO DE CÓMPUTO, REALIZACIÓN DE REPORTES, CONOCIMIENTO DE LA NORMA ISO/TS 16949:2009, CONOCIMIENTO DE METODOLOGIA 5´S",
   },
 ];
 
@@ -421,18 +959,18 @@ export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [
  * Comment type labels for display
  */
 export const COMMENT_TYPE_LABELS: Record<string, string> = {
-  proceso_activo: 'Proceso activo',
-  entrevista: 'Entrevista',
-  entrega_documentos: 'Entrega de documentos',
-  otro: 'Otro',
+  proceso_activo: "Proceso activo",
+  entrevista: "Entrevista",
+  entrega_documentos: "Entrega de documentos",
+  otro: "Otro",
 };
 
 /**
  * Comment type colors using design tokens
  */
 export const COMMENT_TYPE_COLORS: Record<string, string> = {
-  proceso_activo: 'var(--color-accent-amber)',
-  entrevista: 'var(--color-accent-teal)',
-  entrega_documentos: 'var(--color-primary)',
-  otro: 'var(--color-muted)',
+  proceso_activo: "var(--color-accent-amber)",
+  entrevista: "var(--color-accent-teal)",
+  entrega_documentos: "var(--color-primary)",
+  otro: "var(--color-muted)",
 };
