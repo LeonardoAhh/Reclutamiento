@@ -242,6 +242,8 @@
   --layer-splash: 1000;
   --layer-system-update: 1100;
   --layer-system-update-curtain: 1200;
+  --layer-tooltip: 1300;
+  --tooltip-max-width: 280px;
   --skeleton-title-width: 50%;
   --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));
 

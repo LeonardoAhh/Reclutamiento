@@ -1,5 +1,6 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useAuth } from '@/hooks/useAuth';
 
 import { AnimatePresence } from 'framer-motion';
@@ -54,7 +55,8 @@ function App() {
   }, []);
 
   return (
-    <>
+    <TooltipPrimitive.Provider delayDuration={200}>
+      <>
       <AnimatePresence>
         {!splashDone && (
           <SplashTypewriter key="splash-typewriter" onDone={handleSplashDone} />
@@ -99,7 +101,8 @@ function App() {
           </Routes>
         </>
       )}
-    </>
+      </>
+    </TooltipPrimitive.Provider>
   );
 }
 

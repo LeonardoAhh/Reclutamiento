@@ -144,6 +144,8 @@ export function RecordatoriosView() {
         height: node.scrollHeight,
       });
 
+      node.classList.remove("exporting-image");
+
       if (blob) {
         await navigator.clipboard.write([
           new ClipboardItem({ [blob.type]: blob }),

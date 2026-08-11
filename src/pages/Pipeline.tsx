@@ -398,32 +398,41 @@ export function Pipeline() {
   }
 
   async function handleHire(input: {
+    mode: 'create' | 'associate';
     employee: Employee;
     candidateId: string;
   }): Promise<{ ok: boolean; message?: string }> {
-    const empResult = await addSingleEmployee(input.employee);
-    if (!empResult.ok) {
-      sileo.error({ title: 'No se pudo contratar' });
-      return empResult;
+    if (input.mode === 'create') {
+      const empResult = await addSingleEmployee(input.employee);
+      if (!empResult.ok) {
+        sileo.error({ title: 'No se pudo contratar' });
+        return empResult;
+      }
     }
+
     const candResult = await markCandidateHired(
       input.candidateId,
       input.employee.num_empleado,
       input.employee.fecha_ingreso
     );
+
     if (!candResult.ok) {
       const message =
         candResult.message ??
-        'Empleado creado, pero no se pudo actualizar el candidato.';
-      sileo.warning({ title: 'Contratación incompleta' });
+        (input.mode === 'create'
+          ? 'Empleado creado, pero no se pudo actualizar el candidato.'
+          : 'No se pudo vincular al candidato.');
+      sileo.warning({ title: input.mode === 'create' ? 'Contratación incompleta' : 'Vinculación fallida' });
       return { ok: false, message };
     }
+
     // Cierra automáticamente la vacante abierta que coincida con el puesto.
     await coverVacancyForEmployee(input.employee, {
       source: `candidato:${input.candidateId}`,
     });
+
     sileo.success({
-      title: 'Candidato contratado',
+      title: input.mode === 'create' ? 'Candidato contratado' : 'Candidato vinculado',
     });
     return { ok: true };
   }
@@ -701,9 +710,10 @@ export function Pipeline() {
               aria-label="Lista de candidatos"
             >
               <header className="pipeline__card-list-header" aria-hidden="true">
+                <span className="text-center">Empleado</span>
                 <span>Candidato</span>
                 <span>Puesto</span>
-                <span>Proyecto</span>
+                <span className="text-center">Proyecto</span>
                 <span>Fuente</span>
                 <span>Estado</span>
                 <span>Entrevista</span>
@@ -759,14 +769,24 @@ export function Pipeline() {
                       }
                     }}
                   >
+                    <div className="pipeline__ccard-employee-col">
+                      {c.status === 'baja' ? (
+                        <span className="pipeline__baja-badge" title="Dado de baja">
+                          Baja
+                        </span>
+                      ) : c.employee_num ? (
+                        <span
+                          className="pipeline__hired-tag"
+                          title={`Empleado #${c.employee_num}`}
+                        >
+                          <BadgeCheck size={12} aria-hidden="true" />{c.employee_num}
+                        </span>
+                      ) : (
+                        <span className="pipeline__muted">—</span>
+                      )}
+                    </div>
+
                     <div className="pipeline__ccard-name-col">
-                      <div className="pipeline__ccard-avatar">
-                        {c.reclutador ? (
-                          <ReclutadorBadge nombre={c.reclutador} variant="icon-only" className="pipeline__ccard-avatar-badge" />
-                        ) : (
-                          <div className="pipeline__ccard-avatar-placeholder" />
-                        )}
-                      </div>
                       <div className="pipeline__name-details">
                         <span className="pipeline__name-text">
                           <span className="pipeline__name-first">{apellidos.toUpperCase()}</span>
@@ -817,30 +837,13 @@ export function Pipeline() {
 
                     <div className="pipeline__ccard-source-col">
                       {c.source ? (
-                        <motion.span
+                        <span
                           className="pipeline__source-badge"
                           data-source={normalizeString(c.source).toLowerCase()}
                           title={`Fuente: ${c.source}`}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{
-                            opacity: 1,
-                            scale: 1,
-                            boxShadow: [
-                              "0px 0px 0px 0px rgba(0, 0, 0, 0)",
-                              "0px 0px 12px 2px rgba(130, 130, 130, 0.25)",
-                              "0px 0px 0px 0px rgba(0, 0, 0, 0)"
-                            ]
-                          }}
-                          whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{
-                            opacity: { duration: 0.2 },
-                            scale: { type: 'spring', stiffness: 400, damping: 15 },
-                            boxShadow: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
-                          }}
                         >
                           {c.source}
-                        </motion.span>
+                        </span>
                       ) : (
                         <span className="pipeline__muted">—</span>
                       )}
@@ -862,28 +865,9 @@ export function Pipeline() {
                         }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
                         customTrigger={
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{
-                              opacity: 1,
-                              scale: 1,
-                              boxShadow: [
-                                "0px 0px 0px 0px rgba(0, 0, 0, 0)",
-                                "0px 0px 12px 2px rgba(130, 130, 130, 0.25)",
-                                "0px 0px 0px 0px rgba(0, 0, 0, 0)"
-                              ]
-                            }}
-                            whileHover={{ scale: 1.05, y: -2, rotate: [-1, 1, 0] }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{
-                              opacity: { duration: 0.2 },
-                              scale: { type: 'spring', stiffness: 400, damping: 15 },
-                              boxShadow: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }
-                            }}
-                            style={{ display: 'inline-flex' }}
-                          >
+                          <div style={{ display: 'inline-flex' }}>
                             <CandidateStatusBadge status={c.status} showCaret />
-                          </motion.div>
+                          </div>
                         }
                       />
                     </div>
@@ -903,20 +887,12 @@ export function Pipeline() {
                       )}
                     </div>
                     <div className="pipeline__cell-actions pipeline__ccard-actions-col">
-                      {c.employee_num && (
-                        <span
-                          className="pipeline__hired-tag"
-                          title={`Empleado #${c.employee_num}`}
-                        >
-                          <BadgeCheck size={12} aria-hidden="true" />
-                          #{c.employee_num}
-                        </span>
-                      )}
                       <CandidateRowActions
                         candidate={c}
                         notesCount={notesCount(c)}
                         onEdit={openEdit}
                         onDelete={isAdmin ? openDelete : undefined}
+                        onBaja={(cand) => handleStatusChange(cand, 'baja')}
                         onNotes={() => setNotesTarget(c)}
                         onAccessCard={
                           c.reclutador && c.puesto

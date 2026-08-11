@@ -109,14 +109,17 @@ export function Configuracion() {
         <nav
           className="config-sidebar__nav"
           aria-label="Subpáginas de features"
+          role="tablist"
         >
           {FEATURES.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
+              id={`tab-${id}`}
               type="button"
+              role="tab"
               className={`config-sidebar__link ${activeTab === id ? "active" : ""}`}
               onClick={() => handleTabClick(id)}
-              aria-current={activeTab === id ? "page" : undefined}
+              aria-selected={activeTab === id}
               aria-controls="feature-content"
             >
               <Icon size={18} aria-hidden="true" />
@@ -128,8 +131,10 @@ export function Configuracion() {
 
       <main
         id="feature-content"
+        role="tabpanel"
         className={`config-main ${isMobileMenuOpen ? "mobile-hidden" : ""}`}
         aria-label={`Feature: ${FEATURES.find(({ id }) => id === activeTab)?.label}`}
+        aria-labelledby={`tab-${activeTab}`}
         tabIndex={-1}
       >
         <button

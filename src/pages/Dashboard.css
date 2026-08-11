@@ -842,3 +842,31 @@
   width: 100%;
   padding: var(--spacing-md);
 }
+
+/* ── Sidebar Internal Overrides ───────────────────────────────── */
+
+.dashboard-sidebar__hero {
+  padding-block: 0;
+}
+
+.dashboard-sidebar__hero-content {
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.dashboard-sidebar__search-clear {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  z-index: 1;
+}
+
+.dashboard-sidebar__search-clear:not(:disabled) {
+  cursor: pointer;
+}
