@@ -18,7 +18,7 @@
 }
 
 .system-update-overlay--blocking {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--color-modal-scrim);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   pointer-events: auto; /* Bloquea clics debajo */
@@ -44,7 +44,7 @@
   
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-xl);
-  box-shadow: 0 8px 32px var(--su-tint), var(--shadow-lg);
+  box-shadow: 0 8px 32px var(--su-tint), var(--shadow-elevated);
 
   font-family: var(--font-body);
 }
@@ -68,7 +68,7 @@
   /* En dark mode, surface card ya suele ser el token correcto */
   background: var(--color-surface);
   border-color: var(--color-hairline);
-  box-shadow: 0 12px 40px -12px var(--su-tint), var(--shadow-md);
+  box-shadow: 0 12px 40px -12px var(--su-tint), var(--shadow-elevated);
 }
 
 /* ── Icono ────────────────────────────────────────────────────── */
@@ -85,8 +85,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--spacing-xl) + 4px);
-  height: calc(var(--spacing-xl) + 4px);
+  width: var(--spacing-xxl);
+  height: var(--spacing-xxl);
   border-radius: var(--rounded-full);
   background: var(--su-tint);
   color: var(--su-accent);
@@ -136,8 +136,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--spacing-lg) + var(--spacing-sm));
-  height: calc(var(--spacing-lg) + var(--spacing-sm));
+  width: var(--spacing-xxl);
+  height: var(--spacing-xxl);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
   border: none;
   background: transparent;
   color: var(--color-muted);
@@ -156,7 +158,6 @@
   outline: none;
   box-shadow: var(--shadow-focus);
 }
-
 
 
 /* ── Desktop / pantallas grandes ── */

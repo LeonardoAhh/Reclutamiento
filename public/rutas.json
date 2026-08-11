@@ -88,14 +88,6 @@
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
-    "numero empleado": "1539",
-    "nombre": "GUTIERREZ LOPEZ CATALINA YESENIA",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
-  },
-  {
     "numero empleado": "1542",
     "nombre": "PIMENTEL RUEDA MARIA DE JESUS",
     "turno": "2",
@@ -182,14 +174,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "2025",
-    "nombre": "HERNANDEZ QUEZADA VERONICA JAHEL",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "2034",
@@ -1560,14 +1544,6 @@
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
-    "numero empleado": "4094",
-    "nombre": "GARCIA GARCIA ELIZABETH",
-    "turno": "2",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
     "numero empleado": "4096",
     "nombre": "MARTINEZ REMIGIO ARTURO",
     "turno": "3",
@@ -1880,14 +1856,6 @@
     "parada": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
-    "numero empleado": "4200",
-    "nombre": "MENDEZ MOLINA RAUL ABRAHAM",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
     "numero empleado": "4201",
     "nombre": "BAYLON SANCHEZ MARIO ANGEL",
     "turno": "4",
@@ -2016,14 +1984,6 @@
     "parada": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
-    "numero empleado": "4238",
-    "nombre": "VELASCO PEREZ ADRIAN ELI",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
-  },
-  {
     "numero empleado": "4239",
     "nombre": "CALTZONTZI RUIZ VERONICA",
     "turno": "1",
@@ -2056,14 +2016,6 @@
     "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
-    "numero empleado": "4248",
-    "nombre": "VALDEZ MONTOYA AREMY YUNUEN",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
     "numero empleado": "4249",
     "nombre": "LLAMAS VALENCIA MARCO ANTONIO",
     "turno": "1",
@@ -2091,14 +2043,6 @@
     "numero empleado": "4253",
     "nombre": "ZURITA LOPEZ DAGMARA EVELYN",
     "turno": "2",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
-  },
-  {
-    "numero empleado": "4254",
-    "nombre": "RANGEL LEON MIGUEL ANGEL",
-    "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DEL MA. TERESA"
@@ -2216,14 +2160,6 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4283",
-    "nombre": "TORRES DIAZ RAFAEL",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
-  },
-  {
     "numero empleado": "4284",
     "nombre": "SOTO HUERTA AILYN MONSERRAT",
     "turno": "4",
@@ -2330,9 +2266,9 @@
   {
     "numero empleado": "4306",
     "nombre": "AGUSTIN RAMIREZ MARIELA",
-    "turno": "1",
+    "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
+    "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
@@ -2374,5 +2310,29 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+  },
+  {
+    "numero empleado": "4315",
+    "nombre": "VEGA BRIONES OSCAR OSWALDO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "OJO DE AGUA",
+    "parada": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+  },
+  {
+    "numero empleado": "4316",
+    "nombre": "RAMIREZ TRINIDAD LILIANA LIZBETH",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4317",
+    "nombre": "BARRAGAN MARQUEZ MA. INOCENCIA",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   }
 ]

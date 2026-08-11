@@ -48,6 +48,7 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
               className="app-header__mobile-menu-btn"
               onClick={onMobileMenuToggle}
               aria-expanded={mobileMenuOpen}
+              aria-controls="app-sidebar"
               aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             >
               <MorphMenuIcon isOpen={mobileMenuOpen} size={24} />
@@ -57,7 +58,7 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
           {pageTitle && <h1 className="app-header__page-title">{pageTitle}</h1>}
         </div>
 
-        <div style={{ flex: 1 }} />
+        <div className="app-header__spacer" />
 
         <div className="app-header__actions">
           <RemindersPanel />

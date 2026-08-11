@@ -1196,16 +1196,30 @@
 .pipeline__hired-tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--spacing-xs);
   height: 24px;
-  padding: 0 var(--spacing-xs);
-  margin-left: var(--spacing-xxs);
+  padding: 0 8px;
   border-radius: var(--rounded-sm);
-  background: var(--color-success-tint);
-  color: var(--color-accent-teal);
+  background: var(--color-surface);
+  color: var(--color-primary);
   border: 1px solid var(--color-hairline-soft);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pipeline__baja-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface);
+  color: var(--color-error);
+  border: 1px solid var(--color-hairline-soft);
+  font-size: 12px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -1214,8 +1228,7 @@
   align-items: center;
   gap: 6px;
   height: 24px;
-  padding: 0 8px 0 6px;
-  margin-top: 4px;
+  padding: 0 8px;
   border-radius: var(--rounded-md);
   /* Base style: clean outline */
   background: var(--color-surface);
@@ -1226,47 +1239,6 @@
   text-transform: capitalize;
   white-space: nowrap;
   width: max-content;
-}
-
-/* ── Punto decorativo (dot) para indicar la fuente ── */
-.pipeline__source-badge::before {
-  content: "";
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--rounded-full);
-  background: var(--color-muted); /* Fallback */
-  flex-shrink: 0;
-}
-
-/* ── Variantes por fuente ──────────────────────────────
-   Color-coded para identificación de un vistazo. Todos
-   los tonos vienen de tokens del sistema. */
-
-.pipeline__source-badge[data-source="pauta"]::before {
-  background: var(--color-accent-amber);
-}
-
-.pipeline__source-badge[data-source="computrabajo"]::before {
-  background: var(--color-accent-teal);
-}
-
-.pipeline__source-badge[data-source="referido"]::before {
-  background: var(--color-success);
-}
-
-.pipeline__source-badge[data-source="linkedin"]::before,
-.pipeline__source-badge[data-source="indeed"]::before,
-.pipeline__source-badge[data-source="occ"]::before,
-.pipeline__source-badge[data-source="facebook"]::before {
-  /* Plataformas externas: tinte neutral más fuerte */
-  background: var(--color-ink-muted);
-}
-
-.pipeline__source-badge[data-source="volanteo"]::before,
-.pipeline__source-badge[data-source="lona"]::before {
-  /* Captación física: warm amber suave */
-  background: var(--color-warning);
 }
 
 .pipeline__icon-badge {
@@ -1332,6 +1304,7 @@
 .pipeline__ccard-contact-col,
 .pipeline__ccard-source-col,
 .pipeline__ccard-status-col,
+.pipeline__ccard-employee-col,
 .pipeline__cell-actions,
 .pipeline__ccard-mobile-info,
 .pipeline__recruiter {
@@ -1536,6 +1509,8 @@
   );
   transform: translateY(-1px);
 }
+
+
 
 .pipeline__contact-item--notes {
   display: inline-flex;
@@ -2118,10 +2093,10 @@
 @media (min-width: 1025px) {
   .pipeline__card-list-header {
     display: grid;
-    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(
-        100px,
-        1fr
-      ) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
+    grid-template-columns: 90px minmax(180px, 1.4fr) minmax(120px, 1.1fr) minmax(
+        90px,
+        0.9fr
+      ) minmax(90px, 0.9fr) minmax(150px, 1.2fr) 120px 80px;
     align-items: center;
     gap: var(--spacing-md);
     padding: 0 var(--spacing-md);
@@ -2137,10 +2112,10 @@
 
   .pipeline__ccard {
     display: grid;
-    grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 1.2fr) minmax(
-        100px,
-        1fr
-      ) minmax(100px, 1fr) minmax(170px, 1.3fr) 120px 80px;
+    grid-template-columns: 90px minmax(180px, 1.4fr) minmax(120px, 1.1fr) minmax(
+        90px,
+        0.9fr
+      ) minmax(90px, 0.9fr) minmax(150px, 1.2fr) 120px 80px;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -2156,7 +2131,6 @@
     flex: unset;
   }
 
-  .pipeline__ccard-project-col,
   .pipeline__ccard-puesto-col,
   .pipeline__ccard-contact-col,
   .pipeline__ccard-source-col,
@@ -2167,6 +2141,8 @@
     justify-content: flex-start;
   }
 
+  .pipeline__ccard-project-col,
+  .pipeline__ccard-employee-col,
   .pipeline__cell-actions {
     display: flex;
     justify-content: center;

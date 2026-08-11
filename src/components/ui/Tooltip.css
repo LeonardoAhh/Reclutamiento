@@ -1,3 +1,9 @@
+/* ================================================================
+   Tooltip — Notion-style inverted surface tooltip.
+   Radix UI portal: rendered outside the DOM tree.
+   Tokens: colors, spacing, type, rounded, shadow, z-index, motion.
+   ================================================================ */
+
 .tooltip-content {
   background-color: var(--color-ink);
   color: var(--color-canvas);
@@ -5,12 +11,12 @@
   border-radius: var(--rounded-md);
   font-size: var(--type-caption-md-size);
   line-height: var(--type-caption-md-line);
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
-  animation: tooltipFadeIn 150ms ease-out;
+  font-weight: var(--type-caption-md-weight);
+  box-shadow: var(--shadow-elevated);
+  z-index: var(--layer-tooltip);
+  animation: tooltipFadeIn var(--transition-base);
   white-space: normal;
-  max-width: 280px;
+  max-width: var(--tooltip-max-width);
   word-wrap: break-word;
 }
 
@@ -26,6 +32,12 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-content {
+    animation: none;
   }
 }
 
@@ -69,7 +81,7 @@
   color: var(--color-canvas);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--spacing-xxs);
 }
 
 .trend-tooltip__list li {
@@ -81,5 +93,5 @@
   content: "•";
   position: absolute;
   left: 0;
-  color: var(--color-ink-faint);
+  color: var(--color-muted-soft);
 }

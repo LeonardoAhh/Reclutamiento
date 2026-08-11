@@ -8,7 +8,7 @@
 
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 800;
 
   height: calc(var(--_h) + var(--safe-area-top));
   padding-top: var(--safe-area-top);
@@ -255,4 +255,8 @@
   .app-header__spin {
     animation: none;
   }
+}
+
+.app-header__spacer {
+  flex: 1;
 }

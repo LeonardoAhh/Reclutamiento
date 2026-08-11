@@ -379,6 +379,7 @@ export const CANDIDATE_STATUSES = [
   'faltan_documentos',
   'feedback_pendiente',
   'contratado',
+  'baja',
   'rechazado',
   'no_asistio',
 ] as const;
@@ -392,6 +393,7 @@ export const CANDIDATE_STATUS_LABEL: Record<CandidateStatus, string> = {
   faltan_documentos: 'Faltan documentos',
   feedback_pendiente: 'Feedback pendiente',
   contratado: 'Contratado',
+  baja: 'Baja',
   rechazado: 'Rechazado',
   no_asistio: 'No asistió',
 };

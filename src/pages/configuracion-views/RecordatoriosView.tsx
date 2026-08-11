@@ -48,7 +48,7 @@ export function RecordatoriosView() {
 
   const filteredEmployees = useMemo(() => {
     return employees
-      .filter((emp) => emp.fecha_ingreso === selectedDate)
+      .filter((emp) => emp.fecha_ingreso === selectedDate && emp.turno?.toLowerCase() !== "mixto")
       .sort((a, b) => a.nombre.localeCompare(b.nombre))
       .map((emp) => {
         const numKey = String(emp.num_empleado).trim().replace(/^0+/, "");
@@ -93,6 +93,8 @@ export function RecordatoriosView() {
         width: node.scrollWidth,
         height: node.scrollHeight,
       });
+
+      node.classList.remove("exporting-image");
 
       if (blob) {
         await navigator.clipboard.write([
