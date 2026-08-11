@@ -236,6 +236,7 @@
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;
   --document-preview-max: 48rem;
+  --recordatorios-route-table-min: 64rem;
   --system-update-content-max: 22rem;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;

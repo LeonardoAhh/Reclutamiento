@@ -60,6 +60,7 @@ export function RecordatoriosView() {
   const [selectedWeekKey, setSelectedWeekKey] = useState(() =>
     getWeekKey(currentWeek),
   );
+  const [selectedRouteDate, setSelectedRouteDate] = useState(localTodayIso());
   const tableRef = useRef<HTMLDivElement>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
@@ -113,7 +114,8 @@ export function RecordatoriosView() {
   );
 
   const filteredEmployees = useMemo(() => {
-    return weeklyEmployees
+    return employees
+      .filter((employee) => employee.fecha_ingreso === selectedRouteDate)
       .filter(
         (employee) =>
           String(employee.turno ?? "").trim().toLocaleLowerCase("es") !==
@@ -129,7 +131,7 @@ export function RecordatoriosView() {
           parada_final: employee.parada || routeData?.parada || "",
         };
       });
-  }, [rutaLookup, weeklyEmployees]);
+  }, [employees, rutaLookup, selectedRouteDate]);
 
   const selectedWeekLabel = selectedWeek.label;
 
@@ -208,9 +210,9 @@ export function RecordatoriosView() {
 
           <section
             className="config-results-controls"
-            aria-label="Semana y exportación"
+            aria-label="Seleccionar semana"
           >
-            <div className="config-results-controls__filters recordatorios-controls-grid">
+            <div className="config-results-controls__filters recordatorios-week-controls">
               <label className="config-filter-field recordatorios-week-field">
                 <span className="config-filter-label type-caption-sm text-muted">
                   Semana de ingreso
@@ -224,16 +226,6 @@ export function RecordatoriosView() {
                   }))}
                 />
               </label>
-
-              <ButtonUtility
-                type="button"
-                className="config-filter-reset"
-                icon={<Copy aria-hidden="true" />}
-                onClick={handleCopyImage}
-                disabled={filteredEmployees.length === 0 || isGeneratingImage}
-              >
-                {isGeneratingImage ? "Generando..." : "Copiar"}
-              </ButtonUtility>
             </div>
           </section>
 
@@ -243,11 +235,52 @@ export function RecordatoriosView() {
             printDate={localTodayIso()}
           />
 
+          <section className="recordatorios-routes" aria-labelledby="recordatorios-routes-title">
+            <header className="recordatorios-routes__header">
+              <div>
+                <h2 id="recordatorios-routes-title" className="recordatorios-routes__title">
+                  Asignación de rutas
+                </h2>
+                <p className="recordatorios-routes__subtitle">
+                  Selecciona la fecha exacta de ingreso para preparar el listado.
+                </p>
+              </div>
+            </header>
+
+            <section
+              className="config-results-controls recordatorios-route-controls"
+              aria-label="Fecha y copia de rutas"
+            >
+              <div className="config-results-controls__filters recordatorios-route-controls__grid">
+                <label className="config-filter-field recordatorios-route-date-field">
+                  <span className="config-filter-label type-caption-sm text-muted">
+                    Fecha de ingreso
+                  </span>
+                  <input
+                    type="date"
+                    className="config-filter-select"
+                    value={selectedRouteDate}
+                    onChange={(event) => setSelectedRouteDate(event.target.value)}
+                  />
+                </label>
+
+                <ButtonUtility
+                  type="button"
+                  className="config-filter-reset"
+                  icon={<Copy aria-hidden="true" />}
+                  onClick={handleCopyImage}
+                  disabled={filteredEmployees.length === 0 || isGeneratingImage}
+                >
+                  {isGeneratingImage ? "Generando..." : "Copiar"}
+                </ButtonUtility>
+              </div>
+            </section>
+
           {filteredEmployees.length === 0 ? (
             <div className="config-filter-empty" role="status">
               <Bus size={32} aria-hidden="true" />
               <p className="type-body-md text-charcoal">
-                No hay ingresos aplicables al listado de rutas en la semana seleccionada.
+                No hay ingresos aplicables al listado de rutas para la fecha seleccionada.
               </p>
             </div>
           ) : (
@@ -259,9 +292,9 @@ export function RecordatoriosView() {
                 aria-label="Asignación de rutas"
               >
                 <div ref={tableRef} className="recordatorios-export-canvas">
-                  <table className="indicadores-table config-table recordatorios-table">
+                  <table className="config-table recordatorios-table">
                     <caption className="sr-only">
-                      Asignación de rutas para {selectedWeekLabel}
+                      Asignación de rutas para {selectedRouteDate}
                     </caption>
                     <thead>
                       <tr>
@@ -322,6 +355,7 @@ export function RecordatoriosView() {
               </div>
             </div>
           )}
+          </section>
         </div>
       </div>
     </section>
