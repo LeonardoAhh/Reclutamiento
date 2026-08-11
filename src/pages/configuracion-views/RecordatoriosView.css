@@ -1,93 +1,566 @@
-/* ================================================================
-   RecordatoriosView — Configuración de Rutas para Exportación
-   Tokens: globals (colors, spacing, type, rounded).
-   ================================================================ */
-
-/* Controles de Filtro */
-.recordatorios-controls {
-  display: grid;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+.recordatorios-skeleton {
+  margin-top: var(--spacing-lg);
 }
 
-.recordatorios-filters-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--spacing-md);
-  align-items: end;
+.recordatorios-controls-grid {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.recordatorios-filter-group {
-  max-width: 240px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-/* Contenedor de Tabla */
-.recordatorios-table-wrapper {
-  border: 1px solid var(--color-hairline-soft);
-  border-radius: var(--rounded-md);
-  overflow-x: auto;
-}
-
-.recordatorios-table-container {
-  width: max-content;
-  min-width: 100%;
-}
-
-/* Utilidades para celdas */
-.recordatorios-cell-left {
-  text-align: left;
-}
-
-.recordatorios-cell-center {
-  text-align: center;
-}
-
-.recordatorios-error-inline {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--color-error);
-}
-
-/*
-  Clases específicas para html-to-image (Exportación a WhatsApp)
-  Estos estilos fuerzan un look de tabla de Excel puro para la imagen,
-  PERO SOLO se aplican al momento de exportar (.exporting-image).
-*/
-.whatsapp-export-table {
-  border-collapse: collapse;
+.recordatorios-date-field {
   width: 100%;
 }
 
-.whatsapp-export-table thead {
-  background-color: var(--color-surface-soft);
+.recordatorios-table-region {
+  overflow-x: auto;
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
 }
 
-.whatsapp-export-table th,
-.whatsapp-export-table td {
-  border: 1px solid var(--color-hairline);
+.recordatorios-export-canvas {
+  width: max-content;
+  min-width: 100%;
   padding: var(--spacing-sm);
+  background: var(--color-document-paper);
 }
 
-.exporting-image {
-  background-color: #ffffff;
+.recordatorios-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.exporting-image .whatsapp-export-table th,
-.exporting-image .whatsapp-export-table td {
-  border: 1px solid #000000 !important;
-  color: #000000 !important;
+.recordatorios-table th,
+.recordatorios-table td {
+  color: var(--color-document-ink);
+  border: 1px solid var(--color-document-ink);
 }
 
-.exporting-image .whatsapp-export-table th {
-  font-weight: 700 !important;
-  background-color: #f6f5f4 !important; /* var(--color-canvas-soft) forzado */
+.recordatorios-table th {
+  font-weight: var(--font-bold);
 }
 
-.exporting-image .whatsapp-export-table td {
-  font-weight: 500 !important;
-  background-color: #ffffff !important;
+.recordatorios-table td {
+  font-weight: var(--font-medium);
+}
+
+.recordatorios-table__cell--left {
+  text-align: left;
+}
+
+.recordatorios-table__cell--center {
+  text-align: center;
+}
+
+.recordatorios-missing-data {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.weekly-formats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-block: var(--spacing-xl);
+}
+
+.weekly-formats__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.weekly-formats__title,
+.weekly-formats__subtitle {
+  margin: 0;
+}
+
+.weekly-formats__title {
+  color: var(--color-ink);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.weekly-formats__subtitle {
+  margin-top: var(--spacing-xs);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.weekly-formats__week {
+  align-self: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-medium);
+}
+
+.weekly-formats__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.weekly-format-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.weekly-format-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.weekly-format-card__icon {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+}
+
+.weekly-format-card__icon svg {
+  width: var(--spacing-xl);
+  height: var(--spacing-xl);
+}
+
+.weekly-format-card__title,
+.weekly-format-card__description {
+  margin: 0;
+}
+
+.weekly-format-card__title {
+  color: var(--color-ink);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+}
+
+.weekly-format-card__description {
+  margin-top: var(--spacing-xs);
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.weekly-format-card__preview {
+  min-height: var(--skeleton-card-height);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-lg);
+  overflow: hidden;
+  color: var(--color-document-muted);
+  background: var(--color-document-paper);
+  border: 1px solid var(--color-document-hairline);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-caption-sm-size);
+}
+
+.weekly-format-card__preview-title {
+  color: var(--color-document-ink);
+  font-weight: var(--font-bold);
+  text-align: center;
+}
+
+.weekly-format-card__preview-rule {
+  width: 100%;
+  height: var(--spacing-xxs);
+  margin-bottom: var(--spacing-xs);
+  background: var(--color-document-ink);
+}
+
+.weekly-format-card__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.weekly-format-card__meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+}
+
+.weekly-format-card__meta strong {
+  color: var(--color-ink);
+  font-weight: var(--font-semibold);
+}
+
+.weekly-format-card__footer .btn-utility {
+  width: 100%;
+}
+
+.weekly-formats__empty {
+  margin: 0;
+  padding: var(--spacing-lg);
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .recordatorios-controls-grid {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .recordatorios-date-field {
+    max-width: var(--feature-calendar-column-max);
+  }
+
+  .weekly-formats__heading {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .weekly-formats__week {
+    flex-shrink: 0;
+  }
+
+  .weekly-format-card__footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .weekly-format-card__footer .btn-utility {
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .weekly-formats__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.recordatorios-print-root {
+  display: none;
+}
+
+.weekly-doc {
+  color: var(--color-document-ink);
+  background: var(--color-document-paper);
+  font-family: var(--font-body);
+}
+
+.weekly-doc__page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-document-ink);
+  background: var(--color-document-paper);
+}
+
+.weekly-doc__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: var(--font-bold);
+  text-align: center;
+}
+
+.weekly-doc__date-line {
+  margin: 0;
+  text-align: right;
+}
+
+.weekly-doc__body-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.weekly-doc__body-copy p,
+.weekly-doc__contract-statement {
+  margin: 0;
+  text-align: justify;
+}
+
+.weekly-doc__acknowledgement {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: var(--font-semibold);
+  text-align: center;
+}
+
+.weekly-doc__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.weekly-doc__table th,
+.weekly-doc__table td {
+  color: var(--color-document-ink);
+  border: 1px solid var(--color-document-ink);
+  overflow-wrap: anywhere;
+}
+
+.weekly-doc__table th {
+  font-weight: var(--font-bold);
+  text-align: center;
+}
+
+.weekly-doc__table--credential th:nth-child(1),
+.weekly-doc__table--credential td:nth-child(1) {
+  width: 16%;
+}
+
+.weekly-doc__table--credential th:nth-child(2),
+.weekly-doc__table--credential td:nth-child(2) {
+  width: 12%;
+}
+
+.weekly-doc__table--credential th:nth-child(3),
+.weekly-doc__table--credential td:nth-child(3) {
+  width: 27%;
+}
+
+.weekly-doc__table--credential th:nth-child(4),
+.weekly-doc__table--credential td:nth-child(4) {
+  width: 25%;
+}
+
+.weekly-doc__table--credential th:nth-child(5),
+.weekly-doc__table--credential td:nth-child(5) {
+  width: 20%;
+}
+
+.weekly-doc__table--contract th:nth-child(1),
+.weekly-doc__table--contract td:nth-child(1) {
+  width: 16%;
+}
+
+.weekly-doc__table--contract th:nth-child(2),
+.weekly-doc__table--contract td:nth-child(2) {
+  width: 38%;
+}
+
+.weekly-doc__table--contract th:nth-child(3),
+.weekly-doc__table--contract td:nth-child(3) {
+  width: 20%;
+}
+
+.weekly-doc__table--contract th:nth-child(4),
+.weekly-doc__table--contract td:nth-child(4) {
+  width: 26%;
+}
+
+.weekly-doc__company-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.weekly-doc__logo {
+  object-fit: contain;
+  filter: grayscale(1);
+}
+
+.weekly-doc__company-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.weekly-doc__controlled-footer,
+.weekly-doc__address-footer {
+  margin-top: auto;
+  color: var(--color-document-ink);
+}
+
+.weekly-doc__controlled-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.weekly-doc__address-footer {
+  text-align: center;
+}
+
+.weekly-doc__signatures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.weekly-doc__signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.weekly-doc__signature-name {
+  min-height: var(--spacing-xl);
+  font-weight: var(--font-medium);
+}
+
+.weekly-doc__signature-line {
+  width: 100%;
+  border-bottom: 1px solid var(--color-document-ink);
+}
+
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 0;
+  }
+
+  html,
+  body,
+  .recordatorios-print-root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: var(--color-document-paper) !important;
+  }
+
+  body > *:not(.recordatorios-print-root) {
+    display: none !important;
+  }
+
+  body > .recordatorios-print-root {
+    display: block !important;
+    position: static !important;
+  }
+
+  .recordatorios-print-root,
+  .recordatorios-print-root * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .weekly-doc__page {
+    width: 100%;
+    min-height: 11in;
+    padding: 12mm 14mm 10mm;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .weekly-doc__page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .weekly-doc__title {
+    font-size: var(--type-body-md-size);
+    line-height: var(--type-body-md-line);
+  }
+
+  .weekly-doc__date-line {
+    margin-top: 5mm;
+    font-size: var(--type-caption-up-size);
+  }
+
+  .weekly-doc__body-copy {
+    gap: 2.5mm;
+    margin-top: 4mm;
+  }
+
+  .weekly-doc__body-copy p,
+  .weekly-doc__contract-statement {
+    font-size: var(--type-caption-up-size);
+    line-height: 1.35;
+  }
+
+  .weekly-doc__acknowledgement {
+    margin-top: 4mm;
+    margin-bottom: 2mm;
+    font-size: var(--type-caption-up-size);
+  }
+
+  .weekly-doc__table th,
+  .weekly-doc__table td {
+    height: 7mm;
+    padding: 1.2mm;
+    font-size: calc(var(--type-caption-up-size) * 0.72);
+    line-height: 1.15;
+  }
+
+  .weekly-doc__page--credential-continuation .weekly-doc__table {
+    margin-top: 8mm;
+  }
+
+  .weekly-doc__controlled-footer,
+  .weekly-doc__address-footer {
+    padding-top: 3mm;
+    font-size: calc(var(--type-caption-up-size) * 0.72);
+  }
+
+  .weekly-doc__company-header {
+    gap: 8mm;
+  }
+
+  .weekly-doc__logo {
+    width: 34mm;
+    height: 16mm;
+  }
+
+  .weekly-doc__company-copy {
+    gap: 2mm;
+    font-size: var(--type-caption-up-size);
+    line-height: 1.25;
+  }
+
+  .weekly-doc__contract-statement {
+    margin-top: 14mm;
+    font-size: var(--type-body-sm-size);
+    line-height: var(--type-body-sm-line);
+  }
+
+  .weekly-doc__table--contract {
+    margin-top: 8mm;
+  }
+
+  .weekly-doc__table--contract th,
+  .weekly-doc__table--contract td {
+    height: 13mm;
+    font-size: var(--type-caption-up-size);
+  }
+
+  .weekly-doc__contract-statement--individual {
+    margin-top: 18mm;
+  }
+
+  .weekly-doc__signatures {
+    gap: 18mm;
+  }
+
+  .weekly-doc__signature {
+    gap: 3mm;
+    font-size: var(--type-caption-up-size);
+  }
+
+  .weekly-doc__signature-line {
+    min-height: 18mm;
+  }
 }

@@ -601,6 +601,38 @@
   margin: 0;
 }
 
+.config-card__details-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.config-card__details-toggle {
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding-inline: var(--spacing-sm);
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+}
+
+.config-card__details-toggle svg {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+}
+
+.config-card__details-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
 /* ── Propiedades estilo Notion ────────────────────────────────── */
 
 .config-card__properties {
@@ -610,7 +642,23 @@
   margin: var(--spacing-md) 0 0;
 }
 
+.config-card__properties--collapsible {
+  display: none;
+}
+
+.config-card__properties--collapsible.is-expanded {
+  display: grid;
+}
+
 @media (min-width: 768px) {
+  .config-card__details-toggle {
+    display: none;
+  }
+
+  .config-card__properties--collapsible {
+    display: grid;
+  }
+
   .config-card__properties {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
