@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { BadgeCheck, FileSignature, Printer } from 'lucide-react';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { Modal } from '@/components/ui/Modal';
 import { ONBOARDING_DOCUMENT_CONFIG } from '@/lib/constants';
 import {
   formatReadableDate,
@@ -11,6 +13,10 @@ import {
 import type { Employee } from '@/lib/types';
 
 type PrintFormat = 'credential' | 'contracts';
+
+function getEmployeeKey(employee: Employee) {
+  return employee.id || employee.num_empleado;
+}
 
 interface WeeklyOnboardingDocumentsProps {
   employees: Employee[];
@@ -222,31 +228,6 @@ function ContractDocument({
           <DocumentFooter />
         </section>
       ))}
-
-      {employees.map((employee) => (
-        <section
-          key={`contract-individual-${employee.id || employee.num_empleado}`}
-          className="weekly-doc__page weekly-doc__page--contract-individual"
-        >
-          <CompanyHeader printDate={printDate} />
-          <p className="weekly-doc__contract-statement weekly-doc__contract-statement--individual">
-            {config.individualStatement}
-          </p>
-          <div className="weekly-doc__signatures">
-            <div className="weekly-doc__signature">
-              <span className="weekly-doc__signature-name">{employee.nombre}</span>
-              <span className="weekly-doc__signature-line" aria-hidden="true" />
-              <span>{config.employeeSignatureLabel}</span>
-            </div>
-            <div className="weekly-doc__signature">
-              <span className="weekly-doc__signature-name" aria-hidden="true">&nbsp;</span>
-              <span className="weekly-doc__signature-line" aria-hidden="true" />
-              <span>{config.delivererSignatureLabel}</span>
-            </div>
-          </div>
-          <DocumentFooter />
-        </section>
-      ))}
     </div>
   );
 }
@@ -257,14 +238,14 @@ function DocumentPreviewCard({
   description,
   employees,
   weekLabel,
-  onPrint,
+  onReview,
 }: {
   format: PrintFormat;
   title: string;
   description: string;
   employees: Employee[];
   weekLabel: string;
-  onPrint: (format: PrintFormat) => void;
+  onReview: (format: PrintFormat) => void;
 }) {
   const Icon = format === 'credential' ? BadgeCheck : FileSignature;
   const previewEmployees = employees.slice(0, 3);
@@ -305,13 +286,140 @@ function DocumentPreviewCard({
         <ButtonUtility
           type="button"
           icon={<Printer aria-hidden="true" />}
-          onClick={() => onPrint(format)}
+          onClick={() => onReview(format)}
           disabled={employees.length === 0}
         >
-          Imprimir
+          Revisar e imprimir
         </ButtonUtility>
       </footer>
     </article>
+  );
+}
+
+interface DocumentReviewModalProps {
+  isOpen: boolean;
+  format: PrintFormat | null;
+  employees: Employee[];
+  selectedKeys: Set<string>;
+  weekLabel: string;
+  printDate: string;
+  onClose: () => void;
+  onToggleEmployee: (employeeKey: string) => void;
+  onToggleAll: () => void;
+  onPrint: () => void;
+}
+
+function DocumentReviewModal({
+  isOpen,
+  format,
+  employees,
+  selectedKeys,
+  weekLabel,
+  printDate,
+  onClose,
+  onToggleEmployee,
+  onToggleAll,
+  onPrint,
+}: DocumentReviewModalProps) {
+  if (!format) return null;
+
+  const selectedEmployees = employees.filter((employee) =>
+    selectedKeys.has(getEmployeeKey(employee)),
+  );
+  const allSelected =
+    employees.length > 0 && selectedEmployees.length === employees.length;
+  const PreviewIcon = format === 'credential' ? BadgeCheck : FileSignature;
+  const title =
+    format === 'credential' ? 'Entrega de credencial' : 'Entrega de contratos';
+
+  const footerActions = (
+    <>
+      <ButtonUtility type="button" onClick={onClose}>
+        Cancelar
+      </ButtonUtility>
+      <button
+        type="button"
+        className="btn-primary"
+        onClick={onPrint}
+        disabled={selectedEmployees.length === 0}
+      >
+        <Printer aria-hidden="true" />
+        Imprimir {selectedEmployees.length}
+      </button>
+    </>
+  );
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      icon={<PreviewIcon aria-hidden="true" />}
+      className="weekly-review-modal"
+      footerActions={footerActions}
+      size="xl"
+      fullscreenMobile
+    >
+      <div className="modal-body weekly-review-modal__body">
+        <aside className="weekly-review-modal__selector" aria-label="Empleados incluidos">
+          <header className="weekly-review-modal__selector-header">
+            <div>
+              <h3>Empleados incluidos</h3>
+              <p aria-live="polite">
+                {selectedEmployees.length} de {employees.length} seleccionados
+              </p>
+            </div>
+            <label className="weekly-review-modal__select-all">
+              <Checkbox
+                checked={allSelected}
+                onChange={onToggleAll}
+                aria-label={allSelected ? 'Excluir a todos' : 'Incluir a todos'}
+              />
+              <span>{allSelected ? 'Quitar todos' : 'Seleccionar todos'}</span>
+            </label>
+          </header>
+
+          <ul className="weekly-review-modal__employee-list">
+            {employees.map((employee) => {
+              const employeeKey = getEmployeeKey(employee);
+              const isSelected = selectedKeys.has(employeeKey);
+              return (
+                <li key={employeeKey}>
+                  <label className="weekly-review-modal__employee">
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={() => onToggleEmployee(employeeKey)}
+                      aria-label={`${isSelected ? 'Excluir' : 'Incluir'} a ${employee.nombre}`}
+                    />
+                    <span className="weekly-review-modal__employee-copy">
+                      <strong>{employee.nombre}</strong>
+                      <span>#{employee.num_empleado} · {employee.puesto}</span>
+                    </span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        </aside>
+
+        <section className="weekly-review-modal__preview" aria-label="Vista previa completa">
+          <div className="weekly-doc-preview">
+            {format === 'credential' ? (
+              <CredentialDocument
+                employees={selectedEmployees}
+                printDate={printDate}
+              />
+            ) : (
+              <ContractDocument
+                employees={selectedEmployees}
+                weekLabel={weekLabel}
+                printDate={printDate}
+              />
+            )}
+          </div>
+        </section>
+      </div>
+    </Modal>
   );
 }
 
@@ -320,7 +428,16 @@ export function WeeklyOnboardingDocuments({
   weekLabel,
   printDate,
 }: WeeklyOnboardingDocumentsProps) {
+  const [reviewFormat, setReviewFormat] = useState<PrintFormat | null>(null);
   const [activePrint, setActivePrint] = useState<PrintFormat | null>(null);
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+    () => new Set(employees.map(getEmployeeKey)),
+  );
+
+  useEffect(() => {
+    setSelectedKeys(new Set(employees.map(getEmployeeKey)));
+    setReviewFormat(null);
+  }, [employees, weekLabel]);
 
   useEffect(() => {
     if (!activePrint) return;
@@ -335,14 +452,43 @@ export function WeeklyOnboardingDocuments({
     };
   }, [activePrint]);
 
+  const selectedEmployees = employees.filter((employee) =>
+    selectedKeys.has(getEmployeeKey(employee)),
+  );
+
+  const handleToggleEmployee = (employeeKey: string) => {
+    setSelectedKeys((current) => {
+      const next = new Set(current);
+      if (next.has(employeeKey)) next.delete(employeeKey);
+      else next.add(employeeKey);
+      return next;
+    });
+  };
+
+  const handleToggleAll = () => {
+    setSelectedKeys((current) =>
+      current.size === employees.length
+        ? new Set<string>()
+        : new Set(employees.map(getEmployeeKey)),
+    );
+  };
+
+  const handlePrintReviewed = () => {
+    if (!reviewFormat || selectedEmployees.length === 0) return;
+    setActivePrint(reviewFormat);
+  };
+
   const printRoot = activePrint
     ? createPortal(
         <div className="recordatorios-print-root" aria-hidden="true">
           {activePrint === 'credential' ? (
-            <CredentialDocument employees={employees} printDate={printDate} />
+            <CredentialDocument
+              employees={selectedEmployees}
+              printDate={printDate}
+            />
           ) : (
             <ContractDocument
-              employees={employees}
+              employees={selectedEmployees}
               weekLabel={weekLabel}
               printDate={printDate}
             />
@@ -373,15 +519,15 @@ export function WeeklyOnboardingDocuments({
           description="Responsiva colectiva para los ingresos de la semana."
           employees={employees}
           weekLabel={weekLabel}
-          onPrint={setActivePrint}
+          onReview={setReviewFormat}
         />
         <DocumentPreviewCard
           format="contracts"
           title="Entrega de contratos"
-          description="Constancia colectiva y recibo individual por empleado."
+          description="Constancia colectiva para firma de recibido."
           employees={employees}
           weekLabel={weekLabel}
-          onPrint={setActivePrint}
+          onReview={setReviewFormat}
         />
       </div>
 
@@ -390,6 +536,19 @@ export function WeeklyOnboardingDocuments({
           No hay ingresos registrados en la semana seleccionada.
         </p>
       )}
+
+      <DocumentReviewModal
+        isOpen={reviewFormat !== null}
+        format={reviewFormat}
+        employees={employees}
+        selectedKeys={selectedKeys}
+        weekLabel={weekLabel}
+        printDate={printDate}
+        onClose={() => setReviewFormat(null)}
+        onToggleEmployee={handleToggleEmployee}
+        onToggleAll={handleToggleAll}
+        onPrint={handlePrintReviewed}
+      />
 
       {printRoot}
     </section>
