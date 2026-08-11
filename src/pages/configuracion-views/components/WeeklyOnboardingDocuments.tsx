@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { BadgeCheck, FileSignature, Printer } from 'lucide-react';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
@@ -57,15 +57,9 @@ function formatDocumentDate(isoDate: string) {
 function CredentialHeader() {
   return (
     <header className="weekly-doc__credential-header">
-      <img
-        className="weekly-doc__credential-logo"
-        src={ONBOARDING_DOCUMENT_CONFIG.logoPath}
-        alt="Viñoplastic"
-      />
       <h1 className="weekly-doc__title">
         {ONBOARDING_DOCUMENT_CONFIG.credential.title}
       </h1>
-      <span className="weekly-doc__credential-header-spacer" aria-hidden="true" />
     </header>
   );
 }
@@ -73,11 +67,6 @@ function CredentialHeader() {
 function CompanyHeader({ printDate }: { printDate: string }) {
   return (
     <header className="weekly-doc__company-header">
-      <img
-        className="weekly-doc__logo"
-        src={ONBOARDING_DOCUMENT_CONFIG.logoPath}
-        alt="Viñoplastic"
-      />
       <div className="weekly-doc__company-copy">
         <strong>{ONBOARDING_DOCUMENT_CONFIG.companyName}</strong>
         <span>
@@ -434,10 +423,18 @@ function DocumentReviewModal({
 }
 
 export function WeeklyOnboardingDocuments({
-  employees,
+  employees: rawEmployees,
   weekLabel,
   printDate,
 }: WeeklyOnboardingDocumentsProps) {
+  const employees = useMemo(() => {
+    return [...rawEmployees].sort((a, b) => {
+      const numA = String(a.num_empleado || '');
+      const numB = String(b.num_empleado || '');
+      return numA.localeCompare(numB, undefined, { numeric: true });
+    });
+  }, [rawEmployees]);
+
   const [reviewFormat, setReviewFormat] = useState<PrintFormat | null>(null);
   const [activePrint, setActivePrint] = useState<PrintFormat | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
