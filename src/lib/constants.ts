@@ -258,6 +258,44 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
 } as const;
 
 /**
+ * Contenido operativo de los formatos semanales de entrega. Los textos se
+ * conservan como aparecen en los documentos oficiales proporcionados por RH.
+ */
+export const ONBOARDING_DOCUMENT_CONFIG = {
+  companyName: 'Viñoplastic Inyección SA de CV',
+  location: 'Santa Rosa Jáuregui, Qro.',
+  logoPath: '/logo-empresa.jpg',
+  addressFooter:
+    'Av. La Montaña N.98 Parque Industrial Querétaro, Tel: 55-63-26-5881 y 2-40-95-39 Ext. 300',
+  credential: {
+    title: 'RESPONSIVA DE ENTREGA DE CREDENCIAL DE TABAJADOR',
+    intro:
+      'Por medio de la presente carta responsiva, en virtud de que ingreso a laborar a esta empresa Viñoplastic inyección SA DE CV declaro que asumo la responsabilidad del resguardo y uso adecuado de mi credencial como trabajador de esta empresa:',
+    paragraphs: [
+      'Reconozco que esta credencial se encuentra bajo mi cuidado y custodia. Acepto utilizarla de manera adecuada y responsable, garantizando su buen estado durante mi relación laboral con la empresa.',
+      'Asimismo, me comprometo a devolver la credencial en la misma condición en que lo recibí, salvo el desgaste normal por el uso ordinario. Seré responsable de cualquier daño, pérdida o robo que pueda ocurrir durante el tiempo en que esté a mi cargo.',
+      'Me comprometo a notificar de inmediato cualquier incidencia o problema que afecte a la empresa.',
+      'La presente carta tiene validez a partir de la fecha de firma y hasta la finalización de mi relación laboral, lo que ocurra primero.',
+    ],
+    acknowledgement: 'Firmamos de enterados y recibida la credencial',
+    formCode: 'RG-REC-052',
+    revision: 'REV.0',
+    firstPageCapacity: 12,
+    continuationPageCapacity: 30,
+  },
+  contract: {
+    collectiveTitle: 'Entrega de contratos',
+    collectiveStatement:
+      'Por medio de la presente se hace constar que se han entregado con esta fecha, la copia del contrato firmado por ambas partes (Empleado y Empleador) de los ingresos de la semana',
+    individualStatement:
+      'Por medio de la presente hago contar que se me ha entregado con esta fecha, la copia de mi contrato, firmado por ambas partes (Empleado y Empleador).',
+    employeeSignatureLabel: 'Nombre y firma del empleado',
+    delivererSignatureLabel: 'Nombre y firma de quien entrega',
+    collectivePageCapacity: 9,
+  },
+} as const;
+
+/**
  * Configuración central del pase de entrevista que recibe el candidato.
  * Mantener aquí los datos operativos para que la vista y la imagen compartida
  * siempre utilicen la misma fuente de verdad.

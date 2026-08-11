@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CircleUser } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
@@ -34,10 +35,12 @@ export function EmployeeResultCard({
   reports,
   onToggle,
 }: EmployeeResultCardProps) {
+  const [isLaborInfoExpanded, setIsLaborInfoExpanded] = useState(false);
   const employeeName = displayValue(employee.nombre);
   const employeeNumber = displayValue(employee.num_empleado);
   const stickerTone = getStickerTone(employeeNumber);
   const employeeTitleId = `employee-card-title-${resultId}`;
+  const laborInfoId = `employee-labor-info-${resultId}`;
   const compactDetailsId = `compact-details-${resultId}`;
   const isCompact = viewMode === 'compact';
   const renewalDate = employee.isBaja
@@ -123,13 +126,33 @@ export function EmployeeResultCard({
             className="config-card__details"
             aria-labelledby={`details-${resultId}`}
           >
-            <h4
-              id={`details-${resultId}`}
-              className="config-card__section-title type-caption-up text-muted"
+            <div className="config-card__details-heading">
+              <h4
+                id={`details-${resultId}`}
+                className="config-card__section-title type-caption-up text-muted"
+              >
+                Información laboral
+              </h4>
+              <button
+                type="button"
+                className="config-card__details-toggle"
+                onClick={() => setIsLaborInfoExpanded((current) => !current)}
+                aria-expanded={isLaborInfoExpanded}
+                aria-controls={laborInfoId}
+              >
+                <MorphingIcon
+                  icon={isLaborInfoExpanded ? ChevronUp : ChevronDown}
+                  aria-hidden="true"
+                />
+                {isLaborInfoExpanded ? 'Contraer' : 'Mostrar'}
+              </button>
+            </div>
+            <dl
+              id={laborInfoId}
+              className={`config-card__properties config-card__properties--collapsible${
+                isLaborInfoExpanded ? ' is-expanded' : ''
+              }`}
             >
-              Información laboral
-            </h4>
-            <dl className="config-card__properties">
               <div className="notion-prop">
                 <dt className="notion-prop__label type-body-sm text-muted">
                   Puesto

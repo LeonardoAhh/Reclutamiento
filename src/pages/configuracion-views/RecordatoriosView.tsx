@@ -3,10 +3,18 @@ import { Bus, AlertCircle, Copy } from "lucide-react";
 import { toBlob } from "html-to-image";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useRutas } from "@/hooks/useRutas";
-import { localTodayIso } from "@/lib/dates";
+import {
+  formatIsoWeekRange,
+  isInIsoWeek,
+  isoWeekOf,
+  localDateToIso,
+  localTodayIso,
+} from "@/lib/dates";
+import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocuments";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { sileo } from "@/lib/notify";
+import "./RecordatoriosView.css";
 
 export function RecordatoriosView() {
   const {
@@ -54,6 +62,21 @@ export function RecordatoriosView() {
       });
   }, [employees, selectedDate, rutaLookup]);
 
+  const selectedWeek = useMemo(() => {
+    const selectedTimestamp = localDateToIso(selectedDate);
+    return isoWeekOf(selectedTimestamp ?? new Date());
+  }, [selectedDate]);
+
+  const weeklyEmployees = useMemo(
+    () =>
+      employees
+        .filter((employee) => isInIsoWeek(employee.fecha_ingreso, selectedWeek))
+        .sort((first, second) => first.nombre.localeCompare(second.nombre, "es")),
+    [employees, selectedWeek],
+  );
+
+  const selectedWeekLabel = `Semana ${selectedWeek.week} · ${formatIsoWeekRange(selectedWeek)} ${selectedWeek.year}`;
+
   const handleCopyImage = async () => {
     if (!tableRef.current) return;
 
@@ -61,18 +84,14 @@ export function RecordatoriosView() {
       setIsGeneratingImage(true);
 
       const node = tableRef.current;
-
-      const width = node.scrollWidth + 16;
-      const height = node.scrollHeight + 16;
+      const documentPaper = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-document-paper")
+        .trim();
 
       const blob = await toBlob(node, {
-        backgroundColor: "#ffffff",
-        width: width,
-        height: height,
-        style: {
-          padding: "8px",
-          margin: "0",
-        },
+        backgroundColor: documentPaper || undefined,
+        width: node.scrollWidth,
+        height: node.scrollHeight,
       });
 
       if (blob) {
@@ -103,11 +122,11 @@ export function RecordatoriosView() {
             height="var(--touch-target-min)"
             radius="var(--rounded-md)"
           />
-          <div style={{ marginTop: "var(--spacing-lg)" }}>
+          <div className="recordatorios-skeleton">
             <Skeleton
               variant="rect"
               width="100%"
-              height="200px"
+              height="var(--skeleton-card-height)"
               radius="var(--rounded-md)"
             />
           </div>
@@ -126,36 +145,13 @@ export function RecordatoriosView() {
         )}
 
         <div className="config-results-wrapper">
-          <style>{`
-            .whatsapp-export-table {
-              border-collapse: collapse;
-              width: 100%;
-            }
-            .whatsapp-export-table th, 
-            .whatsapp-export-table td {
-              border: 1px solid #000000 !important;
-              color: #000000 !important;
-            }
-            .whatsapp-export-table th {
-              font-weight: 700 !important;
-            }
-            .whatsapp-export-table td {
-              font-weight: 500 !important;
-            }
-          `}</style>
 
           <section
             className="config-results-controls"
             aria-label="Filtros y exportación"
           >
-            <div
-              className="config-results-controls__filters"
-              style={{ gridTemplateColumns: "minmax(0, 1fr) auto" }}
-            >
-              <label
-                className="config-filter-field"
-                style={{ maxWidth: "240px" }}
-              >
+            <div className="config-results-controls__filters recordatorios-controls-grid">
+              <label className="config-filter-field recordatorios-date-field">
                 <span className="config-filter-label type-caption-sm text-muted">
                   Fecha de ingreso
                 </span>
@@ -180,6 +176,12 @@ export function RecordatoriosView() {
             </div>
           </section>
 
+          <WeeklyOnboardingDocuments
+            employees={weeklyEmployees}
+            weekLabel={selectedWeekLabel}
+            printDate={localTodayIso()}
+          />
+
           {filteredEmployees.length === 0 ? (
             <div className="config-filter-empty" role="status">
               <Bus size={32} aria-hidden="true" />
@@ -190,42 +192,31 @@ export function RecordatoriosView() {
           ) : (
             <div className="config-card">
               <div
-                className="table-responsive"
+                className="table-responsive recordatorios-table-region"
                 tabIndex={0}
                 role="region"
-                style={{
-                  border: "1px solid var(--color-hairline-soft)",
-                  borderRadius: "var(--rounded-md)",
-                  overflowX: "auto",
-                }}
+                aria-label="Asignación de rutas"
               >
-                <div
-                  ref={tableRef}
-                  style={{
-                    width: "max-content",
-                    minWidth: "100%",
-                    backgroundColor: "#ffffff",
-                  }}
-                >
-                  <table className="indicadores-table config-table whatsapp-export-table">
+                <div ref={tableRef} className="recordatorios-export-canvas">
+                  <table className="indicadores-table config-table recordatorios-table">
                     <caption className="sr-only">
                       Asignación de rutas para el {selectedDate}
                     </caption>
-                    <thead style={{ backgroundColor: "var(--color-surface-hover)" }}>
+                    <thead>
                       <tr>
-                        <th scope="col" style={{ textAlign: "left" }}>
+                        <th scope="col" className="recordatorios-table__cell--left">
                           No. Emp
                         </th>
-                        <th scope="col" style={{ textAlign: "left" }}>
+                        <th scope="col" className="recordatorios-table__cell--left">
                           Nombre
                         </th>
-                        <th scope="col" style={{ textAlign: "center" }}>
+                        <th scope="col" className="recordatorios-table__cell--center">
                           Turno
                         </th>
-                        <th scope="col" style={{ textAlign: "left" }}>
+                        <th scope="col" className="recordatorios-table__cell--left">
                           Nombre Ruta
                         </th>
-                        <th scope="col" style={{ textAlign: "left" }}>
+                        <th scope="col" className="recordatorios-table__cell--left">
                           Parada
                         </th>
                       </tr>
@@ -233,46 +224,32 @@ export function RecordatoriosView() {
                     <tbody>
                       {filteredEmployees.map((emp) => (
                         <tr key={emp.id || emp.num_empleado}>
-                          <td className="type-body-sm font-medium text-ink" style={{ textAlign: "left" }}>
+                          <td className="type-body-sm font-medium text-ink recordatorios-table__cell--left">
                             {emp.num_empleado}
                           </td>
-                          <td className="type-body-sm text-charcoal" style={{ textAlign: "left" }}>
+                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
                             {emp.nombre}
                           </td>
-                          <td className="type-body-sm text-charcoal" style={{ textAlign: "center" }}>
+                          <td className="type-body-sm text-charcoal recordatorios-table__cell--center">
                             {emp.turno || (
                               <span className="text-error">Falta turno</span>
                             )}
                           </td>
-                          <td className="type-body-sm text-charcoal" style={{ textAlign: "left" }}>
+                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
                             {emp.ruta_final ? (
                               emp.ruta_final
                             ) : (
-                              <span
-                                className="text-error"
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "var(--spacing-xs)",
-                                }}
-                              >
-                                <AlertCircle size={14} /> Faltan datos
+                              <span className="text-error recordatorios-missing-data">
+                                <AlertCircle size={14} aria-hidden="true" /> Faltan datos
                               </span>
                             )}
                           </td>
-                          <td className="type-body-sm text-charcoal" style={{ textAlign: "left" }}>
+                          <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
                             {emp.parada_final ? (
                               emp.parada_final
                             ) : (
-                              <span
-                                className="text-error"
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "var(--spacing-xs)",
-                                }}
-                              >
-                                <AlertCircle size={14} /> Faltan datos
+                              <span className="text-error recordatorios-missing-data">
+                                <AlertCircle size={14} aria-hidden="true" /> Faltan datos
                               </span>
                             )}
                           </td>
