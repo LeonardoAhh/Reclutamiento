@@ -1202,31 +1202,49 @@ export function Pipeline() {
         size="md"
         fullscreenMobile={false}
         footerActions={
-          <button
-            type="button"
-            className="btn btn-primary"
-            style={{ width: '100%', justifyContent: 'center' }}
-            onClick={() => {
-              if (!quickProfile) return;
-              const target = quickProfile;
-              setQuickProfile(null);
-              openEdit(target);
-            }}
-          >
-            Editar Perfil Completo
-          </button>
+          <>
+            {quickProfile?.status === 'contratado' && !quickProfile?.employee_num && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ flex: 1, justifyContent: 'center', gap: 'var(--spacing-xs)' }}
+                onClick={() => {
+                  if (!quickProfile) return;
+                  const target = quickProfile;
+                  setQuickProfile(null);
+                  openHire(target);
+                }}
+              >
+                <BadgeCheck size={16} aria-hidden="true" />
+                <span>Contratar</span>
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ flex: 1, justifyContent: 'center' }}
+              onClick={() => {
+                if (!quickProfile) return;
+                const target = quickProfile;
+                setQuickProfile(null);
+                openEdit(target);
+              }}
+            >
+              Editar Perfil Completo
+            </button>
+          </>
         }
       >
         {quickProfile && (
           <div className="modal-body">
-            <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+            <div className="quick-profile-header">
               <div className="quick-profile__avatar">
                 {(quickProfile.nombre ?? '?').charAt(0)}
               </div>
               <div className="quick-profile__info">
                 <h3>{quickProfile.nombre}</h3>
                 <p>{quickProfile.telefono} • {quickProfile.puesto}</p>
-                <div style={{ marginTop: 'var(--spacing-xs)' }}>
+                <div className="quick-profile__status-wrap">
                   <CandidateStatusBadge status={quickProfile.status} />
                 </div>
               </div>

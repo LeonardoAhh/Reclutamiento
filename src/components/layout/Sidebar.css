@@ -65,11 +65,17 @@
   gap: var(--spacing-sm);
   height: var(--mobile-nav-height, 60px);
   margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-hairline);
+  margin-inline: calc(var(--spacing-md) * -1);
+  padding-inline: var(--spacing-md);
 }
 
 .sidebar[data-collapsed="true"] .sidebar__top {
   flex-direction: column;
+  justify-content: center;
   gap: var(--spacing-md);
+  margin-inline: calc(var(--spacing-sm) * -1);
+  padding-inline: var(--spacing-sm);
 }
 
 button.sidebar__collapse-btn {
@@ -287,7 +293,7 @@ button.sidebar__collapse-btn {
 }
 
 :root {
-  --layout-sidebar-w-expanded: 248px;
+  --layout-sidebar-w-expanded: 200px;
   --layout-sidebar-w-collapsed: 76px;
 }
 

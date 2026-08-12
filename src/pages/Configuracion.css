@@ -1183,7 +1183,12 @@
     width: 260px;
     border-bottom: none;
     border-right: 1px solid var(--color-hairline);
-    padding: var(--spacing-2xl) var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+    position: sticky;
+    top: var(--mobile-nav-height, 60px);
+    height: calc(100vh - var(--mobile-nav-height, 60px));
+    overflow-y: auto;
+    align-self: flex-start;
   }
 }
 

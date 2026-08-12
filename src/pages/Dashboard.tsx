@@ -349,7 +349,6 @@ export function Dashboard() {
     empModalMode === null &&
     promoteTarget === null &&
     editTarget === null;
-
   return (
     <div className="config-layout plantilla-layout">
       <aside

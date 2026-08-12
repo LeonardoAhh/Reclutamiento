@@ -29,3 +29,12 @@
 .candidate-status-badge[data-status="contratado"] .candidate-status-badge__dot { background: var(--color-success); }
 .candidate-status-badge[data-status="rechazado"] .candidate-status-badge__dot { background: var(--color-error); }
 .candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot { background: var(--color-ink-faint); }
+
+.candidate-status-caret {
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+
+[aria-expanded="true"] .candidate-status-caret {
+  transform: rotate(180deg);
+}

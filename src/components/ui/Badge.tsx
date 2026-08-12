@@ -3,15 +3,16 @@ import type { RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import './Badge.css';
 
-interface BadgeProps {
+export interface BadgeProps {
   children: React.ReactNode;
   variant?: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error';
   minimal?: boolean;
+  className?: string;
 }
 
-export function Badge({ children, variant = 'default', minimal = false }: BadgeProps) {
+export function Badge({ children, variant = 'default', minimal = false, className = '' }: BadgeProps) {
   return (
-    <span className={`badge badge--${variant} ${minimal ? 'badge--minimal' : ''}`.trim()}>
+    <span className={`badge badge--${variant} ${minimal ? 'badge--minimal' : ''} ${className}`.trim()}>
       {children}
     </span>
   );

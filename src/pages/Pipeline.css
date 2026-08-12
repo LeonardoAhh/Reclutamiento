@@ -2313,9 +2313,19 @@
   transform: translateX(-10px);
 }
 
-.quick-profile-card:hover .quick-profile__edit-btn {
-  opacity: 1;
-  transform: translateX(0);
+.quick-profile-header {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.quick-profile__status-wrap {
+  margin-top: var(--spacing-xs);
+}
+
+.quick-profile__action-btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .quick-profile__edit-btn:hover {
