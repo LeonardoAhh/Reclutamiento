@@ -90,13 +90,13 @@ export function EmployeeIncidenceCalendar({
 }: EmployeeIncidenceCalendarProps) {
   const [requestedMonth, setRequestedMonth] = useState('');
 
-  const availableReports = useMemo(
-    () => reports
+  const availableReports = useMemo(() => {
+    if (!reports) return [];
+    return reports
       .map((report) => ({ report, row: findEmployeeReportRow(report, employeeNumber) }))
       .filter((entry): entry is { report: ReporteDiarioRecord; row: EmployeeReportRow } => Boolean(entry.row))
-      .sort((first, second) => second.report.mes.localeCompare(first.report.mes)),
-    [employeeNumber, reports],
-  );
+      .sort((first, second) => second.report.mes.localeCompare(first.report.mes));
+  }, [employeeNumber, reports]);
 
   const selectedEntry = availableReports.find(({ report }) => report.mes === requestedMonth) ?? availableReports[0];
   const selectedMonth = selectedEntry?.report.mes ?? '';

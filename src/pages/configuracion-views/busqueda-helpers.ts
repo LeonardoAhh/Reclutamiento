@@ -13,6 +13,29 @@ export function normalizeFilterValue(value: string) {
   return value.trim().toLocaleLowerCase('es');
 }
 
+export function normalizeSearchText(text: string) {
+  return String(text ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es')
+    .trim();
+}
+
+export function matchesSearchTokens(employee: EmployeeSearchResult, tokens: string[]) {
+  if (tokens.length === 0) return true;
+  
+  const searchableText = normalizeSearchText([
+    employee.num_empleado,
+    employee.nombre,
+    employee.puesto,
+    employee.area,
+    employee.turno,
+    employee.isBaja ? employee.motivo_baja : ''
+  ].join(' '));
+
+  return tokens.every(token => searchableText.includes(token));
+}
+
 export function uniqueFilterValues(
   results: EmployeeSearchResult[],
   field: 'area' | 'turno',

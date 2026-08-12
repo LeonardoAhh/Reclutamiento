@@ -24,6 +24,7 @@ interface EmployeeResultCardProps {
   reportsLoading: boolean;
   reports: ReporteDiarioRecord[];
   onToggle: () => void;
+  autoExpand?: boolean;
 }
 
 export function EmployeeResultCard({
@@ -34,8 +35,9 @@ export function EmployeeResultCard({
   reportsLoading,
   reports,
   onToggle,
+  autoExpand = false,
 }: EmployeeResultCardProps) {
-  const [isLaborInfoExpanded, setIsLaborInfoExpanded] = useState(false);
+  const [isLaborInfoExpanded, setIsLaborInfoExpanded] = useState(autoExpand);
   const employeeName = displayValue(employee.nombre);
   const employeeNumber = displayValue(employee.num_empleado);
   const stickerTone = getStickerTone(employeeNumber);
@@ -90,30 +92,30 @@ export function EmployeeResultCard({
               <dt>Departamento</dt>
               <dd>{displayValue(employee.area)}</dd>
             </div>
-            <div>
-              <dt>Turno</dt>
-              <dd>
-                {employee.turno
-                  ? displayValue(employee.turno)
-                  : 'Sin información'}
-              </dd>
-            </div>
-          </dl>
-          <ButtonUtility
-            type="button"
-            className="config-compact-summary__toggle"
-            icon={(
-              <MorphingIcon
-                icon={isExpanded ? ChevronUp : ChevronDown}
-                size={16}
-              />
+            {!employee.isBaja && (
+              <div>
+                <dt>Turno</dt>
+                <dd>
+                  {employee.turno
+                    ? displayValue(employee.turno)
+                    : 'Sin información'}
+                </dd>
+              </div>
             )}
+          </dl>
+          <button
+            type="button"
+            className="config-compact-summary__toggle-minimal"
             onClick={onToggle}
             aria-expanded={isExpanded}
             aria-controls={compactDetailsId}
           >
-            {isExpanded ? 'Ocultar detalle' : 'Ver detalle'}
-          </ButtonUtility>
+            <span>{isExpanded ? 'Ocultar' : 'Detalles'}</span>
+            <MorphingIcon
+              icon={isExpanded ? ChevronUp : ChevronDown}
+              size={16}
+            />
+          </button>
         </div>
       )}
 
@@ -217,12 +219,8 @@ export function EmployeeResultCard({
               {!(employee.isBaja && !employee.turno) && (
                 <div className="notion-prop">
                   <dt className="notion-prop__label type-body-sm text-muted">Turno</dt>
-                  <dd className="notion-prop__value">
-                    {employee.turno ? (
-                      <Badge>{employee.turno}</Badge>
-                    ) : (
-                      <span className="type-body-sm-strong text-muted">N/A</span>
-                    )}
+                  <dd className={`notion-prop__value type-body-sm-strong ${employee.turno ? 'text-charcoal' : 'text-muted'}`}>
+                    {employee.turno ? displayValue(employee.turno) : 'N/A'}
                   </dd>
                 </div>
               )}

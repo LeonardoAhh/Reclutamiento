@@ -22,6 +22,8 @@ import { EmployeeResultCard } from './components/EmployeeResultCard';
 import {
   getEmployeeResultId,
   normalizeFilterValue,
+  normalizeSearchText,
+  matchesSearchTokens,
   uniqueFilterValues,
   type EmployeeSearchResult,
   type SearchViewMode,
@@ -43,77 +45,61 @@ export function BusquedaView() {
   const { fetchSummaries, fetchByMesList } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<SearchStatusFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState(ALL_FILTER_VALUE);
   const [shiftFilter, setShiftFilter] = useState(ALL_FILTER_VALUE);
-  const [viewMode, setViewMode] = useState<SearchViewMode>('detail');
+  const [viewMode, setViewMode] = useState<SearchViewMode>('compact');
   const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const [visibleLimit, setVisibleLimit] = useState(10);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [summariesLoading, setSummariesLoading] = useState(true);
   const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [reportsFetched, setReportsFetched] = useState(false);
 
   useEffect(() => {
-    let active = true;
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 250);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
-    const loadReports = async () => {
-      try {
-        const data = await fetchSummaries();
-        if (!active) return;
+  const searchQuery = debouncedSearchTerm.trim();
 
-        const reports = data.length > 0
-          ? await fetchByMesList(data.map((summary) => summary.mes))
-          : [];
-        if (active) setAllReports(reports);
-      } finally {
-        if (active) setSummariesLoading(false);
-      }
-    };
-
-    void loadReports();
-    return () => {
-      active = false;
-    };
-  }, [fetchSummaries, fetchByMesList]);
-
-  const searchQuery = searchTerm.trim();
-
-  const searchMatches = useMemo<EmployeeSearchResult[]>(() => {
-    const query = searchQuery.toLocaleLowerCase('es');
+  // 1. Coincidencia por texto
+  const textMatches = useMemo<EmployeeSearchResult[]>(() => {
+    const query = normalizeSearchText(searchQuery);
     if (query.length < 2) return [];
 
+    const searchTokens = query.split(/\s+/).filter(Boolean);
+
     const activeMatches: EmployeeSearchResult[] = employees
-      .filter(
-        (employee) =>
-          employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
-          employee.nombre.toLocaleLowerCase('es').includes(query),
-      )
-      .map((employee) => ({ ...employee, isBaja: false as const }));
+      .map((employee) => ({ ...employee, isBaja: false as const }))
+      .filter((employee) => matchesSearchTokens(employee, searchTokens));
 
     const bajaMatches: EmployeeSearchResult[] = bajas
-      .filter(
-        (employee) =>
-          employee.num_empleado.toLocaleLowerCase('es').includes(query) ||
-          employee.nombre.toLocaleLowerCase('es').includes(query),
-      )
-      .map((employee) => ({ ...employee, isBaja: true as const }));
+      .map((employee) => ({ ...employee, isBaja: true as const }))
+      .filter((employee) => matchesSearchTokens(employee, searchTokens));
 
-    return [...activeMatches, ...bajaMatches].slice(0, 10);
+    return [...activeMatches, ...bajaMatches];
   }, [searchQuery, employees, bajas]);
 
+  // 2. Opciones de filtros basadas en las coincidencias de texto
   const departmentOptions = useMemo(
-    () => uniqueFilterValues(searchMatches, 'area'),
-    [searchMatches],
+    () => uniqueFilterValues(textMatches, 'area'),
+    [textMatches],
   );
   const shiftOptions = useMemo(
-    () => uniqueFilterValues(searchMatches, 'turno'),
-    [searchMatches],
+    () => uniqueFilterValues(textMatches, 'turno'),
+    [textMatches],
   );
 
+  // 3. Aplicar filtros secundarios
   const filteredEmployees = useMemo(() => {
-    return searchMatches.filter((employee) => {
+    return textMatches.filter((employee) => {
       if (statusFilter === 'active' && employee.isBaja) return false;
       if (statusFilter === 'inactive' && !employee.isBaja) return false;
       if (
@@ -126,20 +112,62 @@ export function BusquedaView() {
       ) return false;
       return true;
     });
-  }, [searchMatches, statusFilter, departmentFilter, shiftFilter]);
+  }, [textMatches, statusFilter, departmentFilter, shiftFilter]);
+
+  // 4. Paginación
+  const paginatedEmployees = useMemo(
+    () => filteredEmployees.slice(0, visibleLimit),
+    [filteredEmployees, visibleLimit]
+  );
 
   const hasActiveFilters =
     statusFilter !== 'all' ||
     departmentFilter !== ALL_FILTER_VALUE ||
     shiftFilter !== ALL_FILTER_VALUE;
-  const canUseCompactView = searchMatches.length > 1;
+    
+  const isSingleResult = filteredEmployees.length === 1;
+  const canUseCompactView = filteredEmployees.length > 1;
 
   useEffect(() => {
     setStatusFilter('all');
     setDepartmentFilter(ALL_FILTER_VALUE);
     setShiftFilter(ALL_FILTER_VALUE);
     setExpandedResultIds(new Set<string>());
+    setVisibleLimit(10);
+    setViewMode('compact');
   }, [searchQuery]);
+
+  const needsReports =
+    (viewMode === 'detail' && filteredEmployees.length > 0) ||
+    expandedResultIds.size > 0 ||
+    filteredEmployees.length === 1;
+
+  useEffect(() => {
+    if (!needsReports || reportsFetched) return;
+
+    let active = true;
+    const loadReports = async () => {
+      setReportsLoading(true);
+      try {
+        const data = await fetchSummaries();
+        if (!active) return;
+        const reports = data.length > 0
+          ? await fetchByMesList(data.map((summary) => summary.mes))
+          : [];
+        if (active) {
+          setAllReports(reports);
+          setReportsFetched(true);
+        }
+      } finally {
+        if (active) setReportsLoading(false);
+      }
+    };
+    void loadReports();
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needsReports, fetchSummaries, fetchByMesList]);
 
   useEffect(() => {
     if (!canUseCompactView && viewMode === 'compact') setViewMode('detail');
@@ -265,13 +293,7 @@ export function BusquedaView() {
       <section
         id="config-search-results"
         aria-label="Resultados de búsqueda"
-        aria-busy={summariesLoading}
       >
-        {summariesLoading && (
-          <span className="sr-only" role="status" aria-live="polite">
-            Cargando reportes disponibles…
-          </span>
-        )}
         {searchQuery.length < 2 ? (
           <div className="animated-empty-state busqueda-view__empty">
             <div className="animated-empty-state__icon">
@@ -284,156 +306,166 @@ export function BusquedaView() {
               Consulta su información laboral, asistencia e historial de incidencias.
             </p>
           </div>
-        ) : searchMatches.length > 0 ? (
+        ) : textMatches.length > 0 ? (
           <div className="config-results-wrapper">
             <h3 className="sr-only">Resultados de búsqueda</h3>
 
-            <section
-              className="config-results-controls"
-              aria-label="Filtros y vista de resultados"
-            >
-              <div className="config-results-controls__heading config-filter-field">
-                <span
-                  className="config-filter-label type-caption-sm text-muted"
-                  aria-hidden="true"
-                >
-                  &nbsp;
-                </span>
-                <div className="config-results-controls__heading-content">
-                  <SlidersHorizontal aria-hidden="true" />
-                  <span className="type-body-sm-strong text-charcoal">
-                    Filtrar resultados
-                  </span>
-                </div>
-              </div>
+            {!isSingleResult && (
+              <section
+                className="config-results-controls"
+                aria-label="Filtros y vista de resultados"
+              >
+                <div className="config-results-controls__filters">
+                  <fieldset className="config-filter-group">
+                    <legend className="config-filter-label type-caption-sm text-muted">
+                      Estado
+                    </legend>
+                    <div className="config-segmented-control">
+                      {([
+                        ['all', 'Todos'],
+                        ['active', 'Activos'],
+                        ['inactive', 'Bajas'],
+                      ] as const).map(([value, label]) => (
+                        <button
+                          key={value}
+                          type="button"
+                          className={`config-segmented-control__button${
+                            statusFilter === value ? ' is-active' : ''
+                          }`}
+                          onClick={() => setStatusFilter(value)}
+                          aria-pressed={statusFilter === value}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
 
-              <div className="config-results-controls__filters">
-                <fieldset className="config-filter-group">
-                  <legend className="config-filter-label type-caption-sm text-muted">
-                    Estado
-                  </legend>
-                  <div className="config-segmented-control">
-                    {([
-                      ['all', 'Todos'],
-                      ['active', 'Activos'],
-                      ['inactive', 'Bajas'],
-                    ] as const).map(([value, label]) => (
+                  <label className="config-filter-field">
+                    <span className="config-filter-label type-caption-sm text-muted">
+                      Departamento
+                    </span>
+                    <CustomSelect
+                      value={departmentFilter}
+                      onChange={setDepartmentFilter}
+                      options={[
+                        { value: ALL_FILTER_VALUE, label: 'Todos' },
+                        ...departmentOptions,
+                      ]}
+                    />
+                  </label>
+
+                  <label className="config-filter-field">
+                    <span className="config-filter-label type-caption-sm text-muted">
+                      Turno
+                    </span>
+                    <CustomSelect
+                      value={shiftFilter}
+                      onChange={setShiftFilter}
+                      options={[
+                        { value: ALL_FILTER_VALUE, label: 'Todos' },
+                        ...shiftOptions,
+                      ]}
+                    />
+                  </label>
+
+                  {hasActiveFilters && (
+                    <ButtonUtility
+                      type="button"
+                      className="config-filter-reset"
+                      icon={<RotateCcw aria-hidden="true" />}
+                      onClick={handleClearFilters}
+                    >
+                      Limpiar
+                    </ButtonUtility>
+                  )}
+                </div>
+
+                {canUseCompactView && (
+                  <div className="config-filter-field">
+                    <span
+                      className="config-filter-label type-caption-sm text-transparent"
+                      aria-hidden="true"
+                      style={{ userSelect: 'none' }}
+                    >
+                      &nbsp;
+                    </span>
+                    <div
+                      className="config-view-switch"
+                      role="group"
+                      aria-label="Vista de resultados"
+                    >
                       <button
-                        key={value}
                         type="button"
-                        className={`config-segmented-control__button${
-                          statusFilter === value ? ' is-active' : ''
+                        className={`config-view-switch__button${
+                          viewMode === 'detail' ? ' is-active' : ''
                         }`}
-                        onClick={() => setStatusFilter(value)}
-                        aria-pressed={statusFilter === value}
+                        onClick={() => handleViewModeChange('detail')}
+                        aria-pressed={viewMode === 'detail'}
                       >
-                        {label}
+                        <List aria-hidden="true" />
+                        Detallada
                       </button>
-                    ))}
+                      <button
+                        type="button"
+                        className={`config-view-switch__button${
+                          viewMode === 'compact' ? ' is-active' : ''
+                        }`}
+                        onClick={() => handleViewModeChange('compact')}
+                        aria-pressed={viewMode === 'compact'}
+                      >
+                        <LayoutGrid aria-hidden="true" />
+                        Compacta
+                      </button>
+                    </div>
                   </div>
-                </fieldset>
-
-                <label className="config-filter-field">
-                  <span className="config-filter-label type-caption-sm text-muted">
-                    Departamento
-                  </span>
-                  <CustomSelect
-                    value={departmentFilter}
-                    onChange={setDepartmentFilter}
-                    options={[
-                      { value: ALL_FILTER_VALUE, label: 'Todos' },
-                      ...departmentOptions,
-                    ]}
-                  />
-                </label>
-
-                <label className="config-filter-field">
-                  <span className="config-filter-label type-caption-sm text-muted">
-                    Turno
-                  </span>
-                  <CustomSelect
-                    value={shiftFilter}
-                    onChange={setShiftFilter}
-                    options={[
-                      { value: ALL_FILTER_VALUE, label: 'Todos' },
-                      ...shiftOptions,
-                    ]}
-                  />
-                </label>
-
-                {hasActiveFilters && (
-                  <ButtonUtility
-                    type="button"
-                    className="config-filter-reset"
-                    icon={<RotateCcw aria-hidden="true" />}
-                    onClick={handleClearFilters}
-                  >
-                    Limpiar
-                  </ButtonUtility>
                 )}
-              </div>
-
-              {canUseCompactView && (
-                <div
-                  className="config-view-switch"
-                  role="group"
-                  aria-label="Vista de resultados"
-                >
-                  <button
-                    type="button"
-                    className={`config-view-switch__button${
-                      viewMode === 'detail' ? ' is-active' : ''
-                    }`}
-                    onClick={() => handleViewModeChange('detail')}
-                    aria-pressed={viewMode === 'detail'}
-                  >
-                    <List aria-hidden="true" />
-                    Detallada
-                  </button>
-                  <button
-                    type="button"
-                    className={`config-view-switch__button${
-                      viewMode === 'compact' ? ' is-active' : ''
-                    }`}
-                    onClick={() => handleViewModeChange('compact')}
-                    aria-pressed={viewMode === 'compact'}
-                  >
-                    <LayoutGrid aria-hidden="true" />
-                    Compacta
-                  </button>
-                </div>
-              )}
-            </section>
+              </section>
+            )}
 
             <p
               className="config-results__count type-caption-sm text-muted"
               aria-live="polite"
             >
               {hasActiveFilters
-                ? `${filteredEmployees.length} de ${searchMatches.length} resultados para “${searchQuery}”`
-                : `${searchMatches.length} resultado${searchMatches.length !== 1 ? 's' : ''} para “${searchQuery}”`}
+                ? `Mostrando ${paginatedEmployees.length} de ${filteredEmployees.length} resultados filtrados (de ${textMatches.length} coincidencias)`
+                : `Mostrando ${paginatedEmployees.length} de ${textMatches.length} resultados para “${searchQuery}”`}
             </p>
 
             <div
               className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
             >
               {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((employee) => {
-                  const resultId = getEmployeeResultId(employee);
+                <>
+                  {paginatedEmployees.map((employee) => {
+                    const resultId = getEmployeeResultId(employee);
 
-                  return (
-                    <EmployeeResultCard
-                      key={resultId}
-                      employee={employee}
-                      resultId={resultId}
-                      viewMode={viewMode}
-                      isExpanded={expandedResultIds.has(resultId)}
-                      reportsLoading={summariesLoading}
-                      reports={allReports}
-                      onToggle={() => handleToggleCompactResult(resultId)}
-                    />
-                  );
-                })
+                    return (
+                      <EmployeeResultCard
+                        key={resultId}
+                        employee={employee}
+                        resultId={resultId}
+                        viewMode={viewMode}
+                        isExpanded={expandedResultIds.has(resultId)}
+                        autoExpand={isSingleResult}
+                        reports={allReports}
+                        reportsLoading={reportsLoading}
+                        onToggle={() => handleToggleCompactResult(resultId)}
+                      />
+                    );
+                  })}
+                  
+                  {filteredEmployees.length > visibleLimit && (
+                    <div className="config-results-load-more">
+                      <ButtonUtility
+                        onClick={() => setVisibleLimit((v) => v + 10)}
+                        className="button-utility--wide"
+                      >
+                        Cargar más resultados
+                      </ButtonUtility>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="config-filter-empty" role="status">
                   <MorphingIcon icon={SearchData} aria-hidden="true" />

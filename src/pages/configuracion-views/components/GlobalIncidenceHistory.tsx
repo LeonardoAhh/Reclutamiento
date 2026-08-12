@@ -20,7 +20,7 @@ export function GlobalIncidenceHistory({
   titleId,
 }: GlobalIncidenceHistoryProps) {
   const history = useMemo(() => {
-    if (!allReports.length) return [];
+    if (!allReports || !allReports.length) return [];
     const months: {
       mes: string;
       incidents: Record<string, { count: number; days: string[] }>;

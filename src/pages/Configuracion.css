@@ -369,17 +369,29 @@
 
 @media (min-width: 1024px) {
   .config-results-controls {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
   }
 
-  .config-results-controls__heading {
-    /* El alineamiento y altura ahora los maneja config-filter-field */
+  .config-results-controls__filters {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+    gap: var(--spacing-md);
+  }
+
+  .config-filter-group,
+  .config-filter-field {
+    min-width: 200px;
+    flex: 1 1 auto;
   }
 
   .config-view-switch {
-    min-width: var(--feature-calendar-column-max);
-    align-self: end;
+    min-width: 240px;
+    align-self: flex-end;
   }
 }
 
@@ -394,6 +406,12 @@
   gap: var(--spacing-lg);
   min-width: 0;
   width: 100%;
+}
+
+.config-results-load-more {
+  text-align: center;
+  margin-top: var(--spacing-md);
+  grid-column: 1 / -1;
 }
 
 .config-card {
@@ -418,22 +436,22 @@
 
 .config-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-md);
   padding-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
 .config-card__avatar {
-  flex: 0 0 var(--touch-target-min);
-  width: var(--touch-target-min);
-  height: var(--touch-target-min);
+  flex: 0 0 var(--spacing-xxl);
+  width: var(--spacing-xxl);
+  height: var(--spacing-xxl);
   display: grid;
   place-items: center;
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
-  font-size: var(--type-heading-lg-size);
+  font-size: var(--type-heading-md-size);
 }
 
 .config-card__avatar--tone-0 { color: var(--color-accent-sky); }
@@ -448,7 +466,6 @@
   justify-content: center;
   gap: var(--spacing-xxs);
   min-width: 0;
-  min-height: var(--touch-target-min);
 }
 
 .config-card__title-group h3,
@@ -465,7 +482,6 @@
 }
 
 .config-card__employee-number {
-  width: 100%;
   font-weight: var(--font-regular);
 }
 
@@ -520,9 +536,25 @@
   overflow-wrap: anywhere;
 }
 
-.config-compact-summary__toggle {
+.config-compact-summary__toggle-minimal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  border-radius: var(--rounded-sm);
+  transition: background-color var(--motion-fast);
   width: 100%;
-  min-height: var(--touch-target-min);
+  justify-content: center;
+}
+
+.config-compact-summary__toggle-minimal:hover {
+  background: var(--color-surface-soft);
 }
 
 .config-card--compact.is-expanded .config-card__body {
@@ -555,19 +587,19 @@
 
 @media (min-width: 600px) {
   .config-compact-summary__facts {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 2fr 1.5fr 1fr;
   }
 
   .config-compact-summary {
     flex-direction: row;
-    align-items: end;
+    align-items: center;
   }
 
   .config-compact-summary__facts {
     flex: 1;
   }
 
-  .config-compact-summary__toggle {
+  .config-compact-summary__toggle-minimal {
     width: auto;
     flex-shrink: 0;
   }
