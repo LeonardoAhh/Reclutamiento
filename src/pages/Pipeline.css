@@ -655,7 +655,7 @@
 .segmented-control__btn.is-active {
   color: var(--color-ink);
   background: var(--color-surface);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-xs), 0 0 0 1px var(--color-hairline);
 }
 
 .segmented-control__btn:focus-visible {
