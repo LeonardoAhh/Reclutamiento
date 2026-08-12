@@ -54,7 +54,6 @@ export const FEATURES: FeatureItem[] = [
   { id: "indicadores", label: "Indicadores", icon: BarChart2 },
   { id: "rutas", label: "Rutas", icon: Bus },
   { id: "tabulador", label: "Tabulador", icon: Wallet },
-  { id: "nocitados", label: "No Citados", icon: UserX },
   { id: "speech", label: "Speech WA", icon: MessageSquare },
   { id: "formatos", label: "Formatos", icon: Bell },
   { id: "sistema", label: "Sistema", icon: Settings },

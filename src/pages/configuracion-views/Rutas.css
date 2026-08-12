@@ -649,82 +649,7 @@
   margin: 0 0 var(--spacing-md);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ANIMATION 1 – Route draw-on SVG
-═══════════════════════════════════════════════════════════ */
-
-.route-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 80px;
-  margin-bottom: var(--spacing-md);
-  overflow: visible;
-}
-
-/* Track base — hairline suave debajo del recorrido animado */
-.route-svg__track {
-  fill: none;
-  stroke: var(--color-route-track);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Línea de recorrido — se dibuja de origen a destino.
-   `pathLength="1"` normaliza el path para poder usar dasharray/offset = 1
-   sin necesidad de calcular la longitud real (fudge factor eliminado). */
-.route-svg__line {
-  fill: none;
-  stroke: var(--color-route-line);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw-line var(--dur-path) var(--ease-out) both;
-}
-
-@keyframes draw-line {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* Dots — endpoints más grandes con fill primary, intermedios donut style. */
-.route-svg__dot {
-  r: 1.6;
-  fill: var(--color-route-stop);
-  stroke: var(--color-route-line);
-  stroke-width: 0.7;
-}
-
-.route-svg__dot--endpoint {
-  r: 2.4;
-  fill: var(--color-route-line);
-  stroke: var(--color-route-line);
-  stroke-width: 0;
-}
-
-.route-svg__stop {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: stop-pop var(--dur-stop) var(--ease-spring) both;
-  animation-delay: var(--stop-delay, 0s);
-}
-
-@keyframes stop-pop {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ─── Stops list ─── */
+/* ─── Stops Itinerary (Vertical Stepper) ─── */
 
 .ruta-stops__heading {
   display: block;
@@ -734,24 +659,65 @@
 
 .ruta-stops__list {
   list-style: none;
-  margin: 0;
+  margin: var(--spacing-md) 0 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
 }
 
-/* Fix crítico: al usar `align-items: center` el dot se desplazaba al centro
-   vertical cuando el texto se envolvía en 2+ líneas. Con `flex-start` y un
-   pequeño margin-top en el dot queda alineado a la PRIMERA línea del texto. */
 .ruta-stops__item {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: var(--spacing-sm);
   color: var(--color-body);
   animation: item-fadein var(--dur-fade) var(--ease-out) both;
   animation-delay: var(--item-delay, 0s);
   text-transform: none;
+}
+
+.ruta-stops__track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.ruta-stops__dot {
+  position: relative;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 4px);
+  flex-shrink: 0;
+}
+
+.ruta-stops__item.is-first .ruta-stops__dot,
+.ruta-stops__item.is-last .ruta-stops__dot {
+  width: 10px;
+  height: 10px;
+  background: var(--color-primary);
+  border: none;
+  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 5px);
+}
+
+.ruta-stops__line {
+  position: absolute;
+  top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 + 4px);
+  bottom: calc(-1 * var(--spacing-lg) + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background-color: var(--color-hairline-strong);
+  z-index: 1;
+}
+
+.ruta-stops__item:not(.is-last) .ruta-stops__text {
+  padding-bottom: var(--spacing-lg);
 }
 
 @keyframes item-fadein {
@@ -763,17 +729,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-.ruta-stops__dot {
-  flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--rounded-full);
-  background: var(--color-primary);
-  /* Compensación para alinear el dot con la primera línea de texto
-     (aprox. la mitad de la altura de línea del body-sm). */
-  margin-top: calc(var(--type-body-sm-line, 1.4) * 1em / 2 - 3px);
 }
 
 /* ═══════════════════════════════════════════════════════════

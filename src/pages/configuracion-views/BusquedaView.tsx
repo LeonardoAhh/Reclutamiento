@@ -72,7 +72,13 @@ export function BusquedaView() {
   // 1. Coincidencia por texto
   const textMatches = useMemo<EmployeeSearchResult[]>(() => {
     const query = normalizeSearchText(searchQuery);
-    if (query.length < 2) return [];
+    
+    // Si no hay búsqueda de texto, devolvemos todos (se filtrarán después por estado/área)
+    if (query.length === 0) {
+      const activeMatches = employees.map((employee) => ({ ...employee, isBaja: false as const }));
+      const bajaMatches = bajas.map((employee) => ({ ...employee, isBaja: true as const }));
+      return [...activeMatches, ...bajaMatches];
+    }
 
     const searchTokens = query.split(/\s+/).filter(Boolean);
 
@@ -125,17 +131,10 @@ export function BusquedaView() {
     departmentFilter !== ALL_FILTER_VALUE ||
     shiftFilter !== ALL_FILTER_VALUE;
     
-  const isSingleResult = filteredEmployees.length === 1;
+  const isSingleResult = filteredEmployees.length === 1 && searchQuery.length > 2;
   const canUseCompactView = filteredEmployees.length > 1;
 
-  useEffect(() => {
-    setStatusFilter('all');
-    setDepartmentFilter(ALL_FILTER_VALUE);
-    setShiftFilter(ALL_FILTER_VALUE);
-    setExpandedResultIds(new Set<string>());
-    setVisibleLimit(10);
-    setViewMode('compact');
-  }, [searchQuery]);
+  // Removemos el useEffect que reseteaba los filtros para permitir buscar DENTRO de un filtro.
 
   const needsReports =
     (viewMode === 'detail' && filteredEmployees.length > 0) ||
@@ -294,135 +293,132 @@ export function BusquedaView() {
         id="config-search-results"
         aria-label="Resultados de búsqueda"
       >
-        {searchQuery.length < 2 ? (
+
+        <section
+          className="config-results-controls"
+          aria-label="Filtros y vista de resultados"
+        >
+          <div className="config-results-controls__filters">
+            <fieldset className="config-filter-group">
+              <legend className="config-filter-label type-caption-sm text-muted">
+                Estado
+              </legend>
+              <div className="config-segmented-control">
+                {([
+                  ['all', 'Todos'],
+                  ['active', 'Activos'],
+                  ['inactive', 'Bajas'],
+                ] as const).map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`config-segmented-control__button${
+                      statusFilter === value ? ' is-active' : ''
+                    }`}
+                    onClick={() => setStatusFilter(value)}
+                    aria-pressed={statusFilter === value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <label className="config-filter-field">
+              <span className="config-filter-label type-caption-sm text-muted">
+                Departamento
+              </span>
+              <CustomSelect
+                value={departmentFilter}
+                onChange={setDepartmentFilter}
+                options={[
+                  { value: ALL_FILTER_VALUE, label: 'Todos' },
+                  ...departmentOptions,
+                ]}
+              />
+            </label>
+
+            <label className="config-filter-field">
+              <span className="config-filter-label type-caption-sm text-muted">
+                Turno
+              </span>
+              <CustomSelect
+                value={shiftFilter}
+                onChange={setShiftFilter}
+                options={[
+                  { value: ALL_FILTER_VALUE, label: 'Todos' },
+                  ...shiftOptions,
+                ]}
+              />
+            </label>
+
+            {hasActiveFilters && (
+              <ButtonUtility
+                type="button"
+                className="config-filter-reset"
+                icon={<RotateCcw aria-hidden="true" />}
+                onClick={handleClearFilters}
+              >
+                Limpiar
+              </ButtonUtility>
+            )}
+          </div>
+
+          {canUseCompactView && (
+            <div className="config-filter-field">
+              <span
+                className="config-filter-label type-caption-sm text-transparent"
+                aria-hidden="true"
+                style={{ userSelect: 'none' }}
+              >
+                &nbsp;
+              </span>
+              <div
+                className="config-view-switch"
+                role="group"
+                aria-label="Vista de resultados"
+              >
+                <button
+                  type="button"
+                  className={`config-view-switch__button${
+                    viewMode === 'detail' ? ' is-active' : ''
+                  }`}
+                  onClick={() => handleViewModeChange('detail')}
+                  aria-pressed={viewMode === 'detail'}
+                >
+                  <List aria-hidden="true" />
+                  Detallada
+                </button>
+                <button
+                  type="button"
+                  className={`config-view-switch__button${
+                    viewMode === 'compact' ? ' is-active' : ''
+                  }`}
+                  onClick={() => handleViewModeChange('compact')}
+                  aria-pressed={viewMode === 'compact'}
+                >
+                  <LayoutGrid aria-hidden="true" />
+                  Compacta
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {searchQuery.length === 0 && !hasActiveFilters ? (
           <div className="animated-empty-state busqueda-view__empty">
             <div className="animated-empty-state__icon">
               <MorphingIcon icon={SearchData} aria-hidden="true" />
             </div>
             <div className="animated-empty-state__title">
-              Busca un colaborador
+              Busca un colaborador o selecciona un filtro
             </div>
             <p className="animated-empty-state__subtitle">
               Consulta su información laboral, asistencia e historial de incidencias.
             </p>
           </div>
-        ) : textMatches.length > 0 ? (
+        ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">
-            <h3 className="sr-only">Resultados de búsqueda</h3>
-
-            {!isSingleResult && (
-              <section
-                className="config-results-controls"
-                aria-label="Filtros y vista de resultados"
-              >
-                <div className="config-results-controls__filters">
-                  <fieldset className="config-filter-group">
-                    <legend className="config-filter-label type-caption-sm text-muted">
-                      Estado
-                    </legend>
-                    <div className="config-segmented-control">
-                      {([
-                        ['all', 'Todos'],
-                        ['active', 'Activos'],
-                        ['inactive', 'Bajas'],
-                      ] as const).map(([value, label]) => (
-                        <button
-                          key={value}
-                          type="button"
-                          className={`config-segmented-control__button${
-                            statusFilter === value ? ' is-active' : ''
-                          }`}
-                          onClick={() => setStatusFilter(value)}
-                          aria-pressed={statusFilter === value}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
-
-                  <label className="config-filter-field">
-                    <span className="config-filter-label type-caption-sm text-muted">
-                      Departamento
-                    </span>
-                    <CustomSelect
-                      value={departmentFilter}
-                      onChange={setDepartmentFilter}
-                      options={[
-                        { value: ALL_FILTER_VALUE, label: 'Todos' },
-                        ...departmentOptions,
-                      ]}
-                    />
-                  </label>
-
-                  <label className="config-filter-field">
-                    <span className="config-filter-label type-caption-sm text-muted">
-                      Turno
-                    </span>
-                    <CustomSelect
-                      value={shiftFilter}
-                      onChange={setShiftFilter}
-                      options={[
-                        { value: ALL_FILTER_VALUE, label: 'Todos' },
-                        ...shiftOptions,
-                      ]}
-                    />
-                  </label>
-
-                  {hasActiveFilters && (
-                    <ButtonUtility
-                      type="button"
-                      className="config-filter-reset"
-                      icon={<RotateCcw aria-hidden="true" />}
-                      onClick={handleClearFilters}
-                    >
-                      Limpiar
-                    </ButtonUtility>
-                  )}
-                </div>
-
-                {canUseCompactView && (
-                  <div className="config-filter-field">
-                    <span
-                      className="config-filter-label type-caption-sm text-transparent"
-                      aria-hidden="true"
-                      style={{ userSelect: 'none' }}
-                    >
-                      &nbsp;
-                    </span>
-                    <div
-                      className="config-view-switch"
-                      role="group"
-                      aria-label="Vista de resultados"
-                    >
-                      <button
-                        type="button"
-                        className={`config-view-switch__button${
-                          viewMode === 'detail' ? ' is-active' : ''
-                        }`}
-                        onClick={() => handleViewModeChange('detail')}
-                        aria-pressed={viewMode === 'detail'}
-                      >
-                        <List aria-hidden="true" />
-                        Detallada
-                      </button>
-                      <button
-                        type="button"
-                        className={`config-view-switch__button${
-                          viewMode === 'compact' ? ' is-active' : ''
-                        }`}
-                        onClick={() => handleViewModeChange('compact')}
-                        aria-pressed={viewMode === 'compact'}
-                      >
-                        <LayoutGrid aria-hidden="true" />
-                        Compacta
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </section>
-            )}
-
             <p
               className="config-results__count type-caption-sm text-muted"
               aria-live="polite"
