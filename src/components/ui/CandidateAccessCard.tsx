@@ -273,6 +273,7 @@ export function CandidateAccessCard({
           className="btn-primary"
           onClick={handleWhatsApp}
           disabled={!imageBlob}
+          style={{ backgroundColor: '#25D366', borderColor: '#25D366', color: '#fff' }}
         >
           <MessageCircle size={18} aria-hidden="true" />
           WhatsApp

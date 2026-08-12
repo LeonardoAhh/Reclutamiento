@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { CheckCircle2, Pencil, ShieldAlert, Trash2, UserPlus, XCircle } from 'lucide-react';
+import { CheckCircle2, Pencil, ShieldAlert, Trash2, UserPlus, XCircle, ClipboardList } from 'lucide-react';
 import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
@@ -11,6 +11,7 @@ import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { Tooltip } from './Tooltip';
+import { sileo } from '@/lib/notify';
 import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -431,7 +432,51 @@ export function CandidateModal({
   const fieldsContacto = (
     <>
       <div className="form-group form-group--span-2">
-        <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4px' }}>
+          <label htmlFor="cand-nombre" style={{ marginBottom: 0 }}>Nombre completo <span className="text-error">*</span></label>
+          {!isEdit && (
+            <button
+              type="button"
+              className="btn-ghost"
+              style={{ fontSize: 'var(--type-caption-sm-size)', padding: '2px 8px', height: 'auto', minHeight: '24px', color: 'var(--color-primary)' }}
+              onClick={async () => {
+                try {
+                  const text = await navigator.clipboard.readText();
+                  if (!text) return;
+                  let newForm = { ...form };
+                  let extracted = false;
+                  
+                  const phoneMatch = text.match(/\b\d{10}\b/);
+                  if (phoneMatch) { newForm.telefono = phoneMatch[0]; extracted = true; }
+                  
+                  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                  if (emailMatch) { newForm.email = emailMatch[0]; extracted = true; }
+                  
+                  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+                  if (lines.length > 0 && !lines[0].includes('@') && !/\d{5,}/.test(lines[0])) {
+                    newForm.nombre = lines[0].toUpperCase();
+                    extracted = true;
+                  }
+
+                  if (extracted) {
+                    setForm(newForm);
+                    setTouched({ ...touched, telefono: true, email: true, nombre: true });
+                    sileo.success({ title: 'Datos extraídos del portapapeles' });
+                  } else {
+                    sileo.info({ title: 'No se encontraron datos reconocibles' });
+                  }
+                } catch (error) {
+                  console.error(error);
+                  sileo.error({ title: 'No se pudo acceder al portapapeles' });
+                }
+              }}
+              title="Autocompletar formulario copiando texto de CV o WhatsApp"
+            >
+              <ClipboardList size={14} style={{ marginRight: '4px' }} />
+              Pegado inteligente
+            </button>
+          )}
+        </div>
         <input
           id="cand-nombre"
           type="text"
@@ -505,6 +550,7 @@ export function CandidateModal({
           id="cand-email"
           type="email"
           value={form.email}
+          list="email-domains"
           onChange={(e) => {
             setForm({ ...form, email: e.target.value });
             if (!touched.email) setTouched({ ...touched, email: true });
@@ -517,6 +563,11 @@ export function CandidateModal({
           disabled={isEdit && !isAdmin}
           className={touched.email && errors.email ? 'input-error' : ''}
         />
+        <datalist id="email-domains">
+          {form.email && !form.email.includes('@') && ['gmail.com', 'outlook.com', 'hotmail.com'].map(domain => (
+            <option key={domain} value={`${form.email}@${domain}`} />
+          ))}
+        </datalist>
         {touched.email && errors.email && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.email}</span>}
       </div>
     </>

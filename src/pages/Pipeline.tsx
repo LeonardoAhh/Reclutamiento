@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -114,6 +114,8 @@ export function Pipeline() {
   const { coverVacancyForEmployee } = useVacancyRequests();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [macroStatus, setMacroStatus] = useState<'todos' | 'activos' | 'contratados' | 'bajas'>('activos');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
@@ -139,6 +141,18 @@ export function Pipeline() {
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
   const [metricsModalOpen, setMetricsModalOpen] = useState(false);
+
+  // Global hotkey para enfocar la búsqueda (Ctrl+K o Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const accessCardData = useMemo(() => {
     if (!accessCardTarget?.reclutador || !accessCardTarget.puesto) return null;
@@ -270,6 +284,11 @@ export function Pipeline() {
     const hasta = endOfDayMxMs(filters.fechaHasta);
 
     return candidates.filter((c) => {
+      // Macro filter (Segmented Control)
+      if (macroStatus === 'activos' && ['contratado', 'baja', 'rechazado', 'no_asistio'].includes(c.status)) return false;
+      if (macroStatus === 'contratados' && c.status !== 'contratado') return false;
+      if (macroStatus === 'bajas' && c.status !== 'baja') return false;
+
       if (filters.area && c.area !== filters.area) return false;
       if (filters.puesto && c.puesto !== filters.puesto) return false;
       if (filters.estado && c.status !== filters.estado) return false;
@@ -286,7 +305,7 @@ export function Pipeline() {
       }
       return true;
     });
-  }, [candidates, filters]);
+  }, [candidates, filters, macroStatus]);
 
   // Resultados exclusivos para el Dropdown de Búsqueda
   const searchResults = useMemo(() => {
@@ -330,7 +349,7 @@ export function Pipeline() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters]);
+  }, [filters, macroStatus]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginatedCandidates = filtered.slice(
@@ -528,9 +547,9 @@ export function Pipeline() {
       <div className="pipeline__layout">
         <div className="pipeline__content">
 
-          {/* ── Search ── */}
+          {/* ── Search & Macro Filters ── */}
           <section className="pipeline__controls">
-            <div className="pipeline__search-container" style={{ position: 'relative', zIndex: 100 }}>
+            <div className="pipeline__search-container">
               {/* Banner flotante de nueva función rotativo */}
               <SearchBanner />
 
@@ -552,9 +571,10 @@ export function Pipeline() {
                 <label htmlFor="pipeline-search-input" className="sr-only">Buscar candidato</label>
                   <input
                     id="pipeline-search-input"
+                    ref={searchInputRef}
                     type="search"
                     inputMode="search"
-                    placeholder="Buscar por nombre, puesto, teléfono..."
+                    placeholder="Buscar por nombre, puesto, teléfono... (Ctrl+K)"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pipeline__search-input"
@@ -595,49 +615,40 @@ export function Pipeline() {
                 )}
               </div>
             </div>
-
-            <button
-              type="button"
-              className={`btn-secondary pipeline__config-btn${showFilters ? ' pipeline__config-btn--active' : ''}`}
-              onClick={() => setShowFilters((prev) => !prev)}
-              title={showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
-              aria-label={showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
-              aria-expanded={showFilters}
-              aria-controls="pipeline-filters-panel"
-              data-testid="pipeline-filters-btn"
-            >
-              <MorphingIcon icon={showFilters ? XIconData : SlidersHorizontalIconData} size={16} />
-              {activeFiltersCount > 0 && (
-                <span className="pipeline__filter-pill" aria-label={`${activeFiltersCount} activos`}>
-                  {activeFiltersCount}
-                </span>
+            
+            <div className="pipeline__quick-filters">
+              {profile?.role === 'reclutador' && (
+                <label className="toggle-switch pipeline__quick-toggle">
+                  <input
+                    type="checkbox"
+                    checked={filters.reclutador === profile.display_name}
+                    onChange={(e) => {
+                      const newFilters = {
+                        ...filters,
+                        reclutador: e.target.checked ? (profile.display_name ?? '') : ''
+                      };
+                      setFilters(newFilters);
+                      localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
+                    }}
+                  />
+                  <span className="toggle-slider"></span>
+                  <span className="toggle-label type-body-sm">Mis Candidatos</span>
+                </label>
               )}
-            </button>
 
-            <div className="pipeline__pagination-controls">
-              <button
-                type="button"
-                className="btn-icon"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
-                aria-label="Página anterior"
-                title="Página anterior"
-              >
-                <ChevronLeft size={16} aria-hidden="true" />
-              </button>
-              <span className="pipeline__pagination-text">
-                Página {currentPage} de {totalPages}
-              </span>
-              <button
-                type="button"
-                className="btn-icon"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
-                aria-label="Página siguiente"
-                title="Página siguiente"
-              >
-                <ChevronRight size={16} aria-hidden="true" />
-              </button>
+              <div className="segmented-control pipeline__quick-segments">
+                {(['todos', 'activos', 'contratados', 'bajas'] as const).map(f => (
+                  <button
+                    key={f}
+                    type="button"
+                    className={`segmented-control__btn ${macroStatus === f ? 'is-active' : ''}`}
+                    onClick={() => setMacroStatus(f)}
+                    aria-pressed={macroStatus === f}
+                  >
+                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -705,6 +716,7 @@ export function Pipeline() {
               )}
             </section>
           ) : (
+            <>
             <section
               className="pipeline__card-list"
               aria-label="Lista de candidatos"
@@ -910,6 +922,33 @@ export function Pipeline() {
                 );
               })}
             </section>
+            
+            <div className="pipeline__pagination-controls" style={{ padding: 'var(--spacing-lg) 0', justifyContent: 'center', width: '100%' }}>
+              <button
+                type="button"
+                className="btn-icon"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                aria-label="Página anterior"
+                title="Página anterior"
+              >
+                <ChevronLeft size={16} aria-hidden="true" />
+              </button>
+              <span className="pipeline__pagination-text">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                type="button"
+                className="btn-icon"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                aria-label="Página siguiente"
+                title="Página siguiente"
+              >
+                <ChevronRight size={16} aria-hidden="true" />
+              </button>
+            </div>
+            </>
           )}
 
           {/* ── Modales ── */}
