@@ -22,7 +22,6 @@ import { Modal } from '@/components/ui/Modal';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
-  CandidateFilters,
   EMPTY_FILTERS,
   type FilterState,
 } from '@/components/pipeline/CandidateFilters';
@@ -143,9 +142,6 @@ export function Pipeline() {
       return EMPTY_FILTERS;
     }
   });
-  const [showFilters, setShowFilters] = useState(
-    () => Object.values(filters).some((v) => v !== '')
-  );
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
   const [metricsModalOpen, setMetricsModalOpen] = useState(false);
@@ -683,18 +679,6 @@ export function Pipeline() {
               </div>
             </div>
           </section>
-
-          {/* ── Filtros avanzados ── */}
-          {showFilters && (
-            <div id="pipeline-filters">
-              <CandidateFilters
-                candidates={candidates}
-                value={filters}
-                onChange={changeFilters}
-                onReset={resetFilters}
-              />
-            </div>
-          )}
 
           {/* ── Vista (tabla o kanban) ── */}
           {error ? (
