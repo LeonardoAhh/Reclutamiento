@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { listProfiles, ROLE_LABEL } from "@/lib/users";
 import { subscribeOnlineUserIds } from "@/lib/presence";
+import { supabase } from "@/lib/supabase";
 import type { Profile } from "@/hooks/useAuth";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { Activity, CheckCircle2, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { RoleBadge } from "@/components/ui/Badge";
+import { RoleBadge, Badge } from "@/components/ui/Badge";
 import "./ActiveSessions.css";
 
 function formatLastAccess(value: string | null | undefined) {
@@ -14,7 +15,11 @@ function formatLastAccess(value: string | null | undefined) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Desconocido";
 
-  let distance = formatDistanceToNow(date, { addSuffix: true, locale: es });
+  // Prevenir tiempos en el futuro por desajustes de reloj entre cliente y servidor
+  const now = Date.now();
+  const safeDate = date.getTime() > now ? new Date(now) : date;
+
+  let distance = formatDistanceToNow(safeDate, { addSuffix: true, locale: es });
   distance = distance.replace(/alrededor de |casi |más de /g, "");
   return distance.charAt(0).toUpperCase() + distance.slice(1);
 }
@@ -47,9 +52,30 @@ export function ActiveSessions() {
       if (mounted) setOnlineUsers(userIds);
     });
 
+    // Suscripción en tiempo real a los cambios en profiles (last_login_at, roles, etc.)
+    const channel = supabase
+      .channel('active-sessions-profiles')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload) => {
+          if (mounted) {
+            if (payload.eventType === 'UPDATE') {
+              setProfiles((prev) =>
+                prev.map((p) => (p.id === payload.new.id ? { ...p, ...payload.new } : p))
+              );
+            } else if (payload.eventType === 'INSERT') {
+              setProfiles((prev) => [...prev, payload.new as Profile]);
+            }
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       mounted = false;
       unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, [reloadKey]);
 
@@ -96,13 +122,13 @@ export function ActiveSessions() {
           </div>
         </div>
         {onlineCount > 0 && (
-          <span className="active-sessions-count">{onlineCount} en línea</span>
+          <Badge variant="success">{onlineCount} en línea</Badge>
         )}
       </header>
 
-      <div className="active-sessions-list">
+      <ul className="active-sessions-list">
         {error && (
-          <div className="active-sessions-state" role="alert">
+          <li className="active-sessions-state" role="alert">
             <p className="type-body-sm text-muted">{error}</p>
             <ButtonUtility
               type="button"
@@ -110,12 +136,19 @@ export function ActiveSessions() {
             >
               Reintentar
             </ButtonUtility>
-          </div>
+          </li>
         )}
         {!error && sortedProfiles.length === 0 && (
-          <p className="active-sessions-state type-body-sm text-muted">
+          <li className="active-sessions-state type-body-sm text-muted">
             No hay perfiles disponibles.
-          </p>
+          </li>
+        )}
+        {!error && sortedProfiles.length > 0 && (
+          <li className="active-sessions-list-header type-caption-sm text-muted" aria-hidden="true">
+            <div className="header-name-col">Nombre</div>
+            <div className="header-role-col">Rol</div>
+            <div className="header-status-col">Estado</div>
+          </li>
         )}
         {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
@@ -123,7 +156,7 @@ export function ActiveSessions() {
           const roleLabel = ROLE_LABEL[profile.role] ?? profile.role;
 
           return (
-            <article key={profile.id} className="session-card">
+            <li key={profile.id} className="session-card">
               <div className="session-name-col">
                 <span className="session-username type-body-md-bold">
                   {profile.display_name || profile.username}
@@ -135,21 +168,18 @@ export function ActiveSessions() {
 
               <div className="session-status-col">
                 {isOnline ? (
-                  <span className="status-pill status-pill--online">
-                    <span className="status-pill__dot" aria-hidden="true" />
-                    <span className="status-pill__text">En línea</span>
-                  </span>
+                  <Badge variant="success">En línea</Badge>
                 ) : (
-                  <span className="status-pill status-pill--offline">
-                    <Clock aria-hidden="true" className="status-pill__icon" />
-                    <span className="status-pill__text">{lastAccess}</span>
-                  </span>
+                  <Badge variant="default">
+                    <Clock size={12} aria-hidden="true" />
+                    {lastAccess}
+                  </Badge>
                 )}
               </div>
-            </article>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }

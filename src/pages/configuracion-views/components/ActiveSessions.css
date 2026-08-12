@@ -42,22 +42,14 @@
   color: var(--color-muted);
 }
 
-.active-sessions-count {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--spacing-xl);
-  padding-inline: var(--spacing-sm);
-  color: var(--color-success);
-  background: var(--color-success-tint);
-  border-radius: var(--rounded-full);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-semibold);
-}
+
 
 .active-sessions-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .active-sessions-state {
@@ -72,6 +64,10 @@
   border-radius: var(--rounded-md);
 }
 
+.active-sessions-list-header {
+  display: none;
+}
+
 .session-card {
   min-width: 0;
   display: grid;
@@ -83,8 +79,17 @@
   align-items: start;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
+  background: transparent;
+  border-bottom: 1px solid var(--color-hairline);
+  transition: background-color 0.2s ease;
+}
+
+.session-card:last-child {
+  border-bottom: none;
+}
+
+.session-card:hover {
   background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
 }
 
@@ -126,51 +131,40 @@
   text-transform: capitalize;
 }
 
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-height: var(--spacing-xl);
-  padding-inline: var(--spacing-sm);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
-  font-size: var(--type-caption-sm-size);
-  line-height: var(--type-caption-sm-line);
-}
-
-.status-pill__dot {
-  content: '';
-  width: var(--spacing-sm);
-  height: var(--spacing-sm);
-  flex-shrink: 0;
-  border-radius: var(--rounded-full);
-}
-
-.status-pill {
-  max-width: 100%;
-  color: var(--color-muted);
-  font-weight: var(--font-medium);
-}
-
-.status-pill--online {
-  color: var(--color-ink-secondary);
-}
-
-.status-pill__dot {
-  background: var(--color-success);
-}
-
 @media (min-width: 600px) {
   .active-sessions-section {
     padding: var(--spacing-xl);
   }
 
+  .active-sessions-list-header {
+    display: grid;
+    grid-template-columns: 26% 26% minmax(0, 1fr);
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md) var(--spacing-xs);
+    border-bottom: 1px solid var(--color-hairline);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .active-sessions-list-header .header-role-col {
+    display: flex;
+  }
+
+  .active-sessions-list-header .header-status-col {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .session-card {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: 26% 26% minmax(0, 1fr);
     grid-template-areas: "name role status";
     gap: var(--spacing-md);
     align-items: center;
+  }
+
+  .session-role-col {
+    justify-content: flex-start;
   }
 
   .session-status-col {

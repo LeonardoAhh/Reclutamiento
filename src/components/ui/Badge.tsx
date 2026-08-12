@@ -54,11 +54,19 @@ interface RoleBadgeProps {
 
 export function RoleBadge({ role = 'default', label }: RoleBadgeProps) {
   const displayLabel = label || role;
-  return (
-    <span className={`role-badge role-badge--${role.toLowerCase()}`}>
-      <span className="session-role">{displayLabel}</span>
-    </span>
-  );
+  
+  let variant: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error' = 'default';
+  const roleLower = role.toLowerCase();
+  
+  if (roleLower === 'admin' || roleLower === 'administrador') {
+    variant = 'coral';
+  } else if (roleLower === 'reclutador' || roleLower === 'reclutadora') {
+    variant = 'teal';
+  } else if (roleLower === 'gerente') {
+    variant = 'amber';
+  }
+
+  return <Badge variant={variant}>{displayLabel}</Badge>;
 }
 
 export { ReclutadorBadge, getReclutadorMeta } from './ReclutadorBadge';
