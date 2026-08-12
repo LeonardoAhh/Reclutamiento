@@ -161,17 +161,6 @@ export function CandidateAccessCard({
     if (!file || !imageBlob) return;
 
     try {
-      if (canShareFile(file)) {
-        setFeedback({
-          tone: "info",
-          message: "Selecciona WhatsApp y el contacto del candidato.",
-        });
-        await navigator.share({
-          files: [file],
-          title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
-        });
-        return;
-      }
 
       let imageReady = false;
       try {

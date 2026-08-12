@@ -115,7 +115,15 @@ export function Pipeline() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [macroStatus, setMacroStatus] = useState<'todos' | 'activos' | 'contratados' | 'bajas'>('activos');
+  const [macroStatus, setMacroStatus] = useState<'todos' | 'activos' | 'contratados' | 'bajas'>(() => {
+    try {
+      const stored = localStorage.getItem('reclutamiento_macro_status');
+      if (stored === 'todos' || stored === 'activos' || stored === 'contratados' || stored === 'bajas') {
+        return stored;
+      }
+    } catch {}
+    return 'activos';
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
@@ -141,6 +149,26 @@ export function Pipeline() {
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
 
   const [metricsModalOpen, setMetricsModalOpen] = useState(false);
+
+  // Guardar macroStatus en localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('reclutamiento_macro_status', macroStatus);
+    } catch {}
+  }, [macroStatus]);
+
+  // Forzar switch de "Mis Candidatos" al entrar si es reclutador
+  const [hasForcedRecruiter, setHasForcedRecruiter] = useState(false);
+  useEffect(() => {
+    if (profile?.role === 'reclutador' && profile?.display_name && !hasForcedRecruiter) {
+      setFilters((prev) => {
+        const newFilters = { ...prev, reclutador: profile.display_name! };
+        try { localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters)); } catch {}
+        return newFilters;
+      });
+      setHasForcedRecruiter(true);
+    }
+  }, [profile, hasForcedRecruiter]);
 
   // Global hotkey para enfocar la búsqueda (Ctrl+K o Cmd+K)
   useEffect(() => {
@@ -292,7 +320,7 @@ export function Pipeline() {
       if (filters.area && c.area !== filters.area) return false;
       if (filters.puesto && c.puesto !== filters.puesto) return false;
       if (filters.estado && c.status !== filters.estado) return false;
-      if (filters.reclutador && (c.reclutador ?? '') !== filters.reclutador) return false;
+      if (filters.reclutador && normalizeString(c.reclutador ?? '') !== normalizeString(filters.reclutador)) return false;
       if (filters.source && (c.source ?? '') !== filters.source) return false;
 
       if (desde || hasta) {
@@ -621,18 +649,22 @@ export function Pipeline() {
                 <label className="toggle-switch pipeline__quick-toggle">
                   <input
                     type="checkbox"
-                    checked={filters.reclutador === profile.display_name}
+                    role="switch"
+                    aria-checked={normalizeString(filters.reclutador ?? '') === normalizeString(profile.display_name ?? '')}
+                    checked={normalizeString(filters.reclutador ?? '') === normalizeString(profile.display_name ?? '')}
                     onChange={(e) => {
                       const newFilters = {
                         ...filters,
                         reclutador: e.target.checked ? (profile.display_name ?? '') : ''
                       };
                       setFilters(newFilters);
-                      localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
+                      try {
+                        localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
+                      } catch {}
                     }}
                   />
-                  <span className="toggle-slider"></span>
-                  <span className="toggle-label type-body-sm">Mis Candidatos</span>
+                  <span className="toggle-switch__slider"></span>
+                  <span className="toggle-switch__label">Mis Candidatos</span>
                 </label>
               )}
 

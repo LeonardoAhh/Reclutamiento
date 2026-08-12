@@ -1626,6 +1626,72 @@ code:not(pre code) {
   }
 }
 
+/* --- CHECKBOX & RADIOS --- */
+
+/* --- TOGGLE SWITCH --- */
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--text-sm);
+  color: var(--color-foreground);
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch__slider {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: var(--color-border);
+  border-radius: var(--rounded-full);
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch__slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-switch input[type="checkbox"]:focus-visible + .toggle-switch__slider {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+  transform: translateX(16px);
+}
+
+.toggle-switch input[type="checkbox"]:disabled + .toggle-switch__slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-switch__label {
+  line-height: 1;
+}
+
 /* ── Error banner ── */
 .documentos-error {
   padding: var(--spacing-md) var(--spacing-lg);

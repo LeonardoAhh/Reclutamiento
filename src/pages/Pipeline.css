@@ -562,6 +562,12 @@
   align-items: center;
 }
 
+.pipeline__quick-toggle.toggle-switch {
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+}
+
 .pipeline__pagination-controls {
   display: flex;
   align-items: center;
