@@ -320,6 +320,7 @@ export function useSupabaseData() {
           fecha_baja: fechaBaja ?? bajaData.fecha_baja,
           tipo_baja: bajaData.tipo_baja,
           motivo_baja: bajaData.motivo_baja,
+          reclutador: emp.reclutador,
           cubierta_manual: false,
           cubierta_fecha: null,
           cubierta_nota: null,

@@ -2449,7 +2449,7 @@
     "Puesto": "OPERADOR DE MÁQUINA D",
     "Turno": "3",
     "Fecha Ingreso": "31/07/2026",
-    "Fecha Baja": "-",
+    "Fecha Baja": "07/08/2026",
     "Nombre Ruta": "R4-SANTA ROSA",
     "Parada": "SANTA ROSA",
     "Ubicacion": "EN EL PUENTE DE LA CRUZ ",
@@ -2535,19 +2535,6 @@
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
-    "No.": "4305",
-    "Nombre": "GONZALEZ VELAZQUEZ ANA ROSA",
-    "Puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
-    "Fecha Ingreso": "05/08/2026",
-    "Fecha Baja": "-",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ",
-    "Fuente de Reclutamiento": "PAUTA",
-    "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
-  },
-  {
     "No.": "4306",
     "Nombre": "AGUSTIN RAMIREZ MARIELA",
     "Puesto": "OPERADOR DE MÁQUINA D",
@@ -2626,16 +2613,16 @@
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
-    "No.": "4315",
-    "Nombre": "VEGA BRIONES OSCAR OSWALDO",
-    "Puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
+    "No.": "4314",
+    "Nombre": "ACUÑA TELLEZ CRESCENCIO",
+    "Puesto": "MONTADOR DE MOLDES B",
+    "Turno": "5",
     "Fecha Ingreso": "12/08/2026",
     "Fecha Baja": "-",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "OJO DE AGUA",
-    "Ubicacion": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA",
-    "Fuente de Reclutamiento": "PAUTA",
+    "Nombre Ruta": "R4-SANTA ROSA",
+    "Parada": "FRACC. MONTENEGRO",
+    "Ubicacion": "PARADA DE CAMIONES HUIZACHE",
+    "Fuente de Reclutamiento": "COMPUTRABAJO",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   },
   {
@@ -2665,16 +2652,29 @@
     "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
   },
   {
-    "No.": "4314",
-    "Nombre": "ACUÑA TELLEZ CRESCENCIO",
-    "Puesto": "MONTADOR DE MOLDES B",
-    "Turno": "5",
-    "Fecha Ingreso": "12/08/2026",
+    "No.": "4318",
+    "Nombre": "SANTOS RAMIREZ HUSSAIT DEMETRIO",
+    "Puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "3",
+    "Fecha Ingreso": "14/08/2026",
     "Fecha Baja": "-",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE",
-    "Fuente de Reclutamiento": "COMPUTRABAJO",
+    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
+    "Parada": "SAN JOSE ITURBIDE",
+    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL",
+    "Fuente de Reclutamiento": "PAUTA",
+    "Reclutador": "DANIELA DE SANTIAGO RAMIREZ"
+  },
+  {
+    "No.": "4319",
+    "Nombre": "ARIAS MARTINEZ ERIDIA NAYELLY",
+    "Puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "Turno": "1",
+    "Fecha Ingreso": "14/08/2026",
+    "Fecha Baja": "-",
+    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "Parada": "PASEOS QUERETARO",
+    "Ubicacion": "PARADA EN EL OXXO DE JUNCOS",
+    "Fuente de Reclutamiento": "PAUTA",
     "Reclutador": "NAYELI ALEXANDRA HERNANDEZ HERNANDEZ"
   }
 ]

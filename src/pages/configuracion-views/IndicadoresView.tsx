@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Database, Loader2 } from 'lucide-react';
 import { useIndicadoresStats, getRecruiterTone } from '@/hooks/useIndicadoresStats';
+import { supabase } from '@/lib/supabase';
+import { sileo } from '@/lib/notify';
 
 export function IndicadoresView() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -70,8 +72,6 @@ export function IndicadoresView() {
 
   return (
     <section className="indicadores-view config-page" aria-label="Indicadores de Reclutamiento">
-
-
 
       {/* ── KPI Cards ───────────────────────────────────────────── */}
       {kpi && (
@@ -523,6 +523,9 @@ export function IndicadoresView() {
                           <li key={`baja-detail-${i}`} className="indicadores-bajas-item">
                             <div className="indicadores-bajas-item-header">
                                 <span className="type-body-sm font-medium text-ink">{baja.nombre}</span>
+                                {baja.numEmpleado && (
+                                  <span className="type-caption-sm text-muted">#{baja.numEmpleado}</span>
+                                )}
                             </div>
                             <div className="indicadores-bajas-item-details">
                                 <span className="type-caption-sm text-muted">

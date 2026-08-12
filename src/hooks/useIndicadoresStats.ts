@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getISOWeek } from 'date-fns';
+import { supabase } from '@/lib/supabase';
 
 export interface IndicadorRecord {
   "No.": string;
@@ -28,6 +29,12 @@ export function parseDate(dateStr: string) {
     const [day, month, year] = parts;
     return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
   }
+  const dashParts = dateStr.split('-');
+  if (dashParts.length === 3 && dashParts[0].length === 4) {
+    const [year, month, day] = dashParts;
+    // Evita bug de timezone al parsear YYYY-MM-DD
+    return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day.substring(0,2), 10));
+  }
   return new Date(dateStr);
 }
 
@@ -38,25 +45,65 @@ export function useIndicadoresStats(selectedMonth: Date) {
 
   useEffect(() => {
     let isMounted = true;
-    fetch('/indicador.json')
-      .then(res => {
-        if (!res.ok) throw new Error('Error al cargar indicador.json');
-        return res.json();
-      })
-      .then((json: IndicadorRecord[]) => {
+    
+    async function fetchSupabaseData() {
+      try {
+        const [empleadosRes, bajasRes] = await Promise.all([
+          supabase.from('empleados').select('*').gte('fecha_ingreso', '2026-01-01'),
+          supabase.from('bajas').select('*').gte('fecha_ingreso', '2026-01-01')
+        ]);
+
+        if (empleadosRes.error) throw empleadosRes.error;
+        if (bajasRes.error) throw bajasRes.error;
+
+        const combined: IndicadorRecord[] = [];
+
+        empleadosRes.data?.forEach(e => {
+          combined.push({
+            "No.": e.num_empleado || '',
+            "Nombre": e.nombre || '',
+            "Puesto": e.puesto || '',
+            "Turno": e.turno || '',
+            "Fecha Ingreso": e.fecha_ingreso || '',
+            "Ruta": e.ruta || '',
+            "Parada": e.parada || '',
+            "Ubicacion": '',
+            "Fuente de Reclutamiento": '',
+            "Reclutador": e.reclutador || 'Sin Reclutador',
+            "Fecha Baja": undefined
+          });
+        });
+
+        bajasRes.data?.forEach(b => {
+          combined.push({
+            "No.": b.num_empleado || '',
+            "Nombre": b.nombre || '',
+            "Puesto": b.puesto || '',
+            "Turno": b.turno || '',
+            "Fecha Ingreso": b.fecha_ingreso || '',
+            "Ruta": '',
+            "Parada": '',
+            "Ubicacion": '',
+            "Fuente de Reclutamiento": '',
+            "Reclutador": b.reclutador || 'Sin Reclutador',
+            "Fecha Baja": b.fecha_baja || undefined
+          });
+        });
+
         if (isMounted) {
-          setData(json);
+          setData(combined);
           setLoading(false);
         }
-      })
-      .catch(err => {
+      } catch (err) {
         if (isMounted) {
-          console.error(err);
+          console.error('Error fetching Supabase indicadores:', err);
           setError('No se pudieron cargar los datos de indicadores.');
           setLoading(false);
         }
-      });
-      
+      }
+    }
+
+    fetchSupabaseData();
     return () => { isMounted = false; };
   }, []);
 
@@ -76,7 +123,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
     const prevMonthDate = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1, 1);
     const recruiterStats: Record<string, { totalIngresos: number; totalBajas: number; totalDiasPermanencia: number }> = {};
     
-    const bajasList: { nombre: string; reclutador: string; fechaIngreso: string; fechaBaja: string; dias: number }[] = [];
+    const bajasList: { numEmpleado: string; nombre: string; reclutador: string; fechaIngreso: string; fechaBaja: string; dias: number }[] = [];
 
     data.forEach(record => {
       const date = record["Fecha Ingreso"] || 'Sin Fecha';
@@ -102,6 +149,10 @@ export function useIndicadoresStats(selectedMonth: Date) {
         if (recruiter === 'Nayeli') {
           recruiter = 'Alexandra';
         }
+      }
+
+      if (recruiter === 'Thalia' || recruiter === 'Leonardo') {
+        return;
       }
 
       recruiterSet.add(recruiter);
@@ -130,6 +181,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
           bajasCountMes += 1;
           
           bajasList.push({
+            numEmpleado: record["No."] || '',
             nombre: record["Nombre"] || 'Sin Nombre',
             reclutador: recruiter,
             fechaIngreso: date,
@@ -225,7 +277,8 @@ export function useIndicadoresStats(selectedMonth: Date) {
           recruiter = 'Alexandra';
         }
       }
-      if (recruiter === 'Sin Reclutador') return;
+      
+      if (recruiter === 'Sin Reclutador' || recruiter === 'Thalia' || recruiter === 'Leonardo') return;
       
       recruiterSet.add(recruiter);
       

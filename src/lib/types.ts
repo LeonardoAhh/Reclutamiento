@@ -53,6 +53,8 @@ export interface Baja {
   fecha_baja: string;
   tipo_baja: string;
   motivo_baja: string;
+  /** Reclutador original que dio de alta a esta persona */
+  reclutador?: string | null;
   /**
    * Marca explícita del usuario indicando que la vacante se cubrió (ej. por
    * promoción interna o transferencia). Si está en `true`, la baja cuenta
