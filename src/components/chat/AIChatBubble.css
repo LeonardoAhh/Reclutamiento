@@ -97,6 +97,11 @@
     color var(--transition-fast);
 }
 
+.ai-chat-tooltip-close {
+  color: var(--color-ink);
+}
+
+
 .ai-chat-tooltip-close:hover,
 .ai-chat-header-close:hover,
 .ai-upload-remove:hover:not(:disabled) {
@@ -132,6 +137,15 @@
   box-shadow: var(--shadow-elevated);
   color: var(--color-body);
   font-family: var(--font-body);
+}
+
+@media (min-width: 768px), (hover: hover) and (pointer: fine) {
+  .ai-chat-window-content {
+    block-size: min(
+      calc(100dvh - var(--spacing-section)),
+      var(--feature-chat-panel-max-block-size-desktop)
+    );
+  }
 }
 
 .ai-chat-bubble-trigger svg {

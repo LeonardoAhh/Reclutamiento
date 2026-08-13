@@ -245,6 +245,7 @@
   --system-update-content-max: 22rem;
   --feature-chat-panel-max-inline-size: 25rem;
   --feature-chat-panel-max-block-size: 37.5rem;
+  --feature-chat-panel-max-block-size-desktop: 50rem;
   --feature-chat-action-min-inline-size: 10rem;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;

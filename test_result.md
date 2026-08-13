@@ -318,3 +318,10 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Toda la configuración visual reutilizable se centralizó en `AI_CHAT_EXPORT_CONFIG` y tokens CSS.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
+
+## Desktop Chat Height + Theme Icon Contrast
+- Ampliada la altura máxima del chat en PC mediante un token desktop de `50rem`, siempre limitada por el viewport disponible.
+- Móvil conserva su altura actual; header y compositor permanecen fijos y solo la conversación hace scroll.
+- El destello y la X de la sugerencia usan `--color-ink`: negros en tema claro y blancos en tema oscuro.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
