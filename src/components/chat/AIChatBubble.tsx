@@ -39,6 +39,7 @@ import {
   exportEvaluationPdf,
 } from "@/lib/aiChatExport";
 import {
+  AI_CHAT_CONTEXT_CONFIG,
   AI_CHAT_ERROR_MESSAGES,
   AI_CHAT_QUICK_ACTIONS,
 } from "@/lib/constants";
@@ -110,6 +111,36 @@ function buildCatalogText(jobs: JobDescription[]): string {
     .join("\n\n---\n\n");
 }
 
+function buildFollowUpCatalogText(
+  jobs: JobDescription[],
+  selectedJobId: string,
+): string {
+  if (!selectedJobId) {
+    return "Usa los puestos y requisitos descritos en la evaluación inicial.";
+  }
+
+  const selectedJob = jobs.find((job) => job.id === selectedJobId);
+  return selectedJob
+    ? buildCatalogText([selectedJob])
+    : "Usa la vacante descrita en la evaluación inicial.";
+}
+
+function limitConversationHistory(messages: Message[]): Message[] {
+  const conversation = messages.filter((message) => message.role !== "system");
+  const { maxHistoryMessages, preservedInitialMessages } =
+    AI_CHAT_CONTEXT_CONFIG;
+
+  if (conversation.length <= maxHistoryMessages) return conversation;
+
+  const preserved = conversation.slice(0, preservedInitialMessages);
+  const recent = conversation.slice(
+    -(maxHistoryMessages - preservedInitialMessages),
+  );
+  return [...preserved, ...recent.filter(
+    (message) => !preserved.some((item) => item.id === message.id),
+  )];
+}
+
 export function AIChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
   const [jobs, setJobs] = useState<JobDescription[]>([]);
@@ -121,7 +152,7 @@ export function AIChatBubble() {
   const [showTooltip, setShowTooltip] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
-  const [cvBase64, setCvBase64] = useState<string | null>(null);
+  const [cvText, setCvText] = useState("");
   const [hasCompared, setHasCompared] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState("");
   const [evaluatedJobName, setEvaluatedJobName] = useState("");
@@ -195,7 +226,7 @@ export function AIChatBubble() {
     }
 
     setFile(selectedFile);
-    setCvBase64(null);
+    setCvText("");
     setFileError("");
   };
 
@@ -213,7 +244,7 @@ export function AIChatBubble() {
 
   const removeFile = () => {
     setFile(null);
-    setCvBase64(null);
+    setCvText("");
     setFileError("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -274,7 +305,7 @@ export function AIChatBubble() {
     try {
       const base64Data = await fileToBase64(file);
       const extractedText = await extractTextFromPDF(file);
-      setCvBase64(base64Data);
+      setCvText(extractedText);
 
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
@@ -282,7 +313,7 @@ export function AIChatBubble() {
           target_job_id: selectedJob || null,
           resume_base64: base64Data,
           resume_text: extractedText,
-          messages: messagesToSend,
+          messages: limitConversationHistory(messagesToSend),
           task: "initial_analysis",
           session_id: sessionId,
         },
@@ -338,14 +369,12 @@ export function AIChatBubble() {
     if (appendUserMessage) setMessages(messagesToSend);
 
     try {
-      const extractedText = file ? await extractTextFromPDF(file) : "";
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
-          catalog: buildCatalogText(jobs),
+          catalog: buildFollowUpCatalogText(jobs, selectedJob),
           target_job_id: selectedJob || null,
-          resume_base64: cvBase64,
-          resume_text: extractedText,
-          messages: messagesToSend,
+          resume_text: cvText,
+          messages: limitConversationHistory(messagesToSend),
           task,
           session_id: sessionId,
         },
@@ -437,7 +466,7 @@ export function AIChatBubble() {
     shouldFocusUploadRef.current = true;
     setMessages([INITIAL_MESSAGE]);
     setFile(null);
-    setCvBase64(null);
+    setCvText("");
     setHasCompared(false);
     setEvaluationResult("");
     setEvaluatedJobName("");

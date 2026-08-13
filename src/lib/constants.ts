@@ -782,14 +782,18 @@ export const AI_CHAT_EXPORT_CONFIG = {
   footerGapToken: "--spacing-xl",
   headerHeightToken: "--spacing-section",
   headingSizeToken: "--type-heading-md-size",
-  sectionSizeToken: "--type-heading-sm-size",
-  bodySizeToken: "--type-body-md-size",
-  captionSizeToken: "--type-caption-sm-size",
-  bodyLineToken: "--type-body-md-line",
+  sectionSizeToken: "--type-body-strong-size",
+  sectionLineToken: "--type-body-strong-line",
+  subsectionSizeToken: "--type-body-sm-strong-size",
+  subsectionLineToken: "--type-body-sm-strong-line",
+  bodySizeToken: "--type-caption-sm-size",
+  captionSizeToken: "--type-caption-up-size",
+  bodyLineToken: "--type-caption-sm-line",
   sectionGapToken: "--spacing-md",
   blockGapToken: "--spacing-sm",
-  bulletIndentToken: "--spacing-md",
+  bulletIndentToken: "--spacing-lg",
   hairlineWidthToken: "--border-width",
+  metadataColumnRatios: [0.4, 0.35, 0.25],
 } as const;
 
 export const AI_CHAT_QUICK_ACTIONS = [
@@ -817,6 +821,11 @@ export const AI_CHAT_ERROR_MESSAGES = {
   analysis: "No pudimos completar el análisis.",
   message: "No pudimos enviar tu mensaje.",
   unavailable: "El asistente no está disponible ahora.",
+} as const;
+
+export const AI_CHAT_CONTEXT_CONFIG = {
+  maxHistoryMessages: 8,
+  preservedInitialMessages: 2,
 } as const;
 
 /**

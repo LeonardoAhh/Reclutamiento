@@ -322,6 +322,14 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 ## Desktop Chat Height + Theme Icon Contrast
 - Ampliada la altura máxima del chat en PC mediante un token desktop de `50rem`, siempre limitada por el viewport disponible.
 - Móvil conserva su altura actual; header y compositor permanecen fijos y solo la conversación hace scroll.
-- El destello y la X de la sugerencia usan `--color-ink`: negros en tema claro y blancos en tema oscuro.
+- El popover y botón flotante usan la misma inversión: negro en tema claro y blanco en tema oscuro.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
+
+## Chat Follow-up Payload + PDF Typography Fix
+- El PDF se envía únicamente en el análisis inicial; seguimientos usan texto extraído, catálogo reducido e historial acotado.
+- Gemini incorpora `resume_text` cuando no recibe adjunto y puede continuar con la evaluación inicial si el PDF fue escaneado.
+- El exportador normaliza tracking artificial, detecta subtítulos de competencias y evita headings huérfanos entre páginas.
+- El PDF usa bandas negras para secciones, subtítulos editoriales, tipografía más compacta y metadata proporcional.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- Verificación dirigida de los bugs reportados: pendiente de testing agent.

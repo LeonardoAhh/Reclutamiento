@@ -78,7 +78,11 @@ serve(async (req) => {
       });
     }
 
-    if (!resume_text && !resume_base64) {
+    if (
+      normalizedTask === "initial_analysis" &&
+      !resume_text &&
+      !resume_base64
+    ) {
       return new Response(JSON.stringify({ error: "Either resume_text or resume_base64 is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -155,7 +159,12 @@ Recibirás un "Catálogo de Puestos".
         // Inyectar el contexto (Catálogo y CV) en el primer mensaje del usuario para que Gemini lo recuerde
         const firstUserMsg = contents.find((c: any) => c.role === "user");
         if (firstUserMsg) {
-          firstUserMsg.parts.unshift({ text: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n` });
+          const resumeContext = resume_text
+            ? `\n${resume_text}`
+            : resume_base64
+              ? "\nDocumento PDF adjunto."
+              : "\nUsa la evaluación inicial presente en la conversación.";
+          firstUserMsg.parts.unshift({ text: `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:${resumeContext}\n` });
           if (resume_base64) {
              firstUserMsg.parts.push({
                inlineData: { mimeType: "application/pdf", data: resume_base64 }
@@ -164,8 +173,11 @@ Recibirás un "Catálogo de Puestos".
         }
       } else {
          // Fallback legacy por si acaso
+         const resumeContext = resume_text
+           ? resume_text
+           : "Documento PDF adjunto.";
          const parts: any[] = [
-           { text: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n` }
+           { text: `Analiza el CV con el formato solicitado.\n\n### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resumeContext}` }
          ];
          if (resume_base64) {
            parts.push({ inlineData: { mimeType: "application/pdf", data: resume_base64 } });
@@ -195,8 +207,8 @@ Recibirás un "Catálogo de Puestos".
           throw new Error("Gemini falló y no hay GROQ_API_KEY configurada para fallback. " + (data.error?.message || ""));
         }
         
-        if (!resume_text) {
-          throw new Error("Gemini falló y no hay resume_text extraído para enviar a Groq.");
+        if (!resume_text && normalizedTask === "initial_analysis") {
+          throw new Error("Gemini falló y no hay texto del CV para el fallback.");
         }
 
         const groqHistory = messages
@@ -209,7 +221,8 @@ Recibirás un "Catálogo de Puestos".
             role: message.role === "user" ? "user" : "assistant",
             content: message.content,
           }));
-        const context = `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resume_text}\n\n`;
+        const resumeContext = resume_text || "Usa la evaluación inicial presente en la conversación.";
+        const context = `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resumeContext}\n\n`;
 
         if (groqHistory.length > 0) {
           groqHistory[0].content = `${context}${groqHistory[0].content}`;
@@ -263,9 +276,9 @@ Recibirás un "Catálogo de Puestos".
         throw new Error("DEEPSEEK_API_KEY is not set");
       }
 
-      const contentText = resume_text 
-        ? resume_text 
-        : "Nota: No se pudo extraer el texto del PDF. Asegúrate de enviar resume_text.";
+      const contentText = resume_text
+        ? resume_text
+        : "Usa la evaluación inicial presente en la conversación.";
 
       let deepseekMessages = [
         { role: "system", content: systemPrompt }
@@ -324,9 +337,9 @@ Recibirás un "Catálogo de Puestos".
         throw new Error("OPENROUTER_API_KEY is not set");
       }
 
-      const contentText = resume_text 
-        ? resume_text 
-        : "Nota: No se pudo extraer el texto del PDF. Asegúrate de enviar resume_text.";
+      const contentText = resume_text
+        ? resume_text
+        : "Usa la evaluación inicial presente en la conversación.";
 
       let openRouterMessages = [
         { role: "system", content: systemPrompt }

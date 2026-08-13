@@ -12,12 +12,32 @@ interface EvaluationExportInput {
 
 type PdfBlock =
   | { type: "section"; text: string }
+  | { type: "subsection"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "bullet"; text: string }
   | { type: "numbered"; text: string; index: string };
 
+const MAJOR_SECTION_PATTERN =
+  /^(puestos compatibles|evaluación|análisis por|banderas rojas|preguntas estratégicas|resumen ejecutivo|recomendación)/i;
+
+function removeArtificialTracking(value: string): string {
+  let normalized = value;
+  const trackedWord = /(?:\b[\p{L}\p{N}]\s+){2,}[\p{L}\p{N}]\b/gu;
+
+  while (trackedWord.test(normalized)) {
+    normalized = normalized.replace(trackedWord, (match) =>
+      match.replace(/\s+/g, ""),
+    );
+    trackedWord.lastIndex = 0;
+  }
+
+  return normalized
+    .replace(/\b([A-ZÁÉÍÓÚÜÑ0-9])\s+([A-ZÁÉÍÓÚÜÑ0-9])\b/g, "$1$2")
+    .replace(/\s*\/\s*/g, "/");
+}
+
 function cleanInlineMarkdown(value: string): string {
-  return value
+  return removeArtificialTracking(value
     .replace(/✅/g, "")
     .replace(/❌/g, "")
     .replace(/⚠️?/g, "")
@@ -27,10 +47,11 @@ function cleanInlineMarkdown(value: string): string {
     .replace(/\*\*([^*]+)\*\*/g, "$1")
     .replace(/__([^_]+)__/g, "$1")
     .replace(/[*_~`]/g, "")
-    .replace(/^(Cumple|Brecha|Parcial):\s*\1:\s*/i, "$1: ")
+    .replace(/^(Cumple|Falta\/Brecha|Brecha|Parcial):\s*\1:\s*/i, "$1: ")
+    .replace(/^Falta\/Brecha:\s*/i, "Brecha: ")
     .replace(/^(Cumple|Brecha|Parcial):\s*/i, "$1: ")
     .replace(/\s{2,}/g, " ")
-    .trim();
+    .trim());
 }
 
 function parseMarkdownBlocks(markdown: string): PdfBlock[] {
@@ -41,27 +62,57 @@ function parseMarkdownBlocks(markdown: string): PdfBlock[] {
     .replace(/\s*\|\s*/g, " · ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+  const lines = normalized.split("\n");
   const blocks: PdfBlock[] = [];
 
-  normalized.split("\n").forEach((rawLine) => {
+  lines.forEach((rawLine, index) => {
     const line = rawLine.trim();
     if (!line) return;
 
-    const headingMatch = line.match(/^#{1,6}\s+(.+)$/);
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
     const boldHeadingMatch = line.match(/^\*\*([^*]+)\*\*:?$/);
     const bulletMatch = line.match(/^[-*+]\s+(.+)$/);
     const numberedMatch = line.match(/^(\d+)[.)]\s+(.+)$/);
+    const nextContentLine = lines
+      .slice(index + 1)
+      .map((candidate) => candidate.trim())
+      .find(Boolean);
+    const followedByList = Boolean(
+      nextContentLine?.match(/^([-*+]\s+|\d+[.)]\s+)/),
+    );
 
-    if (headingMatch || boldHeadingMatch) {
-      const heading = cleanInlineMarkdown(
-        headingMatch?.[1] ?? boldHeadingMatch?.[1] ?? "",
-      ).replace(/:$/, "");
-      if (heading) blocks.push({ type: "section", text: heading });
+    if (headingMatch) {
+      const heading = cleanInlineMarkdown(headingMatch[2]).replace(/:$/, "");
+      if (heading) {
+        blocks.push({
+          type: headingMatch[1].length <= 2 ? "section" : "subsection",
+          text: heading,
+        });
+      }
+      return;
+    }
+
+    if (boldHeadingMatch) {
+      const heading = cleanInlineMarkdown(boldHeadingMatch[1]).replace(/:$/, "");
+      if (heading) {
+        blocks.push({
+          type: MAJOR_SECTION_PATTERN.test(heading) ? "section" : "subsection",
+          text: heading,
+        });
+      }
       return;
     }
 
     if (bulletMatch) {
-      blocks.push({ type: "bullet", text: cleanInlineMarkdown(bulletMatch[1]) });
+      const boldBulletHeading = bulletMatch[1].match(/^\*\*([^*]+)\*\*:?$/);
+      if (boldBulletHeading) {
+        blocks.push({
+          type: "subsection",
+          text: cleanInlineMarkdown(boldBulletHeading[1]).replace(/:$/, ""),
+        });
+      } else {
+        blocks.push({ type: "bullet", text: cleanInlineMarkdown(bulletMatch[1]) });
+      }
       return;
     }
 
@@ -74,7 +125,19 @@ function parseMarkdownBlocks(markdown: string): PdfBlock[] {
       return;
     }
 
-    blocks.push({ type: "paragraph", text: cleanInlineMarkdown(line) });
+    const text = cleanInlineMarkdown(line);
+    if (MAJOR_SECTION_PATTERN.test(text)) {
+      blocks.push({ type: "section", text: text.replace(/:$/, "") });
+      return;
+    }
+    const looksLikeSubsection =
+      followedByList &&
+      text.length <= 72 &&
+      !/[.!?]$/.test(text);
+    blocks.push({
+      type: looksLikeSubsection ? "subsection" : "paragraph",
+      text,
+    });
   });
 
   return blocks.filter((block) => block.text.length > 0);
@@ -114,7 +177,13 @@ function sanitizeFileSegment(value: string): string {
 }
 
 function candidateDisplayName(fileName: string): string {
-  return fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+  return fileName
+    .replace(/\.[^.]+$/, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim()
+    .toLocaleLowerCase("es-MX")
+    .replace(/(?:^|\s)\p{L}/gu, (letter) => letter.toLocaleUpperCase("es-MX"));
 }
 
 function formatDocumentDate(isoDate: string): string {
@@ -179,6 +248,11 @@ export async function exportEvaluationPdf({
   const headerHeight = toPoints(config.headerHeightToken);
   const headingSize = toPoints(config.headingSizeToken);
   const sectionSize = toPoints(config.sectionSizeToken);
+  const sectionLineHeight =
+    getCssTokenNumber(config.sectionLineToken) * sectionSize;
+  const subsectionSize = toPoints(config.subsectionSizeToken);
+  const subsectionLineHeight =
+    getCssTokenNumber(config.subsectionLineToken) * subsectionSize;
   const bodySize = toPoints(config.bodySizeToken);
   const captionSize = toPoints(config.captionSizeToken);
   const bodyLineHeight = getCssTokenNumber(config.bodyLineToken) * bodySize;
@@ -195,6 +269,7 @@ export async function exportEvaluationPdf({
 
   const setInk = () => pdf.setTextColor(0, 0, 0);
   const setMuted = () => pdf.setTextColor(90, 90, 90);
+  const resetTracking = () => pdf.setCharSpace(0);
 
   const drawContinuationHeader = () => {
     pdf.setFillColor(0, 0, 0);
@@ -202,6 +277,7 @@ export async function exportEvaluationPdf({
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(captionSize);
     pdf.setTextColor(255, 255, 255);
+    resetTracking();
     pdf.text(config.continuationLabel, margin, headerHeight / 3);
     cursorY = headerHeight / 2 + margin;
     setInk();
@@ -222,6 +298,7 @@ export async function exportEvaluationPdf({
     pdf.rect(0, 0, pageWidth, headerHeight, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
+    resetTracking();
     pdf.setFontSize(captionSize);
     pdf.text(config.documentEyebrow, margin, margin);
     pdf.setFontSize(headingSize);
@@ -239,24 +316,32 @@ export async function exportEvaluationPdf({
       { label: config.jobLabel, value: jobName },
       { label: config.dateLabel, value: formatDocumentDate(today) },
     ];
-    const columnWidth = contentWidth / columns.length;
+    const columnWidths = config.metadataColumnRatios.map(
+      (ratio) => contentWidth * ratio,
+    );
     const valueLineHeight = bodyLineHeight;
-    const values = columns.map((column) =>
-      pdf.splitTextToSize(column.value, columnWidth - blockGap) as string[],
+    const values = columns.map((column, index) =>
+      pdf.splitTextToSize(column.value, columnWidths[index] - blockGap) as string[],
     );
     const metadataHeight =
       captionSize + blockGap + Math.max(...values.map((lines) => lines.length)) * valueLineHeight;
+    let columnX = margin;
 
     columns.forEach((column, index) => {
-      const x = margin + index * columnWidth;
+      const x = columnX;
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(captionSize);
+      resetTracking();
       setMuted();
       pdf.text(column.label.toUpperCase(), x, cursorY);
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(bodySize);
+      resetTracking();
       setInk();
-      pdf.text(values[index], x, cursorY + captionSize + blockGap);
+      pdf.text(values[index], x, cursorY + captionSize + blockGap, {
+        lineHeightFactor: bodyLineHeight / bodySize,
+      });
+      columnX += columnWidths[index];
     });
     cursorY += metadataHeight + sectionGap;
     pdf.setDrawColor(0, 0, 0);
@@ -265,47 +350,114 @@ export async function exportEvaluationPdf({
     cursorY += sectionGap;
   };
 
-  const writeSection = (text: string) => {
-    const lines = pdf.splitTextToSize(text, contentWidth) as string[];
-    const requiredHeight = lines.length * sectionSize + sectionGap;
-    ensurePageSpace(requiredHeight);
+  const getBlockLines = (block: PdfBlock): string[] => {
+    const isList = block.type === "bullet" || block.type === "numbered";
+    const width = block.type === "section"
+      ? contentWidth - blockGap * 2
+      : contentWidth - (isList ? bulletIndent : 0);
+    const fontSize = block.type === "section"
+      ? sectionSize
+      : block.type === "subsection"
+        ? subsectionSize
+        : bodySize;
+    pdf.setFont(
+      "helvetica",
+      block.type === "section" || block.type === "subsection"
+        ? "bold"
+        : "normal",
+    );
+    pdf.setFontSize(fontSize);
+    resetTracking();
+    return pdf.splitTextToSize(block.text, width) as string[];
+  };
+
+  const getBlockHeight = (block: PdfBlock): number => {
+    const lines = getBlockLines(block);
+    if (block.type === "section") {
+      return lines.length * sectionLineHeight + blockGap * 2 + sectionGap;
+    }
+    if (block.type === "subsection") {
+      return lines.length * subsectionLineHeight + sectionGap;
+    }
+    return lines.length * bodyLineHeight + blockGap;
+  };
+
+  const writeSection = (block: PdfBlock, keepWithNextHeight: number) => {
+    const lines = getBlockLines(block);
+    const bandHeight = lines.length * sectionLineHeight + blockGap * 2;
+    ensurePageSpace(bandHeight + sectionGap + keepWithNextHeight);
+    pdf.setFillColor(0, 0, 0);
+    pdf.rect(margin, cursorY, contentWidth, bandHeight, "F");
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(sectionSize);
+    pdf.setTextColor(255, 255, 255);
+    resetTracking();
+    pdf.text(lines, margin + blockGap, cursorY + blockGap + sectionSize, {
+      lineHeightFactor: sectionLineHeight / sectionSize,
+    });
+    cursorY += bandHeight + sectionGap;
     setInk();
-    pdf.text(lines, margin, cursorY);
-    cursorY += lines.length * sectionSize + blockGap;
+  };
+
+  const writeSubsection = (block: PdfBlock, keepWithNextHeight: number) => {
+    const lines = getBlockLines(block);
+    const requiredHeight = lines.length * subsectionLineHeight + sectionGap;
+    ensurePageSpace(requiredHeight + keepWithNextHeight);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(subsectionSize);
+    setInk();
+    resetTracking();
+    pdf.text(lines, margin, cursorY, {
+      lineHeightFactor: subsectionLineHeight / subsectionSize,
+    });
+    cursorY += lines.length * subsectionLineHeight + blockGap;
     pdf.setDrawColor(0, 0, 0);
     pdf.setLineWidth(hairlineWidth);
     pdf.line(margin, cursorY, pageWidth - margin, cursorY);
-    cursorY += sectionGap;
+    cursorY += blockGap;
   };
 
   const writeBodyBlock = (block: PdfBlock) => {
     const isList = block.type === "bullet" || block.type === "numbered";
     const marker = block.type === "bullet" ? "•" : block.type === "numbered" ? `${block.index}.` : "";
     const textX = margin + (isList ? bulletIndent : 0);
-    const availableWidth = contentWidth - (isList ? bulletIndent : 0);
-    const lines = pdf.splitTextToSize(block.text, availableWidth) as string[];
+    const lines = getBlockLines(block);
     const requiredHeight = lines.length * bodyLineHeight + blockGap;
     ensurePageSpace(requiredHeight);
 
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(bodySize);
     setInk();
+    resetTracking();
     if (marker) {
       pdf.setFont("helvetica", "bold");
       pdf.text(marker, margin, cursorY);
       pdf.setFont("helvetica", "normal");
     }
-    pdf.text(lines, textX, cursorY);
+    pdf.text(lines, textX, cursorY, {
+      lineHeightFactor: bodyLineHeight / bodySize,
+    });
     cursorY += lines.length * bodyLineHeight + blockGap;
   };
 
   drawCoverHeader();
   drawMetadata();
-  parseMarkdownBlocks(analysis).forEach((block) => {
+  const blocks = parseMarkdownBlocks(analysis);
+  blocks.forEach((block, index) => {
+    const nextBlock = blocks[index + 1];
+    const keepWithNextHeight = nextBlock
+      ? Math.min(
+          getBlockHeight(nextBlock),
+          bodyLineHeight * 2 + blockGap,
+        )
+      : 0;
+
     if (block.type === "section") {
-      writeSection(block.text);
+      writeSection(block, keepWithNextHeight);
+      return;
+    }
+    if (block.type === "subsection") {
+      writeSubsection(block, keepWithNextHeight);
       return;
     }
     writeBodyBlock(block);
