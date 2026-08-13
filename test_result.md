@@ -310,3 +310,11 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - El fallback Groq conserva historial, CV, vacante y tarea en lugar de reiniciar el análisis.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni APIs externas en vivo, por instrucción del usuario.
+
+## Executive PDF Redesign
+- Sustituido el volcado plano por un documento editorial blanco y negro con encabezado institucional, metadata y jerarquía de secciones.
+- Añadido parser semántico para títulos, párrafos, viñetas y preguntas numeradas; eliminados duplicados como `Cumple: Cumple:`.
+- Incorporados saltos de página controlados, encabezado de continuidad, divisores finos y pie documental existente.
+- Toda la configuración visual reutilizable se centralizó en `AI_CHAT_EXPORT_CONFIG` y tokens CSS.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.

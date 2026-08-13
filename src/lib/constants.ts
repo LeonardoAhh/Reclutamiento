@@ -769,16 +769,27 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
 
 export const AI_CHAT_EXPORT_CONFIG = {
   documentTitle: "Evaluación de candidato",
+  documentEyebrow: "RECLUTAMIENTO · REPORTE EJECUTIVO",
+  continuationLabel: "EVALUACIÓN · CONTINUACIÓN",
+  candidateLabel: "Candidato",
+  jobLabel: "Vacante evaluada",
+  dateLabel: "Fecha de emisión",
   filePrefix: "evaluacion-cv",
   pageFormat: "letter",
   orientation: "portrait",
   cssPixelToPoint: 0.75,
   marginToken: "--spacing-xxl",
   footerGapToken: "--spacing-xl",
+  headerHeightToken: "--spacing-section",
   headingSizeToken: "--type-heading-md-size",
+  sectionSizeToken: "--type-heading-sm-size",
   bodySizeToken: "--type-body-md-size",
+  captionSizeToken: "--type-caption-sm-size",
   bodyLineToken: "--type-body-md-line",
   sectionGapToken: "--spacing-md",
+  blockGapToken: "--spacing-sm",
+  bulletIndentToken: "--spacing-md",
+  hairlineWidthToken: "--border-width",
 } as const;
 
 export const AI_CHAT_QUICK_ACTIONS = [
