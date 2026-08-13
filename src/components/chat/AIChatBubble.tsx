@@ -468,14 +468,6 @@ export function AIChatBubble() {
         <div className="ai-chat-tooltip">
           <Sparkles aria-hidden="true" />
           <span>Evaluar un CV</span>
-          <button
-            type="button"
-            className="ai-chat-tooltip-close"
-            onClick={() => setShowTooltip(false)}
-            aria-label="Cerrar sugerencia"
-          >
-            <X aria-hidden="true" />
-          </button>
         </div>
       )}
 
@@ -731,42 +723,6 @@ export function AIChatBubble() {
               </fieldset>
             ) : (
               <div className="ai-chat-followup">
-                <details className="ai-chat-quick-menu">
-                  <summary>
-                    <MorphingIcon icon={SparklesData} aria-hidden="true" />
-                    Acciones con IA
-                  </summary>
-                  <div
-                    className="ai-chat-quick-actions"
-                    role="group"
-                    aria-label="Acciones rápidas del asistente"
-                  >
-                    {AI_CHAT_QUICK_ACTIONS.map((action) => {
-                      const ActionIcon = QUICK_ACTION_ICONS[action.task];
-                      const isActive = activeQuickAction === action.task;
-                      return (
-                        <button
-                          key={action.task}
-                          type="button"
-                          onClick={() =>
-                            handleQuickAction(action.task, action.prompt)
-                          }
-                          disabled={isLoading}
-                        >
-                          <MorphingIcon
-                            icon={isActive ? LoaderCircle : ActionIcon}
-                            className={
-                              isActive ? "ai-chat-action-icon--spin" : undefined
-                            }
-                            aria-hidden="true"
-                          />
-                          <span>{action.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </details>
-
                 <div
                   className="ai-chat-result-actions"
                   role="group"
@@ -794,34 +750,6 @@ export function AIChatBubble() {
                     <span>Nueva evaluación</span>
                   </button>
                 </div>
-
-                <form onSubmit={handleSendMessage} className="ai-chat-input-form">
-                  <label htmlFor={messageInputId} className="sr-only">
-                    Pregunta sobre el candidato
-                  </label>
-                  <input
-                    id={messageInputId}
-                    type="text"
-                    placeholder="Pregunta sobre este candidato..."
-                    value={inputText}
-                    onChange={(event) => setInputText(event.target.value)}
-                    disabled={isLoading}
-                    className="ai-chat-text-input"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!inputText.trim() || isLoading}
-                    className="ai-chat-send-btn"
-                    aria-label={isLoading ? "Enviando pregunta" : "Enviar pregunta"}
-                    aria-busy={isLoading}
-                  >
-                    <MorphingIcon
-                      icon={isLoading ? LoaderCircle : SendData}
-                      className={isLoading ? "ai-chat-action-icon--spin" : undefined}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </form>
               </div>
             )}
           </footer>
