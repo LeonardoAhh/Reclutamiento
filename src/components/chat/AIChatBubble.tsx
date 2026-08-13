@@ -57,7 +57,7 @@ const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
   content:
-    "Soy tu IA de Reclutamiento.\nSelecciona una vacante y sube un CV en PDF para comenzar la evaluación.",
+    "Selecciona una vacante y adjunta un CV en PDF para comenzar.",
 };
 
 const markdownComponents: Components = {
@@ -225,7 +225,7 @@ export function AIChatBubble() {
       {
         id: Date.now().toString(),
         role: "user",
-        content: `Por favor analiza el CV adjunto (${file.name}).`,
+        content: `Analizar CV: ${file.name}`,
       },
     ]);
 
@@ -246,7 +246,7 @@ export function AIChatBubble() {
         {
           id: "temp",
           role: "user",
-          content: `Por favor analiza el CV adjunto (${file.name}).`,
+          content: `Analizar CV: ${file.name}`,
         },
       ];
 

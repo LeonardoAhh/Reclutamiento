@@ -292,3 +292,11 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Integrados Morphicons para `Bot ↔ X`, `Copy ↔ Check`, exportación y reinicio, con estados accesibles y reduced motion.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - Verificación dirigida de interfaz: pendiente de testing agent.
+
+## Compact AI Chat Output
+- Ajustado el system prompt para respuestas verticales compactas: sin tablas, HTML, bloques de código ni headings Markdown.
+- Simplificado el formato inicial con secciones en negritas, listas de un nivel, evidencia breve y saltos consistentes.
+- Reducida la escala tipográfica del chat mediante tokens; compactados header, burbujas, listas y ritmo vertical.
+- Las burbujas usan el ancho disponible y las tablas heredadas envuelven contenido sin columnas mínimas rígidas.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
