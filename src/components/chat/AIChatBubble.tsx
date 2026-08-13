@@ -22,7 +22,6 @@ import {
   CircleAlert,
   ClipboardList,
   Copy as CopyData,
-  Download as DownloadData,
   ListChecks,
   LoaderCircle,
   MessageSquareText,
@@ -36,7 +35,6 @@ import { sileo } from "@/lib/notify";
 import {
   buildEvaluationShareText,
   copyEvaluationText,
-  exportEvaluationPdf,
 } from "@/lib/aiChatExport";
 import {
   AI_CHAT_CONTEXT_CONFIG,
@@ -157,7 +155,6 @@ export function AIChatBubble() {
   const [evaluationResult, setEvaluationResult] = useState("");
   const [evaluatedJobName, setEvaluatedJobName] = useState("");
   const [hasCopiedEvaluation, setHasCopiedEvaluation] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -444,21 +441,6 @@ export function AIChatBubble() {
     } catch (error) {
       console.error("Error copying evaluation:", error);
       sileo.error({ title: "No se pudo copiar la evaluación" });
-    }
-  };
-
-  const handleExportEvaluation = async () => {
-    if (!evaluationResult || isExporting) return;
-
-    setIsExporting(true);
-    try {
-      await exportEvaluationPdf(getEvaluationExportInput());
-      sileo.success({ title: "Evaluación exportada en PDF" });
-    } catch (error) {
-      console.error("Error exporting evaluation:", error);
-      sileo.error({ title: "No se pudo exportar la evaluación" });
-    } finally {
-      setIsExporting(false);
     }
   };
 
@@ -805,22 +787,8 @@ export function AIChatBubble() {
                   <button
                     type="button"
                     className="ai-chat-action-btn"
-                    onClick={handleExportEvaluation}
-                    disabled={!evaluationResult || isExporting}
-                    aria-busy={isExporting}
-                  >
-                    <MorphingIcon
-                      icon={isExporting ? LoaderCircle : DownloadData}
-                      className={isExporting ? "ai-chat-action-icon--spin" : undefined}
-                      aria-hidden="true"
-                    />
-                    <span>{isExporting ? "Exportando..." : "Exportar PDF"}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="ai-chat-action-btn"
                     onClick={handleNewEvaluation}
-                    disabled={isLoading || isExporting}
+                    disabled={isLoading}
                   >
                     <MorphingIcon icon={RotateCcw} aria-hidden="true" />
                     <span>Nueva evaluación</span>

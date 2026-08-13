@@ -243,6 +243,7 @@
   --document-preview-max: 48rem;
   --recordatorios-route-table-min: 64rem;
   --system-update-content-max: 22rem;
+  --system-update-panel-max: 28rem;
   --feature-chat-panel-max-inline-size: 25rem;
   --feature-chat-panel-max-block-size: 37.5rem;
   --feature-chat-panel-max-block-size-desktop: 50rem;
@@ -250,10 +251,10 @@
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;
-  --layer-system-update: 1100;
-  --layer-system-update-curtain: 1200;
   --layer-tooltip: 1300;
   --layer-floating-action: 1400;
+  --layer-system-update: 1500;
+  --layer-system-update-curtain: 1600;
   --tooltip-max-width: 280px;
   --skeleton-title-width: 50%;
   --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));

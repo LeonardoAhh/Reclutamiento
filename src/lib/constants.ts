@@ -762,38 +762,16 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  reloadDelayMs: 1800,
+  reloadDelayMs: 800,
+  availableTitle: "Actualización disponible",
+  availableHint: "Instala la versión más reciente para recibir mejoras y correcciones.",
+  actionLabel: "Actualizar ahora",
+  requiredActionLabel: "Actualizar y continuar",
+  preparingLabel: "Preparando actualización",
+  errorHint: "No pudimos actualizar ahora. Intenta nuevamente.",
+  retryLabel: "Reintentar",
   updatingTitle: "Actualizando sistema",
-  updatingHint: "Preparando la nueva versión…",
-} as const;
-
-export const AI_CHAT_EXPORT_CONFIG = {
-  documentTitle: "Evaluación de candidato",
-  documentEyebrow: "RECLUTAMIENTO · REPORTE EJECUTIVO",
-  continuationLabel: "EVALUACIÓN · CONTINUACIÓN",
-  candidateLabel: "Candidato",
-  jobLabel: "Vacante evaluada",
-  dateLabel: "Fecha de emisión",
-  filePrefix: "evaluacion-cv",
-  pageFormat: "letter",
-  orientation: "portrait",
-  cssPixelToPoint: 0.75,
-  marginToken: "--spacing-xxl",
-  footerGapToken: "--spacing-xl",
-  headerHeightToken: "--spacing-section",
-  headingSizeToken: "--type-heading-md-size",
-  sectionSizeToken: "--type-body-strong-size",
-  sectionLineToken: "--type-body-strong-line",
-  subsectionSizeToken: "--type-body-sm-strong-size",
-  subsectionLineToken: "--type-body-sm-strong-line",
-  bodySizeToken: "--type-caption-sm-size",
-  captionSizeToken: "--type-caption-up-size",
-  bodyLineToken: "--type-caption-sm-line",
-  sectionGapToken: "--spacing-md",
-  blockGapToken: "--spacing-sm",
-  bulletIndentToken: "--spacing-lg",
-  hairlineWidthToken: "--border-width",
-  metadataColumnRatios: [0.4, 0.35, 0.25],
+  updatingHint: "Conserva esta ventana abierta. Volverás en un momento.",
 } as const;
 
 export const AI_CHAT_QUICK_ACTIONS = [

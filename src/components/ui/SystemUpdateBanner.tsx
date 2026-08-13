@@ -6,13 +6,13 @@ import {
   Wrench as WrenchData,
   X as XData,
   Download as DownloadIconData,
+  LoaderCircle as LoaderCircleData,
   RefreshCw as RefreshCwIconData,
 } from "lucide";
 import { SYSTEM_UPDATE_BANNER_CONFIG } from "@/lib/constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import type { SystemNotiLevel } from "@/hooks/useSystemVersion";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
-import { AnimatedSubmitButton } from "./AnimatedSubmitButton";
 import "./SystemUpdateBanner.css";
 
 import type { IconInput } from "morphicons/react";
@@ -23,49 +23,80 @@ const LEVEL_ICON: Record<SystemNotiLevel, IconInput> = {
   mantenimiento: WrenchData,
 };
 
-const LEVEL_LABEL: Record<SystemNotiLevel, string> = {
-  info: "Información",
-  success: "Actualización",
-  mantenimiento: "Mantenimiento",
-};
-
 /**
  * Aviso global de actualización del sistema, alimentado por `version.json`.
- * - Reaparece cuando cambia la versión; se puede cerrar (persistente por device).
- * - Niveles con color semántico (info / success / mantenimiento).
- * - Mobile-first: barra inferior full-width que respeta safe-area; en pantallas
- *   grandes se vuelve una tarjeta flotante. Cero valores hardcodeados (tokens).
+ * - Se anuncia al detectar una versión nueva o un Service Worker listo.
+ * - Los avisos opcionales se pueden posponer; mantenimiento exige actualización.
+ * - Mobile-first: tarjeta superior centrada en móvil y alineada a la derecha
+ *   en pantallas grandes para no interferir con el chatbot.
  */
 export function SystemUpdateBanner() {
   const { info, shouldNotify, dismiss, swUpdateFn } = useSystemVersion();
-  const visible = shouldNotify && !!info;
+  const [isOnline, setIsOnline] = useState(() =>
+    typeof navigator === "undefined" ? true : navigator.onLine,
+  );
+  const visible = shouldNotify && isOnline;
   const level = info?.nivel ?? "info";
   const Icon = LEVEL_ICON[level];
   const requiresReload = level === "mantenimiento";
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const [updateFailed, setUpdateFailed] = useState(false);
+  const actionRef = useRef<HTMLButtonElement>(null);
   const reloadTimerRef = useRef<number | null>(null);
 
   const handleReload = () => {
     if (isUpdating) return;
+    setUpdateFailed(false);
     setIsUpdating(true);
-    reloadTimerRef.current = window.setTimeout(() => {
-      dismiss();
-      if (swUpdateFn) {
-        swUpdateFn();
-      } else {
+    reloadTimerRef.current = window.setTimeout(async () => {
+      try {
+        if (swUpdateFn) {
+          await swUpdateFn();
+          dismiss();
+          return;
+        }
+
+        const registration = await navigator.serviceWorker?.getRegistration();
+        await registration?.update();
+        dismiss();
         window.location.reload();
+      } catch (error) {
+        console.error("System update failed:", error);
+        setIsUpdating(false);
+        setUpdateFailed(true);
       }
     }, SYSTEM_UPDATE_BANNER_CONFIG.reloadDelayMs);
   };
 
   useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (visible && requiresReload && !isUpdating) {
+      actionRef.current?.focus();
+    }
+  }, [visible, requiresReload, isUpdating]);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && visible) dismiss();
+      if (e.key === "Escape" && visible && !requiresReload) dismiss();
+      if (e.key === "Tab" && visible && requiresReload) {
+        e.preventDefault();
+        actionRef.current?.focus();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [visible, dismiss]);
+  }, [visible, requiresReload, dismiss]);
 
   useEffect(() => {
     return () => {
@@ -77,78 +108,76 @@ export function SystemUpdateBanner() {
 
   return (
     <AnimatePresence>
-      {visible && info && !isUpdating && (
+      {visible && !isUpdating && (
         <div
           className={`system-update-overlay ${requiresReload ? "system-update-overlay--blocking" : ""}`}
         >
-          <motion.div
-            key={info.version}
+          <motion.section
+            key={info?.version ?? "service-worker-update"}
             className={`system-update system-update--${level}`}
-            role="alertdialog"
+            role={requiresReload ? "alertdialog" : "status"}
             aria-modal={requiresReload ? true : undefined}
-            initial={{ y: 100, opacity: 0, scale: 1 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{
-              y: 100,
-              opacity: 0,
-              scale: 0.95,
-              transition: { duration: 0.2 },
-            }}
-            transition={{
-              type: "spring",
-              damping: 25,
-              stiffness: 350,
-              mass: 0.8,
-            }}
+            aria-labelledby="system-update-title"
+            aria-describedby="system-update-message"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 350 }}
             data-testid="system-update-banner"
           >
-            <div className="system-update__icon-wrapper">
-              <span className="system-update__badge" aria-hidden="true">
-                <MorphingIcon icon={Icon} size={20} />
-              </span>
-            </div>
+            <span className="system-update__badge" aria-hidden="true">
+              <MorphingIcon icon={Icon} />
+            </span>
 
             <div className="system-update__body">
               <div className="system-update__heading">
-                <strong className="system-update__title">{info.titulo}</strong>
+                <strong id="system-update-title" className="system-update__title">
+                  {SYSTEM_UPDATE_BANNER_CONFIG.availableTitle}
+                </strong>
                 <span className="system-update__tag">
-                  {!info.titulo
-                    .toLowerCase()
-                    .includes(LEVEL_LABEL[level].toLowerCase()) &&
-                    `${LEVEL_LABEL[level]} · `}
-                  v{info.version}
+                  {info?.version ? `v${info.version}` : "Lista para instalar"}
                 </span>
               </div>
-
-              {/* Update Action Button placed below the text */}
-              <div className="system-update__action-container">
-                <AnimatedSubmitButton
-                  isSubmitting={false}
-                  isSuccess={isUpdating}
-                  idleText={
-                    requiresReload
-                      ? "Actualizar y recargar"
-                      : "Actualizar sistema"
+              <p id="system-update-message" className="system-update__message">
+                {updateFailed
+                  ? SYSTEM_UPDATE_BANNER_CONFIG.errorHint
+                  : info?.mensaje || SYSTEM_UPDATE_BANNER_CONFIG.availableHint}
+              </p>
+              <button
+                ref={actionRef}
+                type="button"
+                className="system-update__action"
+                onClick={handleReload}
+              >
+                <MorphingIcon
+                  icon={
+                    updateFailed || requiresReload
+                      ? RefreshCwIconData
+                      : DownloadIconData
                   }
-                  successText="Actualizando..."
-                  idleIcon={
-                    requiresReload ? RefreshCwIconData : DownloadIconData
-                  }
-                  onClick={handleReload}
-                  className="btn-primary"
-                  iconOnly={true}
+                  aria-hidden="true"
                 />
-              </div>
+                <span>
+                  {updateFailed
+                    ? SYSTEM_UPDATE_BANNER_CONFIG.retryLabel
+                    : requiresReload
+                      ? SYSTEM_UPDATE_BANNER_CONFIG.requiredActionLabel
+                      : SYSTEM_UPDATE_BANNER_CONFIG.actionLabel}
+                </span>
+              </button>
             </div>
 
-            <button
-              className="system-update__close"
-              onClick={dismiss}
-              aria-label="Cerrar aviso"
-            >
-              <MorphingIcon icon={XData} size={20} aria-hidden="true" />
-            </button>
-          </motion.div>
+            {!requiresReload && (
+              <button
+                type="button"
+                className="system-update__close"
+                onClick={dismiss}
+                aria-label="Recordar actualización después"
+              >
+                <MorphingIcon icon={XData} aria-hidden="true" />
+              </button>
+            )}
+          </motion.section>
         </div>
       )}
 
@@ -165,7 +194,7 @@ export function SystemUpdateBanner() {
           <div className="system-update-curtain__content">
             <span className="system-update-curtain__icon-frame" aria-hidden="true">
               <MorphingIcon
-                icon={RefreshCwIconData}
+                icon={LoaderCircleData}
                 className="system-update-curtain__icon"
               />
             </span>

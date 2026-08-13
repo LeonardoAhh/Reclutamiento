@@ -333,3 +333,14 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - El PDF usa bandas negras para secciones, subtítulos editoriales, tipografía más compacta y metadata proporcional.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - Verificación dirigida de los bugs reportados: pendiente de testing agent.
+
+## Chat PDF Removal + Update Notification
+- Eliminada la opción Exportar PDF del chatbot junto con estado, imports, renderizador y configuración que quedaron sin uso.
+- Las acciones posteriores quedan en dos columnas: Copiar y Nueva evaluación.
+- El aviso de actualización ahora muestra título claro, versión, descripción y CTA textual con Morphicons.
+- En PC se ubica arriba a la izquierda y el chat permanece a la derecha; en móvil ambos conservan separación vertical.
+- El aviso y la cortina usan capas superiores al chat; el aviso se oculta offline para no competir con el estado de conexión.
+- El Service Worker listo vuelve a notificar aunque `version.json` ya se haya visto, y permite posponerlo durante la sesión.
+- Mantenimiento conserva foco en la acción obligatoria; fallos de actualización muestran reintento comprensible.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.

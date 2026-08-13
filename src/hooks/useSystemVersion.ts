@@ -76,7 +76,8 @@ export function useSystemVersion() {
     }
   }, []);
 
-  const [swUpdateFn, setSwUpdateFn] = useState<(() => void) | null>(null);
+  const [swUpdateFn, setSwUpdateFn] = useState<(() => Promise<void>) | null>(null);
+  const [deferredSwUpdate, setDeferredSwUpdate] = useState(false);
 
   useEffect(() => {
     fetchVersion();
@@ -86,8 +87,9 @@ export function useSystemVersion() {
       if (document.visibilityState === 'visible') fetchVersion();
     };
     const onNeedRefresh = (e: Event) => {
-      const detail = (e as CustomEvent<{ update: () => void }>).detail;
+      const detail = (e as CustomEvent<{ update: () => Promise<void> }>).detail;
       setSwUpdateFn(() => detail.update);
+      setDeferredSwUpdate(false);
       fetchVersion();
     };
     
@@ -106,14 +108,17 @@ export function useSystemVersion() {
   }, [fetchVersion]);
 
   const dismiss = useCallback(() => {
+    if (swUpdateFn) setDeferredSwUpdate(true);
     if (!info) return;
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(SEEN_KEY, info.version);
     }
     setSeenVersion(info.version);
-  }, [info]);
+  }, [info, swUpdateFn]);
 
-  const shouldNotify = info != null && info.notificar && info.version !== seenVersion;
+  const shouldNotify =
+    (info != null && info.notificar && info.version !== seenVersion) ||
+    (swUpdateFn != null && !deferredSwUpdate);
 
   return { version: info?.version ?? null, info, shouldNotify, dismiss, swUpdateFn };
 }
