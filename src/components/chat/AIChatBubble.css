@@ -664,6 +664,69 @@
   animation: ai-chat-spin var(--transition-spinner) infinite;
 }
 
+.ai-chat-followup {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.ai-chat-result-actions {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--feature-chat-action-min-inline-size)), 1fr)
+  );
+  gap: var(--spacing-sm);
+}
+
+.ai-chat-action-btn {
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ai-chat-action-btn svg {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  flex-shrink: 0;
+}
+
+.ai-chat-action-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-canvas-soft);
+}
+
+.ai-chat-action-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.ai-chat-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ai-chat-action-icon--spin {
+  animation: ai-chat-spin var(--transition-spinner) infinite;
+}
+
 .ai-chat-input-form {
   inline-size: 100%;
   display: flex;
@@ -780,6 +843,7 @@
   }
 
   .ai-chat-spin,
+  .ai-chat-action-icon--spin,
   .ai-dot,
   .ai-chat-tooltip {
     animation: none;
@@ -791,6 +855,7 @@
   }
 
   .ai-chat-bubble-trigger,
+  .ai-chat-action-btn,
   .ai-chat-submit-btn,
   .ai-chat-send-btn {
     transition: none;
@@ -804,6 +869,7 @@
   .ai-chat-retry-btn:focus-visible,
   .ai-upload-box:focus-visible,
   .ai-upload-remove:focus-visible,
+  .ai-chat-action-btn:focus-visible,
   .ai-chat-submit-btn:focus-visible,
   .ai-chat-table-wrapper:focus-visible,
   .ai-chat-text-input:focus,

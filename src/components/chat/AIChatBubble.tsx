@@ -5,6 +5,7 @@ import {
   PopoverContent,
 } from "@/components/ui/Popover";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -16,7 +17,22 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
+import {
+  Bot as BotData,
+  Check as CheckData,
+  Copy as CopyData,
+  Download as DownloadData,
+  LoaderCircle,
+  RotateCcw,
+  X as XData,
+} from "lucide";
 import { supabase } from "@/lib/supabase";
+import { sileo } from "@/lib/notify";
+import {
+  buildEvaluationShareText,
+  copyEvaluationText,
+  exportEvaluationPdf,
+} from "@/lib/aiChatExport";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 
@@ -36,6 +52,13 @@ interface Message {
   role: "system" | "user" | "ai";
   content: string;
 }
+
+const INITIAL_MESSAGE: Message = {
+  id: "initial",
+  role: "system",
+  content:
+    "Soy tu IA de Reclutamiento.\nSelecciona una vacante y sube un CV en PDF para comenzar la evaluación.",
+};
 
 const markdownComponents: Components = {
   table: ({ node: _node, ...props }) => (
@@ -58,25 +81,24 @@ export function AIChatBubble() {
   const [selectedJob, setSelectedJob] = useState<string>("");
   const [jobsState, setJobsState] = useState<JobsState>("idle");
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "system",
-      content:
-        "Soy tu IA de Reclutamiento.\nSelecciona una vacante y sube un CV en PDF para comenzar la evaluación.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
 
   const [showTooltip, setShowTooltip] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
   const [cvBase64, setCvBase64] = useState<string | null>(null);
   const [hasCompared, setHasCompared] = useState(false);
+  const [evaluationResult, setEvaluationResult] = useState("");
+  const [evaluatedJobName, setEvaluatedJobName] = useState("");
+  const [hasCopiedEvaluation, setHasCopiedEvaluation] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldFocusUploadRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatPanelId = useId();
   const chatTitleId = useId();
@@ -119,6 +141,13 @@ export function AIChatBubble() {
       behavior: reduceMotion ? "auto" : "smooth",
     });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    if (!hasCompared && shouldFocusUploadRef.current) {
+      uploadButtonRef.current?.focus();
+      shouldFocusUploadRef.current = false;
+    }
+  }, [hasCompared]);
 
   const selectPdf = (selectedFile: File) => {
     if (selectedFile.type !== "application/pdf") {
@@ -237,6 +266,11 @@ export function AIChatBubble() {
         ...prev,
         { id: (Date.now() + 1).toString(), role: "ai", content: data.analysis },
       ]);
+      setEvaluationResult(data.analysis);
+      setEvaluatedJobName(
+        jobs.find((job) => job.id === selectedJob)?.title ?? "Auto-perfilar",
+      );
+      setHasCopiedEvaluation(false);
       setHasCompared(true);
     } catch (error) {
       console.error("Error analyzing CV:", error);
@@ -313,6 +347,56 @@ export function AIChatBubble() {
     }
   };
 
+  const getEvaluationExportInput = () => ({
+    analysis: evaluationResult,
+    candidateFileName: file?.name ?? "CV del candidato",
+    jobName: evaluatedJobName || "Auto-perfilar",
+  });
+
+  const handleCopyEvaluation = async () => {
+    if (!evaluationResult) return;
+
+    try {
+      const text = buildEvaluationShareText(getEvaluationExportInput());
+      await copyEvaluationText(text);
+      setHasCopiedEvaluation(true);
+      sileo.success({ title: "Evaluación copiada" });
+    } catch (error) {
+      console.error("Error copying evaluation:", error);
+      sileo.error({ title: "No se pudo copiar la evaluación" });
+    }
+  };
+
+  const handleExportEvaluation = async () => {
+    if (!evaluationResult || isExporting) return;
+
+    setIsExporting(true);
+    try {
+      await exportEvaluationPdf(getEvaluationExportInput());
+      sileo.success({ title: "Evaluación exportada en PDF" });
+    } catch (error) {
+      console.error("Error exporting evaluation:", error);
+      sileo.error({ title: "No se pudo exportar la evaluación" });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleNewEvaluation = () => {
+    shouldFocusUploadRef.current = true;
+    setMessages([INITIAL_MESSAGE]);
+    setFile(null);
+    setCvBase64(null);
+    setHasCompared(false);
+    setEvaluationResult("");
+    setEvaluatedJobName("");
+    setHasCopiedEvaluation(false);
+    setInputText("");
+    setFileError("");
+    setIsDragging(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   return (
     <>
       {!isOpen && showTooltip && (
@@ -338,11 +422,10 @@ export function AIChatBubble() {
             aria-label={isOpen ? "Cerrar asistente IA" : "Abrir asistente IA"}
             aria-controls={chatPanelId}
           >
-            {isOpen ? (
-              <X aria-hidden="true" />
-            ) : (
-              <Bot aria-hidden="true" />
-            )}
+            <MorphingIcon
+              icon={isOpen ? XData : BotData}
+              aria-hidden="true"
+            />
           </button>
         </PopoverTrigger>
 
@@ -502,6 +585,7 @@ export function AIChatBubble() {
                 <div className="ai-chat-upload-actions">
                   {!file ? (
                     <button
+                      ref={uploadButtonRef}
                       type="button"
                       className={`ai-upload-box${isDragging ? " is-dragging" : ""}`}
                       onClick={() => fileInputRef.current?.click()}
@@ -567,36 +651,80 @@ export function AIChatBubble() {
                 )}
               </fieldset>
             ) : (
-              <form onSubmit={handleSendMessage} className="ai-chat-input-form">
-                <label htmlFor={messageInputId} className="sr-only">
-                  Pregunta sobre el candidato
-                </label>
-                <input
-                  id={messageInputId}
-                  type="text"
-                  placeholder="Pregunta sobre este candidato..."
-                  value={inputText}
-                  onChange={(event) => setInputText(event.target.value)}
-                  disabled={isLoading}
-                  className="ai-chat-text-input"
-                />
-                <button
-                  type="submit"
-                  disabled={!inputText.trim() || isLoading}
-                  className="ai-chat-send-btn"
-                  aria-label={isLoading ? "Enviando pregunta" : "Enviar pregunta"}
-                  aria-busy={isLoading}
+              <div className="ai-chat-followup">
+                <div
+                  className="ai-chat-result-actions"
+                  role="group"
+                  aria-label="Acciones de la evaluación"
                 >
-                  {isLoading ? (
-                    <Loader2
-                      className="ai-chat-spin"
+                  <button
+                    type="button"
+                    className="ai-chat-action-btn"
+                    onClick={handleCopyEvaluation}
+                    disabled={!evaluationResult}
+                  >
+                    <MorphingIcon
+                      icon={hasCopiedEvaluation ? CheckData : CopyData}
                       aria-hidden="true"
                     />
-                  ) : (
-                    <Send aria-hidden="true" />
-                  )}
-                </button>
-              </form>
+                    <span>{hasCopiedEvaluation ? "Copiada" : "Copiar"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="ai-chat-action-btn"
+                    onClick={handleExportEvaluation}
+                    disabled={!evaluationResult || isExporting}
+                    aria-busy={isExporting}
+                  >
+                    <MorphingIcon
+                      icon={isExporting ? LoaderCircle : DownloadData}
+                      className={isExporting ? "ai-chat-action-icon--spin" : undefined}
+                      aria-hidden="true"
+                    />
+                    <span>{isExporting ? "Exportando..." : "Exportar PDF"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="ai-chat-action-btn"
+                    onClick={handleNewEvaluation}
+                    disabled={isLoading || isExporting}
+                  >
+                    <MorphingIcon icon={RotateCcw} aria-hidden="true" />
+                    <span>Nueva evaluación</span>
+                  </button>
+                </div>
+
+                <form onSubmit={handleSendMessage} className="ai-chat-input-form">
+                  <label htmlFor={messageInputId} className="sr-only">
+                    Pregunta sobre el candidato
+                  </label>
+                  <input
+                    id={messageInputId}
+                    type="text"
+                    placeholder="Pregunta sobre este candidato..."
+                    value={inputText}
+                    onChange={(event) => setInputText(event.target.value)}
+                    disabled={isLoading}
+                    className="ai-chat-text-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!inputText.trim() || isLoading}
+                    className="ai-chat-send-btn"
+                    aria-label={isLoading ? "Enviando pregunta" : "Enviar pregunta"}
+                    aria-busy={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2
+                        className="ai-chat-spin"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Send aria-hidden="true" />
+                    )}
+                  </button>
+                </form>
+              </div>
             )}
           </footer>
         </PopoverContent>

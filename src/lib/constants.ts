@@ -767,6 +767,20 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   updatingHint: "Preparando la nueva versión…",
 } as const;
 
+export const AI_CHAT_EXPORT_CONFIG = {
+  documentTitle: "Evaluación de candidato",
+  filePrefix: "evaluacion-cv",
+  pageFormat: "letter",
+  orientation: "portrait",
+  cssPixelToPoint: 0.75,
+  marginToken: "--spacing-xxl",
+  footerGapToken: "--spacing-xl",
+  headingSizeToken: "--type-heading-md-size",
+  bodySizeToken: "--type-body-md-size",
+  bodyLineToken: "--type-body-md-line",
+  sectionGapToken: "--spacing-md",
+} as const;
+
 /**
  * Contenido operativo de los formatos semanales de entrega. Los textos se
  * conservan como aparecen en los documentos oficiales proporcionados por RH.

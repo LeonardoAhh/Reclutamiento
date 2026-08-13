@@ -284,3 +284,11 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Eliminados estado, import y selectores obsoletos; las clases del componente y del CSS tienen correspondencia completa.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni pruebas extensas, por instrucción del usuario; verificación visual pendiente.
+
+## Indicadores Tie Fix + Chat Result Actions
+- Corregida la selección arbitraria del top mensual: ahora el cálculo conserva a todas las personas con el total máximo.
+- En empate, la KPI muestra `Empate` y detalla nombres, total e igualdad; con un solo liderazgo conserva el formato anterior.
+- Añadidas al chat las acciones Copiar, Exportar PDF y Nueva evaluación; la nueva evaluación conserva la vacante seleccionada.
+- Integrados Morphicons para `Bot ↔ X`, `Copy ↔ Check`, exportación y reinicio, con estados accesibles y reduced motion.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- Verificación dirigida de interfaz: pendiente de testing agent.

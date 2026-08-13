@@ -213,7 +213,12 @@ export function useIndicadoresStats(selectedMonth: Date) {
       total: formattedData.reduce((acc, row) => acc + (row[rec] || 0), 0),
       tone: getRecruiterTone(recruiterList.indexOf(rec))
     }));
-    const topRecruiter = recruiterTotals.length ? recruiterTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
+    const highestRecruiterTotal = recruiterTotals.length
+      ? Math.max(...recruiterTotals.map((recruiter) => recruiter.total))
+      : 0;
+    const topRecruiters = recruiterTotals.filter(
+      (recruiter) => recruiter.total === highestRecruiterTotal,
+    );
     const reclutadoresEnMeta = recruiterTotals.filter(r => r.total >= metaMensual).length;
     const promedioPermanenciaGlobal = bajasCountMes > 0 ? Math.round(totalDiasPermanenciaMes / bajasCountMes) : 0;
 
@@ -240,7 +245,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
       kpi: { 
         totalIngresos, 
         promedio, 
-        topRecruiter, 
+        topRecruiters,
         reclutadoresEnMeta, 
         recruiterTotals,
         totalBajasMes,
