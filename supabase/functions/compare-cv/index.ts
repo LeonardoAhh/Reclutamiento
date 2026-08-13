@@ -187,7 +187,10 @@ Recibirás un "Catálogo de Puestos".
 
       const payload = {
         systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: contents
+        contents: contents,
+        generationConfig: {
+          temperature: 0.1,
+        }
       };
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
@@ -239,6 +242,7 @@ Recibirás un "Catálogo de Puestos".
             { role: "system", content: systemPrompt },
             ...groqHistory,
           ],
+          temperature: 0.1,
         };
 
         const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -305,7 +309,8 @@ Recibirás un "Catálogo de Puestos".
 
       const payload = {
         model: "deepseek-chat",
-        messages: deepseekMessages
+        messages: deepseekMessages,
+        temperature: 0.1,
       };
 
       const res = await fetch("https://api.deepseek.com/chat/completions", {
@@ -366,7 +371,8 @@ Recibirás un "Catálogo de Puestos".
 
       const payload = {
         model: "meta-llama/llama-3.1-70b-instruct:free", // Modelo gratuito por defecto en OpenRouter
-        messages: openRouterMessages
+        messages: openRouterMessages,
+        temperature: 0.1,
       };
 
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
