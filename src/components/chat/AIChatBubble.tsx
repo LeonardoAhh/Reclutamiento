@@ -14,16 +14,21 @@ import {
   UploadCloud,
   FileText,
   Loader2,
-  Send,
   Sparkles,
 } from "lucide-react";
 import {
   Bot as BotData,
   Check as CheckData,
+  CircleAlert,
+  ClipboardList,
   Copy as CopyData,
   Download as DownloadData,
+  ListChecks,
   LoaderCircle,
+  MessageSquareText,
   RotateCcw,
+  Send as SendData,
+  Sparkles as SparklesData,
   X as XData,
 } from "lucide";
 import { supabase } from "@/lib/supabase";
@@ -33,6 +38,10 @@ import {
   copyEvaluationText,
   exportEvaluationPdf,
 } from "@/lib/aiChatExport";
+import {
+  AI_CHAT_ERROR_MESSAGES,
+  AI_CHAT_QUICK_ACTIONS,
+} from "@/lib/constants";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 
@@ -74,6 +83,32 @@ const markdownComponents: Components = {
 };
 
 type JobsState = "idle" | "loading" | "ready" | "error";
+type QuickActionTask = (typeof AI_CHAT_QUICK_ACTIONS)[number]["task"];
+type ChatTask = "follow_up" | QuickActionTask;
+
+type ChatRetry =
+  | { kind: "analysis" }
+  | { kind: "message"; task: ChatTask; userMessage: string };
+
+interface ChatErrorState {
+  message: string;
+  retry: ChatRetry;
+}
+
+const QUICK_ACTION_ICONS = {
+  interview_guide: ClipboardList,
+  executive_summary: ListChecks,
+  candidate_message: MessageSquareText,
+} as const;
+
+function buildCatalogText(jobs: JobDescription[]): string {
+  return jobs
+    .map(
+      (job) =>
+        `[ID: ${job.id}] Título: ${job.title}\nRequisitos: ${job.requirements_text || ""}\nResponsabilidades: ${job.responsibilities_text || ""}`,
+    )
+    .join("\n\n---\n\n");
+}
 
 export function AIChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
@@ -95,6 +130,10 @@ export function AIChatBubble() {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [activeQuickAction, setActiveQuickAction] =
+    useState<QuickActionTask | null>(null);
+  const [chatError, setChatError] = useState<ChatErrorState | null>(null);
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadButtonRef = useRef<HTMLButtonElement>(null);
@@ -212,59 +251,50 @@ export function AIChatBubble() {
     }
   };
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (appendUserMessage = true) => {
     if (!file) {
       setFileError("Adjunta un archivo PDF antes de iniciar la comparación.");
       return;
     }
 
+    const analysisMessage: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: `Analizar CV: ${file.name}`,
+    };
+    const messagesToSend = appendUserMessage
+      ? [...messages, analysisMessage]
+      : messages;
+
     setFileError("");
+    setChatError(null);
     setIsLoading(true);
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        role: "user",
-        content: `Analizar CV: ${file.name}`,
-      },
-    ]);
+    if (appendUserMessage) setMessages(messagesToSend);
 
     try {
       const base64Data = await fileToBase64(file);
       const extractedText = await extractTextFromPDF(file);
       setCvBase64(base64Data);
 
-      const catalogText = jobs
-        .map(
-          (j) =>
-            `[ID: ${j.id}] Título: ${j.title}\nRequisitos: ${j.requirements_text || ""}\nResponsabilidades: ${j.responsibilities_text || ""}`,
-        )
-        .join("\n\n---\n\n");
-
-      const messagesToSend = [
-        ...messages,
-        {
-          id: "temp",
-          role: "user",
-          content: `Analizar CV: ${file.name}`,
-        },
-      ];
-
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
-          catalog: catalogText,
+          catalog: buildCatalogText(jobs),
           target_job_id: selectedJob || null,
           resume_base64: base64Data,
           resume_text: extractedText,
           messages: messagesToSend,
+          task: "initial_analysis",
+          session_id: sessionId,
         },
       });
 
-      if (error || !data?.analysis) throw error ?? new Error("Empty AI response");
+      if (error || data?.error || !data?.analysis) {
+        throw error ?? new Error("AI response unavailable");
+      }
 
       setMessages((prev) => [
         ...prev,
-        { id: (Date.now() + 1).toString(), role: "ai", content: data.analysis },
+        { id: crypto.randomUUID(), role: "ai", content: data.analysis },
       ]);
       setEvaluationResult(data.analysis);
       setEvaluatedJobName(
@@ -274,77 +304,98 @@ export function AIChatBubble() {
       setHasCompared(true);
     } catch (error) {
       console.error("Error analyzing CV:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: "ai",
-          content: `Lo siento, el asistente está experimentando un alto volumen de tráfico. Por favor, intenta de nuevo en un momento.`,
-        },
-      ]);
+      setChatError({
+        message: AI_CHAT_ERROR_MESSAGES.analysis,
+        retry: { kind: "analysis" },
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSendMessage = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!inputText.trim() || isLoading) return;
+  const requestAssistantMessage = async (
+    userMessage: string,
+    task: ChatTask,
+    appendUserMessage = true,
+  ) => {
+    const trimmedMessage = userMessage.trim();
+    if (!trimmedMessage || isLoading) return;
 
-    const userMessage = inputText.trim();
+    const userEntry: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: trimmedMessage,
+    };
+    const messagesToSend = appendUserMessage
+      ? [...messages, userEntry]
+      : messages;
+    let errorMessage: string = AI_CHAT_ERROR_MESSAGES.message;
+
     setInputText("");
+    setChatError(null);
+    setActiveQuickAction(task === "follow_up" ? null : task);
     setIsLoading(true);
-
-    const newMessages: Message[] = [
-      ...messages,
-      { id: Date.now().toString(), role: "user", content: userMessage },
-    ];
-    setMessages(newMessages);
+    if (appendUserMessage) setMessages(messagesToSend);
 
     try {
-      const catalogText = jobs
-        .map(
-          (j) =>
-            `[ID: ${j.id}] Título: ${j.title}\nRequisitos: ${j.requirements_text || ""}\nResponsabilidades: ${j.responsibilities_text || ""}`,
-        )
-        .join("\n\n---\n\n");
-
-      let extractedText = "";
-      if (file) {
-        extractedText = await extractTextFromPDF(file);
-      }
-
+      const extractedText = file ? await extractTextFromPDF(file) : "";
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
-          catalog: catalogText,
+          catalog: buildCatalogText(jobs),
           target_job_id: selectedJob || null,
           resume_base64: cvBase64,
           resume_text: extractedText,
-          messages: newMessages,
+          messages: messagesToSend,
+          task,
+          session_id: sessionId,
         },
       });
 
-      if (error || !data?.analysis) {
-        throw error ?? new Error("Empty AI response");
+      if (data?.error) errorMessage = AI_CHAT_ERROR_MESSAGES.unavailable;
+      if (error || data?.error || !data?.analysis) {
+        throw error ?? new Error("AI response unavailable");
       }
 
       setMessages((prev) => [
         ...prev,
-        { id: (Date.now() + 1).toString(), role: "ai", content: data.analysis },
+        { id: crypto.randomUUID(), role: "ai", content: data.analysis },
       ]);
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: "ai",
-          content: `Lo siento, mi conexión se interrumpió temporalmente. ¿Podrías intentar enviar tu mensaje de nuevo?`,
-        },
-      ]);
+      setChatError({
+        message: errorMessage,
+        retry: { kind: "message", task, userMessage: trimmedMessage },
+      });
     } finally {
       setIsLoading(false);
+      setActiveQuickAction(null);
     }
+  };
+
+  const handleSendMessage = (event: React.FormEvent) => {
+    event.preventDefault();
+    void requestAssistantMessage(inputText, "follow_up");
+  };
+
+  const handleQuickAction = (task: QuickActionTask, prompt: string) => {
+    void requestAssistantMessage(prompt, task);
+  };
+
+  const handleRetry = () => {
+    if (!chatError || isLoading) return;
+
+    const { retry } = chatError;
+    setChatError(null);
+    if (retry.kind === "analysis") {
+      void handleAnalyze(false);
+      return;
+    }
+
+    void requestAssistantMessage(
+      retry.userMessage,
+      retry.task,
+      false,
+    );
   };
 
   const getEvaluationExportInput = () => ({
@@ -394,6 +445,9 @@ export function AIChatBubble() {
     setInputText("");
     setFileError("");
     setIsDragging(false);
+    setChatError(null);
+    setActiveQuickAction(null);
+    setSessionId(crypto.randomUUID());
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -548,13 +602,27 @@ export function AIChatBubble() {
                   <Bot />
                 </div>
                 <div className="ai-chat-content">
-                  <span className="sr-only">El asistente está analizando.</span>
+                  <span className="sr-only">El asistente está respondiendo.</span>
                   <div className="ai-typing-indicator" aria-hidden="true">
                     <span className="ai-dot" />
                     <span className="ai-dot" />
                     <span className="ai-dot" />
                   </div>
                 </div>
+              </div>
+            )}
+            {chatError && (
+              <div className="ai-chat-inline-error" role="alert">
+                <MorphingIcon icon={CircleAlert} aria-hidden="true" />
+                <p>{chatError.message}</p>
+                <button
+                  type="button"
+                  onClick={handleRetry}
+                  disabled={isLoading}
+                >
+                  <MorphingIcon icon={RotateCcw} aria-hidden="true" />
+                  Reintentar
+                </button>
               </div>
             )}
             <div ref={messagesEndRef} aria-hidden="true" />
@@ -626,7 +694,7 @@ export function AIChatBubble() {
                   <button
                     type="button"
                     className="ai-chat-submit-btn"
-                    onClick={handleAnalyze}
+                    onClick={() => void handleAnalyze()}
                     disabled={!file || isLoading}
                     aria-busy={isLoading}
                   >
@@ -652,6 +720,42 @@ export function AIChatBubble() {
               </fieldset>
             ) : (
               <div className="ai-chat-followup">
+                <details className="ai-chat-quick-menu">
+                  <summary>
+                    <MorphingIcon icon={SparklesData} aria-hidden="true" />
+                    Acciones con IA
+                  </summary>
+                  <div
+                    className="ai-chat-quick-actions"
+                    role="group"
+                    aria-label="Acciones rápidas del asistente"
+                  >
+                    {AI_CHAT_QUICK_ACTIONS.map((action) => {
+                      const ActionIcon = QUICK_ACTION_ICONS[action.task];
+                      const isActive = activeQuickAction === action.task;
+                      return (
+                        <button
+                          key={action.task}
+                          type="button"
+                          onClick={() =>
+                            handleQuickAction(action.task, action.prompt)
+                          }
+                          disabled={isLoading}
+                        >
+                          <MorphingIcon
+                            icon={isActive ? LoaderCircle : ActionIcon}
+                            className={
+                              isActive ? "ai-chat-action-icon--spin" : undefined
+                            }
+                            aria-hidden="true"
+                          />
+                          <span>{action.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </details>
+
                 <div
                   className="ai-chat-result-actions"
                   role="group"
@@ -714,14 +818,11 @@ export function AIChatBubble() {
                     aria-label={isLoading ? "Enviando pregunta" : "Enviar pregunta"}
                     aria-busy={isLoading}
                   >
-                    {isLoading ? (
-                      <Loader2
-                        className="ai-chat-spin"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <Send aria-hidden="true" />
-                    )}
+                    <MorphingIcon
+                      icon={isLoading ? LoaderCircle : SendData}
+                      className={isLoading ? "ai-chat-action-icon--spin" : undefined}
+                      aria-hidden="true"
+                    />
                   </button>
                 </form>
               </div>

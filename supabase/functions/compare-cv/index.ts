@@ -5,6 +5,48 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type AiTask =
+  | "initial_analysis"
+  | "follow_up"
+  | "interview_guide"
+  | "executive_summary"
+  | "candidate_message";
+
+type AiModel = "gemini" | "deepseek" | "openrouter";
+
+function resolveAiModel(task: AiTask): AiModel {
+  if (
+    task === "candidate_message" &&
+    Deno.env.get("OPENROUTER_API_KEY")
+  ) {
+    return "openrouter";
+  }
+
+  if (
+    (task === "interview_guide" || task === "executive_summary") &&
+    Deno.env.get("DEEPSEEK_API_KEY")
+  ) {
+    return "deepseek";
+  }
+
+  return "gemini";
+}
+
+function normalizeTask(value: unknown): AiTask {
+  const supportedTasks: AiTask[] = [
+    "initial_analysis",
+    "follow_up",
+    "interview_guide",
+    "executive_summary",
+    "candidate_message",
+  ];
+
+  return typeof value === "string" && supportedTasks.includes(value as AiTask)
+    ? (value as AiTask)
+    : "follow_up";
+}
+
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -13,7 +55,21 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { catalog, target_job_id, resume_text, resume_base64, messages = [], model = "gemini" } = body;
+    const {
+      catalog,
+      target_job_id,
+      resume_text,
+      resume_base64,
+      messages = [],
+      model = "auto",
+      task = "follow_up",
+    } = body;
+    const normalizedTask = normalizeTask(task);
+    const supportedModels: AiModel[] = ["gemini", "deepseek", "openrouter"];
+    const resolvedModel =
+      model !== "auto" && supportedModels.includes(model as AiModel)
+        ? (model as AiModel)
+        : resolveAiModel(normalizedTask);
 
     if (!catalog) {
       return new Response(JSON.stringify({ error: "catalog is required" }), {
@@ -79,7 +135,7 @@ Recibirás un "Catálogo de Puestos".
 2. [Pregunta técnica o conductual 2].
 3. [Pregunta técnica o conductual 3].`;
 
-    if (model === "gemini") {
+    if (resolvedModel === "gemini") {
       const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
       if (!geminiApiKey) {
          throw new Error("GEMINI_API_KEY is not set");
@@ -143,15 +199,33 @@ Recibirás un "Catálogo de Puestos".
           throw new Error("Gemini falló y no hay resume_text extraído para enviar a Groq.");
         }
 
+        const groqHistory = messages
+          .filter((message: any) =>
+            message.role === "user" ||
+            message.role === "ai" ||
+            message.role === "model"
+          )
+          .map((message: any) => ({
+            role: message.role === "user" ? "user" : "assistant",
+            content: message.content,
+          }));
+        const context = `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resume_text}\n\n`;
+
+        if (groqHistory.length > 0) {
+          groqHistory[0].content = `${context}${groqHistory[0].content}`;
+        } else {
+          groqHistory.push({
+            role: "user",
+            content: `${context}Analiza el CV con el formato solicitado.`,
+          });
+        }
+
         const groqPayload = {
           model: "openai/gpt-oss-20b",
           messages: [
             { role: "system", content: systemPrompt },
-            { 
-              role: "user", 
-              content: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resume_text}` 
-            }
-          ]
+            ...groqHistory,
+          ],
         };
 
         const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -168,62 +242,22 @@ Recibirás un "Catálogo de Puestos".
           throw new Error(`Ambos modelos (Gemini y Groq) fallaron. Groq Error: ${groqData.error?.message}`);
         }
 
-        const analysis = groqData.choices?.[0]?.message?.content || "No se pudo generar un análisis con Groq.";
+        const analysis = groqData.choices?.[0]?.message?.content;
+        if (!analysis) throw new Error("Groq returned an empty response");
         return new Response(JSON.stringify({ analysis }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
         // --- FIN FALLBACK GROQ ---
       }
 
-      const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo generar un análisis.";
+      const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!analysis) throw new Error("Gemini returned an empty response");
 
       return new Response(JSON.stringify({ analysis }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
 
-    } else if (model === "kimi") {
-      const kimiApiKey = Deno.env.get("MOONSHOT_API_KEY");
-      if (!kimiApiKey) {
-        throw new Error("MOONSHOT_API_KEY is not set");
-      }
-
-      // Para Moonshot (Kimi), usaremos resume_text si está disponible, 
-      // ya que subir archivos requiere un flujo multipart separado en su API.
-      const contentText = resume_text 
-        ? resume_text 
-        : "Nota: No se pudo extraer el texto del PDF para enviarlo a Kimi. Por favor usa Gemini para PDFs escaneados, o asegúrate de enviar resume_text.";
-
-      const payload = {
-        model: "moonshot-v1-8k",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}` }
-        ]
-      };
-
-      const res = await fetch("https://api.moonshot.cn/v1/chat/completions", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${kimiApiKey}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-      
-      if (!res.ok) {
-        console.error("Moonshot API Error:", data);
-        throw new Error(data.error?.message || "Error from Moonshot API");
-      }
-
-      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis.";
-
-      return new Response(JSON.stringify({ analysis }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-
-    } else if (model === "deepseek") {
+    } else if (resolvedModel === "deepseek") {
       const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY");
       if (!deepseekApiKey) {
         throw new Error("DEEPSEEK_API_KEY is not set");
@@ -277,13 +311,14 @@ Recibirás un "Catálogo de Puestos".
         throw new Error(`Error from Deepseek API: ${data.error?.message || "Unknown error"}`);
       }
 
-      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis con Deepseek.";
+      const analysis = data.choices?.[0]?.message?.content;
+      if (!analysis) throw new Error("DeepSeek returned an empty response");
 
       return new Response(JSON.stringify({ analysis }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
 
-    } else if (model === "openrouter") {
+    } else if (resolvedModel === "openrouter") {
       const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
       if (!openRouterApiKey) {
         throw new Error("OPENROUTER_API_KEY is not set");
@@ -339,7 +374,8 @@ Recibirás un "Catálogo de Puestos".
         throw new Error(`Error from OpenRouter API: ${data.error?.message || "Unknown error"}`);
       }
 
-      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis con OpenRouter.";
+      const analysis = data.choices?.[0]?.message?.content;
+      if (!analysis) throw new Error("OpenRouter returned an empty response");
 
       return new Response(JSON.stringify({ analysis }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -351,15 +387,14 @@ Recibirás un "Catálogo de Puestos".
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error processing request:", error);
-    // Devolvemos 200 para que el frontend no lo oculte tras un FunctionsHttpError, 
-    // y lo mandamos como 'analysis' para que se imprima directo en el chat.
-    return new Response(JSON.stringify({ 
-      analysis: `Lo siento, mis servidores están temporalmente saturados. Por favor, intenta de nuevo en un momento.` 
-    }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: { code: "AI_UNAVAILABLE" } }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 });

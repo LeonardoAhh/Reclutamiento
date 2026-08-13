@@ -300,3 +300,13 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Las burbujas usan el ancho disponible y las tablas heredadas envuelven contenido sin columnas mínimas rígidas.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
+
+## AI Recruiter Actions + Provider Routing
+- Añadido menú compacto `Acciones con IA`: Guía de entrevista, Resumen ejecutivo y Mensaje al candidato.
+- Enrutamiento automático por tarea: análisis inicial con Gemini/Groq; guía y resumen con DeepSeek cuando está disponible; mensajes con OpenRouter cuando está disponible.
+- Kimi y Moonshot eliminados del contrato porque no existe API key configurada para ese proveedor.
+- Cada evaluación usa `session_id`; Nueva evaluación inicia una sesión limpia y conserva la vacante.
+- Errores técnicos sustituidos por mensajes inline mínimos con acción Reintentar y Morphicons.
+- El fallback Groq conserva historial, CV, vacante y tarea en lugar de reiniciar el análisis.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni APIs externas en vivo, por instrucción del usuario.
