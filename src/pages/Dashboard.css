@@ -195,12 +195,12 @@
 
 .dept-card__header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md, 16px) var(--spacing-md, 16px) 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -220,19 +220,20 @@
 .dept-card__header-left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs, 8px);
   flex-wrap: wrap;
-  width: 100%;
+  flex: 1;
 }
 
 .dept-card__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: 500;
+  font-size: var(--type-heading-xs-size, 14px);
+  font-weight: 600;
   letter-spacing: var(--tracking-snug);
   color: var(--color-ink);
-  white-space: nowrap;
+  text-transform: uppercase;
+  margin-right: 4px;
 }
 
 .dept-card__meta {
@@ -244,11 +245,7 @@
 .dept-card__header-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
   flex-shrink: 0;
-  width: 100%;
-  min-width: 0;
-  color: var(--color-muted);
 }
 
 .dept-card__vacancy-badge {
@@ -294,28 +291,38 @@
 }
 
 .dept-card__body {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  border-top: 1px solid var(--color-hairline);
+  justify-content: flex-end;
+  flex: 1;
 }
 
-.dept-card__body-row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  color: var(--color-muted);
-  font-size: var(--type-caption-md-size);
-}
-
-.dept-card__stat-label {
-  font-weight: 500;
-}
-
-.dept-card__stat-value {
+.dept-card__headcount {
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size, 16px);
   font-weight: 700;
   color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.dept-card__progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--type-caption-sm-size, 12px);
+  color: var(--color-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.dept-card__progress-value {
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size, 14px);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .dept-card__bottom {
@@ -682,12 +689,12 @@
 
   .dept-card__header {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .dept-card__header-right {
     width: auto;
-    min-width: 200px;
+    min-width: auto;
   }
 
   .dept-card__table th,

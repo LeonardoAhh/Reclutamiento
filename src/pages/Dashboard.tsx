@@ -790,36 +790,18 @@ function DepartmentCard({
           <div className="dept-card__header-left">
             <h3 className="dept-card__title">{dept.area}</h3>
             {incapacidadCount > 0 && (
-              <Badge variant="amber">
-                <HeartPulse size={11} aria-hidden="true" />
+              <Badge variant="amber" title={`${incapacidadCount} incapacidades`}>
+                <HeartPulse size={12} aria-hidden="true" />
                 {incapacidadCount}
               </Badge>
-            )}
-          </div>
-          <div className="dept-card__header-right">
-            <Badge variant={getCoverageBadge(dept.porcentaje_cobertura)}>
-              {dept.porcentaje_cobertura}%
-            </Badge>
-            {hasVacancies && (
-              <span className="dept-card__vacancy-badge">
-                {dept.vacantes} vacantes
-              </span>
             )}
           </div>
         </div>
 
         <div className="dept-card__body">
-          <div className="dept-card__body-row">
-            <span className="dept-card__stat-label">Real / Aut.</span>
-            <span className="dept-card__stat-value">
-              {dept.plantilla_real} / {dept.plantilla_autorizada}
-            </span>
-          </div>
-          <div className="dept-card__body-row">
-            <span className="dept-card__stat-label">Urgentes</span>
-            <span className="dept-card__stat-value">
-              {dept.urgentes || "—"}
-            </span>
+          <div className="dept-card__progress-label">
+            <span>Cobertura</span>
+            <span className="dept-card__progress-value">{dept.porcentaje_cobertura}%</span>
           </div>
           <CoverageBar
             percentage={dept.porcentaje_cobertura}

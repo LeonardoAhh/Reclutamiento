@@ -1,0 +1,354 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const body = await req.json();
+    const { catalog, target_job_id, resume_text, resume_base64, messages = [], model = "gemini" } = body;
+
+    if (!catalog) {
+      return new Response(JSON.stringify({ error: "catalog is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!resume_text && !resume_base64) {
+      return new Response(JSON.stringify({ error: "Either resume_text or resume_base64 is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const systemPrompt = `Eres un Copiloto Experto en Adquisición de Talento. Tu objetivo es perfilar candidatos y asesorar al reclutador leyendo su CV contra nuestro catálogo de puestos.
+
+### Reglas de Evaluación (Tolerancia Cero al Sesgo)
+Evalúa únicamente: skills, experiencia, educación, herramientas, logros, idiomas y certificaciones.
+Ignora por completo y nunca uses como criterio: edad, género, estado civil, nacionalidad, apariencia física, religión, orientación sexual o fotografía.
+
+### Instrucciones de Perfilamiento
+Recibirás un "Catálogo de Puestos".
+- Si el usuario especificó un Target Job ID, evalúa principalmente contra ese puesto. Si el candidato no encaja bien, revisa el catálogo y sugiere alternativas mejores.
+- Si NO hay Target Job ID (Auto-perfilar), analiza el CV, busca en el catálogo los 2-3 puestos con mayor afinidad y preséntalos.
+
+### Comportamiento del Chat (¡Muy Importante!)
+1. Si el usuario pide el ANÁLISIS INICIAL, debes usar EXACTAMENTE el "Formato de Salida Inicial" detallado abajo.
+2. Si el usuario hace PREGUNTAS DE SEGUIMIENTO (chat conversacional), responde de forma natural, analítica y experta.
+3. LÍMITE DE DOMINIO: Si el usuario te hace preguntas ajenas a Recursos Humanos, reclutamiento, entrevistas, o el CV actual (ej. recetas, política, chistes, código ajeno al puesto), DEBES negarte a responder cortésmente, recordando que tu única función es asistir en adquisición de talento.
+
+### Formato de Salida Inicial (Usar SOLO para el primer análisis):
+
+**Puestos Compatibles / Evaluación:**
+- **[Nombre del puesto 1]** — Match: XX%. (Breve razón del encaje).
+- **[Nombre del puesto 2 (si aplica)]** — Match: XX%. (Breve razón del encaje).
+
+**Análisis por Skills y Competencias:**
+- 🔹 **[Nombre de la Skill 1 (Ej. React)]**
+  - ✅ **Cumple:** [Evidencia encontrada en el CV]
+  - ❌ **Falta/Brecha:** [Lo que pide el puesto y no tiene]
+- 🔹 **[Nombre de la Skill 2]**
+  - ⚠️ **Parcial:** [Evidencia parcial o relacionada]
+*(Lista las skills más críticas del puesto y evalúalas de esta forma)*
+
+**🚩 Banderas Rojas (Red Flags):**
+- [Identifica saltos laborales, inactividad. Si no hay, indica "Ninguna detectada"].
+
+**💡 Preguntas Estratégicas para Entrevista:**
+Sugiere 3 preguntas técnicas o conductuales para investigar áreas grises:
+1. [Pregunta 1]
+2. [Pregunta 2]
+3. [Pregunta 3]`;
+
+    if (model === "gemini") {
+      const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+      if (!geminiApiKey) {
+         throw new Error("GEMINI_API_KEY is not set");
+      }
+
+      let contents = [];
+      
+      if (messages && messages.length > 0) {
+        // Filtrar 'system' y mapear a formato Gemini ('user' o 'model')
+        contents = messages
+          .filter((m: any) => m.role === "user" || m.role === "ai" || m.role === "model")
+          .map((m: any) => ({
+            role: m.role === "user" ? "user" : "model",
+            parts: [{ text: m.content }]
+          }));
+          
+        // Inyectar el contexto (Catálogo y CV) en el primer mensaje del usuario para que Gemini lo recuerde
+        const firstUserMsg = contents.find((c: any) => c.role === "user");
+        if (firstUserMsg) {
+          firstUserMsg.parts.unshift({ text: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n` });
+          if (resume_base64) {
+             firstUserMsg.parts.push({
+               inlineData: { mimeType: "application/pdf", data: resume_base64 }
+             });
+          }
+        }
+      } else {
+         // Fallback legacy por si acaso
+         const parts: any[] = [
+           { text: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n` }
+         ];
+         if (resume_base64) {
+           parts.push({ inlineData: { mimeType: "application/pdf", data: resume_base64 } });
+         }
+         contents.push({ role: "user", parts });
+      }
+
+      const payload = {
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: contents
+      };
+
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.warn("Gemini API falló, intentando Fallback a Groq...", data);
+        
+        // --- INICIO FALLBACK GROQ ---
+        const groqApiKey = Deno.env.get("GROQ_API_KEY");
+        if (!groqApiKey) {
+          throw new Error("Gemini falló y no hay GROQ_API_KEY configurada para fallback. " + (data.error?.message || ""));
+        }
+        
+        if (!resume_text) {
+          throw new Error("Gemini falló y no hay resume_text extraído para enviar a Groq.");
+        }
+
+        const groqPayload = {
+          model: "openai/gpt-oss-20b",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { 
+              role: "user", 
+              content: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${resume_text}` 
+            }
+          ]
+        };
+
+        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${groqApiKey}`
+          },
+          body: JSON.stringify(groqPayload)
+        });
+
+        const groqData = await groqRes.json();
+        if (!groqRes.ok) {
+          throw new Error(`Ambos modelos (Gemini y Groq) fallaron. Groq Error: ${groqData.error?.message}`);
+        }
+
+        const analysis = groqData.choices?.[0]?.message?.content || "No se pudo generar un análisis con Groq.";
+        return new Response(JSON.stringify({ analysis }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+        // --- FIN FALLBACK GROQ ---
+      }
+
+      const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo generar un análisis.";
+
+      return new Response(JSON.stringify({ analysis }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+
+    } else if (model === "kimi") {
+      const kimiApiKey = Deno.env.get("MOONSHOT_API_KEY");
+      if (!kimiApiKey) {
+        throw new Error("MOONSHOT_API_KEY is not set");
+      }
+
+      // Para Moonshot (Kimi), usaremos resume_text si está disponible, 
+      // ya que subir archivos requiere un flujo multipart separado en su API.
+      const contentText = resume_text 
+        ? resume_text 
+        : "Nota: No se pudo extraer el texto del PDF para enviarlo a Kimi. Por favor usa Gemini para PDFs escaneados, o asegúrate de enviar resume_text.";
+
+      const payload = {
+        model: "moonshot-v1-8k",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}` }
+        ]
+      };
+
+      const res = await fetch("https://api.moonshot.cn/v1/chat/completions", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${kimiApiKey}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error("Moonshot API Error:", data);
+        throw new Error(data.error?.message || "Error from Moonshot API");
+      }
+
+      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis.";
+
+      return new Response(JSON.stringify({ analysis }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+
+    } else if (model === "deepseek") {
+      const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY");
+      if (!deepseekApiKey) {
+        throw new Error("DEEPSEEK_API_KEY is not set");
+      }
+
+      const contentText = resume_text 
+        ? resume_text 
+        : "Nota: No se pudo extraer el texto del PDF. Asegúrate de enviar resume_text.";
+
+      let deepseekMessages = [
+        { role: "system", content: systemPrompt }
+      ];
+
+      if (messages && messages.length > 0) {
+        const history = messages
+          .filter((m: any) => m.role === "user" || m.role === "ai" || m.role === "model")
+          .map((m: any) => ({
+            role: m.role === "user" ? "user" : "assistant",
+            content: m.content
+          }));
+        
+        if (history.length > 0) {
+          history[0].content = `### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}\n\nPregunta del usuario: ${history[0].content}`;
+          deepseekMessages = deepseekMessages.concat(history);
+        }
+      } else {
+        deepseekMessages.push({ 
+          role: "user", 
+          content: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}` 
+        });
+      }
+
+      const payload = {
+        model: "deepseek-chat",
+        messages: deepseekMessages
+      };
+
+      const res = await fetch("https://api.deepseek.com/chat/completions", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${deepseekApiKey}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error("Deepseek API Error:", data);
+        throw new Error(`Error from Deepseek API: ${data.error?.message || "Unknown error"}`);
+      }
+
+      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis con Deepseek.";
+
+      return new Response(JSON.stringify({ analysis }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+
+    } else if (model === "openrouter") {
+      const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
+      if (!openRouterApiKey) {
+        throw new Error("OPENROUTER_API_KEY is not set");
+      }
+
+      const contentText = resume_text 
+        ? resume_text 
+        : "Nota: No se pudo extraer el texto del PDF. Asegúrate de enviar resume_text.";
+
+      let openRouterMessages = [
+        { role: "system", content: systemPrompt }
+      ];
+
+      if (messages && messages.length > 0) {
+        const history = messages
+          .filter((m: any) => m.role === "user" || m.role === "ai" || m.role === "model")
+          .map((m: any) => ({
+            role: m.role === "user" ? "user" : "assistant",
+            content: m.content
+          }));
+        
+        if (history.length > 0) {
+          history[0].content = `### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}\n\nPregunta del usuario: ${history[0].content}`;
+          openRouterMessages = openRouterMessages.concat(history);
+        }
+      } else {
+        openRouterMessages.push({ 
+          role: "user", 
+          content: `Por favor analiza mi CV adjunto y auto-perfila o evalúa contra el catálogo de puestos.\n\n### Target Job ID:\n${target_job_id || "Ninguno"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${contentText}` 
+        });
+      }
+
+      const payload = {
+        model: "meta-llama/llama-3.1-70b-instruct:free", // Modelo gratuito por defecto en OpenRouter
+        messages: openRouterMessages
+      };
+
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${openRouterApiKey}`,
+          "HTTP-Referer": "https://localhost", // Recomendado por OpenRouter
+          "X-Title": "Reclutamiento AI"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error("OpenRouter API Error:", data);
+        throw new Error(`Error from OpenRouter API: ${data.error?.message || "Unknown error"}`);
+      }
+
+      const analysis = data.choices?.[0]?.message?.content || "No se pudo generar un análisis con OpenRouter.";
+
+      return new Response(JSON.stringify({ analysis }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ error: "Modelo no soportado" }), {
+      status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+
+  } catch (error: any) {
+    console.error("Error processing request:", error);
+    // Devolvemos 200 para que el frontend no lo oculte tras un FunctionsHttpError, 
+    // y lo mandamos como 'analysis' para que se imprima directo en el chat.
+    return new Response(JSON.stringify({ 
+      analysis: `Lo siento, mis servidores están temporalmente saturados. Por favor, intenta de nuevo en un momento.` 
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});

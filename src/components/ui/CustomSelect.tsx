@@ -74,7 +74,7 @@ export function CustomSelect({
         o.label.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    if (placeholder && !searchQuery) {
+    if (placeholder && !searchQuery && !opts.some(o => o.value === '')) {
       return [{ value: '', label: placeholder }, ...opts];
     }
     return opts;

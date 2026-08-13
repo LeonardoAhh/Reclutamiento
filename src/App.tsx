@@ -24,6 +24,7 @@ import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Configuracion } from '@/pages/Configuracion';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
+import { AIChatBubble } from '@/components/chat/AIChatBubble';
 
 function AdminGuard({ children }: { children: ReactNode }) {
   const { profile, profileLoading, loading } = useAuth();
@@ -41,6 +42,7 @@ function ProtectedShell({ children }: { children: ReactNode }) {
         <MaintenanceGuard>
           <AppShell>{children}</AppShell>
           <TopRecruiterModal />
+          <AIChatBubble />
         </MaintenanceGuard>
       </PositionsProvider>
     </AuthGuard>
