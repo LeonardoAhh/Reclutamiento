@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/Popover";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
   Bot,
@@ -14,7 +14,6 @@ import {
   FileText,
   Loader2,
   Send,
-  User,
   Sparkles,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -22,8 +21,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
-// @ts-ignore: Propiedad no expuesta en los tipos oficiales pero válida en runtime
-pdfjsLib.GlobalWorkerOptions.verbosity = 0; // Solo mostrar errores fatales, ocultar warnings
+Object.assign(pdfjsLib.GlobalWorkerOptions, { verbosity: 0 });
 import "./AIChatBubble.css";
 
 interface JobDescription {
@@ -39,13 +37,26 @@ interface Message {
   content: string;
 }
 
+const markdownComponents: Components = {
+  table: ({ node: _node, ...props }) => (
+    <div
+      className="ai-chat-table-wrapper"
+      role="region"
+      aria-label="Tabla de evaluación"
+      tabIndex={0}
+    >
+      <table {...props} />
+    </div>
+  ),
+};
+
+type JobsState = "idle" | "loading" | "ready" | "error";
+
 export function AIChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
   const [jobs, setJobs] = useState<JobDescription[]>([]);
   const [selectedJob, setSelectedJob] = useState<string>("");
-  const [model, setModel] = useState<
-    "gemini" | "kimi" | "deepseek" | "openrouter"
-  >("gemini");
+  const [jobsState, setJobsState] = useState<JobsState>("idle");
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -58,60 +69,85 @@ export function AIChatBubble() {
 
   const [showTooltip, setShowTooltip] = useState(true);
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
   const [cvBase64, setCvBase64] = useState<string | null>(null);
   const [hasCompared, setHasCompared] = useState(false);
   const [inputText, setInputText] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatPanelId = useId();
+  const chatTitleId = useId();
+  const jobSelectId = useId();
+  const fileInputId = useId();
+  const fileHelpId = useId();
+  const fileErrorId = useId();
+  const messageInputId = useId();
 
-  useEffect(() => {
-    if (isOpen && jobs.length === 0) {
-      loadJobs();
-    }
-  }, [isOpen]);
+  const loadJobs = useCallback(async () => {
+    setJobsState("loading");
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
-  const loadJobs = async () => {
     const { data, error } = await supabase
       .from("job_descriptions")
       .select("id, title, requirements_text, responsibilities_text");
 
-    if (data) {
-      setJobs(data);
+    if (error) {
+      console.error("Error loading job descriptions:", error);
+      setJobsState("error");
+      return;
     }
+
+    setJobs(data ?? []);
+    setJobsState("ready");
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && jobsState === "idle") {
+      void loadJobs();
+    }
+  }, [isOpen, jobsState, loadJobs]);
+
+  useEffect(() => {
+    if (!messagesEndRef.current) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    messagesEndRef.current.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, [messages, isLoading]);
+
+  const selectPdf = (selectedFile: File) => {
+    if (selectedFile.type !== "application/pdf") {
+      setFileError("Selecciona un archivo PDF para continuar.");
+      return;
+    }
+
+    setFile(selectedFile);
+    setCvBase64(null);
+    setFileError("");
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const selectedFile = e.target.files[0];
-      if (selectedFile.type === "application/pdf") {
-        setFile(selectedFile);
-      } else {
-        alert("Por favor, sube únicamente archivos PDF.");
-      }
-    }
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) selectPdf(selectedFile);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
+  const handleDrop = (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.type === "application/pdf") {
-        setFile(droppedFile);
-      } else {
-        alert("Por favor, sube únicamente archivos PDF.");
-      }
-    }
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (droppedFile) selectPdf(droppedFile);
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setCvBase64(null);
+    setFileError("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const fileToBase64 = (file: File): Promise<string> => {
@@ -136,7 +172,7 @@ export function AIChatBubble() {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items
-          .map((item: any) => item.str)
+          .map((item) => ("str" in item ? item.str : ""))
           .join(" ");
         fullText += pageText + "\n";
       }
@@ -148,8 +184,12 @@ export function AIChatBubble() {
   };
 
   const handleAnalyze = async () => {
-    if (!file) return;
+    if (!file) {
+      setFileError("Adjunta un archivo PDF antes de iniciar la comparación.");
+      return;
+    }
 
+    setFileError("");
     setIsLoading(true);
     setMessages((prev) => [
       ...prev,
@@ -188,18 +228,17 @@ export function AIChatBubble() {
           resume_base64: base64Data,
           resume_text: extractedText,
           messages: messagesToSend,
-          model: model,
         },
       });
 
-      if (error) throw error;
+      if (error || !data?.analysis) throw error ?? new Error("Empty AI response");
 
       setMessages((prev) => [
         ...prev,
         { id: (Date.now() + 1).toString(), role: "ai", content: data.analysis },
       ]);
       setHasCompared(true);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error analyzing CV:", error);
       setMessages((prev) => [
         ...prev,
@@ -248,17 +287,18 @@ export function AIChatBubble() {
           resume_base64: cvBase64,
           resume_text: extractedText,
           messages: newMessages,
-          model: model,
         },
       });
 
-      if (error) throw new Error("Error interno del servicio AI.");
+      if (error || !data?.analysis) {
+        throw error ?? new Error("Empty AI response");
+      }
 
       setMessages((prev) => [
         ...prev,
         { id: (Date.now() + 1).toString(), role: "ai", content: data.analysis },
       ]);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error sending message:", error);
       setMessages((prev) => [
         ...prev,
@@ -277,261 +317,266 @@ export function AIChatBubble() {
     <>
       {!isOpen && showTooltip && (
         <div className="ai-chat-tooltip">
-          <Sparkles size={16} />
-          <span>Chat bot</span>
+          <Sparkles aria-hidden="true" />
+          <span>Evaluar un CV</span>
           <button
+            type="button"
             className="ai-chat-tooltip-close"
             onClick={() => setShowTooltip(false)}
             aria-label="Cerrar sugerencia"
           >
-            <X size={14} />
+            <X aria-hidden="true" />
           </button>
-          <div className="ai-chat-tooltip-arrow" />
         </div>
       )}
 
-      <Popover
-        open={isOpen}
-        onOpenChange={(open) => {
-          setIsOpen(open);
-        }}
-      >
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <button
+            type="button"
             className="ai-chat-bubble-trigger"
-            aria-label="Abrir asistente IA"
+            aria-label={isOpen ? "Cerrar asistente IA" : "Abrir asistente IA"}
+            aria-controls={chatPanelId}
           >
-            {isOpen ? <X size={24} /> : <Bot size={24} />}
+            {isOpen ? (
+              <X aria-hidden="true" />
+            ) : (
+              <Bot aria-hidden="true" />
+            )}
           </button>
         </PopoverTrigger>
 
         <PopoverContent
+          id={chatPanelId}
           side="top"
           align="end"
-          sideOffset={16}
+          sideOffset={0}
           className="ai-chat-window-content"
+          aria-labelledby={chatTitleId}
         >
-          <div className="ai-chat-header">
+          <header className="ai-chat-header">
             <div className="ai-chat-header-profile">
-              <div className="ai-chat-header-avatar">
-                <Bot size={20} />
-                <span className="ai-chat-status-dot"></span>
+              <div className="ai-chat-header-avatar" aria-hidden="true">
+                <Bot />
               </div>
               <div className="ai-chat-header-info">
-                <h3>Asistente de Reclutamiento</h3>
-                <span className="ai-chat-status-text">En línea</span>
+                <h2 id={chatTitleId}>Asistente de Reclutamiento</h2>
+                <span className="ai-chat-status-text">
+                  Evaluación de perfiles
+                </span>
               </div>
 
               <button
+                type="button"
                 className="ai-chat-header-close"
                 onClick={() => setIsOpen(false)}
                 aria-label="Cerrar chat"
               >
-                <X size={18} />
+                <X aria-hidden="true" />
               </button>
             </div>
+
             <div className="ai-chat-controls">
+              <label className="ai-chat-label" htmlFor={jobSelectId}>
+                Vacante a evaluar
+              </label>
               <CustomSelect
+                id={jobSelectId}
                 value={selectedJob}
                 onChange={setSelectedJob}
                 options={[
                   { value: "", label: "Auto-perfilar" },
-                  ...jobs.map((j) => ({
-                    value: j.id,
-                    label: j.title
+                  ...jobs.map((job) => ({
+                    value: job.id,
+                    label: job.title
                       .toLowerCase()
-                      .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase()),
+                      .replace(/(?:^|\s)\S/g, (letter) => letter.toUpperCase()),
                   })),
                 ]}
-                disabled={isLoading || jobs.length === 0}
+                disabled={isLoading || jobsState !== "ready" || jobs.length === 0}
                 placeholder={
-                  jobs.length === 0
+                  jobsState === "loading" || jobsState === "idle"
                     ? "Cargando perfiles..."
                     : "Selecciona un puesto a evaluar..."
                 }
+                aria-label="Vacante a evaluar"
               />
+              <div className="ai-chat-control-status">
+                {jobsState === "error" && (
+                  <>
+                    <p role="alert">
+                      No pudimos cargar las vacantes. Intenta nuevamente.
+                    </p>
+                    <button
+                      type="button"
+                      className="ai-chat-retry-btn"
+                      onClick={() => void loadJobs()}
+                    >
+                      Reintentar
+                    </button>
+                  </>
+                )}
+                {jobsState === "ready" && jobs.length === 0 && (
+                  <p role="status">No hay vacantes disponibles para evaluar.</p>
+                )}
+              </div>
             </div>
-          </div>
+          </header>
 
-          <div className="ai-chat-messages">
-            {messages.map((msg) => (
-              <div key={msg.id} className={`ai-chat-message ${msg.role}`}>
-                {msg.role !== "user" && (
-                  <div className="ai-chat-avatar">
-                    <Bot size={16} />
+          <section
+            className="ai-chat-messages"
+            aria-label="Conversación con el asistente"
+            role="log"
+            aria-busy={isLoading}
+            aria-relevant="additions text"
+          >
+            {messages.map((message) => (
+              <article
+                key={message.id}
+                className={`ai-chat-message ${message.role}`}
+              >
+                {message.role !== "user" && (
+                  <div className="ai-chat-avatar" aria-hidden="true">
+                    <Bot />
                   </div>
                 )}
                 <div className="ai-chat-content">
-                  {msg.role === "ai" || msg.role === "system" ? (
+                  {message.role === "ai" || message.role === "system" ? (
                     <div className="ai-chat-markdown">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        components={{
-                          table: ({ node, ...props }) => (
-                            <div className="ai-chat-table-wrapper">
-                              <table {...props} />
-                            </div>
-                          ),
-                        }}
+                        components={markdownComponents}
                       >
-                        {msg.content}
+                        {message.content}
                       </ReactMarkdown>
                     </div>
                   ) : (
-                    <div
-                      style={{
-                        whiteSpace: "pre-wrap",
-                        lineHeight: "var(--type-body-sm-line)",
-                      }}
-                    >
-                      {msg.content}
+                    <div className="ai-chat-plain-message">
+                      {message.content}
                     </div>
                   )}
                 </div>
-              </div>
+              </article>
             ))}
 
             {isLoading && (
-              <div className="ai-chat-message ai">
-                <div className="ai-chat-avatar">
-                  <Bot size={16} />
+              <div className="ai-chat-message ai" role="status">
+                <div className="ai-chat-avatar" aria-hidden="true">
+                  <Bot />
                 </div>
                 <div className="ai-chat-content">
-                  <div className="ai-typing-indicator">
-                    <div className="ai-dot"></div>
-                    <div className="ai-dot"></div>
-                    <div className="ai-dot"></div>
+                  <span className="sr-only">El asistente está analizando.</span>
+                  <div className="ai-typing-indicator" aria-hidden="true">
+                    <span className="ai-dot" />
+                    <span className="ai-dot" />
+                    <span className="ai-dot" />
                   </div>
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
-          </div>
+            <div ref={messagesEndRef} aria-hidden="true" />
+          </section>
 
-          <div className="ai-chat-upload-area">
+          <footer className="ai-chat-composer">
             {!hasCompared ? (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-                  gap: "var(--spacing-sm)",
-                  width: "100%",
-                }}
-              >
+              <fieldset className="ai-chat-upload-fieldset">
+                <legend className="sr-only">Preparar evaluación del CV</legend>
                 <input
+                  id={fileInputId}
                   type="file"
                   accept="application/pdf"
                   ref={fileInputRef}
-                  style={{ display: "none" }}
+                  className="ai-chat-file-input"
                   onChange={handleFileChange}
+                  aria-describedby={
+                    fileError
+                      ? `${fileHelpId} ${fileErrorId}`
+                      : fileHelpId
+                  }
                 />
 
-                {!file ? (
-                  <div
-                    className={`ai-upload-box ${isDragging ? "dragging" : ""}`}
-                    onClick={() => fileInputRef.current?.click()}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setIsDragging(true);
-                    }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={handleDrop}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "var(--spacing-sm)",
-                    }}
-                  >
-                    <UploadCloud size={20} color="var(--color-muted)" />
-                    <p>Subir PDF</p>
-                  </div>
-                ) : (
-                  <div
-                    className="ai-upload-box"
-                    style={{
-                      borderColor: "var(--color-primary)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "var(--spacing-md) var(--spacing-lg)",
-                      minWidth: 0,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "var(--spacing-sm)",
-                        minWidth: 0,
-                      }}
-                    >
-                      <FileText size={20} color="var(--color-primary)" />
-                      <p
-                        style={{
-                          color: "var(--color-ink)",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {file.name}
-                      </p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setFile(null);
-                      }}
-                      style={{
-                        background: "var(--color-canvas-soft)",
-                        border: "none",
-                        color: "var(--color-ink)",
-                        padding: "var(--spacing-xs)",
-                        borderRadius: "var(--rounded-xs)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                      }}
-                      title="Quitar archivo"
-                      aria-label="Quitar archivo"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                )}
+                <p id={fileHelpId} className="ai-chat-upload-help">
+                  Adjunta un PDF para compararlo con la vacante seleccionada.
+                </p>
 
-                <button
-                  className="ai-chat-submit-btn"
-                  onClick={handleAnalyze}
-                  disabled={!file || isLoading}
-                  style={{ height: "100%" }}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2
-                        size={16}
-                        className="ai-chat-spin"
-                        style={{
-                          display: "inline",
-                          marginRight: "var(--spacing-sm)",
-                        }}
-                      />
-                      Analizando...
-                    </>
+                <div className="ai-chat-upload-actions">
+                  {!file ? (
+                    <button
+                      type="button"
+                      className={`ai-upload-box${isDragging ? " is-dragging" : ""}`}
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={() => setIsDragging(false)}
+                      onDrop={handleDrop}
+                      disabled={isLoading}
+                      aria-describedby={
+                        fileError
+                          ? `${fileHelpId} ${fileErrorId}`
+                          : fileHelpId
+                      }
+                    >
+                      <UploadCloud aria-hidden="true" />
+                      <span>Subir PDF</span>
+                    </button>
                   ) : (
-                    "Comparar CV"
+                    <div className="ai-upload-file">
+                      <div className="ai-upload-file-info">
+                        <FileText aria-hidden="true" />
+                        <span>{file.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className="ai-upload-remove"
+                        onClick={removeFile}
+                        aria-label={`Quitar archivo ${file.name}`}
+                        disabled={isLoading}
+                      >
+                        <X aria-hidden="true" />
+                      </button>
+                    </div>
                   )}
-                </button>
-              </div>
+
+                  <button
+                    type="button"
+                    className="ai-chat-submit-btn"
+                    onClick={handleAnalyze}
+                    disabled={!file || isLoading}
+                    aria-busy={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2
+                          className="ai-chat-spin"
+                          aria-hidden="true"
+                        />
+                        Analizando...
+                      </>
+                    ) : (
+                      "Comparar CV"
+                    )}
+                  </button>
+                </div>
+
+                {fileError && (
+                  <p id={fileErrorId} className="ai-chat-error" role="alert">
+                    {fileError}
+                  </p>
+                )}
+              </fieldset>
             ) : (
               <form onSubmit={handleSendMessage} className="ai-chat-input-form">
+                <label htmlFor={messageInputId} className="sr-only">
+                  Pregunta sobre el candidato
+                </label>
                 <input
+                  id={messageInputId}
                   type="text"
-                  placeholder="Pregunta algo sobre este candidato..."
+                  placeholder="Pregunta sobre este candidato..."
                   value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
+                  onChange={(event) => setInputText(event.target.value)}
                   disabled={isLoading}
                   className="ai-chat-text-input"
                 />
@@ -539,16 +584,21 @@ export function AIChatBubble() {
                   type="submit"
                   disabled={!inputText.trim() || isLoading}
                   className="ai-chat-send-btn"
+                  aria-label={isLoading ? "Enviando pregunta" : "Enviar pregunta"}
+                  aria-busy={isLoading}
                 >
                   {isLoading ? (
-                    <Loader2 size={18} className="ai-chat-spin" />
+                    <Loader2
+                      className="ai-chat-spin"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <Send size={18} />
+                    <Send aria-hidden="true" />
                   )}
                 </button>
               </form>
             )}
-          </div>
+          </footer>
         </PopoverContent>
       </Popover>
     </>

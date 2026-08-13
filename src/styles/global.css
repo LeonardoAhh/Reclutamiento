@@ -196,6 +196,10 @@
   --touch-target-min: 48px;
   --control-padding-x: 20px;
   --control-padding-y: 8px;
+  --icon-size-sm: var(--spacing-lg);
+  --icon-size-md: calc(var(--spacing-lg) + var(--spacing-xs));
+  --icon-size-control: var(--type-heading-sm-size);
+  --icon-size-lg: var(--spacing-xl);
 
   /* ── Spacing — base 4px (mantenemos escala actual estable) ─── */
   --spacing-xxs: 2px;
@@ -223,6 +227,7 @@
   /* ── Transitions ─────────────────────────────────────────────── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+  --transition-spinner: 1000ms linear;
   --transition-progress: 1400ms ease-in-out;
 
   /* ── Container ───────────────────────────────────────────────── */
@@ -238,12 +243,17 @@
   --document-preview-max: 48rem;
   --recordatorios-route-table-min: 64rem;
   --system-update-content-max: 22rem;
+  --feature-chat-panel-max-inline-size: 25rem;
+  --feature-chat-panel-max-block-size: 37.5rem;
+  --feature-chat-action-min-inline-size: 10rem;
+  --feature-chat-table-column-min-inline-size: 7.5rem;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;
   --layer-system-update: 1100;
   --layer-system-update-curtain: 1200;
   --layer-tooltip: 1300;
+  --layer-floating-action: 1400;
   --tooltip-max-width: 280px;
   --skeleton-title-width: 50%;
   --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));

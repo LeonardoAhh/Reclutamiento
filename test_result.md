@@ -276,3 +276,11 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Configuración funcional y tokens visuales centralizados; actualización por Service Worker y recarga preservadas.
 - Verificación local: TypeScript PASS, lint PASS y build PASS.
 - Verificación de interfaz: pendiente.
+
+## AI Chat UI/UX Standardization
+- Estandarizado `AIChatBubble` con estructura fluida mobile-first, tokens semánticos centrales y sin estilos inline.
+- Corregida la semántica de carga de PDF, labels, navegación por teclado, regiones de estado, foco visible, reduced motion y forced colors.
+- Añadidos estados recuperables para carga de vacantes y archivo inválido sin alterar Supabase, PDF.js, Markdown ni el contrato de `compare-cv`.
+- Eliminados estado, import y selectores obsoletos; las clases del componente y del CSS tienen correspondencia completa.
+- Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
+- No se invocaron agentes ni pruebas extensas, por instrucción del usuario; verificación visual pendiente.
