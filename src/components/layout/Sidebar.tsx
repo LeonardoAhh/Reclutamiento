@@ -107,7 +107,13 @@ export function Sidebar({
         <button
           type="button"
           className="sidebar__item sidebar__collapse-btn"
-          onClick={onToggleCollapse}
+          onClick={() => {
+            if (mobileMenuOpen && onCloseMobileMenu) {
+              onCloseMobileMenu();
+            } else {
+              onToggleCollapse();
+            }
+          }}
           aria-pressed={collapsed}
           aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
           title={collapsed ? "Expandir menú" : "Colapsar menú"}

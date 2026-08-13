@@ -43,6 +43,7 @@ interface EmployeeModalProps {
     bajaData?: { fecha_baja: string; tipo_baja: string; motivo_baja: string },
   ) => Promise<{ ok: boolean; message?: string }> | void;
   openVacancies?: AutoVacancy[];
+  existingEmployees?: Employee[];
 }
 
 type FormState = Pick<
@@ -98,6 +99,7 @@ export function EmployeeModal({
   onSave,
   onDelete,
   openVacancies = [],
+  existingEmployees = [],
 }: EmployeeModalProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
@@ -232,8 +234,11 @@ export function EmployeeModal({
 
   const isValidNameStr = (str: string) => str === '' || /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(str);
 
+  const isNumDuplicate = form.num_empleado.trim() !== '' && 
+    existingEmployees.some(e => e.num_empleado === form.num_empleado.trim());
+
   const errorsAdd = {
-    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : null,
+    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : isNumDuplicate ? 'Este número ya existe.' : null,
     nombre: !form.nombre.trim() ? 'Obligatorio.' : form.nombre.trim().length < 2 ? 'Mín. 2 letras.' : !isValidNameStr(form.nombre) ? 'Solo letras.' : null,
     area: !form.area ? 'Obligatorio.' : null,
     seccion: !form.seccion ? 'Obligatorio.' : null,
@@ -243,6 +248,9 @@ export function EmployeeModal({
     turno: !form.turno ? 'Selecciona turno.' : null,
     reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
   };
+
+  const isNameDuplicate = form.nombre.trim() !== '' && 
+    existingEmployees.some(e => e.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase());
 
   const errorsDelete = {
     fecha_baja: !bajaForm.fecha_baja ? 'Obligatorio.' : null,
@@ -356,6 +364,11 @@ export function EmployeeModal({
           className={touchedAdd.nombre && errorsAdd.nombre ? 'input-error' : ''}
         />
         {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.nombre}</span>}
+        {!errorsAdd.nombre && isNameDuplicate && mode === 'add' && (
+          <span className="form-warning-text" style={{ color: 'var(--color-amber)', fontSize: 'var(--text-xs)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <AlertCircle size={12} /> Ya existe alguien con este nombre. Verifica que sea un homónimo.
+          </span>
+        )}
       </div>
     </>
   );
@@ -703,6 +716,7 @@ export function EmployeeModal({
                 successText="¡Guardado!"
                 idleIcon={SaveIconData}
                 className="btn-primary"
+                disabled={!isAddValid}
               />
             </span>
           </Tooltip>
@@ -717,6 +731,7 @@ export function EmployeeModal({
             successText="¡Guardado!"
             idleIcon={SaveIconData}
             className="btn-primary"
+            disabled={!isAddValid}
           />
         )
       ) : (
@@ -730,6 +745,7 @@ export function EmployeeModal({
           successText="¡Baja registrada!"
           idleIcon={Trash2IconData}
           className="btn-danger"
+          disabled={!isDeleteValid}
         />
       )}
     </>

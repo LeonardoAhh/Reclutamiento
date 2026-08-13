@@ -716,6 +716,7 @@ export function Dashboard() {
           onSave={handleSaveEmployee}
           onDelete={handleDeleteEmployee}
           openVacancies={openVacancies}
+          existingEmployees={employees}
         />
 
         {/* ── Edit Employee Modal ── */}

@@ -56,13 +56,13 @@ export function RemindersPanel() {
         {reminders.length > 0 ? (
           <>
             <BellRing size={20} strokeWidth={2} />
-            <span className="type-body-sm font-medium">Pendientes</span>
+            <span className="type-body-sm font-medium reminders-bell-text">Pendientes</span>
             <span className="reminders-badge">{reminders.length > 99 ? '99+' : reminders.length}</span>
           </>
         ) : (
           <>
             <Bell size={20} strokeWidth={2} />
-            <span className="type-body-sm font-medium">Pendientes</span>
+            <span className="type-body-sm font-medium reminders-bell-text">Pendientes</span>
           </>
         )}
       </button>
