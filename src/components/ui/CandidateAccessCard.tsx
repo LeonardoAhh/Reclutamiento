@@ -8,6 +8,7 @@ import {
   getCandidateAccessCardFilename,
   type CandidateAccessCardData,
 } from "@/lib/candidateAccessCard";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import "./CandidateAccessCard.css";
 
 interface CandidateAccessCardProps {
@@ -51,6 +52,7 @@ export function CandidateAccessCard({
   const [isGenerating, setIsGenerating] = useState(true);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [copied, setCopied] = useState(false);
+  const isMobile = useIsMobile();
 
   const filename = useMemo(
     () => getCandidateAccessCardFilename(data.candidateName),
@@ -179,16 +181,18 @@ export function CandidateAccessCard({
         </p>
       </div>
 
-      <div className="candidate-access-card__preview" aria-busy={isGenerating}>
-        {previewUrl ? (
-          <img src={previewUrl} alt={previewAlt} />
-        ) : (
-          <div className="candidate-access-card__placeholder" role="status">
-            {isGenerating && <div className="candidate-access-card__skeleton" aria-hidden="true" />}
-            <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
-          </div>
-        )}
-      </div>
+      {!isMobile && (
+        <div className="candidate-access-card__preview" aria-busy={isGenerating}>
+          {previewUrl ? (
+            <img src={previewUrl} alt={previewAlt} />
+          ) : (
+            <div className="candidate-access-card__placeholder" role="status">
+              {isGenerating && <div className="candidate-access-card__skeleton" aria-hidden="true" />}
+              <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {feedback && (
         <p
@@ -200,7 +204,7 @@ export function CandidateAccessCard({
         </p>
       )}
 
-      <footer className="modal-footer" aria-label="Acciones de la tarjeta">
+      <footer className="modal-footer" style={{ justifyContent: 'center' }} aria-label="Acciones de la tarjeta">
         <button
           type="button"
           className="btn-secondary"

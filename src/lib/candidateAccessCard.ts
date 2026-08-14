@@ -195,12 +195,12 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   context.fillStyle = surface;
   context.fillRect(0, 0, width, height);
 
-  // Header (Solid black block - design.md Rule 3: primary accent)
-  context.fillStyle = primary;
+  // Header (Solid ink block - Inverts with theme: black in light, white in dark)
+  context.fillStyle = ink;
   context.fillRect(0, 0, width, headerHeight);
 
   // Header Typography
-  context.fillStyle = onPrimary;
+  context.fillStyle = surface;
   setFont(context, 600, CARD_LAYOUT.subtitleSize, fontFamily, '1px');
   context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle, padding, 80);
   setFont(context, 700, CARD_LAYOUT.titleSize, fontFamily, '-2.5px');
@@ -211,7 +211,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
   const badgeHeight = 56;
   const badgeX = width - padding - badgeWidth;
   const badgeY = 60;
-  context.strokeStyle = onPrimary;
+  context.strokeStyle = surface;
   context.lineWidth = CARD_LAYOUT.hairlineWidth;
   roundedRect(context, badgeX, badgeY, badgeWidth, badgeHeight, 9999);
   context.stroke();

@@ -2,12 +2,10 @@
 .candidate-access-card {
   display: flex;
   min-width: 0;
-  flex: 1;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  overflow-y: auto;
-  padding: var(--spacing-lg);
-  padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  padding-bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
 }
 
 .candidate-access-card__intro {
@@ -37,27 +35,31 @@
   line-height: var(--type-body-sm-line);
 }
 
-/* Rediseño de Vista Previa: usando canvas-soft y level 1 shadow para el documento */
+/* Rediseño de Vista Previa: imagen directa con sombreado y borde redondeado */
 .candidate-access-card__preview {
-  display: grid;
+  display: flex;
   width: 100%;
-  max-width: var(--candidate-access-preview-max-mobile);
-  aspect-ratio: 4 / 5;
+  max-width: 200px;
   align-self: center;
-  overflow: hidden;
-  place-items: center;
-  background: var(--color-canvas-soft);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-elevated); /* Level 1 emulation */
+  justify-content: center;
+  align-items: center;
   position: relative;
+}
+
+@media (max-width: 640px) {
+  .candidate-access-card__preview {
+    display: none;
+  }
 }
 
 .candidate-access-card__preview img {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--color-hairline);
   animation: fade-in var(--transition-slow) ease-out;
 }
 

@@ -253,6 +253,7 @@
   --layer-splash: 1000;
   --layer-tooltip: 1300;
   --layer-floating-action: 1400;
+  --layer-modal: 1450;
   --layer-system-update: 1500;
   --layer-system-update-curtain: 1600;
   --tooltip-max-width: 280px;

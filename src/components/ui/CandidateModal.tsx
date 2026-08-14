@@ -757,7 +757,8 @@ const fieldsPosicion = (
       isOpen={isOpen}
       onClose={onClose}
       className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
-      fullscreenMobile={!isDelete}
+      size={accessCard ? 'xs' : isDelete ? 'sm' : 'md'}
+      fullscreenMobile={false}
       icon={icon}
       title={title}
       subtitle={subtitle}
@@ -765,7 +766,6 @@ const fieldsPosicion = (
       {accessCard ? (
         <CandidateAccessCard
           data={accessCard.data}
-          heading="Candidato registrado"
         />
       ) : useWizard ? (
         /* ── Móvil: registro por pasos ── */

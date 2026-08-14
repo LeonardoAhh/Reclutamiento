@@ -15,7 +15,7 @@ interface ModalProps {
   labelledById?: string;
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
-  size?: "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Si es true, el modal será fullscreen en móvil. Por defecto true, excepto para confirmaciones pequeñas. */
   fullscreenMobile?: boolean;
 }

@@ -8,7 +8,7 @@
   justify-content: center;
   background: var(--color-modal-scrim);
   padding: var(--spacing-lg);
-  z-index: var(--layer-maintenance);
+  z-index: var(--layer-modal);
 }
 
 .top-recruiter-modal {
