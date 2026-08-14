@@ -19,6 +19,7 @@ serve(async (req) => {
       resume_text,
       resume_base64,
       messages = [],
+      task = "follow_up",
     } = body;
 
     if (!catalog) {
@@ -28,7 +29,11 @@ serve(async (req) => {
       });
     }
 
-    if (!resume_text && !resume_base64) {
+    if (
+      task === "initial_analysis" &&
+      !resume_text &&
+      !resume_base64
+    ) {
       return new Response(JSON.stringify({ error: "Either resume_text or resume_base64 is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -156,7 +161,7 @@ Recibirás un "Catálogo de Puestos".
           systemInstruction: { parts: [{ text: systemPrompt }] },
           contents: geminiContents
         };
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -211,7 +216,7 @@ Recibirás un "Catálogo de Puestos".
         const groqApiKey = Deno.env.get("GROQ_API_KEY");
         if (groqApiKey) {
           const payload = {
-            model: "llama3-70b-8192",
+            model: "openai/gpt-oss-120b",
             messages: openAIMessages
           };
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -242,7 +247,7 @@ Recibirás un "Catálogo de Puestos".
         const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
         if (openRouterApiKey) {
           const payload = {
-            model: "meta-llama/llama-3.1-70b-instruct:free",
+            model: "openrouter/free",
             messages: openAIMessages
           };
           const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
