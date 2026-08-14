@@ -765,7 +765,6 @@ const fieldsPosicion = (
       {accessCard ? (
         <CandidateAccessCard
           data={accessCard.data}
-          phone={accessCard.phone}
           heading="Candidato registrado"
         />
       ) : useWizard ? (

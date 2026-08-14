@@ -472,14 +472,6 @@
     "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
-    "numero_empleado": "2666",
-    "nombre": "LIRA REYNOSO JOSHUA SHADDAY",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero_empleado": "2672",
     "nombre": "SOLIS OSORIO MIREYA",
     "turno": "2",
@@ -2334,5 +2326,21 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero_empleado": "4318",
+    "nombre": "SANTOS RAMIREZ HUSSAIT DEMETRIO",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "N/A",
+    "parada": "N/A"
+  },
+  {
+    "numero_empleado": "4319",
+    "nombre": "ARIAS MARTINEZ ERIDIA NAYELLY",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA EN EL OXXO DE JUNCOS"
   }
 ]

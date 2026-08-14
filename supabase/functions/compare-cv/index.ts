@@ -161,7 +161,7 @@ Recibirás un "Catálogo de Puestos".
           systemInstruction: { parts: [{ text: systemPrompt }] },
           contents: geminiContents
         };
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -216,7 +216,7 @@ Recibirás un "Catálogo de Puestos".
         const groqApiKey = Deno.env.get("GROQ_API_KEY");
         if (groqApiKey) {
           const payload = {
-            model: "openai/gpt-oss-120b",
+            model: "llama-3.1-70b-versatile",
             messages: openAIMessages
           };
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -247,7 +247,7 @@ Recibirás un "Catálogo de Puestos".
         const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
         if (openRouterApiKey) {
           const payload = {
-            model: "openrouter/free",
+            model: "openrouter/auto",
             messages: openAIMessages
           };
           const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {

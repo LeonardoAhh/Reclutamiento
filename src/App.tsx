@@ -6,7 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { PWAStatus } from '@/components/ui/PWAStatus';
-import { SystemUpdateBanner } from '@/components/ui/SystemUpdateBanner';
+import { SystemUpdateNotification } from '@/components/ui/SystemUpdateNotification';
+
 import { AppToaster } from '@/components/ui/AppToaster';
 import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
@@ -68,7 +69,7 @@ function App() {
       {splashDone && (
         <>
           <PWAStatus />
-          <SystemUpdateBanner />
+          <SystemUpdateNotification />
           <AppToaster />
           <ThemeTransitionOverlay />
           <Routes>

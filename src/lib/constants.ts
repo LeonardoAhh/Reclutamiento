@@ -763,8 +763,9 @@ export function getRecruiterAccessCardName(
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
   reloadDelayMs: 800,
-  availableTitle: "Actualización disponible",
-  availableHint: "Instala la versión más reciente para recibir mejoras y correcciones.",
+  availableTitle: "Actualización aplicada",
+  availableHint:
+    "Instala la versión más reciente para recibir mejoras y correcciones.",
   actionLabel: "Actualizar ahora",
   requiredActionLabel: "Actualizar y continuar",
   preparingLabel: "Preparando actualización",

@@ -993,7 +993,6 @@ export function Pipeline() {
             {accessCardData && (
               <CandidateAccessCard
                 data={accessCardData}
-                phone={accessCardTarget?.telefono ?? ''}
               />
             )}
           </Modal>

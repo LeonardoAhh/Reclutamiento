@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -12,7 +12,6 @@ import "./CandidateAccessCard.css";
 
 interface CandidateAccessCardProps {
   data: CandidateAccessCardData;
-  phone: string;
   heading?: string;
 }
 
@@ -45,7 +44,6 @@ function isAbortError(error: unknown): boolean {
 
 export function CandidateAccessCard({
   data,
-  phone,
   heading = "Pase listo para compartir",
 }: CandidateAccessCardProps) {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
@@ -156,42 +154,6 @@ export function CandidateAccessCard({
     }
   };
 
-  const handleWhatsApp = async () => {
-    const file = getFile();
-    if (!file || !imageBlob) return;
-
-    try {
-
-      let imageReady = false;
-      try {
-        await copyImage(imageBlob);
-        imageReady = true;
-      } catch {
-        downloadImage(imageBlob, filename);
-      }
-
-      const digits = phone.replace(/\D/g, "");
-      const recipient = `${CANDIDATE_ACCESS_CARD_CONFIG.whatsappCountryCode}${digits}`;
-      const message = imageReady
-        ? CANDIDATE_ACCESS_CARD_CONFIG.whatsappPasteMessage
-        : CANDIDATE_ACCESS_CARD_CONFIG.whatsappAttachMessage;
-      const whatsappUrl = `${CANDIDATE_ACCESS_CARD_CONFIG.whatsappBaseUrl}/${recipient}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-      setFeedback({
-        tone: "info",
-        message: imageReady
-          ? "La imagen está copiada. Pégala en el chat que se abrió."
-          : "La imagen se descargó. Adjunta el archivo en el chat que se abrió.",
-      });
-    } catch (error: unknown) {
-      if (!isAbortError(error)) {
-        setFeedback({
-          tone: "error",
-          message: "No fue posible preparar el envío por WhatsApp.",
-        });
-      }
-    }
-  };
 
   const previewAlt = [
     `Pase de entrevista para ${data.candidateName}`,
@@ -256,16 +218,6 @@ export function CandidateAccessCard({
         >
           <Share2 size={18} aria-hidden="true" />
           Compartir
-        </button>
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={handleWhatsApp}
-          disabled={!imageBlob}
-          style={{ backgroundColor: '#25D366', borderColor: '#25D366', color: '#fff' }}
-        >
-          <MessageCircle size={18} aria-hidden="true" />
-          WhatsApp
         </button>
       </footer>
     </section>
