@@ -162,13 +162,19 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "CALIDAD",
     seccion: "METROLOGÍA",
     puesto: "METRÓLOGO",
-    plantilla_autorizada: 13,
+    plantilla_autorizada: 15,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "METROLOGÍA",
+    puesto: "JEFE DE METROLOGÍA",
+    plantilla_autorizada: 1,
   },
   {
     area: "CALIDAD",
     seccion: "METROLOGÍA",
     puesto: "AUXILIAR DE METROLOGÍA",
-    plantilla_autorizada: 4,
+    plantilla_autorizada: 1,
   },
 
   // ── GERENCIA ──
