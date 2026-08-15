@@ -1,12 +1,11 @@
 .app-toaster {
   position: fixed;
-  top: auto;
-  bottom: calc(max(var(--spacing-lg), env(safe-area-inset-bottom)) + var(--touch-target-min) + var(--spacing-xxxxl));
+  top: max(var(--spacing-xl), env(safe-area-inset-top, 24px));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 99999;
+  z-index: var(--layer-modal, 1450);
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: var(--spacing-sm);
   pointer-events: none;
   list-style: none;
@@ -16,72 +15,63 @@
   max-width: calc(100vw - var(--spacing-lg) * 2);
 }
 
-@media (min-width: 768px) {
-  .app-toaster {
-    top: auto;
-    bottom: calc(var(--spacing-xl) + var(--touch-target-min) + var(--spacing-xxxxl));
-    left: auto;
-    right: var(--spacing-xl);
-    transform: none;
-    align-items: flex-end;
-    /* Al alinear al final, las notificaciones crecen hacia arriba. */
-    flex-direction: column-reverse; 
-  }
-}
-
 .app-toaster__item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-lg); /* Removed pill shape, aligned to cards */
-  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-elevated);
   pointer-events: auto;
-  min-width: 280px;
-  background-color: var(--color-ink);
-  color: var(--color-canvas);
-  border: 1px solid var(--color-border);
+  min-width: 320px;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
 }
 
 .app-toaster__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 2px;
 }
 
 .app-toaster__title {
   font-family: var(--font-body);
-  font-weight: var(--font-semibold);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-weight: 600;
+  font-size: var(--type-body-sm-strong-size, 15px);
+  line-height: var(--type-body-sm-strong-line, 1.4);
+  color: var(--color-ink);
 }
 
 .app-toaster__hint {
   font-family: var(--font-body);
-  font-weight: var(--font-regular);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-line);
-  opacity: 0.8;
+  font-weight: 400;
+  font-size: var(--type-caption-sm-size, 14px);
+  line-height: var(--type-caption-sm-line, 1.43);
+  color: var(--color-ink-muted);
 }
 
 .app-toaster__icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px; /* optical alignment with title text */
 }
 
-/* We use CSS variables to map semantic colors for both light/dark */
-[data-theme='light'] .app-toaster__item--success .app-toaster__icon { color: #4ade80; } /* green-400 */
-[data-theme='light'] .app-toaster__item--error .app-toaster__icon { color: #f87171; } /* red-400 */
-[data-theme='light'] .app-toaster__item--warning .app-toaster__icon { color: #fbbf24; } /* amber-400 */
-[data-theme='light'] .app-toaster__item--info .app-toaster__icon { color: #60a5fa; } /* blue-400 */
-[data-theme='light'] .app-toaster__item--loading .app-toaster__icon { color: #94a3b8; } /* slate-400 */
+/* Icon colors based on AGENTS.md / design.md semantics */
+[data-theme='light'] .app-toaster__item--success .app-toaster__icon { color: var(--color-success, #16a34a); }
+[data-theme='light'] .app-toaster__item--error .app-toaster__icon { color: var(--color-error, #dc2626); }
+[data-theme='light'] .app-toaster__item--warning .app-toaster__icon { color: var(--color-warning, #d97706); }
+[data-theme='light'] .app-toaster__item--info .app-toaster__icon { color: var(--color-ink); }
+[data-theme='light'] .app-toaster__item--loading .app-toaster__icon { color: var(--color-ink-muted); }
 
-[data-theme='dark'] .app-toaster__item--success .app-toaster__icon { color: #15803d; } /* green-700 */
-[data-theme='dark'] .app-toaster__item--error .app-toaster__icon { color: #b91c1c; } /* red-700 */
-[data-theme='dark'] .app-toaster__item--warning .app-toaster__icon { color: #b45309; } /* amber-700 */
-[data-theme='dark'] .app-toaster__item--info .app-toaster__icon { color: #1d4ed8; } /* blue-700 */
-[data-theme='dark'] .app-toaster__item--loading .app-toaster__icon { color: #475569; } /* slate-600 */
+[data-theme='dark'] .app-toaster__item--success .app-toaster__icon { color: #22c55e; }
+[data-theme='dark'] .app-toaster__item--error .app-toaster__icon { color: #ef4444; }
+[data-theme='dark'] .app-toaster__item--warning .app-toaster__icon { color: #f59e0b; }
+[data-theme='dark'] .app-toaster__item--info .app-toaster__icon { color: var(--color-ink); }
+[data-theme='dark'] .app-toaster__item--loading .app-toaster__icon { color: var(--color-ink-muted); }
 
 /* Loading spin animation */
 .app-toaster__icon--spin {

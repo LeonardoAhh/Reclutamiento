@@ -15,7 +15,7 @@ import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocument
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { sileo } from "@/lib/notify";
+import { toast } from "@/lib/notify";
 import "./FormatosView.css";
 
 interface AvailableWeek {
@@ -162,13 +162,13 @@ export function FormatosView() {
         await navigator.clipboard.write([
           new ClipboardItem({ [blob.type]: blob }),
         ]);
-        sileo.success({ title: "Imagen copiada al portapapeles" });
+        toast.success({ title: "Imagen copiada al portapapeles" });
       } else {
         throw new Error("No se pudo generar el Blob de la imagen");
       }
     } catch (err) {
       console.error("Error generating or copying image:", err);
-      sileo.error({ title: "Error al copiar la imagen" });
+      toast.error({ title: "Error al copiar la imagen" });
     } finally {
       tableRef.current?.classList.remove("is-exporting");
       setIsGeneratingImage(false);

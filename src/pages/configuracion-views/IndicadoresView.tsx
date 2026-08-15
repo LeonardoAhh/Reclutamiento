@@ -7,7 +7,7 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { ChevronLeft, ChevronRight, Database, Loader2 } from 'lucide-react';
 import { useIndicadoresStats, getRecruiterTone } from '@/hooks/useIndicadoresStats';
 import { supabase } from '@/lib/supabase';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 
 export function IndicadoresView() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);

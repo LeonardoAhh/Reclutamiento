@@ -11,7 +11,7 @@ import {
 import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
 import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
 import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 import {
   signInWithUsername as signInLib,
   signOut as signOutLib,
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!expiredNotifiedRef.current) {
       expiredNotifiedRef.current = true;
-      sileo.error({
+      toast.error({
         title: 'Sesión expirada. Vuelve a iniciar sesión.',
       });
     }

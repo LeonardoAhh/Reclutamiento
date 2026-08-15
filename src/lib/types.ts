@@ -620,3 +620,39 @@ export interface SpeechTemplate {
   updated_at?: string;
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+ * Actividades y Pruebas (Coordinadores a Reclutadores)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+export const ACTIVITY_STATUSES = ['pendiente', 'en_proceso', 'completada'] as const;
+export type ActivityStatus = (typeof ACTIVITY_STATUSES)[number];
+
+export const ACTIVITY_STATUS_LABEL: Record<ActivityStatus, string> = {
+  pendiente: 'Pendiente',
+  en_proceso: 'En proceso',
+  completada: 'Completada',
+};
+
+export interface Activity {
+  id?: string;
+  titulo: string;
+  descripcion?: string | null;
+  asignado_a?: string | null;
+  creado_por?: string | null;
+  estado: ActivityStatus;
+  tipo?: 'unica' | 'rutinaria';
+  reference_image?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ActivityProof {
+  id?: string;
+  activity_id: string;
+  file_url: string;
+  file_name: string;
+  uploaded_by?: string | null;
+  created_at?: string;
+}
+
+

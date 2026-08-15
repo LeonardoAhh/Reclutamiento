@@ -45,6 +45,17 @@ export function RemindersPanel() {
     return updateCandidate(id, payload);
   };
 
+  const nowStr = useMemo(() => {
+    return new Intl.DateTimeFormat('es-MX', {
+      timeZone: 'America/Mexico_City',
+      day: 'numeric',
+      month: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(new Date());
+  }, [isOpen]);
+
   return (
     <>
       <button 
@@ -91,6 +102,7 @@ export function RemindersPanel() {
               >
                 <div className="reminders-header">
                   <h2 id="reminders-title">Pendientes</h2>
+                  <span className="text-muted type-caption-sm" style={{ fontSize: '11px', textTransform: 'capitalize' }}>{nowStr}</span>
                 </div>
 
                 <div className="reminders-content">

@@ -31,7 +31,7 @@ import {
   X as XData,
 } from "lucide";
 import { supabase } from "@/lib/supabase";
-import { sileo } from "@/lib/notify";
+import { toast } from "@/lib/notify";
 import {
   buildEvaluationShareText,
   copyEvaluationText,
@@ -437,10 +437,10 @@ export function AIChatBubble() {
       const text = buildEvaluationShareText(getEvaluationExportInput());
       await copyEvaluationText(text);
       setHasCopiedEvaluation(true);
-      sileo.success({ title: "Evaluación copiada" });
+      toast.success({ title: "Evaluación copiada" });
     } catch (error) {
       console.error("Error copying evaluation:", error);
-      sileo.error({ title: "No se pudo copiar la evaluación" });
+      toast.error({ title: "No se pudo copiar la evaluación" });
     }
   };
 

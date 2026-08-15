@@ -11,7 +11,7 @@ import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { notifyResult, sileo } from '@/lib/notify';
+import { notifyResult, toast } from '@/lib/notify';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
@@ -448,7 +448,7 @@ export function Pipeline() {
     if (input.mode === 'create') {
       const empResult = await addSingleEmployee(input.employee);
       if (!empResult.ok) {
-        sileo.error({ title: 'No se pudo contratar' });
+        toast.error({ title: 'No se pudo contratar' });
         return empResult;
       }
     }
@@ -465,7 +465,7 @@ export function Pipeline() {
         (input.mode === 'create'
           ? 'Empleado creado, pero no se pudo actualizar el candidato.'
           : 'No se pudo vincular al candidato.');
-      sileo.warning({ title: input.mode === 'create' ? 'Contratación incompleta' : 'Vinculación fallida' });
+      toast.warning({ title: input.mode === 'create' ? 'Contratación incompleta' : 'Vinculación fallida' });
       return { ok: false, message };
     }
 
@@ -474,7 +474,7 @@ export function Pipeline() {
       source: `candidato:${input.candidateId}`,
     });
 
-    sileo.success({
+    toast.success({
       title: input.mode === 'create' ? 'Candidato contratado' : 'Candidato vinculado',
     });
     return { ok: true };

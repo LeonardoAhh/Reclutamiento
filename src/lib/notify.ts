@@ -2,7 +2,7 @@ export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading' | '
 
 export interface ToastOptions {
   title: string;
-  hint?: string;
+  description?: string;
   duration?: number;
   id?: string | number;
 }
@@ -67,8 +67,8 @@ class ToastStore {
 
 export const toastStore = new ToastStore();
 
-// Retrocompatibilidad con la API de Sileo
-export const sileo = {
+// Retrocompatibilidad con la API de toast
+export const toast = {
   success: (opts: ToastOptions) => toastStore.add('success', opts),
   error: (opts: ToastOptions) => toastStore.add('error', opts),
   info: (opts: ToastOptions) => toastStore.add('info', opts),
@@ -100,7 +100,7 @@ export const sileo = {
 };
 
 if (typeof window !== 'undefined') {
-  (window as unknown as { sileo: typeof sileo }).sileo = sileo;
+  (window as unknown as { toast: typeof toast }).toast = toast;
 }
 
 export type ActionResult = { ok: boolean; message?: string };
@@ -116,9 +116,9 @@ export async function notifyResult<T extends ActionResult>(
 ): Promise<T> {
   const res = await (typeof action === 'function' ? action() : action);
   if (res.ok) {
-    sileo.success({ title: messages.success });
+    toast.success({ title: messages.success });
   } else {
-    sileo.error({ title: messages.error ?? 'No se pudo realizar la acción' });
+    toast.error({ title: messages.error ?? 'No se pudo realizar la acción' });
   }
   return res;
 }

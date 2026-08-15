@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Activity, CheckCircle2, ShieldAlert } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
-import { sileo } from "@/lib/notify";
+import { toast } from "@/lib/notify";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ActiveSessions } from "./components/ActiveSessions";
@@ -32,12 +32,12 @@ export function SistemaView() {
     setSaving(false);
 
     if (!result.ok) {
-      sileo.error({ title: result.message });
+      toast.error({ title: result.message });
       return;
     }
 
     setShowConfirmation(false);
-    sileo.success({
+    toast.success({
       title: nextValue ? "Mantenimiento activado" : "Mantenimiento desactivado",
     });
   };

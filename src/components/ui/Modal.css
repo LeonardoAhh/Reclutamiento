@@ -174,3 +174,19 @@
     height: auto;
   }
 }
+
+/* ── Alert variants ──────────────────────────────────────────────────── */
+.modal-alert .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.modal-alert .modal-footer {
+  border-top: none;
+  padding-top: var(--spacing-sm);
+}
+
+.modal-alert .modal-title__text h2 {
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+}

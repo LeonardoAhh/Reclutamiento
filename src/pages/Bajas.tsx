@@ -24,7 +24,7 @@ import {
 import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
 import { formatMonthLabel, formatShortDate, currentYearMx } from '@/lib/dates';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 import './Bajas.css';
 
 const currentYear = currentYearMx();
@@ -128,11 +128,11 @@ export function Bajas() {
             onImport={async (raw) => {
               const res = await importBajas(raw);
               if (res.ok) {
-                sileo.success({
+                toast.success({
                   title: 'Bajas registradas',
                 });
               } else {
-                sileo.error({
+                toast.error({
                   title: 'Error al procesar archivo',
                 });
               }
@@ -409,14 +409,14 @@ export function Bajas() {
         onClose={() => setCubrirTarget(null)}
         onSave={async (n, f, note) => {
           const res = await marcarCubierta(n, f, note);
-          if (res.ok) sileo.success({ title: 'Vacante cubierta' });
-          else sileo.error({ title: 'No se pudo marcar como cubierta' });
+          if (res.ok) toast.success({ title: 'Vacante cubierta' });
+          else toast.error({ title: 'No se pudo marcar como cubierta' });
           return res;
         }}
         onClear={async (n) => {
           const res = await desmarcarCubierta(n);
-          if (res.ok) sileo.info({ title: 'Cobertura removida' });
-          else sileo.error({ title: 'No se pudo remover la cobertura' });
+          if (res.ok) toast.info({ title: 'Cobertura removida' });
+          else toast.error({ title: 'No se pudo remover la cobertura' });
           return res;
         }}
       />

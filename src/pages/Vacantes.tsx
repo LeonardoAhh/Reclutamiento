@@ -40,7 +40,7 @@ import {
   toTitleCase,
 } from "@/lib/utils";
 import { computeAutoVacancies, type AutoVacancy } from "@/lib/autoVacancies";
-import { notifyResult, sileo } from "@/lib/notify";
+import { notifyResult, toast } from "@/lib/notify";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SkeletonTable } from "@/components/ui/PageSkeletons";
 import { VacancyStatusBadge } from "@/components/ui/VacancyStatusBadge";
@@ -251,15 +251,15 @@ export function Vacantes() {
     try {
       if (toggleTarget.coberturaTipo === "manual") {
         const res = await desmarcarCubierta(toggleTarget.baja.num_empleado);
-        if (res.ok) sileo.info({ title: "Vacante reabierta" });
-        else sileo.error({ title: "No se pudo reabrir la vacante" });
+        if (res.ok) toast.info({ title: "Vacante reabierta" });
+        else toast.error({ title: "No se pudo reabrir la vacante" });
       } else {
         const res = await marcarCubierta(
           toggleTarget.baja.num_empleado,
           localTodayIso(),
         );
-        if (res.ok) sileo.success({ title: "Vacante cubierta" });
-        else sileo.error({ title: "No se pudo marcar la vacante" });
+        if (res.ok) toast.success({ title: "Vacante cubierta" });
+        else toast.error({ title: "No se pudo marcar la vacante" });
       }
     } finally {
       setIsToggling(false);

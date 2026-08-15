@@ -11,7 +11,7 @@ import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { Tooltip } from './Tooltip';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -461,13 +461,13 @@ export function CandidateModal({
                   if (extracted) {
                     setForm(newForm);
                     setTouched({ ...touched, telefono: true, email: true, nombre: true });
-                    sileo.success({ title: 'Datos extraídos del portapapeles' });
+                    toast.success({ title: 'Datos extraídos del portapapeles' });
                   } else {
-                    sileo.info({ title: 'No se encontraron datos reconocibles' });
+                    toast.info({ title: 'No se encontraron datos reconocibles' });
                   }
                 } catch (error) {
                   console.error(error);
-                  sileo.error({ title: 'No se pudo acceder al portapapeles' });
+                  toast.error({ title: 'No se pudo acceder al portapapeles' });
                 }
               }}
               title="Autocompletar formulario copiando texto de CV o WhatsApp"

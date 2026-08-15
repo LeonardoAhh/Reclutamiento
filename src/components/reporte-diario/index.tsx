@@ -4,7 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SkeletonTable } from "@/components/ui/PageSkeletons";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { sileo } from "@/lib/notify";
+import { toast } from "@/lib/notify";
 import { format, getISOWeek } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
@@ -526,7 +526,7 @@ export default function ReporteDiarioContent() {
     async (file: File) => {
       if (processStep) return;
       if (file.type !== "application/json" && !file.name.endsWith(".json")) {
-        sileo.error({ title: "Formato de archivo inválido" });
+        toast.error({ title: "Formato de archivo inválido" });
         return;
       }
 
@@ -544,7 +544,7 @@ export default function ReporteDiarioContent() {
         if (errs.length > 0) {
           setProcessStep(null);
           setErrors(errs);
-          sileo.error({ title: "Inconsistencias en el archivo" });
+          toast.error({ title: "Inconsistencias en el archivo" });
           return;
         }
 
@@ -559,7 +559,7 @@ export default function ReporteDiarioContent() {
         setProcessStep(null);
         const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`;
         setErrors([msg]);
-        sileo.error({ title: "Archivo corrupto" });
+        toast.error({ title: "Archivo corrupto" });
       }
     },
     [processStep],
@@ -589,7 +589,7 @@ export default function ReporteDiarioContent() {
       // panel is always visible; no collapse
       loadSuccessTimerRef.current = null;
     }, LOAD_SUCCESS_DURATION_MS);
-    sileo.success({ title: "Reporte cargado" });
+    toast.success({ title: "Reporte cargado" });
   }, [loadSuccess, previewData]);
 
   const cancelLoad = useCallback(() => {
@@ -656,7 +656,7 @@ export default function ReporteDiarioContent() {
     } catch {
       // La limpieza visual no depende de que sessionStorage esté disponible.
     }
-    sileo.info({ title: "Vista de datos limpiada" });
+    toast.info({ title: "Vista de datos limpiada" });
   }, []);
 
   const computeKpis = useCallback(

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { supabase } from "@/lib/supabase"
-import { sileo } from "@/lib/notify"
+import { toast } from "@/lib/notify"
 import { formatSupabaseError as describeSupabaseError } from "@/lib/errors"
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ export function useReporteDiario() {
         } catch (err) {
             const msg = describeSupabaseError(err)
             setError(msg)
-            sileo.error({ title: 'No se pudo guardar el reporte' })
+            toast.error({ title: 'No se pudo guardar el reporte' })
             return { success: false, error: msg }
         } finally {
             setSaving(false)
@@ -154,7 +154,7 @@ export function useReporteDiario() {
                 .delete()
                 .eq("id", id)
             if (error) throw error
-            sileo.success({ title: "Reporte eliminado" })
+            toast.success({ title: "Reporte eliminado" })
             return { success: true }
         } catch (err) {
             const msg = describeSupabaseError(err)

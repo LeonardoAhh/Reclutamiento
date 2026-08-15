@@ -18,6 +18,8 @@ interface ModalProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Si es true, el modal será fullscreen en móvil. Por defecto true, excepto para confirmaciones pequeñas. */
   fullscreenMobile?: boolean;
+  /** Oculta el botón X de cerrar en el encabezado */
+  hideCloseButton?: boolean;
 }
 
 /**
@@ -39,6 +41,7 @@ export function Modal({
   footerActions,
   size = "md",
   fullscreenMobile = true,
+  hideCloseButton = false,
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -132,14 +135,16 @@ export function Modal({
               <h2 id={labelledById}>{title}</h2>
             </div>
           </div>
-          <button
-            type="button"
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Cerrar"
-          >
-            <X size={18} aria-hidden="true" />
-          </button>
+          {!hideCloseButton && (
+            <button
+              type="button"
+              className="modal-close"
+              onClick={onClose}
+              aria-label="Cerrar"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          )}
         </header>
         {children}
         {footerActions && (

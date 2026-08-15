@@ -5,7 +5,7 @@ import { FormWizard } from './FormWizard';
 import { CustomSelect, type Option } from './CustomSelect';
 import { usePositions } from '@/lib/positions';
 import { useAuth } from '@/hooks/useAuth';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 import './PositionSettingsWizard.css';
 
 interface Props {
@@ -150,7 +150,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     });
     setSubmitting(false);
     if (res.ok) {
-      sileo.success({
+      toast.success({
         title: 'Configuración guardada',
       });
       resetAll();

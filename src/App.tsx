@@ -23,6 +23,7 @@ import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Configuracion } from '@/pages/Configuracion';
+import { Actividades } from '@/pages/Actividades';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { AIChatBubble } from '@/components/chat/AIChatBubble';
@@ -92,6 +93,7 @@ function App() {
             <Route path="/asistencia" element={<Navigate to="/configuracion" replace />} />
             <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
             <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
+            <Route path="/actividades" element={<ProtectedShell><Actividades /></ProtectedShell>} />
             <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />
             <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
             <Route path="/features" element={<Navigate to="/configuracion" replace />} />

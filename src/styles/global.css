@@ -884,8 +884,6 @@ code:not(pre code) {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  height: var(--control-height);
-  padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-xs);
   font-family: var(--font-body);
@@ -898,9 +896,16 @@ code:not(pre code) {
   appearance: none;
 }
 
+.form-group input,
+.form-group select {
+  height: var(--control-height);
+  padding: 0 var(--spacing-sm);
+}
+
 .form-group textarea {
   height: auto;
   min-height: 88px;
+  padding: var(--control-padding-y) var(--spacing-sm);
   resize: vertical;
   border-radius: var(--rounded-xs);
 }
@@ -1228,6 +1233,14 @@ code:not(pre code) {
   position: relative;
 }
 
+.modal-content--xs {
+  max-width: 400px;
+}
+
+.modal-content--sm {
+  max-width: 480px;
+}
+
 .modal-content--lg {
   max-width: 760px;
 }
@@ -1480,6 +1493,28 @@ code:not(pre code) {
   .modal-overlay {
     animation: none;
   }
+}
+
+/* ── Alert variants ──────────────────────────────────────────────────── */
+.modal-alert .modal-header {
+  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
+}
+
+.modal-alert .modal-body {
+  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg);
+}
+
+.modal-alert .modal-footer {
+  border-top: none;
+  padding: var(--spacing-lg);
+}
+
+.modal-alert .modal-title__text h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 /* ========================================

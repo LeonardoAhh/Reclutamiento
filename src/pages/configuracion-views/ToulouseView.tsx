@@ -17,7 +17,7 @@ import {
 } from '@/lib/toulouse';
 import { RECLUTADORES_ACTIVOS } from '@/lib/constants';
 import { localTodayIso, formatShortDate } from '@/lib/dates';
-import { sileo } from '@/lib/notify';
+import { toast } from '@/lib/notify';
 import './Toulouse.css';
 
 type Variant = 'candidato' | 'correccion';
@@ -56,7 +56,7 @@ export function ToulouseView() {
 
   function regenerate() {
     setSeed(newSeed());
-    sileo.info({ title: 'Nueva rejilla generada' });
+    toast.info({ title: 'Nueva rejilla generada' });
   }
 
   function handlePrint() {
@@ -93,7 +93,7 @@ export function ToulouseView() {
     setSaving(false);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
-    sileo.success({
+    toast.success({
       title: 'Hoja guardada',
     });
   }
@@ -117,7 +117,7 @@ export function ToulouseView() {
     setTiempoMin(s.tiempo_limite_seg != null ? String(Math.round(s.tiempo_limite_seg / 60)) : '');
     setFolio(s.folio ?? '');
     setSeed(Number(s.seed));
-    sileo.info({ title: 'Hoja cargada' });
+    toast.info({ title: 'Hoja cargada' });
   }
 
   return (

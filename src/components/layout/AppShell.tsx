@@ -24,6 +24,8 @@ function persistSidebarCollapsed(collapsed: boolean) {
 }
 
 
+import { SessionNotice } from './SessionNotice';
+
 /**
  * Shell de la app autenticada.
  *  - Desktop (>=1024px): Sidebar fijo a la izquierda + contenido desplazado.
@@ -67,6 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="app-shell" data-collapsed={collapsed}>
+      <SessionNotice />
       <Sidebar
         collapsed={collapsed}
         onToggleCollapse={toggleCollapse}
