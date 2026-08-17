@@ -17,6 +17,7 @@ import { formatLongDate } from "@/lib/dates";
 import { useRutas, RutaAgrupada, type EmpleadoRuta } from "@/hooks/useRutas";
 import { RutaEmployeesModal } from "@/components/ui/RutaEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import "./Rutas.css";
 
 /* ─────────────────────────────────────────
@@ -61,7 +62,7 @@ function RutaCard({
       <span className="ruta-card__icon" aria-hidden="true">
         <Bus size={18} />
       </span>
-      <span className="ruta-card__title type-heading-sm">
+      <span className="ruta-card__title type-heading-sm" style={{ flex: 'none', margin: '0' }}>
         {ruta.nombreRuta.split("-")[0].trim()}
         {isOverCapacity && (
           <span
@@ -74,11 +75,6 @@ function RutaCard({
       {matchCount !== undefined && matchCount > 0 && (
         <span className="ruta-card__match-badge">{matchCount}</span>
       )}
-      <ChevronRight
-        size={18}
-        aria-hidden="true"
-        className="ruta-card__chevron"
-      />
     </button>
   );
 }
@@ -427,6 +423,7 @@ export function RutasView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
@@ -508,7 +505,34 @@ export function RutasView() {
       data-mobile-view={mobileView}
       tabIndex={-1}
     >
-      {/* ── Search bar & Horarios ── */}
+      <header className="config-page__header" style={{ marginBottom: 'var(--spacing-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="segmented-control">
+          <button
+            type="button"
+            className={`segmented-control__btn ${activeTab === 'capacidad' ? 'active' : ''}`}
+            onClick={() => setActiveTab('capacidad')}
+            aria-pressed={activeTab === 'capacidad'}
+          >
+            Configuración de Rutas
+          </button>
+          <button
+            type="button"
+            className={`segmented-control__btn ${activeTab === 'incidencias' ? 'active' : ''}`}
+            onClick={() => setActiveTab('incidencias')}
+            aria-pressed={activeTab === 'incidencias'}
+          >
+            Incidencias Reportadas
+          </button>
+        </div>
+      </header>
+
+      {activeTab === 'incidencias' ? (
+        <section className="rutas-incidencias" style={{ marginTop: 'var(--spacing-md)' }}>
+          <IncidenciasTable />
+        </section>
+      ) : (
+        <>
+          {/* ── Search bar & Horarios ── */}
       <section
         className="config-page__toolbar"
         aria-label="Herramientas de rutas"
@@ -564,22 +588,8 @@ export function RutasView() {
             )}
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "var(--spacing-md)",
-              alignItems: "center",
-            }}
-          >
-            <div
-              className="rutas-last-updated"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-                gap: "var(--spacing-xxs)",
-              }}
-            >
+          <div className="rutas-toolbar-actions">
+            <div className="rutas-last-updated">
               <span className="type-caption-up text-muted">
                 Última actualización
               </span>
@@ -689,6 +699,8 @@ export function RutasView() {
         onClose={() => setIsModalOpen(false)}
         ruta={selectedRuta}
       />
+      </>
+      )}
     </section>
   );
 }

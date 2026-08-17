@@ -10,12 +10,12 @@
  * abajo) para tolerar pequeñas diferencias de capitalización y espacios.
  */
 export const TRANSPORTE_RUTAS = [
-  'R1- QUERETARO- PIE DE LA CUESTA',
-  'R2- SAN JOSE ITURBIDE',
-  'R3- SAN JOSE ITURBIDE 2',
-  'R4-SANTA ROSA',
-  'R5- QUERETARO-AV. DE LA LUZ',
-  'R6- AV. DE LA LUZ - PASEOS QUERETARO',
+  "R1- QUERETARO- PIE DE LA CUESTA",
+  "R2- SAN JOSE ITURBIDE",
+  "R3- SAN JOSE ITURBIDE 2",
+  "R4-SANTA ROSA",
+  "R5- QUERETARO-AV. DE LA LUZ",
+  "R6- AV. DE LA LUZ - PASEOS QUERETARO",
 ] as const;
 
 export type TransporteRuta = (typeof TRANSPORTE_RUTAS)[number];
@@ -30,12 +30,12 @@ export type TransporteRuta = (typeof TRANSPORTE_RUTAS)[number];
  * se modifica acá (no requiere migración ni cambio de UI).
  */
 export const RUTA_CAPACIDAD: Readonly<Record<TransporteRuta, number>> = {
-  'R1- QUERETARO- PIE DE LA CUESTA': 21,
-  'R2- SAN JOSE ITURBIDE': 21,
-  'R3- SAN JOSE ITURBIDE 2': 14,
-  'R4-SANTA ROSA': 21,
-  'R5- QUERETARO-AV. DE LA LUZ': 21,
-  'R6- AV. DE LA LUZ - PASEOS QUERETARO': 21,
+  "R1- QUERETARO- PIE DE LA CUESTA": 21,
+  "R2- SAN JOSE ITURBIDE": 21,
+  "R3- SAN JOSE ITURBIDE 2": 14,
+  "R4-SANTA ROSA": 21,
+  "R5- QUERETARO-AV. DE LA LUZ": 21,
+  "R6- AV. DE LA LUZ - PASEOS QUERETARO": 21,
 };
 
 /**
@@ -53,7 +53,7 @@ export function getRutaCapacidad(ruta: string): number | null {
  * `empleados.ruta` como en `empleados.parada`. El dashboard de capacidad
  * lo excluye del conteo de cualquier ruta y lo reporta aparte en stats.
  */
-export const TRANSPORTE_NA = 'N/A';
+export const TRANSPORTE_NA = "N/A";
 
 /**
  * Catálogo de paradas oficiales. Incluye `N/A` para empleados sin
@@ -63,32 +63,32 @@ export const TRANSPORTE_NA = 'N/A';
  * abre una zona y no queremos bloquear cargas legítimas.
  */
 export const TRANSPORTE_PARADAS = [
-  'AV. DE LA LUZ',
-  'AV. PEDREGAL',
-  'BUENAVISTA',
-  'COREA',
-  'FRACC. MONTENEGRO',
-  'HDA SANTA ROSA',
-  'LA BARRETA',
-  'LA LUZ',
-  'LA MONJA',
-  'MONTENEGRO',
-  'OBRERA',
-  'OJO DE AGUA',
-  'PASEOS QUERETARO',
-  'PEÑAFLOR',
-  'PIE DE LA CUESTA',
-  'PLAZA DEL SOL',
-  'PROL. BERNARDO QUINTANA',
-  'PUERTO AGUIRRE',
-  'PUERTO CARROZA',
-  'RINCON OJO DE AGUA',
-  'SALITRE',
-  'SAN ISIDRO',
-  'SAN JOSE ITURBIDE',
-  'SANTA CATARINA',
-  'SANTA ROSA',
-  'TLALOC',
+  "AV. DE LA LUZ",
+  "AV. PEDREGAL",
+  "BUENAVISTA",
+  "COREA",
+  "FRACC. MONTENEGRO",
+  "HDA SANTA ROSA",
+  "LA BARRETA",
+  "LA LUZ",
+  "LA MONJA",
+  "MONTENEGRO",
+  "OBRERA",
+  "OJO DE AGUA",
+  "PASEOS QUERETARO",
+  "PEÑAFLOR",
+  "PIE DE LA CUESTA",
+  "PLAZA DEL SOL",
+  "PROL. BERNARDO QUINTANA",
+  "PUERTO AGUIRRE",
+  "PUERTO CARROZA",
+  "RINCON OJO DE AGUA",
+  "SALITRE",
+  "SAN ISIDRO",
+  "SAN JOSE ITURBIDE",
+  "SANTA CATARINA",
+  "SANTA ROSA",
+  "TLALOC",
   TRANSPORTE_NA,
 ] as const;
 
@@ -99,7 +99,7 @@ export type TransporteParada = (typeof TRANSPORTE_PARADAS)[number];
  * datos históricos se renderiza como "extra" al final del breakdown del
  * dashboard pero NO es una opción seleccionable en el alta de empleados.
  */
-export const TRANSPORTE_TURNOS = ['1', '2', '3', '4', '5'] as const;
+export const TRANSPORTE_TURNOS = ["1", "2", "3", "4", "5"] as const;
 
 export type TransporteTurno = (typeof TRANSPORTE_TURNOS)[number];
 
@@ -112,38 +112,41 @@ export type TransporteTurno = (typeof TRANSPORTE_TURNOS)[number];
  * el valor crudo en lugar de tirar — así el dashboard sigue mostrando datos
  * viejos sin perderlos, aunque queden agrupados aparte como "extras".
  */
-export const CLAVE_HORARIO_TO_TURNO: Readonly<Record<string, TransporteTurno>> = {
-  '1': '1',
-  '0': '5',
-  '27': '4',
-  '7': '2',
-  '26': '1',
-  '35': '1',
-  '38': '1',
-  '2': '2',
-  '6': '2',
-  '13': '2',
-  '30': '2',
-  '31': '2',
-  '32': '2',
-  '36': '2',
-  '3': '3',
-  '16': '3',
-  '4': '4',
-  '5': '5',
-  '8': '5',
-  '33': '5',
-};
+export const CLAVE_HORARIO_TO_TURNO: Readonly<Record<string, TransporteTurno>> =
+  {
+    "1": "1",
+    "0": "5",
+    "27": "4",
+    "7": "2",
+    "26": "1",
+    "35": "1",
+    "38": "1",
+    "2": "2",
+    "6": "2",
+    "13": "2",
+    "30": "2",
+    "31": "2",
+    "32": "2",
+    "36": "2",
+    "3": "3",
+    "16": "3",
+    "4": "4",
+    "5": "5",
+    "8": "5",
+    "33": "5",
+  };
 
 /**
  * Mapea una clave de horario al turno (1–5). Si la clave no está en el
  * catálogo, devuelve el valor original sin alterarlo (defensivo). Acepta
  * strings tanto sin trim como con espacios alrededor.
  */
-export function mapClaveHorarioToTurno(value: string | null | undefined): string {
-  if (value == null) return '';
+export function mapClaveHorarioToTurno(
+  value: string | null | undefined,
+): string {
+  if (value == null) return "";
   const key = String(value).trim();
-  if (!key) return '';
+  if (!key) return "";
   return CLAVE_HORARIO_TO_TURNO[key] ?? key;
 }
 
@@ -153,15 +156,15 @@ export function mapClaveHorarioToTurno(value: string | null | undefined): string
  * trimea bordes; mantiene los acentos para no perder la identidad real.
  */
 export function normalizeRuta(value: string): string {
-  return value.replace(/\s+/g, ' ').trim().toUpperCase();
+  return value.replace(/\s+/g, " ").trim().toUpperCase();
 }
 
 const RUTAS_BY_NORM = new Map(
-  TRANSPORTE_RUTAS.map((r) => [normalizeRuta(r), r] as const)
+  TRANSPORTE_RUTAS.map((r) => [normalizeRuta(r), r] as const),
 );
 
 const PARADAS_BY_NORM = new Map(
-  TRANSPORTE_PARADAS.map((p) => [normalizeRuta(p), p] as const)
+  TRANSPORTE_PARADAS.map((p) => [normalizeRuta(p), p] as const),
 );
 
 /**
@@ -169,8 +172,8 @@ const PARADAS_BY_NORM = new Map(
  * normalizar al marcador canónico. No clasifica como N/A valores vacíos.
  */
 export function isNaMarker(value: string): boolean {
-  const v = value.trim().toUpperCase().replace(/\./g, '');
-  return v === 'N/A' || v === 'NA';
+  const v = value.trim().toUpperCase().replace(/\./g, "");
+  return v === "N/A" || v === "NA";
 }
 
 /**
@@ -180,7 +183,9 @@ export function isNaMarker(value: string): boolean {
  * `"r1-queretaro-pie de la cuesta"` con minúsculas, encuentra la versión
  * oficial sin romper la asignación.
  */
-export function matchRuta(value: string): TransporteRuta | typeof TRANSPORTE_NA | null {
+export function matchRuta(
+  value: string,
+): TransporteRuta | typeof TRANSPORTE_NA | null {
   if (isNaMarker(value)) return TRANSPORTE_NA;
   return RUTAS_BY_NORM.get(normalizeRuta(value)) ?? null;
 }
@@ -211,7 +216,7 @@ export function rutaShortCode(value: string): string {
  */
 export function turnoLabel(value: string): string {
   const v = value.trim();
-  if (!v) return '—';
+  if (!v) return "—";
   if (/^\d+$/.test(v)) return `T${v}`;
   return v;
 }
@@ -221,16 +226,16 @@ export function turnoLabel(value: string): string {
  * estable (`lun`, `mar`, …) y a una etiqueta corta para chips.
  */
 export const TRANSPORTE_DIAS = [
-  { key: 'lun', label: 'L' },
-  { key: 'mar', label: 'M' },
-  { key: 'mie', label: 'X' },
-  { key: 'jue', label: 'J' },
-  { key: 'vie', label: 'V' },
-  { key: 'sab', label: 'S' },
-  { key: 'dom', label: 'D' },
+  { key: "lun", label: "L" },
+  { key: "mar", label: "M" },
+  { key: "mie", label: "X" },
+  { key: "jue", label: "J" },
+  { key: "vie", label: "V" },
+  { key: "sab", label: "S" },
+  { key: "dom", label: "D" },
 ] as const;
 
-export type TransporteDia = (typeof TRANSPORTE_DIAS)[number]['key'];
+export type TransporteDia = (typeof TRANSPORTE_DIAS)[number]["key"];
 
 /**
  * Turnos que opera cada día (calendario de cuadrillas):
@@ -240,12 +245,14 @@ export type TransporteDia = (typeof TRANSPORTE_DIAS)[number]['key'];
  *   T4: domingo, lunes-martes, miércoles-jueves
  *   T5: no documentado todavía (omitido del cálculo por día)
  */
-export const TURNO_DIAS: Readonly<Record<TransporteTurno, ReadonlyArray<TransporteDia>>> = {
-  '1': ['lun', 'mar', 'mie', 'jue', 'vie', 'sab'],
-  '2': ['mie', 'jue', 'vie', 'sab', 'dom'],
-  '3': ['vie', 'sab', 'dom', 'lun', 'mar'],
-  '4': ['dom', 'lun', 'mar', 'mie', 'jue'],
-  '5': [],
+export const TURNO_DIAS: Readonly<
+  Record<TransporteTurno, ReadonlyArray<TransporteDia>>
+> = {
+  "1": ["lun", "mar", "mie", "jue", "vie", "sab"],
+  "2": ["mie", "jue", "vie", "sab", "dom"],
+  "3": ["vie", "sab", "dom", "lun", "mar"],
+  "4": ["dom", "lun", "mar", "mie", "jue"],
+  "5": [],
 };
 
 /**
@@ -253,9 +260,9 @@ export const TURNO_DIAS: Readonly<Record<TransporteTurno, ReadonlyArray<Transpor
  * o T3) — se representa con el override por día abajo.
  */
 export const TURNO_HORARIO: Readonly<Record<TransporteTurno, string>> = {
-  '1': '6:00 - 14:00',
-  '2': '14:00 - 22:00',
-  '3': '22:00 - 6:00',
-  '4': 'variable',
-  '5': '',
+  "1": "6:00 - 14:00",
+  "2": "14:00 - 22:00",
+  "3": "22:00 - 6:00",
+  "4": "variable",
+  "5": "",
 };

@@ -9,6 +9,36 @@
   gap: var(--spacing-lg);
 }
 
+.segmented-control {
+  display: inline-flex;
+  background-color: var(--color-surface-hover);
+  border-radius: var(--rounded-md);
+  padding: 4px;
+}
+
+.segmented-control__btn {
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.segmented-control__btn:hover {
+  background-color: var(--color-surface);
+}
+
+.segmented-control__btn.active {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-primary);
+}
+
 /* ── Hero ──────────────────────────────────────────────── */
 
 .transporte__hero {

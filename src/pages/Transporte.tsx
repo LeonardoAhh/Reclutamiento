@@ -4,6 +4,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
 import { TransporteImporter } from '@/components/transporte/TransporteImporter';
+import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
   getRutaCapacidad,
@@ -21,17 +22,13 @@ import type { Employee } from '@/lib/types';
 import './Transporte.css';
 
 /**
- * /transporte — control de capacidad por ruta.
- *
- * Reusa la tabla `empleados` extendida con `ruta` y `parada` (migración 014).
- * No crea tablas nuevas. La capacidad por ruta es **fija** (definida en
- * `RUTA_CAPACIDAD` del catálogo) y se comparte entre los 4 turnos: la barra
- * muestra ocupación total vs cupo, y el breakdown por turno es informativo.
+ * /transporte — control de capacidad por ruta e incidencias.
  */
 export function Transporte() {
   const { employees, loading, assignTransporte } = useSupabaseData();
   const [search, setSearch] = useState('');
   const [importerOpen, setImporterOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
 
   // Construye el dashboard de rutas: catálogo oficial siempre presente, más
   // cualquier ruta huérfana que haya quedado en `empleados` (raro pero
@@ -117,7 +114,24 @@ export function Transporte() {
   return (
     <main className="transporte container">
       <header className="transporte__hero">
-        <div />
+        <div className="segmented-control">
+          <button
+            type="button"
+            className={`segmented-control__btn ${activeTab === 'capacidad' ? 'active' : ''}`}
+            onClick={() => setActiveTab('capacidad')}
+            aria-pressed={activeTab === 'capacidad'}
+          >
+            Capacidad de Rutas
+          </button>
+          <button
+            type="button"
+            className={`segmented-control__btn ${activeTab === 'incidencias' ? 'active' : ''}`}
+            onClick={() => setActiveTab('incidencias')}
+            aria-pressed={activeTab === 'incidencias'}
+          >
+            Incidencias
+          </button>
+        </div>
         <div className="transporte__hero-actions">
           <button
             type="button"
@@ -129,43 +143,49 @@ export function Transporte() {
         </div>
       </header>
 
-      <section className="transporte__stats" aria-label="Resumen de transporte">
-        <StatTile
-          icon={<Users size={16} aria-hidden="true" />}
-          label="Empleados"
-          value={stats.total}
-        />
-        <StatTile
-          icon={<Bus size={16} aria-hidden="true" />}
-          label="Con ruta"
-          value={stats.conRuta}
-        />
-        <StatTile
-          icon={<RouteIcon size={16} aria-hidden="true" />}
-          label="Rutas activas"
-          value={stats.rutasActivas}
-        />
-      </section>
+      {activeTab === 'incidencias' ? (
+        <section className="transporte__incidencias" style={{ marginTop: 'var(--spacing-xl)' }}>
+          <IncidenciasTable />
+        </section>
+      ) : (
+        <>
+          <section className="transporte__stats" aria-label="Resumen de transporte">
+            <StatTile
+              icon={<Users size={16} aria-hidden="true" />}
+              label="Empleados"
+              value={stats.total}
+            />
+            <StatTile
+              icon={<Bus size={16} aria-hidden="true" />}
+              label="Con ruta"
+              value={stats.conRuta}
+            />
+            <StatTile
+              icon={<RouteIcon size={16} aria-hidden="true" />}
+              label="Rutas activas"
+              value={stats.rutasActivas}
+            />
+          </section>
 
-      <section
-        className="transporte__capacity"
-        aria-label="Capacidad por ruta"
-      >
-        <header className="transporte__section-head">
-          <h2>Capacidad por ruta</h2>
-        </header>
-        <div className="transporte__route-grid">
-          {routes.map((route) => (
-            <RouteCard key={route.ruta} route={route} />
-          ))}
-        </div>
-      </section>
+          <section
+            className="transporte__capacity"
+            aria-label="Capacidad por ruta"
+          >
+            <header className="transporte__section-head">
+              <h2>Capacidad por ruta</h2>
+            </header>
+            <div className="transporte__route-grid">
+              {routes.map((route) => (
+                <RouteCard key={route.ruta} route={route} />
+              ))}
+            </div>
+          </section>
 
-      <section
-        className="transporte__matrix-section"
-        aria-label="Capacidad por turno y día"
-      >
-        <header className="transporte__section-head">
+          <section
+            className="transporte__matrix-section"
+            aria-label="Capacidad por turno y día"
+          >
+            <header className="transporte__section-head">
           <h2>Cupo por turno y día</h2>
         </header>
         <div className="transporte__matrix-grid">
@@ -214,6 +234,8 @@ export function Transporte() {
 
         <EmployeesTable employees={filteredEmployees} />
       </section>
+      </>
+      )}
 
       <TransporteImporter
         isOpen={importerOpen}

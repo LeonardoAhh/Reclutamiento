@@ -23,6 +23,7 @@ import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Configuracion } from '@/pages/Configuracion';
+import { ReporteTransportePublic } from '@/pages/ReporteTransportePublic';
 import { Actividades } from '@/pages/Actividades';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
@@ -82,6 +83,7 @@ function App() {
                 </RedirectIfAuthed>
               }
             />
+            <Route path="/reporte" element={<ReporteTransportePublic />} />
             <Route path="/resumen" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
             <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
             <Route path="/candidatos" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
