@@ -59,7 +59,7 @@ export function TopRecruiterModal() {
   const { profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [topRecruiter, setTopRecruiter] = useState<{name: string, total: number} | null>(null);
-  const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean} | null>(null);
+  const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean, isTie?: boolean} | null>(null);
   const [animatedProgress, setAnimatedProgress] = useState(0);
 
   useEffect(() => {
@@ -106,19 +106,13 @@ export function TopRecruiterModal() {
 
       const totalsArray = Object.entries(recruiterTotals).map(([name, total]) => ({ name, total }));
       
-      let actualTopRecruiter = { name: 'Nadie', total: 0 };
+      let topTotal = 0;
       if (totalsArray.length > 0) {
-        actualTopRecruiter = totalsArray.reduce((max, current) => current.total > max.total ? current : max);
+        topTotal = Math.max(...totalsArray.map(r => r.total));
       }
 
-      const topNameLower = actualTopRecruiter.name.toLowerCase();
-      
-      // Determinar si el usuario actual es el Top Recruiter
-      const isTop = (topNameLower !== 'nadie') && (
-        currentUserNameLower === topNameLower ||
-        currentUserNameLower.includes(topNameLower) ||
-        topNameLower.includes(currentUserNameLower)
-      );
+      const topRecruiters = totalsArray.filter(r => r.total === topTotal && topTotal > 0);
+      const isTie = topRecruiters.length > 1;
 
       // Determinar estadísticas del usuario actual
       let currentUserTotal = 0;
@@ -141,8 +135,21 @@ export function TopRecruiterModal() {
          currentUserName = profile.display_name || profile.username || 'Reclutador';
       }
 
+      // El usuario actual es top recruiter si su total es igual al máximo y es > 0
+      const isTop = currentUserTotal > 0 && currentUserTotal === topTotal;
+
+      let actualTopRecruiter = { name: 'Nadie', total: 0 };
+      if (topRecruiters.length > 0) {
+        // Si hay empate y el usuario actual es uno de ellos, mostrar su nombre en el mensaje general
+        if (isTop) {
+          actualTopRecruiter = { name: currentUserName, total: topTotal };
+        } else {
+          actualTopRecruiter = topRecruiters[0];
+        }
+      }
+
       setTopRecruiter(actualTopRecruiter);
-      setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop });
+      setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop, isTie });
       setIsOpen(true);
       sessionStorage.setItem('hasSeenTopRecruiterModal', 'true');
     };
@@ -221,10 +228,14 @@ export function TopRecruiterModal() {
                 
                 <div className="top-recruiter-modal__content">
                   <h2 id="modal-title" className="top-recruiter-modal__title type-heading-md">
-                    ¡Felicidades, {topRecruiter.name}!
+                    ¡Felicidades, {currentUserStats.name}!
                   </h2>
                   <p className="top-recruiter-modal__text type-body-md">
-                    Eres el reclutador <span className="top-recruiter-modal__highlight">#1</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.
+                    {currentUserStats.isTie ? (
+                      <>Estás empatado(a) en <span className="top-recruiter-modal__highlight">1er lugar</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
+                    ) : (
+                      <>Eres el reclutador <span className="top-recruiter-modal__highlight">#1</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
+                    )}
                   </p>
                   
                   <div className="top-recruiter-modal__kpi">

@@ -101,12 +101,12 @@ export function IndicadoresView() {
             <span className="indicadores-kpi-label">Top Reclutador</span>
             <span className="indicadores-kpi-value indicadores-kpi-value--name">
               {kpi.topRecruiters.length > 1
-                ? 'Empate'
+                ? kpi.topRecruiters.map((recruiter) => recruiter.name).join(' y ')
                 : kpi.topRecruiters[0]?.name}
             </span>
             <span className="indicadores-kpi-sub">
               {kpi.topRecruiters.length > 1
-                ? `${kpi.topRecruiters.map((recruiter) => recruiter.name).join(' y ')} · ${kpi.topRecruiters[0]?.total} ingresos cada una`
+                ? `Empate con ${kpi.topRecruiters[0]?.total} ingresos cada una`
                 : `${kpi.topRecruiters[0]?.total ?? 0} ingresos`}
             </span>
           </div>
