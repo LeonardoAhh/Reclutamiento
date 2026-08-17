@@ -130,15 +130,7 @@ export function Transporte() {
             Incidencias
           </button>
         </div>
-        <div className="transporte__hero-actions">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => setImporterOpen(true)}
-          >
-            <Upload size={16} aria-hidden="true" />
-          </button>
-        </div>
+
       </header>
 
       {activeTab === 'incidencias' ? (
