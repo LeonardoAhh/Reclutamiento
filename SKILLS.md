@@ -1,6 +1,3 @@
-Tienes razón. Debí entregarlo como **un bloque Markdown único**, listo para copiar y guardar como `SKILLS.md`.
-
-````md
 # SKILLS.md — Procedimientos operativos para Gemini 3.1 Pro
 
 Este documento define **cómo debe trabajar** Gemini 3.1 Pro dentro del proyecto.
@@ -56,15 +53,15 @@ No es obligatorio ejecutar todas las skills en cada tarea.
 
 Gemini debe seleccionar únicamente las que correspondan al trabajo solicitado.
 
-| Tipo de tarea | Skills recomendadas |
-|---|---|
-| Nueva interfaz | Analizar, investigar, diseñar UI, componentes, frontend, responsive, accesibilidad y testing |
-| Rediseño visual | Analizar, auditar UI, preservar funcionalidad, frontend, responsive y testing |
-| Corrección de bug | Reproducir, diagnosticar, corregir, probar regresión y revisar diff |
-| Cambio de backend | Analizar contratos, seguridad, backend y testing |
-| Cambio full stack | Analizar, investigar, backend, frontend, accesibilidad, seguridad y testing |
-| Refactor autorizado | Analizar alcance, proteger comportamiento, refactorizar y probar regresión |
-| Auditoría | Investigar, auditar, clasificar hallazgos e informar sin modificar |
+| Tipo de tarea       | Skills recomendadas                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| Nueva interfaz      | Analizar, investigar, diseñar UI, componentes, frontend, responsive, accesibilidad y testing |
+| Rediseño visual     | Analizar, auditar UI, preservar funcionalidad, frontend, responsive y testing                |
+| Corrección de bug   | Reproducir, diagnosticar, corregir, probar regresión y revisar diff                          |
+| Cambio de backend   | Analizar contratos, seguridad, backend y testing                                             |
+| Cambio full stack   | Analizar, investigar, backend, frontend, accesibilidad, seguridad y testing                  |
+| Refactor autorizado | Analizar alcance, proteger comportamiento, refactorizar y probar regresión                   |
+| Auditoría           | Investigar, auditar, clasificar hallazgos e informar sin modificar                           |
 
 ---
 
@@ -116,21 +113,27 @@ Convertir la petición literal del usuario en un alcance concreto sin inventar r
 ## Alcance interpretado
 
 ### Objetivo
+
 - ...
 
 ### Cambios autorizados
+
 - ...
 
 ### Comportamiento que debe preservarse
+
 - ...
 
 ### Fuera de alcance
+
 - ...
 
 ### Áreas probablemente afectadas
+
 - ...
 
 ### Criterios de aceptación
+
 - ...
 ```
 
@@ -189,24 +192,31 @@ Comprender la implementación actual y encontrar patrones reutilizables.
 ## Investigación
 
 ### Implementación actual
+
 - ...
 
 ### Componentes reutilizables
+
 - ...
 
 ### Hooks y utilidades reutilizables
+
 - ...
 
 ### Tokens existentes
+
 - ...
 
 ### Contratos que deben preservarse
+
 - ...
 
 ### Riesgos
+
 - ...
 
 ### Solución mínima recomendada
+
 - ...
 ```
 
@@ -256,17 +266,21 @@ Si alguna respuesta es afirmativa, se debe preguntar al usuario.
 Necesito confirmar una decisión antes de continuar.
 
 ### Situación
+
 - ...
 
 ### Opción A
+
 - ...
 - Impacto: ...
 
 ### Opción B
+
 - ...
 - Impacto: ...
 
 ### Recomendación
+
 - ...
 
 No aplicaré ninguna opción hasta recibir confirmación.
@@ -323,18 +337,23 @@ Preparar una implementación pequeña, segura y verificable.
 3. ...
 
 ### Archivos afectados
+
 - ...
 
 ### Elementos reutilizados
+
 - ...
 
 ### Comportamiento preservado
+
 - ...
 
 ### Estados contemplados
+
 - ...
 
 ### Verificación prevista
+
 - ...
 ```
 
@@ -427,15 +446,19 @@ Identificar problemas UI/UX sin modificar funcionalidad.
 ## Auditoría UI/UX
 
 ### P0 — Bloqueantes
+
 - ...
 
 ### P1 — Impacto alto
+
 - ...
 
 ### P2 — Mejoras opcionales
+
 - ...
 
 ### Elementos correctos que deben preservarse
+
 - ...
 ```
 
@@ -488,25 +511,32 @@ Convertir requisitos autorizados en una interfaz coherente con `desing.md`.
 ## Propuesta UI
 
 ### Objetivo del usuario
+
 - ...
 
 ### Estructura móvil
+
 1. ...
 2. ...
 
 ### Tablet y desktop
+
 - ...
 
 ### Componentes reutilizados
+
 - ...
 
 ### Estados
+
 - ...
 
 ### Accesibilidad
+
 - ...
 
 ### Comportamiento preservado
+
 - ...
 ```
 
@@ -656,15 +686,15 @@ Conseguir que la interfaz funcione de forma intencional en todos los anchos.
 
 ## Matriz de comprobación
 
-| Contexto | Comprobar |
-|---|---|
+| Contexto       | Comprobar                     |
+| -------------- | ----------------------------- |
 | Móvil estrecho | Reflow, texto y touch targets |
-| Móvil estándar | Acciones y navegación |
-| Tablet | Grids, formularios y toolbars |
-| Desktop | Alineación y ancho de lectura |
-| Wide | Límites del contenedor |
-| Zoom | Clipping, foco y legibilidad |
-| Texto largo | Wrap y alturas dinámicas |
+| Móvil estándar | Acciones y navegación         |
+| Tablet         | Grids, formularios y toolbars |
+| Desktop        | Alineación y ancho de lectura |
+| Wide           | Límites del contenedor        |
+| Zoom           | Clipping, foco y legibilidad  |
+| Texto largo    | Wrap y alturas dinámicas      |
 
 ---
 
@@ -730,15 +760,19 @@ Verificar cumplimiento WCAG 2.2 AA.
 ## Auditoría de accesibilidad
 
 ### Bloqueantes
+
 - ...
 
 ### Incidencias
+
 - ...
 
 ### Verificaciones superadas
+
 - ...
 
 ### Pruebas realizadas
+
 - ...
 ```
 
@@ -961,24 +995,31 @@ Evitar dependencias innecesarias.
 ## Evaluación de dependencia
 
 ### Necesidad
+
 - ...
 
 ### Solución con el stack actual
+
 - ...
 
 ### Dependencia propuesta
+
 - ...
 
 ### Impacto
+
 - ...
 
 ### Alternativas
+
 - ...
 
 ### Recomendación
+
 - ...
 
 ### Requiere autorización
+
 - Sí
 ```
 
@@ -1033,21 +1074,27 @@ Reproducir y corregir la causa raíz sin cambios especulativos.
 ## Diagnóstico
 
 ### Comportamiento esperado
+
 - ...
 
 ### Comportamiento reproducido
+
 - ...
 
 ### Evidencia
+
 - ...
 
 ### Causa raíz
+
 - ...
 
 ### Corrección aplicada
+
 - ...
 
 ### Regresión verificada
+
 - ...
 ```
 
@@ -1181,12 +1228,12 @@ Verificar contratos, seguridad y persistencia.
 ```md
 ## Pruebas backend
 
-| Caso | Esperado | Obtenido | Estado |
-|---|---|---|---|
-| Éxito | ... | ... | OK |
-| Entrada inválida | ... | ... | OK |
-| Sin autenticación | ... | ... | OK |
-| Sin permiso | ... | ... | OK |
+| Caso              | Esperado | Obtenido | Estado |
+| ----------------- | -------- | -------- | ------ |
+| Éxito             | ...      | ...      | OK     |
+| Entrada inválida  | ...      | ...      | OK     |
+| Sin autenticación | ...      | ...      | OK     |
+| Sin permiso       | ...      | ...      | OK     |
 ```
 
 ---
@@ -1352,18 +1399,23 @@ Comunicar resultados breves, exactos y comprobados.
 ## Resultado
 
 ### Cambios realizados
+
 - ...
 
 ### Archivos modificados
+
 - ...
 
 ### Comportamiento preservado
+
 - ...
 
 ### Verificación
+
 - ...
 
 ### Pendientes o limitaciones
+
 - ...
 ```
 
@@ -1483,44 +1535,57 @@ Una auditoría no autoriza implementar los hallazgos.
 ## Análisis de la tarea
 
 ### Solicitud literal
+
 - ...
 
 ### Objetivo
+
 - ...
 
 ### Cambios autorizados
+
 - ...
 
 ### Fuera de alcance
+
 - ...
 
 ### Archivos probables
+
 - ...
 
 ### Componentes reutilizables
+
 - ...
 
 ### Contratos que deben preservarse
+
 - ...
 
 ### Estados necesarios
+
 - ...
 
 ### Requisitos de accesibilidad
+
 - ...
 
 ### Riesgos
+
 - ...
 
 ### Preguntas necesarias
+
 - Ninguna / ...
 
 ### Plan mínimo
+
 1. ...
 2. ...
 3. ...
 
 ### Verificación prevista
+
 - ...
 ```
 
@@ -1532,12 +1597,14 @@ Una auditoría no autoriza implementar los hallazgos.
 ## Revisión UI/UX
 
 ### Jerarquía
+
 - [ ] Existe un único `h1`.
 - [ ] El contenido está ordenado por prioridad.
 - [ ] La CTA principal es identificable.
 - [ ] Las acciones secundarias están subordinadas.
 
 ### Sistema visual
+
 - [ ] Se utilizan tokens de color.
 - [ ] Se utilizan tokens tipográficos.
 - [ ] Se utilizan tokens de spacing.
@@ -1546,6 +1613,7 @@ Una auditoría no autoriza implementar los hallazgos.
 - [ ] La paleta sticker es únicamente decorativa.
 
 ### Layout
+
 - [ ] La implementación es mobile-first.
 - [ ] No existe overflow.
 - [ ] No existe clipping.
@@ -1554,6 +1622,7 @@ Una auditoría no autoriza implementar los hallazgos.
 - [ ] Los controles tienen una altura exterior consistente.
 
 ### Estados
+
 - [ ] Carga.
 - [ ] Vacío.
 - [ ] Sin resultados.
@@ -1562,6 +1631,7 @@ Una auditoría no autoriza implementar los hallazgos.
 - [ ] Disabled.
 
 ### Accesibilidad
+
 - [ ] HTML semántico.
 - [ ] Labels.
 - [ ] Teclado.
@@ -1579,35 +1649,45 @@ Una auditoría no autoriza implementar los hallazgos.
 ## Diagnóstico de bug
 
 ### Problema reportado
+
 - ...
 
 ### Resultado esperado
+
 - ...
 
 ### Resultado actual
+
 - ...
 
 ### Pasos de reproducción
+
 1. ...
 2. ...
 3. ...
 
 ### Evidencia
+
 - ...
 
 ### Causa raíz
+
 - ...
 
 ### Corrección aplicada
+
 - ...
 
 ### Archivos modificados
+
 - ...
 
 ### Pruebas de regresión
+
 - ...
 
 ### Resultado final
+
 - ...
 ```
 
@@ -1627,4 +1707,7 @@ Gemini 3.1 Pro debe ejecutar siempre estas fases mínimas:
 8. Comunicar resultados reales.
 
 Ninguna skill autoriza ignorar `AGENTS.md`, analizar `rutas-app`, inventar requisitos o realizar cambios no solicitados.
-````
+
+```
+
+```

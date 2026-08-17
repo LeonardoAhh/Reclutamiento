@@ -50,7 +50,7 @@ export function useIncidenciasTransporte() {
         .maybeSingle();
 
       if (empError || !emp) {
-        throw new Error('El número de empleado no existe o no es válido.');
+        throw new Error('No fue posible validar la información. Revisa que tus datos estén correctos e intenta de nuevo.');
       }
 
       // 2. Verificar que no haya enviado un reporte en las últimas 12 horas (Rate Limiting)

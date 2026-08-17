@@ -16,7 +16,6 @@ import { PositionsProvider } from '@/lib/positions';
 import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
-import { Vacantes } from '@/pages/Vacantes';
 import { Bajas } from '@/pages/Bajas';
 import { Transporte } from '@/pages/Transporte';
 import { KpisPage } from '@/pages/KpisPage';
@@ -87,7 +86,6 @@ function App() {
             <Route path="/resumen" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
             <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
             <Route path="/candidatos" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
-            <Route path="/vacantes" element={<ProtectedShell><Vacantes /></ProtectedShell>} />
             <Route path="/toulouse" element={<Navigate to="/configuracion" replace />} />
             <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
             <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />

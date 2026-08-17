@@ -344,3 +344,30 @@ La implementación cumple con todos los requisitos de AGENTS.md:
 - Mantenimiento conserva foco en la acción obligatoria; fallos de actualización muestran reintento comprensible.
 - Verificación local: TypeScript PASS, lint PASS y Vite build PASS.
 - No se invocaron agentes ni pruebas de interfaz, por instrucción del usuario.
+## Limpieza de Código Muerto (Dead Code Removal)
+
+Durante esta sesión, se identificaron y eliminaron múltiples archivos y componentes "huérfanos" (código muerto) que ya no estaban en uso o que habían sido desconectados de la navegación principal de la aplicación. 
+
+### 1. Módulo de Documentos
+- **Eliminados:** Carpeta src/components/documentos/ y src/pages/configuracion-views/DocumentosView.tsx.
+- **Razón:** El feature documentos había sido reemplazado por ormatos.
+- **Limpieza:** Se removió la configuración muerta (documentos) de Configuracion.tsx.
+
+### 2. Módulo de No Citados
+- **Eliminados:** RegistroNoCitadosView.tsx, NoCitadosChart.tsx y NoCitados.css.
+- **Limpieza:** Se removió la referencia muerta en Configuracion.tsx.
+
+### 3. Módulo de Toulouse
+- **Eliminados:** ToulouseView.tsx, Toulouse.css y la carpeta src/components/toulouse/.
+- **Limpieza:** Se eliminaron dependencias y la vista de Configuracion.tsx.
+
+### 4. Vista de Vacantes
+- **Eliminados:** Vacantes.tsx y Vacantes.css, así como la carpeta src/components/vacancies/.
+- **Razón:** El usuario confirmó su deprecación.
+- **Limpieza:** Se eliminó la ruta explícita /vacantes en App.tsx.
+
+### 5. Importadores Ocultos (Turnos y Transporte)
+- **Eliminados:** Carpeta src/components/turnos/ (TurnosImporter.tsx) y los archivos TransporteImporter.tsx / TransporteImporter.css.
+- **Limpieza:** Se eliminaron los estados booleanos, props e imports tanto en Dashboard.tsx como en Transporte.tsx.
+
+Todos los archivos fueron borrados asegurando que TypeScript no generara ningún error por dependencias faltantes.

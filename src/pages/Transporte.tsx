@@ -3,7 +3,6 @@ import { Bus, CheckCircle2, Route as RouteIcon, Search, Upload, Users, X } from 
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { SkeletonTable } from '@/components/ui/PageSkeletons';
-import { TransporteImporter } from '@/components/transporte/TransporteImporter';
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import { buildRouteCapacity, type RouteCapacity } from '@/lib/transporte';
 import {
@@ -27,7 +26,6 @@ import './Transporte.css';
 export function Transporte() {
   const { employees, loading, assignTransporte } = useSupabaseData();
   const [search, setSearch] = useState('');
-  const [importerOpen, setImporterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
 
   // Construye el dashboard de rutas: catálogo oficial siempre presente, más
@@ -236,13 +234,6 @@ export function Transporte() {
       </section>
       </>
       )}
-
-      <TransporteImporter
-        isOpen={importerOpen}
-        onClose={() => setImporterOpen(false)}
-        employees={employees}
-        onConfirm={assignTransporte}
-      />
     </main>
   );
 }

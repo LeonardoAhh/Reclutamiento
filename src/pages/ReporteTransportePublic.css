@@ -21,11 +21,25 @@
 }
 
 .reporte-publico__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.reporte-publico__header-text {
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xxs);
-  align-items: flex-start;
+}
+
+.reporte-publico__logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .reporte-publico__icon {
@@ -132,4 +146,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.reporte-publico__footer {
+  margin-top: var(--spacing-xl);
+  width: 100%;
+  max-width: 520px;
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  text-align: center;
 }

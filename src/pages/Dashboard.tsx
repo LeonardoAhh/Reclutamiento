@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/Badge";
 import { CommentModal } from "@/components/ui/CommentModal";
 import { JsonImporter } from "@/components/ui/JsonImporter";
-import { TurnosImporter } from "@/components/turnos/TurnosImporter";
+import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
 import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
 import { AreaDetailView } from "@/components/ui/AreaDetailView";
@@ -35,7 +35,6 @@ import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
 import Avatar from "boring-avatars";
 import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   transformEmployeeData,
@@ -130,7 +129,6 @@ export function Dashboard() {
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
-  const [turnosImporterOpen, setTurnosImporterOpen] = useState(false);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -741,14 +739,6 @@ export function Dashboard() {
           isOpen={vacancyReportOpen}
           onClose={() => setVacancyReportOpen(false)}
           positions={positionCoverage}
-        />
-
-        {/* ── Turnos Importer (clave de horario por num_empleado) ── */}
-        <TurnosImporter
-          isOpen={turnosImporterOpen}
-          onClose={() => setTurnosImporterOpen(false)}
-          employees={employees}
-          onConfirm={assignTurnos}
         />
       </main>
     </div>

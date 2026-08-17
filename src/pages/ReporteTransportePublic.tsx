@@ -53,7 +53,8 @@ export function ReporteTransportePublic() {
       !formData.numero_empleado ||
       !formData.ruta ||
       !formData.turno ||
-      !formData.tipo
+      !formData.tipo ||
+      !formData.comentarios.trim()
     ) {
       return;
     }
@@ -102,6 +103,16 @@ export function ReporteTransportePublic() {
             </button>
           </div>
         </div>
+        <footer className="reporte-publico__footer">
+          <p className="type-caption-sm text-faint">
+            &copy; {new Date().getFullYear()} ViñoPlastic Querétaro. Derechos
+            Reservados.
+          </p>
+          <p className="type-caption-sm text-faint">
+            El mal uso de este portal será sancionado. Tus datos están
+            protegidos.
+          </p>
+        </footer>
       </main>
     );
   }
@@ -110,10 +121,17 @@ export function ReporteTransportePublic() {
     <main className="reporte-publico">
       <div className="reporte-publico__container">
         <header className="reporte-publico__header">
-          <h1 className="type-heading-1">Reporte</h1>
-          <p className="type-body-md text-muted">
-            ¿Tuviste problemas con tu ruta? Cuéntanos.
-          </p>
+          <div className="reporte-publico__header-text">
+            <h1 className="type-heading-1">Reporte</h1>
+            <p className="type-body-md text-muted">
+              ¿Tuviste problemas con tu ruta? Cuéntanos.
+            </p>
+          </div>
+          <img
+            src="/logo-empresa.jpg"
+            alt="Logo de la empresa"
+            className="reporte-publico__logo"
+          />
         </header>
 
         {errorMsg && (
@@ -135,7 +153,7 @@ export function ReporteTransportePublic() {
               pattern="[0-9]*"
               required
               className="text-input"
-              placeholder="Solo lo necesitamos para validar tu reporte."
+              placeholder="Lo necesitamos para validar tu reporte."
               value={formData.numero_empleado}
               onChange={(e) =>
                 setFormData({ ...formData, numero_empleado: e.target.value })
@@ -151,7 +169,7 @@ export function ReporteTransportePublic() {
               id="ruta"
               value={formData.ruta}
               onChange={(val) => setFormData({ ...formData, ruta: val })}
-              placeholder="Selecciona tu ruta..."
+              placeholder="Selecciona tu ruta."
               searchable={true}
               options={TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r }))}
             />
@@ -165,7 +183,7 @@ export function ReporteTransportePublic() {
               id="turno"
               value={formData.turno}
               onChange={(val) => setFormData({ ...formData, turno: val })}
-              placeholder="Selecciona tu turno..."
+              placeholder="Selecciona tu turno."
               options={TRANSPORTE_TURNOS.filter((t) => t !== "5").map((t) => ({
                 value: t,
                 label: `Turno ${t}`,
@@ -213,6 +231,7 @@ export function ReporteTransportePublic() {
               id="comentarios"
               className="text-input"
               rows={3}
+              required
               placeholder="Detalles sobre lo ocurrido..."
               value={formData.comentarios}
               onChange={(e) =>
@@ -232,6 +251,15 @@ export function ReporteTransportePublic() {
           />
         </form>
       </div>
+      <footer className="reporte-publico__footer">
+        <p className="type-caption-sm text-faint">
+          &copy; {new Date().getFullYear()} ViñoPlastic Querétaro. Derechos
+          Reservados.
+        </p>
+        <p className="type-caption-sm text-faint">
+          El mal uso de este portal será sancionado. Tus datos están protegidos.
+        </p>
+      </footer>
     </main>
   );
 }

@@ -20,12 +20,9 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BusquedaView } from "./configuracion-views/BusquedaView";
-import { DocumentosView } from "./configuracion-views/DocumentosView";
 import { IndicadoresView } from "./configuracion-views/IndicadoresView";
 import { RutasView } from "./configuracion-views/RutasView";
 import { TabuladorView } from "./configuracion-views/TabuladorView";
-import { ToulouseView } from "./configuracion-views/ToulouseView";
-import { RegistroNoCitadosView } from "./configuracion-views/RegistroNoCitadosView";
 import { SistemaView } from "./configuracion-views/SistemaView";
 import { SpeechView } from "./configuracion-views/SpeechView";
 import { FormatosView } from "./configuracion-views/FormatosView";
@@ -33,12 +30,9 @@ import "./Configuracion.css";
 
 type FeatureId =
   | "busqueda"
-  | "documentos"
   | "indicadores"
   | "rutas"
   | "tabulador"
-  | "toulouse"
-  | "nocitados"
   | "sistema"
   | "speech"
   | "formatos";
@@ -61,12 +55,9 @@ export const FEATURES: FeatureItem[] = [
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   busqueda: <BusquedaView />,
-  documentos: <DocumentosView />,
   indicadores: <IndicadoresView />,
   rutas: <RutasView />,
   tabulador: <TabuladorView />,
-  toulouse: <ToulouseView />,
-  nocitados: <RegistroNoCitadosView />,
   speech: <SpeechView />,
   formatos: <FormatosView />,
   sistema: <SistemaView />,
