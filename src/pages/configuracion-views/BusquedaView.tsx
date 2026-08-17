@@ -25,12 +25,15 @@ import {
   normalizeSearchText,
   matchesSearchTokens,
   uniqueFilterValues,
+  isNuevoIngreso,
+  hasExcesoFaltas,
   type EmployeeSearchResult,
   type SearchViewMode,
 } from './busqueda-helpers';
 import '../Configuracion.css';
 
 type SearchStatusFilter = 'all' | 'active' | 'inactive';
+type RiskFilter = 'all' | 'nuevos_ingresos' | 'riesgo_baja';
 
 const ALL_FILTER_VALUE = 'all';
 
@@ -49,6 +52,7 @@ export function BusquedaView() {
   const [statusFilter, setStatusFilter] = useState<SearchStatusFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState(ALL_FILTER_VALUE);
   const [shiftFilter, setShiftFilter] = useState(ALL_FILTER_VALUE);
+  const [riskFilter, setRiskFilter] = useState<RiskFilter>('all');
   const [viewMode, setViewMode] = useState<SearchViewMode>('compact');
   const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(
     () => new Set(),
@@ -116,9 +120,16 @@ export function BusquedaView() {
         shiftFilter !== ALL_FILTER_VALUE &&
         normalizeFilterValue(employee.turno ?? '') !== shiftFilter
       ) return false;
+      if (riskFilter === 'nuevos_ingresos' && !isNuevoIngreso(employee.fecha_ingreso)) return false;
+      if (
+        riskFilter === 'riesgo_baja' &&
+        (!reportsFetched || !isNuevoIngreso(employee.fecha_ingreso) || !hasExcesoFaltas(employee.num_empleado, allReports))
+      ) {
+        return false;
+      }
       return true;
     });
-  }, [textMatches, statusFilter, departmentFilter, shiftFilter]);
+  }, [textMatches, statusFilter, departmentFilter, shiftFilter, riskFilter, reportsFetched, allReports]);
 
   // 4. Paginación
   const paginatedEmployees = useMemo(
@@ -129,20 +140,16 @@ export function BusquedaView() {
   const hasActiveFilters =
     statusFilter !== 'all' ||
     departmentFilter !== ALL_FILTER_VALUE ||
-    shiftFilter !== ALL_FILTER_VALUE;
+    shiftFilter !== ALL_FILTER_VALUE ||
+    riskFilter !== 'all';
     
   const isSingleResult = filteredEmployees.length === 1 && searchQuery.length > 2;
   const canUseCompactView = filteredEmployees.length > 1;
 
   // Removemos el useEffect que reseteaba los filtros para permitir buscar DENTRO de un filtro.
 
-  const needsReports =
-    (viewMode === 'detail' && filteredEmployees.length > 0) ||
-    expandedResultIds.size > 0 ||
-    filteredEmployees.length === 1;
-
   useEffect(() => {
-    if (!needsReports || reportsFetched) return;
+    if (reportsFetched) return;
 
     let active = true;
     const loadReports = async () => {
@@ -166,11 +173,25 @@ export function BusquedaView() {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [needsReports, fetchSummaries, fetchByMesList]);
+  }, [fetchSummaries, fetchByMesList]);
 
   useEffect(() => {
     if (!canUseCompactView && viewMode === 'compact') setViewMode('detail');
   }, [canUseCompactView, viewMode]);
+
+  const metrics = useMemo(() => {
+    let nuevosIngresos = 0;
+    let riesgoBaja = 0;
+    
+    for (const emp of employees) {
+      const nuevo = isNuevoIngreso(emp.fecha_ingreso);
+      if (nuevo) nuevosIngresos++;
+      if (nuevo && reportsFetched && hasExcesoFaltas(emp.num_empleado, allReports)) {
+        riesgoBaja++;
+      }
+    }
+    return { nuevosIngresos, riesgoBaja };
+  }, [employees, allReports, reportsFetched]);
 
   if (authLoading || employeesLoading || bajasLoading) {
     return (
@@ -205,6 +226,7 @@ export function BusquedaView() {
     setStatusFilter('all');
     setDepartmentFilter(ALL_FILTER_VALUE);
     setShiftFilter(ALL_FILTER_VALUE);
+    setRiskFilter('all');
   };
 
   const handleViewModeChange = (mode: SearchViewMode) => {
@@ -231,6 +253,34 @@ export function BusquedaView() {
           disponibles.
         </p>
       )}
+
+      <section className="busqueda-hero" aria-label="Indicadores de riesgo">
+        <button 
+          type="button" 
+          className={`busqueda-hero__card busqueda-hero__card--new ${riskFilter === 'nuevos_ingresos' ? 'is-active' : ''}`}
+          onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
+        >
+          <div className="busqueda-hero__card-header">
+            <span className="busqueda-hero__card-title">Nuevos Ingresos</span>
+            <span className="busqueda-hero__card-count">{metrics.nuevosIngresos}</span>
+          </div>
+        </button>
+        
+        <button 
+          type="button" 
+          className={`busqueda-hero__card busqueda-hero__card--risk ${riskFilter === 'riesgo_baja' ? 'is-active' : ''}`}
+          onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
+        >
+          <div className="busqueda-hero__card-header">
+            <span className="busqueda-hero__card-title">Riesgo No Renovación</span>
+            {reportsLoading ? (
+               <Skeleton variant="rect" width="24px" height="24px" radius="var(--rounded-sm)" />
+            ) : (
+               <span className="busqueda-hero__card-count">{metrics.riesgoBaja}</span>
+            )}
+          </div>
+        </button>
+      </section>
 
       <section
         className="config-page__toolbar"

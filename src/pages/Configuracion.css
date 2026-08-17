@@ -352,8 +352,9 @@
 
 .config-filter-reset {
   width: 100%;
-  min-height: var(--touch-target-min);
-  align-self: end;
+  height: var(--control-height);
+  min-height: var(--control-height);
+  align-self: flex-end;
 }
 
 @media (min-width: 768px) {
@@ -381,6 +382,7 @@
     flex-wrap: wrap;
     flex: 1 1 auto;
     gap: var(--spacing-md);
+    align-items: flex-end;
   }
 
   .config-filter-group,
@@ -466,6 +468,18 @@
   justify-content: center;
   gap: var(--spacing-xxs);
   min-width: 0;
+  flex: 1;
+}
+
+.config-card__meta-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-xxs);
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .config-card__title-group h3,
@@ -1696,6 +1710,114 @@
 }
 
 /* ── Búsqueda View ────────────────────────────────────────────── */
+
+.busqueda-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 640px) {
+  .busqueda-hero {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.busqueda-hero__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--spacing-2xs);
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.busqueda-hero__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.busqueda-hero__card:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.busqueda-hero__card.is-active {
+  border-width: 2px;
+}
+
+/* Card: Nuevos Ingresos */
+.busqueda-hero__card--new:hover,
+.busqueda-hero__card--new.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+.busqueda-hero__card--new .busqueda-hero__card-count {
+  color: var(--color-primary);
+}
+
+/* Card: Riesgo Baja */
+.busqueda-hero__card--risk:hover,
+.busqueda-hero__card--risk.is-active {
+  border-color: var(--color-warning);
+  background: var(--color-warning-tint);
+}
+
+.busqueda-hero__card--risk .busqueda-hero__card-count {
+  color: var(--color-warning);
+}
+
+.busqueda-hero__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.busqueda-hero__card-title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+}
+
+.busqueda-hero__card-count {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: 1;
+}
+
+.busqueda-hero__card-count--loading {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rounded-sm);
+  background: var(--color-hairline-soft);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.2; }
+  100% { opacity: 0.6; }
+}
+
+.busqueda-hero__card-desc {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+}
 
 .busqueda-view {
   gap: var(--spacing-xl);

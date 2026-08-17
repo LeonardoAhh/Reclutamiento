@@ -1,5 +1,7 @@
 import type { Baja, Employee } from '@/lib/types';
 import { toTitleCase } from '@/lib/utils';
+import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
+import type { ReporteRow } from '@/components/reporte-diario/types';
 
 const STICKER_TONES = 5;
 
@@ -69,4 +71,58 @@ export function getStickerTone(employeeNumber: string) {
 export function displayValue(value: unknown) {
   const text = String(value ?? '').trim();
   return text ? toTitleCase(text) : 'Sin información';
+}
+
+export function isNuevoIngreso(fecha_ingreso?: string | null): boolean {
+  if (!fecha_ingreso) return false;
+  // Use UTC to avoid timezone issues when parsing YYYY-MM-DD
+  const [year, month, day] = fecha_ingreso.split('-').map(Number);
+  if (!year || !month || !day) return false;
+  
+  const ingreso = new Date(year, month - 1, day);
+  const now = new Date();
+  
+  // Calculate difference in days
+  const diffTime = now.getTime() - ingreso.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays >= 0 && diffDays <= 90;
+}
+
+export function hasExcesoFaltas(num_empleado: string, allReports: ReporteDiarioRecord[]): boolean {
+  const faltaDates: Date[] = [];
+  
+  for (const report of allReports) {
+    if (!report.data || !Array.isArray(report.data)) continue;
+    const rows = report.data as ReporteRow[];
+    const employeeRow = rows.find(r => String(r.numero_empleado) === String(num_empleado));
+    if (!employeeRow || !employeeRow.days) continue;
+    
+    const [yearStr, monthStr] = report.mes.split('-');
+    const year = parseInt(yearStr, 10);
+    const month = parseInt(monthStr, 10) - 1;
+    
+    for (const [dayStr, incident] of Object.entries(employeeRow.days)) {
+      if (incident === 'F') {
+        const day = parseInt(dayStr, 10);
+        if (!isNaN(day)) {
+          faltaDates.push(new Date(year, month, day));
+        }
+      }
+    }
+  }
+  
+  faltaDates.sort((a, b) => a.getTime() - b.getTime());
+  
+  for (let i = 0; i <= faltaDates.length - 4; i++) {
+    const start = faltaDates[i];
+    const end = faltaDates[i + 3];
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays <= 30) {
+      return true;
+    }
+  }
+  
+  return false;
 }

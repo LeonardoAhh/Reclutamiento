@@ -48,9 +48,7 @@ export function EmployeeResultCard({
   const renewalDate = employee.isBaja
     ? null
     : addDaysToIso(employee.fecha_ingreso, 90);
-  const showRenewalDate = Boolean(
-    renewalDate && renewalDate >= localTodayIso(),
-  );
+  const showRenewalDate = Boolean(renewalDate);
 
   return (
     <article
@@ -78,6 +76,16 @@ export function EmployeeResultCard({
             {employee.isBaja && <Badge variant="error">Baja</Badge>}
             {employee.is_starlite && <StarliteBadge />}
           </h3>
+        </div>
+        <div className="config-card__meta-right">
+          <span className="text-muted">
+            Ingreso: {formatReadableDate(employee.fecha_ingreso)}
+          </span>
+          {showRenewalDate && renewalDate && (
+            <span className="text-warning">
+              Renovación: {formatReadableDate(renewalDate)}
+            </span>
+          )}
         </div>
       </header>
 
