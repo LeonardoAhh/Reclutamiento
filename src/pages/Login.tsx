@@ -146,7 +146,7 @@ export function Login() {
                     autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    placeholder="usuario@reclutamiento.local"
+                    placeholder="usuario@empresa.com"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={submitting || isSuccess}
