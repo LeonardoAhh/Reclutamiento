@@ -34,8 +34,7 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
   }
 
   useEffect(() => {
-    const page = pageTitle || "App";
-    document.title = `${page} — Reclutamiento`;
+    document.title = pageTitle || "App";
   }, [pageTitle]);
 
   return (

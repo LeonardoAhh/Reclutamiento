@@ -44,7 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     });
 
     const pageTitle = currentNavItem ? currentNavItem.label : 'App';
-    document.title = `${pageTitle} — Reclutamiento`;
+    document.title = pageTitle;
   }, [location.pathname]);
 
   useEffect(() => {
