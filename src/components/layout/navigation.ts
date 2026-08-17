@@ -33,7 +33,6 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   },
   { to: "/reportes", label: "Reporte Diario", icon: Calendar },
   { to: "/plantilla", label: "Plantilla", icon: Building2 },
-  { to: "/vacantes", label: "Vacantes", icon: Briefcase },
   { to: "/actividades", label: "Actividades", icon: ClipboardList },
   { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
 ];

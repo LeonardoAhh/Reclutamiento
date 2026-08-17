@@ -3,6 +3,7 @@ import { CheckCircle2, Star, Trophy, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CoverageBar } from './CoverageBar';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 import './TopRecruiterModal.css';
 
 const MONTHLY_GOAL = 28;
@@ -55,7 +56,7 @@ function Confetti() {
 }
 
 export function TopRecruiterModal() {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [topRecruiter, setTopRecruiter] = useState<{name: string, total: number} | null>(null);
   const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean} | null>(null);
@@ -65,104 +66,89 @@ export function TopRecruiterModal() {
     // Solo mostramos el modal una vez por sesión
     if (sessionStorage.getItem('hasSeenTopRecruiterModal') === 'true') return;
 
-    if (!user || !user.email) return;
+    if (!profile || profile.role !== 'reclutador') return;
 
-    const userEmailLower = user.email.toLowerCase();
+    const currentUserNameLower = (profile.display_name || profile.username || '').toLowerCase();
 
-    // Restringir el modal exclusivamente a los reclutadores
-    const allowedRecruiters = ['alexandra@reclutamiento.local', 'daniela@reclutamiento.local'];
-    if (!allowedRecruiters.includes(userEmailLower)) return;
+    const fetchStats = async () => {
+      const currentMonth = new Date().getMonth(); // 0-11
+      const currentYear = new Date().getFullYear();
+      
+      const startOfMonth = new Date(currentYear, currentMonth, 1).toISOString();
+      const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).toISOString();
 
-    fetch('/indicador.json')
-      .then(res => res.ok ? res.json() : null)
-      .then((data: any[]) => {
-        if (!data || data.length === 0) return;
+      const [empRes, bajRes] = await Promise.all([
+        supabase.from('empleados').select('reclutador').gte('fecha_ingreso', startOfMonth).lte('fecha_ingreso', endOfMonth),
+        supabase.from('bajas').select('reclutador').gte('fecha_ingreso', startOfMonth).lte('fecha_ingreso', endOfMonth)
+      ]);
 
-        const currentMonth = new Date().getMonth(); // 0-11
-        const currentYear = new Date().getFullYear();
+      const allRecords = [...(empRes.data || []), ...(bajRes.data || [])];
+      
+      if (allRecords.length === 0) return;
 
-        const recruiterTotals: Record<string, number> = {};
-        data.forEach(record => {
-          const fechaIngresoStr = record["Fecha Ingreso"];
-          if (!fechaIngresoStr) return;
-
-          const parts = fechaIngresoStr.split('/');
-          if (parts.length !== 3) return;
-
-          const recordMonth = parseInt(parts[1], 10) - 1;
-          const recordYear = parseInt(parts[2], 10);
-
-          if (recordMonth !== currentMonth || recordYear !== currentYear) return;
-
-          const rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
-          let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
+      const recruiterTotals: Record<string, number> = {};
+      allRecords.forEach(record => {
+        const rawRecruiter = record.reclutador ? record.reclutador.replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
+        let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
+        
+        if (recruiter !== 'Sin Reclutador') {
+          // Capitalizar correctamente el nombre (Ej. "DANIELA" -> "Daniela")
+          recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
           
-          if (recruiter !== 'Sin Reclutador') {
-            // Capitalizar correctamente el nombre (Ej. "DANIELA" -> "Daniela")
-            recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
-            
-            // Renombrar a Nayeli por Alexandra por preferencia del usuario
-            if (recruiter === 'Nayeli') {
-              recruiter = 'Alexandra';
-            }
-
-            recruiterTotals[recruiter] = (recruiterTotals[recruiter] || 0) + 1;
+          // Renombrar a Nayeli por Alexandra por preferencia del usuario
+          if (recruiter === 'Nayeli') {
+            recruiter = 'Alexandra';
           }
-        });
 
-        const totalsArray = Object.entries(recruiterTotals).map(([name, total]) => ({ name, total }));
-        
-        let actualTopRecruiter = { name: 'Nadie', total: 0 };
-        if (totalsArray.length > 0) {
-          actualTopRecruiter = totalsArray.reduce((max, current) => current.total > max.total ? current : max);
+          recruiterTotals[recruiter] = (recruiterTotals[recruiter] || 0) + 1;
         }
+      });
 
-        const emailMap: Record<string, string> = {
-          'leonardo': 'leonardo@reclutamiento.local',
-          'daniela': 'daniela@reclutamiento.local',
-          'alexandra': 'alexandra@reclutamiento.local',
-          'nayeli': 'alexandra@reclutamiento.local'
-        };
+      const totalsArray = Object.entries(recruiterTotals).map(([name, total]) => ({ name, total }));
+      
+      let actualTopRecruiter = { name: 'Nadie', total: 0 };
+      if (totalsArray.length > 0) {
+        actualTopRecruiter = totalsArray.reduce((max, current) => current.total > max.total ? current : max);
+      }
 
-        const topNameLower = actualTopRecruiter.name.toLowerCase();
-        const expectedEmail = emailMap[topNameLower];
-        
-        const isTop = expectedEmail 
-          ? userEmailLower === expectedEmail
-          : (userEmailLower.includes(topNameLower) && topNameLower !== 'nadie');
+      const topNameLower = actualTopRecruiter.name.toLowerCase();
+      
+      // Determinar si el usuario actual es el Top Recruiter
+      const isTop = (topNameLower !== 'nadie') && (
+        currentUserNameLower === topNameLower ||
+        currentUserNameLower.includes(topNameLower) ||
+        topNameLower.includes(currentUserNameLower)
+      );
 
-        // Determinar estadísticas del usuario actual
-        let currentUserTotal = 0;
-        let currentUserName = '';
+      // Determinar estadísticas del usuario actual
+      let currentUserTotal = 0;
+      let currentUserName = '';
 
-        for (const r of totalsArray) {
-          const recNameLower = r.name.toLowerCase();
-          const expected = emailMap[recNameLower];
-          if (expected) {
-            if (userEmailLower === expected) {
-              currentUserTotal = r.total;
-              currentUserName = r.name;
-              break;
-            }
-          } else if (userEmailLower.includes(recNameLower)) {
-            currentUserTotal = r.total;
-            currentUserName = r.name;
-            break;
-          }
+      for (const r of totalsArray) {
+        const recNameLower = r.name.toLowerCase();
+        if (
+          currentUserNameLower === recNameLower || 
+          currentUserNameLower.includes(recNameLower) || 
+          recNameLower.includes(currentUserNameLower)
+        ) {
+          currentUserTotal = r.total;
+          currentUserName = r.name;
+          break;
         }
+      }
 
-        if (!currentUserName) {
-           const fallbackName = userEmailLower.split('@')[0] || 'Reclutador';
-           currentUserName = fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1);
-        }
+      if (!currentUserName) {
+         currentUserName = profile.display_name || profile.username || 'Reclutador';
+      }
 
-        setTopRecruiter(actualTopRecruiter);
-        setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop });
-        setIsOpen(true);
-        sessionStorage.setItem('hasSeenTopRecruiterModal', 'true');
-      })
-      .catch(console.error);
-  }, [user]);
+      setTopRecruiter(actualTopRecruiter);
+      setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop });
+      setIsOpen(true);
+      sessionStorage.setItem('hasSeenTopRecruiterModal', 'true');
+    };
+
+    fetchStats().catch(console.error);
+  }, [profile]);
 
   // Manejo de teclado (ESC para cerrar)
   useEffect(() => {

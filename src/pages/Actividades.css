@@ -411,6 +411,24 @@
   }
 }
 
+.vacantes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .vacantes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .vacantes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .activity-card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);

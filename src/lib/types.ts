@@ -640,7 +640,7 @@ export interface Activity {
   asignado_a?: string | null;
   creado_por?: string | null;
   estado: ActivityStatus;
-  tipo?: 'unica' | 'rutinaria';
+  tipo?: 'unica' | 'rutinaria' | 'vacante';
   reference_image?: string | null;
   created_at?: string;
   updated_at?: string;

@@ -34,7 +34,7 @@ export function useActivities() {
     fetchActivities();
   }, [fetchActivities]);
 
-  const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: 'unica' | 'rutinaria' = 'unica', reference_image: string | null = null) => {
+  const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: 'unica' | 'rutinaria' | 'vacante' = 'unica', reference_image: string | null = null) => {
     if (!profile) return null;
     try {
       const { data, error } = await supabase.from('activities').insert({
@@ -48,7 +48,7 @@ export function useActivities() {
       }).select().single();
       
       if (error) throw error;
-      setActivities(prev => [data as Activity, ...prev]);
+      await fetchActivities();
       toast.success({ title: 'Actividad asignada' });
       return data;
     } catch (err: any) {
@@ -164,7 +164,7 @@ export function useActivities() {
     }
   };
 
-  const updateActivity = async (id: string, fields: { titulo?: string; descripcion?: string; asignado_a?: string | null; tipo?: 'unica' | 'rutinaria', reference_image?: string | null }) => {
+  const updateActivity = async (id: string, fields: { titulo?: string; descripcion?: string; asignado_a?: string | null; tipo?: 'unica' | 'rutinaria' | 'vacante', reference_image?: string | null }) => {
     try {
       const { data, error } = await supabase.from('activities')
         .update({ ...fields, updated_at: new Date().toISOString() })
