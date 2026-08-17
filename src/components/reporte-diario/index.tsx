@@ -27,7 +27,6 @@ import {
   VISIBLE_SECTIONS,
 } from "./constants";
 import {
-  Check as CheckIconData,
   PanelLeftClose,
   PanelLeftOpen,
   Save as SaveIconData,
@@ -59,7 +58,6 @@ import ReportesGuardadosDialog from "./reportes-guardados-dialog";
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 
-const LOAD_SUCCESS_DURATION_MS = 1200;
 const SAVE_SUCCESS_DURATION_MS = 1500;
 
 export default function ReporteDiarioContent() {
@@ -78,9 +76,7 @@ export default function ReporteDiarioContent() {
   const [fileName, setFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const loadSuccessTimerRef = useRef<number | null>(null);
   const saveSuccessTimerRef = useRef<number | null>(null);
-  const [loadSuccess, setLoadSuccess] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   // collapse behaviour removed — panel is always visible
@@ -106,12 +102,6 @@ export default function ReporteDiarioContent() {
   const [processStep, setProcessStep] = useState<
     "reading" | "validating" | null
   >(null);
-  const [previewData, setPreviewData] = useState<{
-    rows: ReporteRow[];
-    mes: string;
-    fileName: string;
-    jsonRaw: unknown;
-  } | null>(null);
 
   const {
     saving: dbSaving,
@@ -131,8 +121,6 @@ export default function ReporteDiarioContent() {
 
   useEffect(() => {
     return () => {
-      if (loadSuccessTimerRef.current !== null)
-        window.clearTimeout(loadSuccessTimerRef.current);
       if (saveSuccessTimerRef.current !== null)
         window.clearTimeout(saveSuccessTimerRef.current);
     };
@@ -548,13 +536,19 @@ export default function ReporteDiarioContent() {
           return;
         }
 
-        setPreviewData({
-          rows: parsed,
-          mes: parsed[0]?.mes ?? "",
-          fileName: file.name,
-          jsonRaw: json,
-        });
+        setRows(parsed);
+        setSelectedMes(parsed[0]?.mes ?? "");
+        setFileName(file.name);
+        try {
+          sessionStorage.setItem(
+            "reporteDiarioCache",
+            JSON.stringify(json),
+          );
+        } catch (error) {
+          console.warn("No se pudo actualizar la caché local del reporte:", error);
+        }
         setProcessStep(null);
+        toast.success({ title: "Reporte cargado" });
       } catch (err) {
         setProcessStep(null);
         const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`;
@@ -564,44 +558,6 @@ export default function ReporteDiarioContent() {
     },
     [processStep],
   );
-
-  const confirmLoad = useCallback(() => {
-    if (!previewData || loadSuccess) return;
-
-    setRows(previewData.rows);
-    setSelectedMes(previewData.mes);
-    setFileName(previewData.fileName);
-    try {
-      sessionStorage.setItem(
-        "reporteDiarioCache",
-        JSON.stringify(previewData.jsonRaw),
-      );
-    } catch (error) {
-      console.warn("No se pudo actualizar la caché local del reporte:", error);
-    }
-
-    setLoadSuccess(true);
-    if (loadSuccessTimerRef.current !== null)
-      window.clearTimeout(loadSuccessTimerRef.current);
-    loadSuccessTimerRef.current = window.setTimeout(() => {
-      setLoadSuccess(false);
-      setPreviewData(null);
-      // panel is always visible; no collapse
-      loadSuccessTimerRef.current = null;
-    }, LOAD_SUCCESS_DURATION_MS);
-    toast.success({ title: "Reporte cargado" });
-  }, [loadSuccess, previewData]);
-
-  const cancelLoad = useCallback(() => {
-    if (loadSuccess) return;
-    if (loadSuccessTimerRef.current !== null) {
-      window.clearTimeout(loadSuccessTimerRef.current);
-      loadSuccessTimerRef.current = null;
-    }
-    setLoadSuccess(false);
-    setPreviewData(null);
-    setProcessStep(null);
-  }, [loadSuccess]);
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -996,12 +952,20 @@ export default function ReporteDiarioContent() {
                     <CloudUpload size={34} />
                   </span>
                   <h3 className="reporte-hero__dropzone-title">
-                    Selecciona un archivo
+                    Arrastra tu archivo aquí o haz clic para seleccionar
                   </h3>
+                  <p className="reporte-hero__dropzone-hint">
+                    Detecta automáticamente el mes y valida el formato
+                  </p>
+                  <span className="reporte-hero__dropzone-format" aria-hidden="true">
+                    <FileJson size={14} />
+                    .json
+                  </span>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
 
           {savedSummaries.length > 0 && (
             <div
@@ -1057,83 +1021,7 @@ export default function ReporteDiarioContent() {
           </div>
         )}
 
-        {/* Preview Modal + Processing Overlay + Drag Overlay siguen debajo */}
-        <Modal
-          isOpen={!!previewData}
-          onClose={cancelLoad}
-          title="Revisión rápida del archivo"
-          subtitle="Confirma que los datos son los esperados antes de aplicarlos."
-          icon={<FileJson />}
-          footerActions={
-            <>
-              <button
-                type="button"
-                onClick={cancelLoad}
-                className="btn-secondary"
-                disabled={loadSuccess}
-              >
-                Cancelar
-              </button>
-              <AnimatedSubmitButton
-                type="button"
-                isSubmitting={false}
-                isSuccess={loadSuccess}
-                idleText="Sí, cargar datos"
-                successText="¡Cargado!"
-                idleIcon={CheckIconData}
-                className="btn-primary"
-                onClick={confirmLoad}
-              />
-            </>
-          }
-        >
-          {previewData && (
-            <div className="modal-body">
-              <div className="reporte-preview">
-                <div className="reporte-preview__card">
-                  <span className="reporte-preview__icon" aria-hidden="true">
-                    <FileJson size={20} />
-                  </span>
-                  <div className="reporte-preview__body">
-                    <p
-                      className="reporte-preview__filename"
-                      title={previewData.fileName}
-                    >
-                      {previewData.fileName}
-                    </p>
-                    <p className="reporte-preview__meta">
-                      {previewData.rows.length.toLocaleString("es-MX")}{" "}
-                      registros · {formatMes(previewData.mes)}
-                    </p>
-                  </div>
-                </div>
-                <ul
-                  className="reporte-preview__stats"
-                  aria-label="Resumen del archivo"
-                >
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">
-                      {previewData.rows.length.toLocaleString("es-MX")}
-                    </span>
-                    <span className="reporte-preview__stat-label">
-                      Registros
-                    </span>
-                  </li>
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">
-                      {formatMes(previewData.mes)}
-                    </span>
-                    <span className="reporte-preview__stat-label">Periodo</span>
-                  </li>
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">JSON</span>
-                    <span className="reporte-preview__stat-label">Formato</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
-        </Modal>
+
 
         <AnimatePresence>
           {isDragging && (
@@ -1502,83 +1390,6 @@ export default function ReporteDiarioContent() {
           currentMonth={currentMonth}
         />
 
-        {/* ── Preview Modal ────────────────────────────────── */}
-        <Modal
-          isOpen={!!previewData}
-          onClose={cancelLoad}
-          title="Revisión rápida del archivo"
-          subtitle="Confirma que los datos son los esperados antes de aplicarlos."
-          icon={<FileJson />}
-          footerActions={
-            <>
-              <button
-                type="button"
-                onClick={cancelLoad}
-                className="btn-secondary"
-                disabled={loadSuccess}
-              >
-                Cancelar
-              </button>
-              <AnimatedSubmitButton
-                type="button"
-                isSubmitting={false}
-                isSuccess={loadSuccess}
-                idleText="Sí, cargar datos"
-                successText="¡Cargado!"
-                idleIcon={CheckIconData}
-                className="btn-primary"
-                onClick={confirmLoad}
-              />
-            </>
-          }
-        >
-          {previewData && (
-            <div className="modal-body">
-              <div className="reporte-preview">
-                <div className="reporte-preview__card">
-                  <span className="reporte-preview__icon" aria-hidden="true">
-                    <FileJson size={20} />
-                  </span>
-                  <div className="reporte-preview__body">
-                    <p
-                      className="reporte-preview__filename"
-                      title={previewData.fileName}
-                    >
-                      {previewData.fileName}
-                    </p>
-                    <p className="reporte-preview__meta">
-                      {previewData.rows.length.toLocaleString("es-MX")}{" "}
-                      registros · {formatMes(previewData.mes)}
-                    </p>
-                  </div>
-                </div>
-                <ul
-                  className="reporte-preview__stats"
-                  aria-label="Resumen del archivo"
-                >
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">
-                      {previewData.rows.length.toLocaleString("es-MX")}
-                    </span>
-                    <span className="reporte-preview__stat-label">
-                      Registros
-                    </span>
-                  </li>
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">
-                      {formatMes(previewData.mes)}
-                    </span>
-                    <span className="reporte-preview__stat-label">Periodo</span>
-                  </li>
-                  <li className="reporte-preview__stat">
-                    <span className="reporte-preview__stat-value">JSON</span>
-                    <span className="reporte-preview__stat-label">Formato</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
-        </Modal>
 
         {/* ── Modal: Top 10 empleados con más incidencias ──────── */}
         {topIncidenceEmployees.length > 0 && (
