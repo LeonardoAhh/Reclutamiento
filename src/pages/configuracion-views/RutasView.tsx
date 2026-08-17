@@ -1,12 +1,23 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
-import { Bus, CalendarDays, ChevronLeft, ChevronRight, Clock, MapPin, Minus, TrendingDown, TrendingUp } from 'lucide-react';
-import { Search as SearchData, X as XIconData } from 'lucide';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { getShortName } from '@/lib/names';
-import { useRutas, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
-import { RutaEmployeesModal } from '@/components/ui/RutaEmployeesModal';
-import { Tooltip } from '@/components/ui/Tooltip';
-import './Rutas.css';
+import { useState, useRef, useMemo, useEffect } from "react";
+import {
+  Bus,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  MapPin,
+  Minus,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
+import { Search as SearchData, X as XIconData } from "lucide";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { getShortName } from "@/lib/names";
+import { formatLongDate } from "@/lib/dates";
+import { useRutas, RutaAgrupada, type EmpleadoRuta } from "@/hooks/useRutas";
+import { RutaEmployeesModal } from "@/components/ui/RutaEmployeesModal";
+import { Tooltip } from "@/components/ui/Tooltip";
+import "./Rutas.css";
 
 /* ─────────────────────────────────────────
    Subcomponents
@@ -30,15 +41,20 @@ interface RutaCardProps {
   onClick: () => void;
 }
 
-function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { matchCount?: number }) {
+function RutaCard({
+  ruta,
+  isActive,
+  onClick,
+  matchCount,
+}: RutaCardProps & { matchCount?: number }) {
   const isOverCapacity = Object.entries(ruta.turnosCount).some(
-    ([t, c]) => ruta.maxCapacityPerShift[t] && c > ruta.maxCapacityPerShift[t]
+    ([t, c]) => ruta.maxCapacityPerShift[t] && c > ruta.maxCapacityPerShift[t],
   );
 
   return (
     <button
       type="button"
-      className={`ruta-card${isActive ? ' ruta-card--active' : ''}${matchCount ? ' ruta-card--has-match' : ''}`}
+      className={`ruta-card${isActive ? " ruta-card--active" : ""}${matchCount ? " ruta-card--has-match" : ""}`}
       onClick={onClick}
       aria-pressed={isActive}
     >
@@ -46,22 +62,26 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
         <Bus size={18} />
       </span>
       <span className="ruta-card__title type-heading-sm">
-        {ruta.nombreRuta.split('-')[0].trim()}
+        {ruta.nombreRuta.split("-")[0].trim()}
         {isOverCapacity && (
-          <span className="ruta-card__alert-dot" aria-label="Sobrecupo detectado" title="Sobrecupo detectado" />
+          <span
+            className="ruta-card__alert-dot"
+            aria-label="Sobrecupo detectado"
+            title="Sobrecupo detectado"
+          />
         )}
       </span>
       {matchCount !== undefined && matchCount > 0 && (
-        <span className="ruta-card__match-badge">
-          {matchCount}
-        </span>
+        <span className="ruta-card__match-badge">{matchCount}</span>
       )}
-      <ChevronRight size={18} aria-hidden="true" className="ruta-card__chevron" />
+      <ChevronRight
+        size={18}
+        aria-hidden="true"
+        className="ruta-card__chevron"
+      />
     </button>
   );
 }
-
-
 
 /* ─── Animated shift bars ─── */
 interface ShiftBarsProps {
@@ -73,9 +93,17 @@ interface ShiftBarsProps {
   animKey: number;
 }
 
-function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleados = [], empleadosPrev = [], animKey }: ShiftBarsProps) {
-  const entries = Object.entries(turnosCount)
-    .sort(([a], [b]) => a.localeCompare(b));
+function ShiftBars({
+  turnosCount,
+  turnosCountPrev,
+  maxCapacityPerShift,
+  empleados = [],
+  empleadosPrev = [],
+  animKey,
+}: ShiftBarsProps) {
+  const entries = Object.entries(turnosCount).sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
 
   return (
     <div className="shift-bars" key={animKey}>
@@ -87,47 +115,73 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
 
         const prevCount = turnosCountPrev[turno] ?? count; // Default to count if no prev data
         const delta = count - prevCount;
-        let trendAria = 'Sin cambios';
-        if (delta > 0) trendAria = `${delta} alta${delta === 1 ? '' : 's'}`;
-        if (delta < 0) trendAria = `${Math.abs(delta)} baja${Math.abs(delta) === 1 ? '' : 's'}`;
+        let trendAria = "Sin cambios";
+        if (delta > 0) trendAria = `${delta} alta${delta === 1 ? "" : "s"}`;
+        if (delta < 0)
+          trendAria = `${Math.abs(delta)} baja${Math.abs(delta) === 1 ? "" : "s"}`;
 
-        const currentEmps = empleados.filter(e => e.turno === turno);
-        const prevEmps = empleadosPrev.filter(e => e.turno === turno);
-        const added = currentEmps.filter(curr => !prevEmps.some(prev => prev.numeroEmpleado === curr.numeroEmpleado));
-        const removed = prevEmps.filter(prev => !currentEmps.some(curr => curr.numeroEmpleado === prev.numeroEmpleado));
+        const currentEmps = empleados.filter((e) => e.turno === turno);
+        const prevEmps = empleadosPrev.filter((e) => e.turno === turno);
+        const added = currentEmps.filter(
+          (curr) =>
+            !prevEmps.some(
+              (prev) => prev.numeroEmpleado === curr.numeroEmpleado,
+            ),
+        );
+        const removed = prevEmps.filter(
+          (prev) =>
+            !currentEmps.some(
+              (curr) => curr.numeroEmpleado === prev.numeroEmpleado,
+            ),
+        );
 
-        const tooltipContent = (added.length > 0 || removed.length > 0) ? (
-          <div className="trend-tooltip">
-            {added.length > 0 && (
-              <div className="trend-tooltip__section">
-                <strong className="trend-tooltip__title trend-tooltip__title--success">
-                  <TrendingUp size={12} /> Altas ({added.length}):
-                </strong>
-                <ul className="trend-tooltip__list">
-                  {added.map(e => <li key={e.numeroEmpleado}>{e.numeroEmpleado} &middot; {getShortName(e.nombre)}</li>)}
-                </ul>
-              </div>
-            )}
-            {removed.length > 0 && (
-              <div className="trend-tooltip__section">
-                <strong className="trend-tooltip__title trend-tooltip__title--danger">
-                  <TrendingDown size={12} /> Bajas ({removed.length}):
-                </strong>
-                <ul className="trend-tooltip__list">
-                  {removed.map(e => <li key={e.numeroEmpleado}>{e.numeroEmpleado} &middot; {getShortName(e.nombre)}</li>)}
-                </ul>
-              </div>
-            )}
-          </div>
-        ) : null;
+        const tooltipContent =
+          added.length > 0 || removed.length > 0 ? (
+            <div className="trend-tooltip">
+              {added.length > 0 && (
+                <div className="trend-tooltip__section">
+                  <strong className="trend-tooltip__title trend-tooltip__title--success">
+                    <TrendingUp size={12} /> Altas ({added.length}):
+                  </strong>
+                  <ul className="trend-tooltip__list">
+                    {added.map((e) => (
+                      <li key={e.numeroEmpleado}>
+                        {e.numeroEmpleado} &middot; {getShortName(e.nombre)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {removed.length > 0 && (
+                <div className="trend-tooltip__section">
+                  <strong className="trend-tooltip__title trend-tooltip__title--danger">
+                    <TrendingDown size={12} /> Bajas ({removed.length}):
+                  </strong>
+                  <ul className="trend-tooltip__list">
+                    {removed.map((e) => (
+                      <li key={e.numeroEmpleado}>
+                        {e.numeroEmpleado} &middot; {getShortName(e.nombre)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : null;
 
         const trendBadge = (
           <span
             tabIndex={0}
-            className={`shift-bars__trend ${delta > 0 ? 'trend-up' : delta < 0 ? 'trend-down' : 'trend-flat'}`}
+            className={`shift-bars__trend ${delta > 0 ? "trend-up" : delta < 0 ? "trend-down" : "trend-flat"}`}
             aria-label={trendAria}
           >
-            {delta > 0 ? <TrendingUp size={14} aria-hidden="true" /> : delta < 0 ? <TrendingDown size={14} aria-hidden="true" /> : <Minus size={14} aria-hidden="true" />}
+            {delta > 0 ? (
+              <TrendingUp size={14} aria-hidden="true" />
+            ) : delta < 0 ? (
+              <TrendingDown size={14} aria-hidden="true" />
+            ) : (
+              <Minus size={14} aria-hidden="true" />
+            )}
             <span className="sr-only">{trendAria}</span>
             <span aria-hidden="true">{Math.abs(delta)}</span>
           </span>
@@ -136,36 +190,46 @@ function ShiftBars({ turnosCount, turnosCountPrev, maxCapacityPerShift, empleado
         return (
           <div
             key={turno}
-            className={`shift-bars__row${isOverCapacity ? ' shift-bars__row--over' : ''}`}
-            style={{ '--bar-delay': `${i * 0.08}s`, '--bar-pct': `${Math.min(pct, 100)}%` } as React.CSSProperties}
+            className={`shift-bars__row${isOverCapacity ? " shift-bars__row--over" : ""}`}
+            style={
+              {
+                "--bar-delay": `${i * 0.08}s`,
+                "--bar-pct": `${Math.min(pct, 100)}%`,
+              } as React.CSSProperties
+            }
           >
-            <span className="shift-bars__label type-body-sm">Turno {turno}</span>
+            <span className="shift-bars__label type-body-sm">
+              Turno {turno}
+            </span>
             <div
               className="shift-bars__track"
               role="progressbar"
               aria-valuenow={count}
               aria-valuemin={0}
               aria-valuemax={Math.max(barMax, count)}
-              aria-valuetext={assignedCapacity ? `${count} de ${assignedCapacity} empleados` : `${count} empleados`}
+              aria-valuetext={
+                assignedCapacity
+                  ? `${count} de ${assignedCapacity} empleados`
+                  : `${count} empleados`
+              }
               aria-label={`Turno ${turno}`}
             >
               <div className="shift-bars__fill" />
             </div>
             <div className="shift-bars__stats">
               <span
-                className={`shift-bars__count type-body-sm${isOverCapacity ? ' shift-bars__count--over' : ''}`}
+                className={`shift-bars__count type-body-sm${isOverCapacity ? " shift-bars__count--over" : ""}`}
               >
                 {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
               </span>
-              {turnosCountPrev[turno] !== undefined && (
-                tooltipContent ? (
+              {turnosCountPrev[turno] !== undefined &&
+                (tooltipContent ? (
                   <Tooltip content={tooltipContent} side="top" delayMs={200}>
                     {trendBadge}
                   </Tooltip>
                 ) : (
                   trendBadge
-                )
-              )}
+                ))}
             </div>
           </div>
         );
@@ -180,17 +244,28 @@ interface DailyCapacityBarsProps {
   animKey: number;
 }
 
-function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) {
-  const DAYS_ORDER = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+function DailyCapacityBars({
+  capacityPerDay,
+  animKey,
+}: DailyCapacityBarsProps) {
+  const DAYS_ORDER = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+  ];
 
   const RESTING_SHIFTS: Record<string, string> = {
-    Lunes:     'T2',
-    Martes:    'T2',
-    Miércoles: 'T3',
-    Jueves:    'T3',
-    Viernes:   'T4',
-    Sábado:    'T4',
-    Domingo:   'T1',
+    Lunes: "T2",
+    Martes: "T2",
+    Miércoles: "T3",
+    Jueves: "T3",
+    Viernes: "T4",
+    Sábado: "T4",
+    Domingo: "T1",
   };
 
   return (
@@ -209,7 +284,7 @@ function DailyCapacityBars({ capacityPerDay, animKey }: DailyCapacityBarsProps) 
                 <span className="daily-cards__label">Descansa</span>
                 <span
                   className="daily-cards__rest-badge"
-                  title={`Descansa el Turno ${RESTING_SHIFTS[day].replace('T', '')}`}
+                  title={`Descansa el Turno ${RESTING_SHIFTS[day].replace("T", "")}`}
                 >
                   {RESTING_SHIFTS[day]}
                 </span>
@@ -238,7 +313,9 @@ function Placeholder() {
         </div>
       </div>
       <h3 className="type-heading-md">Selecciona una ruta</h3>
-      <p className="type-body-sm">Toca cualquier tarjeta para ver sus detalles.</p>
+      <p className="type-body-sm">
+        Toca cualquier tarjeta para ver sus detalles.
+      </p>
     </div>
   );
 }
@@ -258,7 +335,11 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
         <div className="ruta-detail__grids">
           <section className="ruta-section">
             <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
-              <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" />
+              <MapPin
+                size={16}
+                aria-hidden="true"
+                className="ruta-section__title-icon"
+              />
               {ruta.nombreRuta}
               <button
                 type="button"
@@ -283,7 +364,11 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
 
           <section className="ruta-section">
             <h3 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
-              <CalendarDays size={16} aria-hidden="true" className="ruta-section__title-icon" />
+              <CalendarDays
+                size={16}
+                aria-hidden="true"
+                className="ruta-section__title-icon"
+              />
               Empleados por día
             </h3>
             <DailyCapacityBars
@@ -296,7 +381,11 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
         {/* Route simulation */}
         <section className="ruta-section">
           <h3 className="ruta-section__title type-heading-sm">
-            <MapPin size={16} aria-hidden="true" className="ruta-section__title-icon" />
+            <MapPin
+              size={16}
+              aria-hidden="true"
+              className="ruta-section__title-icon"
+            />
             Itinerario ({ruta.paradas.length} paradas)
           </h3>
           <div className="ruta-stops">
@@ -304,12 +393,18 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
               {ruta.paradas.map((parada, i) => (
                 <li
                   key={parada}
-                  className={`ruta-stops__item type-body-sm ${i === 0 ? 'is-first' : i === ruta.paradas.length - 1 ? 'is-last' : ''}`}
-                  style={{ '--item-delay': `${0.05 + i * 0.06}s` } as React.CSSProperties}
+                  className={`ruta-stops__item type-body-sm ${i === 0 ? "is-first" : i === ruta.paradas.length - 1 ? "is-last" : ""}`}
+                  style={
+                    {
+                      "--item-delay": `${0.05 + i * 0.06}s`,
+                    } as React.CSSProperties
+                  }
                 >
                   <div className="ruta-stops__track" aria-hidden="true">
                     <div className="ruta-stops__dot" />
-                    {i !== ruta.paradas.length - 1 && <div className="ruta-stops__line" />}
+                    {i !== ruta.paradas.length - 1 && (
+                      <div className="ruta-stops__line" />
+                    )}
                   </div>
                   <span className="ruta-stops__text">{parada}</span>
                 </li>
@@ -327,16 +422,16 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
 ───────────────────────────────────────── */
 
 export function RutasView() {
-  const { rutas, loading, errorMsg } = useRutas();
+  const { rutas, lastUpdated, loading, errorMsg } = useRutas();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [animKey, setAnimKey] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
    */
-  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
   const listRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -350,7 +445,7 @@ export function RutasView() {
       const count = ruta.empleados.filter(
         (emp) =>
           emp.numeroEmpleado.toLowerCase().includes(searchNorm) ||
-          emp.nombre.toLowerCase().includes(searchNorm)
+          emp.nombre.toLowerCase().includes(searchNorm),
       ).length;
       if (count > 0) map.set(ruta.nombreRuta, count);
     }
@@ -365,7 +460,8 @@ export function RutasView() {
   // Auto-select first matching route when search changes
   useEffect(() => {
     if (searchNorm && filteredRutas.length > 0) {
-      const currentStillVisible = selectedRuta && matchCounts.has(selectedRuta.nombreRuta);
+      const currentStillVisible =
+        selectedRuta && matchCounts.has(selectedRuta.nombreRuta);
       if (!currentStillVisible) {
         setSelectedRuta(filteredRutas[0]);
         setAnimKey((k) => k + 1);
@@ -376,32 +472,47 @@ export function RutasView() {
   function handleSelect(ruta: RutaAgrupada) {
     setSelectedRuta(ruta);
     setAnimKey((k) => k + 1);
-    setMobileView('detail'); // push to detail on mobile
+    setMobileView("detail"); // push to detail on mobile
   }
 
   function handleBack() {
-    setMobileView('list');
+    setMobileView("list");
   }
 
   const handleListKeyDown = (event: React.KeyboardEvent) => {
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
-    const buttons = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('.ruta-card') ?? []);
+    const buttons = Array.from(
+      listRef.current?.querySelectorAll<HTMLButtonElement>(".ruta-card") ?? [],
+    );
     if (!buttons.length) return;
-    const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
-    const nextIndex = event.key === 'Home'
-      ? 0
-      : event.key === 'End'
-        ? buttons.length - 1
-        : (Math.max(currentIndex, 0) + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
+    const currentIndex = buttons.indexOf(
+      document.activeElement as HTMLButtonElement,
+    );
+    const nextIndex =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? buttons.length - 1
+          : (Math.max(currentIndex, 0) +
+              (event.key === "ArrowDown" ? 1 : -1) +
+              buttons.length) %
+            buttons.length;
     buttons[nextIndex]?.focus();
   };
 
   return (
-    <section className="rutas-page config-page" id="main-content" data-mobile-view={mobileView} tabIndex={-1}>
-
+    <section
+      className="rutas-page config-page"
+      id="main-content"
+      data-mobile-view={mobileView}
+      tabIndex={-1}
+    >
       {/* ── Search bar & Horarios ── */}
-      <section className="config-page__toolbar" aria-label="Herramientas de rutas">
+      <section
+        className="config-page__toolbar"
+        aria-label="Herramientas de rutas"
+      >
         <div className="rutas-toolbar-flex">
           <div className="form-group config-search rutas-search-container">
             <label htmlFor="rutas-search-input" className="sr-only">
@@ -410,17 +521,20 @@ export function RutasView() {
             <div className="config-search__wrapper">
               <button
                 type="button"
-                className={`config-search__icon rutas-search-clear-btn ${searchTerm ? 'rutas-search-clear-btn--active' : 'rutas-search-clear-btn--inactive'}`}
-                onClick={() => { setSearchTerm(''); searchInputRef.current?.focus(); }}
+                className={`config-search__icon rutas-search-clear-btn ${searchTerm ? "rutas-search-clear-btn--active" : "rutas-search-clear-btn--inactive"}`}
+                onClick={() => {
+                  setSearchTerm("");
+                  searchInputRef.current?.focus();
+                }}
                 disabled={!searchTerm}
-                aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
+                aria-label={searchTerm ? "Limpiar búsqueda" : "Buscar"}
                 tabIndex={searchTerm ? 0 : -1}
               >
-                <MorphingIcon 
-                  icon={searchTerm ? XIconData : SearchData} 
-                  size={18} 
-                  className="text-muted" 
-                  aria-hidden="true" 
+                <MorphingIcon
+                  icon={searchTerm ? XIconData : SearchData}
+                  size={18}
+                  className="text-muted"
+                  aria-hidden="true"
                 />
               </button>
               <input
@@ -430,30 +544,65 @@ export function RutasView() {
                 placeholder="Buscar por número de empleado o nombre…"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
+                aria-describedby={
+                  searchNorm ? "rutas-search-status" : undefined
+                }
                 autoComplete="off"
               />
             </div>
             {searchNorm && (
-              <p id="rutas-search-status" className="config-search__hint text-muted mt-xs" role="status" aria-live="polite">
+              <p
+                id="rutas-search-status"
+                className="config-search__hint text-muted mt-xs"
+                role="status"
+                aria-live="polite"
+              >
                 {filteredRutas.length === 0
-                  ? 'Sin resultados'
-                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? '' : 's'} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? '' : 's'}`}
+                  ? "Sin resultados"
+                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? "" : "s"} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? "" : "s"}`}
               </p>
             )}
           </div>
-          
-          <a
-            href="/horarios/index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-secondary rutas-horarios-btn"
-            title="Ver horarios"
-            aria-label="Ver horarios"
+
+          <div
+            style={{
+              display: "flex",
+              gap: "var(--spacing-md)",
+              alignItems: "center",
+            }}
           >
-            <Clock size={16} aria-hidden="true" />
-            Horarios
-          </a>
+            <div
+              className="rutas-last-updated"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                gap: "var(--spacing-xxs)",
+              }}
+            >
+              <span className="type-caption-up text-muted">
+                Última actualización
+              </span>
+              <span
+                className="type-body-sm strong"
+                style={{ color: "var(--color-primary)" }}
+              >
+                {lastUpdated ? formatLongDate(lastUpdated) : "No especificada"}
+              </span>
+            </div>
+
+            <a
+              href="/horarios/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary rutas-horarios-btn"
+              title="Ver horarios"
+              aria-label="Ver horarios"
+            >
+              <Clock size={16} aria-hidden="true" />
+              Horarios
+            </a>
+          </div>
         </div>
       </section>
 
@@ -480,11 +629,14 @@ export function RutasView() {
             </div>
           )}
 
-          {!loading && !errorMsg && !searchNorm && filteredRutas.length === 0 && (
-            <p className="rutas-empty type-body-sm">
-              No se encontraron rutas en el archivo.
-            </p>
-          )}
+          {!loading &&
+            !errorMsg &&
+            !searchNorm &&
+            filteredRutas.length === 0 && (
+              <p className="rutas-empty type-body-sm">
+                No se encontraron rutas en el archivo.
+              </p>
+            )}
 
           {!loading &&
             !errorMsg &&
@@ -494,13 +646,19 @@ export function RutasView() {
                 ruta={ruta}
                 isActive={selectedRuta?.nombreRuta === ruta.nombreRuta}
                 onClick={() => handleSelect(ruta)}
-                matchCount={searchNorm ? matchCounts.get(ruta.nombreRuta) : undefined}
+                matchCount={
+                  searchNorm ? matchCounts.get(ruta.nombreRuta) : undefined
+                }
               />
             ))}
         </section>
 
         {/* ── Right: detail / placeholder ── */}
-        <section className="rutas-detail-pane" aria-live="polite" aria-atomic="false">
+        <section
+          className="rutas-detail-pane"
+          aria-live="polite"
+          aria-atomic="false"
+        >
           {/* Back button — mobile only, rendered via CSS display */}
           {selectedRuta && (
             <button

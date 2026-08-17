@@ -156,6 +156,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
 export function useRutas() {
   const [rawData, setRawData] = useState<EmpleadoRuta[]>([]);
   const [rawPrevData, setRawPrevData] = useState<EmpleadoRuta[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -164,9 +165,10 @@ export function useRutas() {
 
     async function load() {
       try {
-        const [res, resPrev] = await Promise.all([
+        const [res, resPrev, resInfo] = await Promise.all([
           fetch(RUTAS_URL, { signal: controller.signal }),
-          fetch(RUTAS_PREV_URL, { signal: controller.signal }).catch(() => null)
+          fetch(RUTAS_PREV_URL, { signal: controller.signal }).catch(() => null),
+          fetch('/rutas-info.json', { signal: controller.signal }).catch(() => null)
         ]);
 
         if (!res.ok) throw new Error(`No se pudo cargar rutas.json (${res.status})`);
@@ -188,6 +190,16 @@ export function useRutas() {
             setRawPrevData(dataPrev.map(normalise));
           }
         }
+
+        if (resInfo && resInfo.ok) {
+          const ctInfo = resInfo.headers.get('content-type') ?? '';
+          if (!ctInfo.includes('text/html')) {
+            const dataInfo = await resInfo.json();
+            if (dataInfo.fecha) {
+              setLastUpdated(dataInfo.fecha);
+            }
+          }
+        }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === 'AbortError') return;
         setErrorMsg(err instanceof Error ? err.message : 'Error desconocido');
@@ -202,5 +214,5 @@ export function useRutas() {
 
   const rutas = useMemo(() => groupByRuta(rawData, rawPrevData), [rawData, rawPrevData]);
 
-  return { rutas, loading, errorMsg };
+  return { rutas, lastUpdated, loading, errorMsg };
 }

@@ -907,7 +907,7 @@
     "numero empleado": "3466",
     "nombre": "AGUILAR GUERRERO JOSE ALONSO",
     "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "LA BARRETA",
     "parada": "TIENDA EN LA ENTRADA"
   },
@@ -1347,7 +1347,7 @@
     "numero empleado": "3959",
     "nombre": "LOPEZ YAÑEZ DIEGO",
     "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
@@ -1518,14 +1518,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SALITRE",
     "parada": "FRENTE AL JARDIN"
-  },
-  {
-    "numero empleado": "4088",
-    "nombre": "ARRIAGA RAMIREZ YOHALI NARCEDALIA",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "4092",
@@ -2120,6 +2112,14 @@
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
+    "numero empleado": "4279",
+    "nombre": "LOPEZ MONROY ERIKA YANEI",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
     "numero empleado": "4280",
     "nombre": "ARREDONDO MENDOZA MA. GUADALUPE",
     "turno": "1",
@@ -2158,14 +2158,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
-  },
-  {
-    "numero empleado": "4288",
-    "nombre": "HERNANDEZ COLLAZO ELIZABETH",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN EL MODELORAMA SOBRE CARRETERA"
   },
   {
     "numero empleado": "4292",
@@ -2342,5 +2334,45 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "PUERTO CARROZA",
     "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+  },
+  {
+    "numero empleado": "4324",
+    "nombre": "OVIEDO HERNANDEZ LAKSHMI NICOLE",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "SANTA CATARINA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4325",
+    "nombre": "GARCIA CABRERA MARCOS ISRAEL",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+  },
+  {
+    "numero empleado": "4326",
+    "nombre": "RODRIGUEZ IBAÑEZ BRAYAN",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA ",
+    "parada": "FRENTE AL ELECTRA"
+  },
+  {
+    "numero empleado": "4328",
+    "nombre": "BAUTISTA SANCHEZ VIRGINIA",
+    "turno": "4",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero empleado": "4329",
+    "nombre": "ALEGRIA BALDERAS PATRICIA",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "LA BARRETA",
+    "parada": "TIENDA EN LA ENTRADA"
   }
 ]

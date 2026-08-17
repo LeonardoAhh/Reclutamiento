@@ -219,6 +219,33 @@ export function formatReadableDate(iso: string | null | undefined): string {
 }
 
 /**
+ * Formato largo para el usuario (`lunes, 17 de agosto de 2026`), en TZ MX.
+ */
+export function formatLongDate(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  const trimmed = String(iso).trim();
+  if (!trimmed) return '—';
+
+  const dateOnly = parseDdMmYyyy(trimmed);
+  const d = dateOnly
+    ? new Date(`${dateOnly}T12:00:00${MX_UTC_OFFSET}`)
+    : new Date(trimmed);
+
+  if (Number.isNaN(d.getTime())) return '—';
+  
+  const formatted = d.toLocaleDateString('es-MX', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: TZ_MX,
+  });
+  
+  // Capitalize the first letter (e.g. "lunes" -> "Lunes")
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+/**
  * Parse `DD/MM/YYYY` (o `DD-MM-YYYY`) → ISO `YYYY-MM-DD`. Acepta también
  * entradas ya en ISO. Regresa `null` si la entrada no es reconocible.
  */
