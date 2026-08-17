@@ -37,6 +37,8 @@ export function Login() {
 
   // Cargar email recordado (si existe) + auto-focus inteligente
   useEffect(() => {
+    document.title = "Iniciar Sesión — Reclutamiento";
+    
     const saved = localStorage.getItem("reclutamiento_saved_email");
     if (saved) {
       setUsername(saved);
