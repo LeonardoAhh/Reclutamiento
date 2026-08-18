@@ -39,8 +39,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
 
     if (selected.size > 2 * 1024 * 1024) {
       loader.flash({
-        title: "La imagen es muy grande",
-        hint: "Máximo 2MB",
+        title: "La imagen es muy grande (Máx 2MB)",
         duration: 2500,
       });
       return;
@@ -97,7 +96,6 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       trigger("error");
       loader.flash({
         title: "Error al subir el avatar",
-        hint: err.message,
         duration: 3000,
       });
     } finally {

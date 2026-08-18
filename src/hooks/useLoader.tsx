@@ -80,7 +80,7 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
       {createPortal(
         <AnimatePresence>
           {state !== null && (
-            <TransitionLoader key="transition-loader" title={state.title} hint={state.hint} />
+            <TransitionLoader key="transition-loader" title={state.title} />
           )}
         </AnimatePresence>,
         document.body
