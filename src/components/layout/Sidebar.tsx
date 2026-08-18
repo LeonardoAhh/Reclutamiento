@@ -82,7 +82,6 @@ export function Sidebar({
     trigger("light");
     loader.flash({
       title: "Cerrando sesión...",
-      hint: "Nos vemos pronto",
       duration: 2500,
     });
     try {

@@ -1,35 +1,32 @@
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { useMorphingSequence } from '@/hooks/useMorphingSequence';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
   title?: string;
-  hint?: string;
 }
 
 export function TransitionLoader({ 
-  title = "Sincronizando...", 
-  hint = "Por favor espera mientras preparamos tu sesión" 
+  title = "Sincronizando..."
 }: TransitionLoaderProps) {
+  const { icon, shouldReduceMotion } = useMorphingSequence();
+
   return (
-    <div className="transition-loader" role="status" aria-live="polite">
+    <div className="transition-loader" role="status" aria-live="polite" aria-label={title}>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: 12 }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="transition-loader__content"
       >
-        <MorphingIcon 
-          icon={Loader2} 
-          size={32} 
-          strokeWidth={2} 
-          className="transition-loader__spinner" 
-          aria-hidden="true" 
-        />
-        <div className="transition-loader__text-container">
-          <h1 className="transition-loader__title">{title}</h1>
-          {hint && <p className="transition-loader__hint">{hint}</p>}
+        <div style={{ color: 'var(--color-primary)' }}>
+          <MorphingIcon 
+            icon={icon} 
+            size={48} 
+            spring={shouldReduceMotion ? 'snappy' : 'bouncy'}
+            aria-hidden="true" 
+          />
         </div>
       </motion.div>
     </div>

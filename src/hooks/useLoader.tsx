@@ -13,7 +13,6 @@ import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 interface LoaderOptions {
   title?: string;
-  hint?: string;
 }
 
 interface LoaderApi {

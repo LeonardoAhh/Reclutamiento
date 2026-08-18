@@ -1,34 +1,22 @@
-import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { LayoutDashboard, Users, BusFront, FileText } from 'lucide';
+import { useMorphingSequence } from '@/hooks/useMorphingSequence';
 import './SplashTypewriter.css';
-
-const ICONS = [LayoutDashboard, Users, BusFront, FileText];
 
 interface SplashTypewriterProps {
   onDone: () => void;
 }
 
 export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const { icon, shouldReduceMotion } = useMorphingSequence();
   const entrance = shouldReduceMotion ? false : { opacity: 0, y: 10 };
   const exit = shouldReduceMotion ? undefined : { opacity: 0 };
-  const [iconIndex, setIconIndex] = useState(0);
 
   useEffect(() => {
-    // Cambiar de ícono cada 400ms para crear el efecto morphing
-    const interval = setInterval(() => {
-      setIconIndex((prev) => (prev + 1) % ICONS.length);
-    }, 400);
-
-    // Duración total reducida
+    // La duración es siempre la misma sin importar la preferencia de movimiento
     const timer = setTimeout(onDone, 1600);
-    
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
-    };
+    return () => clearTimeout(timer);
   }, [onDone]);
 
   return (
@@ -49,9 +37,10 @@ export function SplashTypewriter({ onDone }: SplashTypewriterProps) {
       >
         <div style={{ color: 'var(--color-primary)' }}>
           <MorphingIcon 
-            icon={ICONS[iconIndex]} 
+            icon={icon} 
             size={48} 
-            spring="bouncy"
+            spring={shouldReduceMotion ? 'snappy' : 'bouncy'}
+            aria-hidden="true"
           />
         </div>
       </motion.div>
