@@ -280,3 +280,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Reescrito `AGENTS.md` como contrato operativo: alcance, jerarquía, preflight, preservación funcional, tokens, responsive, alineación obligatoria, accesibilidad, reutilización, calidad, estados, decisión segura y checklist final.
 - Corregida la referencia de la fuente visual al nombre real `desing.md`.
 - No se ejecutaron pruebas ni agentes por instrucción del usuario; no se modificaron Supabase, datos ni `rutas-app`.
+
+## 2025-07 — Auditoría integral de Actividades
+- Aislados los formularios y estados pendientes de crear actividad, crear vacante, editar, asignar, actualizar estado, subir evidencia y eliminar; se evita contaminación de datos y doble ejecución entre acciones.
+- El detalle ahora diferencia carga/vacío de evidencias, ignora respuestas obsoletas y bloquea cargas hasta tener el listado actual.
+- Eliminadas colisiones de modales: detalle se suspende mientras se muestra confirmación o visor, y el visor reutiliza `Modal` con foco, Escape y retorno controlados.
+- Corregida semántica y teclado: `h1`, botones nativos para consultar tarjetas e imágenes, `fieldset`/`legend`, filtros `aria-pressed`, paneles `aria-controls`, labels y nombres accesibles.
+- Presentación mobile-first sin estilos inline: formulario de vacante de una columna a dos, touch targets y focus visible/forced-colors en controles nuevos.
+- Verificación local: lint dirigido PASS, `yarn tsc -b --pretty false` PASS y `yarn vite build` PASS. Sin agentes ni prueba autenticada por instrucción del usuario.

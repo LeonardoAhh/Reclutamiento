@@ -64,47 +64,6 @@ function AssigneeBadges({ act, isAdmin, currentUser }: { act: Activity; isAdmin:
   );
 }
 
-function ImageLightbox({
-  src,
-  alt,
-  onClose,
-}: {
-  src: string;
-  alt: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
-
-  return (
-    <div
-      className="lightbox-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-label="Visor de imagen"
-    >
-      <button
-        className="lightbox-close"
-        onClick={onClose}
-        aria-label="Cerrar visor"
-      >
-        <X size={24} aria-hidden="true" />
-      </button>
-      <img
-        src={src}
-        alt={alt}
-        className="lightbox-img"
-        onClick={(e) => e.stopPropagation()}
-      />
-    </div>
-  );
-}
-
 function SmartTextarea({
   id,
   value,
@@ -240,14 +199,21 @@ export function Actividades() {
   const [assignModalVacancy, setAssignModalVacancy] = useState<Activity | null>(null);
   const [proofs, setProofs] = useState<any[]>([]);
 
-  /* ── Create form state ─────────────────────────────────────────────── */
+  /* ── Create activity form state ─────────────────────────────────────── */
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [vacanteSeccion, setVacanteSeccion] = useState("");
   const [asignadoA, setAsignadoA] = useState("");
   const [tipo, setTipo] = useState<"unica" | "rutinaria" | "vacante">("unica");
+  const [isCreating, setIsCreating] = useState(false);
+
+  /* ── Create vacancy form state (isolated from activities) ───────────── */
+  const [vacanteTitulo, setVacanteTitulo] = useState("");
+  const [vacanteArea, setVacanteArea] = useState("");
+  const [vacanteSeccion, setVacanteSeccion] = useState("");
+  const [vacanteAsignadoA, setVacanteAsignadoA] = useState("");
+  const [isCreatingVacancy, setIsCreatingVacancy] = useState(false);
+
   const [reclutadores, setReclutadores] = useState<any[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [referenceImageFile, setReferenceImageFile] = useState<File | null>(
     null,
   );
@@ -268,10 +234,8 @@ export function Actividades() {
   /* ── Section collapse & item limits ────────────────────────────────── */
   const [rutinariasCollapsed, setRutinariasCollapsed] = useState(true);
   const [actividadesCollapsed, setActividadesCollapsed] = useState(true);
-  const [vacantesCollapsed, setVacantesCollapsed] = useState(false);
   const [rutinariasLimit, setRutinariasLimit] = useState(4);
   const [actividadesLimit, setActividadesLimit] = useState(4);
-  const [vacantesLimit, setVacantesLimit] = useState(4);
 
   /* ── Edit form state ───────────────────────────────────────────────── */
   const [editTitulo, setEditTitulo] = useState("");
@@ -287,13 +251,25 @@ export function Actividades() {
     string | null
   >(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [proofsLoading, setProofsLoading] = useState(false);
+  const [isUploadingProof, setIsUploadingProof] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAssigningVacancy, setIsAssigningVacancy] = useState(false);
+  const proofsRequestRef = useRef(0);
 
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
     title: string;
     description?: string;
+    isLoading: boolean;
     onConfirm: () => void;
-  }>({ isOpen: false, title: "", onConfirm: () => {} });
+  }>({
+    isOpen: false,
+    title: "",
+    isLoading: false,
+    onConfirm: () => {},
+  });
 
   useEffect(() => {
     if (profile?.role === "admin") {
@@ -314,22 +290,22 @@ export function Actividades() {
   
   const seccionesOptions = useMemo(() => {
     let base = positions;
-    if (descripcion) {
-      base = base.filter((p) => p.area === descripcion);
+    if (vacanteArea) {
+      base = base.filter((p) => p.area === vacanteArea);
     }
     return Array.from(new Set(base.map((p) => p.seccion).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'es'));
-  }, [positions, descripcion]);
+  }, [positions, vacanteArea]);
   
   const puestosOptions = useMemo(() => {
     let base = positions;
-    if (descripcion) {
-      base = base.filter((p) => p.area === descripcion);
+    if (vacanteArea) {
+      base = base.filter((p) => p.area === vacanteArea);
     }
     if (vacanteSeccion) {
       base = base.filter((p) => p.seccion === vacanteSeccion);
     }
     return Array.from(new Set(base.map((p) => p.puesto))).sort((a, b) => a.localeCompare(b, 'es'));
-  }, [positions, descripcion, vacanteSeccion]);
+  }, [positions, vacanteArea, vacanteSeccion]);
 
   const vacantesManuales = useMemo(() => {
     const list = activities.filter((a) => a.tipo === "vacante");
@@ -371,38 +347,50 @@ export function Actividades() {
     activityId: string,
     recruiterId: string,
   ) => {
-    await updateActivity(activityId, { asignado_a: recruiterId || null });
+    if (isAssigningVacancy) return;
+    setIsAssigningVacancy(true);
+    const updated = await updateActivity(activityId, {
+      asignado_a: recruiterId || null,
+    });
+    setIsAssigningVacancy(false);
+    if (updated) setAssignModalVacancy(null);
   };
 
   const handleCreateVacante = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titulo) return;
-    setIsSubmitting(true);
-    const finalDesc = vacanteSeccion ? `${descripcion} - ${vacanteSeccion}` : descripcion;
+    const normalizedTitle = vacanteTitulo.trim();
+    if (!normalizedTitle) return;
+
+    setIsCreatingVacancy(true);
+    const finalDesc = vacanteSeccion
+      ? `${vacanteArea} - ${vacanteSeccion}`
+      : vacanteArea;
     const act = await createActivity(
-      titulo,
+      normalizedTitle,
       finalDesc,
-      asignadoA || null,
+      vacanteAsignadoA || null,
       "vacante",
     );
 
-    setIsSubmitting(false);
+    setIsCreatingVacancy(false);
     if (act) {
       setIsCreateVacanteModalOpen(false);
-      setTitulo("");
-      setDescripcion("");
+      setVacanteTitulo("");
+      setVacanteArea("");
       setVacanteSeccion("");
-      setAsignadoA("");
+      setVacanteAsignadoA("");
     }
   };
 
   /* ── Handlers ──────────────────────────────────────────────────────── */
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titulo) return;
-    setIsSubmitting(true);
+    const normalizedTitle = titulo.trim();
+    if (!normalizedTitle) return;
+
+    setIsCreating(true);
     const act = await createActivity(
-      titulo,
+      normalizedTitle,
       descripcion,
       asignadoA || null,
       tipo,
@@ -415,7 +403,7 @@ export function Actividades() {
       }
     }
 
-    setIsSubmitting(false);
+    setIsCreating(false);
     if (act) {
       setIsCreateModalOpen(false);
       setTitulo("");
@@ -429,19 +417,39 @@ export function Actividades() {
 
   const openDetails = async (activity: Activity) => {
     if (activity.tipo === "rutinaria") return;
+
+    const requestId = ++proofsRequestRef.current;
     setSelectedActivity(activity);
+    setProofs([]);
+    setProofsLoading(true);
     setIsDetailModalOpen(true);
-    const p = await getProofs(activity.id!);
-    setProofs(p);
+
+    const nextProofs = await getProofs(activity.id!);
+    if (requestId === proofsRequestRef.current) {
+      setProofs(nextProofs);
+      setProofsLoading(false);
+    }
   };
 
   const handleStatusChange = async (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    if (!selectedActivity) return;
+    if (!selectedActivity || isUpdatingStatus) return;
+
+    const previousStatus = selectedActivity.estado;
     const newStatus = e.target.value as ActivityStatus;
+    setSelectedActivity({ ...selectedActivity, estado: newStatus });
+    setIsUpdatingStatus(true);
+
     const updated = await updateActivityStatus(selectedActivity.id!, newStatus);
-    if (updated) setSelectedActivity(updated as Activity);
+    setIsUpdatingStatus(false);
+    if (updated) {
+      setSelectedActivity(updated as Activity);
+    } else {
+      setSelectedActivity((current) =>
+        current ? { ...current, estado: previousStatus } : current,
+      );
+    }
   };
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -460,10 +468,10 @@ export function Actividades() {
       return;
     }
 
-    setIsSubmitting(true);
+    setIsUploadingProof(true);
     const proof = await uploadProof(selectedActivity.id!, file);
     if (proof) setProofs((prev) => [proof, ...prev]);
-    setIsSubmitting(false);
+    setIsUploadingProof(false);
     e.target.value = "";
   };
 
@@ -472,10 +480,16 @@ export function Actividades() {
       isOpen: true,
       title: "¿Eliminar prueba?",
       description: "Esta acción no se puede deshacer.",
+      isLoading: false,
       onConfirm: async () => {
+        setConfirmState((state) => ({ ...state, isLoading: true }));
         const ok = await deleteProof(proofId, url);
-        if (ok) setProofs((prev) => prev.filter((p) => p.id !== proofId));
-        setConfirmState((s) => ({ ...s, isOpen: false }));
+        if (ok) {
+          setProofs((prev) => prev.filter((p) => p.id !== proofId));
+          setConfirmState((state) => ({ ...state, isOpen: false, isLoading: false }));
+        } else {
+          setConfirmState((state) => ({ ...state, isLoading: false }));
+        }
       },
     });
   };
@@ -495,8 +509,9 @@ export function Actividades() {
 
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedActivity || !editTitulo) return;
-    setIsSubmitting(true);
+    const normalizedTitle = editTitulo.trim();
+    if (!selectedActivity || !normalizedTitle) return;
+    setIsEditing(true);
 
     let newImageUrl = editExistingReferenceImage;
 
@@ -511,13 +526,13 @@ export function Actividades() {
     }
 
     const act = await updateActivity(selectedActivity.id!, {
-      titulo: editTitulo,
+      titulo: normalizedTitle,
       descripcion: editDescripcion,
       asignado_a: editAsignadoA || null,
       tipo: editTipo,
       reference_image: newImageUrl,
     });
-    setIsSubmitting(false);
+    setIsEditing(false);
     if (act) {
       setIsEditModalOpen(false);
       setSelectedActivity(null);
@@ -530,9 +545,15 @@ export function Actividades() {
       isOpen: true,
       title: `¿Eliminar "${activity.titulo}"?`,
       description: "Esta actividad será eliminada permanentemente.",
+      isLoading: false,
       onConfirm: async () => {
-        await deleteActivity(activity.id!);
-        setConfirmState((s) => ({ ...s, isOpen: false }));
+        setConfirmState((state) => ({ ...state, isLoading: true }));
+        const ok = await deleteActivity(activity.id!);
+        if (ok) {
+          setConfirmState((state) => ({ ...state, isOpen: false, isLoading: false }));
+        } else {
+          setConfirmState((state) => ({ ...state, isLoading: false }));
+        }
       },
     });
   };
@@ -621,39 +642,29 @@ export function Actividades() {
   /* ── Loading state ─────────────────────────────────────────────────── */
   if (loading) {
     return (
-      <div className="actividades-page">
-        <div className="actividades-header"></div>
-        <div className="actividades-empty">
-          <p className="actividades-empty__title">Cargando...</p>
+      <main className="actividades-page">
+        <header className="actividades-header">
+          <h1>Actividades</h1>
+        </header>
+        <div className="actividades-empty" role="status" aria-live="polite">
+          <p className="actividades-empty__title">Cargando actividades...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   /* ── Render ─────────────────────────────────────────────────────────── */
   return (
-    <div className="actividades-page">
-      {/* Hero */}
-      <div
-        className="actividades-header"
-        style={{ paddingBlock: 0, margin: 0 }}
-      ></div>
+    <main className="actividades-page">
+      <header className="actividades-header">
+        <h1>Actividades</h1>
+      </header>
 
       <div className="actividades-layout">
         {/* ── Section: Asignación de Vacantes ────────────────────────── */}
         <section className="actividades-section">
-          <div
-            className="actividades-section__header"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "var(--spacing-lg)",
-            }}
-          >
-            <div
-              style={{ flex: 1, marginBottom: 0, cursor: 'default' }}
-            >
+          <div className="actividades-section__header actividades-section__header--with-action">
+            <div className="actividades-section__heading">
               <div>
                 <h2 className="actividades-section__title">
                   {isAdmin ? "Asignación de Vacantes" : "Tus Vacantes"}
@@ -715,18 +726,19 @@ export function Actividades() {
                                 <h3 className="rutinaria-title">
                                   {v.titulo}
                                 </h3>
-                                {seccion && <p className="rutinaria-desc" style={{ color: 'var(--color-muted)' }}>{seccion}</p>}
-                                <div className="rutinaria-badge" style={{ marginTop: "var(--spacing-sm)" }}>
+                                {seccion && (
+                                  <p className="rutinaria-desc rutinaria-desc--muted">
+                                    {seccion}
+                                  </p>
+                                )}
+                                <div className="rutinaria-badge rutinaria-badge--spaced">
                                   <AssigneeBadges act={v} isAdmin={isAdmin} currentUser={profile} />
                                 </div>
                               </div>
                             </div>
 
                             {isAdmin && (
-                              <div
-                                className="activity-admin-actions"
-                                onClick={(e) => e.stopPropagation()}
-                              >
+                              <div className="activity-admin-actions">
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <button
@@ -775,21 +787,13 @@ export function Actividades() {
 
         {/* ── Section: Rutinas ──────────────────────────────────────── */}
         <section className="actividades-section">
-          <div
-            className="actividades-section__header"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "var(--spacing-lg)",
-            }}
-          >
+          <div className="actividades-section__header actividades-section__header--with-action">
             <button
               type="button"
-              className="actividades-section__toggle"
+              className="actividades-section__toggle actividades-section__heading"
               onClick={() => setRutinariasCollapsed(!rutinariasCollapsed)}
               aria-expanded={!rutinariasCollapsed}
-              style={{ flex: 1, marginBottom: 0 }}
+              aria-controls="responsabilidades-panel"
             >
               <div>
                 <h2 className="actividades-section__title">
@@ -821,7 +825,7 @@ export function Actividades() {
           </div>
 
           {!rutinariasCollapsed && (
-            <>
+            <div id="responsabilidades-panel">
               {rutinarias.length === 0 ? (
                 <div className="actividades-empty">
                   <ListTodo
@@ -867,22 +871,22 @@ export function Actividades() {
 
                         {act.reference_image && (
                           <div className="rutinaria-card-right">
-                            <img
-                              src={act.reference_image}
-                              alt="Referencia visual"
-                              className="rutinaria-ref-img"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setLightboxSrc(act.reference_image!);
-                              }}
-                            />
+                            <button
+                              type="button"
+                              className="rutinaria-ref-button"
+                              onClick={() => setLightboxSrc(act.reference_image!)}
+                              aria-label={`Ampliar referencia de ${act.titulo}`}
+                            >
+                              <img
+                                src={act.reference_image}
+                                alt=""
+                                className="rutinaria-ref-img"
+                              />
+                            </button>
                           </div>
                         )}
                         {isAdmin && (
-                          <div
-                            className="activity-admin-actions"
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <div className="activity-admin-actions">
                             <Popover>
                               <PopoverTrigger asChild>
                                 <button
@@ -935,7 +939,7 @@ export function Actividades() {
                   )}
                 </>
               )}
-            </>
+            </div>
           )}
         </section>
 
@@ -946,6 +950,7 @@ export function Actividades() {
             className="actividades-section__header actividades-section__toggle"
             onClick={() => setActividadesCollapsed(!actividadesCollapsed)}
             aria-expanded={!actividadesCollapsed}
+            aria-controls="actividades-panel"
           >
             <div>
               <h2 className="actividades-section__title">
@@ -966,14 +971,14 @@ export function Actividades() {
           </button>
 
           {!actividadesCollapsed && (
-            <>
+            <div id="actividades-panel">
               {/* ── Filter toolbar ──────────────────────────────────────── */}
               {allUnicas.length > 0 && (
                 <div className="actividades-toolbar">
                   {/* Status filter tabs */}
                   <div
                     className="actividades-status-tabs"
-                    role="tablist"
+                    role="group"
                     aria-label="Filtrar por estado"
                   >
                     {(
@@ -986,8 +991,8 @@ export function Actividades() {
                     ).map(({ key, label }) => (
                       <button
                         key={key}
-                        role="tab"
-                        aria-selected={statusFilter === key}
+                        type="button"
+                        aria-pressed={statusFilter === key}
                         className={`actividades-status-tab ${statusFilter === key ? "actividades-status-tab--active" : ""}`}
                         onClick={() => setStatusFilter(key)}
                       >
@@ -1078,8 +1083,8 @@ export function Actividades() {
                     No hay actividades que coincidan con los filtros aplicados.
                   </p>
                   <button
-                    className="btn-ghost"
-                    style={{ marginTop: "var(--spacing-md)" }}
+                    type="button"
+                    className="btn-ghost actividades-clear-filters"
                     onClick={() => {
                       setStatusFilter("todas");
                       setSearchQuery("");
@@ -1093,19 +1098,16 @@ export function Actividades() {
               ) : (
                 <div className="actividades-grid">
                   {unicas.slice(0, actividadesLimit).map((act) => (
-                    <div
+                    <article
                       key={act.id}
                       className="activity-card"
-                      onClick={() => openDetails(act)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          openDetails(act);
-                        }
-                      }}
                     >
+                      <button
+                        type="button"
+                        className="activity-card__open"
+                        onClick={() => openDetails(act)}
+                        aria-label={`Consultar ${act.titulo}`}
+                      />
                       {isNewActivity(act) && (
                         <span className="activity-new-badge">Nueva</span>
                       )}
@@ -1123,10 +1125,7 @@ export function Actividades() {
                       <div className="activity-meta">
                         <AssigneeBadges act={act} isAdmin={isAdmin} currentUser={profile} />
                         {isAdmin && (
-                          <div
-                            className="activity-admin-actions"
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <div className="activity-admin-actions">
                             <Popover>
                               <PopoverTrigger asChild>
                                 <button
@@ -1159,7 +1158,7 @@ export function Actividades() {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </article>
                   ))}
                 </div>
               )}
@@ -1179,33 +1178,35 @@ export function Actividades() {
                     : "Ver menos"}
                 </button>
               )}
-            </>
+            </div>
           )}
         </section>
       </div>
 
       <Modal
         isOpen={isCreateVacanteModalOpen}
-        onClose={() => setIsCreateVacanteModalOpen(false)}
+        onClose={() => {
+          if (!isCreatingVacancy) setIsCreateVacanteModalOpen(false);
+        }}
         title="Asignar Vacante"
         icon={<ClipboardList size={20} aria-hidden="true" />}
       >
         <form className="modal-body" onSubmit={handleCreateVacante} noValidate>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-md)" }}>
+          <div className="vacante-form-grid">
             <div className="form-group">
               <label htmlFor="vacante-area">Área</label>
               <select
                 id="vacante-area"
-                value={descripcion}
+                value={vacanteArea}
                 onChange={(e) => {
-                  setDescripcion(e.target.value);
-                  setVacanteSeccion(""); // Reset seccion when area changes
-                  setTitulo(""); // Reset puesto when area changes
+                  setVacanteArea(e.target.value);
+                  setVacanteSeccion("");
+                  setVacanteTitulo("");
                 }}
               >
                 <option value="">Todas las áreas</option>
-                {areasOptions.map((a) => (
-                  <option key={a} value={a}>{a}</option>
+                {areasOptions.map((area) => (
+                  <option key={area} value={area}>{area}</option>
                 ))}
               </select>
             </div>
@@ -1217,13 +1218,13 @@ export function Actividades() {
                 value={vacanteSeccion}
                 onChange={(e) => {
                   setVacanteSeccion(e.target.value);
-                  setTitulo(""); // Reset puesto when seccion changes
+                  setVacanteTitulo("");
                 }}
                 disabled={seccionesOptions.length === 0}
               >
                 <option value="">Todas las secciones</option>
-                {seccionesOptions.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                {seccionesOptions.map((seccion) => (
+                  <option key={seccion} value={seccion}>{seccion}</option>
                 ))}
               </select>
             </div>
@@ -1233,13 +1234,13 @@ export function Actividades() {
               <select
                 id="vacante-puesto"
                 required
-                value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
+                value={vacanteTitulo}
+                onChange={(e) => setVacanteTitulo(e.target.value)}
                 disabled={puestosOptions.length === 0}
               >
                 <option value="">Seleccione un puesto</option>
-                {puestosOptions.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+                {puestosOptions.map((puesto) => (
+                  <option key={puesto} value={puesto}>{puesto}</option>
                 ))}
               </select>
             </div>
@@ -1248,13 +1249,13 @@ export function Actividades() {
               <label htmlFor="vacante-asignado">Asignar a</label>
               <select
                 id="vacante-asignado"
-                value={asignadoA}
-                onChange={(e) => setAsignadoA(e.target.value)}
+                value={vacanteAsignadoA}
+                onChange={(e) => setVacanteAsignadoA(e.target.value)}
               >
                 <option value="">Sin asignar</option>
-                {reclutadores.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {capitalize(r.display_name || r.username)}
+                {reclutadores.map((reclutador) => (
+                  <option key={reclutador.id} value={reclutador.id}>
+                    {capitalize(reclutador.display_name || reclutador.username)}
                   </option>
                 ))}
               </select>
@@ -1266,16 +1267,17 @@ export function Actividades() {
               type="button"
               className="btn-secondary"
               onClick={() => setIsCreateVacanteModalOpen(false)}
-              disabled={isSubmitting}
+              disabled={isCreatingVacancy}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className="btn-primary"
-              disabled={isSubmitting || !titulo}
+              disabled={isCreatingVacancy || !vacanteTitulo.trim()}
+              aria-busy={isCreatingVacancy}
             >
-              {isSubmitting ? "Guardando..." : "Crear"}
+              {isCreatingVacancy ? "Guardando..." : "Crear"}
             </button>
           </div>
         </form>
@@ -1283,19 +1285,22 @@ export function Actividades() {
 
       <Modal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          if (!isCreating) setIsCreateModalOpen(false);
+        }}
         title="Actividad nueva"
         icon={<ClipboardList size={20} aria-hidden="true" />}
       >
         <form className="modal-body" onSubmit={handleCreate} noValidate>
           {/* Tipo selector */}
-          <div className="form-group">
-            <label>Tipo</label>
+          <fieldset className="form-group activity-type-fieldset">
+            <legend>Tipo</legend>
             <div className="activity-type-selector">
               <label
                 className={`activity-type-option ${tipo === "unica" ? "active" : ""}`}
               >
                 <input
+                  className="sr-only"
                   type="radio"
                   name="tipo"
                   value="unica"
@@ -1308,6 +1313,7 @@ export function Actividades() {
                 className={`activity-type-option ${tipo === "rutinaria" ? "active" : ""}`}
               >
                 <input
+                  className="sr-only"
                   type="radio"
                   name="tipo"
                   value="rutinaria"
@@ -1317,7 +1323,7 @@ export function Actividades() {
                 Responsabilidad
               </label>
             </div>
-          </div>
+          </fieldset>
 
           <div className="form-group">
             <label htmlFor="activity-titulo">Título</label>
@@ -1358,14 +1364,15 @@ export function Actividades() {
           </div>
 
           <div className="form-group">
-            <label>Foto de Referencia (Opcional)</label>
+            <span className="form-label">Foto de Referencia (Opcional)</span>
             <div className="reference-upload-area">
               {referenceImagePreview ? (
                 <div className="reference-preview">
-                  <img src={referenceImagePreview} alt="Preview" />
+                  <img src={referenceImagePreview} alt="Vista previa de la referencia" />
                   <button
                     type="button"
                     className="btn-icon-danger"
+                    aria-label="Quitar foto de referencia"
                     onClick={() => {
                       setReferenceImageFile(null);
                       setReferenceImagePreview(null);
@@ -1400,16 +1407,17 @@ export function Actividades() {
               type="button"
               className="btn-secondary"
               onClick={() => setIsCreateModalOpen(false)}
-              disabled={isSubmitting}
+              disabled={isCreating}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className="btn-primary"
-              disabled={isSubmitting || !titulo}
+              disabled={isCreating || !titulo.trim()}
+              aria-busy={isCreating}
             >
-              {isSubmitting ? "Guardando..." : "Asignar"}
+              {isCreating ? "Guardando..." : "Asignar"}
             </button>
           </div>
         </form>
@@ -1418,18 +1426,21 @@ export function Actividades() {
       {/* ── Modal: Edit ──────────────────────────────────────────── */}
       <Modal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => {
+          if (!isEditing) setIsEditModalOpen(false);
+        }}
         title="Editar actividad"
         icon={<Pencil size={20} aria-hidden="true" />}
       >
         <form className="modal-body" onSubmit={handleEdit} noValidate>
-          <div className="form-group">
-            <label>Tipo</label>
+          <fieldset className="form-group activity-type-fieldset">
+            <legend>Tipo</legend>
             <div className="activity-type-selector">
               <label
                 className={`activity-type-option ${editTipo === "unica" ? "active" : ""}`}
               >
                 <input
+                  className="sr-only"
                   type="radio"
                   name="editTipo"
                   value="unica"
@@ -1442,6 +1453,7 @@ export function Actividades() {
                 className={`activity-type-option ${editTipo === "rutinaria" ? "active" : ""}`}
               >
                 <input
+                  className="sr-only"
                   type="radio"
                   name="editTipo"
                   value="rutinaria"
@@ -1451,7 +1463,7 @@ export function Actividades() {
                 Rutina
               </label>
             </div>
-          </div>
+          </fieldset>
 
           <div className="form-group">
             <label htmlFor="edit-titulo">Título</label>
@@ -1491,7 +1503,7 @@ export function Actividades() {
           </div>
 
           <div className="form-group">
-            <label>Foto de Referencia (Opcional)</label>
+            <span className="form-label">Foto de Referencia (Opcional)</span>
             <div className="reference-upload-area">
               {editReferenceImagePreview || editExistingReferenceImage ? (
                 <div className="reference-preview">
@@ -1499,11 +1511,12 @@ export function Actividades() {
                     src={
                       editReferenceImagePreview || editExistingReferenceImage!
                     }
-                    alt="Preview"
+                    alt="Vista previa de la referencia"
                   />
                   <button
                     type="button"
                     className="btn-icon-danger"
+                    aria-label="Quitar foto de referencia"
                     onClick={() => {
                       setEditReferenceImageFile(null);
                       setEditReferenceImagePreview(null);
@@ -1539,16 +1552,17 @@ export function Actividades() {
               type="button"
               className="btn-secondary"
               onClick={() => setIsEditModalOpen(false)}
-              disabled={isSubmitting}
+              disabled={isEditing}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className="btn-primary"
-              disabled={isSubmitting || !editTitulo}
+              disabled={isEditing || !editTitulo.trim()}
+              aria-busy={isEditing}
             >
-              {isSubmitting ? "Guardando..." : "Guardar"}
+              {isEditing ? "Guardando..." : "Guardar"}
             </button>
           </div>
         </form>
@@ -1556,10 +1570,13 @@ export function Actividades() {
 
       {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
       <Modal
-        isOpen={isDetailModalOpen}
+        isOpen={isDetailModalOpen && !confirmState.isOpen && !lightboxSrc}
         onClose={() => {
+          proofsRequestRef.current += 1;
           setIsDetailModalOpen(false);
           setSelectedActivity(null);
+          setProofs([]);
+          setProofsLoading(false);
           refresh();
         }}
         title={selectedActivity?.titulo ?? "Detalles de Tarea"}
@@ -1575,6 +1592,8 @@ export function Actividades() {
                   id="detail-estado"
                   value={selectedActivity.estado}
                   onChange={handleStatusChange}
+                  disabled={isUpdatingStatus}
+                  aria-busy={isUpdatingStatus}
                 >
                   <option value="pendiente">Pendiente</option>
                   <option value="en_proceso">En Proceso</option>
@@ -1583,7 +1602,7 @@ export function Actividades() {
               </div>
 
               <div className="form-group">
-                <label>Descripción</label>
+                <h3 className="form-label">Descripción</h3>
                 <div className="activity-desc-block">
                   {selectedActivity.descripcion || "Sin descripción detallada."}
                 </div>
@@ -1594,13 +1613,19 @@ export function Actividades() {
               <div className="activity-reference-image-full">
                 <h4>Foto de Referencia</h4>
                 <div className="reference-image-well">
-                  <img
-                    src={selectedActivity.reference_image}
-                    alt="Referencia visual"
+                  <button
+                    type="button"
+                    className="reference-image-button"
                     onClick={() =>
                       setLightboxSrc(selectedActivity.reference_image!)
                     }
-                  />
+                    aria-label={`Ampliar referencia de ${selectedActivity.titulo}`}
+                  >
+                    <img
+                      src={selectedActivity.reference_image}
+                      alt=""
+                    />
+                  </button>
                 </div>
               </div>
             )}
@@ -1609,8 +1634,12 @@ export function Actividades() {
 
             <h3 className="activity-proofs-heading">Evidencias / Pruebas</h3>
 
-            <div className="proofs-list">
-              {proofs.length === 0 ? (
+            <div className="proofs-list" aria-live="polite">
+              {proofsLoading ? (
+                <p className="actividades-empty__subtitle">
+                  Cargando evidencias...
+                </p>
+              ) : proofs.length === 0 ? (
                 <p className="actividades-empty__subtitle">
                   No hay pruebas subidas aún.
                 </p>
@@ -1643,8 +1672,9 @@ export function Actividades() {
             <label className="file-upload-wrapper">
               <input
                 type="file"
+                className="sr-only"
                 onChange={handleFileUpload}
-                disabled={isSubmitting}
+                disabled={isUploadingProof || proofsLoading}
                 accept="image/*,.pdf"
               />
               <div className="file-upload-inner">
@@ -1654,9 +1684,11 @@ export function Actividades() {
                   aria-hidden="true"
                 />
                 <span className="file-upload-text">
-                  {isSubmitting
-                    ? "Subiendo archivo..."
-                    : "Haz clic para subir un archivo (imagen o PDF)"}
+                  {proofsLoading
+                    ? "Espera mientras cargan las evidencias..."
+                    : isUploadingProof
+                      ? "Subiendo archivo..."
+                      : "Haz clic para subir un archivo (imagen o PDF)"}
                 </span>
               </div>
             </label>
@@ -1666,21 +1698,25 @@ export function Actividades() {
 
       <Modal
         isOpen={!!assignModalVacancy}
-        onClose={() => setAssignModalVacancy(null)}
+        onClose={() => {
+          if (!isAssigningVacancy) setAssignModalVacancy(null);
+        }}
         title="Asignar reclutador"
         icon={<UserPlus size={20} aria-hidden="true" />}
         size="sm"
       >
-        <div className="modal-body" style={{ minHeight: "150px" }}>
+        <div className="modal-body assign-vacancy-modal__body">
           <div className="form-group">
-            <label>Selecciona al responsable</label>
+            <label htmlFor="assign-vacancy-recruiter">Selecciona al responsable</label>
             <select
+              id="assign-vacancy-recruiter"
               className="text-input"
               value={assignModalVacancy?.asignado_a || ""}
+              disabled={isAssigningVacancy}
+              aria-busy={isAssigningVacancy}
               onChange={(e) => {
                 if (assignModalVacancy) {
-                  handleAssignVacancy(assignModalVacancy.id!, e.target.value);
-                  setAssignModalVacancy(null);
+                  void handleAssignVacancy(assignModalVacancy.id!, e.target.value);
                 }
               }}
             >
@@ -1699,17 +1735,34 @@ export function Actividades() {
         isOpen={confirmState.isOpen}
         title={confirmState.title}
         description={confirmState.description}
+        confirmLabel="Eliminar"
+        isLoading={confirmState.isLoading}
         onConfirm={confirmState.onConfirm}
-        onCancel={() => setConfirmState((s) => ({ ...s, isOpen: false }))}
+        onCancel={() => {
+          if (!confirmState.isLoading) {
+            setConfirmState((state) => ({ ...state, isOpen: false }));
+          }
+        }}
       />
 
       {lightboxSrc && (
-        <ImageLightbox
-          src={lightboxSrc}
-          alt="Referencia visual"
+        <Modal
+          isOpen
           onClose={() => setLightboxSrc(null)}
-        />
+          title="Referencia visual"
+          size="xl"
+          fullscreenMobile={false}
+          className="activity-lightbox"
+        >
+          <div className="modal-body activity-lightbox__body">
+            <img
+              src={lightboxSrc}
+              alt="Referencia visual ampliada"
+              className="activity-lightbox__image"
+            />
+          </div>
+        </Modal>
       )}
-    </div>
+    </main>
   );
 }

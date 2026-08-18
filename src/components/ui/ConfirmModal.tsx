@@ -10,6 +10,7 @@ export interface ConfirmModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   isDestructive?: boolean;
+  isLoading?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export function ConfirmModal({
   onConfirm,
   onCancel,
   isDestructive = true,
+  isLoading = false,
 }: ConfirmModalProps) {
   return (
     <Modal
@@ -37,14 +39,17 @@ export function ConfirmModal({
       fullscreenMobile={false}
       footerActions={
         <>
-          <button className="btn-secondary" onClick={onCancel}>
+          <button type="button" className="btn-secondary" onClick={onCancel} disabled={isLoading}>
             {cancelLabel}
           </button>
           <button
+            type="button"
             className={isDestructive ? "btn-danger" : "btn-primary"}
             onClick={onConfirm}
+            disabled={isLoading}
+            aria-busy={isLoading}
           >
-            {confirmLabel}
+            {isLoading ? "Procesando..." : confirmLabel}
           </button>
         </>
       }

@@ -371,3 +371,16 @@ Durante esta sesión, se identificaron y eliminaron múltiples archivos y compon
 - **Limpieza:** Se eliminaron los estados booleanos, props e imports tanto en Dashboard.tsx como en Transporte.tsx.
 
 Todos los archivos fueron borrados asegurando que TypeScript no generara ningún error por dependencias faltantes.
+
+## Auditoría de Actividades — Visual, accesibilidad e interferencia de acciones
+- Separado el estado de “Asignar vacante” del formulario de actividad para evitar que títulos, áreas o responsables se filtren entre flujos.
+- Separados los estados de carga por acción; crear, editar, asignar, cambiar estado, subir y eliminar ya no comparten un bloqueo global.
+- Las eliminaciones bloquean doble confirmación, muestran progreso y no cierran el diálogo cuando la operación falla.
+- El detalle anuncia la carga de evidencias, evita respuestas obsoletas y no confunde carga con estado vacío.
+- Evitada la superposición de focus traps entre detalle, confirmación y visor de imágenes.
+- Corregida accesibilidad de tarjetas, imágenes, radios, carga de archivos, filtros, secciones colapsables, labels, título principal y touch targets.
+- Eliminados estilos inline de la página; formulario de vacante ajustado mobile-first.
+- `yarn tsc -b --pretty false`: PASS.
+- `yarn vite build`: PASS.
+- Lint dirigido de `Actividades.tsx` y `ConfirmModal.tsx`: PASS.
+- No se invocaron agentes ni pruebas extensas por instrucción explícita del usuario; prueba visual autenticada pendiente.
