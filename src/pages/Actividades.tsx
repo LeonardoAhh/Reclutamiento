@@ -40,8 +40,12 @@ function capitalize(str: string) {
   return str.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function AssigneeBadges({ act, isAdmin }: { act: Activity; isAdmin: boolean }) {
+function AssigneeBadges({ act, isAdmin, currentUser }: { act: Activity; isAdmin: boolean; currentUser?: any }) {
   if (act.asignado_a) {
+    // Si es su usuario, no mostramos el badge (es redundante)
+    if (currentUser && act.asignado_a === currentUser.id) {
+      return null;
+    }
 
     const name =
       (act as any).asignado_a_profile?.display_name ||
@@ -192,6 +196,20 @@ function SmartTextarea({
 
 export function Actividades() {
   const { profile } = useAuth();
+
+  const lastVisitRef = useRef<string | null>(null);
+
+  // Actualizar la fecha de última visita para que el sistema de notificaciones sepa 
+  // qué actividades ya fueron "vistas" por el usuario
+  useEffect(() => {
+    // Guardamos la referencia de cuándo fue la última vez (antes de sobreescribir)
+    // para poder ponerle una etiqueta de "NUEVO" en el render a lo que sea más reciente.
+    lastVisitRef.current = localStorage.getItem("last_activities_visit");
+    
+    // Y actualizamos el localStorage para la próxima vez
+    localStorage.setItem("last_activities_visit", new Date().toISOString());
+  }, []);
+
   const {
     activities,
     loading,
@@ -205,6 +223,11 @@ export function Actividades() {
     deleteProof,
     refresh,
   } = useActivities();
+
+  const isNewActivity = (act: Activity) => {
+    if (!lastVisitRef.current || !act.created_at) return false;
+    return new Date(act.created_at) > new Date(lastVisitRef.current);
+  };
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreateVacanteModalOpen, setIsCreateVacanteModalOpen] =
@@ -312,6 +335,12 @@ export function Actividades() {
     const list = activities.filter((a) => a.tipo === "vacante");
     
     list.sort((a, b) => {
+      // 0. Nuevas primero
+      const aNew = isNewActivity(a);
+      const bNew = isNewActivity(b);
+      if (aNew && !bNew) return -1;
+      if (!aNew && bNew) return 1;
+
       // 1. Sin asignar primero
       if (!a.asignado_a && b.asignado_a) return -1;
       if (a.asignado_a && !b.asignado_a) return 1;
@@ -510,7 +539,17 @@ export function Actividades() {
 
   /* ── Derived data ──────────────────────────────────────────────────── */
   const isAdmin = profile?.role === "admin";
-  const rutinarias = activities.filter((a) => a.tipo === "rutinaria");
+  const rutinarias = useMemo(() => {
+    const list = activities.filter((a) => a.tipo === "rutinaria");
+    return list.sort((a, b) => {
+      const aNew = isNewActivity(a);
+      const bNew = isNewActivity(b);
+      if (aNew && !bNew) return -1;
+      if (!aNew && bNew) return 1;
+      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
+    });
+  }, [activities]);
+
   const allUnicas = activities.filter((a) => a.tipo === "unica" || !a.tipo);
 
   /* ── Counts for filter badges ──────────────────────────────────────── */
@@ -560,6 +599,12 @@ export function Actividades() {
     };
 
     result = [...result].sort((a, b) => {
+      // 0. Nuevas primero, sin importar el sort order
+      const aNew = isNewActivity(a);
+      const bNew = isNewActivity(b);
+      if (aNew && !bNew) return -1;
+      if (!aNew && bNew) return 1;
+
       if (sortOrder === "oldest") {
         return (a.created_at ?? "").localeCompare(b.created_at ?? "");
       }
@@ -659,15 +704,20 @@ export function Actividades() {
                         
                         return (
                           <div key={v.id} className="rutinaria-card">
+                            {isNewActivity(v) && (
+                              <span className="activity-new-badge">Nueva</span>
+                            )}
                             <div className="rutinaria-card-main">
                               <div className="rutinaria-icon">
                                 <ClipboardList size={18} aria-hidden="true" />
                               </div>
                               <div className="rutinaria-content">
-                                <h3 className="rutinaria-title">{v.titulo}</h3>
+                                <h3 className="rutinaria-title">
+                                  {v.titulo}
+                                </h3>
                                 {seccion && <p className="rutinaria-desc" style={{ color: 'var(--color-muted)' }}>{seccion}</p>}
                                 <div className="rutinaria-badge" style={{ marginTop: "var(--spacing-sm)" }}>
-                                  <AssigneeBadges act={v} isAdmin={isAdmin} />
+                                  <AssigneeBadges act={v} isAdmin={isAdmin} currentUser={profile} />
                                 </div>
                               </div>
                             </div>
@@ -793,19 +843,24 @@ export function Actividades() {
                   <div className="rutinarias-list">
                     {rutinarias.slice(0, rutinariasLimit).map((act) => (
                       <div key={act.id} className="rutinaria-card">
+                        {isNewActivity(act) && (
+                          <span className="activity-new-badge">Nueva</span>
+                        )}
                         <div className="rutinaria-card-main">
                           <div className="rutinaria-icon">
                             <CheckCircle2 size={18} aria-hidden="true" />
                           </div>
                           <div className="rutinaria-content">
-                            <h3 className="rutinaria-title">{act.titulo}</h3>
+                            <h3 className="rutinaria-title">
+                              {act.titulo}
+                            </h3>
                             {act.descripcion && (
                               <p className="rutinaria-desc">
                                 {act.descripcion}
                               </p>
                             )}
                             <div className="rutinaria-badge">
-                              <AssigneeBadges act={act} isAdmin={isAdmin} />
+                              <AssigneeBadges act={act} isAdmin={isAdmin} currentUser={profile} />
                             </div>
                           </div>
                         </div>
@@ -1051,8 +1106,13 @@ export function Actividades() {
                         }
                       }}
                     >
+                      {isNewActivity(act) && (
+                        <span className="activity-new-badge">Nueva</span>
+                      )}
                       <div className="activity-card-header">
-                        <h3 className="activity-title">{act.titulo}</h3>
+                        <h3 className="activity-title">
+                          {act.titulo}
+                        </h3>
                         <span className={`activity-status ${act.estado}`}>
                           {ACTIVITY_STATUS_LABEL[act.estado]}
                         </span>
@@ -1061,7 +1121,7 @@ export function Actividades() {
                         {act.descripcion ? act.descripcion : "Sin descripción"}
                       </p>
                       <div className="activity-meta">
-                        <AssigneeBadges act={act} isAdmin={isAdmin} />
+                        <AssigneeBadges act={act} isAdmin={isAdmin} currentUser={profile} />
                         {isAdmin && (
                           <div
                             className="activity-admin-actions"
@@ -1527,21 +1587,23 @@ export function Actividades() {
                 <div className="activity-desc-block">
                   {selectedActivity.descripcion || "Sin descripción detallada."}
                 </div>
-
-                {selectedActivity.reference_image && (
-                  <div className="activity-reference-image">
-                    <h4>Foto de Referencia</h4>
-                    <img
-                      src={selectedActivity.reference_image}
-                      alt="Referencia visual"
-                      onClick={() =>
-                        setLightboxSrc(selectedActivity.reference_image!)
-                      }
-                    />
-                  </div>
-                )}
               </div>
             </div>
+
+            {selectedActivity.reference_image && (
+              <div className="activity-reference-image-full">
+                <h4>Foto de Referencia</h4>
+                <div className="reference-image-well">
+                  <img
+                    src={selectedActivity.reference_image}
+                    alt="Referencia visual"
+                    onClick={() =>
+                      setLightboxSrc(selectedActivity.reference_image!)
+                    }
+                  />
+                </div>
+              </div>
+            )}
 
             <hr className="activity-detail-divider" />
 

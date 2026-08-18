@@ -1,34 +1,37 @@
 .session-notice-wrapper {
   position: fixed;
-  top: var(--spacing-lg);
-  left: 0;
-  right: 0;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: var(--z-modal, 1000);
+  pointer-events: none; /* Allows clicking through the wrapper */
   display: flex;
   justify-content: center;
-  z-index: 1000;
-  pointer-events: none; /* Allows clicking through the wrapper */
 }
 
 .session-notice {
   pointer-events: auto; /* Re-enable pointer events on the notice itself */
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-primary-soft);
-  box-shadow: var(--shadow-lg);
-  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--rounded-lg);
   display: flex;
-  align-items: center;
-  padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-xl);
-  gap: var(--spacing-xl);
-  max-width: calc(100vw - var(--spacing-lg) * 2);
+  align-items: flex-start;
+  padding: var(--spacing-md);
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 380px; /* Restrict max width */
 }
 
 .session-notice__content {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+  flex-direction: column;
+  flex: 1;
+  gap: var(--spacing-xs);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   color: var(--color-ink);
+  line-height: var(--type-body-sm-line);
 }
 
 .session-notice__icon {
@@ -40,10 +43,12 @@
   font-weight: var(--font-semibold);
   font-size: var(--type-body-sm-size);
   color: var(--color-primary);
-  margin-left: var(--spacing-md);
   padding: 0;
   height: auto;
-  border-radius: var(--rounded-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  align-self: flex-start;
 }
 
 .session-notice__action:hover {
@@ -51,35 +56,4 @@
   background: transparent;
 }
 
-.session-notice__close {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  color: var(--color-muted);
-  border: none !important;
-}
 
-.session-notice__close:hover {
-  color: var(--color-ink);
-}
-
-@media (max-width: 640px) {
-  .session-notice {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--rounded-lg);
-    gap: var(--spacing-md);
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .session-notice__close {
-    position: absolute;
-    top: var(--spacing-xxs);
-    right: var(--spacing-xxs);
-  }
-  
-  .session-notice__action {
-    margin-left: 0;
-    margin-top: var(--spacing-xs);
-  }
-}

@@ -110,6 +110,31 @@
   margin: 0;
 }
 
+.activity-new-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--rounded-full);
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+}
+
+/* Ensure the cards can hold the floating badge */
+.activity-card, .rutinaria-card {
+  position: relative;
+  overflow: visible;
+}
+
 /* ── Filter toolbar ─────────────────────────────────────────────────── */
 .actividades-toolbar {
   display: flex;
@@ -822,6 +847,42 @@
 }
 
 /* ── Reference Image ─────────────────────────────────────────────────── */
+.activity-reference-image-full {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.activity-reference-image-full h4 {
+  font-family: var(--font-display);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--font-semibold);
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.reference-image-well {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-sm); /* A little well padding if desired, or no padding for full bleed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reference-image-well img {
+  max-width: 100%;
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.reference-image-well img:hover {
+  opacity: 0.85;
+}
+
 .reference-upload-area {
   display: flex;
   flex-direction: column;
@@ -875,29 +936,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.activity-reference-image {
-  margin-top: var(--spacing-lg);
-}
 
-.activity-reference-image h4 {
-  font-family: var(--font-display);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--font-semibold);
-  margin: 0 0 var(--spacing-sm) 0;
-  color: var(--color-ink);
-}
-
-.activity-reference-image img {
-  max-width: 100%;
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-  cursor: pointer;
-  transition: opacity var(--transition-fast);
-}
-
-.activity-reference-image img:hover {
-  opacity: 0.85;
-}
 
 .rutinaria-ref-img {
   max-width: 100%;

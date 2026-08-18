@@ -23,6 +23,12 @@ export function SessionNotice() {
           .select("id", { count: "exact", head: true })
           .eq("estado", "pendiente");
 
+        // Solo notificar si se crearon actividades DESPUÉS de la última vez que revisó
+        const lastVisit = localStorage.getItem("last_activities_visit");
+        if (lastVisit) {
+          query = query.gt("created_at", lastVisit);
+        }
+
         if (profile.role === "reclutador") {
           query = query.or(`asignado_a.eq.${profile.id},asignado_a.is.null`);
         }
@@ -87,44 +93,37 @@ export function SessionNotice() {
       {isVisible && (
         <div className="session-notice-wrapper">
           <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
+            initial={{ y: -50, opacity: 0, scale: 0.95 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: -20, opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="session-notice"
             role="alert"
           >
+            <Bell
+              size={18}
+              className="session-notice__icon"
+              aria-hidden="true"
+            />
+            
             <div className="session-notice__content">
-              <Bell
-                size={18}
-                className="session-notice__icon"
-                aria-hidden="true"
-              />
               <span>
                 Tienes{" "}
                 <strong>
                   {taskCount}{" "}
                   {taskCount === 1
-                    ? "actividad pendiente"
-                    : "actividades pendientes"}
+                    ? "nueva actividad"
+                    : "nuevas actividades"}
                 </strong>{" "}
-                por revisar.
+                pendientes por revisar.
               </span>
               <button
                 onClick={handleGo}
                 className="btn-text session-notice__action"
-                style={{ display: "flex", alignItems: "center", gap: "4px" }}
               >
-                Ir <ArrowRight size={16} />
+                Ver tablero <ArrowRight size={14} />
               </button>
             </div>
-            <button
-              onClick={handleDismiss}
-              className="btn-ghost btn-icon session-notice__close"
-              aria-label="Cerrar aviso"
-            >
-              <X size={16} aria-hidden="true" />
-            </button>
           </motion.div>
         </div>
       )}
