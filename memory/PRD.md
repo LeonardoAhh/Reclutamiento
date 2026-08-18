@@ -288,3 +288,11 @@ App de control de plantilla, vacantes y pipeline de candidatos (Supabase backend
 - Corregida semántica y teclado: `h1`, botones nativos para consultar tarjetas e imágenes, `fieldset`/`legend`, filtros `aria-pressed`, paneles `aria-controls`, labels y nombres accesibles.
 - Presentación mobile-first sin estilos inline: formulario de vacante de una columna a dos, touch targets y focus visible/forced-colors en controles nuevos.
 - Verificación local: lint dirigido PASS, `yarn tsc -b --pretty false` PASS y `yarn vite build` PASS. Sin agentes ni prueba autenticada por instrucción del usuario.
+
+## 2025-07 — Alineación mobile-first del reporte público de transporte
+- Rediseñada la composición de `ReporteTransportePublic` con jerarquía documental, tarjeta responsiva, safe areas y ancho semántico existente; no se alteraron datos, validaciones, consultas ni envío.
+- Eliminados estilos inline, medidas visuales directas, sombras manuales, `!important`, clases inexistentes, imports muertos y footer duplicado.
+- Mejorada la experiencia móvil con controles y CTA de touch target, radios tipo tarjeta, contenido sin overflow y progresión a dos columnas únicamente desde el breakpoint documentado.
+- Mejorada la accesibilidad con único `h1`, fieldset/legend nativos, obligatoriedad visible y accesible, nombres para selects, `aria-busy`, error anunciado, iconos decorativos ocultos y foco gestionado al mostrar o reiniciar el éxito.
+- Añadido soporte explícito para reduced motion y forced colors; todos los colores, tamaños, espacios, radios, sombras y transiciones usan tokens existentes.
+- Verificación local: lint dirigido PASS, `yarn tsc -b --pretty false` PASS y `yarn vite build` PASS. Sin agentes ni prueba de interfaz por instrucción del usuario.

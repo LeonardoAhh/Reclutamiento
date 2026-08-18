@@ -384,3 +384,13 @@ Todos los archivos fueron borrados asegurando que TypeScript no generara ningún
 - `yarn vite build`: PASS.
 - Lint dirigido de `Actividades.tsx` y `ConfirmModal.tsx`: PASS.
 - No se invocaron agentes ni pruebas extensas por instrucción explícita del usuario; prueba visual autenticada pendiente.
+
+## Reporte público de transporte — Alineación visual y accesibilidad
+- `ReporteTransportePublic.tsx/.css` alineados con `AGENTS.md` y `desing.md`, sin modificar datos, reglas, consultas ni envío a Supabase.
+- Nueva composición mobile-first con safe areas, tarjeta fluida, jerarquía tipográfica y radios responsivos; controles y acciones cumplen el touch target.
+- Eliminados estilos inline, valores visuales directos, `!important`, clases inexistentes, imports muertos y markup duplicado.
+- Accesibilidad: foco gestionado entre formulario/éxito, nombres accesibles en selects, obligatoriedad clara, `aria-busy`, error anunciado, fieldset/legend y soporte forced-colors/reduced-motion.
+- Lint dirigido de `ReporteTransportePublic.tsx`: PASS.
+- `yarn tsc -b --pretty false`: PASS.
+- `yarn vite build`: PASS.
+- No se invocaron agentes ni pruebas de interfaz por instrucción explícita del usuario.
