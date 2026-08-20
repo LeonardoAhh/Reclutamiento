@@ -1,0 +1,1794 @@
+/* ========================================
+   DESIGN TOKENS — Notion-inspired system
+   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
+   Values updated · Variable names preserved for backwards compatibility.
+   ======================================== */
+
+:root {
+  /* ── Brand & Accent ─────────────────────────────────────────────
+     Notion-style: single blue structural accent. */
+  --color-primary: #000000;
+  --color-primary-active: #31302e;
+  --color-primary-disabled: #e6e6e6;
+
+  /* Deep indigo "night" band background — signature single-hero moment. */
+  --color-secondary: #213183;
+  --color-secondary-rgb: 33 49 131;
+
+  /* ── Surface ────────────────────────────────────────────────────
+     Warm paper canvas over pure white. Cards on pure white to lift from canvas. */
+  --color-canvas: #f6f5f4; /* Warm off-white (paper) — page background */
+  --color-canvas-soft: #f6f5f4; /* Alias explícito Notion */
+  --color-surface: #ffffff; /* Cards, panels, form fields */
+  --color-surface-soft: #f6f5f4; /* Nav pills, dividers suaves */
+  --color-surface-card: #ffffff; /* Cards de feature/testimonial */
+  --color-surface-dark: #191817; /* Superficies oscuras (login panel, footer) */
+  --color-surface-dark-elevated: #232120; /* Cards anidadas sobre superficie oscura */
+  --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
+  --color-document-ink: #000000; /* Texto de salidas oficiales */
+  --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
+  --color-document-soft: #f6f5f4; /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d5d3d1; /* Bordes de salidas oficiales */
+  --color-document-primary: #000000; /* Encabezado de salidas oficiales */
+  --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
+
+  /* ── Hairlines ──────────────────────────────────────────────── */
+  --color-hairline: #d5d3d1;
+  --color-hairline-soft: #e6e6e6;
+  --color-hairline-strong: #a39e98;
+
+  /* ── Text ───────────────────────────────────────────────────── */
+  --color-ink: #000000; /* Notion true-black (soft via alpha en usos) */
+  --color-body-strong: #000000;
+  --color-body: #31302e; /* Warm charcoal — body copy */
+  --color-charcoal: #31302e;
+  --color-muted: #615d59; /* Stone — supporting copy */
+  --color-muted-soft: #a39e98; /* Ash — captions, placeholders */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b8b6b3;
+
+  /* ── Semantic ───────────────────────────────────────────────── */
+  --color-success: #1aae39; /* Sticker green como affirmative */
+  --color-warning: #dd5b00; /* Sticker orange como warning */
+  --color-error: #ef4444;
+
+  /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
+     Small colourful illustration blocks, app-icon tiles, category dots. */
+  --color-accent-sky: #62aef0;
+  --color-accent-purple: #d6b6f6;
+  --color-accent-purple-deep: #391c57;
+
+  --color-accent-orange: #dd5b00;
+  --color-accent-orange-deep: #793400;
+  --color-accent-teal: #2a9d99;
+  --color-accent-green: #1aae39;
+  --color-accent-brown: #523410;
+
+  /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  --color-brand-whatsapp: #25d366;
+  --color-brand-accent: var(--color-primary);
+  --color-badge-orange: var(--color-accent-orange);
+
+  --color-badge-violet: var(--color-accent-purple);
+  --color-badge-emerald: var(--color-accent-green);
+
+  /* Accent RGB channels (usados por gradientes/tintes en la app) */
+  --color-accent-teal-rgb: 42 157 153;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: var(--color-warning-rgb);
+
+  /* ── Channel values ─────────────────────────────────────────── */
+  --color-primary-rgb: 0 0 0;
+  --color-error-rgb: 239 68 68;
+  --color-success-rgb: 26 174 57;
+  --color-warning-rgb: 221 91 0;
+  --color-ink-rgb: 0 0 0;
+  --color-canvas-rgb: 246 245 244;
+
+  /* ── Derived overlays ───────────────────────────────────────── */
+  --color-focus-ring: rgba(0, 0, 0, 0.2);
+  --color-modal-scrim: rgba(0, 0, 0, 0.32);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  --color-success-tint: rgba(26, 174, 57, 0.1);
+  --color-error-tint: rgba(239, 68, 68, 0.1);
+  --color-warning-tint: rgba(221, 91, 0, 0.1);
+  --color-primary-tint: rgba(0, 0, 0, 0.06);
+  --color-header-glass: rgba(246, 245, 244, 0.92);
+
+  /* ── Typography ─────────────────────────────────────────────────
+     Notion sets everything in tuned Inter. Weight 700 for display,
+     weight 400 for body — the primary expressive lever. */
+  --font-display:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code:
+    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas,
+    monospace;
+
+  /* display-xl — hero headline (Notion: 64px 700, tight tracking) */
+  --type-display-xl-size: 40px;
+  --type-display-xl-weight: 700;
+  --type-display-xl-line: 1.05;
+  --type-display-xl-tracking: -0.035em;
+
+  /* display-lg — large section headlines */
+  --type-display-lg-size: 32px;
+  --type-display-lg-weight: 700;
+  --type-display-lg-line: 1.08;
+  --type-display-lg-tracking: -0.03em;
+
+  /* heading-lg — section headlines */
+  --type-heading-lg-size: 26px;
+  --type-heading-lg-weight: 700;
+  --type-heading-lg-line: 1.15;
+  --type-heading-lg-tracking: -0.024em;
+
+  /* heading-md — sub-section headings */
+  --type-heading-md-size: 22px;
+  --type-heading-md-weight: 700;
+  --type-heading-md-line: 1.23;
+  --type-heading-md-tracking: -0.018em;
+
+  /* heading-sm — card titles */
+  --type-heading-sm-size: 18px;
+  --type-heading-sm-weight: 700;
+  --type-heading-sm-line: 1.3;
+  --type-heading-sm-tracking: -0.012em;
+
+  /* body-md — texto corrido, 400 weight (readability first) */
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-line: 1.5;
+  --type-body-md-tracking: 0;
+
+  /* body-sm — dense body, table rows, nav */
+  --type-body-sm-size: 15px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 1.4;
+  --type-body-sm-tracking: 0;
+
+  /* body-strong — feature titles / callouts (Notion title) */
+  --type-body-strong-size: 16px;
+  --type-body-strong-weight: 600;
+  --type-body-strong-line: 1.4;
+  --type-body-strong-tracking: -0.006em;
+
+  /* body-sm-strong — button labels, dense strong copy */
+  --type-body-sm-strong-size: 15px;
+  --type-body-sm-strong-weight: 600;
+  --type-body-sm-strong-line: 1.4;
+  --type-body-sm-strong-tracking: 0;
+
+  /* caption-sm — captions, footnotes */
+  --type-caption-sm-size: 14px;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.43;
+  --type-caption-sm-tracking: 0;
+
+  /* caption-uppercase — eyebrows / section labels */
+  --type-caption-up-size: 12px;
+  --type-caption-up-weight: 600;
+  --type-caption-up-line: 1.33;
+  --type-caption-up-tracking: 0.06em;
+
+  /* button — Notion: 16 / 500 (design.md {typography.button}) */
+  --type-button-size: 16px;
+  --type-button-weight: 500;
+  --type-button-line: 1.5;
+  --type-button-tracking: 0;
+
+  /* code */
+  --type-code-md-size: 14px;
+  --type-code-md-weight: 400;
+  --type-code-md-line: 1.5;
+  --type-code-md-tracking: 0;
+  --type-code-sm-size: 14px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-line: 1.43;
+  --type-code-sm-tracking: 0;
+
+  /* ── Control sizing ─────────────────────────────────────────── */
+  --control-height: 36px;
+  --control-height-lg: 40px;
+  --touch-target-min: 48px;
+  --control-padding-x: 20px;
+  --control-padding-y: 8px;
+  --icon-size-sm: var(--spacing-lg);
+  --icon-size-md: calc(var(--spacing-lg) + var(--spacing-xs));
+  --icon-size-control: var(--type-heading-sm-size);
+  --icon-size-lg: var(--spacing-xl);
+
+  /* ── Spacing — base 4px (mantenemos escala actual estable) ─── */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-section: 96px;
+
+  /* ── Border radius (Notion: xs4 · sm5 · md8 · lg12 · xl16 · full) ── */
+  --rounded-none: 0;
+  --rounded-xs: 4px;
+  --rounded-sm: 5px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-xl: 16px;
+  --rounded-full: 9999px;
+
+  /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
+  --shadow-focus: inset 0 0 0 2px var(--color-primary);
+
+  /* ── Transitions ─────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-spinner: 1000ms linear;
+  --transition-progress: 1400ms ease-in-out;
+
+  /* ── Container ───────────────────────────────────────────────── */
+  --container-max: 1700px;
+  --container-padding: var(--spacing-xl);
+  --container-padding-mobile: var(--spacing-lg);
+  --feature-result-card-min: 34rem;
+  --candidate-access-preview-max: 18rem;
+  --candidate-access-preview-max-mobile: 15rem;
+  --feature-calendar-column-min: 10rem;
+  --feature-calendar-column-max: 13rem;
+  --feature-calendar-surface-max: 22rem;
+  --document-preview-max: 48rem;
+  --recordatorios-route-table-min: 64rem;
+  --system-update-content-max: 22rem;
+  --system-update-panel-max: 28rem;
+  --feature-chat-panel-max-inline-size: 25rem;
+  --feature-chat-panel-max-block-size: 37.5rem;
+  --feature-chat-panel-max-block-size-desktop: 50rem;
+  --feature-chat-action-min-inline-size: 10rem;
+  --system-update-progress-segment: 40%;
+  --layer-maintenance: 1000;
+  --layer-splash: 1000;
+  --layer-tooltip: 1300;
+  --layer-floating-action: 1400;
+  --layer-modal: 1450;
+  --layer-system-update: 1500;
+  --layer-system-update-curtain: 1600;
+  --tooltip-max-width: 280px;
+  --skeleton-title-width: 50%;
+  --skeleton-card-height: calc(var(--spacing-section) + var(--spacing-2xl));
+
+  /* ── PWA / safe-area ─────────────────────────────────────────── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --tab-bar-height: 0px;
+
+  /* ── Tokens extra / alias ────────────────────────────────────── */
+  --type-caption-md-size: 13px;
+  --type-caption-md-weight: 500;
+  --type-caption-md-line: 1.4;
+  --type-display-md-size: 30px;
+  --type-display-md-weight: 700;
+  --type-body-lg-size: 18px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-regular: 400;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+
+  /* Tracking Notion (tight display) */
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.018em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+
+  --rounded-pill: var(--rounded-full);
+  --radius-sm: var(--rounded-sm);
+  --radius-md: var(--rounded-md);
+  --border-width: 1px;
+
+  --spacing-2xs: 3px;
+  --space-xxs: var(--spacing-xxs);
+  --space-xs: var(--spacing-xs);
+  --space-sm: var(--spacing-sm);
+  --space-md: var(--spacing-md);
+  --space-lg: var(--spacing-lg);
+  --space-xl: var(--spacing-xl);
+
+  --color-amber: var(--color-accent-amber);
+  --color-danger: var(--color-error);
+  --color-error-soft: var(--color-error-tint);
+  --color-border: var(--color-hairline);
+  --color-focus: var(--color-primary);
+  --color-surface-contrast: var(--color-ink);
+  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-cream-strong: var(--color-surface-soft);
+  --color-text-primary: var(--color-ink);
+  --color-text-tertiary: var(--color-muted);
+
+  /* Shadows — Notion barely-there layered stack.
+     Level 0 = flat (hairline only). Level 1 = soft. Level 2 = elevated. */
+  --shadow-xs:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02);
+  --shadow-sm:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027);
+  --shadow-subtle: var(--shadow-sm);
+  --shadow-card: var(--shadow-sm);
+  --shadow-elevated:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
+  --shadow-prominent:
+    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04),
+    0 23px 52px rgba(0, 0, 0, 0.05);
+
+  --header-height: 64px;
+  --mobile-nav-height: 56px;
+  --mobile-nav-content-space: calc(
+    var(--mobile-nav-height) + var(--spacing-2xl)
+  );
+  --transition-slow: 350ms ease;
+  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-theme-in: 300ms;
+  --duration-theme-out: 200ms;
+  --duration-theme-stagger: 60ms;
+
+  color-scheme: light;
+}
+
+/* ========================================
+   DARK THEME
+   [data-theme="dark"] en <html>
+   ======================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Notion-style dark: deep neutral canvas, cards a un pelo más claros */
+  --color-canvas: #191817;
+  --color-canvas-soft: #191817;
+  --color-surface: #232120;
+  --color-surface-soft: #191817;
+  --color-surface-card: #232120;
+  --color-surface-dark: #f6f5f4;
+  --color-surface-dark-elevated: #ffffff;
+
+  --color-hairline: #3a3735;
+  --color-hairline-soft: #2c2a29;
+  --color-hairline-strong: #504c48;
+
+  --color-ink: #f6f5f4;
+  --color-body-strong: #f6f5f4;
+  --color-body: #c9c5c0;
+  --color-charcoal: #c9c5c0;
+  --color-muted: #8f8a83;
+  --color-muted-soft: #8d8881;
+  --color-on-dark: #191817;
+  --color-on-dark-soft: #8f8a83;
+
+  /* Primary invertido para dark: blanco sobre oscuro (espejo del negro sobre claro) */
+  --color-primary: #ffffff;
+  --color-on-primary: #000000;
+  --color-primary-active: #e6e6e6;
+  --color-primary-disabled: #3a3735;
+
+  --color-primary-rgb: 255 255 255;
+  --color-ink-rgb: 246 245 244;
+  --color-canvas-rgb: 25 24 23;
+
+  --color-secondary: #4a5cc4;
+  --color-secondary-rgb: 74 92 196;
+
+  /* Semánticos dark: legibles como texto/icono sobre canvas y surface. */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #fb7185;
+  --color-success-rgb: 74 222 128;
+  --color-warning-rgb: 251 191 36;
+  --color-error-rgb: 251 113 133;
+
+  /* Sticker palette dark: misma función, mayor luminancia para contraste AA. */
+  --color-accent-sky: #7dd3fc;
+  --color-accent-purple: #c4b5fd;
+  --color-accent-purple-deep: #a78bfa;
+  --color-accent-orange: #fdba74;
+  --color-accent-orange-deep: #fb923c;
+  --color-accent-teal: #5eead4;
+  --color-accent-teal-rgb: 94 234 212;
+  --color-accent-green: var(--color-success);
+  --color-accent-brown: #d6b98c;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: var(--color-warning-rgb);
+
+  --color-focus-ring: rgba(246, 245, 244, 0.25);
+  --color-modal-scrim: rgba(0, 0, 0, 0.72);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.1);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
+  --color-success-tint: rgba(74, 222, 128, 0.15);
+  --color-error-tint: rgba(251, 113, 133, 0.15);
+  --color-warning-tint: rgba(251, 191, 36, 0.18);
+  --color-primary-tint: rgba(246, 245, 244, 0.08);
+  --color-header-glass: rgba(25, 24, 23, 0.88);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-prominent: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS: el safe-area (notch + barra de estado) toma su color del <html>,
+     no del <body>. Sin esto, en tema oscuro la barra superior se ve blanca. */
+  background-color: var(--color-canvas);
+  transition: background-color var(--transition-base);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-body);
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: var(--safe-area-bottom);
+  }
+}
+
+.theme-init * {
+  transition: none !important;
+}
+
+/* ========================================
+   THEME TRANSITION — fade suave instantáneo
+   View Transitions API (Chrome 111+, Safari 18+).
+   En navegadores sin soporte, el tema cambia sin animación.
+   ======================================== */
+
+::view-transition-old(root) {
+  animation: theme-fade-out 200ms ease both;
+}
+
+::view-transition-new(root) {
+  animation: theme-fade-in 200ms ease both;
+}
+
+@keyframes theme-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Accesibilidad: usuarios con reduce-motion no ven animación. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ── Headings ── */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-weight: 500; /* Editorial weight — no bold pesado */
+}
+
+h1 {
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+h2 {
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+h3 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+h4 {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-active);
+}
+
+button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+}
+
+strong,
+b {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-line);
+}
+
+pre {
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-code-sm-size);
+}
+
+/* ========================================
+   TYPE UTILITY CLASSES
+   ======================================== */
+
+.type-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+.type-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+.type-heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.type-heading-md {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.type-heading-sm {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.type-body-md {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.type-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.type-body-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.type-body-sm-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.type-caption-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.type-caption-up {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.type-button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+/* ========================================
+   PAGE HEADER — Título unificado (mobile-first)
+   ----------------------------------------------
+   Escala editorial (siguiendo desing.md · Notion):
+     · Mobile  (base)     → heading-lg  (26px / -0.024em)
+     · Tablet  (≥ 768px)  → display-lg  (32px / -0.030em)
+     · Desktop (≥ 1024px) → display-xl  (40px / -0.035em)
+   Todos los valores provienen de tokens del sistema (font, size,
+   weight, line, tracking, color, spacing). Sin hardcodes.
+   ======================================== */
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-lg);
+  margin: 0 0 var(--spacing-md);
+}
+
+.page-header__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    padding-block: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .page-title {
+    font-size: var(--type-display-lg-size);
+    font-weight: var(--type-display-lg-weight);
+    line-height: var(--type-display-lg-line);
+    letter-spacing: var(--type-display-lg-tracking);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-title {
+    font-size: var(--type-display-xl-size);
+    font-weight: var(--type-display-xl-weight);
+    line-height: var(--type-display-xl-line);
+    letter-spacing: var(--type-display-xl-tracking);
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: max(var(--container-padding), var(--safe-area-left));
+  padding-right: max(var(--container-padding), var(--safe-area-right));
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: max(var(--container-padding-mobile), var(--safe-area-left));
+    padding-right: max(var(--container-padding-mobile), var(--safe-area-right));
+  }
+}
+
+/* Color text helpers */
+.text-ink {
+  color: var(--color-ink);
+}
+.text-body {
+  color: var(--color-body);
+}
+.text-body-strong {
+  color: var(--color-body-strong);
+}
+.text-charcoal {
+  color: var(--color-charcoal);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-muted-soft {
+  color: var(--color-muted-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-success {
+  color: var(--color-success);
+}
+.text-warning {
+  color: var(--color-warning);
+}
+.text-error {
+  color: var(--color-error);
+}
+
+/* Section divider — hairline pura, sin sombras */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--color-hairline);
+  margin: 0;
+}
+
+/* ========================================
+   VIEW TRANSITIONS
+   ======================================== */
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ========================================
+   FORM SYSTEM
+   ======================================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group label {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  color: var(--color-ink);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-xs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.form-group input,
+.form-group select {
+  height: var(--control-height);
+  padding: 0 var(--spacing-sm);
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: 88px;
+  padding: var(--control-padding-y) var(--spacing-sm);
+  resize: vertical;
+  border-radius: var(--rounded-xs);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: var(--color-charcoal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.form-group input:invalid:not(:placeholder-shown),
+.form-group select:invalid:not(:focus) {
+  border-color: var(--color-error);
+}
+
+.form-group select:disabled,
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+}
+
+.form-error {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-error);
+  margin-top: var(--spacing-xxs);
+}
+
+/* ── Teléfono: wrapper + iconos de validación ──────────────── */
+.phone-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.phone-validation-icon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.phone-validation-icon.valid {
+  color: var(--color-success);
+}
+.phone-validation-icon.invalid {
+  color: var(--color-error);
+}
+
+.input-error {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 1px var(--color-error) !important;
+}
+
+/* ========================================
+   BUTTONS — Ollama style
+   Todos los botones usan rounded-full.
+   Sin sombras — profundidad viene del color y borders.
+   ======================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+/* Primary CTA — rounded rect (design.md: button-primary) */
+.btn-primary {
+  border-radius: var(--rounded-md);
+}
+
+/* Utility buttons — tighter rounded rect (design.md: button-utility, button-secondary) */
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  border-radius: var(--rounded-md);
+}
+
+.btn-sm {
+  height: 32px;
+  padding: 0 var(--spacing-md);
+  font-size: var(--type-caption-sm-size);
+  font-weight: 500;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-danger:focus-visible,
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Primary — black pill, único CTA con color sólido */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn-primary:active {
+  background: var(--color-primary-active);
+}
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  border-color: var(--color-primary-disabled);
+  color: var(--color-charcoal);
+  cursor: not-allowed;
+}
+
+/* Secondary — white surface + hairline */
+.btn-secondary {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+}
+.btn-secondary:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-charcoal);
+}
+.btn-secondary:active {
+  background: var(--color-hairline);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+.btn-danger:hover {
+  background: color-mix(in srgb, var(--color-error) 88%, black);
+}
+.btn-danger:active {
+  background: color-mix(in srgb, var(--color-error) 78%, black);
+}
+
+/* Ghost — transparente, solo texto */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-charcoal);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* Text link style button */
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-decoration: underline;
+}
+.btn-text:hover {
+  color: var(--color-primary-active);
+}
+.btn-text:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Icon button */
+.btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+.btn-icon:hover {
+  color: var(--color-ink);
+  border-color: var(--color-charcoal);
+  background: var(--color-surface-soft);
+}
+.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.btn-icon--danger:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.btn-icon__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   CARDS
+   Border 1px + rounded-lg. Sin sombra.
+   ======================================== */
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+}
+
+.card--soft {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+/* Card inverted — isla oscura (KPI hero, featured) */
+.card--dark {
+  background: var(--color-surface-dark);
+  border-color: transparent;
+  color: var(--color-on-dark);
+}
+
+.card--dark h1,
+.card--dark h2,
+.card--dark h3,
+.card--dark h4 {
+  color: var(--color-on-dark);
+}
+
+.card--dark .text-muted {
+  color: var(--color-on-dark-soft);
+}
+
+/* ========================================
+   MODAL — Ollama style (NO glass)
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-modal-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+.modal-content {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: min(85vh, 760px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: slideUpModal 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  position: relative;
+}
+
+.modal-content--xs {
+  max-width: 400px;
+}
+
+.modal-content--sm {
+  max-width: 480px;
+}
+
+.modal-content--lg {
+  max-width: 760px;
+}
+
+.modal-content--xl {
+  max-width: 1040px;
+}
+
+/* Scrollbar estilo minimalista */
+.modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-charcoal);
+}
+
+/* Mobile: fullscreen para modales grandes, excepto confirmaciones */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  /* Por defecto en mobile: sheet desde abajo con bordes redondeados arriba */
+  .modal-content {
+    max-height: 92vh;
+    border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    animation: slideUpMobile 300ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  /* Modales que deben ser fullscreen en mobile (no confirmaciones) */
+  .modal-content.modal-fullscreen-mobile {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    animation: modalFullscreenIn 250ms ease forwards;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-header {
+    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: var(--spacing-lg);
+  }
+
+  /* Cualquier contenedor de contenido (no header/footer) es el área scrollable.
+     Robusto aunque el wrapper no use la clase .modal-body. iOS: min-height:0 +
+     -webkit-overflow-scrolling + overscroll-behavior para permitir el pan. */
+  .modal-content.modal-fullscreen-mobile
+    > *:not(.modal-header):not(.modal-footer) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* El .modal-body es el ÚNICO contenedor de scroll en móvil. Sus hijos NO deben
+     encogerse: varios componentes usan overflow:hidden (ExpandableSection,
+     tarjetas con border-radius), lo que hace que su tamaño mínimo automático sea
+     0 y el algoritmo flexbox los APLASTE para caber en el alto del modal → el
+     contenido se recorta y el cuerpo nunca desborda → no hay scroll en iOS.
+     Con flex-shrink:0 conservan su alto natural, el cuerpo desborda y scrollea.
+     Los scrollers internos (flex:1) siguen funcionando porque mantienen grow:1. */
+  .modal-content.modal-fullscreen-mobile .modal-body > * {
+    flex-shrink: 0;
+  }
+
+  .modal-content.modal-fullscreen-mobile > .modal-footer {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+    margin-top: auto;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.modal-title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title > svg,
+.modal-title > [data-icon] {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-title__text {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.modal-title h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.modal-title__sub {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  color: var(--color-body);
+  margin: 0;
+}
+
+.modal-close {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+  color: var(--color-ink);
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+}
+
+@media (min-width: 768px) {
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.modal-close:active {
+  transform: scale(0.9);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-hairline);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .modal-footer {
+    justify-content: stretch;
+  }
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
+    flex: 1 1 auto;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFullscreenIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .modal-overlay {
+    animation: none;
+  }
+}
+
+/* ── Alert variants ──────────────────────────────────────────────────── */
+.modal-alert .modal-header {
+  border-bottom: 1px solid var(--color-hairline);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
+}
+
+.modal-alert .modal-body {
+  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg);
+}
+
+.modal-alert .modal-footer {
+  border-top: none;
+  padding: var(--spacing-lg);
+}
+
+.modal-alert .modal-title__text h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+/* ========================================
+   GLOBAL EMPTY STATE ANIMADO
+   ======================================== */
+.animated-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  color: var(--color-muted);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animated-empty-state__icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-hairline-strong);
+}
+
+.animated-empty-state__icon svg {
+  width: 100%;
+  height: 100%;
+  animation: floatEmpty 3s ease-in-out infinite;
+}
+
+.animated-empty-state__title {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-medium);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.animated-empty-state__subtitle {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  max-width: 300px;
+}
+
+@keyframes floatEmpty {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+  display: none !important;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible para navegación por teclado */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ========================================
+   COLOR ALIASES (retrocompatibilidad)
+   ======================================== */
+
+.color-error {
+  color: var(--color-error);
+}
+.color-success {
+  color: var(--color-success);
+}
+.color-warning {
+  color: var(--color-warning);
+}
+.color-primary {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   DOCUMENTOS PAGE
+   ======================================== */
+
+.documentos-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* Mobile first: en pantallas pequeñas apilamos y usamos safe-area */
+@media (max-width: 640px) {
+  .documentos-page {
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
+  }
+}
+
+/* ── Header ── */
+.documentos-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.documentos-header h1 {
+  margin: 0;
+  /* Hereda .type-display-lg, pero forzamos mobile */
+  font-size: var(--type-display-lg-size);
+}
+
+@media (max-width: 480px) {
+  .documentos-header h1 {
+    font-size: var(--type-heading-lg-size);
+  }
+
+  .documentos-header .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* --- CHECKBOX & RADIOS --- */
+
+/* --- TOGGLE SWITCH --- */
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--text-sm);
+  color: var(--color-foreground);
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch__slider {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: var(--color-border);
+  border-radius: var(--rounded-full);
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch__slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-switch input[type="checkbox"]:focus-visible + .toggle-switch__slider {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+  transform: translateX(16px);
+}
+
+.toggle-switch input[type="checkbox"]:disabled + .toggle-switch__slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-switch__label {
+  line-height: 1;
+}
+
+/* ── Error banner ── */
+.documentos-error {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-error-tint);
+  border: 1px solid var(--color-error);
+  border-radius: var(--rounded-md);
+}
+
+/* ── Constancia capture wrapper ── */
+.constancia-capture {
+  background: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-lg);
+  /* Evita que el contenido rompa el layout en móvil antes de la captura */
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .constancia-capture {
+    padding: var(--spacing-md);
+    border-radius: var(--rounded-md);
+  }
+}
+
+/* Spinner accesible */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+/* Asegura que todos los botones tengan touch target mínimo en móvil */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-ghost {
+    min-height: 44px;
+  }
+}
+
+/* Los previews permanecen disponibles en móvil mediante scroll horizontal.
+   Ocultarlos impediría revisar el documento antes de descargarlo. */

@@ -1,0 +1,302 @@
+import { useEffect, useMemo, useState } from 'react';
+import { AlertCircle, CheckCircle2, Edit2, Pencil } from 'lucide-react';
+import type { Employee } from '@/lib/types';
+import { usePositions } from '@/lib/positions';
+import { localTodayIso } from '@/lib/dates';
+import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
+import { Tooltip } from './Tooltip';
+import { Modal } from './Modal';
+import { CustomSelect } from './CustomSelect';
+import './EditEmployeeModal.css';
+
+interface EditEmployeeModalProps {
+  isOpen: boolean;
+  employee: Employee | null;
+  onClose: () => void;
+  onSave: (
+    num_empleado: string,
+    fields: Partial<Pick<Employee, 'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso' | 'ruta' | 'parada' | 'is_starlite' | 'reclutador'>>
+  ) => Promise<{ ok: boolean; message?: string }>;
+}
+
+type FormState = Pick<
+  Employee,
+  'nombre' | 'area' | 'seccion' | 'puesto' | 'categoria' | 'turno' | 'fecha_ingreso'
+> & {
+  ruta: string;
+  parada: string;
+  is_starlite: boolean;
+  reclutador: string;
+};
+
+export function EditEmployeeModal({
+  isOpen,
+  employee,
+  onClose,
+  onSave,
+}: EditEmployeeModalProps) {
+  const [form, setForm] = useState<FormState>({
+    nombre: '',
+    area: '',
+    seccion: '',
+    puesto: '',
+    categoria: 'N/A',
+    turno: '1',
+    fecha_ingreso: '',
+    ruta: '',
+    parada: '',
+    is_starlite: false,
+    reclutador: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const { positions } = usePositions();
+  const areas = useMemo(
+    () => Array.from(new Set(positions.map((p) => p.area))),
+    [positions]
+  );
+  const sectionsForArea = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          positions.filter((p) => p.area === form.area).map((p) => p.seccion)
+        )
+      ),
+    [positions, form.area]
+  );
+  const puestosForSection = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          positions
+            .filter((p) => p.area === form.area && p.seccion === form.seccion)
+            .map((p) => p.puesto)
+        )
+      ),
+    [positions, form.area, form.seccion]
+  );
+
+  useEffect(() => {
+    if (!isOpen || !employee) return;
+    setErrorMsg(null);
+    setSubmitting(false);
+    setForm({
+      nombre: employee.nombre,
+      area: employee.area,
+      seccion: employee.seccion,
+      puesto: employee.puesto,
+      categoria: employee.categoria,
+      turno: employee.turno,
+      fecha_ingreso: employee.fecha_ingreso,
+      ruta: employee.ruta ?? '',
+      parada: employee.parada ?? '',
+      is_starlite: employee.is_starlite ?? false,
+      reclutador: employee.reclutador ?? '',
+    });
+  }, [isOpen, employee]);
+
+  const isValid =
+    form.nombre.trim().length > 0 &&
+    form.area.length > 0 &&
+    form.seccion.length > 0 &&
+    form.puesto.length > 0;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting || !employee) return;
+    setErrorMsg(null);
+
+    try {
+      setSubmitting(true);
+      const result = await onSave(employee.num_empleado, {
+        nombre: form.nombre,
+        area: form.area,
+        seccion: form.seccion,
+        puesto: form.puesto,
+        categoria: form.categoria,
+        turno: form.turno,
+        fecha_ingreso: form.fecha_ingreso,
+        ruta: form.ruta || null,
+        parada: form.parada || null,
+        is_starlite: form.is_starlite,
+        reclutador: form.reclutador || null,
+      });
+      if (result && result.ok === false) {
+        setErrorMsg(result.message ?? 'No se pudo guardar.');
+        return;
+      }
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const icon = (
+    <Pencil size={20} className="color-primary" aria-hidden="true" />
+  );
+  const title = 'Editar Empleado';
+  const subtitle = '';
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      icon={icon}
+      title={title}
+      subtitle={subtitle}
+      fullscreenMobile={false}
+      className="edit-employee-modal"
+      size="lg"
+      footerActions={
+        <>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onClose}
+            disabled={submitting}
+          >
+            Cancelar
+          </button>
+          {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 ? (
+            <Tooltip
+              side="top"
+              content={
+                <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
+                  <AlertCircle size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span></span>
+                </span>
+              }
+            >
+              <span style={{ display: 'inline-block' }}>
+                <button
+                  type="submit"
+                  form="edit-employee-form"
+                  className="btn-primary"
+                  disabled={!isValid || submitting}
+                >
+                  {submitting ? 'Guardando…' : 'Guardar'}
+                </button>
+              </span>
+            </Tooltip>
+          ) : (
+            <button
+              type="submit"
+              form="edit-employee-form"
+              className="btn-primary"
+              disabled={!isValid || submitting}
+            >
+              {submitting ? 'Guardando…' : 'Guardar'}
+            </button>
+          )}
+        </>
+      }
+    >
+      <form id="edit-employee-form" onSubmit={handleSubmit} className="modal-body" noValidate>
+        <div className="form-grid">
+          <div className="form-group">
+            <label htmlFor="edit-emp-name">Nombre Completo</label>
+            <input
+              id="edit-emp-name"
+              type="text"
+              required
+              value={form.nombre}
+              onChange={(e) =>
+                setForm({ ...form, nombre: e.target.value.toUpperCase() })
+              }
+              autoComplete="off"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-area">Área</label>
+            <CustomSelect
+              id="edit-emp-area"
+              value={form.area}
+              onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
+              options={areas.map((a) => ({ value: a, label: a }))}
+              placeholder="Seleccione área…"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-seccion">Sección</label>
+            <CustomSelect
+              id="edit-emp-seccion"
+              value={form.seccion}
+              onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
+              options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+              placeholder="Seleccione sección…"
+              disabled={!form.area}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-puesto">Puesto</label>
+            <CustomSelect
+              id="edit-emp-puesto"
+              value={form.puesto}
+              onChange={(val) => setForm({ ...form, puesto: val })}
+              options={puestosForSection.map((p) => ({ value: p, label: p }))}
+              placeholder="Seleccione puesto…"
+              disabled={!form.seccion}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-turno">Turno</label>
+            <CustomSelect
+              id="edit-emp-turno"
+              value={form.turno}
+              onChange={(val) => setForm({ ...form, turno: val })}
+              options={[
+                { value: '1', label: '1' },
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4' },
+                { value: 'Mixto', label: 'Mixto' },
+              ]}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-starlite">Etiqueta Starlite</label>
+            <CustomSelect
+              id="edit-emp-starlite"
+              value={form.is_starlite ? 'true' : 'false'}
+              onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+              options={[
+                { value: 'false', label: 'No' },
+                { value: 'true', label: 'Sí' }
+              ]}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-fecha">Fecha de Ingreso</label>
+            <input
+              id="edit-fecha"
+              type="date"
+              value={form.fecha_ingreso}
+              onChange={(e) => setForm({ ...form, fecha_ingreso: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="edit-emp-reclutador">Reclutador</label>
+            <CustomSelect
+              id="edit-emp-reclutador"
+              value={form.reclutador}
+              onChange={(val) => setForm({ ...form, reclutador: val })}
+              placeholder="Sin asignar"
+              options={RECLUTADORES_ACTIVOS.map((r) => ({ 
+                value: r.toUpperCase(), 
+                label: RECLUTADORES_INFO[r].nombre_completo 
+              }))}
+            />
+          </div>
+        </div>
+
+        {errorMsg && (
+          <p className="form-error" role="alert">
+            {errorMsg}
+          </p>
+        )}
+
+      </form>
+    </Modal>
+  );
+}

@@ -1,0 +1,68 @@
+/* IncapacidadModal — toggle + fecha opcional de regreso */
+
+.modal-content.incapacidad-modal {
+  max-width: 460px;
+}
+
+.incapacidad-modal__icon {
+  color: var(--color-accent-amber);
+}
+
+
+
+.incapacidad-modal__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.incapacidad-modal__toggle input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent-amber);
+  cursor: pointer;
+}
+
+.incapacidad-modal__toggle-label {
+  font-weight: 500;
+  color: var(--color-ink);
+  font-size: var(--type-body-md-size);
+}
+
+
+.incapacidad-modal__error {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-error-tint, color-mix(in srgb, var(--color-error) 10%, var(--color-canvas)));
+  border-radius: var(--rounded-sm);
+  color: var(--color-error);
+  font-size: var(--type-caption-md-size);
+}
+
+/* ── CubrirVacanteSheet — usa los mismos estilos `.incapacidad-modal__*`
+   pero como Sheet. El form crece para que el footer quede anclado abajo;
+   el botón "Quitar cobertura" empuja a la izquierda. ── */
+.cubrir-vacante-sheet__form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.cubrir-vacante-sheet__clear {
+  margin-right: auto;
+}
+
+.cubrir-vacante-sheet__clear > span {
+  margin-left: var(--spacing-xxs);
+}
+
+@media (max-width: 640px) {
+  .modal-header-actions .cubrir-vacante-sheet__clear > span {
+    display: none;
+  }
+}

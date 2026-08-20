@@ -1,0 +1,134 @@
+/* ========================================
+   VACANCY MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.vacancy-modal {
+  /* El componente Modal ya maneja el layout base */
+}
+
+.vacancy-modal--wide {
+  /* Para formularios más grandes en desktop */
+}
+
+/* ── Exclusion toggle ── */
+.vacancy-modal__exclusion-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  transition: background var(--transition-fast);
+}
+
+.vacancy-modal__exclusion-toggle:hover {
+  background: var(--color-surface-soft);
+}
+
+.vacancy-modal__exclusion-toggle input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.vacancy-modal__exclusion-label {
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+}
+
+.vacancy-modal__exclusion-reason {
+  margin-top: var(--spacing-sm);
+  padding-left: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+/* ── Timeline (historial) ── */
+.vacancy-modal__timeline {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--rounded-lg);
+}
+
+.vacancy-modal__timeline-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-md);
+}
+
+.vacancy-modal__timeline-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.vacancy-modal__timeline-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.vacancy-modal__timeline-transition {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.vacancy-modal__timeline-status {
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  color: var(--color-muted);
+  padding: 2px var(--spacing-xs);
+  background: var(--color-surface-cream-strong);
+  border-radius: var(--rounded-xs);
+}
+
+.vacancy-modal__timeline-status--to {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.vacancy-modal__timeline-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-muted);
+}
+
+.vacancy-modal__timeline-by {
+  color: var(--color-body);
+}
+
+.vacancy-modal__timeline-reason {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-body);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 640px) {
+  .vacancy-modal__timeline {
+    padding: var(--spacing-md);
+  }
+  
+  .vacancy-modal__timeline-entry {
+    padding: var(--spacing-xs);
+  }
+}

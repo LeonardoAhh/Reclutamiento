@@ -1,0 +1,40 @@
+.candidate-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--type-caption-md-size, 12px);
+  font-weight: var(--font-medium, 500);
+  white-space: nowrap;
+}
+
+.candidate-status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
+/* Variantes de color por estado */
+.candidate-status-badge[data-status="entrevista"] .candidate-status-badge__dot { background: var(--color-accent-amber); }
+.candidate-status-badge[data-status="entrega_documentos"] .candidate-status-badge__dot { background: var(--color-accent-teal); }
+.candidate-status-badge[data-status="faltan_documentos"] .candidate-status-badge__dot { background: var(--color-warning); }
+.candidate-status-badge[data-status="feedback_pendiente"] .candidate-status-badge__dot { background: var(--color-primary); }
+.candidate-status-badge[data-status="contratado"] .candidate-status-badge__dot { background: var(--color-success); }
+.candidate-status-badge[data-status="rechazado"] .candidate-status-badge__dot { background: var(--color-error); }
+.candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot { background: var(--color-ink-faint); }
+
+.candidate-status-caret {
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+
+[aria-expanded="true"] .candidate-status-caret {
+  transform: rotate(180deg);
+}

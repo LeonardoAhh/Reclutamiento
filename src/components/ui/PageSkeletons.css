@@ -1,0 +1,67 @@
+/* Layouts de carga reutilizables construidos sobre <Skeleton>. */
+
+.skeleton-card {
+  gap: var(--spacing-sm);
+  min-height: 92px;
+  justify-content: center;
+}
+
+/* ── Tabla ── */
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  background: var(--color-canvas);
+}
+
+.skeleton-table__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.skeleton-table__row:last-child {
+  border-bottom: none;
+}
+
+.skeleton-table__row--head {
+  background: var(--color-surface-soft);
+}
+
+.skeleton-table__cell {
+  flex-shrink: 0;
+}
+
+/* ── Lista de tarjetas ── */
+.skeleton-card-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  background: var(--color-canvas);
+}
+
+.skeleton-card-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.skeleton-card-list__item:last-child {
+  border-bottom: none;
+}
+
+.skeleton-card-list__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1 1 auto;
+}

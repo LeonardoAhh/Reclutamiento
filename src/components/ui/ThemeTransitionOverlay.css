@@ -1,0 +1,23 @@
+/* Overlay full-screen para la transición de tema (fallback Framer Motion).
+   Token-only. No define color de fondo: lo recibe inline desde el componente
+   (capturado del bg del documento antes del cambio). */
+
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  /* Cubrir también safe-areas (notch, home indicator) */
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  /* El propio overlay no respira; el clip-path se anima por Framer Motion. */
+  will-change: clip-path;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition-overlay {
+    display: none;
+  }
+}

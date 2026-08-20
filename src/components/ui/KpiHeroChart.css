@@ -1,0 +1,109 @@
+.kpi-hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.kpi-hero-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.kpi-hero-metrics {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: flex-start;
+}
+
+.kpi-hero-avg-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.kpi-hero-avg-top {
+  display: flex;
+  align-items: center;
+}
+
+.kpi-hero-nav {
+  display: flex;
+  gap: 6px;
+  background: var(--color-surface, #fff);
+  padding: 4px;
+  border-radius: var(--rounded-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid var(--color-hairline);
+}
+
+.kpi-hero-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink);
+  border-radius: var(--rounded-sm);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kpi-hero-nav-btn:not(:disabled):hover {
+  background: var(--color-surface-hover);
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.kpi-hero-nav-btn:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+.kpi-hero-nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.kpi-hero-badge {
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-hairline);
+  padding: 4px 12px;
+  border-radius: var(--rounded-md);
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  font-family: var(--font-body);
+  font-weight: var(--type-caption-sm-weight);
+}
+
+.kpi-hero-avg-value {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--color-ink, #111) 0%, var(--color-text-muted, #666) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.kpi-hero-avg-value span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-left: 2px;
+  color: var(--color-text-muted);
+  -webkit-text-fill-color: var(--color-text-muted);
+}

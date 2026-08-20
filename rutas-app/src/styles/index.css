@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+/* ================================================================
+   DESIGN TOKENS — Notion-inspired system (desing.md)
+   Warm paper canvas · Inter · Single blue accent · Sticker palette
+   Fully aligned with /reclutamiento/src/styles/global.css
+   ================================================================ */
+
+@theme {
+
+  /* ── Brand & Accent ───────────────────────────────────────────── */
+  --color-primary: #0075de;              /* Single structural accent — Notion blue */
+  --color-primary-active: #005bab;       /* Pressed / hover state */
+  --color-primary-disabled: #e6e6e6;
+
+  /* Deep indigo "night" band — hero sections only, never CTAs */
+  --color-secondary: #213183;
+
+  /* ── Surfaces ─────────────────────────────────────────────────── */
+  --color-canvas: #f6f5f4;              /* Warm paper — page background */
+  --color-canvas-soft: #f6f5f4;
+  --color-surface: #ffffff;             /* Cards, panels, form fields */
+  --color-surface-soft: #f6f5f4;        /* Nav pills, dividers */
+  --color-surface-card: #f0efed;        /* Hover / skeleton / tinted rows */
+  /* Dark surfaces: near-black (not indigo) per desing.md */
+  --color-surface-dark: #191817;
+  --color-surface-dark-elevated: #232120;
+
+  /* ── Hairlines ────────────────────────────────────────────────── */
+  --color-hairline: #e6e6e6;
+  --color-hairline-soft: #f0efee;
+  --color-hairline-strong: #d5d3d1;
+
+  /* ── Text ─────────────────────────────────────────────────────── */
+  --color-ink: #000000;                  /* Notion true-black for headings */
+  --color-ink-deep: #000000;
+  --color-charcoal: #31302e;             /* Warm charcoal — body copy */
+  --color-body: #31302e;
+  --color-mute: #615d59;                 /* Stone — supporting copy */
+  --color-stone: #615d59;
+  --color-ash: #a39e98;                  /* Ash — captions, placeholders */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+
+  /* ── Semantic ─────────────────────────────────────────────────── */
+  --color-success: #1aae39;
+  --color-warning: #dd5b00;
+  --color-error: #ef4444;
+
+  /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structure) ─ */
+  --color-accent-sky: #62aef0;
+  --color-accent-purple: #d6b6f6;
+  --color-accent-purple-deep: #391c57;
+  --color-accent-pink: #ff64c8;
+  --color-accent-orange: #dd5b00;
+  --color-accent-orange-deep: #793400;
+  --color-accent-teal: #2a9d99;
+  --color-accent-green: #1aae39;
+  --color-accent-brown: #523410;
+
+  /* ── Sidebar (shadcn) ─────────────────────────────────────────── */
+  --color-sidebar: #ffffff;
+  --color-sidebar-foreground: #000000;
+  --color-sidebar-border: #e6e6e6;
+  --color-sidebar-accent: #f0efed;
+  --color-sidebar-accent-foreground: #000000;
+
+  /* ── Typography (NotionInter ≈ Inter) ────────────────────────── */
+  --font-sans: "Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* display-1: 64px · hero headlines */
+  --text-display-xl: 64px;
+  --text-display-xl--line-height: 1.0;
+  --text-display-xl--font-weight: 700;
+  --text-display-xl--letter-spacing: -2.125px;
+
+  /* display-2: 40px · large section headlines */
+  --text-display-md: 40px;
+  --text-display-md--line-height: 1.1;
+  --text-display-md--font-weight: 700;
+  --text-display-md--letter-spacing: -1px;
+
+  /* display mobile */
+  --text-display-mobile: 28px;
+  --text-display-mobile--line-height: 1.15;
+  --text-display-mobile--font-weight: 700;
+  --text-display-mobile--letter-spacing: -0.5px;
+
+  /* heading-2: 26px */
+  --text-heading-lg: 26px;
+  --text-heading-lg--line-height: 1.23;
+  --text-heading-lg--font-weight: 700;
+  --text-heading-lg--letter-spacing: -0.625px;
+
+  /* heading-3: 22px */
+  --text-heading-md: 22px;
+  --text-heading-md--line-height: 1.27;
+  --text-heading-md--font-weight: 700;
+  --text-heading-md--letter-spacing: -0.25px;
+
+  /* title: 20px */
+  --text-title: 20px;
+  --text-title--line-height: 1.4;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.125px;
+
+  /* body-md: 16px — default body copy */
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.5;
+  --text-body-md--font-weight: 400;
+
+  /* body-strong */
+  --text-body-strong: 16px;
+  --text-body-strong--line-height: 1.5;
+  --text-body-strong--font-weight: 600;
+
+  /* body-sm / table cells: 15px */
+  --text-body-sm: 15px;
+  --text-body-sm--line-height: 1.33;
+  --text-body-sm--font-weight: 400;
+
+  --text-table-cell: 15px;
+  --text-table-cell--line-height: 1.4;
+
+  /* button: 16px */
+  --text-button-md: 16px;
+  --text-button-md--line-height: 1.5;
+  --text-button-md--font-weight: 500;
+
+  /* caption: 14px */
+  --text-caption-md: 14px;
+  --text-caption-md--line-height: 1.43;
+  --text-caption-md--font-weight: 400;
+
+  /* eyebrow: 12px */
+  --text-eyebrow: 12px;
+  --text-eyebrow--line-height: 1.33;
+  --text-eyebrow--font-weight: 600;
+  --text-eyebrow--letter-spacing: 0.125px;
+
+  /* ── Radius ────────────────────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   8px;   /* utility buttons per desing.md */
+  --radius-lg:  12px;   /* cards */
+  --radius-xl:  16px;
+  --radius-full: 9999px; /* pill CTA buttons */
+
+  /* ── Spacing (8px base) ──────────────────────────────────────── */
+  --spacing-xxs: 4px;
+  --spacing-xs:  8px;
+  --spacing-sm:  12px;
+  --spacing-md:  16px;
+  --spacing-lg:  24px;
+  --spacing-xl:  28px;
+  --spacing-xxl: 32px;
+  --spacing-section: 96px;
+}
+
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
+@layer base {
+  html {
+    @apply bg-canvas text-ink font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    /* OpenType features per desing.md */
+    font-feature-settings: "lnum" 1, "locl" 1;
+  }
+
+  body {
+    @apply min-h-screen;
+    color: var(--color-charcoal);
+  }
+
+  /* Focus ring — primary blue, consistent with reclutamiento */
+  :where(button, a, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+}
+
+/* ================================================================
+   ELEVATION — "Barely-there layered shadow" per desing.md
+   "Elevation by hairline + barely-there layered shadow,
+    not heavy drop-shadows"
+   ================================================================ */
+.shadow-soft {
+  box-shadow:
+    rgba(0, 0, 0, 0.01) 0 0.175px 1.041px,
+    rgba(0, 0, 0, 0.02) 0 0.800px 2.925px,
+    rgba(0, 0, 0, 0.027) 0 2.025px 7.847px,
+    rgba(0, 0, 0, 0.04) 0 4px 18px;
+}
+
+/* ================================================================
+   BUTTON OVERRIDES
+   Align CVA components with desing.md button rules:
+   - Pill-shape for primary CTAs (rounded-full)
+   - 8px radius for utility / outline / ghost (rounded-md)
+   ================================================================ */
+
+/* Pill primary — the one structural CTA */
+.rounded-full.bg-primary {
+  border-radius: var(--radius-full) !important;
+}
+
+/* Pill secondary (matching app style) */
+.rounded-full.bg-surface {
+  border-radius: var(--radius-full) !important;
+}
+
+/* Utility outline & ghost — 8px per desing.md */
+.rounded-md {
+  border-radius: var(--radius-md) !important;
+}
+
+/* ================================================================
+   ANIMATIONS — entrance choreography
+   ================================================================ */
+
+/* Full-screen detail sheet entrance (mobile) */
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-sheet { animation: sheet-in 0.22s ease-out both; }
+
+/* Panel / list entrance */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fade-in-up 0.28s ease-out both; }
+
+/* Stagger children */
+.stagger > * { animation: fade-in-up 0.3s ease-out both; }
+.stagger > *:nth-child(1)  { animation-delay: 0.02s; }
+.stagger > *:nth-child(2)  { animation-delay: 0.04s; }
+.stagger > *:nth-child(3)  { animation-delay: 0.06s; }
+.stagger > *:nth-child(4)  { animation-delay: 0.08s; }
+.stagger > *:nth-child(5)  { animation-delay: 0.10s; }
+.stagger > *:nth-child(6)  { animation-delay: 0.12s; }
+.stagger > *:nth-child(7)  { animation-delay: 0.14s; }
+.stagger > *:nth-child(8)  { animation-delay: 0.16s; }
+.stagger > *:nth-child(n+9){ animation-delay: 0.18s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sheet,
+  .animate-fade-in-up,
+  .stagger > * { animation: none; }
+}
+
+/* ================================================================
+   SCROLLBAR UTILITY
+   ================================================================ */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ================================================================
+   MOBILE SCROLL SNAP — route tabs
+   ================================================================ */
+@media (max-width: 768px) {
+  [data-testid="route-tabs"] > div {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  [data-testid="route-tabs"] button {
+    scroll-snap-align: center;
+  }
+}

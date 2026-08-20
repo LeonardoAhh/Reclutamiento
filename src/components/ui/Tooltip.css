@@ -1,0 +1,97 @@
+/* ================================================================
+   Tooltip — Notion-style inverted surface tooltip.
+   Radix UI portal: rendered outside the DOM tree.
+   Tokens: colors, spacing, type, rounded, shadow, z-index, motion.
+   ================================================================ */
+
+.tooltip-content {
+  background-color: var(--color-ink);
+  color: var(--color-canvas);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-caption-md-size);
+  line-height: var(--type-caption-md-line);
+  font-weight: var(--type-caption-md-weight);
+  box-shadow: var(--shadow-elevated);
+  z-index: var(--layer-tooltip);
+  animation: tooltipFadeIn var(--transition-base);
+  white-space: normal;
+  max-width: var(--tooltip-max-width);
+  word-wrap: break-word;
+}
+
+.tooltip-arrow {
+  fill: var(--color-ink);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-content {
+    animation: none;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOOLTIP LIST COMPONENT (e.g. for Trends or History)
+────────────────────────────────────────────────────────── */
+
+.trend-tooltip {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xs);
+  min-width: 150px;
+  gap: var(--spacing-sm);
+}
+
+.trend-tooltip__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.trend-tooltip__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+}
+
+.trend-tooltip__title--success {
+  color: var(--color-accent-green);
+}
+
+.trend-tooltip__title--danger {
+  color: var(--color-accent-orange);
+}
+
+.trend-tooltip__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-canvas);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.trend-tooltip__list li {
+  position: relative;
+  padding-left: var(--spacing-sm);
+}
+
+.trend-tooltip__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-muted-soft);
+}

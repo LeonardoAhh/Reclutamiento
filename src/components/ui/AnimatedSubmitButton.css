@@ -1,0 +1,63 @@
+.animated-submit-button {
+  position: relative;
+  overflow: hidden;
+  /* Animamos los colores de forma suave independientemente de framer-motion */
+  transition: 
+    background var(--transition-smooth), 
+    border-color var(--transition-smooth), 
+    color var(--transition-smooth),
+    box-shadow var(--transition-smooth) !important;
+}
+
+.animated-submit-button[data-state="success"] {
+  background: var(--color-success) !important;
+  border-color: var(--color-success) !important;
+  color: var(--color-on-primary) !important;
+}
+
+.animated-submit-button[data-state="error"] {
+  background: var(--color-error) !important;
+  border-color: var(--color-error) !important;
+  color: var(--color-on-primary) !important;
+  animation: animated-submit-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.animated-submit-button__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+}
+
+.animated-submit-button__content svg {
+  flex-shrink: 0;
+}
+
+.animated-submit-button__text {
+  white-space: nowrap;
+}
+
+.animated-submit-button__spinner {
+  animation: animated-submit-spin 800ms linear infinite;
+}
+
+@keyframes animated-submit-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes animated-submit-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-submit-button__spinner,
+  .animated-submit-button[data-state="error"] {
+    animation: none;
+  }
+}

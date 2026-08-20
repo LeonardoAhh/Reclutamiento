@@ -1,0 +1,40 @@
+import {
+  LayoutGrid,
+  Contact,
+  Calendar,
+  Building2,
+  Briefcase,
+  SlidersHorizontal,
+  ClipboardList,
+  Bot,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+export type NavItem = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  end?: boolean;
+  mobilePriority?: boolean;
+};
+
+export const NAV_ITEMS: ReadonlyArray<NavItem> = [
+  {
+    to: "/resumen",
+    label: "Resumen",
+    icon: LayoutGrid,
+    end: false,
+    mobilePriority: true,
+  },
+  {
+    to: "/candidatos",
+    label: "Candidatos",
+    icon: Contact,
+    mobilePriority: true,
+  },
+  { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
+  { to: "/reportes", label: "Reporte Diario", icon: Calendar },
+  { to: "/plantilla", label: "Plantilla", icon: Building2 },
+  { to: "/actividades", label: "Actividades", icon: ClipboardList },
+  { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
+];

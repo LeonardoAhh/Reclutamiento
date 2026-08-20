@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pre-Filtro Telefónico - Coordinador SGI</title>
+    <style>
+        @page { size: letter; margin: 15mm; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 10pt;
+            color: #1a1a1a;
+            line-height: 1.4;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1e3a5f;
+            font-size: 14pt;
+            margin-bottom: 2px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 9pt;
+            margin-bottom: 16px;
+        }
+        .candidate-name {
+            background: #1e3a5f;
+            color: #fff;
+            padding: 8px 14px;
+            font-size: 12pt;
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+            border-radius: 4px;
+        }
+        .section-title {
+            font-size: 9pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1e3a5f;
+            letter-spacing: 0.5px;
+            margin: 14px 0 8px 0;
+            padding-bottom: 3px;
+            border-bottom: 2px solid #1e3a5f;
+        }
+        .question-block {
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 4px;
+            border-left: 4px solid #1e3a5f;
+        }
+        .question-block.critical {
+            border-left-color: #dc2626;
+            background: #fef2f2;
+        }
+        .q-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .q-num {
+            min-width: 22px;
+            height: 22px;
+            background: #1e3a5f;
+            color: #fff;
+            font-size: 9pt;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .question-block.critical .q-num {
+            background: #dc2626;
+        }
+        .q-text {
+            font-size: 9.5pt;
+            font-weight: 600;
+        }
+        .q-why {
+            font-size: 8.5pt;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 3px;
+        }
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0;
+        }
+        .score-label {
+            font-size: 8.5pt;
+            font-weight: 700;
+            color: #374151;
+            min-width: 55px;
+        }
+        .score-boxes {
+            display: flex;
+            gap: 4px;
+        }
+        .score-box {
+            width: 28px;
+            height: 22px;
+            border: 1.5px solid #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            font-weight: 700;
+            color: #6b7280;
+        }
+        .notes-line {
+            border-bottom: 1px solid #d1d5db;
+            height: 24px;
+            margin-top: 4px;
+        }
+        .summary-box {
+            background: #1e3a5f;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-label {
+            font-size: 10pt;
+            font-weight: 700;
+        }
+        .summary-score {
+            font-size: 14pt;
+            font-weight: 700;
+        }
+        .decision-box {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+            text-align: center;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            font-size: 8pt;
+            color: #6b7280;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #dc2626; }
+        .dot-blue { background: #1e3a5f; }
+        .page-break { page-break-before: always; }
+        .print-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 20px;
+            background: #1e3a5f;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* ===== IMPRESIÓN: BLANCO Y NEGRO, TAMAÑO CARTA ===== */
+        @media print {
+            .print-btn { display: none !important; }
+            body {
+                padding: 10px;
+                color: #000 !important;
+            }
+            .page-break { page-break-before: always; }
+
+            h1, .section-title, .q-why, .score-label,
+            .summary-label, .summary-score {
+                color: #000 !important;
+            }
+            .subtitle { color: #333 !important; }
+
+            /* Quitar rellenos de color, dejar solo bordes en negro */
+            .candidate-name {
+                background: #fff !important;
+                color: #000 !important;
+                border: 2px solid #000;
+                border-radius: 0;
+            }
+            .section-title {
+                border-bottom: 2px solid #000;
+            }
+            .question-block {
+                background: #fff !important;
+                border: 1px solid #000;
+                border-left-width: 4px;
+                border-left-color: #000;
+                border-radius: 0;
+            }
+            .question-block.critical {
+                border-left-width: 6px;
+                border-left-color: #000;
+                border-style: solid;
+            }
+            /* Etiqueta textual para diferenciar "crítico" sin depender del color */
+            .question-block.critical .q-text::before {
+                content: "[CRÍTICO] ";
+                font-weight: 800;
+            }
+            .q-num {
+                background: #000 !important;
+                color: #fff !important;
+                border: 1px solid #000;
+            }
+            .question-block.critical .q-num {
+                background: #000 !important;
+            }
+            .score-box {
+                border: 1.5px solid #000;
+                color: #000;
+            }
+            .notes-line { border-bottom: 1px solid #000; }
+            .summary-box {
+                background: #fff !important;
+                color: #000 !important;
+                border: 2px solid #000;
+                border-radius: 0;
+            }
+            .decision-box {
+                background: #fff !important;
+                color: #000 !important;
+                border: 1.5px solid #000;
+            }
+            .legend { color: #000 !important; }
+            .dot { border: 1px solid #000; }
+            .dot-red { background: #000 !important; }
+            .dot-blue { background: #fff !important; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
+
+<h1>CUESTIONARIO DE FILTRO TELEFÓNICO</h1>
+
+<!-- ========== DANIELA GARCÍA ========== -->
+<div class="candidate-name">DANIELA GARCÍA IRACHETA</div>
+
+<div class="section-title">🔴 Validaciones Críticas</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">1</div>
+        <div>
+            <div class="q-text">¿Has implementado o auditado bajo la norma <strong>IATF 16949:2016</strong> de forma directa?</div>
+            <div class="q-why">El puesto requiere IATF 16949. Su CV no lo certifica explícitamente.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">2</div>
+        <div>
+            <div class="q-text">¿Conoces la norma <strong>VDA 6.3</strong> (auditoría de procesos)? ¿La has aplicado en auditorías reales?</div>
+            <div class="q-why">Requisito del puesto. No aparece en su CV.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">3</div>
+        <div>
+            <div class="q-text">¿Cuál es tu nivel real de <strong>inglés</strong>? ¿Puedes leer especificaciones técnicas y redactar reportes de auditoría?</div>
+            <div class="q-why">Puesto pide 60% lectura / 50% escritura-habla. Su CV no cuantifica.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="section-title">🟡 Validaciones Importantes (Evaluar profundidad)</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">4</div>
+        <div>
+            <div class="q-text">¿Has trabajado en el sector de <strong>inyección de plástico automotriz</strong> o con procesos similares?</div>
+            <div class="q-why">Su experiencia es wire & cable / aire acondicionado.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">5</div>
+        <div>
+            <div class="q-text">Eres Gerente de Calidad actual. ¿Por qué buscas un puesto de <strong>Coordinador</strong>? ¿No lo ves como retroceso?</div>
+            <div class="q-why">Riesgo de rotación. Puede aceptar por necesidad y seguir buscando rol gerencial.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">6</div>
+        <div>
+            <div class="q-text">¿Estás dispuesta a <strong>reubicarte a Querétaro</strong> y realizar viajes frecuentes a plantas/clientes?</div>
+            <div class="q-why">Vive en San Luis Potosí. El puesto es presencial en Planta Querétaro.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="section-title">🟢 Validaciones Complementarias (Valor agregado)</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">7</div>
+        <div>
+            <div class="q-text">¿Manejas <strong>SAP</strong>? ¿En qué módulos (QM, PP, MM)?</div>
+            <div class="q-why">Aparece en su CV. Confirmar profundidad.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">8</div>
+        <div>
+            <div class="q-text">Describe tu experiencia con <strong>auditorías externas de casa certificadora</strong> (DQS, TÜV, SGS, etc.).</div>
+            <div class="q-why">Función clave del puesto. Validar que no solo hizo internas.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">9</div>
+        <div>
+            <div class="q-text">¿Qué <strong>expectativa salarial</strong> tienes para un puesto de Coordinador SGI en Querétaro?</div>
+            <div class="q-why">Puede negociar como gerente. Verificar si entra en rango.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+
+
+<!-- ========== MARÍA VILLANUEVA ========== -->
+<div class="page-break"></div>
+
+<div class="candidate-name">MARÍA VILLANUEVA ARREDONDO</div>
+
+<div class="section-title">🔴 Validaciones Críticas</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">1</div>
+        <div>
+            <div class="q-text">¿Puedes <strong>leer y redactar reportes de auditoría en inglés</strong>? ¿Has interactuado con auditores/clientes en inglés?</div>
+            <div class="q-why">Está estudiando B3. El puesto requiere comunicación con auditores externos y clientes.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">2</div>
+        <div>
+            <div class="q-text">En <strong>Progressive Automotive</strong>: ¿qué procesos de <strong>inyección de plástico</strong> auditaste? ¿Qué CSRs manejaste?</div>
+            <div class="q-why">Validar que su experiencia en plástico automotriz es real y profunda, no superficial.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block critical">
+    <div class="q-header">
+        <div class="q-num">3</div>
+        <div>
+            <div class="q-text">¿Por qué dejaste <strong>Indux Qro</strong> tras solo 4 meses (nov 2025–feb 2026)? ¿Hay alguna razón que deba conocer?</div>
+            <div class="q-why">Permanencia corta = bandera amarilla. Descartar si fue despido por causa o renuncia conflictiva.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="section-title">🟡 Validaciones Importantes (Evaluar profundidad)</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">4</div>
+        <div>
+            <div class="q-text">Describe una <strong>auditoría VDA 6.3</strong> que hayas liderado: ¿qué proceso auditaste, qué hallazgos encontraste, cómo cerraste?</div>
+            <div class="q-why">Dice ser auditor líder VDA 6.3. Validar que no es solo certificación sin práctica.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">5</div>
+        <div>
+            <div class="q-text">¿Manejas <strong>SAP</strong>, <strong>Minitab</strong> u otro ERP/estadístico? ¿En qué nivel?</div>
+            <div class="q-why">No aparecen en su CV. Daniela sí los tiene. Verificar si es una debilidad real.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">6</div>
+        <div>
+            <div class="q-text">¿Qué <strong>expectativa salarial</strong> tienes? ¿Conoces el rango de un Coordinador SGI en Querétaro?</div>
+            <div class="q-why">11 años de experiencia pueden generar expectativa alta. Verificar ajuste al presupuesto.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="section-title">🟢 Validaciones Complementarias (Valor agregado)</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">7</div>
+        <div>
+            <div class="q-text">¿Has gestionado <strong>auditorías de recertificación IATF</strong> con resultado favorable? ¿Con qué casa certificadora?</div>
+            <div class="q-why">Menciona recertificación en PAPP. Validar resultado y casa certificadora.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">8</div>
+        <div>
+            <div class="q-text">¿Has implementado <strong>LPAs</strong> (Layered Process Audits) en línea de producción? ¿Qué resultados obtuviste?</div>
+            <div class="q-why">Menciona gestión de LPAs en Indux y Progressive. Validar impacto real.</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+<div class="question-block">
+    <div class="q-header">
+        <div class="q-num">9</div>
+        <div>
+            <div class="q-text">¿Estás dispuesta a <strong>viajar frecuentemente</strong> a plantas/clientes? ¿Tienes alguna restricción de movilidad?</div>
+        </div>
+    </div>
+    <div class="score-row">
+        <span class="score-label">Califica:</span>
+        <div class="score-boxes">
+            <div class="score-box">0</div>
+            <div class="score-box">1</div>
+            <div class="score-box">2</div>
+            <div class="score-box">3</div>
+        </div>
+    </div>
+    <div class="notes-line"></div>
+    <div class="notes-line"></div>
+</div>
+
+
+<div class="legend">
+    <div class="legend-item"><div class="dot dot-red"></div> Crítico (descarte si 0)</div>
+    <div class="legend-item"><div class="dot dot-blue"></div> Importante</div>
+    <div class="legend-item">0 = No cumple | 1 = Mínimo | 2 = Bien | 3 = Excelente</div>
+</div>
+
+</body>
+</html>
