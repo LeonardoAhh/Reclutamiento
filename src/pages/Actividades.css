@@ -156,7 +156,7 @@
 }
 
 /* Ensure the cards can hold the floating badge */
-.activity-card, .rutinaria-card {
+.activity-card, .responsabilidad-card {
   position: relative;
   overflow: visible;
 }
@@ -350,125 +350,20 @@
   margin: 0;
 }
 
-/* ── Rutinaria cards (flat list) ─────────────────────────────────────── */
-.rutinarias-list {
+/* ── Responsabilidades list (grid layout) ─────────────────────────────────────── */
+.responsabilidades-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-sm);
 }
 
 @media (min-width: 640px) {
-  .rutinarias-list {
+  .responsabilidades-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.rutinaria-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) 48px var(--spacing-lg) var(--spacing-lg);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  transition:
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-@media (min-width: 640px) {
-  .rutinaria-card {
-    flex-direction: row;
-  }
-}
-
-.rutinaria-card-main {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  flex: 1;
-  min-width: 0; /* allows text truncation if needed */
-}
-
-.rutinaria-card-right {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.rutinaria-card:hover {
-  box-shadow: var(--shadow-xs);
-  border-color: var(--color-hairline-strong);
-}
-
-.rutinaria-icon {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--color-primary-tint);
-  border-radius: var(--rounded-md);
-  color: var(--color-primary);
-  margin-top: var(--spacing-xxs);
-}
-
-.rutinaria-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-}
-
-.rutinaria-content .rutinaria-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  letter-spacing: var(--type-heading-sm-tracking);
-  line-height: var(--type-heading-sm-line);
-  color: var(--color-ink);
-  margin: 0;
-}
-
-.rutinaria-content .rutinaria-desc {
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--color-charcoal);
-  margin: var(--spacing-xxs) 0 0 0;
-  white-space: pre-wrap;
-}
-
-.rutinaria-content .rutinaria-desc--muted {
-  color: var(--color-muted);
-}
-
-.rutinaria-badge--spaced {
-  margin-top: var(--spacing-sm);
-}
-
-.activity-team-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-xs);
-}
-
-.rutinaria-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
-  margin-top: var(--spacing-xxs);
-}
-
-/* ── Activity cards (tasks grid) ─────────────────────────────────────── */
+/* ── Activity grids ────────────────────────────────────────────────────── */
 .actividades-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -503,151 +398,6 @@
   .vacantes-grid {
     grid-template-columns: repeat(4, 1fr);
   }
-}
-
-.activity-card {
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  cursor: pointer;
-  transition:
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.activity-card:hover {
-  box-shadow: var(--shadow-card);
-  border-color: var(--color-hairline-strong);
-}
-
-.activity-card__open {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  cursor: pointer;
-}
-
-.activity-card__open:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-  box-shadow: none;
-}
-
-.activity-card:has(.activity-card__open:active) {
-  transform: scale(0.98);
-}
-
-.activity-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-}
-
-.activity-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
-  color: var(--color-ink);
-  margin: 0;
-}
-
-/* ── Status pill ─────────────────────────────────────────────────────── */
-.activity-status {
-  flex-shrink: 0;
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
-  white-space: nowrap;
-}
-
-.activity-status.pendiente {
-  background: var(--color-warning-tint);
-  color: var(--color-warning);
-}
-
-.activity-status.en_proceso {
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
-}
-
-.activity-status.completada {
-  background: var(--color-success-tint);
-  color: var(--color-success);
-}
-
-/* ── Card body ───────────────────────────────────────────────────────── */
-.activity-desc {
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--color-charcoal);
-  margin: 0;
-  flex-grow: 1;
-  white-space: pre-wrap;
-}
-
-.activity-meta {
-  font-size: var(--type-caption-sm-size);
-  line-height: var(--type-caption-sm-line);
-  color: var(--color-muted);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: var(--spacing-xs);
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--color-hairline);
-}
-
-.activity-admin-actions {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.activity-admin-actions .btn-icon {
-  background: transparent;
-  border-color: transparent;
-  color: var(--color-charcoal);
-}
-
-.activity-admin-actions .btn-icon:hover {
-  background: var(--color-surface-soft);
-  border-color: transparent;
-  color: var(--color-ink);
-}
-
-.activity-action-menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-  min-width: 120px;
-}
-
-.activity-action-item {
-  justify-content: flex-start;
-  width: 100%;
-  font-size: var(--type-body-sm-size);
-  padding-left: var(--spacing-sm);
-  padding-right: var(--spacing-sm);
-}
-
-.rutinaria-card .activity-admin-actions {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
 }
 
 /* ── Modal form extras ───────────────────────────────────────────────── */
@@ -1094,36 +844,6 @@
 
 
 
-.rutinaria-ref-button {
-  display: flex;
-  max-width: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: var(--rounded-md);
-  background: transparent;
-  cursor: pointer;
-}
-
-.rutinaria-ref-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-  box-shadow: none;
-}
-
-.rutinaria-ref-img {
-  max-width: 100%;
-  max-height: 120px;
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-  object-fit: contain;
-  background: var(--color-surface);
-  transition: opacity var(--transition-fast);
-}
-
-.rutinaria-ref-button:hover .rutinaria-ref-img {
-  opacity: 0.85;
-}
-
 .activity-lightbox__body {
   align-items: center;
   justify-content: center;
@@ -1138,27 +858,10 @@
 }
 
 @media (forced-colors: active) {
-  .activity-card__open:focus-visible,
   .activity-type-option:has(input:focus-visible),
-  .reference-image-button:focus-visible,
-  .rutinaria-ref-button:focus-visible {
+  .reference-image-button:focus-visible {
     outline-color: ButtonText;
   }
-}
-
-.activity-card-preview-thumb {
-  margin-top: var(--spacing-sm);
-  width: 100%;
-  height: 120px;
-  border-radius: var(--rounded-md);
-  overflow: hidden;
-  border: 1px solid var(--color-hairline);
-}
-.activity-card-preview-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .proof-item .proof-image-button {

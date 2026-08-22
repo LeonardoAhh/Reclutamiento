@@ -1,0 +1,154 @@
+import { CheckCircle2, MoreVertical, Trash2, Pencil, Image as ImageIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
+import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
+import "./ResponsabilidadCard.css";
+
+export interface ResponsabilidadCardProps {
+  id: string;
+  title: string;
+  description?: string;
+  area?: string;
+  assignees?: Array<{ id: string; display_name?: string; username?: string }>;
+  referenceImage?: string;
+  isNew?: boolean;
+  isAdmin?: boolean;
+  currentUserId?: string;
+  onClick?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onViewReference?: () => void;
+}
+
+export function ResponsabilidadCard({
+  id,
+  title,
+  description,
+  area,
+  assignees = [],
+  referenceImage,
+  isNew = false,
+  isAdmin = false,
+  currentUserId,
+  onClick,
+  onEdit,
+  onDelete,
+  onViewReference,
+}: ResponsabilidadCardProps) {
+  const filteredAssignees = assignees.filter(
+    (a) => !currentUserId || a.id !== currentUserId,
+  );
+
+  return (
+    <div className="responsabilidad-card" role="listitem">
+      {isNew && <span className="activity-new-badge">Nueva</span>}
+
+      <div className="responsabilidad-card-main">
+        <div className="responsabilidad-icon">
+          <CheckCircle2 size={18} aria-hidden="true" />
+        </div>
+
+        <div className="responsabilidad-content">
+          <h3 className="responsabilidad-title"><span className="responsabilidad-title-text">{title}</span></h3>
+          {description && (
+            <p 
+              className="responsabilidad-desc" 
+              data-full={description}
+            >
+              <span className="responsabilidad-desc-text">{description}</span>
+            </p>
+          )}
+          {area && (
+            <p 
+              className="responsabilidad-desc responsabilidad-desc--muted" 
+              data-full={area}
+            >
+              <span className="responsabilidad-desc-text">{area}</span>
+            </p>
+          )}
+          <div className="responsabilidad-badge">
+            {filteredAssignees.length > 0 ? (
+              filteredAssignees.slice(0, 2).map((assignee) => (
+                <ReclutadorBadge
+                  key={assignee.id}
+                  nombre={assignee.display_name || assignee.username || "—"}
+                  size="sm"
+                  showRole={false}
+                />
+              ))
+            ) : (
+              <span className="responsabilidad-badge--team">Todo el equipo</span>
+            )}
+            {filteredAssignees.length > 2 && (
+              <span className="responsabilidad-badge-more">
+                +{filteredAssignees.length - 2}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {referenceImage && (
+        <div className="responsabilidad-card-right">
+          <button
+            type="button"
+            className="responsabilidad-ref-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewReference?.();
+            }}
+            aria-label={`Ampliar referencia de ${title}`}
+          >
+            <ImageIcon size={16} aria-hidden="true" />
+            <img
+              src={referenceImage}
+              alt=""
+              className="responsabilidad-ref-img"
+            />
+          </button>
+        </div>
+      )}
+
+      {isAdmin && (
+        <div className="activity-admin-actions">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="btn-ghost btn-icon" aria-label="Opciones">
+                <MoreVertical size={16} aria-hidden="true" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="activity-action-menu">
+              {onEdit && (
+                <button
+                  className="btn-ghost activity-action-item"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                  }}
+                >
+                  <Pencil size={14} aria-hidden="true" />
+                  <span>Editar</span>
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  className="btn-ghost activity-action-item text-danger"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                >
+                  <Trash2 size={14} aria-hidden="true" />
+                  <span>Eliminar</span>
+                </button>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+    </div>
+  );
+}

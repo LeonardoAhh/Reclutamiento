@@ -2,6 +2,10 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { useAuth } from "@/hooks/useAuth";
+import { usePagination } from "@/hooks/usePagination";
+import { Pagination } from "@/components/ui/Pagination";
+import { ActivityCard } from "@/components/ui/ActivityCard";
+import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
 import { Activity, ActivityStatus, ACTIVITY_STATUS_LABEL } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { Modal } from "@/components/ui/Modal";
@@ -249,10 +253,8 @@ export function Actividades() {
   const [recruiterFilter, setRecruiterFilter] = useState("");
 
   /* ── Section collapse & item limits ────────────────────────────────── */
-  const [rutinariasCollapsed, setRutinariasCollapsed] = useState(true);
+  const [responsabilidadesCollapsed, setresponsabilidadesCollapsed] = useState(true);
   const [actividadesCollapsed, setActividadesCollapsed] = useState(true);
-  const [rutinariasLimit, setRutinariasLimit] = useState(4);
-  const [actividadesLimit, setActividadesLimit] = useState(4);
 
   /* ── Edit form state ───────────────────────────────────────────────── */
   const [editTitulo, setEditTitulo] = useState("");
@@ -448,7 +450,12 @@ export function Actividades() {
   };
 
   const openDetails = async (activity: Activity) => {
-    if (activity.tipo === "rutinaria") return;
+    if (activity.tipo === "rutinaria") {
+      if (activity.reference_image) {
+        setLightboxSrc(activity.reference_image);
+      }
+      return;
+    }
 
     const requestId = ++proofsRequestRef.current;
     setSelectedActivity(activity);
@@ -598,7 +605,7 @@ export function Actividades() {
 
   /* ── Derived data ──────────────────────────────────────────────────── */
   const isAdmin = profile?.role === "admin";
-  const rutinarias = useMemo(() => {
+  const responsabilidades = useMemo(() => {
     const list = activities.filter((a) => a.tipo === "rutinaria");
     return list.sort((a, b) => {
       const aNew = isNewActivity(a);
@@ -676,6 +683,29 @@ export function Actividades() {
 
     return result;
   }, [allUnicas, statusFilter, recruiterFilter, searchQuery, sortOrder]);
+
+  /* ── Pagination ──────────────────────────────────────────────────────── */
+  const {
+    pageItems: responsabilidadesPaginadas,
+    currentPage: responsabilidadesPage,
+    totalPages: responsabilidadesTotalPages,
+    goToPage: goToresponsabilidadesPage,
+    nextPage: nextresponsabilidadesPage,
+    prevPage: prevresponsabilidadesPage,
+    canGoNext: canGoNextResponsabilidades,
+    canGoPrev: canGoPrevResponsabilidades,
+  } = usePagination(responsabilidades, 10);
+
+  const {
+    pageItems: actividadesPaginadas,
+    currentPage: actividadesPage,
+    totalPages: actividadesTotalPages,
+    goToPage: goToActividadesPage,
+    nextPage: nextActividadesPage,
+    prevPage: prevActividadesPage,
+    canGoNext: canGoNextActividades,
+    canGoPrev: canGoPrevActividades,
+  } = usePagination(unicas, 12);
 
   /* ── Loading state ─────────────────────────────────────────────────── */
   if (loading) {
@@ -758,22 +788,22 @@ export function Actividades() {
                 }
 
                 return (
-                  <div key={v.id} className="rutinaria-card">
+                  <div key={v.id} className="responsabilidad-card">
                     {isNewActivity(v) && (
                       <span className="activity-new-badge">Nueva</span>
                     )}
-                    <div className="rutinaria-card-main">
-                      <div className="rutinaria-icon">
+                    <div className="responsabilidad-card-main">
+                      <div className="responsabilidad-icon">
                         <ClipboardList size={18} aria-hidden="true" />
                       </div>
-                      <div className="rutinaria-content">
-                        <h3 className="rutinaria-title">{v.titulo}</h3>
+                      <div className="responsabilidad-content">
+                        <h3 className="responsabilidad-title">{v.titulo}</h3>
                         {seccion && (
-                          <p className="rutinaria-desc rutinaria-desc--muted">
+                          <p className="responsabilidad-desc responsabilidad-desc--muted">
                             {seccion}
                           </p>
                         )}
-                        <div className="rutinaria-badge rutinaria-badge--spaced">
+                        <div className="responsabilidad-badge responsabilidad-badge--spaced">
                           <AssigneeBadges
                             act={v}
                             isAdmin={isAdmin}
@@ -834,20 +864,20 @@ export function Actividades() {
             <button
               type="button"
               className="actividades-section__toggle actividades-section__heading"
-              onClick={() => setRutinariasCollapsed(!rutinariasCollapsed)}
-              aria-expanded={!rutinariasCollapsed}
+              onClick={() => setresponsabilidadesCollapsed(!responsabilidadesCollapsed)}
+              aria-expanded={!responsabilidadesCollapsed}
               aria-controls="responsabilidades-panel"
             >
               <div>
                 <h2 className="actividades-section__title">
-                  {rutinariasCollapsed ? (
+                  {responsabilidadesCollapsed ? (
                     <ChevronRight size={18} aria-hidden="true" />
                   ) : (
                     <ChevronDown size={18} aria-hidden="true" />
                   )}
                   Responsabilidades
                   <span className="actividades-section__count">
-                    {rutinarias.length}
+                    {responsabilidades.length}
                   </span>
                 </h2>
                 <p className="actividades-section__desc">
@@ -867,9 +897,9 @@ export function Actividades() {
             )}
           </div>
 
-          {!rutinariasCollapsed && (
+          {!responsabilidadesCollapsed && (
             <div id="responsabilidades-panel">
-              {rutinarias.length === 0 ? (
+              {responsabilidades.length === 0 ? (
                 <div className="actividades-empty">
                   <ListTodo
                     size={40}
@@ -887,102 +917,40 @@ export function Actividades() {
                 </div>
               ) : (
                 <>
-                  <div className="rutinarias-list">
-                    {rutinarias.slice(0, rutinariasLimit).map((act) => (
-                      <div key={act.id} className="rutinaria-card">
-                        {isNewActivity(act) && (
-                          <span className="activity-new-badge">Nueva</span>
-                        )}
-                        <div className="rutinaria-card-main">
-                          <div className="rutinaria-icon">
-                            <CheckCircle2 size={18} aria-hidden="true" />
-                          </div>
-                          <div className="rutinaria-content">
-                            <h3 className="rutinaria-title">{act.titulo}</h3>
-                            {act.descripcion && (
-                              <p className="rutinaria-desc">
-                                {act.descripcion}
-                              </p>
-                            )}
-                            <div className="rutinaria-badge">
-                              <AssigneeBadges
-                                act={act}
-                                isAdmin={isAdmin}
-                                currentUser={profile}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {act.reference_image && (
-                          <div className="rutinaria-card-right">
-                            <button
-                              type="button"
-                              className="rutinaria-ref-button"
-                              onClick={() =>
-                                setLightboxSrc(act.reference_image!)
-                              }
-                              aria-label={`Ampliar referencia de ${act.titulo}`}
-                            >
-                              <img
-                                src={act.reference_image}
-                                alt=""
-                                className="rutinaria-ref-img"
-                              />
-                            </button>
-                          </div>
-                        )}
-                        {isAdmin && (
-                          <div className="activity-admin-actions">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button
-                                  className="btn-ghost btn-icon"
-                                  aria-label="Opciones"
-                                >
-                                  <MoreVertical size={16} aria-hidden="true" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                align="end"
-                                className="activity-action-menu"
-                              >
-                                <button
-                                  className="btn-ghost activity-action-item"
-                                  onClick={(e) => openEdit(act, e)}
-                                >
-                                  <Pencil size={14} aria-hidden="true" />
-                                  <span>Editar</span>
-                                </button>
-                                <button
-                                  className="btn-ghost activity-action-item text-danger"
-                                  onClick={(e) => handleDelete(act, e)}
-                                >
-                                  <Trash2 size={14} aria-hidden="true" />
-                                  <span>Eliminar</span>
-                                </button>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        )}
-                      </div>
+                  <div className="responsabilidades-list" role="list" aria-label="Responsabilidades">
+                    {responsabilidadesPaginadas.map((act) => (
+                      <ResponsabilidadCard
+                        key={act.id}
+                        id={act.id!}
+                        title={act.titulo}
+                        description={act.descripcion?.includes(" - ") ? act.descripcion.split(" - ").slice(1).join(" - ") : act.descripcion ?? undefined}
+                        area={act.descripcion?.includes(" - ") ? act.descripcion.split(" - ")[0] : undefined}
+                        assignees={act.asignado_a
+                          ? [{ id: act.asignado_a, display_name: (act as any).asignado_a_profile?.display_name, username: (act as any).asignado_a_profile?.username }]
+                          : [{ id: "team", display_name: "Alexandra" }, { id: "team2", display_name: "Daniela" }, { id: "team3", display_name: "Leonardo" }]}
+                        referenceImage={act.reference_image ?? undefined}
+                        isNew={isNewActivity(act)}
+                        isAdmin={isAdmin}
+                        currentUserId={profile?.id}
+                        onClick={() => openDetails(act)}
+                        onEdit={() => openEdit(act)}
+                        onDelete={() => handleDelete(act)}
+                        onViewReference={() => act.reference_image && setLightboxSrc(act.reference_image!)}
+                      />
                     ))}
                   </div>
 
-                  {rutinarias.length > 4 && (
-                    <button
-                      type="button"
-                      className="btn-ghost actividades-show-more"
-                      onClick={() =>
-                        setRutinariasLimit(
-                          rutinariasLimit <= 4 ? rutinarias.length : 4,
-                        )
-                      }
-                    >
-                      {rutinariasLimit <= 4
-                        ? `Ver todas (${rutinarias.length})`
-                        : "Ver menos"}
-                    </button>
+                  {responsabilidadesTotalPages > 1 && (
+                    <Pagination
+                      currentPage={responsabilidadesPage}
+                      totalPages={responsabilidadesTotalPages}
+                      onPageChange={goToresponsabilidadesPage}
+                      onPrev={prevresponsabilidadesPage}
+                      onNext={nextresponsabilidadesPage}
+                      canGoPrev={canGoPrevResponsabilidades}
+                      canGoNext={canGoNextResponsabilidades}
+                      ariaLabel="Paginación de responsabilidades"
+                    />
                   )}
                 </>
               )}
@@ -1143,95 +1111,41 @@ export function Actividades() {
                   </button>
                 </div>
               ) : (
-                <div className="actividades-grid">
-                  {unicas.slice(0, actividadesLimit).map((act) => (
-                    <article key={act.id} className="activity-card">
-                      <button
-                        type="button"
-                        className="activity-card__open"
-                        onClick={() => openDetails(act)}
-                        aria-label={`Consultar ${act.titulo}`}
-                      />
-                      {isNewActivity(act) && (
-                        <span className="activity-new-badge">Nueva</span>
-                      )}
-                      <div className="activity-card-header">
-                        <h3 className="activity-title">{act.titulo}</h3>
-                        <span className={`activity-status ${act.estado}`}>
-                          {ACTIVITY_STATUS_LABEL[act.estado]}
-                        </span>
-                      </div>
-                      <p className="activity-desc">
-                        {act.descripcion ? act.descripcion : "Sin descripción"}
-                      </p>
-                      {act.reference_image && (
-                        <div className="activity-card-preview-thumb">
-                          <img
-                            src={act.reference_image}
-                            alt=""
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      <div className="activity-meta">
-                        <AssigneeBadges
-                          act={act}
-                          isAdmin={isAdmin}
-                          currentUser={profile}
-                        />
-                        {isAdmin && (
-                          <div className="activity-admin-actions">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button
-                                  className="btn-ghost btn-icon"
-                                  aria-label="Opciones"
-                                >
-                                  <MoreVertical size={16} aria-hidden="true" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                align="end"
-                                className="activity-action-menu"
-                              >
-                                <button
-                                  className="btn-ghost activity-action-item"
-                                  onClick={(e) => openEdit(act, e)}
-                                >
-                                  <Pencil size={14} aria-hidden="true" />
-                                  <span>Editar</span>
-                                </button>
-                                <button
-                                  className="btn-ghost activity-action-item text-danger"
-                                  onClick={(e) => handleDelete(act, e)}
-                                >
-                                  <Trash2 size={14} aria-hidden="true" />
-                                  <span>Eliminar</span>
-                                </button>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        )}
-                      </div>
-                    </article>
+                <div className="actividades-grid" role="list" aria-label="Actividades">
+                  {actividadesPaginadas.map((act) => (
+                    <ActivityCard
+                      key={act.id}
+                      id={act.id!}
+                      title={act.titulo}
+                      description={act.descripcion ?? undefined}
+                      status={act.estado}
+                      assignees={act.asignado_a
+                        ? [{ id: act.asignado_a, display_name: (act as any).asignado_a_profile?.display_name, username: (act as any).asignado_a_profile?.username }]
+                        : []}
+                      referenceImage={act.reference_image ?? undefined}
+                      isNew={isNewActivity(act)}
+                      isAdmin={isAdmin}
+                      currentUserId={profile?.id}
+                      onClick={() => openDetails(act)}
+                      onEdit={() => openEdit(act)}
+                      onDelete={() => handleDelete(act)}
+                      onViewReference={() => act.reference_image && setLightboxSrc(act.reference_image!)}
+                    />
                   ))}
                 </div>
               )}
 
-              {unicas.length > 4 && (
-                <button
-                  type="button"
-                  className="btn-ghost actividades-show-more"
-                  onClick={() =>
-                    setActividadesLimit(
-                      actividadesLimit <= 4 ? unicas.length : 4,
-                    )
-                  }
-                >
-                  {actividadesLimit <= 4
-                    ? `Ver todas (${unicas.length})`
-                    : "Ver menos"}
-                </button>
+              {actividadesTotalPages > 1 && (
+                <Pagination
+                  currentPage={actividadesPage}
+                  totalPages={actividadesTotalPages}
+                  onPageChange={goToActividadesPage}
+                  onPrev={prevActividadesPage}
+                  onNext={nextActividadesPage}
+                  canGoPrev={canGoPrevActividades}
+                  canGoNext={canGoNextActividades}
+                  ariaLabel="Paginación de actividades"
+                />
               )}
             </div>
           )}

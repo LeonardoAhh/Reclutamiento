@@ -1,0 +1,358 @@
+﻿/* ActivityCard.css â€” Mobile-first Â· Notion-inspired tokens */
+
+.activity-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  transition:
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.activity-card:hover {
+  box-shadow: var(--shadow-xs);
+  border-color: var(--color-hairline-strong);
+}
+
+.activity-card:focus-within {
+  box-shadow: var(--shadow-xs);
+  border-color: var(--color-hairline-strong);
+}
+
+.activity-card__open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.activity-card__open:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.activity-card:has(.activity-card__open:active) {
+  transform: scale(0.98);
+}
+
+@media (min-width: 640px) {
+  .activity-card {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
+
+.activity-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-md);
+}
+
+.activity-icon.status-pendiente {
+  background: var(--color-warning-tint);
+  color: var(--color-warning);
+}
+
+.activity-icon.status-en_proceso {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.activity-icon.status-completada {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.activity-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.activity-title {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  letter-spacing: var(--type-heading-sm-tracking);
+  line-height: var(--type-heading-sm-line);
+  color: var(--color-ink);
+  margin: 0;
+  min-width: 0;
+  position: relative;
+  flex: 1;
+}
+
+.activity-title-text {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+/* -- Status pill (compact) ----------------------------------------------- */
+.activity-status {
+  flex-shrink: 0;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  white-space: nowrap;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.activity-status.pendiente {
+  background: var(--color-warning-tint);
+  color: var(--color-warning);
+}
+
+.activity-status.en_proceso {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.activity-status.completada {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.activity-desc {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-charcoal);
+  margin: 0;
+  max-width: 100%;
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.activity-desc-text {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.activity-desc[data-full]::after {
+  content: attr(data-full);
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  max-width: 280px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-ink);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  border-radius: var(--rounded-sm);
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  z-index: 10;
+}
+
+.activity-desc[data-full]:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.activity-desc--muted {
+  color: var(--color-muted);
+}
+
+.activity-assignees {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  white-space: nowrap;
+  margin-top: var(--spacing-xxs);
+  flex-wrap: wrap;
+}
+
+.activity-assignees--empty {
+  font-style: italic;
+}
+
+.activity-assignees-more {
+  font-size: var(--type-caption-sm-size);
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+}
+
+.activity-card-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.activity-ref-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  max-width: 100%;
+  padding: var(--spacing-xs);
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.activity-ref-button:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
+}
+
+.activity-ref-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.activity-ref-img {
+  max-width: 120px;
+  max-height: 60px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+  object-fit: contain;
+  background: var(--color-surface);
+  transition: opacity var(--transition-fast);
+}
+
+.activity-ref-button:hover .activity-ref-img {
+  opacity: 0.85;
+}
+
+/* -- Admin actions ------------------------------------------------------ */
+.activity-card .activity-admin-actions {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 2;
+}
+
+@media (min-width: 640px) {
+  .activity-card .activity-admin-actions {
+    position: static;
+    flex-shrink: 0;
+    margin-left: var(--spacing-sm);
+  }
+}
+
+.activity-admin-actions .btn-icon {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-charcoal);
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+}
+
+.activity-admin-actions .btn-icon:hover {
+  background: var(--color-surface-soft);
+  border-color: transparent;
+  color: var(--color-ink);
+}
+
+.activity-action-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 120px;
+}
+
+.activity-action-item {
+  justify-content: flex-start;
+  width: 100%;
+  font-size: var(--type-body-sm-size);
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+}
+
+/* -- New badge ---------------------------------------------------------- */
+.activity-new-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--rounded-full);
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.activity-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* -- Responsive --------------------------------------------------------- */
+@media (forced-colors: active) {
+  .activity-ref-button:focus-visible {
+    outline-color: ButtonText;
+  }
+}
