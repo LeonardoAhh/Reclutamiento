@@ -3,19 +3,26 @@ import {
   Bus,
   CalendarDays,
   ChevronLeft,
-  ChevronRight,
   Clock,
   MapPin,
   Minus,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+// NOTE: MorphingIcon espera IconInput de 'morphicons', compatible solo con
+// las definiciones crudas del paquete base 'lucide' (no 'lucide-react').
 import { Search as SearchData, X as XIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { getShortName } from "@/lib/names";
 import { formatLongDate } from "@/lib/dates";
-import { useRutas, RutaAgrupada, type EmpleadoRuta } from "@/hooks/useRutas";
+import {
+  useRutas,
+  RutaAgrupada,
+  getTurnosPorDia,
+  type EmpleadoRuta,
+} from "@/hooks/useRutas";
 import { RutaEmployeesModal } from "@/components/ui/RutaEmployeesModal";
+import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import "./Rutas.css";
@@ -178,7 +185,6 @@ function ShiftBars({
             ) : (
               <Minus size={14} aria-hidden="true" />
             )}
-            <span className="sr-only">{trendAria}</span>
             <span aria-hidden="true">{Math.abs(delta)}</span>
           </span>
         );
@@ -237,12 +243,16 @@ function ShiftBars({
 /* ─── Animated daily capacity bars ─── */
 interface DailyCapacityBarsProps {
   capacityPerDay: Record<string, number>;
+  empleados: EmpleadoRuta[];
   animKey: number;
+  onSelectDay: (day: string) => void;
 }
 
 function DailyCapacityBars({
   capacityPerDay,
+  empleados,
   animKey,
+  onSelectDay,
 }: DailyCapacityBarsProps) {
   const DAYS_ORDER = [
     "Lunes",
@@ -268,8 +278,16 @@ function DailyCapacityBars({
     <div className="daily-cards" key={`daily-${animKey}`}>
       {DAYS_ORDER.map((day) => {
         const count = capacityPerDay[day] || 0;
+        const turnos = getTurnosPorDia(empleados, day);
         return (
-          <div key={day} className="daily-cards__card">
+          <button
+            key={day}
+            type="button"
+            className="daily-cards__card"
+            onClick={() => onSelectDay(day)}
+            aria-haspopup="dialog"
+            aria-label={`Ver ${count} empleados de la ruta el ${day}`}
+          >
             <span className="daily-cards__day">{day}</span>
             <div className="daily-cards__stats">
               <div className="daily-cards__stat">
@@ -286,7 +304,26 @@ function DailyCapacityBars({
                 </span>
               </div>
             </div>
-          </div>
+            <div className="daily-cards__shifts">
+              <span className="daily-cards__label">Turnos</span>
+              {turnos.length > 0 ? (
+                <span className="daily-cards__shift-list">
+                  {turnos.map((turno) => (
+                    <span key={turno} className="daily-cards__shift-badge">
+                      T{turno}
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                <span
+                  className="daily-cards__shift-badge daily-cards__shift-badge--empty"
+                  aria-hidden="true"
+                >
+                  —
+                </span>
+              )}
+            </div>
+          </button>
         );
       })}
     </div>
@@ -321,9 +358,15 @@ interface RutaDetailProps {
   ruta: RutaAgrupada;
   animKey: number;
   onOpenEmployeesModal: () => void;
+  onSelectDay: (day: string) => void;
 }
 
-function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
+function RutaDetail({
+  ruta,
+  animKey,
+  onOpenEmployeesModal,
+  onSelectDay,
+}: RutaDetailProps) {
   return (
     <div className="ruta-detail ruta-detail--enter" key={animKey}>
       <div className="ruta-detail__body">
@@ -369,7 +412,9 @@ function RutaDetail({ ruta, animKey, onOpenEmployeesModal }: RutaDetailProps) {
             </h3>
             <DailyCapacityBars
               capacityPerDay={ruta.capacityPerDay}
+              empleados={ruta.empleados}
               animKey={animKey}
+              onSelectDay={onSelectDay}
             />
           </section>
         </div>
@@ -421,6 +466,7 @@ export function RutasView() {
   const { rutas, lastUpdated, loading, errorMsg } = useRutas();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
@@ -687,6 +733,7 @@ export function RutasView() {
               ruta={selectedRuta}
               animKey={animKey}
               onOpenEmployeesModal={() => setIsModalOpen(true)}
+              onSelectDay={setSelectedDia}
             />
           ) : (
             <Placeholder />
@@ -698,6 +745,12 @@ export function RutasView() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         ruta={selectedRuta}
+      />
+      <RutaDayEmployeesModal
+        isOpen={selectedDia !== null}
+        onClose={() => setSelectedDia(null)}
+        ruta={selectedRuta}
+        dia={selectedDia}
       />
       </>
       )}

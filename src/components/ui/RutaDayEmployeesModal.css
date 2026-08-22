@@ -1,0 +1,169 @@
+/* ================================================================
+   RutaDayEmployeesModal
+   Empleados de una ruta en un día concreto.
+   Tokens only · Mobile-first · A11y
+   ================================================================ */
+
+.ruta-day-modal__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+}
+
+/* ── Table wrap (scroll container on narrow screens) ── */
+.ruta-day-modal__table-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 60vh;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.ruta-day-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+}
+
+.ruta-day-modal__table thead {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface-soft);
+  z-index: 1;
+}
+
+.ruta-day-modal__table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-muted);
+  border-bottom: 2px solid var(--color-hairline);
+  white-space: nowrap;
+}
+
+.ruta-day-modal__table tbody tr {
+  border-bottom: 1px solid var(--color-hairline-soft);
+  transition: background var(--transition-fast);
+}
+
+.ruta-day-modal__table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ruta-day-modal__table tbody tr:hover {
+  background: var(--color-surface-soft);
+}
+
+.ruta-day-modal__table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-ink);
+  vertical-align: top;
+}
+
+.ruta-day-modal__num {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.ruta-day-modal__name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ruta-day-modal__seccion {
+  white-space: nowrap;
+}
+
+.ruta-day-modal__muted {
+  color: var(--color-muted-soft);
+}
+
+/* ── Empty state ── */
+.ruta-day-modal__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  text-align: center;
+  color: var(--color-muted);
+}
+
+/* ================================================================
+   Mobile — refine inner spacing
+   ================================================================ */
+@media (max-width: 767px) {
+  .ruta-day-modal__body {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-lg);
+  }
+
+  .ruta-day-modal__table-wrap {
+    border: none;
+    background: transparent;
+  }
+
+  .ruta-day-modal__table,
+  .ruta-day-modal__table tbody,
+  .ruta-day-modal__table tr,
+  .ruta-day-modal__table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Ocultar la cabecera de la tabla */
+  .ruta-day-modal__table thead {
+    display: none;
+  }
+
+  .ruta-day-modal__table tbody tr {
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--rounded-md);
+    background: var(--color-surface);
+  }
+
+  .ruta-day-modal__table tbody tr:last-child {
+    border-bottom: 1px solid var(--color-hairline);
+    margin-bottom: 0;
+  }
+
+  .ruta-day-modal__table td {
+    padding: 0;
+    margin-bottom: 4px;
+    border: none;
+  }
+
+  .ruta-day-modal__table td:last-child {
+    margin-bottom: 0;
+  }
+
+  .ruta-day-modal__num {
+    display: block;
+    font-size: 13px;
+    color: var(--color-muted);
+    font-weight: var(--font-medium);
+  }
+
+  .ruta-day-modal__name {
+    display: block;
+    font-weight: var(--font-semibold);
+    color: var(--color-ink);
+  }
+
+  .ruta-day-modal__seccion {
+    display: block;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+}
+

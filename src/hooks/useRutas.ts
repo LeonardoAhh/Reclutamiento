@@ -45,6 +45,7 @@ interface EmpleadoRutaRaw {
   'nombre ruta': string;
   colonia: string;
   parada: string;
+  seccion?: string;
 }
 
 /* ─── Normalised internal types ─── */
@@ -55,6 +56,7 @@ export interface EmpleadoRuta {
   nombreRuta: string;
   colonia: string;
   parada: string;
+  seccion?: string;
 }
 
 export interface RutaAgrupada {
@@ -81,7 +83,30 @@ function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
     nombreRuta: raw['nombre ruta'],
     colonia: raw.colonia,
     parada: raw.parada,
+    seccion: raw.seccion?.trim() || undefined,
   };
+}
+
+/** Empleados que laboran un día dado según su calendario de turno. */
+export function getEmpleadosPorDia(
+  empleados: EmpleadoRuta[],
+  dia: string,
+): EmpleadoRuta[] {
+  return empleados.filter((emp) =>
+    (SHIFT_SCHEDULE[emp.turno] || []).includes(dia),
+  );
+}
+
+/** Turnos únicos que laboran un día dado, ordenados numéricamente. */
+export function getTurnosPorDia(
+  empleados: EmpleadoRuta[],
+  dia: string,
+): string[] {
+  const turnos = new Set<string>();
+  for (const emp of empleados) {
+    if ((SHIFT_SCHEDULE[emp.turno] || []).includes(dia)) turnos.add(emp.turno);
+  }
+  return Array.from(turnos).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
 function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = []): RutaAgrupada[] {

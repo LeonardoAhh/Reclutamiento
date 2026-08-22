@@ -66,11 +66,11 @@
 }
 
 .trend-tooltip__title--success {
-  color: var(--color-accent-green);
+  color: var(--color-success);
 }
 
 .trend-tooltip__title--danger {
-  color: var(--color-accent-orange);
+  color: var(--color-warning);
 }
 
 .trend-tooltip__list {
