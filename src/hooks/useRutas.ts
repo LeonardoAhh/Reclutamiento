@@ -1,12 +1,36 @@
 import { useEffect, useState, useMemo } from 'react';
 import { mapClaveHorarioToTurno } from '@/lib/transporte-routes';
 
-const SHIFT_SCHEDULE: Record<string, string[]> = {
+/** Calendario estándar por turno (días que se trabajan). */
+const DEFAULT_SCHEDULE: Record<string, string[]> = {
   '1': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
   '2': ['Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
   '3': ['Viernes', 'Sábado', 'Domingo', 'Lunes', 'Martes'],
   '4': ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves'],
 };
+
+/**
+ * Secciones del turno 2 que trabajan Lun–Sáb en vez de Mié–Dom.
+ * Fuente: catálogo de secciones provisto por RH.
+ */
+const T2_LUN_SAB_SECTIONS = new Set([
+  'A. CALIDAD 2DO. TURNO',
+  'ALMACÉN 2DO TURNO',
+]);
+
+const SCHEDULE_LUN_SAB = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+/**
+ * Devuelve los días laborales de un empleado según su turno y sección.
+ * La mayoría de las secciones siguen el calendario estándar del turno,
+ * pero algunas secciones de T2 trabajan Lun–Sáb en vez de Mié–Dom.
+ */
+export function getWorkingDays(turno: string, seccion?: string): string[] {
+  if (turno === '2' && seccion && T2_LUN_SAB_SECTIONS.has(seccion.trim())) {
+    return SCHEDULE_LUN_SAB;
+  }
+  return DEFAULT_SCHEDULE[turno] || [];
+}
 
 const ROUTE_CAPACITIES = [
   { "TURNO": "1", "RUTAS": "R1- QUERETARO- PIE DE LA CUESTA", "CAPACIDAD": "21" },
@@ -87,13 +111,13 @@ function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
   };
 }
 
-/** Empleados que laboran un día dado según su calendario de turno. */
+/** Empleados que laboran un día dado según su calendario de turno y sección. */
 export function getEmpleadosPorDia(
   empleados: EmpleadoRuta[],
   dia: string,
 ): EmpleadoRuta[] {
   return empleados.filter((emp) =>
-    (SHIFT_SCHEDULE[emp.turno] || []).includes(dia),
+    getWorkingDays(emp.turno, emp.seccion).includes(dia),
   );
 }
 
@@ -104,7 +128,7 @@ export function getTurnosPorDia(
 ): string[] {
   const turnos = new Set<string>();
   for (const emp of empleados) {
-    if ((SHIFT_SCHEDULE[emp.turno] || []).includes(dia)) turnos.add(emp.turno);
+    if (getWorkingDays(emp.turno, emp.seccion).includes(dia)) turnos.add(emp.turno);
   }
   return Array.from(turnos).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
@@ -134,10 +158,8 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
     if (!group.paradas.includes(emp.parada)) group.paradas.push(emp.parada);
     group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
     
-    // Add to daily capacity based on shift schedule. Turno 4 is variable,
-    // so it contributes to the day-by-day passenger load but is not shown as
-    // a separate route shift in the Rutas breakdown.
-    const schedule = SHIFT_SCHEDULE[emp.turno] || [];
+    // Add to daily capacity based on shift schedule and section.
+    const schedule = getWorkingDays(emp.turno, emp.seccion);
     for (const day of schedule) {
       if (group.capacityPerDay[day] !== undefined) {
         group.capacityPerDay[day] += 1;

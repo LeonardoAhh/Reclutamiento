@@ -18,10 +18,8 @@ import { formatLongDate } from "@/lib/dates";
 import {
   useRutas,
   RutaAgrupada,
-  getTurnosPorDia,
   type EmpleadoRuta,
 } from "@/hooks/useRutas";
-import { RutaEmployeesModal } from "@/components/ui/RutaEmployeesModal";
 import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
@@ -264,21 +262,10 @@ function DailyCapacityBars({
     "Domingo",
   ];
 
-  const RESTING_SHIFTS: Record<string, string> = {
-    Lunes: "T2",
-    Martes: "T2",
-    Miércoles: "T3",
-    Jueves: "T3",
-    Viernes: "T4",
-    Sábado: "T4",
-    Domingo: "T1",
-  };
-
   return (
     <div className="daily-cards" key={`daily-${animKey}`}>
       {DAYS_ORDER.map((day) => {
         const count = capacityPerDay[day] || 0;
-        const turnos = getTurnosPorDia(empleados, day);
         return (
           <button
             key={day}
@@ -294,34 +281,6 @@ function DailyCapacityBars({
                 <span className="daily-cards__label">Empleados</span>
                 <span className="daily-cards__value">{count}</span>
               </div>
-              <div className="daily-cards__stat">
-                <span className="daily-cards__label">Descansa</span>
-                <span
-                  className="daily-cards__rest-badge"
-                  title={`Descansa el Turno ${RESTING_SHIFTS[day].replace("T", "")}`}
-                >
-                  {RESTING_SHIFTS[day]}
-                </span>
-              </div>
-            </div>
-            <div className="daily-cards__shifts">
-              <span className="daily-cards__label">Turnos</span>
-              {turnos.length > 0 ? (
-                <span className="daily-cards__shift-list">
-                  {turnos.map((turno) => (
-                    <span key={turno} className="daily-cards__shift-badge">
-                      T{turno}
-                    </span>
-                  ))}
-                </span>
-              ) : (
-                <span
-                  className="daily-cards__shift-badge daily-cards__shift-badge--empty"
-                  aria-hidden="true"
-                >
-                  —
-                </span>
-              )}
             </div>
           </button>
         );
@@ -357,14 +316,12 @@ function Placeholder() {
 interface RutaDetailProps {
   ruta: RutaAgrupada;
   animKey: number;
-  onOpenEmployeesModal: () => void;
   onSelectDay: (day: string) => void;
 }
 
 function RutaDetail({
   ruta,
   animKey,
-  onOpenEmployeesModal,
   onSelectDay,
 }: RutaDetailProps) {
   return (
@@ -380,15 +337,6 @@ function RutaDetail({
                 className="ruta-section__title-icon"
               />
               {ruta.nombreRuta}
-              <button
-                type="button"
-                className="btn-secondary btn-sm ruta-section__title-btn"
-                onClick={onOpenEmployeesModal}
-                title="Ver empleados"
-                aria-label="Ver empleados"
-              >
-                Empleados
-              </button>
             </h3>
 
             <ShiftBars
@@ -465,7 +413,6 @@ function RutaDetail({
 export function RutasView() {
   const { rutas, lastUpdated, loading, errorMsg } = useRutas();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -732,7 +679,6 @@ export function RutasView() {
             <RutaDetail
               ruta={selectedRuta}
               animKey={animKey}
-              onOpenEmployeesModal={() => setIsModalOpen(true)}
               onSelectDay={setSelectedDia}
             />
           ) : (
@@ -741,11 +687,6 @@ export function RutasView() {
         </section>
       </div>
 
-      <RutaEmployeesModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        ruta={selectedRuta}
-      />
       <RutaDayEmployeesModal
         isOpen={selectedDia !== null}
         onClose={() => setSelectedDia(null)}

@@ -27,8 +27,6 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
   let pageTitle = currentNavItem ? currentNavItem.label : "";
   if (!pageTitle) {
     if (location.pathname.startsWith("/bajas")) pageTitle = "Downsizing";
-    else if (location.pathname.startsWith("/transporte"))
-      pageTitle = "Transporte";
     else if (location.pathname.startsWith("/configuracion"))
       pageTitle = "Configuración";
   }

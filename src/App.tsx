@@ -17,7 +17,6 @@ import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
 import { Dashboard } from '@/pages/Dashboard';
 import { Pipeline } from '@/pages/Pipeline';
 import { Bajas } from '@/pages/Bajas';
-import { Transporte } from '@/pages/Transporte';
 import { KpisPage } from '@/pages/KpisPage';
 import { Login } from '@/pages/Login';
 import { ReporteDiario } from '@/pages/ReporteDiario';
@@ -88,7 +87,7 @@ function App() {
             <Route path="/toulouse" element={<Navigate to="/configuracion" replace />} />
             <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
             <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
-            <Route path="/transporte" element={<ProtectedShell><Transporte /></ProtectedShell>} />
+            <Route path="/transporte" element={<Navigate to="/configuracion" replace />} />
             <Route path="/asistencia" element={<Navigate to="/configuracion" replace />} />
             <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
             <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
