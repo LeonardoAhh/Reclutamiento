@@ -1979,6 +1979,27 @@
   border-bottom: 1px solid var(--color-hairline-soft);
 }
 
+.tabulador-area-count {
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  margin-left: var(--spacing-xs);
+}
+
+.tabulador-results-status {
+  margin: 0 0 var(--spacing-md);
+}
+
+.tabulador-area-title mark,
+.tabulador-position-name mark,
+.tabulador-card__puesto mark,
+.tabulador-card__tipo mark {
+  background: var(--color-primary-tint);
+  color: inherit;
+  border-radius: var(--rounded-xs);
+  padding: 0 1px;
+}
+
 .tabulador-position-name {
   display: block;
 }

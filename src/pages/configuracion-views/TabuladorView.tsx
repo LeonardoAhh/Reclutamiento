@@ -3,6 +3,9 @@ import { CheckCircle2, Wallet } from 'lucide-react';
 import { Search as SearchData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { ButtonUtility } from '@/components/ui/ButtonUtility';
+import { normalizeSearchText } from './busqueda-helpers';
+import { HighlightText } from './HighlightText';
 import '../Configuracion.css';
 
 interface PuestoTabulador {
@@ -82,26 +85,32 @@ export function TabuladorView() {
     return () => controller.abort();
   }, []);
 
+  const searchTokens = useMemo(
+    () => normalizeSearchText(searchTerm).split(/\s+/).filter(Boolean),
+    [searchTerm],
+  );
+  const isFiltering = searchTokens.length > 0;
+
   const groupedAndFilteredData = useMemo(() => {
     const currentData = tabuladorType === 'sindicalizado' ? dataSindicalizado : dataNoSindicalizado;
-    const query = searchTerm.trim().toLocaleLowerCase('es');
-    const filtered = query
-      ? currentData.filter((item) =>
-          item.PUESTO.toLocaleLowerCase('es').includes(query) ||
-          item.ÁREA.toLocaleLowerCase('es').includes(query)
-        )
-      : currentData;
+    const filtered = !isFiltering
+      ? currentData
+      : currentData.filter((item) => {
+          const haystack = normalizeSearchText(`${item.PUESTO} ${item.ÁREA} ${item.TIPO}`);
+          return searchTokens.every((token) => haystack.includes(token));
+        });
 
     return filtered.reduce<Record<string, PuestoTabulador[]>>((groups, item) => {
       (groups[item.ÁREA] ??= []).push(item);
       return groups;
     }, {});
-  }, [dataSindicalizado, dataNoSindicalizado, tabuladorType, searchTerm]);
+  }, [dataSindicalizado, dataNoSindicalizado, tabuladorType, searchTokens, isFiltering]);
 
   const resultCount = Object.values(groupedAndFilteredData).reduce(
     (total, puestos) => total + puestos.length,
     0
   );
+  const areaCount = Object.keys(groupedAndFilteredData).length;
 
   const handleClearSearch = () => {
     setSearchTerm('');
@@ -161,44 +170,48 @@ export function TabuladorView() {
         {!loadError && (
           <div className="form-group config-search tabulador-search-header">
             <label htmlFor="tabulador-search-input" className="sr-only">
-              Buscar puesto o área
+              Buscar puesto, área o tipo
             </label>
             <div className="config-search__wrapper">
-              <button
-                type="button"
-                className="config-search__icon"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: 'inherit',
-                  cursor: searchTerm ? 'pointer' : 'default',
-                  zIndex: 1
-                }}
-                onClick={handleClearSearch}
-                disabled={!searchTerm}
-                aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
-                tabIndex={searchTerm ? 0 : -1}
-              >
-                <MorphingIcon 
-                  icon={searchTerm ? XIconData : SearchData} 
-                  size={18} 
-                  className="text-muted" 
-                  aria-hidden="true" 
+              <span className="config-search__icon" aria-hidden="true">
+                <MorphingIcon
+                  icon={SearchData}
+                  size={18}
+                  className="text-muted"
                 />
-              </button>
+              </span>
               <input
                 id="tabulador-search-input"
                 ref={searchInputRef}
-                type="text"
-                placeholder="Buscar puesto o área…"
+                type="search"
+                inputMode="search"
+                placeholder="Buscar puesto, área o tipo…"
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape' && searchTerm) {
+                    event.stopPropagation();
+                    handleClearSearch();
+                  }
+                }}
                 autoComplete="off"
                 aria-describedby="tabulador-results-status"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="config-search__clear config-search__icon--action"
+                  onClick={handleClearSearch}
+                  aria-label="Limpiar búsqueda"
+                >
+                  <MorphingIcon
+                    icon={XIconData}
+                    size={18}
+                    className="text-muted"
+                    aria-hidden="true"
+                  />
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -210,6 +223,17 @@ export function TabuladorView() {
         </div>
       ) : (
         <>
+          <p
+            id="tabulador-results-status"
+            className="tabulador-results-status type-caption-sm text-muted"
+            role="status"
+            aria-live="polite"
+          >
+            {resultCount} puesto{resultCount === 1 ? '' : 's'} en{' '}
+            {areaCount} área{areaCount === 1 ? '' : 's'}
+            {isFiltering ? ` para “${searchTerm.trim()}”` : ''}.
+          </p>
+
           <section
             id="tabulador-panel"
             className="tabulador-results"
@@ -217,15 +241,23 @@ export function TabuladorView() {
             aria-labelledby={`config-tab-${tabuladorType}`}
             tabIndex={0}
           >
-            <p id="tabulador-results-status" className="sr-only" role="status" aria-live="polite">
-              {resultCount} puesto{resultCount === 1 ? '' : 's'} encontrado{resultCount === 1 ? '' : 's'}.
-            </p>
-
             {resultCount === 0 ? (
-              <div className="config-empty">
-                <p className="type-body-md text-muted">
-                  No se encontraron puestos{searchTerm ? ` para “${searchTerm}”` : ''}.
+              <div className="config-empty" role="status">
+                <MorphingIcon
+                  icon={SearchData}
+                  size={32}
+                  className="text-muted-soft config-empty__icon"
+                  aria-hidden="true"
+                />
+                <p className="type-body-md text-muted config-empty__copy">
+                  No se encontraron puestos
+                  {isFiltering ? ` para “${searchTerm.trim()}”` : ''}.
                 </p>
+                {isFiltering && (
+                  <ButtonUtility onClick={handleClearSearch}>
+                    Limpiar búsqueda
+                  </ButtonUtility>
+                )}
               </div>
             ) : (
               Object.entries(groupedAndFilteredData).map(([area, puestos]) => {
@@ -233,7 +265,10 @@ export function TabuladorView() {
                 return (
                   <section key={area} className="tabulador-area-section" aria-labelledby={areaId}>
                     <h3 id={areaId} className="tabulador-area-title type-heading-sm text-ink">
-                      {area}
+                      <HighlightText text={area} tokens={searchTokens} />
+                      <span className="tabulador-area-count">
+                        {puestos.length} puesto{puestos.length === 1 ? '' : 's'}
+                      </span>
                     </h3>
 
                     <div className="indicadores-card indicadores-table-card tabulador-desktop-table">
@@ -252,9 +287,11 @@ export function TabuladorView() {
                               <tr key={`${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`}>
                                 <th scope="row">
                                   <span className="tabulador-position-name type-body-sm font-medium text-ink">
-                                    {puesto.PUESTO}
+                                    <HighlightText text={puesto.PUESTO} tokens={searchTokens} />
                                   </span>
-                                  <span className="type-caption-sm text-muted">{puesto.TIPO}</span>
+                                  <span className="type-caption-sm text-muted">
+                                    <HighlightText text={puesto.TIPO} tokens={searchTokens} />
+                                  </span>
                                 </th>
                                 <td>
                                   <span className="indicador-value">{puesto.SALARIO_DIARIO}</span>
@@ -277,8 +314,12 @@ export function TabuladorView() {
                           className="tabulador-card"
                         >
                           <div className="tabulador-card__head">
-                            <span className="tabulador-card__puesto">{puesto.PUESTO}</span>
-                            <span className="tabulador-card__tipo">{puesto.TIPO}</span>
+                            <span className="tabulador-card__puesto">
+                              <HighlightText text={puesto.PUESTO} tokens={searchTokens} />
+                            </span>
+                            <span className="tabulador-card__tipo">
+                              <HighlightText text={puesto.TIPO} tokens={searchTokens} />
+                            </span>
                           </div>
                           <dl className="tabulador-card__figures">
                             <div className="tabulador-card__figure">
