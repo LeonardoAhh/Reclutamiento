@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import {
   Bus,
   CalendarDays,
@@ -24,6 +24,7 @@ import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import { supabase } from '@/lib/supabase';
+import { Modal } from "@/components/ui/Modal";
 import "./Rutas.css";
 
 /*Subcomponents*/
@@ -413,6 +414,12 @@ export function RutasView() {
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
+  
+  // States for Security PIN Modal
+  const [pinModalOpen, setPinModalOpen] = useState(false);
+  const [pinValue, setPinValue] = useState("");
+  const [pinError, setPinError] = useState("");
+  const [pendingPayload, setPendingPayload] = useState<any>(null);
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
@@ -595,10 +602,10 @@ export function RutasView() {
                       alert("El archivo JSON debe ser un arreglo de empleados válido.");
                       return;
                     }
-                    const { error } = await supabase.rpc('update_empleados_rutas', { payload });
-                    if (error) throw error;
-                    alert("Rutas actualizadas correctamente. Recargando...");
-                    window.location.reload();
+                    
+                    // Instead of executing right away, ask for PIN
+                    setPendingPayload(payload);
+                    setPinModalOpen(true);
                   } catch (err: any) {
                     console.error("Upload error:", err);
                     alert("Error al cargar JSON: " + (err.message || 'Verifica la consola'));
@@ -710,6 +717,81 @@ export function RutasView() {
         ruta={selectedRuta}
         dia={selectedDia}
       />
+
+      <Modal
+        isOpen={pinModalOpen}
+        onClose={() => {
+          setPinModalOpen(false);
+          setPinValue("");
+          setPinError("");
+          setPendingPayload(null);
+        }}
+        title="Autorización Requerida"
+        size="sm"
+        fullscreenMobile={false}
+        footerActions={
+          <>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                setPinModalOpen(false);
+                setPinValue("");
+                setPinError("");
+                setPendingPayload(null);
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              className="btn-primary"
+              onClick={async () => {
+                const correctPin = import.meta.env.VITE_RUTAS_UPLOAD_PIN || "7328";
+                if (pinValue !== correctPin) {
+                  setPinError("PIN incorrecto. Intenta de nuevo.");
+                  return;
+                }
+                
+                try {
+                  const { error } = await supabase.rpc('update_empleados_rutas', { payload: pendingPayload });
+                  if (error) throw error;
+                  alert("Rutas actualizadas correctamente. Recargando...");
+                  window.location.reload();
+                } catch (err: any) {
+                  console.error("RPC error:", err);
+                  alert("Error al aplicar rutas: " + (err.message || 'Verifica la consola'));
+                }
+              }}
+            >
+              Autorizar y Subir
+            </button>
+          </>
+        }
+      >
+        <div className="modal-body">
+          <p className="text-muted mb-md">
+            Ingresa el PIN para actualizar las rutas.
+          </p>
+          <div className="form-group">
+            <label htmlFor="rutas-pin-input">PIN de Seguridad</label>
+            <input
+              id="rutas-pin-input"
+              type="password"
+              className="form-control"
+              value={pinValue}
+              onChange={(e) => {
+                setPinValue(e.target.value);
+                setPinError("");
+              }}
+              placeholder="****"
+              maxLength={6}
+              autoComplete="new-password"
+              autoFocus
+            />
+            {pinError && <p className="validation-error">{pinError}</p>}
+          </div>
+        </div>
+      </Modal>
+      
       </>
       )}
     </section>
