@@ -499,10 +499,10 @@ export function RutasView() {
       tabIndex={-1}
     >
       <header className="config-page__header" style={{ marginBottom: 'var(--spacing-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div className="segmented-control">
+        <div className="config-view-switch">
           <button
             type="button"
-            className={`segmented-control__btn ${activeTab === 'capacidad' ? 'active' : ''}`}
+            className={`config-view-switch__button ${activeTab === 'capacidad' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('capacidad')}
             aria-pressed={activeTab === 'capacidad'}
           >
@@ -510,7 +510,7 @@ export function RutasView() {
           </button>
           <button
             type="button"
-            className={`segmented-control__btn ${activeTab === 'incidencias' ? 'active' : ''}`}
+            className={`config-view-switch__button ${activeTab === 'incidencias' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('incidencias')}
             aria-pressed={activeTab === 'incidencias'}
           >
