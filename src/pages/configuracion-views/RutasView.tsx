@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+﻿import { useState, useRef, useMemo, useEffect } from "react";
 import {
   Bus,
   CalendarDays,
@@ -8,13 +8,13 @@ import {
   Minus,
   TrendingDown,
   TrendingUp,
+  UploadCloud
 } from "lucide-react";
 // NOTE: MorphingIcon espera IconInput de 'morphicons', compatible solo con
 // las definiciones crudas del paquete base 'lucide' (no 'lucide-react').
 import { Search as SearchData, X as XIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { getShortName } from "@/lib/names";
-import { formatLongDate } from "@/lib/dates";
 import {
   useRutas,
   RutaAgrupada,
@@ -23,11 +23,10 @@ import {
 import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
+import { supabase } from '@/lib/supabase';
 import "./Rutas.css";
 
-/* ─────────────────────────────────────────
-   Subcomponents
-───────────────────────────────────────── */
+/*Subcomponents*/
 
 function SkeletonCard() {
   return (
@@ -84,7 +83,7 @@ function RutaCard({
   );
 }
 
-/* ─── Animated shift bars ─── */
+/*Animated shift bars*/
 interface ShiftBarsProps {
   turnosCount: Record<string, number>;
   turnosCountPrev: Record<string, number>;
@@ -238,7 +237,7 @@ function ShiftBars({
   );
 }
 
-/* ─── Animated daily capacity bars ─── */
+/*Animated daily capacity bars*/
 interface DailyCapacityBarsProps {
   capacityPerDay: Record<string, number>;
   empleados: EmpleadoRuta[];
@@ -255,10 +254,10 @@ function DailyCapacityBars({
   const DAYS_ORDER = [
     "Lunes",
     "Martes",
-    "Miércoles",
+    "MiÃ©rcoles",
     "Jueves",
     "Viernes",
-    "Sábado",
+    "SÃ¡bado",
     "Domingo",
   ];
 
@@ -289,7 +288,7 @@ function DailyCapacityBars({
   );
 }
 
-/* ─── Placeholder ─── */
+/*Placeholder*/
 function Placeholder() {
   return (
     <div className="rutas-placeholder">
@@ -312,7 +311,7 @@ function Placeholder() {
   );
 }
 
-/* ─── Detail panel ─── */
+/*Detail panel*/
 interface RutaDetailProps {
   ruta: RutaAgrupada;
   animKey: number;
@@ -406,9 +405,6 @@ function RutaDetail({
   );
 }
 
-/* ─────────────────────────────────────────
-   Main component
-───────────────────────────────────────── */
 
 export function RutasView() {
   const { rutas, lastUpdated, loading, errorMsg } = useRutas();
@@ -525,7 +521,7 @@ export function RutasView() {
         </section>
       ) : (
         <>
-          {/* ── Search bar & Horarios ── */}
+          {/* Search bar & Horarios*/}
       <section
         className="config-page__toolbar"
         aria-label="Herramientas de rutas"
@@ -533,7 +529,7 @@ export function RutasView() {
         <div className="rutas-toolbar-flex">
           <div className="form-group config-search rutas-search-container">
             <label htmlFor="rutas-search-input" className="sr-only">
-              Buscar empleado por número o nombre
+              Buscar empleado por numero o nombre
             </label>
             <div className="config-search__wrapper">
               <button
@@ -544,7 +540,7 @@ export function RutasView() {
                   searchInputRef.current?.focus();
                 }}
                 disabled={!searchTerm}
-                aria-label={searchTerm ? "Limpiar búsqueda" : "Buscar"}
+                aria-label={searchTerm ? "Limpiar bÃºsqueda" : "Buscar"}
                 tabIndex={searchTerm ? 0 : -1}
               >
                 <MorphingIcon
@@ -558,7 +554,7 @@ export function RutasView() {
                 id="rutas-search-input"
                 ref={searchInputRef}
                 type="text"
-                placeholder="Buscar por número de empleado o nombre…"
+                placeholder="Buscar por numero de empleado o nombres"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 aria-describedby={
@@ -576,23 +572,42 @@ export function RutasView() {
               >
                 {filteredRutas.length === 0
                   ? "Sin resultados"
-                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? "" : "s"} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? "" : "s"}`}
+                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? "" : "s"} Â· ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? "" : "s"}`}
               </p>
             )}
           </div>
 
-          <div className="rutas-toolbar-actions">
-            <div className="rutas-last-updated">
-              <span className="type-caption-up text-muted">
-                Última actualización
-              </span>
-              <span
-                className="type-body-sm strong"
-                style={{ color: "var(--color-primary)" }}
-              >
-                {lastUpdated ? formatLongDate(lastUpdated) : "No especificada"}
-              </span>
-            </div>
+                              <div className="rutas-toolbar-actions">
+            <label className="btn-secondary rutas-horarios-btn" style={{ cursor: 'pointer', margin: 0 }}>
+              <UploadCloud size={16} aria-hidden="true" />
+              Actualizar
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: 'none' }}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const text = await file.text();
+                    const payload = JSON.parse(text);
+                    if (!Array.isArray(payload) || payload.length === 0) {
+                      alert("El archivo JSON debe ser un arreglo de empleados válido.");
+                      return;
+                    }
+                    const { error } = await supabase.rpc('update_empleados_rutas', { payload });
+                    if (error) throw error;
+                    alert("Rutas actualizadas correctamente. Recargando...");
+                    window.location.reload();
+                  } catch (err: any) {
+                    console.error("Upload error:", err);
+                    alert("Error al cargar JSON: " + (err.message || 'Verifica la consola'));
+                  } finally {
+                    e.target.value = '';
+                  }
+                }}
+              />
+            </label>
 
             <a
               href="/horarios/index.html"
@@ -606,11 +621,13 @@ export function RutasView() {
               Horarios
             </a>
           </div>
+
+
         </div>
       </section>
 
       <div className="rutas-layout" data-mobile-view={mobileView}>
-        {/* ── Left: route list ── */}
+        {/*Left: route list*/}
         <section
           ref={listRef}
           className="rutas-list"
@@ -656,7 +673,7 @@ export function RutasView() {
             ))}
         </section>
 
-        {/* ── Right: detail / placeholder ── */}
+        {/* Right: detail / placeholder */}
         <section
           className="rutas-detail-pane"
           aria-live="polite"

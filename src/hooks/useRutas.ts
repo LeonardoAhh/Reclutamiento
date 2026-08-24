@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { mapClaveHorarioToTurno } from '@/lib/transporte-routes';
+import { supabase } from '@/lib/supabase';
 
 /** Calendario estándar por turno (días que se trabajan). */
 const DEFAULT_SCHEDULE: Record<string, string[]> = {
@@ -57,21 +58,6 @@ const ROUTE_CAPACITIES = [
   { "TURNO": "4", "RUTAS": "R6- AV. DE LA LUZ - PASEOS QUERETARO", "CAPACIDAD": "21" }
 ];
 
-/* ─── Raw shape from JSON ─── */
-// NOTE: rutas.json uses 'numero_empleado' (underscore);
-//       rutas-anterior.json uses 'numero empleado' (space).
-//       Both are declared as optional so TypeScript accepts either format.
-interface EmpleadoRutaRaw {
-  numero_empleado?: string;
-  'numero empleado'?: string;
-  nombre: string;
-  turno: string;
-  'nombre ruta': string;
-  colonia: string;
-  parada: string;
-  seccion?: string;
-}
-
 /* ─── Normalised internal types ─── */
 export interface EmpleadoRuta {
   numeroEmpleado: string;
@@ -93,22 +79,6 @@ export interface RutaAgrupada {
   turnosCountPrev: Record<string, number>;
   maxCapacityPerShift: Record<string, number>;
   capacityPerDay: Record<string, number>;
-}
-
-const RUTAS_URL = '/rutas.json';
-const RUTAS_PREV_URL = '/rutas-anterior.json';
-
-function normalise(raw: EmpleadoRutaRaw): EmpleadoRuta {
-  const numEmp = raw.numero_empleado ?? raw['numero empleado'] ?? '';
-  return {
-    numeroEmpleado: String(numEmp).trim(),
-    nombre: raw.nombre,
-    turno: mapClaveHorarioToTurno(raw.turno), // Normalizar clave de horario a turno canónico
-    nombreRuta: raw['nombre ruta'],
-    colonia: raw.colonia,
-    parada: raw.parada,
-    seccion: raw.seccion?.trim() || undefined,
-  };
 }
 
 /** Empleados que laboran un día dado según su calendario de turno y sección. */
@@ -212,44 +182,53 @@ export function useRutas() {
 
     async function load() {
       try {
-        const [res, resPrev, resInfo] = await Promise.all([
-          fetch(RUTAS_URL, { signal: controller.signal }),
-          fetch(RUTAS_PREV_URL, { signal: controller.signal }).catch(() => null),
-          fetch('/rutas-info.json', { signal: controller.signal }).catch(() => null)
-        ]);
+        const { data: empleadosData, error: empleadosError } = await supabase
+          .from('empleados')
+          .select('num_empleado, nombre, turno, seccion, ruta, colonia, parada')
+          .not('ruta', 'is', null)
+          .neq('ruta', '');
 
-        if (!res.ok) throw new Error(`No se pudo cargar rutas.json (${res.status})`);
+        if (empleadosError) throw empleadosError;
 
-        const ct = res.headers.get('content-type') ?? '';
-        if (ct.includes('text/html')) {
-          throw new Error(
-            'El servidor devolvió HTML en lugar de JSON. Verifica que rutas.json esté en public/.'
-          );
-        }
+        const { data: snapshotData, error: snapshotError } = await supabase
+          .from('rutas_snapshots')
+          .select('snapshot_data, created_at')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
-        const data: EmpleadoRutaRaw[] = await res.json();
-        setRawData(data.map(normalise));
+        if (snapshotError) throw snapshotError;
+
+        const currentMapped = (empleadosData || []).map(emp => ({
+          numeroEmpleado: emp.num_empleado,
+          nombre: emp.nombre,
+          turno: mapClaveHorarioToTurno(emp.turno || ''),
+          nombreRuta: emp.ruta || '',
+          colonia: emp.colonia || '',
+          parada: emp.parada || '',
+          seccion: emp.seccion?.trim() || undefined,
+        }));
         
-        if (resPrev && resPrev.ok) {
-          const ctPrev = resPrev.headers.get('content-type') ?? '';
-          if (!ctPrev.includes('text/html')) {
-            const dataPrev: EmpleadoRutaRaw[] = await resPrev.json();
-            setRawPrevData(dataPrev.map(normalise));
-          }
+        setRawData(currentMapped);
+
+        if (snapshotData && snapshotData.snapshot_data) {
+          const snapshotArr = Array.isArray(snapshotData.snapshot_data) ? snapshotData.snapshot_data : [];
+          const prevMapped = snapshotArr.map(emp => ({
+            numeroEmpleado: emp.numeroEmpleado || emp.numero_empleado,
+            nombre: emp.nombre,
+            turno: mapClaveHorarioToTurno(emp.turno || ''),
+            nombreRuta: emp.nombreRuta || emp.ruta || '',
+            colonia: emp.colonia || '',
+            parada: emp.parada || '',
+            seccion: emp.seccion?.trim() || undefined,
+          }));
+          setRawPrevData(prevMapped);
+          setLastUpdated(new Date(snapshotData.created_at).toISOString());
         }
 
-        if (resInfo && resInfo.ok) {
-          const ctInfo = resInfo.headers.get('content-type') ?? '';
-          if (!ctInfo.includes('text/html')) {
-            const dataInfo = await resInfo.json();
-            if (dataInfo.fecha) {
-              setLastUpdated(dataInfo.fecha);
-            }
-          }
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
-        setErrorMsg(err instanceof Error ? err.message : 'Error desconocido');
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
+        setErrorMsg(err.message || 'Error al cargar rutas desde Supabase');
       } finally {
         setLoading(false);
       }
