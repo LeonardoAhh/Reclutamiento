@@ -257,7 +257,7 @@ export function AIChatPage() {
                     {isLoading && !hasCompared && (
                       <Loader2 className="ai-chat-spin" aria-hidden="true" />
                     )}
-                    <span>Comparar CV</span>
+                    <span>Comparar</span>
                   </button>
                 </div>
                 {fileError && (
