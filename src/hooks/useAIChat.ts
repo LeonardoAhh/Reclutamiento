@@ -47,6 +47,7 @@ export interface ChatConversation {
   hasCompared: boolean;
   createdAt: string;
   updatedAt: string;
+  isPendingSync?: boolean;
 }
 
 type ConversationSyncState = "idle" | "loading" | "synced" | "local";
@@ -377,10 +378,19 @@ export function useAIChat() {
         }
       }
 
+      let finalNext = next;
+      if (syncFailed) {
+        finalNext = next.map((c) => 
+          pendingLocal.some((p) => p.id === c.id) ? { ...c, isPendingSync: true } : { ...c, isPendingSync: false }
+        );
+      } else {
+        finalNext = next.map((c) => ({ ...c, isPendingSync: false }));
+      }
+
       if (cancelled) return;
-      setConversations(next);
-      writeLocalHistory(user.id, next);
-      if (next[0]) applyConversation(next[0]);
+      setConversations(finalNext);
+      writeLocalHistory(user.id, finalNext);
+      if (finalNext[0]) applyConversation(finalNext[0]);
       setConversationSyncState(syncFailed ? "local" : "synced");
     })();
 
@@ -409,9 +419,11 @@ export function useAIChat() {
           if (error) {
             console.warn("Conversación guardada solo en este dispositivo:", error);
             setConversationSyncState("local");
+            setConversations((curr) => curr.map((c) => c.id === conversation.id ? { ...c, isPendingSync: true } : c));
             return;
           }
           setConversationSyncState("synced");
+          setConversations((curr) => curr.map((c) => c.id === conversation.id ? { ...c, isPendingSync: false } : c));
         });
     },
     [user?.id],

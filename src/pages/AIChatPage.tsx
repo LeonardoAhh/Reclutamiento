@@ -19,6 +19,8 @@ import {
   SlidersHorizontal,
   Trash2,
   X,
+  CloudOff,
+  Search,
   UploadCloud,
 } from "lucide-react";
 import {
@@ -94,6 +96,7 @@ export function AIChatPage() {
   } = useAIChat();
 
   const isMobile = useIsMobile();
+  const [historySearchQuery, setHistorySearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [hasCopiedEvaluation, setHasCopiedEvaluation] = useState(false);
@@ -408,6 +411,33 @@ export function AIChatPage() {
     </>
   );
 
+  const filteredConversations = conversations.filter(c => 
+    !historySearchQuery || 
+    c.title.toLowerCase().includes(historySearchQuery.toLowerCase()) || 
+    c.evaluatedJobName?.toLowerCase().includes(historySearchQuery.toLowerCase()) ||
+    c.candidateFileName?.toLowerCase().includes(historySearchQuery.toLowerCase())
+  );
+
+  const groupedConversations = filteredConversations.reduce((acc, curr) => {
+    const date = new Date(curr.updatedAt);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    let group = "Anteriores";
+    if (date.toDateString() === today.toDateString()) {
+      group = "Hoy";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      group = "Ayer";
+    }
+    
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(curr);
+    return acc;
+  }, {} as Record<string, typeof conversations>);
+
+  const groupOrder = ["Hoy", "Ayer", "Anteriores"];
+
   const historyContent = (
     <>
       <div className="ai-history-heading">
@@ -431,90 +461,120 @@ export function AIChatPage() {
         </button>
       </div>
 
+      {conversations.length > 0 && (
+        <div className="ai-history-search">
+          <Search size="var(--icon-size-sm)" aria-hidden="true" />
+          <input
+            type="search"
+            placeholder="Buscar candidato..."
+            value={historySearchQuery}
+            onChange={(e) => setHistorySearchQuery(e.target.value)}
+            aria-label="Buscar en historial"
+          />
+        </div>
+      )}
+
       {conversations.length > 0 ? (
-        <nav className="ai-history-nav" aria-label="Conversaciones anteriores">
-          <ul>
-            {conversations.map((conversation) => (
-              <li
-                key={conversation.id}
-                className={`ai-history-row${conversation.id === sessionId ? " is-active" : ""}`}
-              >
-                {editingConversationId === conversation.id ? (
-                  <form
-                    className="ai-history-rename-form"
-                    onSubmit={submitConversationRename}
-                  >
-                    <label className="sr-only" htmlFor={`rename-${conversation.id}`}>
-                      Nuevo nombre de la conversación
-                    </label>
-                    <input
-                      id={`rename-${conversation.id}`}
-                      value={conversationTitleDraft}
-                      onChange={(event) => setConversationTitleDraft(event.target.value)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Escape") cancelRenamingConversation();
-                      }}
-                      maxLength={AI_CHAT_HISTORY_CONFIG.maxTitleLength}
-                      autoFocus
-                    />
-                    <button
-                      type="submit"
-                      disabled={!conversationTitleDraft.trim()}
-                      aria-label="Guardar nombre"
-                    >
-                      <Check aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={cancelRenamingConversation}
-                      aria-label="Cancelar edición"
-                    >
-                      <X aria-hidden="true" />
-                    </button>
-                  </form>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      className="ai-history-item"
-                      onClick={() => handleOpenConversation(conversation.id)}
-                      aria-current={conversation.id === sessionId ? "page" : undefined}
-                    >
-                      <span>{conversation.title}</span>
-                      <time dateTime={conversation.updatedAt}>
-                        {formatConversationDate(conversation.updatedAt)}
-                      </time>
-                    </button>
-                    <div className="ai-history-item-actions">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          startRenamingConversation(conversation.id, conversation.title)
-                        }
-                        aria-label={`Renombrar ${conversation.title}`}
+        filteredConversations.length > 0 ? (
+          <nav className="ai-history-nav" aria-label="Conversaciones anteriores">
+            {groupOrder.map((group) => {
+              if (!groupedConversations[group] || groupedConversations[group].length === 0) return null;
+              return (
+                <div key={group} className="ai-history-group">
+                  <h3 className="type-caption-up ai-history-group-title">{group}</h3>
+                  <ul>
+                    {groupedConversations[group].map((conversation) => (
+                      <li
+                        key={conversation.id}
+                        className={`ai-history-row${conversation.id === sessionId ? " is-active" : ""}`}
                       >
-                        <Pencil aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsHistoryOpen(false);
-                          setConversationPendingDelete({
-                            id: conversation.id,
-                            title: conversation.title,
-                          });
-                        }}
-                        aria-label={`Eliminar ${conversation.title}`}
-                      >
-                        <Trash2 aria-hidden="true" />
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+                        {editingConversationId === conversation.id ? (
+                          <form
+                            className="ai-history-rename-form"
+                            onSubmit={submitConversationRename}
+                          >
+                            <label className="sr-only" htmlFor={`rename-${conversation.id}`}>
+                              Nuevo nombre de la conversación
+                            </label>
+                            <input
+                              id={`rename-${conversation.id}`}
+                              value={conversationTitleDraft}
+                              onChange={(event) => setConversationTitleDraft(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") cancelRenamingConversation();
+                              }}
+                              maxLength={AI_CHAT_HISTORY_CONFIG.maxTitleLength}
+                              autoFocus
+                            />
+                            <button
+                              type="submit"
+                              disabled={!conversationTitleDraft.trim()}
+                              aria-label="Guardar nombre"
+                            >
+                              <Check aria-hidden="true" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelRenamingConversation}
+                              aria-label="Cancelar edición"
+                            >
+                              <X aria-hidden="true" />
+                            </button>
+                          </form>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="ai-history-item"
+                              onClick={() => handleOpenConversation(conversation.id)}
+                              aria-current={conversation.id === sessionId ? "page" : undefined}
+                            >
+                              <span>{conversation.title}</span>
+                              <div className="ai-history-item-meta">
+                                <time dateTime={conversation.updatedAt}>
+                                  {formatConversationDate(conversation.updatedAt)}
+                                </time>
+                                {conversation.isPendingSync && (
+                                  <CloudOff size="12" className="ai-sync-icon" aria-label="Sincronización pendiente" />
+                                )}
+                              </div>
+                            </button>
+                            <div className="ai-history-item-actions">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  startRenamingConversation(conversation.id, conversation.title)
+                                }
+                                aria-label={`Renombrar ${conversation.title}`}
+                              >
+                                <Pencil aria-hidden="true" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setIsHistoryOpen(false);
+                                  setConversationPendingDelete({
+                                    id: conversation.id,
+                                    title: conversation.title,
+                                  });
+                                }}
+                                aria-label={`Eliminar ${conversation.title}`}
+                              >
+                                <Trash2 aria-hidden="true" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </nav>
+        ) : (
+          <p className="ai-history-empty">No se encontraron resultados.</p>
+        )
       ) : (
         <p className="ai-history-empty">
           Tus evaluaciones aparecerán aquí después del primer análisis.
