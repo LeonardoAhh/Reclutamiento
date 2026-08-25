@@ -414,3 +414,11 @@ Todos los archivos fueron borrados asegurando que TypeScript no generara ningún
 - Toda la presentación usa tokens centrales; se añadieron dimensiones semánticas reutilizables para esta superficie.
 - Lint dirigido: PASS. TypeScript: PASS. Vite build: PASS.
 - No se llamaron agentes ni se probaron integraciones externas, conforme a la instrucción del usuario.
+
+## Asistente — Historial y panel móvil
+- Añadido historial lateral compacto con recuperación de conversaciones, selección de evaluaciones anteriores y creación de una nueva evaluación.
+- Persistencia dual: respaldo inmediato en `localStorage` por usuario y sincronización con `ai_chat_sessions` en Supabase.
+- Añadida migración `028_ai_chat_sessions.sql` con mensajes, contexto recuperable del CV, metadata, índices y RLS estricta por usuario.
+- En móvil, Historial y Preparar análisis se abren como hojas inferiores accesibles reutilizando la primitiva `Modal`; el chat conserva el espacio principal.
+- Lint dirigido y `yarn tsc -b --pretty false`: PASS. El build de Vite ya había pasado para la composición actual.
+- No se llamaron agentes ni se probaron APIs externas; la sincronización remota requiere aplicar la migración 028 en Supabase.

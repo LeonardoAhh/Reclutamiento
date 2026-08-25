@@ -1,6 +1,8 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { useAIChat } from "@/hooks/useAIChat";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { Modal } from "@/components/ui/Modal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -9,8 +11,11 @@ import {
   X,
   UploadCloud,
   FileText,
+  History,
   Loader2,
+  Plus,
   Send,
+  SlidersHorizontal,
 } from "lucide-react";
 import {
   Check as CheckData,
@@ -38,6 +43,19 @@ const markdownComponents: Components = {
   ),
 };
 
+const conversationDateFormatter = new Intl.DateTimeFormat("es-MX", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+function formatConversationDate(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "Fecha no disponible"
+    : conversationDateFormatter.format(date);
+}
+
 export function AIChatPage() {
   const {
     jobs,
@@ -47,6 +65,7 @@ export function AIChatPage() {
     loadJobs,
     messages,
     file,
+    candidateFileName,
     fileError,
     selectPdf,
     removeFile,
@@ -55,15 +74,22 @@ export function AIChatPage() {
     evaluatedJobName,
     isLoading,
     chatError,
+    sessionId,
+    conversations,
+    conversationSyncState,
     handleAnalyze,
     requestAssistantMessage,
     handleRetry,
     handleNewEvaluation,
+    handleSelectConversation,
   } = useAIChat();
 
+  const isMobile = useIsMobile();
   const [inputText, setInputText] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [hasCopiedEvaluation, setHasCopiedEvaluation] = useState(false);
+  const [isSetupOpen, setIsSetupOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadButtonRef = useRef<HTMLButtonElement>(null);
@@ -127,7 +153,7 @@ export function AIChatPage() {
 
   const getEvaluationExportInput = () => ({
     analysis: evaluationResult,
-    candidateFileName: file?.name ?? "CV del candidato",
+    candidateFileName: candidateFileName || file?.name || "CV del candidato",
     jobName: evaluatedJobName || "Auto-perfilar",
   });
 
@@ -150,8 +176,234 @@ export function AIChatPage() {
     setHasCopiedEvaluation(false);
     setInputText("");
     setIsDragging(false);
+    setIsHistoryOpen(false);
+    setIsSetupOpen(isMobile);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const handleStartAnalysis = () => {
+    setIsSetupOpen(false);
+    void handleAnalyze();
+  };
+
+  const handleOpenConversation = (conversationId: string) => {
+    handleSelectConversation(conversationId);
+    setHasCopiedEvaluation(false);
+    setInputText("");
+    setIsHistoryOpen(false);
+    setIsSetupOpen(false);
+  };
+
+  const setupContent = (
+    <>
+      <header className="ai-context-header">
+        <span className="ai-context-step">Contexto</span>
+        <h2>Prepara el análisis</h2>
+        <p>Elige una vacante y adjunta el CV que quieres evaluar.</p>
+      </header>
+
+      <div className="ai-chat-controls">
+        <label className="ai-chat-label" htmlFor={jobSelectId}>
+          Vacante
+        </label>
+        <CustomSelect
+          id={jobSelectId}
+          value={selectedJob}
+          onChange={setSelectedJob}
+          options={[
+            { value: "", label: "Auto-perfilar" },
+            ...jobs.map((job) => ({
+              value: job.id,
+              label: job.title
+                .toLowerCase()
+                .replace(/(?:^|\s)\S/g, (letter) => letter.toUpperCase()),
+            })),
+          ]}
+          disabled={isLoading || jobsState !== "ready" || jobs.length === 0}
+          placeholder={
+            jobsState === "loading" || jobsState === "idle"
+              ? "Cargando perfiles..."
+              : "Selecciona un puesto a evaluar..."
+          }
+          aria-label="Vacante a evaluar"
+        />
+        <div className="ai-chat-control-status">
+          {jobsState === "error" && (
+            <>
+              <p role="alert">No pudimos cargar las vacantes.</p>
+              <button
+                type="button"
+                className="ai-chat-retry-btn"
+                onClick={() => void loadJobs()}
+              >
+                Reintentar
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {!hasCompared ? (
+        <fieldset className="ai-chat-upload-fieldset">
+          <legend className="sr-only">Preparar evaluación del CV</legend>
+          <p id={fileHelpId} className="ai-chat-upload-help">
+            Archivo PDF del candidato
+          </p>
+          <input
+            id={fileInputId}
+            type="file"
+            accept="application/pdf"
+            ref={fileInputRef}
+            className="ai-chat-file-input"
+            onChange={handleFileChange}
+            aria-describedby={
+              fileError ? `${fileHelpId} ${fileErrorId}` : fileHelpId
+            }
+          />
+          <div className="ai-chat-upload-actions">
+            {!file ? (
+              <button
+                ref={uploadButtonRef}
+                type="button"
+                className={`ai-upload-box${isDragging ? " is-dragging" : ""}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+                disabled={isLoading}
+              >
+                <UploadCloud aria-hidden="true" />
+                <span>Adjuntar CV</span>
+              </button>
+            ) : (
+              <div className="ai-upload-file">
+                <div className="ai-upload-file-info">
+                  <FileText aria-hidden="true" />
+                  <span title={file.name}>{file.name}</span>
+                </div>
+                <button
+                  type="button"
+                  className="ai-upload-remove"
+                  onClick={removeFile}
+                  aria-label="Quitar archivo adjunto"
+                  disabled={isLoading}
+                >
+                  <X aria-hidden="true" />
+                </button>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="btn-primary ai-chat-submit-btn"
+              onClick={handleStartAnalysis}
+              disabled={!file || isLoading}
+              aria-busy={isLoading}
+            >
+              {isLoading && !hasCompared && (
+                <Loader2 className="ai-chat-spin" aria-hidden="true" />
+              )}
+              <span>{isLoading ? "Analizando" : "Analizar CV"}</span>
+            </button>
+          </div>
+          {fileError && (
+            <p id={fileErrorId} className="ai-chat-error" role="alert">
+              {fileError}
+            </p>
+          )}
+        </fieldset>
+      ) : (
+        <div className="ai-chat-followup">
+          <div className="ai-chat-evaluation-status" aria-live="polite">
+            <span>Evaluación actual</span>
+            <strong>{evaluatedJobName || "Auto-perfilar"}</strong>
+            <p>{candidateFileName || "CV analizado"}</p>
+          </div>
+          <div
+            className="ai-chat-result-actions"
+            role="group"
+            aria-label="Acciones de la evaluación"
+          >
+            <button
+              type="button"
+              className="ai-chat-action-btn"
+              onClick={handleCopyEvaluation}
+              disabled={!evaluationResult}
+            >
+              <MorphingIcon
+                icon={hasCopiedEvaluation ? CheckData : CopyData}
+                aria-hidden="true"
+              />
+              <span>{hasCopiedEvaluation ? "Copiada" : "Copiar"}</span>
+            </button>
+            <button
+              type="button"
+              className="ai-chat-action-btn"
+              onClick={handleNewEval}
+              disabled={isLoading}
+            >
+              <MorphingIcon icon={RotateCcw} aria-hidden="true" />
+              <span>Nueva</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  const historyContent = (
+    <>
+      <div className="ai-history-heading">
+        <div>
+          <h2>Conversaciones</h2>
+          <p>
+            {conversationSyncState === "loading"
+              ? "Sincronizando..."
+              : conversationSyncState === "local"
+                ? "Guardadas en este dispositivo"
+                : "Historial sincronizado"}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="ai-history-new-btn"
+          onClick={handleNewEval}
+          aria-label="Nueva evaluación"
+        >
+          <Plus aria-hidden="true" />
+        </button>
+      </div>
+
+      {conversations.length > 0 ? (
+        <nav className="ai-history-nav" aria-label="Conversaciones anteriores">
+          <ul>
+            {conversations.map((conversation) => (
+              <li key={conversation.id}>
+                <button
+                  type="button"
+                  className={`ai-history-item${conversation.id === sessionId ? " is-active" : ""}`}
+                  onClick={() => handleOpenConversation(conversation.id)}
+                  aria-current={conversation.id === sessionId ? "page" : undefined}
+                >
+                  <span>{conversation.title}</span>
+                  <time dateTime={conversation.updatedAt}>
+                    {formatConversationDate(conversation.updatedAt)}
+                  </time>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : (
+        <p className="ai-history-empty">
+          Tus evaluaciones aparecerán aquí después del primer análisis.
+        </p>
+      )}
+    </>
+  );
 
   return (
     <div className="ai-page-container">
@@ -169,165 +421,16 @@ export function AIChatPage() {
       </header>
 
       <main className="ai-page-layout">
-        <aside className="ai-page-sidebar" aria-label="Contexto de la evaluación">
-          <section className="ai-page-card ai-context-card">
-            <header className="ai-context-header">
-              <span className="ai-context-step">Contexto</span>
-              <h2>Prepara el análisis</h2>
-              <p>Elige una vacante y adjunta el CV que quieres evaluar.</p>
-            </header>
-
-            <div className="ai-chat-controls">
-              <label className="ai-chat-label" htmlFor={jobSelectId}>
-                Vacante
-              </label>
-              <CustomSelect
-                id={jobSelectId}
-                value={selectedJob}
-                onChange={setSelectedJob}
-                options={[
-                  { value: "", label: "Auto-perfilar" },
-                  ...jobs.map((job) => ({
-                    value: job.id,
-                    label: job.title
-                      .toLowerCase()
-                      .replace(/(?:^|\s)\S/g, (letter) => letter.toUpperCase()),
-                  })),
-                ]}
-                disabled={isLoading || jobsState !== "ready" || jobs.length === 0}
-                placeholder={
-                  jobsState === "loading" || jobsState === "idle"
-                    ? "Cargando perfiles..."
-                    : "Selecciona un puesto a evaluar..."
-                }
-                aria-label="Vacante a evaluar"
-              />
-              <div className="ai-chat-control-status">
-                {jobsState === "error" && (
-                  <>
-                    <p role="alert">No pudimos cargar las vacantes.</p>
-                    <button
-                      type="button"
-                      className="ai-chat-retry-btn"
-                      onClick={() => void loadJobs()}
-                    >
-                      Reintentar
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {!hasCompared ? (
-              <fieldset className="ai-chat-upload-fieldset">
-                <legend className="sr-only">Preparar evaluación del CV</legend>
-                <p id={fileHelpId} className="ai-chat-upload-help">
-                  Archivo PDF del candidato
-                </p>
-                <input
-                  id={fileInputId}
-                  type="file"
-                  accept="application/pdf"
-                  ref={fileInputRef}
-                  className="ai-chat-file-input"
-                  onChange={handleFileChange}
-                  aria-describedby={
-                    fileError ? `${fileHelpId} ${fileErrorId}` : fileHelpId
-                  }
-                />
-                <div className="ai-chat-upload-actions">
-                  {!file ? (
-                    <button
-                      ref={uploadButtonRef}
-                      type="button"
-                      className={`ai-upload-box${isDragging ? " is-dragging" : ""}`}
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                        setIsDragging(true);
-                      }}
-                      onDragLeave={() => setIsDragging(false)}
-                      onDrop={handleDrop}
-                      disabled={isLoading}
-                    >
-                      <UploadCloud aria-hidden="true" />
-                      <span>Adjuntar CV</span>
-                    </button>
-                  ) : (
-                    <div className="ai-upload-file">
-                      <div className="ai-upload-file-info">
-                        <FileText aria-hidden="true" />
-                        <span title={file.name}>{file.name}</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="ai-upload-remove"
-                        onClick={removeFile}
-                        aria-label="Quitar archivo adjunto"
-                        disabled={isLoading}
-                      >
-                        <X aria-hidden="true" />
-                      </button>
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    className="btn-primary ai-chat-submit-btn"
-                    onClick={() => void handleAnalyze()}
-                    disabled={!file || isLoading}
-                    aria-busy={isLoading}
-                  >
-                    {isLoading && !hasCompared && (
-                      <Loader2 className="ai-chat-spin" aria-hidden="true" />
-                    )}
-                    <span>{isLoading ? "Analizando" : "Analizar CV"}</span>
-                  </button>
-                </div>
-                {fileError && (
-                  <p id={fileErrorId} className="ai-chat-error" role="alert">
-                    {fileError}
-                  </p>
-                )}
-              </fieldset>
-            ) : (
-              <div className="ai-chat-followup">
-                <div className="ai-chat-evaluation-status" aria-live="polite">
-                  <span>Evaluación actual</span>
-                  <strong>{evaluatedJobName || "Auto-perfilar"}</strong>
-                  <p>{file?.name ?? "CV analizado"}</p>
-                </div>
-                <div
-                  className="ai-chat-result-actions"
-                  role="group"
-                  aria-label="Acciones de la evaluación"
-                >
-                  <button
-                    type="button"
-                    className="ai-chat-action-btn"
-                    onClick={handleCopyEvaluation}
-                    disabled={!evaluationResult}
-                  >
-                    <MorphingIcon
-                      icon={hasCopiedEvaluation ? CheckData : CopyData}
-                      aria-hidden="true"
-                    />
-                    <span>{hasCopiedEvaluation ? "Copiada" : "Copiar"}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="ai-chat-action-btn"
-                    onClick={handleNewEval}
-                    disabled={isLoading}
-                  >
-                    <MorphingIcon icon={RotateCcw} aria-hidden="true" />
-                    <span>Nueva</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </section>
-        </aside>
+        {!isMobile && (
+          <aside className="ai-page-sidebar" aria-label="Herramientas del asistente">
+            <section className="ai-page-card ai-context-card">
+              {setupContent}
+            </section>
+            <section className="ai-page-card ai-history-card">
+              {historyContent}
+            </section>
+          </aside>
+        )}
 
         <section
           className="ai-page-chat-area ai-page-card"
@@ -350,6 +453,24 @@ export function AIChatPage() {
                 </p>
               </div>
             </div>
+            {isMobile && (
+              <div className="ai-chat-mobile-actions">
+                <button
+                  type="button"
+                  onClick={() => setIsHistoryOpen(true)}
+                  aria-label="Abrir historial de conversaciones"
+                >
+                  <History aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsSetupOpen(true)}
+                  aria-label="Preparar análisis"
+                >
+                  <SlidersHorizontal aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </header>
 
           <div
@@ -526,6 +647,39 @@ export function AIChatPage() {
           </div>
         </section>
       </main>
+
+      {isMobile && (
+        <>
+          <Modal
+            isOpen={isSetupOpen}
+            onClose={() => setIsSetupOpen(false)}
+            title="Preparar análisis"
+            icon={<SlidersHorizontal aria-hidden="true" />}
+            className="ai-mobile-sheet"
+            labelledById="ai-setup-sheet-title"
+            size="sm"
+            fullscreenMobile={false}
+          >
+            <div className="modal-body ai-mobile-sheet-body">
+              {setupContent}
+            </div>
+          </Modal>
+          <Modal
+            isOpen={isHistoryOpen}
+            onClose={() => setIsHistoryOpen(false)}
+            title="Historial"
+            icon={<History aria-hidden="true" />}
+            className="ai-mobile-sheet"
+            labelledById="ai-history-sheet-title"
+            size="sm"
+            fullscreenMobile={false}
+          >
+            <div className="modal-body ai-mobile-sheet-body">
+              {historyContent}
+            </div>
+          </Modal>
+        </>
+      )}
     </div>
   );
 }

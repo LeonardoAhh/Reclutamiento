@@ -251,10 +251,11 @@
   --feature-chat-panel-max-block-size: 37.5rem;
   --feature-chat-panel-max-block-size-desktop: 50rem;
   --feature-chat-action-min-inline-size: 10rem;
-  --feature-chat-context-inline-size: 20rem;
+  --feature-chat-context-inline-size: 18rem;
   --feature-chat-conversation-max-inline-size: 48rem;
   --feature-chat-composer-max-block-size: 10rem;
   --feature-chat-page-min-block-size: 36rem;
+  --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;

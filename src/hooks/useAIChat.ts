@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
@@ -31,6 +32,100 @@ export interface Message {
   role: "system" | "user" | "ai";
   content: string;
   analysisData?: AnalysisData | null;
+}
+
+export interface ChatConversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  selectedJobId: string;
+  evaluatedJobName: string;
+  candidateFileName: string;
+  resumeText: string;
+  evaluationResult: string;
+  hasCompared: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+type ConversationSyncState = "idle" | "loading" | "synced" | "local";
+
+interface ChatConversationRow {
+  id: string;
+  title: string;
+  messages: Message[];
+  selected_job_id: string | null;
+  evaluated_job_name: string | null;
+  candidate_file_name: string | null;
+  resume_text: string;
+  evaluation_result: string;
+  has_compared: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+const CHAT_HISTORY_STORAGE_PREFIX = "ai_chat_history_v1";
+
+function getHistoryStorageKey(userId: string): string {
+  return `${CHAT_HISTORY_STORAGE_PREFIX}:${userId}`;
+}
+
+function readLocalHistory(userId: string): ChatConversation[] {
+  try {
+    const value = localStorage.getItem(getHistoryStorageKey(userId));
+    return value ? (JSON.parse(value) as ChatConversation[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalHistory(userId: string, conversations: ChatConversation[]) {
+  try {
+    localStorage.setItem(getHistoryStorageKey(userId), JSON.stringify(conversations));
+  } catch (error) {
+    console.warn("No se pudo guardar el historial local del asistente:", error);
+  }
+}
+
+function conversationFromRow(row: ChatConversationRow): ChatConversation {
+  return {
+    id: row.id,
+    title: row.title,
+    messages: row.messages,
+    selectedJobId: row.selected_job_id ?? "",
+    evaluatedJobName: row.evaluated_job_name ?? "",
+    candidateFileName: row.candidate_file_name ?? "",
+    resumeText: row.resume_text ?? "",
+    evaluationResult: row.evaluation_result ?? "",
+    hasCompared: row.has_compared,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function conversationToRow(conversation: ChatConversation, userId: string) {
+  return {
+    id: conversation.id,
+    user_id: userId,
+    title: conversation.title,
+    selected_job_id: conversation.selectedJobId || null,
+    evaluated_job_name: conversation.evaluatedJobName || null,
+    candidate_file_name: conversation.candidateFileName || null,
+    resume_text: conversation.resumeText,
+    evaluation_result: conversation.evaluationResult,
+    has_compared: conversation.hasCompared,
+    messages: conversation.messages,
+    created_at: conversation.createdAt,
+    updated_at: conversation.updatedAt,
+  };
+}
+
+function buildConversationTitle(fileName: string, jobName: string): string {
+  const candidateName = fileName.replace(/\.pdf$/i, "").trim();
+  if (candidateName && jobName && jobName !== "Auto-perfilar") {
+    return `${candidateName} · ${jobName}`;
+  }
+  return candidateName || jobName || "Nueva evaluación";
 }
 
 const INITIAL_MESSAGE: Message = {
@@ -126,12 +221,14 @@ const extractTextFromPDF = async (file: File): Promise<string> => {
 };
 
 export function useAIChat() {
+  const { user } = useAuth();
   const [jobs, setJobs] = useState<JobDescription[]>([]);
   const [selectedJob, setSelectedJob] = useState<string>("");
   const [jobsState, setJobsState] = useState<JobsState>("idle");
 
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [file, setFile] = useState<File | null>(null);
+  const [candidateFileName, setCandidateFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [cvText, setCvText] = useState("");
   const [hasCompared, setHasCompared] = useState(false);
@@ -139,7 +236,10 @@ export function useAIChat() {
   const [evaluatedJobName, setEvaluatedJobName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [chatError, setChatError] = useState<ChatErrorState | null>(null);
-  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState<string>(() => crypto.randomUUID());
+  const [conversations, setConversations] = useState<ChatConversation[]>([]);
+  const [conversationSyncState, setConversationSyncState] =
+    useState<ConversationSyncState>("idle");
   const [activeQuickAction, setActiveQuickAction] = useState<QuickActionTask | null>(null);
 
   const loadJobs = useCallback(async () => {
@@ -164,28 +264,149 @@ export function useAIChat() {
     }
   }, [jobsState, loadJobs]);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("ai_chat_session");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.messages && parsed.messages.length > 0) {
-          setMessages(parsed.messages);
-          setSessionId(parsed.sessionId || crypto.randomUUID());
-          if (parsed.messages.length > 1) setHasCompared(true);
-        }
-      }
-    } catch(e) {}
+  const applyConversation = useCallback((conversation: ChatConversation) => {
+    setSessionId(conversation.id);
+    setMessages(conversation.messages.length > 0 ? conversation.messages : [INITIAL_MESSAGE]);
+    setSelectedJob(conversation.selectedJobId);
+    setEvaluatedJobName(conversation.evaluatedJobName);
+    setCandidateFileName(conversation.candidateFileName);
+    setCvText(conversation.resumeText);
+    setEvaluationResult(conversation.evaluationResult);
+    setHasCompared(conversation.hasCompared);
+    setFile(null);
+    setFileError("");
+    setChatError(null);
+    setActiveQuickAction(null);
   }, []);
 
-  const persistMessages = (newMessages: Message[]) => {
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    const localConversations = readLocalHistory(user.id);
+
+    setConversations(localConversations);
+    if (localConversations[0]) applyConversation(localConversations[0]);
+    setConversationSyncState("loading");
+
+    void (async () => {
+      const { data, error } = await supabase
+        .from("ai_chat_sessions")
+        .select("*")
+        .order("updated_at", { ascending: false });
+
+      if (cancelled) return;
+      if (error) {
+        console.warn("No se pudo sincronizar el historial del asistente:", error);
+        setConversationSyncState("local");
+        return;
+      }
+
+      const merged = new Map<string, ChatConversation>();
+      const remoteConversations = ((data ?? []) as ChatConversationRow[]).map(
+        conversationFromRow,
+      );
+      const remoteById = new Map(
+        remoteConversations.map((conversation) => [conversation.id, conversation]),
+      );
+      [...remoteConversations, ...localConversations].forEach((conversation) => {
+        const current = merged.get(conversation.id);
+        if (!current || conversation.updatedAt > current.updatedAt) {
+          merged.set(conversation.id, conversation);
+        }
+      });
+      const next = Array.from(merged.values()).sort((a, b) =>
+        b.updatedAt.localeCompare(a.updatedAt),
+      );
+      const pendingLocal = localConversations.filter((conversation) => {
+        const remote = remoteById.get(conversation.id);
+        return !remote || conversation.updatedAt > remote.updatedAt;
+      });
+
+      let syncFailed = false;
+      if (pendingLocal.length > 0) {
+        const { error: syncError } = await supabase
+          .from("ai_chat_sessions")
+          .upsert(
+            pendingLocal.map((conversation) =>
+              conversationToRow(conversation, user.id),
+            ),
+          );
+        if (syncError) {
+          syncFailed = true;
+          console.warn("El historial local quedó pendiente de sincronización:", syncError);
+        }
+      }
+
+      if (cancelled) return;
+      setConversations(next);
+      writeLocalHistory(user.id, next);
+      if (next[0]) applyConversation(next[0]);
+      setConversationSyncState(syncFailed ? "local" : "synced");
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applyConversation, user?.id]);
+
+  const saveConversation = useCallback(
+    (conversation: ChatConversation) => {
+      setConversations((current) => {
+        const next = [
+          conversation,
+          ...current.filter((item) => item.id !== conversation.id),
+        ].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+        if (user?.id) writeLocalHistory(user.id, next);
+        return next;
+      });
+
+      if (!user?.id) return;
+      setConversationSyncState("loading");
+      void supabase
+        .from("ai_chat_sessions")
+        .upsert(conversationToRow(conversation, user.id))
+        .then(({ error }) => {
+          if (error) {
+            console.warn("Conversación guardada solo en este dispositivo:", error);
+            setConversationSyncState("local");
+            return;
+          }
+          setConversationSyncState("synced");
+        });
+    },
+    [user?.id],
+  );
+
+  const persistMessages = (
+    newMessages: Message[],
+    overrides: Partial<ChatConversation> = {},
+  ) => {
     setMessages(newMessages);
-    try {
-      localStorage.setItem("ai_chat_session", JSON.stringify({
-        sessionId,
-        messages: newMessages
-      }));
-    } catch(e) {}
+    const now = new Date().toISOString();
+    const nextFileName =
+      overrides.candidateFileName ?? candidateFileName ?? file?.name ?? "";
+    const nextJobName = overrides.evaluatedJobName ?? evaluatedJobName;
+    const nextHasCompared = overrides.hasCompared ?? hasCompared;
+
+    if (newMessages.length <= 1 && !nextHasCompared) return;
+
+    saveConversation({
+      id: sessionId,
+      title:
+        overrides.title ?? buildConversationTitle(nextFileName, nextJobName),
+      messages: newMessages,
+      selectedJobId: overrides.selectedJobId ?? selectedJob,
+      evaluatedJobName: nextJobName,
+      candidateFileName: nextFileName,
+      resumeText: overrides.resumeText ?? cvText,
+      evaluationResult: overrides.evaluationResult ?? evaluationResult,
+      hasCompared: nextHasCompared,
+      createdAt:
+        overrides.createdAt ??
+        conversations.find((item) => item.id === sessionId)?.createdAt ??
+        now,
+      updatedAt: now,
+    });
   };
 
   const selectPdf = (selectedFile: File) => {
@@ -194,12 +415,14 @@ export function useAIChat() {
       return;
     }
     setFile(selectedFile);
+    setCandidateFileName(selectedFile.name);
     setCvText("");
     setFileError("");
   };
 
   const removeFile = () => {
     setFile(null);
+    setCandidateFileName("");
     setCvText("");
     setFileError("");
   };
@@ -222,7 +445,7 @@ export function useAIChat() {
     setFileError("");
     setChatError(null);
     setIsLoading(true);
-    if (appendUserMessage) persistMessages(messagesToSend);
+    if (appendUserMessage) setMessages(messagesToSend);
 
     try {
       const base64Data = await fileToBase64(file);
@@ -245,19 +468,28 @@ export function useAIChat() {
         throw error ?? new Error("AI response unavailable");
       }
 
-      persistMessages([
+      const jobName =
+        jobs.find((job) => job.id === selectedJob)?.title ?? "Auto-perfilar";
+      const resultMessages: Message[] = [
         ...messagesToSend,
-        { 
-          id: crypto.randomUUID(), 
-          role: "ai", 
+        {
+          id: crypto.randomUUID(),
+          role: "ai",
           content: data.analysis,
-          analysisData: data.analysisData 
+          analysisData: data.analysisData,
         },
-      ]);
+      ];
+      persistMessages(resultMessages, {
+        selectedJobId: selectedJob,
+        evaluatedJobName: jobName,
+        candidateFileName: file.name,
+        resumeText: extractedText,
+        evaluationResult: data.analysis,
+        hasCompared: true,
+      });
       setEvaluationResult(data.analysis);
-      setEvaluatedJobName(
-        jobs.find((job) => job.id === selectedJob)?.title ?? "Auto-perfilar",
-      );
+      setEvaluatedJobName(jobName);
+      setCandidateFileName(file.name);
       setHasCompared(true);
     } catch (error) {
       console.error("Error analyzing CV:", error);
@@ -337,9 +569,20 @@ export function useAIChat() {
     void requestAssistantMessage(retry.userMessage, retry.task, false);
   };
 
+  const handleSelectConversation = useCallback(
+    (conversationId: string) => {
+      const conversation = conversations.find(
+        (item) => item.id === conversationId,
+      );
+      if (conversation) applyConversation(conversation);
+    },
+    [applyConversation, conversations],
+  );
+
   const handleNewEvaluation = () => {
-    persistMessages([INITIAL_MESSAGE]);
+    setMessages([INITIAL_MESSAGE]);
     setFile(null);
+    setCandidateFileName("");
     setCvText("");
     setHasCompared(false);
     setEvaluationResult("");
@@ -348,7 +591,6 @@ export function useAIChat() {
     setChatError(null);
     setActiveQuickAction(null);
     setSessionId(crypto.randomUUID());
-    try { localStorage.removeItem("ai_chat_session"); } catch(e) {}
   };
 
   return {
@@ -359,6 +601,7 @@ export function useAIChat() {
     loadJobs,
     messages,
     file,
+    candidateFileName,
     fileError,
     selectPdf,
     removeFile,
@@ -367,10 +610,14 @@ export function useAIChat() {
     evaluatedJobName,
     isLoading,
     chatError,
+    sessionId,
+    conversations,
+    conversationSyncState,
     handleAnalyze,
     requestAssistantMessage,
     handleRetry,
     handleNewEvaluation,
-    activeQuickAction
+    handleSelectConversation,
+    activeQuickAction,
   };
 }
