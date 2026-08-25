@@ -6,6 +6,7 @@ import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 import {
   AI_CHAT_CONTEXT_CONFIG,
   AI_CHAT_ERROR_MESSAGES,
+  AI_CHAT_HISTORY_CONFIG,
   AI_CHAT_QUICK_ACTIONS,
 } from "@/lib/constants";
 
@@ -84,6 +85,27 @@ function writeLocalHistory(userId: string, conversations: ChatConversation[]) {
     localStorage.setItem(getHistoryStorageKey(userId), JSON.stringify(conversations));
   } catch (error) {
     console.warn("No se pudo guardar el historial local del asistente:", error);
+  }
+}
+
+function getDeletedHistoryStorageKey(userId: string): string {
+  return `${CHAT_HISTORY_STORAGE_PREFIX}:deleted:${userId}`;
+}
+
+function readDeletedConversationIds(userId: string): string[] {
+  try {
+    const value = localStorage.getItem(getDeletedHistoryStorageKey(userId));
+    return value ? (JSON.parse(value) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeDeletedConversationIds(userId: string, ids: string[]) {
+  try {
+    localStorage.setItem(getDeletedHistoryStorageKey(userId), JSON.stringify(ids));
+  } catch (error) {
+    console.warn("No se pudo guardar la cola local de eliminaciones:", error);
   }
 }
 
@@ -234,6 +256,7 @@ export function useAIChat() {
   const [hasCompared, setHasCompared] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState("");
   const [evaluatedJobName, setEvaluatedJobName] = useState("");
+  const [conversationTitle, setConversationTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [chatError, setChatError] = useState<ChatErrorState | null>(null);
   const [sessionId, setSessionId] = useState<string>(() => crypto.randomUUID());
@@ -269,6 +292,7 @@ export function useAIChat() {
     setMessages(conversation.messages.length > 0 ? conversation.messages : [INITIAL_MESSAGE]);
     setSelectedJob(conversation.selectedJobId);
     setEvaluatedJobName(conversation.evaluatedJobName);
+    setConversationTitle(conversation.title);
     setCandidateFileName(conversation.candidateFileName);
     setCvText(conversation.resumeText);
     setEvaluationResult(conversation.evaluationResult);
@@ -283,6 +307,7 @@ export function useAIChat() {
     if (!user?.id) return;
     let cancelled = false;
     const localConversations = readLocalHistory(user.id);
+    const deletedConversationIds = readDeletedConversationIds(user.id);
 
     setConversations(localConversations);
     if (localConversations[0]) applyConversation(localConversations[0]);
@@ -301,10 +326,26 @@ export function useAIChat() {
         return;
       }
 
+      let syncFailed = false;
+      if (deletedConversationIds.length > 0) {
+        const { error: deleteError } = await supabase
+          .from("ai_chat_sessions")
+          .delete()
+          .in("id", deletedConversationIds);
+        if (deleteError) {
+          syncFailed = true;
+          console.warn("Las eliminaciones locales siguen pendientes:", deleteError);
+        } else {
+          writeDeletedConversationIds(user.id, []);
+        }
+      }
+
       const merged = new Map<string, ChatConversation>();
-      const remoteConversations = ((data ?? []) as ChatConversationRow[]).map(
-        conversationFromRow,
-      );
+      const remoteConversations = ((data ?? []) as ChatConversationRow[])
+        .map(conversationFromRow)
+        .filter(
+          (conversation) => !deletedConversationIds.includes(conversation.id),
+        );
       const remoteById = new Map(
         remoteConversations.map((conversation) => [conversation.id, conversation]),
       );
@@ -322,7 +363,6 @@ export function useAIChat() {
         return !remote || conversation.updatedAt > remote.updatedAt;
       });
 
-      let syncFailed = false;
       if (pendingLocal.length > 0) {
         const { error: syncError } = await supabase
           .from("ai_chat_sessions")
@@ -393,7 +433,8 @@ export function useAIChat() {
     saveConversation({
       id: sessionId,
       title:
-        overrides.title ?? buildConversationTitle(nextFileName, nextJobName),
+        overrides.title ??
+        (conversationTitle || buildConversationTitle(nextFileName, nextJobName)),
       messages: newMessages,
       selectedJobId: overrides.selectedJobId ?? selectedJob,
       evaluatedJobName: nextJobName,
@@ -470,6 +511,7 @@ export function useAIChat() {
 
       const jobName =
         jobs.find((job) => job.id === selectedJob)?.title ?? "Auto-perfilar";
+      const defaultTitle = buildConversationTitle(file.name, jobName);
       const resultMessages: Message[] = [
         ...messagesToSend,
         {
@@ -480,6 +522,7 @@ export function useAIChat() {
         },
       ];
       persistMessages(resultMessages, {
+        title: defaultTitle,
         selectedJobId: selectedJob,
         evaluatedJobName: jobName,
         candidateFileName: file.name,
@@ -489,6 +532,7 @@ export function useAIChat() {
       });
       setEvaluationResult(data.analysis);
       setEvaluatedJobName(jobName);
+      setConversationTitle(defaultTitle);
       setCandidateFileName(file.name);
       setHasCompared(true);
     } catch (error) {
@@ -579,7 +623,7 @@ export function useAIChat() {
     [applyConversation, conversations],
   );
 
-  const handleNewEvaluation = () => {
+  const resetConversation = useCallback(() => {
     setMessages([INITIAL_MESSAGE]);
     setFile(null);
     setCandidateFileName("");
@@ -587,10 +631,73 @@ export function useAIChat() {
     setHasCompared(false);
     setEvaluationResult("");
     setEvaluatedJobName("");
+    setConversationTitle("");
     setFileError("");
     setChatError(null);
     setActiveQuickAction(null);
     setSessionId(crypto.randomUUID());
+  }, []);
+
+  const handleRenameConversation = useCallback(
+    (conversationId: string, nextTitle: string) => {
+      const title = nextTitle
+        .trim()
+        .slice(0, AI_CHAT_HISTORY_CONFIG.maxTitleLength);
+      const conversation = conversations.find(
+        (item) => item.id === conversationId,
+      );
+      if (!conversation || !title || conversation.title === title) return;
+
+      const renamed = {
+        ...conversation,
+        title,
+        updatedAt: new Date().toISOString(),
+      };
+      if (conversationId === sessionId) setConversationTitle(title);
+      saveConversation(renamed);
+    },
+    [conversations, saveConversation, sessionId],
+  );
+
+  const handleDeleteConversation = useCallback(
+    async (conversationId: string) => {
+      const next = conversations.filter((item) => item.id !== conversationId);
+      setConversations(next);
+
+      if (user?.id) {
+        writeLocalHistory(user.id, next);
+        const deletedIds = Array.from(
+          new Set([
+            ...readDeletedConversationIds(user.id),
+            conversationId,
+          ]),
+        );
+        writeDeletedConversationIds(user.id, deletedIds);
+        setConversationSyncState("loading");
+
+        const { error } = await supabase
+          .from("ai_chat_sessions")
+          .delete()
+          .eq("id", conversationId);
+        if (error) {
+          console.warn("La eliminación quedó pendiente de sincronización:", error);
+          setConversationSyncState("local");
+        } else {
+          writeDeletedConversationIds(
+            user.id,
+            deletedIds.filter((id) => id !== conversationId),
+          );
+          setConversationSyncState("synced");
+        }
+      }
+
+      if (conversationId === sessionId) resetConversation();
+    },
+    [conversations, resetConversation, sessionId, user?.id],
+  );
+
+  const handleNewEvaluation = () => {
+    resetConversation();
   };
 
   return {
@@ -618,6 +725,8 @@ export function useAIChat() {
     handleRetry,
     handleNewEvaluation,
     handleSelectConversation,
+    handleRenameConversation,
+    handleDeleteConversation,
     activeQuickAction,
   };
 }

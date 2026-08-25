@@ -40,6 +40,8 @@ serve(async (req) => {
       });
     }
 
+    const isInitialAnalysis = task === "initial_analysis";
+
     const systemPrompt = `Eres un Copiloto Experto en Adquisición de Talento. Tu objetivo es perfilar candidatos y asesorar al reclutador leyendo su CV contra nuestro catálogo de puestos.
 
 ### Reglas de Evaluación (Tolerancia Cero al Sesgo)
@@ -140,7 +142,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
           contents: geminiContents,
           generationConfig: {
              // force json if it's the first message
-             responseMimeType: messages && messages.length > 0 ? "text/plain" : "application/json"
+             responseMimeType: isInitialAnalysis ? "application/json" : "text/plain"
           }
         };
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
@@ -169,7 +171,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
           const payload = {
             model: "deepseek-chat",
             messages: openAIMessages,
-            response_format: messages && messages.length > 0 ? { type: "text" } : { type: "json_object" }
+            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
           };
           const res = await fetch("https://api.deepseek.com/chat/completions", {
             method: "POST",
@@ -201,7 +203,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
           const payload = {
             model: "llama-3.1-70b-versatile",
             messages: openAIMessages,
-            response_format: messages && messages.length > 0 ? { type: "text" } : { type: "json_object" }
+            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
           };
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
@@ -233,7 +235,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
           const payload = {
             model: "openrouter/auto",
             messages: openAIMessages,
-            response_format: messages && messages.length > 0 ? { type: "text" } : { type: "json_object" }
+            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
           };
           const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -262,9 +264,9 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
     // FINAL CHECK
     if (analysisResult) {
       // Intentar limpiar JSON si trae backticks, solo si es el análisis inicial
-      let finalJson = analysisResult;
+      const finalJson = analysisResult;
       let analysisData = null;
-      if (!messages || messages.length === 0) {
+      if (isInitialAnalysis) {
         try {
           const cleaned = analysisResult.replace(/^```json\n?|```$/gm, '').trim();
           analysisData = JSON.parse(cleaned);

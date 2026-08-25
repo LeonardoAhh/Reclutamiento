@@ -2,20 +2,24 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { useAIChat } from "@/hooks/useAIChat";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Modal } from "@/components/ui/Modal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
   Bot,
-  X,
-  UploadCloud,
+  Check,
   FileText,
   History,
   Loader2,
+  Pencil,
   Plus,
   Send,
   SlidersHorizontal,
+  Trash2,
+  X,
+  UploadCloud,
 } from "lucide-react";
 import {
   Check as CheckData,
@@ -24,6 +28,9 @@ import {
   RotateCcw,
 } from "lucide";
 import { toast } from "@/lib/notify";
+import {
+  AI_CHAT_HISTORY_CONFIG,
+} from "@/lib/constants";
 import {
   buildEvaluationShareText,
   copyEvaluationText,
@@ -82,6 +89,8 @@ export function AIChatPage() {
     handleRetry,
     handleNewEvaluation,
     handleSelectConversation,
+    handleRenameConversation,
+    handleDeleteConversation,
   } = useAIChat();
 
   const isMobile = useIsMobile();
@@ -90,6 +99,13 @@ export function AIChatPage() {
   const [hasCopiedEvaluation, setHasCopiedEvaluation] = useState(false);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+  const [conversationTitleDraft, setConversationTitleDraft] = useState("");
+  const [conversationPendingDelete, setConversationPendingDelete] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [isDeletingConversation, setIsDeletingConversation] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadButtonRef = useRef<HTMLButtonElement>(null);
@@ -188,10 +204,48 @@ export function AIChatPage() {
 
   const handleOpenConversation = (conversationId: string) => {
     handleSelectConversation(conversationId);
+    setEditingConversationId(null);
     setHasCopiedEvaluation(false);
     setInputText("");
     setIsHistoryOpen(false);
     setIsSetupOpen(false);
+  };
+
+  const startRenamingConversation = (conversationId: string, title: string) => {
+    setEditingConversationId(conversationId);
+    setConversationTitleDraft(title);
+  };
+
+  const cancelRenamingConversation = () => {
+    setEditingConversationId(null);
+    setConversationTitleDraft("");
+  };
+
+  const submitConversationRename = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!editingConversationId || !conversationTitleDraft.trim()) return;
+    handleRenameConversation(editingConversationId, conversationTitleDraft);
+    cancelRenamingConversation();
+  };
+
+  const confirmConversationDeletion = async () => {
+    if (!conversationPendingDelete) return;
+    const isDeletingCurrent = conversationPendingDelete.id === sessionId;
+    setIsDeletingConversation(true);
+    await handleDeleteConversation(conversationPendingDelete.id);
+    if (isDeletingCurrent) {
+      setInputText("");
+      setHasCopiedEvaluation(false);
+      setIsSetupOpen(isMobile);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+    setIsDeletingConversation(false);
+    setConversationPendingDelete(null);
+  };
+
+  const cancelConversationDeletion = () => {
+    setConversationPendingDelete(null);
+    if (isMobile) setIsHistoryOpen(true);
   };
 
   const setupContent = (
@@ -381,18 +435,82 @@ export function AIChatPage() {
         <nav className="ai-history-nav" aria-label="Conversaciones anteriores">
           <ul>
             {conversations.map((conversation) => (
-              <li key={conversation.id}>
-                <button
-                  type="button"
-                  className={`ai-history-item${conversation.id === sessionId ? " is-active" : ""}`}
-                  onClick={() => handleOpenConversation(conversation.id)}
-                  aria-current={conversation.id === sessionId ? "page" : undefined}
-                >
-                  <span>{conversation.title}</span>
-                  <time dateTime={conversation.updatedAt}>
-                    {formatConversationDate(conversation.updatedAt)}
-                  </time>
-                </button>
+              <li
+                key={conversation.id}
+                className={`ai-history-row${conversation.id === sessionId ? " is-active" : ""}`}
+              >
+                {editingConversationId === conversation.id ? (
+                  <form
+                    className="ai-history-rename-form"
+                    onSubmit={submitConversationRename}
+                  >
+                    <label className="sr-only" htmlFor={`rename-${conversation.id}`}>
+                      Nuevo nombre de la conversación
+                    </label>
+                    <input
+                      id={`rename-${conversation.id}`}
+                      value={conversationTitleDraft}
+                      onChange={(event) => setConversationTitleDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") cancelRenamingConversation();
+                      }}
+                      maxLength={AI_CHAT_HISTORY_CONFIG.maxTitleLength}
+                      autoFocus
+                    />
+                    <button
+                      type="submit"
+                      disabled={!conversationTitleDraft.trim()}
+                      aria-label="Guardar nombre"
+                    >
+                      <Check aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cancelRenamingConversation}
+                      aria-label="Cancelar edición"
+                    >
+                      <X aria-hidden="true" />
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="ai-history-item"
+                      onClick={() => handleOpenConversation(conversation.id)}
+                      aria-current={conversation.id === sessionId ? "page" : undefined}
+                    >
+                      <span>{conversation.title}</span>
+                      <time dateTime={conversation.updatedAt}>
+                        {formatConversationDate(conversation.updatedAt)}
+                      </time>
+                    </button>
+                    <div className="ai-history-item-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startRenamingConversation(conversation.id, conversation.title)
+                        }
+                        aria-label={`Renombrar ${conversation.title}`}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsHistoryOpen(false);
+                          setConversationPendingDelete({
+                            id: conversation.id,
+                            title: conversation.title,
+                          });
+                        }}
+                        aria-label={`Eliminar ${conversation.title}`}
+                      >
+                        <Trash2 aria-hidden="true" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>
@@ -680,6 +798,22 @@ export function AIChatPage() {
           </Modal>
         </>
       )}
+
+      <ConfirmModal
+        isOpen={conversationPendingDelete !== null}
+        title="Eliminar conversación"
+        description={
+          conversationPendingDelete
+            ? `Se eliminará “${conversationPendingDelete.title}” de tu historial.`
+            : undefined
+        }
+        confirmLabel="Eliminar"
+        cancelLabel="Cancelar"
+        onConfirm={() => void confirmConversationDeletion()}
+        onCancel={cancelConversationDeletion}
+        isDestructive
+        isLoading={isDeletingConversation}
+      />
     </div>
   );
 }

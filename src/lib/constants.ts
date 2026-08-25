@@ -813,6 +813,10 @@ export const AI_CHAT_CONTEXT_CONFIG = {
   preservedInitialMessages: 2,
 } as const;
 
+export const AI_CHAT_HISTORY_CONFIG = {
+  maxTitleLength: 80,
+} as const;
+
 /**
  * Contenido operativo de los formatos semanales de entrega. Los textos se
  * conservan como aparecen en los documentos oficiales proporcionados por RH.

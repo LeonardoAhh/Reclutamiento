@@ -422,3 +422,11 @@ Todos los archivos fueron borrados asegurando que TypeScript no generara ningún
 - En móvil, Historial y Preparar análisis se abren como hojas inferiores accesibles reutilizando la primitiva `Modal`; el chat conserva el espacio principal.
 - Lint dirigido y `yarn tsc -b --pretty false`: PASS. El build de Vite ya había pasado para la composición actual.
 - No se llamaron agentes ni se probaron APIs externas; la sincronización remota requiere aplicar la migración 028 en Supabase.
+
+## Asistente — Gestión de conversaciones y ajuste de compare-cv
+- Añadido renombrado inline con límite centralizado, guardado optimista local y sincronización con Supabase.
+- Añadida eliminación individual mediante `ConfirmModal`; al eliminar la conversación activa se crea una nueva conservando la vacante.
+- Las eliminaciones pendientes quedan registradas localmente para evitar que una conversación remota reaparezca y se reintentan al sincronizar.
+- Corregido `compare-cv/index.ts`: el modo JSON del análisis inicial ahora depende de `task === "initial_analysis"` y no de la presencia de mensajes, que siempre incluía la solicitud del usuario.
+- Lint dirigido, TypeScript y Vite build: PASS.
+- No se llamaron agentes ni se probaron proveedores de IA en vivo, por instrucción del usuario.

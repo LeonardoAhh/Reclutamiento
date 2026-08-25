@@ -991,6 +991,27 @@
   list-style: none;
 }
 
+.ai-history-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-inline-size: 0;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--rounded-md);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ai-history-row:hover,
+.ai-history-row.is-active {
+  border-color: var(--color-hairline);
+  background: var(--color-canvas-soft);
+}
+
+.ai-history-row.is-active {
+  box-shadow: inset calc(var(--border-width) * 2) 0 0 var(--color-primary);
+}
+
 .ai-history-item {
   display: flex;
   inline-size: 100%;
@@ -1001,25 +1022,12 @@
   justify-content: center;
   gap: var(--spacing-xxs);
   padding: var(--spacing-sm);
-  border: var(--border-width) solid transparent;
+  border: 0;
   border-radius: var(--rounded-md);
   background: transparent;
   color: var(--color-ink);
   text-align: start;
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.ai-history-item:hover,
-.ai-history-item.is-active {
-  border-color: var(--color-hairline);
-  background: var(--color-canvas-soft);
-}
-
-.ai-history-item.is-active {
-  box-shadow: inset calc(var(--border-width) * 2) 0 0 var(--color-primary);
 }
 
 .ai-history-item > span {
@@ -1036,6 +1044,72 @@
   color: var(--color-muted);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
+}
+
+.ai-history-item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.ai-history-item-actions button,
+.ai-history-rename-form button {
+  display: inline-flex;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.ai-history-item-actions button:hover,
+.ai-history-rename-form button:hover:not(:disabled) {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.ai-history-item-actions button:last-child:hover {
+  color: var(--color-error);
+}
+
+.ai-history-item-actions svg,
+.ai-history-rename-form svg {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+}
+
+.ai-history-rename-form {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs);
+}
+
+.ai-history-rename-form input {
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  padding-inline: var(--spacing-sm);
+  border: var(--border-width) solid var(--color-hairline-strong);
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+}
+
+.ai-history-rename-form input:focus-visible {
+  border-color: var(--color-primary);
+  outline: calc(var(--border-width) * 2) solid var(--color-primary);
+  outline-offset: var(--spacing-xxs);
+}
+
+.ai-history-rename-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .ai-history-empty {
