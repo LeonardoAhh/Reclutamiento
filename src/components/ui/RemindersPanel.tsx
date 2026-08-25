@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellRing, Clock, X, CheckCircle2 } from "lucide-react";
+import { Bell, BellRing, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCandidates } from "@/hooks/useCandidates";
 import { CandidateStatusBadge } from "@/components/ui/CandidateStatusBadge";
@@ -27,6 +27,62 @@ export function RemindersPanel() {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(
     null,
   );
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const getFocusableItems = () =>
+      dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ) ?? [];
+    const focusFrame = requestAnimationFrame(() => {
+      const firstItem = getFocusableItems()[0];
+      if (firstItem) {
+        firstItem.focus();
+      } else {
+        dialogRef.current?.focus();
+      }
+    });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusableItems = getFocusableItems();
+      if (focusableItems.length === 0) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      const firstItem = focusableItems[0];
+      const lastItem = focusableItems[focusableItems.length - 1];
+      if (event.shiftKey && document.activeElement === firstItem) {
+        event.preventDefault();
+        lastItem.focus();
+      } else if (!event.shiftKey && document.activeElement === lastItem) {
+        event.preventDefault();
+        firstItem.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", handleKeyDown);
+      if (previousFocus && document.contains(previousFocus)) {
+        previousFocus.focus();
+      }
+    };
+  }, [isOpen]);
 
   const reminders = useMemo(() => {
     const today = localTodayIso();
@@ -71,10 +127,13 @@ export function RemindersPanel() {
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         className={`reminders-bell ${reminders.length > 0 ? "has-reminders" : ""}`}
         onClick={() => setIsOpen(true)}
         aria-label="Ver recordatorios"
+        aria-expanded={isOpen}
+        aria-controls="reminders-dialog"
       >
         {reminders.length > 0 ? (
           <>
@@ -109,10 +168,13 @@ export function RemindersPanel() {
                 onClick={() => setIsOpen(false)}
               />
               <motion.div
+                ref={dialogRef}
+                id="reminders-dialog"
                 className="reminders-popover"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="reminders-title"
+                tabIndex={-1}
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -4, scale: 0.96 }}
@@ -140,7 +202,10 @@ export function RemindersPanel() {
                         <button
                           key={c.id}
                           className="reminder-compact-item"
-                          onClick={() => setSelectedCandidate(c)}
+                          onClick={() => {
+                            setIsOpen(false);
+                            setSelectedCandidate(c);
+                          }}
                         >
                           <div className="reminder-compact-main">
                             <span

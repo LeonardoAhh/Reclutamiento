@@ -7,8 +7,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  padding: 6px 12px;
-  height: 36px;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--rounded-md);
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -16,13 +17,13 @@
 }
 
 .reminders-bell:hover {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-surface-soft);
 }
 
 .reminders-badge {
   background-color: var(--color-error);
   color: white;
-  font-size: 10px;
+  font-size: var(--type-caption-up-size);
   font-weight: 700;
   min-width: 18px;
   height: 18px;
@@ -118,7 +119,7 @@
 
 .reminder-compact-item:hover,
 .reminder-compact-item:focus-visible {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-surface-soft);
   outline: none;
 }
 

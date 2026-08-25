@@ -494,7 +494,7 @@ export function CandidateModal({
           disabled={isEdit && !isAdmin}
           className={touched.nombre && errors.nombre ? 'input-error' : ''}
         />
-        {touched.nombre && errors.nombre && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.nombre}</span>}
+        {touched.nombre && errors.nombre && <span className="form-error-text">{errors.nombre}</span>}
       </div>
 
       <div className="form-group">
@@ -527,7 +527,7 @@ export function CandidateModal({
             <XCircle size={18} className="phone-validation-icon invalid" />
           )}
         </div>
-        {touched.telefono && errors.telefono && !duplicateSource && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.telefono}</span>}
+        {touched.telefono && errors.telefono && !duplicateSource && <span className="form-error-text">{errors.telefono}</span>}
         {duplicateSource && (
           <div className="candidate-modal__dup-warning">
             <span className="candidate-modal__dup-text">
@@ -568,7 +568,7 @@ export function CandidateModal({
             <option key={domain} value={`${form.email}@${domain}`} />
           ))}
         </datalist>
-        {touched.email && errors.email && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.email}</span>}
+        {touched.email && errors.email && <span className="form-error-text">{errors.email}</span>}
       </div>
     </>
   );
@@ -598,7 +598,7 @@ const fieldsPosicion = (
           disabled={(isEdit && !isAdmin) || noOpenPositions}
           aria-invalid={touched.area && !!errors.area}
         />
-        {touched.area && errors.area && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.area}</span>}
+        {touched.area && errors.area && <span className="form-error-text">{errors.area}</span>}
       </div>
 
       <div className="form-group">
@@ -615,7 +615,7 @@ const fieldsPosicion = (
           disabled={!form.area || (isEdit && !isAdmin)}
           aria-invalid={touched.seccion && !!errors.seccion}
         />
-        {touched.seccion && errors.seccion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.seccion}</span>}
+        {touched.seccion && errors.seccion && <span className="form-error-text">{errors.seccion}</span>}
       </div>
 
       <div className="form-group form-group--span-2">
@@ -632,7 +632,7 @@ const fieldsPosicion = (
           disabled={!form.seccion || (isEdit && !isAdmin)}
           aria-invalid={touched.puesto && !!errors.puesto}
         />
-        {touched.puesto && errors.puesto && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.puesto}</span>}
+        {touched.puesto && errors.puesto && <span className="form-error-text">{errors.puesto}</span>}
       </div>
     </>
   );
@@ -664,7 +664,7 @@ const fieldsPosicion = (
           aria-label="Reclutador a cargo del proceso, obligatorio"
           aria-invalid={touched.reclutador && !!errors.reclutador}
         />
-        {touched.reclutador && errors.reclutador && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.reclutador}</span>}
+        {touched.reclutador && errors.reclutador && <span className="form-error-text">{errors.reclutador}</span>}
       </div>
 
       <div className="form-group">
@@ -681,7 +681,7 @@ const fieldsPosicion = (
           disabled={isEdit && !canEditCitaAndSource}
           aria-invalid={touched.source && !!errors.source}
         />
-        {touched.source && errors.source && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.source}</span>}
+        {touched.source && errors.source && <span className="form-error-text">{errors.source}</span>}
       </div>
 
       <div className="form-group">
@@ -711,7 +711,7 @@ const fieldsPosicion = (
           disabled={isEdit && !isAdmin}
           className={touched.fecha_aplicacion && errors.fecha_aplicacion ? 'input-error' : ''}
         />
-        {touched.fecha_aplicacion && errors.fecha_aplicacion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.fecha_aplicacion}</span>}
+        {touched.fecha_aplicacion && errors.fecha_aplicacion && <span className="form-error-text">{errors.fecha_aplicacion}</span>}
       </div>
 
       <div className="form-group">
@@ -727,7 +727,7 @@ const fieldsPosicion = (
           disabled={isEdit && !canEditCitaAndSource}
           className={touched.fecha_cita && errors.fecha_cita ? 'input-error' : ''}
         />
-        {touched.fecha_cita && errors.fecha_cita && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errors.fecha_cita}</span>}
+        {touched.fecha_cita && errors.fecha_cita && <span className="form-error-text">{errors.fecha_cita}</span>}
       </div>
     </>
   );

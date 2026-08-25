@@ -28,7 +28,7 @@
 
 .candidate-modal__dup-text {
   font-size: var(--type-caption-sm-size);
-  color: var(--color-ink-faint);
+  color: var(--color-muted);
   display: flex;
   align-items: center;
   gap: var(--spacing-xxs);
@@ -137,5 +137,3 @@
   color: var(--color-error);
   font-weight: var(--font-semibold);
 }
-
-

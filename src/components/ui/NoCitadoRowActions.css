@@ -9,8 +9,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   color: var(--color-muted);
   background: transparent;
   border: 1px solid transparent;

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { isBoneyardBuild } from "@/lib/boneyard";
 import {
   BarChart2,
   Bell,
@@ -64,26 +64,15 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
 };
 
 export function Configuracion() {
-  const { loading } = useAuth();
   const reduceMotion = useReducedMotion();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab") as FeatureId | null;
   const activeTab =
     tabParam && FEATURES.some((f) => f.id === tabParam) ? tabParam : "busqueda";
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
-
-  if (loading) {
-    return (
-      <div className="config-layout">
-        <main className="config-main config-main--loading" aria-busy="true">
-          <span className="type-body-md text-muted" role="status">
-            Cargando features…
-          </span>
-        </main>
-      </div>
-    );
-  }
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(
+    () => !isBoneyardBuild(),
+  );
 
   const handleTabClick = (tab: FeatureId) => {
     setSearchParams({ tab });
@@ -129,7 +118,7 @@ export function Configuracion() {
       >
         <button
           type="button"
-          className="config-mobile-back"
+          className="btn-text config-mobile-back"
           onClick={() => setIsMobileMenuOpen(true)}
           aria-label="Volver al menú de features"
         >

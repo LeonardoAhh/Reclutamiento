@@ -136,7 +136,7 @@
 }
 
 .kpis-page__m-card--interactive:hover > .stat-card {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-surface-soft);
 }
 
 .kpis-page__m-card--interactive:active > .stat-card {
@@ -392,7 +392,4 @@
 
 
 
-  .projection-card--future {
-    background: linear-gradient(145deg, var(--color-surface-card) 0%, var(--color-surface-sunken) 100%);
-  }
 }

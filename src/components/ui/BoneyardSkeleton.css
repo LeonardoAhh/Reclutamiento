@@ -1,0 +1,6 @@
+@media (prefers-reduced-motion: reduce) {
+  .boneyard-skeleton__bone {
+    /* La librería aplica la animación en línea. */
+    animation: none !important;
+  }
+}

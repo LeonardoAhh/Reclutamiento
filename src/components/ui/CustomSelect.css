@@ -54,15 +54,19 @@
   background: transparent;
   border: none;
   border-radius: 0;
-  box-shadow: none !important;
+  box-shadow: none;
 }
+
 .custom-select-trigger--unstyled:hover,
-.custom-select-trigger--unstyled:focus,
-.custom-select-trigger--unstyled:focus-visible {
+.custom-select-trigger--unstyled:focus {
   background: transparent;
   border: none;
-  box-shadow: none !important;
-  outline: none !important;
+  box-shadow: none;
+}
+
+.custom-select-trigger--unstyled:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .custom-select-value {

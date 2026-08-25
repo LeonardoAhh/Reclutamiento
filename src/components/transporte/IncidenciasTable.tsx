@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Download, AlertCircle } from 'lucide-react';
 import { useIncidenciasTransporte } from '@/hooks/useIncidenciasTransporte';
 import { formatReadableDate } from '@/lib/dates';
-import { SkeletonTable } from '@/components/ui/PageSkeletons';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import './IncidenciasTable.css';
 
 export function IncidenciasTable() {
@@ -44,10 +44,6 @@ export function IncidenciasTable() {
     document.body.removeChild(link);
   };
 
-  if (loading) {
-    return <SkeletonTable rows={5} />;
-  }
-
   if (errorMsg) {
     return (
       <div className="table-empty">
@@ -59,14 +55,25 @@ export function IncidenciasTable() {
 
   if (incidencias.length === 0) {
     return (
-      <div className="table-empty">
-        <p className="type-body-sm text-muted">No hay incidencias reportadas aún.</p>
-      </div>
+      <BoneyardSkeleton
+        name="configuracion-incidencias"
+        loading={loading}
+        loadingLabel="Cargando incidencias de transporte…"
+      >
+        <div className="table-empty">
+          <p className="type-body-sm text-muted">No hay incidencias reportadas aún.</p>
+        </div>
+      </BoneyardSkeleton>
     );
   }
 
   return (
-    <div className="table-container card">
+    <BoneyardSkeleton
+      name="configuracion-incidencias"
+      loading={loading}
+      loadingLabel="Cargando incidencias de transporte…"
+    >
+      <div className="table-container card">
       <div className="card__header" style={{ display: 'flex', justifyContent: 'flex-end', padding: 'var(--spacing-md)' }}>
         <button type="button" className="btn-secondary btn-sm" onClick={handleDownloadExcel}>
           <Download size={16} />
@@ -106,6 +113,7 @@ export function IncidenciasTable() {
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
+    </BoneyardSkeleton>
   );
 }

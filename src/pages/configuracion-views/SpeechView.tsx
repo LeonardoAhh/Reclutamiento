@@ -26,7 +26,7 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Modal } from "@/components/ui/Modal";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { getUrlAsPngBlob } from "@/lib/images";
@@ -556,36 +556,15 @@ export function SpeechView() {
     formData.created_by !== "" &&
     (formData.categoria === "flyers" || formData.contenido.trim().length > 0);
 
-  // ── Loading ───────────────────────────────────────────────────────────────
-
-  if (authLoading || loading) {
-    return (
-      <section className="speech-view config-page" aria-busy="true">
-        <div className="speech-skeleton" aria-hidden="true">
-          <Skeleton
-            variant="rect"
-            width="100%"
-            height="var(--skeleton-card-height)"
-            radius="var(--rounded-lg)"
-          />
-          <Skeleton
-            variant="rect"
-            width="100%"
-            height="var(--skeleton-card-height)"
-            radius="var(--rounded-lg)"
-          />
-        </div>
-        <span className="sr-only" role="status">
-          Cargando plantillas…
-        </span>
-      </section>
-    );
-  }
-
   const deletingTemplate = effectiveTemplates.find((t) => t.id === deletingId);
 
   return (
-    <section className="speech-view config-page" aria-labelledby="speech-title">
+    <BoneyardSkeleton
+      name="configuracion-speech"
+      loading={authLoading || loading}
+      loadingLabel="Cargando plantillas…"
+    >
+      <section className="speech-view config-page" aria-labelledby="speech-title">
       {/* ── Banner de modo semilla ─────────────────────────────────────────── */}
       {isSeedMode && (
         <div className="speech-seed-banner" role="status">
@@ -1161,6 +1140,7 @@ export function SpeechView() {
           </div>
         </div>
       </Modal>
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

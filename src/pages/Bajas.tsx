@@ -5,8 +5,7 @@ import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge } from '@/components/ui/Badge';
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { SkeletonTable } from '@/components/ui/PageSkeletons';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { CubrirVacanteSheet } from '@/components/ui/CubrirVacanteSheet';
 import { RequisicionSheet } from '@/components/ui/RequisicionSheet';
 import {
@@ -97,32 +96,15 @@ export function Bajas() {
     return Math.max(m, 1);
   }, [months]);
 
-  if (loading && bajas.length === 0) {
-    return (
-      <main className="bajas container" id="page-bajas">
-        <section className="bajas__hero">
-          <div />
-        </section>
-        <section className="bajas__filters" aria-hidden="true">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} height={56} width={160} radius="var(--rounded-md)" />
-          ))}
-        </section>
-        <section className="bajas__chart-section">
-          <Skeleton height={220} radius="var(--rounded-lg)" />
-        </section>
-        <div className="bajas__grid">
-          <SkeletonTable rows={6} columns={['28%', '24%', '16%', '16%', '16%']} />
-          <SkeletonTable rows={6} columns={['28%', '24%', '16%', '16%', '16%']} />
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="bajas container" id="page-bajas">
+    <BoneyardSkeleton
+      name="bajas-page"
+      loading={loading && bajas.length === 0}
+      loadingLabel="Cargando bajas…"
+    >
+      <main className="bajas container" id="page-bajas">
       <section className="bajas__hero">
-        <div />
+        <h1 className="bajas__title">Downsizing</h1>
         <div className="bajas__hero-actions" style={{ display: 'none' }}>
           <BajasImporter
             onImport={async (raw) => {
@@ -154,6 +136,7 @@ export function Bajas() {
             className="bajas__banner-action"
             onClick={() => void retrySync()}
             disabled={saveStatus === 'saving'}
+            aria-label="Reintentar sincronización"
             title="Reintentar sync"
           >
             <MorphingIcon
@@ -432,6 +415,7 @@ export function Bajas() {
         }
         onClose={() => setRequisicionTarget(null)}
       />
-    </main>
+      </main>
+    </BoneyardSkeleton>
   );
 }

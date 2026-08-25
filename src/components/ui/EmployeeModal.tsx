@@ -111,7 +111,7 @@ export function EmployeeModal({
     motivo_baja: "",
   });
   const emptyTouchedAdd = {
-    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false
+    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false, ruta: false, parada: false
   };
   const emptyTouchedDelete = {
     fecha_baja: false, tipo_baja: false, motivo_baja: false
@@ -247,6 +247,8 @@ export function EmployeeModal({
     categoria: !form.categoria || form.categoria === 'N/A' ? 'Selecciona categoría.' : null,
     turno: !form.turno ? 'Selecciona turno.' : null,
     reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
+    ruta: !form.ruta ? 'Selecciona ruta.' : null,
+    parada: !form.parada ? 'Selecciona parada.' : null,
   };
 
   const isNameDuplicate = form.nombre.trim() !== '' && 
@@ -343,7 +345,7 @@ export function EmployeeModal({
           autoComplete="off"
           className={touchedAdd.num_empleado && errorsAdd.num_empleado ? 'input-error' : ''}
         />
-        {touchedAdd.num_empleado && errorsAdd.num_empleado && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.num_empleado}</span>}
+        {touchedAdd.num_empleado && errorsAdd.num_empleado && <span className="form-error-text">{errorsAdd.num_empleado}</span>}
       </div>
       <div className="form-group">
         <label htmlFor="emp-name">Nombre Completo <span className="text-error">*</span></label>
@@ -363,9 +365,9 @@ export function EmployeeModal({
           autoComplete="off"
           className={touchedAdd.nombre && errorsAdd.nombre ? 'input-error' : ''}
         />
-        {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.nombre}</span>}
+        {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text">{errorsAdd.nombre}</span>}
         {!errorsAdd.nombre && isNameDuplicate && mode === 'add' && (
-          <span className="form-warning-text" style={{ color: 'var(--color-amber)', fontSize: 'var(--text-xs)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span className="form-warning-text">
             <AlertCircle size={12} /> Ya existe alguien con este nombre. Verifica que sea un homónimo.
           </span>
         )}
@@ -407,7 +409,7 @@ export function EmployeeModal({
             options={areas.map((a) => ({ value: a, label: a }))}
             placeholder="Seleccione área…"
           />
-          {touchedAdd.area && errorsAdd.area && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.area}</span>}
+          {touchedAdd.area && errorsAdd.area && <span className="form-error-text">{errorsAdd.area}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="emp-seccion">Sección <span className="text-error">*</span></label>
@@ -422,7 +424,7 @@ export function EmployeeModal({
             placeholder="Seleccione sección…"
             disabled={!form.area}
           />
-          {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.seccion}</span>}
+          {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text">{errorsAdd.seccion}</span>}
         </div>
         <div className="form-group--span-2 form-grid form-grid--3-cols">
           <div className="form-group">
@@ -438,7 +440,7 @@ export function EmployeeModal({
               placeholder="Seleccione puesto…"
               disabled={!form.seccion}
             />
-            {touchedAdd.puesto && errorsAdd.puesto && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.puesto}</span>}
+            {touchedAdd.puesto && errorsAdd.puesto && <span className="form-error-text">{errorsAdd.puesto}</span>}
           </div>
           <div className="form-group">
             <label htmlFor="emp-turno">Turno <span className="text-error">*</span></label>
@@ -459,7 +461,7 @@ export function EmployeeModal({
               placeholder="Turno..."
               aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
             />
-            {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.turno}</span>}
+            {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
           </div>
           {starliteField}
         </div>
@@ -475,7 +477,7 @@ export function EmployeeModal({
             }}
             className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
           />
-          {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.fecha_ingreso}</span>}
+          {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
         </div>
       </>
     );
@@ -527,7 +529,7 @@ export function EmployeeModal({
             placeholder="Categoría..."
             aria-invalid={touchedAdd.categoria && !!errorsAdd.categoria}
           />
-          {touchedAdd.categoria && errorsAdd.categoria && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.categoria}</span>}
+          {touchedAdd.categoria && errorsAdd.categoria && <span className="form-error-text">{errorsAdd.categoria}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="emp-vac-turno">Turno <span className="text-error">*</span></label>
@@ -548,7 +550,7 @@ export function EmployeeModal({
             placeholder="Turno..."
             aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
           />
-          {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.turno}</span>}
+          {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
         </div>
         {starliteField}
       </div>
@@ -564,12 +566,51 @@ export function EmployeeModal({
           }}
           className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
         />
-        {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.fecha_ingreso}</span>}
+        {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
       </div>
     </>
   ) : null;
 
-  const fieldsTransporte = null;
+  const fieldsTransporte = (
+    <>
+      <div className="form-group">
+        <label htmlFor="emp-ruta">Ruta de Transporte <span className="text-error">*</span></label>
+        <CustomSelect
+          id="emp-ruta"
+          value={form.ruta}
+          onChange={(val) => {
+            setForm({ ...form, ruta: val });
+            setTouchedAdd(t => ({ ...t, ruta: true }));
+          }}
+          options={[
+            { value: TRANSPORTE_NA, label: "N/A (No utiliza transporte)" },
+            ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r })),
+          ]}
+          placeholder="Seleccione ruta..."
+          aria-invalid={touchedAdd.ruta && !!errorsAdd.ruta}
+        />
+        {touchedAdd.ruta && errorsAdd.ruta && <span className="form-error-text">{errorsAdd.ruta}</span>}
+      </div>
+      <div className="form-group">
+        <label htmlFor="emp-parada">Parada de Transporte <span className="text-error">*</span></label>
+        <CustomSelect
+          id="emp-parada"
+          value={form.parada}
+          onChange={(val) => {
+            setForm({ ...form, parada: val });
+            setTouchedAdd(t => ({ ...t, parada: true }));
+          }}
+          options={TRANSPORTE_PARADAS.map((p) => ({
+            value: p,
+            label: p === TRANSPORTE_NA ? "N/A (No utiliza transporte)" : p
+          }))}
+          placeholder="Seleccione parada..."
+          aria-invalid={touchedAdd.parada && !!errorsAdd.parada}
+        />
+        {touchedAdd.parada && errorsAdd.parada && <span className="form-error-text">{errorsAdd.parada}</span>}
+      </div>
+    </>
+  );
 
   const fieldsExtra = (
     <>
@@ -589,7 +630,7 @@ export function EmployeeModal({
           }))}
           aria-invalid={touchedAdd.reclutador && !!errorsAdd.reclutador}
         />
-        {touchedAdd.reclutador && errorsAdd.reclutador && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsAdd.reclutador}</span>}
+        {touchedAdd.reclutador && errorsAdd.reclutador && <span className="form-error-text">{errorsAdd.reclutador}</span>}
       </div>
     </>
   );
@@ -629,7 +670,7 @@ export function EmployeeModal({
             }}
             className={touchedDelete.fecha_baja && errorsDelete.fecha_baja ? 'input-error' : ''}
           />
-          {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.fecha_baja}</span>}
+          {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span className="form-error-text">{errorsDelete.fecha_baja}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="baja-tipo">Tipo de Baja <span className="text-error">*</span></label>
@@ -651,7 +692,7 @@ export function EmployeeModal({
               { value: "Solo Inducción", label: "Solo Inducción" },
             ]}
           />
-          {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.tipo_baja}</span>}
+          {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span className="form-error-text">{errorsDelete.tipo_baja}</span>}
         </div>
         <div className="form-group form-group--span-2">
           <label htmlFor="baja-motivo">Descripción <span className="text-error">*</span></label>
@@ -667,7 +708,7 @@ export function EmployeeModal({
             autoComplete="off"
             className={touchedDelete.motivo_baja && errorsDelete.motivo_baja ? 'input-error' : ''}
           />
-          {touchedDelete.motivo_baja && errorsDelete.motivo_baja && <span className="form-error-text" style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', marginTop: '4px' }}>{errorsDelete.motivo_baja}</span>}
+          {touchedDelete.motivo_baja && errorsDelete.motivo_baja && <span className="form-error-text">{errorsDelete.motivo_baja}</span>}
         </div>
       </div>
     </div>
@@ -785,22 +826,24 @@ export function EmployeeModal({
                 isValid:
                   form.area.length > 0 &&
                   form.seccion.length > 0 &&
-                  form.puesto.length > 0,
+                  form.puesto.length > 0 &&
+                  form.reclutador.length > 0,
                 content: (
                   <div className="form-grid">
                     {fieldsVacancySelector}
                     {fieldsFecha}
                     {fieldsPosicion}
+                    {fieldsExtra}
                   </div>
                 ),
               },
               {
                 id: "transporte",
                 title: "Transporte",
+                isValid: form.ruta.length > 0 && form.parada.length > 0,
                 content: (
                   <div className="form-grid">
                     {fieldsTransporte}
-                    {fieldsExtra}
                   </div>
                 ),
               },
@@ -829,8 +872,8 @@ export function EmployeeModal({
             {fieldsVacancySelector}
             {fieldsFecha}
             {fieldsPosicion}
-            {fieldsTransporte}
             {fieldsExtra}
+            {fieldsTransporte}
           </div>
         ) : (
           deleteContent

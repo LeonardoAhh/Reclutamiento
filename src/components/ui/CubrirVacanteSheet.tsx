@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
 import { CircleCheckBig as CheckCircleIconData } from 'lucide';
 import { Modal } from './Modal';
@@ -31,6 +31,7 @@ export function CubrirVacanteSheet({
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const errorId = useId();
 
   useEffect(() => {
     if (!isOpen || !baja) return;
@@ -151,6 +152,8 @@ export function CubrirVacanteSheet({
             onChange={(e) => setFecha(e.target.value)}
             min={baja.fecha_baja || undefined}
             required
+            aria-describedby={errorMsg ? errorId : undefined}
+            aria-invalid={errorMsg ? true : undefined}
           />
         </div>
 
@@ -169,7 +172,7 @@ export function CubrirVacanteSheet({
         </div>
 
         {errorMsg && (
-          <div className="incapacidad-modal__error" role="alert">
+          <div id={errorId} className="incapacidad-modal__error" role="alert">
             <AlertCircle size={14} aria-hidden="true" />
             {errorMsg}
           </div>

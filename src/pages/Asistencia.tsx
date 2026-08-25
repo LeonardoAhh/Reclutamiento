@@ -146,7 +146,7 @@ export function Asistencia() {
 
       {!data ? (
         <div className="feature-card" style={{ marginTop: 'var(--spacing-xl)', maxWidth: '800px' }}>
-          <h3 className="type-heading-3" style={{ marginBottom: 'var(--spacing-xs)' }}>Pegar JSON</h3>
+          <h2 className="type-heading-3" style={{ marginBottom: 'var(--spacing-xs)' }}>Pegar JSON</h2>
           <p className="type-body-sm color-ink-muted" style={{ marginBottom: 'var(--spacing-lg)' }}>
             Pega aquí el contenido del reporte de asistencia generado en formato JSON.
           </p>
@@ -180,11 +180,11 @@ export function Asistencia() {
         <div className="asistencia-content">
           {summaryByProyecto.length > 0 && (
             <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h3 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Proyecto</h3>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Proyecto</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-md)' }}>
                 {summaryByProyecto.map((summary, i) => (
                   <div key={`proyecto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h4 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.proyecto}</h4>
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.proyecto}</h3>
                     <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>{summary.total}</div>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
@@ -205,11 +205,11 @@ export function Asistencia() {
 
           {summaryByPuesto.length > 0 && (
             <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h3 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Puesto</h3>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Puesto</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-md)' }}>
                 {summaryByPuesto.map((summary, i) => (
                   <div key={`puesto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h4 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.puesto}</h4>
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.puesto}</h3>
                     <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>{summary.total}</div>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>

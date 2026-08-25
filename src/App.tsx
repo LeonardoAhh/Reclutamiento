@@ -1,7 +1,6 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { useAuth } from '@/hooks/useAuth';
 
 import { AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
@@ -26,17 +25,17 @@ import { Actividades } from '@/pages/Actividades';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { AIChatPage } from '@/pages/AIChatPage';
-
-function AdminGuard({ children }: { children: ReactNode }) {
-  const { profile, profileLoading, loading } = useAuth();
-  if (loading || profileLoading) return null;
-  if (!profile || profile.role !== 'admin') {
-    return <Navigate to="/" replace />;
-  }
-  return <>{children}</>;
-}
+import { isBoneyardBuild } from '@/lib/boneyard';
 
 function ProtectedShell({ children }: { children: ReactNode }) {
+  if (isBoneyardBuild()) {
+    return (
+      <PositionsProvider>
+        <AppShell>{children}</AppShell>
+      </PositionsProvider>
+    );
+  }
+
   return (
     <AuthGuard>
       <PositionsProvider>
@@ -50,7 +49,7 @@ function ProtectedShell({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  const [splashDone, setSplashDone] = useState(false);
+  const [splashDone, setSplashDone] = useState(isBoneyardBuild);
 
   const handleSplashDone = useCallback(() => {
     setSplashDone(true);

@@ -1,7 +1,3 @@
-.recordatorios-skeleton {
-  margin-top: var(--spacing-lg);
-}
-
 .recordatorios-week-controls,
 .recordatorios-route-controls__grid {
   grid-template-columns: minmax(0, 1fr);
@@ -223,7 +219,7 @@
 }
 
 .weekly-format-card__preview {
-  min-height: var(--skeleton-card-height);
+  min-height: var(--config-panel-min-height);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);

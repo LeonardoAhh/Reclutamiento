@@ -14,7 +14,7 @@ import {
 import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocuments";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { toast } from "@/lib/notify";
 import "./FormatosView.css";
 
@@ -177,31 +177,13 @@ export function FormatosView() {
 
   const loading = employeesLoading || rutasLoading;
 
-  if (loading) {
-    return (
-      <section className="config-page" aria-busy="true">
-        <div className="config-page__content">
-          <Skeleton
-            variant="rect"
-            width="100%"
-            height="var(--touch-target-min)"
-            radius="var(--rounded-md)"
-          />
-          <div className="recordatorios-skeleton">
-            <Skeleton
-              variant="rect"
-              width="100%"
-              height="var(--skeleton-card-height)"
-              radius="var(--rounded-md)"
-            />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className="config-page">
+    <BoneyardSkeleton
+      name="configuracion-formatos"
+      loading={loading}
+      loadingLabel="Cargando formatos…"
+    >
+      <section className="config-page">
       <div className="config-page__content">
         {employeesError && (
           <p className="type-body-sm text-error" role="alert">
@@ -387,6 +369,7 @@ export function FormatosView() {
           </section>
         </div>
       </div>
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

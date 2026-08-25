@@ -174,6 +174,36 @@ interface RequisicionDocProps {
 const LEYENDA_RESPONSABILIDAD =
   'Yo acepto que el personal que estoy solicitando es indispensable ocupando el 100% de su rendimiento y no estoy desperdiciando recursos innecesarios. Yo seré responsable por No llegar a los objetivos del puesto que estoy solicitando. Soy Jefe y estoy avalando mi capacidad para detectar las necesidades de cada puesto, así como para incrementar o disminuir la plantilla según las necesidades.';
 
+interface DocHeaderProps {
+  codigo: string | null;
+  issuedDate: string;
+  subtitle?: string;
+}
+
+function DocHeader({ codigo, issuedDate, subtitle }: DocHeaderProps) {
+  return (
+    <header className="requisicion-doc__head">
+      <div className="requisicion-doc__head-left">
+        <span className="requisicion-doc__eyebrow">
+          Formato de reclutamiento
+          {subtitle ? ` · ${subtitle}` : ''}
+        </span>
+        <h3 className="requisicion-doc__title">Requisición de Personal</h3>
+      </div>
+      <dl className="requisicion-doc__head-meta">
+        <div>
+          <dt>Código</dt>
+          <dd className="requisicion-doc__code">{codigo ?? '—'}</dd>
+        </div>
+        <div>
+          <dt>Fecha emisión</dt>
+          <dd>{formatShortDate(issuedDate)}</dd>
+        </div>
+      </dl>
+    </header>
+  );
+}
+
 function RequisicionDoc({
   baja,
   turno,
@@ -336,36 +366,6 @@ function RequisicionDoc({
         </footer>
       </article>
     </div>
-  );
-}
-
-interface DocHeaderProps {
-  codigo: string | null;
-  issuedDate: string;
-  subtitle?: string;
-}
-
-function DocHeader({ codigo, issuedDate, subtitle }: DocHeaderProps) {
-  return (
-    <header className="requisicion-doc__head">
-      <div className="requisicion-doc__head-left">
-        <span className="requisicion-doc__eyebrow">
-          Formato de reclutamiento
-          {subtitle ? ` · ${subtitle}` : ''}
-        </span>
-        <h3 className="requisicion-doc__title">Requisición de Personal</h3>
-      </div>
-      <dl className="requisicion-doc__head-meta">
-        <div>
-          <dt>Código</dt>
-          <dd className="requisicion-doc__code">{codigo ?? '—'}</dd>
-        </div>
-        <div>
-          <dt>Fecha emisión</dt>
-          <dd>{formatShortDate(issuedDate)}</dd>
-        </div>
-      </dl>
-    </header>
   );
 }
 

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./ReporteDiario.css";
 import { Modal } from "@/components/ui/Modal";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { SkeletonTable } from "@/components/ui/PageSkeletons";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { toast } from "@/lib/notify";
 import { format, getISOWeek } from "date-fns";
@@ -789,85 +788,17 @@ export default function ReporteDiarioContent() {
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
 
-  /* ── Carga inicial: skeleton que replica la estructura real. ─────────── */
-  if (loadingDb) {
-    if (!hasData) {
-      return (
-        <div className="reporte-container">
-          <section
-            className="reporte-hero reporte-loading-state"
-            aria-busy="true"
-            aria-labelledby="reporte-loading-status"
-          >
-            <header className="reporte-hero__intro" aria-hidden="true">
-              <Skeleton
-                variant="text"
-                className="reporte-loading-state__eyebrow"
-              />
-            </header>
-            <div
-              className="reporte-hero__dropzone reporte-loading-state__dropzone"
-              aria-hidden="true"
-            >
-              <Skeleton
-                variant="circle"
-                className="reporte-loading-state__icon"
-              />
-              <Skeleton
-                variant="text"
-                className="reporte-loading-state__title"
-              />
-              <Skeleton
-                variant="text"
-                className="reporte-loading-state__subtitle"
-              />
-            </div>
-            <span
-              id="reporte-loading-status"
-              className="sr-only"
-              role="status"
-              aria-live="polite"
-            >
-              Cargando reportes de asistencia…
-            </span>
-          </section>
-        </div>
-      );
-    }
-
-    return (
-      <div className="reporte-container">
-        <header className="reporte-card reporte-head">
-          <div className="reporte-head__row">
-            <div className="reporte-title-wrapper">
-              <h1 className="reporte-title">Reporte Diario</h1>
-            </div>
-          </div>
-        </header>
-        <div
-          className="reporte-card reporte-skeleton-card"
-          data-testid="reporte-skeleton"
-          aria-busy="true"
-        >
-          <Skeleton variant="text" className="reporte-skeleton-card__title" />
-          <SkeletonTable
-            rows={8}
-            columns={["24%", "30%", "12%", "12%", "10%", "12%"]}
-          />
-          <span className="sr-only" role="status" aria-live="polite">
-            Actualizando datos del reporte…
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   /* ── Rediseño (Idea A): Hero centrado cuando NO hay reporte ──────────
        Rompe el split lateral y muestra: título + dropzone protagonista +
        3 pasos de onboarding + acceso rápido a reportes guardados. */
   if (!hasData) {
     return (
-      <div className="reporte-container">
+      <BoneyardSkeleton
+        name="reportes-page"
+        loading={loadingDb}
+        loadingLabel="Cargando reportes de asistencia…"
+      >
+        <div className="reporte-container">
         <input
           ref={fileInputRef}
           className="reporte-file-input"
@@ -893,6 +824,9 @@ export default function ReporteDiarioContent() {
               <BarChart2 size={14} />
               Reporte Diario
             </span>
+            <h1 id="reporte-hero-title" className="reporte-hero__title">
+              Reporte Diario
+            </h1>
           </header>
 
           <div
@@ -932,10 +866,10 @@ export default function ReporteDiarioContent() {
                     className="reporte-spinner reporte-overlay__icon-primary"
                     aria-hidden="true"
                   />
-                  <h3 className="reporte-hero__dropzone-title">
+                  <h2 className="reporte-hero__dropzone-title">
                     {processStep === "reading" && "Leyendo archivo…"}
                     {processStep === "validating" && "Revisando incidencias…"}
-                  </h3>
+                  </h2>
                 </motion.div>
               ) : (
                 <motion.div
@@ -951,9 +885,9 @@ export default function ReporteDiarioContent() {
                   >
                     <CloudUpload size={34} />
                   </span>
-                  <h3 className="reporte-hero__dropzone-title">
+                  <h2 className="reporte-hero__dropzone-title">
                     Arrastra tu archivo aquí o haz clic para seleccionar
-                  </h3>
+                  </h2>
                   <p className="reporte-hero__dropzone-hint">
                     Detecta automáticamente el mes y valida el formato
                   </p>
@@ -1060,15 +994,21 @@ export default function ReporteDiarioContent() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+        </div>
+      </BoneyardSkeleton>
     );
   }
 
   return (
     <>
+      {loadingDb && (
+        <span className="sr-only" role="status" aria-live="polite">
+          Actualizando datos del reporte…
+        </span>
+      )}
       <header className="reporte-header__top">
         <div className="reporte-head__left">
-          {/* Title removed per request */}
+          <h1 className="reporte-title">Reporte Diario</h1>
         </div>
 
         <div

@@ -71,6 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
   background: transparent;
   border: none;
   color: var(--color-ink);
@@ -83,24 +85,14 @@
 
 .app-header__mobile-menu-btn:hover,
 .app-header__mobile-menu-btn:focus-visible {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-surface-soft);
 }
 
-.app-header__page-title {
-  font-family: var(--font-body);
-  font-size: var(--type-body-lg-size);
-  font-weight: var(--font-semibold);
-  color: var(--color-ink);
-  margin: 0;
-  display: none;
-}
+
 
 @media (min-width: 1024px) {
   .app-header__mobile-menu-btn {
     display: none;
-  }
-  .app-header__page-title {
-    display: block;
   }
 }
 

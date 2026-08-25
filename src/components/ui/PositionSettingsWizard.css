@@ -18,7 +18,7 @@
 
 .pos-settings__summary-sub {
   font-size: var(--type-caption-sm-size);
-  color: var(--color-ink-muted);
+  color: var(--color-muted);
 }
 
 /* Custom 3-column grid for numeric inputs to fit on one line */

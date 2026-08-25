@@ -458,7 +458,7 @@
 
 .config-card__avatar--tone-0 { color: var(--color-accent-sky); }
 .config-card__avatar--tone-1 { color: var(--color-accent-purple); }
-.config-card__avatar--tone-2 { color: var(--color-accent-pink); }
+.config-card__avatar--tone-2 { color: var(--color-accent-green); }
 .config-card__avatar--tone-3 { color: var(--color-accent-orange); }
 .config-card__avatar--tone-4 { color: var(--color-accent-teal); }
 
@@ -478,7 +478,7 @@
   gap: var(--spacing-xxs);
   text-align: right;
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--type-caption-up-size);
   line-height: 1.2;
 }
 
@@ -551,24 +551,8 @@
 }
 
 .config-compact-summary__toggle-minimal {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: transparent;
-  border: none;
-  color: var(--color-primary);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
-  cursor: pointer;
-  border-radius: var(--rounded-sm);
-  transition: background-color var(--motion-fast);
   width: 100%;
   justify-content: center;
-}
-
-.config-compact-summary__toggle-minimal:hover {
-  background: var(--color-surface-soft);
 }
 
 .config-card--compact.is-expanded .config-card__body {
@@ -578,7 +562,7 @@
 
 .config-filter-empty {
   grid-column: 1 / -1;
-  min-height: var(--skeleton-card-height);
+  min-height: var(--config-panel-min-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1382,20 +1366,6 @@
   gap: var(--spacing-sm);
 }
 
-.indicadores-historical-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  padding: var(--spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-full);
-  color: var(--color-primary);
-  font-size: var(--type-eyebrow-size);
-  font-weight: var(--font-semibold);
-  line-height: 1;
-}
-
 .indicadores-kpi-value {
   font-family: var(--font-display);
   font-size: var(--type-display-lg-size);
@@ -1459,10 +1429,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-}
-
-.indicadores-skeleton-title {
-  margin-bottom: var(--spacing-md);
 }
 
 .table-responsive {
@@ -1805,8 +1771,8 @@
 }
 
 .busqueda-hero__card-count--loading {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
   border-radius: var(--rounded-sm);
   background: var(--color-hairline-soft);
   animation: pulse 1.5s infinite ease-in-out;
@@ -1836,7 +1802,7 @@
 }
 
 .busqueda-view__empty {
-  min-height: var(--skeleton-card-height);
+  min-height: var(--config-panel-min-height);
   padding-inline: var(--spacing-lg);
 }
 
@@ -1857,7 +1823,6 @@
   color: var(--color-error);
 }
 
-.busqueda-skeleton,
 .config-incidence-loading {
   display: flex;
   flex-direction: column;
@@ -1958,13 +1923,6 @@
   color: var(--color-ink);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
-}
-
-.tabulador-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
 }
 
 .tabulador-results {
@@ -2152,16 +2110,7 @@
 
 .config-mobile-back {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) 0;
   margin-bottom: var(--spacing-xs);
-  background: transparent;
-  border: none;
-  color: var(--color-primary);
-  font-weight: var(--font-medium);
-  font-size: var(--type-body-sm-size);
-  cursor: pointer;
   align-self: flex-start;
 }
 

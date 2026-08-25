@@ -133,7 +133,7 @@
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   padding: var(--spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   white-space: nowrap;
   line-height: 1;
   position: relative;
@@ -335,7 +335,7 @@
   padding: 4px 10px;
   background-color: var(--color-primary);
   color: var(--color-on-primary);
-  font-size: 10px;
+  font-size: var(--type-caption-up-size);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;

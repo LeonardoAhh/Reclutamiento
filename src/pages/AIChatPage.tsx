@@ -249,7 +249,7 @@ export function AIChatPage() {
 
                   <button
                     type="button"
-                    className="ai-chat-submit-btn"
+                    className="btn-primary ai-chat-submit-btn"
                     onClick={() => void handleAnalyze()}
                     disabled={!file || isLoading}
                     aria-busy={isLoading}
@@ -325,7 +325,7 @@ export function AIChatPage() {
                             <span>Match</span>
                           </div>
                           <div className="ai-chat-score-roles">
-                            <h3>Roles recomendados</h3>
+                            <h2>Roles recomendados</h2>
                             <ul>
                               {message.analysisData.roles?.map((r: any, i: number) => (
                                 <li key={i}>
@@ -340,7 +340,7 @@ export function AIChatPage() {
                         <div className="ai-chat-analysis-grid">
                           {message.analysisData.strengths?.length > 0 && (
                             <div className="ai-chat-analysis-col">
-                              <h4 className="text-success">Fortalezas</h4>
+                              <h3 className="text-success">Fortalezas</h3>
                               <ul className="ai-chat-bullet-list">
                                 {message.analysisData.strengths.map((s: string, i: number) => (
                                   <li key={i}>{s}</li>
@@ -350,7 +350,7 @@ export function AIChatPage() {
                           )}
                           {message.analysisData.weaknesses?.length > 0 && (
                             <div className="ai-chat-analysis-col">
-                              <h4 className="text-warning">Brechas</h4>
+                              <h3 className="text-warning">Brechas</h3>
                               <ul className="ai-chat-bullet-list">
                                 {message.analysisData.weaknesses.map((w: string, i: number) => (
                                   <li key={i}>{w}</li>
@@ -363,7 +363,7 @@ export function AIChatPage() {
                         {message.analysisData.flags?.length > 0 &&
                          message.analysisData.flags[0] !== "Ninguna" && (
                           <div className="ai-chat-flags">
-                            <h4>Banderas Rojas</h4>
+                            <h3>Banderas Rojas</h3>
                             <ul>
                               {message.analysisData.flags.map((f: string, i: number) => (
                                 <li key={i}>{f}</li>
@@ -442,7 +442,7 @@ export function AIChatPage() {
             />
             <button
               type="submit"
-              className="ai-chat-send-btn"
+              className="btn-primary ai-chat-send-btn"
               disabled={!inputText.trim() || isLoading || !hasCompared}
               aria-label="Enviar mensaje"
             >

@@ -31,11 +31,7 @@ import {
   autoVacancyToRequest,
 } from "@/lib/autoVacancies";
 import { usePositions } from "@/lib/positions";
-import {
-  KpiGridSkeleton,
-  StatCardSkeleton,
-} from "@/components/ui/PageSkeletons";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import {
   calculatePositionCoverage,
   calculateDepartmentCoverage,
@@ -754,151 +750,15 @@ export function KpisPage() {
     else if (id === "stat-vac-ttf") setTtfHistoryModalOpen(true);
   }
 
-  if (loading) {
-    return (
-      <main className="kpis-page container" id="page-kpis">
-        <section className="kpis-page__hero">
-          <div />
-          {isDesktop && (
-            <div className="kpis-page__hero-actions">
-              <button type="button" className="btn-secondary" disabled>
-                Ocultar
-              </button>
-            </div>
-          )}
-        </section>
-
-        {isDesktop && (
-          <>
-            <section className="kpis-page__chart-section">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                  height: "100%",
-                  padding: "0 4px",
-                  marginBottom: 24,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Skeleton variant="text" width={280} height={32} />
-                  <div
-                    style={{ display: "flex", gap: 12, alignItems: "center" }}
-                  >
-                    <Skeleton width={100} height={24} radius={12} />
-                    <Skeleton width={50} height={24} radius={12} />
-                  </div>
-                </div>
-                <Skeleton width="100%" height={300} radius={12} />
-              </div>
-            </section>
-
-            <section
-              className="kpis-page__projection-section"
-              aria-hidden="true"
-            >
-              <div className="kpis-page__projection-card">
-                <header>
-                  <Skeleton variant="text" width={140} height={24} />
-                  <Skeleton variant="text" width={100} height={16} />
-                </header>
-                <div className="projection-metrics">
-                  <div className="projection-metric">
-                    <Skeleton
-                      variant="text"
-                      width={50}
-                      height={32}
-                      style={{ marginBottom: 4 }}
-                    />
-                    <Skeleton variant="text" width={120} height={16} />
-                  </div>
-                  <div className="projection-metric">
-                    <Skeleton
-                      variant="text"
-                      width={50}
-                      height={32}
-                      style={{ marginBottom: 4 }}
-                    />
-                    <Skeleton variant="text" width={120} height={16} />
-                  </div>
-                  <div className="projection-metric">
-                    <Skeleton
-                      variant="text"
-                      width={60}
-                      height={32}
-                      style={{ marginBottom: 4 }}
-                    />
-                    <Skeleton variant="text" width={120} height={16} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="kpis-page__projection-card projection-card--future">
-                <header>
-                  <Skeleton variant="text" width={160} height={24} />
-                  <Skeleton variant="text" width={110} height={16} />
-                </header>
-                <div className="projection-metrics">
-                  <div className="projection-metric">
-                    <Skeleton
-                      variant="text"
-                      width={40}
-                      height={32}
-                      style={{ marginBottom: 4 }}
-                    />
-                    <Skeleton variant="text" width={130} height={16} />
-                  </div>
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {isDesktop ? (
-          <KpiGridSkeleton count={cards.length} />
-        ) : (
-          <>
-            <nav
-              className="kpis-page__tabs"
-              aria-hidden="true"
-              style={{ opacity: 0.6, pointerEvents: "none" }}
-            >
-              {KPI_GROUPS.map((group) => (
-                <div
-                  key={group.id}
-                  className={`kpis-page__tab${
-                    activeGroup === group.id ? " kpis-page__tab--active" : ""
-                  }`}
-                >
-                  {group.label}
-                </div>
-              ))}
-            </nav>
-
-            <section className="kpis-page__m-grid" aria-hidden="true">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="kpis-page__m-card">
-                  <StatCardSkeleton />
-                </div>
-              ))}
-            </section>
-          </>
-        )}
-      </main>
-    );
-  }
-
   return (
-    <main className="kpis-page container" id="page-kpis">
+    <BoneyardSkeleton
+      name="resumen-page"
+      loading={loading}
+      loadingLabel="Cargando resumen…"
+    >
+      <main className="kpis-page container" id="page-kpis">
       <section className="kpis-page__hero">
-        <div />
+        <h1 className="kpis-page__title">Resumen</h1>
         {isDesktop && (
           <div className="kpis-page__hero-actions">
             <button
@@ -932,7 +792,7 @@ export function KpisPage() {
           >
             <div className="kpis-page__projection-card">
               <header>
-                <h3 className="projection-title">Estado Actual</h3>
+                <h2 className="projection-title">Estado Actual</h2>
                 <span className="projection-date">
                   Hoy, {formatProjectionDate(todayIso)}
                 </span>
@@ -979,9 +839,9 @@ export function KpisPage() {
               </div>
             </div>
 
-            <div className="kpis-page__projection-card projection-card--future">
+            <div className="kpis-page__projection-card">
               <header>
-                <h3 className="projection-title">Proyección</h3>
+                <h2 className="projection-title">Proyección</h2>
                 {projectionTotals.nextHireDate && (
                   <span className="projection-date">
                     Próx. Ingreso:{" "}
@@ -1258,6 +1118,7 @@ export function KpisPage() {
              faltan_documentos, feedback_pendiente). */
         candidates={candidates}
       />
-    </main>
+      </main>
+    </BoneyardSkeleton>
   );
 }

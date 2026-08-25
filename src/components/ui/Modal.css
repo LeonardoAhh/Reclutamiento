@@ -82,7 +82,7 @@
   padding: var(--spacing-xs);
   display: inline-flex;
   align-items: center;
-  color: var(--color-ink-faint);
+  color: var(--color-muted);
   border-radius: var(--rounded-sm);
   cursor: pointer;
   transition: color var(--transition-fast), background var(--transition-fast);

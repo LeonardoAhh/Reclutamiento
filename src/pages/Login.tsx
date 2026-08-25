@@ -228,6 +228,12 @@ export function Login() {
                   </label>
                 </div>
 
+                {error && (
+                  <p id={errorId} className="form-error" role="alert">
+                    {error}
+                  </p>
+                )}
+
                 <AnimatedSubmitButton
                   isSubmitting={submitting}
                   isSuccess={isSuccess}
@@ -237,7 +243,7 @@ export function Login() {
                   loadingText="Verificando..."
                   successText="¡Bienvenido!"
                   idleIcon={ArrowRightIconData}
-                  className="login__submit login__submit--full"
+                  className="btn-primary login__submit login__submit--full"
                   data-testid="login-submit-button"
                 />
               </form>

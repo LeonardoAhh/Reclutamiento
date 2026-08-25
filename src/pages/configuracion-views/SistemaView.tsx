@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { toast } from "@/lib/notify";
 import { Modal } from "@/components/ui/Modal";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { ActiveSessions } from "./components/ActiveSessions";
 import "./SistemaView.css";
 
@@ -42,32 +42,22 @@ export function SistemaView() {
     });
   };
 
-  if (authLoading || profileLoading) {
-    return (
-      <section className="config-page" aria-busy="true">
-        <Skeleton
-          variant="rect"
-          width="100%"
-          height="var(--skeleton-card-height)"
-          radius="var(--rounded-lg)"
-        />
-        <span className="sr-only" role="status">
-          Cargando configuración del sistema…
-        </span>
-      </section>
-    );
-  }
-
   if (!isAdmin) {
     return (
-      <section className="config-page">
-        <div className="sistema-permission-state" role="status">
-          <ShieldAlert aria-hidden="true" />
-          <p className="type-body-md text-muted">
-            Esta sección está disponible solo para administradores.
-          </p>
-        </div>
-      </section>
+      <BoneyardSkeleton
+        name="configuracion-sistema"
+        loading={authLoading || profileLoading}
+        loadingLabel="Cargando configuración del sistema…"
+      >
+        <section className="config-page">
+          <div className="sistema-permission-state" role="status">
+            <ShieldAlert aria-hidden="true" />
+            <p className="type-body-md text-muted">
+              Esta sección está disponible solo para administradores.
+            </p>
+          </div>
+        </section>
+      </BoneyardSkeleton>
     );
   }
 

@@ -17,7 +17,7 @@ import { Search as SearchData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { EmployeeResultCard } from './components/EmployeeResultCard';
 import {
   getEmployeeResultId,
@@ -193,30 +193,6 @@ export function BusquedaView() {
     return { nuevosIngresos, riesgoBaja };
   }, [employees, allReports, reportsFetched]);
 
-  if (authLoading || employeesLoading || bajasLoading) {
-    return (
-      <section className="busqueda-view config-page" aria-busy="true">
-        <div className="busqueda-skeleton" aria-hidden="true">
-          <Skeleton
-            variant="rect"
-            width="100%"
-            height="var(--touch-target-min)"
-            radius="var(--rounded-md)"
-          />
-          <Skeleton
-            variant="rect"
-            width="100%"
-            height="var(--skeleton-card-height)"
-            radius="var(--rounded-md)"
-          />
-        </div>
-        <span className="sr-only" role="status" aria-live="polite">
-          Cargando colaboradores…
-        </span>
-      </section>
-    );
-  }
-
   const handleClearSearch = () => {
     setSearchTerm('');
     searchInputRef.current?.focus();
@@ -246,7 +222,12 @@ export function BusquedaView() {
   const showHelperText = searchQuery.length === 1;
 
   return (
-    <section className="busqueda-view config-page" aria-labelledby="busqueda-title">
+    <BoneyardSkeleton
+      name="configuracion-busqueda"
+      loading={authLoading || employeesLoading || bajasLoading}
+      loadingLabel="Cargando colaboradores…"
+    >
+      <section className="busqueda-view config-page" aria-labelledby="busqueda-title">
       {employeesError && (
         <p className="config-search-error type-body-sm mt-sm" role="alert">
           No fue posible actualizar la lista de colaboradores. Se muestran los datos
@@ -273,14 +254,21 @@ export function BusquedaView() {
         >
           <div className="busqueda-hero__card-header">
             <span className="busqueda-hero__card-title">Riesgo No Renovación</span>
-            {reportsLoading ? (
-               <Skeleton variant="rect" width="24px" height="24px" radius="var(--rounded-sm)" />
-            ) : (
-               <span className="busqueda-hero__card-count">{metrics.riesgoBaja}</span>
-            )}
+            <span
+              className="busqueda-hero__card-count"
+              aria-busy={reportsLoading}
+              aria-live="polite"
+            >
+              {metrics.riesgoBaja}
+            </span>
           </div>
         </button>
       </section>
+      {reportsLoading && (
+        <span className="sr-only" role="status" aria-live="polite">
+          Actualizando riesgo de no renovación…
+        </span>
+      )}
 
       <section
         className="config-page__toolbar"
@@ -543,6 +531,7 @@ export function BusquedaView() {
           </div>
         )}
       </section>
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

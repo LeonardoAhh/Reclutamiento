@@ -106,7 +106,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  height: 32px;
+  height: var(--control-height-sm);
   padding: 0 var(--spacing-md);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
@@ -157,14 +157,14 @@
 }
 
 .bajas__filter select {
-  height: 36px;
+  height: var(--control-height);
   padding: 0 var(--spacing-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   color: var(--color-body-strong);
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-sm, 8px);
+  border-radius: var(--rounded-xs);
   appearance: none;
   cursor: pointer;
 }
@@ -251,7 +251,7 @@
   gap: var(--spacing-xs);
   align-items: end;
   height: 240px;
-  padding-top: var(--spacing-md);
+  padding-top: var(--spacing-xl);
 }
 
 .bajas__chart-col {
@@ -303,7 +303,7 @@
 .bajas__chart-bar-value {
   position: absolute;
   top: -18px;
-  font-size: 11px;
+  font-size: var(--type-caption-up-size);
   font-weight: 600;
   color: var(--color-body-strong);
   white-space: nowrap;
@@ -325,8 +325,8 @@
 }
 
 .bajas__chart-x-solo {
-  font-size: 11px;
-  color: var(--color-warning, #d4a017);
+  font-size: var(--type-caption-up-size);
+  color: var(--color-warning);
 }
 
 @media (max-width: 720px) {
@@ -365,52 +365,6 @@
   min-height: 0;
   max-height: 80vh;
   overflow: auto;
-}
-
-.bajas__row-action {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  height: var(--control-height);
-  padding: 0 var(--spacing-md);
-  font-size: var(--type-caption-sm-size);
-  font-family: var(--font-body);
-  font-weight: var(--type-button-weight);
-  background: var(--color-surface-soft);
-  color: var(--color-body-strong);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-full);
-  cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
-}
-
-.bajas__row-action:hover {
-  background: rgb(var(--color-success-rgb) / 0.12);
-  border-color: rgb(var(--color-success-rgb) / 0.4);
-  color: var(--color-success);
-}
-
-.bajas__row-action:focus-visible {
-  outline: 2px solid var(--color-focus, var(--color-success));
-  outline-offset: 2px;
-}
-
-/* Variante para generar requisición — usa el coral primary para diferenciarla
-   de la acción "marcar cubierta" (verde). */
-.bajas__row-action--req:hover {
-  background: rgb(var(--color-primary-rgb) / 0.12);
-  border-color: rgb(var(--color-primary-rgb) / 0.4);
-  color: var(--color-primary);
-}
-
-.bajas__row-action--req:focus-visible {
-  outline-color: var(--color-primary);
-}
-
-.bajas__row-action-label {
-  font-family: var(--font-code);
-  font-size: var(--type-caption-md-size);
-  letter-spacing: var(--tracking-wide);
 }
 
 .bajas__grid-list {

@@ -8,7 +8,7 @@
   align-items: center;
   gap: var(--spacing-xxs);
   padding: var(--spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   background: var(--color-warning-tint);
   color: var(--color-accent-amber);
   border: 1px solid currentColor;

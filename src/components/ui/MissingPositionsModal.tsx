@@ -386,7 +386,7 @@ export function MissingPositionsModal({
                         </td>
                         <td className="missing-positions-modal__num-col">
                           {r.netStarlite > 0 ? (
-                            <span className="missing-positions-modal__count-badge" style={{ color: '#d97706', fontWeight: 600 }}>
+                            <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--starlite">
                               {r.netStarlite}
                             </span>
                           ) : (

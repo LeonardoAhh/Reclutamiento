@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Share2 } from "lucide-react";
+import { LoaderCircle, Share2 } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -187,7 +187,13 @@ export function CandidateAccessCard({
             <img src={previewUrl} alt={previewAlt} />
           ) : (
             <div className="candidate-access-card__placeholder" role="status">
-              {isGenerating && <div className="candidate-access-card__skeleton" aria-hidden="true" />}
+              {isGenerating && (
+                <LoaderCircle
+                  className="candidate-access-card__spinner"
+                  size="var(--icon-size-lg)"
+                  aria-hidden="true"
+                />
+              )}
               <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
             </div>
           )}

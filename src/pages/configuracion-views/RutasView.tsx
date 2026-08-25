@@ -25,21 +25,9 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
 import { supabase } from '@/lib/supabase';
 import { Modal } from "@/components/ui/Modal";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
+import { isBoneyardBuild } from "@/lib/boneyard";
 import "./Rutas.css";
-
-/*Subcomponents*/
-
-function SkeletonCard() {
-  return (
-    <div className="ruta-skeleton" aria-hidden="true">
-      <div className="ruta-skeleton__icon skeleton-pulse" />
-      <div className="ruta-skeleton__lines">
-        <div className="ruta-skeleton__line ruta-skeleton__line--title skeleton-pulse" />
-        <div className="ruta-skeleton__line ruta-skeleton__line--sub skeleton-pulse" />
-      </div>
-    </div>
-  );
-}
 
 interface RutaCardProps {
   ruta: RutaAgrupada;
@@ -413,7 +401,12 @@ export function RutasView() {
   const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>('capacidad');
+  const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>(() =>
+    isBoneyardBuild() &&
+    new URLSearchParams(window.location.search).get('view') === 'incidencias'
+      ? 'incidencias'
+      : 'capacidad',
+  );
   
   // States for Security PIN Modal
   const [pinModalOpen, setPinModalOpen] = useState(false);
@@ -635,19 +628,17 @@ export function RutasView() {
 
       <div className="rutas-layout" data-mobile-view={mobileView}>
         {/*Left: route list*/}
-        <section
-          ref={listRef}
-          className="rutas-list"
-          aria-label="Lista de rutas"
-          onKeyDown={handleListKeyDown}
+        <BoneyardSkeleton
+          name="configuracion-rutas"
+          loading={loading}
+          loadingLabel="Cargando rutas…"
         >
-          {loading && (
-            <>
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </>
-          )}
+          <section
+            ref={listRef}
+            className="rutas-list"
+            aria-label="Lista de rutas"
+            onKeyDown={handleListKeyDown}
+          >
 
           {errorMsg && (
             <div className="rutas-error" role="alert">
@@ -678,7 +669,8 @@ export function RutasView() {
                 }
               />
             ))}
-        </section>
+          </section>
+        </BoneyardSkeleton>
 
         {/* Right: detail / placeholder */}
         <section
@@ -690,7 +682,7 @@ export function RutasView() {
           {selectedRuta && (
             <button
               type="button"
-              className="rutas-back-btn"
+              className="btn-text rutas-back-btn"
               onClick={handleBack}
               aria-label="Volver a la lista de rutas"
             >

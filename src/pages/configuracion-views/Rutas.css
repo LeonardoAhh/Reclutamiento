@@ -102,28 +102,8 @@
 @media (max-width: 768px) {
   .rutas-back-btn {
     display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs);
     min-height: var(--touch-target-min);
     margin-bottom: var(--spacing-md);
-    background: none;
-    border: none;
-    padding-inline: var(--spacing-xs);
-    font-family: var(--font-body);
-    font-size: var(--type-body-sm-size);
-    color: var(--color-primary);
-    cursor: pointer;
-    transition: color var(--transition-fast);
-  }
-
-  .rutas-back-btn:hover {
-    color: var(--color-primary-active);
-  }
-
-  .rutas-back-btn:focus-visible {
-    outline: none;
-    box-shadow: var(--shadow-focus);
-    border-radius: var(--rounded-sm);
   }
 }
 
@@ -158,61 +138,6 @@
   border-radius: var(--rounded-md);
   border: 1px solid var(--color-error);
   background: var(--color-error-tint);
-}
-
-/* ─── Skeleton loading ─── */
-
-.ruta-skeleton {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-}
-
-.ruta-skeleton__icon {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--rounded-md);
-  flex-shrink: 0;
-  background: var(--color-surface-cream-strong);
-}
-
-.ruta-skeleton__lines {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ruta-skeleton__line {
-  border-radius: var(--rounded-xs);
-  background: var(--color-surface-cream-strong);
-}
-
-.ruta-skeleton__line--title {
-  height: 13px;
-  width: 65%;
-}
-
-.ruta-skeleton__line--sub {
-  height: 11px;
-  width: 42%;
-}
-
-@keyframes skeleton-shimmer {
-  0%,
-  100% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.skeleton-pulse {
-  animation: skeleton-shimmer 1.5s ease-in-out infinite;
 }
 
 /* ─── Route card ─── */
@@ -268,8 +193,8 @@
 }
 
 .ruta-card__icon {
-  width: 36px;
-  height: 36px;
+  width: var(--control-height);
+  height: var(--control-height);
   border-radius: var(--rounded-md);
   display: flex;
   align-items: center;
@@ -935,10 +860,6 @@
     transform: none;
   }
 
-  .skeleton-pulse {
-    animation: none;
-    opacity: 0.6;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════

@@ -501,10 +501,6 @@
   margin-top: var(--spacing-xxs);
 }
 
-.empleados__rail-skeleton {
-  margin: 2px 0;
-}
-
 .empleados__filters {
   display: flex;
   gap: var(--spacing-md);

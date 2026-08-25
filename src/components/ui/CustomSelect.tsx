@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckCircle2 } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide';
@@ -19,6 +19,7 @@ interface CustomSelectProps {
   className?: string;
   disabled?: boolean;
   'aria-label'?: string;
+  'aria-describedby'?: string;
   customTrigger?: React.ReactNode;
   searchable?: boolean;
 }
@@ -44,6 +45,7 @@ export function CustomSelect({
   className = '',
   disabled = false,
   'aria-label': ariaLabel,
+  'aria-describedby': ariaDescribedBy,
   customTrigger,
   searchable = false,
 }: CustomSelectProps) {
@@ -61,6 +63,8 @@ export function CustomSelect({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const generatedListboxId = useId();
+  const listboxId = `${id ?? generatedListboxId}-listbox`;
 
   const selectedOption = options.find((o) => o.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
@@ -152,8 +156,7 @@ export function CustomSelect({
   useEffect(() => {
     if (isOpen && highlightedIndex >= 0 && listRef.current) {
       const list = listRef.current;
-      // +1 si hay input de búsqueda (porque el input ocupa el primer hijo de la lista)
-      const item = list.children[searchable ? highlightedIndex + 1 : highlightedIndex] as HTMLElement;
+      const item = list.children[highlightedIndex] as HTMLElement;
       if (item && item.tagName === 'BUTTON') {
         const itemTop = item.offsetTop;
         const itemBottom = itemTop + item.offsetHeight;
@@ -225,6 +228,11 @@ export function CustomSelect({
     }
   };
 
+  const activeDescendant =
+    isOpen && highlightedIndex >= 0 && highlightedIndex < visibleOptions.length
+      ? `${listboxId}-option-${highlightedIndex}`
+      : undefined;
+
   return (
     <div className={`custom-select-container ${className}`} ref={rootRef} onKeyDown={handleKeyDown}>
       <button
@@ -235,8 +243,12 @@ export function CustomSelect({
         onClick={() => setIsOpen((prev) => !prev)}
         disabled={disabled}
         aria-label={ariaLabel || placeholder}
+        aria-describedby={ariaDescribedBy}
+        role="combobox"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-controls={listboxId}
+        aria-activedescendant={activeDescendant}
       >
         {customTrigger ? (
           customTrigger
@@ -259,41 +271,53 @@ export function CustomSelect({
           <div
             ref={dropdownRef}
             className={`custom-select-dropdown custom-select-dropdown--portal${pos.up ? ' custom-select-dropdown--up' : ''}`}
-            role="listbox"
             style={{
               left: pos.left,
               width: pos.width,
               ...(pos.up ? { bottom: pos.bottom } : { top: pos.top }),
             }}
           >
-            <div className="custom-select-list" ref={listRef}>
-              {searchable && (
-                <div className="custom-select-search">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar..."
-                    className="custom-select-search-input"
-                    aria-label="Buscar opciones"
-                    onClick={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => {
-                      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
-                        e.preventDefault(); // Evita que el cursor se mueva en el input
-                      }
-                    }}
-                    autoFocus
-                  />
-                </div>
-              )}
+            {searchable && (
+              <div className="custom-select-search">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar..."
+                  className="custom-select-search-input"
+                  aria-label="Buscar opciones"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="true"
+                  aria-controls={listboxId}
+                  aria-activedescendant={activeDescendant}
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                      e.preventDefault(); // Evita que el cursor se mueva en el input
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+            )}
+
+            <div
+              className="custom-select-list"
+              ref={listRef}
+              id={listboxId}
+              role="listbox"
+              aria-label={ariaLabel || placeholder}
+            >
 
               {visibleOptions.length === 0 && searchable ? (
                 <div className="custom-select-no-results">No se encontraron resultados</div>
               ) : (
                 visibleOptions.map((opt, index) => (
                   <button
-                    key={`${opt.value}-${index}`}
+                    key={`${opt.value}-${opt.label}`}
+                    id={`${listboxId}-option-${index}`}
                     type="button"
                     className={`custom-select-option ${value === opt.value ? 'is-selected' : ''} ${highlightedIndex === index ? 'is-highlighted' : ''}`}
                     onClick={() => handleSelect(opt.value)}

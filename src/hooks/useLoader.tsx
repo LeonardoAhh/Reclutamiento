@@ -29,8 +29,8 @@ const LoaderContext = createContext<LoaderApi | null>(null);
 /**
  * Provider global del splash de carga. Renderiza un único <AppLoader> vía
  * portal en <body>, con entrada/salida coordinada por AnimatePresence. Es
- * independiente del Skeleton: el Skeleton vive dentro de cada página mientras
- * carga su data; este overlay cubre transiciones de sesión y navegación.
+ * independiente de Boneyard: cada vista gestiona su carga de datos y este
+ * overlay cubre únicamente transiciones de sesión y navegación.
  */
 export function LoaderProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<LoaderOptions | null>(null);

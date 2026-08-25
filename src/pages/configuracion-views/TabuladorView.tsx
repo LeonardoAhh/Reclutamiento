@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { CheckCircle2, Wallet } from 'lucide-react';
 import { Search as SearchData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { normalizeSearchText } from './busqueda-helpers';
 import { HighlightText } from './HighlightText';
@@ -131,20 +131,13 @@ export function TabuladorView() {
     requestAnimationFrame(() => document.getElementById(`config-tab-${nextId}`)?.focus());
   };
 
-  if (loading) {
-    return (
-      <section className="tabulador-view config-page" aria-busy="true">
-        <div className="tabulador-skeleton" aria-hidden="true">
-          <Skeleton variant="rect" width="100%" height="48px" radius="8px" />
-          <Skeleton variant="rect" width="100%" height="200px" radius="8px" />
-        </div>
-        <span className="sr-only" role="status">Cargando tabulador de salarios…</span>
-      </section>
-    );
-  }
-
   return (
-    <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
+    <BoneyardSkeleton
+      name="configuracion-tabulador"
+      loading={loading}
+      loadingLabel="Cargando tabulador de salarios…"
+    >
+      <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
       <header className="config-page__header tabulador-header">
         <div className="config-tabs" role="tablist" aria-label="Tipo de tabulador">
           {TAB_OPTIONS.map(({ id, label }) => {
@@ -343,6 +336,7 @@ export function TabuladorView() {
           </section>
         </>
       )}
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

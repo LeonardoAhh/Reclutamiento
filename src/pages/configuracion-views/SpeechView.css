@@ -17,13 +17,6 @@
   color: var(--color-accent-orange-deep);
 }
 
-/* Skeleton */
-.speech-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
 /* ── Navegación de categorías (Segmented / Pills) ────────────────────────── */
 
 .speech-category-nav {
@@ -233,8 +226,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--icon-size-xxl);
+  height: var(--icon-size-xxl);
   background: transparent;
   border: none;
   border-radius: var(--rounded-md);
@@ -281,7 +274,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  min-height: var(--skeleton-card-height);
+  min-height: var(--config-panel-min-height);
 }
 
 .speech-empty p {
@@ -318,8 +311,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: var(--icon-size-xl);
+  height: var(--icon-size-xl);
   background: transparent;
   border: none;
   border-radius: var(--rounded-sm);
@@ -417,8 +410,8 @@
 }
 
 .speech-image-action {
-  background: rgba(0, 0, 0, 0.65);
-  color: white;
+  background: color-mix(in srgb, var(--color-surface-dark) 65%, transparent);
+  color: var(--color-on-dark);
   border-radius: var(--rounded-md);
   padding: 6px;
   display: flex;
@@ -431,7 +424,7 @@
 }
 
 .speech-image-action:hover {
-  background: rgba(0, 0, 0, 0.85);
+  background: color-mix(in srgb, var(--color-surface-dark) 85%, transparent);
   transform: scale(1.05);
 }
 
@@ -478,9 +471,9 @@
   right: 2px;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: var(--rounded-md);
   background: var(--color-error);
-  color: white;
+  color: var(--color-on-primary);
   border: none;
   display: flex;
   align-items: center;

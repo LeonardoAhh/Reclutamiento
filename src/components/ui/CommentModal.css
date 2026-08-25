@@ -61,7 +61,7 @@
 
 .comment-empty {
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
   font-style: italic;
 }
 

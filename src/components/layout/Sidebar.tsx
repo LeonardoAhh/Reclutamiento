@@ -48,6 +48,9 @@ export function Sidebar({
   const [modalOpen, setModalOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const userMenuPopoverRef = useRef<HTMLDivElement | null>(null);
+  const userMenuInitialFocusRef = useRef<"first" | "last">("first");
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const loader = useLoader();
   const { version } = useSystemVersion();
@@ -61,9 +64,21 @@ export function Sidebar({
   }, [location.pathname, onCloseMobileMenu]);
   if (!username) return null;
 
-  // Close popover when clicking outside
+  // Mantener el patrón de teclado del menú y cerrarlo al salir de él.
   useEffect(() => {
     if (!menuOpen) return;
+    const getMenuItems = () =>
+      userMenuPopoverRef.current?.querySelectorAll<HTMLButtonElement>(
+        "button:not([disabled])",
+      ) ?? [];
+    const focusFrame = requestAnimationFrame(() => {
+      const items = getMenuItems();
+      const target =
+        userMenuInitialFocusRef.current === "last"
+          ? items[items.length - 1]
+          : items[0];
+      target?.focus();
+    });
     const onPointerDown = (e: PointerEvent) => {
       if (
         userMenuRef.current &&
@@ -72,8 +87,47 @@ export function Sidebar({
         setMenuOpen(false);
       }
     };
+    const onFocusIn = (e: FocusEvent) => {
+      if (!userMenuRef.current?.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        setMenuOpen(false);
+        triggerRef.current?.focus();
+        return;
+      }
+
+      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+      const items = Array.from(getMenuItems());
+      if (items.length === 0 || !userMenuPopoverRef.current?.contains(document.activeElement)) {
+        return;
+      }
+
+      e.preventDefault();
+      const currentIndex = items.indexOf(document.activeElement as HTMLButtonElement);
+      if (e.key === "Home") {
+        items[0].focus();
+      } else if (e.key === "End") {
+        items[items.length - 1].focus();
+      } else {
+        const direction = e.key === "ArrowDown" ? 1 : -1;
+        const nextIndex = (currentIndex + direction + items.length) % items.length;
+        items[nextIndex].focus();
+      }
+    };
     document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
+    document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [menuOpen]);
 
   const handleSignOut = useCallback(async () => {
@@ -171,10 +225,21 @@ export function Sidebar({
       <div className="sidebar__footer" ref={userMenuRef}>
         <div className="sidebar__user">
           <button
+            ref={triggerRef}
             id="sidebar-user-menu-trigger"
             type="button"
             className="sidebar__user-trigger"
-            onClick={() => setMenuOpen((s) => !s)}
+            onClick={() => {
+              userMenuInitialFocusRef.current = "first";
+              setMenuOpen((s) => !s);
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+              event.preventDefault();
+              userMenuInitialFocusRef.current =
+                event.key === "ArrowUp" ? "last" : "first";
+              setMenuOpen(true);
+            }}
             aria-expanded={menuOpen}
             aria-controls={menuOpen ? "sidebar-user-menu-popover" : undefined}
             aria-haspopup="menu"
@@ -191,6 +256,7 @@ export function Sidebar({
           <AnimatePresence>
             {menuOpen && (
               <motion.div
+                ref={userMenuPopoverRef}
                 id="sidebar-user-menu-popover"
                 role="menu"
                 aria-labelledby="sidebar-user-menu-trigger"

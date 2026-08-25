@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { Tooltip } from './Tooltip';
 import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, History, Pencil, Trash2 } from 'lucide-react';
 import type {
@@ -118,6 +118,7 @@ export function VacancySheet({
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const errorId = useId();
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
@@ -266,6 +267,7 @@ export function VacancySheet({
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
           options={areas.map((a) => ({ value: a, label: a }))}
           placeholder="Seleccione área…"
+          aria-describedby={errorMsg ? errorId : undefined}
         />
       </div>
       <div className="form-group">
@@ -288,6 +290,7 @@ export function VacancySheet({
           options={puestosForSection.map((p) => ({ value: p, label: p }))}
           placeholder="Seleccione puesto…"
           disabled={!form.seccion}
+          aria-describedby={errorMsg ? errorId : undefined}
         />
       </div>
     </>
@@ -491,7 +494,7 @@ export function VacancySheet({
     ) : null;
 
   const errorNotice = errorMsg ? (
-    <p className="form-error" role="alert">
+    <p id={errorId} className="form-error" role="alert">
       {errorMsg}
     </p>
   ) : null;

@@ -20,11 +20,14 @@ export function BajaCoberturaBadge({ baja }: { baja: BajaWithCobertura }) {
   }
   if (baja.cubiertaPor === 'manual') {
     return (
-      <span title={baja.cubierta_nota ?? undefined}>
+      <span>
         <Badge variant="success">
           <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
           {baja.coberturaDias != null ? ` · ${baja.coberturaDias}d` : ''}
         </Badge>
+        {baja.cubierta_nota && (
+          <span className="sr-only">Nota de cobertura: {baja.cubierta_nota}</span>
+        )}
       </span>
     );
   }

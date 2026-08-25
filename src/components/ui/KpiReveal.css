@@ -51,8 +51,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: var(--icon-size-xl);
+  height: var(--icon-size-xl);
   color: var(--color-on-dark);
   background: var(--color-surface-contrast);
   border-radius: var(--rounded-full);

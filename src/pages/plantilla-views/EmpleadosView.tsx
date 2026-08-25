@@ -8,8 +8,7 @@ import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { SkeletonTable, SkeletonCardList } from '@/components/ui/PageSkeletons';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -235,40 +234,13 @@ export function EmpleadosView() {
     [groups, selectedArea]
   );
 
-  if (loading && employees.length === 0) {
-    return (
-      <section className="empleados config-page" id="page-empleados">
-        <section className="empleados__hero">
-          <div />
-          <Skeleton width="100%" height={40} radius="var(--rounded-md)" />
-        </section>
-        {isDesktop ? (
-          <div className="empleados__layout">
-            <nav className="empleados__rail" aria-hidden="true">
-              <div className="empleados__rail-list">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    height={34}
-                    radius="var(--rounded-md)"
-                    className="empleados__rail-skeleton"
-                  />
-                ))}
-              </div>
-            </nav>
-            <section className="empleados__detail">
-              <SkeletonTable rows={8} columns={['18%', '40%', '30%', '10%']} />
-            </section>
-          </div>
-        ) : (
-          <SkeletonCardList items={6} />
-        )}
-      </section>
-    );
-  }
-
   return (
-    <section className="empleados config-page" id="page-empleados">
+    <BoneyardSkeleton
+      name="plantilla-empleados"
+      loading={loading && employees.length === 0}
+      loadingLabel="Cargando empleados…"
+    >
+      <section className="empleados config-page" id="page-empleados">
       <section className="empleados__hero">
         <div />
         <div className="empleados__filters">
@@ -464,6 +436,7 @@ export function EmpleadosView() {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDeleteEmployee}
       />
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

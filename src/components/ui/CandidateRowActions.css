@@ -9,8 +9,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   color: var(--color-muted);
   background: transparent;
   border: 1px solid transparent;
@@ -54,7 +54,7 @@
 }
 
 .candidate-row-actions__info-label {
-  font-size: 10px;
+  font-size: var(--type-caption-up-size);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);

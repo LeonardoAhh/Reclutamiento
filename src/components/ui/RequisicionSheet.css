@@ -437,8 +437,8 @@
 
   html,
   body {
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--color-document-paper) !important;
+    color: var(--color-document-ink) !important;
   }
 
   body>* {
@@ -464,8 +464,8 @@
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 8mm 12mm !important;
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--color-document-paper) !important;
+    color: var(--color-document-ink) !important;
     gap: var(--spacing-sm);
     /* Cada hoja ocupa una página propia; salto duro entre hojas. */
     page-break-after: always;
@@ -474,7 +474,7 @@
 
   /* Forzar todo el texto a negro en impresión */
   #requisicion-print-root * {
-    color: #000 !important;
+    color: var(--color-document-ink) !important;
   }
 
   /* La última hoja no necesita salto extra (evita hoja en blanco final). */
@@ -499,14 +499,14 @@
   #requisicion-print-root .requisicion-doc__field--blank .requisicion-doc__field-blank,
   #requisicion-print-root .requisicion-doc__sig-line,
   #requisicion-print-root .requisicion-doc__checkbox-box {
-    border-color: #000 !important;
+    border-color: var(--color-document-ink) !important;
   }
 
   /* Leyenda: ÚNICA excepción que mantiene color gris */
   #requisicion-print-root .requisicion-doc__leyenda {
-    color: #555 !important;
+    color: var(--color-document-muted) !important;
     opacity: 1 !important;
-    border-left-color: #999 !important;
+    border-left-color: var(--color-document-hairline) !important;
   }
 
   /* Pide a la impresora que respete fondos/colores definidos. */

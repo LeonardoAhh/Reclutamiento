@@ -52,7 +52,7 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
             </button>
           )}
 
-          {pageTitle && <h1 className="app-header__page-title">{pageTitle}</h1>}
+
         </div>
 
         <div className="app-header__spacer" />

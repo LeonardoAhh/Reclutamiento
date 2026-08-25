@@ -12,7 +12,7 @@
 
 import './KpiHeroChart.css';
 import { useMemo, useId } from 'react';
-import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { localTodayIso } from '@/lib/dates';
 import {
@@ -22,7 +22,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend,
   Line,
   ComposedChart,
   type TooltipProps,
@@ -61,15 +60,10 @@ const PALETTE = {
   red: 'var(--color-error)',
   amber: 'var(--color-accent-amber)',
   ink: 'var(--color-ink)',
-  alertFill: 'var(--color-vacancy-tint)',
   grid: 'var(--color-hairline)',
   axis: 'var(--color-muted)',
-  border: 'var(--color-hairline-strong)',
-  surface: 'var(--color-canvas)',
   surfaceCard: 'var(--color-surface-card)',
   surfaceSoft: 'var(--color-surface-soft)',
-  textPrimary: 'var(--color-ink)',
-  textMuted: 'var(--color-muted)',
 };
 
 // ─────────────────────────────────────────────
@@ -93,30 +87,9 @@ interface CustomTooltipInternalProps extends TooltipProps<number, string> {
 function CustomTooltip({ active, payload, label, presentation }: CustomTooltipInternalProps) {
   if (!active || !payload?.length) return null;
 
-  const baseFontSize = presentation ? 16 : 13;
-
   return (
-    <div
-      role="tooltip"
-      style={{
-        backgroundColor: PALETTE.surfaceCard,
-        border: `1px solid ${PALETTE.border}`,
-        borderRadius: 'var(--rounded-lg)',
-        padding: presentation ? '14px 18px' : '10px 14px',
-        fontFamily: 'var(--font-body)',
-        minWidth: presentation ? 200 : 170,
-      }}
-    >
-      <p
-        style={{
-          margin: '0 0 8px',
-          fontSize: presentation ? 15 : 12,
-          fontWeight: 600,
-          color: PALETTE.textPrimary,
-          letterSpacing: 'var(--type-caption-up-tracking)',
-          textTransform: 'uppercase',
-        }}
-      >
+    <div role="tooltip" className={`kpi-hero-tooltip${presentation ? ' kpi-hero-tooltip--presentation' : ''}`}>
+      <p className="kpi-hero-tooltip__title">
         {label}
       </p>
       {payload.map((entry) => {
@@ -128,103 +101,19 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
         return (
           <p
             key={entry.dataKey}
-            style={{
-              margin: '5px 0 0',
-              fontSize: baseFontSize,
-              color: PALETTE.textMuted,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              fontWeight: 400,
-            }}
+            className="kpi-hero-tooltip__row"
           >
             <span
               aria-hidden="true"
-              style={{
-                display: 'inline-block',
-                width: isPercent ? 14 : 10,
-                height: isPercent ? 3 : 10,
-                borderRadius: isPercent ? 2 : 3,
-                backgroundColor: entry.color,
-                flexShrink: 0,
-              }}
+              className={`kpi-hero-series-marker${isPercent ? ' kpi-hero-series-marker--line' : ''}`}
+              style={{ backgroundColor: entry.color }}
             />
-            <span style={{ color: PALETTE.textMuted }}>{entry.name}:</span>{' '}
-            <strong style={{ color: PALETTE.textPrimary, fontWeight: 500 }}>{valor}</strong>
+            <span>{entry.name}:</span>{' '}
+            <strong>{valor}</strong>
           </p>
         );
       })}
     </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// Leyenda personalizada
-// ─────────────────────────────────────────────
-
-interface LegendPayloadItem {
-  value: string;
-  color: string;
-  dataKey?: string;
-}
-
-interface CustomLegendProps {
-  payload?: LegendPayloadItem[];
-  presentation?: boolean;
-}
-
-function CustomLegend({ payload, presentation }: CustomLegendProps) {
-  if (!payload?.length) return null;
-
-  const fontSize = presentation ? 15 : 13;
-
-  return (
-    <ul
-      aria-label="Leyenda de la gráfica"
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: presentation ? '8px 28px' : '6px 20px',
-        listStyle: 'none',
-        margin: presentation ? '0 0 20px' : '0 0 12px',
-        padding: 0,
-        justifyContent: 'flex-start',
-      }}
-    >
-      {payload.map((entry) => {
-        const isLine = entry.dataKey === 'cobertura';
-        return (
-          <li
-            key={entry.dataKey ?? entry.value}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 7,
-              fontSize,
-              fontWeight: 400,
-              color: PALETTE.textMuted,
-              padding: presentation ? '5px 14px' : '4px 10px',
-              background: PALETTE.surfaceSoft,
-              borderRadius: 'var(--rounded-pill)',
-              border: `1px solid ${PALETTE.border}`,
-            }}
-          >
-            <span
-              aria-hidden="true"
-              style={{
-                display: 'inline-block',
-                width: isLine ? 16 : 10,
-                height: isLine ? 3 : 10,
-                borderRadius: isLine ? 2 : 3,
-                backgroundColor: entry.color,
-                flexShrink: 0,
-              }}
-            />
-            {entry.value}
-          </li>
-        );
-      })}
-    </ul>
   );
 }
 
@@ -279,85 +168,28 @@ function SafeLineDot({
 
 interface DayCardProps {
   data: DailyKpiData;
-  presentation: boolean;
-  expanded?: boolean;
 }
 
-function DayCard({ data, presentation, expanded = false }: DayCardProps) {
+function DayCard({ data }: DayCardProps) {
   const isCritical = data.cobertura < 90;
   const hasAlta = data.vacantesPlantilla > 10 || data.vacantesBackup > 12;
-  const numFontSize = presentation ? 18 : expanded ? 24 : 14;
-  const padding = presentation ? '12px 10px' : expanded ? '14px 16px' : '6px 4px';
 
   return (
-    <div
-      style={{
-        background: isCritical ? PALETTE.alertFill : PALETTE.surfaceCard,
-        border: `1px solid ${isCritical ? PALETTE.red : PALETTE.border}`,
-        borderRadius: 'var(--rounded-lg)',
-        padding,
-        textAlign: 'center',
-        transition: 'border-color var(--transition-fast)',
-        minWidth: 0,
-        overflow: 'hidden',
-      }}
-    >
+    <div className={`kpi-hero-day-card${isCritical ? ' kpi-hero-day-card--critical' : ''}`}>
       {/* Día */}
-      <p
-        style={{
-          fontSize: presentation ? 13 : expanded ? 12 : 9,
-          fontWeight: 600,
-          color: PALETTE.textMuted,
-          margin: '0 0 4px',
-          textTransform: 'uppercase',
-          letterSpacing: 'var(--type-caption-up-tracking)',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
+      <p className="kpi-hero-day-card__day">
         {data.day}
       </p>
 
       {/* % cobertura */}
-      <p
-        style={{
-          fontSize: numFontSize,
-          fontWeight: 500,
-          margin: '0 0 4px',
-          color: isCritical ? PALETTE.red : PALETTE.ink,
-          lineHeight: 1,
-          whiteSpace: 'nowrap',
-        }}
-      >
+      <p className="kpi-hero-day-card__coverage">
         {data.cobertura.toFixed(1)}%
       </p>
 
-      {/* ✅ Vacantes: whiteSpace nowrap + textOverflow ellipsis, SIN wordBreak */}
-      <p
-        style={{
-          fontSize: presentation ? 13 : expanded ? 12 : 9,
-          margin: '0 0 1px',
-          fontWeight: 400,
-          color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
+      <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
         {data.vacantesPlantilla}P
       </p>
-      <p
-        style={{
-          fontSize: presentation ? 13 : expanded ? 12 : 9,
-          margin: 0,
-          fontWeight: 400,
-          color: hasAlta ? PALETTE.amber : PALETTE.textMuted,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
+      <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
         +{data.vacantesBackup}B
       </p>
     </div>
@@ -383,11 +215,6 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
   const avgCobertura = data.reduce((s, d) => s + d.cobertura, 0) / data.length;
   const minCobertura = Math.min(...data.map((d) => d.cobertura));
   const isCriticalWeek = minCobertura < 90;
-
-  const labelFontSize = presentation ? 12 : 11;
-  const numFontSize = presentation ? 30 : 26;
-  const headerFontSize = presentation ? 26 : 18;
-  const subFontSize = presentation ? 14 : 11;
 
   return (
     <div className="kpi-hero-header">
@@ -439,35 +266,12 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
 
         {isCriticalWeek && (
           <>
-            <div
-              style={{
-                width: 1,
-                height: presentation ? 48 : 36,
-                background: PALETTE.border,
-                alignSelf: 'center',
-              }}
-            />
-            <div style={{ textAlign: 'right' }}>
-              <p
-                style={{
-                  fontSize: labelFontSize,
-                  color: PALETTE.red,
-                  margin: '0 0 2px',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--type-caption-up-tracking)',
-                  fontWeight: 600,
-                }}
-              >
+            <div className={`kpi-hero-critical-divider${presentation ? ' kpi-hero-critical-divider--presentation' : ''}`} />
+            <div className={`kpi-hero-critical${presentation ? ' kpi-hero-critical--presentation' : ''}`}>
+              <p className="kpi-hero-critical__label">
                 Mín. cobertura
               </p>
-              <p
-                style={{
-                  fontSize: numFontSize,
-                  fontWeight: 400,
-                  margin: 0,
-                  color: PALETTE.red,
-                }}
-              >
+              <p className="kpi-hero-critical__value">
                 {minCobertura.toFixed(1)}%
               </p>
             </div>
@@ -484,24 +288,9 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
 
 function ChartEmpty() {
   return (
-    <div
-      role="img"
-      aria-label="Sin datos disponibles"
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 10,
-        color: PALETTE.textMuted,
-        fontSize: 14,
-        fontWeight: 400,
-      }}
-    >
+    <div role="img" aria-label="Sin datos disponibles" className="kpi-hero-empty">
       <svg
-        width={32}
-        height={32}
+        className="kpi-hero-empty__icon"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -593,20 +382,7 @@ export function KpiHeroChart({
     <figure
       aria-label={ariaLabel}
       aria-describedby={descId}
-      style={{
-        width: '100%',
-        margin: 'var(--spacing-lg) 0',
-        display: 'block',
-        cursor: onClick ? 'pointer' : 'default',
-        position: 'relative',
-        background: PALETTE.surface,
-        borderRadius: 'var(--rounded-lg)',
-        border: `1px solid ${PALETTE.border}`,
-        padding: presentation ? '28px 32px 24px' : '16px 12px 14px',
-        boxSizing: 'border-box',
-        fontFamily: 'var(--font-body)',
-        overflow: 'hidden',
-      }}
+      className={`kpi-hero-chart${presentation ? ' kpi-hero-chart--presentation' : ''}${onClick ? ' kpi-hero-chart--interactive' : ''}`}
       onClick={onClick}
       role={onClick ? 'button' : 'img'}
       tabIndex={onClick ? 0 : undefined}
@@ -623,14 +399,7 @@ export function KpiHeroChart({
     >
       <figcaption
         id={descId}
-        style={{
-          position: 'absolute',
-          width: 1,
-          height: 1,
-          overflow: 'hidden',
-          clip: 'rect(0 0 0 0)',
-          whiteSpace: 'nowrap',
-        }}
+        className="kpi-hero-sr-only"
       >
         {ariaLabel}.{' '}
         {isEmpty
@@ -653,14 +422,7 @@ export function KpiHeroChart({
             weekNumber={weekNumber}
           />
 
-          <div
-            style={{
-              background: PALETTE.surfaceCard,
-              borderRadius: 'var(--rounded-lg)',
-              border: `1px solid ${PALETTE.border}`,
-              padding: presentation ? '20px 16px 12px' : '8px 4px 6px',
-            }}
-          >
+          <div className={`kpi-hero-plot${presentation ? ' kpi-hero-plot--presentation' : ''}`}>
             <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
               <ComposedChart
                 data={chartData}
@@ -729,8 +491,6 @@ export function KpiHeroChart({
                   }}
                 />
 
-                <Legend content={() => null} />
-
                 <Bar
                   yAxisId="left"
                   dataKey="vacantesPlantilla"
@@ -781,39 +541,17 @@ export function KpiHeroChart({
             </ResponsiveContainer>
           </div>
           {presentation && (
-                      <div
-                        style={{
-                          display: 'grid',
-                          gridTemplateColumns: `repeat(${visibleCards.length}, minmax(0, 1fr))`,
-                          gap: 12,
-                          marginTop: 16,
-                          width: '100%',
-                          minWidth: 0,
-                        }}
-                      >
+                      <div className="kpi-hero-day-grid">
                         {visibleCards.map((d) => (
                           <DayCard
                             key={d.dateIso}
                             data={d}
-                            presentation={presentation}
-                            expanded={false}
                           />
                         ))}
                       </div>
                     )}
 
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--type-caption-sm-size)',
-              fontWeight: 'var(--type-caption-sm-weight)',
-              lineHeight: 'var(--type-caption-sm-line)',
-              letterSpacing: 'var(--type-caption-sm-tracking)',
-              color: PALETTE.textMuted,
-              margin: 'var(--spacing-md) 0 0',
-              textAlign: 'right',
-            }}
-          >
+          <p className="kpi-hero-footer-label">
             KPI RECLUTAMIENTO
           </p>
         </>

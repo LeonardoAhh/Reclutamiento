@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 24px;
+  height: var(--icon-size-lg);
   padding: 0 8px;
   border-radius: var(--rounded-md);
   background: var(--color-surface);
@@ -28,7 +28,7 @@
 .candidate-status-badge[data-status="feedback_pendiente"] .candidate-status-badge__dot { background: var(--color-primary); }
 .candidate-status-badge[data-status="contratado"] .candidate-status-badge__dot { background: var(--color-success); }
 .candidate-status-badge[data-status="rechazado"] .candidate-status-badge__dot { background: var(--color-error); }
-.candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot { background: var(--color-ink-faint); }
+.candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot { background: var(--color-muted-soft); }
 
 .candidate-status-caret {
   opacity: 0.5;

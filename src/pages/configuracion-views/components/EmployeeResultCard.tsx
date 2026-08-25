@@ -113,7 +113,7 @@ export function EmployeeResultCard({
           </dl>
           <button
             type="button"
-            className="config-compact-summary__toggle-minimal"
+            className="btn-text config-compact-summary__toggle-minimal"
             onClick={onToggle}
             aria-expanded={isExpanded}
             aria-controls={compactDetailsId}

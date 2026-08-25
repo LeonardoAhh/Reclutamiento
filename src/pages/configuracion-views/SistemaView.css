@@ -106,7 +106,7 @@
 }
 
 .sistema-permission-state {
-  min-height: var(--skeleton-card-height);
+  min-height: var(--config-panel-min-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,4 +163,3 @@
     align-items: start;
   }
 }
-

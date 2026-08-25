@@ -189,7 +189,7 @@ function codeTone(code: string | undefined): string {
 function codeBg(code: string | undefined): string {
     if (!code || code === "-" || code === "X") return "var(--color-surface-soft)";
     if (code === "A") return "var(--color-success-tint)";
-    if (code === "D" || code === "DF") return "rgba(var(--color-accent-teal-rgb), 0.1)";
+    if (code === "D" || code === "DF") return "rgb(var(--color-accent-teal-rgb) / 0.1)";
     return "var(--color-error-tint)";
 }
 

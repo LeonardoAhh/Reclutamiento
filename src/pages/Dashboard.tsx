@@ -35,7 +35,7 @@ import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
 import Avatar from "boring-avatars";
 import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import {
   transformEmployeeData,
   calculatePositionCoverage,
@@ -48,6 +48,7 @@ import {
   filterUnreservedVacancies,
 } from "@/lib/autoVacancies";
 import { notifyResult } from "@/lib/notify";
+import { isBoneyardBuild } from "@/lib/boneyard";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useVacancyRequests } from "@/hooks/useVacancyRequests";
 import { useCandidates } from "@/hooks/useCandidates";
@@ -103,8 +104,15 @@ export function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterArea, setFilterArea] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("general");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>(() =>
+    isBoneyardBuild() &&
+    new URLSearchParams(window.location.search).get("view") === "empleados"
+      ? "empleados"
+      : "general",
+  );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(
+    () => !isBoneyardBuild(),
+  );
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
     seccion: string;
@@ -317,31 +325,6 @@ export function Dashboard() {
     return result;
   }
 
-  if (loading && employees.length === 0) {
-    return (
-      <main className="dashboard container" id="dashboard-main">
-        <section className="dashboard__hero" id="dashboard-hero">
-          <div className="dashboard__hero-content">
-            <h1>Plantilla</h1>
-          </div>
-        </section>
-        <section className="dashboard__controls">
-          <Skeleton
-            height={40}
-            radius="var(--rounded-md)"
-            className="dashboard__hero-skeleton"
-          />
-          <Skeleton height={40} width={140} radius="var(--rounded-md)" />
-        </section>
-        <section className="dashboard__departments">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} height={150} radius="var(--rounded-lg)" />
-          ))}
-        </section>
-      </main>
-    );
-  }
-
   const showSearchDropdown =
     matchingEmployees.length > 0 &&
     empModalMode === null &&
@@ -387,7 +370,7 @@ export function Dashboard() {
         aria-label="Contenido principal"
       >
         <button
-          className="config-mobile-back"
+          className="btn-text config-mobile-back"
           onClick={() => {
             if (activeTab !== "general" && activeTab !== "empleados") {
               setActiveTab("general");
@@ -411,9 +394,14 @@ export function Dashboard() {
             className="dashboard__content-area"
           >
             {activeTab === "general" && (
-              <>
+              <BoneyardSkeleton
+                name="plantilla-page"
+                loading={loading && employees.length === 0}
+                loadingLabel="Cargando plantilla…"
+              >
                 <header className="dashboard__hero dashboard-sidebar__hero">
                   <div className="dashboard__hero-content dashboard-sidebar__hero-content">
+                    <h1>Plantilla</h1>
                     <div className="config-search dashboard-sidebar__search">
                       <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
                         <label htmlFor="search-input" className="sr-only">
@@ -622,7 +610,7 @@ export function Dashboard() {
                   {filteredDepts.length === 0 && employees.length === 0 && (
                     <div className="dashboard__empty" id="dashboard-empty">
                       <Users size={48} strokeWidth={2.5} />
-                      <h3>Sin datos cargados</h3>
+                      <h2>Sin datos cargados</h2>
                       <p>
                         Importa un archivo JSON o crea un empleado para
                         comenzar.
@@ -637,7 +625,7 @@ export function Dashboard() {
                         size={48}
                         strokeWidth={2.5}
                       />
-                      <h3>Sin resultados</h3>
+                      <h2>Sin resultados</h2>
                       <p>No se encontraron coincidencias para tu búsqueda.</p>
                     </div>
                   )}
@@ -652,7 +640,7 @@ export function Dashboard() {
                     />
                   ))}
                 </section>
-              </>
+              </BoneyardSkeleton>
             )}
             {activeTab === "empleados" && <EmpleadosView />}
             {activeTab !== "general" && activeTab !== "empleados" && (
@@ -779,7 +767,7 @@ function DepartmentCard({
       >
         <div className="dept-card__header">
           <div className="dept-card__header-left">
-            <h3 className="dept-card__title">{dept.area}</h3>
+            <h2 className="dept-card__title">{dept.area}</h2>
             {incapacidadCount > 0 && (
               <Badge variant="amber" title={`${incapacidadCount} incapacidades`}>
                 <HeartPulse size={12} aria-hidden="true" />

@@ -149,7 +149,7 @@
 
   .ruta-day-modal__num {
     display: block;
-    font-size: 13px;
+    font-size: var(--type-caption-sm-size);
     color: var(--color-muted);
     font-weight: var(--font-medium);
   }
@@ -162,8 +162,7 @@
 
   .ruta-day-modal__seccion {
     display: block;
-    font-size: 13px;
+    font-size: var(--type-caption-sm-size);
     color: var(--color-muted);
   }
 }
-

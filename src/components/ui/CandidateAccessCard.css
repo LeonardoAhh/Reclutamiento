@@ -78,18 +78,19 @@
   line-height: var(--type-body-sm-line);
 }
 
-/* Skeleton animado para la carga */
-.candidate-access-card__skeleton {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-hairline);
-  border-top-color: var(--color-primary);
-  border-radius: var(--rounded-full);
-  animation: spinner 1s linear infinite;
+.candidate-access-card__spinner {
+  color: var(--color-primary);
+  animation: candidate-access-card-spin var(--duration-spinner) linear infinite;
 }
 
-@keyframes spinner {
-  to { transform: rotate(360deg); }
+@keyframes candidate-access-card-spin {
+  to { transform: rotate(1turn); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .candidate-access-card__spinner {
+    animation: none;
+  }
 }
 
 .candidate-access-card__feedback {

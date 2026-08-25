@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 
-import { Skeleton } from '@/components/ui/Skeleton';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ChevronLeft, ChevronRight, Database, Loader2 } from 'lucide-react';
 import { useIndicadoresStats, getRecruiterTone } from '@/hooks/useIndicadoresStats';
@@ -32,21 +32,6 @@ export function IndicadoresView() {
     ? recruiters.indexOf(selectedMobileRecruiter)
     : -1;
 
-  if (loading) {
-    return (
-      <section className="indicadores-view config-page">
-        <div className="indicadores-kpi-grid">
-          {[1,2,3,4].map(i => (
-            <div key={i} className="indicadores-kpi-card">
-              <Skeleton variant="text" width="80px" height="14px" />
-              <Skeleton variant="text" width="60px" height="32px" />
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   if (error) {
     return (
       <div className="config-empty">
@@ -71,7 +56,12 @@ export function IndicadoresView() {
   const monthLabel = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
 
   return (
-    <section className="indicadores-view config-page" aria-label="Indicadores de Reclutamiento">
+    <BoneyardSkeleton
+      name="configuracion-indicadores"
+      loading={loading}
+      loadingLabel="Cargando indicadores…"
+    >
+      <section className="indicadores-view config-page" aria-label="Indicadores de Reclutamiento">
 
       {/* ── KPI Cards ───────────────────────────────────────────── */}
       {kpi && (
@@ -315,7 +305,7 @@ export function IndicadoresView() {
             <div className="indicadores-mobile-detail" aria-live="polite">
               <button
                 type="button"
-                className="config-mobile-back"
+                className="btn-text config-mobile-back"
                 onClick={() => setSelectedMobileRecruiter(null)}
                 aria-label="Volver a la lista de reclutadores"
               >
@@ -552,6 +542,7 @@ export function IndicadoresView() {
           )}
         </>
       )}
-    </section>
+      </section>
+    </BoneyardSkeleton>
   );
 }

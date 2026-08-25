@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--color-modal-scrim);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -52,8 +52,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--icon-size-xxl);
+  height: var(--icon-size-xxl);
   background: transparent;
   border: none;
   border-radius: var(--rounded-md);

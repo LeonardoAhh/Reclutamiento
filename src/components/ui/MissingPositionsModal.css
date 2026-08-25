@@ -50,7 +50,7 @@
 }
 
 .missing-positions-modal__summary-item--starlite .missing-positions-modal__summary-value {
-  color: #d97706; /* Amber-600 */
+  color: var(--color-accent-amber);
 }
 
 .missing-positions-modal__summary-label {
@@ -121,7 +121,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface-soft);
   color: var(--color-body);
-  font-size: 11px;
+  font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
@@ -216,7 +216,7 @@
   margin-top: 2px;
   font-size: var(--text-xs, 0.72rem);
   font-weight: var(--font-medium);
-  color: var(--color-accent-teal, #0f766e);
+  color: var(--color-accent-teal);
 }
 
 /* ── Badges numéricos ── */
@@ -244,6 +244,10 @@
   color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
 }
 
+.missing-positions-modal__count-badge--starlite {
+  color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
+}
+
 .missing-positions-modal__count-badge--total {
   color: var(--color-ink);
 }
@@ -261,7 +265,7 @@
   align-items: center;
   gap: 6px;
   padding: 4px var(--spacing-xs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
   font-size: var(--type-heading-sm-size);
   font-weight: var(--font-semibold);
@@ -271,7 +275,7 @@
 }
 
 .missing-positions-modal__processes-pill--starlite {
-  color: #d97706;
+  color: var(--color-accent-amber);
 }
 
 .missing-positions-modal__starlite-icon {
@@ -380,7 +384,7 @@
   .missing-positions-modal__table tbody td:nth-child(6)::before {
     display: inline-block;
     margin-right: 6px;
-    font-size: 11px;
+    font-size: var(--type-caption-up-size);
     font-weight: var(--font-semibold);
     letter-spacing: var(--tracking-wider);
     text-transform: uppercase;
