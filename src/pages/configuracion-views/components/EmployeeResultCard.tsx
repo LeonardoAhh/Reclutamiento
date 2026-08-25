@@ -12,6 +12,7 @@ import { GlobalIncidenceHistory } from './GlobalIncidenceHistory';
 import {
   displayValue,
   getStickerTone,
+  getFaltaDates,
   type EmployeeSearchResult,
   type SearchViewMode,
 } from '../busqueda-helpers';
@@ -20,6 +21,7 @@ interface EmployeeResultCardProps {
   employee: EmployeeSearchResult;
   resultId: string;
   viewMode: SearchViewMode;
+  isRiskFilter?: boolean;
   isExpanded: boolean;
   reportsLoading: boolean;
   reports: ReporteDiarioRecord[];
@@ -31,6 +33,7 @@ export function EmployeeResultCard({
   employee,
   resultId,
   viewMode,
+  isRiskFilter = false,
   isExpanded,
   reportsLoading,
   reports,
@@ -49,6 +52,7 @@ export function EmployeeResultCard({
     ? null
     : addDaysToIso(employee.fecha_ingreso, 90);
   const showRenewalDate = Boolean(renewalDate);
+  const faltaDates = isRiskFilter ? getFaltaDates(employee.num_empleado, reports) : [];
 
   return (
     <article
@@ -78,12 +82,13 @@ export function EmployeeResultCard({
           </h3>
         </div>
         <div className="config-card__meta-right">
-          <span className="text-muted">
-            Ingreso: {formatReadableDate(employee.fecha_ingreso)}
-          </span>
-          {showRenewalDate && renewalDate && (
-            <span className="text-warning">
-              Renovación: {formatReadableDate(renewalDate)}
+          {!showRenewalDate ? (
+            <span className="text-muted">
+              Ingreso: {formatReadableDate(employee.fecha_ingreso)}
+            </span>
+          ) : (
+            <span className="text-warning" style={{ fontWeight: 500 }}>
+              Renovación: {formatReadableDate(renewalDate!)}
             </span>
           )}
         </div>
@@ -100,15 +105,26 @@ export function EmployeeResultCard({
               <dt>Departamento</dt>
               <dd>{displayValue(employee.area)}</dd>
             </div>
-            {!employee.isBaja && (
+            {isRiskFilter && faltaDates.length > 0 ? (
               <div>
-                <dt>Turno</dt>
+                <dt>Alerta</dt>
                 <dd>
-                  {employee.turno
-                    ? displayValue(employee.turno)
-                    : 'Sin información'}
+                  <Badge variant="error">
+                    {faltaDates.length} {faltaDates.length === 1 ? 'Falta' : 'Faltas'}
+                  </Badge>
                 </dd>
               </div>
+            ) : (
+              !employee.isBaja && (
+                <div>
+                  <dt>Turno</dt>
+                  <dd>
+                    {employee.turno
+                      ? displayValue(employee.turno)
+                      : 'Sin información'}
+                  </dd>
+                </div>
+              )
             )}
           </dl>
           <button

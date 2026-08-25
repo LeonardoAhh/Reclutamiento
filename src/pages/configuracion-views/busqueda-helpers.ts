@@ -89,7 +89,7 @@ export function isNuevoIngreso(fecha_ingreso?: string | null): boolean {
   return diffDays >= 0 && diffDays <= 90;
 }
 
-export function hasExcesoFaltas(num_empleado: string, allReports: ReporteDiarioRecord[]): boolean {
+export function getFaltaDates(num_empleado: string, allReports: ReporteDiarioRecord[]): Date[] {
   const faltaDates: Date[] = [];
   
   for (const report of allReports) {
@@ -113,6 +113,12 @@ export function hasExcesoFaltas(num_empleado: string, allReports: ReporteDiarioR
   }
   
   faltaDates.sort((a, b) => a.getTime() - b.getTime());
+  return faltaDates;
+}
+
+export function hasExcesoFaltas(num_empleado: string, allReports: ReporteDiarioRecord[]): boolean {
+  const faltaDates = getFaltaDates(num_empleado, allReports);
+
   
   // Regla 1: 3 faltas en un mes (30 días inclusivos)
   for (let i = 0; i <= faltaDates.length - 3; i++) {

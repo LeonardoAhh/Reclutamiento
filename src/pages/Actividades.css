@@ -34,6 +34,25 @@
   margin: 0;
 }
 
+/* ── Responsive H1 to match Pipeline/Dashboard ──────────────────────── */
+@media (min-width: 768px) {
+  .actividades-header h1 {
+    font-size: var(--type-display-lg-size);
+    font-weight: var(--type-display-lg-weight);
+    line-height: var(--type-display-lg-line);
+    letter-spacing: var(--type-display-lg-tracking);
+  }
+}
+
+@media (min-width: 1024px) {
+  .actividades-header h1 {
+    font-size: var(--type-display-xl-size);
+    font-weight: var(--type-display-xl-weight);
+    line-height: var(--type-display-xl-line);
+    letter-spacing: var(--type-display-xl-tracking);
+  }
+}
+
 /* ── Layout: two stacked sections ────────────────────────────────────── */
 .actividades-layout {
   display: flex;

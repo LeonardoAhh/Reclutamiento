@@ -109,7 +109,7 @@ export function BusquedaView() {
 
   // 3. Aplicar filtros secundarios
   const filteredEmployees = useMemo(() => {
-    return textMatches.filter((employee) => {
+    const result = textMatches.filter((employee) => {
       if (statusFilter === 'active' && employee.isBaja) return false;
       if (statusFilter === 'inactive' && !employee.isBaja) return false;
       if (
@@ -129,6 +129,17 @@ export function BusquedaView() {
       }
       return true;
     });
+
+    if (riskFilter !== 'all') {
+      result.sort((a, b) => {
+        const dateA = a.fecha_ingreso || '';
+        const dateB = b.fecha_ingreso || '';
+        if (dateA !== dateB) return dateA.localeCompare(dateB);
+        return a.nombre.localeCompare(b.nombre);
+      });
+    }
+
+    return result;
   }, [textMatches, statusFilter, departmentFilter, shiftFilter, riskFilter, reportsFetched, allReports]);
 
   // 4. Paginación
@@ -480,6 +491,7 @@ export function BusquedaView() {
                         employee={employee}
                         resultId={resultId}
                         viewMode={viewMode}
+                        isRiskFilter={riskFilter === 'riesgo_baja'}
                         isExpanded={expandedResultIds.has(resultId)}
                         autoExpand={isSingleResult}
                         reports={allReports}
