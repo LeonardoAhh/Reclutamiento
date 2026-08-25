@@ -75,6 +75,7 @@ export function AIChatPage() {
   const fileHelpId = useId();
   const fileErrorId = useId();
   const messageInputId = useId();
+  const chatHeadingId = useId();
 
   useEffect(() => {
     if (!messagesEndRef.current) return;
@@ -109,6 +110,19 @@ export function AIChatPage() {
     event.preventDefault();
     void requestAssistantMessage(inputText, "follow_up");
     setInputText("");
+  };
+
+  const handleMessageKeyDown = (
+    event: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey &&
+      !event.nativeEvent.isComposing
+    ) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
   };
 
   const getEvaluationExportInput = () => ({
@@ -146,19 +160,26 @@ export function AIChatPage() {
           <div className="ai-page-avatar" aria-hidden="true">
             <Bot />
           </div>
-          <div>
+          <div className="ai-page-title-copy">
+            <span className="ai-page-eyebrow">Asistente IA</span>
             <h1>Asistente de Reclutamiento</h1>
-            <p>Evaluación inteligente de perfiles</p>
+            <p>Analiza perfiles y continúa la evaluación en una conversación.</p>
           </div>
         </div>
       </header>
 
       <main className="ai-page-layout">
-        <aside className="ai-page-sidebar">
-          <div className="ai-page-card">
+        <aside className="ai-page-sidebar" aria-label="Contexto de la evaluación">
+          <section className="ai-page-card ai-context-card">
+            <header className="ai-context-header">
+              <span className="ai-context-step">Contexto</span>
+              <h2>Prepara el análisis</h2>
+              <p>Elige una vacante y adjunta el CV que quieres evaluar.</p>
+            </header>
+
             <div className="ai-chat-controls">
               <label className="ai-chat-label" htmlFor={jobSelectId}>
-                Selecciona un puesto a evaluar
+                Vacante
               </label>
               <CustomSelect
                 id={jobSelectId}
@@ -200,6 +221,9 @@ export function AIChatPage() {
             {!hasCompared ? (
               <fieldset className="ai-chat-upload-fieldset">
                 <legend className="sr-only">Preparar evaluación del CV</legend>
+                <p id={fileHelpId} className="ai-chat-upload-help">
+                  Archivo PDF del candidato
+                </p>
                 <input
                   id={fileInputId}
                   type="file"
@@ -227,13 +251,13 @@ export function AIChatPage() {
                       disabled={isLoading}
                     >
                       <UploadCloud aria-hidden="true" />
-                      <span>Subir PDF</span>
+                      <span>Adjuntar CV</span>
                     </button>
                   ) : (
                     <div className="ai-upload-file">
                       <div className="ai-upload-file-info">
                         <FileText aria-hidden="true" />
-                        <span>CV adjunto</span>
+                        <span title={file.name}>{file.name}</span>
                       </div>
                       <button
                         type="button"
@@ -257,7 +281,7 @@ export function AIChatPage() {
                     {isLoading && !hasCompared && (
                       <Loader2 className="ai-chat-spin" aria-hidden="true" />
                     )}
-                    <span>Comparar</span>
+                    <span>{isLoading ? "Analizando" : "Analizar CV"}</span>
                   </button>
                 </div>
                 {fileError && (
@@ -268,6 +292,11 @@ export function AIChatPage() {
               </fieldset>
             ) : (
               <div className="ai-chat-followup">
+                <div className="ai-chat-evaluation-status" aria-live="polite">
+                  <span>Evaluación actual</span>
+                  <strong>{evaluatedJobName || "Auto-perfilar"}</strong>
+                  <p>{file?.name ?? "CV analizado"}</p>
+                </div>
                 <div
                   className="ai-chat-result-actions"
                   role="group"
@@ -292,101 +321,131 @@ export function AIChatPage() {
                     disabled={isLoading}
                   >
                     <MorphingIcon icon={RotateCcw} aria-hidden="true" />
-                    <span>Nuevo</span>
+                    <span>Nueva</span>
                   </button>
                 </div>
               </div>
             )}
-          </div>
+          </section>
         </aside>
 
         <section
           className="ai-page-chat-area ai-page-card"
-          aria-label="Conversación con el asistente"
+          aria-labelledby={chatHeadingId}
         >
-          <div className="ai-chat-messages" role="log" aria-busy={isLoading}>
+          <header className="ai-chat-panel-header">
+            <div className="ai-chat-panel-identity">
+              <div className="ai-chat-avatar" aria-hidden="true">
+                <Bot />
+              </div>
+              <div>
+                <h2 id={chatHeadingId}>Conversación</h2>
+                <p>
+                  <span className="ai-chat-status-dot" aria-hidden="true" />
+                  {isLoading
+                    ? "Analizando información..."
+                    : hasCompared
+                      ? "Listo para continuar"
+                      : "Esperando un CV"}
+                </p>
+              </div>
+            </div>
+          </header>
+
+          <div
+            className="ai-chat-messages"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-busy={isLoading}
+          >
             {messages.map((message) => (
               <article
                 key={message.id}
-                className={`ai-chat-message ${message.role}`}
+                className={`ai-chat-message ${message.role}${message.id === "initial" ? " is-initial" : ""}`}
               >
                 {message.role !== "user" && (
                   <div className="ai-chat-avatar" aria-hidden="true">
                     <Bot />
                   </div>
                 )}
-                <div className="ai-chat-content">
-                  {message.role === "ai" || message.role === "system" ? (
-                    message.analysisData ? (
-                      <div className="ai-chat-structured">
-                        <div className="ai-chat-score-header">
-                          <div className="ai-chat-score-circle">
-                            <strong>{message.analysisData.matchScore}%</strong>
-                            <span>Match</span>
+                <div className="ai-chat-message-body">
+                  <span className="ai-chat-author">
+                    {message.role === "user" ? "Tú" : "Asistente"}
+                  </span>
+                  <div className="ai-chat-content">
+                    {message.role === "ai" || message.role === "system" ? (
+                      message.analysisData ? (
+                        <div className="ai-chat-structured">
+                          <div className="ai-chat-score-header">
+                            <div className="ai-chat-score-circle">
+                              <strong>{message.analysisData.matchScore}%</strong>
+                              <span>Match</span>
+                            </div>
+                            <div className="ai-chat-score-roles">
+                              <h2>Roles recomendados</h2>
+                              <ul>
+                                {message.analysisData.roles?.map((r: any, i: number) => (
+                                  <li key={i}>
+                                    <strong>{r.title}</strong> ({r.match}%)<br />
+                                    <span className="ai-chat-role-reason">{r.reason}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </div>
-                          <div className="ai-chat-score-roles">
-                            <h2>Roles recomendados</h2>
-                            <ul>
-                              {message.analysisData.roles?.map((r: any, i: number) => (
-                                <li key={i}>
-                                  <strong>{r.title}</strong> ({r.match}%)<br />
-                                  <span className="ai-chat-role-reason">{r.reason}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
 
-                        <div className="ai-chat-analysis-grid">
-                          {message.analysisData.strengths?.length > 0 && (
-                            <div className="ai-chat-analysis-col">
-                              <h3 className="text-success">Fortalezas</h3>
-                              <ul className="ai-chat-bullet-list">
-                                {message.analysisData.strengths.map((s: string, i: number) => (
-                                  <li key={i}>{s}</li>
+                          <div className="ai-chat-analysis-grid">
+                            {message.analysisData.strengths?.length > 0 && (
+                              <div className="ai-chat-analysis-col">
+                                <h3 className="text-success">Fortalezas</h3>
+                                <ul className="ai-chat-bullet-list">
+                                  {message.analysisData.strengths.map((s: string, i: number) => (
+                                    <li key={i}>{s}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {message.analysisData.weaknesses?.length > 0 && (
+                              <div className="ai-chat-analysis-col">
+                                <h3 className="text-warning">Brechas</h3>
+                                <ul className="ai-chat-bullet-list">
+                                  {message.analysisData.weaknesses.map((w: string, i: number) => (
+                                    <li key={i}>{w}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          {message.analysisData.flags?.length > 0 &&
+                           message.analysisData.flags[0] !== "Ninguna" && (
+                            <div className="ai-chat-flags">
+                              <h3>Banderas Rojas</h3>
+                              <ul>
+                                {message.analysisData.flags.map((f: string, i: number) => (
+                                  <li key={i}>{f}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
-                          {message.analysisData.weaknesses?.length > 0 && (
-                            <div className="ai-chat-analysis-col">
-                              <h3 className="text-warning">Brechas</h3>
-                              <ul className="ai-chat-bullet-list">
-                                {message.analysisData.weaknesses.map((w: string, i: number) => (
-                                  <li key={i}>{w}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
                         </div>
-
-                        {message.analysisData.flags?.length > 0 &&
-                         message.analysisData.flags[0] !== "Ninguna" && (
-                          <div className="ai-chat-flags">
-                            <h3>Banderas Rojas</h3>
-                            <ul>
-                              {message.analysisData.flags.map((f: string, i: number) => (
-                                <li key={i}>{f}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
+                      ) : (
+                        <div className="ai-chat-markdown">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={markdownComponents}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
+                      )
                     ) : (
-                      <div className="ai-chat-markdown">
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          components={markdownComponents}
-                        >
-                          {message.content}
-                        </ReactMarkdown>
+                      <div className="ai-chat-plain-message">
+                        {message.content}
                       </div>
-                    )
-                  ) : (
-                    <div className="ai-chat-plain-message">
-                      {message.content}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
@@ -396,12 +455,15 @@ export function AIChatPage() {
                 <div className="ai-chat-avatar" aria-hidden="true">
                   <Bot />
                 </div>
-                <div className="ai-chat-content">
-                  <span className="sr-only">El asistente está respondiendo.</span>
-                  <div className="ai-typing-indicator" aria-hidden="true">
-                    <span className="ai-dot" />
-                    <span className="ai-dot" />
-                    <span className="ai-dot" />
+                <div className="ai-chat-message-body">
+                  <span className="ai-chat-author">Asistente</span>
+                  <div className="ai-chat-content">
+                    <span className="sr-only">El asistente está respondiendo.</span>
+                    <div className="ai-typing-indicator" aria-hidden="true">
+                      <span className="ai-dot" />
+                      <span className="ai-dot" />
+                      <span className="ai-dot" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -420,39 +482,48 @@ export function AIChatPage() {
             <div ref={messagesEndRef} aria-hidden="true" />
           </div>
 
-          <form
-            className="ai-chat-input-form"
-            onSubmit={handleSendMessage}
-            aria-label="Enviar mensaje al asistente"
-          >
-            <input
-              id={messageInputId}
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder={
-                hasCompared
-                  ? "Escribe un mensaje al asistente..."
-                  : "Analizo tu CV primero para poder conversar contigo."
-              }
-              disabled={!hasCompared || isLoading}
-              className="ai-chat-text-input"
-              aria-label="Escribe tu mensaje"
-              autoComplete="off"
-            />
-            <button
-              type="submit"
-              className="btn-primary ai-chat-send-btn"
-              disabled={!inputText.trim() || isLoading || !hasCompared}
-              aria-label="Enviar mensaje"
+          <div className="ai-chat-composer-shell">
+            <form
+              className="ai-chat-input-form"
+              onSubmit={handleSendMessage}
+              aria-label="Enviar mensaje al asistente"
             >
-              {isLoading && hasCompared && !inputText.trim() ? (
-                <Loader2 className="ai-chat-action-icon--spin" aria-hidden="true" />
-              ) : (
-                <Send aria-hidden="true" />
-              )}
-            </button>
-          </form>
+              <textarea
+                id={messageInputId}
+                value={inputText}
+                onChange={(event) => setInputText(event.target.value)}
+                onKeyDown={handleMessageKeyDown}
+                placeholder={
+                  hasCompared
+                    ? "Pregunta sobre el perfil o solicita otro análisis..."
+                    : "Adjunta un CV para comenzar la conversación"
+                }
+                disabled={!hasCompared || isLoading}
+                className="ai-chat-text-input"
+                aria-label="Escribe tu mensaje"
+                aria-describedby={`${messageInputId}-hint`}
+                autoComplete="off"
+                rows={1}
+              />
+              <button
+                type="submit"
+                className="btn-primary ai-chat-send-btn"
+                disabled={!inputText.trim() || isLoading || !hasCompared}
+                aria-label="Enviar mensaje"
+              >
+                {isLoading && hasCompared && !inputText.trim() ? (
+                  <Loader2 className="ai-chat-action-icon--spin" aria-hidden="true" />
+                ) : (
+                  <Send aria-hidden="true" />
+                )}
+              </button>
+            </form>
+            <p id={`${messageInputId}-hint`} className="ai-chat-composer-hint">
+              {hasCompared
+                ? "Enter para enviar · Shift + Enter para una nueva línea"
+                : "La conversación se habilita después de analizar el CV."}
+            </p>
+          </div>
         </section>
       </main>
     </div>

@@ -405,3 +405,12 @@ Todos los archivos fueron borrados asegurando que TypeScript no generara ningún
 - `yarn tsc -b --pretty false`: PASS.
 - `yarn vite build`: PASS.
 - Verificación automatizada de interfaz: pendiente.
+
+## Asistente — Experiencia de chat IA
+- Reorganizada `/asistente` como una experiencia de conversación dominante: encabezado compacto, panel de contexto y chat con mensajes centrados.
+- El asistente responde en formato abierto tipo ChatGPT; los mensajes del usuario conservan burbuja diferenciada y el compositor permanece separado al pie.
+- El compositor ahora admite varias líneas, Enter para enviar y Shift + Enter para salto de línea.
+- Mejorados el estado del asistente, el nombre del PDF adjunto, el contexto de la evaluación, foco visible, regiones anunciables y responsive mobile-first.
+- Toda la presentación usa tokens centrales; se añadieron dimensiones semánticas reutilizables para esta superficie.
+- Lint dirigido: PASS. TypeScript: PASS. Vite build: PASS.
+- No se llamaron agentes ni se probaron integraciones externas, conforme a la instrucción del usuario.
