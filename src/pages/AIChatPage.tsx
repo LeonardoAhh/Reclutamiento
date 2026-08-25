@@ -864,7 +864,7 @@ export function AIChatPage() {
         title="Eliminar conversación"
         description={
           conversationPendingDelete
-            ? `Se eliminará “${conversationPendingDelete.title}” de tu historial.`
+            ? "Esta acción no se puede deshacer."
             : undefined
         }
         confirmLabel="Eliminar"
