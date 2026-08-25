@@ -114,12 +114,24 @@ export function hasExcesoFaltas(num_empleado: string, allReports: ReporteDiarioR
   
   faltaDates.sort((a, b) => a.getTime() - b.getTime());
   
-  for (let i = 0; i <= faltaDates.length - 4; i++) {
+  // Regla 1: 3 faltas en un mes (30 días inclusivos)
+  for (let i = 0; i <= faltaDates.length - 3; i++) {
     const start = faltaDates[i];
-    const end = faltaDates[i + 3];
+    const end = faltaDates[i + 2];
     const diffTime = end.getTime() - start.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays <= 30) {
+    if (diffDays <= 29) {
+      return true;
+    }
+  }
+
+  // Regla 2: 2 faltas en una semana (7 días inclusivos)
+  for (let i = 0; i <= faltaDates.length - 2; i++) {
+    const start = faltaDates[i];
+    const end = faltaDates[i + 1];
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays <= 6) {
       return true;
     }
   }

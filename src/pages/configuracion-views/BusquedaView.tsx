@@ -120,10 +120,10 @@ export function BusquedaView() {
         shiftFilter !== ALL_FILTER_VALUE &&
         normalizeFilterValue(employee.turno ?? '') !== shiftFilter
       ) return false;
-      if (riskFilter === 'nuevos_ingresos' && !isNuevoIngreso(employee.fecha_ingreso)) return false;
+      if (riskFilter === 'nuevos_ingresos' && (employee.isBaja || !isNuevoIngreso(employee.fecha_ingreso))) return false;
       if (
         riskFilter === 'riesgo_baja' &&
-        (!reportsFetched || !isNuevoIngreso(employee.fecha_ingreso) || !hasExcesoFaltas(employee.num_empleado, allReports))
+        (employee.isBaja || !reportsFetched || !isNuevoIngreso(employee.fecha_ingreso) || !hasExcesoFaltas(employee.num_empleado, allReports))
       ) {
         return false;
       }
