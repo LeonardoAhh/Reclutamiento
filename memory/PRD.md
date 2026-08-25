@@ -1,5 +1,13 @@
 # PRD — Reclutamiento (React + Vite + Supabase)
 
+## 2026-08-25 — Boneyard `/resumen`: contenido real visible durante carga
+
+- **Problema**: en `/resumen`, algunas tarjetas KPI reales seguían visibles sobre el skeleton. `Boneyard` oculta su rama con `visibility: hidden`, pero `.kpi-reveal--revealed .kpi-reveal__inner { visibility: visible; }` reactivaba explícitamente la visibilidad de esos descendientes.
+- **Corrección centralizada**: `BoneyardSkeleton` añade la clase base `boneyard-skeleton`; su CSS obliga a los descendientes de la rama que Boneyard marca como oculta a heredar ese estado. Al terminar la carga, la regla deja de aplicar y el contenido recupera su visibilidad normal. No se modificaron datos, cálculos, rutas ni archivos generados.
+- **Auditoría estática**: revisados los 14 nombres registrados y todos los usos de `BoneyardSkeleton`. La única regla `visibility: visible` dentro de una página envuelta pertenece a `KpiReveal`, usado únicamente por `/resumen`; no se detectó el mismo conflicto en las demás páginas. La corrección compartida también evita futuras recurrencias equivalentes.
+- **Accesibilidad/testabilidad**: el estado anunciado de carga conserva `role="status"` y ahora expone un `data-testid` único por skeleton.
+- **Verificación focalizada**: `yarn tsc -b --pretty false` PASS, `git diff --check` PASS y prueba mínima de cascada CSS PASS (oculto durante carga, visible al finalizar). No se ejecutó `npm run build` ni se inspeccionó/modificó `rutas-app`; no se llamaron agentes.
+
 ## 2026-07-21 — Fix JWT expirado (sesión zombie): interceptor 401 + refresh proactivo
 
 - **Problema**: al expirar el JWT en primer plano, las mutaciones fallaban con 401/`PGRST303` "JWT expired" pero los hooks (`useSupabaseData`, `useBajas`, `useCandidates`, etc.) tragaban el error y devolvían `localStorage` cacheado → el usuario nunca se enteraba y perdía los cambios.

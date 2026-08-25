@@ -26,6 +26,10 @@ export function BoneyardSkeleton({
   snapshotConfig,
   className,
 }: BoneyardSkeletonProps) {
+  const containerClassName = ["boneyard-skeleton", className]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <>
       <BoneyardPrimitive
@@ -33,13 +37,19 @@ export function BoneyardSkeleton({
         loading={loading}
         fixture={fixture}
         snapshotConfig={snapshotConfig}
-        className={className}
+        className={containerClassName}
         select="viewport"
       >
         {children}
       </BoneyardPrimitive>
       {loading && (
-        <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        <span
+          className="sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid={`${name}-loading-status`}
+        >
           {loadingLabel}
         </span>
       )}
