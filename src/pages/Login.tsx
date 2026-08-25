@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent, useId, useEffect } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight as ArrowRightIconData,
   Eye,
@@ -9,13 +9,17 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useAuth } from "@/hooks/useAuth";
-import { useSystemVersion } from "@/hooks/useSystemVersion";
-import { MotionConfig, motion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import "./Login.css";
+
+type LoginError = {
+  field: "username" | "password" | "form";
+  message: string;
+};
 
 export function Login() {
   const { signIn } = useAuth();
-  const { version } = useSystemVersion();
+  const reduceMotion = useReducedMotion();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,19 +27,22 @@ export function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<LoginError | null>(null);
   const [capsLock, setCapsLock] = useState(false);
 
-  const emailRef = useRef<HTMLInputElement>(null);
+  const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const usernameId = useId();
   const passwordId = useId();
   const rememberId = useId();
-  const errorId = useId();
+  const titleId = useId();
+  const usernameErrorId = useId();
+  const passwordErrorId = useId();
+  const formErrorId = useId();
   const capsId = useId();
 
-  // Cargar email recordado (si existe) + auto-focus inteligente
+  // Cargar usuario recordado (si existe) + auto-focus inteligente
   useEffect(() => {
     document.title = "Iniciar Sesión";
     
@@ -43,25 +50,12 @@ export function Login() {
     if (saved) {
       setUsername(saved);
       setRememberMe(true);
-      // Si ya tiene email guardado, focus directo a contraseña
+      // Si ya tiene usuario guardado, focus directo a contraseña
       requestAnimationFrame(() => passwordRef.current?.focus());
     } else {
-      requestAnimationFrame(() => emailRef.current?.focus());
+      requestAnimationFrame(() => usernameRef.current?.focus());
     }
   }, []);
-
-  // Limpiar error después de 3 segundos
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
-
-  // Limpiar error si el usuario empieza a escribir de nuevo
-  useEffect(() => {
-    if (error) setError(null);
-  }, [username, password]);
 
   // Detectar Caps Lock en el campo de contraseña
   const handlePasswordKeyEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,52 +69,65 @@ export function Login() {
 
     const u = username.trim();
     if (!u) {
-      return setError("Ingresa tu correo electrónico.");
+      setError({
+        field: "username",
+        message: "Ingresa tu usuario o correo electrónico.",
+      });
+      usernameRef.current?.focus();
+      return;
     }
     if (!password) {
-      return setError("Ingresa tu contraseña.");
-    }
-
-    setSubmitting(true);
-    const result = await signIn(u, password);
-
-    if (!result.ok) {
-      setSubmitting(false);
-      setError(
-        result.message ?? "No se pudo iniciar sesión. Revisa tus credenciales.",
-      );
+      setError({ field: "password", message: "Ingresa tu contraseña." });
+      passwordRef.current?.focus();
       return;
     }
 
-    if (rememberMe) {
-      localStorage.setItem("reclutamiento_saved_email", u);
-    } else {
-      localStorage.removeItem("reclutamiento_saved_email");
-    }
+    setSubmitting(true);
+    try {
+      const result = await signIn(u, password);
 
-    setSubmitting(false);
-    setIsSuccess(true);
-    // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
+      if (!result.ok) {
+        setError({
+          field: "form",
+          message:
+            result.message ??
+            "No se pudo iniciar sesión. Revisa tus credenciales.",
+        });
+        return;
+      }
+
+      if (rememberMe) {
+        localStorage.setItem("reclutamiento_saved_email", u);
+      } else {
+        localStorage.removeItem("reclutamiento_saved_email");
+      }
+
+      setIsSuccess(true);
+      // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
+    } catch {
+      setError({
+        field: "form",
+        message: "No se pudo iniciar sesión. Inténtalo de nuevo.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <MotionConfig reducedMotion="user">
-      <main className="login" aria-label="Inicio de sesión">
-        <div className="login__left">
-          <motion.div
-            className="login__content"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
+    <main className="login" aria-labelledby={titleId}>
+      <div className="login__left">
+        <div className="login__content">
             <div className="login__header">
               <div className="login__brand">
-                <span className="login__brand-icon">
-                  <MorphingIcon icon={Asterisk} size={32} strokeWidth={2.5} />
+                <span className="login__brand-icon" aria-hidden="true">
+                  <MorphingIcon icon={Asterisk} size="var(--icon-size-xxl)" />
                 </span>
                 <span className="login__brand-name">Reclutamiento</span>
               </div>
-              <h1 className="login__title">ViñoPlastic Qro</h1>
+              <h1 id={titleId} className="login__title">
+                ViñoPlastic Qro
+              </h1>
               <p className="login__subtitle">
                 Ingresa tus credenciales para continuar.
               </p>
@@ -136,27 +143,46 @@ export function Login() {
                 {/* Campo: correo */}
                 <div className="login__field">
                   <label htmlFor={usernameId} className="login__field-label">
-                    Correo electrónico
+                    Usuario o correo electrónico
                   </label>
                   <input
-                    ref={emailRef}
+                    ref={usernameRef}
                     id={usernameId}
                     data-testid="login-email-input"
                     className="login__input"
-                    type="email"
+                    type="text"
                     autoComplete="username"
                     autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    placeholder="usuario@empresa.com"
+                    placeholder="usuario o correo@empresa.com"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if (
+                        error?.field === "username" ||
+                        error?.field === "form"
+                      ) {
+                        setError(null);
+                      }
+                    }}
                     disabled={submitting || isSuccess}
                     required
                     aria-required="true"
-                    aria-describedby={error ? errorId : undefined}
-                    aria-invalid={error ? "true" : undefined}
+                    aria-describedby={
+                      error?.field === "username" ? usernameErrorId : undefined
+                    }
+                    aria-invalid={error?.field === "username" || undefined}
                   />
+                  {error?.field === "username" && (
+                    <p
+                      id={usernameErrorId}
+                      className="form-error-text login__field-error"
+                      role="alert"
+                    >
+                      {error.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Campo: contraseña */}
@@ -174,18 +200,32 @@ export function Login() {
                       autoComplete="current-password"
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (
+                          error?.field === "password" ||
+                          error?.field === "form"
+                        ) {
+                          setError(null);
+                        }
+                      }}
                       onKeyUp={handlePasswordKeyEvent}
                       onKeyDown={handlePasswordKeyEvent}
+                      onBlur={() => setCapsLock(false)}
                       disabled={submitting || isSuccess}
                       required
                       aria-required="true"
                       aria-describedby={
-                        [error ? errorId : null, capsLock ? capsId : null]
+                        [
+                          error?.field === "password"
+                            ? passwordErrorId
+                            : null,
+                          capsLock ? capsId : null,
+                        ]
                           .filter(Boolean)
                           .join(" ") || undefined
                       }
-                      aria-invalid={error ? "true" : undefined}
+                      aria-invalid={error?.field === "password" || undefined}
                     />
                     <button
                       type="button"
@@ -202,14 +242,22 @@ export function Login() {
                     >
                       <MorphingIcon
                         icon={showPassword ? EyeOff : Eye}
-                        size={16}
-                        strokeWidth={2}
+                        size="var(--icon-size-sm)"
                         aria-hidden="true"
                       />
                     </button>
                   </div>
+                  {error?.field === "password" && (
+                    <p
+                      id={passwordErrorId}
+                      className="form-error-text login__field-error"
+                      role="alert"
+                    >
+                      {error.message}
+                    </p>
+                  )}
                   {capsLock && (
-                    <p id={capsId} className="login__caps-warning" role="alert">
+                    <p id={capsId} className="login__caps-warning" role="status">
                       Bloq Mayús activado
                     </p>
                   )}
@@ -228,36 +276,34 @@ export function Login() {
                   </label>
                 </div>
 
-                {error && (
-                  <p id={errorId} className="form-error" role="alert">
-                    {error}
+                {error?.field === "form" && (
+                  <p
+                    id={formErrorId}
+                    className="form-error-text login__form-error"
+                    role="alert"
+                  >
+                    {error.message}
                   </p>
                 )}
 
                 <AnimatedSubmitButton
                   isSubmitting={submitting}
                   isSuccess={isSuccess}
-                  isError={!!error}
-                  errorText={error || undefined}
                   idleText="Ingresar"
                   loadingText="Verificando..."
                   successText="¡Bienvenido!"
                   idleIcon={ArrowRightIconData}
-                  className="btn-primary login__submit login__submit--full"
+                  className="btn-primary login__submit"
                   data-testid="login-submit-button"
                 />
               </form>
             </div>
-          </motion.div>
+          </div>
         </div>
 
+      {!reduceMotion && (
         <div className="login__right" aria-hidden="true">
-          <motion.div
-            className="login__image-wrapper"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-          >
+          <div className="login__image-wrapper">
             <video
               src="/login-video-claude.mp4"
               className="login__media"
@@ -266,9 +312,9 @@ export function Login() {
               muted
               playsInline
             />
-          </motion.div>
+          </div>
         </div>
-      </main>
-    </MotionConfig>
+      )}
+    </main>
   );
 }
