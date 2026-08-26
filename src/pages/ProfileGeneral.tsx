@@ -104,7 +104,7 @@ export function ProfileGeneral() {
           </Tabs.Content>
           {isAdmin && (
             <Tabs.Content className="profile-general__tab-content" value="templates">
-              <ProfileTemplateManager employees={eligibleEmployees} templates={data.templates} onSaved={loadData} />
+              <ProfileTemplateManager templates={data.templates} onSaved={loadData} />
             </Tabs.Content>
           )}
         </Tabs.Root>
@@ -112,4 +112,3 @@ export function ProfileGeneral() {
     </main>
   );
 }
-

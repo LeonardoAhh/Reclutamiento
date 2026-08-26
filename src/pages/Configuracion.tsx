@@ -45,12 +45,12 @@ interface FeatureItem {
 
 export const FEATURES: FeatureItem[] = [
   { id: "busqueda", label: "Búsqueda", icon: Search },
+  { id: "formatos", label: "Formatos", icon: Bell },
   { id: "indicadores", label: "Indicadores", icon: BarChart2 },
   { id: "rutas", label: "Rutas", icon: Bus },
-  { id: "tabulador", label: "Tabulador", icon: Wallet },
-  { id: "speech", label: "Speech WA", icon: MessageSquare },
-  { id: "formatos", label: "Formatos", icon: Bell },
   { id: "sistema", label: "Sistema", icon: Settings },
+  { id: "speech", label: "Speech WA", icon: MessageSquare },
+  { id: "tabulador", label: "Tabulador", icon: Wallet },
 ];
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CheckCircle2, LockKeyhole, Save } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { formatReadableDate } from '@/lib/dates';
@@ -9,6 +9,7 @@ import {
   profilePositionKey,
   type EligibleProfileEmployee,
   type ProfileCycle,
+  type ProfileCriterion,
   type ProfileEvaluation,
   type ProfileTemplate,
 } from './types';
@@ -33,8 +34,11 @@ export function ProfileEvaluationPanel({
   const [selectedKey, setSelectedKey] = useState('');
   const [responses, setResponses] = useState<Record<string, boolean | undefined>>({});
   const [comments, setComments] = useState('');
+  const [activeStep, setActiveStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const categoryHeadingRefs = useRef<Array<HTMLHeadingElement | null>>([]);
+  const reviewHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
   const selectedEmployee = employees.find((employee) => employee.key === selectedKey) ?? null;
   const existingEvaluation = selectedEmployee
@@ -50,14 +54,35 @@ export function ProfileEvaluationPanel({
     if (!selectedEmployee) return null;
     const positionKey = profilePositionKey(
       selectedEmployee.area,
-      selectedEmployee.section,
       selectedEmployee.position,
     );
     return templates.find((item) => (
       item.status === 'active'
-      && profilePositionKey(item.area, item.seccion, item.puesto) === positionKey
+      && profilePositionKey(item.area, item.puesto) === positionKey
     )) ?? null;
   }, [existingEvaluation, selectedEmployee, templates]);
+
+  const categoryGroups = useMemo(() => {
+    if (!template) return [];
+    const groups = new Map<string, { name: string; criteria: ProfileCriterion[] }>();
+
+    for (const criterion of template.criteria) {
+      const name = criterion.category.trim();
+      const key = name.toLocaleUpperCase('es-MX');
+      const group = groups.get(key);
+      if (group) group.criteria.push(criterion);
+      else groups.set(key, { name, criteria: [criterion] });
+    }
+
+    let displayNumber = 0;
+    return Array.from(groups.values()).map((group) => ({
+      ...group,
+      criteria: group.criteria.map((criterion) => ({
+        criterion,
+        displayNumber: ++displayNumber,
+      })),
+    }));
+  }, [template]);
 
   useEffect(() => {
     setResponses(Object.fromEntries(
@@ -67,6 +92,10 @@ export function ProfileEvaluationPanel({
     setError('');
   }, [existingEvaluation?.id, selectedKey]);
 
+  useEffect(() => {
+    setActiveStep(0);
+  }, [selectedKey, template?.id]);
+
   const scorableCriteria = template?.criteria.filter((criterion) => criterion.is_scorable) ?? [];
   const answeredCount = scorableCriteria.filter((criterion) => typeof responses[criterion.id] === 'boolean').length;
   const previewScoreBps = scorableCriteria.reduce(
@@ -74,6 +103,24 @@ export function ProfileEvaluationPanel({
     0,
   );
   const isLocked = existingEvaluation?.status === 'submitted';
+  const isReviewStep = activeStep === categoryGroups.length;
+  const currentGroup = categoryGroups[activeStep] ?? null;
+  const currentScorableCriteria = currentGroup?.criteria.filter(({ criterion }) => criterion.is_scorable) ?? [];
+  const currentAnsweredCount = currentScorableCriteria.filter(
+    ({ criterion }) => typeof responses[criterion.id] === 'boolean',
+  ).length;
+  const canAdvance = Boolean(
+    currentGroup && currentAnsweredCount === currentScorableCriteria.length,
+  );
+
+  const goToStep = (nextStep: number) => {
+    const boundedStep = Math.max(0, Math.min(nextStep, categoryGroups.length));
+    setActiveStep(boundedStep);
+    window.requestAnimationFrame(() => {
+      if (boundedStep === categoryGroups.length) reviewHeadingRef.current?.focus();
+      else categoryHeadingRefs.current[boundedStep]?.focus();
+    });
+  };
 
   const handleSave = async (submit: boolean) => {
     if (!selectedEmployee || !template || saving || isLocked) return;
@@ -167,93 +214,160 @@ export function ProfileEvaluationPanel({
             </div>
           ) : (
             <form onSubmit={(event) => { event.preventDefault(); void handleSave(true); }}>
+              <div className="profile-general__step-status" aria-live="polite">
+                <strong>{isReviewStep ? 'Revisión final' : currentGroup?.name}</strong>
+                <span>
+                  Paso {activeStep + 1} de {categoryGroups.length + 1}
+                  {!isReviewStep && ` · ${currentAnsweredCount} de ${currentScorableCriteria.length} respondidos`}
+                </span>
+              </div>
+
               <fieldset className="profile-general__evaluation-fieldset" disabled={isLocked || saving}>
                 <legend>Perfil de {template.puesto} · versión {template.version}</legend>
                 <div className="profile-general__evaluation-list">
-                  {template.criteria.map((criterion, index) => {
-                    if (!criterion.is_scorable) {
-                      return (
-                        <div key={criterion.id} className="profile-general__criterion profile-general__criterion--info">
-                          <span className="profile-general__criterion-index">{index + 1}</span>
-                          <div><strong>{criterion.description}</strong><span>{criterion.category} · Informativo</span></div>
-                        </div>
-                      );
-                    }
-                    const groupLabelId = `profile-evaluation-criterion-${criterion.id}`;
+                  {categoryGroups.map((group, groupIndex) => {
+                    const categoryHeadingId = `profile-evaluation-category-${template.id}-${groupIndex}`;
                     return (
-                      <div key={criterion.id} className="profile-general__criterion">
-                        <span className="profile-general__criterion-index">{index + 1}</span>
-                        <div className="profile-general__criterion-copy">
-                          <strong id={groupLabelId}>{criterion.description}</strong>
-                          <span>{criterion.category} · {(criterion.weight_bps / 100).toFixed(2)}%</span>
+                      <section
+                        key={group.name}
+                        className={`profile-general__category-group${groupIndex === activeStep ? ' profile-general__category-group--active' : ''}`}
+                        aria-labelledby={categoryHeadingId}
+                      >
+                        <h3
+                          id={categoryHeadingId}
+                          ref={(node) => { categoryHeadingRefs.current[groupIndex] = node; }}
+                          tabIndex={-1}
+                        >
+                          {group.name}
+                        </h3>
+                        <div className="profile-general__category-grid">
+                          {group.criteria.map(({ criterion, displayNumber }) => {
+                            if (!criterion.is_scorable) {
+                              return (
+                                <div key={criterion.id} className="profile-general__criterion profile-general__criterion--info">
+                                  <span className="profile-general__criterion-index">{displayNumber}</span>
+                                  <div><strong>{criterion.description}</strong><span>Informativo</span></div>
+                                </div>
+                              );
+                            }
+                            const groupLabelId = `profile-evaluation-criterion-${criterion.id}`;
+                            return (
+                              <div key={criterion.id} className="profile-general__criterion">
+                                <span className="profile-general__criterion-index">{displayNumber}</span>
+                                <div className="profile-general__criterion-copy">
+                                  <strong id={groupLabelId}>{criterion.description}</strong>
+                                  <span>Peso: {(criterion.weight_bps / 100).toFixed(2)}%</span>
+                                </div>
+                                <div className="profile-general__binary" role="radiogroup" aria-labelledby={groupLabelId}>
+                                  <label>
+                                    <input
+                                      type="radio"
+                                      name={`criterion-${criterion.id}`}
+                                      checked={responses[criterion.id] === true}
+                                      onChange={() => setResponses((current) => ({ ...current, [criterion.id]: true }))}
+                                      required
+                                    />
+                                    Cumple
+                                  </label>
+                                  <label>
+                                    <input
+                                      type="radio"
+                                      name={`criterion-${criterion.id}`}
+                                      checked={responses[criterion.id] === false}
+                                      onChange={() => setResponses((current) => ({ ...current, [criterion.id]: false }))}
+                                      required
+                                    />
+                                    No cumple
+                                  </label>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                        <div className="profile-general__binary" role="radiogroup" aria-labelledby={groupLabelId}>
-                          <label>
-                            <input
-                              type="radio"
-                              name={`criterion-${criterion.id}`}
-                              checked={responses[criterion.id] === true}
-                              onChange={() => setResponses((current) => ({ ...current, [criterion.id]: true }))}
-                              required
-                            />
-                            Cumple
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              name={`criterion-${criterion.id}`}
-                              checked={responses[criterion.id] === false}
-                              onChange={() => setResponses((current) => ({ ...current, [criterion.id]: false }))}
-                              required
-                            />
-                            No cumple
-                          </label>
-                        </div>
-                      </div>
+                      </section>
                     );
                   })}
                 </div>
               </fieldset>
 
-              <div className="form-group profile-general__comments">
-                <label htmlFor="profile-evaluation-comments">Comentarios</label>
-                <textarea
-                  id="profile-evaluation-comments"
-                  value={comments}
-                  onChange={(event) => setComments(event.target.value)}
-                  disabled={isLocked || saving}
-                  placeholder="Observaciones generales de la evaluación"
-                />
+              <div className={`profile-general__step-navigation${isReviewStep ? ' profile-general__step-navigation--review' : ''}`}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => goToStep(activeStep - 1)}
+                  disabled={activeStep === 0}
+                >
+                  Anterior
+                </button>
+                {!isReviewStep && (
+                  <button type="button" className="btn-primary" onClick={() => goToStep(activeStep + 1)} disabled={!canAdvance}>
+                    Siguiente
+                  </button>
+                )}
+                <button type="button" className="btn-secondary profile-general__step-save" onClick={() => void handleSave(false)} disabled={saving || isLocked}>
+                  Guardar borrador
+                </button>
               </div>
 
-              <div className="profile-general__evaluation-footer">
-                <div className="profile-general__score" aria-live="polite">
-                  <span>Resultado</span>
-                  <strong>{(previewScoreBps / 100).toFixed(2)}%</strong>
-                  <small>{answeredCount} de {scorableCriteria.length} criterios respondidos</small>
+              <div className={`profile-general__evaluation-completion${isReviewStep ? ' profile-general__evaluation-completion--active' : ''}`}>
+                <section className="profile-general__review" aria-labelledby="profile-evaluation-review-title">
+                  <h3 id="profile-evaluation-review-title" ref={reviewHeadingRef} tabIndex={-1}>Revisión final</h3>
+                  <ul>
+                    {categoryGroups.map((group) => {
+                      const groupScorable = group.criteria.filter(({ criterion }) => criterion.is_scorable);
+                      const groupAnswered = groupScorable.filter(
+                        ({ criterion }) => typeof responses[criterion.id] === 'boolean',
+                      ).length;
+                      return (
+                        <li key={group.name}>
+                          <span>{group.name}</span>
+                          <strong>{groupScorable.length === 0 ? 'Informativa' : `${groupAnswered} de ${groupScorable.length}`}</strong>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+
+                <div className="form-group profile-general__comments">
+                  <label htmlFor="profile-evaluation-comments">Comentarios</label>
+                  <textarea
+                    id="profile-evaluation-comments"
+                    value={comments}
+                    onChange={(event) => setComments(event.target.value)}
+                    disabled={isLocked || saving}
+                    placeholder="Observaciones generales de la evaluación"
+                  />
                 </div>
-                <div className="profile-general__footer-actions">
-                  {isLocked ? (
-                    isAdmin && (
-                      <button type="button" className="btn-secondary" onClick={() => void handleReopen()} disabled={saving}>
-                        <LockKeyhole size={16} aria-hidden="true" /> Reabrir para corrección
-                      </button>
-                    )
-                  ) : (
-                    <>
-                      <button type="button" className="btn-secondary" onClick={() => void handleSave(false)} disabled={saving}>
-                        <Save size={16} aria-hidden="true" /> Guardar borrador
-                      </button>
-                      <button type="submit" className="btn-primary" disabled={saving || answeredCount !== scorableCriteria.length}>
-                        <CheckCircle2 size={16} aria-hidden="true" /> Enviar y bloquear
-                      </button>
-                    </>
-                  )}
+
+                <div className="profile-general__evaluation-footer">
+                  <div className="profile-general__score" aria-live="polite">
+                    <span>Resultado</span>
+                    <strong>{(previewScoreBps / 100).toFixed(2)}%</strong>
+                    <small>{answeredCount} de {scorableCriteria.length} criterios respondidos</small>
+                  </div>
+                  <div className="profile-general__footer-actions">
+                    {isLocked ? (
+                      isAdmin && (
+                        <button type="button" className="btn-secondary" onClick={() => void handleReopen()} disabled={saving}>
+                          <LockKeyhole size={16} aria-hidden="true" /> Reabrir para corrección
+                        </button>
+                      )
+                    ) : (
+                      <>
+                        <button type="button" className="btn-secondary" onClick={() => void handleSave(false)} disabled={saving}>
+                          <Save size={16} aria-hidden="true" /> Guardar borrador
+                        </button>
+                        <button type="submit" className="btn-primary" disabled={saving || answeredCount !== scorableCriteria.length}>
+                          <CheckCircle2 size={16} aria-hidden="true" /> Enviar y bloquear
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
+                {isLocked && !isAdmin && (
+                  <p className="profile-general__locked-note">La evaluación está bloqueada. Solo un Administrador puede reabrirla.</p>
+                )}
               </div>
-              {isLocked && !isAdmin && (
-                <p className="profile-general__locked-note">La evaluación está bloqueada. Solo un Administrador puede reabrirla.</p>
-              )}
               {error && <p className="form-error-text" role="alert">{error}</p>}
             </form>
           )}
@@ -262,4 +376,3 @@ export function ProfileEvaluationPanel({
     </section>
   );
 }
-

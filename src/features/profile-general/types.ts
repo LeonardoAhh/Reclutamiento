@@ -24,7 +24,6 @@ export interface ProfileCriterion {
 export interface ProfileTemplate {
   id: string;
   area: string;
-  seccion: string;
   puesto: string;
   version: number;
   status: ProfileTemplateStatus;
@@ -93,8 +92,8 @@ export interface EditableCriterion {
 const normalizeText = (value: string) =>
   value.trim().replace(/\s+/g, ' ').toLocaleUpperCase('es-MX');
 
-export function profilePositionKey(area: string, section: string, position: string): string {
-  return [area, section, position].map(normalizeText).join('|');
+export function profilePositionKey(area: string, position: string): string {
+  return [area, position].map(normalizeText).join('|');
 }
 
 export function profileHiringKey(employeeNumber: string, entryDate: string): string {
@@ -153,4 +152,3 @@ export function buildEligibleProfileEmployees(
     (left, right) => left.entryDate.localeCompare(right.entryDate) || left.name.localeCompare(right.name, 'es-MX'),
   );
 }
-

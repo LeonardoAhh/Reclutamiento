@@ -20,6 +20,18 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: ReadonlyArray<NavItem> = [
+  { to: "/actividades", label: "Actividades", icon: ClipboardList },
+  { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
+  {
+    to: "/candidatos",
+    label: "Candidatos",
+    icon: Contact,
+    mobilePriority: true,
+  },
+  { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
+  { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
+  { to: "/plantilla", label: "Plantilla", icon: Building2 },
+  { to: "/reportes", label: "Reporte Diario", icon: Calendar },
   {
     to: "/resumen",
     label: "Resumen",
@@ -27,16 +39,4 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
     end: false,
     mobilePriority: true,
   },
-  {
-    to: "/candidatos",
-    label: "Candidatos",
-    icon: Contact,
-    mobilePriority: true,
-  },
-  { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
-  { to: "/reportes", label: "Reporte Diario", icon: Calendar },
-  { to: "/plantilla", label: "Plantilla", icon: Building2 },
-  { to: "/actividades", label: "Actividades", icon: ClipboardList },
-  { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
-  { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
 ];

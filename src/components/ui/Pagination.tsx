@@ -11,6 +11,7 @@ interface PaginationProps {
   canGoPrev: boolean;
   canGoNext: boolean;
   ariaLabel?: string;
+  variant?: "numbered" | "compact";
 }
 
 export function Pagination({
@@ -22,6 +23,7 @@ export function Pagination({
   canGoPrev,
   canGoNext,
   ariaLabel = "Paginación",
+  variant = "numbered",
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
@@ -54,20 +56,18 @@ export function Pagination({
 
   return (
     <nav
-      className="pagination"
+      className={`pagination pagination--${variant}`}
       aria-label={ariaLabel}
-      aria-live="polite"
     >
       <button
         type="button"
-        className="pagination__btn pagination__btn--prev pagination__mobile-only"
+        className="pagination__btn pagination__btn--prev"
         onClick={onPrev}
         disabled={!canGoPrev}
         aria-label="Página anterior"
         aria-disabled={!canGoPrev}
       >
         <ChevronLeft size={18} aria-hidden="true" />
-        <span className="pagination__btn-text">Anterior</span>
       </button>
 
       <div className="pagination__pages" role="group" aria-label="Páginas">
@@ -97,44 +97,20 @@ export function Pagination({
         )}
       </div>
 
+      <span className="pagination__mobile-info" aria-live="polite" aria-atomic="true">
+        Página {currentPage} de {totalPages}
+      </span>
+
       <button
         type="button"
-        className="pagination__btn pagination__btn--next pagination__mobile-only"
+        className="pagination__btn pagination__btn--next"
         onClick={onNext}
         disabled={!canGoNext}
         aria-label="Página siguiente"
         aria-disabled={!canGoNext}
       >
-        <span className="pagination__btn-text">Siguiente</span>
         <ChevronRight size={18} aria-hidden="true" />
       </button>
-
-      <div className="pagination__mobile-info pagination__mobile-only" aria-hidden="true">
-        Página {currentPage} de {totalPages}
-      </div>
-
-      <div className="pagination__desktop-controls">
-        <button
-          type="button"
-          className="pagination__btn pagination__btn--prev"
-          onClick={onPrev}
-          disabled={!canGoPrev}
-          aria-label="Página anterior"
-          aria-disabled={!canGoPrev}
-        >
-          <ChevronLeft size={18} aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          className="pagination__btn pagination__btn--next"
-          onClick={onNext}
-          disabled={!canGoNext}
-          aria-label="Página siguiente"
-          aria-disabled={!canGoNext}
-        >
-          <ChevronRight size={18} aria-hidden="true" />
-        </button>
-      </div>
     </nav>
   );
 }

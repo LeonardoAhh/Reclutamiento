@@ -3,16 +3,16 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .pagination {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   padding: var(--spacing-md) 0;
   width: 100%;
 }
 
 .pagination__pages {
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--spacing-xs);
   flex-wrap: wrap;
@@ -69,21 +69,6 @@
   color: var(--color-on-primary);
 }
 
-.pagination__btn--prev,
-.pagination__btn--next {
-  padding: var(--spacing-xs) var(--spacing-md);
-}
-
-.pagination__btn-text {
-  display: none;
-}
-
-@media (max-width: 600px) {
-  .pagination__btn-text {
-    display: inline;
-  }
-}
-
 .pagination__ellipsis {
   display: inline-flex;
   align-items: center;
@@ -97,37 +82,42 @@
 }
 
 .pagination__mobile-info {
+  min-width: 0;
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
   color: var(--color-muted);
   text-align: center;
 }
 
-.pagination__desktop-controls {
-  display: none;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .pagination {
-    flex-direction: row;
+    display: flex;
     justify-content: center;
   }
 
-  .pagination__mobile-only {
-    display: none !important;
+  .pagination__pages {
+    display: flex;
   }
 
-  .pagination__desktop-controls {
-    display: inline-flex;
+  .pagination__mobile-info {
+    display: none;
   }
+}
 
-  .pagination__btn--prev,
-  .pagination__btn--next {
-    min-width: var(--touch-target-min);
-    padding: var(--spacing-xs);
-  }
+.pagination--compact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.pagination--compact .pagination__pages {
+  display: none;
+}
+
+.pagination--compact .pagination__mobile-info {
+  display: block;
 }
 
 @media (forced-colors: active) {

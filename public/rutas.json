@@ -2761,5 +2761,32 @@
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "HDA SANTA ROSA ",
     "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4352",
+    "nombre": "TORRES SANTOS ANTONIO",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "turno": "2",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4353",
+    "nombre": "GARCIA RIVERA LILIANA BELEN",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "turno": "2",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+  },
+  {
+    "numero empleado": "4354",
+    "nombre": "GARCIA MARTINEZ MARIA DE LOS ANGELES",
+    "seccion": "ALMACÉN 2DO TURNO ",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   }
 ]

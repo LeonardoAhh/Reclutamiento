@@ -14,6 +14,9 @@ function profileGeneralError(error: unknown): string {
     if (value.code === '42P01' || value.code === 'PGRST205') {
       return 'Perfil General todavía no está habilitado en la base de datos. Aplica la migración 029.';
     }
+    if (value.code === '42883' || value.code === 'PGRST202') {
+      return 'El alcance Área + Puesto todavía no está habilitado en la base de datos. Aplica la migración 030.';
+    }
     if (value.code === '42501') return value.message || 'No tienes permiso para realizar esta acción.';
     if (value.message?.trim()) return value.message.trim();
   }
@@ -34,7 +37,7 @@ export async function fetchProfileGeneralData(): Promise<ProfileGeneralData> {
       .order('starts_on', { ascending: false }),
     supabase
       .from('profile_general_templates')
-      .select('id, area, seccion, puesto, version, status, source, created_at, activated_at, criteria:profile_general_criteria(*)')
+      .select('id, area, puesto, version, status, source, created_at, activated_at, criteria:profile_general_criteria(*)')
       .order('created_at', { ascending: false }),
     supabase
       .from('profile_general_evaluations')
@@ -61,14 +64,12 @@ export async function fetchProfileGeneralData(): Promise<ProfileGeneralData> {
 
 export async function saveProfileTemplate(input: {
   area: string;
-  section: string;
   position: string;
   source: 'manual' | 'import';
   criteria: EditableCriterion[];
 }): Promise<void> {
   const { error } = await supabase.rpc('save_profile_general_template', {
     p_area: input.area,
-    p_seccion: input.section,
     p_puesto: input.position,
     p_source: input.source,
     p_criteria: input.criteria.map((criterion) => ({

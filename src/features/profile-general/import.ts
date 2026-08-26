@@ -49,7 +49,7 @@ function parseWeightBps(value: unknown, rowNumber: number): number {
   return Math.round(normalized * 100);
 }
 
-function parseCsvLine(line: string): string[] {
+function parseDelimitedLine(line: string, delimiter: string): string[] {
   const cells: string[] = [];
   let current = '';
   let quoted = false;
@@ -60,7 +60,7 @@ function parseCsvLine(line: string): string[] {
       index += 1;
     } else if (character === '"') {
       quoted = !quoted;
-    } else if (character === ',' && !quoted) {
+    } else if (character === delimiter && !quoted) {
       cells.push(current.trim());
       current = '';
     } else {
@@ -73,10 +73,21 @@ function parseCsvLine(line: string): string[] {
 
 function parseCsv(text: string): ImportedRow[] {
   const lines = text.split(/\r?\n/).filter((line) => line.trim());
-  if (lines.length < 2) throw new Error('El CSV necesita encabezados y al menos una fila.');
-  const headers = parseCsvLine(lines[0]);
+  if (lines.length < 2) {
+    throw new Error('El contenido necesita una fila de encabezados y al menos un criterio.');
+  }
+  const delimiter = ['\t', ';', ',']
+    .map((candidate) => ({
+      candidate,
+      columns: parseDelimitedLine(lines[0], candidate).length,
+    }))
+    .sort((left, right) => right.columns - left.columns)[0];
+  if (delimiter.columns < 2) {
+    throw new Error('Separa las columnas con tabulación, coma o punto y coma.');
+  }
+  const headers = parseDelimitedLine(lines[0], delimiter.candidate);
   return lines.slice(1).map((line) => {
-    const cells = parseCsvLine(line);
+    const cells = parseDelimitedLine(line, delimiter.candidate);
     return Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? '']));
   });
 }

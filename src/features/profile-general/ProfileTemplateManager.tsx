@@ -1,16 +1,15 @@
-import { useMemo, useRef, useState } from 'react';
-import { FileUp, Plus, Trash2 } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
+import { FileUp, Plus, Printer, Trash2 } from 'lucide-react';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { toast } from '@/lib/notify';
+import { usePositions } from '@/lib/positions';
 import { saveProfileTemplate } from './api';
-import {
-  criteriaFromImportedRows,
-  distributeCriteriaWeights,
-  parseProfileImport,
-} from './import';
-import type { EditableCriterion, EligibleProfileEmployee, ProfileTemplate } from './types';
+import { ProfileImportModal } from './ProfileImportModal';
+import { ProfileTemplatePrint } from './ProfileTemplatePrint';
+import { distributeCriteriaWeights } from './import';
+import type { EditableCriterion, ProfileTemplate } from './types';
 
 interface ProfileTemplateManagerProps {
-  employees: EligibleProfileEmployee[];
   templates: ProfileTemplate[];
   onSaved: () => Promise<void>;
 }
@@ -23,23 +22,31 @@ const emptyCriterion = (): EditableCriterion => ({
   isScorable: true,
 });
 
-export function ProfileTemplateManager({ employees, templates, onSaved }: ProfileTemplateManagerProps) {
-  const fileRef = useRef<HTMLInputElement>(null);
+export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateManagerProps) {
+  const { positions, loading: positionsLoading } = usePositions();
   const [area, setArea] = useState('');
-  const [section, setSection] = useState('');
   const [position, setPosition] = useState('');
   const [source, setSource] = useState<'manual' | 'import'>('manual');
   const [criteria, setCriteria] = useState<EditableCriterion[]>([emptyCriterion()]);
+  const [importOpen, setImportOpen] = useState(false);
+  const [printTemplate, setPrintTemplate] = useState<ProfileTemplate | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  const jobs = useMemo(() => {
-    const unique = new Map<string, EligibleProfileEmployee>();
-    for (const employee of employees) {
-      unique.set(`${employee.area}|${employee.section}|${employee.position}`, employee);
-    }
-    return Array.from(unique.values());
-  }, [employees]);
+  const handlePrintComplete = useCallback(() => setPrintTemplate(null), []);
+
+  const areas = useMemo(
+    () => Array.from(new Set(positions.map((item) => item.area))).sort((left, right) => left.localeCompare(right, 'es-MX')),
+    [positions],
+  );
+  const positionOptions = useMemo(
+    () => Array.from(new Set(
+      positions
+        .filter((item) => item.area === area)
+        .map((item) => item.puesto),
+    )).sort((left, right) => left.localeCompare(right, 'es-MX')),
+    [area, positions],
+  );
 
   const totalWeightBps = criteria.reduce(
     (total, criterion) => total + (criterion.isScorable ? criterion.weightBps : 0),
@@ -48,7 +55,7 @@ export function ProfileTemplateManager({ employees, templates, onSaved }: Profil
   const hasInvalidCriterion = criteria.some(
     (criterion) => !criterion.description.trim() || (criterion.isScorable && criterion.weightBps <= 0),
   );
-  const canSave = Boolean(area.trim() && section.trim() && position.trim())
+  const canSave = Boolean(area.trim() && position.trim())
     && criteria.length > 0
     && !hasInvalidCriterion
     && totalWeightBps === 10000;
@@ -61,34 +68,15 @@ export function ProfileTemplateManager({ employees, templates, onSaved }: Profil
     )));
   };
 
-  const handleFile = async (file: File | undefined) => {
-    if (!file) return;
-    try {
-      const rows = parseProfileImport(await file.text(), file.name);
-      const imported = criteriaFromImportedRows(rows);
-      if (imported.length === 0) throw new Error('No encontramos criterios para previsualizar.');
-      setCriteria(imported.some((criterion) => criterion.weightBps > 0)
-        ? imported
-        : distributeCriteriaWeights(imported));
-      setSource('import');
-      setError('');
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'No pudimos leer el archivo.');
-    } finally {
-      if (fileRef.current) fileRef.current.value = '';
-    }
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!canSave || saving) return;
     setSaving(true);
     setError('');
     try {
-      await saveProfileTemplate({ area, section, position, source, criteria });
+      await saveProfileTemplate({ area, position, source, criteria });
       toast.success({ title: 'Plantilla activada' });
       setArea('');
-      setSection('');
       setPosition('');
       setSource('manual');
       setCriteria([emptyCriterion()]);
@@ -108,40 +96,40 @@ export function ProfileTemplateManager({ employees, templates, onSaved }: Profil
             <h2 id="profile-template-editor-title">Nueva plantilla</h2>
             <p>Captura los criterios o importa el formato estructurado o heredado desde JSON/CSV y corrige la previsualización.</p>
           </div>
-          <label className="btn-secondary profile-general__file-action">
+          <button type="button" className="btn-secondary" onClick={() => setImportOpen(true)}>
             <FileUp size={16} aria-hidden="true" />
             Importar archivo
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".json,.csv,application/json,text/csv"
-              onChange={(event) => void handleFile(event.target.files?.[0])}
-            />
-          </label>
+          </button>
         </header>
 
         <form onSubmit={(event) => void handleSubmit(event)}>
           <div className="form-grid profile-general__job-fields">
             <div className="form-group">
               <label htmlFor="profile-template-area">Área</label>
-              <input id="profile-template-area" list="profile-template-areas" value={area} onChange={(event) => setArea(event.target.value)} required />
-              <datalist id="profile-template-areas">
-                {[...new Set(jobs.map((job) => job.area))].map((value) => <option key={value} value={value} />)}
-              </datalist>
-            </div>
-            <div className="form-group">
-              <label htmlFor="profile-template-section">Sección</label>
-              <input id="profile-template-section" list="profile-template-sections" value={section} onChange={(event) => setSection(event.target.value)} required />
-              <datalist id="profile-template-sections">
-                {[...new Set(jobs.filter((job) => !area || job.area === area).map((job) => job.section))].map((value) => <option key={value} value={value} />)}
-              </datalist>
+              <CustomSelect
+                id="profile-template-area"
+                value={area}
+                onChange={(value) => {
+                  setArea(value);
+                  setPosition('');
+                }}
+                options={areas.map((value) => ({ value, label: value }))}
+                placeholder={positionsLoading ? 'Cargando áreas…' : 'Selecciona un área'}
+                disabled={positionsLoading}
+                searchable
+              />
             </div>
             <div className="form-group">
               <label htmlFor="profile-template-position">Puesto</label>
-              <input id="profile-template-position" list="profile-template-positions" value={position} onChange={(event) => setPosition(event.target.value)} required />
-              <datalist id="profile-template-positions">
-                {[...new Set(jobs.filter((job) => (!area || job.area === area) && (!section || job.section === section)).map((job) => job.position))].map((value) => <option key={value} value={value} />)}
-              </datalist>
+              <CustomSelect
+                id="profile-template-position"
+                value={position}
+                onChange={setPosition}
+                options={positionOptions.map((value) => ({ value, label: value }))}
+                placeholder="Selecciona un puesto"
+                disabled={!area}
+                searchable
+              />
             </div>
           </div>
 
@@ -238,9 +226,19 @@ export function ProfileTemplateManager({ employees, templates, onSaved }: Profil
                 <summary>
                   <span>{template.puesto}</span>
                   <span className="profile-general__summary-meta">
-                    {template.area} · {template.seccion} · v{template.version} · {template.status === 'active' ? 'Activa' : template.status === 'draft' ? 'Borrador' : 'Archivada'}
+                    {template.area} · v{template.version} · {template.status === 'active' ? 'Activa' : template.status === 'draft' ? 'Borrador' : 'Archivada'}
                   </span>
                 </summary>
+                <div className="profile-general__template-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setPrintTemplate(template)}
+                  >
+                    <Printer size={16} aria-hidden="true" />
+                    Imprimir formato
+                  </button>
+                </div>
                 <ol>
                   {template.criteria.map((criterion) => (
                     <li key={criterion.id}>
@@ -254,6 +252,19 @@ export function ProfileTemplateManager({ employees, templates, onSaved }: Profil
           </div>
         )}
       </section>
+      {printTemplate && (
+        <ProfileTemplatePrint template={printTemplate} onComplete={handlePrintComplete} />
+      )}
+      {importOpen && (
+        <ProfileImportModal
+          onClose={() => setImportOpen(false)}
+          onImported={(importedCriteria) => {
+            setCriteria(importedCriteria);
+            setSource('import');
+            setError('');
+          }}
+        />
+      )}
     </div>
   );
 }
