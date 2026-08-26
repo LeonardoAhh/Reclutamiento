@@ -755,9 +755,21 @@
   background: var(--color-error-tint);
 }
 
+.trend-mixed {
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
+}
+
 .trend-flat {
   color: var(--color-muted);
   background: var(--color-surface-soft);
+}
+
+.shift-bars__comparison-note {
+  margin-top: var(--spacing-sm);
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
 }
 
 /* ─── Off-shift badge (daily capacity) ─── */

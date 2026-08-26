@@ -22,6 +22,7 @@ import { ReporteDiario } from '@/pages/ReporteDiario';
 import { Configuracion } from '@/pages/Configuracion';
 import { ReporteTransportePublic } from '@/pages/ReporteTransportePublic';
 import { Actividades } from '@/pages/Actividades';
+import { ProfileGeneral } from '@/pages/ProfileGeneral';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { AIChatPage } from '@/pages/AIChatPage';
@@ -91,6 +92,7 @@ function App() {
             <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
             <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
             <Route path="/actividades" element={<ProtectedShell><Actividades /></ProtectedShell>} />
+            <Route path="/perfil-general" element={<ProtectedShell><ProfileGeneral /></ProtectedShell>} />
             <Route path="/asistente" element={<ProtectedShell><AIChatPage /></ProtectedShell>} />
             <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />
             <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />

@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 import { mapClaveHorarioToTurno } from '@/lib/transporte-routes';
-import { supabase } from '@/lib/supabase';
 
 /** Calendario estándar por turno (días que se trabajan). */
 const DEFAULT_SCHEDULE: Record<string, string[]> = {
@@ -106,23 +105,29 @@ export function getTurnosPorDia(
 function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = []): RutaAgrupada[] {
   const map = new Map<string, RutaAgrupada>();
 
+  const ensureGroup = (nombreRuta: string): RutaAgrupada => {
+    const existing = map.get(nombreRuta);
+    if (existing) return existing;
+    const group: RutaAgrupada = {
+      nombreRuta,
+      empleados: [],
+      empleadosPrev: [],
+      totalEmpleados: 0,
+      paradas: [],
+      turnosCount: {},
+      turnosCountPrev: {},
+      maxCapacityPerShift: {},
+      capacityPerDay: {
+        'Lunes': 0, 'Martes': 0, 'Miércoles': 0, 'Jueves': 0,
+        'Viernes': 0, 'Sábado': 0, 'Domingo': 0,
+      },
+    };
+    map.set(nombreRuta, group);
+    return group;
+  };
+
   for (const emp of empleados) {
-    if (!map.has(emp.nombreRuta)) {
-      map.set(emp.nombreRuta, {
-        nombreRuta: emp.nombreRuta,
-        empleados: [],
-        empleadosPrev: [],
-        totalEmpleados: 0,
-        paradas: [],
-        turnosCount: {},
-        turnosCountPrev: {},
-        maxCapacityPerShift: {},
-        capacityPerDay: {
-          'Lunes': 0, 'Martes': 0, 'Miércoles': 0, 'Jueves': 0, 'Viernes': 0, 'Sábado': 0, 'Domingo': 0
-        }
-      });
-    }
-    const group = map.get(emp.nombreRuta)!;
+    const group = ensureGroup(emp.nombreRuta);
     group.empleados.push(emp);
     group.totalEmpleados += 1;
     if (!group.paradas.includes(emp.parada)) group.paradas.push(emp.parada);
@@ -138,11 +143,9 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
   }
 
   for (const empPrev of empleadosPrev) {
-    if (map.has(empPrev.nombreRuta)) {
-      const group = map.get(empPrev.nombreRuta)!;
-      group.empleadosPrev.push(empPrev);
-      group.turnosCountPrev[empPrev.turno] = (group.turnosCountPrev[empPrev.turno] ?? 0) + 1;
-    }
+    const group = ensureGroup(empPrev.nombreRuta);
+    group.empleadosPrev.push(empPrev);
+    group.turnosCountPrev[empPrev.turno] = (group.turnosCountPrev[empPrev.turno] ?? 0) + 1;
   }
 
   // Populate max capacities
@@ -174,6 +177,7 @@ export function useRutas() {
   const [rawData, setRawData] = useState<EmpleadoRuta[]>([]);
   const [rawPrevData, setRawPrevData] = useState<EmpleadoRuta[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [hasComparison, setHasComparison] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -181,54 +185,71 @@ export function useRutas() {
     const controller = new AbortController();
 
     async function load() {
+      setErrorMsg(null);
       try {
-        const { data: empleadosData, error: empleadosError } = await supabase
-          .from('empleados')
-          .select('num_empleado, nombre, turno, seccion, ruta, colonia, parada')
-          .not('ruta', 'is', null)
-          .neq('ruta', '');
-
-        if (empleadosError) throw empleadosError;
-
-        const { data: snapshotData, error: snapshotError } = await supabase
-          .from('rutas_snapshots')
-          .select('snapshot_data, created_at')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        if (snapshotError) throw snapshotError;
-
-        const currentMapped = (empleadosData || []).map(emp => ({
-          numeroEmpleado: emp.num_empleado,
-          nombre: emp.nombre,
-          turno: mapClaveHorarioToTurno(emp.turno || ''),
-          nombreRuta: emp.ruta || '',
-          colonia: emp.colonia || '',
-          parada: emp.parada || '',
-          seccion: emp.seccion?.trim() || undefined,
-        }));
+        const ts = Date.now();
+        const base = import.meta.env.BASE_URL || '/';
+        const urlRutas = (base.endsWith('/') ? base + 'rutas.json' : base + '/rutas.json') + '?t=' + ts;
+        const urlAnterior = (base.endsWith('/') ? base + 'rutas-anterior.json' : base + '/rutas-anterior.json') + '?t=' + ts;
+        const urlInfo = (base.endsWith('/') ? base + 'rutas-info.json' : base + '/rutas-info.json') + '?t=' + ts;
         
-        setRawData(currentMapped);
+        console.log("Fetching rutas from:", urlRutas);
 
-        if (snapshotData && snapshotData.snapshot_data) {
-          const snapshotArr = Array.isArray(snapshotData.snapshot_data) ? snapshotData.snapshot_data : [];
-          const prevMapped = snapshotArr.map(emp => ({
-            numeroEmpleado: emp.numeroEmpleado || emp.numero_empleado,
-            nombre: emp.nombre,
-            turno: mapClaveHorarioToTurno(emp.turno || ''),
-            nombreRuta: emp.nombreRuta || emp.ruta || '',
-            colonia: emp.colonia || '',
-            parada: emp.parada || '',
-            seccion: emp.seccion?.trim() || undefined,
-          }));
-          setRawPrevData(prevMapped);
-          setLastUpdated(new Date(snapshotData.created_at).toISOString());
+        const [res, resPrev, resInfo] = await Promise.all([
+          fetch(urlRutas, { signal: controller.signal }),
+          fetch(urlAnterior, { signal: controller.signal }).catch(() => null),
+          fetch(urlInfo, { signal: controller.signal }).catch(() => null)
+        ]);
+
+        if (res && res.ok) {
+          const ct = res.headers.get('content-type') || '';
+          if (ct.includes('text/html')) {
+            throw new Error(`El servidor devolvió HTML (posible SPA fallback) en lugar de JSON.`);
+          }
+
+          const data = await res.json();
+          const currentMapped = (Array.isArray(data) ? data : [])
+            .map((emp: any) => ({
+              numeroEmpleado: String(emp['numero empleado'] || emp.numeroEmpleado || emp.num_empleado || ''),
+              nombre: String(emp.nombre || ''),
+              turno: mapClaveHorarioToTurno(String(emp.turno || '')),
+              nombreRuta: String(emp['nombre ruta'] || emp.nombreRuta || emp.ruta || ''),
+              colonia: String(emp.colonia || ''),
+              parada: String(emp.parada || ''),
+              seccion: typeof emp.seccion === 'string' ? emp.seccion.trim() : undefined,
+            }))
+            .filter((emp: EmpleadoRuta) => emp.nombreRuta.trim() !== '');
+          setRawData(currentMapped);
+        } else {
+          throw new Error(`No se pudo cargar rutas.json (status: ${res ? res.status : 'network error'})`);
         }
 
+        if (resPrev && resPrev.ok) {
+          const prevData = await resPrev.json();
+          const prevMapped = (Array.isArray(prevData) ? prevData : [])
+            .map((emp: any) => ({
+              numeroEmpleado: String(emp['numero empleado'] || emp.numeroEmpleado || emp.num_empleado || ''),
+              nombre: String(emp.nombre || ''),
+              turno: mapClaveHorarioToTurno(String(emp.turno || '')),
+              nombreRuta: String(emp['nombre ruta'] || emp.nombreRuta || emp.ruta || ''),
+              colonia: String(emp.colonia || ''),
+              parada: String(emp.parada || ''),
+              seccion: typeof emp.seccion === 'string' ? emp.seccion.trim() : undefined,
+            }))
+            .filter((emp: EmpleadoRuta) => emp.nombreRuta.trim() !== '');
+          setRawPrevData(prevMapped);
+          setHasComparison(true);
+        }
+
+        if (resInfo && resInfo.ok) {
+          const infoData = await resInfo.json();
+          if (infoData.fecha) {
+            setLastUpdated(infoData.fecha);
+          }
+        }
       } catch (err: any) {
         if (err.name === 'AbortError') return;
-        setErrorMsg(err.message || 'Error al cargar rutas desde Supabase');
+        setErrorMsg(err.message || 'Error al cargar los archivos de rutas');
       } finally {
         setLoading(false);
       }
@@ -240,5 +261,5 @@ export function useRutas() {
 
   const rutas = useMemo(() => groupByRuta(rawData, rawPrevData), [rawData, rawPrevData]);
 
-  return { rutas, lastUpdated, loading, errorMsg };
+  return { rutas, lastUpdated, hasComparison, loading, errorMsg };
 }

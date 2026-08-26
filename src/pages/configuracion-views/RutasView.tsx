@@ -8,13 +8,13 @@ import {
   Minus,
   TrendingDown,
   TrendingUp,
-  UploadCloud
 } from "lucide-react";
 // NOTE: MorphingIcon espera IconInput de 'morphicons', compatible solo con
 // las definiciones crudas del paquete base 'lucide' (no 'lucide-react').
 import { Search as SearchData, X as XIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { getShortName } from "@/lib/names";
+import { formatReadableDate } from "@/lib/dates";
 import {
   useRutas,
   RutaAgrupada,
@@ -23,8 +23,6 @@ import {
 import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
-import { supabase } from '@/lib/supabase';
-import { Modal } from "@/components/ui/Modal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { isBoneyardBuild } from "@/lib/boneyard";
 import "./Rutas.css";
@@ -79,6 +77,7 @@ interface ShiftBarsProps {
   maxCapacityPerShift: Record<string, number>;
   empleados: EmpleadoRuta[];
   empleadosPrev: EmpleadoRuta[];
+  hasComparison: boolean;
   animKey: number;
 }
 
@@ -88,26 +87,21 @@ function ShiftBars({
   maxCapacityPerShift,
   empleados = [],
   empleadosPrev = [],
+  hasComparison,
   animKey,
 }: ShiftBarsProps) {
-  const entries = Object.entries(turnosCount).sort(([a], [b]) =>
-    a.localeCompare(b),
-  );
+  const entries = Array.from(
+    new Set([...Object.keys(turnosCount), ...Object.keys(turnosCountPrev)]),
+  ).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
   return (
     <div className="shift-bars" key={animKey}>
-      {entries.map(([turno, count], i) => {
+      {entries.map((turno, i) => {
+        const count = turnosCount[turno] ?? 0;
         const assignedCapacity = maxCapacityPerShift[turno];
         const barMax = assignedCapacity || Math.max(count, 21);
         const pct = barMax > 0 ? Math.round((count / barMax) * 100) : 0;
         const isOverCapacity = count > barMax;
-
-        const prevCount = turnosCountPrev[turno] ?? count; // Default to count if no prev data
-        const delta = count - prevCount;
-        let trendAria = "Sin cambios";
-        if (delta > 0) trendAria = `${delta} alta${delta === 1 ? "" : "s"}`;
-        if (delta < 0)
-          trendAria = `${Math.abs(delta)} baja${Math.abs(delta) === 1 ? "" : "s"}`;
 
         const currentEmps = empleados.filter((e) => e.turno === turno);
         const prevEmps = empleadosPrev.filter((e) => e.turno === turno);
@@ -123,6 +117,16 @@ function ShiftBars({
               (curr) => curr.numeroEmpleado === prev.numeroEmpleado,
             ),
         );
+        const trendAria = added.length > 0 || removed.length > 0
+          ? `${added.length} alta${added.length === 1 ? "" : "s"} y ${removed.length} baja${removed.length === 1 ? "" : "s"}`
+          : "Sin cambios";
+        const trendClass = added.length > 0 && removed.length > 0
+          ? "trend-mixed"
+          : added.length > 0
+            ? "trend-up"
+            : removed.length > 0
+              ? "trend-down"
+              : "trend-flat";
 
         const tooltipContent =
           added.length > 0 || removed.length > 0 ? (
@@ -161,17 +165,25 @@ function ShiftBars({
         const trendBadge = (
           <span
             tabIndex={0}
-            className={`shift-bars__trend ${delta > 0 ? "trend-up" : delta < 0 ? "trend-down" : "trend-flat"}`}
+            className={`shift-bars__trend ${trendClass}`}
             aria-label={trendAria}
           >
-            {delta > 0 ? (
+            {added.length > 0 && removed.length === 0 ? (
               <TrendingUp size={14} aria-hidden="true" />
-            ) : delta < 0 ? (
+            ) : removed.length > 0 && added.length === 0 ? (
               <TrendingDown size={14} aria-hidden="true" />
             ) : (
               <Minus size={14} aria-hidden="true" />
             )}
-            <span aria-hidden="true">{Math.abs(delta)}</span>
+            <span aria-hidden="true">
+              {added.length > 0 && removed.length > 0
+                ? `+${added.length} / −${removed.length}`
+                : added.length > 0
+                  ? `+${added.length}`
+                  : removed.length > 0
+                    ? `−${removed.length}`
+                    : "0"}
+            </span>
           </span>
         );
 
@@ -210,7 +222,7 @@ function ShiftBars({
               >
                 {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
               </span>
-              {turnosCountPrev[turno] !== undefined &&
+              {hasComparison &&
                 (tooltipContent ? (
                   <Tooltip content={tooltipContent} side="top" delayMs={200}>
                     {trendBadge}
@@ -243,10 +255,10 @@ function DailyCapacityBars({
   const DAYS_ORDER = [
     "Lunes",
     "Martes",
-    "MiÃ©rcoles",
+    "Miércoles",
     "Jueves",
     "Viernes",
-    "SÃ¡bado",
+    "Sábado",
     "Domingo",
   ];
 
@@ -304,12 +316,16 @@ function Placeholder() {
 interface RutaDetailProps {
   ruta: RutaAgrupada;
   animKey: number;
+  hasComparison: boolean;
+  comparisonDate: string | null;
   onSelectDay: (day: string) => void;
 }
 
 function RutaDetail({
   ruta,
   animKey,
+  hasComparison,
+  comparisonDate,
   onSelectDay,
 }: RutaDetailProps) {
   return (
@@ -333,8 +349,14 @@ function RutaDetail({
               maxCapacityPerShift={ruta.maxCapacityPerShift}
               empleados={ruta.empleados}
               empleadosPrev={ruta.empleadosPrev}
+              hasComparison={hasComparison}
               animKey={animKey}
             />
+            <p className="shift-bars__comparison-note">
+              {hasComparison
+                ? `Cambios desde la captura del ${formatReadableDate(comparisonDate)}.`
+                : "El comparativo aparecerá después de la próxima actualización de rutas."}
+            </p>
           </section>
 
           <section className="ruta-section">
@@ -396,7 +418,7 @@ function RutaDetail({
 
 
 export function RutasView() {
-  const { rutas, lastUpdated, loading, errorMsg } = useRutas();
+  const { rutas, lastUpdated, hasComparison, loading, errorMsg } = useRutas();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
@@ -408,11 +430,6 @@ export function RutasView() {
       : 'capacidad',
   );
   
-  // States for Security PIN Modal
-  const [pinModalOpen, setPinModalOpen] = useState(false);
-  const [pinValue, setPinValue] = useState("");
-  const [pinError, setPinError] = useState("");
-  const [pendingPayload, setPendingPayload] = useState<any>(null);
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
@@ -540,7 +557,7 @@ export function RutasView() {
                   searchInputRef.current?.focus();
                 }}
                 disabled={!searchTerm}
-                aria-label={searchTerm ? "Limpiar bÃºsqueda" : "Buscar"}
+                aria-label={searchTerm ? "Limpiar búsqueda" : "Buscar"}
                 tabIndex={searchTerm ? 0 : -1}
               >
                 <MorphingIcon
@@ -572,42 +589,12 @@ export function RutasView() {
               >
                 {filteredRutas.length === 0
                   ? "Sin resultados"
-                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? "" : "s"} Â· ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? "" : "s"}`}
+                  : `${matchCounts.size} ruta${matchCounts.size === 1 ? "" : "s"} · ${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0)} empleado${Array.from(matchCounts.values()).reduce((a, b) => a + b, 0) === 1 ? "" : "s"}`}
               </p>
             )}
           </div>
 
                               <div className="rutas-toolbar-actions">
-            <label className="btn-secondary rutas-horarios-btn" style={{ cursor: 'pointer', margin: 0 }}>
-              <UploadCloud size={16} aria-hidden="true" />
-              Actualizar
-              <input
-                type="file"
-                accept=".json"
-                style={{ display: 'none' }}
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  try {
-                    const text = await file.text();
-                    const payload = JSON.parse(text);
-                    if (!Array.isArray(payload) || payload.length === 0) {
-                      alert("El archivo JSON debe ser un arreglo de empleados válido.");
-                      return;
-                    }
-                    
-                    // Instead of executing right away, ask for PIN
-                    setPendingPayload(payload);
-                    setPinModalOpen(true);
-                  } catch (err: any) {
-                    console.error("Upload error:", err);
-                    alert("Error al cargar JSON: " + (err.message || 'Verifica la consola'));
-                  } finally {
-                    e.target.value = '';
-                  }
-                }}
-              />
-            </label>
 
             <a
               href="/horarios/index.html"
@@ -695,6 +682,8 @@ export function RutasView() {
             <RutaDetail
               ruta={selectedRuta}
               animKey={animKey}
+              hasComparison={hasComparison}
+              comparisonDate={lastUpdated}
               onSelectDay={setSelectedDia}
             />
           ) : (
@@ -710,79 +699,7 @@ export function RutasView() {
         dia={selectedDia}
       />
 
-      <Modal
-        isOpen={pinModalOpen}
-        onClose={() => {
-          setPinModalOpen(false);
-          setPinValue("");
-          setPinError("");
-          setPendingPayload(null);
-        }}
-        title="Autorización Requerida"
-        size="sm"
-        fullscreenMobile={false}
-        footerActions={
-          <>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                setPinModalOpen(false);
-                setPinValue("");
-                setPinError("");
-                setPendingPayload(null);
-              }}
-            >
-              Cancelar
-            </button>
-            <button
-              className="btn-primary"
-              onClick={async () => {
-                const correctPin = import.meta.env.VITE_RUTAS_UPLOAD_PIN || "7328";
-                if (pinValue !== correctPin) {
-                  setPinError("PIN incorrecto. Intenta de nuevo.");
-                  return;
-                }
-                
-                try {
-                  const { error } = await supabase.rpc('update_empleados_rutas', { payload: pendingPayload });
-                  if (error) throw error;
-                  alert("Rutas actualizadas correctamente. Recargando...");
-                  window.location.reload();
-                } catch (err: any) {
-                  console.error("RPC error:", err);
-                  alert("Error al aplicar rutas: " + (err.message || 'Verifica la consola'));
-                }
-              }}
-            >
-              Autorizar y Subir
-            </button>
-          </>
-        }
-      >
-        <div className="modal-body">
-          <p className="text-muted mb-md">
-            Ingresa el PIN para actualizar las rutas.
-          </p>
-          <div className="form-group">
-            <label htmlFor="rutas-pin-input">PIN de Seguridad</label>
-            <input
-              id="rutas-pin-input"
-              type="password"
-              className="form-control"
-              value={pinValue}
-              onChange={(e) => {
-                setPinValue(e.target.value);
-                setPinError("");
-              }}
-              placeholder="****"
-              maxLength={6}
-              autoComplete="new-password"
-              autoFocus
-            />
-            {pinError && <p className="validation-error">{pinError}</p>}
-          </div>
-        </div>
-      </Modal>
+
       
       </>
       )}

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./Pagination.css";
 
@@ -54,7 +55,6 @@ export function Pagination({
   return (
     <nav
       className="pagination"
-      role="navigation"
       aria-label={ariaLabel}
       aria-live="polite"
     >
@@ -90,7 +90,6 @@ export function Pagination({
               onClick={() => onPageChange(page)}
               aria-label={`Página ${page}`}
               aria-current={page === currentPage ? "page" : undefined}
-              aria-pressed={page === currentPage}
             >
               {page}
             </button>
@@ -139,5 +138,3 @@ export function Pagination({
     </nav>
   );
 }
-
-import { useMemo } from "react";

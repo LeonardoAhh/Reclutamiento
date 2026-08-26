@@ -35,6 +35,7 @@ supabase db push
 | `019_reportes_diarios.sql` | Tabla `reportes_diarios` (1 registro por `mes`, UNIQUE) para guardar e historizar el **Reporte Diario** de asistencia: `data` jsonb con las filas crudas + columnas resumen (`total_empleados`, `total_incidencias`, `tasa_asistencia`, `dias_disponibles`, `total_ausentismo`, `pct_ausentismo`) + `uploaded_by`, `created_at`, `updated_at` (trigger). RLS permisiva para `authenticated`. Consumido por `useReporteDiario.ts`. | Reporte Diario |
 | `022_system_maintenance.sql` | Tabla/configuración global `config.main`, lectura para usuarios autenticados, actualización exclusiva por rol `admin` y publicación Realtime para propagar mantenimiento a sesiones abiertas. | Sistema |
 | `028_ai_chat_sessions.sql` | Historial personal del Asistente: mensajes, contexto textual del CV y vacante, con RLS por usuario y respaldo local en cliente. | Asistente |
+| `029_profile_general.sql` | Ciclos, plantillas versionadas, criterios ponderados, evaluaciones y auditoría de Perfil General. Incluye transacciones RPC y permisos para Administrador/Reclutador. | Perfil General |
 
 ## RLS
 

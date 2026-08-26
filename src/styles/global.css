@@ -259,6 +259,7 @@
   --feature-chat-composer-max-block-size: 10rem;
   --feature-chat-page-min-block-size: 36rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
+  --feature-profile-binary-min: 18rem;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;

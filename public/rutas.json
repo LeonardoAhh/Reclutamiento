@@ -5,8 +5,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ ",
-    "parada": "PARADA EN LA IGLESIA"
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN LA IGLESIA"
   },
   {
     "numero empleado": "54",
@@ -14,8 +14,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "645",
@@ -23,8 +23,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ ",
-    "parada": "PARADA EN LA IGLESIA"
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN LA IGLESIA"
   },
   {
     "numero empleado": "773",
@@ -32,8 +32,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SAN ISIDRO",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "1102",
@@ -41,8 +41,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "1106",
@@ -50,8 +50,8 @@
     "seccion": "METROLOGÍA",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "1369",
@@ -59,8 +59,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "MONTENEGRO",
-    "parada": "LONCHERIA LILI"
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero empleado": "1444",
@@ -68,8 +68,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "1467",
@@ -77,8 +77,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "1473",
@@ -86,8 +86,17 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "1496",
+    "nombre": "SANCHEZ LOPEZ ELIUD",
+    "seccion": "PRODUCCIÓN MONTAJE",
+    "turno": "2",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "1526",
@@ -95,8 +104,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
   },
   {
     "numero empleado": "1528",
@@ -104,8 +113,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "1539",
@@ -113,8 +122,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "1542",
@@ -122,8 +131,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "1671",
@@ -131,8 +140,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "1677",
@@ -140,8 +149,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "1715",
@@ -149,8 +158,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "1719",
@@ -158,8 +167,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "1731",
@@ -167,8 +176,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "1757",
@@ -176,8 +185,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "1793",
@@ -185,8 +194,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "1877",
@@ -194,8 +203,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "1997",
@@ -203,8 +212,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "1998",
@@ -212,8 +221,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "2034",
@@ -221,8 +230,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "2038",
@@ -230,8 +239,8 @@
     "seccion": "PRODUCCIÓN MONTAJE",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "2043",
@@ -239,8 +248,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "2091",
@@ -248,8 +257,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "2095",
@@ -257,8 +266,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "2106",
@@ -266,8 +275,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero empleado": "2154",
@@ -275,8 +284,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "2160",
@@ -284,8 +293,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN LA BODEGA AURRERA"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero empleado": "2201",
@@ -293,8 +302,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero empleado": "2247",
@@ -302,8 +311,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "2249",
@@ -311,8 +320,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
-    "parada": "ENFRENTE AL WATER HOUSE"
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero empleado": "2254",
@@ -320,8 +329,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN STEREN"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN STEREN"
   },
   {
     "numero empleado": "2277",
@@ -329,8 +338,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero empleado": "2286",
@@ -338,8 +347,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
     "numero empleado": "2305",
@@ -347,8 +356,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "RINCON OJO DE AGUA",
-    "parada": "PARADA EN EL ENTRONQUE"
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero empleado": "2315",
@@ -356,8 +365,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "2330",
@@ -365,8 +374,8 @@
     "seccion": "METROLOGÍA",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2338",
@@ -374,8 +383,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ ",
-    "parada": "PARADA EN EL PUENTE PEATONAL"
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN EL PUENTE PEATONAL"
   },
   {
     "numero empleado": "2341",
@@ -383,8 +392,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
     "numero empleado": "2348",
@@ -392,8 +401,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "2350",
@@ -401,8 +410,8 @@
     "seccion": "METROLOGÍA",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "2365",
@@ -410,8 +419,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA LUZ",
-    "parada": "PARADA EN LA CURVA DE LA RECICLADORA"
+    "parada": "LA LUZ",
+    "colonia": "PARADA EN LA CURVA DE LA RECICLADORA"
   },
   {
     "numero empleado": "2391",
@@ -419,8 +428,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2393",
@@ -428,8 +437,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero empleado": "2400",
@@ -437,8 +446,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "2401",
@@ -446,8 +455,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "2420",
@@ -455,8 +464,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "2440",
@@ -464,8 +473,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "2461",
@@ -473,8 +482,8 @@
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2479",
@@ -482,8 +491,8 @@
     "seccion": "METROLOGÍA",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "2494",
@@ -491,8 +500,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero empleado": "2545",
@@ -500,8 +509,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "2617",
@@ -509,8 +518,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "2618",
@@ -518,8 +527,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "2635",
@@ -527,8 +536,8 @@
     "seccion": "METROLOGÍA",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "2645",
@@ -536,8 +545,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA ",
-    "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
+    "parada": "LA MONJA ",
+    "colonia": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
     "numero empleado": "2672",
@@ -545,8 +554,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "2676",
@@ -554,8 +563,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "2698",
@@ -563,8 +572,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "2706",
@@ -572,8 +581,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2710",
@@ -581,8 +590,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2714",
@@ -590,8 +599,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "MONTENEGRO",
-    "parada": "LONCHERIA LILI"
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero empleado": "2725",
@@ -599,8 +608,8 @@
     "seccion": "METROLOGÍA",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "2734",
@@ -608,8 +617,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero empleado": "2741",
@@ -617,8 +626,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "2777",
@@ -626,8 +635,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "2863",
@@ -635,8 +644,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "2874",
@@ -644,8 +653,8 @@
     "seccion": "METROLOGÍA",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "2912",
@@ -653,8 +662,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero empleado": "2916",
@@ -662,8 +671,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "2932",
@@ -671,8 +680,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SAN ISIDRO",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "2934",
@@ -680,8 +689,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "EN EL OXXO DE LOS PILARES"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero empleado": "2942",
@@ -689,8 +698,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "2943",
@@ -698,8 +707,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "2946",
@@ -707,8 +716,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "2949",
@@ -716,8 +725,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "2950",
@@ -725,8 +734,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "2951",
@@ -734,8 +743,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "2981",
@@ -743,8 +752,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "2994",
@@ -752,8 +761,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "2996",
@@ -761,8 +770,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3079",
@@ -770,8 +779,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3093",
@@ -779,8 +788,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3105",
@@ -788,8 +797,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3118",
@@ -797,8 +806,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "3144",
@@ -806,8 +815,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "PUERTO AGUIRRE",
-    "parada": "PARADA EN LA TORTILLERIA"
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero empleado": "3163",
@@ -815,8 +824,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3166",
@@ -824,8 +833,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3190",
@@ -833,8 +842,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3198",
@@ -842,8 +851,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "3202",
@@ -851,8 +860,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3256",
@@ -860,8 +869,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "EN EL OXXO DE LOS PILARES"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero empleado": "3257",
@@ -869,8 +878,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "3263",
@@ -878,8 +887,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3266",
@@ -887,8 +896,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3276",
@@ -896,8 +905,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "RINCON OJO DE AGUA",
-    "parada": "PARADA EN EL ENTRONQUE"
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero empleado": "3289",
@@ -905,8 +914,8 @@
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LAS ROSAS"
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero empleado": "3306",
@@ -914,8 +923,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "3316",
@@ -923,8 +932,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3324",
@@ -932,8 +941,8 @@
     "seccion": "PRODUCCIÓN MONTAJE",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "3366",
@@ -941,8 +950,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3375",
@@ -950,8 +959,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "PUERTO AGUIRRE",
-    "parada": "PARADA EN LA TORTILLERIA"
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero empleado": "3381",
@@ -959,8 +968,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3389",
@@ -968,8 +977,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE LA ALAMEDA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE LA ALAMEDA"
   },
   {
     "numero empleado": "3396",
@@ -977,8 +986,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
-    "parada": "ENFRENTE AL WATER HOUSE"
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero empleado": "3398",
@@ -986,8 +995,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "3403",
@@ -995,8 +1004,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3414",
@@ -1004,8 +1013,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero empleado": "3419",
@@ -1013,8 +1022,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "3432",
@@ -1022,8 +1031,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3466",
@@ -1031,8 +1040,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero empleado": "3471",
@@ -1040,8 +1049,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "3473",
@@ -1049,8 +1058,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3520",
@@ -1058,8 +1067,8 @@
     "seccion": "RECURSOS HUMANOS",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero empleado": "3531",
@@ -1067,8 +1076,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3534",
@@ -1076,8 +1085,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "3548",
@@ -1085,8 +1094,8 @@
     "seccion": "MOLDES",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "3551",
@@ -1094,8 +1103,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero empleado": "3563",
@@ -1103,8 +1112,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "3576",
@@ -1112,8 +1121,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "3582",
@@ -1121,8 +1130,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "3593",
@@ -1130,8 +1139,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "3600",
@@ -1139,8 +1148,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3610",
@@ -1148,8 +1157,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "3611",
@@ -1157,8 +1166,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3624",
@@ -1166,8 +1175,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3637",
@@ -1175,8 +1184,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3650",
@@ -1184,8 +1193,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "3669",
@@ -1193,8 +1202,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "3671",
@@ -1202,8 +1211,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero empleado": "3672",
@@ -1211,8 +1220,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero empleado": "3680",
@@ -1220,8 +1229,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3694",
@@ -1229,8 +1238,8 @@
     "seccion": "METROLOGÍA",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "3706",
@@ -1238,8 +1247,8 @@
     "seccion": "METROLOGÍA",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero empleado": "3734",
@@ -1247,8 +1256,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "PUERTO AGUIRRE",
-    "parada": "PARADA EN LA TORTILLERIA"
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero empleado": "3745",
@@ -1256,8 +1265,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "3754",
@@ -1265,8 +1274,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "3764",
@@ -1274,8 +1283,8 @@
     "seccion": "MOLDES",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA",
-    "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
+    "parada": "LA MONJA",
+    "colonia": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
     "numero empleado": "3772",
@@ -1283,8 +1292,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3773",
@@ -1292,8 +1301,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "3776",
@@ -1301,8 +1310,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "3780",
@@ -1310,8 +1319,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "3785",
@@ -1319,8 +1328,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "3790",
@@ -1328,8 +1337,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LAS ROSAS"
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero empleado": "3796",
@@ -1337,8 +1346,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "3801",
@@ -1346,8 +1355,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "3803",
@@ -1355,8 +1364,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "3809",
@@ -1364,8 +1373,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
+    "parada": "PLAZA DEL SOL",
+    "colonia": "EN EL KFC"
   },
   {
     "numero empleado": "3816",
@@ -1373,8 +1382,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero empleado": "3818",
@@ -1382,8 +1391,8 @@
     "seccion": "RECURSOS HUMANOS",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3831",
@@ -1391,8 +1400,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "3836",
@@ -1400,8 +1409,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3870",
@@ -1409,8 +1418,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "3881",
@@ -1418,8 +1427,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "3882",
@@ -1427,8 +1436,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "3883",
@@ -1436,8 +1445,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "3897",
@@ -1445,8 +1454,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "TRANSITO FRENTE AL OXXO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "TRANSITO FRENTE AL OXXO"
   },
   {
     "numero empleado": "3899",
@@ -1454,8 +1463,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "3930",
@@ -1463,8 +1472,8 @@
     "seccion": "PRODUCCIÓN MONTAJE",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "3932",
@@ -1472,8 +1481,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "3939",
@@ -1481,8 +1490,8 @@
     "seccion": "LOGISTICA",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
   },
   {
     "numero empleado": "3942",
@@ -1490,8 +1499,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "3945",
@@ -1499,8 +1508,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "3957",
@@ -1508,8 +1517,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "CRUZ ROJA MEXICANA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "CRUZ ROJA MEXICANA"
   },
   {
     "numero empleado": "3959",
@@ -1517,8 +1526,8 @@
     "seccion": "METROLOGÍA",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "3960",
@@ -1526,8 +1535,8 @@
     "seccion": "METROLOGÍA",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "3983",
@@ -1535,8 +1544,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
   },
   {
     "numero empleado": "3997",
@@ -1544,8 +1553,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "3999",
@@ -1553,8 +1562,8 @@
     "seccion": "RECURSOS HUMANOS",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "RINCON OJO DE AGUA",
-    "parada": "PARADA EN EL ENTRONQUE"
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero empleado": "4000",
@@ -1562,8 +1571,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4010",
@@ -1571,8 +1580,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "4017",
@@ -1580,8 +1589,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4028",
@@ -1589,8 +1598,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE LA ALAMEDA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE LA ALAMEDA"
   },
   {
     "numero empleado": "4040",
@@ -1598,8 +1607,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "4041",
@@ -1607,8 +1616,8 @@
     "seccion": "PRODUCCIÓN ADMTVO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "4042",
@@ -1616,8 +1625,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "OJO DE AGUA",
-    "parada": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+    "parada": "OJO DE AGUA",
+    "colonia": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
   },
   {
     "numero empleado": "4044",
@@ -1625,8 +1634,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4049",
@@ -1634,8 +1643,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4054",
@@ -1643,8 +1652,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "4061",
@@ -1652,8 +1661,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4063",
@@ -1661,8 +1670,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4065",
@@ -1670,8 +1679,8 @@
     "seccion": "PRODUCCIÓN MONTAJE",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "4077",
@@ -1679,8 +1688,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4078",
@@ -1688,8 +1697,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero empleado": "4083",
@@ -1697,8 +1706,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4084",
@@ -1706,8 +1715,8 @@
     "seccion": "METROLOGÍA",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "4092",
@@ -1715,8 +1724,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "4096",
@@ -1724,8 +1733,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "4097",
@@ -1733,8 +1742,8 @@
     "seccion": "RECURSOS HUMANOS",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "MONTENEGRO",
-    "parada": "LONCHERIA LILI"
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero empleado": "4098",
@@ -1742,8 +1751,8 @@
     "seccion": "METROLOGÍA",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "4103",
@@ -1751,8 +1760,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4106",
@@ -1760,8 +1769,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN LA BODEGA AURRERA"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero empleado": "4111",
@@ -1769,8 +1778,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4112",
@@ -1778,8 +1787,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4114",
@@ -1787,8 +1796,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero empleado": "4115",
@@ -1796,8 +1805,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero empleado": "4116",
@@ -1805,8 +1814,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4117",
@@ -1814,8 +1823,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "4125",
@@ -1823,8 +1832,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "4128",
@@ -1832,8 +1841,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4129",
@@ -1841,8 +1850,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "AV. PEDREGAL",
-    "parada": "SEGUNDA PARADA DE CAMIONES"
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4137",
@@ -1850,8 +1859,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA ",
-    "parada": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
+    "parada": "LA MONJA ",
+    "colonia": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
     "numero empleado": "4138",
@@ -1859,8 +1868,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA MONJA",
-    "parada": "SOBRE CARR EN EL PUENTE PEATONAL"
+    "parada": "LA MONJA",
+    "colonia": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
     "numero empleado": "4142",
@@ -1868,8 +1877,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "EN EL OXXO DE LOS PILARES"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero empleado": "4143",
@@ -1877,8 +1886,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
-    "parada": "ENFRENTE AL WATER HOUSE"
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero empleado": "4144",
@@ -1886,8 +1895,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN EL CIDESI "
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN EL CIDESI "
   },
   {
     "numero empleado": "4146",
@@ -1895,8 +1904,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA",
-    "parada": "ENFRENTE AL WATER HOUSE"
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero empleado": "4147",
@@ -1904,8 +1913,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "TRANSITO FRENTE AL OXXO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "TRANSITO FRENTE AL OXXO"
   },
   {
     "numero empleado": "4154",
@@ -1913,8 +1922,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4162",
@@ -1922,8 +1931,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "4165",
@@ -1931,8 +1940,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4168",
@@ -1940,8 +1949,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4169",
@@ -1949,8 +1958,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "4172",
@@ -1958,8 +1967,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "4177",
@@ -1967,8 +1976,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero empleado": "4178",
@@ -1976,8 +1985,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero empleado": "4179",
@@ -1985,8 +1994,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "AV. PEDREGAL",
-    "parada": "SEGUNDA PARADA DE CAMIONES"
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4180",
@@ -1994,8 +2003,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "4184",
@@ -2003,8 +2012,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "4185",
@@ -2012,8 +2021,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "4187",
@@ -2021,8 +2030,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4188",
@@ -2030,8 +2039,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "4192",
@@ -2039,8 +2048,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "4193",
@@ -2048,8 +2057,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "4201",
@@ -2057,8 +2066,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4203",
@@ -2066,8 +2075,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN LA BODEGA AURRERA"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero empleado": "4208",
@@ -2075,8 +2084,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero empleado": "4209",
@@ -2084,17 +2093,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
-    "numero empleado": "4215",
-    "nombre": "RAMOS ORTIZ LUIS ANGEL",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "4217",
@@ -2102,8 +2102,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SAN ISIDRO",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4225",
@@ -2111,8 +2111,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "BUENAVISTA",
-    "parada": "FRENTE AL BARCO DE CHILOS"
+    "parada": "BUENAVISTA",
+    "colonia": "FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4226",
@@ -2120,8 +2120,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "EN EL CIDESI "
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN EL CIDESI "
   },
   {
     "numero empleado": "4227",
@@ -2129,8 +2129,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "4228",
@@ -2138,8 +2138,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4229",
@@ -2147,8 +2147,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SALITRE",
-    "parada": "FRENTE AL JARDIN"
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero empleado": "4230",
@@ -2156,8 +2156,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4231",
@@ -2165,8 +2165,8 @@
     "seccion": "MANTENIMIENTO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "4234",
@@ -2174,8 +2174,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4235",
@@ -2183,8 +2183,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4239",
@@ -2192,8 +2192,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "4240",
@@ -2201,8 +2201,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4242",
@@ -2210,8 +2210,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4246",
@@ -2219,8 +2219,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero empleado": "4249",
@@ -2228,8 +2228,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "4250",
@@ -2237,8 +2237,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "4251",
@@ -2246,8 +2246,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "4253",
@@ -2255,8 +2255,8 @@
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4255",
@@ -2264,8 +2264,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4259",
@@ -2273,8 +2273,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4260",
@@ -2282,8 +2282,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4262",
@@ -2291,8 +2291,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4265",
@@ -2300,8 +2300,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "AV. PEDREGAL",
-    "parada": "SEGUNDA PARADA DE CAMIONES"
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4270",
@@ -2309,8 +2309,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4271",
@@ -2318,8 +2318,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "4272",
@@ -2327,8 +2327,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA DE AUTOBUSES SECUNDARIA"
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA DE AUTOBUSES SECUNDARIA"
   },
   {
     "numero empleado": "4274",
@@ -2336,8 +2336,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero empleado": "4275",
@@ -2345,8 +2345,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero empleado": "4276",
@@ -2354,8 +2354,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero empleado": "4280",
@@ -2363,8 +2363,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA",
-    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero empleado": "4281",
@@ -2372,8 +2372,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PIRINEOS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero empleado": "4282",
@@ -2381,8 +2381,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4284",
@@ -2390,8 +2390,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PLAZA DEL SOL",
-    "parada": "EN EL KFC"
+    "parada": "PLAZA DEL SOL",
+    "colonia": "EN EL KFC"
   },
   {
     "numero empleado": "4287",
@@ -2399,8 +2399,8 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero empleado": "4292",
@@ -2408,8 +2408,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4294",
@@ -2417,8 +2417,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "4295",
@@ -2426,8 +2426,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4296",
@@ -2435,8 +2435,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero empleado": "4299",
@@ -2444,8 +2444,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4300",
@@ -2453,8 +2453,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "COREA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4303",
@@ -2462,8 +2462,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "OJO DE AGUA",
-    "parada": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+    "parada": "OJO DE AGUA",
+    "colonia": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
   },
   {
     "numero empleado": "4304",
@@ -2471,8 +2471,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4306",
@@ -2480,8 +2480,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero empleado": "4308",
@@ -2489,8 +2489,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SAN ISIDRO",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4311",
@@ -2498,8 +2498,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero empleado": "4312",
@@ -2507,8 +2507,8 @@
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero empleado": "4313",
@@ -2516,8 +2516,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "4316",
@@ -2525,8 +2525,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4317",
@@ -2534,8 +2534,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4318",
@@ -2543,8 +2543,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4319",
@@ -2552,8 +2552,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE JUNCOS"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN EL OXXO DE JUNCOS"
   },
   {
     "numero empleado": "4320",
@@ -2561,8 +2561,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4321",
@@ -2570,8 +2570,8 @@
     "seccion": "CALIDAD ADMTVO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "4322",
@@ -2579,8 +2579,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4323",
@@ -2588,8 +2588,8 @@
     "seccion": "A. CALIDAD 2DO. TURNO",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero empleado": "4324",
@@ -2597,17 +2597,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
-  },
-  {
-    "numero empleado": "4325",
-    "nombre": "GARCIA CABRERA MARCOS ISRAEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4326",
@@ -2615,8 +2606,8 @@
     "seccion": "ALMACÉN 1ER TURNO ",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA ",
-    "parada": "FRENTE AL ELECTRA"
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "FRENTE AL ELECTRA"
   },
   {
     "numero empleado": "4328",
@@ -2624,8 +2615,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero empleado": "4329",
@@ -2633,8 +2624,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero empleado": "4331",
@@ -2642,8 +2633,8 @@
     "seccion": "A. CALIDAD 1ER TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4332",
@@ -2651,8 +2642,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4333",
@@ -2660,8 +2651,8 @@
     "seccion": "PRODUCCIÓN 4o. TURNO",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero empleado": "4335",
@@ -2669,8 +2660,8 @@
     "seccion": "PRODUCCIÓN 3ER. TURNO",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero empleado": "4340",
@@ -2678,8 +2669,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
   },
   {
     "numero empleado": "4342",
@@ -2687,8 +2678,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero empleado": "4343",
@@ -2696,8 +2687,8 @@
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero empleado": "4344",
@@ -2705,7 +2696,34 @@
     "seccion": "PRODUCCIÓN 2o. TURNO",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ"
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
+  },
+  {
+    "numero empleado": "4345",
+    "nombre": "PAULINO PEREZ FRANCISCO JAVIER",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4346",
+    "nombre": "ROBLES SUAREZ LEONOR MANUELA",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+  },
+  {
+    "numero empleado": "4347",
+    "nombre": "AGUILLON BALDERAS BELEN NOEMI",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   }
 ]

@@ -32,9 +32,9 @@
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-caption-size);
+  font-size: var(--type-caption-sm-size);
   font-weight: var(--font-medium);
-  line-height: var(--type-caption-line);
+  line-height: var(--type-caption-sm-line);
   cursor: pointer;
   transition:
     background var(--transition-fast),
@@ -92,13 +92,13 @@
   height: var(--touch-target-min);
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-size);
+  font-size: var(--type-caption-sm-size);
   font-weight: var(--font-medium);
 }
 
 .pagination__mobile-info {
   font-family: var(--font-body);
-  font-size: var(--type-caption-size);
+  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
   text-align: center;
 }

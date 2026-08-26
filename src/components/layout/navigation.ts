@@ -6,6 +6,7 @@ import {
   Briefcase,
   SlidersHorizontal,
   ClipboardList,
+  ClipboardCheck,
   Bot,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -36,5 +37,6 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: "/reportes", label: "Reporte Diario", icon: Calendar },
   { to: "/plantilla", label: "Plantilla", icon: Building2 },
   { to: "/actividades", label: "Actividades", icon: ClipboardList },
+  { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
   { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
 ];
