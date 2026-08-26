@@ -2788,5 +2788,23 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "parada": "SAN JOSE ITURBIDE",
     "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+  },
+  {
+    "numero empleado": "4336",
+    "nombre": "HERNANDEZ GUTIERREZ CARLA",
+    "seccion": "CALIDAD ADMTVO",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
+  },
+  {
+    "numero empleado": "4337",
+    "nombre": "DURANTE GOMEZ JESSICA",
+    "seccion": "CALIDAD ADMTVO",
+    "turno": "4",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   }
 ]
