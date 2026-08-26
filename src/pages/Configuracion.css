@@ -1229,10 +1229,38 @@
   overflow-x: auto;
 }
 
+.config-sidebar__group {
+  display: flex;
+  flex-direction: inherit;
+  gap: inherit;
+}
+
+.config-sidebar__group-title {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .config-sidebar__nav {
     flex-direction: column;
     overflow-x: visible;
+  }
+  
+  .config-sidebar__group {
+    margin-bottom: var(--spacing-lg);
+  }
+  .config-sidebar__group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .config-sidebar__group-title {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    padding-inline: var(--spacing-md);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-size, 12px);
+    font-weight: 600;
+    letter-spacing: 0.125px;
+    color: var(--color-muted);
   }
 }
 
@@ -2086,6 +2114,23 @@
   .config-sidebar__nav {
     flex-direction: column;
     overflow-x: hidden;
+  }
+  
+  .config-sidebar:not(.mobile-hidden) .config-sidebar__group {
+    margin-bottom: var(--spacing-lg);
+  }
+  .config-sidebar:not(.mobile-hidden) .config-sidebar__group:last-child {
+    margin-bottom: 0;
+  }
+  .config-sidebar:not(.mobile-hidden) .config-sidebar__group-title {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    padding-inline: var(--spacing-md);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-size, 12px);
+    font-weight: 600;
+    letter-spacing: 0.125px;
+    color: var(--color-muted);
   }
 
   .config-sidebar__link {

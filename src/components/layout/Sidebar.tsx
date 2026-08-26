@@ -21,7 +21,7 @@ import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
 
-import { NAV_ITEMS } from "./navigation";
+import { NAV_GROUPS } from "./navigation";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -183,42 +183,49 @@ export function Sidebar({
 
       {/* Navegación */}
       <nav className="sidebar__nav" aria-label="Secciones">
-        <ul className="sidebar__list" role="list">
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => {
-            const isActive = end
-              ? location.pathname === to
-              : location.pathname.startsWith(to);
+        {NAV_GROUPS.map((group, groupIdx) => (
+          <div key={groupIdx} className="sidebar__group">
+            {group.title && !collapsed && (
+              <div className="sidebar__group-title">{group.title}</div>
+            )}
+            <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
+              {group.items.map(({ to, label, icon: Icon, end }) => {
+                const isActive = end
+                  ? location.pathname === to
+                  : location.pathname.startsWith(to);
 
-            const link = (
-              <NavLink
-                to={to}
-                end={end}
-                className={`sidebar__item${isActive ? " sidebar__item--active" : ""}`}
-                aria-label={label}
-                data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
-              >
-                <Icon
-                  size={20}
-                  aria-hidden="true"
-                  className="sidebar__item-icon"
-                />
-                <span className="sidebar__item-label">{label}</span>
-              </NavLink>
-            );
+                const link = (
+                  <NavLink
+                    to={to}
+                    end={end}
+                    className={`sidebar__item${isActive ? " sidebar__item--active" : ""}`}
+                    aria-label={label}
+                    data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
+                  >
+                    <Icon
+                      size={20}
+                      aria-hidden="true"
+                      className="sidebar__item-icon"
+                    />
+                    <span className="sidebar__item-label">{label}</span>
+                  </NavLink>
+                );
 
-            return (
-              <li key={to}>
-                {collapsed ? (
-                  <Tooltip content={label} side="right" delayMs={0}>
-                    {link}
-                  </Tooltip>
-                ) : (
-                  link
-                )}
-              </li>
-            );
-          })}
-        </ul>
+                return (
+                  <li key={to}>
+                    {collapsed ? (
+                      <Tooltip content={label} side="right" delayMs={0}>
+                        {link}
+                      </Tooltip>
+                    ) : (
+                      link
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
       {/* Footer: user avatar + menu (moved from header) */}

@@ -19,24 +19,46 @@ export type NavItem = {
   mobilePriority?: boolean;
 };
 
-export const NAV_ITEMS: ReadonlyArray<NavItem> = [
-  { to: "/actividades", label: "Actividades", icon: ClipboardList },
-  { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
+export type NavGroup = {
+  title?: string;
+  items: NavItem[];
+};
+
+export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
-    to: "/candidatos",
-    label: "Candidatos",
-    icon: Contact,
-    mobilePriority: true,
+    title: "Principal",
+    items: [
+      {
+        to: "/candidatos",
+        label: "Candidatos",
+        icon: Contact,
+        mobilePriority: true,
+      },
+      { to: "/plantilla", label: "Plantilla", icon: Building2 },
+      {
+        to: "/resumen",
+        label: "Resumen",
+        icon: LayoutGrid,
+        end: false,
+        mobilePriority: true,
+      },
+    ],
   },
-  { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
-  { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
-  { to: "/plantilla", label: "Plantilla", icon: Building2 },
-  { to: "/reportes", label: "Reporte Diario", icon: Calendar },
   {
-    to: "/resumen",
-    label: "Resumen",
-    icon: LayoutGrid,
-    end: false,
-    mobilePriority: true,
+    title: "Herramientas",
+    items: [
+      { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
+      { to: "/reportes", label: "Reporte Diario", icon: Calendar },
+    ],
+  },
+  {
+    title: "Administración",
+    items: [
+      { to: "/actividades", label: "Actividades", icon: ClipboardList },
+      { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
+      { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
+    ],
   },
 ];
+
+export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_GROUPS.flatMap(group => group.items);

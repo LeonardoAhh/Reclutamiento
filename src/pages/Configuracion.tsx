@@ -43,15 +43,32 @@ interface FeatureItem {
   icon: LucideIcon;
 }
 
-export const FEATURES: FeatureItem[] = [
-  { id: "busqueda", label: "Búsqueda", icon: Search },
-  { id: "formatos", label: "Formatos", icon: Bell },
-  { id: "indicadores", label: "Indicadores", icon: BarChart2 },
-  { id: "rutas", label: "Rutas", icon: Bus },
-  { id: "sistema", label: "Sistema", icon: Settings },
-  { id: "speech", label: "Speech WA", icon: MessageSquare },
-  { id: "tabulador", label: "Tabulador", icon: Wallet },
+export type FeatureGroup = {
+  title?: string;
+  items: FeatureItem[];
+};
+
+export const FEATURE_GROUPS: FeatureGroup[] = [
+  {
+    title: "Principal",
+    items: [
+      { id: "busqueda", label: "Búsqueda", icon: Search },
+      { id: "formatos", label: "Formatos", icon: Bell },
+      { id: "rutas", label: "Rutas", icon: Bus },
+      { id: "speech", label: "Speech WA", icon: MessageSquare },
+    ],
+  },
+  {
+    title: "Administración",
+    items: [
+      { id: "indicadores", label: "Indicadores", icon: BarChart2 },
+      { id: "sistema", label: "Sistema", icon: Settings },
+      { id: "tabulador", label: "Tabulador", icon: Wallet },
+    ],
+  }
 ];
+
+export const FEATURES: FeatureItem[] = FEATURE_GROUPS.flatMap(group => group.items);
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   busqueda: <BusquedaView />,
@@ -90,20 +107,27 @@ export function Configuracion() {
           aria-label="Subpáginas de features"
           role="tablist"
         >
-          {FEATURES.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              id={`tab-${id}`}
-              type="button"
-              role="tab"
-              className={`config-sidebar__link ${activeTab === id ? "active" : ""}`}
-              onClick={() => handleTabClick(id)}
-              aria-selected={activeTab === id}
-              aria-controls="feature-content"
-            >
-              <Icon size={18} aria-hidden="true" />
-              <span>{label}</span>
-            </button>
+          {FEATURE_GROUPS.map((group, idx) => (
+            <div key={idx} className="config-sidebar__group" role="presentation" aria-label={group.title || "Principal"}>
+              {group.title && (
+                <div className="config-sidebar__group-title">{group.title}</div>
+              )}
+              {group.items.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  id={`tab-${id}`}
+                  type="button"
+                  role="tab"
+                  className={`config-sidebar__link ${activeTab === id ? "active" : ""}`}
+                  onClick={() => handleTabClick(id)}
+                  aria-selected={activeTab === id}
+                  aria-controls="feature-content"
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
       </aside>

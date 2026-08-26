@@ -95,6 +95,24 @@ button.sidebar__collapse-btn {
   scrollbar-width: thin;
 }
 
+.sidebar__group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.sidebar__group:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar__group-title {
+  margin-bottom: var(--spacing-xs);
+  padding-inline: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-size, 12px);
+  font-weight: 600;
+  letter-spacing: 0.125px;
+  color: var(--color-muted);
+}
+
 .sidebar__list {
   display: flex;
   flex-direction: column;
