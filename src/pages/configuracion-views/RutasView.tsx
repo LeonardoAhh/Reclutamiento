@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import {
+  ArrowRightLeft,
   Bus,
   CalendarDays,
   ChevronLeft,
@@ -117,6 +118,7 @@ function ShiftBars({
               (curr) => curr.numeroEmpleado === prev.numeroEmpleado,
             ),
         );
+        const netChange = added.length - removed.length;
         const trendAria = added.length > 0 || removed.length > 0
           ? `${added.length} alta${added.length === 1 ? "" : "s"} y ${removed.length} baja${removed.length === 1 ? "" : "s"}`
           : "Sin cambios";
@@ -127,6 +129,19 @@ function ShiftBars({
             : removed.length > 0
               ? "trend-down"
               : "trend-flat";
+
+        let iconNode;
+        if (added.length > 0 && removed.length > 0) {
+          iconNode = netChange > 0 ? <TrendingUp size={14} aria-hidden="true" /> :
+                     netChange < 0 ? <TrendingDown size={14} aria-hidden="true" /> :
+                     <ArrowRightLeft size={14} aria-hidden="true" />;
+        } else if (added.length > 0) {
+          iconNode = <TrendingUp size={14} aria-hidden="true" />;
+        } else if (removed.length > 0) {
+          iconNode = <TrendingDown size={14} aria-hidden="true" />;
+        } else {
+          iconNode = <Minus size={14} aria-hidden="true" />;
+        }
 
         const tooltipContent =
           added.length > 0 || removed.length > 0 ? (
@@ -162,28 +177,22 @@ function ShiftBars({
             </div>
           ) : null;
 
+        const textContent = (added.length > 0 && removed.length > 0)
+          ? (netChange > 0 ? `+${netChange}` : netChange < 0 ? `−${Math.abs(netChange)}` : "0")
+          : added.length > 0
+            ? `+${added.length}`
+            : removed.length > 0
+              ? `−${removed.length}`
+              : "0";
+
         const trendBadge = (
           <span
             tabIndex={0}
             className={`shift-bars__trend ${trendClass}`}
             aria-label={trendAria}
           >
-            {added.length > 0 && removed.length === 0 ? (
-              <TrendingUp size={14} aria-hidden="true" />
-            ) : removed.length > 0 && added.length === 0 ? (
-              <TrendingDown size={14} aria-hidden="true" />
-            ) : (
-              <Minus size={14} aria-hidden="true" />
-            )}
-            <span aria-hidden="true">
-              {added.length > 0 && removed.length > 0
-                ? `+${added.length} / −${removed.length}`
-                : added.length > 0
-                  ? `+${added.length}`
-                  : removed.length > 0
-                    ? `−${removed.length}`
-                    : "0"}
-            </span>
+            {iconNode}
+            <span aria-hidden="true">{textContent}</span>
           </span>
         );
 
@@ -377,40 +386,7 @@ function RutaDetail({
           </section>
         </div>
 
-        {/* Route simulation */}
-        <section className="ruta-section">
-          <h3 className="ruta-section__title type-heading-sm">
-            <MapPin
-              size={16}
-              aria-hidden="true"
-              className="ruta-section__title-icon"
-            />
-            Itinerario ({ruta.paradas.length} paradas)
-          </h3>
-          <div className="ruta-stops">
-            <ul className="ruta-stops__list">
-              {ruta.paradas.map((parada, i) => (
-                <li
-                  key={parada}
-                  className={`ruta-stops__item type-body-sm ${i === 0 ? "is-first" : i === ruta.paradas.length - 1 ? "is-last" : ""}`}
-                  style={
-                    {
-                      "--item-delay": `${0.05 + i * 0.06}s`,
-                    } as React.CSSProperties
-                  }
-                >
-                  <div className="ruta-stops__track" aria-hidden="true">
-                    <div className="ruta-stops__dot" />
-                    {i !== ruta.paradas.length - 1 && (
-                      <div className="ruta-stops__line" />
-                    )}
-                  </div>
-                  <span className="ruta-stops__text">{parada}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+
       </div>
     </div>
   );

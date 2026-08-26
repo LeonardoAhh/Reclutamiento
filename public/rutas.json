@@ -2725,5 +2725,41 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "parada": "BUENAVISTA ",
     "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+  },
+  {
+    "numero empleado": "4348",
+    "nombre": "SANCHEZ PEREZ KARINA BELEM",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
+  },
+  {
+    "numero empleado": "4349",
+    "nombre": "BARRIENTOS PEREZ MARIA DE LOS ANGELES",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+  },
+  {
+    "numero empleado": "4350",
+    "nombre": "RAMIREZ ARREDONDO NANCY ELIZABETH",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
+  },
+  {
+    "numero empleado": "4351",
+    "nombre": "HERNANDEZ BALMACEDA KAREN LIZBETH",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   }
 ]

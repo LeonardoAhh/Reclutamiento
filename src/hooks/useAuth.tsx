@@ -60,9 +60,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const expiredNotifiedRef = useRef(false);
   // Impide que respuestas 401 concurrentes ejecuten varios cierres a la vez.
   const expiryHandlingRef = useRef(false);
+  // Evita que un fetch viejo (o refresh) interrumpa y borre un inicio de sesión en progreso.
+  const loggingInRef = useRef(false);
 
   const expireSession = useCallback(async () => {
     if (expiryHandlingRef.current) return;
+    if (loggingInRef.current) return; // Ignorar expiraciones si el usuario está activamente iniciando sesión
+
     expiryHandlingRef.current = true;
 
     // Cortamos la sesión en memoria primero para que AuthGuard redirija a
@@ -72,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
     setProfileLoading(false);
 
-    if (!expiredNotifiedRef.current) {
+    if (!expiredNotifiedRef.current && window.location.pathname !== '/login') {
       expiredNotifiedRef.current = true;
       toast.error({
         title: 'Sesión expirada. Vuelve a iniciar sesión.',
@@ -287,7 +291,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [session?.user?.id]);
 
   const signIn = useCallback(
-    (username: string, password: string) => signInLib(username, password),
+    async (username: string, password: string) => {
+      loggingInRef.current = true;
+      try {
+        return await signInLib(username, password);
+      } finally {
+        // Damos gracia de unos segundos para que React Router haga la redirección
+        // y los efectos dependientes de la nueva sesión se estabilicen antes de
+        // volver a ser vulnerables a eventos de expiración rezagados.
+        setTimeout(() => {
+          loggingInRef.current = false;
+        }, 3000);
+      }
+    },
     []
   );
 

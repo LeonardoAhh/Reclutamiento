@@ -112,16 +112,25 @@
 ═══════════════════════════════════════════════════════════ */
 
 .rutas-list {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: nowrap;
   gap: var(--spacing-sm);
-  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: var(--spacing-xs);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   width: 100%;
+}
+
+.rutas-list::-webkit-scrollbar {
+  display: none;
 }
 
 @media (min-width: 769px) {
   .rutas-list {
-    grid-template-columns: repeat(6, 1fr);
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 0;
     gap: var(--spacing-md);
   }
 }
@@ -146,14 +155,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-md);
-  width: 100%;
-  min-width: 0;
+  gap: var(--spacing-sm);
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 80px;
   min-height: var(--touch-target-min);
-  max-width: 100%;
   box-sizing: border-box;
-  padding: var(--spacing-md);
-  border-radius: var(--rounded-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   cursor: pointer;
@@ -175,12 +184,14 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* Selected state: slide right on desktop only */
 @media (min-width: 769px) {
+  .ruta-card {
+    flex: 1 1 120px;
+  }
   .ruta-card--active {
     background: rgb(var(--color-primary-rgb) / 0.07);
     border-color: var(--color-primary);
-    transform: translateX(4px);
+    transform: translateY(-2px);
   }
 }
 
@@ -534,7 +545,7 @@
 @media (min-width: 1024px) {
   .ruta-detail__body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1.4fr;
+    grid-template-columns: 1fr 1fr;
     align-items: start;
     gap: var(--spacing-lg);
   }
@@ -727,17 +738,22 @@
   color: var(--color-ink);
   flex-shrink: 0;
   font-size: var(--type-body-sm-size);
+  width: 55px;
+  font-variant-numeric: tabular-nums;
 }
 
 .shift-bars__trend {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-xxs);
   padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--font-medium);
   line-height: 1;
+  width: 64px;
+  flex-shrink: 0;
 }
 
 .shift-bars__trend:focus-visible {
@@ -746,23 +762,23 @@
 }
 
 .trend-up {
-  color: var(--color-success);
-  background: var(--color-success-tint);
+  color: var(--color-canvas);
+  background: var(--color-success);
 }
 
 .trend-down {
-  color: var(--color-error);
-  background: var(--color-error-tint);
+  color: var(--color-canvas);
+  background: var(--color-error);
 }
 
 .trend-mixed {
-  color: var(--color-warning);
-  background: var(--color-warning-tint);
+  color: var(--color-canvas);
+  background: var(--color-warning);
 }
 
 .trend-flat {
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
+  color: var(--color-canvas);
+  background: var(--color-muted);
 }
 
 .shift-bars__comparison-note {
@@ -878,10 +894,10 @@
    DAILY CAPACITY LIST
 ═══════════════════════════════════════════════════════════ */
 
-/* ── Daily capacity cards (2-column grid) ── */
+/* ── Daily capacity cards (3-column grid) ── */
 .daily-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-sm);
 }
 
@@ -947,6 +963,7 @@
 
 @media (max-width: 480px) {
   .daily-cards {
+    grid-template-columns: 1fr 1fr;
     gap: var(--spacing-xs);
   }
   .daily-cards__card {
