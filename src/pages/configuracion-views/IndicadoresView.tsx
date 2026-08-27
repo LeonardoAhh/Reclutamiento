@@ -515,24 +515,43 @@ export function IndicadoresView() {
                     <div key={`bajas-col-${recruiter}`} className="indicadores-bajas-col">
                       <h4 className="indicadores-bajas-header type-body-sm font-bold uppercase">{recruiter}</h4>
                       <ul className="indicadores-bajas-list">
-                        {bajasOfRecruiter.map((baja, i) => (
-                          <li key={`baja-detail-${i}`} className="indicadores-bajas-item">
-                            <div className="indicadores-bajas-item-header">
-                                <span className="type-body-sm font-medium text-ink">{baja.nombre}</span>
-                                {baja.numEmpleado && (
-                                  <span className="type-caption-sm text-muted">#{baja.numEmpleado}</span>
-                                )}
-                            </div>
-                            <div className="indicadores-bajas-item-details">
-                                <span className="type-caption-sm text-muted">
-                                  <strong>Ingreso:</strong> {baja.fechaIngreso}
-                                </span>
-                                <span className="type-caption-sm text-error font-medium">
-                                  <strong>Baja:</strong> {baja.fechaBaja} ({baja.dias} días)
-                                </span>
-                            </div>
-                          </li>
-                        ))}
+                        {bajasOfRecruiter.map((baja, i) => {
+                          const TARGET_RETENTION_DAYS = 90;
+                          const efficiencyRaw = (baja.dias / TARGET_RETENTION_DAYS) * 100;
+                          const efficiency = Math.min(Math.round(efficiencyRaw), 100);
+
+                          let efficiencyClass = "text-error";
+                          if (efficiency >= 80) {
+                            efficiencyClass = "text-success";
+                          } else if (efficiency >= 30) {
+                            efficiencyClass = "text-warning";
+                          }
+
+                          return (
+                            <li key={`baja-detail-${i}`} className="indicadores-bajas-item">
+                              <div className="indicadores-bajas-item-header">
+                                  <span className="type-body-sm font-medium text-ink">{baja.nombre}</span>
+                                  {baja.numEmpleado && (
+                                    <span className="type-caption-sm text-muted">#{baja.numEmpleado}</span>
+                                  )}
+                              </div>
+                              <div className="indicadores-bajas-item-details">
+                                  <span className="type-caption-sm text-muted">
+                                    <strong>Ingreso:</strong> {baja.fechaIngreso}
+                                  </span>
+                                  <span className="type-caption-sm text-muted">
+                                    <strong>Baja:</strong> {baja.fechaBaja} ({baja.dias} días)
+                                  </span>
+                                  <span 
+                                    className={`type-caption-sm font-medium ${efficiencyClass}`}
+                                    aria-label={`Eficiencia de contratación: ${efficiency} por ciento`}
+                                  >
+                                    <strong>Eficiencia:</strong> {efficiency}%
+                                  </span>
+                              </div>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   );
