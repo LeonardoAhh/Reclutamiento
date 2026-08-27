@@ -29,7 +29,7 @@ export function DeleteEmployeeConfirmModal({
   if (!employee) return null;
 
   async function handleConfirm() {
-    if (submitting) return;
+    if (submitting || !employee) return;
     setErrorMsg(null);
 
     try {
