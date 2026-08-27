@@ -598,7 +598,30 @@ export function VacancyModal({
     );
   }
 
-  const footerActions = !isDelete ? (
+  const footerActions = isDelete ? (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting || isSuccess}
+      >
+        Cancelar
+      </button>
+      <AnimatedSubmitButton
+        isSubmitting={submitting}
+        isSuccess={isSuccess}
+        isError={!!errorMsg}
+        errorText={errorMsg || undefined}
+        idleText="Eliminar"
+        loadingText="Eliminando..."
+        successText="¡Eliminado!"
+        idleIcon={Trash2IconData}
+        className="btn-danger"
+        form="vacancy-form"
+      />
+    </>
+  ) : (
     <AnimatedSubmitButton
       isSubmitting={submitting}
       isSuccess={isSuccess}
@@ -612,7 +635,7 @@ export function VacancyModal({
       disabled={!isFormValid}
       form="vacancy-form"
     />
-  ) : null;
+  );
 
   return (
     <Modal
@@ -631,27 +654,6 @@ export function VacancyModal({
           <>
             {deleteContent}
             {errorNotice}
-            <footer className="modal-footer">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={onClose}
-                disabled={submitting || isSuccess}
-              >
-                Cancelar
-              </button>
-              <AnimatedSubmitButton
-                isSubmitting={submitting}
-                isSuccess={isSuccess}
-                isError={!!errorMsg}
-                errorText={errorMsg || undefined}
-                idleText="Eliminar"
-                loadingText="Eliminando..."
-                successText="¡Eliminado!"
-                idleIcon={Trash2IconData}
-                className="btn-danger"
-              />
-            </footer>
           </>
         ) : (
           <>

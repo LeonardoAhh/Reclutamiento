@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useId, useMemo, useState, useRef } from 'react';
 import { CircleCheckBig, PenLine, ShieldAlert, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
 import { Save as SaveIconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
@@ -119,6 +119,7 @@ export function CandidateModal({
   onSave,
   onDelete,
 }: CandidateModalProps) {
+  const formId = useId();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
   // En edición, `source` y `fecha_cita` pueden ser modificados tanto por
@@ -769,6 +770,31 @@ const fieldsPosicion = (
   ) : null;
 
   const useWizard = !accessCard && isMobile;
+  const footerActions = !accessCard && !useWizard ? (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting || isSuccess}
+      >
+        Cancelar
+      </button>
+      <AnimatedSubmitButton
+        isSubmitting={submitting}
+        isSuccess={isSuccess}
+        isError={!!errorMsg}
+        errorText={errorMsg || undefined}
+        idleText="Guardar"
+        loadingText="Guardando..."
+        successText="¡Guardado!"
+        idleIcon={SaveIconData}
+        className="btn-primary"
+        disabled={false}
+        form={formId}
+      />
+    </>
+  ) : undefined;
 
   return (
     <Modal
@@ -780,6 +806,7 @@ const fieldsPosicion = (
       icon={icon}
       title={title}
       subtitle={subtitle}
+      footerActions={footerActions}
     >
       {accessCard ? (
         <CandidateAccessCard
@@ -825,7 +852,7 @@ const fieldsPosicion = (
           />
         </form>
       ) : (
-        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
           <div className="form-grid">
             {fieldsContacto}
             {fieldsPosicion}
@@ -835,28 +862,6 @@ const fieldsPosicion = (
 
           {errorNotice}
 
-          <footer className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={onClose}
-              disabled={submitting || isSuccess}
-            >
-              Cancelar
-            </button>
-            <AnimatedSubmitButton
-              isSubmitting={submitting}
-              isSuccess={isSuccess}
-              isError={!!errorMsg}
-              errorText={errorMsg || undefined}
-              idleText="Guardar"
-              loadingText="Guardando..."
-              successText="¡Guardado!"
-              idleIcon={SaveIconData}
-              className="btn-primary"
-              disabled={false}
-            />
-          </footer>
         </form>
       )}
     </Modal>

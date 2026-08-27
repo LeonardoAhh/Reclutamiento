@@ -117,6 +117,16 @@
   border-color: var(--color-error);
 }
 
+.candidate-access-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-hairline);
+}
+
 @media (min-width: 600px) {
   .candidate-access-card {
     padding: var(--spacing-xl);

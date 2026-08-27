@@ -119,6 +119,7 @@ export function VacancySheet({
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const errorId = useId();
+  const formId = useId();
   const isMobile = useIsMobile();
 
   const { positions } = usePositions();
@@ -533,7 +534,7 @@ export function VacancySheet({
     const footerActions = (
       <>
         {isDelete ? (
-          <button type="submit" className="btn-danger" disabled={submitting} form="vacancy-form">
+          <button type="submit" className="btn-danger" disabled={submitting} form={formId}>
             {submitting ? 'Eliminando…' : 'Eliminar'}
           </button>
         ) : (
@@ -541,7 +542,7 @@ export function VacancySheet({
             type="submit"
             className="btn-primary"
             disabled={!isFormValid || submitting}
-            form="vacancy-form"
+            form={formId}
           >
             {submitting ? 'Guardando…' : isAdd ? 'Crear' : 'Guardar'}
           </button>
@@ -559,7 +560,7 @@ export function VacancySheet({
         className={`vacancy-sheet${!isDelete ? ' vacancy-sheet--wide' : ''}`}
         footerActions={footerActions}
       >
-        <form id="vacancy-form" onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
+        <form id={formId} onSubmit={handleSubmit} className="vacancy-sheet__form" noValidate>
           <div className="modal-body">
             {isDelete ? (
               deleteContent
@@ -578,6 +579,27 @@ export function VacancySheet({
     );
   }
 
+  const deleteFooterActions = isDelete ? (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        className="btn-danger"
+        disabled={submitting}
+        form={formId}
+      >
+        {submitting ? 'Eliminando…' : 'Eliminar'}
+      </button>
+    </>
+  ) : undefined;
+
   /* ── Móvil: modal fullscreen (cohesivo con Nuevo Candidato) ── */
   return (
     <Modal
@@ -589,24 +611,12 @@ export function VacancySheet({
       className={`vacancy-sheet modal-fullscreen-mobile${
         !isDelete ? ' modal-wizard-mobile' : ''
       }`}
+      footerActions={deleteFooterActions}
     >
       {isDelete ? (
-        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
           {deleteContent}
           {errorNotice}
-          <footer className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={onClose}
-              disabled={submitting}
-            >
-              Cancelar
-            </button>
-            <button type="submit" className="btn-danger" disabled={submitting}>
-              {submitting ? 'Eliminando…' : 'Eliminar'}
-            </button>
-          </footer>
         </form>
       ) : (
         /* Alta/edición por pasos en móvil */

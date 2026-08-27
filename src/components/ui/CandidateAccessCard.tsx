@@ -210,14 +210,21 @@ export function CandidateAccessCard({
         </p>
       )}
 
-      <footer className="modal-footer" style={{ justifyContent: 'center' }} aria-label="Acciones de la tarjeta">
+      <footer
+        className="candidate-access-card__actions"
+        aria-label="Acciones de la tarjeta"
+      >
         <button
           type="button"
           className="btn-secondary"
           onClick={handleCopy}
           disabled={!imageBlob}
         >
-          <MorphingIcon icon={copied ? Check : Copy} size={18} />
+          <MorphingIcon
+            icon={copied ? Check : Copy}
+            size="var(--icon-size-sm)"
+            aria-hidden="true"
+          />
           {copied ? "Copiada" : "Copiar"}
         </button>
         <button
@@ -226,7 +233,7 @@ export function CandidateAccessCard({
           onClick={handleShare}
           disabled={!imageBlob}
         >
-          <Share2 size={18} aria-hidden="true" />
+          <Share2 size="var(--icon-size-sm)" aria-hidden="true" />
           Compartir
         </button>
       </footer>

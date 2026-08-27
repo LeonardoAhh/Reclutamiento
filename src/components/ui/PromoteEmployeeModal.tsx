@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { CircleArrowUp, CircleCheckBig, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
@@ -75,6 +75,7 @@ export function PromoteEmployeeModal({
   onPromote,
   onCreatePosition,
 }: PromoteEmployeeModalProps) {
+  const formId = useId();
   const { positions } = usePositions();
 
   const [mode, setMode] = useState<PromoteMode>('existing');
@@ -230,6 +231,28 @@ export function PromoteEmployeeModal({
 
   if (!isOpen || !employee) return null;
 
+  const footerActions = (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        className="btn-primary"
+        disabled={!canSubmit || submitting}
+        aria-busy={submitting}
+        form={formId}
+      >
+        {submitting ? 'Aplicando...' : 'Confirmar'}
+      </button>
+    </>
+  );
+
   /* ── Render ───────────────────────────────────────────────────────────── */
 
   return (
@@ -246,9 +269,10 @@ export function PromoteEmployeeModal({
       }
       title="Promover empleado"
       subtitle={`#${employee.num_empleado} · ${employee.nombre}`}
+      footerActions={footerActions}
     >
       <form
-        id="promote-form"
+        id={formId}
         onSubmit={handleSubmit}
         className="modal-body"
         noValidate
@@ -319,25 +343,6 @@ export function PromoteEmployeeModal({
           </p>
         )}
 
-        {/* ── Footer ─────────────────────────────────────────────────── */}
-        <footer className="modal-footer">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={!canSubmit || submitting}
-            aria-busy={submitting}
-          >
-            {submitting ? 'Aplicando...' : 'Confirmar'}
-          </button>
-        </footer>
       </form>
     </Modal>
   );

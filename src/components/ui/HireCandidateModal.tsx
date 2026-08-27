@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { CircleAlert, CircleCheckBig, UserRoundPlus } from 'lucide-react';
 import { LoaderCircle, UserRoundPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
@@ -44,6 +44,7 @@ export function HireCandidateModal({
   onClose,
   onConfirm,
 }: HireCandidateModalProps) {
+  const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -68,6 +69,37 @@ export function HireCandidateModal({
   }
 
   const alreadyHired = !!candidate.employee_num;
+  const footerActions = alreadyHired ? (
+    <button type="button" className="btn-secondary" onClick={onClose}>
+      Cerrar
+    </button>
+  ) : (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        className="btn-primary"
+        disabled={submitting || (mode === 'create' ? !form.num_empleado.trim() : !selectedEmployeeId)}
+        aria-busy={submitting}
+        form={formId}
+      >
+        <MorphingIcon
+          icon={submitting ? LoaderCircle : UserPlusIcon}
+          size="var(--icon-size-sm)"
+          aria-hidden="true"
+          className={submitting ? 'spin' : undefined}
+        />
+        {submitting ? 'Guardando…' : (mode === 'create' ? 'Contratar' : 'Vincular')}
+      </button>
+    </>
+  );
 
     async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -133,6 +165,7 @@ export function HireCandidateModal({
       icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`Contratar a ${candidate.nombre}`}
       subtitle={`${candidate.puesto} · ${candidate.area}${candidate.seccion ? ` · ${candidate.seccion}` : ''}`}
+      footerActions={footerActions}
     >
       {alreadyHired ? (
         <div className="modal-body">
@@ -152,14 +185,9 @@ export function HireCandidateModal({
               en el Dashboard.
             </p>
           </div>
-          <footer className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={onClose}>
-              Cerrar
-            </button>
-          </footer>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="modal-body" noValidate aria-describedby="hire-hint-text">
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate aria-describedby="hire-hint-text">
           <div className="hire-mode-tabs">
             <button
               type="button"
@@ -258,32 +286,6 @@ export function HireCandidateModal({
             </p>
           )}
 
-          <footer className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={onClose}
-              disabled={submitting}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={submitting || (mode === 'create' ? !form.num_empleado.trim() : !selectedEmployeeId)}
-              aria-busy={submitting}
-            >
-              <MorphingIcon
-                icon={submitting ? LoaderCircle : UserPlusIcon}
-                size={16}
-                aria-hidden="true"
-                className={
-                  submitting ? 'spin' : undefined
-                }
-              />
-              {submitting ? 'Guardando…' : (mode === 'create' ? 'Contratar' : 'Vincular')}
-            </button>
-          </footer>
         </form>
       )}
     </Modal>

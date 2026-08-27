@@ -1,4 +1,4 @@
-import { CircleCheckBig, EllipsisVertical, Trash2, PenLine, Image as ImageIcon } from "lucide-react";
+import { CircleCheckBig, EllipsisVertical, Trash2, SquarePen, Image as ImageIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +50,7 @@ export function ResponsabilidadCard({
 
       <div className="responsabilidad-card-main">
         <div className="responsabilidad-icon">
-          <CircleCheckBig size={18} aria-hidden="true" />
+          <CircleCheckBig size="var(--icon-size-md)" aria-hidden="true" />
         </div>
 
         <div className="responsabilidad-content">
@@ -104,7 +104,7 @@ export function ResponsabilidadCard({
             }}
             aria-label={`Ampliar referencia de ${title}`}
           >
-            <ImageIcon size={16} aria-hidden="true" />
+            <ImageIcon size="var(--icon-size-sm)" aria-hidden="true" />
             <img
               src={referenceImage}
               alt=""
@@ -119,7 +119,7 @@ export function ResponsabilidadCard({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button type="button" aria-label="Opciones">
-                <EllipsisVertical size={16} aria-hidden="true" />
+                <EllipsisVertical size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -132,7 +132,7 @@ export function ResponsabilidadCard({
                       onEdit();
                     }}
                   >
-                    <PenLine aria-hidden="true" />
+                    <SquarePen aria-hidden="true" />
                     <span>Editar</span>
                   </button>
                 </DropdownMenuItem>

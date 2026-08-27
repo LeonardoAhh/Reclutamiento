@@ -21,6 +21,7 @@ export interface JobDescription {
 }
 
 export interface AnalysisData {
+  candidateName?: string;
   matchScore: number;
   roles: { title: string; match: number; reason: string }[];
   strengths: string[];

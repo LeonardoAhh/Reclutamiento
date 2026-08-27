@@ -159,7 +159,7 @@ export function Modal({
             </button>
           )}
         </header>
-        {children}
+        <div className="modal-scroll-region">{children}</div>
         {footerActions && (
           <footer className="modal-footer">{footerActions}</footer>
         )}

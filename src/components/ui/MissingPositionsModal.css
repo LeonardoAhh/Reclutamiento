@@ -2,8 +2,8 @@
 
 .missing-positions-modal {
   width: min(1400px, 96vw);
-  max-width: 1400px;
-  max-height: 90vh;
+  max-width: 1000px;
+  max-height: 80vh;
 }
 
 .missing-positions-modal__body {

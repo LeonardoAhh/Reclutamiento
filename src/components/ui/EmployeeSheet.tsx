@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { CircleAlert, CircleCheckBig, Trash2, UserRoundPlus } from "lucide-react";
 import type { Employee } from "@/lib/types";
 import { usePositions } from "@/lib/positions";
@@ -70,6 +70,7 @@ export function EmployeeSheet({
   onSave,
   onDelete,
 }: EmployeeSheetProps) {
+  const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -380,6 +381,7 @@ export function EmployeeSheet({
           type="submit"
           className="btn-primary"
           disabled={!isAddValid || submitting}
+          form={formId}
         >
           {submitting ? "Guardando…" : "Guardar"}
         </button>
@@ -388,6 +390,7 @@ export function EmployeeSheet({
           type="submit"
           className="btn-danger"
           disabled={!isDeleteValid || submitting}
+          form={formId}
         >
           {submitting ? "Registrando baja…" : "Eliminar"}
         </button>
@@ -406,8 +409,9 @@ export function EmployeeSheet({
         title={title}
         subtitle={subtitle}
         size={isAdd ? "md" : "sm"}
+        footerActions={actionButtons}
       >
-        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
           {isAdd ? (
             <div className="form-grid">
               {fieldsIdentidad}
@@ -418,7 +422,6 @@ export function EmployeeSheet({
             deleteContent
           )}
           {errorNotice}
-          <footer className="modal-footer">{actionButtons}</footer>
         </form>
       </Modal>
     );
@@ -435,6 +438,7 @@ export function EmployeeSheet({
       icon={icon}
       title={title}
       subtitle={subtitle}
+      footerActions={!isAdd ? actionButtons : undefined}
     >
       {isAdd ? (
         /* Alta por pasos en móvil */
@@ -473,10 +477,9 @@ export function EmployeeSheet({
           />
         </form>
       ) : (
-        <form onSubmit={handleSubmit} className="modal-body" noValidate>
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
           {deleteContent}
           {errorNotice}
-          <footer className="modal-footer">{actionButtons}</footer>
         </form>
       )}
     </Modal>

@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import {
-  BusFront,
   ChartNoAxesCombined,
-  FileText,
-  LayoutDashboard,
   NotebookText,
   Route,
-  Users,
   UserSearch,
 } from 'lucide';
 import type { IconInput } from 'morphicons/react';
 
-const LOADER_ICONS = [LayoutDashboard, Users, BusFront, FileText] satisfies readonly IconInput[];
-
-export const AUTH_TRANSITION_ICONS = [
+const LOADER_ICONS = [
   ChartNoAxesCombined,
   UserSearch,
   Route,
@@ -29,10 +23,7 @@ export const MORPHING_SEQUENCE_CYCLE_MS = MORPHING_SEQUENCE_INTERVAL_MS * LOADER
  * Provee la secuencia animada de íconos para las pantallas de carga.
  * Respeta `prefers-reduced-motion` deteniendo el intervalo automáticamente.
  */
-export function useMorphingSequence(
-  intervalMs = MORPHING_SEQUENCE_INTERVAL_MS,
-  icons: readonly IconInput[] = LOADER_ICONS,
-) {
+export function useMorphingSequence(intervalMs = MORPHING_SEQUENCE_INTERVAL_MS) {
   const shouldReduceMotion = Boolean(useReducedMotion());
   const [iconIndex, setIconIndex] = useState(0);
   const safeIntervalMs = Number.isFinite(intervalMs) && intervalMs > 0
@@ -43,14 +34,14 @@ export function useMorphingSequence(
     if (shouldReduceMotion) return;
 
     const interval = window.setInterval(() => {
-      setIconIndex((previousIndex) => (previousIndex + 1) % icons.length);
+      setIconIndex((previousIndex) => (previousIndex + 1) % LOADER_ICONS.length);
     }, safeIntervalMs);
 
     return () => window.clearInterval(interval);
-  }, [icons, safeIntervalMs, shouldReduceMotion]);
+  }, [safeIntervalMs, shouldReduceMotion]);
 
   return {
-    icon: icons[shouldReduceMotion ? 0 : iconIndex],
+    icon: LOADER_ICONS[shouldReduceMotion ? 0 : iconIndex],
     shouldReduceMotion,
   };
 }

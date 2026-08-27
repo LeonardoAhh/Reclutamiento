@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
   UserRoundPlus,
   Trash2,
@@ -101,6 +101,7 @@ export function EmployeeModal({
   openVacancies = [],
   existingEmployees = [],
 }: EmployeeModalProps) {
+  const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -754,6 +755,7 @@ export function EmployeeModal({
                 idleIcon={SaveIconData}
                 className="btn-primary"
                 disabled={!isAddValid}
+                form={formId}
               />
             </span>
           </Tooltip>
@@ -769,6 +771,7 @@ export function EmployeeModal({
             idleIcon={SaveIconData}
             className="btn-primary"
             disabled={!isAddValid}
+            form={formId}
           />
         )
       ) : (
@@ -783,6 +786,7 @@ export function EmployeeModal({
           idleIcon={Trash2IconData}
           className="btn-danger"
           disabled={!isDeleteValid}
+          form={formId}
         />
       )}
     </>
@@ -860,8 +864,9 @@ export function EmployeeModal({
       subtitle={subtitle}
       size={isAdd ? "lg" : "sm"}
       fullscreenMobile={false}
+      footerActions={actionButtons}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
+      <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
         {isAdd ? (
           <div className="form-grid">
             {fieldsIdentidad}
@@ -876,7 +881,6 @@ export function EmployeeModal({
         )}
 
         {errorNotice}
-        <footer className="modal-footer">{actionButtons}</footer>
       </form>
     </Modal>
   );

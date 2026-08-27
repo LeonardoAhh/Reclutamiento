@@ -3,9 +3,9 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoader } from "@/hooks/useLoader";
 import { useFeedback } from "@/hooks/useFeedback";
-import { X, LoaderCircle as Loader2Icon } from "lucide-react";
 import { CloudUpload, LoaderCircle } from "lucide";
 import { Avatar } from "./Avatar";
+import { Modal } from "./Modal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import "./AvatarUploadModal.css";
 
@@ -91,7 +91,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
         duration: 2500,
       });
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       trigger("error");
       loader.flash({
@@ -103,31 +103,50 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
     }
   };
 
-  return (
-    <div className="avatar-modal-overlay" onPointerDown={onClose}>
-      <div
-        className="avatar-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="avatar-modal-title"
-        onPointerDown={(e) => e.stopPropagation()}
-      >
-        <header className="avatar-modal__header">
-          <h2 id="avatar-modal-title" className="avatar-modal__title">
-            Avatar
-          </h2>
-          <button
-            type="button"
-            className="avatar-modal__close"
-            onClick={onClose}
-            aria-label="Cerrar modal"
-            disabled={uploading}
-          >
-            <X size={20} aria-hidden="true" />
-          </button>
-        </header>
+  const handleClose = () => {
+    if (!uploading) onClose();
+  };
 
-        <div className="avatar-modal__body">
+  const footerActions = (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={handleClose}
+        disabled={uploading}
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        className="btn-primary"
+        onClick={handleUpload}
+        disabled={!file || uploading}
+        aria-busy={uploading}
+      >
+        {uploading && (
+          <MorphingIcon
+            icon={LoaderCircle}
+            size="var(--icon-size-sm)"
+            className="avatar-modal__spin"
+            aria-hidden="true"
+          />
+        )}
+        <span>{uploading ? "Guardando..." : "Guardar"}</span>
+      </button>
+    </>
+  );
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Avatar"
+      size="sm"
+      fullscreenMobile={false}
+      footerActions={footerActions}
+    >
+        <div className="modal-body avatar-modal__body">
           <div className="avatar-modal__preview">
             <Avatar name={username} src={preview} size={96} />
           </div>
@@ -152,37 +171,14 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
           >
-            <MorphingIcon icon={uploading ? LoaderCircle : CloudUpload} size={16} />
+            <MorphingIcon
+              icon={uploading ? LoaderCircle : CloudUpload}
+              size="var(--icon-size-sm)"
+              aria-hidden="true"
+            />
             <span>{file ? "Elegir otra imagen" : "Seleccionar"}</span>
           </button>
         </div>
-
-        <footer className="avatar-modal__footer">
-          <button
-            type="button"
-            className="button-utility"
-            onClick={onClose}
-            disabled={uploading}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            className="button-primary"
-            onClick={handleUpload}
-            disabled={!file || uploading}
-          >
-            {uploading ? (
-              <>
-                <Loader2Icon size={16} className="avatar-modal__spin" />
-                <span>Guardando...</span>
-              </>
-            ) : (
-              <span>Guardar</span>
-            )}
-          </button>
-        </footer>
-      </div>
-    </div>
+    </Modal>
   );
 }

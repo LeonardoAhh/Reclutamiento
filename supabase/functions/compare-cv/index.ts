@@ -61,6 +61,8 @@ Recibirás un "Catálogo de Puestos".
 ### Formato de Salida JSON (Usar SOLO para el primer análisis de CV):
 DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No incluyas backticks ni texto introductorio, solo el JSON:
 {
+  "candidateName": "<Nombre completo del candidato, o 'No especificado'>",
+  "contactNumber": "<Número de teléfono o correo de contacto, o 'No especificado'>",
   "matchScore": <número_del_0_al_100>,
   "roles": [
     { "title": "<Nombre del puesto>", "match": <número_0_100>, "reason": "<Razón breve del encaje>" }

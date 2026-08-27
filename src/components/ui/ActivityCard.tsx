@@ -1,4 +1,4 @@
-import { EllipsisVertical, Trash2, PenLine, Image as ImageIcon, CircleCheckBig, Clock, CircleDashed } from "lucide-react";
+import { EllipsisVertical, Trash2, SquarePen, Image as ImageIcon, CircleCheckBig, Clock, CircleDashed } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,7 +70,7 @@ export function ActivityCard({
 
       <div className="activity-card-main">
         <div className={`activity-icon status-${status}`}>
-          <Icon size={18} aria-hidden="true" />
+          <Icon size="var(--icon-size-md)" aria-hidden="true" />
         </div>
 
         <div className="activity-content">
@@ -127,7 +127,7 @@ export function ActivityCard({
             }}
             aria-label={`Ver imagen de referencia de ${title}`}
           >
-            <ImageIcon size={16} aria-hidden="true" />
+            <ImageIcon size="var(--icon-size-sm)" aria-hidden="true" />
             <img
               src={referenceImage}
               alt=""
@@ -146,7 +146,7 @@ export function ActivityCard({
                 type="button"
                 aria-label="Opciones"
               >
-                <EllipsisVertical size={16} aria-hidden="true" />
+                <EllipsisVertical size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -159,7 +159,7 @@ export function ActivityCard({
                       onEdit();
                     }}
                   >
-                    <PenLine aria-hidden="true" />
+                    <SquarePen aria-hidden="true" />
                     <span>Editar</span>
                   </button>
                 </DropdownMenuItem>

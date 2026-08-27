@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useId, useMemo, useRef } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,18 +10,17 @@ import { Activity, ActivityStatus, ACTIVITY_STATUS_LABEL } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { Modal } from "@/components/ui/Modal";
 import {
-  ClipboardList,
+  BriefcaseBusiness,
+  ClipboardPenLine,
   Plus,
-  FileText,
-  CloudUpload,
+  FileSearch,
+  FileUp,
   Trash2,
-  CircleCheckBig,
   ListTodo,
   Inbox,
-  PenLine,
+  SquarePen,
   EllipsisVertical,
   Search,
-  ArrowUpDown,
   List,
   ImagePlus,
   X,
@@ -147,7 +146,7 @@ function SmartTextarea({
             onClick={() => insertAtCursor("• ")}
             title="Añadir viñeta"
           >
-            <List size={14} aria-hidden="true" />
+            <List size="var(--icon-size-sm)" aria-hidden="true" />
             <span>Viñeta</span>
           </button>
           <button
@@ -156,7 +155,7 @@ function SmartTextarea({
             onClick={() => insertAtCursor("- [ ] ")}
             title="Añadir checklist"
           >
-            <ListTodo size={14} aria-hidden="true" />
+            <ListTodo size="var(--icon-size-sm)" aria-hidden="true" />
             <span>Checklist</span>
           </button>
         </div>
@@ -175,6 +174,9 @@ function isImage(filename: string): boolean {
 }
 
 export function Actividades() {
+  const vacancyFormId = useId();
+  const createFormId = useId();
+  const editFormId = useId();
   const { profile } = useAuth();
 
   const lastVisitRef = useRef<string | null>(null);
@@ -752,7 +754,7 @@ export function Actividades() {
                 className="btn-primary btn-sm"
                 onClick={() => setIsCreateVacanteModalOpen(true)}
               >
-                <Plus size={16} aria-hidden="true" />
+                <Plus size="var(--icon-size-sm)" aria-hidden="true" />
                 <span>Nueva</span>
               </button>
             )}
@@ -760,8 +762,8 @@ export function Actividades() {
 
           {vacantesManuales.length === 0 ? (
             <div className="actividades-empty">
-              <ClipboardList
-                size={40}
+              <BriefcaseBusiness
+                size="var(--icon-size-xxl)"
                 className="actividades-empty__icon"
                 aria-hidden="true"
               />
@@ -793,7 +795,10 @@ export function Actividades() {
                     )}
                     <div className="responsabilidad-card-main">
                       <div className="responsabilidad-icon">
-                        <ClipboardList size={18} aria-hidden="true" />
+                        <BriefcaseBusiness
+                          size="var(--icon-size-md)"
+                          aria-hidden="true"
+                        />
                       </div>
                       <div className="responsabilidad-content">
                         <h3 className="responsabilidad-title">{v.titulo}</h3>
@@ -820,7 +825,10 @@ export function Actividades() {
                               type="button"
                               aria-label="Opciones"
                             >
-                              <EllipsisVertical size={16} aria-hidden="true" />
+                              <EllipsisVertical
+                                size="var(--icon-size-sm)"
+                                aria-hidden="true"
+                              />
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
@@ -871,9 +879,9 @@ export function Actividades() {
               <div>
                 <h2 className="actividades-section__title">
                   {responsabilidadesCollapsed ? (
-                    <ChevronRight size={18} aria-hidden="true" />
+                    <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
                   ) : (
-                    <ChevronDown size={18} aria-hidden="true" />
+                    <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
                   )}
                   Responsabilidades
                   <span className="actividades-section__count">
@@ -891,7 +899,7 @@ export function Actividades() {
                 className="btn-primary btn-sm"
                 onClick={() => setIsCreateModalOpen(true)}
               >
-                <Plus size={16} aria-hidden="true" />
+                <Plus size="var(--icon-size-sm)" aria-hidden="true" />
                 <span>Crear</span>
               </button>
             )}
@@ -902,7 +910,7 @@ export function Actividades() {
               {responsabilidades.length === 0 ? (
                 <div className="actividades-empty">
                   <ListTodo
-                    size={40}
+                    size="var(--icon-size-xxl)"
                     className="actividades-empty__icon"
                     aria-hidden="true"
                   />
@@ -970,9 +978,9 @@ export function Actividades() {
             <div>
               <h2 className="actividades-section__title">
                 {actividadesCollapsed ? (
-                  <ChevronRight size={18} aria-hidden="true" />
+                  <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
                 ) : (
-                  <ChevronDown size={18} aria-hidden="true" />
+                  <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
                 )}
                 Actividades
                 <span className="actividades-section__count">
@@ -1023,7 +1031,7 @@ export function Actividades() {
                   <div className="actividades-filters">
                     <div className="actividades-search">
                       <Search
-                        size={16}
+                        size="var(--icon-size-sm)"
                         className="actividades-search__icon"
                         aria-hidden="true"
                       />
@@ -1075,7 +1083,7 @@ export function Actividades() {
               {allUnicas.length === 0 ? (
                 <div className="actividades-empty">
                   <Inbox
-                    size={40}
+                    size="var(--icon-size-xxl)"
                     className="actividades-empty__icon"
                     aria-hidden="true"
                   />
@@ -1089,7 +1097,7 @@ export function Actividades() {
               ) : unicas.length === 0 ? (
                 <div className="actividades-empty">
                   <Search
-                    size={40}
+                    size="var(--icon-size-xxl)"
                     className="actividades-empty__icon"
                     aria-hidden="true"
                   />
@@ -1158,10 +1166,31 @@ export function Actividades() {
           if (!isCreatingVacancy) setIsCreateVacanteModalOpen(false);
         }}
         title="Asignar Vacante"
-        icon={<ClipboardList size={20} aria-hidden="true" />}
+        icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
         fullscreenMobile={false}
+        footerActions={
+          <>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setIsCreateVacanteModalOpen(false)}
+              disabled={isCreatingVacancy}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={isCreatingVacancy || !vacanteTitulo.trim()}
+              aria-busy={isCreatingVacancy}
+              form={vacancyFormId}
+            >
+              {isCreatingVacancy ? "Guardando..." : "Crear"}
+            </button>
+          </>
+        }
       >
-        <form className="modal-body" onSubmit={handleCreateVacante} noValidate>
+        <form id={vacancyFormId} className="modal-body" onSubmit={handleCreateVacante} noValidate>
           <div className="vacante-form-grid">
             <div className="form-group">
               <label htmlFor="vacante-area">Área</label>
@@ -1236,24 +1265,6 @@ export function Actividades() {
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsCreateVacanteModalOpen(false)}
-              disabled={isCreatingVacancy}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isCreatingVacancy || !vacanteTitulo.trim()}
-              aria-busy={isCreatingVacancy}
-            >
-              {isCreatingVacancy ? "Guardando..." : "Crear"}
-            </button>
-          </div>
         </form>
       </Modal>
 
@@ -1263,10 +1274,31 @@ export function Actividades() {
           if (!isCreating) setIsCreateModalOpen(false);
         }}
         title="Actividad nueva"
-        icon={<ClipboardList size={20} aria-hidden="true" />}
+        icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
         fullscreenMobile={false}
+        footerActions={
+          <>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setIsCreateModalOpen(false)}
+              disabled={isCreating}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={isCreating || !titulo.trim()}
+              aria-busy={isCreating}
+              form={createFormId}
+            >
+              {isCreating ? "Guardando..." : "Asignar"}
+            </button>
+          </>
+        }
       >
-        <form className="modal-body" onSubmit={handleCreate} noValidate>
+        <form id={createFormId} className="modal-body" onSubmit={handleCreate} noValidate>
           {/* Tipo selector */}
           <fieldset className="form-group activity-type-fieldset">
             <legend>Tipo</legend>
@@ -1356,12 +1388,12 @@ export function Actividades() {
                       setReferenceImagePreview(null);
                     }}
                   >
-                    <X size={16} aria-hidden="true" />
+                    <X size="var(--icon-size-sm)" aria-hidden="true" />
                   </button>
                 </div>
               ) : (
                 <label className="reference-upload-label">
-                  <ImagePlus size={24} aria-hidden="true" />
+                  <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
                   <span>Subir foto de referencia</span>
                   <input
                     type="file"
@@ -1380,24 +1412,6 @@ export function Actividades() {
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsCreateModalOpen(false)}
-              disabled={isCreating}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isCreating || !titulo.trim()}
-              aria-busy={isCreating}
-            >
-              {isCreating ? "Guardando..." : "Asignar"}
-            </button>
-          </div>
         </form>
       </Modal>
 
@@ -1408,10 +1422,31 @@ export function Actividades() {
           if (!isEditing) setIsEditModalOpen(false);
         }}
         title="Editar actividad"
-        icon={<PenLine size={20} aria-hidden="true" />}
+        icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
         fullscreenMobile={false}
+        footerActions={
+          <>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setIsEditModalOpen(false)}
+              disabled={isEditing}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={isEditing || !editTitulo.trim()}
+              aria-busy={isEditing}
+              form={editFormId}
+            >
+              {isEditing ? "Guardando..." : "Guardar"}
+            </button>
+          </>
+        }
       >
-        <form className="modal-body" onSubmit={handleEdit} noValidate>
+        <form id={editFormId} className="modal-body" onSubmit={handleEdit} noValidate>
           <fieldset className="form-group activity-type-fieldset">
             <legend>Tipo</legend>
             <div className="activity-type-selector">
@@ -1502,12 +1537,12 @@ export function Actividades() {
                       setEditExistingReferenceImage(null);
                     }}
                   >
-                    <X size={16} aria-hidden="true" />
+                    <X size="var(--icon-size-sm)" aria-hidden="true" />
                   </button>
                 </div>
               ) : (
                 <label className="reference-upload-label">
-                  <ImagePlus size={24} aria-hidden="true" />
+                  <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
                   <span>Subir foto de referencia</span>
                   <input
                     type="file"
@@ -1526,24 +1561,6 @@ export function Actividades() {
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsEditModalOpen(false)}
-              disabled={isEditing}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isEditing || !editTitulo.trim()}
-              aria-busy={isEditing}
-            >
-              {isEditing ? "Guardando..." : "Guardar"}
-            </button>
-          </div>
         </form>
       </Modal>
 
@@ -1559,7 +1576,7 @@ export function Actividades() {
           refresh();
         }}
         title={selectedActivity?.titulo ?? "Detalles de Tarea"}
-        icon={<FileText size={20} aria-hidden="true" />}
+        icon={<FileSearch size="var(--icon-size-md)" aria-hidden="true" />}
         size="lg"
       >
         {selectedActivity && (
@@ -1653,7 +1670,7 @@ export function Actividades() {
                           }
                           aria-label={`Eliminar ${proof.file_name}`}
                         >
-                          <Trash2 size={16} aria-hidden="true" />
+                          <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
                         </button>
                       )}
                     </div>
@@ -1670,8 +1687,8 @@ export function Actividades() {
                   accept="image/*,.pdf"
                 />
                 <div className="file-upload-inner">
-                  <CloudUpload
-                    size={28}
+                  <FileUp
+                    size="var(--icon-size-xl)"
                     className="file-upload-icon"
                     aria-hidden="true"
                   />
@@ -1695,7 +1712,7 @@ export function Actividades() {
           if (!isAssigningVacancy) setAssignModalVacancy(null);
         }}
         title="Asignar reclutador"
-        icon={<UserRoundPlus size={20} aria-hidden="true" />}
+        icon={<UserRoundPlus size="var(--icon-size-md)" aria-hidden="true" />}
         size="sm"
       >
         <div className="modal-body assign-vacancy-modal__body">

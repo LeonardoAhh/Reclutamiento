@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { CircleCheckBig, Star, Trophy, X } from 'lucide-react';
+import { Star, Trophy } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CoverageBar } from './CoverageBar';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
+import { Modal } from './Modal';
 import './TopRecruiterModal.css';
 
 const MONTHLY_GOAL = 28;
@@ -157,15 +158,6 @@ export function TopRecruiterModal() {
     fetchStats().catch(console.error);
   }, [profile]);
 
-  // Manejo de teclado (ESC para cerrar)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) setIsOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
-
   useEffect(() => {
     if (isOpen && currentUserStats && topRecruiter) {
       const targetTotal = currentUserStats.isTop ? topRecruiter.total : currentUserStats.total;
@@ -188,115 +180,66 @@ export function TopRecruiterModal() {
     return "¡Meta mensual alcanzada! Excelente trabajo y dedicación.";
   };
 
+  if (!topRecruiter || !currentUserStats) return null;
+
+  const isTop = currentUserStats.isTop;
+
   return (
-    <AnimatePresence>
-      {isOpen && topRecruiter && currentUserStats && (
-        <motion.div 
-          className="top-recruiter-modal-overlay" 
+    <Modal
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      className="top-recruiter-modal"
+      size="xs"
+      fullscreenMobile={false}
+      icon={isTop
+        ? <Trophy size="var(--icon-size-lg)" aria-hidden="true" />
+        : <Star size="var(--icon-size-lg)" aria-hidden="true" />}
+      title={isTop
+        ? `¡Felicidades, ${currentUserStats.name}!`
+        : `¡Excelente esfuerzo, ${currentUserStats.name}!`}
+      footerActions={
+        <button
+          type="button"
+          className="btn-primary"
           onClick={() => setIsOpen(false)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          role="presentation"
         >
-          <motion.div
-            className="top-recruiter-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 15, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.98 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-          >
-            {animatedProgress >= 100 && <Confetti />}
+          ¡Genial!
+        </button>
+      }
+    >
+      <div className="modal-body top-recruiter-modal__body">
+        {animatedProgress >= 100 && <Confetti />}
 
-            <button 
-              className="top-recruiter-modal__close"
-              onClick={() => setIsOpen(false)}
-              aria-label="Cerrar mensaje"
-            >
-              <X size={24} />
-            </button>
-            
-            {currentUserStats.isTop ? (
-              <>
-                <div className="top-recruiter-modal__icon-wrapper" aria-hidden="true">
-                  <Trophy size={24} />
-                </div>
-                
-                <div className="top-recruiter-modal__content">
-                  <h2 id="modal-title" className="top-recruiter-modal__title type-heading-md">
-                    ¡Felicidades, {currentUserStats.name}!
-                  </h2>
-                  <p className="top-recruiter-modal__text type-body-md">
-                    {currentUserStats.isTie ? (
-                      <>Estás empatado(a) en <span className="top-recruiter-modal__highlight">1er lugar</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
-                    ) : (
-                      <>Eres el reclutador <span className="top-recruiter-modal__highlight">#1</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
-                    )}
-                  </p>
-                  
-                  <div className="top-recruiter-modal__kpi">
-                    <CoverageBar 
-                      percentage={animatedProgress} 
-                      color="var(--color-warning)" 
-                    />
-                    <p className="top-recruiter-modal__kpi-text type-caption-sm">
-                      {topRecruiter.total >= MONTHLY_GOAL 
-                        ? `¡Has superado la meta mensual de ${MONTHLY_GOAL} ingresos!` 
-                        : `Estás a ${MONTHLY_GOAL - topRecruiter.total} de tu meta mensual de ${MONTHLY_GOAL} (${WEEKLY_GOAL}/sem).`}
-                    </p>
-                  </div>
-
-                  <p className="top-recruiter-modal__text type-body-md">
-                    {getContextualMessage(animatedProgress, true)}
-                  </p>
-                </div>
-              </>
+        {isTop && (
+          <p className="top-recruiter-modal__text type-body-md">
+            {currentUserStats.isTie ? (
+              <>Estás empatado(a) en <span className="top-recruiter-modal__highlight">1er lugar</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
             ) : (
-              <>
-                <div className="top-recruiter-modal__icon-wrapper top-recruiter-modal__icon-wrapper--personal" aria-hidden="true">
-                  <Star size={24} />
-                </div>
-                
-                <div className="top-recruiter-modal__content">
-                  <h2 id="modal-title" className="top-recruiter-modal__title type-heading-md">
-                    ¡Excelente esfuerzo, {currentUserStats.name}!
-                  </h2>
-                  
-                  <div className="top-recruiter-modal__kpi">
-                    <CoverageBar 
-                      percentage={animatedProgress} 
-                      color="var(--color-success)" 
-                    />
-                    <p className="top-recruiter-modal__kpi-text type-caption-sm">
-                      {currentUserStats.total > 0 
-                        ? `Llevas ${currentUserStats.total} ingresos acumulados de ${MONTHLY_GOAL} (${WEEKLY_GOAL} por semana).`
-                        : `Meta mensual: ${MONTHLY_GOAL} ingresos (${WEEKLY_GOAL} por semana).`}
-                    </p>
-                  </div>
-
-                  <p className="top-recruiter-modal__text type-body-md">
-                    {getContextualMessage(animatedProgress, false)}
-                  </p>
-                </div>
-              </>
+              <>Eres el reclutador <span className="top-recruiter-modal__highlight">#1</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
             )}
-            
-            <motion.button 
-              className="btn-primary top-recruiter-modal__btn"
-              onClick={() => setIsOpen(false)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              ¡Genial!
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </p>
+        )}
+
+        <div className="top-recruiter-modal__kpi">
+          <CoverageBar
+            percentage={animatedProgress}
+            color={isTop ? "var(--color-warning)" : "var(--color-success)"}
+          />
+          <p className="top-recruiter-modal__kpi-text type-caption-sm">
+            {isTop
+              ? topRecruiter.total >= MONTHLY_GOAL
+                ? `¡Has superado la meta mensual de ${MONTHLY_GOAL} ingresos!`
+                : `Estás a ${MONTHLY_GOAL - topRecruiter.total} de tu meta mensual de ${MONTHLY_GOAL} (${WEEKLY_GOAL}/sem).`
+              : currentUserStats.total > 0
+                ? `Llevas ${currentUserStats.total} ingresos acumulados de ${MONTHLY_GOAL} (${WEEKLY_GOAL} por semana).`
+                : `Meta mensual: ${MONTHLY_GOAL} ingresos (${WEEKLY_GOAL} por semana).`}
+          </p>
+        </div>
+
+        <p className="top-recruiter-modal__text type-body-md">
+          {getContextualMessage(animatedProgress, isTop)}
+        </p>
+      </div>
+    </Modal>
   );
 }
-

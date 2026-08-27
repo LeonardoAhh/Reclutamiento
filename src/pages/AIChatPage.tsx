@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from "react";
-import { useAIChat } from "@/hooks/useAIChat";
+import { useAIChat, type Message } from "@/hooks/useAIChat";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
@@ -23,8 +23,7 @@ import {
   LoaderCircle,
   EllipsisVertical,
   PenLine,
-  Plus,
-  Send,
+  ArrowUp,
   SlidersHorizontal,
   Trash2,
   X,
@@ -61,17 +60,21 @@ const markdownComponents: Components = {
   ),
 };
 
-const conversationDateFormatter = new Intl.DateTimeFormat("es-MX", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
+function getAnalyzedCandidateName(messages: readonly Message[]): string {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const value = messages[index].analysisData?.candidateName;
+    if (typeof value !== "string") continue;
 
-function formatConversationDate(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "Fecha no disponible"
-    : conversationDateFormatter.format(date);
+    const candidateName = value.trim();
+    if (
+      candidateName &&
+      candidateName.toLocaleLowerCase("es-MX") !== "no especificado"
+    ) {
+      return candidateName;
+    }
+  }
+
+  return "";
 }
 
 export function AIChatPage() {
@@ -105,6 +108,7 @@ export function AIChatPage() {
   } = useAIChat();
 
   const isMobile = useIsMobile();
+  const analyzedCandidateName = getAnalyzedCandidateName(messages);
   const [historySearchQuery, setHistorySearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [isDragging, setIsDragging] = useState(false);
@@ -122,7 +126,7 @@ export function AIChatPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadButtonRef = useRef<HTMLButtonElement>(null);
   const shouldFocusUploadRef = useRef(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   const jobSelectId = useId();
   const fileInputId = useId();
@@ -132,11 +136,13 @@ export function AIChatPage() {
   const chatHeadingId = useId();
 
   useEffect(() => {
-    if (!messagesEndRef.current) return;
+    const messagesContainer = messagesRef.current;
+    if (!messagesContainer) return;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    messagesEndRef.current.scrollIntoView({
+    messagesContainer.scrollTo({
+      top: messagesContainer.scrollHeight,
       behavior: reduceMotion ? "auto" : "smooth",
     });
   }, [messages, isLoading]);
@@ -262,12 +268,6 @@ export function AIChatPage() {
 
   const setupContent = (
     <>
-      <header className="ai-context-header">
-        <span className="ai-context-step">Contexto</span>
-        <h2>Prepara el análisis</h2>
-        <p>Elige una vacante y adjunta el CV que quieres evaluar.</p>
-      </header>
-
       <div className="ai-chat-controls">
         <label className="ai-chat-label" htmlFor={jobSelectId}>
           Vacante
@@ -382,47 +382,40 @@ export function AIChatPage() {
           )}
         </fieldset>
       ) : (
-        <div className="ai-chat-followup">
-          <div className="ai-chat-evaluation-status" aria-live="polite">
-            <span>Evaluación actual</span>
-            <strong>{evaluatedJobName || "Auto-perfilar"}</strong>
-            <p>{candidateFileName || "CV analizado"}</p>
-          </div>
-          <div
-            className="ai-chat-result-actions"
-            role="group"
-            aria-label="Acciones de la evaluación"
+        <div
+          className="ai-chat-result-actions"
+          role="group"
+          aria-label="Acciones de la evaluación"
+        >
+          <button
+            type="button"
+            className="ai-chat-action-btn"
+            onClick={handleCopyEvaluation}
+            disabled={!evaluationResult}
           >
-            <button
-              type="button"
-              className="ai-chat-action-btn"
-              onClick={handleCopyEvaluation}
-              disabled={!evaluationResult}
-            >
-              <MorphingIcon
-                icon={hasCopiedEvaluation ? CheckData : CopyData}
-                aria-hidden="true"
-              />
-              <span>{hasCopiedEvaluation ? "Copiada" : "Copiar"}</span>
-            </button>
-            <button
-              type="button"
-              className="ai-chat-action-btn"
-              onClick={handleNewEval}
-              disabled={isLoading}
-            >
-              <MorphingIcon icon={RotateCcw} aria-hidden="true" />
-              <span>Nueva</span>
-            </button>
-          </div>
+            <MorphingIcon
+              icon={hasCopiedEvaluation ? CheckData : CopyData}
+              aria-hidden="true"
+            />
+            <span>{hasCopiedEvaluation ? "Copiada" : "Copiar"}</span>
+          </button>
+          <button
+            type="button"
+            className="ai-chat-action-btn"
+            onClick={handleNewEval}
+            disabled={isLoading}
+          >
+            <MorphingIcon icon={RotateCcw} aria-hidden="true" />
+            <span>Nueva</span>
+          </button>
         </div>
       )}
     </>
   );
 
-  const filteredConversations = conversations.filter(c => 
-    !historySearchQuery || 
-    c.title.toLowerCase().includes(historySearchQuery.toLowerCase()) || 
+  const filteredConversations = conversations.filter(c =>
+    !historySearchQuery ||
+    c.title.toLowerCase().includes(historySearchQuery.toLowerCase()) ||
     c.evaluatedJobName?.toLowerCase().includes(historySearchQuery.toLowerCase()) ||
     c.candidateFileName?.toLowerCase().includes(historySearchQuery.toLowerCase())
   );
@@ -432,14 +425,14 @@ export function AIChatPage() {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     let group = "Anteriores";
     if (date.toDateString() === today.toDateString()) {
       group = "Hoy";
     } else if (date.toDateString() === yesterday.toDateString()) {
       group = "Ayer";
     }
-    
+
     if (!acc[group]) acc[group] = [];
     acc[group].push(curr);
     return acc;
@@ -449,26 +442,6 @@ export function AIChatPage() {
 
   const historyContent = (
     <>
-      <div className="ai-history-heading">
-        <div>
-          <h2>Conversaciones</h2>
-          <p>
-            {conversationSyncState === "loading"
-              ? "Sincronizando..."
-              : conversationSyncState === "local"
-                ? "Guardadas en este dispositivo"
-                : "Historial sincronizado"}
-          </p>
-        </div>
-        <button
-          type="button"
-          className="ai-history-new-btn"
-          onClick={handleNewEval}
-          aria-label="Nueva evaluación"
-        >
-          <Plus aria-hidden="true" />
-        </button>
-      </div>
 
       {conversations.length > 0 && (
         <div className="ai-history-search">
@@ -541,11 +514,11 @@ export function AIChatPage() {
                               >
                                 <span>{conversation.title}</span>
                                 <div className="ai-history-item-meta">
-                                  <time dateTime={conversation.updatedAt}>
-                                    {formatConversationDate(conversation.updatedAt)}
-                                  </time>
+                                  <span className="ai-history-item-job">
+                                    {conversation.evaluatedJobName || "Puesto no disponible"}
+                                  </span>
                                   {conversation.isPendingSync && (
-                                    <CloudOff size="12" className="ai-sync-icon" aria-label="Sincronización pendiente" />
+                                    <CloudOff className="ai-sync-icon" aria-label="Sincronización pendiente" />
                                   )}
                                 </div>
                               </button>
@@ -616,28 +589,17 @@ export function AIChatPage() {
 
   return (
     <div className="ai-page-container">
-      <header className="ai-page-header">
-        <div className="ai-page-header-title">
-          <div className="ai-page-avatar" aria-hidden="true">
-            <Bot />
-          </div>
-          <div className="ai-page-title-copy">
-            <span className="ai-page-eyebrow">Asistente IA</span>
-            <h1>Asistente de Reclutamiento</h1>
-            <p>Analiza perfiles y continúa la evaluación en una conversación.</p>
-          </div>
-        </div>
-      </header>
+
 
       <main className="ai-page-layout">
         {!isMobile && (
-          <aside className="ai-page-sidebar" aria-label="Herramientas del asistente">
-            <section className="ai-page-card ai-context-card">
+          <aside className="ai-page-sidebar ai-page-card" aria-label="Herramientas del asistente">
+            <div className="ai-context-section">
               {setupContent}
-            </section>
-            <section className="ai-page-card ai-history-card">
+            </div>
+            <div className="ai-history-section">
               {historyContent}
-            </section>
+            </div>
           </aside>
         )}
 
@@ -647,18 +609,43 @@ export function AIChatPage() {
         >
           <header className="ai-chat-panel-header">
             <div className="ai-chat-panel-identity">
-              <div className="ai-chat-avatar" aria-hidden="true">
+              <div
+                className="ai-chat-avatar"
+                aria-hidden="true"
+              >
                 <Bot />
               </div>
               <div>
                 <h2 id={chatHeadingId}>Conversación</h2>
-                <p>
+                <p
+                  aria-label={
+                    analyzedCandidateName
+                      ? `${analyzedCandidateName}, ${
+                          isLoading
+                            ? "Analizando información"
+                            : hasCompared
+                              ? "Listo para continuar"
+                              : "Esperando un CV"
+                        }`
+                      : undefined
+                  }
+                >
                   <span className="ai-chat-status-dot" aria-hidden="true" />
+                  {analyzedCandidateName && (
+                    <>
+                      <span className="ai-chat-candidate-name">
+                        {analyzedCandidateName}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                    </>
+                  )}
+                  <span className="ai-chat-panel-status">
                   {isLoading
                     ? "Analizando información..."
                     : hasCompared
                       ? "Listo para continuar"
                       : "Esperando un CV"}
+                  </span>
                 </p>
               </div>
             </div>
@@ -683,6 +670,7 @@ export function AIChatPage() {
           </header>
 
           <div
+            ref={messagesRef}
             className="ai-chat-messages"
             role="log"
             aria-live="polite"
@@ -707,22 +695,16 @@ export function AIChatPage() {
                     {message.role === "ai" || message.role === "system" ? (
                       message.analysisData ? (
                         <div className="ai-chat-structured">
-                          <div className="ai-chat-score-header">
-                            <div className="ai-chat-score-circle">
-                              <strong>{message.analysisData.matchScore}%</strong>
-                              <span>Match</span>
-                            </div>
-                            <div className="ai-chat-score-roles">
-                              <h2>Roles recomendados</h2>
-                              <ul>
-                                {message.analysisData.roles?.map((r: any, i: number) => (
-                                  <li key={i}>
-                                    <strong>{r.title}</strong> ({r.match}%)<br />
-                                    <span className="ai-chat-role-reason">{r.reason}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                          <div className="ai-chat-score-roles">
+                            <h2>Roles recomendados</h2>
+                            <ul>
+                              {message.analysisData.roles?.map((r: any, i: number) => (
+                                <li key={i}>
+                                  <strong>{r.title}</strong> ({r.match}%)<br />
+                                  <span className="ai-chat-role-reason">{r.reason}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
 
                           <div className="ai-chat-analysis-grid">
@@ -809,7 +791,6 @@ export function AIChatPage() {
                 </button>
               </div>
             )}
-            <div ref={messagesEndRef} aria-hidden="true" />
           </div>
 
           <div className="ai-chat-composer-shell">
@@ -837,14 +818,14 @@ export function AIChatPage() {
               />
               <button
                 type="submit"
-                className="btn-primary ai-chat-send-btn"
+                className="ai-chat-send-btn"
                 disabled={!inputText.trim() || isLoading || !hasCompared}
                 aria-label="Enviar mensaje"
               >
                 {isLoading && hasCompared && !inputText.trim() ? (
                   <LoaderCircle className="ai-chat-action-icon--spin" aria-hidden="true" />
                 ) : (
-                  <Send aria-hidden="true" />
+                  <ArrowUp aria-hidden="true" />
                 )}
               </button>
             </form>
