@@ -1,9 +1,11 @@
 import { CheckCircle2, MoreVertical, Trash2, Pencil, Image as ImageIcon } from "lucide-react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
 import "./ResponsabilidadCard.css";
 
@@ -114,39 +116,47 @@ export function ResponsabilidadCard({
 
       {isAdmin && (
         <div className="activity-admin-actions">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="btn-ghost btn-icon" aria-label="Opciones">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button type="button" aria-label="Opciones">
                 <MoreVertical size={16} aria-hidden="true" />
               </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="activity-action-menu">
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
               {onEdit && (
-                <button
-                  className="btn-ghost activity-action-item"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit();
-                  }}
-                >
-                  <Pencil size={14} aria-hidden="true" />
-                  <span>Editar</span>
-                </button>
+                <DropdownMenuItem asChild>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }}
+                  >
+                    <Pencil aria-hidden="true" />
+                    <span>Editar</span>
+                  </button>
+                </DropdownMenuItem>
               )}
               {onDelete && (
-                <button
-                  className="btn-ghost activity-action-item text-danger"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete();
-                  }}
-                >
-                  <Trash2 size={14} aria-hidden="true" />
-                  <span>Eliminar</span>
-                </button>
+                <>
+                  {onEdit && <DropdownMenuSeparator />}
+                  <DropdownMenuItem asChild>
+                    <button
+                      type="button"
+                      className="dropdown-menu-item--danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                      }}
+                    >
+                      <Trash2 aria-hidden="true" />
+                      <span>Eliminar</span>
+                    </button>
+                  </DropdownMenuItem>
+                </>
               )}
-            </PopoverContent>
-          </Popover>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </div>

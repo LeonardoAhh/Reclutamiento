@@ -1,0 +1,84 @@
+.dropdown-menu-trigger {
+  display: inline-flex;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  justify-content: center;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-body);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.dropdown-menu-trigger:hover,
+.dropdown-menu-trigger[data-state="open"] {
+  border-color: var(--color-hairline-soft);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.dropdown-menu-trigger svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+}
+
+.dropdown-menu-content {
+  z-index: var(--layer-menu);
+  display: flex;
+  min-inline-size: var(--menu-min-inline-size);
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-elevated);
+}
+
+.dropdown-menu-item {
+  display: flex;
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-inline: var(--spacing-md);
+  border-radius: var(--rounded-sm);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdown-menu-item[data-highlighted] {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  outline: none;
+}
+
+.dropdown-menu-item--danger {
+  color: var(--color-error);
+}
+
+.dropdown-menu-item--danger[data-highlighted] {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+
+.dropdown-menu-item svg {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  flex: 0 0 auto;
+}
+
+.dropdown-menu-separator {
+  block-size: var(--border-width);
+  margin-block: var(--spacing-xxs);
+  background: var(--color-hairline);
+}

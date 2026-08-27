@@ -11,6 +11,8 @@ export interface ConfirmModalProps {
   onCancel: () => void;
   isDestructive?: boolean;
   isLoading?: boolean;
+  loadingLabel?: string;
+  errorMessage?: string;
 }
 
 /**
@@ -27,6 +29,8 @@ export function ConfirmModal({
   onCancel,
   isDestructive = true,
   isLoading = false,
+  loadingLabel = "Procesando…",
+  errorMessage,
 }: ConfirmModalProps) {
   return (
     <Modal
@@ -49,7 +53,7 @@ export function ConfirmModal({
             disabled={isLoading}
             aria-busy={isLoading}
           >
-            {isLoading ? "Procesando..." : confirmLabel}
+            {isLoading ? loadingLabel : confirmLabel}
           </button>
         </>
       }
@@ -57,6 +61,11 @@ export function ConfirmModal({
       <div className="modal-body">
         {description && (
           <div className="text-sm text-charcoal">{description}</div>
+        )}
+        {errorMessage && (
+          <p className="form-error-text" role="alert">
+            {errorMessage}
+          </p>
         )}
       </div>
     </Modal>

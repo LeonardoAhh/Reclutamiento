@@ -5,7 +5,6 @@ import {
   Copy as CopyIcon,
   Pencil,
   Trash2,
-  ShieldAlert,
   Briefcase,
   Bus,
   FileText,
@@ -24,6 +23,7 @@ import {
 import { Check, Copy, Save as SaveIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Modal } from "@/components/ui/Modal";
+import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -555,8 +555,6 @@ export function SpeechView() {
     (formData.categoria !== "vacante" || formData.puesto.trim().length > 0) &&
     formData.created_by !== "" &&
     (formData.categoria === "flyers" || formData.contenido.trim().length > 0);
-
-  const deletingTemplate = effectiveTemplates.find((t) => t.id === deletingId);
 
   return (
     <BoneyardSkeleton
@@ -1096,50 +1094,15 @@ export function SpeechView() {
         </div>
       </Modal>
 
-      {/* ── Modal confirmación de borrado ──────────────────────────────────── */}
-      <Modal
+      <DeleteConfirmModal
         isOpen={deletingId !== null}
-        onClose={() => {
+        title="Eliminar plantilla"
+        onCancel={() => {
           if (deleteStatus !== "loading") setDeletingId(null);
         }}
-        title="Eliminar plantilla"
-        icon={<ShieldAlert size={20} aria-hidden="true" />}
-        fullscreenMobile={false}
-        footerActions={
-          <div className="speech-modal-footer">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setDeletingId(null)}
-              disabled={deleteStatus === "loading"}
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={confirmDelete}
-              disabled={deleteStatus === "loading"}
-              aria-label="Confirmar eliminación"
-            >
-              <Trash2 size={16} aria-hidden="true" />
-              {deleteStatus === "loading" ? "Eliminando…" : "Eliminar"}
-            </button>
-          </div>
-        }
-      >
-        <div className="modal-body">
-          <div className="delete-warning">
-            <p className="delete-warning__title">
-              ¿Eliminar la plantilla{" "}
-              <span className="delete-warning__name">
-                "{deletingTemplate?.titulo}"
-              </span>
-              ?
-            </p>
-          </div>
-        </div>
-      </Modal>
+        onConfirm={() => void confirmDelete()}
+        isLoading={deleteStatus === "loading"}
+      />
       </section>
     </BoneyardSkeleton>
   );

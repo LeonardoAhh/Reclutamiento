@@ -307,11 +307,7 @@ export function EmployeeSheet({
     <div className="delete-flow">
       <div className="delete-warning">
         <p className="delete-warning__title">
-          ¿Registrar baja de{" "}
-          <span className="delete-warning__name">
-            {form.nombre || "este empleado"}
-          </span>
-          ?
+          Esta acción no se puede deshacer.
         </p>
         <dl className="delete-warning__meta">
           <div className="delete-warning__meta-row">
@@ -393,7 +389,7 @@ export function EmployeeSheet({
           className="btn-danger"
           disabled={!isDeleteValid || submitting}
         >
-          {submitting ? "Registrando baja…" : "Registrar Baja"}
+          {submitting ? "Registrando baja…" : "Eliminar"}
         </button>
       )}
     </>
@@ -409,6 +405,7 @@ export function EmployeeSheet({
         icon={icon}
         title={title}
         subtitle={subtitle}
+        size={isAdd ? "md" : "sm"}
       >
         <form onSubmit={handleSubmit} className="modal-body" noValidate>
           {isAdd ? (

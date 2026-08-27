@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
+import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 
 interface SavedSummary {
   id: string;
@@ -19,7 +20,7 @@ interface ReportesGuardadosDialogProps {
   savedSummaries: SavedSummary[];
   dbSaving: boolean;
   onLoad: (mes: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => void | Promise<void>;
   formatMes: (mes: string) => string;
   /** "icon" (default): botón compacto ícono + contador · "labeled": ícono + texto */
   triggerVariant?: "icon" | "labeled";
@@ -34,9 +35,22 @@ export default function ReportesGuardadosDialog({
   triggerVariant = "icon",
 }: ReportesGuardadosDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<SavedSummary | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const count = savedSummaries.length;
   const label =
     count === 1 ? "1 reporte guardado" : `${count} reportes guardados`;
+
+  async function confirmDeletion() {
+    if (!pendingDelete || isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await onDelete(pendingDelete.id);
+      setPendingDelete(null);
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   return (
     <>
@@ -115,7 +129,7 @@ export default function ReportesGuardadosDialog({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDelete(s.id);
+                      setPendingDelete(s);
                     }}
                     disabled={dbSaving}
                     className="reporte-saved__delete"
@@ -130,6 +144,16 @@ export default function ReportesGuardadosDialog({
           )}
         </div>
       </Modal>
+
+      <DeleteConfirmModal
+        isOpen={pendingDelete !== null}
+        title="Eliminar reporte"
+        onConfirm={() => void confirmDeletion()}
+        onCancel={() => {
+          if (!isDeleting) setPendingDelete(null);
+        }}
+        isLoading={isDeleting || dbSaving}
+      />
     </>
   );
 }

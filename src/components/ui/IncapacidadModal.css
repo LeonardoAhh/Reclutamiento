@@ -1,46 +1,48 @@
 /* IncapacidadModal — toggle + fecha opcional de regreso */
 
-.modal-content.incapacidad-modal {
-  max-width: 460px;
-}
-
 .incapacidad-modal__icon {
   color: var(--color-accent-amber);
 }
 
+.incapacidad-modal .incapacidad-modal__icon {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  color: currentColor;
+}
 
+.incapacidad-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
 
 .incapacidad-modal__toggle {
-  display: inline-flex;
+  display: flex;
+  min-block-size: var(--touch-target-min);
   align-items: center;
   gap: var(--spacing-sm);
   cursor: pointer;
   user-select: none;
 }
 
-.incapacidad-modal__toggle input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-accent-amber);
-  cursor: pointer;
-}
-
 .incapacidad-modal__toggle-label {
-  font-weight: 500;
   color: var(--color-ink);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
 }
 
-
 .incapacidad-modal__error {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-error-tint, color-mix(in srgb, var(--color-error) 10%, var(--color-canvas)));
-  border-radius: var(--rounded-sm);
-  color: var(--color-error);
-  font-size: var(--type-caption-md-size);
+  margin: 0;
+}
+
+.incapacidad-modal__error svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
 }
 
 /* ── CubrirVacanteSheet — usa los mismos estilos `.incapacidad-modal__*`

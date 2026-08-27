@@ -2619,15 +2619,6 @@
     "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero empleado": "4329",
-    "nombre": "ALEGRIA BALDERAS PATRICIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "parada": "LA BARRETA",
-    "colonia": "TIENDA EN LA ENTRADA"
-  },
-  {
     "numero empleado": "4331",
     "nombre": "GARCIA GARCIA FLOR DE LIZ",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2689,15 +2680,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "parada": "AV. DE LA LUZ",
     "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4344",
-    "nombre": "MATEOS GONZALEZ MARIANA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "turno": "2",
-    "nombre ruta": "R4-SANTA ROSA",
-    "parada": "SANTA ROSA",
-    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero empleado": "4345",

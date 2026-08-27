@@ -2,9 +2,17 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { useAIChat } from "@/hooks/useAIChat";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import { Modal } from "@/components/ui/Modal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { Tooltip } from "@/components/ui/Tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -13,6 +21,7 @@ import {
   FileText,
   History,
   Loader2,
+  MoreVertical,
   Pencil,
   Plus,
   Send,
@@ -523,45 +532,67 @@ export function AIChatPage() {
                           </form>
                         ) : (
                           <>
-                            <button
-                              type="button"
-                              className="ai-history-item"
-                              onClick={() => handleOpenConversation(conversation.id)}
-                              aria-current={conversation.id === sessionId ? "page" : undefined}
-                            >
-                              <span>{conversation.title}</span>
-                              <div className="ai-history-item-meta">
-                                <time dateTime={conversation.updatedAt}>
-                                  {formatConversationDate(conversation.updatedAt)}
-                                </time>
-                                {conversation.isPendingSync && (
-                                  <CloudOff size="12" className="ai-sync-icon" aria-label="Sincronización pendiente" />
-                                )}
-                              </div>
-                            </button>
+                            <Tooltip content={conversation.title} side="top">
+                              <button
+                                type="button"
+                                className="ai-history-item"
+                                onClick={() => handleOpenConversation(conversation.id)}
+                                aria-current={conversation.id === sessionId ? "page" : undefined}
+                              >
+                                <span>{conversation.title}</span>
+                                <div className="ai-history-item-meta">
+                                  <time dateTime={conversation.updatedAt}>
+                                    {formatConversationDate(conversation.updatedAt)}
+                                  </time>
+                                  {conversation.isPendingSync && (
+                                    <CloudOff size="12" className="ai-sync-icon" aria-label="Sincronización pendiente" />
+                                  )}
+                                </div>
+                              </button>
+                            </Tooltip>
                             <div className="ai-history-item-actions">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  startRenamingConversation(conversation.id, conversation.title)
-                                }
-                                aria-label={`Renombrar ${conversation.title}`}
-                              >
-                                <Pencil aria-hidden="true" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsHistoryOpen(false);
-                                  setConversationPendingDelete({
-                                    id: conversation.id,
-                                    title: conversation.title,
-                                  });
-                                }}
-                                aria-label={`Eliminar ${conversation.title}`}
-                              >
-                                <Trash2 aria-hidden="true" />
-                              </button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    type="button"
+                                    aria-label={`Acciones de ${conversation.title}`}
+                                  >
+                                    <MoreVertical aria-hidden="true" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem
+                                      asChild
+                                      onSelect={() =>
+                                        startRenamingConversation(conversation.id, conversation.title)
+                                      }
+                                    >
+                                      <button type="button">
+                                        <Pencil aria-hidden="true" />
+                                        <span>Renombrar</span>
+                                      </button>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                      asChild
+                                      onSelect={() => {
+                                        setIsHistoryOpen(false);
+                                        setConversationPendingDelete({
+                                          id: conversation.id,
+                                          title: conversation.title,
+                                        });
+                                      }}
+                                    >
+                                      <button
+                                        type="button"
+                                        className="dropdown-menu-item--danger"
+                                      >
+                                        <Trash2 aria-hidden="true" />
+                                        <span>Eliminar</span>
+                                      </button>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </>
                         )}
@@ -859,19 +890,11 @@ export function AIChatPage() {
         </>
       )}
 
-      <ConfirmModal
+      <DeleteConfirmModal
         isOpen={conversationPendingDelete !== null}
         title="Eliminar conversación"
-        description={
-          conversationPendingDelete
-            ? "Esta acción no se puede deshacer."
-            : undefined
-        }
-        confirmLabel="Eliminar"
-        cancelLabel="Cancelar"
         onConfirm={() => void confirmConversationDeletion()}
         onCancel={cancelConversationDeletion}
-        isDestructive
         isLoading={isDeletingConversation}
       />
     </div>

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, HeartPulse } from 'lucide-react';
+import { useEffect, useId, useState } from 'react';
+import { AlertCircle, HeartPulse } from 'lucide-react';
 import { Modal } from './Modal';
+import { Checkbox } from './Checkbox';
 import type { Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import './IncapacidadModal.css';
@@ -26,6 +27,7 @@ export function IncapacidadModal({
   const [hasta, setHasta] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const formId = useId();
 
   useEffect(() => {
     if (!isOpen || !employee) return;
@@ -59,6 +61,28 @@ export function IncapacidadModal({
 
   if (!employee) return null;
 
+  const footerActions = (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting}
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        className="btn-primary"
+        form={formId}
+        disabled={submitting}
+        aria-busy={submitting}
+      >
+        {submitting ? 'Guardando…' : 'Guardar'}
+      </button>
+    </>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -66,20 +90,27 @@ export function IncapacidadModal({
       className="incapacidad-modal"
       icon={
         <HeartPulse
-          size={20}
           className="incapacidad-modal__icon"
           aria-hidden="true"
         />
       }
       title="Marcar incapacidad"
-      subtitle={`${employee.nombre} · #${employee.num_empleado}`}
+      size="xs"
+      fullscreenMobile={false}
+      footerActions={footerActions}
     >
-      <form onSubmit={handleSubmit} className="modal-body" noValidate>
-        <label className="incapacidad-modal__toggle">
-          <input
-            type="checkbox"
+      <form
+        id={formId}
+        onSubmit={handleSubmit}
+        className="modal-body"
+        noValidate
+      >
+        <label htmlFor={`${formId}-toggle`} className="incapacidad-modal__toggle">
+          <Checkbox
+            id={`${formId}-toggle`}
             checked={enIncapacidad}
             onChange={(e) => setEnIncapacidad(e.target.checked)}
+            disabled={submitting}
           />
           <span className="incapacidad-modal__toggle-label">
             En incapacidad médica
@@ -101,29 +132,11 @@ export function IncapacidadModal({
         </div>
 
         {errorMsg && (
-          <div className="incapacidad-modal__error" role="alert">
-            <AlertCircle size={14} aria-hidden="true" />
+          <div className="form-error-text incapacidad-modal__error" role="alert">
+            <AlertCircle aria-hidden="true" />
             {errorMsg}
           </div>
         )}
-
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={submitting}
-          >
-            {submitting ? 'Guardando…' : 'Guardar'}
-          </button>
-        </div>
       </form>
     </Modal>
   );

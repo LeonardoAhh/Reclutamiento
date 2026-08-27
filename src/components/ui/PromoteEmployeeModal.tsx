@@ -269,27 +269,25 @@ export function PromoteEmployeeModal({
         {/* ── Segmented control de modo ──────────────────────────────── */}
         <div
           className="promote-mode"
-          role="radiogroup"
+          role="group"
           aria-label="Tipo de promoción"
         >
           <button
             type="button"
             className={`promote-mode__option${mode === 'existing' ? ' is-active' : ''}`}
-            role="radio"
-            aria-checked={mode === 'existing'}
+            aria-pressed={mode === 'existing'}
             onClick={() => setMode('existing')}
           >
-            <ListChecks size={15} aria-hidden="true" />
+            <ListChecks aria-hidden="true" />
             <span>Puesto existente</span>
           </button>
           <button
             type="button"
             className={`promote-mode__option${mode === 'new' ? ' is-active' : ''}`}
-            role="radio"
-            aria-checked={mode === 'new'}
+            aria-pressed={mode === 'new'}
             onClick={() => setMode('new')}
           >
-            <Plus size={15} aria-hidden="true" />
+            <Plus aria-hidden="true" />
             <span>Crear nuevo puesto</span>
           </button>
         </div>
@@ -337,7 +335,7 @@ export function PromoteEmployeeModal({
             disabled={!canSubmit || submitting}
             aria-busy={submitting}
           >
-            {submitting ? 'Promoviendo…' : 'Confirmar promoción'}
+            {submitting ? 'Aplicando...' : 'Confirmar'}
           </button>
         </footer>
       </form>
@@ -414,7 +412,7 @@ function ExistingFields({
       </div>
 
       {/* Puesto */}
-      <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+      <div className="form-group form-group--span-2">
         <label htmlFor="promote-existing-puesto">Nuevo puesto</label>
         <CustomSelect
           id="promote-existing-puesto"
@@ -494,7 +492,7 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
       </div>
 
       {/* Nombre del puesto */}
-      <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+      <div className="form-group form-group--span-2">
         <label htmlFor="promote-new-puesto">Nombre del puesto</label>
         <input
           id="promote-new-puesto"
@@ -533,10 +531,10 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
       </div>
 
       {/* Notas */}
-      <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+      <div className="form-group form-group--span-2">
         <label htmlFor="promote-new-notas">
           Notas{' '}
-          <span aria-hidden="true" style={{ fontWeight: 400, textTransform: 'none', fontSize: 'var(--type-caption-md-size)', color: 'var(--color-muted-soft)', letterSpacing: 0 }}>
+          <span aria-hidden="true" className="promote-form__optional">
             (opcional)
           </span>
         </label>
@@ -551,7 +549,7 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
       </div>
 
       {/* Hint informativo */}
-      <p className="promote-hint" style={{ gridColumn: '1 / -1' }}>
+      <p className="promote-hint">
         El puesto se registrará en el sistema y aparecerá en los selectores
         de Dashboard, Vacantes, Pipeline y formularios relacionados.
       </p>

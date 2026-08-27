@@ -649,11 +649,7 @@ export function EmployeeModal({
     <div className="employee-modal__delete">
       <div className="delete-warning">
         <p className="delete-warning__title">
-          ¿Registrar baja de{" "}
-          <span className="delete-warning__name">
-            {form.nombre || "este empleado"}
-          </span>
-          ?
+          Esta acción no se puede deshacer.
         </p>
       </div>
 
@@ -781,7 +777,7 @@ export function EmployeeModal({
           isSuccess={isSuccess}
           isError={!!errorMsg}
           errorText={errorMsg || undefined}
-          idleText="Registrar"
+          idleText="Eliminar"
           loadingText="Registrando baja..."
           successText="¡Baja registrada!"
           idleIcon={Trash2IconData}
@@ -862,7 +858,7 @@ export function EmployeeModal({
       icon={icon}
       title={title}
       subtitle={subtitle}
-      size={isAdd ? "lg" : "md"}
+      size={isAdd ? "lg" : "sm"}
       fullscreenMobile={false}
     >
       <form onSubmit={handleSubmit} className="modal-body" noValidate>

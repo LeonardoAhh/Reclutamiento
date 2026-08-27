@@ -32,12 +32,14 @@ import {
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { toast } from "@/lib/notify";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import "./Actividades.css";
 
 /** Capitaliza la primera letra de cada palabra. */
@@ -282,7 +284,6 @@ export function Actividades() {
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
     title: string;
-    description?: string;
     isLoading: boolean;
     onConfirm: () => void;
   }>({
@@ -515,8 +516,7 @@ export function Actividades() {
   const handleDeleteProof = (proofId: string, url: string) => {
     setConfirmState({
       isOpen: true,
-      title: "¿Eliminar prueba?",
-      description: "Esta acción no se puede deshacer.",
+      title: "Eliminar prueba",
       isLoading: false,
       onConfirm: async () => {
         setConfirmState((state) => ({ ...state, isLoading: true }));
@@ -584,8 +584,7 @@ export function Actividades() {
     e?.stopPropagation();
     setConfirmState({
       isOpen: true,
-      title: `¿Eliminar "${activity.titulo}"?`,
-      description: "Esta actividad será eliminada permanentemente.",
+      title: "Eliminar actividad",
       isLoading: false,
       onConfirm: async () => {
         setConfirmState((state) => ({ ...state, isLoading: true }));
@@ -815,40 +814,41 @@ export function Actividades() {
 
                     {isAdmin && (
                       <div className="activity-admin-actions">
-                        <Popover>
-                          <PopoverTrigger asChild>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
                             <button
-                              className="btn-ghost btn-icon"
+                              type="button"
                               aria-label="Opciones"
                             >
                               <MoreVertical size={16} aria-hidden="true" />
                             </button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            align="end"
-                            className="activity-action-menu"
-                          >
-                            <button
-                              className="btn-ghost activity-action-item"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setAssignModalVacancy(v);
-                                // Popover handles closing automatically when clicking inside,
-                                // or we can rely on Radix UI's default behavior.
-                              }}
-                            >
-                              <UserPlus size={14} aria-hidden="true" />
-                              <span>Asignar a...</span>
-                            </button>
-                            <button
-                              className="btn-ghost activity-action-item text-danger"
-                              onClick={(e) => handleDelete(v, e)}
-                            >
-                              <Trash2 size={14} aria-hidden="true" />
-                              <span>Eliminar</span>
-                            </button>
-                          </PopoverContent>
-                        </Popover>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem asChild>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setAssignModalVacancy(v);
+                                }}
+                              >
+                                <UserPlus aria-hidden="true" />
+                                <span>Asignar a...</span>
+                              </button>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                              <button
+                                type="button"
+                                className="dropdown-menu-item--danger"
+                                onClick={(e) => handleDelete(v, e)}
+                              >
+                                <Trash2 aria-hidden="true" />
+                                <span>Eliminar</span>
+                              </button>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     )}
                   </div>
@@ -1725,11 +1725,9 @@ export function Actividades() {
         </div>
       </Modal>
 
-      <ConfirmModal
+      <DeleteConfirmModal
         isOpen={confirmState.isOpen}
         title={confirmState.title}
-        description={confirmState.description}
-        confirmLabel="Eliminar"
         isLoading={confirmState.isLoading}
         onConfirm={confirmState.onConfirm}
         onCancel={() => {

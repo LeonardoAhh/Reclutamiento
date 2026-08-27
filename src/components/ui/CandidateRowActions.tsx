@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { BadgeCheck, CheckCircle2, FileImage, MoreVertical, Pencil, StickyNote, Trash2, User, UserMinus } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
+import { BadgeCheck, FileImage, MoreVertical, Pencil, Trash2, UserMinus } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
 import type { Candidate } from '@/lib/types';
 import { ReclutadorBadge } from '@/components/ui/Badge';
 import './CandidateRowActions.css';
@@ -33,100 +39,84 @@ export function CandidateRowActions({
 
   return (
     <div className="candidate-row-actions">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="candidate-row-actions__trigger"
             aria-label={`Acciones de ${candidate.nombre}`}
-            title="Acciones"
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <MoreVertical size={16} aria-hidden="true" />
+            <MoreVertical aria-hidden="true" />
           </button>
-        </PopoverTrigger>
+        </DropdownMenuTrigger>
 
-        <PopoverContent 
-          side="bottom" 
-          align="end" 
-          sideOffset={4}
-          className="candidate-row-actions__menu"
-        >
+        <DropdownMenuContent>
           {candidate.reclutador && (
             <>
               <div className="candidate-row-actions__info">
                 <span className="candidate-row-actions__info-label">Reclutador</span>
                 <ReclutadorBadge nombre={candidate.reclutador} />
               </div>
-              <div className="candidate-row-actions__divider" role="separator" />
+              <DropdownMenuSeparator />
             </>
           )}
 
           {onAccessCard && (
-            <button
-              type="button"
-              className="candidate-row-actions__item"
-              role="menuitem"
-              onClick={(e) => run(e, onAccessCard)}
-            >
-              <FileImage size={14} aria-hidden="true" />
-              <span>Ver pase</span>
-            </button>
+            <DropdownMenuItem asChild>
+              <button type="button" onClick={(e) => run(e, onAccessCard)}>
+                <FileImage aria-hidden="true" />
+                <span>Ver pase</span>
+              </button>
+            </DropdownMenuItem>
           )}
 
           {onHire && (
-            <button
-              type="button"
-              className="candidate-row-actions__item candidate-row-actions__item--primary"
-              role="menuitem"
-              onClick={(e) => run(e, onHire)}
-            >
-              <BadgeCheck size={14} aria-hidden="true" />
-              <span>Contratar</span>
-            </button>
+            <DropdownMenuItem asChild>
+              <button type="button" onClick={(e) => run(e, onHire)}>
+                <BadgeCheck aria-hidden="true" />
+                <span>Contratar</span>
+              </button>
+            </DropdownMenuItem>
           )}
 
-
-          <button
-            type="button"
-            className="candidate-row-actions__item"
-            role="menuitem"
-            onClick={(e) => run(e, onEdit)}
-          >
-            <Pencil size={14} aria-hidden="true" />
-            <span>Editar</span>
-          </button>
+          <DropdownMenuItem asChild>
+            <button type="button" onClick={(e) => run(e, onEdit)}>
+              <Pencil aria-hidden="true" />
+              <span>Editar</span>
+            </button>
+          </DropdownMenuItem>
 
           {onBaja && (
-            <button
-              type="button"
-              className="candidate-row-actions__item candidate-row-actions__item--danger"
-              role="menuitem"
-              onClick={(e) => run(e, onBaja)}
-            >
-              <UserMinus size={14} aria-hidden="true" />
-              <span>Baja</span>
-            </button>
+            <DropdownMenuItem asChild>
+              <button
+                type="button"
+                className="dropdown-menu-item--danger"
+                onClick={(e) => run(e, onBaja)}
+              >
+                <UserMinus aria-hidden="true" />
+                <span>Baja</span>
+              </button>
+            </DropdownMenuItem>
           )}
 
           {onDelete && (
             <>
-              <div className="candidate-row-actions__divider" role="separator" />
-
-              <button
-                type="button"
-                className="candidate-row-actions__item candidate-row-actions__item--danger"
-                role="menuitem"
-                onClick={(e) => run(e, onDelete)}
-              >
-                <Trash2 size={14} aria-hidden="true" />
-                <span>Eliminar</span>
-              </button>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <button
+                  type="button"
+                  className="dropdown-menu-item--danger"
+                  onClick={(e) => run(e, onDelete)}
+                >
+                  <Trash2 aria-hidden="true" />
+                  <span>Eliminar</span>
+                </button>
+              </DropdownMenuItem>
             </>
           )}
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

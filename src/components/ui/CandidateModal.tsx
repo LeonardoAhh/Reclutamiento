@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { CheckCircle2, Pencil, ShieldAlert, Trash2, UserPlus, XCircle, ClipboardList } from 'lucide-react';
-import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
+import { CheckCircle2, Pencil, ShieldAlert, UserPlus, XCircle, ClipboardList } from 'lucide-react';
+import { Save as SaveIconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
@@ -8,6 +8,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
 import { formatDateTimeMx, formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
+import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { Tooltip } from './Tooltip';
@@ -294,6 +295,29 @@ export function CandidateModal({
 
   const isFormValid = !Object.values(errors).some(Boolean);
 
+  async function handleDeleteConfirm() {
+    if (submitting || !onDelete || !candidate?.id) return;
+    setErrorMsg(null);
+
+    try {
+      setSubmitting(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const result = await onDelete(candidate.id);
+      if (result && result.ok === false) {
+        setErrorMsg(result.message ?? 'No se pudo eliminar.');
+        setSubmitting(false);
+        return;
+      }
+
+      setIsSuccess(true);
+      setTimeout(() => onClose(), 1500);
+    } catch {
+      setErrorMsg('Ocurrió un error inesperado.');
+      setSubmitting(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
@@ -326,21 +350,6 @@ export function CandidateModal({
               return;
             }
           }
-      }
-
-      if (mode === 'delete' && onDelete && candidate?.id) {
-        // Retraso artificial para que se note la animación de "pensando"
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const result = await onDelete(candidate.id);
-        if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo eliminar.');
-          setSubmitting(false);
-          return;
-        }
-        setIsSuccess(true);
-        setTimeout(() => onClose(), 1500);
-        return;
       }
 
       if ((mode === 'add' || mode === 'edit') && onSave) {
@@ -404,12 +413,23 @@ export function CandidateModal({
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
 
+  if (isDelete) {
+    return (
+      <DeleteConfirmModal
+        isOpen={isOpen}
+        title="Eliminar candidato"
+        onConfirm={() => void handleDeleteConfirm()}
+        onCancel={onClose}
+        isLoading={submitting || isSuccess}
+        errorMessage={errorMsg ?? undefined}
+      />
+    );
+  }
+
 
 
   const icon = accessCard ? (
     <CheckCircle2 size={20} className="color-success" aria-hidden="true" />
-  ) : isDelete ? (
-    <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
     <Pencil size={20} className="color-primary" aria-hidden="true" />
   ) : (
@@ -418,9 +438,7 @@ export function CandidateModal({
 
   const title = accessCard
     ? 'Pase de entrevista'
-    : isDelete
-      ? 'Eliminar candidato'
-      : isEdit
+    : isEdit
         ? 'Editar candidato'
         : 'Nuevo candidato';
 
@@ -750,14 +768,14 @@ const fieldsPosicion = (
     </div>
   ) : null;
 
-  const useWizard = !isDelete && !accessCard && isMobile;
+  const useWizard = !accessCard && isMobile;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
-      size={accessCard ? 'xs' : isDelete ? 'sm' : 'md'}
+      size={accessCard ? 'xs' : 'md'}
       fullscreenMobile={false}
       icon={icon}
       title={title}
@@ -808,21 +826,12 @@ const fieldsPosicion = (
         </form>
       ) : (
         <form onSubmit={handleSubmit} className="modal-body" noValidate>
-          {isDelete ? (
-            <div className="delete-warning">
-              <p className="delete-warning__title">
-                ¿Eliminar a{' '}
-                <span className="delete-warning__name">{form.nombre || 'este candidato'}</span>?
-              </p>
-            </div>
-          ) : (
-            <div className="form-grid">
-              {fieldsContacto}
-              {fieldsPosicion}
-              {fieldsProceso}
-              {auditNotice}
-            </div>
-          )}
+          <div className="form-grid">
+            {fieldsContacto}
+            {fieldsPosicion}
+            {fieldsProceso}
+            {auditNotice}
+          </div>
 
           {errorNotice}
 
@@ -835,32 +844,18 @@ const fieldsPosicion = (
             >
               Cancelar
             </button>
-            {isDelete ? (
-              <AnimatedSubmitButton
-                isSubmitting={submitting}
-                isSuccess={isSuccess}
-                isError={!!errorMsg}
-                errorText={errorMsg || undefined}
-                idleText="Eliminar"
-                loadingText="Eliminando..."
-                successText="¡Eliminado!"
-                idleIcon={Trash2IconData}
-                className="btn-danger"
-              />
-            ) : (
-              <AnimatedSubmitButton
-                isSubmitting={submitting}
-                isSuccess={isSuccess}
-                isError={!!errorMsg}
-                errorText={errorMsg || undefined}
-                idleText="Guardar"
-                loadingText="Guardando..."
-                successText="¡Guardado!"
-                idleIcon={SaveIconData}
-                className="btn-primary"
-                disabled={false}
-              />
-            )}
+            <AnimatedSubmitButton
+              isSubmitting={submitting}
+              isSuccess={isSuccess}
+              isError={!!errorMsg}
+              errorText={errorMsg || undefined}
+              idleText="Guardar"
+              loadingText="Guardando..."
+              successText="¡Guardado!"
+              idleIcon={SaveIconData}
+              className="btn-primary"
+              disabled={false}
+            />
           </footer>
         </form>
       )}

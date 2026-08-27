@@ -750,12 +750,6 @@
   40% { transform: scale(1); opacity: 1; }
 }
 
-.ai-page-container button:focus-visible,
-.ai-chat-table-wrapper:focus-visible {
-  outline: calc(var(--border-width) * 2) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 @media (min-width: 48rem) {
   .ai-chat-panel-header,
   .ai-chat-messages,
@@ -1134,7 +1128,6 @@
   align-items: center;
 }
 
-.ai-history-item-actions button,
 .ai-history-rename-form button {
   display: inline-flex;
   min-inline-size: var(--touch-target-min);
@@ -1148,17 +1141,11 @@
   cursor: pointer;
 }
 
-.ai-history-item-actions button:hover,
 .ai-history-rename-form button:hover:not(:disabled) {
   background: var(--color-surface);
   color: var(--color-ink);
 }
 
-.ai-history-item-actions button:last-child:hover {
-  color: var(--color-error);
-}
-
-.ai-history-item-actions svg,
 .ai-history-rename-form svg {
   inline-size: var(--icon-size-control);
   block-size: var(--icon-size-control);
