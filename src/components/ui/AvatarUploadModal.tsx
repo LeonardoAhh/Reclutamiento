@@ -3,8 +3,8 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoader } from "@/hooks/useLoader";
 import { useFeedback } from "@/hooks/useFeedback";
-import { X, Loader2 as Loader2Icon } from "lucide-react";
-import { UploadCloud, Loader2 } from "lucide";
+import { X, LoaderCircle as Loader2Icon } from "lucide-react";
+import { CloudUpload, LoaderCircle } from "lucide";
 import { Avatar } from "./Avatar";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import "./AvatarUploadModal.css";
@@ -152,7 +152,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
           >
-            <MorphingIcon icon={uploading ? Loader2 : UploadCloud} size={16} />
+            <MorphingIcon icon={uploading ? LoaderCircle : CloudUpload} size={16} />
             <span>{file ? "Elegir otra imagen" : "Seleccionar"}</span>
           </button>
         </div>

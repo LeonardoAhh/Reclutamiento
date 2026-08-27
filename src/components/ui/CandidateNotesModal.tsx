@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StickyNote } from 'lucide-react';
-import { Loader2, MessageSquarePlus } from 'lucide';
+import { LoaderCircle, MessageSquarePlus } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
 import type { Candidate, CandidateNote } from '@/lib/types';
@@ -148,7 +148,7 @@ export function CandidateNotesModal({
             aria-busy={submitting}
           >
             <MorphingIcon
-              icon={submitting ? Loader2 : MessageSquarePlus}
+              icon={submitting ? LoaderCircle : MessageSquarePlus}
               size={16}
               aria-hidden="true"
               className={

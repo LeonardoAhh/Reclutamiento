@@ -52,8 +52,17 @@ export function useTheme() {
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
-      applyTheme(theme);
-      window.localStorage.setItem(STORAGE_KEY, theme);
+
+      /* El script de index.html aplica el tema antes del primer paint. Cuando
+         ThemeToggle se monta dentro de un popover, no debemos volver a escribir
+         el atributo raíz: hacerlo fuerza un repintado completo aunque el valor
+         sea el mismo. Solo sincronizamos si el documento quedó desalineado. */
+      if (document.documentElement.getAttribute('data-theme') !== theme) {
+        applyTheme(theme);
+      }
+      if (window.localStorage.getItem(STORAGE_KEY) !== theme) {
+        window.localStorage.setItem(STORAGE_KEY, theme);
+      }
       return;
     }
 
@@ -106,4 +115,3 @@ export function useTheme() {
 
   return { theme, toggleTheme, setTheme };
 }
-

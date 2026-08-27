@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle2, Star } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
@@ -179,7 +179,7 @@ export function MissingPositionsModal({
       isOpen={isOpen}
       onClose={onClose}
       className="missing-positions-modal"
-      icon={<AlertCircle size={20} aria-hidden="true" />}
+      icon={<CircleAlert size={20} aria-hidden="true" />}
       title="Vacantes y Procesos"
       fullscreenMobile={true}
     >

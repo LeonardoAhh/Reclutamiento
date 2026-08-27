@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { AlertCircle, HeartPulse } from 'lucide-react';
+import { CircleAlert, HeartPulse } from 'lucide-react';
 import { Modal } from './Modal';
 import { Checkbox } from './Checkbox';
 import type { Employee } from '@/lib/types';
@@ -133,7 +133,7 @@ export function IncapacidadModal({
 
         {errorMsg && (
           <div className="form-error-text incapacidad-modal__error" role="alert">
-            <AlertCircle aria-hidden="true" />
+            <CircleAlert aria-hidden="true" />
             {errorMsg}
           </div>
         )}

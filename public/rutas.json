@@ -2788,5 +2788,14 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "parada": "AV. DE LA LUZ",
     "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+  },
+  {
+    "numero empleado": "4355",
+    "nombre": "VARGAS PEREZ BLANCA ESTELA",
+    "seccion": "CALIDAD",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   }
 ]

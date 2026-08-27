@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, Star, Trophy, X } from 'lucide-react';
+import { CircleCheckBig, Star, Trophy, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CoverageBar } from './CoverageBar';
 import { motion, AnimatePresence } from 'framer-motion';

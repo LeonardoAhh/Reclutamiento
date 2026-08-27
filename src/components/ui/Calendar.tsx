@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CircleCheckBig, ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
 

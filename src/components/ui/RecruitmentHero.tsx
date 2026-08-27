@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
-import { Briefcase, CheckCircle2, ClipboardCheck, Search, UserCheck, Users } from 'lucide-react';
+import { Briefcase, CircleCheckBig, ClipboardCheck, Search, UserCheck, UsersRound } from 'lucide-react';
 import './RecruitmentHero.css';
 
 const STAGES = [
   { icon: Search, label: 'Búsqueda' },
   { icon: ClipboardCheck, label: 'Evaluación' },
-  { icon: Users, label: 'Entrevistas' },
+  { icon: UsersRound, label: 'Entrevistas' },
   { icon: UserCheck, label: 'Selección' },
   { icon: Briefcase, label: 'Contratación' },
 ] as const;

@@ -3,7 +3,7 @@ import {
   MessageSquare,
   Plus,
   Copy as CopyIcon,
-  Pencil,
+  PenLine,
   Trash2,
   Briefcase,
   Bus,
@@ -19,14 +19,23 @@ import {
   ImagePlus,
   X,
   Download,
+  EllipsisVertical,
+  Check,
 } from "lucide-react";
-import { Check, Copy, Save as SaveIconData } from "lucide";
+import { Check as CheckData, Copy, Save as SaveIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Modal } from "@/components/ui/Modal";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { getUrlAsPngBlob } from "@/lib/images";
@@ -667,51 +676,56 @@ export function SpeechView() {
                         </div>
 
                         <div className="speech-template-card__buttons">
-                          <button
-                            type="button"
-                            className={`speech-action-btn${copiedId === template.id ? " is-copied" : ""}`}
-                            onClick={() => handleCopy(template)}
-                            aria-label={
-                              copiedId === template.id
-                                ? "Copiado"
-                                : `Copiar plantilla: ${template.titulo}`
-                            }
-                            title={
-                              copiedId === template.id
-                                ? "Copiado"
-                                : "Copiar al portapapeles"
-                            }
-                            disabled={isSeedMode}
-                          >
-                            <MorphingIcon
-                              icon={copiedId === template.id ? Check : Copy}
-                              size={16}
-                            />
-                          </button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                type="button"
+                                className="speech-action-btn"
+                                aria-label="Opciones de plantilla"
+                                title="Opciones"
+                              >
+                                <EllipsisVertical size={16} />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleCopy(template)}
+                                disabled={isSeedMode}
+                              >
+                                {copiedId === template.id ? (
+                                  <>
+                                    <Check size={16} className="text-success mr-2" />
+                                    <span>Copiado</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <CopyIcon size={16} className="mr-2" />
+                                    <span>Copiar</span>
+                                  </>
+                                )}
+                              </DropdownMenuItem>
 
-                          {!isSeedMode && (
-                            <button
-                              type="button"
-                              className="speech-action-btn"
-                              onClick={() => openEdit(template)}
-                              aria-label={`Editar plantilla: ${template.titulo}`}
-                              title="Editar plantilla"
-                            >
-                              <Pencil size={16} aria-hidden="true" />
-                            </button>
-                          )}
+                              {!isSeedMode && (
+                                <DropdownMenuItem onClick={() => openEdit(template)}>
+                                  <PenLine size={16} className="mr-2" />
+                                  <span>Editar</span>
+                                </DropdownMenuItem>
+                              )}
 
-                          {isAdmin && !isSeedMode && (
-                            <button
-                              type="button"
-                              className="speech-action-btn speech-action-btn--danger"
-                              onClick={() => requestDelete(template.id)}
-                              aria-label={`Eliminar plantilla: ${template.titulo}`}
-                              title="Eliminar plantilla"
-                            >
-                              <Trash2 size={16} aria-hidden="true" />
-                            </button>
-                          )}
+                              {isAdmin && !isSeedMode && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => requestDelete(template.id)}
+                                    className="text-error"
+                                  >
+                                    <Trash2 size={16} className="mr-2" />
+                                    <span>Eliminar</span>
+                                  </DropdownMenuItem>
+                                </>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
 

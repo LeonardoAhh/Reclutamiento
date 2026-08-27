@@ -4,7 +4,6 @@ import {
   Bus,
   CalendarDays,
   ChevronLeft,
-  Clock,
   MapPin,
   Minus,
   TrendingDown,
@@ -569,23 +568,6 @@ export function RutasView() {
               </p>
             )}
           </div>
-
-                              <div className="rutas-toolbar-actions">
-
-            <a
-              href="/horarios/index.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary rutas-horarios-btn"
-              title="Ver horarios"
-              aria-label="Ver horarios"
-            >
-              <Clock size={16} aria-hidden="true" />
-              Horarios
-            </a>
-          </div>
-
-
         </div>
       </section>
 

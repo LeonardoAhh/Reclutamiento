@@ -1,4 +1,4 @@
-import { HeartPulse, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { HeartPulse, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,7 @@ export function EmployeeRowActions({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button type="button" aria-label={`Acciones de ${employee.nombre}`}>
-            <MoreVertical aria-hidden="true" />
+            <EllipsisVertical aria-hidden="true" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -40,7 +40,7 @@ export function EmployeeRowActions({
               type="button"
               onClick={() => run(onEdit)}
             >
-              <Pencil aria-hidden="true" />
+              <PenLine aria-hidden="true" />
               <span>Editar</span>
             </button>
           </DropdownMenuItem>

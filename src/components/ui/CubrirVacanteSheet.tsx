@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
+import { CircleCheckBig, CircleAlert, Trash2 } from 'lucide-react';
 import { CircleCheckBig as CheckCircleIconData } from 'lucide';
 import { Modal } from './Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
@@ -122,7 +122,7 @@ export function CubrirVacanteSheet({
       onClose={onClose}
       className="cubrir-vacante-sheet"
       icon={
-        <CheckCircle2
+        <CircleCheckBig
           size={20}
           className="incapacidad-modal__icon"
           aria-hidden="true"
@@ -173,7 +173,7 @@ export function CubrirVacanteSheet({
 
         {errorMsg && (
           <div id={errorId} className="incapacidad-modal__error" role="alert">
-            <AlertCircle size={14} aria-hidden="true" />
+            <CircleAlert size={14} aria-hidden="true" />
             {errorMsg}
           </div>
         )}

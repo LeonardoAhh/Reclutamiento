@@ -13,13 +13,13 @@ import {
   ClipboardList,
   Plus,
   FileText,
-  UploadCloud,
+  CloudUpload,
   Trash2,
-  CheckCircle2,
+  CircleCheckBig,
   ListTodo,
   Inbox,
-  Pencil,
-  MoreVertical,
+  PenLine,
+  EllipsisVertical,
   Search,
   ArrowUpDown,
   List,
@@ -27,7 +27,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
-  UserPlus,
+  UserRoundPlus,
 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { toast } from "@/lib/notify";
@@ -820,7 +820,7 @@ export function Actividades() {
                               type="button"
                               aria-label="Opciones"
                             >
-                              <MoreVertical size={16} aria-hidden="true" />
+                              <EllipsisVertical size={16} aria-hidden="true" />
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
@@ -832,7 +832,7 @@ export function Actividades() {
                                   setAssignModalVacancy(v);
                                 }}
                               >
-                                <UserPlus aria-hidden="true" />
+                                <UserRoundPlus aria-hidden="true" />
                                 <span>Asignar a...</span>
                               </button>
                             </DropdownMenuItem>
@@ -1408,7 +1408,7 @@ export function Actividades() {
           if (!isEditing) setIsEditModalOpen(false);
         }}
         title="Editar actividad"
-        icon={<Pencil size={20} aria-hidden="true" />}
+        icon={<PenLine size={20} aria-hidden="true" />}
         fullscreenMobile={false}
       >
         <form className="modal-body" onSubmit={handleEdit} noValidate>
@@ -1670,7 +1670,7 @@ export function Actividades() {
                   accept="image/*,.pdf"
                 />
                 <div className="file-upload-inner">
-                  <UploadCloud
+                  <CloudUpload
                     size={28}
                     className="file-upload-icon"
                     aria-hidden="true"
@@ -1695,7 +1695,7 @@ export function Actividades() {
           if (!isAssigningVacancy) setAssignModalVacancy(null);
         }}
         title="Asignar reclutador"
-        icon={<UserPlus size={20} aria-hidden="true" />}
+        icon={<UserRoundPlus size={20} aria-hidden="true" />}
         size="sm"
       >
         <div className="modal-body assign-vacancy-modal__body">

@@ -10,8 +10,8 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
   CloudUpload,
   Calendar,
-  AlertCircle,
-  Loader2,
+  CircleAlert,
+  LoaderCircle,
   X,
   ChevronRight,
   ChevronLeft,
@@ -861,7 +861,7 @@ export default function ReporteDiarioContent() {
                   aria-live="polite"
                   aria-atomic="true"
                 >
-                  <Loader2
+                  <LoaderCircle
                     size="1em"
                     className="reporte-spinner reporte-overlay__icon-primary"
                     aria-hidden="true"
@@ -933,7 +933,7 @@ export default function ReporteDiarioContent() {
             role="alert"
             data-testid="errors-banner"
           >
-            <AlertCircle size={16} aria-hidden="true" />
+            <CircleAlert size={16} aria-hidden="true" />
             <div className="reporte-errors__content">
               <div className="reporte-flex-between">
                 <strong>Errores de formato</strong>
@@ -1096,7 +1096,7 @@ export default function ReporteDiarioContent() {
               role="alert"
               data-testid="errors-banner"
             >
-              <AlertCircle size={16} aria-hidden="true" />
+              <CircleAlert size={16} aria-hidden="true" />
               <div className="reporte-errors__content">
                 <div className="reporte-flex-between">
                   <strong>Errores de formato</strong>

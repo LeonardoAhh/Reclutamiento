@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, Moon, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { CircleCheckBig, Moon, TrendingDown, TrendingUp, UsersRound } from 'lucide-react';
 import { ChevronDown, ChevronRight } from 'lucide';
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
@@ -350,7 +350,7 @@ export default function ReporteAreaSummary({
         <section className="ras" aria-labelledby="ras-heading">
             <header className="ras__header">
                 <div className="ras__header-title">
-                    <Users size="1em" aria-hidden="true" />
+                    <UsersRound size="1em" aria-hidden="true" />
                     <h3 id="ras-heading" className="ras__heading">Resumen por sección</h3>
                 </div>
                 <span className="ras__count" aria-label={`${totalIncidencias} incidencias en total`}>

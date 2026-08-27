@@ -1,7 +1,7 @@
 import "./ReporteDiario.css";
 import {
   Calendar,
-  CheckCircle2,
+  CircleCheckBig,
   ChevronRight,
   Database,
   Trash2,

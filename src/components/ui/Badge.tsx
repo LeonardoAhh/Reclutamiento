@@ -1,4 +1,4 @@
-import { Briefcase, CalendarClock, CheckCircle2, HeartPulse, LifeBuoy, Star, UserRound, Users } from 'lucide-react';
+import { Briefcase, CalendarClock, CircleCheckBig, HeartPulse, LifeBuoy, Star, UserRound, UsersRound } from 'lucide-react';
 import type { RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import './Badge.css';
@@ -82,7 +82,7 @@ interface StatusBadgeProps {
 }
 
 export function PlantillaBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
-  const Icon = Users;
+  const Icon = UsersRound;
   const label = "Plantilla";
 
   if (iconOnly) {

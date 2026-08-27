@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react";
-import { Bus, AlertCircle, Copy } from "lucide-react";
+import { Bus, CircleAlert, Copy } from "lucide-react";
 import { toBlob } from "html-to-image";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useRutas } from "@/hooks/useRutas";
@@ -343,7 +343,7 @@ export function FormatosView() {
                                 emp.ruta_final
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
-                                  <AlertCircle size={14} aria-hidden="true" />{" "}
+                                  <CircleAlert size={14} aria-hidden="true" />{" "}
                                   Faltan datos
                                 </span>
                               )}
@@ -353,7 +353,7 @@ export function FormatosView() {
                                 emp.parada_final
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
-                                  <AlertCircle size={14} aria-hidden="true" />{" "}
+                                  <CircleAlert size={14} aria-hidden="true" />{" "}
                                   Faltan datos
                                 </span>
                               )}

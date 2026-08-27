@@ -1,4 +1,4 @@
-import { MoreVertical, Trash2, Pencil, Image as ImageIcon, CheckCircle2, Clock, CircleDashed } from "lucide-react";
+import { EllipsisVertical, Trash2, PenLine, Image as ImageIcon, CircleCheckBig, Clock, CircleDashed } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,7 +34,7 @@ const STATUS_LABEL: Record<ActivityCardProps["status"], string> = {
 const STATUS_ICON: Record<ActivityCardProps["status"], React.ElementType> = {
   pendiente: CircleDashed,
   en_proceso: Clock,
-  completada: CheckCircle2,
+  completada: CircleCheckBig,
 };
 
 export function ActivityCard({
@@ -146,7 +146,7 @@ export function ActivityCard({
                 type="button"
                 aria-label="Opciones"
               >
-                <MoreVertical size={16} aria-hidden="true" />
+                <EllipsisVertical size={16} aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -159,7 +159,7 @@ export function ActivityCard({
                       onEdit();
                     }}
                   >
-                    <Pencil aria-hidden="true" />
+                    <PenLine aria-hidden="true" />
                     <span>Editar</span>
                   </button>
                 </DropdownMenuItem>

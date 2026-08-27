@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ChevronLeft } from 'lucide-react';
+import { CircleCheckBig, ChevronLeft } from 'lucide-react';
 import './FormWizard.css';
 
 export interface FormWizardStep {

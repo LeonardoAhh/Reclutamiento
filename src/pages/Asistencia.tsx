@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { AlertCircle, CheckCircle2, Search, Users } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, Search, UsersRound } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
@@ -139,7 +139,7 @@ export function Asistencia() {
     <div className="asistencia-page">
       <header className="config-page__header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
         <h1 className="config-page__title">
-          <Users className="text-primary" size={24} aria-hidden="true" />
+          <UsersRound className="text-primary" size={24} aria-hidden="true" />
           Asistencia del Personal
         </h1>
       </header>
@@ -171,7 +171,7 @@ export function Asistencia() {
 
           {error && (
             <div className="asistencia-error">
-              <AlertCircle size={16} />
+              <CircleAlert size={16} />
               <span>{error}</span>
             </div>
           )}

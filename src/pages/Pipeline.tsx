@@ -3,7 +3,7 @@ import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { BadgeCheck, BarChart3, CalendarDays, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, Pencil, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserPlus, UserRound, UserX, Users } from 'lucide-react';
+import { BadgeCheck, BarChart3, CalendarDays, CircleCheckBig, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, PenLine, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
 import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
@@ -507,7 +507,7 @@ export function Pipeline() {
             aria-label="Nuevo candidato"
             title="Nuevo candidato"
           >
-            <UserPlus size={16} aria-hidden="true" />
+            <UserRoundPlus size={16} aria-hidden="true" />
             <span>Nuevo</span>
           </button>
         </div>
@@ -651,7 +651,7 @@ export function Pipeline() {
                   </p>
                   <Tooltip content="Agregar candidato">
                     <button type="button" className="btn-primary" onClick={openAdd} aria-label="Agregar primer candidato">
-                      <UserPlus size={16} aria-hidden="true" />
+                      <UserRoundPlus size={16} aria-hidden="true" />
                     </button>
                   </Tooltip>
                 </>
@@ -1083,7 +1083,7 @@ export function Pipeline() {
                     title="Editar candidato"
                     onClick={() => openEdit(selectedMobileCandidate)}
                   >
-                    <Pencil size={16} aria-hidden="true" />
+                    <PenLine size={16} aria-hidden="true" />
                     <span>Editar</span>
                   </button>
                   {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
@@ -1209,7 +1209,7 @@ export function Pipeline() {
             }}
           >
             <div className="pipeline__kpi-card__icon">
-              <Users size={20} aria-hidden="true" />
+              <UsersRound size={20} aria-hidden="true" />
             </div>
             <div className="pipeline__kpi-card__body">
               <span className="pipeline__kpi-card__label">Resumen General</span>

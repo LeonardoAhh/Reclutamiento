@@ -48,7 +48,10 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderPro
               aria-controls="app-sidebar"
               aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             >
-              <MorphMenuIcon isOpen={mobileMenuOpen} size={24} />
+              <MorphMenuIcon
+                isOpen={mobileMenuOpen}
+                size="var(--icon-size-md)"
+              />
             </button>
           )}
 

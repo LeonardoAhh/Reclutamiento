@@ -2,20 +2,13 @@ import { useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { isBoneyardBuild } from "@/lib/boneyard";
 import {
-  BarChart2,
-  Bell,
-  Bus,
-  CheckCircle2,
+  BadgeDollarSign,
+  ChartNoAxesCombined,
   ChevronLeft,
-  ChevronRight,
-  ClipboardCheck,
-  FileText,
-  MessageSquare,
-  Search,
-  Settings,
-  SlidersHorizontal,
-  UserX,
-  Wallet,
+  Files,
+  MessagesSquare,
+  Route,
+  ScanSearch,
   type LucideIcon,
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -23,7 +16,6 @@ import { BusquedaView } from "./configuracion-views/BusquedaView";
 import { IndicadoresView } from "./configuracion-views/IndicadoresView";
 import { RutasView } from "./configuracion-views/RutasView";
 import { TabuladorView } from "./configuracion-views/TabuladorView";
-import { SistemaView } from "./configuracion-views/SistemaView";
 import { SpeechView } from "./configuracion-views/SpeechView";
 import { FormatosView } from "./configuracion-views/FormatosView";
 import "./Configuracion.css";
@@ -33,7 +25,6 @@ type FeatureId =
   | "indicadores"
   | "rutas"
   | "tabulador"
-  | "sistema"
   | "speech"
   | "formatos";
 
@@ -52,18 +43,17 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   {
     title: "Principal",
     items: [
-      { id: "busqueda", label: "Búsqueda", icon: Search },
-      { id: "formatos", label: "Formatos", icon: Bell },
-      { id: "rutas", label: "Rutas", icon: Bus },
-      { id: "speech", label: "Speech WA", icon: MessageSquare },
+      { id: "busqueda", label: "Búsqueda", icon: ScanSearch },
+      { id: "formatos", label: "Formatos", icon: Files },
+      { id: "rutas", label: "Rutas", icon: Route },
+      { id: "speech", label: "Speech WA", icon: MessagesSquare },
     ],
   },
   {
     title: "Administración",
     items: [
-      { id: "indicadores", label: "Indicadores", icon: BarChart2 },
-      { id: "sistema", label: "Sistema", icon: Settings },
-      { id: "tabulador", label: "Tabulador", icon: Wallet },
+      { id: "indicadores", label: "Indicadores", icon: ChartNoAxesCombined },
+      { id: "tabulador", label: "Tabulador", icon: BadgeDollarSign },
     ],
   }
 ];
@@ -77,7 +67,6 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   tabulador: <TabuladorView />,
   speech: <SpeechView />,
   formatos: <FormatosView />,
-  sistema: <SistemaView />,
 };
 
 export function Configuracion() {

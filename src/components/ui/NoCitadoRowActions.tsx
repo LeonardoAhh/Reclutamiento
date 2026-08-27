@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { CircleCheckBig, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
 import type { NoCitado } from '@/lib/types';
 import './NoCitadoRowActions.css';
@@ -34,7 +34,7 @@ export function NoCitadoRowActions({
             aria-label={`Acciones de ${fullName}`}
             title="Acciones"
           >
-            <MoreVertical size={16} aria-hidden="true" />
+            <EllipsisVertical size={16} aria-hidden="true" />
           </button>
         </PopoverTrigger>
 
@@ -51,7 +51,7 @@ export function NoCitadoRowActions({
             role="menuitem"
             onClick={() => run(onEdit)}
           >
-            <Pencil size={14} aria-hidden="true" />
+            <PenLine size={14} aria-hidden="true" />
             <span>Editar</span>
           </button>
 

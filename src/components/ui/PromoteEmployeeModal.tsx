@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowUpCircle, CheckCircle2, ListChecks, Plus } from 'lucide-react';
+import { CircleArrowUp, CircleCheckBig, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
 import { Modal } from './Modal';
@@ -238,7 +238,7 @@ export function PromoteEmployeeModal({
       onClose={onClose}
       className="promote-modal"
       icon={
-        <ArrowUpCircle
+        <CircleArrowUp
           size={18}
           className="color-primary"
           aria-hidden="true"

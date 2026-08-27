@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, ClipboardList, FileText } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, ClipboardList, FileText } from 'lucide-react';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import type { BajaWithCobertura } from '@/lib/bajas';
@@ -14,7 +14,7 @@ export function BajaCoberturaBadge({ baja }: { baja: BajaWithCobertura }) {
   if (baja.soloInduccion) {
     return (
       <Badge variant="default">
-        <AlertCircle size={11} aria-hidden="true" /> Solo Inducción
+        <CircleAlert size={11} aria-hidden="true" /> Solo Inducción
       </Badge>
     );
   }
@@ -22,7 +22,7 @@ export function BajaCoberturaBadge({ baja }: { baja: BajaWithCobertura }) {
     return (
       <span>
         <Badge variant="success">
-          <CheckCircle2 size={11} aria-hidden="true" /> Cubierta
+          <CircleCheckBig size={11} aria-hidden="true" /> Cubierta
           {baja.coberturaDias != null ? ` · ${baja.coberturaDias}d` : ''}
         </Badge>
         {baja.cubierta_nota && (
@@ -88,7 +88,7 @@ export function BajaDetailSheet({
         className="btn-primary"
         onClick={() => onCubrir(baja)}
       >
-        <CheckCircle2 size={14} aria-hidden="true" />
+        <CircleCheckBig size={14} aria-hidden="true" />
         {baja.cubierta_manual ? 'Editar cobertura' : 'Marcar cubierta'}
       </button>
     </>

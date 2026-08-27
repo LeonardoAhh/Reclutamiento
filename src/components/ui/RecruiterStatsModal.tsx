@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Copy, TrendingUp, Users } from 'lucide-react';
+import { CircleCheckBig, Copy, TrendingUp, UsersRound } from 'lucide-react';
 import { toast } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -178,7 +178,7 @@ export function RecruiterStatsModal({
                       data-testid={`copy-week-${tueWeek}-btn`}
                     >
                       {isCopied ? (
-                        <CheckCircle2 size={16} aria-hidden="true" />
+                        <CircleCheckBig size={16} aria-hidden="true" />
                       ) : (
                         <Copy size={16} aria-hidden="true" />
                       )}
@@ -201,7 +201,7 @@ export function RecruiterStatsModal({
       className="recruiter-stats-modal"
       icon={
         mode === 'global' ? (
-          <Users size={20} aria-hidden="true" />
+          <UsersRound size={20} aria-hidden="true" />
         ) : (
           <TrendingUp size={20} aria-hidden="true" />
         )
@@ -350,7 +350,7 @@ export function RecruiterStatsModal({
                       style={{ width: "100%", justifyContent: "center" }}
                       onClick={() => handleCopyRow(stat, tueWeek)}
                     >
-                      {isCopied ? <CheckCircle2 size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+                      {isCopied ? <CircleCheckBig size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
                       <span>{isCopied ? "¡Copiado!" : "Copiar métricas de la semana"}</span>
                     </button>
                   </div>

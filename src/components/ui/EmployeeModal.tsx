@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  UserPlus,
+  UserRoundPlus,
   Trash2,
   Calendar,
   UserCheck,
-  AlertCircle,
+  CircleAlert,
   Bus,
 } from "lucide-react";
 import { Save as SaveIconData, Trash2 as Trash2IconData } from "lucide";
@@ -368,7 +368,7 @@ export function EmployeeModal({
         {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text">{errorsAdd.nombre}</span>}
         {!errorsAdd.nombre && isNameDuplicate && mode === 'add' && (
           <span className="form-warning-text">
-            <AlertCircle size={12} /> Ya existe alguien con este nombre. Verifica que sea un homónimo.
+            <CircleAlert size={12} /> Ya existe alguien con este nombre. Verifica que sea un homónimo.
           </span>
         )}
       </div>
@@ -638,7 +638,7 @@ export function EmployeeModal({
   const errorNotice = null;
 
   const icon = isAdd ? (
-    <UserPlus size={20} className="color-primary" aria-hidden="true" />
+    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
@@ -733,7 +733,7 @@ export function EmployeeModal({
                   textAlign: "left",
                 }}
               >
-                <AlertCircle
+                <CircleAlert
                   size={14}
                   className="color-warning"
                   style={{ flexShrink: 0, marginTop: "2px" }}

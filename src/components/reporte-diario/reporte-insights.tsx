@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { AlertTriangle, CheckCircle2, ChevronRight, Sparkles, TrendingUp } from 'lucide-react';
+import { AlertTriangle, CircleCheckBig, ChevronRight, Sparkles, TrendingUp } from 'lucide-react';
 import type { ReporteRow } from "./types";
 import { Modal } from "@/components/ui/Modal";
 
@@ -253,7 +253,7 @@ function InsightItem({ insight }: InsightItemProps) {
 function SuccessState() {
     return (
         <div style={STYLES.successBanner}>
-            <CheckCircle2 size={20} style={{ flexShrink: 0 }} />
+            <CircleCheckBig size={20} style={{ flexShrink: 0 }} />
             <p style={STYLES.successText}>
                 Operación normal, sin alertas este mes.
             </p>

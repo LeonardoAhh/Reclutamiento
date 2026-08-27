@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, LockKeyhole, Save } from 'lucide-react';
+import { CircleCheckBig, LockKeyhole, Save } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
@@ -358,7 +358,7 @@ export function ProfileEvaluationPanel({
                           <Save size={16} aria-hidden="true" /> Guardar borrador
                         </button>
                         <button type="submit" className="btn-primary" disabled={saving || answeredCount !== scorableCriteria.length}>
-                          <CheckCircle2 size={16} aria-hidden="true" /> Enviar y bloquear
+                          <CircleCheckBig size={16} aria-hidden="true" /> Enviar y bloquear
                         </button>
                       </>
                     )}

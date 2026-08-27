@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CalendarRange, CheckCircle2, Copy, Users } from 'lucide-react';
+import { CalendarRange, CircleCheckBig, Copy, UsersRound } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { StarliteBadge } from './Badge';
@@ -253,7 +253,7 @@ export function WeeklyHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       className="weekly-hires-modal"
-      icon={<Users size={20} aria-hidden="true" />}
+      icon={<UsersRound size={20} aria-hidden="true" />}
       title={`Ingresos · Semanas ${previousRange.week} y ${range.week}`}
       subtitle={
         <span className="weekly-hires-modal__subtitle">

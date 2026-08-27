@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, X, ArrowLeft } from "lucide-react";
+import { CircleCheckBig, X, ArrowLeft } from "lucide-react";
 import { EASE_OUT } from "@/lib/motion";
 
 interface ModalProps {

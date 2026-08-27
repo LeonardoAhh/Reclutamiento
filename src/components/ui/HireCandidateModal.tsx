@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, UserPlus } from 'lucide-react';
-import { Loader2, UserPlus as UserPlusIcon } from 'lucide';
+import { CircleAlert, CircleCheckBig, UserRoundPlus } from 'lucide-react';
+import { LoaderCircle, UserRoundPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
 import type { Candidate, Employee } from '@/lib/types';
@@ -130,7 +130,7 @@ export function HireCandidateModal({
       isOpen={isOpen}
       onClose={onClose}
       className="employee-modal"
-      icon={<UserPlus size={20} className="color-primary" aria-hidden="true" />}
+      icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`Contratar a ${candidate.nombre}`}
       subtitle={`${candidate.puesto} · ${candidate.area}${candidate.seccion ? ` · ${candidate.seccion}` : ''}`}
     >
@@ -141,7 +141,7 @@ export function HireCandidateModal({
               className="delete-warning__icon hire-success-icon"
               aria-hidden="true"
             >
-              <CheckCircle2 size={32} />
+              <CircleCheckBig size={32} />
             </div>
             <p className="delete-warning__title">
               Ya está contratado como empleado{' '}
@@ -254,7 +254,7 @@ export function HireCandidateModal({
 
           {errorMsg && (
             <p className="form-error" role="alert">
-              <AlertCircle size={14} aria-hidden="true" /> {errorMsg}
+              <CircleAlert size={14} aria-hidden="true" /> {errorMsg}
             </p>
           )}
 
@@ -274,7 +274,7 @@ export function HireCandidateModal({
               aria-busy={submitting}
             >
               <MorphingIcon
-                icon={submitting ? Loader2 : UserPlusIcon}
+                icon={submitting ? LoaderCircle : UserPlusIcon}
                 size={16}
                 aria-hidden="true"
                 className={

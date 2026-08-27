@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Info as InfoData, CheckCircle2 as CheckCircle2Data, Wrench as WrenchData } from "lucide";
+import { Info as InfoData, CircleCheckBig as CheckCircle2Data, Wrench as WrenchData } from "lucide";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { SYSTEM_UPDATE_BANNER_CONFIG } from "@/lib/constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";

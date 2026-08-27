@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { ChevronLeft, ChevronRight, Database, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Database, LoaderCircle } from 'lucide-react';
 import { useIndicadoresStats, getRecruiterTone } from '@/hooks/useIndicadoresStats';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/lib/notify';

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, CloudOff, HeartPulse, Users } from 'lucide-react';
+import { CircleCheckBig, CloudOff, HeartPulse, UsersRound } from 'lucide-react';
 import { Search as SearchData, X as XIconData, ToggleLeft, ToggleRight } from 'lucide';
 
 import { ChevronDown, ChevronUp } from 'lucide';
@@ -313,7 +313,7 @@ export function EmpleadosView() {
 
       {groups.length === 0 ? (
         <div className="empleados__empty">
-          <Users size={28} aria-hidden="true" />
+          <UsersRound size={28} aria-hidden="true" />
           <p>
             {employees.length === 0
               ? 'No hay empleados registrados.'

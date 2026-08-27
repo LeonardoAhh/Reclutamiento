@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell, BellRing, CheckCircle2 } from "lucide-react";
+import { Bell, BellDot, CircleCheckBig } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
 import { CandidateStatusBadge } from "@/components/ui/CandidateStatusBadge";
 import {
@@ -88,7 +88,7 @@ export function RemindersPanel() {
           >
             {reminders.length > 0 ? (
               <>
-                <BellRing
+                <BellDot
                   size="var(--icon-size-md)"
                   aria-hidden="true"
                 />
@@ -126,7 +126,7 @@ export function RemindersPanel() {
           <div className="reminders-content">
             {reminders.length === 0 ? (
               <div className="reminders-empty" role="status">
-                <CheckCircle2
+                <CircleCheckBig
                   size="var(--icon-size-xxl)"
                   aria-hidden="true"
                 />

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo, useId } from 'react';
 import { createPortal } from 'react-dom';
-import { CheckCircle2 } from 'lucide-react';
+import { CircleCheckBig } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './CustomSelect.css';
@@ -326,7 +326,7 @@ export function CustomSelect({
                     aria-selected={value === opt.value}
                   >
                     <span className="custom-select-option-label">{opt.label}</span>
-                    {value === opt.value && <CheckCircle2 size={16} className="custom-select-check" />}
+                    {value === opt.value && <CircleCheckBig size={16} className="custom-select-check" />}
                   </button>
                 ))
               )}

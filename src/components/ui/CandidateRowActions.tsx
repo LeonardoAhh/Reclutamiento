@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BadgeCheck, FileImage, MoreVertical, Pencil, Trash2, UserMinus } from 'lucide-react';
+import { BadgeCheck, FileImage, EllipsisVertical, PenLine, Trash2, UserMinus } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ export function CandidateRowActions({
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <MoreVertical aria-hidden="true" />
+            <EllipsisVertical aria-hidden="true" />
           </button>
         </DropdownMenuTrigger>
 
@@ -82,7 +82,7 @@ export function CandidateRowActions({
 
           <DropdownMenuItem asChild>
             <button type="button" onClick={(e) => run(e, onEdit)}>
-              <Pencil aria-hidden="true" />
+              <PenLine aria-hidden="true" />
               <span>Editar</span>
             </button>
           </DropdownMenuItem>

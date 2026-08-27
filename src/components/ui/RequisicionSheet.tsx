@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { CheckCircle2, FileText, Printer } from 'lucide-react';
+import { CircleCheckBig, FileText, Printer } from 'lucide-react';
 import { Modal } from './Modal';
 import type {
   AuthorizedPosition,

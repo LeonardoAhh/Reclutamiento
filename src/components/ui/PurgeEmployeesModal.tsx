@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertOctagon, CheckCircle2, Download } from 'lucide-react';
-import { AlertOctagon as AlertOctagonIcon, Loader2 } from 'lucide';
+import { AlertOctagon, CircleCheckBig, Download } from 'lucide-react';
+import { AlertOctagon as AlertOctagonIcon, LoaderCircle } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
 import type { Employee } from '@/lib/types';
@@ -112,7 +112,7 @@ export function PurgeEmployeesModal({
       <div className="modal-body purge-employees-modal__body">
         {success ? (
           <section className="purge-employees-modal__success" role="status">
-            <CheckCircle2
+            <CircleCheckBig
               size={36}
               aria-hidden="true"
               className="purge-employees-modal__success-icon"
@@ -182,7 +182,7 @@ export function PurgeEmployeesModal({
                 </button>
                 {backupDownloaded && (
                   <p className="purge-employees-modal__step-confirm">
-                    <CheckCircle2 size={14} aria-hidden="true" /> Respaldo
+                    <CircleCheckBig size={14} aria-hidden="true" /> Respaldo
                     descargado como <code>{backupFileName}</code>.
                   </p>
                 )}
@@ -254,7 +254,7 @@ export function PurgeEmployeesModal({
                     aria-busy={isPurging}
                   >
                     <MorphingIcon
-                      icon={isPurging ? Loader2 : AlertOctagonIcon}
+                      icon={isPurging ? LoaderCircle : AlertOctagonIcon}
                       size={14}
                       aria-hidden="true"
                       className={

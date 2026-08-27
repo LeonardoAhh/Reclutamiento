@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CircleUser } from 'lucide-react';
+import { CircleUserRound } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
 import { addDaysToIso, formatReadableDate, localTodayIso } from '@/lib/dates';
@@ -66,7 +66,7 @@ export function EmployeeResultCard({
           className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
           aria-hidden="true"
         >
-          <CircleUser size="1em" aria-hidden="true" />
+          <CircleUserRound size="1em" aria-hidden="true" />
         </div>
         <div className="config-card__title-group">
           <h3

@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2 } from 'lucide-react';
+import { Activity, CircleCheckBig } from 'lucide-react';
 import { Modal } from './Modal';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';

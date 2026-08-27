@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MessageSquare } from 'lucide-react';
-import { Loader2, MessageSquarePlus } from 'lucide';
+import { LoaderCircle, MessageSquarePlus } from 'lucide';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
@@ -135,7 +135,7 @@ export function CommentModal({
             aria-busy={submitting}
           >
             <MorphingIcon
-              icon={submitting ? Loader2 : MessageSquarePlus}
+              icon={submitting ? LoaderCircle : MessageSquarePlus}
               size={16}
               aria-hidden="true"
               className={

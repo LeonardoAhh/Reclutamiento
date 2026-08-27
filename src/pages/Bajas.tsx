@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, ChevronRight, CloudOff, Filter, RefreshCw } from 'lucide-react';
+import { CircleCheckBig, ChevronRight, CloudOff, Filter, RefreshCw } from 'lucide-react';
 import { RefreshCw as RefreshCwIconData, LoaderCircle as LoaderCircleIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge } from '@/components/ui/Badge';

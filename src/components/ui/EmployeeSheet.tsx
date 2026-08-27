@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, Trash2, UserPlus } from "lucide-react";
+import { CircleAlert, CircleCheckBig, Trash2, UserRoundPlus } from "lucide-react";
 import type { Employee } from "@/lib/types";
 import { usePositions } from "@/lib/positions";
 import { localTodayIso } from "@/lib/dates";
@@ -279,7 +279,7 @@ export function EmployeeSheet({
         />
         {String(form.fecha_ingreso).localeCompare(localTodayIso()) > 0 && (
           <p className="employee-sheet__future-warning">
-            <AlertCircle size={14} aria-hidden="true" />
+            <CircleAlert size={14} aria-hidden="true" />
             No contará en KPIs ni Dashboard.
           </p>
         )}
@@ -296,7 +296,7 @@ export function EmployeeSheet({
   ) : null;
 
   const icon = isAdd ? (
-    <UserPlus size={20} className="color-primary" aria-hidden="true" />
+    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );

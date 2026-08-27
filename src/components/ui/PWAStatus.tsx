@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, WifiOff } from 'lucide-react';
+import { CircleCheckBig, WifiOff } from 'lucide-react';
 import './PWAStatus.css';
 
 
@@ -77,7 +77,7 @@ export function PWAStatus() {
             exit={{ y: -40, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 420, damping: 32 }}
           >
-            <CheckCircle2 size={14} aria-hidden="true" className="pwa-offline__icon" />
+            <CircleCheckBig size={14} aria-hidden="true" className="pwa-offline__icon" />
             <span>App lista para uso sin conexión</span>
           </motion.div>
         )}

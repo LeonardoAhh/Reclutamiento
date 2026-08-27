@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CalendarX, CheckCircle2, MapPin, Users } from 'lucide-react';
+import { CalendarX, CircleCheckBig, MapPin, UsersRound } from 'lucide-react';
 import { formatMes, isIncidence } from "./helpers";
 import type { ReporteRow } from "./types";
 
@@ -136,7 +136,7 @@ export default function ReporteKpiDashboard({
             label: "Empleados",
             value: kpis.totalEmpleados,
             sub: `en ${formatMes(currentMonth)}`,
-            icon: <Users size={18} />,
+            icon: <UsersRound size={18} />,
             tone: "default",
         },
         {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   BarChart3,
-  CheckCircle2,
+  CircleCheckBig,
   Minus,
   TrendingDown,
   TrendingUp,

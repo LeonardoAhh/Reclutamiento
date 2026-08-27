@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import {
-  ArrowRight as ArrowRightIconData,
+  Fingerprint,
   Eye,
   EyeOff,
-  Asterisk,
+  LogIn,
 } from "lucide";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -45,7 +45,7 @@ export function Login() {
   // Cargar usuario recordado (si existe) + auto-focus inteligente
   useEffect(() => {
     document.title = "Iniciar Sesión";
-    
+
     const saved = localStorage.getItem("reclutamiento_saved_email");
     if (saved) {
       setUsername(saved);
@@ -121,7 +121,7 @@ export function Login() {
             <div className="login__header">
               <div className="login__brand">
                 <span className="login__brand-icon" aria-hidden="true">
-                  <MorphingIcon icon={Asterisk} size="var(--icon-size-xxl)" />
+                  <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
                 </span>
                 <span className="login__brand-name">Reclutamiento</span>
               </div>
@@ -143,7 +143,7 @@ export function Login() {
                 {/* Campo: correo */}
                 <div className="login__field">
                   <label htmlFor={usernameId} className="login__field-label">
-                    Usuario o correo electrónico
+                    Correo interno
                   </label>
                   <input
                     ref={usernameRef}
@@ -292,7 +292,7 @@ export function Login() {
                   idleText="Ingresar"
                   loadingText="Verificando..."
                   successText="¡Bienvenido!"
-                  idleIcon={ArrowRightIconData}
+                  idleIcon={LogIn}
                   className="btn-primary login__submit"
                   data-testid="login-submit-button"
                 />

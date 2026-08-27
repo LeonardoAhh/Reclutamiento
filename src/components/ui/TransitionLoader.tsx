@@ -1,5 +1,9 @@
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { useMorphingSequence } from '@/hooks/useMorphingSequence';
+import {
+  AUTH_TRANSITION_ICONS,
+  MORPHING_SEQUENCE_INTERVAL_MS,
+  useMorphingSequence,
+} from '@/hooks/useMorphingSequence';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -9,7 +13,10 @@ interface TransitionLoaderProps {
 export function TransitionLoader({
   title = 'Sincronizando…',
 }: TransitionLoaderProps) {
-  const { icon } = useMorphingSequence();
+  const { icon } = useMorphingSequence(
+    MORPHING_SEQUENCE_INTERVAL_MS,
+    AUTH_TRANSITION_ICONS,
+  );
 
   return (
     <div

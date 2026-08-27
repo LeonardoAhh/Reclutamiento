@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, CircleAlert, X } from 'lucide-react';
+import { CircleCheckBig, CircleAlert, X } from 'lucide-react';
 import { ChevronDown, ChevronRight } from 'lucide';
 import { INCIDENT_TABS, INCIDENCIA_LABELS } from "./constants";
 import type { IncidentTab, EmployeeRef } from "./types";

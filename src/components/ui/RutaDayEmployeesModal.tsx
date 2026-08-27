@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CalendarDays, Users } from 'lucide-react';
+import { CalendarDays, UsersRound } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import {
   getEmpleadosPorDia,
@@ -71,7 +71,7 @@ export function RutaDayEmployeesModal({
       <div className="modal-body ruta-day-modal__body">
         {employees.length === 0 ? (
           <div className="ruta-day-modal__empty">
-            <Users size={32} aria-hidden="true" />
+            <UsersRound size={32} aria-hidden="true" />
             <p className="type-body-sm">
               No hay empleados asignados a esta ruta el día {dia.toLowerCase()}.
             </p>

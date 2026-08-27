@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BarChart3, CheckCircle2, Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { BarChart3, CircleCheckBig, Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import { Modal } from './Modal';
 import { businessDaysBetween } from '@/lib/dates';
 import type { VacancyRequest } from '@/lib/types';

@@ -12,10 +12,10 @@ import { useLoader } from '@/hooks/useLoader';
  * splash mínimo para evitar el "flash" de login → contenido.
  */
 export function AuthGuard({ children }: { children: ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, loading, profileLoading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loading || (session && profileLoading)) {
     return null;
   }
 

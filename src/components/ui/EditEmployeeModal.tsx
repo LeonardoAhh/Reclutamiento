@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertCircle, CheckCircle2, Edit2, Pencil } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, SquarePen, PenLine } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
@@ -133,7 +133,7 @@ export function EditEmployeeModal({
   }
 
   const icon = (
-    <Pencil size={20} className="color-primary" aria-hidden="true" />
+    <PenLine size={20} className="color-primary" aria-hidden="true" />
   );
   const title = 'Editar Empleado';
   const subtitle = '';
@@ -163,7 +163,7 @@ export function EditEmployeeModal({
               side="top"
               content={
                 <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
-                  <AlertCircle size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <CircleAlert size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <span></span>
                 </span>
               }

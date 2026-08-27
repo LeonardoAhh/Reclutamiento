@@ -1,27 +1,19 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  ChevronsLeft,
-  Menu,
-  ChevronDown,
-  ChevronUp,
-  Loader,
-  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide";
-import { ImagePlus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Tooltip } from "@/components/ui/Tooltip";
 import "./Sidebar.css";
-import { Avatar } from "@/components/ui/Avatar";
-import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
 
 import { NAV_GROUPS } from "./navigation";
+import { UserMenuPopover } from "./UserMenuPopover";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -41,17 +33,10 @@ export function Sidebar({
   mobileMenuOpen,
   onCloseMobileMenu,
 }: SidebarProps) {
-  const { username, profile, signOut } = useAuth();
+  const { username, user, profile, signOut } = useAuth();
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const userMenuPopoverRef = useRef<HTMLDivElement | null>(null);
-  const userMenuInitialFocusRef = useRef<"first" | "last">("first");
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const shouldReduceMotion = useReducedMotion();
   const loader = useLoader();
   const { version } = useSystemVersion();
   const { trigger } = useFeedback();
@@ -63,72 +48,6 @@ export function Sidebar({
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
   if (!username) return null;
-
-  // Mantener el patrón de teclado del menú y cerrarlo al salir de él.
-  useEffect(() => {
-    if (!menuOpen) return;
-    const getMenuItems = () =>
-      userMenuPopoverRef.current?.querySelectorAll<HTMLButtonElement>(
-        "button:not([disabled])",
-      ) ?? [];
-    const focusFrame = requestAnimationFrame(() => {
-      const items = getMenuItems();
-      const target =
-        userMenuInitialFocusRef.current === "last"
-          ? items[items.length - 1]
-          : items[0];
-      target?.focus();
-    });
-    const onPointerDown = (e: PointerEvent) => {
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(e.target as Node)
-      ) {
-        setMenuOpen(false);
-      }
-    };
-    const onFocusIn = (e: FocusEvent) => {
-      if (!userMenuRef.current?.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        setMenuOpen(false);
-        triggerRef.current?.focus();
-        return;
-      }
-
-      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
-      const items = Array.from(getMenuItems());
-      if (items.length === 0 || !userMenuPopoverRef.current?.contains(document.activeElement)) {
-        return;
-      }
-
-      e.preventDefault();
-      const currentIndex = items.indexOf(document.activeElement as HTMLButtonElement);
-      if (e.key === "Home") {
-        items[0].focus();
-      } else if (e.key === "End") {
-        items[items.length - 1].focus();
-      } else {
-        const direction = e.key === "ArrowDown" ? 1 : -1;
-        const nextIndex = (currentIndex + direction + items.length) % items.length;
-        items[nextIndex].focus();
-      }
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("focusin", onFocusIn);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      cancelAnimationFrame(focusFrame);
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("focusin", onFocusIn);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [menuOpen]);
 
   const handleSignOut = useCallback(async () => {
     if (signingOut) return;
@@ -173,9 +92,10 @@ export function Sidebar({
           data-testid="sidebar-collapse-toggle"
         >
           <MorphingIcon
-            icon={collapsed ? Menu : ChevronsLeft}
-            size={20}
+            icon={collapsed ? PanelLeftOpen : PanelLeftClose}
+            size="var(--icon-size-md)"
             className="sidebar__item-icon"
+            aria-hidden="true"
           />
           <span className="sidebar__item-label">Colapsar</span>
         </button>
@@ -229,124 +149,19 @@ export function Sidebar({
       </nav>
 
       {/* Footer: user avatar + menu (moved from header) */}
-      <div className="sidebar__footer" ref={userMenuRef}>
+      <div className="sidebar__footer">
         <div className="sidebar__user">
-          <button
-            ref={triggerRef}
-            id="sidebar-user-menu-trigger"
-            type="button"
-            className="sidebar__user-trigger"
-            onClick={() => {
-              userMenuInitialFocusRef.current = "first";
-              setMenuOpen((s) => !s);
-            }}
-            onKeyDown={(event) => {
-              if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
-              event.preventDefault();
-              userMenuInitialFocusRef.current =
-                event.key === "ArrowUp" ? "last" : "first";
-              setMenuOpen(true);
-            }}
-            aria-expanded={menuOpen}
-            aria-controls={menuOpen ? "sidebar-user-menu-popover" : undefined}
-            aria-haspopup="menu"
-            aria-label="Opciones de usuario"
-          >
-            <Avatar name={username} src={profile?.avatar_url} size={32} />
-            <MorphingIcon
-              icon={menuOpen ? ChevronUp : ChevronDown}
-              size={14}
-              className="sidebar__user-icon"
-            />
-          </button>
-
-          <AnimatePresence>
-            {menuOpen && (
-              <motion.div
-                ref={userMenuPopoverRef}
-                id="sidebar-user-menu-popover"
-                role="menu"
-                aria-labelledby="sidebar-user-menu-trigger"
-                className="app-header__popover"
-                initial={{
-                  opacity: 0,
-                  y: shouldReduceMotion ? 0 : -8,
-                  scale: shouldReduceMotion ? 1 : 0.98,
-                }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{
-                  opacity: 0,
-                  y: shouldReduceMotion ? 0 : -8,
-                  scale: shouldReduceMotion ? 1 : 0.98,
-                }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.16,
-                  ease: "easeOut",
-                }}
-              >
-                <div className="app-header__popover-header">
-                  <span className="app-header__session-name" title={username}>
-                    {username}
-                  </span>
-                  {version && (
-                    <span className="app-header__popover-version">
-                      v{version}
-                    </span>
-                  )}
-                </div>
-
-                <div className="app-header__popover-divider" />
-
-                <div className="app-header__popover-actions">
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="app-header__popover-item"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      setModalOpen(true);
-                    }}
-                  >
-                    <span>Avatar</span>
-                    <ImagePlus
-                      size={16}
-                      className="app-header__popover-icon"
-                      aria-hidden="true"
-                    />
-                  </button>
-
-                  <div className="app-header__popover-row">
-                    <span className="app-header__popover-row-label">Tema</span>
-                    <ThemeToggle />
-                  </div>
-
-                  <div className="app-header__popover-divider" />
-
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="app-header__popover-item app-header__popover-item--danger"
-                    onClick={handleSignOut}
-                    disabled={signingOut}
-                  >
-                    <MorphingIcon
-                      icon={signingOut ? Loader : LogOut}
-                      size={16}
-                      className={`app-header__popover-icon${signingOut ? " app-header__spin" : ""}`}
-                      aria-hidden="true"
-                    />
-                    <span>{signingOut ? "Cerrando..." : "Cerrar sesión"}</span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <UserMenuPopover
+            username={username}
+            email={user?.email}
+            avatarUrl={profile?.avatar_url ?? undefined}
+            collapsed={collapsed && !mobileMenuOpen}
+            isAdmin={profile?.role === "admin"}
+            version={version}
+            signingOut={signingOut}
+            onSignOut={handleSignOut}
+          />
         </div>
-
-        <AvatarUploadModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-        />
       </div>
     </aside>
   );

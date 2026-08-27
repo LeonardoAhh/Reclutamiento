@@ -20,9 +20,9 @@ import {
   Check,
   FileText,
   History,
-  Loader2,
-  MoreVertical,
-  Pencil,
+  LoaderCircle,
+  EllipsisVertical,
+  PenLine,
   Plus,
   Send,
   SlidersHorizontal,
@@ -30,7 +30,7 @@ import {
   X,
   CloudOff,
   Search,
-  UploadCloud,
+  CloudUpload,
 } from "lucide-react";
 import {
   Check as CheckData,
@@ -341,7 +341,7 @@ export function AIChatPage() {
                 onDrop={handleDrop}
                 disabled={isLoading}
               >
-                <UploadCloud aria-hidden="true" />
+                <CloudUpload aria-hidden="true" />
                 <span>Adjuntar CV</span>
               </button>
             ) : (
@@ -370,7 +370,7 @@ export function AIChatPage() {
               aria-busy={isLoading}
             >
               {isLoading && !hasCompared && (
-                <Loader2 className="ai-chat-spin" aria-hidden="true" />
+                <LoaderCircle className="ai-chat-spin" aria-hidden="true" />
               )}
               <span>{isLoading ? "Analizando" : "Analizar CV"}</span>
             </button>
@@ -557,7 +557,7 @@ export function AIChatPage() {
                                     type="button"
                                     aria-label={`Acciones de ${conversation.title}`}
                                   >
-                                    <MoreVertical aria-hidden="true" />
+                                    <EllipsisVertical aria-hidden="true" />
                                   </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
@@ -568,7 +568,7 @@ export function AIChatPage() {
                                       }
                                     >
                                       <button type="button">
-                                        <Pencil aria-hidden="true" />
+                                        <PenLine aria-hidden="true" />
                                         <span>Renombrar</span>
                                       </button>
                                     </DropdownMenuItem>
@@ -842,7 +842,7 @@ export function AIChatPage() {
                 aria-label="Enviar mensaje"
               >
                 {isLoading && hasCompared && !inputText.trim() ? (
-                  <Loader2 className="ai-chat-action-icon--spin" aria-hidden="true" />
+                  <LoaderCircle className="ai-chat-action-icon--spin" aria-hidden="true" />
                 ) : (
                   <Send aria-hidden="true" />
                 )}

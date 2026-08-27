@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Download, AlertCircle } from 'lucide-react';
+import { Download, CircleAlert } from 'lucide-react';
 import { useIncidenciasTransporte } from '@/hooks/useIncidenciasTransporte';
 import { formatReadableDate } from '@/lib/dates';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
@@ -47,7 +47,7 @@ export function IncidenciasTable() {
   if (errorMsg) {
     return (
       <div className="table-empty">
-        <AlertCircle size={24} className="text-danger" />
+        <CircleAlert size={24} className="text-danger" />
         <p className="type-body-sm mt-sm">Error: {errorMsg}</p>
       </div>
     );

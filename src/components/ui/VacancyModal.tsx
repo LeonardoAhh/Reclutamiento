@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Tooltip } from './Tooltip';
 import {
   ClipboardList,
-  Pencil,
+  PenLine,
   Trash2,
-  AlertCircle,
+  CircleAlert,
   History,
   ArrowRight,
   Info,
@@ -269,7 +269,7 @@ export function VacancyModal({
   const icon = isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
-    <Pencil size={20} className="color-primary" aria-hidden="true" />
+    <PenLine size={20} className="color-primary" aria-hidden="true" />
   ) : (
     <ClipboardList size={20} className="color-primary" aria-hidden="true" />
   );
@@ -525,7 +525,7 @@ export function VacancyModal({
   const deleteContent = (
     <div className="delete-warning">
       <div className="delete-warning__icon" aria-hidden="true">
-        <AlertCircle size={32} />
+        <CircleAlert size={32} />
       </div>
       <p className="delete-warning__title">
         ¿Eliminar vacante de{' '}

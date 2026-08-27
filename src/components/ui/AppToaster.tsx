@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, AlertTriangle, Info, LoaderCircle, AlertCircle } from 'lucide-react';
+import { CircleCheckBig, AlertTriangle, Info, LoaderCircle, CircleAlert } from 'lucide-react';
 import { toastStore, type ToastState } from '@/lib/notify';
 import './AppToaster.css';
 
 function ToastItem({ toast }: { toast: ToastState }) {
   let IconData;
   switch (toast.type) {
-    case 'success': IconData = CheckCircle2; break;
+    case 'success': IconData = CircleCheckBig; break;
     case 'error': IconData = AlertTriangle; break;
     case 'info': IconData = Info; break;
-    case 'warning': IconData = AlertCircle; break;
+    case 'warning': IconData = CircleAlert; break;
     case 'loading': IconData = LoaderCircle; break;
     default: IconData = Info; break;
   }

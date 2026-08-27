@@ -1,19 +1,20 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowUpCircle,
-  CheckCircle2,
+  CircleArrowUp,
+  CircleCheckBig,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
   Clock,
-  Contact,
+  ContactRound,
   Filter,
   HeartPulse,
-  Pencil,
+  Network,
+  PenLine,
   Trash2,
-  UserPlus as UserPlusIcon,
-  Users,
+  UserRoundPlus as UserPlusIcon,
+  UsersRound,
 } from "lucide-react";
 import { Search as SearchData, X as XIconData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -345,7 +346,7 @@ export function Dashboard() {
             className={`config-sidebar__link ${activeTab === "general" ? "active" : ""}`}
             onClick={() => handleTabClick("general")}
           >
-            <Users size={18} aria-hidden="true" />
+            <Network size={18} aria-hidden="true" />
             <span>Departamentos</span>
           </button>
           <button
@@ -356,7 +357,7 @@ export function Dashboard() {
             className={`config-sidebar__link ${activeTab === "empleados" ? "active" : ""}`}
             onClick={() => handleTabClick("empleados")}
           >
-            <Contact size={18} aria-hidden="true" />
+            <ContactRound size={18} aria-hidden="true" />
             <span>Empleados</span>
           </button>
         </nav>
@@ -529,7 +530,7 @@ export function Dashboard() {
                                     aria-label={`Editar a ${emp.nombre}`}
                                     title="Editar empleado"
                                   >
-                                    <Pencil size={14} aria-hidden="true" />
+                                    <PenLine size={14} aria-hidden="true" />
                                   </button>
                                   <button
                                     type="button"
@@ -538,7 +539,7 @@ export function Dashboard() {
                                     aria-label={`Promover a ${emp.nombre}`}
                                     title="Promover a otro puesto"
                                   >
-                                    <ArrowUpCircle
+                                    <CircleArrowUp
                                       size={14}
                                       aria-hidden="true"
                                     />
@@ -609,7 +610,7 @@ export function Dashboard() {
                 >
                   {filteredDepts.length === 0 && employees.length === 0 && (
                     <div className="dashboard__empty" id="dashboard-empty">
-                      <Users size={48} strokeWidth={2.5} />
+                      <UsersRound size={48} strokeWidth={2.5} />
                       <h2>Sin datos cargados</h2>
                       <p>
                         Importa un archivo JSON o crea un empleado para

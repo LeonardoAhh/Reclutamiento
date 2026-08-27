@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Users } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
 import { Check, Copy } from 'lucide';
 import { MorphingIcon } from './MorphingIcon';
 import { Modal } from './Modal';
@@ -173,7 +173,7 @@ export function FutureHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Próximos ingresos programados"
-      icon={<Users size={20} />}
+      icon={<UsersRound size={20} />}
       size={isMobile ? 'md' : 'xl'}
       fullscreenMobile={true}
     >

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CheckCircle2, X } from 'lucide-react';
+import { CircleCheckBig, X } from 'lucide-react';
 import { usePositions } from '@/lib/positions';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus } from '@/lib/types';

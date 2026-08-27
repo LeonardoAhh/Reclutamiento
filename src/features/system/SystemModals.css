@@ -1,0 +1,32 @@
+.maintenance-mode-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.maintenance-mode-modal__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.maintenance-mode-modal__copy,
+.maintenance-mode-modal__error {
+  margin: 0;
+}
+
+.maintenance-mode-modal__error {
+  color: var(--color-error);
+}
+
+.maintenance-mode-modal__error-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.user-activity-modal__body {
+  overscroll-behavior: contain;
+}

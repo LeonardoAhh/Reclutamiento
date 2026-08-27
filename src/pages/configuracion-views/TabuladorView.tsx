@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { CheckCircle2, Wallet } from 'lucide-react';
+import { CircleCheckBig, Wallet } from 'lucide-react';
 import { Search as SearchData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';

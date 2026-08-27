@@ -168,6 +168,12 @@
   --type-caption-sm-line: 1.43;
   --type-caption-sm-tracking: 0;
 
+  /* caption-xs — metadatos secundarios compactos, como correos de cuenta */
+  --type-caption-xs-size: 12px;
+  --type-caption-xs-weight: 400;
+  --type-caption-xs-line: 1.33;
+  --type-caption-xs-tracking: 0;
+
   /* caption-uppercase — eyebrows / section labels */
   --type-caption-up-size: 12px;
   --type-caption-up-weight: 600;
@@ -260,6 +266,8 @@
   --feature-chat-page-min-block-size: 36rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
+  /* Ancho estable del panel que agrupa las acciones de la cuenta. */
+  --feature-user-menu-inline-size: 14rem;
   --system-update-progress-segment: 40%;
   --layer-maintenance: 1000;
   --layer-splash: 1000;

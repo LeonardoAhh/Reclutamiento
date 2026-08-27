@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { CheckCircle2, Pencil, ShieldAlert, UserPlus, XCircle, ClipboardList } from 'lucide-react';
+import { CircleCheckBig, PenLine, ShieldAlert, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
 import { Save as SaveIconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
@@ -429,11 +429,11 @@ export function CandidateModal({
 
 
   const icon = accessCard ? (
-    <CheckCircle2 size={20} className="color-success" aria-hidden="true" />
+    <CircleCheckBig size={20} className="color-success" aria-hidden="true" />
   ) : isEdit ? (
-    <Pencil size={20} className="color-primary" aria-hidden="true" />
+    <PenLine size={20} className="color-primary" aria-hidden="true" />
   ) : (
-    <UserPlus size={20} className="color-primary" aria-hidden="true" />
+    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
   );
 
   const title = accessCard
@@ -539,7 +539,7 @@ export function CandidateModal({
             className={touched.telefono && errors.telefono ? 'input-error' : ''}
           />
           {isPhoneValid && (
-            <CheckCircle2 size={18} className="phone-validation-icon valid" />
+            <CircleCheckBig size={18} className="phone-validation-icon valid" />
           )}
           {touched.telefono && errors.telefono && (
             <XCircle size={18} className="phone-validation-icon invalid" />

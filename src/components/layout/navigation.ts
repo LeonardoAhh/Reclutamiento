@@ -1,13 +1,12 @@
 import {
-  LayoutGrid,
+  BotMessageSquare,
+  ChartNoAxesCombined,
+  ClipboardPenLine,
   Contact,
-  Calendar,
-  Building2,
-  Briefcase,
-  SlidersHorizontal,
-  ClipboardList,
-  ClipboardCheck,
-  Bot,
+  ListTodo,
+  NotebookText,
+  Settings2,
+  UserSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -31,14 +30,14 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
       {
         to: "/candidatos",
         label: "Candidatos",
-        icon: Contact,
+        icon: UserSearch,
         mobilePriority: true,
       },
-      { to: "/plantilla", label: "Plantilla", icon: Building2 },
+      { to: "/plantilla", label: "Plantilla", icon: Contact },
       {
         to: "/resumen",
         label: "Resumen",
-        icon: LayoutGrid,
+        icon: ChartNoAxesCombined,
         end: false,
         mobilePriority: true,
       },
@@ -47,16 +46,16 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Herramientas",
     items: [
-      { to: "/asistente", label: "Asistente", icon: Bot, mobilePriority: true },
-      { to: "/reportes", label: "Reporte Diario", icon: Calendar },
+      { to: "/asistente", label: "Asistente", icon: BotMessageSquare, mobilePriority: true },
+      { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
     ],
   },
   {
     title: "Administración",
     items: [
-      { to: "/actividades", label: "Actividades", icon: ClipboardList },
-      { to: "/configuracion", label: "Configuración", icon: SlidersHorizontal },
-      { to: "/perfil-general", label: "Perfil General", icon: ClipboardCheck },
+      { to: "/actividades", label: "Actividades", icon: ListTodo },
+      { to: "/configuracion", label: "Configuración", icon: Settings2 },
+      { to: "/perfil-general", label: "Perfil General", icon: ClipboardPenLine },
     ],
   },
 ];

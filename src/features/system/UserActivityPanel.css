@@ -1,0 +1,127 @@
+.user-activity-panel {
+  min-width: 0;
+}
+
+.user-activity-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-hairline);
+}
+
+.user-activity-panel__heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.user-activity-panel__icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.user-activity-panel__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-activity-panel__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  text-align: center;
+}
+
+.user-activity-panel__state p {
+  margin: 0;
+}
+
+.user-activity-panel__columns {
+  display: none;
+}
+
+.user-activity-panel__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name status"
+    "role status";
+  align-items: center;
+  gap: var(--spacing-xxs) var(--spacing-sm);
+  min-width: 0;
+  padding: var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--color-hairline);
+  transition: background-color var(--transition-fast);
+}
+
+.user-activity-panel__row:last-child {
+  border-bottom: 0;
+}
+
+.user-activity-panel__row:hover {
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+}
+
+.user-activity-panel__name {
+  grid-area: name;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.user-activity-panel__role {
+  grid-area: role;
+  min-width: 0;
+}
+
+.user-activity-panel__status {
+  grid-area: status;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.user-activity-panel__status-icon {
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+}
+
+@media (min-width: 600px) {
+  .user-activity-panel__columns,
+  .user-activity-panel__row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .user-activity-panel__columns {
+    display: grid;
+    padding: 0 var(--spacing-md) var(--spacing-xs);
+    border-bottom: var(--border-width) solid var(--color-hairline);
+  }
+
+  .user-activity-panel__columns span:last-child {
+    text-align: end;
+  }
+
+  .user-activity-panel__row {
+    grid-template-areas: "name role status";
+  }
+}

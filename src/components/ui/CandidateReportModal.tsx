@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Users } from "lucide-react";
+import { UsersRound } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { motion, type Variants } from "framer-motion";
 import { Modal } from "./Modal";
@@ -437,7 +437,7 @@ export function CandidateReportModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidate-report-modal"
-      icon={<Users size={20} aria-hidden="true" />}
+      icon={<UsersRound size={20} aria-hidden="true" />}
       title="Resumen de candidatos"
       size="md"
       fullscreenMobile={false}

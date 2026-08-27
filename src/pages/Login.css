@@ -113,7 +113,7 @@
 .login__form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .login__field {
@@ -251,7 +251,6 @@
 .login__submit {
   width: 100%;
   min-height: var(--touch-target-min);
-  margin-top: var(--spacing-sm);
 }
 
 /* ── Right Column (Image) ── */

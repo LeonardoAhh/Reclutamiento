@@ -1,19 +1,17 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import { Moon, Sun } from 'lucide';
+import { MoonStar, SunMedium } from 'lucide';
 import { useTheme } from '@/hooks/useTheme';
 import { useFeedback } from '@/hooks/useFeedback';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './ThemeToggle.css';
 
-/**
- * ThemeToggle — interruptor minimalista tipo pill con Sol/Luna.
- * Carril redondeado con un "thumb" deslizante que muestra
- * el ícono del tema actual.
- */
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+/** Interruptor textual reutilizable para cambiar el tema de la interfaz. */
+export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
   const { trigger } = useFeedback();
-  const shouldReduceMotion = useReducedMotion();
   const isDark = theme === 'dark';
 
   const handleToggle = () => {
@@ -25,26 +23,22 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={handleToggle}
-      className="theme-toggle"
+      className={['theme-toggle', className].filter(Boolean).join(' ')}
       data-state={isDark ? 'dark' : 'light'}
       data-testid="theme-toggle"
       role="switch"
       aria-checked={isDark}
       aria-label={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-      title={isDark ? 'Tema claro' : 'Tema oscuro'}
     >
-      <motion.span
-        className="theme-toggle__thumb"
-        layout
-        transition={{ type: shouldReduceMotion ? false : 'spring', stiffness: 500, damping: 30 }}
-      >
-        <MorphingIcon
-          icon={isDark ? Moon : Sun}
-          size={14}
-          strokeWidth={2.5}
-          className="theme-toggle__icon"
-        />
-      </motion.span>
+      <MorphingIcon
+        icon={isDark ? MoonStar : SunMedium}
+        className="theme-toggle__icon"
+        aria-hidden="true"
+      />
+      <span className="theme-toggle__label">Tema</span>
+      <span className="theme-toggle__state" aria-hidden="true">
+        {isDark ? 'Oscuro' : 'Claro'}
+      </span>
     </button>
   );
 }

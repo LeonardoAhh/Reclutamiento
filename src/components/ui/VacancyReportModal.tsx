@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ClipboardList, Share2, Users, AlertCircle } from "lucide-react";
+import { ClipboardList, Share2, UsersRound, CircleAlert } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { motion, type Variants } from "framer-motion";
 import { Modal } from "./Modal";

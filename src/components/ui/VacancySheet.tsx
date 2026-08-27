@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import { Tooltip } from './Tooltip';
-import { AlertCircle, ArrowRight, CheckCircle2, ClipboardList, History, Pencil, Trash2 } from 'lucide-react';
+import { CircleAlert, ArrowRight, CircleCheckBig, ClipboardList, History, PenLine, Trash2 } from 'lucide-react';
 import type {
   VacancyRequest,
   VacancyStatus,
@@ -237,7 +237,7 @@ export function VacancySheet({
   const icon = isDelete ? (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   ) : isEdit ? (
-    <Pencil size={20} className="color-primary" aria-hidden="true" />
+    <PenLine size={20} className="color-primary" aria-hidden="true" />
   ) : (
     <ClipboardList size={20} className="color-primary" aria-hidden="true" />
   );
@@ -502,7 +502,7 @@ export function VacancySheet({
   const deleteContent = (
     <div className="delete-warning">
       <div className="delete-warning__icon" aria-hidden="true">
-        <AlertCircle size={32} />
+        <CircleAlert size={32} />
       </div>
       <p className="delete-warning__title">
         ¿Eliminar vacante de{' '}

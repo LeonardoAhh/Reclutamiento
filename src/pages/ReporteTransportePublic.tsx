@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Bus,
-  CheckCircle2,
-  AlertCircle,
+  CircleCheckBig,
+  CircleAlert,
 } from "lucide-react";
 import {
   useIncidenciasTransporte,
@@ -110,7 +110,7 @@ export function ReporteTransportePublic() {
           aria-labelledby="reporte-success-title"
         >
           <div className="reporte-publico__success-icon" aria-hidden="true">
-            <CheckCircle2 size="var(--icon-size-lg)" />
+            <CircleCheckBig size="var(--icon-size-lg)" />
           </div>
           <div className="reporte-publico__success-copy">
             <h1
@@ -173,7 +173,7 @@ export function ReporteTransportePublic() {
 
         {errorMsg && (
           <div className="reporte-publico__alert" role="alert">
-            <AlertCircle size="var(--icon-size-control)" aria-hidden="true" />
+            <CircleAlert size="var(--icon-size-control)" aria-hidden="true" />
             <span>{errorMsg}</span>
           </div>
         )}

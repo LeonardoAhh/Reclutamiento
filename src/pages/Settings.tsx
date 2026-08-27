@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { AlertCircle, CheckCircle2, Loader2, RefreshCw, UserPlus } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, LoaderCircle, RefreshCw, UserRoundPlus } from 'lucide-react';
 import {
   Eye,
   EyeOff,
-  Loader2 as Loader2IconData,
-  UserPlus as UserPlusIconData,
+  LoaderCircle as Loader2IconData,
+  UserRoundPlus as UserPlusIconData,
 } from 'lucide';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import {
@@ -210,7 +210,7 @@ export function Settings() {
         >
           <header className="settings__panel-header">
             <h2 id="settings-create-title" className="settings__panel-title">
-              <UserPlus size={16} aria-hidden="true" />
+              <UserRoundPlus size={16} aria-hidden="true" />
               Crear usuario
             </h2>
             <p className="settings__panel-sub">
@@ -333,9 +333,9 @@ export function Settings() {
                   transition={{ duration: 0.18 }}
                 >
                   {formStatus.type === 'success' ? (
-                    <CheckCircle2 size={14} aria-hidden="true" />
+                    <CircleCheckBig size={14} aria-hidden="true" />
                   ) : (
-                    <AlertCircle size={14} aria-hidden="true" />
+                    <CircleAlert size={14} aria-hidden="true" />
                   )}
                   <span>{formStatus.message}</span>
                 </motion.div>
@@ -397,7 +397,7 @@ export function Settings() {
 
           {listError && (
             <div className="settings__banner settings__banner--error" role="alert">
-              <AlertCircle size={14} aria-hidden="true" />
+              <CircleAlert size={14} aria-hidden="true" />
               <span>{listError}</span>
             </div>
           )}
@@ -474,7 +474,7 @@ export function Settings() {
                         ))}
                       </select>
                       {state?.saving && (
-                        <Loader2
+                        <LoaderCircle
                           size={14}
                           className="settings__spinner"
                           aria-hidden="true"
