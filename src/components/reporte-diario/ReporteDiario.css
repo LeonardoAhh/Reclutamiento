@@ -780,6 +780,7 @@ button.reporte-card:focus-visible,
   overflow-x: auto;
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+  max-width: 100%;
 }
 
 .reporte-cmp__table {
@@ -797,8 +798,8 @@ button.reporte-card:focus-visible,
 .reporte-cmp__table th {
   padding: var(--spacing-sm) var(--spacing-md);
   text-align: left;
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
@@ -820,12 +821,17 @@ button.reporte-card:focus-visible,
   padding: var(--spacing-sm) var(--spacing-md);
   color: var(--color-ink);
   white-space: normal;
-  overflow-wrap: anywhere;
+}
+
+.reporte-cmp__mes {
+  font-weight: var(--type-body-strong-weight);
+  white-space: nowrap !important;
 }
 
 .reporte-cmp__num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .reporte-cmp__table th.reporte-cmp__num {
   text-align: right;
@@ -1020,11 +1026,17 @@ button.reporte-card:focus-visible,
 
 .reporte-saved__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-sm);
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+@media (min-width: 640px) {
+  .reporte-saved__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .reporte-saved__item {
@@ -1087,13 +1099,11 @@ button.reporte-card:focus-visible,
 
 .reporte-saved__title {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-md-line);
+  line-height: var(--type-caption-sm-line);
   color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .reporte-saved__sub {
@@ -1498,7 +1508,6 @@ button.reporte-card:focus-visible,
   line-height: var(--type-body-sm-line);
   color: var(--color-ink);
   white-space: normal;
-  overflow-wrap: anywhere;
 }
 
 .reporte-incidents__card-sub {

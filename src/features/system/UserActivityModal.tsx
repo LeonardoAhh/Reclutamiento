@@ -23,7 +23,7 @@ export function UserActivityModal({
       title="Actividad de usuarios"
       icon={<Activity aria-hidden="true" />}
       onClose={onClose}
-      size="md"
+      size="sm"
       fullscreenMobile={false}
     >
       <div className="modal-body user-activity-modal__body">

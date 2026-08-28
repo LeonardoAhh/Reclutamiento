@@ -156,7 +156,7 @@ const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
   content:
-    "¡Hola! Soy ViñoBot\n\nPara comenzar, en el menu izquierdo. Despues selecciona un CV (.PDF). Lo analizaré al instante para decirte qué tan bien encaja con el perfil que buscas.",
+    "¡Hola! Soy ViñoBot. ¿Que perfil vamos a analizar?",
 };
 
 export type JobsState = "idle" | "loading" | "ready" | "error";

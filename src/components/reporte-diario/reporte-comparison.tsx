@@ -188,8 +188,7 @@ export default function ReporteComparisonDialog({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         title="Comparativa mensual"
-        subtitle="Evolución de incidencias y ausentismo mes a mes."
-        size="xl"
+        size="lg"
         fullscreenMobile={true}
       >
         <div className="reporte-cmp__body">

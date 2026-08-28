@@ -491,19 +491,13 @@
 
 .activity-detail-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-lg);
-}
-
-@media (min-width: 768px) {
-  .activity-detail-grid {
-    grid-template-columns: 30% 1fr;
-  }
 }
 
 .activity-detail-divider {
   border: none;
-  border-top: 1px solid var(--color-hairline);
+  border-top: var(--border-width) solid var(--color-hairline);
   margin: 0;
 }
 
@@ -521,84 +515,12 @@
   gap: var(--spacing-md);
 }
 
-@media (min-width: 768px) {
-  .proofs-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-    align-items: start;
-  }
-}
-
 /* ── Proof list ──────────────────────────────────────────────────────── */
 .proofs-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--spacing-sm);
-}
-
-.proof-item {
-  position: relative;
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1;
-  padding: var(--spacing-sm);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  transition: border-color var(--transition-fast);
-  text-align: center;
-  overflow: hidden;
-}
-
-.proof-item:hover {
-  border-color: var(--color-hairline-strong);
-}
-
-.proof-item a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  transition: color var(--transition-fast);
-  word-break: break-all;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.proof-item a:hover {
-  text-decoration: underline;
-}
-
-.proof-item__delete {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-size-xl);
-  height: var(--icon-size-xl);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  color: var(--color-muted);
-  cursor: pointer;
-  padding: 0;
-  border-radius: var(--rounded-md);
-  box-shadow: var(--shadow-sm);
-  z-index: 10;
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
-}
-
-.proof-item__delete:hover {
-  color: var(--color-error);
-  background: var(--color-error-tint);
+  gap: var(--spacing-sm);
 }
 
 /* ── File upload area ────────────────────────────────────────────────── */
@@ -833,36 +755,6 @@
   box-shadow: var(--shadow-focus);
 }
 
-.reference-preview {
-  position: relative;
-  width: 100%;
-  max-width: 300px;
-  border-radius: var(--rounded-md);
-  overflow: hidden;
-  border: 1px solid var(--color-hairline);
-}
-
-.reference-preview img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.reference-preview .btn-icon-danger {
-  position: absolute;
-  top: var(--spacing-xs);
-  right: var(--spacing-xs);
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
-  background: var(--color-canvas);
-  border-radius: var(--rounded-md);
-  padding: var(--spacing-xs);
-  border: 1px solid var(--color-hairline);
-  box-shadow: var(--shadow-sm);
-}
-
-
-
 .activity-lightbox__body {
   align-items: center;
   justify-content: center;
@@ -881,22 +773,4 @@
   .reference-image-button:focus-visible {
     outline-color: ButtonText;
   }
-}
-
-.proof-item .proof-image-button {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: zoom-in;
-  display: block;
-  border-radius: var(--rounded-sm);
-  overflow: hidden;
-}
-.proof-item .proof-image-button img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }

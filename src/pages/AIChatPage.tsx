@@ -822,7 +822,7 @@ export function AIChatPage() {
             <p id={`${messageInputId}-hint`} className="ai-chat-composer-hint">
               {hasCompared
                 ? "Enter para enviar · Shift + Enter para una nueva línea"
-                : "La conversación se habilita analizar el CV."}
+                : "La conversación se habilita al analizar el CV."}
             </p>
           </div>
         </section>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { useAuth } from "@/hooks/useAuth";
@@ -6,29 +6,32 @@ import { usePagination } from "@/hooks/usePagination";
 import { Pagination } from "@/components/ui/Pagination";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
-import { Activity, ActivityStatus, ACTIVITY_STATUS_LABEL } from "@/lib/types";
+import {
+  Activity,
+  ActivityProof,
+  ActivityStatus,
+  ACTIVITY_STATUS_LABEL,
+} from "@/lib/types";
 import { supabase } from "@/lib/supabase";
-import { Modal } from "@/components/ui/Modal";
+import { AssignVacancyModal } from "@/components/ui/AssignVacancyModal";
+import { CreateActivityModal } from "@/components/ui/CreateActivityModal";
+import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
+import { EditActivityModal } from "@/components/ui/EditActivityModal";
+import { LightboxModal } from "@/components/ui/LightboxModal";
+import { TaskDetailsModal } from "@/components/ui/TaskDetailsModal";
 import {
   BriefcaseBusiness,
-  ClipboardPenLine,
   Plus,
-  FileSearch,
-  FileUp,
   Trash2,
   ListTodo,
   Inbox,
-  SquarePen,
   EllipsisVertical,
   Search,
   List,
-  ImagePlus,
-  X,
   ChevronDown,
   ChevronRight,
   UserRoundPlus,
 } from "lucide-react";
-import { CustomSelect } from "@/components/ui/CustomSelect";
 import { toast } from "@/lib/notify";
 import {
   DropdownMenu,
@@ -78,105 +81,13 @@ function AssigneeBadges({
   );
 }
 
-function SmartTextarea({
-  id,
-  value,
-  onChange,
-  placeholder,
-  maxLength = 1500,
-}: {
-  id: string;
-  value: string;
-  onChange: (val: string) => void;
-  placeholder?: string;
-  maxLength?: number;
-}) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleResize = () => {
-    const el = textareaRef.current;
-    if (el) {
-      el.style.height = "auto";
-      el.style.height = `${el.scrollHeight}px`;
-    }
-  };
-
-  useEffect(() => {
-    handleResize();
-  }, [value]);
-
-  const insertAtCursor = (text: string) => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-
-    let prefix = "";
-    if (start > 0 && value[start - 1] !== "\n") {
-      prefix = "\n";
-    }
-
-    const insertion = prefix + text;
-    const newValue =
-      value.substring(0, start) + insertion + value.substring(end);
-    onChange(newValue);
-    setTimeout(() => {
-      el.focus();
-      el.setSelectionRange(start + insertion.length, start + insertion.length);
-    }, 0);
-  };
-
-  return (
-    <div className="smart-textarea-wrapper">
-      <textarea
-        ref={textareaRef}
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        rows={3}
-        className="smart-textarea"
-      />
-      <div className="smart-textarea-toolbar">
-        <div className="smart-textarea-actions">
-          <button
-            type="button"
-            className="smart-textarea-btn"
-            onClick={() => insertAtCursor("• ")}
-            title="Añadir viñeta"
-          >
-            <List size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Viñeta</span>
-          </button>
-          <button
-            type="button"
-            className="smart-textarea-btn"
-            onClick={() => insertAtCursor("- [ ] ")}
-            title="Añadir checklist"
-          >
-            <ListTodo size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Checklist</span>
-          </button>
-        </div>
-        <span className="smart-textarea-counter">
-          {value.length} / {maxLength}
-        </span>
-      </div>
-    </div>
-  );
-}
-
 function isImage(filename: string): boolean {
   if (!filename) return false;
-  const ext = filename.split(".").pop()?.toLowerCase() || "";
-  return ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext);
+  const extension = filename.split(".").pop()?.toLowerCase() || "";
+  return ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(extension);
 }
 
 export function Actividades() {
-  const vacancyFormId = useId();
-  const createFormId = useId();
-  const editFormId = useId();
   const { profile } = useAuth();
 
   const lastVisitRef = useRef<string | null>(null);
@@ -203,7 +114,6 @@ export function Actividades() {
     uploadReferenceImage,
     getProofs,
     deleteProof,
-    refresh,
   } = useActivities();
 
   const isNewActivity = (act: Activity) => {
@@ -222,13 +132,13 @@ export function Actividades() {
   const [assignModalVacancy, setAssignModalVacancy] = useState<Activity | null>(
     null,
   );
-  const [proofs, setProofs] = useState<any[]>([]);
+  const [proofs, setProofs] = useState<ActivityProof[]>([]);
 
   /* ── Create activity form state ─────────────────────────────────────── */
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [asignadoA, setAsignadoA] = useState("");
-  const [tipo, setTipo] = useState<"unica" | "rutinaria" | "vacante">("unica");
+  const [tipo, setTipo] = useState<"unica" | "rutinaria">("unica");
   const [isCreating, setIsCreating] = useState(false);
 
   /* ── Create vacancy form state (isolated from activities) ───────────── */
@@ -264,9 +174,7 @@ export function Actividades() {
   const [editTitulo, setEditTitulo] = useState("");
   const [editDescripcion, setEditDescripcion] = useState("");
   const [editAsignadoA, setEditAsignadoA] = useState("");
-  const [editTipo, setEditTipo] = useState<"unica" | "rutinaria" | "vacante">(
-    "unica",
-  );
+  const [editTipo, setEditTipo] = useState<"unica" | "rutinaria">("unica");
   const [editReferenceImageFile, setEditReferenceImageFile] =
     useState<File | null>(null);
   const [editReferenceImagePreview, setEditReferenceImagePreview] = useState<
@@ -543,7 +451,7 @@ export function Actividades() {
     setEditTitulo(activity.titulo);
     setEditDescripcion(activity.descripcion || "");
     setEditAsignadoA(activity.asignado_a || "");
-    setEditTipo(activity.tipo || "unica");
+    setEditTipo(activity.tipo === "rutinaria" ? "rutinaria" : "unica");
     setEditReferenceImageFile(null);
     setEditReferenceImagePreview(null);
     setEditExistingReferenceImage(activity.reference_image || null);
@@ -1160,587 +1068,138 @@ export function Actividades() {
         </section>
       </div>
 
-      <Modal
+      <CreateVacancyModal
         isOpen={isCreateVacanteModalOpen}
         onClose={() => {
           if (!isCreatingVacancy) setIsCreateVacanteModalOpen(false);
         }}
-        title="Asignar Vacante"
-        icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
-        fullscreenMobile={false}
-        footerActions={
-          <>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsCreateVacanteModalOpen(false)}
-              disabled={isCreatingVacancy}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isCreatingVacancy || !vacanteTitulo.trim()}
-              aria-busy={isCreatingVacancy}
-              form={vacancyFormId}
-            >
-              {isCreatingVacancy ? "Guardando..." : "Crear"}
-            </button>
-          </>
-        }
-      >
-        <form id={vacancyFormId} className="modal-body" onSubmit={handleCreateVacante} noValidate>
-          <div className="vacante-form-grid">
-            <div className="form-group">
-              <label htmlFor="vacante-area">Área</label>
-              <CustomSelect
-                id="vacante-area"
-                value={vacanteArea}
-                onChange={(val) => {
-                  setVacanteArea(val);
-                  setVacanteSeccion("");
-                  setVacanteTitulo("");
-                }}
-                options={[
-                  { value: "", label: "Todas las áreas" },
-                  ...areasOptions.map((area) => ({ value: area, label: area })),
-                ]}
-              />
-            </div>
+        isCreating={isCreatingVacancy}
+        area={vacanteArea}
+        onAreaChange={(value) => {
+          setVacanteArea(value);
+          setVacanteSeccion("");
+          setVacanteTitulo("");
+        }}
+        areasOptions={areasOptions}
+        seccion={vacanteSeccion}
+        onSeccionChange={(value) => {
+          setVacanteSeccion(value);
+          setVacanteTitulo("");
+        }}
+        seccionesOptions={seccionesOptions}
+        puesto={vacanteTitulo}
+        onPuestoChange={setVacanteTitulo}
+        puestosOptions={puestosOptions}
+        asignadoA={vacanteAsignadoA}
+        onAsignadoAChange={setVacanteAsignadoA}
+        recruitersOptions={[
+          { value: "", label: "Sin asignar" },
+          ...reclutadores.map((reclutador) => ({
+            value: reclutador.id,
+            label: capitalize(reclutador.display_name || reclutador.username),
+          })),
+        ]}
+        onSubmit={handleCreateVacante}
+      />
 
-            <div className="form-group">
-              <label htmlFor="vacante-seccion">Sección</label>
-              <CustomSelect
-                id="vacante-seccion"
-                value={vacanteSeccion}
-                onChange={(val) => {
-                  setVacanteSeccion(val);
-                  setVacanteTitulo("");
-                }}
-                disabled={seccionesOptions.length === 0}
-                options={[
-                  { value: "", label: "Todas las secciones" },
-                  ...seccionesOptions.map((seccion) => ({
-                    value: seccion,
-                    label: seccion,
-                  })),
-                ]}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="vacante-puesto">Puesto</label>
-              <CustomSelect
-                id="vacante-puesto"
-                value={vacanteTitulo}
-                onChange={setVacanteTitulo}
-                disabled={puestosOptions.length === 0}
-                options={[
-                  { value: "", label: "Seleccione un puesto" },
-                  ...puestosOptions.map((puesto) => ({
-                    value: puesto,
-                    label: puesto,
-                  })),
-                ]}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="vacante-asignado">Asignar a</label>
-              <CustomSelect
-                id="vacante-asignado"
-                value={vacanteAsignadoA}
-                onChange={setVacanteAsignadoA}
-                options={[
-                  { value: "", label: "Sin asignar" },
-                  ...reclutadores.map((reclutador) => ({
-                    value: reclutador.id,
-                    label: capitalize(
-                      reclutador.display_name || reclutador.username,
-                    ),
-                  })),
-                ]}
-              />
-            </div>
-          </div>
-
-        </form>
-      </Modal>
-
-      <Modal
+      <CreateActivityModal
         isOpen={isCreateModalOpen}
         onClose={() => {
           if (!isCreating) setIsCreateModalOpen(false);
         }}
-        title="Actividad nueva"
-        icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
-        fullscreenMobile={false}
-        footerActions={
-          <>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsCreateModalOpen(false)}
-              disabled={isCreating}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isCreating || !titulo.trim()}
-              aria-busy={isCreating}
-              form={createFormId}
-            >
-              {isCreating ? "Guardando..." : "Asignar"}
-            </button>
-          </>
-        }
-      >
-        <form id={createFormId} className="modal-body" onSubmit={handleCreate} noValidate>
-          {/* Tipo selector */}
-          <fieldset className="form-group activity-type-fieldset">
-            <legend>Tipo</legend>
-            <div className="activity-type-selector">
-              <label
-                className={`activity-type-option ${tipo === "unica" ? "active" : ""}`}
-              >
-                <input
-                  className="sr-only"
-                  type="radio"
-                  name="tipo"
-                  value="unica"
-                  checked={tipo === "unica"}
-                  onChange={() => setTipo("unica")}
-                />
-                Actividad
-              </label>
-              <label
-                className={`activity-type-option ${tipo === "rutinaria" ? "active" : ""}`}
-              >
-                <input
-                  className="sr-only"
-                  type="radio"
-                  name="tipo"
-                  value="rutinaria"
-                  checked={tipo === "rutinaria"}
-                  onChange={() => setTipo("rutinaria")}
-                />
-                Responsabilidad
-              </label>
-            </div>
-          </fieldset>
-
-          <div className="form-group">
-            <label htmlFor="activity-titulo">Título</label>
-            <input
-              id="activity-titulo"
-              required
-              type="text"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              placeholder="Ej. Revisión de expedientes"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="activity-asignado">Asignar a</label>
-            <CustomSelect
-              id="activity-asignado"
-              value={asignadoA}
-              onChange={setAsignadoA}
-              options={[
-                { value: "", label: "Todo el equipo" },
-                ...reclutadores.map((r) => ({
-                  value: r.id,
-                  label: capitalize(r.display_name || r.username),
-                })),
-              ]}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="activity-descripcion">Descripción</label>
-            <SmartTextarea
-              id="activity-descripcion"
-              value={descripcion}
-              onChange={setDescripcion}
-              placeholder="Detalles de la actividad..."
-            />
-          </div>
-
-          <div className="form-group">
-            <span className="form-label">Foto de Referencia (Opcional)</span>
-            <div className="reference-upload-area">
-              {referenceImagePreview ? (
-                <div className="reference-preview">
-                  <img
-                    src={referenceImagePreview}
-                    alt="Vista previa de la referencia"
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon-danger"
-                    aria-label="Quitar foto de referencia"
-                    onClick={() => {
-                      setReferenceImageFile(null);
-                      setReferenceImagePreview(null);
-                    }}
-                  >
-                    <X size="var(--icon-size-sm)" aria-hidden="true" />
-                  </button>
-                </div>
-              ) : (
-                <label className="reference-upload-label">
-                  <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
-                  <span>Subir foto de referencia</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setReferenceImageFile(file);
-                        setReferenceImagePreview(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                </label>
-              )}
-            </div>
-          </div>
-
-        </form>
-      </Modal>
+        isCreating={isCreating}
+        tipo={tipo}
+        setTipo={setTipo}
+        titulo={titulo}
+        setTitulo={setTitulo}
+        asignadoA={asignadoA}
+        setAsignadoA={setAsignadoA}
+        recruitersOptions={[
+          { value: "", label: "Todo el equipo" },
+          ...reclutadores.map((reclutador) => ({
+            value: reclutador.id,
+            label: capitalize(reclutador.display_name || reclutador.username),
+          })),
+        ]}
+        descripcion={descripcion}
+        setDescripcion={setDescripcion}
+        referenceImagePreview={referenceImagePreview}
+        referenceImageFile={referenceImageFile}
+        setReferenceImageFile={setReferenceImageFile}
+        setReferenceImagePreview={setReferenceImagePreview}
+        onSubmit={handleCreate}
+      />
 
       {/* ── Modal: Edit ──────────────────────────────────────────── */}
-      <Modal
+      <EditActivityModal
         isOpen={isEditModalOpen}
         onClose={() => {
           if (!isEditing) setIsEditModalOpen(false);
         }}
-        title="Editar actividad"
-        icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
-        fullscreenMobile={false}
-        footerActions={
-          <>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => setIsEditModalOpen(false)}
-              disabled={isEditing}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={isEditing || !editTitulo.trim()}
-              aria-busy={isEditing}
-              form={editFormId}
-            >
-              {isEditing ? "Guardando..." : "Guardar"}
-            </button>
-          </>
-        }
-      >
-        <form id={editFormId} className="modal-body" onSubmit={handleEdit} noValidate>
-          <fieldset className="form-group activity-type-fieldset">
-            <legend>Tipo</legend>
-            <div className="activity-type-selector">
-              <label
-                className={`activity-type-option ${editTipo === "unica" ? "active" : ""}`}
-              >
-                <input
-                  className="sr-only"
-                  type="radio"
-                  name="editTipo"
-                  value="unica"
-                  checked={editTipo === "unica"}
-                  onChange={() => setEditTipo("unica")}
-                />
-                Tarea
-              </label>
-              <label
-                className={`activity-type-option ${editTipo === "rutinaria" ? "active" : ""}`}
-              >
-                <input
-                  className="sr-only"
-                  type="radio"
-                  name="editTipo"
-                  value="rutinaria"
-                  checked={editTipo === "rutinaria"}
-                  onChange={() => setEditTipo("rutinaria")}
-                />
-                Rutina
-              </label>
-            </div>
-          </fieldset>
-
-          <div className="form-group">
-            <label htmlFor="edit-titulo">Título</label>
-            <input
-              id="edit-titulo"
-              required
-              type="text"
-              value={editTitulo}
-              onChange={(e) => setEditTitulo(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="edit-asignado">Asignar a</label>
-            <CustomSelect
-              id="edit-asignado"
-              value={editAsignadoA}
-              onChange={setEditAsignadoA}
-              options={[
-                { value: "", label: "Todo el equipo" },
-                ...reclutadores.map((r) => ({
-                  value: r.id,
-                  label: capitalize(r.display_name || r.username),
-                })),
-              ]}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="edit-descripcion">Descripción</label>
-            <SmartTextarea
-              id="edit-descripcion"
-              value={editDescripcion}
-              onChange={setEditDescripcion}
-              placeholder="Detalles de la actividad..."
-            />
-          </div>
-
-          <div className="form-group">
-            <span className="form-label">Foto de Referencia (Opcional)</span>
-            <div className="reference-upload-area">
-              {editReferenceImagePreview || editExistingReferenceImage ? (
-                <div className="reference-preview">
-                  <img
-                    src={
-                      editReferenceImagePreview || editExistingReferenceImage!
-                    }
-                    alt="Vista previa de la referencia"
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon-danger"
-                    aria-label="Quitar foto de referencia"
-                    onClick={() => {
-                      setEditReferenceImageFile(null);
-                      setEditReferenceImagePreview(null);
-                      setEditExistingReferenceImage(null);
-                    }}
-                  >
-                    <X size="var(--icon-size-sm)" aria-hidden="true" />
-                  </button>
-                </div>
-              ) : (
-                <label className="reference-upload-label">
-                  <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
-                  <span>Subir foto de referencia</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setEditReferenceImageFile(file);
-                        setEditReferenceImagePreview(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                </label>
-              )}
-            </div>
-          </div>
-
-        </form>
-      </Modal>
+        isEditing={isEditing}
+        tipo={editTipo}
+        setTipo={setEditTipo}
+        titulo={editTitulo}
+        setTitulo={setEditTitulo}
+        asignadoA={editAsignadoA}
+        setAsignadoA={setEditAsignadoA}
+        recruitersOptions={[
+          { value: "", label: "Todo el equipo" },
+          ...reclutadores.map((reclutador) => ({
+            value: reclutador.id,
+            label: capitalize(reclutador.display_name || reclutador.username),
+          })),
+        ]}
+        descripcion={editDescripcion}
+        setDescripcion={setEditDescripcion}
+        referenceImagePreview={editReferenceImagePreview}
+        referenceImageFile={editReferenceImageFile}
+        existingReferenceImage={editExistingReferenceImage}
+        setReferenceImageFile={setEditReferenceImageFile}
+        setReferenceImagePreview={setEditReferenceImagePreview}
+        setExistingReferenceImage={setEditExistingReferenceImage}
+        onSubmit={handleEdit}
+      />
 
       {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
-      <Modal
+      <TaskDetailsModal
         isOpen={isDetailModalOpen && !confirmState.isOpen && !lightboxSrc}
         onClose={() => {
           proofsRequestRef.current += 1;
           setIsDetailModalOpen(false);
-          setSelectedActivity(null);
-          setProofs([]);
-          setProofsLoading(false);
-          refresh();
         }}
-        title={selectedActivity?.titulo ?? "Detalles de Tarea"}
-        icon={<FileSearch size="var(--icon-size-md)" aria-hidden="true" />}
-        size="lg"
-      >
-        {selectedActivity && (
-          <div className="modal-body">
-            <div className="activity-detail-grid">
-              <div className="form-group">
-                <label htmlFor="detail-estado">Estado</label>
-                <CustomSelect
-                  id="detail-estado"
-                  value={selectedActivity.estado}
-                  onChange={handleStatusChange}
-                  disabled={isUpdatingStatus}
-                  options={[
-                    { value: "pendiente", label: "Pendiente" },
-                    { value: "en_proceso", label: "En Proceso" },
-                    { value: "completada", label: "Completada" },
-                  ]}
-                />
-              </div>
+        activity={selectedActivity}
+        onStatusChange={handleStatusChange}
+        isUpdatingStatus={isUpdatingStatus}
+        onLightboxOpen={setLightboxSrc}
+        proofsLoading={proofsLoading}
+        proofs={proofs}
+        isImage={isImage}
+        isAdmin={isAdmin}
+        onDeleteProof={handleDeleteProof}
+        onUploadProof={handleFileUpload}
+        isUploadingProof={isUploadingProof}
+      />
 
-              <div className="form-group">
-                <h3 className="form-label">Descripción</h3>
-                <div className="activity-desc-block">
-                  {selectedActivity.descripcion || "Sin descripción detallada."}
-                </div>
-              </div>
-            </div>
-
-            {selectedActivity.reference_image && (
-              <div className="activity-reference-image-full">
-                <h4>Foto de Referencia</h4>
-                <div className="reference-image-well">
-                  <button
-                    type="button"
-                    className="reference-image-button"
-                    onClick={() =>
-                      setLightboxSrc(selectedActivity.reference_image!)
-                    }
-                    aria-label={`Ampliar referencia de ${selectedActivity.titulo}`}
-                  >
-                    <img src={selectedActivity.reference_image} alt="" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <hr className="activity-detail-divider" />
-
-            <h3 className="activity-proofs-heading">Evidencias / Pruebas</h3>
-
-            <div className="proofs-layout">
-              <div className="proofs-list" aria-live="polite">
-                {proofsLoading ? (
-                  <p className="actividades-empty__subtitle">
-                    Cargando evidencias...
-                  </p>
-                ) : proofs.length === 0 ? (
-                  <p className="actividades-empty__subtitle">
-                    No hay pruebas aún.
-                  </p>
-                ) : (
-                  proofs.map((proof) => (
-                    <div key={proof.id} className="proof-item">
-                      {isImage(proof.file_name) ? (
-                        <button
-                          type="button"
-                          className="proof-image-button"
-                          onClick={() => setLightboxSrc(proof.file_url)}
-                          aria-label={`Ver ${proof.file_name}`}
-                        >
-                          <img
-                            src={proof.file_url}
-                            alt={proof.file_name}
-                            loading="lazy"
-                          />
-                        </button>
-                      ) : (
-                        <a
-                          href={proof.file_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {proof.file_name}
-                        </a>
-                      )}
-                      {isAdmin && (
-                        <button
-                          className="proof-item__delete"
-                          onClick={() =>
-                            handleDeleteProof(proof.id, proof.file_url)
-                          }
-                          aria-label={`Eliminar ${proof.file_name}`}
-                        >
-                          <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
-                        </button>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <label className="file-upload-wrapper">
-                <input
-                  type="file"
-                  className="sr-only"
-                  onChange={handleFileUpload}
-                  disabled={isUploadingProof || proofsLoading}
-                  accept="image/*,.pdf"
-                />
-                <div className="file-upload-inner">
-                  <FileUp
-                    size="var(--icon-size-xl)"
-                    className="file-upload-icon"
-                    aria-hidden="true"
-                  />
-                  <span className="file-upload-text">
-                    {proofsLoading
-                      ? "Espera mientras cargan las evidencias..."
-                      : isUploadingProof
-                        ? "Subiendo archivo..."
-                        : "Haz clic para subir un archivo"}
-                  </span>
-                </div>
-              </label>
-            </div>
-          </div>
-        )}
-      </Modal>
-
-      <Modal
-        isOpen={!!assignModalVacancy}
+      <AssignVacancyModal
+        isOpen={Boolean(assignModalVacancy)}
         onClose={() => {
           if (!isAssigningVacancy) setAssignModalVacancy(null);
         }}
-        title="Asignar reclutador"
-        icon={<UserRoundPlus size="var(--icon-size-md)" aria-hidden="true" />}
-        size="sm"
-      >
-        <div className="modal-body assign-vacancy-modal__body">
-          <div className="form-group">
-            <label htmlFor="assign-vacancy-recruiter">
-              Selecciona al responsable
-            </label>
-            <CustomSelect
-              id="assign-vacancy-recruiter"
-              className="text-input"
-              value={assignModalVacancy?.asignado_a || ""}
-              disabled={isAssigningVacancy}
-              onChange={(val) => {
-                if (assignModalVacancy) {
-                  void handleAssignVacancy(assignModalVacancy.id!, val);
-                }
-              }}
-              options={[
-                { value: "", label: "Sin asignar" },
-                ...reclutadores.map((r) => ({
-                  value: r.id,
-                  label: capitalize(r.display_name || r.username),
-                })),
-              ]}
-            />
-          </div>
-        </div>
-      </Modal>
+        isAssigning={isAssigningVacancy}
+        vacancyId={assignModalVacancy?.id}
+        currentAssignee={assignModalVacancy?.asignado_a || ""}
+        options={[
+          { value: "", label: "Sin asignar" },
+          ...reclutadores.map((reclutador) => ({
+            value: reclutador.id,
+            label: capitalize(reclutador.display_name || reclutador.username),
+          })),
+        ]}
+        onAssign={(vacancyId, assigneeId) => {
+          void handleAssignVacancy(vacancyId, assigneeId);
+        }}
+      />
 
       <DeleteConfirmModal
         isOpen={confirmState.isOpen}
@@ -1754,24 +1213,11 @@ export function Actividades() {
         }}
       />
 
-      {lightboxSrc && (
-        <Modal
-          isOpen
-          onClose={() => setLightboxSrc(null)}
-          title="Referencia visual"
-          size="xl"
-          fullscreenMobile={false}
-          className="activity-lightbox"
-        >
-          <div className="modal-body activity-lightbox__body">
-            <img
-              src={lightboxSrc}
-              alt="Referencia visual ampliada"
-              className="activity-lightbox__image"
-            />
-          </div>
-        </Modal>
-      )}
+      <LightboxModal
+        isOpen={Boolean(lightboxSrc)}
+        onClose={() => setLightboxSrc(null)}
+        src={lightboxSrc}
+      />
     </main>
   );
 }

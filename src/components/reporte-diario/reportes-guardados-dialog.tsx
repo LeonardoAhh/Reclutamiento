@@ -1,6 +1,7 @@
 import "./ReporteDiario.css";
 import {
   Calendar,
+  CalendarDays,
   CircleCheckBig,
   ChevronRight,
   Database,
@@ -86,7 +87,7 @@ export default function ReportesGuardadosDialog({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         title="REPORTES GUARDADOS"
-        size="lg"
+        size="sm"
         fullscreenMobile={true}
       >
         <div className="reporte-saved__body">
@@ -116,11 +117,11 @@ export default function ReportesGuardadosDialog({
                     data-testid={`load-report-${s.mes}`}
                   >
                     <span className="reporte-saved__icon">
-                      <Calendar size={18} aria-hidden="true" />
+                      <CalendarDays size={18} aria-hidden="true" />
                     </span>
                     <span className="reporte-saved__main">
                       <span className="reporte-saved__title reporte-saved__title--uppercase">
-                        {formatMes(s.mes)} | CARGAR
+                        {formatMes(s.mes)}
                       </span>
                     </span>
                   </button>

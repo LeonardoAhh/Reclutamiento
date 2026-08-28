@@ -5,6 +5,7 @@ import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
 import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
 import { Modal } from "@/components/ui/Modal";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -46,18 +47,18 @@ interface AreaCardProps {
 function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
     const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
     const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
-    
+
     const pct = active > 0 ? (incidence / active) * 100 : 0;
-    
+
     // El badge de la derecha sigue siendo el total de incidencias del área o solo operadores?
     // Mostramos solo de operadores si hay operadores.
     const statusTone = getStatusTone(pct, incidence > 0);
-    
+
     const asistenciaValue = area.is_descanso ? "—" : Math.max(active - incidence, 0);
     const isCriticalTrend = pct > TREND_THRESHOLD;
 
     const isClickable = incidence > 0;
-    
+
     let statusClass = "";
     if (area.is_descanso) {
         statusClass = " ras-card--descanso";
@@ -76,7 +77,7 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
                 <span className="ras-card__name" title={area.area}>
                     {area.area}
                 </span>
-                
+
                 <div className="ras-card__header-metrics">
                     {incidence > 0 && (
                         <span className={`ras-card__trend ras-card__trend--${isCriticalTrend ? "critical" : "stable"}`} aria-label={`${pct.toFixed(0)}% ausentismo`}>
@@ -86,7 +87,7 @@ function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
                             {pct.toFixed(0)}%
                         </span>
                     )}
-                    
+
                     {area.is_descanso ? (
                         <div className="ras-card__descanso" data-testid={`area-descanso-${area.area}`}>
                             <Moon size={11} aria-hidden="true" />
@@ -207,23 +208,33 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                 <table className="reporte-incidents__table">
                     <thead>
                         <tr>
-                            <th scope="col"># Emp</th>
-                            <th scope="col">Nombre</th>
+                            <th scope="col">Empleado</th>
                             <th scope="col">Incidencia</th>
                             <th scope="col">Turno</th>
                             <th scope="col">Puesto</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {rows.map((row) => (
-                            <tr key={row.key}>
-                                <td className="reporte-incidents__td-num">{row.numero_empleado}</td>
-                                <td className="reporte-incidents__td-name">{row.nombre}</td>
-                                <td><IncidenceBadge code={row.tipo_incidencia} /></td>
-                                <td><span className="reporte-chip">{row.turno}</span></td>
-                                <td>{row.puesto || '-'}</td>
-                            </tr>
-                        ))}
+                        {rows.map((row) => {
+                            // En México, la "categoría" suele ser la letra final (A, B, C...)
+                            const puestoLimpio = row.puesto 
+                                ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() 
+                                : "-";
+                            return (
+                                <tr key={row.key}>
+                                    <td className="reporte-incidents__td-num">
+                                        <Tooltip content={row.nombre || 'Sin nombre'} side="right">
+                                            <span>
+                                                {row.numero_empleado}
+                                            </span>
+                                        </Tooltip>
+                                    </td>
+                                    <td><IncidenceBadge code={row.tipo_incidencia} /></td>
+                                    <td><span className="reporte-chip">{row.turno}</span></td>
+                                    <td>{puestoLimpio}</td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -233,6 +244,9 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                 {rows.map((row) => {
                     const isOpen = expanded.has(row.key);
                     const detailId = `area-detail-${row.key}`;
+                    const puestoLimpio = row.puesto 
+                        ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() 
+                        : "-";
                     return (
                         <li key={row.key} className="reporte-incidents__card">
                             <button
@@ -260,12 +274,12 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
 
                             {isOpen && (
                                 <div id={detailId} className="reporte-incidents__card-detail">
-                                    <span className="reporte-incidents__detail-label"># Empleado</span>
+                                    <span className="reporte-incidents__detail-label">Empleado</span>
                                     <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
                                     {row.puesto && (
                                         <>
                                             <span className="reporte-incidents__detail-label">Puesto</span>
-                                            <span className="reporte-incidents__detail-value">{row.puesto}</span>
+                                            <span className="reporte-incidents__detail-value">{puestoLimpio}</span>
                                         </>
                                     )}
                                 </div>
@@ -414,7 +428,7 @@ export default function ReporteAreaSummary({
                 }}
                 title={selectedArea || 'Detalle de sección'}
                 subtitle={`${detailRows.length} ausencia${detailRows.length !== 1 ? "s" : ""}`}
-                size="xl"
+                size="lg"
                 fullscreenMobile={true}
             >
                 <DetailList rows={detailRows} />

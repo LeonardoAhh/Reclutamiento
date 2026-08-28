@@ -142,7 +142,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       isOpen={isOpen}
       onClose={handleClose}
       title="Avatar"
-      size="sm"
+      size="xs"
       fullscreenMobile={false}
       footerActions={footerActions}
     >

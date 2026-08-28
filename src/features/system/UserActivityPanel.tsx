@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { Badge, RoleBadge } from "@/components/ui/Badge";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import type { Profile } from "@/hooks/useAuth";
 import { subscribeOnlineUserIds } from "@/lib/presence";
 import { supabase } from "@/lib/supabase";
-import { listProfiles, ROLE_LABEL } from "@/lib/users";
+import { listProfiles } from "@/lib/users";
 import "./UserActivityPanel.css";
 
 function formatLastAccess(value: string | null | undefined) {
@@ -97,11 +96,6 @@ export function UserActivityPanel() {
     [profiles, onlineUsers],
   );
 
-  const onlineCount = useMemo(
-    () => profiles.filter((profile) => onlineUsers.has(profile.id)).length,
-    [profiles, onlineUsers],
-  );
-
   if (loading) {
     return (
       <div className="user-activity-panel__state" aria-busy="true">
@@ -114,16 +108,6 @@ export function UserActivityPanel() {
 
   return (
     <section className="user-activity-panel" aria-label="Actividad de usuarios">
-      <header className="user-activity-panel__header">
-        <div className="user-activity-panel__heading">
-          <Activity className="user-activity-panel__icon" aria-hidden="true" />
-          <span className="type-body-sm">Estado actual</span>
-        </div>
-        {onlineCount > 0 && (
-          <Badge variant="success">{onlineCount} en línea</Badge>
-        )}
-      </header>
-
       <ul className="user-activity-panel__list">
         {error && (
           <li className="user-activity-panel__state" role="alert">
@@ -143,40 +127,35 @@ export function UserActivityPanel() {
           </li>
         )}
 
-        {!error && sortedProfiles.length > 0 && (
-          <li
-            className="user-activity-panel__columns type-caption-sm text-muted"
-            aria-hidden="true"
-          >
-            <span>Nombre</span>
-            <span>Rol</span>
-            <span>Estado</span>
-          </li>
-        )}
-
         {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
-          const roleLabel = ROLE_LABEL[profile.role] ?? profile.role;
 
           return (
-            <li key={profile.id} className="user-activity-panel__row">
+            <li key={profile.id} className="user-activity-panel__card">
               <span className="user-activity-panel__name type-body-md-bold">
                 {profile.display_name || profile.username}
               </span>
-              <span className="user-activity-panel__role">
-                <RoleBadge role={profile.role || "default"} label={roleLabel} />
-              </span>
-              <span className="user-activity-panel__status">
+              <span
+                className={`user-activity-panel__status type-body-sm${
+                  isOnline ? " user-activity-panel__status--online" : ""
+                }`}
+              >
                 {isOnline ? (
-                  <Badge variant="success">En línea</Badge>
+                  <>
+                    <span
+                      className="user-activity-panel__online-dot"
+                      aria-hidden="true"
+                    />
+                    En línea
+                  </>
                 ) : (
-                  <Badge variant="default">
+                  <>
                     <Clock
                       className="user-activity-panel__status-icon"
                       aria-hidden="true"
                     />
                     {formatLastAccess(profile.last_login_at)}
-                  </Badge>
+                  </>
                 )}
               </span>
             </li>
