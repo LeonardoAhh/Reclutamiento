@@ -156,7 +156,7 @@ const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
   content:
-    "¡Hola! Soy tu asistente de reclutamiento.\n\nPara comenzar, selecciona una vacante y adjunta el CV de un candidato en formato PDF. Lo analizaré al instante para decirte qué tan bien encaja con el perfil que buscas.",
+    "¡Hola! Soy ViñoBot\n\nPara comenzar, en el menu izquierdo. Despues selecciona un CV (.PDF). Lo analizaré al instante para decirte qué tan bien encaja con el perfil que buscas.",
 };
 
 export type JobsState = "idle" | "loading" | "ready" | "error";
@@ -381,7 +381,7 @@ export function useAIChat() {
 
       let finalNext = next;
       if (syncFailed) {
-        finalNext = next.map((c) => 
+        finalNext = next.map((c) =>
           pendingLocal.some((p) => p.id === c.id) ? { ...c, isPendingSync: true } : { ...c, isPendingSync: false }
         );
       } else {

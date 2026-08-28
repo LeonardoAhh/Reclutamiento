@@ -156,6 +156,7 @@ export function Sidebar({
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
             collapsed={collapsed && !mobileMenuOpen}
+            mobile={Boolean(mobileMenuOpen)}
             isAdmin={profile?.role === "admin"}
             version={version}
             signingOut={signingOut}

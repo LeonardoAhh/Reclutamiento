@@ -354,14 +354,6 @@
   line-height: var(--type-caption-sm-line);
 }
 
-.ai-chat-status-dot {
-  inline-size: var(--spacing-sm);
-  block-size: var(--spacing-sm);
-  flex-shrink: 0;
-  border-radius: var(--rounded-full);
-  background: var(--color-success);
-}
-
 .ai-chat-messages {
   display: flex;
   flex: 1;
@@ -561,10 +553,6 @@
   white-space: nowrap;
   color: var(--color-ink);
   font-weight: var(--type-body-sm-strong-weight);
-}
-
-.ai-chat-panel-status {
-  flex-shrink: 0;
 }
 
 .ai-chat-text-input:focus,
@@ -851,37 +839,16 @@
     transform var(--transition-fast);
 }
 
-.ai-chat-mobile-actions button {
-  display: inline-flex;
-  min-inline-size: var(--touch-target-min);
-  min-block-size: var(--touch-target-min);
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.ai-history-new-btn:hover,
-.ai-chat-mobile-actions button:hover {
+.ai-history-new-btn:hover {
   border-color: var(--color-primary);
   background: var(--color-canvas-soft);
 }
 
-.ai-history-new-btn:active,
-.ai-chat-mobile-actions button:active {
+.ai-history-new-btn:active {
   transform: scale(0.98);
 }
 
-.ai-history-new-btn svg,
-.ai-chat-mobile-actions svg {
+.ai-history-new-btn svg {
   inline-size: var(--icon-size-control);
   block-size: var(--icon-size-control);
 }
@@ -1108,10 +1075,8 @@
   min-inline-size: 0;
 }
 
-.ai-chat-mobile-actions {
-  display: flex;
+.ai-chat-mobile-menu {
   flex-shrink: 0;
-  gap: var(--spacing-xs);
 }
 
 @media (max-width: 47.999rem) {
@@ -1137,10 +1102,6 @@
 }
 
 @media (forced-colors: active) {
-  .ai-chat-status-dot {
-    border: var(--border-width) solid currentColor;
-  }
-
   .ai-chat-input-form:focus-within {
     outline: calc(var(--border-width) * 2) solid Highlight;
     outline-offset: var(--spacing-xxs);

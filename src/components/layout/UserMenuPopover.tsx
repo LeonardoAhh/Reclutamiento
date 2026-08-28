@@ -17,6 +17,7 @@ interface UserMenuPopoverProps {
   email?: string | null;
   avatarUrl?: string | null;
   collapsed: boolean;
+  mobile: boolean;
   isAdmin: boolean;
   version: string | null;
   signingOut: boolean;
@@ -28,6 +29,7 @@ export function UserMenuPopover({
   email,
   avatarUrl,
   collapsed,
+  mobile,
   isAdmin,
   version,
   signingOut,
@@ -76,8 +78,8 @@ export function UserMenuPopover({
           </button>
         </PopoverTrigger>
         <PopoverContent
-          align="end"
-          side="right"
+          align={mobile ? "start" : "end"}
+          side={mobile ? "top" : "right"}
           className="user-menu-popover"
           role="dialog"
           aria-label="Opciones de usuario"

@@ -617,54 +617,44 @@ export function AIChatPage() {
               </div>
               <div>
                 <h2 id={chatHeadingId}>Conversación</h2>
-                <p
-                  aria-label={
-                    analyzedCandidateName
-                      ? `${analyzedCandidateName}, ${
-                          isLoading
-                            ? "Analizando información"
-                            : hasCompared
-                              ? "Listo para continuar"
-                              : "Esperando un CV"
-                        }`
-                      : undefined
-                  }
-                >
-                  <span className="ai-chat-status-dot" aria-hidden="true" />
-                  {analyzedCandidateName && (
-                    <>
-                      <span className="ai-chat-candidate-name">
-                        {analyzedCandidateName}
-                      </span>
-                      <span aria-hidden="true">·</span>
-                    </>
-                  )}
-                  <span className="ai-chat-panel-status">
-                  {isLoading
-                    ? "Analizando información..."
-                    : hasCompared
-                      ? "Listo para continuar"
-                      : "Esperando un CV"}
-                  </span>
-                </p>
+                {analyzedCandidateName && (
+                  <p>
+                    <span className="ai-chat-candidate-name">
+                      {analyzedCandidateName}
+                    </span>
+                  </p>
+                )}
               </div>
             </div>
             {isMobile && (
-              <div className="ai-chat-mobile-actions">
-                <button
-                  type="button"
-                  onClick={() => setIsHistoryOpen(true)}
-                  aria-label="Abrir historial de conversaciones"
-                >
-                  <History aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsSetupOpen(true)}
-                  aria-label="Preparar análisis"
-                >
-                  <SlidersHorizontal aria-hidden="true" />
-                </button>
+              <div className="ai-chat-mobile-menu">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button type="button" aria-label="Opciones del asistente">
+                      <EllipsisVertical aria-hidden="true" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem
+                      asChild
+                      onSelect={() => setIsHistoryOpen(true)}
+                    >
+                      <button type="button">
+                        <History aria-hidden="true" />
+                        <span>Historial</span>
+                      </button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      asChild
+                      onSelect={() => setIsSetupOpen(true)}
+                    >
+                      <button type="button">
+                        <SlidersHorizontal aria-hidden="true" />
+                        <span>Preparar análisis</span>
+                      </button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
           </header>
@@ -806,8 +796,8 @@ export function AIChatPage() {
                 onKeyDown={handleMessageKeyDown}
                 placeholder={
                   hasCompared
-                    ? "Pregunta sobre el perfil o solicita otro análisis..."
-                    : "Adjunta un CV para comenzar la conversación"
+                    ? "¿Que sigue?"
+                    : "Adjunta un CV para comenzar."
                 }
                 disabled={!hasCompared || isLoading}
                 className="ai-chat-text-input"

@@ -1,9 +1,15 @@
 .user-menu-popover {
   width: min(
     var(--feature-user-menu-inline-size),
-    calc(100vw - (var(--spacing-lg) * 2))
+    calc(100vw - var(--spacing-lg) - var(--spacing-lg))
   );
-  max-width: calc(100vw - (var(--spacing-lg) * 2));
+  max-width: calc(100vw - var(--spacing-lg) - var(--spacing-lg));
+  max-height: calc(
+    100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
+      var(--spacing-lg) - var(--spacing-lg)
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--spacing-xs);
   z-index: var(--layer-menu);
 }
