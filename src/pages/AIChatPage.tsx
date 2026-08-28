@@ -634,7 +634,7 @@ export function AIChatPage() {
                       <EllipsisVertical aria-hidden="true" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
+                  <DropdownMenuContent className="ai-chat-mobile-menu__content">
                     <DropdownMenuItem
                       asChild
                       onSelect={() => setIsHistoryOpen(true)}
@@ -822,7 +822,7 @@ export function AIChatPage() {
             <p id={`${messageInputId}-hint`} className="ai-chat-composer-hint">
               {hasCompared
                 ? "Enter para enviar · Shift + Enter para una nueva línea"
-                : "La conversación se habilita después de analizar el CV."}
+                : "La conversación se habilita analizar el CV."}
             </p>
           </div>
         </section>
