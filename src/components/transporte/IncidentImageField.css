@@ -1,0 +1,84 @@
+.incident-image-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.incident-image-field__optional {
+  color: var(--color-muted);
+  font-weight: var(--type-body-sm-weight);
+}
+
+.incident-image-field__help,
+.incident-image-field__error {
+  margin: 0;
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.incident-image-field__help {
+  color: var(--color-muted);
+}
+
+.incident-image-field__error {
+  color: var(--color-error);
+}
+
+.incident-image-field__picker {
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.incident-image-field__picker:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-strong);
+}
+
+.incident-image-field__picker:has(input:focus-visible) {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.incident-image-field__picker:has(input:disabled) {
+  cursor: not-allowed;
+  color: var(--color-muted);
+  background: var(--color-canvas-soft);
+}
+
+.incident-image-field__picker.is-error {
+  color: var(--color-error);
+  background: var(--color-error-tint);
+  border-color: var(--color-error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incident-image-field__picker {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .incident-image-field__picker:has(input:focus-visible) {
+    outline: calc(var(--border-width) * 2) solid ButtonText;
+    outline-offset: calc(var(--border-width) * 2);
+  }
+}

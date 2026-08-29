@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Bell, X, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import "./SessionNotice.css";
+import { toast } from "@/lib/notify";
+
+const SESSION_NOTICE_ID = "pending-activities";
 
 export function SessionNotice() {
   const { profile } = useAuth();
-  const [isVisible, setIsVisible] = useState(false);
   const [taskCount, setTaskCount] = useState(0);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!profile) return;
@@ -37,7 +34,6 @@ export function SessionNotice() {
 
         if (count && count > 0) {
           setTaskCount(count);
-          setIsVisible(true);
         } else {
           sessionStorage.setItem("notified_activities", "true");
         }
@@ -67,7 +63,6 @@ export function SessionNotice() {
 
           if (newAct.estado === "pendiente") {
             setTaskCount((prev) => prev + 1);
-            setIsVisible(true);
           }
         },
       )
@@ -79,58 +74,16 @@ export function SessionNotice() {
   }, [profile]);
 
   useEffect(() => {
-    if (isVisible) {
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        sessionStorage.setItem("notified_activities", "true");
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible]);
+    if (taskCount <= 0) return;
 
-  const handleDismiss = () => {
-    setIsVisible(false);
+    toast.info({
+      id: SESSION_NOTICE_ID,
+      title: `${taskCount} ${
+        taskCount === 1 ? "actividad pendiente" : "actividades pendientes"
+      }`,
+    });
     sessionStorage.setItem("notified_activities", "true");
-  };
+  }, [taskCount]);
 
-  const handleGo = () => {
-    handleDismiss();
-    navigate("/actividades");
-  };
-
-  return (
-    <AnimatePresence>
-      {isVisible && (
-        <div className="session-notice-wrapper">
-          <motion.div
-            initial={{ y: -50, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: -20, opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="session-notice"
-            role="alert"
-          >
-            <Bell
-              size={18}
-              className="session-notice__icon"
-              aria-hidden="true"
-            />
-            
-            <div className="session-notice__content">
-              <span>
-                <strong>{taskCount}</strong>{" "}
-                {taskCount === 1 ? "actividad pendiente" : "actividades pendientes"}
-              </span>
-              <button
-                onClick={handleGo}
-                className="btn-text session-notice__action"
-              >
-                Ir a página <ArrowRight size={14} />
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
-  );
+  return null;
 }

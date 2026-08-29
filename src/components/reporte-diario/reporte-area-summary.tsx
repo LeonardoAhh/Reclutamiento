@@ -209,9 +209,9 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                     <thead>
                         <tr>
                             <th scope="col">Empleado</th>
-                            <th scope="col">Incidencia</th>
-                            <th scope="col">Turno</th>
                             <th scope="col">Puesto</th>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Incidencia</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -229,9 +229,9 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                                             </span>
                                         </Tooltip>
                                     </td>
-                                    <td><IncidenceBadge code={row.tipo_incidencia} /></td>
-                                    <td><span className="reporte-chip">{row.turno}</span></td>
                                     <td>{puestoLimpio}</td>
+                                    <td><span className="reporte-chip">{row.turno}</span></td>
+                                    <td><IncidenceBadge code={row.tipo_incidencia} /></td>
                                 </tr>
                             );
                         })}
@@ -429,7 +429,7 @@ export default function ReporteAreaSummary({
                 title={selectedArea || 'Detalle de sección'}
                 subtitle={`${detailRows.length} ausencia${detailRows.length !== 1 ? "s" : ""}`}
                 size="lg"
-                fullscreenMobile={true}
+                fullscreenMobile={false}
             >
                 <DetailList rows={detailRows} />
             </Modal>

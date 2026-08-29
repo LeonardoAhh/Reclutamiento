@@ -7,7 +7,8 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
 import { ChevronsUpDown, DoorOpen, LoaderCircle } from "lucide";
-import { Activity, CalendarClock, ShieldAlert, UserRoundPen } from "lucide-react";
+import { Activity, CalendarClock, ShieldAlert, UserRoundPen, BusFront } from "lucide-react";
+import { Link } from "react-router-dom";
 import "./UserMenuPopover.css";
 
 type UserMenuModal = "avatar" | "maintenance" | "activity" | null;
@@ -114,6 +115,15 @@ export function UserMenuPopover({
             </button>
 
             <ThemeToggle className="user-menu-popover__item" />
+            
+            <Link
+              to="/incidencias-transporte"
+              className="user-menu-popover__item"
+              onClick={() => setOpen(false)}
+            >
+              <BusFront className="user-menu-popover__icon" aria-hidden="true" />
+              <span>Incidencias</span>
+            </Link>
 
             <a
               href="/horarios/index.html"

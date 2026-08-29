@@ -63,6 +63,11 @@ const AIChatPage = lazy(() =>
     default: AIChatPage,
   })),
 );
+const IncidenciasTransportePage = lazy(() =>
+  import('@/pages/IncidenciasTransportePage').then(({ IncidenciasTransportePage }) => ({
+    default: IncidenciasTransportePage,
+  })),
+);
 
 function ProtectedShell({ children }: { children: ReactNode }) {
   if (isBoneyardBuild()) {
@@ -129,6 +134,7 @@ function App() {
               <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
               <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
               <Route path="/actividades" element={<ProtectedShell><Actividades /></ProtectedShell>} />
+              <Route path="/incidencias-transporte" element={<ProtectedShell><IncidenciasTransportePage /></ProtectedShell>} />
               <Route path="/perfil-general" element={<ProtectedShell><ProfileGeneral /></ProtectedShell>} />
               <Route path="/asistente" element={<ProtectedShell><AIChatPage /></ProtectedShell>} />
               <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />

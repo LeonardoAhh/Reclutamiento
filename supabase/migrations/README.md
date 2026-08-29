@@ -37,6 +37,8 @@ supabase db push
 | `028_ai_chat_sessions.sql` | Historial personal del Asistente: mensajes, contexto textual del CV y vacante, con RLS por usuario y respaldo local en cliente. | Asistente |
 | `029_profile_general.sql` | Ciclos, plantillas versionadas, criterios ponderados, evaluaciones y auditoría de Perfil General. Incluye transacciones RPC y permisos para Administrador/Reclutador. | Perfil General |
 | `030_profile_general_area_position_scope.sql` | Unifica las plantillas por Área + Puesto, conserva la sección en el histórico del empleado y evita duplicados entre turnos. | Perfil General |
+| `031_profiles_activity_security.sql` | Restringe la actividad completa del equipo a administradores y conserva la lectura del perfil propio. | Seguridad |
+| `032_transport_incident_image.sql` | Añade evidencia visual opcional a reportes de transporte mediante bucket privado, límite de 5 MB y lectura exclusiva para administradores. | Transporte |
 
 ## RLS
 

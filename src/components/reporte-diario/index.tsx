@@ -313,6 +313,7 @@ export default function ReporteDiarioContent() {
         nombre: row.nombre,
         departamento: row.departamento,
         area: row.area,
+        puesto: row.puesto,
         turno: row.turno || "-",
       });
       return acc;

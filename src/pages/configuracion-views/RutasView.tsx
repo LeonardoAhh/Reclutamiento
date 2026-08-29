@@ -22,7 +22,7 @@ import {
 } from "@/hooks/useRutas";
 import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { IncidenciasTable } from '@/components/transporte/IncidenciasTable';
+
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { isBoneyardBuild } from "@/lib/boneyard";
 import "./Rutas.css";
@@ -398,12 +398,6 @@ export function RutasView() {
   const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<'capacidad' | 'incidencias'>(() =>
-    isBoneyardBuild() &&
-    new URLSearchParams(window.location.search).get('view') === 'incidencias'
-      ? 'incidencias'
-      : 'capacidad',
-  );
   
   /**
    * mobileView controls which panel is shown on small screens.
@@ -486,33 +480,7 @@ export function RutasView() {
       data-mobile-view={mobileView}
       tabIndex={-1}
     >
-      <header className="config-page__header" style={{ marginBottom: 'var(--spacing-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div className="config-view-switch">
-          <button
-            type="button"
-            className={`config-view-switch__button ${activeTab === 'capacidad' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('capacidad')}
-            aria-pressed={activeTab === 'capacidad'}
-          >
-            Configuración de Rutas
-          </button>
-          <button
-            type="button"
-            className={`config-view-switch__button ${activeTab === 'incidencias' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('incidencias')}
-            aria-pressed={activeTab === 'incidencias'}
-          >
-            Incidencias Reportadas
-          </button>
-        </div>
-      </header>
 
-      {activeTab === 'incidencias' ? (
-        <section className="rutas-incidencias" style={{ marginTop: 'var(--spacing-md)' }}>
-          <IncidenciasTable />
-        </section>
-      ) : (
-        <>
           {/* Search bar & Horarios*/}
       <section
         className="config-page__toolbar"
@@ -658,9 +626,7 @@ export function RutasView() {
       />
 
 
-      
-      </>
-      )}
+
     </section>
   );
 }

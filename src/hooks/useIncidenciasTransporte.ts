@@ -1,6 +1,11 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { validarComentario } from '@/lib/profanity';
+import {
+  TRANSPORT_INCIDENT_IMAGE_BUCKET,
+  getTransportIncidentImageExtension,
+  validateTransportIncidentImage,
+} from '@/lib/transport-incident-image';
 
 export interface IncidenciaTransporte {
   id: string;
@@ -11,10 +16,27 @@ export interface IncidenciaTransporte {
   turno: string;
   tipo: string;
   comentarios: string;
+  imagen_path?: string | null;
   status: string;
 }
 
-export type NuevoReporte = Omit<IncidenciaTransporte, 'id' | 'created_at' | 'status'>;
+export type NuevoReporte = Omit<
+  IncidenciaTransporte,
+  'id' | 'created_at' | 'imagen_path' | 'status'
+>;
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof error.message === 'string'
+  ) {
+    return error.message;
+  }
+
+  return fallback;
+}
 
 export function useIncidenciasTransporte() {
   const [incidencias, setIncidencias] = useState<IncidenciaTransporte[]>([]);
@@ -32,16 +54,26 @@ export function useIncidenciasTransporte() {
 
       if (error) throw error;
       setIncidencias(data as IncidenciaTransporte[]);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error al cargar incidencias');
+    } catch (error: unknown) {
+      setErrorMsg(getErrorMessage(error, 'Error al cargar incidencias'));
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const enviarIncidencia = async (reporte: NuevoReporte) => {
+  const enviarIncidencia = async (
+    reporte: NuevoReporte,
+    imagen?: File | null,
+  ) => {
     setErrorMsg(null);
+    let imagenPath: string | null = null;
+
     try {
+      if (imagen) {
+        const validationError = validateTransportIncidentImage(imagen);
+        if (validationError) throw new Error(validationError);
+      }
+
       // 1. Validar si el empleado existe y obtener su nombre real
       const { data: emp, error: empError } = await supabase
         .from('empleados')
@@ -75,22 +107,60 @@ export function useIncidenciasTransporte() {
         throw new Error('El comentario contiene lenguaje inapropiado. Por favor, mantén un tono profesional.');
       }
 
-      // 2. Insertar con el nombre real
+      // 4. Subir evidencia después de validar el reporte para evitar archivos innecesarios.
+      if (imagen) {
+        const extension = getTransportIncidentImageExtension(imagen);
+        imagenPath = `${crypto.randomUUID()}.${extension}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from(TRANSPORT_INCIDENT_IMAGE_BUCKET)
+          .upload(imagenPath, imagen, {
+            contentType: imagen.type,
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw new Error('No fue posible adjuntar la imagen. Intenta nuevamente.');
+        }
+      }
+
+      // 5. Insertar con el nombre real y la ruta privada de la evidencia.
+      const imageFields = imagenPath ? { imagen_path: imagenPath } : {};
       const { error } = await supabase
         .from('incidencias_transporte')
         .insert([{ 
-          ...reporte, 
+          ...reporte,
+          ...imageFields,
           nombre_empleado: emp.nombre, // Sobrescribimos con el nombre de la BD
           status: 'nuevo' 
         }]);
 
-      if (error) throw error;
+      if (error) {
+        if (imagenPath) {
+          await supabase.storage
+            .from(TRANSPORT_INCIDENT_IMAGE_BUCKET)
+            .remove([imagenPath]);
+        }
+        throw error;
+      }
       return true;
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error al enviar la incidencia');
+    } catch (error: unknown) {
+      setErrorMsg(getErrorMessage(error, 'Error al enviar la incidencia'));
       return false;
     }
   };
+
+  const getIncidenciaImageUrl = useCallback(async (path: string) => {
+    const { data, error } = await supabase.storage
+      .from(TRANSPORT_INCIDENT_IMAGE_BUCKET)
+      .createSignedUrl(path, 60);
+
+    if (error || !data?.signedUrl) {
+      throw new Error('No fue posible abrir la imagen. Intenta nuevamente.');
+    }
+
+    return data.signedUrl;
+  }, []);
 
   return {
     incidencias,
@@ -98,5 +168,6 @@ export function useIncidenciasTransporte() {
     errorMsg,
     fetchIncidencias,
     enviarIncidencia,
+    getIncidenciaImageUrl,
   };
 }

@@ -1,70 +1,37 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Info as InfoData, CircleCheckBig as CheckCircle2Data, Wrench as WrenchData } from "lucide";
+import { useEffect } from "react";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { SYSTEM_UPDATE_BANNER_CONFIG } from "@/lib/constants";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
-import "./SystemUpdateNotification.css";
+import { toast } from "@/lib/notify";
 
 import type { SystemNotiLevel } from "@/hooks/useSystemVersion";
-import type { IconInput } from "morphicons/react";
 
-const LEVEL_ICON: Record<SystemNotiLevel, IconInput> = {
-  info: InfoData,
-  success: CheckCircle2Data,
-  mantenimiento: WrenchData,
+const SYSTEM_UPDATE_NOTICE_ID = "system-update";
+
+const LEVEL_TOAST: Record<
+  SystemNotiLevel,
+  (options: Parameters<typeof toast.info>[0]) => string
+> = {
+  info: toast.info,
+  success: toast.success,
+  mantenimiento: toast.warning,
 };
 
 export function SystemUpdateNotification() {
   const { info, shouldNotify, dismiss } = useSystemVersion();
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (shouldNotify) {
-      setVisible(true);
-      // Auto-dismiss after 4 seconds as per design.md toast behavior
-      const timer = setTimeout(() => {
-        setVisible(false);
-        // Esperamos a que termine la animación de salida antes de hacer dismiss real
-        setTimeout(() => {
-          dismiss();
-        }, 500);
-      }, 4000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [shouldNotify, dismiss]);
+    if (!shouldNotify) return;
 
-  const level = info?.nivel ?? "info";
-  const Icon = LEVEL_ICON[level];
+    const notify = LEVEL_TOAST[info?.nivel ?? "info"];
+    notify({
+      id: SYSTEM_UPDATE_NOTICE_ID,
+      title: SYSTEM_UPDATE_BANNER_CONFIG.availableTitle,
+      description: info?.version ? `v${info.version}` : undefined,
+    });
 
-  return (
-    <AnimatePresence>
-      {visible && (
-        <div className="system-update-toast-container">
-          <motion.div
-            className={`system-update-toast system-update-toast--${level}`}
-            initial={{ y: -50, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: -20, opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            role="status"
-            aria-live="polite"
-          >
-            <div className="system-update-toast__icon">
-              <MorphingIcon icon={Icon} />
-            </div>
-            <div className="system-update-toast__content">
-              <strong className="system-update-toast__title">
-                {SYSTEM_UPDATE_BANNER_CONFIG.availableTitle}
-              </strong>
-              {info?.version && (
-                <span className="system-update-toast__tag">v{info.version}</span>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
-  );
+    const timer = window.setTimeout(dismiss, 4000);
+    return () => window.clearTimeout(timer);
+  }, [dismiss, info?.nivel, info?.version, shouldNotify]);
+
+  return null;
 }
