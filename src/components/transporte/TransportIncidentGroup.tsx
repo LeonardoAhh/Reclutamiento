@@ -63,7 +63,7 @@ export function TransportIncidentGroup({
             <thead>
               <tr>
                 <th scope="col" className="incidencias-table__employee-column">
-                  Empleado
+                  Número de empleado
                 </th>
                 <th scope="col" className="incidencias-table__route-column">
                   Ruta
@@ -81,14 +81,7 @@ export function TransportIncidentGroup({
             <tbody>
               {incidents.map((incident) => (
                 <tr key={incident.id}>
-                  <td>
-                    <span className="incidencias-table__employee-number">
-                      {incident.numero_empleado}
-                    </span>
-                    <span className="incidencias-table__employee-name">
-                      {incident.nombre_empleado || '—'}
-                    </span>
-                  </td>
+                  <td>{incident.numero_empleado}</td>
                   <td>{incident.ruta}</td>
                   <td>{incident.turno}</td>
                   <td>{incident.tipo}</td>

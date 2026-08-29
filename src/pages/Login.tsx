@@ -115,31 +115,37 @@ export function Login() {
   };
 
   return (
-    <main className="login" aria-labelledby={titleId}>
-      <div className="login__left">
+    <main className="login">
+      <section className="login__left" aria-labelledby={titleId}>
         <div className="login__content">
-            <div className="login__header">
-              <div className="login__brand">
-                <span className="login__brand-icon" aria-hidden="true">
-                  <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
-                </span>
-                <span className="login__brand-name">Reclutamiento</span>
-              </div>
+          <header className="login__header">
+            <div className="login__brand">
+              <span className="login__brand-icon" aria-hidden="true">
+                <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
+              </span>
+              <span className="login__brand-name">Reclutamiento</span>
+            </div>
+            <div className="login__heading">
               <h1 id={titleId} className="login__title">
-                ViñoPlastic Qro
+                ViñoPlastic Querétaro
               </h1>
               <p className="login__subtitle">
                 Ingresa tus credenciales para continuar.
               </p>
             </div>
+          </header>
 
-            <div className="login__card">
-              <form
-                className="login__form"
-                onSubmit={handleSubmit}
-                noValidate
-                aria-label="Formulario de inicio de sesión"
-              >
+          <div className="login__card">
+            <form
+              className="login__form"
+              onSubmit={handleSubmit}
+              noValidate
+              aria-label="Formulario de inicio de sesión"
+              aria-busy={submitting || undefined}
+              aria-describedby={
+                error?.field === "form" ? formErrorId : undefined
+              }
+            >
                 {/* Campo: correo */}
                 <div className="login__field">
                   <label htmlFor={usernameId} className="login__field-label">
@@ -148,6 +154,7 @@ export function Login() {
                   <input
                     ref={usernameRef}
                     id={usernameId}
+                    name="username"
                     data-testid="login-email-input"
                     className="login__input"
                     type="text"
@@ -155,7 +162,8 @@ export function Login() {
                     autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    placeholder="usuario o correo@empresa.com"
+                    enterKeyHint="next"
+                    placeholder="Correo interno"
                     value={username}
                     onChange={(e) => {
                       setUsername(e.target.value);
@@ -194,10 +202,12 @@ export function Login() {
                     <input
                       ref={passwordRef}
                       id={passwordId}
+                      name="password"
                       data-testid="login-password-input"
                       className="login__input login__input--padded-r"
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
+                      enterKeyHint="go"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => {
@@ -268,11 +278,12 @@ export function Login() {
                   <label htmlFor={rememberId} className="login__checkbox-label">
                     <Checkbox
                       id={rememberId}
+                      name="remember_username"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
                       disabled={submitting || isSuccess}
                     />
-                    <span className="login__checkbox-text">Recuérdame</span>
+                    <span className="login__checkbox-text">Recordar usuario</span>
                   </label>
                 </div>
 
@@ -290,31 +301,31 @@ export function Login() {
                   isSubmitting={submitting}
                   isSuccess={isSuccess}
                   idleText="Ingresar"
-                  loadingText="Verificando..."
+                  loadingText="Verificando…"
                   successText="¡Bienvenido!"
                   idleIcon={LogIn}
                   className="btn-primary login__submit"
                   data-testid="login-submit-button"
                 />
-              </form>
-            </div>
+            </form>
           </div>
         </div>
+      </section>
 
-      {!reduceMotion && (
-        <div className="login__right" aria-hidden="true">
-          <div className="login__image-wrapper">
-            <video
-              src="/login-video-claude.mp4"
-              className="login__media"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-          </div>
+      <div className="login__right" aria-hidden="true">
+        <div className="login__image-wrapper">
+          <video
+            src="/login-video-claude.mp4"
+            poster="/login-bg.jpg"
+            className="login__media"
+            autoPlay={!reduceMotion}
+            loop={!reduceMotion}
+            muted
+            playsInline
+            preload="metadata"
+          />
         </div>
-      )}
+      </div>
     </main>
   );
 }

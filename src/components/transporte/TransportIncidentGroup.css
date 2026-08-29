@@ -75,23 +75,12 @@
   border-bottom: 0;
 }
 
-.incidencias-table__employee-number,
-.incidencias-table__employee-name {
-  display: block;
-}
-
-.incidencias-table__employee-number,
 .incidencias-table__empty-value {
   color: var(--color-muted);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-}
-
-.incidencias-table__employee-name {
-  color: var(--color-ink);
-  font-weight: var(--type-body-sm-strong-weight);
 }
 
 .incidencias-table__comments {

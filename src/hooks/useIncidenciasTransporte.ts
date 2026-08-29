@@ -82,7 +82,7 @@ export function useIncidenciasTransporte() {
         .maybeSingle();
 
       if (empError || !emp) {
-        throw new Error('No fue posible validar la información. Revisa que tus datos estén correctos e intenta de nuevo.');
+        throw new Error('Error. No pudimos validar que trabajas en ViñoPlastic Inyección Querétaro');
       }
 
       // 2. Verificar que no haya enviado un reporte en las últimas 12 horas (Rate Limiting)
@@ -128,11 +128,11 @@ export function useIncidenciasTransporte() {
       const imageFields = imagenPath ? { imagen_path: imagenPath } : {};
       const { error } = await supabase
         .from('incidencias_transporte')
-        .insert([{ 
+        .insert([{
           ...reporte,
           ...imageFields,
           nombre_empleado: emp.nombre, // Sobrescribimos con el nombre de la BD
-          status: 'nuevo' 
+          status: 'nuevo'
         }]);
 
       if (error) {
