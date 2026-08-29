@@ -1,8 +1,41 @@
-import ExcelJS from 'exceljs';
+import excelJsUrl from 'exceljs/dist/exceljs.min.js?url';
 import { saveAs } from 'file-saver';
 import { rutas } from '../data/rutas';
 
+let excelJsPromise;
+
+const loadExcelJS = () => {
+  if (globalThis.ExcelJS) {
+    return Promise.resolve(globalThis.ExcelJS);
+  }
+
+  if (!excelJsPromise) {
+    excelJsPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = excelJsUrl;
+      script.async = true;
+      script.onload = () => {
+        if (globalThis.ExcelJS) {
+          resolve(globalThis.ExcelJS);
+          return;
+        }
+
+        excelJsPromise = undefined;
+        reject(new Error('ExcelJS no se pudo inicializar.'));
+      };
+      script.onerror = () => {
+        excelJsPromise = undefined;
+        reject(new Error('ExcelJS no se pudo cargar.'));
+      };
+      document.head.append(script);
+    });
+  }
+
+  return excelJsPromise;
+};
+
 export const downloadRutasExcel = async () => {
+  const ExcelJS = await loadExcelJS();
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Sistema de Transporte';
 

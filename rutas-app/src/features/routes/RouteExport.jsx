@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
 import { Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -12,6 +11,7 @@ export default function RouteExport({ ruta }) {
     setBusy(true);
     try {
       await document.fonts.ready;
+      const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 3,
         cacheBust: true,

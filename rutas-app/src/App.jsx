@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { WifiOff, ArrowLeft, FileSpreadsheet } from 'lucide-react';
 import { rutas } from './data/rutas';
-import { downloadRutasExcel } from './lib/excelExport';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import RouteSidebar from './features/routes/RouteSidebar';
 import RouteTabs from './features/routes/RouteTabs';
 import RoutePanel from './features/routes/RoutePanel';
 import GlobalSearch from './features/routes/GlobalSearch';
+
+async function downloadExcel() {
+  const { downloadRutasExcel } = await import('./lib/excelExport');
+  await downloadRutasExcel();
+}
 
 function App() {
   const rutasOrdenadas = [...rutas].sort((a, b) =>
@@ -77,11 +81,11 @@ function App() {
           <span className="text-body-strong font-bold text-ink flex-1">
             Horarios de Transporte
           </span>
-          <Button variant="outline" size="sm" onClick={downloadRutasExcel} className="hidden sm:flex" aria-label="Descargar Excel">
+          <Button variant="outline" size="sm" onClick={downloadExcel} className="hidden sm:flex" aria-label="Descargar Excel">
             <FileSpreadsheet className="size-4 mr-2" />
             Excel
           </Button>
-          <Button variant="outline" size="icon" onClick={downloadRutasExcel} className="sm:hidden" aria-label="Descargar Excel">
+          <Button variant="outline" size="icon" onClick={downloadExcel} className="sm:hidden" aria-label="Descargar Excel">
             <FileSpreadsheet className="size-4" />
           </Button>
         </header>

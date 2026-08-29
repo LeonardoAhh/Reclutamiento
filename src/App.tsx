@@ -1,4 +1,4 @@
-import { useState, useCallback, type ReactNode } from 'react';
+import { lazy, Suspense, useState, useCallback, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
@@ -13,20 +13,56 @@ import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { MaintenanceGuard } from '@/components/auth/MaintenanceGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
-import { Dashboard } from '@/pages/Dashboard';
-import { Pipeline } from '@/pages/Pipeline';
-import { Bajas } from '@/pages/Bajas';
-import { KpisPage } from '@/pages/KpisPage';
-import { Login } from '@/pages/Login';
-import { ReporteDiario } from '@/pages/ReporteDiario';
-import { Configuracion } from '@/pages/Configuracion';
-import { ReporteTransportePublic } from '@/pages/ReporteTransportePublic';
-import { Actividades } from '@/pages/Actividades';
-import { ProfileGeneral } from '@/pages/ProfileGeneral';
+import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
-import { AIChatPage } from '@/pages/AIChatPage';
 import { isBoneyardBuild } from '@/lib/boneyard';
+
+const Dashboard = lazy(() =>
+  import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
+);
+const Pipeline = lazy(() =>
+  import('@/pages/Pipeline').then(({ Pipeline }) => ({ default: Pipeline })),
+);
+const Bajas = lazy(() =>
+  import('@/pages/Bajas').then(({ Bajas }) => ({ default: Bajas })),
+);
+const KpisPage = lazy(() =>
+  import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })),
+);
+const Login = lazy(() =>
+  import('@/pages/Login').then(({ Login }) => ({ default: Login })),
+);
+const ReporteDiario = lazy(() =>
+  import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({
+    default: ReporteDiario,
+  })),
+);
+const Configuracion = lazy(() =>
+  import('@/pages/Configuracion').then(({ Configuracion }) => ({
+    default: Configuracion,
+  })),
+);
+const ReporteTransportePublic = lazy(() =>
+  import('@/pages/ReporteTransportePublic').then(
+    ({ ReporteTransportePublic }) => ({ default: ReporteTransportePublic }),
+  ),
+);
+const Actividades = lazy(() =>
+  import('@/pages/Actividades').then(({ Actividades }) => ({
+    default: Actividades,
+  })),
+);
+const ProfileGeneral = lazy(() =>
+  import('@/pages/ProfileGeneral').then(({ ProfileGeneral }) => ({
+    default: ProfileGeneral,
+  })),
+);
+const AIChatPage = lazy(() =>
+  import('@/pages/AIChatPage').then(({ AIChatPage }) => ({
+    default: AIChatPage,
+  })),
+);
 
 function ProtectedShell({ children }: { children: ReactNode }) {
   if (isBoneyardBuild()) {
@@ -71,7 +107,8 @@ function App() {
           <SystemUpdateNotification />
           <AppToaster />
           <ThemeTransitionOverlay />
-          <Routes>
+          <Suspense fallback={<TransitionLoader title="Cargando vista…" />}>
+            <Routes>
             <Route
               path="/login"
               element={
@@ -103,7 +140,8 @@ function App() {
             <Route path="/kpis" element={<Navigate to="/resumen" replace />} />
             <Route path="/" element={<Navigate to="/resumen" replace />} />
             <Route path="*" element={<Navigate to="/resumen" replace />} />
-          </Routes>
+            </Routes>
+          </Suspense>
         </>
       )}
       </>
