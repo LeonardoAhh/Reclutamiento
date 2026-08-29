@@ -109,37 +109,37 @@ function App() {
           <ThemeTransitionOverlay />
           <Suspense fallback={<TransitionLoader title="Cargando vista…" />}>
             <Routes>
-            <Route
-              path="/login"
-              element={
-                <RedirectIfAuthed>
-                  <Login />
-                </RedirectIfAuthed>
-              }
-            />
-            <Route path="/reporte" element={<ReporteTransportePublic />} />
-            <Route path="/resumen" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
-            <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
-            <Route path="/candidatos" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
-            <Route path="/toulouse" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
-            <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
-            <Route path="/transporte" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/asistencia" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
-            <Route path="/actividades" element={<ProtectedShell><Actividades /></ProtectedShell>} />
-            <Route path="/perfil-general" element={<ProtectedShell><ProfileGeneral /></ProtectedShell>} />
-            <Route path="/asistente" element={<ProtectedShell><AIChatPage /></ProtectedShell>} />
-            <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
-            <Route path="/features" element={<Navigate to="/configuracion" replace />} />
-            <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
-            <Route path="/pipeline" element={<Navigate to="/candidatos" replace />} />
-            <Route path="/reporte-diario" element={<Navigate to="/reportes" replace />} />
-            <Route path="/kpis" element={<Navigate to="/resumen" replace />} />
-            <Route path="/" element={<Navigate to="/resumen" replace />} />
-            <Route path="*" element={<Navigate to="/resumen" replace />} />
+              <Route
+                path="/login"
+                element={
+                  <RedirectIfAuthed>
+                    <Login />
+                  </RedirectIfAuthed>
+                }
+              />
+              <Route path="/reporte" element={<ReporteTransportePublic />} />
+              <Route path="/resumen" element={<ProtectedShell><KpisPage /></ProtectedShell>} />
+              <Route path="/plantilla" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
+              <Route path="/candidatos" element={<ProtectedShell><Pipeline /></ProtectedShell>} />
+              <Route path="/toulouse" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/bajas" element={<ProtectedShell><Bajas /></ProtectedShell>} />
+              <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
+              <Route path="/transporte" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/asistencia" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/reportes" element={<ProtectedShell><ReporteDiario /></ProtectedShell>} />
+              <Route path="/actividades" element={<ProtectedShell><Actividades /></ProtectedShell>} />
+              <Route path="/perfil-general" element={<ProtectedShell><ProfileGeneral /></ProtectedShell>} />
+              <Route path="/asistente" element={<ProtectedShell><AIChatPage /></ProtectedShell>} />
+              <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/configuracion" element={<ProtectedShell><Configuracion /></ProtectedShell>} />
+              <Route path="/features" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
+              <Route path="/pipeline" element={<Navigate to="/candidatos" replace />} />
+              <Route path="/reporte-diario" element={<Navigate to="/reportes" replace />} />
+              <Route path="/kpis" element={<Navigate to="/resumen" replace />} />
+              <Route path="/" element={<Navigate to="/resumen" replace />} />
+              <Route path="*" element={<Navigate to="/resumen" replace />} />
             </Routes>
           </Suspense>
         </>
