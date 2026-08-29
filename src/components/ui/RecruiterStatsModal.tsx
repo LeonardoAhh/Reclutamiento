@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { CircleCheckBig, Copy, TrendingUp, UsersRound } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CircleCheckBig, Copy, TrendingUp, UsersRound, Plus, Minus } from 'lucide-react';
 import { toast } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { ExpandableSection } from '@/components/ui/ExpandableSection';
 import { Badge, ReclutadorBadge } from '@/components/ui/Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { isoWeekOf } from '@/lib/dates';
 import './RecruiterStatsModal.css';
 
@@ -68,10 +69,36 @@ export function RecruiterStatsModal({
 }: RecruiterStatsModalProps) {
   const isMobile = useIsMobile();
   const [copiedKey, setCopiedKey] = useState<number | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);  useEffect(() => {
+    if (isOpen) {
+      setIsExpanded(false);
+      setCopiedKey(null);
+    }
+  }, [isOpen]);
+  const title =
+    mode === 'global'
+      ? 'Resumen de Reclutadores'
+      : mode === 'pauta'
+        ? 'Detalle Pauta'
+        : mode === 'alexandra'
+          ? 'Detalle Alexandra'
+          : mode === 'daniela'
+            ? 'Detalle Daniela'
+            : '';
+
+  const stats =
+    mode === 'pauta'
+      ? pautaStats
+      : mode === 'alexandra'
+        ? alexandraStats
+        : mode === 'daniela'
+          ? danielaStats
+          : [];
 
   const handleCopyRow = async (stat: WeekStat, weekNum: number) => {
-    // Formato TSV (tab-separado) listo para pegar en Excel: CITADOS \t CONTRATADOS
-    const text = `${stat.total}\t${stat.contratados}`;
+    // Formato TSV (tab-separado) listo para pegar en Excel: CITADOS \t CONTRATADOS \t EFECTIVIDAD
+    const effectiveness = stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100);
+    const text = `${stat.total}\t${stat.contratados}\t${effectiveness}%`;
     const key = stat.startWed.getTime();
     try {
       if (navigator.clipboard && window.isSecureContext) {
@@ -99,47 +126,28 @@ export function RecruiterStatsModal({
     }
   };
 
-  const title =
-    mode === 'global'
-      ? 'Resumen de Reclutadores'
-      : mode === 'pauta'
-        ? 'Detalle Pauta'
-        : mode === 'alexandra'
-          ? 'Detalle Alexandra'
-          : mode === 'daniela'
-            ? 'Detalle Daniela'
-            : '';
+  const renderWeeksTable = (weeks: WeekStat[], showHeader = true) => {
+    const displayedWeeks = isExpanded ? weeks : weeks.slice(0, 3);
+    const hasMore = weeks.length > 3;
 
-  const stats =
-    mode === 'pauta'
-      ? pautaStats
-      : mode === 'alexandra'
-        ? alexandraStats
-        : mode === 'daniela'
-          ? danielaStats
-          : [];
-
-  const weeksByMonth = groupWeeksByMonth(stats);
-
-  const renderWeeksTable = (weeks: WeekStat[], showHeader = true) => (
-    <div className="recruiter-stats-modal__table-wrap">
-      <table className="recruiter-stats-modal__table">
-        {showHeader && (
-          <thead>
-            <tr>
-              <th>Semana</th>
-              <th>Período</th>
-              <th className="recruiter-stats-modal__table-number">Candidatos</th>
-              <th className="recruiter-stats-modal__table-number">Contratados</th>
-              <th className="recruiter-stats-modal__table-number">Efectividad</th>
-              <th className="recruiter-stats-modal__table-copy-col">
-                <span className="recruiter-stats-modal__sr-only">Copiar</span>
-              </th>
-            </tr>
-          </thead>
-        )}
-        <tbody>
-          {weeks.map((stat) => {
+    return (
+      <div className="recruiter-stats-modal__table-wrap">
+        <table className="recruiter-stats-modal__table">
+          {showHeader && (
+            <thead>
+              <tr>
+                <th>Semana</th>
+                <th className="recruiter-stats-modal__table-number">Candidatos</th>
+                <th className="recruiter-stats-modal__table-number">Contratados</th>
+                <th className="recruiter-stats-modal__table-number">Efectividad</th>
+                <th className="recruiter-stats-modal__table-copy-col">
+                  <span className="recruiter-stats-modal__sr-only">Copiar</span>
+                </th>
+              </tr>
+            </thead>
+          )}
+          <tbody>
+          {displayedWeeks.map((stat) => {
             const tueWeek = isoWeekOf(stat.endTue).week;
             const fmt = new Intl.DateTimeFormat('es-MX', {
               day: 'numeric',
@@ -157,9 +165,9 @@ export function RecruiterStatsModal({
 
             return (
               <tr key={key}>
-                <td className="recruiter-stats-modal__table-week">Sem {tueWeek}</td>
-                <td className="recruiter-stats-modal__table-period">
-                  {wedStr} – {tueStr}
+                <td className="recruiter-stats-modal__table-week">
+                  <div style={{ fontWeight: 'var(--type-body-strong-weight)', color: 'var(--color-ink)' }}>Semana {tueWeek}</div>
+                  <div style={{ fontSize: 'var(--type-caption-size)', color: 'var(--color-muted)' }}>{wedStr} – {tueStr}</div>
                 </td>
                 <td className="recruiter-stats-modal__table-number">{stat.total}</td>
                 <td className="recruiter-stats-modal__table-number recruiter-stats-modal__table-number--hired">
@@ -169,13 +177,12 @@ export function RecruiterStatsModal({
                   {effectiveness}%
                 </td>
                 <td className="recruiter-stats-modal__table-copy-col">
-                  <Tooltip content="Copiar">
+                  <Tooltip content="Copiar semana">
                     <button
                       type="button"
                       onClick={() => handleCopyRow(stat, tueWeek)}
                       className={`recruiter-stats-modal__copy-btn${isCopied ? ' is-copied' : ''}`}
-                      aria-label={`Copiar Semana ${tueWeek}: ${stat.total} citados, ${stat.contratados} contratados`}
-                      data-testid={`copy-week-${tueWeek}-btn`}
+                      aria-label={`Copiar Semana ${tueWeek}`}
                     >
                       {isCopied ? (
                         <CircleCheckBig size={16} aria-hidden="true" />
@@ -190,8 +197,19 @@ export function RecruiterStatsModal({
           })}
         </tbody>
       </table>
+      {hasMore && (
+        <div style={{ padding: 'var(--spacing-md)', display: 'flex', justifyContent: 'center', borderTop: '1px solid var(--color-hairline)' }}>
+          <ButtonUtility
+            onClick={() => setIsExpanded(!isExpanded)}
+            icon={isExpanded ? <Minus size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+          >
+            {isExpanded ? "Ver menos" : "Ver más"}
+          </ButtonUtility>
+        </div>
+      )}
     </div>
   );
+  };
 
   return (
     <Modal
@@ -207,7 +225,7 @@ export function RecruiterStatsModal({
         )
       }
       title={title}
-      size={mode === 'global' ? 'xl' : isMobile ? 'md' : 'lg'}
+      size={mode === 'global' ? 'xl' : 'sm'}
       fullscreenMobile={false}
     >
       <div className="modal-body recruiter-stats-modal__body">
@@ -344,15 +362,13 @@ export function RecruiterStatsModal({
                         <span className="recruiter-stats-modal__stat-label">Efectividad</span>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="btn-primary"
-                      style={{ width: "100%", justifyContent: "center" }}
+                    <ButtonUtility
                       onClick={() => handleCopyRow(stat, tueWeek)}
+                      style={{ width: "100%", justifyContent: "center" }}
+                      icon={isCopied ? <CircleCheckBig size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
                     >
-                      {isCopied ? <CircleCheckBig size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
-                      <span>{isCopied ? "¡Copiado!" : "Copiar métricas de la semana"}</span>
-                    </button>
+                      {isCopied ? "¡Copiado!" : "Copiar métricas de la semana"}
+                    </ButtonUtility>
                   </div>
                 );
               })()

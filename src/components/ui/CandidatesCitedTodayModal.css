@@ -49,32 +49,18 @@
 }
 
 .candidates-cited-today-modal__name {
-  display: flex;
-  flex-direction: column;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  line-height: var(--type-body-sm-line);
   min-width: 0;
 }
 
-.candidates-cited-today-modal__apellidos {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-bold);
-  color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.candidates-cited-today-modal__nombres {
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-regular);
-  color: var(--color-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .candidates-cited-today-modal__puesto {
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
+  line-height: var(--type-caption-sm-line);
+  text-transform: uppercase;
 }
 
 .candidates-cited-today-modal__meta {
@@ -92,16 +78,18 @@
 }
 
 .candidates-cited-today-modal__area-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--font-semibold);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
   margin: 0 0 var(--spacing-sm) 0;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xxs);
 }
 
 .candidates-cited-today-modal__area-count {
   color: var(--color-muted);
-  font-weight: var(--font-medium);
-  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-caption-sm-size);
 }

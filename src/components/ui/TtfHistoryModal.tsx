@@ -18,7 +18,6 @@ interface MonthlyTtf {
   count: number;
   vacancies: Array<{
     puesto: string;
-    area: string;
     dias: number;
     fecha_apertura: string;
     fecha_cubierta: string;
@@ -66,11 +65,10 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
 
       const entry = grouped.get(key)!;
       entry.vacancies.push({
-        puesto: v.puesto || 'Sin puesto',
-        area: v.area || 'Sin área',
+        puesto: v.puesto ?? '—',
         dias,
         fecha_apertura: v.fecha_apertura!,
-        fecha_cubierta: v.fecha_cubierta!,
+        fecha_cubierta: v.fecha_cubierta!
       });
     });
 
@@ -97,6 +95,8 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
       icon={<BarChart3 size={20} />}
       className="ttf-history-modal"
       labelledById="ttf-history-title"
+      size="md"
+      fullscreenMobile={false}
     >
       <div className="modal-body ttf-history-modal__body">
         <div className="ttf-history-modal__content">
@@ -112,8 +112,8 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
                 const trend = diff > 0 ? 'up' : diff < 0 ? 'down' : 'neutral';
 
                 return (
-                  <details key={`${data.year}-${data.month}`} className="ttf-history-modal__month">
-                    <summary className="ttf-history-modal__month-summary">
+                  <div key={`${data.year}-${data.month}`} className="ttf-history-modal__month">
+                    <div className="ttf-history-modal__month-summary">
                       <div className="ttf-history-modal__month-header">
                         <h3 className="ttf-history-modal__month-title">
                           {data.month} {data.year}
@@ -137,31 +137,8 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
                           </div>
                         )}
                       </div>
-                    </summary>
-
-                    <div className="ttf-history-modal__month-details">
-                      <table className="ttf-history-modal__table">
-                        <thead>
-                          <tr>
-                            <th>Puesto</th>
-                            <th>Área</th>
-                            <th>Días hábiles</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.vacancies
-                            .sort((a, b) => b.dias - a.dias)
-                            .map((v, idx) => (
-                              <tr key={idx}>
-                                <td>{v.puesto}</td>
-                                <td>{v.area}</td>
-                                <td className="ttf-history-modal__table-dias">{v.dias}</td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
                     </div>
-                  </details>
+                  </div>
                 );
               })}
             </div>

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { CircleCheckBig, Eye, ChevronRight } from "lucide-react";
+import { CircleCheckBig, Eye, ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Reveal } from "@/components/ui/Reveal";
@@ -965,7 +965,7 @@ export function KpisPage() {
                       variant={card.variant}
                     />
                     {hasModal && revealed && (
-                      <ButtonUtility
+                      <button
                         className="kpis-page__detail-btn"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -981,10 +981,10 @@ export function KpisPage() {
                                 ? "Ver histórico mensual de TTF"
                                 : "Ver puestos en proceso del pipeline"
                         }
-                        icon={<Eye size={14} aria-hidden="true" />}
+                        title="Ver detalle"
                       >
-                        Detalle
-                      </ButtonUtility>
+                        <ArrowUpRight size={18} aria-hidden="true" />
+                      </button>
                     )}
                   </div>
                 </KpiReveal>

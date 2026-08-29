@@ -86,9 +86,9 @@ export default function ReportesGuardadosDialog({
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="REPORTES GUARDADOS"
+        title="Reportes guardados"
         size="sm"
-        fullscreenMobile={true}
+        fullscreenMobile={false}
       >
         <div className="reporte-saved__body">
           {savedSummaries.length === 0 ? (

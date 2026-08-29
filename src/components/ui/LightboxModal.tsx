@@ -1,4 +1,5 @@
 import { Modal } from "./Modal";
+import "./LightboxModal.css";
 
 interface LightboxModalProps {
   isOpen: boolean;
@@ -12,7 +13,7 @@ export function LightboxModal({ isOpen, onClose, src }: LightboxModalProps) {
       isOpen={isOpen}
       onClose={onClose}
       title="Referencia visual"
-      size="sm"
+      size="lg"
       fullscreenMobile={false}
       className="activity-lightbox"
     >

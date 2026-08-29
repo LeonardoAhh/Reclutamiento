@@ -4,7 +4,7 @@ import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
-import { splitCandidateName } from '@/lib/names';
+
 import './CandidatesCitedTodayModal.css';
 
 interface CandidatesCitedTodayModalProps {
@@ -35,7 +35,6 @@ export function CandidatesCitedTodayModal({
   const renderAreaContent = (items: Candidate[]) => (
     <ul className="candidates-cited-today-modal__list">
       {items.map((c) => {
-        const { apellidos, nombres } = splitCandidateName(c.nombre);
         const detalle = [c.puesto, c.seccion]
           .map((v) => v?.trim())
           .filter(Boolean)
@@ -44,8 +43,7 @@ export function CandidatesCitedTodayModal({
           <li key={c.id ?? c.nombre} className="candidates-cited-today-modal__item">
             <div className="candidates-cited-today-modal__main">
               <span className="candidates-cited-today-modal__name">
-                <span className="candidates-cited-today-modal__apellidos">{apellidos.toUpperCase()}</span>
-                {nombres && <span className="candidates-cited-today-modal__nombres">{nombres.toUpperCase()}</span>}
+                {c.nombre.toUpperCase()}
               </span>
               {detalle && (
                 <span className="candidates-cited-today-modal__puesto">{detalle}</span>
@@ -72,9 +70,8 @@ export function CandidatesCitedTodayModal({
       className="candidates-cited-today-modal"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
       title="Detalle entrevistas"
-      subtitle="Detalle de candidatos citados"
-      size={isMobile ? 'md' : 'lg'}
-      fullscreenMobile={true}
+      size="sm"
+      fullscreenMobile={false}
     >
       <div className="modal-body candidates-cited-today-modal__body">
         <header className="candidates-cited-today-modal__summary">

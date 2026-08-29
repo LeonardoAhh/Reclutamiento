@@ -1,173 +1,111 @@
-﻿/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   responsabilidadCard.css â€” Mobile-first Â· Notion-inspired tokens
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-.responsabilidad-card {
-  position: relative;
+.responsibility-card {
   display: flex;
+  min-inline-size: 0;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  transition:
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
-  min-width: 0;
-}
-
-.responsabilidad-card:hover {
-  box-shadow: var(--shadow-xs);
-  border-color: var(--color-hairline-strong);
-}
-
-@media (min-width: 640px) {
-  .responsabilidad-card {
-    flex-direction: row;
-    align-items: flex-start;
-    padding: var(--spacing-md) var(--spacing-lg);
-  }
-}
-
-.responsabilidad-card-main {
-  display: flex;
-  align-items: flex-start;
   gap: var(--spacing-md);
-  flex: 1;
-  min-width: 0;
+  padding: var(--spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
 }
 
-.responsabilidad-icon {
+.responsibility-card__header {
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--spacing-md);
+}
+
+.responsibility-card__icon {
+  display: inline-flex;
+  inline-size: var(--control-height-sm);
+  block-size: var(--control-height-sm);
   flex-shrink: 0;
-  display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--control-height);
-  height: var(--control-height);
-  background: var(--color-primary-tint);
   border-radius: var(--rounded-md);
-  color: var(--color-primary);
-}
-
-.responsabilidad-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
-}
-
-.responsabilidad-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  letter-spacing: var(--type-heading-sm-tracking);
-  line-height: var(--type-heading-sm-line);
-  color: var(--color-ink);
-  margin: 0;
-  min-width: 0;
-  position: relative;
-}
-
-.responsabilidad-title-text {
-  display: inline-block;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-.responsabilidad-desc {
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--color-charcoal);
-  margin: 0;
-  max-width: 100%;
-  position: relative;
-  display: block;
-  min-width: 0;
-}
-
-.responsabilidad-desc-text {
-  display: inline-block;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-.responsabilidad-desc[data-full]::after,
-.responsabilidad-desc--muted[data-full]::after {
-  content: attr(data-full);
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  max-width: 280px;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-ink);
-  color: var(--color-on-primary);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-line);
-  border-radius: var(--rounded-sm);
-  white-space: normal;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-4px);
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
-  z-index: 10;
-}
-
-.responsabilidad-desc[data-full]:hover::after,
-.responsabilidad-desc--muted[data-full]:hover::after {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.responsabilidad-desc--muted {
-  color: var(--color-muted);
-}
-
-.responsabilidad-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
-  white-space: nowrap;
-  margin-top: var(--spacing-xxs);
-  flex-wrap: wrap;
-}
-
-.responsabilidad-badge--team {
-  font-style: italic;
-}
-
-.responsabilidad-badge-more {
-  font-size: var(--type-caption-sm-size);
-  color: var(--color-muted);
   background: var(--color-surface-soft);
-  padding: var(--spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-sm);
+  color: var(--color-ink);
 }
 
-.responsabilidad-card-right {
-  flex-shrink: 0;
+.responsibility-card__heading,
+.responsibility-card__title-row {
+  min-inline-size: 0;
+}
+
+.responsibility-card__title-row {
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-sm);
 }
 
-.responsabilidad-ref-button {
+.responsibility-card__title {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.responsibility-card__status {
+  flex: 0 0 auto;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+}
+
+.responsibility-card__description {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-charcoal);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.responsibility-card__footer {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-block-start: auto;
+}
+
+.responsibility-card__area {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-xs-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+  overflow-wrap: anywhere;
+}
+
+.responsibility-card__actions {
+  flex: 0 0 auto;
+}
+
+.responsibility-card__menu {
   display: inline-flex;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  max-width: 100%;
-  padding: var(--spacing-xs);
+  padding: 0;
   border: 0;
   border-radius: var(--rounded-md);
   background: transparent;
@@ -178,75 +116,18 @@
     color var(--transition-fast);
 }
 
-.responsabilidad-ref-button:hover {
+.responsibility-card__menu:hover {
   background: var(--color-surface-soft);
-  color: var(--color-primary);
+  color: var(--color-ink);
 }
 
-.responsabilidad-ref-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+.responsibility-card__menu:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--spacing-xxs);
 }
 
-.responsabilidad-ref-img {
-  max-width: 120px;
-  max-height: 60px;
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-  object-fit: contain;
-  background: var(--color-surface);
-  transition: opacity var(--transition-fast);
-}
-
-.responsabilidad-ref-button:hover .responsabilidad-ref-img {
-  opacity: 0.85;
-}
-
-/* â”€â”€ Admin actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.responsabilidad-card .activity-admin-actions {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-  z-index: 2;
-}
-
-@media (min-width: 640px) {
-  .responsabilidad-card .activity-admin-actions {
-    position: static;
-    flex-shrink: 0;
-    margin-left: var(--spacing-sm);
-  }
-}
-
-/* â”€â”€ New badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.activity-new-badge {
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--type-caption-up-size);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: var(--rounded-full);
-  box-shadow: var(--shadow-sm);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.responsabilidad-card {
-  position: relative;
-  overflow: visible;
-}
-
-/* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (forced-colors: active) {
-  .responsabilidad-ref-button:focus-visible {
+  .responsibility-card__menu:focus-visible {
     outline-color: ButtonText;
   }
 }

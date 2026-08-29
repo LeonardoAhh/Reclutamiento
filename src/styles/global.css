@@ -232,6 +232,7 @@
 
   /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
   --shadow-focus: inset 0 0 0 2px var(--color-primary);
+  --focus-ring-width: 2px;
 
   /* ── Transitions ─────────────────────────────────────────────── */
   --transition-fast: 150ms ease;
@@ -240,11 +241,23 @@
   --transition-progress: 1400ms ease-in-out;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-max: 1700px;
+  --container-max: 1500px;
   --container-padding: var(--spacing-xl);
   --container-padding-mobile: var(--spacing-lg);
+  /* Medida máxima de lectura definida por design.md. */
+  --content-reading-max-inline-size: 65ch;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
+  /* Ancho legible mínimo para cards de asignación antes de reflujo automático. */
+  --feature-vacancy-assignment-card-min-inline-size: 18rem;
+  /* Geometría responsive de responsabilidades y sus referencias visuales. */
+  --feature-responsibility-card-min-inline-size: 28rem;
+  --feature-activity-card-min-inline-size: 24rem;
+  --feature-activity-filter-min-inline-size: 8.5rem;
+  --feature-activity-search-min-inline-size: 18rem;
+  --feature-reference-attachment-thumbnail-inline-size: 7.5rem;
+  --feature-reference-attachment-thumbnail-block-size: 4.5rem;
+  --feature-image-viewer-max-block-size: 70dvh;
   --candidate-access-preview-max: 18rem;
   --candidate-access-preview-max-mobile: 15rem;
   --feature-calendar-column-min: 10rem;
@@ -262,9 +275,7 @@
   --menu-min-inline-size: 10rem;
   --feature-chat-context-inline-size: 18rem;
   --feature-chat-conversation-max-inline-size: 48rem;
-  --feature-chat-page-max-inline-size: 87.5rem;
   --feature-chat-composer-max-block-size: 10rem;
-  --feature-chat-page-min-block-size: 36rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
   /* Ancho estable del panel que agrupa las acciones de la cuenta. */
@@ -371,6 +382,8 @@
   --duration-theme-out: 200ms;
   --duration-theme-stagger: 60ms;
   --duration-skeleton: 1500ms;
+  --opacity-skeleton-rest: 0.7;
+  --opacity-skeleton-active: 1;
   --duration-spinner: 800ms;
 
   color-scheme: light;

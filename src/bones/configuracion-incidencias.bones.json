@@ -15,10 +15,40 @@
         ]
       ]
     },
+    "600": {
+      "name": "configuracion-incidencias",
+      "viewportWidth": 568,
+      "width": 568,
+      "height": 21,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          21,
+          8
+        ]
+      ]
+    },
     "768": {
       "name": "configuracion-incidencias",
       "viewportWidth": 476,
       "width": 476,
+      "height": 21,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          21,
+          8
+        ]
+      ]
+    },
+    "1080": {
+      "name": "configuracion-incidencias",
+      "viewportWidth": 524,
+      "width": 524,
       "height": 21,
       "bones": [
         [

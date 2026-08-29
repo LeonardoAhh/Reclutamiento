@@ -1,0 +1,85 @@
+.reference-attachment {
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.reference-attachment:hover {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-surface-soft);
+}
+
+.reference-attachment:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--spacing-xxs);
+}
+
+.reference-attachment__preview {
+  display: flex;
+  inline-size: var(--feature-reference-attachment-thumbnail-inline-size);
+  block-size: var(--feature-reference-attachment-thumbnail-block-size);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+}
+
+.reference-attachment__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.reference-attachment__content {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.reference-attachment__title,
+.reference-attachment__description {
+  overflow-wrap: anywhere;
+}
+
+.reference-attachment__title {
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.reference-attachment__description {
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-xs-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+}
+
+.reference-attachment__icon {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+@media (forced-colors: active) {
+  .reference-attachment:focus-visible {
+    outline-color: ButtonText;
+  }
+}

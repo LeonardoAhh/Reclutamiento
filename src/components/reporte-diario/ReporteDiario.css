@@ -764,15 +764,7 @@ button.reporte-card:focus-visible,
    ============================================================================ */
 
 .reporte-cmp__body {
-  padding: var(--spacing-md);
-  max-height: 75vh;
-  overflow-y: auto;
-}
-
-@media (min-width: 768px) {
-  .reporte-cmp__body {
-    padding: var(--spacing-lg);
-  }
+  padding: var(--spacing-lg);
 }
 
 .reporte-cmp__table-wrap {
@@ -1013,16 +1005,9 @@ button.reporte-card:focus-visible,
 
 /* Modal body */
 .reporte-saved__body {
-  padding: var(--spacing-md);
-  max-height: 75vh;
-  overflow-y: auto;
+  padding: var(--spacing-lg);
 }
 
-@media (min-width: 768px) {
-  .reporte-saved__body {
-    padding: var(--spacing-lg);
-  }
-}
 
 .reporte-saved__list {
   display: grid;
@@ -1085,8 +1070,8 @@ button.reporte-card:focus-visible,
   height: var(--control-height);
   flex-shrink: 0;
   border-radius: var(--rounded-md);
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
 }
 
 .reporte-saved__main {
@@ -1905,8 +1890,6 @@ button.reporte-card:focus-visible,
 .top-emp-modal {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
 }
 
 /* Tarjeta del empleado */
@@ -2347,10 +2330,10 @@ button.reporte-card:focus-visible,
 }
 
 .top-emp-drill-header__name {
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-body-sm-line);
+  line-height: var(--type-body-strong-line);
 }
 
 .top-emp-drill-header__month {

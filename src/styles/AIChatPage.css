@@ -31,9 +31,7 @@
   grid-template-rows: minmax(0, 1fr);
   gap: var(--spacing-lg);
   inline-size: 100%;
-  max-inline-size: var(--feature-chat-page-max-inline-size);
-  margin-inline: auto;
-  padding: var(--spacing-xl) var(--container-padding-mobile)
+  padding-block: var(--spacing-xl)
     calc(var(--spacing-2xl) + var(--safe-area-bottom));
 }
 
@@ -84,12 +82,6 @@
   block-size: 100%;
   min-block-size: 0;
   box-shadow: var(--shadow-sm);
-}
-
-@media (min-width: 48rem) {
-  .ai-page-layout {
-    padding-inline: var(--container-padding);
-  }
 }
 
 @media (min-width: 48rem) {

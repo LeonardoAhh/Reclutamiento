@@ -10,9 +10,25 @@
   visibility: inherit;
 }
 
+.boneyard-skeleton__bone {
+  opacity: var(--opacity-skeleton-rest);
+  animation: skeleton-fade var(--duration-skeleton) ease-in-out infinite;
+}
+
+@keyframes skeleton-fade {
+  0%,
+  100% {
+    opacity: var(--opacity-skeleton-rest);
+  }
+
+  50% {
+    opacity: var(--opacity-skeleton-active);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .boneyard-skeleton__bone {
-    /* La librería aplica la animación en línea. */
-    animation: none !important;
+    animation: none;
+    opacity: var(--opacity-skeleton-rest);
   }
 }

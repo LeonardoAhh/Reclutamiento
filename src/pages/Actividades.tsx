@@ -3,9 +3,8 @@ import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
-import { Pagination } from "@/components/ui/Pagination";
-import { ActivityCard } from "@/components/ui/ActivityCard";
-import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
+import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
+import { ResponsibilitiesSection } from "@/components/ui/ResponsibilitiesSection";
 import {
   Activity,
   ActivityProof,
@@ -19,66 +18,14 @@ import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
 import { EditActivityModal } from "@/components/ui/EditActivityModal";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 import { TaskDetailsModal } from "@/components/ui/TaskDetailsModal";
-import {
-  BriefcaseBusiness,
-  Plus,
-  Trash2,
-  ListTodo,
-  Inbox,
-  EllipsisVertical,
-  Search,
-  List,
-  ChevronDown,
-  ChevronRight,
-  UserRoundPlus,
-} from "lucide-react";
+import { VacancyAssignmentSection } from "@/components/ui/VacancyAssignmentSection";
 import { toast } from "@/lib/notify";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import "./Actividades.css";
 
 /** Capitaliza la primera letra de cada palabra. */
 function capitalize(str: string) {
   return str.replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function AssigneeBadges({
-  act,
-  isAdmin,
-  currentUser,
-}: {
-  act: Activity;
-  isAdmin: boolean;
-  currentUser?: any;
-}) {
-  if (act.asignado_a) {
-    // Si es su usuario, no mostramos el badge (es redundante)
-    if (currentUser && act.asignado_a === currentUser.id) {
-      return null;
-    }
-
-    const name =
-      (act as any).asignado_a_profile?.display_name ||
-      (act as any).asignado_a_profile?.username ||
-      "—";
-    return <ReclutadorBadge nombre={name} size="sm" showRole={false} />;
-  }
-
-  // Todo el equipo
-  return (
-    <div className="activity-team-badges">
-      <ReclutadorBadge nombre="Alexandra" size="sm" showRole={false} />
-      <ReclutadorBadge nombre="Daniela" size="sm" showRole={false} />
-      <ReclutadorBadge nombre="Leonardo" size="sm" showRole={false} />
-    </div>
-  );
 }
 
 function isImage(filename: string): boolean {
@@ -619,7 +566,7 @@ export function Actividades() {
   /* ── Loading state ─────────────────────────────────────────────────── */
   if (loading) {
     return (
-      <main className="actividades-page">
+      <main className="actividades-page container">
         <header className="actividades-header">
           <h1>Actividades</h1>
         </header>
@@ -632,440 +579,89 @@ export function Actividades() {
 
   /* ── Render ─────────────────────────────────────────────────────────── */
   return (
-    <main className="actividades-page">
+    <main className="actividades-page container">
       <header className="actividades-header">
         <h1>Actividades</h1>
       </header>
 
       <div className="actividades-layout">
-        {/* ── Section: Asignación de Vacantes ────────────────────────── */}
-        <section className="actividades-section">
-          <div className="actividades-section__header actividades-section__header--with-action">
-            <div className="actividades-section__heading">
-              <div>
-                <h2 className="actividades-section__title">
-                  {isAdmin ? "Asignación de Vacantes" : "Tus Vacantes"}
-                  <span className="actividades-section__count">
-                    {vacantesManuales.length}
-                  </span>
-                </h2>
-                <p className="actividades-section__desc">
-                  {isAdmin
-                    ? "Asigna las vacantes activas a los reclutadores del equipo."
-                    : "Vacantes que te han sido asignadas."}
-                </p>
-              </div>
-            </div>
+        <VacancyAssignmentSection
+          vacancies={vacantesManuales}
+          positions={positions}
+          isAdmin={isAdmin}
+          currentUserId={profile?.id}
+          isNew={isNewActivity}
+          onCreate={() => setIsCreateVacanteModalOpen(true)}
+          onAssign={setAssignModalVacancy}
+          onDelete={handleDelete}
+        />
 
-            {isAdmin && (
-              <button
-                className="btn-primary btn-sm"
-                onClick={() => setIsCreateVacanteModalOpen(true)}
-              >
-                <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-                <span>Nueva</span>
-              </button>
-            )}
-          </div>
+        <ResponsibilitiesSection
+          responsibilities={responsabilidades}
+          pageItems={responsabilidadesPaginadas}
+          isCollapsed={responsabilidadesCollapsed}
+          isAdmin={isAdmin}
+          currentUserId={profile?.id}
+          pagination={{
+            currentPage: responsabilidadesPage,
+            totalPages: responsabilidadesTotalPages,
+            onPageChange: goToresponsabilidadesPage,
+            onPrev: prevresponsabilidadesPage,
+            onNext: nextresponsabilidadesPage,
+            canGoPrev: canGoPrevResponsabilidades,
+            canGoNext: canGoNextResponsabilidades,
+          }}
+          isNew={isNewActivity}
+          onToggle={() =>
+            setresponsabilidadesCollapsed((isCollapsed) => !isCollapsed)
+          }
+          onCreate={() => setIsCreateModalOpen(true)}
+          onEdit={openEdit}
+          onDelete={handleDelete}
+          onViewReference={setLightboxSrc}
+        />
 
-          {vacantesManuales.length === 0 ? (
-            <div className="actividades-empty">
-              <BriefcaseBusiness
-                size="var(--icon-size-xxl)"
-                className="actividades-empty__icon"
-                aria-hidden="true"
-              />
-              <p className="actividades-empty__title">Sin vacantes</p>
-              <p className="actividades-empty__subtitle">
-                Crea una nueva asignación de vacante manualmente.
-              </p>
-            </div>
-          ) : (
-            <div className="vacantes-grid">
-              {vacantesManuales.map((v) => {
-                const [area, ...seccionParts] = (v.descripcion || "").split(
-                  " - ",
-                );
-                let seccion = seccionParts.join(" - ");
-                if (!seccion) {
-                  const match = positions.find(
-                    (p) => p.area === area && p.puesto === v.titulo,
-                  );
-                  if (match?.seccion) {
-                    seccion = match.seccion;
-                  }
-                }
-
-                return (
-                  <div key={v.id} className="responsabilidad-card">
-                    {isNewActivity(v) && (
-                      <span className="activity-new-badge">Nueva</span>
-                    )}
-                    <div className="responsabilidad-card-main">
-                      <div className="responsabilidad-icon">
-                        <BriefcaseBusiness
-                          size="var(--icon-size-md)"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div className="responsabilidad-content">
-                        <h3 className="responsabilidad-title">{v.titulo}</h3>
-                        {seccion && (
-                          <p className="responsabilidad-desc responsabilidad-desc--muted">
-                            {seccion}
-                          </p>
-                        )}
-                        <div className="responsabilidad-badge responsabilidad-badge--spaced">
-                          <AssigneeBadges
-                            act={v}
-                            isAdmin={isAdmin}
-                            currentUser={profile}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {isAdmin && (
-                      <div className="activity-admin-actions">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button
-                              type="button"
-                              aria-label="Opciones"
-                            >
-                              <EllipsisVertical
-                                size="var(--icon-size-sm)"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem asChild>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setAssignModalVacancy(v);
-                                }}
-                              >
-                                <UserRoundPlus aria-hidden="true" />
-                                <span>Asignar a...</span>
-                              </button>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                              <button
-                                type="button"
-                                className="dropdown-menu-item--danger"
-                                onClick={(e) => handleDelete(v, e)}
-                              >
-                                <Trash2 aria-hidden="true" />
-                                <span>Eliminar</span>
-                              </button>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
-
-        {/* ── Section: Rutinas ──────────────────────────────────────── */}
-        <section className="actividades-section">
-          <div className="actividades-section__header actividades-section__header--with-action">
-            <button
-              type="button"
-              className="actividades-section__toggle actividades-section__heading"
-              onClick={() => setresponsabilidadesCollapsed(!responsabilidadesCollapsed)}
-              aria-expanded={!responsabilidadesCollapsed}
-              aria-controls="responsabilidades-panel"
-            >
-              <div>
-                <h2 className="actividades-section__title">
-                  {responsabilidadesCollapsed ? (
-                    <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
-                  ) : (
-                    <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
-                  )}
-                  Responsabilidades
-                  <span className="actividades-section__count">
-                    {responsabilidades.length}
-                  </span>
-                </h2>
-                <p className="actividades-section__desc">
-                  De manera recurrente, sin seguimiento de evidencias.
-                </p>
-              </div>
-            </button>
-
-            {isAdmin && (
-              <button
-                className="btn-primary btn-sm"
-                onClick={() => setIsCreateModalOpen(true)}
-              >
-                <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-                <span>Crear</span>
-              </button>
-            )}
-          </div>
-
-          {!responsabilidadesCollapsed && (
-            <div id="responsabilidades-panel">
-              {responsabilidades.length === 0 ? (
-                <div className="actividades-empty">
-                  <ListTodo
-                    size="var(--icon-size-xxl)"
-                    className="actividades-empty__icon"
-                    aria-hidden="true"
-                  />
-                  <p className="actividades-empty__title">
-                    Sin responsabilidades
-                  </p>
-                  <p className="actividades-empty__subtitle">
-                    {isAdmin
-                      ? 'Crea una actividad tipo "Rutina" para asignarla.'
-                      : "Aún no tienes responsabilidades asignadas."}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="responsabilidades-list" role="list" aria-label="Responsabilidades">
-                    {responsabilidadesPaginadas.map((act) => (
-                      <ResponsabilidadCard
-                        key={act.id}
-                        id={act.id!}
-                        title={act.titulo}
-                        description={act.descripcion?.includes(" - ") ? act.descripcion.split(" - ").slice(1).join(" - ") : act.descripcion ?? undefined}
-                        area={act.descripcion?.includes(" - ") ? act.descripcion.split(" - ")[0] : undefined}
-                        assignees={act.asignado_a
-                          ? [{ id: act.asignado_a, display_name: (act as any).asignado_a_profile?.display_name, username: (act as any).asignado_a_profile?.username }]
-                          : [{ id: "team", display_name: "Alexandra" }, { id: "team2", display_name: "Daniela" }, { id: "team3", display_name: "Leonardo" }]}
-                        referenceImage={act.reference_image ?? undefined}
-                        isNew={isNewActivity(act)}
-                        isAdmin={isAdmin}
-                        currentUserId={profile?.id}
-                        onClick={() => openDetails(act)}
-                        onEdit={() => openEdit(act)}
-                        onDelete={() => handleDelete(act)}
-                        onViewReference={() => act.reference_image && setLightboxSrc(act.reference_image!)}
-                      />
-                    ))}
-                  </div>
-
-                  {responsabilidadesTotalPages > 1 && (
-                    <Pagination
-                      currentPage={responsabilidadesPage}
-                      totalPages={responsabilidadesTotalPages}
-                      onPageChange={goToresponsabilidadesPage}
-                      onPrev={prevresponsabilidadesPage}
-                      onNext={nextresponsabilidadesPage}
-                      canGoPrev={canGoPrevResponsabilidades}
-                      canGoNext={canGoNextResponsabilidades}
-                      ariaLabel="Paginación de responsabilidades"
-                    />
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </section>
-
-        {/* ── Section: Tareas únicas ───────────────────────────────── */}
-        <section className="actividades-section">
-          <button
-            type="button"
-            className="actividades-section__header actividades-section__toggle"
-            onClick={() => setActividadesCollapsed(!actividadesCollapsed)}
-            aria-expanded={!actividadesCollapsed}
-            aria-controls="actividades-panel"
-          >
-            <div>
-              <h2 className="actividades-section__title">
-                {actividadesCollapsed ? (
-                  <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
-                ) : (
-                  <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
-                )}
-                Actividades
-                <span className="actividades-section__count">
-                  {allUnicas.length}
-                </span>
-              </h2>
-              <p className="actividades-section__desc">
-                Seguimiento con avance y evidencias.
-              </p>
-            </div>
-          </button>
-
-          {!actividadesCollapsed && (
-            <div id="actividades-panel">
-              {/* ── Filter toolbar ──────────────────────────────────────── */}
-              {allUnicas.length > 0 && (
-                <div className="actividades-toolbar">
-                  {/* Status filter tabs */}
-                  <div
-                    className="actividades-status-tabs"
-                    role="group"
-                    aria-label="Filtrar por estado"
-                  >
-                    {(
-                      [
-                        { key: "todas" as const, label: "Todas" },
-                        { key: "pendiente" as const, label: "Pendientes" },
-                        { key: "en_proceso" as const, label: "En proceso" },
-                        { key: "completada" as const, label: "Completadas" },
-                      ] as const
-                    ).map(({ key, label }) => (
-                      <button
-                        key={key}
-                        type="button"
-                        aria-pressed={statusFilter === key}
-                        className={`actividades-status-tab ${statusFilter === key ? "actividades-status-tab--active" : ""}`}
-                        onClick={() => setStatusFilter(key)}
-                      >
-                        {label}
-                        <span className="actividades-status-tab__count">
-                          {statusCounts[key]}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Search + Sort + Recruiter filter row */}
-                  <div className="actividades-filters">
-                    <div className="actividades-search">
-                      <Search
-                        size="var(--icon-size-sm)"
-                        className="actividades-search__icon"
-                        aria-hidden="true"
-                      />
-                      <input
-                        type="search"
-                        className="actividades-search__input"
-                        placeholder="Buscar por título o descripción..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        aria-label="Buscar actividades"
-                      />
-                    </div>
-
-                    <select
-                      className="actividades-sort"
-                      value={sortOrder}
-                      onChange={(e) =>
-                        setSortOrder(
-                          e.target.value as "newest" | "oldest" | "status",
-                        )
-                      }
-                      aria-label="Ordenar actividades"
-                    >
-                      <option value="newest">Más recientes</option>
-                      <option value="oldest">Más antiguas</option>
-                      <option value="status">Por estado</option>
-                    </select>
-
-                    {isAdmin && reclutadores.length > 0 && (
-                      <select
-                        className="actividades-recruiter-filter"
-                        value={recruiterFilter}
-                        onChange={(e) => setRecruiterFilter(e.target.value)}
-                        aria-label="Filtrar por reclutador"
-                      >
-                        <option value="">Todos los reclutadores</option>
-                        <option value="__team__">Todo el equipo</option>
-                        {reclutadores.map((r: any) => (
-                          <option key={r.id} value={r.id}>
-                            {r.display_name || r.username}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {allUnicas.length === 0 ? (
-                <div className="actividades-empty">
-                  <Inbox
-                    size="var(--icon-size-xxl)"
-                    className="actividades-empty__icon"
-                    aria-hidden="true"
-                  />
-                  <p className="actividades-empty__title">Sin actividades</p>
-                  <p className="actividades-empty__subtitle">
-                    {isAdmin
-                      ? "Asigna una actividad para dar seguimiento."
-                      : "No tienes actividades asignadas."}
-                  </p>
-                </div>
-              ) : unicas.length === 0 ? (
-                <div className="actividades-empty">
-                  <Search
-                    size="var(--icon-size-xxl)"
-                    className="actividades-empty__icon"
-                    aria-hidden="true"
-                  />
-                  <p className="actividades-empty__title">Sin coincidencias</p>
-                  <p className="actividades-empty__subtitle">
-                    No hay actividades que coincidan con los filtros aplicados.
-                  </p>
-                  <button
-                    type="button"
-                    className="btn-ghost actividades-clear-filters"
-                    onClick={() => {
-                      setStatusFilter("todas");
-                      setSearchQuery("");
-                      setRecruiterFilter("");
-                      setSortOrder("newest");
-                    }}
-                  >
-                    Limpiar filtros
-                  </button>
-                </div>
-              ) : (
-                <div className="actividades-grid" role="list" aria-label="Actividades">
-                  {actividadesPaginadas.map((act) => (
-                    <ActivityCard
-                      key={act.id}
-                      id={act.id!}
-                      title={act.titulo}
-                      description={act.descripcion ?? undefined}
-                      status={act.estado}
-                      assignees={act.asignado_a
-                        ? [{ id: act.asignado_a, display_name: (act as any).asignado_a_profile?.display_name, username: (act as any).asignado_a_profile?.username }]
-                        : []}
-                      referenceImage={act.reference_image ?? undefined}
-                      isNew={isNewActivity(act)}
-                      isAdmin={isAdmin}
-                      currentUserId={profile?.id}
-                      onClick={() => openDetails(act)}
-                      onEdit={() => openEdit(act)}
-                      onDelete={() => handleDelete(act)}
-                      onViewReference={() => act.reference_image && setLightboxSrc(act.reference_image!)}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {actividadesTotalPages > 1 && (
-                <Pagination
-                  currentPage={actividadesPage}
-                  totalPages={actividadesTotalPages}
-                  onPageChange={goToActividadesPage}
-                  onPrev={prevActividadesPage}
-                  onNext={nextActividadesPage}
-                  canGoPrev={canGoPrevActividades}
-                  canGoNext={canGoNextActividades}
-                  ariaLabel="Paginación de actividades"
-                />
-              )}
-            </div>
-          )}
-        </section>
+        <ActivitiesSection
+          activities={allUnicas}
+          filteredActivities={unicas}
+          pageItems={actividadesPaginadas}
+          recruiters={reclutadores}
+          isCollapsed={actividadesCollapsed}
+          isAdmin={isAdmin}
+          currentUserId={profile?.id}
+          statusFilter={statusFilter}
+          searchQuery={searchQuery}
+          sortOrder={sortOrder}
+          recruiterFilter={recruiterFilter}
+          statusCounts={statusCounts}
+          pagination={{
+            currentPage: actividadesPage,
+            totalPages: actividadesTotalPages,
+            onPageChange: goToActividadesPage,
+            onPrev: prevActividadesPage,
+            onNext: nextActividadesPage,
+            canGoPrev: canGoPrevActividades,
+            canGoNext: canGoNextActividades,
+          }}
+          isNew={isNewActivity}
+          onToggle={() =>
+            setActividadesCollapsed((isCollapsed) => !isCollapsed)
+          }
+          onStatusFilterChange={setStatusFilter}
+          onSearchQueryChange={setSearchQuery}
+          onSortOrderChange={setSortOrder}
+          onRecruiterFilterChange={setRecruiterFilter}
+          onClearFilters={() => {
+            setStatusFilter("todas");
+            setSearchQuery("");
+            setRecruiterFilter("");
+            setSortOrder("newest");
+          }}
+          onOpen={openDetails}
+          onEdit={openEdit}
+          onDelete={handleDelete}
+          onViewReference={setLightboxSrc}
+        />
       </div>
 
       <CreateVacancyModal

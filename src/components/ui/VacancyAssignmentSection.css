@@ -1,0 +1,221 @@
+.vacancy-assignment-section {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+}
+
+.vacancy-assignment-section__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--spacing-md);
+  margin-block-end: var(--spacing-lg);
+}
+
+.vacancy-assignment-section__heading {
+  min-inline-size: 0;
+}
+
+.vacancy-assignment-section__title {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-xxs);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.vacancy-assignment-section__count {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-xs-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+}
+
+.vacancy-assignment-section__description {
+  max-inline-size: var(--content-reading-max-inline-size);
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.vacancy-assignment-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      min(100%, var(--feature-vacancy-assignment-card-min-inline-size)),
+      1fr
+    )
+  );
+  gap: var(--spacing-md);
+}
+
+.vacancy-assignment-card {
+  position: relative;
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.vacancy-assignment-card__body {
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--spacing-md);
+  padding-inline-end: var(--touch-target-min);
+}
+
+.vacancy-assignment-card__icon {
+  display: inline-flex;
+  inline-size: var(--control-height-sm);
+  block-size: var(--control-height-sm);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.vacancy-assignment-card__content {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.vacancy-assignment-card__title-row {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.vacancy-assignment-card__title {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.vacancy-assignment-card__status {
+  flex: 0 0 auto;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+}
+
+.vacancy-assignment-card__section {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.vacancy-assignment-card__footer {
+  min-inline-size: 0;
+  margin-block-start: auto;
+}
+
+.vacancy-assignment-card__actions {
+  position: absolute;
+  inset-block-start: var(--spacing-xs);
+  inset-inline-end: var(--spacing-xs);
+}
+
+.vacancy-assignment-card__menu {
+  display: inline-flex;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.vacancy-assignment-card__menu:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.vacancy-assignment-card__menu:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--spacing-xxs);
+}
+
+.vacancy-assignment-section__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  border: var(--border-width) dashed var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  text-align: center;
+}
+
+.vacancy-assignment-section__empty-icon {
+  margin-block-end: var(--spacing-md);
+  color: var(--color-muted-soft);
+}
+
+.vacancy-assignment-section__empty-title {
+  margin: 0 0 var(--spacing-xxs);
+  color: var(--color-charcoal);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.vacancy-assignment-section__empty-description {
+  max-inline-size: var(--content-reading-max-inline-size);
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}

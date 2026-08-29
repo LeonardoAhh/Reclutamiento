@@ -591,9 +591,9 @@ export function AIChatPage() {
     <div className="ai-page-container">
 
 
-      <main className="ai-page-layout">
+      <main className="ai-page-layout container">
         {!isMobile && (
-          <aside className="ai-page-sidebar ai-page-card" aria-label="Herramientas del asistente">
+          <aside className="ai-page-sidebar ai-page-card" aria-label="Herramientas del IA">
             <div className="ai-context-section">
               {setupContent}
             </div>
@@ -630,7 +630,7 @@ export function AIChatPage() {
               <div className="ai-chat-mobile-menu">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button type="button" aria-label="Opciones del asistente">
+                    <button type="button" aria-label="Opciones del IA">
                       <EllipsisVertical aria-hidden="true" />
                     </button>
                   </DropdownMenuTrigger>
@@ -679,7 +679,7 @@ export function AIChatPage() {
                 )}
                 <div className="ai-chat-message-body">
                   <span className="ai-chat-author">
-                    {message.role === "user" ? "Tú" : "Asistente"}
+                    {message.role === "user" ? "Tú" : "IA"}
                   </span>
                   <div className="ai-chat-content">
                     {message.role === "ai" || message.role === "system" ? (
@@ -758,9 +758,9 @@ export function AIChatPage() {
                   <Bot />
                 </div>
                 <div className="ai-chat-message-body">
-                  <span className="ai-chat-author">Asistente</span>
+                  <span className="ai-chat-author">IA</span>
                   <div className="ai-chat-content">
-                    <span className="sr-only">El asistente está respondiendo.</span>
+                    <span className="sr-only">La IA está respondiendo.</span>
                     <div className="ai-typing-indicator" aria-hidden="true">
                       <span className="ai-dot" />
                       <span className="ai-dot" />
@@ -787,7 +787,7 @@ export function AIChatPage() {
             <form
               className="ai-chat-input-form"
               onSubmit={handleSendMessage}
-              aria-label="Enviar mensaje al asistente"
+              aria-label="Enviar mensaje."
             >
               <textarea
                 id={messageInputId}

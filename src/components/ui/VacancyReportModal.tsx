@@ -539,7 +539,7 @@ export function VacancyReportModal({
             >
               <span
                 className="vacancy-report-modal__puesto"
-                style={{ fontSize: "0.85rem", fontWeight: 600 }}
+                style={{ fontSize: "var(--type-body-sm-size)", color: "var(--color-ink)" }}
               >
                 {(() => {
                   let turnoLabel = row.turno ? toTitleCase(row.turno) : "";
@@ -599,10 +599,10 @@ export function VacancyReportModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="vacancy-report-modal"
+      className="vacancy-report-modal "
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title="Asignación de vacantes"
-      size="md"
+      size="sm"
       fullscreenMobile={false}
       footerActions={
         <button
@@ -622,7 +622,7 @@ export function VacancyReportModal({
             }}
           >
             <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "¡Copiado al portapapeles!" : "Copiar mensaje"}
+            {copied ? "¡Copiado!" : "Copiar"}
           </span>
         </button>
       }

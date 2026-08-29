@@ -13,34 +13,29 @@ interface CandidatesInProcessModalProps {
   candidates: Candidate[];
 }
 
-interface PuestoSeccionCount {
+interface PuestoCount {
   puesto: string;
-  seccion: string;
   isStarlite: boolean;
   count: number;
   statuses: Partial<Record<CandidateStatus, number>>;
 }
 
-function groupByPuestoSeccion(candidates: Candidate[]): PuestoSeccionCount[] {
-  const map = new Map<string, PuestoSeccionCount>();
+function groupByPuesto(candidates: Candidate[]): PuestoCount[] {
+  const map = new Map<string, PuestoCount>();
   for (const c of candidates) {
     const puesto = (c.puesto ?? '').trim() || '—';
-    const seccion = (c.seccion ?? '').trim() || '—';
     const isStarlite = !!c.is_starlite;
-    const key = `${puesto}||${seccion}||${isStarlite}`;
+    const key = `${puesto}||${isStarlite}`;
     let entry = map.get(key);
     if (!entry) {
-      entry = { puesto, seccion, isStarlite, count: 0, statuses: {} };
+      entry = { puesto, isStarlite, count: 0, statuses: {} };
       map.set(key, entry);
     }
     entry.count += 1;
     entry.statuses[c.status] = (entry.statuses[c.status] || 0) + 1;
   }
   return Array.from(map.values()).sort(
-    (a, b) =>
-      b.count - a.count ||
-      a.puesto.localeCompare(b.puesto) ||
-      a.seccion.localeCompare(b.seccion)
+    (a, b) => b.count - a.count || a.puesto.localeCompare(b.puesto)
   );
 }
 
@@ -50,13 +45,13 @@ export function CandidatesInProcessModal({
   candidates,
 }: CandidatesInProcessModalProps) {
   const isMobile = useIsMobile();
-  const grouped = groupByPuestoSeccion(candidates);
+  const grouped = groupByPuesto(candidates);
 
   const renderList = () => (
     <ul className="candidates-in-process-modal__puesto-list">
       {grouped.map((g) => (
         <li
-          key={`${g.puesto}||${g.seccion}||${g.isStarlite}`}
+          key={`${g.puesto}||${g.isStarlite}`}
           className="candidates-in-process-modal__puesto-item"
         >
           <div className="candidates-in-process-modal__puesto-main">
@@ -69,11 +64,6 @@ export function CandidatesInProcessModal({
                   </span>
                 )}
               </span>
-              {g.seccion && (
-                <span className="candidates-in-process-modal__puesto-seccion">
-                  {g.seccion}
-                </span>
-              )}
             </div>
             <div className="candidates-in-process-modal__puesto-badges">
               {Object.entries(g.statuses)
@@ -103,9 +93,8 @@ export function CandidatesInProcessModal({
       className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
       title="Procesos por cerrar"
-      subtitle="Activos en página de candidatos"
-      size={isMobile ? 'md' : 'lg'}
-      fullscreenMobile={true}
+      size="md"
+      fullscreenMobile={false}
     >
       <div className="modal-body candidates-in-process-modal__body">
         <header className="candidates-in-process-modal__summary">

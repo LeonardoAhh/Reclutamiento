@@ -304,13 +304,7 @@ export function CandidateReportModal({
     () => candidates.filter((c) => ACTIVE_STATUSES.has(c.status)),
     [candidates],
   );
-  const groups = useMemo(() => buildPuestoGroups(active), [active]);
-  const recruiters = useMemo(() => buildRecruiterRows(active), [active]);
-
   const totalActivos = active.length;
-  const totalStarlite = groups.reduce((sum, g) => sum + g.starlite, 0);
-  const totalPuestos = groups.reduce((sum, g) => sum + g.rows.length, 0);
-  const reclutadoresActivos = recruiters.filter((r) => r.total > 0).length;
   const message = useMemo(() => buildWhatsappMessage(active), [active]);
 
   const isMobile = useIsMobile();
@@ -348,90 +342,6 @@ export function CandidateReportModal({
 
   const empty = totalActivos === 0;
 
-  const renderGroupContent = (group: AreaGroup) => (
-    <ul className="candidate-report-modal__rows">
-      {group.rows.map((row) => (
-        <li
-          key={`${row.area}|${row.seccion}|${row.puesto}`}
-          className="candidate-report-modal__row"
-        >
-          <div
-            className="candidate-report-modal__row-main"
-            style={{ justifyContent: "center" }}
-          >
-            <span
-              className="candidate-report-modal__puesto"
-              style={{ fontSize: "0.85rem", fontWeight: 600 }}
-            >
-              {(() => {
-                let cleanSeccion = row.seccion;
-                if (
-                  cleanSeccion
-                    .toUpperCase()
-                    .startsWith(group.area.toUpperCase())
-                ) {
-                  cleanSeccion = cleanSeccion
-                    .substring(group.area.length)
-                    .trim();
-                  if (
-                    cleanSeccion.startsWith("-") ||
-                    cleanSeccion.startsWith("—")
-                  ) {
-                    cleanSeccion = cleanSeccion.substring(1).trim();
-                  }
-                }
-
-                let turnoLabel = cleanSeccion || row.turno || "";
-                if (
-                  row.turno &&
-                  cleanSeccion &&
-                  !cleanSeccion.toUpperCase().includes(row.turno.toUpperCase())
-                ) {
-                  turnoLabel = `${cleanSeccion} (${row.turno})`;
-                }
-                turnoLabel = toTitleCase(turnoLabel);
-
-                // Acortar nombres comunes para WhatsApp
-                turnoLabel = turnoLabel.replace(/Turno/i, "T.");
-                turnoLabel = turnoLabel.replace(/1er /i, "1er ");
-                turnoLabel = turnoLabel.replace(/2do /i, "2do ");
-
-                const lowerTurno = turnoLabel.toLowerCase();
-                if (
-                  lowerTurno &&
-                  !lowerTurno.includes("t.") &&
-                  !lowerTurno.includes("turno") &&
-                  !lowerTurno.includes("mixto") &&
-                  !lowerTurno.includes("central")
-                ) {
-                  turnoLabel = "";
-                }
-
-                let displayPuesto = toTitleCase(row.puesto);
-                if (
-                  displayPuesto.toLowerCase() === "operador de máquina" &&
-                  row.starlite > 0
-                ) {
-                  displayPuesto = "Operador de Starlite";
-                }
-
-                return turnoLabel
-                  ? `${displayPuesto} (${turnoLabel})`
-                  : displayPuesto;
-              })()}
-            </span>
-          </div>
-          <div className="candidate-report-modal__badges">
-            {row.starlite > 0 && (
-              <Badge variant="amber">★ {row.starlite}</Badge>
-            )}
-            <Badge variant="default">{row.total}</Badge>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-
   return (
     <Modal
       isOpen={isOpen}
@@ -439,7 +349,7 @@ export function CandidateReportModal({
       className="candidate-report-modal"
       icon={<UsersRound size={20} aria-hidden="true" />}
       title="Resumen de candidatos"
-      size="md"
+      size="xs"
       fullscreenMobile={false}
       footerActions={
         <button
@@ -459,90 +369,36 @@ export function CandidateReportModal({
             }}
           >
             <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "¡Copiado al portapapeles!" : "Copiar mensaje"}
+            {copied ? "¡Copiado!" : "Copiar"}
           </span>
         </button>
       }
     >
-      <div
-        className="candidate-report-modal__wrapper"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          minHeight: 0,
-        }}
-      >
-        <div
-          className="modal-body candidate-report-modal__body"
-          style={
-            isMobile
-              ? {
-                  padding: "var(--spacing-xl) var(--spacing-md)",
-                  textAlign: "center",
-                }
-              : { flex: 1, overflowY: "auto" }
-          }
-        >
-          {empty ? (
-            <motion.p
-              className="candidate-report-modal__empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              No hay candidatos activos en proceso.
-            </motion.p>
-          ) : (
-            <>
-              {isMobile ? (
-                <p
-                  style={{
-                    color: "var(--color-muted)",
-                    fontSize: "var(--type-body-md-size)",
-                  }}
-                >
-                  Pulsa el botón de abajo para copiar el reporte.
-                </p>
-              ) : (
-                <motion.section
-                  className="candidate-report-modal__groups"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  aria-label="Candidatos agrupados por puesto"
-                >
-                  <h3 className="candidate-report-modal__section-title">
-                    Por puesto
-                  </h3>
-                  {groups.map((group) => (
-                    <motion.article
-                      key={group.area}
-                      className="feature-card"
-                      variants={itemVariants}
-                    >
-                      <header
-                        className="candidate-report-modal__row"
-                        style={{
-                          background: "var(--color-surface-soft)",
-                          borderBottom: "1px solid var(--color-hairline)",
-                        }}
-                      >
-                        <h4 className="candidate-report-modal__group-title">
-                          {group.area}
-                        </h4>
-                        <span className="candidate-report-modal__group-count">
-                          {group.total} candidato{group.total === 1 ? "" : "s"}
-                        </span>
-                      </header>
-                      {renderGroupContent(group)}
-                    </motion.article>
-                  ))}
-                </motion.section>
-              )}
-            </>
-          )}
-        </div>
+      <div className="modal-body candidate-report-modal__body" style={{ padding: 'var(--spacing-xl) var(--spacing-md)', textAlign: 'center' }}>
+        {empty ? (
+          <motion.p
+            className="candidate-report-modal__empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            No hay candidatos activos en proceso.
+          </motion.p>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)', alignItems: 'center' }}
+          >
+            <span style={{ fontSize: 'var(--type-display-xl-size)', fontWeight: 'var(--type-display-xl-weight)', color: 'var(--color-ink)', lineHeight: 'var(--type-display-xl-line)', letterSpacing: 'var(--type-display-xl-tracking)' }}>
+              {totalActivos}
+            </span>
+            <span style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-md-size)' }}>
+              Candidato{totalActivos === 1 ? '' : 's'} en total
+            </span>
+          </motion.div>
+        )}
       </div>
     </Modal>
   );

@@ -1,5 +1,5 @@
 {
-  "breakpoints": [375, 768, 1280, 1440],
+  "breakpoints": [375, 600, 768, 1080, 1280, 1440],
   "out": "./src/bones",
   "routes": [
     "/plantilla",
@@ -14,15 +14,12 @@
     "/configuracion?tab=rutas&view=incidencias",
     "/configuracion?tab=tabulador",
     "/configuracion?tab=speech",
-    "/configuracion?tab=formatos",
-    "/configuracion?tab=sistema"
+    "/configuracion?tab=formatos"
   ],
   "wait": 2200,
   "color": "var(--color-canvas-soft)",
-  "darkColor": "var(--color-canvas-soft)",
-  "shimmerColor": "color-mix(in srgb, var(--color-ink) 8%, var(--color-canvas-soft))",
-  "darkShimmerColor": "color-mix(in srgb, var(--color-ink) 8%, var(--color-canvas-soft))",
-  "animate": "shimmer",
+  "darkColor": "var(--color-surface)",
+  "animate": "solid",
   "speed": "var(--duration-skeleton)",
   "boneClass": "boneyard-skeleton__bone"
 }

@@ -16,9 +16,8 @@ import _configuracion_incidencias from './configuracion-incidencias.bones.json'
 import _configuracion_tabulador from './configuracion-tabulador.bones.json'
 import _configuracion_speech from './configuracion-speech.bones.json'
 import _configuracion_formatos from './configuracion-formatos.bones.json'
-import _configuracion_sistema from './configuracion-sistema.bones.json'
 
-configureBoneyard({"color":"var(--color-canvas-soft)","darkColor":"var(--color-canvas-soft)","animate":"shimmer","shimmerColor":"color-mix(in srgb, var(--color-ink) 8%, var(--color-canvas-soft))","darkShimmerColor":"color-mix(in srgb, var(--color-ink) 8%, var(--color-canvas-soft))","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
+configureBoneyard({"color":"var(--color-canvas-soft)","darkColor":"var(--color-surface)","animate":"solid","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
 
 registerBones({
   "plantilla-page": _plantilla_page,
@@ -34,5 +33,4 @@ registerBones({
   "configuracion-tabulador": _configuracion_tabulador,
   "configuracion-speech": _configuracion_speech,
   "configuracion-formatos": _configuracion_formatos,
-  "configuracion-sistema": _configuracion_sistema,
 })

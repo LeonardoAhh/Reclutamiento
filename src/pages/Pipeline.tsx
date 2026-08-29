@@ -3,7 +3,7 @@ import { MotionConfig, motion } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { BadgeCheck, BarChart3, CalendarDays, CircleCheckBig, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, PenLine, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
+import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, CircleCheckBig, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, PenLine, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
 import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
@@ -470,7 +470,7 @@ export function Pipeline() {
       loadingLabel="Cargando candidatos…"
     >
       <MotionConfig reducedMotion="user">
-        <main className="pipeline">
+        <main className="pipeline container">
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
       <section className="pipeline__hero">
@@ -1195,7 +1195,7 @@ export function Pipeline() {
         isOpen={metricsModalOpen}
         onClose={() => setMetricsModalOpen(false)}
         title="Métricas y KPIs"
-        size="md"
+        size="sm"
         fullscreenMobile={false}
       >
         <div className="modal-body pipeline__metrics-menu">
@@ -1217,7 +1217,7 @@ export function Pipeline() {
                 {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} citados
               </span>
             </div>
-            <ChevronRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
+            <ArrowUpRight size={18} className="pipeline__kpi-card__arrow" aria-hidden="true" />
           </button>
 
           <div className="pipeline__sidebar-divider" />
@@ -1239,10 +1239,7 @@ export function Pipeline() {
                   <span className="pipeline__kpi-row__name">Pauta</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {pautaStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
+                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
                 </div>
               </button>
 
@@ -1259,10 +1256,7 @@ export function Pipeline() {
                   <span className="pipeline__kpi-row__name">Alexandra</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {alexandraStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
+                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
                 </div>
               </button>
 
@@ -1279,10 +1273,7 @@ export function Pipeline() {
                   <span className="pipeline__kpi-row__name">Daniela</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
-                  <span className="pipeline__kpi-row__value">
-                    {danielaStats.reduce((a, s) => a + s.total, 0)}
-                  </span>
-                  <ChevronRight size={14} aria-hidden="true" />
+                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
                 </div>
               </button>
             </div>

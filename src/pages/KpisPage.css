@@ -221,12 +221,33 @@
   white-space: nowrap;
 }
 
-/* Botón de detalle (PC, visible cuando la card está revelada). */
+/* Botón de detalle ghost (PC, visible cuando la card está revelada). */
 .kpis-page__detail-btn {
   position: absolute;
-  right: var(--spacing-md);
-  bottom: var(--spacing-md);
+  right: var(--spacing-sm);
+  bottom: var(--spacing-sm);
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--rounded-md);
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.kpis-page__detail-btn:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.kpis-page__detail-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 /* ── Grid de KPIs (PC) ──────────────────────────────────────────────── */

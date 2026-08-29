@@ -1,4 +1,12 @@
-import { EllipsisVertical, Trash2, SquarePen, Image as ImageIcon, CircleCheckBig, Clock, CircleDashed } from "lucide-react";
+import {
+  CircleCheckBig,
+  CircleDashed,
+  Clock,
+  EllipsisVertical,
+  SquarePen,
+  Trash2,
+} from "lucide-react";
+import type { ElementType } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,15 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
+import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
+import { ReferenceAttachment } from "@/components/ui/ReferenceAttachment";
 import "./ActivityCard.css";
 
+type ActivityCardStatus = "pendiente" | "en_proceso" | "completada";
+
 export interface ActivityCardProps {
-  id: string;
   title: string;
   description?: string;
-  status: "pendiente" | "en_proceso" | "completada";
-  assignees?: Array<{ id: string; display_name?: string; username?: string }>;
+  status: ActivityCardStatus;
+  assignee?: {
+    id: string;
+    display_name?: string | null;
+    username?: string | null;
+  };
   referenceImage?: string;
   isNew?: boolean;
   isAdmin?: boolean;
@@ -25,24 +39,23 @@ export interface ActivityCardProps {
   onViewReference?: () => void;
 }
 
-const STATUS_LABEL: Record<ActivityCardProps["status"], string> = {
+const STATUS_LABEL: Record<ActivityCardStatus, string> = {
   pendiente: "Pendiente",
   en_proceso: "En proceso",
   completada: "Completada",
 };
 
-const STATUS_ICON: Record<ActivityCardProps["status"], React.ElementType> = {
+const STATUS_ICON: Record<ActivityCardStatus, ElementType> = {
   pendiente: CircleDashed,
   en_proceso: Clock,
   completada: CircleCheckBig,
 };
 
 export function ActivityCard({
-  id,
   title,
   description,
   status,
-  assignees = [],
+  assignee,
   referenceImage,
   isNew = false,
   isAdmin = false,
@@ -52,140 +65,96 @@ export function ActivityCard({
   onDelete,
   onViewReference,
 }: ActivityCardProps) {
-  const filteredAssignees = assignees.filter(
-    (a) => !currentUserId || a.id !== currentUserId,
-  );
-
   const Icon = STATUS_ICON[status];
+  const normalizedDescription = description?.trim();
 
   return (
-    <article className="activity-card" role="listitem">
-      <button
-        type="button"
-        className="activity-card__open"
-        onClick={onClick}
-        aria-label={`Consultar ${title}`}
-      />
-      {isNew && <span className="activity-new-badge">Nueva</span>}
-
-      <div className="activity-card-main">
-        <div className={`activity-icon status-${status}`}>
+    <article className="activity-card" role="listitem" data-status={status}>
+      <header className="activity-card__header">
+        <div className="activity-card__icon">
           <Icon size="var(--icon-size-md)" aria-hidden="true" />
         </div>
 
-        <div className="activity-content">
-          <div className="activity-title-row">
-            <h3 className="activity-title"><span className="activity-title-text">{title}</span></h3>
-            <span className={`activity-status ${status}`}>
-              {STATUS_LABEL[status]}
-            </span>
-          </div>
-
-          {description?.trim() ? (
-            <p 
-              className="activity-desc" 
-              data-full={description.trim()}
-            >
-              <span className="activity-desc-text">{description.trim()}</span>
-            </p>
-          ) : (
-            <p className="activity-desc activity-desc--muted">
-              <span className="activity-desc-text">Sin descripción</span>
-            </p>
-          )}
-
-          <div className="activity-assignees">
-            {filteredAssignees.length > 0 ? (
-              filteredAssignees.slice(0, 2).map((assignee) => (
-                <ReclutadorBadge
-                  key={assignee.id}
-                  nombre={assignee.display_name || assignee.username || "—"}
-                  size="sm"
-                  showRole={false}
-                />
-              ))
-            ) : (
-              <span className="activity-assignees--empty">Todo el equipo</span>
-            )}
-            {filteredAssignees.length > 2 && (
-              <span className="activity-assignees-more">
-                +{filteredAssignees.length - 2}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {referenceImage && (
-        <div className="activity-card-right">
-          <button
-            type="button"
-            className="activity-ref-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewReference?.();
-            }}
-            aria-label={`Ver imagen de referencia de ${title}`}
-          >
-            <ImageIcon size="var(--icon-size-sm)" aria-hidden="true" />
-            <img
-              src={referenceImage}
-              alt=""
-              className="activity-ref-img"
-              loading="lazy"
-            />
-          </button>
-        </div>
-      )}
-
-      {isAdmin && (
-        <div className="activity-admin-actions">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+        <div className="activity-card__heading">
+          <div className="activity-card__title-row">
+            <h3 className="activity-card__title">
               <button
                 type="button"
-                aria-label="Opciones"
+                className="activity-card__open"
+                onClick={onClick}
+                aria-label={`Consultar ${title}`}
               >
-                <EllipsisVertical size="var(--icon-size-sm)" aria-hidden="true" />
+                {title}
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {onEdit && (
-                <DropdownMenuItem asChild>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit();
-                    }}
-                  >
-                    <SquarePen aria-hidden="true" />
-                    <span>Editar</span>
-                  </button>
-                </DropdownMenuItem>
-              )}
-              {onDelete && (
-                <>
-                  {onEdit && <DropdownMenuSeparator />}
+            </h3>
+            <span className="activity-card__status">
+              {STATUS_LABEL[status]}
+            </span>
+            {isNew && <span className="activity-card__new">Nueva</span>}
+          </div>
+        </div>
+
+        {isAdmin && (onEdit || onDelete) && (
+          <div className="activity-card__actions">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="activity-card__menu"
+                  aria-label={`Opciones de ${title}`}
+                >
+                  <EllipsisVertical
+                    size="var(--icon-size-sm)"
+                    aria-hidden="true"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {onEdit && (
                   <DropdownMenuItem asChild>
-                    <button
-                      type="button"
-                      className="dropdown-menu-item--danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete();
-                      }}
-                    >
-                      <Trash2 aria-hidden="true" />
-                      <span>Eliminar</span>
+                    <button type="button" onClick={onEdit}>
+                      <SquarePen aria-hidden="true" />
+                      <span>Editar</span>
                     </button>
                   </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
+                )}
+                {onDelete && (
+                  <>
+                    {onEdit && <DropdownMenuSeparator />}
+                    <DropdownMenuItem asChild>
+                      <button
+                        type="button"
+                        className="dropdown-menu-item--danger"
+                        onClick={onDelete}
+                      >
+                        <Trash2 aria-hidden="true" />
+                        <span>Eliminar</span>
+                      </button>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </header>
+
+      <p
+        className={`activity-card__description${normalizedDescription ? "" : " activity-card__description--muted"}`}
+      >
+        {normalizedDescription || "Sin descripción"}
+      </p>
+
+      <footer className="activity-card__footer">
+        <AssignmentMeta assignee={assignee} currentUserId={currentUserId} />
+        {referenceImage && onViewReference && (
+          <ReferenceAttachment
+            src={referenceImage}
+            contextLabel={title}
+            onOpen={onViewReference}
+          />
+        )}
+      </footer>
     </article>
   );
 }

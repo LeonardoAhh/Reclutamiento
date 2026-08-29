@@ -8,7 +8,7 @@ import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
 import { formatShortDate } from '@/lib/dates';
-import { splitCandidateName } from '@/lib/names';
+
 import './FutureHiresModal.css';
 
 interface FutureHiresModalProps {
@@ -27,8 +27,8 @@ export function FutureHiresModal({
 
   const sortedFutureHires = useMemo(() => {
     return [...futureHires].sort((a, b) => {
-      const cmpArea = (a.area || '').localeCompare(b.area || '');
-      if (cmpArea !== 0) return cmpArea;
+      const cmpPuesto = (a.puesto || '').localeCompare(b.puesto || '');
+      if (cmpPuesto !== 0) return cmpPuesto;
       return (a.seccion || '').localeCompare(b.seccion || '');
     });
   }, [futureHires]);
@@ -37,51 +37,26 @@ export function FutureHiresModal({
     e.stopPropagation();
 
     const capitalizeTitle = (str: string) => {
+      if (!str) return '';
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     };
 
-    const groupedByArea: Record<string, Record<string, number>> = {};
+    const rolesCount: Record<string, number> = {};
 
     for (const emp of sortedFutureHires) {
-      const area = emp.area ? capitalizeTitle(emp.area) : 'Sin área';
-      const puesto = emp.is_starlite ? 'Starlite' : capitalizeTitle(emp.puesto);
-      let turnoStr = '';
-
-      if (emp.seccion) {
-        const match = emp.seccion.match(/\b(?:1ER|1RA|2DO|2DA|3ER|3RA|4TO|4TA|[1-9]O|[1-9]A|NOCTURNO|DIURNO|MATUTINO|VESPERTINO)\.?\s*TURNO\b/i);
-        if (match) {
-          let t = match[0].toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim();
-          t = t.replace('1er turno', '1er. Turno')
-               .replace('2do turno', '2do. Turno')
-               .replace('3er turno', '3er. Turno')
-               .replace('4to turno', '4to. Turno')
-               .replace('nocturno', 'Nocturno')
-               .replace('diurno', 'Diurno')
-               .replace('matutino', 'Matutino')
-               .replace('vespertino', 'Vespertino');
-          turnoStr = ` - ${t.charAt(0).toUpperCase() + t.slice(1)}`;
-        }
-      }
-
-      const key = `${puesto}${turnoStr}`;
-
-      if (!groupedByArea[area]) {
-        groupedByArea[area] = {};
-      }
-      groupedByArea[area][key] = (groupedByArea[area][key] || 0) + 1;
+      const puesto = emp.is_starlite ? 'Starlite' : capitalizeTitle(emp.puesto || '');
+      const seccion = emp.seccion ? capitalizeTitle(emp.seccion) : '';
+      const key = seccion ? `${puesto} - ${seccion}` : puesto;
+      rolesCount[key] = (rolesCount[key] || 0) + 1;
     }
 
     const fecha = sortedFutureHires.length > 0 ? formatShortDate(sortedFutureHires[0].fecha_ingreso) : '';
     const textParts = [`Próximos Ingresos: ${fecha}`];
 
-    for (const [area, roles] of Object.entries(groupedByArea)) {
-      textParts.push('');
-      textParts.push(area);
-
-      for (const [roleKey, count] of Object.entries(roles)) {
-        const plural = count === 1 ? 'Ingreso' : 'Ingresos';
-        textParts.push(`${roleKey}: ${count} ${plural}`);
-      }
+    textParts.push('');
+    for (const [roleKey, count] of Object.entries(rolesCount)) {
+      const plural = count === 1 ? 'Ingreso' : 'Ingresos';
+      textParts.push(`${roleKey}: ${count} ${plural}`);
     }
 
     if (sortedFutureHires.length > 0) {
@@ -101,59 +76,45 @@ export function FutureHiresModal({
     <div className="future-hires-modal__section">
       {isMobile ? (
         <div className="future-hires-modal__mobile-list">
-          {hiresToRender.map((e) => {
-            const { apellidos, nombres } = splitCandidateName(e.nombre);
-            return (
-              <div key={e.num_empleado} className="future-hires-modal__mobile-card">
+          {hiresToRender.map((e, idx) => (
+              <div key={e.num_empleado ?? idx} className="future-hires-modal__mobile-card">
                 <div className="future-hires-modal__mobile-card-header">
                   <span className="future-hires-modal__mobile-name">
-                    <span className="future-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
-                    {nombres && <span className="future-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                    <span className="future-hires-modal__mobile-apellidos">{e.puesto}</span>
                     {e.is_starlite && <StarliteBadge compact />}
                   </span>
                   <span className="future-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
                 </div>
                 <div className="future-hires-modal__mobile-card-body">
-                  <div className="future-hires-modal__mobile-puesto">{e.puesto}</div>
-                  <div className="future-hires-modal__mobile-area">
-                    {e.area} {e.seccion ? `· ${e.seccion}` : ''}
+                  <div className="future-hires-modal__mobile-seccion">
+                    {e.seccion || '-'}
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
         </div>
       ) : (
         <div className="future-hires-modal__table-wrap">
           <table className="future-hires-modal__table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Nombre</th>
                 <th>Puesto</th>
-                <th>Área · Sección</th>
+                <th>Sección</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               {hiresToRender.map((e) => (
                 <tr key={e.num_empleado}>
-                  <td className="future-hires-modal__cell-mono">
-                    {e.num_empleado}
-                  </td>
                   <td>
                     <div className="future-hires-modal__cell-name">
-                      <span className="future-hires-modal__name-text">{e.nombre}</span>
+                      <span>{e.puesto}</span>
                       {e.is_starlite && <StarliteBadge compact />}
                     </div>
                   </td>
-                  <td>{e.puesto}</td>
                   <td>
-                    <div className="future-hires-modal__cell-area">
-                      {e.area}
-                    </div>
                     <div className="future-hires-modal__cell-seccion">
-                      {e.seccion}
+                      {e.seccion || '-'}
                     </div>
                   </td>
                   <td className="future-hires-modal__cell-mono">
@@ -172,17 +133,17 @@ export function FutureHiresModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Próximos ingresos programados"
+      title="Próximos ingresos"
       icon={<UsersRound size={20} />}
-      size={isMobile ? 'md' : 'xl'}
-      fullscreenMobile={true}
+      size="md"
+      fullscreenMobile={false}
     >
       <div className="modal-body future-hires-modal">
         {futureHires.length > 0 ? (
           <>
             <div className="future-hires-modal__header-actions">
               <p className="future-hires-modal__hint">
-                Procesos cerrados con caratula y fecha de ingreso programada.
+                Procesos cerrados con fecha programada.
               </p>
               <Tooltip content={copied ? "Copiado" : "Copiar"}>
                 <button
@@ -198,7 +159,7 @@ export function FutureHiresModal({
           </>
         ) : (
           <div className="future-hires-modal__empty">
-            No hay próximos ingresos programados en este momento.
+            No hay ingresos programados.
           </div>
         )}
       </div>

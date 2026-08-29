@@ -2097,15 +2097,6 @@
     "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
-    "numero empleado": "4217",
-    "nombre": "HERNANDEZ GONZALEZ JESUS EMMANUEL",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "SAN ISIDRO",
-    "colonia": "PARADA DE CAMIONES"
-  },
-  {
     "numero empleado": "4225",
     "nombre": "AMADOR MARTINEZ STEFANIA",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -2385,15 +2376,6 @@
     "colonia": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4284",
-    "nombre": "SOTO HUERTA AILYN MONSERRAT",
-    "seccion": "CALIDAD ADMTVO",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "PLAZA DEL SOL",
-    "colonia": "EN EL KFC"
-  },
-  {
     "numero empleado": "4287",
     "nombre": "VARGAS LARA JACIM ALDAIR",
     "seccion": "PRODUCCIÓN 2o. TURNO",
@@ -2518,24 +2500,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "parada": "PROL. BERNARDO QUINTANA",
     "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
-  },
-  {
-    "numero empleado": "4316",
-    "nombre": "RAMIREZ TRINIDAD LILIANA LIZBETH",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "4317",
-    "nombre": "BARRAGAN  MARQUEZ MA. INOCENCIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4318",
@@ -2680,15 +2644,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "parada": "AV. DE LA LUZ",
     "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4345",
-    "nombre": "PAULINO PEREZ FRANCISCO JAVIER",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4346",

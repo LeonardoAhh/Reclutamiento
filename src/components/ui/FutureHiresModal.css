@@ -89,25 +89,16 @@
 }
 
 .future-hires-modal__name-text {
-  font-weight: 500;
-}
-
-.future-hires-modal__cell-area {
-  font-weight: 500;
-  text-transform: uppercase;
-  color: var(--color-ink);
-  line-height: 1.2;
-  white-space: nowrap;
+  font-weight: var(--type-body-strong-weight);
 }
 
 .future-hires-modal__cell-seccion {
   font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
-  margin-top: 2px;
-  line-height: 1.2;
+  text-transform: uppercase;
+  line-height: var(--type-caption-sm-line);
   white-space: nowrap;
 }
-
 /* ── Tarjetas Móvil ── */
 .future-hires-modal__mobile-list {
   display: flex;
@@ -166,12 +157,15 @@
 }
 
 .future-hires-modal__mobile-puesto {
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
+  line-height: var(--type-body-sm-line);
 }
 
-.future-hires-modal__mobile-area {
+.future-hires-modal__mobile-seccion {
   font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
+  text-transform: uppercase;
+  line-height: var(--type-caption-sm-line);
 }

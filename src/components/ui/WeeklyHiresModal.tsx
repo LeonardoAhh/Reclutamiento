@@ -6,7 +6,7 @@ import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Baja, Employee } from '@/lib/types';
 import { formatShortDate, type IsoWeekRange } from '@/lib/dates';
-import { splitCandidateName } from '@/lib/names';
+
 import './WeeklyHiresModal.css';
 
 interface WeeklyHiresModalProps {
@@ -24,7 +24,6 @@ interface WeeklyHiresModalProps {
 
 interface PuestoCount {
   puesto: string;
-  area: string;
   isStarlite: boolean;
   count: number;
 }
@@ -33,12 +32,16 @@ function groupByPuesto(hires: Employee[]): PuestoCount[] {
   const map = new Map<string, PuestoCount>();
   for (const e of hires) {
     const isStarlite = !!e.is_starlite;
-    const key = `${e.area}||${e.puesto}||${isStarlite}`;
+    const key = `${e.puesto}||${isStarlite}`;
     const prev = map.get(key);
     if (prev) {
       prev.count += 1;
     } else {
-      map.set(key, { puesto: e.puesto, area: e.area, isStarlite, count: 1 });
+      map.set(key, {
+        puesto: e.puesto || 'Sin puesto',
+        isStarlite,
+        count: 1,
+      });
     }
   }
   return Array.from(map.values()).sort(
@@ -108,59 +111,45 @@ export function WeeklyHiresModal({
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
         <div className="weekly-hires-modal__mobile-list">
-          {hiresToRender.map((e) => {
-            const { apellidos, nombres } = splitCandidateName(e.nombre);
-            return (
-            <div key={e.num_empleado} className="weekly-hires-modal__mobile-card">
+          {hiresToRender.map((e, idx) => (
+            <div key={e.num_empleado ?? idx} className="weekly-hires-modal__mobile-card">
               <div className="weekly-hires-modal__mobile-card-header">
                 <span className="weekly-hires-modal__mobile-name">
-                  <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
-                  {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                  <span className="weekly-hires-modal__mobile-apellidos">{e.puesto}</span>
                   {highlightStarlite && e.is_starlite && <StarliteBadge compact />}
                 </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
-                <div className="weekly-hires-modal__mobile-puesto">{e.puesto}</div>
-                <div className="weekly-hires-modal__mobile-area">
-                  {e.area} {e.seccion ? `· ${e.seccion}` : ''}
+                <div className="weekly-hires-modal__mobile-seccion">
+                  {e.seccion || '-'}
                 </div>
               </div>
             </div>
-            );
-          })}
+          ))}
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">
           <table className="weekly-hires-modal__table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Nombre</th>
                 <th>Puesto</th>
-                <th>Área · Sección</th>
+                <th>Sección</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               {hiresToRender.map((e) => (
                 <tr key={e.num_empleado}>
-                  <td className="weekly-hires-modal__cell-mono">
-                    {e.num_empleado}
-                  </td>
                   <td>
                     <span className="weekly-hires-modal__cell-name">
-                      <span>{e.nombre}</span>
+                      <span>{e.puesto}</span>
                       {highlightStarlite && e.is_starlite && <StarliteBadge />}
                     </span>
                   </td>
-                  <td>{e.puesto}</td>
                   <td>
-                    <div className="weekly-hires-modal__cell-area">
-                      {e.area}
-                    </div>
                     <div className="weekly-hires-modal__cell-seccion">
-                      {e.seccion}
+                      {e.seccion || '-'}
                     </div>
                   </td>
                   <td className="weekly-hires-modal__cell-mono">
@@ -180,62 +169,47 @@ export function WeeklyHiresModal({
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
         <div className="weekly-hires-modal__mobile-list">
-          {bajasToRender.map((b) => {
-            const { apellidos, nombres } = splitCandidateName(b.nombre);
-            return (
-            <div key={`${b.num_empleado}-${b.fecha_baja}`} className="weekly-hires-modal__mobile-card">
+          {bajasToRender.map((b, idx) => (
+            <div key={`${b.num_empleado}-${b.fecha_baja}-${idx}`} className="weekly-hires-modal__mobile-card">
               <div className="weekly-hires-modal__mobile-card-header">
                 <span className="weekly-hires-modal__mobile-name">
-                  <span className="weekly-hires-modal__mobile-apellidos">{apellidos.toUpperCase()}</span>
-                  {nombres && <span className="weekly-hires-modal__mobile-nombres">{nombres.toUpperCase()}</span>}
+                  <span className="weekly-hires-modal__mobile-apellidos">{b.puesto}</span>
                   {highlightStarlite && b.is_starlite && <StarliteBadge compact />}
                 </span>
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(b.fecha_baja)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
-                <div className="weekly-hires-modal__mobile-area">
+                <div className="weekly-hires-modal__mobile-seccion">
                   {[b.seccion, b.turno].map((v) => v?.trim()).filter(Boolean).join(' · ') || '—'}
                 </div>
               </div>
             </div>
-            );
-          })}
+          ))}
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">
           <table className="weekly-hires-modal__table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Nombre</th>
                 <th>Puesto</th>
-                <th>Área · Sección</th>
-                <th>Tipo</th>
+                <th>Sección</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               {bajasToRender.map((b) => (
                 <tr key={`${b.num_empleado}-${b.fecha_baja}`}>
-                  <td className="weekly-hires-modal__cell-mono">
-                    {b.num_empleado}
-                  </td>
                   <td>
                     <span className="weekly-hires-modal__cell-name">
-                      <span>{b.nombre}</span>
+                      <span>{b.puesto}</span>
                       {highlightStarlite && b.is_starlite && <StarliteBadge />}
                     </span>
                   </td>
-                  <td>{b.puesto}</td>
                   <td>
-                    <div className="weekly-hires-modal__cell-area">
-                      {b.area}
-                    </div>
                     <div className="weekly-hires-modal__cell-seccion">
-                      {b.seccion}
+                      {[b.seccion, b.turno].map((v) => v?.trim()).filter(Boolean).join(' · ') || '—'}
                     </div>
                   </td>
-                  <td>{b.tipo_baja || '—'}</td>
                   <td className="weekly-hires-modal__cell-mono">
                     {formatShortDate(b.fecha_baja)}
                   </td>
@@ -261,8 +235,8 @@ export function WeeklyHiresModal({
           Comparativo semanal {range.year}
         </span>
       }
-      size={isMobile ? 'md' : 'xl'}
-      fullscreenMobile={true}
+      size="md"
+      fullscreenMobile={false}
     >
       <div className="modal-body weekly-hires-modal__body">
         {/* Estadísticas principales */}
@@ -295,13 +269,12 @@ export function WeeklyHiresModal({
           )}
         </header>
 
-        {/* Semana Actual */}
-        <ExpandableSection
-          title={`Semana ${range.week} · ${rangeLabel}`}
-          badge={`${hires.length} ingresos · ${bajas.length} bajas`}
-          variant="card"
-          defaultExpanded
-        >
+        <div className="weekly-hires-modal__weeks-grid">
+          {/* Semana Actual */}
+          <ExpandableSection
+            title={`Semana ${range.week}`}
+            variant="card"
+          >
           <div className="weekly-hires-modal__week-content">
             <div className="weekly-hires-modal__week-stats">
               <div className="weekly-hires-modal__week-stat">
@@ -324,8 +297,8 @@ export function WeeklyHiresModal({
               <div className="weekly-hires-modal__puestos">
                 <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
                 <ul className="weekly-hires-modal__puesto-list">
-                  {groupedHires.map((g) => (
-                    <li key={`${g.area}-${g.puesto}-${g.isStarlite}`} className="weekly-hires-modal__puesto-item">
+                  {groupedHires.map((g, idx) => (
+                    <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
                       <span className="weekly-hires-modal__puesto-name">
                         {g.puesto}
                         {g.isStarlite && (
@@ -334,7 +307,6 @@ export function WeeklyHiresModal({
                           </span>
                         )}
                       </span>
-                      <span className="weekly-hires-modal__puesto-area">{g.area}</span>
                       <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                     </li>
                   ))}
@@ -349,8 +321,7 @@ export function WeeklyHiresModal({
 
         {/* Semana Anterior */}
         <ExpandableSection
-          title={`Semana ${previousRange.week} · ${previousRangeLabel}`}
-          badge={`${previousHires.length} ingresos · ${previousBajas.length} bajas`}
+          title={`Semana ${previousRange.week}`}
           variant="card"
         >
           <div className="weekly-hires-modal__week-content">
@@ -373,8 +344,8 @@ export function WeeklyHiresModal({
               <div className="weekly-hires-modal__puestos">
                 <h5 className="weekly-hires-modal__puestos-title">Puestos contratados</h5>
                 <ul className="weekly-hires-modal__puesto-list">
-                  {groupedPreviousHires.map((g) => (
-                    <li key={`${g.area}-${g.puesto}-${g.isStarlite}`} className="weekly-hires-modal__puesto-item">
+                  {groupedPreviousHires.map((g, idx) => (
+                    <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
                       <span className="weekly-hires-modal__puesto-name">
                         {g.puesto}
                         {g.isStarlite && (
@@ -383,7 +354,6 @@ export function WeeklyHiresModal({
                           </span>
                         )}
                       </span>
-                      <span className="weekly-hires-modal__puesto-area">{g.area}</span>
                       <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                     </li>
                   ))}
@@ -402,7 +372,8 @@ export function WeeklyHiresModal({
             )}
             {previousBajas.length > 0 && renderBajasTable(previousBajas, 'Detalle de bajas', true)}
           </div>
-        </ExpandableSection>
+            </ExpandableSection>
+        </div>
       </div>
     </Modal>
   );
