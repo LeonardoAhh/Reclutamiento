@@ -8,6 +8,13 @@ import {
   type ReportFieldErrors,
 } from "@/components/transporte/TransportReportSteps";
 import type { NuevoReporte } from "@/hooks/useIncidenciasTransporte";
+import {
+  isValidTransportReportEmployeeNumber,
+} from "@/lib/transport-report-employee-number";
+import {
+  isValidTransportReportComment,
+  TRANSPORT_REPORT_COMMENT_MAX_LENGTH,
+} from "@/lib/transport-report-comment";
 import "./TransportReportForm.css";
 
 const INITIAL_REPORT: NuevoReporte = {
@@ -41,8 +48,9 @@ function validateTripStep(data: NuevoReporte): ReportFieldErrors {
 
   if (!employeeNumber) {
     errors.numero_empleado = "Ingresa tu número de empleado.";
-  } else if (!/^\d+$/.test(employeeNumber)) {
-    errors.numero_empleado = "Usa únicamente números.";
+  } else if (!isValidTransportReportEmployeeNumber(employeeNumber)) {
+    errors.numero_empleado =
+      "Ingresa un número de empleado de 1 a 4 dígitos.";
   }
   if (!data.ruta) errors.ruta = "Selecciona tu ruta.";
   if (!data.turno) errors.turno = "Selecciona tu turno.";
@@ -52,10 +60,13 @@ function validateTripStep(data: NuevoReporte): ReportFieldErrors {
 
 function validateIncidentStep(data: NuevoReporte): ReportFieldErrors {
   const errors: ReportFieldErrors = {};
+  const comment = data.comentarios.trim();
 
   if (!data.tipo) errors.tipo = "Selecciona el tipo de incidencia.";
-  if (!data.comentarios.trim()) {
+  if (!comment) {
     errors.comentarios = "Describe brevemente lo ocurrido.";
+  } else if (!isValidTransportReportComment(comment)) {
+    errors.comentarios = `Usa máximo ${TRANSPORT_REPORT_COMMENT_MAX_LENGTH} caracteres.`;
   }
 
   return errors;

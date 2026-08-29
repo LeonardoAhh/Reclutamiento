@@ -14,6 +14,13 @@ import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { TransportIncidentGroup } from '@/components/transporte/TransportIncidentGroup';
 import './IncidenciasTable.css';
 
+function escapeCsvCell(value: unknown): string {
+  const text = String(value);
+  const spreadsheetSafeText = /^[\s]*[=+\-@]/.test(text) ? `'${text}` : text;
+
+  return `"${spreadsheetSafeText.replace(/"/g, '""')}"`;
+}
+
 export function IncidenciasTable() {
   const { profile } = useAuth();
   const {
@@ -90,9 +97,7 @@ export function IncidenciasTable() {
     const csvContent = [
       header.join(','),
       ...rows.map((row) =>
-        row
-          .map((field) => `"${String(field).replace(/"/g, '""')}"`)
-          .join(','),
+        row.map(escapeCsvCell).join(','),
       ),
     ].join('\n');
 

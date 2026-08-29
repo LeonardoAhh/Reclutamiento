@@ -6,6 +6,14 @@ import {
   getTransportIncidentImageExtension,
   validateTransportIncidentImage,
 } from '@/lib/transport-incident-image';
+import {
+  isValidTransportReportEmployeeNumber,
+} from '@/lib/transport-report-employee-number';
+import {
+  isValidTransportReportComment,
+  normalizeTransportReportComment,
+  TRANSPORT_REPORT_COMMENT_MAX_LENGTH,
+} from '@/lib/transport-report-comment';
 
 export interface IncidenciaTransporte {
   id: string;
@@ -69,6 +77,18 @@ export function useIncidenciasTransporte() {
     let imagenPath: string | null = null;
 
     try {
+      const employeeNumber = reporte.numero_empleado.trim();
+      if (!isValidTransportReportEmployeeNumber(employeeNumber)) {
+        throw new Error('El número de empleado debe contener de 1 a 4 dígitos.');
+      }
+
+      const comment = normalizeTransportReportComment(reporte.comentarios);
+      if (!isValidTransportReportComment(comment)) {
+        throw new Error(
+          `El comentario debe contener entre 1 y ${TRANSPORT_REPORT_COMMENT_MAX_LENGTH} caracteres.`,
+        );
+      }
+
       if (imagen) {
         const validationError = validateTransportIncidentImage(imagen);
         if (validationError) throw new Error(validationError);
@@ -78,7 +98,7 @@ export function useIncidenciasTransporte() {
       const { data: emp, error: empError } = await supabase
         .from('empleados')
         .select('nombre')
-        .eq('num_empleado', reporte.numero_empleado)
+        .eq('num_empleado', employeeNumber)
         .maybeSingle();
 
       if (empError || !emp) {
@@ -90,7 +110,7 @@ export function useIncidenciasTransporte() {
       const { data: reportesPrevios, error: rateError } = await supabase
         .from('incidencias_transporte')
         .select('id')
-        .eq('numero_empleado', reporte.numero_empleado)
+        .eq('numero_empleado', employeeNumber)
         .gte('created_at', doceHorasAtras)
         .limit(1);
 
@@ -103,7 +123,7 @@ export function useIncidenciasTransporte() {
       }
 
       // 3. Validar groserías en los comentarios con el filtro avanzado
-      if (reporte.comentarios && !validarComentario(reporte.comentarios, { modoSuave: true })) {
+      if (!validarComentario(comment, { modoSuave: true })) {
         throw new Error('El comentario contiene lenguaje inapropiado. Por favor, mantén un tono profesional.');
       }
 
@@ -131,6 +151,8 @@ export function useIncidenciasTransporte() {
         .insert([{
           ...reporte,
           ...imageFields,
+          numero_empleado: employeeNumber,
+          comentarios: comment,
           nombre_empleado: emp.nombre, // Sobrescribimos con el nombre de la BD
           status: 'nuevo'
         }]);

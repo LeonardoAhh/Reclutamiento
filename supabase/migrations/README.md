@@ -39,6 +39,7 @@ supabase db push
 | `030_profile_general_area_position_scope.sql` | Unifica las plantillas por Área + Puesto, conserva la sección en el histórico del empleado y evita duplicados entre turnos. | Perfil General |
 | `031_profiles_activity_security.sql` | Restringe la actividad completa del equipo a administradores y conserva la lectura del perfil propio. | Seguridad |
 | `032_transport_incident_image.sql` | Añade evidencia visual opcional a reportes de transporte mediante bucket privado, límite de 5 MB y lectura exclusiva para administradores. | Transporte |
+| `033_transport_incident_comment_guard.sql` | Exige comentarios de 1 a 500 caracteres en nuevas incidencias sin invalidar datos históricos. | Transporte |
 
 ## RLS
 

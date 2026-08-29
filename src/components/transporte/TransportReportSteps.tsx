@@ -6,6 +6,13 @@ import {
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { IncidentImageField } from "@/components/transporte/IncidentImageField";
 import { IncidentTypeField } from "@/components/transporte/IncidentTypeField";
+import {
+  sanitizeTransportReportEmployeeNumber,
+  TRANSPORT_REPORT_EMPLOYEE_NUMBER_MAX_LENGTH,
+} from "@/lib/transport-report-employee-number";
+import {
+  TRANSPORT_REPORT_COMMENT_MAX_LENGTH,
+} from "@/lib/transport-report-comment";
 
 export type ReportFieldErrors = Partial<
   Record<keyof NuevoReporte, string>
@@ -37,9 +44,11 @@ export function TransportTripStep({
         </label>
         <input
           id="num_emp"
+          name="numero_empleado"
           type="text"
           inputMode="numeric"
-          pattern="[0-9]*"
+          pattern="[0-9]{1,4}"
+          maxLength={TRANSPORT_REPORT_EMPLOYEE_NUMBER_MAX_LENGTH}
           required
           disabled={disabled}
           className="reporte-publico__input"
@@ -50,7 +59,10 @@ export function TransportTripStep({
             errors.numero_empleado ? "num-emp-error" : undefined
           }
           onChange={(event) =>
-            onFieldChange("numero_empleado", event.target.value)
+            onFieldChange(
+              "numero_empleado",
+              sanitizeTransportReportEmployeeNumber(event.target.value),
+            )
           }
         />
         {errors.numero_empleado && (
@@ -142,18 +154,31 @@ export function TransportIncidentStep({
           id="comentarios"
           className="reporte-publico__textarea"
           rows={3}
+          maxLength={TRANSPORT_REPORT_COMMENT_MAX_LENGTH}
           required
           disabled={disabled}
           placeholder="Detalles sobre lo ocurrido..."
           value={data.comentarios}
           aria-invalid={Boolean(errors.comentarios) || undefined}
           aria-describedby={
-            errors.comentarios ? "comentarios-error" : undefined
+            [
+              "comentarios-counter",
+              errors.comentarios ? "comentarios-error" : null,
+            ]
+              .filter(Boolean)
+              .join(" ")
           }
           onChange={(event) =>
             onFieldChange("comentarios", event.target.value)
           }
         />
+        <span
+          id="comentarios-counter"
+          className="reporte-publico__character-count"
+        >
+          {data.comentarios.length} de {TRANSPORT_REPORT_COMMENT_MAX_LENGTH}{" "}
+          caracteres
+        </span>
         {errors.comentarios && (
           <p id="comentarios-error" className="form-error-text">
             {errors.comentarios}
