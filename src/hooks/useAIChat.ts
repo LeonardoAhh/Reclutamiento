@@ -220,8 +220,17 @@ function buildConversationTitle(fileName: string, jobName: string): string {
 const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
-  content:
-    "¡Hola! Soy ViñoBot. ¿Qué perfil vamos a analizar?",
+  content: "¡Hola! 👋 Soy ViñoBot, tu asistente de reclutamiento.\n\n" +
+    "Puedo ayudarte con:\n" +
+    "📋 **Análisis de CV** según el puesto seleccionado\n" +
+    "🔍 **Identificar fortalezas** y aspectos por validar\n" +
+    "💡 **Evaluar compatibilidad** con la vacante\n" +
+    "📝 **Preparar preguntas de entrevista** con metodología STAR\n" +
+    "📊 **Respaldar conclusiones** con evidencias del CV\n\n" +
+    "**Para comenzar:**\n" +
+    "1. Selecciona el puesto deseado\n" +
+    "2. Adjunta el CV del candidato\n\n" +
+    "¿En qué puedo ayudarte hoy?"
 };
 
 export type JobsState = "idle" | "loading" | "ready" | "error";
