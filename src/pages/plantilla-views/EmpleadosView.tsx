@@ -240,7 +240,7 @@ export function EmpleadosView() {
       loading={loading && employees.length === 0}
       loadingLabel="Cargando empleados…"
     >
-      <section className="empleados config-page" id="page-empleados">
+      <section className="empleados" id="page-empleados">
       <section className="empleados__hero">
         <div />
         <div className="empleados__filters">

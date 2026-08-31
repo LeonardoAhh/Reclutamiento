@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import {
   CircleArrowUp,
   CircleCheckBig,
@@ -49,7 +50,6 @@ import {
   filterUnreservedVacancies,
 } from "@/lib/autoVacancies";
 import { notifyResult } from "@/lib/notify";
-import { isBoneyardBuild } from "@/lib/boneyard";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useVacancyRequests } from "@/hooks/useVacancyRequests";
 import { useCandidates } from "@/hooks/useCandidates";
@@ -105,14 +105,9 @@ export function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterArea, setFilterArea] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>(() =>
-    isBoneyardBuild() &&
-    new URLSearchParams(window.location.search).get("view") === "empleados"
-      ? "empleados"
-      : "general",
-  );
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(
-    () => !isBoneyardBuild(),
+    searchParams.get("view") === "empleados" ? "empleados" : "general",
   );
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
@@ -120,9 +115,17 @@ export function Dashboard() {
     puesto: string;
   } | null>(null);
 
-  const handleTabClick = (tab: typeof activeTab) => {
+  const handlePrimaryViewChange = (tab: "general" | "empleados") => {
     setActiveTab(tab);
-    setIsMobileMenuOpen(false);
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        if (tab === "empleados") next.set("view", "empleados");
+        else next.delete("view");
+        return next;
+      },
+      { replace: true },
+    );
   };
 
   // Employee Modal State
@@ -331,59 +334,62 @@ export function Dashboard() {
     empModalMode === null &&
     promoteTarget === null &&
     editTarget === null;
+  const primaryView = activeTab === "empleados" ? "empleados" : "general";
+
   return (
-    <div className="config-layout plantilla-layout">
-      <aside
-        className={`config-sidebar ${!isMobileMenuOpen ? "mobile-hidden" : ""}`}
-        aria-label="Menú de Plantilla"
-      >
-        <nav className="config-sidebar__nav" role="tablist">
+    <main className="plantilla-layout" aria-labelledby="plantilla-title">
+      <header className="plantilla-header">
+        <h1 id="plantilla-title" className="plantilla-header__title">
+          Plantilla
+        </h1>
+      </header>
+
+      <nav className="plantilla-navigation" aria-label="Vista de Plantilla">
+        <div className="plantilla-navigation__tabs">
           <button
-            role="tab"
-            id="tab-general"
-            aria-selected={activeTab === "general"}
-            aria-controls="panel-general"
-            className={`config-sidebar__link ${activeTab === "general" ? "active" : ""}`}
-            onClick={() => handleTabClick("general")}
+            type="button"
+            aria-pressed={primaryView === "general"}
+            className={`plantilla-navigation__tab${
+              primaryView === "general"
+                ? " plantilla-navigation__tab--active"
+                : ""
+            }`}
+            onClick={() => handlePrimaryViewChange("general")}
           >
-            <Network size={18} aria-hidden="true" />
+            <Network size="var(--icon-size-sm)" aria-hidden="true" />
             <span>Departamentos</span>
           </button>
           <button
-            role="tab"
-            id="tab-empleados"
-            aria-selected={activeTab === "empleados"}
-            aria-controls="panel-empleados"
-            className={`config-sidebar__link ${activeTab === "empleados" ? "active" : ""}`}
-            onClick={() => handleTabClick("empleados")}
+            type="button"
+            aria-pressed={primaryView === "empleados"}
+            className={`plantilla-navigation__tab${
+              primaryView === "empleados"
+                ? " plantilla-navigation__tab--active"
+                : ""
+            }`}
+            onClick={() => handlePrimaryViewChange("empleados")}
           >
-            <ContactRound size={18} aria-hidden="true" />
+            <ContactRound size="var(--icon-size-sm)" aria-hidden="true" />
             <span>Empleados</span>
           </button>
-        </nav>
-      </aside>
+        </div>
+      </nav>
 
-      <main
-        id={`panel-${activeTab}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${activeTab}`}
-        className={`config-main ${isMobileMenuOpen ? "mobile-hidden" : ""}`}
+      <section
+        className="plantilla-main"
         aria-label="Contenido principal"
       >
-        <button
-          className="btn-text config-mobile-back"
-          onClick={() => {
-            if (activeTab !== "general" && activeTab !== "empleados") {
-              setActiveTab("general");
-            } else {
-              setIsMobileMenuOpen(true);
-            }
-          }}
-          aria-label="Volver"
-        >
-          <ChevronLeft size={20} />
-          <span>Volver</span>
-        </button>
+        {activeTab !== "general" && activeTab !== "empleados" && (
+          <button
+            type="button"
+            className="btn-text plantilla-main__back"
+            onClick={() => handlePrimaryViewChange("general")}
+            aria-label="Volver a Departamentos"
+          >
+            <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
+            <span>Volver</span>
+          </button>
+        )}
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -402,9 +408,8 @@ export function Dashboard() {
               >
                 <header className="dashboard__hero dashboard-sidebar__hero">
                   <div className="dashboard__hero-content dashboard-sidebar__hero-content">
-                    <h1>Plantilla</h1>
-                    <div className="config-search dashboard-sidebar__search">
-                      <div className="config-search__wrapper dashboard-sidebar__search-wrapper">
+                    <div className="dashboard-sidebar__search">
+                      <div className="dashboard-sidebar__search-wrapper">
                         <label htmlFor="search-input" className="sr-only">
                           Buscar en la plantilla
                         </label>
@@ -652,7 +657,7 @@ export function Dashboard() {
                 onOpenComment={(area, seccion, puesto) =>
                   setCommentTarget({ area, seccion, puesto })
                 }
-                onBack={() => setActiveTab("general")}
+                onBack={() => handlePrimaryViewChange("general")}
                 getCoverageBadge={getCoverageBadge}
                 incapacidadPorSeccion={
                   activeTab !== "general"
@@ -729,12 +734,12 @@ export function Dashboard() {
           onClose={() => setVacancyReportOpen(false)}
           positions={positionCoverage}
         />
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
 
-/* ── Department Card (opens detail modal on click) ── */
+/* ── Department Card (opens detail view on click) ── */
 
 interface DepartmentCardProps {
   dept: DepartmentCoverage;
@@ -762,7 +767,6 @@ function DepartmentCard({
       <button
         className="dept-card__button"
         onClick={onOpen}
-        aria-haspopup="dialog"
         aria-label={`Ver detalle de ${dept.area}`}
         type="button"
       >

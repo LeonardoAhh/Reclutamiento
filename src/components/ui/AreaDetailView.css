@@ -656,16 +656,43 @@
 }
 
 /* ── Header alineado (título + botón "volver") ── */
+.area-detail-view {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
 .area-detail__header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start !important;
+  justify-content: flex-start;
   gap: var(--spacing-sm);
 }
 
-/* ── Hide back button on mobile (Dashboard provides global one) ── */
-@media (max-width: 1024px) {
-  .area-detail__back-btn {
-    display: none !important;
+.area-detail__title {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  overflow-wrap: anywhere;
+}
+
+/* Dashboard provides mobile back navigation. */
+.area-detail__header .area-detail__back-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .area-detail__header .area-detail__back-btn {
+    display: inline-flex;
   }
 }
 
