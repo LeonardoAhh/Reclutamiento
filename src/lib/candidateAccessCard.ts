@@ -1,5 +1,5 @@
-import { CANDIDATE_ACCESS_CARD_CONFIG } from './constants';
-import { toNaturalCase } from './utils';
+import { CANDIDATE_ACCESS_CARD_CONFIG } from "./constants";
+import { toNaturalCase } from "./utils";
 
 export interface CandidateAccessCardData {
   candidateName: string;
@@ -8,26 +8,105 @@ export interface CandidateAccessCardData {
   interviewDate?: string | null;
 }
 
-const CARD_LAYOUT = {
-  width: 1080,
-  height: 1350,
-  padding: 80,
-  headerHeight: 240,
-  cornerRadius: 48,
-  panelRadius: 32,
-  labelSize: 24,
-  bodySize: 42,
-  candidateSize: 64,
-  titleSize: 64,
-  subtitleSize: 24,
-  hairlineWidth: 3,
-  informationLineHeight: 56,
-} as const;
+const OUTPUT_WIDTH = 1080;
+const OUTPUT_HEIGHT = 1350;
+const RENDER_SCALE = 3;
+const CARD_WIDTH = OUTPUT_WIDTH / RENDER_SCALE;
+const CARD_HEIGHT = OUTPUT_HEIGHT / RENDER_SCALE;
+
+type CanvasContextWithLetterSpacing = CanvasRenderingContext2D & {
+  letterSpacing?: string;
+};
+
+interface CardTokens {
+  paper: string;
+  ink: string;
+  muted: string;
+  soft: string;
+  hairline: string;
+  fontFamily: string;
+  borderWidth: number;
+  radiusMd: number;
+  radiusLg: number;
+  spaceXs: number;
+  spaceSm: number;
+  spaceMd: number;
+  spaceLg: number;
+  spaceXl: number;
+  headingMdSize: number;
+  headingMdWeight: number;
+  headingMdLine: number;
+  headingMdTracking: string;
+  headingSmSize: number;
+  headingSmWeight: number;
+  headingSmLine: number;
+  headingSmTracking: string;
+  bodySmSize: number;
+  bodySmLine: number;
+  bodyStrongSize: number;
+  bodyStrongWeight: number;
+  bodyStrongLine: number;
+  captionSize: number;
+  captionWeight: number;
+  captionLine: number;
+}
+
+interface FittedText {
+  lines: string[];
+  size: number;
+  lineHeight: number;
+}
 
 function readCssToken(name: string): string {
-  const value = window.getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const value = window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
   if (!value) throw new Error(`Falta el token CSS ${name}.`);
   return value;
+}
+
+function readCssNumber(name: string): number {
+  const value = Number.parseFloat(readCssToken(name));
+  if (!Number.isFinite(value)) {
+    throw new Error(`El token CSS ${name} no contiene un valor numérico.`);
+  }
+  return value;
+}
+
+function getCardTokens(): CardTokens {
+  return {
+    paper: readCssToken("--color-document-paper"),
+    ink: readCssToken("--color-document-ink"),
+    muted: readCssToken("--color-document-muted"),
+    soft: readCssToken("--color-document-soft"),
+    hairline: readCssToken("--color-document-hairline"),
+    fontFamily: readCssToken("--font-body"),
+    borderWidth: readCssNumber("--border-width"),
+    radiusMd: readCssNumber("--rounded-md"),
+    radiusLg: readCssNumber("--rounded-lg"),
+    spaceXs: readCssNumber("--spacing-xs"),
+    spaceSm: readCssNumber("--spacing-sm"),
+    spaceMd: readCssNumber("--spacing-md"),
+    spaceLg: readCssNumber("--spacing-lg"),
+    spaceXl: readCssNumber("--spacing-xl"),
+    headingMdSize: readCssNumber("--type-heading-md-size"),
+    headingMdWeight: readCssNumber("--type-heading-md-weight"),
+    headingMdLine: readCssNumber("--type-heading-md-line"),
+    headingMdTracking: readCssToken("--type-heading-md-tracking"),
+    headingSmSize: readCssNumber("--type-heading-sm-size"),
+    headingSmWeight: readCssNumber("--type-heading-sm-weight"),
+    headingSmLine: readCssNumber("--type-heading-sm-line"),
+    headingSmTracking: readCssToken("--type-heading-sm-tracking"),
+    bodySmSize: readCssNumber("--type-body-sm-size"),
+    bodySmLine: readCssNumber("--type-body-sm-line"),
+    bodyStrongSize: readCssNumber("--type-body-strong-size"),
+    bodyStrongWeight: readCssNumber("--type-body-strong-weight"),
+    bodyStrongLine: readCssNumber("--type-body-strong-line"),
+    captionSize: readCssNumber("--type-caption-xs-size"),
+    captionWeight: readCssNumber("--type-caption-xs-weight"),
+    captionLine: readCssNumber("--type-caption-xs-line"),
+  };
 }
 
 function setFont(
@@ -35,10 +114,10 @@ function setFont(
   weight: number,
   size: number,
   family: string,
-  letterSpacing: string = '0px'
+  letterSpacing = "0px",
 ): void {
   context.font = `${weight} ${size}px ${family}`;
-  (context as any).letterSpacing = letterSpacing;
+  (context as CanvasContextWithLetterSpacing).letterSpacing = letterSpacing;
 }
 
 function roundedRect(
@@ -55,7 +134,12 @@ function roundedRect(
   context.lineTo(x + width - safeRadius, y);
   context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
   context.lineTo(x + width, y + height - safeRadius);
-  context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  context.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width - safeRadius,
+    y + height,
+  );
   context.lineTo(x + safeRadius, y + height);
   context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
   context.lineTo(x, y + safeRadius);
@@ -63,277 +147,489 @@ function roundedRect(
   context.closePath();
 }
 
+function splitLongWord(
+  context: CanvasRenderingContext2D,
+  word: string,
+  maxWidth: number,
+): string[] {
+  const parts: string[] = [];
+  let part = "";
+
+  for (const character of word) {
+    const nextPart = `${part}${character}`;
+    if (part && context.measureText(nextPart).width > maxWidth) {
+      parts.push(part);
+      part = character;
+    } else {
+      part = nextPart;
+    }
+  }
+
+  if (part) parts.push(part);
+  return parts;
+}
+
 function wrapText(
   context: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,
-  maxLines: number,
 ): string[] {
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return ['—'];
+  const sourceWords = text.trim().split(/\s+/).filter(Boolean);
+  if (sourceWords.length === 0) return ["—"];
 
-  const fitWithEllipsis = (value: string): string => {
-    let fitted = value.trim();
-    while (fitted && context.measureText(`${fitted}…`).width > maxWidth) {
-      fitted = fitted.slice(0, -1).trimEnd();
-    }
-    return `${fitted}…`;
-  };
-
+  const words = sourceWords.flatMap((word) =>
+    context.measureText(word).width > maxWidth
+      ? splitLongWord(context, word, maxWidth)
+      : [word],
+  );
   const lines: string[] = [];
-  let currentLine = '';
+  let currentLine = "";
 
-  for (let index = 0; index < words.length; index += 1) {
-    const word = words[index];
+  for (const word of words) {
     const candidateLine = currentLine ? `${currentLine} ${word}` : word;
     if (context.measureText(candidateLine).width <= maxWidth) {
       currentLine = candidateLine;
       continue;
     }
 
-    if (!currentLine) {
-      currentLine = fitWithEllipsis(word);
-      continue;
-    }
-
-    if (lines.length < maxLines - 1) {
-      lines.push(currentLine);
-      currentLine = word;
-      continue;
-    }
-
-    const remainingText = [currentLine, ...words.slice(index)].join(' ');
-    lines.push(fitWithEllipsis(remainingText));
-    return lines;
+    if (currentLine) lines.push(currentLine);
+    currentLine = word;
   }
 
-  if (currentLine && lines.length < maxLines) {
-    lines.push(
-      context.measureText(currentLine).width <= maxWidth
-        ? currentLine
-        : fitWithEllipsis(currentLine),
-    );
-  }
-
+  if (currentLine) lines.push(currentLine);
   return lines;
 }
 
-function drawWrappedText(
+function fitWrappedText(
   context: CanvasRenderingContext2D,
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number,
-  lineHeight: number,
-  maxLines: number,
-): number {
-  const lines = wrapText(context, text, maxWidth, maxLines);
-  lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight));
-  return lines.length;
+  options: {
+    text: string;
+    maxWidth: number;
+    maxLines: number;
+    initialSize: number;
+    minimumSize: number;
+    weight: number;
+    lineRatio: number;
+    fontFamily: string;
+    tracking?: string;
+  },
+): FittedText {
+  const {
+    text,
+    maxWidth,
+    maxLines,
+    initialSize,
+    minimumSize,
+    weight,
+    lineRatio,
+    fontFamily,
+    tracking = "0px",
+  } = options;
+
+  for (let size = initialSize; size >= minimumSize; size -= 1) {
+    setFont(context, weight, size, fontFamily, tracking);
+    const lines = wrapText(context, text, maxWidth);
+    if (lines.length <= maxLines || size === minimumSize) {
+      return { lines, size, lineHeight: size * lineRatio };
+    }
+  }
+
+  return { lines: [text], size: minimumSize, lineHeight: minimumSize * lineRatio };
 }
 
-function drawInformationBlock(
+function drawTextLines(
+  context: CanvasRenderingContext2D,
+  text: FittedText,
+  x: number,
+  y: number,
+  color: string,
+  weight: number,
+  fontFamily: string,
+  tracking = "0px",
+): number {
+  context.fillStyle = color;
+  setFont(context, weight, text.size, fontFamily, tracking);
+  text.lines.forEach((line, index) => {
+    context.fillText(line, x, y + index * text.lineHeight);
+  });
+  return y + text.lines.length * text.lineHeight;
+}
+
+function drawLabel(
+  context: CanvasRenderingContext2D,
+  label: string,
+  x: number,
+  y: number,
+  tokens: CardTokens,
+): number {
+  context.fillStyle = tokens.muted;
+  setFont(
+    context,
+    tokens.bodyStrongWeight,
+    tokens.captionSize,
+    tokens.fontFamily,
+  );
+  context.fillText(label, x, y);
+  return y + tokens.captionSize * tokens.captionLine;
+}
+
+function drawLabeledValue(
   context: CanvasRenderingContext2D,
   options: {
     label: string;
     value: string;
+    x: number;
     y: number;
-    textColor: string;
-    mutedColor: string;
-    fontFamily: string;
-    maxLines?: number;
+    maxWidth: number;
+    initialSize: number;
+    minimumSize: number;
+    maxLines: number;
+    weight: number;
+    lineRatio: number;
+    tracking?: string;
+    tokens: CardTokens;
   },
-): void {
-  const { padding, width, labelSize, bodySize, informationLineHeight } = CARD_LAYOUT;
-  const { label, value, y, textColor, mutedColor, fontFamily, maxLines = 2 } = options;
-
-  context.fillStyle = mutedColor;
-  setFont(context, 600, labelSize, fontFamily, '+0.5px');
-  context.fillText(label.toUpperCase(), padding, y);
-
-  context.fillStyle = textColor;
-  setFont(context, 600, bodySize, fontFamily, '-0.5px');
-  drawWrappedText(
-    context,
+): number {
+  const {
+    label,
     value,
-    padding,
-    y + 54,
-    width - padding * 2,
-    informationLineHeight,
+    x,
+    y,
+    maxWidth,
+    initialSize,
+    minimumSize,
     maxLines,
+    weight,
+    lineRatio,
+    tracking = "0px",
+    tokens,
+  } = options;
+  const valueTop = drawLabel(context, label, x, y, tokens) + tokens.spaceXs;
+  const fittedValue = fitWrappedText(context, {
+    text: value,
+    maxWidth,
+    maxLines,
+    initialSize,
+    minimumSize,
+    weight,
+    lineRatio,
+    fontFamily: tokens.fontFamily,
+    tracking,
+  });
+
+  return drawTextLines(
+    context,
+    fittedValue,
+    x,
+    valueTop,
+    tokens.ink,
+    weight,
+    tokens.fontFamily,
+    tracking,
   );
 }
 
+function drawHeader(
+  context: CanvasRenderingContext2D,
+  tokens: CardTokens,
+): void {
+  const company = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle,
+    maxWidth: CARD_WIDTH - tokens.spaceXl * 2,
+    maxLines: 1,
+    initialSize: tokens.captionSize,
+    minimumSize: tokens.captionSize,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  drawTextLines(
+    context,
+    company,
+    tokens.spaceXl,
+    tokens.spaceLg,
+    tokens.muted,
+    tokens.bodyStrongWeight,
+    tokens.fontFamily,
+  );
+
+  const titleTop = tokens.spaceLg + company.lineHeight + tokens.spaceSm;
+  context.fillStyle = tokens.ink;
+  setFont(
+    context,
+    tokens.headingSmWeight,
+    tokens.headingSmSize,
+    tokens.fontFamily,
+    tokens.headingSmTracking,
+  );
+  context.fillText(
+    CANDIDATE_ACCESS_CARD_CONFIG.cardTitle,
+    tokens.spaceXl,
+    titleTop,
+  );
+
+  const dividerY =
+    titleTop + tokens.headingSmSize * tokens.headingSmLine + tokens.spaceMd;
+  context.strokeStyle = tokens.hairline;
+  context.lineWidth = tokens.borderWidth;
+  context.beginPath();
+  context.moveTo(tokens.spaceXl, dividerY);
+  context.lineTo(CARD_WIDTH - tokens.spaceXl, dividerY);
+  context.stroke();
+}
+
+function drawLocation(
+  context: CanvasRenderingContext2D,
+  y: number,
+  tokens: CardTokens,
+): number {
+  const panelX = tokens.spaceXl;
+  const panelWidth = CARD_WIDTH - tokens.spaceXl * 2;
+  const innerX = panelX + tokens.spaceMd;
+  const innerWidth = panelWidth - tokens.spaceMd * 2;
+  const name = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.locationName,
+    maxWidth: innerWidth,
+    maxLines: 1,
+    initialSize: tokens.bodyStrongSize,
+    minimumSize: tokens.bodySmSize,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.bodyStrongLine,
+    fontFamily: tokens.fontFamily,
+  });
+  const address = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.address,
+    maxWidth: innerWidth,
+    maxLines: 2,
+    initialSize: tokens.captionSize,
+    minimumSize: tokens.captionSize,
+    weight: tokens.captionWeight,
+    lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  const labelHeight = tokens.captionSize * tokens.captionLine;
+  const panelHeight =
+    tokens.spaceSm * 2 +
+    labelHeight +
+    tokens.spaceXs +
+    name.lines.length * name.lineHeight +
+    tokens.spaceXs +
+    address.lines.length * address.lineHeight;
+
+  context.fillStyle = tokens.soft;
+  roundedRect(
+    context,
+    panelX,
+    y,
+    panelWidth,
+    panelHeight,
+    tokens.radiusMd,
+  );
+  context.fill();
+
+  let contentY = y + tokens.spaceSm;
+  contentY =
+    drawLabel(
+      context,
+      CANDIDATE_ACCESS_CARD_CONFIG.locationLabel,
+      innerX,
+      contentY,
+      tokens,
+    ) + tokens.spaceXs;
+  contentY = drawTextLines(
+    context,
+    name,
+    innerX,
+    contentY,
+    tokens.ink,
+    tokens.bodyStrongWeight,
+    tokens.fontFamily,
+  );
+  contentY += tokens.spaceXs;
+  drawTextLines(
+    context,
+    address,
+    innerX,
+    contentY,
+    tokens.muted,
+    tokens.captionWeight,
+    tokens.fontFamily,
+  );
+
+  return y + panelHeight;
+}
+
+function drawFooter(
+  context: CanvasRenderingContext2D,
+  tokens: CardTokens,
+): void {
+  const maxWidth = CARD_WIDTH - tokens.spaceXl * 2;
+  const identification = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
+    maxWidth,
+    maxLines: 1,
+    initialSize: tokens.captionSize,
+    minimumSize: tokens.captionSize,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  const access = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.accessNotice,
+    maxWidth,
+    maxLines: 1,
+    initialSize: tokens.captionSize,
+    minimumSize: tokens.captionSize,
+    weight: tokens.captionWeight,
+    lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  const contentHeight =
+    identification.lineHeight + tokens.spaceXs + access.lineHeight;
+  const contentTop = CARD_HEIGHT - tokens.spaceXs - contentHeight;
+
+  context.strokeStyle = tokens.hairline;
+  context.lineWidth = tokens.borderWidth;
+  context.beginPath();
+  context.moveTo(tokens.spaceXl, contentTop - tokens.spaceSm);
+  context.lineTo(CARD_WIDTH - tokens.spaceXl, contentTop - tokens.spaceSm);
+  context.stroke();
+
+  context.textAlign = "center";
+  let textY = drawTextLines(
+    context,
+    identification,
+    CARD_WIDTH / 2,
+    contentTop,
+    tokens.ink,
+    tokens.bodyStrongWeight,
+    tokens.fontFamily,
+  );
+  textY += tokens.spaceXs;
+  drawTextLines(
+    context,
+    access,
+    CARD_WIDTH / 2,
+    textY,
+    tokens.muted,
+    tokens.captionWeight,
+    tokens.fontFamily,
+  );
+  context.textAlign = "left";
+}
+
 function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
-  const { width, height, padding, headerHeight, cornerRadius, panelRadius } = CARD_LAYOUT;
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = document.createElement("canvas");
+  canvas.width = OUTPUT_WIDTH;
+  canvas.height = OUTPUT_HEIGHT;
 
-  const context = canvas.getContext('2d');
-  if (!context) throw new Error('No fue posible generar la imagen del pase.');
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("No fue posible generar la imagen del pase.");
 
-  const primary = readCssToken('--color-primary');
-  const surface = readCssToken('--color-surface');
-  const surfaceSoft = readCssToken('--color-canvas-soft');
-  const ink = readCssToken('--color-ink');
-  const muted = readCssToken('--color-muted');
-  const onPrimary = readCssToken('--color-on-primary');
-  const hairline = readCssToken('--color-hairline');
-  const fontFamily = readCssToken('--font-body');
+  const tokens = getCardTokens();
+  const contentWidth = CARD_WIDTH - tokens.spaceXl * 2;
   const displayCandidateName = toNaturalCase(data.candidateName, {
+    preserveAcronyms: false,
+  });
+  const displayRecruiterName = toNaturalCase(data.recruiterName, {
     preserveAcronyms: false,
   });
   const displayPosition = toNaturalCase(data.position);
 
+  context.scale(RENDER_SCALE, RENDER_SCALE);
+  context.textBaseline = "top";
   context.save();
-  // Main card clip
-  roundedRect(context, 0, 0, width, height, cornerRadius);
+  roundedRect(
+    context,
+    0,
+    0,
+    CARD_WIDTH,
+    CARD_HEIGHT,
+    tokens.radiusLg,
+  );
   context.clip();
+  context.fillStyle = tokens.paper;
+  context.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
 
-  // Background
-  context.fillStyle = surface;
-  context.fillRect(0, 0, width, height);
-
-  // Header (Solid ink block - Inverts with theme: black in light, white in dark)
-  context.fillStyle = ink;
-  context.fillRect(0, 0, width, headerHeight);
-
-  // Header Typography
-  context.fillStyle = surface;
-  setFont(context, 600, CARD_LAYOUT.subtitleSize, fontFamily, '1px');
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle, padding, 80);
-  setFont(context, 700, CARD_LAYOUT.titleSize, fontFamily, '-2.5px');
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.cardTitle, padding, 155);
-
-  // "1 USO" Badge (Pill shaped)
-  const badgeWidth = 140;
-  const badgeHeight = 56;
-  const badgeX = width - padding - badgeWidth;
-  const badgeY = 60;
-  context.strokeStyle = surface;
-  context.lineWidth = CARD_LAYOUT.hairlineWidth;
-  roundedRect(context, badgeX, badgeY, badgeWidth, badgeHeight, 9999);
-  context.stroke();
-  context.textAlign = 'center';
-  setFont(context, 600, 22, fontFamily, '1px');
-  context.fillText('1 USO', badgeX + badgeWidth / 2, badgeY + 38);
-
-  // Candidate Name
-  context.textAlign = 'center';
-  context.fillStyle = muted;
-  setFont(context, 600, CARD_LAYOUT.labelSize, fontFamily, '1px');
-  context.fillText('CANDIDATO(A)', width / 2, 320);
-
-  context.fillStyle = ink;
-  setFont(context, 700, CARD_LAYOUT.candidateSize, fontFamily, '-1.5px');
-  const candidateLines = wrapText(context, displayCandidateName, width - padding * 2, 2);
-  candidateLines.forEach((line, index) => {
-    context.fillText(line, width / 2, 400 + index * 70);
-  });
-  context.textAlign = 'left';
-
-  // Divider
-  context.strokeStyle = hairline;
-  context.lineWidth = CARD_LAYOUT.hairlineWidth;
-  context.beginPath();
-  context.moveTo(padding, 510);
-  context.lineTo(width - padding, 510);
-  context.stroke();
-
-  // Information Blocks
-  drawInformationBlock(context, {
-    label: 'Acude con',
-    value: data.recruiterName,
-    y: 570,
-    textColor: ink,
-    mutedColor: muted,
-    fontFamily,
+  drawHeader(context, tokens);
+  drawLabeledValue(context, {
+    label: CANDIDATE_ACCESS_CARD_CONFIG.candidateLabel,
+    value: displayCandidateName,
+    x: tokens.spaceXl,
+    y: 92,
+    maxWidth: contentWidth,
+    initialSize: tokens.headingMdSize,
+    minimumSize: tokens.bodyStrongSize,
+    maxLines: 2,
+    weight: tokens.headingMdWeight,
+    lineRatio: tokens.headingMdLine,
+    tracking: tokens.headingMdTracking,
+    tokens,
   });
 
-  drawInformationBlock(context, {
-    label: 'Puesto',
+  drawLabeledValue(context, {
+    label: CANDIDATE_ACCESS_CARD_CONFIG.positionLabel,
     value: displayPosition,
-    y: 730,
-    textColor: ink,
-    mutedColor: muted,
-    fontFamily,
+    x: tokens.spaceXl,
+    y: 174,
+    maxWidth: contentWidth,
+    initialSize: tokens.bodyStrongSize,
+    minimumSize: tokens.captionSize,
+    maxLines: 1,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.bodyStrongLine,
+    tokens,
   });
 
+  const columnGap = tokens.spaceMd;
+  const dateColumnWidth = (contentWidth - columnGap) / 3;
+  const recruiterColumnWidth = contentWidth - columnGap - dateColumnWidth;
+  const detailsTop = 246;
   if (data.interviewDate) {
-    drawInformationBlock(context, {
-      label: 'Fecha de entrevista',
+    drawLabeledValue(context, {
+      label: CANDIDATE_ACCESS_CARD_CONFIG.dateLabel,
       value: data.interviewDate,
-      y: 890,
-      textColor: ink,
-      mutedColor: muted,
-      fontFamily,
+      x: tokens.spaceXl,
+      y: detailsTop,
+      maxWidth: dateColumnWidth,
+      initialSize: tokens.bodySmSize,
+      minimumSize: tokens.captionSize,
       maxLines: 1,
+      weight: tokens.bodyStrongWeight,
+      lineRatio: tokens.bodySmLine,
+      tokens,
     });
   }
+  drawLabeledValue(context, {
+    label: CANDIDATE_ACCESS_CARD_CONFIG.recruiterLabel,
+    value: displayRecruiterName,
+    x: data.interviewDate
+      ? tokens.spaceXl + dateColumnWidth + columnGap
+      : tokens.spaceXl,
+    y: detailsTop,
+    maxWidth: data.interviewDate ? recruiterColumnWidth : contentWidth,
+    initialSize: tokens.bodySmSize,
+    minimumSize: tokens.captionSize,
+    maxLines: 1,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.bodySmLine,
+    tokens,
+  });
 
-  // Location panel with Notion-style micro-shadow
-  const locationTop = data.interviewDate ? 1000 : 890;
-  const locationHeight = 196;
-  
-  context.save();
-  context.shadowColor = 'rgba(0, 0, 0, 0.05)';
-  context.shadowBlur = 12;
-  context.shadowOffsetY = 4;
-  context.fillStyle = surfaceSoft;
-  roundedRect(context, padding, locationTop, width - padding * 2, locationHeight, panelRadius);
-  context.fill();
+  drawLocation(context, 298, tokens);
+  drawFooter(context, tokens);
   context.restore();
-  
-  context.strokeStyle = hairline;
-  context.lineWidth = CARD_LAYOUT.hairlineWidth;
-  context.stroke();
 
-  // Location text
-  context.fillStyle = muted;
-  setFont(context, 600, 22, fontFamily, '1px');
-  context.fillText('UBICACIÓN', padding + 36, locationTop + 52);
-
-  context.fillStyle = ink;
-  setFont(context, 600, 32, fontFamily, '-0.5px');
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.locationName, padding + 36, locationTop + 104);
-  setFont(context, 400, 27, fontFamily, '0px');
-  drawWrappedText(
+  context.strokeStyle = tokens.hairline;
+  context.lineWidth = tokens.borderWidth;
+  roundedRect(
     context,
-    CANDIDATE_ACCESS_CARD_CONFIG.address,
-    padding + 36,
-    locationTop + 150,
-    width - padding * 2 - 72,
-    36,
-    2,
+    tokens.borderWidth / 2,
+    tokens.borderWidth / 2,
+    CARD_WIDTH - tokens.borderWidth,
+    CARD_HEIGHT - tokens.borderWidth,
+    tokens.radiusLg,
   );
-
-  // Bottom notices
-  const noticeTop = data.interviewDate ? 1250 : 1230;
-  context.strokeStyle = hairline;
-  context.beginPath();
-  context.moveTo(padding, noticeTop - 36);
-  context.lineTo(width - padding, noticeTop - 36);
-  context.stroke();
-
-  context.textAlign = 'center';
-  context.fillStyle = ink;
-  setFont(context, 600, 24, fontFamily, '-0.2px');
-  context.fillText(CANDIDATE_ACCESS_CARD_CONFIG.accessNotice, width / 2, noticeTop + 12);
-  context.fillStyle = muted;
-  setFont(context, 400, 22, fontFamily, '0px');
-  context.fillText(
-    CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
-    width / 2,
-    noticeTop + 50,
-  );
-  context.textAlign = 'left';
-  context.restore();
-
-  // Outer card stroke
-  context.strokeStyle = hairline;
-  context.lineWidth = CARD_LAYOUT.hairlineWidth * 2; // double width because stroke is centered
-  roundedRect(context, 0, 0, width, height, cornerRadius);
   context.stroke();
 
   return canvas;
@@ -346,17 +642,17 @@ export async function createCandidateAccessCardBlob(
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) resolve(blob);
-      else reject(new Error('No fue posible convertir el pase a imagen.'));
-    }, 'image/png');
+      else reject(new Error("No fue posible convertir el pase a imagen."));
+    }, "image/png");
   });
 }
 
 export function getCandidateAccessCardFilename(candidateName: string): string {
   const safeName = candidateName
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
     .toLowerCase();
-  return `${CANDIDATE_ACCESS_CARD_CONFIG.filePrefix}-${safeName || 'candidato'}.png`;
+  return `${CANDIDATE_ACCESS_CARD_CONFIG.filePrefix}-${safeName || "candidato"}.png`;
 }

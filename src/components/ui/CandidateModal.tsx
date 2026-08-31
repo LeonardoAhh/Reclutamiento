@@ -134,7 +134,7 @@ export function CandidateModal({
     data: CandidateAccessCardData;
     phone: string;
   } | null>(null);
-  
+
   // UX State
   const [touched, setTouched] = useState<Record<keyof FormState, boolean>>({
     nombre: false, telefono: false, email: false, puesto: false, area: false, seccion: false, status: false, reclutador: false, source: false, cv_url: false, fecha_aplicacion: false, fecha_cita: false, is_starlite: false
@@ -262,20 +262,20 @@ export function CandidateModal({
 
   // Validations
   const isValidName = (name: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name) && name.trim().split(/\s+/).length >= 2;
-  const nombreError = !form.nombre.trim() 
-    ? 'El nombre completo es obligatorio.' 
-    : !isValidName(form.nombre) 
-      ? 'Debe contener al menos nombre y apellido (solo letras).' 
+  const nombreError = !form.nombre.trim()
+    ? 'El nombre completo es obligatorio.'
+    : !isValidName(form.nombre)
+      ? 'Debe contener al menos nombre y apellido (solo letras).'
       : null;
 
-  const telefonoError = telDigits.length === 0 
-    ? 'El teléfono es obligatorio.' 
-    : telDigits.length !== 10 
-      ? 'Debe tener exactamente 10 dígitos.' 
-      : isSequentialOrRepeated(telDigits) 
+  const telefonoError = telDigits.length === 0
+    ? 'El teléfono es obligatorio.'
+    : telDigits.length !== 10
+      ? 'Debe tener exactamente 10 dígitos.'
+      : isSequentialOrRepeated(telDigits)
         ? 'El número de teléfono parece ser falso o incorrecto.'
-        : (duplicateSource && !overrideDuplicate) 
-          ? `Teléfono duplicado en ${duplicateSource}` 
+        : (duplicateSource && !overrideDuplicate)
+          ? `Teléfono duplicado en ${duplicateSource}`
           : null;
 
   const isValidEmail = (email: string) => email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -451,51 +451,7 @@ export function CandidateModal({
   const fieldsContacto = (
     <>
       <div className="form-group form-group--span-2">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4px' }}>
-          <label htmlFor="cand-nombre" style={{ marginBottom: 0 }}>Nombre completo <span className="text-error">*</span></label>
-          {!isEdit && (
-            <button
-              type="button"
-              className="btn-ghost"
-              style={{ fontSize: 'var(--type-caption-sm-size)', padding: '2px 8px', height: 'auto', minHeight: '24px', color: 'var(--color-primary)' }}
-              onClick={async () => {
-                try {
-                  const text = await navigator.clipboard.readText();
-                  if (!text) return;
-                  let newForm = { ...form };
-                  let extracted = false;
-                  
-                  const phoneMatch = text.match(/\b\d{10}\b/);
-                  if (phoneMatch) { newForm.telefono = phoneMatch[0]; extracted = true; }
-                  
-                  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-                  if (emailMatch) { newForm.email = emailMatch[0]; extracted = true; }
-                  
-                  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-                  if (lines.length > 0 && !lines[0].includes('@') && !/\d{5,}/.test(lines[0])) {
-                    newForm.nombre = lines[0].toUpperCase();
-                    extracted = true;
-                  }
-
-                  if (extracted) {
-                    setForm(newForm);
-                    setTouched({ ...touched, telefono: true, email: true, nombre: true });
-                    toast.success({ title: 'Datos extraídos del portapapeles' });
-                  } else {
-                    toast.info({ title: 'No se encontraron datos reconocibles' });
-                  }
-                } catch (error) {
-                  console.error(error);
-                  toast.error({ title: 'No se pudo acceder al portapapeles' });
-                }
-              }}
-              title="Autocompletar formulario copiando texto de CV o WhatsApp"
-            >
-              <ClipboardList size={14} style={{ marginRight: '4px' }} />
-              Pegado inteligente
-            </button>
-          )}
-        </div>
+        <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
         <input
           id="cand-nombre"
           type="text"

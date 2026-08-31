@@ -875,12 +875,17 @@ export const ONBOARDING_DOCUMENT_CONFIG = {
  * siempre utilicen la misma fuente de verdad.
  */
 export const CANDIDATE_ACCESS_CARD_CONFIG = {
-  cardTitle: "PASE DE ENTREVISTA",
-  cardSubtitle: "VIÑOPLASTIC INYECCIÓN S.A. DE C.V.",
+  cardTitle: "Pase de entrevista",
+  cardSubtitle: "VIÑOPLASTIC",
+  candidateLabel: "Candidato(a)",
+  positionLabel: "Puesto",
+  dateLabel: "Fecha",
+  recruiterLabel: "Acude con",
+  locationLabel: "Ubicación",
   accessNotice: "Válido para un solo acceso · Personal e intransferible",
   identificationNotice: "Presenta tu INE original en caseta de vigilancia",
   locationName: "Parque Industrial Querétaro",
-  address: "Av. La Montaña 98, 76220 Santa Rosa Jáuregui, Qro.",
+  address: "Av. La Montaña 98,Santa Rosa Jáuregui, Qro.",
   filePrefix: "pase-entrevista",
   shareTitle: "Pase de entrevista",
   whatsappCountryCode: "52",
