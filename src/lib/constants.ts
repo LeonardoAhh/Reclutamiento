@@ -768,7 +768,7 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  availableTitle: "Actualización disponible",
+  availableTitle: "¡We are ready!",
   availableHint:
     "Guarda cualquier cambio pendiente antes de actualizar.",
   actionLabel: "Actualizar ahora",
@@ -779,7 +779,7 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   registrationErrorTitle: "Actualizaciones no disponibles",
   registrationErrorHint:
     "La aplicación seguirá funcionando, pero no pudo comprobar nuevas versiones.",
-  appliedTitle: "Actualización aplicada",
+  appliedTitle: "¡We are ready!",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
