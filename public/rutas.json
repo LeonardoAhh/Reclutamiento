@@ -2743,5 +2743,14 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA ",
     "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+  },
+  {
+    "numero empleado": "4357",
+    "nombre": "MORALES OVALLE MARTIN",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN EL OXXO DE JUNCOS"
   }
 ]
