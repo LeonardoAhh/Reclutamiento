@@ -9,8 +9,6 @@ import type { Profile } from '@/hooks/useAuth';
 export const APP_ROLES = [
   'admin',
   'reclutador',
-  'gerente',
-  'auditor',
 ] as const;
 
 export type AppRole = (typeof APP_ROLES)[number];
@@ -19,8 +17,6 @@ export type AppRole = (typeof APP_ROLES)[number];
 export const ROLE_LABEL: Record<AppRole, string> = {
   admin: 'Administrador',
   reclutador: 'Reclutador',
-  gerente: 'Gerente',
-  auditor: 'Auditor',
 };
 
 export interface CreateUserInput {
@@ -77,11 +73,10 @@ export async function createUser(
       // Pasa cuando el JWT ya no es válido para el proyecto. Traducimos a
       // un mensaje accionable.
       if (resp.status === 401) {
-        return {
-          ok: false,
-          message:
-            'Sesión rechazada por Supabase (401). Cierra sesión y vuelve a iniciar.',
-        };
+      return {
+      ok: false,
+      message: 'Tu sesión ha caducado. Vuelve a iniciar sesión para continuar.',
+      };
       }
       try {
         const parsed = (await resp.clone().json()) as {
@@ -147,7 +142,7 @@ export async function updateProfileRole(
     return {
       ok: false,
       message:
-        'No se actualizó ningún registro. Verifica que tu cuenta tenga rol admin.',
+        'No se actualizó ningún registro. Verifica que tu cuenta tenga el rol correcto.',
     };
   }
   return { ok: true };

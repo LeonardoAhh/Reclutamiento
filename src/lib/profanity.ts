@@ -113,7 +113,7 @@ function validarComentario(
   if (regex.test(textoNormalizado)) {
     if (modoSuave) return false;
     throw new Error(
-      'El comentario contiene lenguaje inapropiado. Por favor, mantén un tono profesional.'
+      'El comentario contiene lenguaje inapropiado.'
     );
   }
 

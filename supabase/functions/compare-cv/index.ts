@@ -1,4 +1,15 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+type EdgeRuntime = {
+  env: {
+    get(name: string): string | undefined;
+  };
+  serve(
+    handler: (request: Request) => Response | Promise<Response>,
+  ): void;
+};
+
+const edgeRuntime = (
+  globalThis as typeof globalThis & { Deno: EdgeRuntime }
+).Deno;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +22,14 @@ const GROQ_OPEN_MODELS = [
   "openai/gpt-oss-20b",
 ] as const;
 const OPENROUTER_FREE_MODEL = "openrouter/free";
+
+interface OpenAICompatibleProvider {
+  name: string;
+  apiKey: string | undefined;
+  url: string;
+  models: readonly string[];
+  extraHeaders: Record<string, string>;
+}
 
 type StreamPayload =
   | { type: "delta"; text: string }
@@ -200,7 +219,7 @@ function isUsableModelResponse(
   }
 }
 
-serve(async (req) => {
+edgeRuntime.serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -361,7 +380,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
 
     if (!isInitialAnalysis && stream === true) {
       const streamErrors: string[] = [];
-      const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+      const geminiApiKey = edgeRuntime.env.get("GEMINI_API_KEY");
 
       if (geminiApiKey) {
         try {
@@ -389,24 +408,24 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
         }
       }
 
-      const openAIProviders = [
+      const openAIProviders: OpenAICompatibleProvider[] = [
         {
           name: "Deepseek",
-          apiKey: Deno.env.get("DEEPSEEK_API_KEY"),
+          apiKey: edgeRuntime.env.get("DEEPSEEK_API_KEY"),
           url: "https://api.deepseek.com/chat/completions",
           models: ["deepseek-chat"],
           extraHeaders: {},
         },
         {
           name: "Groq",
-          apiKey: Deno.env.get("GROQ_API_KEY"),
+          apiKey: edgeRuntime.env.get("GROQ_API_KEY"),
           url: "https://api.groq.com/openai/v1/chat/completions",
           models: [...GROQ_OPEN_MODELS],
           extraHeaders: {},
         },
         {
           name: "OpenRouter",
-          apiKey: Deno.env.get("OPENROUTER_API_KEY"),
+          apiKey: edgeRuntime.env.get("OPENROUTER_API_KEY"),
           url: "https://openrouter.ai/api/v1/chat/completions",
           models: [OPENROUTER_FREE_MODEL],
           extraHeaders: {
@@ -462,7 +481,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
 
     // 1. TRY GEMINI
     try {
-      const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+      const geminiApiKey = edgeRuntime.env.get("GEMINI_API_KEY");
       if (geminiApiKey) {
         const payload = {
           systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -498,7 +517,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
     // 2. TRY DEEPSEEK
     if (!analysisResult) {
       try {
-        const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY");
+        const deepseekApiKey = edgeRuntime.env.get("DEEPSEEK_API_KEY");
         if (deepseekApiKey) {
           const payload = {
             model: "deepseek-chat",
@@ -536,7 +555,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
 
     // 3. TRY OPEN-WEIGHT MODELS ON GROQ
     if (!analysisResult) {
-      const groqApiKey = Deno.env.get("GROQ_API_KEY");
+      const groqApiKey = edgeRuntime.env.get("GROQ_API_KEY");
       if (groqApiKey) {
         for (const model of GROQ_OPEN_MODELS) {
           if (analysisResult) break;
@@ -583,7 +602,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
     // 4. TRY OPENROUTER'S FREE OPEN-MODEL ROUTER
     if (!analysisResult) {
       try {
-        const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
+        const openRouterApiKey = edgeRuntime.env.get("OPENROUTER_API_KEY");
         if (openRouterApiKey) {
           const payload = {
             model: OPENROUTER_FREE_MODEL,

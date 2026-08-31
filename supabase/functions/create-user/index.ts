@@ -46,7 +46,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 const AUTH_EMAIL_DOMAIN = 'reclutamiento.local';
 
-const ALLOWED_ROLES = ['admin', 'reclutador', 'gerente', 'auditor'] as const;
+const ALLOWED_ROLES = ['admin', 'reclutador'] as const;
 type AppRole = (typeof ALLOWED_ROLES)[number];
 
 const CORS_HEADERS: Record<string, string> = {
@@ -86,14 +86,19 @@ Deno.serve(async (req: Request) => {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!supabaseUrl || !anonKey || !serviceKey) {
-    return jsonResponse(
-      {
-        ok: false,
-        message:
-          'Configuración incompleta: faltan SUPABASE_URL / ANON_KEY / SERVICE_ROLE_KEY en los secrets de la función.',
-      },
-      500
-    );
+  console.error('Missing Supabase configuration:', {
+  supabaseUrl: !supabaseUrl,
+  anonKey: !anonKey,
+  serviceKey: !serviceKey,
+  });
+
+  return jsonResponse(
+    {
+      ok: false,
+      message: 'Error interno del servidor. Por favor, inténtalo más tarde.',
+    },
+    500
+  );
   }
 
   // ── Auth del caller ────────────────────────────────────────────────────
