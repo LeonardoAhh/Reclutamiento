@@ -107,7 +107,7 @@ export function Pipeline() {
   const isAdmin = profile?.role === 'admin';
 
   const { addSingleEmployee } = useSupabaseData();
-  const { coverVacancyForEmployee } = useVacancyRequests();
+  const { coverVacancyForEmployee } = useVacancyRequests({ loadHistory: false });
 
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);

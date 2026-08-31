@@ -80,7 +80,7 @@ export function Dashboard() {
     purgeAllEmployees,
   } = useSupabaseData();
 
-  const { coverVacancyForEmployee } = useVacancyRequests();
+  const { coverVacancyForEmployee } = useVacancyRequests({ loadHistory: false });
   const { positions, createPosition } = usePositions();
   const { bajas } = useBajas();
   // Pipeline completo. Se pasa a `AreaDetailModal` para contar candidatos

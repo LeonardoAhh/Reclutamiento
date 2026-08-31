@@ -4,6 +4,30 @@ import { Activity, ActivityProof, ActivityStatus } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
 
+const ACTIVITY_SELECT = `
+  id,
+  titulo,
+  descripcion,
+  asignado_a,
+  estado,
+  tipo,
+  reference_image,
+  created_at,
+  updated_at,
+  asignado_a_profile:profiles!activities_asignado_a_fkey(display_name, username)
+`;
+
+const ACTIVITY_PROOF_SELECT =
+  'id, activity_id, file_url, file_name, created_at';
+
+function sortActivitiesByCreatedAt(rows: Activity[]): Activity[] {
+  return [...rows].sort((left, right) => {
+    const leftTime = left.created_at ? new Date(left.created_at).getTime() : 0;
+    const rightTime = right.created_at ? new Date(right.created_at).getTime() : 0;
+    return rightTime - leftTime;
+  });
+}
+
 export function useActivities() {
   const { profile } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -13,7 +37,10 @@ export function useActivities() {
     if (!profile) return;
     setLoading(true);
     try {
-      let query = supabase.from('activities').select(`*, asignado_a_profile:profiles!activities_asignado_a_fkey(display_name, username), creado_por_profile:profiles!activities_creado_por_fkey(display_name, username)`).order('created_at', { ascending: false });
+      let query = supabase
+        .from('activities')
+        .select(ACTIVITY_SELECT)
+        .order('created_at', { ascending: false });
       
       // If reclutador, only fetch theirs or general activities
       if (profile.role === 'reclutador') {
@@ -37,20 +64,30 @@ export function useActivities() {
   const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: 'unica' | 'rutinaria' | 'vacante' = 'unica', reference_image: string | null = null) => {
     if (!profile) return null;
     try {
-      const { data, error } = await supabase.from('activities').insert({
-        titulo,
-        descripcion,
-        asignado_a: asignado_a || null,
-        creado_por: profile.id,
-        estado: 'pendiente',
-        tipo,
-        reference_image
-      }).select().single();
+      const { data, error } = await supabase
+        .from('activities')
+        .insert({
+          titulo,
+          descripcion,
+          asignado_a: asignado_a || null,
+          creado_por: profile.id,
+          estado: 'pendiente',
+          tipo,
+          reference_image
+        })
+        .select(ACTIVITY_SELECT)
+        .single();
       
       if (error) throw error;
-      await fetchActivities();
+      const saved = data as Activity;
+      setActivities((current) =>
+        sortActivitiesByCreatedAt([
+          saved,
+          ...current.filter((activity) => activity.id !== saved.id),
+        ])
+      );
       toast.success({ title: 'Actividad asignada' });
-      return data;
+      return saved;
     } catch (err: any) {
       toast.error({ title: 'Error al asignar', description: err.message });
       return null;
@@ -62,13 +99,14 @@ export function useActivities() {
       const { data, error } = await supabase.from('activities')
         .update({ estado, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
+        .select(ACTIVITY_SELECT)
         .single();
         
       if (error) throw error;
-      setActivities(prev => prev.map(a => a.id === id ? { ...a, estado } : a));
+      const saved = data as Activity;
+      setActivities(prev => prev.map(a => a.id === id ? saved : a));
       toast.success({ title: 'Estado actualizado' });
-      return data;
+      return saved;
     } catch (err: any) {
       toast.error({ title: 'Error al actualizar', description: err.message });
       return null;
@@ -96,7 +134,7 @@ export function useActivities() {
         file_url: publicUrlData.publicUrl,
         file_name: file.name,
         uploaded_by: profile.id
-      }).select().single();
+      }).select(ACTIVITY_PROOF_SELECT).single();
       
       if (error) throw error;
       toast.success({ title: 'Prueba subida exitosamente' });
@@ -110,7 +148,7 @@ export function useActivities() {
   const getProofs = async (activityId: string) => {
     try {
       const { data, error } = await supabase.from('activity_proofs')
-        .select('*, uploaded_by_profile:profiles!activity_proofs_uploaded_by_fkey(display_name, username)')
+        .select(ACTIVITY_PROOF_SELECT)
         .eq('activity_id', activityId)
         .order('created_at', { ascending: false });
         
@@ -169,13 +207,16 @@ export function useActivities() {
       const { data, error } = await supabase.from('activities')
         .update({ ...fields, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
+        .select(ACTIVITY_SELECT)
         .single();
 
       if (error) throw error;
-      await fetchActivities();
+      const saved = data as Activity;
+      setActivities((current) =>
+        current.map((activity) => activity.id === id ? saved : activity)
+      );
       toast.success({ title: 'Actividad actualizada' });
-      return data;
+      return saved;
     } catch (err: any) {
       toast.error({ title: 'Error al actualizar', description: err.message });
       return null;

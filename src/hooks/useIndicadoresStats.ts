@@ -17,6 +17,13 @@ export interface IndicadorRecord {
 }
 
 export const RECRUITER_TONES = 5;
+const INDICATORS_HISTORY_START = '2026-01-01';
+
+const EMPLOYEE_INDICATOR_COLUMNS =
+  'num_empleado, nombre, puesto, turno, fecha_ingreso, ruta, parada, reclutador';
+
+const BAJA_INDICATOR_COLUMNS =
+  'num_empleado, nombre, puesto, turno, fecha_ingreso, reclutador, fecha_baja';
 
 export function getRecruiterTone(index: number) {
   return `data-tone-${index % RECRUITER_TONES}`;
@@ -49,8 +56,14 @@ export function useIndicadoresStats(selectedMonth: Date) {
     async function fetchSupabaseData() {
       try {
         const [empleadosRes, bajasRes] = await Promise.all([
-          supabase.from('empleados').select('*').gte('fecha_ingreso', '2026-01-01'),
-          supabase.from('bajas').select('*').gte('fecha_ingreso', '2026-01-01')
+          supabase
+            .from('empleados')
+            .select(EMPLOYEE_INDICATOR_COLUMNS)
+            .gte('fecha_ingreso', INDICATORS_HISTORY_START),
+          supabase
+            .from('bajas')
+            .select(BAJA_INDICATOR_COLUMNS)
+            .gte('fecha_ingreso', INDICATORS_HISTORY_START)
         ]);
 
         if (empleadosRes.error) throw empleadosRes.error;

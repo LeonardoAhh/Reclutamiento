@@ -49,6 +49,7 @@ export interface ChatConversation {
   createdAt: string;
   updatedAt: string;
   isPendingSync?: boolean;
+  isHydrated?: boolean;
 }
 
 type ConversationSyncState = "idle" | "loading" | "synced" | "local";
@@ -66,6 +67,23 @@ interface ChatConversationRow {
   created_at: string;
   updated_at: string;
 }
+
+type ChatConversationSummaryRow = Pick<
+  ChatConversationRow,
+  | "id"
+  | "title"
+  | "selected_job_id"
+  | "evaluated_job_name"
+  | "candidate_file_name"
+  | "has_compared"
+  | "created_at"
+  | "updated_at"
+>;
+
+const CHAT_CONVERSATION_SUMMARY_SELECT =
+  "id, title, selected_job_id, evaluated_job_name, candidate_file_name, has_compared, created_at, updated_at";
+const CHAT_CONVERSATION_CONTENT_SELECT =
+  "id, title, messages, selected_job_id, evaluated_job_name, candidate_file_name, resume_text, evaluation_result, has_compared, created_at, updated_at";
 
 const CHAT_HISTORY_STORAGE_PREFIX = "ai_chat_history_v1";
 
@@ -124,7 +142,31 @@ function conversationFromRow(row: ChatConversationRow): ChatConversation {
     hasCompared: row.has_compared,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    isHydrated: true,
   };
+}
+
+function conversationSummaryFromRow(
+  row: ChatConversationSummaryRow,
+): ChatConversation {
+  return {
+    id: row.id,
+    title: row.title,
+    messages: [],
+    selectedJobId: row.selected_job_id ?? "",
+    evaluatedJobName: row.evaluated_job_name ?? "",
+    candidateFileName: row.candidate_file_name ?? "",
+    resumeText: "",
+    evaluationResult: "",
+    hasCompared: row.has_compared,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    isHydrated: false,
+  };
+}
+
+function hasConversationContent(conversation: ChatConversation): boolean {
+  return conversation.isHydrated !== false;
 }
 
 function conversationToRow(conversation: ChatConversation, userId: string) {
@@ -305,6 +347,23 @@ export function useAIChat() {
     setActiveQuickAction(null);
   }, []);
 
+  const loadConversationContent = useCallback(async (conversationId: string) => {
+    const { data, error } = await supabase
+      .from("ai_chat_sessions")
+      .select(CHAT_CONVERSATION_CONTENT_SELECT)
+      .eq("id", conversationId)
+      .single();
+
+    if (error || !data) {
+      if (error) {
+        console.warn("No se pudo cargar la conversación seleccionada:", error);
+      }
+      return null;
+    }
+
+    return conversationFromRow(data as ChatConversationRow);
+  }, []);
+
   useEffect(() => {
     if (!user?.id) return;
     let cancelled = false;
@@ -312,13 +371,18 @@ export function useAIChat() {
     const deletedConversationIds = readDeletedConversationIds(user.id);
 
     setConversations(localConversations);
-    if (localConversations[0]) applyConversation(localConversations[0]);
+    if (
+      localConversations[0] &&
+      hasConversationContent(localConversations[0])
+    ) {
+      applyConversation(localConversations[0]);
+    }
     setConversationSyncState("loading");
 
     void (async () => {
       const { data, error } = await supabase
         .from("ai_chat_sessions")
-        .select("*")
+        .select(CHAT_CONVERSATION_SUMMARY_SELECT)
         .order("updated_at", { ascending: false });
 
       if (cancelled) return;
@@ -343,8 +407,8 @@ export function useAIChat() {
       }
 
       const merged = new Map<string, ChatConversation>();
-      const remoteConversations = ((data ?? []) as ChatConversationRow[])
-        .map(conversationFromRow)
+      const remoteConversations = ((data ?? []) as ChatConversationSummaryRow[])
+        .map(conversationSummaryFromRow)
         .filter(
           (conversation) => !deletedConversationIds.includes(conversation.id),
         );
@@ -353,7 +417,7 @@ export function useAIChat() {
       );
       [...remoteConversations, ...localConversations].forEach((conversation) => {
         const current = merged.get(conversation.id);
-        if (!current || conversation.updatedAt > current.updatedAt) {
+        if (!current || conversation.updatedAt >= current.updatedAt) {
           merged.set(conversation.id, conversation);
         }
       });
@@ -362,7 +426,21 @@ export function useAIChat() {
       );
       const pendingLocal = localConversations.filter((conversation) => {
         const remote = remoteById.get(conversation.id);
-        return !remote || conversation.updatedAt > remote.updatedAt;
+        return (
+          hasConversationContent(conversation) &&
+          (conversation.isPendingSync ||
+            !remote ||
+            conversation.updatedAt > remote.updatedAt)
+        );
+      });
+      const pendingSummaries = localConversations.filter((conversation) => {
+        const remote = remoteById.get(conversation.id);
+        return (
+          !hasConversationContent(conversation) &&
+          (conversation.isPendingSync ||
+            !remote ||
+            conversation.updatedAt > remote.updatedAt)
+        );
       });
 
       if (pendingLocal.length > 0) {
@@ -379,10 +457,36 @@ export function useAIChat() {
         }
       }
 
+      if (pendingSummaries.length > 0) {
+        const summarySyncResults = await Promise.all(
+          pendingSummaries.map(async (conversation) => {
+            if (!remoteById.has(conversation.id)) return false;
+            const { error: summarySyncError } = await supabase
+              .from("ai_chat_sessions")
+              .update({
+                title: conversation.title,
+                updated_at: conversation.updatedAt,
+              })
+              .eq("id", conversation.id);
+            return !summarySyncError;
+          }),
+        );
+        if (summarySyncResults.some((wasSynced) => !wasSynced)) {
+          syncFailed = true;
+          console.warn("Algunos nombres del historial siguen pendientes de sincronización.");
+        }
+      }
+
       let finalNext = next;
+      const pendingIds = new Set([
+        ...pendingLocal.map((conversation) => conversation.id),
+        ...pendingSummaries.map((conversation) => conversation.id),
+      ]);
       if (syncFailed) {
         finalNext = next.map((c) =>
-          pendingLocal.some((p) => p.id === c.id) ? { ...c, isPendingSync: true } : { ...c, isPendingSync: false }
+          pendingIds.has(c.id)
+            ? { ...c, isPendingSync: true }
+            : { ...c, isPendingSync: false }
         );
       } else {
         finalNext = next.map((c) => ({ ...c, isPendingSync: false }));
@@ -391,14 +495,29 @@ export function useAIChat() {
       if (cancelled) return;
       setConversations(finalNext);
       writeLocalHistory(user.id, finalNext);
-      if (finalNext[0]) applyConversation(finalNext[0]);
+      if (finalNext[0]) {
+        if (hasConversationContent(finalNext[0])) {
+          applyConversation(finalNext[0]);
+        } else {
+          const hydrated = await loadConversationContent(finalNext[0].id);
+          if (!cancelled && hydrated) {
+            const hydratedHistory = finalNext.map((conversation) =>
+              conversation.id === hydrated.id ? hydrated : conversation,
+            );
+            setConversations(hydratedHistory);
+            writeLocalHistory(user.id, hydratedHistory);
+            applyConversation(hydrated);
+          }
+        }
+      }
+      if (cancelled) return;
       setConversationSyncState(syncFailed ? "local" : "synced");
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [applyConversation, user?.id]);
+  }, [applyConversation, loadConversationContent, user?.id]);
 
   const saveConversation = useCallback(
     (conversation: ChatConversation) => {
@@ -460,6 +579,7 @@ export function useAIChat() {
         conversations.find((item) => item.id === sessionId)?.createdAt ??
         now,
       updatedAt: now,
+      isHydrated: true,
     });
   };
 
@@ -502,15 +622,17 @@ export function useAIChat() {
     if (appendUserMessage) setMessages(messagesToSend);
 
     try {
-      const base64Data = await fileToBase64(file);
       const extractedText = await extractTextFromPDF(file);
+      const base64Data = extractedText.trim()
+        ? null
+        : await fileToBase64(file);
       setCvText(extractedText);
 
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
           catalog: buildCatalogText(jobs),
           target_job_id: selectedJob || null,
-          resume_base64: base64Data,
+          ...(base64Data ? { resume_base64: base64Data } : {}),
           resume_text: extractedText,
           messages: limitConversationHistory(messagesToSend),
           task: "initial_analysis",
@@ -627,13 +749,34 @@ export function useAIChat() {
   };
 
   const handleSelectConversation = useCallback(
-    (conversationId: string) => {
+    async (conversationId: string) => {
       const conversation = conversations.find(
         (item) => item.id === conversationId,
       );
-      if (conversation) applyConversation(conversation);
+      if (!conversation) return;
+      if (hasConversationContent(conversation)) {
+        applyConversation(conversation);
+        return;
+      }
+
+      setConversationSyncState("loading");
+      const hydrated = await loadConversationContent(conversationId);
+      if (!hydrated) {
+        setConversationSyncState("local");
+        return;
+      }
+
+      setConversations((current) => {
+        const next = current.map((item) =>
+          item.id === hydrated.id ? hydrated : item,
+        );
+        if (user?.id) writeLocalHistory(user.id, next);
+        return next;
+      });
+      applyConversation(hydrated);
+      setConversationSyncState("synced");
     },
-    [applyConversation, conversations],
+    [applyConversation, conversations, loadConversationContent, user?.id],
   );
 
   const resetConversation = useCallback(() => {
@@ -652,7 +795,7 @@ export function useAIChat() {
   }, []);
 
   const handleRenameConversation = useCallback(
-    (conversationId: string, nextTitle: string) => {
+    async (conversationId: string, nextTitle: string) => {
       const title = nextTitle
         .trim()
         .slice(0, AI_CHAT_HISTORY_CONFIG.maxTitleLength);
@@ -667,9 +810,41 @@ export function useAIChat() {
         updatedAt: new Date().toISOString(),
       };
       if (conversationId === sessionId) setConversationTitle(title);
-      saveConversation(renamed);
+
+      if (hasConversationContent(renamed)) {
+        saveConversation(renamed);
+        return;
+      }
+
+      setConversations((current) => {
+        const next = current.map((item) =>
+          item.id === conversationId ? renamed : item,
+        );
+        if (user?.id) writeLocalHistory(user.id, next);
+        return next;
+      });
+
+      if (!user?.id) return;
+      setConversationSyncState("loading");
+      const { error } = await supabase
+        .from("ai_chat_sessions")
+        .update({ title, updated_at: renamed.updatedAt })
+        .eq("id", conversationId);
+      setConversations((current) => {
+        const next = current.map((item) =>
+          item.id === conversationId
+            ? { ...item, isPendingSync: Boolean(error) }
+            : item,
+        );
+        writeLocalHistory(user.id, next);
+        return next;
+      });
+      setConversationSyncState(error ? "local" : "synced");
+      if (error) {
+        console.warn("El nuevo nombre quedó pendiente de sincronización:", error);
+      }
     },
-    [conversations, saveConversation, sessionId],
+    [conversations, saveConversation, sessionId, user?.id],
   );
 
   const handleDeleteConversation = useCallback(

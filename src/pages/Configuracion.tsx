@@ -18,6 +18,10 @@ import { RutasView } from "./configuracion-views/RutasView";
 import { TabuladorView } from "./configuracion-views/TabuladorView";
 import { SpeechView } from "./configuracion-views/SpeechView";
 import { FormatosView } from "./configuracion-views/FormatosView";
+import {
+  SupabaseDataProvider,
+  type SupabaseDataResource,
+} from "@/hooks/useSupabaseData";
 import "./Configuracion.css";
 
 type FeatureId =
@@ -60,13 +64,28 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
 
 export const FEATURES: FeatureItem[] = FEATURE_GROUPS.flatMap(group => group.items);
 
+const EMPLOYEE_DATA: readonly SupabaseDataResource[] = ["employees"];
+const SPEECH_DATA: readonly SupabaseDataResource[] = ["speechTemplates"];
+
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
-  busqueda: <BusquedaView />,
+  busqueda: (
+    <SupabaseDataProvider resources={EMPLOYEE_DATA}>
+      <BusquedaView />
+    </SupabaseDataProvider>
+  ),
   indicadores: <IndicadoresView />,
   rutas: <RutasView />,
   tabulador: <TabuladorView />,
-  speech: <SpeechView />,
-  formatos: <FormatosView />,
+  speech: (
+    <SupabaseDataProvider resources={SPEECH_DATA}>
+      <SpeechView />
+    </SupabaseDataProvider>
+  ),
+  formatos: (
+    <SupabaseDataProvider resources={EMPLOYEE_DATA}>
+      <FormatosView />
+    </SupabaseDataProvider>
+  ),
 };
 
 export function Configuracion() {

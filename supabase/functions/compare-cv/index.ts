@@ -5,6 +5,41 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const GEMINI_MODEL = "gemini-2.5-flash-lite";
+const GROQ_OPEN_MODELS = [
+  "openai/gpt-oss-120b",
+  "openai/gpt-oss-20b",
+] as const;
+const OPENROUTER_FREE_MODEL = "openrouter/free";
+
+function cleanJsonResponse(value: string): string {
+  return value.replace(/^```json\n?|```$/gm, "").trim();
+}
+
+function isUsableModelResponse(
+  value: unknown,
+  isInitialAnalysis: boolean,
+): value is string {
+  if (typeof value !== "string" || !value.trim()) return false;
+  if (!isInitialAnalysis) return true;
+
+  try {
+    const parsed = JSON.parse(cleanJsonResponse(value));
+    return (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      typeof parsed.candidateName === "string" &&
+      typeof parsed.matchScore === "number" &&
+      Array.isArray(parsed.roles) &&
+      Array.isArray(parsed.strengths) &&
+      Array.isArray(parsed.weaknesses) &&
+      Array.isArray(parsed.flags)
+    );
+  } catch {
+    return false;
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -133,7 +168,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
     ];
 
     let analysisResult: string | null = null;
-    let errors = [];
+    const errors: string[] = [];
 
     // 1. TRY GEMINI
     try {
@@ -147,16 +182,21 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
              responseMimeType: isInitialAnalysis ? "application/json" : "text/plain"
           }
         };
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiApiKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-          analysisResult = data.candidates[0].content.parts[0].text;
+        const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (res.ok && isUsableModelResponse(content, isInitialAnalysis)) {
+          analysisResult = content;
         } else {
-          errors.push(`Gemini Error: ${data.error?.message || 'Unknown'}`);
+          errors.push(
+            `Gemini (${GEMINI_MODEL}) Error: ${
+              data.error?.message || (content ? "Invalid response format" : "Unknown")
+            }`,
+          );
         }
       } else {
         errors.push("GEMINI_API_KEY not set");
@@ -173,7 +213,9 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
           const payload = {
             model: "deepseek-chat",
             messages: openAIMessages,
-            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
+            ...(isInitialAnalysis
+              ? { response_format: { type: "json_object" } }
+              : {}),
           };
           const res = await fetch("https://api.deepseek.com/chat/completions", {
             method: "POST",
@@ -184,10 +226,15 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
             body: JSON.stringify(payload)
           });
           const data = await res.json();
-          if (res.ok && data.choices?.[0]?.message?.content) {
-            analysisResult = data.choices[0].message.content;
+          const content = data.choices?.[0]?.message?.content;
+          if (res.ok && isUsableModelResponse(content, isInitialAnalysis)) {
+            analysisResult = content;
           } else {
-            errors.push(`Deepseek Error: ${data.error?.message || 'Unknown'}`);
+            errors.push(
+              `Deepseek Error: ${
+                data.error?.message || (content ? "Invalid response format" : "Unknown")
+              }`,
+            );
           }
         } else {
             errors.push("DEEPSEEK_API_KEY not set");
@@ -197,47 +244,64 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
       }
     }
 
-    // 3. TRY GROQ
+    // 3. TRY OPEN-WEIGHT MODELS ON GROQ
     if (!analysisResult) {
-      try {
-        const groqApiKey = Deno.env.get("GROQ_API_KEY");
-        if (groqApiKey) {
-          const payload = {
-            model: "llama-3.1-70b-versatile",
-            messages: openAIMessages,
-            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
-          };
-          const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${groqApiKey}`
-            },
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if (res.ok && data.choices?.[0]?.message?.content) {
-            analysisResult = data.choices[0].message.content;
-          } else {
-            errors.push(`Groq Error: ${data.error?.message || 'Unknown'}`);
+      const groqApiKey = Deno.env.get("GROQ_API_KEY");
+      if (groqApiKey) {
+        for (const model of GROQ_OPEN_MODELS) {
+          if (analysisResult) break;
+          try {
+            const payload = {
+              model,
+              messages: openAIMessages,
+              ...(isInitialAnalysis
+                ? { response_format: { type: "json_object" } }
+                : {}),
+            };
+            const res = await fetch(
+              "https://api.groq.com/openai/v1/chat/completions",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${groqApiKey}`,
+                },
+                body: JSON.stringify(payload),
+              },
+            );
+            const data = await res.json();
+            const content = data.choices?.[0]?.message?.content;
+            if (res.ok && isUsableModelResponse(content, isInitialAnalysis)) {
+              analysisResult = content;
+            } else {
+              errors.push(
+                `Groq (${model}) Error: ${
+                  data.error?.message ||
+                  (content ? "Invalid response format" : "Unknown")
+                }`,
+              );
+            }
+          } catch (e: any) {
+            errors.push(`Groq (${model}) Exception: ${e.message}`);
           }
-        } else {
-            errors.push("GROQ_API_KEY not set");
         }
-      } catch (e: any) {
-        errors.push(`Groq Exception: ${e.message}`);
+      } else {
+        errors.push("GROQ_API_KEY not set");
       }
     }
 
-    // 4. TRY OPENROUTER
+    // 4. TRY OPENROUTER'S FREE OPEN-MODEL ROUTER
     if (!analysisResult) {
       try {
         const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
         if (openRouterApiKey) {
           const payload = {
-            model: "openrouter/auto",
+            model: OPENROUTER_FREE_MODEL,
             messages: openAIMessages,
-            response_format: isInitialAnalysis ? { type: "json_object" } : { type: "text" }
+            ...(isInitialAnalysis
+              ? { response_format: { type: "json_object" } }
+              : {}),
+            provider: isInitialAnalysis ? { require_parameters: true } : undefined,
           };
           const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -250,10 +314,15 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
             body: JSON.stringify(payload)
           });
           const data = await res.json();
-          if (res.ok && data.choices?.[0]?.message?.content) {
-            analysisResult = data.choices[0].message.content;
+          const content = data.choices?.[0]?.message?.content;
+          if (res.ok && isUsableModelResponse(content, isInitialAnalysis)) {
+            analysisResult = content;
           } else {
-            errors.push(`OpenRouter Error: ${data.error?.message || 'Unknown'}`);
+            errors.push(
+              `OpenRouter (${OPENROUTER_FREE_MODEL}) Error: ${
+                data.error?.message || (content ? "Invalid response format" : "Unknown")
+              }`,
+            );
           }
         } else {
             errors.push("OPENROUTER_API_KEY not set");
@@ -270,7 +339,7 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
       let analysisData = null;
       if (isInitialAnalysis) {
         try {
-          const cleaned = analysisResult.replace(/^```json\n?|```$/gm, '').trim();
+          const cleaned = cleanJsonResponse(analysisResult);
           analysisData = JSON.parse(cleaned);
         } catch (e) {
           console.warn("Failed to parse JSON natively, returning as raw text");

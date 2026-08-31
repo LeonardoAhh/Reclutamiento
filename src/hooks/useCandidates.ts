@@ -1,4 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import type {
@@ -71,7 +79,7 @@ function localId(): string {
  * Hook for fetching and mutating candidates + candidate notes.
  * Mirrors useSupabaseData: tries Supabase first, falls back to localStorage.
  */
-export function useCandidates() {
+function useCandidatesStore() {
   const [candidates, setCandidates] = useState<Candidate[]>(() =>
     loadLocalCandidates()
   );
@@ -163,10 +171,8 @@ export function useCandidates() {
   }, [isConfigured, refetch]);
 
   /* ── Realtime ─────────────────────────────────────────────────────────
-     Suscripción a cambios en `candidates` / `candidate_notes`. Cuando otra
-     persona (u otra pestaña) inserta/edita/elimina, refrescamos en silencio
-     (sin skeleton). Requiere tener Realtime habilitado para estas tablas en
-     Supabase. Si no lo está, simplemente nunca dispara — degradación segura. */
+     Una sola suscripción compartida aplica el payload de `candidates` al
+     estado local. No vuelve a descargar candidatos y notas por cada cambio. */
   useEffect(() => {
     if (!isConfigured) return;
     const channelName = `candidates-changes-${Math.random().toString(36).substring(7)}`;
@@ -175,13 +181,50 @@ export function useCandidates() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'candidates' },
-        () => refetch({ silent: true })
+        (payload) => {
+          setCandidates((current) => {
+            const changed = payload.new as Candidate;
+            const removed = payload.old as Partial<Candidate>;
+            let next = current;
+
+            if (payload.eventType === 'DELETE' && removed.id) {
+              next = current.filter((candidate) => candidate.id !== removed.id);
+            } else if (
+              (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') &&
+              changed.id
+            ) {
+              const normalized = normalizeCandidate(changed);
+              const exists = current.some(
+                (candidate) => candidate.id === normalized.id
+              );
+              next = exists
+                ? current.map((candidate) =>
+                    candidate.id === normalized.id ? normalized : candidate
+                  )
+                : [normalized, ...current];
+              next = [...next].sort((left, right) => {
+                const leftTime = left.created_at
+                  ? new Date(left.created_at).getTime()
+                  : 0;
+                const rightTime = right.created_at
+                  ? new Date(right.created_at).getTime()
+                  : 0;
+                return rightTime - leftTime;
+              });
+            }
+
+            if (next !== current) {
+              saveLocal(STORAGE_KEYS.candidates, next);
+            }
+            return next;
+          });
+        }
       )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isConfigured, refetch]);
+  }, [isConfigured]);
 
   function flashSaved() {
     setSaveStatus('saved');
@@ -413,4 +456,21 @@ export function useCandidates() {
     addCandidateNote,
     refetch,
   };
+}
+
+type CandidatesContextValue = ReturnType<typeof useCandidatesStore>;
+
+const CandidatesContext = createContext<CandidatesContextValue | null>(null);
+
+export function CandidatesProvider({ children }: { children: ReactNode }) {
+  const value = useCandidatesStore();
+  return createElement(CandidatesContext.Provider, { value }, children);
+}
+
+export function useCandidates(): CandidatesContextValue {
+  const value = useContext(CandidatesContext);
+  if (!value) {
+    throw new Error('useCandidates debe usarse dentro de CandidatesProvider.');
+  }
+  return value;
 }

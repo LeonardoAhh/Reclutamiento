@@ -221,7 +221,7 @@ export function AIChatPage() {
   };
 
   const handleOpenConversation = (conversationId: string) => {
-    handleSelectConversation(conversationId);
+    void handleSelectConversation(conversationId);
     setEditingConversationId(null);
     setHasCopiedEvaluation(false);
     setInputText("");
@@ -242,7 +242,7 @@ export function AIChatPage() {
   const submitConversationRename = (event: React.FormEvent) => {
     event.preventDefault();
     if (!editingConversationId || !conversationTitleDraft.trim()) return;
-    handleRenameConversation(editingConversationId, conversationTitleDraft);
+    void handleRenameConversation(editingConversationId, conversationTitleDraft);
     cancelRenamingConversation();
   };
 

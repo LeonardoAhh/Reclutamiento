@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Bell, BellDot, CircleCheckBig } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
+import {
+  SupabaseDataProvider,
+  type SupabaseDataResource,
+} from "@/hooks/useSupabaseData";
 import { CandidateStatusBadge } from "@/components/ui/CandidateStatusBadge";
 import {
   Popover,
@@ -12,6 +16,12 @@ import { localTodayIso, addDaysToIso, formatReadableDate } from "@/lib/dates";
 import { CandidateModal } from "./CandidateModal";
 import type { Candidate } from "@/lib/types";
 import "./RemindersPanel.css";
+
+const CANDIDATE_FORM_DATA: readonly SupabaseDataResource[] = [
+  "employees",
+  "comments",
+  "noCitados",
+];
 
 function formatReminderDate(fecha: string | null | undefined) {
   if (!fecha) return "";
@@ -181,14 +191,16 @@ export function RemindersPanel() {
       </Popover>
 
       {selectedCandidate && (
-        <CandidateModal
-          isOpen={true}
-          mode="edit"
-          candidate={selectedCandidate}
-          candidates={candidates}
-          onClose={() => setSelectedCandidate(null)}
-          onSave={handleUpdate}
-        />
+        <SupabaseDataProvider resources={CANDIDATE_FORM_DATA}>
+          <CandidateModal
+            isOpen={true}
+            mode="edit"
+            candidate={selectedCandidate}
+            candidates={candidates}
+            onClose={() => setSelectedCandidate(null)}
+            onSave={handleUpdate}
+          />
+        </SupabaseDataProvider>
       )}
     </>
   );

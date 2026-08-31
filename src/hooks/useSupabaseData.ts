@@ -1,4 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import { parseDdMmYyyy, localTodayIso } from '@/lib/dates';
@@ -94,11 +102,26 @@ function checkSupabaseConfig(): boolean {
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
+export type SupabaseDataResource =
+  | 'employees'
+  | 'comments'
+  | 'noCitados'
+  | 'speechTemplates';
+
+const ALL_SUPABASE_DATA_RESOURCES: readonly SupabaseDataResource[] = [
+  'employees',
+  'comments',
+  'noCitados',
+  'speechTemplates',
+];
+
 /**
  * Hook for fetching and mutating employees + comments.
  * Tries Supabase first, falls back to localStorage so the app stays usable offline.
  */
-export function useSupabaseData() {
+function useSupabaseDataStore(
+  resources: readonly SupabaseDataResource[] = ALL_SUPABASE_DATA_RESOURCES
+) {
   const [employees, setEmployees] = useState<Employee[]>(() =>
     loadLocal(STORAGE_KEYS.employees, [])
   );
@@ -116,9 +139,19 @@ export function useSupabaseData() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
   const isConfigured = checkSupabaseConfig();
+  const loadEmployees = resources.includes('employees');
+  const loadComments = resources.includes('comments');
+  const loadNoCitados = resources.includes('noCitados');
+  const loadSpeechTemplates = resources.includes('speechTemplates');
 
   useEffect(() => {
-    if (!isConfigured) {
+    if (
+      !isConfigured ||
+      (!loadEmployees &&
+        !loadComments &&
+        !loadNoCitados &&
+        !loadSpeechTemplates)
+    ) {
       setLoading(false);
       return;
     }
@@ -127,32 +160,53 @@ export function useSupabaseData() {
       try {
         setLoading(true);
 
-        const [empResult, commResult, noCitadosResult, speechResult] = await Promise.all([
-          supabase.from('empleados').select('*'),
-          supabase.from('comentarios_reclutamiento').select('*'),
-          supabase.from('no_citados').select('*').order('created_at', { ascending: false }),
-          supabase.from('speech_templates').select('*').order('created_at', { ascending: true }),
-        ]);
+        const [empResult, commResult, noCitadosResult, speechResult] =
+          await Promise.all([
+            loadEmployees
+              ? supabase.from('empleados').select('*')
+              : Promise.resolve(null),
+            loadComments
+              ? supabase.from('comentarios_reclutamiento').select('*')
+              : Promise.resolve(null),
+            loadNoCitados
+              ? supabase
+                  .from('no_citados')
+                  .select('*')
+                  .order('created_at', { ascending: false })
+              : Promise.resolve(null),
+            loadSpeechTemplates
+              ? supabase
+                  .from('speech_templates')
+                  .select('*')
+                  .order('created_at', { ascending: true })
+              : Promise.resolve(null),
+          ]);
 
-        if (empResult.error) throw empResult.error;
-        if (commResult.error) throw commResult.error;
-        if (noCitadosResult.error) throw noCitadosResult.error;
-        if (speechResult.error) throw speechResult.error;
+        if (empResult?.error) throw empResult.error;
+        if (commResult?.error) throw commResult.error;
+        if (noCitadosResult?.error) throw noCitadosResult.error;
+        if (speechResult?.error) throw speechResult.error;
 
-        const empData = empResult.data as Employee[];
-        const commData = commResult.data as PositionComment[];
-        const noCitadosData = noCitadosResult.data as NoCitado[];
-        const speechData = speechResult.data as SpeechTemplate[];
-
-        setEmployees(empData);
-        setComments(commData);
-        setNoCitados(noCitadosData);
-        setSpeechTemplates(speechData);
-
-        saveLocal(STORAGE_KEYS.employees, empData);
-        saveLocal(STORAGE_KEYS.comments, commData);
-        saveLocal(STORAGE_KEYS.no_citados, noCitadosData);
-        saveLocal(STORAGE_KEYS.speech_templates, speechData);
+        if (empResult) {
+          const empData = empResult.data as Employee[];
+          setEmployees(empData);
+          saveLocal(STORAGE_KEYS.employees, empData);
+        }
+        if (commResult) {
+          const commData = commResult.data as PositionComment[];
+          setComments(commData);
+          saveLocal(STORAGE_KEYS.comments, commData);
+        }
+        if (noCitadosResult) {
+          const noCitadosData = noCitadosResult.data as NoCitado[];
+          setNoCitados(noCitadosData);
+          saveLocal(STORAGE_KEYS.no_citados, noCitadosData);
+        }
+        if (speechResult) {
+          const speechData = speechResult.data as SpeechTemplate[];
+          setSpeechTemplates(speechData);
+          saveLocal(STORAGE_KEYS.speech_templates, speechData);
+        }
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase fetch failed, using localStorage:', msg, err);
@@ -163,7 +217,13 @@ export function useSupabaseData() {
     }
 
     fetchData();
-  }, [isConfigured]);
+  }, [
+    isConfigured,
+    loadComments,
+    loadEmployees,
+    loadNoCitados,
+    loadSpeechTemplates,
+  ]);
 
   function flashSaved() {
     setSaveStatus('saved');
@@ -1197,4 +1257,27 @@ export function useSupabaseData() {
     deleteSpeechTemplate,
     uploadSpeechImages,
   };
+}
+
+type SupabaseDataContextValue = ReturnType<typeof useSupabaseDataStore>;
+
+const SupabaseDataContext = createContext<SupabaseDataContextValue | null>(null);
+
+export function SupabaseDataProvider({
+  children,
+  resources = ALL_SUPABASE_DATA_RESOURCES,
+}: {
+  children: ReactNode;
+  resources?: readonly SupabaseDataResource[];
+}) {
+  const value = useSupabaseDataStore(resources);
+  return createElement(SupabaseDataContext.Provider, { value }, children);
+}
+
+export function useSupabaseData(): SupabaseDataContextValue {
+  const value = useContext(SupabaseDataContext);
+  if (!value) {
+    throw new Error('useSupabaseData debe usarse dentro de SupabaseDataProvider.');
+  }
+  return value;
 }

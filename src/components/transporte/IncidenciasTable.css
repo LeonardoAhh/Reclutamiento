@@ -30,6 +30,10 @@
   padding: var(--spacing-lg);
 }
 
+.incidencias-pagination {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
 .incidencias-state {
   min-width: 0;
   display: flex;

@@ -831,6 +831,11 @@ export const AI_CHAT_HISTORY_CONFIG = {
   maxTitleLength: 80,
 } as const;
 
+export const TRANSPORT_INCIDENTS_CONFIG = {
+  pageSize: 40,
+  exportBatchSize: 500,
+} as const;
+
 /**
  * Contenido operativo de los formatos semanales de entrega. Los textos se
  * conservan como aparecen en los documentos oficiales proporcionados por RH.

@@ -58,7 +58,10 @@ function localId(): string {
 /**
  * Hook for fetching and mutating vacancy_requests + audit history.
  */
-export function useVacancyRequests() {
+export function useVacancyRequests(
+  options: { loadHistory?: boolean } = {}
+) {
+  const loadHistory = options.loadHistory ?? true;
   const [vacancies, setVacancies] = useState<VacancyRequest[]>(() =>
     loadLocal(STORAGE_KEYS.vacancies, [])
   );
@@ -85,22 +88,26 @@ export function useVacancyRequests() {
             .from('vacancy_requests')
             .select('*')
             .order('fecha_apertura', { ascending: false }),
-          supabase
-            .from('vacancy_status_history')
-            .select('*')
-            .order('changed_at', { ascending: false }),
+          loadHistory
+            ? supabase
+                .from('vacancy_status_history')
+                .select('*')
+                .order('changed_at', { ascending: false })
+            : Promise.resolve(null),
         ]);
 
         if (vacResult.error) throw vacResult.error;
-        if (histResult.error) throw histResult.error;
+        if (histResult?.error) throw histResult.error;
 
         const vacData = (vacResult.data ?? []) as VacancyRequest[];
-        const histData = (histResult.data ?? []) as VacancyStatusHistoryEntry[];
 
         setVacancies(vacData);
-        setHistory(histData);
         saveLocal(STORAGE_KEYS.vacancies, vacData);
-        saveLocal(STORAGE_KEYS.history, histData);
+        if (histResult) {
+          const histData = (histResult.data ?? []) as VacancyStatusHistoryEntry[];
+          setHistory(histData);
+          saveLocal(STORAGE_KEYS.history, histData);
+        }
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg, err);
@@ -111,7 +118,7 @@ export function useVacancyRequests() {
     }
 
     fetchData();
-  }, [isConfigured]);
+  }, [isConfigured, loadHistory]);
 
   function flashSaved() {
     setSaveStatus('saved');

@@ -8,9 +8,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import { TRANSPORT_INCIDENTS_CONFIG } from '@/lib/constants';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { LightboxModal } from '@/components/ui/LightboxModal';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { Pagination } from '@/components/ui/Pagination';
 import { TransportIncidentGroup } from '@/components/transporte/TransportIncidentGroup';
 import './IncidenciasTable.css';
 
@@ -25,9 +27,11 @@ export function IncidenciasTable() {
   const { profile } = useAuth();
   const {
     incidencias,
+    totalCount,
     loading,
     errorMsg,
     fetchIncidencias,
+    fetchIncidenciasForExport,
     getIncidenciaImageUrl,
   } = useIncidenciasTransporte();
   const [loadingImageId, setLoadingImageId] = useState<string | null>(null);
@@ -35,12 +39,23 @@ export function IncidenciasTable() {
     null,
   );
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isExporting, setIsExporting] = useState(false);
   const isAdmin = profile?.role === 'admin';
   const isDesktop = useMediaQuery('(min-width: 1080px)');
 
   useEffect(() => {
-    fetchIncidencias();
-  }, [fetchIncidencias]);
+    void fetchIncidencias(currentPage);
+  }, [currentPage, fetchIncidencias]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalCount / TRANSPORT_INCIDENTS_CONFIG.pageSize),
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
 
   const groupedIncidents = useMemo(
     () =>
@@ -67,49 +82,60 @@ export function IncidenciasTable() {
     });
   };
 
-  const handleDownloadCsv = () => {
-    if (incidencias.length === 0) return;
+  const handleDownloadCsv = async () => {
+    if (totalCount === 0 || isExporting) return;
 
-    const header = [
-      'ID',
-      'Fecha',
-      'Numero Empleado',
-      'Nombre',
-      'Ruta',
-      'Turno',
-      'Tipo de Incidencia',
-      'Comentarios',
-      'Imagen adjunta',
-      'Estatus',
-    ];
-    const rows = incidencias.map((incident) => [
-      incident.id,
-      incident.created_at,
-      incident.numero_empleado,
-      incident.nombre_empleado || '',
-      incident.ruta,
-      incident.turno,
-      incident.tipo,
-      incident.comentarios || '',
-      incident.imagen_path ? 'Sí' : 'No',
-      incident.status,
-    ]);
-    const csvContent = [
-      header.join(','),
-      ...rows.map((row) =>
-        row.map(escapeCsvCell).join(','),
-      ),
-    ].join('\n');
+    setIsExporting(true);
+    try {
+      const incidentsForExport = await fetchIncidenciasForExport();
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Incidencias_Transporte_${new Date().toISOString().slice(0, 10)}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+      const header = [
+        'ID',
+        'Fecha',
+        'Numero Empleado',
+        'Nombre',
+        'Ruta',
+        'Turno',
+        'Tipo de Incidencia',
+        'Comentarios',
+        'Imagen adjunta',
+        'Estatus',
+      ];
+      const rows = incidentsForExport.map((incident) => [
+        incident.id,
+        incident.created_at,
+        incident.numero_empleado,
+        incident.nombre_empleado || '',
+        incident.ruta,
+        incident.turno,
+        incident.tipo,
+        incident.comentarios || '',
+        incident.imagen_path ? 'Sí' : 'No',
+        incident.status,
+      ]);
+      const csvContent = [
+        header.join(','),
+        ...rows.map((row) => row.map(escapeCsvCell).join(',')),
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Incidencias_Transporte_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error: unknown) {
+      toast.error({
+        title: 'No se pudo generar el archivo',
+        description:
+          error instanceof Error ? error.message : 'Intenta nuevamente.',
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleOpenImage = async (incident: IncidenciaTransporte) => {
@@ -148,7 +174,7 @@ export function IncidenciasTable() {
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => void fetchIncidencias()}
+          onClick={() => void fetchIncidencias(currentPage)}
         >
           Reintentar
         </button>
@@ -194,14 +220,16 @@ export function IncidenciasTable() {
             <button
               type="button"
               className="btn-secondary incidencias-table-actions__download"
-              aria-label={`Descargar ${incidencias.length} incidencias para Excel`}
-              onClick={handleDownloadCsv}
+              aria-label={`Descargar ${totalCount} incidencias para Excel`}
+              aria-busy={isExporting || undefined}
+              disabled={isExporting}
+              onClick={() => void handleDownloadCsv()}
             >
               <MorphingIcon
                 icon={FileSpreadsheet}
                 size="var(--icon-size-sm)"
               />
-              Excel
+              {isExporting ? 'Preparando…' : 'Excel'}
             </button>
           </div>
 
@@ -219,6 +247,20 @@ export function IncidenciasTable() {
                 onOpenImage={handleOpenImage}
               />
             ))}
+          </div>
+          <div className="incidencias-pagination">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              onPrev={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              onNext={() =>
+                setCurrentPage((page) => Math.min(totalPages, page + 1))
+              }
+              canGoPrev={currentPage > 1}
+              canGoNext={currentPage < totalPages}
+              ariaLabel="Paginación de incidencias de transporte"
+            />
           </div>
         </div>
       </BoneyardSkeleton>

@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { TRANSPORT_INCIDENTS_CONFIG } from '@/lib/constants';
 import { validarComentario } from '@/lib/profanity';
 import {
   TRANSPORT_INCIDENT_IMAGE_BUCKET,
@@ -33,6 +34,9 @@ export type NuevoReporte = Omit<
   'id' | 'created_at' | 'imagen_path' | 'status'
 >;
 
+const TRANSPORT_INCIDENT_SELECT =
+  'id, created_at, numero_empleado, nombre_empleado, ruta, turno, tipo, comentarios, imagen_path, status';
+
 function getErrorMessage(error: unknown, fallback: string): string {
   if (
     typeof error === 'object' &&
@@ -50,23 +54,52 @@ export function useIncidenciasTransporte() {
   const [incidencias, setIncidencias] = useState<IncidenciaTransporte[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const requestIdRef = useRef(0);
 
-  const fetchIncidencias = useCallback(async () => {
+  const fetchIncidencias = useCallback(async (page = 1) => {
+    const requestId = ++requestIdRef.current;
+    const from = (page - 1) * TRANSPORT_INCIDENTS_CONFIG.pageSize;
+    const to = from + TRANSPORT_INCIDENTS_CONFIG.pageSize - 1;
     setLoading(true);
     setErrorMsg(null);
     try {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('incidencias_transporte')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select(TRANSPORT_INCIDENT_SELECT, { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
+      if (requestId !== requestIdRef.current) return;
       setIncidencias(data as IncidenciaTransporte[]);
+      setTotalCount(count ?? 0);
     } catch (error: unknown) {
+      if (requestId !== requestIdRef.current) return;
       setErrorMsg(getErrorMessage(error, 'Error al cargar incidencias'));
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) setLoading(false);
     }
+  }, []);
+
+  const fetchIncidenciasForExport = useCallback(async () => {
+    const allIncidents: IncidenciaTransporte[] = [];
+    const { exportBatchSize } = TRANSPORT_INCIDENTS_CONFIG;
+
+    for (let from = 0; ; from += exportBatchSize) {
+      const { data, error } = await supabase
+        .from('incidencias_transporte')
+        .select(TRANSPORT_INCIDENT_SELECT)
+        .order('created_at', { ascending: false })
+        .range(from, from + exportBatchSize - 1);
+
+      if (error) throw error;
+      const batch = (data ?? []) as IncidenciaTransporte[];
+      allIncidents.push(...batch);
+      if (batch.length < exportBatchSize) break;
+    }
+
+    return allIncidents;
   }, []);
 
   const enviarIncidencia = async (
@@ -186,9 +219,11 @@ export function useIncidenciasTransporte() {
 
   return {
     incidencias,
+    totalCount,
     loading,
     errorMsg,
     fetchIncidencias,
+    fetchIncidenciasForExport,
     enviarIncidencia,
     getIncidenciaImageUrl,
   };
