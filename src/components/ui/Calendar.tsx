@@ -1,10 +1,9 @@
 import * as React from "react";
-import { CircleCheckBig, ChevronLeft, ChevronRight } from 'lucide-react';
-import { DayPicker } from "react-day-picker";
+import { DayPicker } from "@daypicker/react";
 import { es } from "date-fns/locale";
 
 import { cn } from "@/lib/utils-shadcn";
-import "react-day-picker/style.css";
+import "@daypicker/react/style.css";
 import "./Calendar.css";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;

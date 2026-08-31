@@ -3,24 +3,17 @@
 ──────────────────────────────────────────────────────────────── */
 
 .rdp-root {
-  --rdp-cell-size: 36px;
+  --rdp-day-height: var(--control-height);
+  --rdp-day-width: var(--control-height);
+  --rdp-day_button-height: var(--control-height);
+  --rdp-day_button-width: var(--control-height);
   --rdp-accent-color: var(--color-primary);
-  --rdp-background-color: var(--color-primary-tint);
-  --rdp-accent-color-dark: var(--color-primary);
-  --rdp-background-color-dark: var(--color-primary-tint);
-  --rdp-outline: 2px solid var(--color-primary);
-  --rdp-outline-selected: 2px solid var(--color-primary);
-  
-  /* Additional v9 variables for rounded borders if needed */
-  --rdp-border-radius: var(--rounded-md);
+  --rdp-accent-background-color: var(--color-primary-tint);
+  --rdp-day_button-border-radius: var(--rounded-md);
+  --rdp-selected-border: var(--focus-ring-width) solid var(--color-primary);
   margin: 0;
 }
 
-/* Make sure the text on selected days is white */
-.rdp-root {
-  --rdp-selected-color: var(--color-surface);
-}
-
-.rdp-day_selected {
-  font-weight: bold;
+.rdp-selected {
+  font-weight: var(--type-body-strong-weight);
 }
