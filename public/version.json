@@ -1,8 +1,8 @@
 {
   "version": "0.3.3",
-  "fecha": "2026-08-29",
+  "fecha": "2026-08-31",
   "nivel": "success",
-  "titulo": "Actualización",
-  "mensaje": "Mejoras en DB y rendimiento",
+  "titulo": "¡We are ready!",
+  "mensaje": "Se han realizado ajustes y mejoras para optimizar tu experiencia con la aplicación.",
   "notificar": true
 }
