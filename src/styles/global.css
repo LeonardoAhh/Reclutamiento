@@ -270,6 +270,7 @@
   --recordatorios-route-table-min: 64rem;
   --system-update-content-max: 22rem;
   --system-update-panel-max: 28rem;
+  --toast-max-inline-size: var(--system-update-panel-max);
   --feature-chat-panel-max-inline-size: 25rem;
   --feature-chat-panel-max-block-size: 37.5rem;
   --feature-chat-panel-max-block-size-desktop: 50rem;

@@ -768,17 +768,31 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  reloadDelayMs: 800,
-  availableTitle: "Actualización aplicada",
+  availableTitle: "Actualización disponible",
   availableHint:
-    "Instala la versión más reciente para recibir mejoras y correcciones.",
+    "Guarda cualquier cambio pendiente antes de actualizar.",
   actionLabel: "Actualizar ahora",
-  requiredActionLabel: "Actualizar y continuar",
+  deferLabel: "Más tarde",
   preparingLabel: "Preparando actualización",
   errorHint: "No pudimos actualizar ahora. Intenta nuevamente.",
   retryLabel: "Reintentar",
-  updatingTitle: "Actualizando sistema",
-  updatingHint: "Conserva esta ventana abierta. Volverás en un momento.",
+  registrationErrorTitle: "Actualizaciones no disponibles",
+  registrationErrorHint:
+    "La aplicación seguirá funcionando, pero no pudo comprobar nuevas versiones.",
+  appliedTitle: "Actualización aplicada",
+  noticeDurationMs: 4000,
+  versionCheckIntervalMs: 5 * 60 * 1000,
+  serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
+  serviceWorkerCheckMinGapMs: 60 * 1000,
+  offlineTitle: "Sin conexión",
+  offlineHint: "Algunas funciones requieren conexión a internet.",
+  onlineTitle: "Conexión restablecida",
+  offlineReadyTitle: "Recursos básicos disponibles sin conexión",
+} as const;
+
+export const TOAST_CONFIG = {
+  maxVisible: 3,
+  defaultDurationMs: 4000,
 } as const;
 
 export const AI_CHAT_QUICK_ACTIONS = [

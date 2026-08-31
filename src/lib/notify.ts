@@ -1,10 +1,20 @@
+import { TOAST_CONFIG } from '@/lib/constants';
+
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading' | 'default';
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+  closeOnAction?: boolean;
+}
 
 export interface ToastOptions {
   title: string;
   description?: string;
   duration?: number;
   id?: string | number;
+  actions?: readonly ToastAction[];
 }
 
 export interface ToastState extends ToastOptions {
@@ -17,51 +27,70 @@ type Listener = (toasts: ToastState[]) => void;
 class ToastStore {
   private toasts: ToastState[] = [];
   private listeners = new Set<Listener>();
+  private timers = new Map<string, ReturnType<typeof setTimeout>>();
 
-  subscribe(listener: Listener) {
+  subscribe = (listener: Listener) => {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
     };
-  }
+  };
 
-  getSnapshot() {
+  getSnapshot = () => {
     return this.toasts;
-  }
+  };
 
   private notify() {
     this.listeners.forEach((l) => l(this.toasts));
   }
 
   add(type: ToastType, opts: ToastOptions) {
-    const id = opts.id ? String(opts.id) : crypto.randomUUID();
-    const duration = opts.duration ?? (type === 'loading' ? Infinity : 4000);
+    const id = opts.id !== undefined ? String(opts.id) : crypto.randomUUID();
+    const duration =
+      opts.duration ??
+      (type === 'loading' ? Infinity : TOAST_CONFIG.defaultDurationMs);
 
     const existingIndex = this.toasts.findIndex((t) => t.id === id);
     const newToast: ToastState = { ...opts, id, type, duration };
+
+    this.clearTimer(id);
 
     if (existingIndex > -1) {
       const newToasts = [...this.toasts];
       newToasts[existingIndex] = newToast;
       this.toasts = newToasts;
     } else {
-      this.toasts = [...this.toasts, newToast];
+      const nextToasts = [...this.toasts, newToast];
+      const removedToasts = nextToasts.slice(
+        0,
+        Math.max(0, nextToasts.length - TOAST_CONFIG.maxVisible),
+      );
+      removedToasts.forEach((toast) => this.clearTimer(toast.id));
+      this.toasts = nextToasts.slice(-TOAST_CONFIG.maxVisible);
     }
     
     this.notify();
 
     if (duration !== Infinity) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         this.remove(id);
       }, duration);
+      this.timers.set(id, timer);
     }
 
     return id;
   }
 
   remove(id: string) {
+    this.clearTimer(id);
     this.toasts = this.toasts.filter((t) => t.id !== id);
     this.notify();
+  }
+
+  private clearTimer(id: string) {
+    const timer = this.timers.get(id);
+    if (timer) clearTimeout(timer);
+    this.timers.delete(id);
   }
 }
 
@@ -73,6 +102,7 @@ export const toast = {
   error: (opts: ToastOptions) => toastStore.add('error', opts),
   info: (opts: ToastOptions) => toastStore.add('info', opts),
   warning: (opts: ToastOptions) => toastStore.add('warning', opts),
+  loading: (opts: ToastOptions) => toastStore.add('loading', opts),
   promise: async <T>(
     promise: Promise<T> | (() => Promise<T>),
     opts: { loading: string; success: string; error: string; id?: string | number }

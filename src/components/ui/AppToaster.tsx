@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useSyncExternalStore } from 'react';
 import { CircleCheckBig, AlertTriangle, Info, LoaderCircle, CircleAlert } from 'lucide-react';
 import { toastStore, type ToastState } from '@/lib/notify';
 import './AppToaster.css';
@@ -16,45 +15,64 @@ function ToastItem({ toast }: { toast: ToastState }) {
   }
   
   return (
-    <motion.li
-      layout
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+    <li
       className={`app-toaster__item app-toaster__item--${toast.type}`}
+      aria-busy={toast.type === 'loading'}
     >
-      <div className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}>
-        <IconData size={18} aria-hidden="true" />
+      <div
+        className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}
+      >
+        <IconData aria-hidden="true" />
       </div>
       <div className="app-toaster__content">
         <span className="app-toaster__title">{toast.title}</span>
-        {toast.description && <span className="app-toaster__hint">{toast.description}</span>}
+        {toast.description && (
+          <span className="app-toaster__hint">{toast.description}</span>
+        )}
+        {toast.actions && toast.actions.length > 0 && (
+          <div className="app-toaster__actions">
+            {toast.actions.map((action) => (
+              <button
+                key={action.label}
+                type="button"
+                className={`app-toaster__action app-toaster__action--${action.variant ?? 'secondary'}`}
+                onClick={() => {
+                  action.onClick();
+                  if (action.closeOnAction !== false) {
+                    toastStore.remove(toast.id);
+                  }
+                }}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-    </motion.li>
+    </li>
   );
 }
 
 /**
- * Host de notificaciones personalizado alineado a AGENTS.md
- * Se suscribe a `toastStore` y usa `framer-motion` + `lucide-react`.
+ * Host único de notificaciones, accesible y limitado a tres mensajes.
  */
 export function AppToaster() {
-  const [toasts, setToasts] = useState<ToastState[]>([]);
-
-  useEffect(() => {
-    return toastStore.subscribe((newToasts) => {
-      setToasts(newToasts);
-    });
-  }, []);
+  const toasts = useSyncExternalStore(
+    toastStore.subscribe,
+    toastStore.getSnapshot,
+    toastStore.getSnapshot,
+  );
 
   return (
-    <ul className="app-toaster" aria-live="polite" aria-atomic="true">
-      <AnimatePresence mode="popLayout">
-        {toasts.map((t) => (
-          <ToastItem key={t.id} toast={t} />
-        ))}
-      </AnimatePresence>
-    </ul>
+    <ol
+      className="app-toaster"
+      aria-label="Notificaciones"
+      aria-live="polite"
+      aria-relevant="additions text"
+    >
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} />
+      ))}
+    </ol>
   );
 }

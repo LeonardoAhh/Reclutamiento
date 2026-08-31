@@ -1,7 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
+
+type ReleaseMetadata = {
+  version?: unknown
+}
+
+const releaseMetadata = JSON.parse(
+  readFileSync(new URL('./public/version.json', import.meta.url), 'utf8'),
+) as ReleaseMetadata
+
+if (typeof releaseMetadata.version !== 'string' || !releaseMetadata.version.trim()) {
+  throw new Error('public/version.json debe incluir una versión válida.')
+}
+
+const appVersion = releaseMetadata.version.trim()
 
 export default defineConfig({
   plugins: [
@@ -24,7 +39,6 @@ export default defineConfig({
         background_color: '#f6f5f4',
         display: 'standalone',
         display_override: ['standalone', 'minimal-ui', 'browser'],
-        orientation: 'portrait-primary',
         scope: '/',
         start_url: '/pipeline',
         lang: 'es-MX',
@@ -57,8 +71,14 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest,woff2}'],
+        // /horarios administra su propio ciclo PWA y no debe entrar al SW raíz.
+        globIgnores: ['horarios/**'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//, /version\.json$/],
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/horarios(?:\/|$)/,
+          /version\.json$/,
+        ],
         skipWaiting: false,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
@@ -71,22 +91,14 @@ export default defineConfig({
             options: { cacheName: 'version-check' },
           },
           {
-            urlPattern: ({ url }) =>
-              url.origin.includes('supabase.co'),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'supabase-api',
-              networkTimeoutSeconds: 6,
-              expiration: {
-                maxEntries: 80,
-                maxAgeSeconds: 60 * 60 * 24,
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
+            // Datos autenticados nunca se persisten en Cache Storage.
+            urlPattern: ({ url }) => url.hostname.endsWith('.supabase.co'),
+            handler: 'NetworkOnly',
           },
           {
-            urlPattern: ({ request }) =>
-              request.destination === 'font',
+            urlPattern: ({ request, url }) =>
+              request.destination === 'font' &&
+              !url.pathname.startsWith('/horarios/'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'fonts',
@@ -98,9 +110,11 @@ export default defineConfig({
             },
           },
           {
-            // Imágenes locales (logos, avatares, lottie json)
-            urlPattern: ({ request, sameOrigin }) =>
-              sameOrigin && (request.destination === 'image' || /\.(json)$/.test(new URL(request.url).pathname)),
+            // Solo imágenes públicas locales; JSON funcional permanece en red.
+            urlPattern: ({ request, sameOrigin, url }) =>
+              sameOrigin &&
+              request.destination === 'image' &&
+              !url.pathname.startsWith('/horarios/'),
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'assets',
@@ -122,6 +136,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion),
   },
   server: {
     host: '0.0.0.0',

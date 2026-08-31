@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSyncExternalStore } from 'react';
+import { SYSTEM_UPDATE_BANNER_CONFIG } from '@/lib/constants';
 
 /** Niveles de aviso soportados (mapeados a color en el CSS del banner). */
 export type SystemNotiLevel = 'info' | 'success' | 'mantenimiento';
@@ -12,12 +13,9 @@ export interface SystemVersionInfo {
   notificar: boolean;
 }
 
-/** Fuente de verdad editable manualmente y desplegada como asset estático. */
 const VERSION_URL = '/version.json';
-/** Última versión que el usuario ya vio/descartó en este dispositivo. */
 const SEEN_KEY = 'system_version_seen';
-/** Cada cuánto re-consultar mientras la pestaña está abierta. */
-const POLL_MS = 5 * 60 * 1000;
+const CURRENT_APP_VERSION = __APP_VERSION__;
 
 const LEVELS: ReadonlySet<SystemNotiLevel> = new Set([
   'info',
@@ -40,85 +38,121 @@ function parse(raw: unknown): SystemVersionInfo | null {
   };
 }
 
-/**
- * Lee `version.json` (editable a mano + redeploy), expone la versión actual y
- * decide si debe mostrarse el aviso de actualización:
- *  - se re-consulta al montar, al volver el foco/visibilidad y cada 5 min
- *  - `version.json` no entra al precache del SW, y se pide con `no-store`,
- *    por lo que siempre refleja el último deploy
- *  - el aviso reaparece SOLO cuando cambia la versión respecto a la última
- *    vista en este dispositivo (persistida en localStorage)
- */
+interface SystemVersionSnapshot {
+  version: string;
+  info: SystemVersionInfo | null;
+  shouldNotify: boolean;
+  hasRemoteUpdate: boolean;
+}
+
+type Listener = () => void;
+
+function readSeenVersion(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage.getItem(SEEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+let info: SystemVersionInfo | null = null;
+let seenVersion = readSeenVersion();
+let snapshot: SystemVersionSnapshot = createSnapshot();
+let inFlight = false;
+let stopWatching: (() => void) | undefined;
+const listeners = new Set<Listener>();
+
+function createSnapshot(): SystemVersionSnapshot {
+  const hasRemoteUpdate = info != null && info.version !== CURRENT_APP_VERSION;
+  return {
+    version: CURRENT_APP_VERSION,
+    info,
+    hasRemoteUpdate,
+    shouldNotify:
+      info != null &&
+      !hasRemoteUpdate &&
+      info.notificar &&
+      info.version !== seenVersion,
+  };
+}
+
+function publish(): void {
+  snapshot = createSnapshot();
+  listeners.forEach((listener) => listener());
+}
+
+async function fetchVersion(): Promise<void> {
+  if (inFlight) return;
+  inFlight = true;
+  try {
+    const response = await fetch(`${VERSION_URL}?t=${Date.now()}`, {
+      cache: 'no-store',
+    });
+    if (!response.ok) return;
+    const contentType = response.headers.get('content-type') ?? '';
+    if (contentType.includes('text/html')) return;
+    const parsed = parse(await response.json());
+    if (!parsed) return;
+
+    info = parsed;
+    publish();
+  } catch {
+    // Avisos de versión son complementarios; una falla no bloquea la app.
+  } finally {
+    inFlight = false;
+  }
+}
+
+function startWatching(): void {
+  if (stopWatching || typeof window === 'undefined') return;
+
+  const refreshWhenVisible = (): void => {
+    if (document.visibilityState === 'visible') void fetchVersion();
+  };
+  const interval = window.setInterval(
+    refreshWhenVisible,
+    SYSTEM_UPDATE_BANNER_CONFIG.versionCheckIntervalMs,
+  );
+
+  window.addEventListener('focus', refreshWhenVisible);
+  window.addEventListener('online', refreshWhenVisible);
+  document.addEventListener('visibilitychange', refreshWhenVisible);
+  void fetchVersion();
+
+  stopWatching = () => {
+    window.clearInterval(interval);
+    window.removeEventListener('focus', refreshWhenVisible);
+    window.removeEventListener('online', refreshWhenVisible);
+    document.removeEventListener('visibilitychange', refreshWhenVisible);
+    stopWatching = undefined;
+  };
+}
+
+function subscribe(listener: Listener): () => void {
+  listeners.add(listener);
+  startWatching();
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0) stopWatching?.();
+  };
+}
+
+function getSnapshot(): SystemVersionSnapshot {
+  return snapshot;
+}
+
+export function dismissSystemVersion(): void {
+  if (!info || info.version !== CURRENT_APP_VERSION) return;
+  seenVersion = info.version;
+  try {
+    window.localStorage.setItem(SEEN_KEY, seenVersion);
+  } catch {
+    // El aviso puede cerrarse aunque almacenamiento local esté restringido.
+  }
+  publish();
+}
+
 export function useSystemVersion() {
-  const [info, setInfo] = useState<SystemVersionInfo | null>(null);
-  const [seenVersion, setSeenVersion] = useState<string | null>(() => {
-    if (typeof localStorage === 'undefined') return null;
-    return localStorage.getItem(SEEN_KEY);
-  });
-  const inFlight = useRef(false);
-
-  const fetchVersion = useCallback(async () => {
-    if (inFlight.current) return;
-    inFlight.current = true;
-    try {
-      const res = await fetch(`${VERSION_URL}?t=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      if (!res.ok) return;
-      const ct = res.headers.get('content-type') ?? '';
-      if (ct.includes('text/html')) return;
-      const parsed = parse(await res.json());
-      if (parsed) setInfo(parsed);
-    } catch {
-      /* silencioso: la ausencia de aviso no debe romper la app */
-    } finally {
-      inFlight.current = false;
-    }
-  }, []);
-
-  const [swUpdateFn, setSwUpdateFn] = useState<(() => Promise<void>) | null>(null);
-  const [deferredSwUpdate, setDeferredSwUpdate] = useState(false);
-
-  useEffect(() => {
-    fetchVersion();
-
-    const onFocus = () => fetchVersion();
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') fetchVersion();
-    };
-    const onNeedRefresh = (e: Event) => {
-      const detail = (e as CustomEvent<{ update: () => Promise<void> }>).detail;
-      setSwUpdateFn(() => detail.update);
-      setDeferredSwUpdate(false);
-      fetchVersion();
-    };
-    
-    const id = window.setInterval(fetchVersion, POLL_MS);
-
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', onVisibility);
-    window.addEventListener('pwa:need-refresh', onNeedRefresh);
-
-    return () => {
-      window.clearInterval(id);
-      window.removeEventListener('focus', onFocus);
-      document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('pwa:need-refresh', onNeedRefresh);
-    };
-  }, [fetchVersion]);
-
-  const dismiss = useCallback(() => {
-    if (swUpdateFn) setDeferredSwUpdate(true);
-    if (!info) return;
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(SEEN_KEY, info.version);
-    }
-    setSeenVersion(info.version);
-  }, [info, swUpdateFn]);
-
-  const shouldNotify =
-    (info != null && info.notificar && info.version !== seenVersion) ||
-    (swUpdateFn != null && !deferredSwUpdate);
-
-  return { version: info?.version ?? null, info, shouldNotify, dismiss, swUpdateFn };
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

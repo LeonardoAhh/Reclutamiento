@@ -1,88 +1,59 @@
-import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { CircleCheckBig, WifiOff } from 'lucide-react';
-import './PWAStatus.css';
+import { useEffect, useRef, useState } from 'react';
+import { usePWAUpdate } from '@/hooks/usePWAUpdate';
+import { SYSTEM_UPDATE_BANNER_CONFIG } from '@/lib/constants';
+import { toast } from '@/lib/notify';
 
+const CONNECTION_NOTICE_ID = 'connection-status';
+const OFFLINE_READY_NOTICE_ID = 'offline-ready';
 
-/**
- * PWA status banners
- *
- * - `need-refresh`: new service-worker waiting → update banner (bottom card)
- *   with animated entrance, indeterminate progress and session-aware dismiss.
- * - `offline`: navigator.onLine === false → sticky top bar.
- *
- * Tokens consumed: --color-*, --spacing-*, --rounded-*, --type-*, --font-*,
- * --shadow-focus, --transition-fast, --tab-bar-height, --safe-area-*.
- * Zero hardcoded colours or sizes.
- */
 export function PWAStatus() {
   const [offline, setOffline] = useState(
     typeof navigator !== 'undefined' ? !navigator.onLine : false,
   );
-  const [offlineReady, setOfflineReady] = useState(false);
+  const { offlineReadyRevision } = usePWAUpdate();
+  const previousOffline = useRef(offline);
+  const lastOfflineReadyRevision = useRef(0);
 
   useEffect(() => {
-    function onOfflineReady() {
-      setOfflineReady(true);
-      window.setTimeout(() => setOfflineReady(false), 4000);
-    }
-    
-    function onOnline() {
-      setOffline(false);
-    }
-    function onOffline() {
-      setOffline(true);
-    }
+    const updateConnection = (): void => setOffline(!navigator.onLine);
 
-    window.addEventListener('pwa:offline-ready', onOfflineReady);
-    window.addEventListener('online', onOnline);
-    window.addEventListener('offline', onOffline);
+    window.addEventListener('online', updateConnection);
+    window.addEventListener('offline', updateConnection);
 
     return () => {
-      window.removeEventListener('pwa:offline-ready', onOfflineReady);
-      window.removeEventListener('online', onOnline);
-      window.removeEventListener('offline', onOffline);
+      window.removeEventListener('online', updateConnection);
+      window.removeEventListener('offline', updateConnection);
     };
   }, []);
 
-  return (
-    <>
-      {/* ── Offline bar ─────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {offline && (
-          <motion.div
-            className="pwa-offline"
-            role="status"
-            aria-live="assertive"
-            initial={{ y: -40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -40, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-          >
-            <WifiOff size={14} aria-hidden="true" className="pwa-offline__icon" />
-            <span>Sin conexión — mostrando datos en caché</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  useEffect(() => {
+    if (offline) {
+      toast.warning({
+        id: CONNECTION_NOTICE_ID,
+        title: SYSTEM_UPDATE_BANNER_CONFIG.offlineTitle,
+        description: SYSTEM_UPDATE_BANNER_CONFIG.offlineHint,
+        duration: Infinity,
+      });
+    } else if (previousOffline.current) {
+      toast.success({
+        id: CONNECTION_NOTICE_ID,
+        title: SYSTEM_UPDATE_BANNER_CONFIG.onlineTitle,
+      });
+    }
+    previousOffline.current = offline;
+  }, [offline]);
 
-      {/* ── Offline-ready toast (primera instalación del SW) ─────────── */}
-      <AnimatePresence>
-        {offlineReady && !offline && (
-          <motion.div
-            className="pwa-offline pwa-offline--ready"
-            role="status"
-            aria-live="polite"
-            initial={{ y: -40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -40, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-          >
-            <CircleCheckBig size={14} aria-hidden="true" className="pwa-offline__icon" />
-            <span>App lista para uso sin conexión</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  useEffect(() => {
+    if (offlineReadyRevision <= lastOfflineReadyRevision.current) return;
 
-    </>
-  );
+    lastOfflineReadyRevision.current = offlineReadyRevision;
+    if (offline) return;
+
+    toast.success({
+      id: OFFLINE_READY_NOTICE_ID,
+      title: SYSTEM_UPDATE_BANNER_CONFIG.offlineReadyTitle,
+    });
+  }, [offline, offlineReadyRevision]);
+
+  return null;
 }
