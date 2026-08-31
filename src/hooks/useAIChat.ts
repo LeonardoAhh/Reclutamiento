@@ -220,17 +220,13 @@ function buildConversationTitle(fileName: string, jobName: string): string {
 const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
-  content: "¡Hola! 👋 Soy ViñoBot, tu asistente de reclutamiento.\n\n" +
-    "Puedo ayudarte con:\n" +
-    "📋 **Análisis de CV** según el puesto seleccionado\n" +
-    "🔍 **Identificar fortalezas** y aspectos por validar\n" +
-    "💡 **Evaluar compatibilidad** con la vacante\n" +
-    "📝 **Preparar preguntas de entrevista** con metodología STAR\n" +
-    "📊 **Respaldar conclusiones** con evidencias del CV\n\n" +
-    "**Para comenzar:**\n" +
-    "1. Selecciona el puesto deseado\n" +
-    "2. Adjunta el CV del candidato\n\n" +
-    "¿En qué puedo ayudarte hoy?"
+  content: "¡Hola! Soy ViñoBot, tu asistente para analizar candidatos.\n\n" +
+    "Puedo ayudarte a:\n\n" +
+    "- Evaluar la compatibilidad con el puesto.\n" +
+    "- Identificar fortalezas y aspectos por validar.\n" +
+    "- Explicar por qué podría ser una buena contratación con evidencias del CV.\n" +
+    "- Preparar preguntas de entrevista con metodología STAR.\n\n" +
+    "Para comenzar, selecciona un puesto y adjunta el CV del candidato."
 };
 
 export type JobsState = "idle" | "loading" | "ready" | "error";
@@ -474,7 +470,13 @@ export function useAIChat() {
 
   const applyConversation = useCallback((conversation: ChatConversation) => {
     setSessionId(conversation.id);
-    setMessages(conversation.messages.length > 0 ? conversation.messages : [INITIAL_MESSAGE]);
+    setMessages(
+      conversation.messages.length > 0
+        ? conversation.messages.map((message) =>
+            message.id === INITIAL_MESSAGE.id ? INITIAL_MESSAGE : message,
+          )
+        : [INITIAL_MESSAGE],
+    );
     setSelectedJob(conversation.selectedJobId);
     setEvaluatedJobName(conversation.evaluatedJobName);
     setConversationTitle(conversation.title);
