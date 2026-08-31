@@ -34,6 +34,8 @@ import {
   CloudOff,
   Search,
   CloudUpload,
+  ArrowDown,
+  Square,
 } from "lucide-react";
 import {
   Check as CheckData,
@@ -43,7 +45,9 @@ import {
 } from "lucide";
 import { toast } from "@/lib/notify";
 import {
+  AI_CHAT_CONTEXT_CONFIG,
   AI_CHAT_HISTORY_CONFIG,
+  AI_CHAT_QUICK_ACTIONS,
 } from "@/lib/constants";
 import {
   buildEvaluationShareText,
@@ -115,6 +119,10 @@ export function AIChatPage() {
     handleSelectConversation,
     handleRenameConversation,
     handleDeleteConversation,
+    activeQuickAction,
+    isStreaming,
+    stopResponse,
+    regenerateLastResponse,
   } = useAIChat();
 
   const isMobile = useIsMobile();
@@ -132,11 +140,13 @@ export function AIChatPage() {
     title: string;
   } | null>(null);
   const [isDeletingConversation, setIsDeletingConversation] = useState(false);
+  const [showScrollToLatest, setShowScrollToLatest] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadButtonRef = useRef<HTMLButtonElement>(null);
   const shouldFocusUploadRef = useRef(false);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const shouldFollowMessagesRef = useRef(true);
 
   const jobSelectId = useId();
   const fileInputId = useId();
@@ -147,14 +157,12 @@ export function AIChatPage() {
 
   useEffect(() => {
     const messagesContainer = messagesRef.current;
-    if (!messagesContainer) return;
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    if (!messagesContainer || !shouldFollowMessagesRef.current) return;
     messagesContainer.scrollTo({
       top: messagesContainer.scrollHeight,
-      behavior: reduceMotion ? "auto" : "smooth",
+      behavior: "auto",
     });
+    setShowScrollToLatest(false);
   }, [messages, isLoading]);
 
   useEffect(() => {
@@ -178,8 +186,48 @@ export function AIChatPage() {
 
   const handleSendMessage = (event: React.FormEvent) => {
     event.preventDefault();
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
     void requestAssistantMessage(inputText, "follow_up");
     setInputText("");
+  };
+
+  const handleMessagesScroll = () => {
+    const container = messagesRef.current;
+    if (!container) return;
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    const isNearBottom =
+      distanceFromBottom <= AI_CHAT_CONTEXT_CONFIG.followScrollThreshold;
+    shouldFollowMessagesRef.current = isNearBottom;
+    setShowScrollToLatest(!isNearBottom);
+  };
+
+  const scrollToLatest = () => {
+    const container = messagesRef.current;
+    if (!container) return;
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
+
+  const handleQuickAction = (
+    action: (typeof AI_CHAT_QUICK_ACTIONS)[number],
+  ) => {
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
+    void requestAssistantMessage(
+      action.prompt,
+      action.task,
+      true,
+      messages,
+      action.label,
+    );
   };
 
   const handleMessageKeyDown = (
@@ -214,7 +262,28 @@ export function AIChatPage() {
     }
   };
 
+  const handleCopyMessage = async (message: Message) => {
+    try {
+      const text = message.analysisData
+        ? buildEvaluationShareText(getEvaluationExportInput())
+        : message.content;
+      await copyEvaluationText(text);
+      toast.success({ title: "Respuesta copiada" });
+    } catch (error) {
+      console.error("Error copying assistant message:", error);
+      toast.error({ title: "No se pudo copiar la respuesta" });
+    }
+  };
+
+  const handleRegenerateResponse = () => {
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
+    regenerateLastResponse();
+  };
+
   const handleNewEval = () => {
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
     shouldFocusUploadRef.current = true;
     handleNewEvaluation();
     setHasCopiedEvaluation(false);
@@ -226,11 +295,15 @@ export function AIChatPage() {
   };
 
   const handleStartAnalysis = () => {
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
     setIsSetupOpen(false);
     void handleAnalyze();
   };
 
   const handleOpenConversation = (conversationId: string) => {
+    shouldFollowMessagesRef.current = true;
+    setShowScrollToLatest(false);
     void handleSelectConversation(conversationId);
     setEditingConversationId(null);
     setHasCopiedEvaluation(false);
@@ -597,6 +670,21 @@ export function AIChatPage() {
     </>
   );
 
+  let lastRegenerableMessageId = "";
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message.role === "ai" && !message.analysisData) {
+      const triggeringMessage = messages
+        .slice(0, index)
+        .reverse()
+        .find((item) => item.role === "user");
+      if (triggeringMessage?.task) {
+        lastRegenerableMessageId = message.id;
+      }
+      break;
+    }
+  }
+
   return (
     <div className="ai-page-container">
 
@@ -627,11 +715,18 @@ export function AIChatPage() {
               </div>
               <div>
                 <h2 id={chatHeadingId}>Conversación</h2>
-                {analyzedCandidateName && (
-                  <p>
-                    <span className="ai-chat-candidate-name">
-                      {analyzedCandidateName}
-                    </span>
+                {hasCompared && (
+                  <p className="ai-chat-context-summary">
+                    {analyzedCandidateName && <span>{analyzedCandidateName}</span>}
+                    {analyzedCandidateName && evaluatedJobName && (
+                      <span aria-hidden="true">·</span>
+                    )}
+                    {evaluatedJobName && <span>{evaluatedJobName}</span>}
+                    {(analyzedCandidateName || evaluatedJobName) &&
+                      candidateFileName && <span aria-hidden="true">·</span>}
+                    {candidateFileName && (
+                      <span title={candidateFileName}>{candidateFileName}</span>
+                    )}
                   </p>
                 )}
               </div>
@@ -669,14 +764,16 @@ export function AIChatPage() {
             )}
           </header>
 
-          <div
-            ref={messagesRef}
-            className="ai-chat-messages"
-            role="log"
-            aria-live="polite"
-            aria-relevant="additions text"
-            aria-busy={isLoading}
-          >
+          <div className="ai-chat-transcript">
+            <div
+              ref={messagesRef}
+              className="ai-chat-messages"
+              onScroll={handleMessagesScroll}
+              role="log"
+              aria-live={isStreaming ? "off" : "polite"}
+              aria-relevant="additions text"
+              aria-busy={isLoading}
+            >
             {messages.map((message) => (
               <article
                 key={message.id}
@@ -698,7 +795,7 @@ export function AIChatPage() {
                           <div className="ai-chat-score-roles">
                             <h2>Roles recomendados</h2>
                             <ul>
-                              {message.analysisData.roles?.map((r: any, i: number) => (
+                              {message.analysisData.roles?.map((r, i) => (
                                 <li key={i}>
                                   <strong>{r.title}</strong> ({r.match}%)<br />
                                   <span className="ai-chat-role-reason">{r.reason}</span>
@@ -729,6 +826,28 @@ export function AIChatPage() {
                               </div>
                             )}
                           </div>
+
+                          {message.analysisData.evidence &&
+                            message.analysisData.evidence.length > 0 && (
+                              <section className="ai-chat-evidence">
+                                <h3>Evidencias del CV</h3>
+                                <ul>
+                                  {message.analysisData.evidence.map((evidence) => (
+                                    <li
+                                      key={`${evidence.finding}-${evidence.excerpt}-${evidence.page ?? "sin-pagina"}`}
+                                    >
+                                      <strong>{evidence.finding}</strong>
+                                      <q>{evidence.excerpt}</q>
+                                      <span>
+                                        {evidence.page
+                                          ? `Página ${evidence.page}`
+                                          : "Página no identificada"}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </section>
+                            )}
 
                           {message.analysisData.hiringReason && (
                             <section className="ai-chat-guidance">
@@ -816,15 +935,44 @@ export function AIChatPage() {
                       )
                     ) : (
                       <div className="ai-chat-plain-message">
-                        {message.content}
+                        {message.displayContent ?? message.content}
                       </div>
                     )}
                   </div>
+                  {message.isPartial && (
+                    <p className="ai-chat-partial-label">Respuesta detenida</p>
+                  )}
+                  {message.role === "ai" && message.content && (
+                    <footer
+                      className="ai-chat-message-actions"
+                      aria-label="Acciones de la respuesta"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyMessage(message)}
+                        aria-label="Copiar respuesta"
+                      >
+                        <MorphingIcon icon={CopyData} aria-hidden="true" />
+                        <span>Copiar</span>
+                      </button>
+                      {message.id === lastRegenerableMessageId && (
+                        <button
+                          type="button"
+                          onClick={handleRegenerateResponse}
+                          disabled={isLoading}
+                          aria-label="Regenerar última respuesta"
+                        >
+                          <MorphingIcon icon={RotateCcw} aria-hidden="true" />
+                          <span>Regenerar</span>
+                        </button>
+                      )}
+                    </footer>
+                  )}
                 </div>
               </article>
             ))}
 
-            {isLoading && (
+            {isLoading && !isStreaming && (
               <div className="ai-chat-message ai" role="status">
                 <div className="ai-chat-avatar" aria-hidden="true">
                   <Bot />
@@ -853,9 +1001,49 @@ export function AIChatPage() {
                 </button>
               </div>
             )}
+            </div>
+
+            {showScrollToLatest && (
+              <button
+                type="button"
+                className="ai-chat-scroll-latest"
+                onClick={scrollToLatest}
+                aria-label="Ir al mensaje más reciente"
+              >
+                <ArrowDown aria-hidden="true" />
+              </button>
+            )}
           </div>
+          <p className="sr-only" aria-live="polite">
+            {!isLoading && messages[messages.length - 1]?.role === "ai"
+              ? "Respuesta de IA disponible."
+              : ""}
+          </p>
 
           <div className="ai-chat-composer-shell">
+            {hasCompared && (
+              <div
+                className="ai-chat-quick-actions"
+                aria-label="Preguntas rápidas"
+              >
+                {AI_CHAT_QUICK_ACTIONS.map((action) => (
+                  <button
+                    key={action.task}
+                    type="button"
+                    onClick={() => handleQuickAction(action)}
+                    disabled={isLoading}
+                  >
+                    {activeQuickAction === action.task && (
+                      <LoaderCircle
+                        className="ai-chat-action-icon--spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span>{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             <form
               className="ai-chat-input-form"
               onSubmit={handleSendMessage}
@@ -868,7 +1056,7 @@ export function AIChatPage() {
                 onKeyDown={handleMessageKeyDown}
                 placeholder={
                   hasCompared
-                    ? "¿Que sigue?"
+                    ? "¿Qué sigue?"
                     : "Adjunta un CV para comenzar."
                 }
                 disabled={!hasCompared || isLoading}
@@ -879,13 +1067,14 @@ export function AIChatPage() {
                 rows={1}
               />
               <button
-                type="submit"
+                type={isLoading ? "button" : "submit"}
                 className="ai-chat-send-btn"
-                disabled={!inputText.trim() || isLoading || !hasCompared}
-                aria-label="Enviar mensaje"
+                disabled={isLoading ? !hasCompared : !inputText.trim() || !hasCompared}
+                onClick={isLoading && hasCompared ? stopResponse : undefined}
+                aria-label={isLoading ? "Detener respuesta" : "Enviar mensaje"}
               >
-                {isLoading && hasCompared && !inputText.trim() ? (
-                  <LoaderCircle className="ai-chat-action-icon--spin" aria-hidden="true" />
+                {isLoading && hasCompared ? (
+                  <Square aria-hidden="true" />
                 ) : (
                   <ArrowUp aria-hidden="true" />
                 )}

@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabase";
+import { invokeSupabaseFunctionStream, supabase } from "@/lib/supabase";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 import {
@@ -29,6 +29,13 @@ export interface AnalysisData {
   flags: string[];
   hiringReason?: string;
   interviewQuestions?: Array<string | StarInterviewQuestion>;
+  evidence?: CandidateEvidence[];
+}
+
+export interface CandidateEvidence {
+  finding: string;
+  excerpt: string;
+  page: number | null;
 }
 
 export interface StarInterviewQuestion {
@@ -46,7 +53,10 @@ export interface Message {
   id: string;
   role: "system" | "user" | "ai";
   content: string;
+  displayContent?: string;
   analysisData?: AnalysisData | null;
+  task?: ChatTask;
+  isPartial?: boolean;
 }
 
 export interface ChatConversation {
@@ -211,7 +221,7 @@ const INITIAL_MESSAGE: Message = {
   id: "initial",
   role: "system",
   content:
-    "¡Hola! Soy ViñoBot. ¿Que perfil vamos a analizar?",
+    "¡Hola! Soy ViñoBot. ¿Qué perfil vamos a analizar?",
 };
 
 export type JobsState = "idle" | "loading" | "ready" | "error";
@@ -250,20 +260,121 @@ function buildFollowUpCatalogText(
     : "Usa la vacante descrita en la evaluación inicial.";
 }
 
-function limitConversationHistory(messages: Message[]): Message[] {
-  const conversation = messages.filter((message) => message.role !== "system");
+interface ConversationContext {
+  messages: Message[];
+  memory: string;
+}
+
+function compactMemoryEntry(message: Message): string {
+  const label = message.role === "user" ? "Usuario" : "Asistente";
+  const normalized = message.content.replace(/\s+/g, " ").trim();
+  const limit = AI_CHAT_CONTEXT_CONFIG.maxMemoryEntryCharacters;
+  const content =
+    normalized.length > limit
+      ? `${normalized.slice(0, limit).trimEnd()}…`
+      : normalized;
+  return `${label}: ${content}`;
+}
+
+function buildAnalysisMemory(analysis: AnalysisData): string {
+  const roleSummary = analysis.roles
+    .map((role) => `${role.title} (${role.match}%)`)
+    .join(", ");
+  const parts = [
+    analysis.candidateName
+      ? `Candidato: ${analysis.candidateName}`
+      : "",
+    `Afinidad general: ${analysis.matchScore}%`,
+    roleSummary ? `Roles: ${roleSummary}` : "",
+    analysis.strengths.length > 0
+      ? `Fortalezas: ${analysis.strengths.join("; ")}`
+      : "",
+    analysis.weaknesses.length > 0
+      ? `Brechas: ${analysis.weaknesses.join("; ")}`
+      : "",
+    analysis.flags.length > 0 && analysis.flags[0] !== "Ninguna"
+      ? `Alertas: ${analysis.flags.join("; ")}`
+      : "",
+    analysis.hiringReason
+      ? `Motivo para considerar contratación: ${analysis.hiringReason}`
+      : "",
+  ].filter(Boolean);
+  return `Resumen base de la evaluación:\n${parts.join("\n")}`;
+}
+
+function buildConversationContext(messages: Message[]): ConversationContext {
+  const conversation = messages
+    .filter((message) => message.role !== "system")
+    .map((message) =>
+      message.analysisData
+        ? {
+            ...message,
+            content: buildAnalysisMemory(message.analysisData),
+            analysisData: undefined,
+          }
+        : message,
+    );
   const { maxHistoryMessages, preservedInitialMessages } =
     AI_CHAT_CONTEXT_CONFIG;
 
-  if (conversation.length <= maxHistoryMessages) return conversation;
+  if (conversation.length <= maxHistoryMessages) {
+    return { messages: conversation, memory: "" };
+  }
 
   const preserved = conversation.slice(0, preservedInitialMessages);
   const recent = conversation.slice(
     -(maxHistoryMessages - preservedInitialMessages),
   );
-  return [...preserved, ...recent.filter(
+  const selected = [...preserved, ...recent.filter(
     (message) => !preserved.some((item) => item.id === message.id),
   )];
+  const selectedIds = new Set(selected.map((message) => message.id));
+  const memory = conversation
+    .filter((message) => !selectedIds.has(message.id))
+    .map(compactMemoryEntry)
+    .join("\n")
+    .slice(0, AI_CHAT_CONTEXT_CONFIG.maxMemoryCharacters)
+    .trim();
+
+  return { messages: selected, memory };
+}
+
+type ChatStreamPayload =
+  | { type: "delta"; text: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+
+async function readAssistantStream(
+  response: Response,
+  onDelta: (text: string) => void,
+): Promise<void> {
+  if (!response.ok) {
+    throw new Error(`AI stream unavailable (${response.status})`);
+  }
+  if (!response.body) throw new Error("AI stream body unavailable");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const payload = JSON.parse(line) as ChatStreamPayload;
+      if (payload.type === "delta") onDelta(payload.text);
+      if (payload.type === "error") throw new Error(payload.message);
+    }
+  }
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
 const fileToBase64 = (file: File): Promise<string> => {
@@ -288,9 +399,11 @@ const extractTextFromPDF = async (file: File): Promise<string> => {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       const pageText = textContent.items
-        .map((item) => ("str" in item ? (item as any).str : ""))
+        .map((item) =>
+          "str" in item && typeof item.str === "string" ? item.str : "",
+        )
         .join(" ");
-      fullText += pageText + "\n";
+      fullText += `[CV página ${i}]\n${pageText}\n\n`;
     }
     return fullText;
   } catch (e) {
@@ -321,6 +434,12 @@ export function useAIChat() {
   const [conversationSyncState, setConversationSyncState] =
     useState<ConversationSyncState>("idle");
   const [activeQuickAction, setActiveQuickAction] = useState<QuickActionTask | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const responseAbortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => responseAbortControllerRef.current?.abort();
+  }, []);
 
   const loadJobs = useCallback(async () => {
     setJobsState("loading");
@@ -640,6 +759,7 @@ export function useAIChat() {
         ? null
         : await fileToBase64(file);
       setCvText(extractedText);
+      const conversationContext = buildConversationContext(messagesToSend);
 
       const { data, error } = await supabase.functions.invoke("compare-cv", {
         body: {
@@ -647,7 +767,8 @@ export function useAIChat() {
           target_job_id: selectedJob || null,
           ...(base64Data ? { resume_base64: base64Data } : {}),
           resume_text: extractedText,
-          messages: limitConversationHistory(messagesToSend),
+          messages: conversationContext.messages,
+          conversation_memory: conversationContext.memory,
           task: "initial_analysis",
           session_id: sessionId,
         },
@@ -698,6 +819,9 @@ export function useAIChat() {
     userMessage: string,
     task: ChatTask,
     appendUserMessage = true,
+    baseMessages: Message[] = messages,
+    displayContent?: string,
+    fallbackMessages: Message[] = baseMessages,
   ) => {
     const trimmedMessage = userMessage.trim();
     if (!trimmedMessage || isLoading) return;
@@ -706,48 +830,125 @@ export function useAIChat() {
       id: crypto.randomUUID(),
       role: "user",
       content: trimmedMessage,
+      displayContent,
+      task,
     };
     const messagesToSend = appendUserMessage
-      ? [...messages, userEntry]
-      : messages;
+      ? [...baseMessages, userEntry]
+      : baseMessages;
     let errorMessage: string = AI_CHAT_ERROR_MESSAGES.message;
+    let streamedContent = "";
+    const assistantMessageId = crypto.randomUUID();
+    const abortController = new AbortController();
+    responseAbortControllerRef.current = abortController;
 
     setChatError(null);
     setActiveQuickAction(task === "follow_up" ? null : task);
     setIsLoading(true);
-    if (appendUserMessage) persistMessages(messagesToSend);
+    setIsStreaming(false);
+    if (appendUserMessage) setMessages(messagesToSend);
 
     try {
-      const { data, error } = await supabase.functions.invoke("compare-cv", {
-        body: {
-          catalog: buildFollowUpCatalogText(jobs, selectedJob),
-          target_job_id: selectedJob || null,
-          resume_text: cvText,
-          messages: limitConversationHistory(messagesToSend),
-          task,
-          session_id: sessionId,
-        },
+      const conversationContext = buildConversationContext(messagesToSend);
+      const response = await invokeSupabaseFunctionStream("compare-cv", {
+        catalog: buildFollowUpCatalogText(jobs, selectedJob),
+        target_job_id: selectedJob || null,
+        resume_text: cvText,
+        messages: conversationContext.messages,
+        conversation_memory: conversationContext.memory,
+        task,
+        stream: true,
+        session_id: sessionId,
+      }, abortController.signal);
+
+      if (!response.ok) {
+        errorMessage = AI_CHAT_ERROR_MESSAGES.unavailable;
+      }
+
+      await readAssistantStream(response, (text) => {
+        streamedContent += text;
+        setIsStreaming(true);
+        setMessages([
+          ...messagesToSend,
+          {
+            id: assistantMessageId,
+            role: "ai",
+            content: streamedContent,
+          },
+        ]);
       });
 
-      if (data?.error) errorMessage = AI_CHAT_ERROR_MESSAGES.unavailable;
-      if (error || data?.error || !data?.analysis) {
-        throw error ?? new Error("AI response unavailable");
-      }
+      if (!streamedContent.trim()) throw new Error("AI response unavailable");
 
       persistMessages([
         ...messagesToSend,
-        { id: crypto.randomUUID(), role: "ai", content: data.analysis },
+        { id: assistantMessageId, role: "ai", content: streamedContent },
       ]);
     } catch (error) {
+      if (isAbortError(error)) {
+        if (streamedContent.trim()) {
+          persistMessages([
+            ...messagesToSend,
+            {
+              id: assistantMessageId,
+              role: "ai",
+              content: streamedContent,
+              isPartial: true,
+            },
+          ]);
+        } else {
+          if (appendUserMessage) persistMessages(messagesToSend);
+          else setMessages(fallbackMessages);
+        }
+        return;
+      }
       console.error("Error sending message:", error);
+      if (appendUserMessage) persistMessages(messagesToSend);
+      else setMessages(fallbackMessages);
       setChatError({
         message: errorMessage,
         retry: { kind: "message", task, userMessage: trimmedMessage },
       });
     } finally {
+      if (responseAbortControllerRef.current === abortController) {
+        responseAbortControllerRef.current = null;
+      }
       setIsLoading(false);
+      setIsStreaming(false);
       setActiveQuickAction(null);
     }
+  };
+
+  const stopResponse = useCallback(() => {
+    responseAbortControllerRef.current?.abort();
+  }, []);
+
+  const regenerateLastResponse = () => {
+    if (isLoading) return;
+    let assistantIndex = -1;
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const message = messages[index];
+      if (message.role === "ai" && !message.analysisData) {
+        assistantIndex = index;
+        break;
+      }
+    }
+    if (assistantIndex < 0) return;
+
+    const baseMessages = messages.slice(0, assistantIndex);
+    const userMessage = [...baseMessages]
+      .reverse()
+      .find((message) => message.role === "user" && message.task);
+    if (!userMessage?.task) return;
+
+    void requestAssistantMessage(
+      userMessage.content,
+      userMessage.task,
+      false,
+      baseMessages,
+      undefined,
+      messages,
+    );
   };
 
   const handleRetry = () => {
@@ -763,6 +964,7 @@ export function useAIChat() {
 
   const handleSelectConversation = useCallback(
     async (conversationId: string) => {
+      if (isLoading) return;
       const conversation = conversations.find(
         (item) => item.id === conversationId,
       );
@@ -789,10 +991,12 @@ export function useAIChat() {
       applyConversation(hydrated);
       setConversationSyncState("synced");
     },
-    [applyConversation, conversations, loadConversationContent, user?.id],
+    [applyConversation, conversations, isLoading, loadConversationContent, user?.id],
   );
 
   const resetConversation = useCallback(() => {
+    responseAbortControllerRef.current?.abort();
+    responseAbortControllerRef.current = null;
     setMessages([INITIAL_MESSAGE]);
     setFile(null);
     setCandidateFileName("");
@@ -804,6 +1008,8 @@ export function useAIChat() {
     setFileError("");
     setChatError(null);
     setActiveQuickAction(null);
+    setIsLoading(false);
+    setIsStreaming(false);
     setSessionId(crypto.randomUUID());
   }, []);
 
@@ -929,5 +1135,8 @@ export function useAIChat() {
     handleRenameConversation,
     handleDeleteConversation,
     activeQuickAction,
+    isStreaming,
+    stopResponse,
+    regenerateLastResponse,
   };
 }

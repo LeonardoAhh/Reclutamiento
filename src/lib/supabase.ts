@@ -71,3 +71,31 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     fetch: authAwareFetch,
   },
 });
+
+export async function invokeSupabaseFunctionStream(
+  functionName: string,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<Response> {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Falta la configuración pública de Supabase.');
+  }
+
+  const { data } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token ?? supabaseAnonKey;
+
+  return authAwareFetch(
+    `${supabaseUrl}/functions/v1/${encodeURIComponent(functionName)}`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/x-ndjson',
+      },
+      body: JSON.stringify(body),
+      signal,
+    },
+  );
+}

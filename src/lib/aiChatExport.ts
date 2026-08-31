@@ -13,6 +13,11 @@ interface StructuredEvaluation {
   flags?: string[];
   hiringReason?: string;
   interviewQuestions?: Array<string | StructuredStarQuestion>;
+  evidence?: Array<{
+    finding?: string;
+    excerpt?: string;
+    page?: number | null;
+  }>;
 }
 
 interface StructuredStarQuestion {
@@ -120,6 +125,17 @@ function structuredEvaluationToPlainText(
     }
     if (parsed.hiringReason) {
       sections.push("Por qué considerar su contratación", parsed.hiringReason);
+    }
+    if (parsed.evidence?.length) {
+      sections.push(
+        "Evidencias del CV",
+        ...parsed.evidence.map((item) => {
+          const page = item.page ? ` (página ${item.page})` : "";
+          const finding = item.finding ?? "Hallazgo";
+          const excerpt = item.excerpt ? `: “${item.excerpt}”` : "";
+          return `• ${finding}${page}${excerpt}`;
+        }),
+      );
     }
     if (parsed.interviewQuestions?.length) {
       sections.push(

@@ -12,6 +12,122 @@ const GROQ_OPEN_MODELS = [
 ] as const;
 const OPENROUTER_FREE_MODEL = "openrouter/free";
 
+type StreamPayload =
+  | { type: "delta"; text: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+
+function encodeStreamPayload(payload: StreamPayload): Uint8Array {
+  return new TextEncoder().encode(`${JSON.stringify(payload)}\n`);
+}
+
+function readGeminiDelta(payload: Record<string, unknown>): string {
+  const candidates = payload.candidates;
+  if (!Array.isArray(candidates)) return "";
+  const firstCandidate = candidates[0] as Record<string, unknown> | undefined;
+  const content = firstCandidate?.content as Record<string, unknown> | undefined;
+  const parts = content?.parts;
+  if (!Array.isArray(parts)) return "";
+  return parts
+    .map((part) => {
+      const text = (part as Record<string, unknown>).text;
+      return typeof text === "string" ? text : "";
+    })
+    .join("");
+}
+
+function readOpenAIDelta(payload: Record<string, unknown>): string {
+  const choices = payload.choices;
+  if (!Array.isArray(choices)) return "";
+  const firstChoice = choices[0] as Record<string, unknown> | undefined;
+  const delta = firstChoice?.delta as Record<string, unknown> | undefined;
+  return typeof delta?.content === "string" ? delta.content : "";
+}
+
+function normalizeProviderStream(
+  response: Response,
+  readDelta: (payload: Record<string, unknown>) => string,
+): ReadableStream<Uint8Array> {
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      if (!reader) {
+        controller.enqueue(
+          encodeStreamPayload({
+            type: "error",
+            message: "El proveedor no devolvió contenido.",
+          }),
+        );
+        controller.close();
+        return;
+      }
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const rawLine of lines) {
+            const line = rawLine.trim();
+            if (!line.startsWith("data:")) continue;
+            const data = line.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+
+            try {
+              const payload = JSON.parse(data) as Record<string, unknown>;
+              const text = readDelta(payload);
+              if (text) {
+                controller.enqueue(
+                  encodeStreamPayload({ type: "delta", text }),
+                );
+              }
+            } catch {
+              // Algunos proveedores envían eventos auxiliares sin contenido.
+            }
+          }
+        }
+
+        controller.enqueue(encodeStreamPayload({ type: "done" }));
+        controller.close();
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          controller.close();
+          return;
+        }
+        controller.enqueue(
+          encodeStreamPayload({
+            type: "error",
+            message: "La respuesta se interrumpió.",
+          }),
+        );
+        controller.close();
+      }
+    },
+    cancel(reason) {
+      void reader?.cancel(reason);
+    },
+  });
+}
+
+function streamResponse(
+  response: Response,
+  readDelta: (payload: Record<string, unknown>) => string,
+): Response {
+  return new Response(normalizeProviderStream(response, readDelta), {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
 function cleanJsonResponse(value: string): string {
   return value.replace(/^```json\n?|```$/gm, "").trim();
 }
@@ -40,6 +156,18 @@ function isStarInterviewQuestion(value: unknown): boolean {
   );
 }
 
+function isCandidateEvidence(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+  const evidence = value as Record<string, unknown>;
+  return (
+    typeof evidence.finding === "string" &&
+    evidence.finding.trim().length > 0 &&
+    typeof evidence.excerpt === "string" &&
+    evidence.excerpt.trim().length > 0 &&
+    (typeof evidence.page === "number" || evidence.page === null)
+  );
+}
+
 function isUsableModelResponse(
   value: unknown,
   isInitialAnalysis: boolean,
@@ -62,7 +190,10 @@ function isUsableModelResponse(
       parsed.hiringReason.trim().length > 0 &&
       Array.isArray(parsed.interviewQuestions) &&
       parsed.interviewQuestions.length === 6 &&
-      parsed.interviewQuestions.every(isStarInterviewQuestion)
+      parsed.interviewQuestions.every(isStarInterviewQuestion) &&
+      Array.isArray(parsed.evidence) &&
+      parsed.evidence.length > 0 &&
+      parsed.evidence.every(isCandidateEvidence)
     );
   } catch {
     return false;
@@ -84,6 +215,8 @@ serve(async (req) => {
       resume_base64,
       messages = [],
       task = "follow_up",
+      stream = false,
+      conversation_memory = "",
     } = body;
 
     if (!catalog) {
@@ -117,6 +250,7 @@ Recibirás un "Catálogo de Puestos".
 - Si el usuario especificó un Target Job ID, evalúa principalmente contra ese puesto. Si el candidato no encaja bien, revisa el catálogo y sugiere alternativas mejores.
 - Si NO hay Target Job ID (Auto-perfilar), analiza el CV, busca en el catálogo los 2-3 puestos con mayor afinidad y preséntalos.
 - Explica por qué convendría contratar a la persona únicamente con evidencia del CV y del descriptivo. Si existen brechas relevantes, expresa la recomendación como condicionada, no como una garantía de contratación.
+- Incluye entre 3 y 5 evidencias textuales breves del CV para sustentar los hallazgos más importantes. Usa únicamente el número indicado por marcadores como "[CV página 2]". Si no hay marcador verificable, usa null; nunca inventes página.
 - Genera exactamente 6 preguntas conductuales para entrevista usando la metodología STAR. Cada pregunta debe evaluar una competencia distinta y relevante para los requisitos o responsabilidades del puesto objetivo. Incluye seguimientos breves para Situación, Tarea, Acción y Resultado; estos seguimientos ayudan al entrevistador y no son respuestas sugeridas. En Auto-perfilar, alínea todo al rol con mayor afinidad. No preguntes por atributos personales protegidos.
 
 ### Comportamiento del Chat (¡Muy Importante!)
@@ -137,6 +271,13 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
   "weaknesses": ["<Brecha 1>", "<Brecha 2>"],
   "flags": ["<Bandera roja o 'Ninguna'>"],
   "hiringReason": "<Motivo breve y sustentado para considerar su contratación>",
+  "evidence": [
+    {
+      "finding": "<Hallazgo que sustenta la evidencia>",
+      "excerpt": "<Fragmento breve y fiel del CV>",
+      "page": <número de página o null>
+    }
+  ],
   "interviewQuestions": [
     {
       "competency": "<Competencia del descriptivo que se evaluará>",
@@ -152,6 +293,11 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
 }
 
 Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos STAR.`;
+
+    const compactMemory =
+      typeof conversation_memory === "string" && conversation_memory.trim()
+        ? `\n\n### Memoria compacta de turnos anteriores:\n${conversation_memory.trim()}`
+        : "";
 
     // --- PREPARE MESSAGES FOR GEMINI ---
     let geminiContents: any[] = [];
@@ -170,7 +316,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
           : resume_base64
             ? "\nDocumento PDF adjunto."
             : "\nUsa la evaluación inicial presente en la conversación.";
-        firstUserMsg.parts.unshift({ text: `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:${resumeContext}\n` });
+        firstUserMsg.parts.unshift({ text: `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:${resumeContext}${compactMemory}\n` });
         if (resume_base64) {
            firstUserMsg.parts.push({
              inlineData: { mimeType: "application/pdf", data: resume_base64 }
@@ -197,7 +343,7 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
       }));
 
     const openAIContextText = resume_text || "Usa la evaluación inicial presente en la conversación.";
-    const openAIContext = `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${openAIContextText}\n\n`;
+    const openAIContext = `### Target Job ID:\n${target_job_id || "Ninguno (Auto-perfilar en todo el catálogo)"}\n\n### Catálogo de Puestos Disponibles:\n${catalog}\n\n### CV del Candidato:\n${openAIContextText}${compactMemory}\n\n`;
 
     if (openAIHistory.length > 0) {
       openAIHistory[0].content = `${openAIContext}${openAIHistory[0].content}`;
@@ -212,6 +358,104 @@ Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos
       { role: "system", content: systemPrompt },
       ...openAIHistory,
     ];
+
+    if (!isInitialAnalysis && stream === true) {
+      const streamErrors: string[] = [];
+      const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${geminiApiKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                contents: geminiContents,
+              }),
+              signal: req.signal,
+            },
+          );
+          if (response.ok && response.body) {
+            return streamResponse(response, readGeminiDelta);
+          }
+          streamErrors.push(`Gemini (${GEMINI_MODEL}): ${response.status}`);
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            return new Response(null, { status: 499, headers: corsHeaders });
+          }
+          streamErrors.push(`Gemini (${GEMINI_MODEL}) no disponible`);
+        }
+      }
+
+      const openAIProviders = [
+        {
+          name: "Deepseek",
+          apiKey: Deno.env.get("DEEPSEEK_API_KEY"),
+          url: "https://api.deepseek.com/chat/completions",
+          models: ["deepseek-chat"],
+          extraHeaders: {},
+        },
+        {
+          name: "Groq",
+          apiKey: Deno.env.get("GROQ_API_KEY"),
+          url: "https://api.groq.com/openai/v1/chat/completions",
+          models: [...GROQ_OPEN_MODELS],
+          extraHeaders: {},
+        },
+        {
+          name: "OpenRouter",
+          apiKey: Deno.env.get("OPENROUTER_API_KEY"),
+          url: "https://openrouter.ai/api/v1/chat/completions",
+          models: [OPENROUTER_FREE_MODEL],
+          extraHeaders: {
+            "HTTP-Referer": "https://localhost",
+            "X-Title": "Reclutamiento AI",
+          },
+        },
+      ];
+
+      for (const provider of openAIProviders) {
+        if (!provider.apiKey) continue;
+        for (const model of provider.models) {
+          try {
+            const response = await fetch(provider.url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${provider.apiKey}`,
+                ...provider.extraHeaders,
+              },
+              body: JSON.stringify({
+                model,
+                messages: openAIMessages,
+                stream: true,
+              }),
+              signal: req.signal,
+            });
+            if (response.ok && response.body) {
+              return streamResponse(response, readOpenAIDelta);
+            }
+            streamErrors.push(`${provider.name} (${model}): ${response.status}`);
+          } catch (error) {
+            if (error instanceof DOMException && error.name === "AbortError") {
+              return new Response(null, { status: 499, headers: corsHeaders });
+            }
+            streamErrors.push(`${provider.name} (${model}) no disponible`);
+          }
+        }
+      }
+
+      console.error("All streaming AI models failed:", streamErrors);
+      return new Response(
+        JSON.stringify({ error: "AI streaming response unavailable" }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
 
     let analysisResult: string | null = null;
     const errors: string[] = [];

@@ -825,6 +825,9 @@ export const AI_CHAT_ERROR_MESSAGES = {
 export const AI_CHAT_CONTEXT_CONFIG = {
   maxHistoryMessages: 8,
   preservedInitialMessages: 2,
+  maxMemoryCharacters: 2400,
+  maxMemoryEntryCharacters: 320,
+  followScrollThreshold: 96,
 } as const;
 
 export const AI_CHAT_HISTORY_CONFIG = {
