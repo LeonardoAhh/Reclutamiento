@@ -353,7 +353,7 @@ export function AIChatPage() {
     <>
       <div className="ai-chat-controls">
         <label className="ai-chat-label" htmlFor={jobSelectId}>
-          Vacante
+          Puesto
         </label>
         <CustomSelect
           id={jobSelectId}
@@ -374,12 +374,12 @@ export function AIChatPage() {
               ? "Cargando perfiles..."
               : "Selecciona un puesto a evaluar..."
           }
-          aria-label="Vacante a evaluar"
+          aria-label="Puesto a evakuar"
         />
         <div className="ai-chat-control-status">
           {jobsState === "error" && (
             <>
-              <p role="alert">No pudimos cargar las vacantes.</p>
+              <p role="alert">No pudimos cargar los puestos.</p>
               <button
                 type="button"
                 className="ai-chat-retry-btn"
