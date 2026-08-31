@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "icons:catalog": "node dev-tools/lucide-catalog/generate.mjs",
     "bones:build": "boneyard-js build http://localhost:3000 --no-scan",
     "build:rutas": "cd rutas-app && npm i && npm run build",
     "build": "npm run build:rutas && tsc -b && vite build",
