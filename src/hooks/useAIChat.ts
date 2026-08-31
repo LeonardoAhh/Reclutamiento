@@ -27,6 +27,19 @@ export interface AnalysisData {
   strengths: string[];
   weaknesses: string[];
   flags: string[];
+  hiringReason?: string;
+  interviewQuestions?: Array<string | StarInterviewQuestion>;
+}
+
+export interface StarInterviewQuestion {
+  competency: string;
+  question: string;
+  star: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  };
 }
 
 export interface Message {

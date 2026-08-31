@@ -1,5 +1,9 @@
 import React, { useEffect, useId, useRef, useState } from "react";
-import { useAIChat, type Message } from "@/hooks/useAIChat";
+import {
+  useAIChat,
+  type Message,
+  type StarInterviewQuestion,
+} from "@/hooks/useAIChat";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
@@ -75,6 +79,12 @@ function getAnalyzedCandidateName(messages: readonly Message[]): string {
   }
 
   return "";
+}
+
+function isStarInterviewQuestion(
+  question: string | StarInterviewQuestion,
+): question is StarInterviewQuestion {
+  return typeof question !== "string";
 }
 
 export function AIChatPage() {
@@ -719,6 +729,68 @@ export function AIChatPage() {
                               </div>
                             )}
                           </div>
+
+                          {message.analysisData.hiringReason && (
+                            <section className="ai-chat-guidance">
+                              <h3>Por qué considerar su contratación</h3>
+                              <p>{message.analysisData.hiringReason}</p>
+                            </section>
+                          )}
+
+                          {message.analysisData.interviewQuestions &&
+                            message.analysisData.interviewQuestions.length > 0 && (
+                              <section className="ai-chat-guidance">
+                                <h3>Preguntas sugeridas para entrevista</h3>
+                                <ol>
+                                  {message.analysisData.interviewQuestions.map(
+                                    (question, index) => {
+                                      if (!isStarInterviewQuestion(question)) {
+                                        return (
+                                          <li key={`${question}-${index}`}>
+                                            {question}
+                                          </li>
+                                        );
+                                      }
+
+                                      return (
+                                        <li
+                                          key={`${question.competency}-${question.question}`}
+                                          className="ai-chat-star-question"
+                                        >
+                                          <span className="ai-chat-star-question__competency">
+                                            {question.competency}
+                                          </span>
+                                          <p className="ai-chat-star-question__prompt">
+                                            {question.question}
+                                          </p>
+                                          <details className="ai-chat-star-question__details">
+                                            <summary>Guía STAR</summary>
+                                            <dl>
+                                              <div>
+                                                <dt>Situación</dt>
+                                                <dd>{question.star.situation}</dd>
+                                              </div>
+                                              <div>
+                                                <dt>Tarea</dt>
+                                                <dd>{question.star.task}</dd>
+                                              </div>
+                                              <div>
+                                                <dt>Acción</dt>
+                                                <dd>{question.star.action}</dd>
+                                              </div>
+                                              <div>
+                                                <dt>Resultado</dt>
+                                                <dd>{question.star.result}</dd>
+                                              </div>
+                                            </dl>
+                                          </details>
+                                        </li>
+                                      );
+                                    },
+                                  )}
+                                </ol>
+                              </section>
+                            )}
 
                           {message.analysisData.flags?.length > 0 &&
                            message.analysisData.flags[0] !== "Ninguna" && (

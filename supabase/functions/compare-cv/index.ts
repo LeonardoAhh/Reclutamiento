@@ -16,6 +16,30 @@ function cleanJsonResponse(value: string): string {
   return value.replace(/^```json\n?|```$/gm, "").trim();
 }
 
+function isStarInterviewQuestion(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+
+  const question = value as Record<string, unknown>;
+  const star = question.star;
+  if (typeof star !== "object" || star === null) return false;
+  const starGuide = star as Record<string, unknown>;
+
+  return (
+    typeof question.competency === "string" &&
+    question.competency.trim().length > 0 &&
+    typeof question.question === "string" &&
+    question.question.trim().length > 0 &&
+    typeof starGuide.situation === "string" &&
+    starGuide.situation.trim().length > 0 &&
+    typeof starGuide.task === "string" &&
+    starGuide.task.trim().length > 0 &&
+    typeof starGuide.action === "string" &&
+    starGuide.action.trim().length > 0 &&
+    typeof starGuide.result === "string" &&
+    starGuide.result.trim().length > 0
+  );
+}
+
 function isUsableModelResponse(
   value: unknown,
   isInitialAnalysis: boolean,
@@ -33,7 +57,12 @@ function isUsableModelResponse(
       Array.isArray(parsed.roles) &&
       Array.isArray(parsed.strengths) &&
       Array.isArray(parsed.weaknesses) &&
-      Array.isArray(parsed.flags)
+      Array.isArray(parsed.flags) &&
+      typeof parsed.hiringReason === "string" &&
+      parsed.hiringReason.trim().length > 0 &&
+      Array.isArray(parsed.interviewQuestions) &&
+      parsed.interviewQuestions.length === 6 &&
+      parsed.interviewQuestions.every(isStarInterviewQuestion)
     );
   } catch {
     return false;
@@ -87,6 +116,8 @@ Ignora por completo y nunca uses como criterio: edad, género, estado civil, nac
 Recibirás un "Catálogo de Puestos".
 - Si el usuario especificó un Target Job ID, evalúa principalmente contra ese puesto. Si el candidato no encaja bien, revisa el catálogo y sugiere alternativas mejores.
 - Si NO hay Target Job ID (Auto-perfilar), analiza el CV, busca en el catálogo los 2-3 puestos con mayor afinidad y preséntalos.
+- Explica por qué convendría contratar a la persona únicamente con evidencia del CV y del descriptivo. Si existen brechas relevantes, expresa la recomendación como condicionada, no como una garantía de contratación.
+- Genera exactamente 6 preguntas conductuales para entrevista usando la metodología STAR. Cada pregunta debe evaluar una competencia distinta y relevante para los requisitos o responsabilidades del puesto objetivo. Incluye seguimientos breves para Situación, Tarea, Acción y Resultado; estos seguimientos ayudan al entrevistador y no son respuestas sugeridas. En Auto-perfilar, alínea todo al rol con mayor afinidad. No preguntes por atributos personales protegidos.
 
 ### Comportamiento del Chat (¡Muy Importante!)
 1. Si el usuario pide el ANÁLISIS INICIAL, debes usar EXACTAMENTE el "Formato de Salida JSON" detallado abajo. NO devuelvas markdown fuera de ese JSON.
@@ -104,8 +135,23 @@ DEBES devolver un objeto JSON válido con la siguiente estructura exacta. No inc
   ],
   "strengths": ["<Fortaleza 1>", "<Fortaleza 2>"],
   "weaknesses": ["<Brecha 1>", "<Brecha 2>"],
-  "flags": ["<Bandera roja o 'Ninguna'>"]
-}`;
+  "flags": ["<Bandera roja o 'Ninguna'>"],
+  "hiringReason": "<Motivo breve y sustentado para considerar su contratación>",
+  "interviewQuestions": [
+    {
+      "competency": "<Competencia del descriptivo que se evaluará>",
+      "question": "<Pregunta conductual abierta alineada al puesto>",
+      "star": {
+        "situation": "<Seguimiento para conocer el contexto>",
+        "task": "<Seguimiento para aclarar la responsabilidad u objetivo>",
+        "action": "<Seguimiento para identificar qué hizo personalmente>",
+        "result": "<Seguimiento para conocer impacto, métricas y aprendizaje>"
+      }
+    }
+  ]
+}
+
+Repite la estructura de interviewQuestions hasta completar exactamente 6 objetos STAR.`;
 
     // --- PREPARE MESSAGES FOR GEMINI ---
     let geminiContents: any[] = [];

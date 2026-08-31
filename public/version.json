@@ -1,8 +1,8 @@
 {
-  "version": "0.3.3",
+  "version": "0.3.5",
   "fecha": "2026-08-31",
   "nivel": "success",
   "titulo": "¡We are ready!",
-  "mensaje": "Se han realizado ajustes y mejoras en optimización.",
+  "mensaje": "Mejoras de rendimiento y lectura de datos.",
   "notificar": true
 }
