@@ -8,6 +8,7 @@ import { format, getISOWeek } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
+  Archive,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -783,10 +784,9 @@ export default function ReporteDiarioContent() {
   );
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
+  const recentSummaries = savedSummaries.slice(0, 3);
 
-  /* ── Rediseño (Idea A): Hero centrado cuando NO hay reporte ──────────
-       Rompe el split lateral y muestra: título + dropzone protagonista +
-       3 pasos de onboarding + acceso rápido a reportes guardados. */
+  /* Estado inicial: carga de archivo y acceso a reportes recientes. */
   if (!hasData) {
     return (
       <BoneyardSkeleton
@@ -823,104 +823,172 @@ export default function ReporteDiarioContent() {
             <h1 id="reporte-hero-title" className="reporte-hero__title">
               Reporte Diario
             </h1>
+            <p className="reporte-hero__subtitle">
+              Carga, consulta y compara reportes de asistencia.
+            </p>
           </header>
 
-          <div
-            className="reporte-hero__dropzone"
-            data-dragging={isDragging}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => !processStep && fileInputRef.current?.click()}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (!processStep && (e.key === "Enter" || e.key === " ")) {
-                e.preventDefault();
-                fileInputRef.current?.click();
-              }
-            }}
-            aria-label="Sube un archivo de reporte de asistencia"
-            aria-busy={Boolean(processStep)}
-            aria-disabled={Boolean(processStep)}
-            data-testid="upload-dropzone"
-          >
-            <AnimatePresence mode="wait">
-              {processStep ? (
-                <motion.div
-                  key="processing"
-                  initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
-                  className="reporte-hero__dropzone-inner reporte-hero__dropzone-inner--processing"
-                  role="status"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  <LoaderCircle
-                    size="1em"
-                    className="reporte-spinner reporte-overlay__icon-primary"
-                    aria-hidden="true"
-                  />
-                  <h2 className="reporte-hero__dropzone-title">
-                    {processStep === "reading" && "Leyendo archivo…"}
-                    {processStep === "validating" && "Revisando incidencias…"}
-                  </h2>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="idle"
-                  initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
-                  className="reporte-hero__dropzone-inner"
-                >
-                  <span
-                    className="reporte-hero__dropzone-icon"
-                    aria-hidden="true"
-                  >
-                    <FileUp size={34} />
-                  </span>
-                  <h2 className="reporte-hero__dropzone-title">
-                    Arrastra tu archivo aquí o haz clic para seleccionar
-                  </h2>
-                  <p className="reporte-hero__dropzone-hint">
-                    Detecta automáticamente el mes y valida el formato
-                  </p>
-                  <span className="reporte-hero__dropzone-format" aria-hidden="true">
-                    <FileBraces size={14} />
-                    .json
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-
-          {savedSummaries.length > 0 && (
-            <div
-              className="reporte-hero__saved"
-              aria-label="Acceso a reportes guardados"
+          <div className="reporte-hero__workspace">
+            <section
+              className="reporte-hero__panel reporte-hero__panel--upload"
+              aria-labelledby="reporte-upload-title"
             >
-              <p className="reporte-hero__saved-hint">Reportes guardados.</p>
-              <div className="reporte-hero__saved-actions">
-                <ReportesGuardadosDialog
-                  savedSummaries={savedSummaries}
-                  dbSaving={dbSaving}
-                  onLoad={handleLoadFromDb}
-                  onDelete={handleDeleteFromDb}
-                  formatMes={formatMes}
-                  triggerVariant="labeled"
-                />
-                {savedSummaries.length >= 2 && (
-                  <ReporteComparison
-                    summaries={savedSummaries}
+              <header className="reporte-hero__panel-header">
+                <span className="reporte-hero__panel-icon" aria-hidden="true">
+                  <FileUp size="1em" />
+                </span>
+                <div className="reporte-hero__panel-copy">
+                  <h2 id="reporte-upload-title">Cargar reporte</h2>
+                  <p id="reporte-upload-help">
+                    Selecciona un archivo JSON para validar y consultar la
+                    asistencia.
+                  </p>
+                </div>
+              </header>
+
+              <motion.button
+                type="button"
+                className="reporte-hero__dropzone"
+                data-dragging={isDragging}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Subir un archivo de reporte de asistencia"
+                aria-describedby="reporte-upload-help"
+                aria-busy={Boolean(processStep)}
+                disabled={Boolean(processStep)}
+                data-testid="upload-dropzone"
+              >
+                <AnimatePresence mode="wait">
+                  {processStep ? (
+                    <motion.span
+                      key="processing"
+                      initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
+                      className="reporte-hero__dropzone-inner reporte-hero__dropzone-inner--processing"
+                      role="status"
+                      aria-live="polite"
+                      aria-atomic="true"
+                    >
+                      <LoaderCircle
+                        size="1em"
+                        className="reporte-spinner reporte-overlay__icon-primary"
+                        aria-hidden="true"
+                      />
+                      <span className="reporte-hero__dropzone-title">
+                        {processStep === "reading" && "Leyendo archivo…"}
+                        {processStep === "validating" && "Revisando incidencias…"}
+                      </span>
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="idle"
+                      initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
+                      className="reporte-hero__dropzone-inner"
+                    >
+                      <span
+                        className="reporte-hero__dropzone-icon"
+                        aria-hidden="true"
+                      >
+                        <FileUp size="1em" />
+                      </span>
+                      <span className="reporte-hero__dropzone-title">
+                        Selecciona o arrastra tu archivo
+                      </span>
+                      <span className="reporte-hero__dropzone-hint">
+                        Detectamos automáticamente el mes y validamos el formato.
+                      </span>
+                      <span
+                        className="reporte-hero__dropzone-format"
+                        aria-hidden="true"
+                      >
+                        <FileBraces size="1em" />
+                        .json
+                      </span>
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </section>
+
+            <section
+              className="reporte-hero__panel reporte-hero__panel--recent"
+              aria-labelledby="reporte-recent-title"
+            >
+              <header className="reporte-hero__panel-header">
+                <span className="reporte-hero__panel-icon" aria-hidden="true">
+                  <Archive size="1em" />
+                </span>
+                <div className="reporte-hero__panel-copy">
+                  <h2 id="reporte-recent-title">Reportes recientes</h2>
+                  <p>Consulta o compara reportes guardados.</p>
+                </div>
+              </header>
+
+              {recentSummaries.length > 0 ? (
+                <ul className="reporte-hero__recent-list">
+                  {recentSummaries.map((summary) => (
+                    <li key={summary.id}>
+                      <button
+                        type="button"
+                        className="reporte-hero__recent-item"
+                        onClick={() => void handleLoadFromDb(summary.mes)}
+                        aria-label={`Abrir reporte de ${formatMes(summary.mes)}`}
+                      >
+                        <span
+                          className="reporte-hero__recent-icon"
+                          aria-hidden="true"
+                        >
+                          <CalendarDays size="1em" />
+                        </span>
+                        <span className="reporte-hero__recent-copy">
+                          <span className="reporte-hero__recent-title">
+                            {formatMes(summary.mes)}
+                          </span>
+                          <span className="reporte-hero__recent-meta">
+                            {summary.total_incidencias === 1
+                              ? "1 incidencia"
+                              : `${summary.total_incidencias} incidencias`}
+                          </span>
+                        </span>
+                        <ChevronRight size="1em" aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="reporte-hero__recent-empty">
+                  <Archive size="1em" aria-hidden="true" />
+                  <p>No hay reportes guardados.</p>
+                  <span>Cuando guardes uno, aparecerá aquí.</span>
+                </div>
+              )}
+
+              {savedSummaries.length > 0 && (
+                <div className="reporte-hero__recent-actions">
+                  <ReportesGuardadosDialog
+                    savedSummaries={savedSummaries}
+                    dbSaving={dbSaving}
+                    onLoad={handleLoadFromDb}
+                    onDelete={handleDeleteFromDb}
+                    formatMes={formatMes}
                     triggerVariant="labeled"
+                    triggerLabel="Ver todos"
                   />
-                )}
-              </div>
-            </div>
-          )}
+                  {savedSummaries.length >= 2 && (
+                    <ReporteComparison
+                      summaries={savedSummaries}
+                      triggerVariant="labeled"
+                    />
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
         </motion.section>
 
         {errors.length > 0 && (

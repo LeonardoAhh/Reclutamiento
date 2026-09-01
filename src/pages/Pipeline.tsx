@@ -770,7 +770,7 @@ export function Pipeline() {
                           puesto + reclutador + entrevista de forma compacta. */}
                       <div className="pipeline__ccard-mobile-info" aria-hidden="true">
                         <div className="pipeline__ccard-mobile-info__puesto">
-                          <div>{c.puesto}</div>
+                          <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
                           {c.seccion?.trim() && (
                             <div className="pipeline__seccion">{c.seccion.trim()}</div>
                           )}
@@ -791,7 +791,7 @@ export function Pipeline() {
 
                     <div className="pipeline__ccard-puesto-col">
                       <div className="pipeline__puesto">
-                        <div>{c.puesto}</div>
+                        <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
                         {c.seccion?.trim() && (
                           <div className="pipeline__seccion">{c.seccion.trim()}</div>
                         )}

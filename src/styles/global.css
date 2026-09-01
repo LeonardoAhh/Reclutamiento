@@ -263,6 +263,8 @@
   --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;
+  /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
+  --feature-report-onboarding-max-inline-size: 64rem;
   --feature-navigation-rail-inline-size: 16.25rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;

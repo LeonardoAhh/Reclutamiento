@@ -22,6 +22,7 @@ interface ReportesGuardadosDialogProps {
   formatMes: (mes: string) => string;
   /** "icon" (default): botón compacto ícono + contador · "labeled": ícono + texto */
   triggerVariant?: "icon" | "labeled";
+  triggerLabel?: string;
 }
 
 export default function ReportesGuardadosDialog({
@@ -31,6 +32,7 @@ export default function ReportesGuardadosDialog({
   onDelete,
   formatMes,
   triggerVariant = "icon",
+  triggerLabel = "Reportes",
 }: ReportesGuardadosDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<SavedSummary | null>(null);
@@ -62,7 +64,7 @@ export default function ReportesGuardadosDialog({
           data-testid="open-saved-reports-btn"
         >
           <Archive size={16} aria-hidden="true" />
-          <span className="reporte-saved__trigger-label">Reportes</span>
+          <span className="reporte-saved__trigger-label">{triggerLabel}</span>
         </button>
       ) : (
         <button
