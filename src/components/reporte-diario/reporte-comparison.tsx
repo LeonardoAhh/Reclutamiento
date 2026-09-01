@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
-  BarChart3,
-  CircleCheckBig,
+  ChartNoAxesCombined,
   Minus,
   TrendingDown,
   TrendingUp,
@@ -101,7 +100,7 @@ function TriggerButton({
         aria-label="Comparativa mensual"
         data-testid="open-comparison-btn"
       >
-        <BarChart3 size={16} aria-hidden="true" />
+        <ChartNoAxesCombined size={16} aria-hidden="true" />
         <span className="reporte-saved__trigger-label">Comparar</span>
       </button>
     );
@@ -115,7 +114,7 @@ function TriggerButton({
       title="Comparativa mensual"
       data-testid="open-comparison-btn"
     >
-      <BarChart3 size={16} aria-hidden="true" />
+      <ChartNoAxesCombined size={16} aria-hidden="true" />
     </button>
   );
 }

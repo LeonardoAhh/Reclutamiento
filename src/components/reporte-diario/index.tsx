@@ -8,16 +8,21 @@ import { format, getISOWeek } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
-  CloudUpload,
-  Calendar,
-  CircleAlert,
-  LoaderCircle,
-  X,
-  ChevronRight,
+  CalendarDays,
   ChevronLeft,
-  FileJson,
-  BarChart2,
+  ChevronRight,
+  ChartSpline,
+  FileBraces,
+  FileChartColumn,
+  FileUp,
+  FileX2,
+  LoaderCircle,
 } from "lucide-react";
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  Save as SaveIconData,
+} from "lucide";
 
 import {
   INCIDENT_TABS,
@@ -25,11 +30,6 @@ import {
   SECTION_CONFIGS,
   VISIBLE_SECTIONS,
 } from "./constants";
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  Save as SaveIconData,
-} from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import {
   formatMes,
@@ -54,6 +54,7 @@ import ReporteKpiDashboard from "./reporte-kpi-dashboard";
 import ReporteComparison from "./reporte-comparison";
 import ReporteEmployeeDetail from "./reporte-employee-detail";
 import ReportesGuardadosDialog from "./reportes-guardados-dialog";
+import { ReporteFormatErrors } from "./ReporteFormatErrors";
 
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
@@ -527,7 +528,6 @@ export default function ReporteDiarioContent() {
         if (errs.length > 0) {
           setProcessStep(null);
           setErrors(errs);
-          toast.error({ title: "Inconsistencias en el archivo" });
           return;
         }
 
@@ -817,7 +817,7 @@ export default function ReporteDiarioContent() {
         >
           <header className="reporte-hero__intro">
             <span className="reporte-hero__eyebrow" aria-hidden="true">
-              <BarChart2 size={14} />
+              <FileChartColumn size={14} />
               Reporte Diario
             </span>
             <h1 id="reporte-hero-title" className="reporte-hero__title">
@@ -879,7 +879,7 @@ export default function ReporteDiarioContent() {
                     className="reporte-hero__dropzone-icon"
                     aria-hidden="true"
                   >
-                    <CloudUpload size={34} />
+                    <FileUp size={34} />
                   </span>
                   <h2 className="reporte-hero__dropzone-title">
                     Arrastra tu archivo aquí o haz clic para seleccionar
@@ -888,7 +888,7 @@ export default function ReporteDiarioContent() {
                     Detecta automáticamente el mes y valida el formato
                   </p>
                   <span className="reporte-hero__dropzone-format" aria-hidden="true">
-                    <FileJson size={14} />
+                    <FileBraces size={14} />
                     .json
                   </span>
                 </motion.div>
@@ -924,31 +924,10 @@ export default function ReporteDiarioContent() {
         </motion.section>
 
         {errors.length > 0 && (
-          <div
-            className="reporte-status-banner error reporte-errors"
-            role="alert"
-            data-testid="errors-banner"
-          >
-            <CircleAlert size={16} aria-hidden="true" />
-            <div className="reporte-errors__content">
-              <div className="reporte-flex-between">
-                <strong>Errores de formato</strong>
-                <button
-                  type="button"
-                  onClick={() => setErrors([])}
-                  className="reporte-iconbtn"
-                  aria-label="Cerrar errores"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <ul>
-                {errors.map((err, i) => (
-                  <li key={i}>{err}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <ReporteFormatErrors
+            errors={errors}
+            onDismiss={() => setErrors([])}
+          />
         )}
 
 
@@ -975,7 +954,7 @@ export default function ReporteDiarioContent() {
                 }
                 className="reporte-drag__inner"
               >
-                <CloudUpload
+                <FileUp
                   size="1em"
                   className="reporte-overlay__icon-primary reporte-drag__icon"
                   aria-hidden="true"
@@ -1016,7 +995,7 @@ export default function ReporteDiarioContent() {
               className="reporte-status-banner reporte-status-banner--file"
               data-testid="reporte-filename"
             >
-              <FileJson size={16} className="text-primary" aria-hidden="true" />
+              <FileBraces size={16} className="text-primary" aria-hidden="true" />
               <span className="reporte-head__grid-text">{fileName}</span>
               <button
                 type="button"
@@ -1026,7 +1005,7 @@ export default function ReporteDiarioContent() {
                 className="reporte-iconbtn"
                 data-testid="clear-file-btn"
               >
-                <X size={14} aria-hidden="true" />
+                <FileX2 size={14} aria-hidden="true" />
               </button>
             </div>
           )}
@@ -1087,31 +1066,10 @@ export default function ReporteDiarioContent() {
           {/* Controles movidos arriba; aside no longer contains the search */}
 
           {errors.length > 0 && (
-            <div
-              className="reporte-status-banner error reporte-errors"
-              role="alert"
-              data-testid="errors-banner"
-            >
-              <CircleAlert size={16} aria-hidden="true" />
-              <div className="reporte-errors__content">
-                <div className="reporte-flex-between">
-                  <strong>Errores de formato</strong>
-                  <button
-                    type="button"
-                    onClick={() => setErrors([])}
-                    className="reporte-iconbtn"
-                    aria-label="Cerrar errores"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                <ul>
-                  {errors.map((err, i) => (
-                    <li key={i}>{err}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <ReporteFormatErrors
+              errors={errors}
+              onDismiss={() => setErrors([])}
+            />
           )}
           {/* Controles movidos arriba */}
         </aside>
@@ -1189,7 +1147,7 @@ export default function ReporteDiarioContent() {
                             data-testid="top-incidence-btn"
                             aria-label="Ver top 10 empleados con más incidencias"
                           >
-                            <BarChart2 size={13} aria-hidden="true" />
+                            <ChartSpline size={13} aria-hidden="true" />
                             <span>Análisis de asistencia</span>
                           </button>
                         )}
@@ -1225,7 +1183,7 @@ export default function ReporteDiarioContent() {
                   <div className="reporte-dayhead">
                     <div className="reporte-dayhead__title">
                       <div className="reporte-dayhead__icon">
-                        <Calendar size={18} aria-hidden="true" />
+                        <CalendarDays size={18} aria-hidden="true" />
                       </div>
                       <h3 data-testid="selected-day-title">
                         {selectedDay ? selectedDateTitle : "Detalle del día"}

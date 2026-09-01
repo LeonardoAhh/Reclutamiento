@@ -13,7 +13,7 @@
   display: grid;
   min-inline-size: 0;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   gap: var(--spacing-md);
 }
 
@@ -37,7 +37,7 @@
 .responsibility-card__title-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--spacing-sm);
 }
 

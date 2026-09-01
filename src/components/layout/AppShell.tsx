@@ -52,6 +52,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     document.body.setAttribute('data-sidebar-collapsed', String(collapsed));
   }, [collapsed]);
 
+  useEffect(() => {
+    return () => {
+      document.body.removeAttribute('data-sidebar-collapsed');
+    };
+  }, []);
+
   const toggleCollapse = useCallback(() => setCollapsed((v) => !v), []);
   const toggleMobileMenu = useCallback(() => setMobileMenuOpen((v) => !v), []);
 

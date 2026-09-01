@@ -1,5 +1,5 @@
 import React from 'react';
-import { Moon, TrendingDown, TrendingUp } from 'lucide-react';
+import { MoonStar, TrendingDown, TrendingUp } from 'lucide-react';
 import './SectionSummaryCard.css';
 
 export type StatusTone = "muted" | "error" | "warning" | "primary";
@@ -72,7 +72,7 @@ export function SectionSummaryCard({
 
                     {isDescanso ? (
                         <div className="section-summary-card__descanso" data-testid={`area-descanso-${name}`} title="Descanso" aria-label="Descanso">
-                            <Moon size={14} aria-hidden="true" />
+                            <MoonStar size={14} aria-hidden="true" />
                         </div>
                     ) : (
                         <span

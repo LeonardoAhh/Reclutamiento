@@ -6,6 +6,7 @@
   z-index: var(--layer-system-update);
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--spacing-sm);
   width: min(
     var(--toast-max-inline-size),
@@ -17,11 +18,35 @@
   pointer-events: none;
 }
 
+@media (min-width: 1024px) {
+  body[data-sidebar-collapsed="false"] .app-toaster,
+  body[data-sidebar-collapsed="true"] .app-toaster {
+    right: 0;
+    left: var(--layout-sidebar-w-expanded);
+    align-items: center;
+    width: auto;
+    transform: none;
+  }
+
+  body[data-sidebar-collapsed="true"] .app-toaster {
+    left: var(--layout-sidebar-w-collapsed);
+  }
+
+  body[data-sidebar-collapsed] .app-toaster__item {
+    width: fit-content;
+    max-width: min(
+      var(--toast-max-inline-size),
+      calc(100% - (var(--spacing-lg) * 2))
+    );
+  }
+}
+
 .app-toaster__item {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-md);
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
   padding: var(--spacing-md);
   overflow-wrap: anywhere;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CircleAlert } from "lucide-react";
+import { ListX } from "lucide-react";
 import { ChevronDown, ChevronRight } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import type { EmployeeRef } from "./types";
@@ -93,7 +93,7 @@ export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
 export function EmptyState() {
     return (
         <div className="reporte-incidents__empty">
-            <CircleAlert size={24} aria-hidden="true" />
+            <ListX size={24} aria-hidden="true" />
             <p>Sin registros para este criterio.</p>
         </div>
     );

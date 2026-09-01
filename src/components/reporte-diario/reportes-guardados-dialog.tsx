@@ -1,10 +1,7 @@
 import "./ReporteDiario.css";
 import {
-  Calendar,
+  Archive,
   CalendarDays,
-  CircleCheckBig,
-  ChevronRight,
-  Database,
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
@@ -64,7 +61,7 @@ export default function ReportesGuardadosDialog({
           aria-label={label}
           data-testid="open-saved-reports-btn"
         >
-          <Database size={16} aria-hidden="true" />
+          <Archive size={16} aria-hidden="true" />
           <span className="reporte-saved__trigger-label">Reportes</span>
         </button>
       ) : (
@@ -76,7 +73,7 @@ export default function ReportesGuardadosDialog({
           title="Reportes guardados"
           data-testid="open-saved-reports-btn"
         >
-          <Database size={16} aria-hidden="true" />
+          <Archive size={16} aria-hidden="true" />
           <span className="reporte-saved__count" aria-hidden="true">
             {count}
           </span>
@@ -94,7 +91,7 @@ export default function ReportesGuardadosDialog({
           {savedSummaries.length === 0 ? (
             <div className="reporte-saved__empty">
               <span className="reporte-saved__empty-icon">
-                <Database size={20} aria-hidden="true" />
+                <Archive size={20} aria-hidden="true" />
               </span>
               <p className="reporte-saved__empty-title">
                 No hay reportes guardados

@@ -266,6 +266,8 @@
   --feature-navigation-rail-inline-size: 16.25rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
+  /* Altura legible para detalles extensos de validación antes de scroll interno. */
+  --feature-validation-details-max-block-size: 12rem;
   --document-preview-max: 48rem;
   --recordatorios-route-table-min: 64rem;
   --system-update-content-max: 22rem;

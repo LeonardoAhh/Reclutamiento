@@ -1,4 +1,4 @@
-import { CircleCheckBig, EllipsisVertical, SquarePen, Trash2 } from "lucide-react";
+import { EllipsisVertical, ListRestart, SquarePen, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,7 +41,7 @@ export function ResponsabilidadCard({
     <article className="responsibility-card" role="listitem">
       <header className="responsibility-card__header">
         <div className="responsibility-card__icon">
-          <CircleCheckBig size="var(--icon-size-md)" aria-hidden="true" />
+          <ListRestart size="var(--icon-size-md)" aria-hidden="true" />
         </div>
 
         <div className="responsibility-card__heading">

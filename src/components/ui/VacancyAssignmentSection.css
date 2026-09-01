@@ -105,9 +105,10 @@
 
 .vacancy-assignment-card__title-row {
   display: flex;
+  min-block-size: var(--control-height-sm);
   min-inline-size: 0;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--spacing-sm);
 }
 

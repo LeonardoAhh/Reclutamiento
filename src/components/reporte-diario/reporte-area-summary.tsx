@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CircleCheckBig, Moon, TrendingDown, TrendingUp, UsersRound } from 'lucide-react';
+import { ChartPie } from 'lucide-react';
 import { ChevronDown, ChevronRight } from 'lucide';
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
 import { INCIDENCIA_LABELS } from "./constants";
@@ -7,7 +7,6 @@ import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
 import { Modal } from "@/components/ui/Modal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
-
 import { SectionSummaryCard} from "@/components/ui/SectionSummaryCard";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -106,7 +105,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
 
     if (rows.length === 0) return (
         <div className="reporte-incidents__empty reporte-incidents__empty--padded">
-            <p>No hay ausencias registradas para esta sección.</p>
+            <p>No hay ausencias registradas.</p>
         </div>
     );
 
@@ -274,15 +273,6 @@ export default function ReporteAreaSummary({
 
     return (
         <section className="ras" aria-labelledby="ras-heading">
-            <header className="ras__header">
-                <div className="ras__header-title">
-                    <UsersRound size="1em" aria-hidden="true" />
-                    <h3 id="ras-heading" className="ras__heading">Resumen por sección</h3>
-                </div>
-                <span className="ras__count" aria-label={`${totalIncidencias} incidencias en total`}>
-                    {totalIncidencias}
-                </span>
-            </header>
 
             {/* Grid agrupado por área */}
             <div className="ras__groups" role="list" aria-label="Secciones de la plantilla">

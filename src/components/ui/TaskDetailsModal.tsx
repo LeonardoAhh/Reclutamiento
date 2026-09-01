@@ -1,4 +1,4 @@
-import { FileSearch, Trash2, FileUp } from "lucide-react";
+import { ClipboardClock, Trash2, FileUp } from "lucide-react";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { AttachmentCard } from "./AttachmentCard";
@@ -40,7 +40,7 @@ export function TaskDetailsModal({
       isOpen={isOpen}
       onClose={onClose}
       title={activity?.titulo ?? "Detalles de Tarea"}
-      icon={<FileSearch size="var(--icon-size-md)" aria-hidden="true" />}
+      icon={<ClipboardClock size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
     >
       {activity && (

@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { CircleCheckBig, CircleAlert, X } from 'lucide-react';
-import { ChevronDown, ChevronRight } from 'lucide';
+import { EyeOff } from 'lucide-react';
 import { INCIDENT_TABS, INCIDENCIA_LABELS } from "./constants";
 import type { IncidentTab, EmployeeRef } from "./types";
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -79,7 +76,7 @@ export default function ReporteIncidentTabs({
                         className="reporte-incidents__tab reporte-incidents__clear"
                         data-testid="incident-clear-btn"
                     >
-                        <X size={14} aria-hidden="true" />
+                        <EyeOff size={14} aria-hidden="true" />
                         Ocultar
                     </button>
                 )}

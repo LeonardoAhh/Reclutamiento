@@ -1,17 +1,23 @@
 import { useSyncExternalStore } from 'react';
-import { CircleCheckBig, AlertTriangle, Info, LoaderCircle, CircleAlert } from 'lucide-react';
+import {
+  BadgeCheck,
+  BadgeInfo,
+  CircleDashed,
+  OctagonAlert,
+  TriangleAlert,
+} from 'lucide-react';
 import { toastStore, type ToastState } from '@/lib/notify';
 import './AppToaster.css';
 
 function ToastItem({ toast }: { toast: ToastState }) {
   let IconData;
   switch (toast.type) {
-    case 'success': IconData = CircleCheckBig; break;
-    case 'error': IconData = AlertTriangle; break;
-    case 'info': IconData = Info; break;
-    case 'warning': IconData = CircleAlert; break;
-    case 'loading': IconData = LoaderCircle; break;
-    default: IconData = Info; break;
+    case 'success': IconData = BadgeCheck; break;
+    case 'error': IconData = OctagonAlert; break;
+    case 'info': IconData = BadgeInfo; break;
+    case 'warning': IconData = TriangleAlert; break;
+    case 'loading': IconData = CircleDashed; break;
+    default: IconData = BadgeInfo; break;
   }
   
   return (

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CalendarX, MapPin, UsersRound } from 'lucide-react';
+import { BadgeAlert, Building2, CalendarX2, UsersRound } from 'lucide-react';
 import { formatMes, isIncidence } from "./helpers";
 import type { ReporteRow } from "./types";
 import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
@@ -135,19 +135,19 @@ export default function ReporteKpiDashboard({
             label: "Total incidencias",
             value: kpis.totalIncidencias,
             sub: `en ${formatMes(currentMonth)}`,
-            icon: <CalendarX size={18} />,
+            icon: <BadgeAlert size={18} />,
             tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
         },
         {
             label: "Día con más incidencias",
             value: getWorstDayLabel(kpis.worstDay, currentMonth),
-            icon: <CalendarX size={18} />,
+            icon: <CalendarX2 size={18} />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
             label: "Área con más incidencias",
             value: kpis.worstArea || "—",
-            icon: <MapPin size={18} />,
+            icon: <Building2 size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
             onClick: kpis.worstArea ? () => setIsWorstAreaModalOpen(true) : undefined,
         },

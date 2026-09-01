@@ -59,6 +59,7 @@ export function AnalisisAsistenciaModal({
       title="Análisis de asistencia"
       onBack={drillDownMonth ? () => setDrillDownMonth(null) : undefined}
       fullscreenMobile={false}
+      size="sm"
     >
       <div className="top-emp-modal">
         <AnimatePresence mode="wait" initial={false}>

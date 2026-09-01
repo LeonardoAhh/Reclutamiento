@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ListTodo, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, ListRestart, Plus } from "lucide-react";
 import type { Activity } from "@/lib/types";
 import { Pagination } from "@/components/ui/Pagination";
 import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
@@ -120,7 +120,7 @@ export function ResponsibilitiesSection({
       >
         {responsibilities.length === 0 ? (
           <div className="responsibilities-section__empty">
-            <ListTodo
+            <ListRestart
               size="var(--icon-size-xxl)"
               className="responsibilities-section__empty-icon"
               aria-hidden="true"
