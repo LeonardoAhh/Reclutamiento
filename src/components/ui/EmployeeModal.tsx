@@ -239,7 +239,7 @@ export function EmployeeModal({
     existingEmployees.some(e => e.num_empleado === form.num_empleado.trim());
 
   const errorsAdd = {
-    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : isNumDuplicate ? 'Este número ya existe.' : null,
+    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : !/^\d+$/.test(form.num_empleado.trim()) ? 'Solo números.' : form.num_empleado.trim().length > 4 ? 'Máximo 4 dígitos.' : isNumDuplicate ? 'Este número ya existe.' : null,
     nombre: !form.nombre.trim() ? 'Obligatorio.' : form.nombre.trim().length < 2 ? 'Mín. 2 letras.' : !isValidNameStr(form.nombre) ? 'Solo letras.' : null,
     area: !form.area ? 'Obligatorio.' : null,
     seccion: !form.seccion ? 'Obligatorio.' : null,
@@ -337,9 +337,11 @@ export function EmployeeModal({
           id="emp-num"
           type="text"
           inputMode="numeric"
+          maxLength={4}
           value={form.num_empleado}
           onChange={(e) => {
-            setForm({ ...form, num_empleado: e.target.value.trim() });
+            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+            setForm({ ...form, num_empleado: val });
             if (!touchedAdd.num_empleado) setTouchedAdd(t => ({ ...t, num_empleado: true }));
           }}
           placeholder="Ej. 1234"

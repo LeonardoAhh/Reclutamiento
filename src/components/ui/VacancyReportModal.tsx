@@ -602,7 +602,7 @@ export function VacancyReportModal({
       className="vacancy-report-modal "
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title="Asignación de vacantes"
-      size="sm"
+      size="md"
       fullscreenMobile={false}
       footerActions={
         <button

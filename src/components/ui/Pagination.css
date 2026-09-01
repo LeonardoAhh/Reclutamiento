@@ -109,7 +109,9 @@
 
 .pagination--compact {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto auto;
+  width: fit-content;
+  margin-inline: auto;
 }
 
 .pagination--compact .pagination__pages {

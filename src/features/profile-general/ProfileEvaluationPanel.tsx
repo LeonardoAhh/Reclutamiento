@@ -188,7 +188,6 @@ export function ProfileEvaluationPanel({
             label: `${employee.num} · ${employee.name} · ${employee.position}`,
           }))}
           placeholder="Selecciona un empleado"
-          searchable
         />
       </div>
 

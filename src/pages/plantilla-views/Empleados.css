@@ -4,11 +4,17 @@
 ───────────────────────────────────────────── */
 
 .empleados {
-  width: 100%;
   display: flex;
+  inline-size: 100%;
   flex-direction: column;
-  gap: var(--spacing-xl);
-  padding-bottom: var(--spacing-xxl);
+  gap: var(--design-spacing-lg);
+  padding: 0 var(--container-padding-mobile) var(--design-spacing-xxl);
+}
+
+@media (min-width: 768px) {
+  .empleados {
+    padding-inline: 0;
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -16,40 +22,39 @@
 ══════════════════════════════════════════ */
 
 .empleados__hero {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
+  display: grid;
+  gap: var(--design-spacing-sm);
 }
 
-.empleados__title {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
-  color: var(--color-ink);
+.empleados__summary {
   margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  text-align: start;
 }
 
-@media (min-width: 768px) {
-  .empleados__title {
-    font-size: var(--type-display-lg-size);
-    font-weight: var(--type-display-lg-weight);
-    line-height: var(--type-display-lg-line);
-    letter-spacing: var(--type-display-lg-tracking);
-  }
+.empleados__filters {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface);
 }
 
-@media (min-width: 1024px) {
-  .empleados__title {
-    font-size: var(--type-display-xl-size);
-    font-weight: var(--type-display-xl-weight);
-    line-height: var(--type-display-xl-line);
-    letter-spacing: var(--type-display-xl-tracking);
-  }
+.empleados__starlite-filter {
+  display: inline-flex;
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  justify-self: start;
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-xs);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
 }
 
 /* ══════════════════════════════════════════
@@ -57,51 +62,8 @@
 ══════════════════════════════════════════ */
 
 .empleados__search {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  min-width: 280px;
-  padding: 0 var(--spacing-md);
-  height: var(--control-height);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  color: var(--color-muted);
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.empleados__search:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
-
-.empleados__search svg {
-  flex-shrink: 0;
-}
-
-.empleados__search input {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: transparent;
-  outline: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  box-shadow: none;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-}
-
-.empleados__search input::-webkit-search-decoration,
-.empleados__search input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
+  min-inline-size: 0;
+  inline-size: 100%;
 }
 
 /* ══════════════════════════════════════════
@@ -111,14 +73,16 @@
 .empleados__banner {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
   border-radius: var(--rounded-md);
   background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline-soft);
+  border: var(--border-width) solid var(--color-hairline);
   color: var(--color-body);
   font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
+  letter-spacing: var(--type-caption-md-tracking);
 }
 
 /* ══════════════════════════════════════════
@@ -129,8 +93,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xxl) var(--spacing-lg);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-3xl) var(--design-spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface);
   color: var(--color-muted);
   text-align: center;
 }
@@ -138,30 +105,31 @@
 .empleados__empty p {
   margin: 0;
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* ══════════════════════════════════════════
-   CONTEO PILL
-   Compartido por rail / accordion
+   CONTEOS
+   Compartidos por rail / accordion
 ══════════════════════════════════════════ */
 
 .empleados__rail-count,
 .empleados__acc-count {
   flex-shrink: 0;
-  min-width: 24px;
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  min-inline-size: var(--icon-size-sm);
   text-align: center;
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-semibold);
-  color: var(--color-on-dark);
-  background: var(--color-ink);
-  border-radius: var(--rounded-xs);
-  line-height: 1.6;
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
+  font-variant-numeric: tabular-nums;
 }
 
-/* El pill del rail activo hereda el acento */
 .empleados__rail-item--active .empleados__rail-count {
-  background: var(--color-primary);
+  color: var(--color-ink);
 }
 
 /* ══════════════════════════════════════════
@@ -170,8 +138,8 @@
 
 .empleados__layout {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
-  gap: var(--spacing-lg);
+  grid-template-columns: var(--feature-navigation-rail-inline-size) minmax(0, 1fr);
+  gap: var(--design-spacing-lg);
   align-items: start;
 }
 
@@ -179,45 +147,43 @@
 
 .empleados__rail {
   position: sticky;
-  top: calc(var(--header-height, 56px) + var(--spacing-md));
-  max-height: calc(100vh - var(--header-height, 56px) - var(--spacing-xl));
+  top: var(--design-spacing-md);
+  max-block-size: calc(100dvh - var(--header-height) - var(--design-spacing-xxl));
   overflow-y: auto;
-  padding: var(--spacing-xs);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  padding: var(--design-spacing-xs);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  /* Scrollbar discreta */
   scrollbar-width: thin;
   scrollbar-color: var(--color-hairline-strong) transparent;
-}
-
-.empleados__rail::-webkit-scrollbar {
-  width: 4px;
-}
-.empleados__rail::-webkit-scrollbar-thumb {
-  background: var(--color-hairline-strong);
-  border-radius: var(--rounded-pill);
 }
 
 .empleados__rail-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .empleados__rail-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-sm);
+  gap: var(--design-spacing-xs);
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   text-align: left;
   color: var(--color-body);
   background: transparent;
-  border: none;
+  border: 0;
   border-radius: var(--rounded-md);
   cursor: pointer;
   transition:
@@ -226,25 +192,20 @@
 }
 
 .empleados__rail-item:hover,
-.empleados__rail-item:focus-visible {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
-  outline: none;
-}
-
-.empleados__rail-item:focus-visible {
-  box-shadow: var(--shadow-focus);
-}
-
 .empleados__rail-item--active {
   color: var(--color-ink);
-  background: rgb(var(--color-primary-rgb) / 0.08);
-  font-weight: var(--font-semibold);
+  background: var(--color-surface-soft);
+  font-weight: var(--type-body-sm-strong-weight);
+}
+
+.empleados__rail-item:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .empleados__rail-name {
   flex: 1 1 0;
-  min-width: 0;
+  min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -255,9 +216,10 @@
 .empleados__detail {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  min-inline-size: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
 
@@ -265,49 +227,38 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-soft);
-  border-bottom: 1px solid var(--color-hairline-soft);
-  min-height: var(--touch-target-min);
+  gap: var(--design-spacing-sm);
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-bottom: var(--border-width) solid var(--color-hairline-soft);
 }
 
 .empleados__detail-name {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--font-semibold);
-  color: var(--color-ink);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  /* Truncado si el nombre es muy largo */
-  min-width: 0;
+  min-inline-size: 0;
   overflow: hidden;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .empleados__detail-count {
   flex-shrink: 0;
-  font-size: var(--type-caption-md-size);
   color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
   white-space: nowrap;
 }
 
 .empleados__detail-body {
-  max-height: calc(100vh - var(--header-height, 56px) - 160px);
-  overflow-x: visible;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-hairline-strong) transparent;
-}
-
-.empleados__detail-body::-webkit-scrollbar {
-  width: 4px;
-}
-.empleados__detail-body::-webkit-scrollbar-thumb {
-  background: var(--color-hairline-strong);
-  border-radius: var(--rounded-pill);
+  min-inline-size: 0;
 }
 
 /* ══════════════════════════════════════════
@@ -317,14 +268,14 @@
 .empleados__accordion {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-sm);
 }
 
 .empleados__acc-item {
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  overflow: visible;
 }
 
 .empleados__acc-heading {
@@ -334,40 +285,40 @@
 .empleados__acc-trigger {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-soft);
-  border: none;
+  gap: var(--design-spacing-xs);
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-sm);
+  background: var(--color-surface);
+  border: 0;
   cursor: pointer;
   font-family: var(--font-body);
   text-align: left;
   transition: background var(--transition-fast);
-  min-height: var(--touch-target-min);
   box-sizing: border-box;
 }
 
 .empleados__acc-trigger:hover,
-.empleados__acc-trigger:focus-visible {
-  background: var(--color-surface-card);
-  outline: none;
+.empleados__acc-trigger[aria-expanded="true"] {
+  background: var(--color-surface-soft);
 }
 
 .empleados__acc-trigger:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--color-primary);
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 .empleados__acc-name {
   flex: 1 1 0;
-  min-width: 0;
+  min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--type-body-strong-size);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-ink);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
 }
 
 .empleados__acc-chevron {
@@ -376,8 +327,7 @@
 }
 
 .empleados__acc-panel {
-  border-top: 1px solid var(--color-hairline-soft);
-  overflow: visible;
+  border-top: var(--border-width) solid var(--color-hairline-soft);
 }
 
 /* ══════════════════════════════════════════
@@ -390,132 +340,94 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow: visible;
 }
-
 
 .empleados__grid-item {
   display: grid;
-  grid-template-columns: 36px 1fr auto;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--design-spacing-sm);
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-sm);
   align-items: center;
-  border-bottom: 1px solid var(--color-hairline-soft);
-  min-height: var(--touch-target-min);
+  border-bottom: var(--border-width) solid var(--color-hairline-soft);
 }
 
 .empleados__grid-item:last-child {
   border-bottom: none;
 }
 
-.empleados__grid-item--incapacidad {
-  background: var(--color-vacancy-tint);
-}
-
-.empleados__grid-item .empleados__cell-num {
-  font-size: var(--type-caption-up-size);
-  color: var(--color-muted);
-  text-align: center;
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  padding: var(--spacing-xxs) 0;
-  line-height: 1.2;
-}
-
 .empleados__grid-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
-  min-width: 0;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
 }
 
-.empleados__grid-info .empleados__name {
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-medium);
+.empleados__name {
   color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: var(--type-caption-sm-line);
-  text-transform: capitalize;
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+  overflow-wrap: anywhere;
 }
 
-.empleados__grid-info .empleados__puesto {
-  font-size: var(--text-xs);
+.empleados__grid-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xs);
+  margin-block-end: 2px;
+}
+
+.empleados__metadata {
   color: var(--color-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: var(--type-caption-up-line);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
 }
 
-.empleados__grid-info .empleados__seccion {
-  font-size: var(--text-xs);
-  color: var(--color-primary);
-  font-weight: var(--font-medium);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: var(--type-caption-up-line);
+.empleados__statuses {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xs);
 }
 
 .empleados__incapacidad-tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  background: var(--color-error-soft);
-  color: var(--color-error);
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
+  inline-size: fit-content;
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   border-radius: var(--rounded-sm);
-  margin-top: var(--spacing-xs);
-  width: fit-content;
+  background: var(--color-error-soft);
+  color: var(--color-error-text);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
 }
 
-/* ══════════════════════════════════════════
-   RESPONSIVE — móvil (≤ 767px)
-══════════════════════════════════════════ */
+.empleados__pagination {
+  display: flex;
+  justify-content: center;
+  padding: var(--design-spacing-md);
+  border-top: var(--border-width) solid var(--color-hairline-soft);
+}
 
-@media (max-width: 767px) {
-  .empleados__hero {
-    flex-direction: column;
-    align-items: stretch;
+@media (min-width: 1080px) {
+  .empleados__filters {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
+}
 
-  .empleados__search {
-    min-width: 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Ajuste de padding en cards para pantallas pequeñas */
-  .empleados__card {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
+@media (prefers-reduced-motion: reduce) {
+  .empleados__rail-item,
   .empleados__acc-trigger {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    transition: none;
   }
-}
-
-/* ── Refactored classes from EmpleadosView.tsx inline styles ── */
-.empleados-table__cell-badge--spaced {
-  margin-top: var(--spacing-xxs);
-}
-
-.empleados__filters {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.empleados__starlite-filter {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  cursor: pointer;
-  flex-shrink: 0;
 }

@@ -50,10 +50,11 @@
   background: var(--color-surface);
 }
 
-.profile-general__tab[data-state='active'] {
-  color: var(--color-ink);
-  background: var(--color-surface);
-  border-color: var(--color-hairline-strong);
+.profile-general__tab[data-state='active'],
+.profile-general__tab[data-state='active']:hover {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .profile-general__tab:focus-visible,

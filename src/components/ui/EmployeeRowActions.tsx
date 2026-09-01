@@ -1,4 +1,4 @@
-import { HeartPulse, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
+import { CircleArrowUp, HeartPulse, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +12,15 @@ import './EmployeeRowActions.css';
 interface EmployeeRowActionsProps {
   employee: Employee;
   onEdit: (emp: Employee) => void;
-  onDelete: (emp: Employee) => void;
+  onPromote?: (emp: Employee) => void;
+  onDelete?: (emp: Employee) => void;
   onIncapacidad: (emp: Employee) => void;
 }
 
 export function EmployeeRowActions({
   employee,
   onEdit,
+  onPromote,
   onDelete,
   onIncapacidad,
 }: EmployeeRowActionsProps) {
@@ -44,6 +46,17 @@ export function EmployeeRowActions({
               <span>Editar</span>
             </button>
           </DropdownMenuItem>
+          {onPromote && (
+            <DropdownMenuItem asChild>
+              <button
+                type="button"
+                onClick={() => run(onPromote)}
+              >
+                <CircleArrowUp aria-hidden="true" />
+                <span>Promover</span>
+              </button>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
             <button
               type="button"
@@ -53,17 +66,21 @@ export function EmployeeRowActions({
               <span>Incapacidad</span>
             </button>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <button
-              type="button"
-              className="dropdown-menu-item--danger"
-              onClick={() => run(onDelete)}
-            >
-              <Trash2 aria-hidden="true" />
-              <span>Borrar</span>
-            </button>
-          </DropdownMenuItem>
+          {onDelete && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <button
+                  type="button"
+                  className="dropdown-menu-item--danger"
+                  onClick={() => run(onDelete)}
+                >
+                  <Trash2 aria-hidden="true" />
+                  <span>Borrar</span>
+                </button>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -1,6 +1,6 @@
 /* ========================================
    DESIGN TOKENS — Notion-inspired system
-   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
+   Warm paper canvas · Inter · Single black accent · Sticker palette (decor only)
    Values updated · Variable names preserved for backwards compatibility.
    ======================================== */
 
@@ -33,9 +33,9 @@
   --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #d5d3d1;
-  --color-hairline-soft: #e6e6e6;
-  --color-hairline-strong: #a39e98;
+  --color-hairline: #e6e6e6;
+  --color-hairline-soft: #f0efee;
+  --color-hairline-strong: #d5d3d1;
 
   /* ── Text ───────────────────────────────────────────────────── */
   --color-ink: #000000; /* Notion true-black (soft via alpha en usos) */
@@ -49,9 +49,15 @@
   --color-on-dark-soft: #b8b6b3;
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: #1aae39; /* Sticker green como affirmative */
-  --color-warning: #dd5b00; /* Sticker orange como warning */
-  --color-error: #ef4444;
+  --color-success: #16a34a;
+  --color-success-text: #15803d;
+  --color-success-subtle: #f0fdf4;
+  --color-warning: #d97706;
+  --color-warning-text: #92400e;
+  --color-warning-subtle: #fffbeb;
+  --color-error: #dc2626;
+  --color-error-text: #b91c1c;
+  --color-error-subtle: #fef2f2;
 
   /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
      Small colourful illustration blocks, app-icon tiles, category dots. */
@@ -80,9 +86,9 @@
 
   /* ── Channel values ─────────────────────────────────────────── */
   --color-primary-rgb: 0 0 0;
-  --color-error-rgb: 239 68 68;
-  --color-success-rgb: 26 174 57;
-  --color-warning-rgb: 221 91 0;
+  --color-success-rgb: 22 163 74;
+  --color-warning-rgb: 217 119 6;
+  --color-error-rgb: 220 38 38;
   --color-ink-rgb: 0 0 0;
   --color-canvas-rgb: 246 245 244;
 
@@ -91,9 +97,9 @@
   --color-modal-scrim: rgba(0, 0, 0, 0.32);
   --color-vacancy-tint: rgba(239, 68, 68, 0.05);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
-  --color-success-tint: rgba(26, 174, 57, 0.1);
-  --color-error-tint: rgba(239, 68, 68, 0.1);
-  --color-warning-tint: rgba(221, 91, 0, 0.1);
+  --color-success-tint: var(--color-success-subtle);
+  --color-error-tint: var(--color-error-subtle);
+  --color-warning-tint: var(--color-warning-subtle);
   --color-primary-tint: rgba(0, 0, 0, 0.06);
   --color-header-glass: rgba(246, 245, 244, 0.92);
 
@@ -196,11 +202,38 @@
   --type-code-sm-line: 1.43;
   --type-code-sm-tracking: 0;
 
+  /* Escala canónica de desing.md. Tokens anteriores siguen disponibles
+     durante la migración para no alterar páginas todavía no convertidas. */
+  --type-display-1-size: clamp(2.5rem, calc(5vw + 1rem), 4rem);
+  --type-display-1-weight: 700;
+  --type-display-1-line: 1;
+  --type-display-1-tracking: -0.0332em;
+  --type-display-2-size: clamp(2.25rem, calc(4vw + 0.75rem), 3.375rem);
+  --type-display-2-weight: 700;
+  --type-display-2-line: 1.04;
+  --type-display-2-tracking: -0.0347em;
+  --type-heading-1-size: clamp(1.75rem, calc(3vw + 0.5rem), 2.5rem);
+  --type-heading-1-weight: 700;
+  --type-heading-1-line: 1.1;
+  --type-heading-1-tracking: -0.025em;
+  --type-heading-2-size: clamp(1.375rem, calc(2vw + 0.5rem), 1.625rem);
+  --type-heading-2-weight: 700;
+  --type-heading-2-line: 1.23;
+  --type-heading-2-tracking: -0.024em;
+  --type-heading-3-size: 1.375rem;
+  --type-heading-3-weight: 700;
+  --type-heading-3-line: 1.27;
+  --type-heading-3-tracking: -0.0114em;
+  --type-title-size: 1.25rem;
+  --type-title-weight: 600;
+  --type-title-line: 1.4;
+  --type-title-tracking: -0.00625em;
+
   /* ── Control sizing ─────────────────────────────────────────── */
-  --control-height: 36px;
+  --control-height: 40px;
   --control-height-sm: var(--spacing-xxl);
-  --control-height-lg: 40px;
-  --touch-target-min: 48px;
+  --control-height-lg: 44px;
+  --touch-target-min: 44px;
   --control-padding-x: 20px;
   --control-padding-y: 8px;
   --icon-size-sm: var(--spacing-lg);
@@ -210,7 +243,7 @@
   --icon-size-xl: calc(var(--spacing-xl) + var(--spacing-xs));
   --icon-size-xxl: var(--spacing-xxl);
 
-  /* ── Spacing — base 4px (mantenemos escala actual estable) ─── */
+  /* ── Spacing legado — se conserva durante migración ───────── */
   --spacing-xxs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -220,6 +253,17 @@
   --spacing-xxl: 32px;
   --spacing-2xl: 48px;
   --spacing-section: 96px;
+
+  /* Escala canónica de desing.md para primitivas nuevas/migradas. */
+  --design-spacing-xxs: 0.25rem;
+  --design-spacing-xs: 0.5rem;
+  --design-spacing-sm: 0.75rem;
+  --design-spacing-md: 1rem;
+  --design-spacing-lg: 1.5rem;
+  --design-spacing-xl: 1.75rem;
+  --design-spacing-xxl: 2rem;
+  --design-spacing-3xl: 3rem;
+  --design-spacing-4xl: 4rem;
 
   /* ── Border radius (Notion: xs4 · sm5 · md8 · lg12 · xl16 · full) ── */
   --rounded-none: 0;
@@ -231,19 +275,30 @@
   --rounded-full: 9999px;
 
   /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
-  --shadow-focus: inset 0 0 0 2px var(--color-primary);
+  --shadow-focus: 0 0 0 2px var(--color-primary);
   --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
 
   /* ── Transitions ─────────────────────────────────────────────── */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-instant: 0ms;
+  --transition-fast: 150ms var(--ease-standard);
+  --transition-base: 250ms var(--ease-standard);
+  --transition-slow: 350ms var(--ease-standard);
+  --transition-spring: 400ms var(--ease-spring);
+  --transition-normal: var(--transition-base);
+  --transition-smooth: var(--transition-base);
   --transition-spinner: 1000ms linear;
   --transition-progress: 1400ms ease-in-out;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-max: 1500px;
-  --container-padding: var(--spacing-xl);
-  --container-padding-mobile: var(--spacing-lg);
+  --container-standard-max-inline-size: 80rem;
+  --container-compact-max-inline-size: 64rem;
+  --container-wide-max-inline-size: 100rem;
+  --container-max: var(--container-standard-max-inline-size);
+  --container-padding: var(--design-spacing-md);
+  --container-padding-mobile: var(--design-spacing-md);
   /* Medida máxima de lectura definida por design.md. */
   --content-reading-max-inline-size: 65ch;
   --auth-form-max-inline-size: 28rem;
@@ -254,7 +309,8 @@
   --feature-responsibility-card-min-inline-size: 28rem;
   --feature-activity-card-min-inline-size: 24rem;
   --feature-activity-filter-min-inline-size: 8.5rem;
-  --feature-activity-search-min-inline-size: 18rem;
+  --search-field-min-inline-size: 18rem;
+  --feature-activity-search-min-inline-size: var(--search-field-min-inline-size);
   --feature-reference-attachment-thumbnail-inline-size: 7.5rem;
   --feature-reference-attachment-thumbnail-block-size: 4.5rem;
   --feature-image-viewer-max-block-size: 70dvh;
@@ -264,7 +320,9 @@
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;
   /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
-  --feature-report-onboarding-max-inline-size: 64rem;
+  --feature-report-onboarding-max-inline-size: var(
+    --container-compact-max-inline-size
+  );
   --feature-navigation-rail-inline-size: 16.25rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
@@ -304,6 +362,12 @@
   --layer-system-update: 1500;
   --layer-system-update-curtain: 1600;
   --tooltip-max-width: 280px;
+  --scrollbar-size: var(--spacing-sm);
+  --toggle-track-inline-size: 2.25rem;
+  --toggle-track-block-size: 1.25rem;
+  --toggle-thumb-size: 1rem;
+  --toggle-thumb-inset: 0.125rem;
+  --toggle-thumb-travel: 1rem;
   --config-panel-min-height: calc(var(--spacing-section) + var(--spacing-2xl));
 
   /* ── PWA / safe-area ─────────────────────────────────────────── */
@@ -317,6 +381,7 @@
   --type-caption-md-size: 13px;
   --type-caption-md-weight: 500;
   --type-caption-md-line: 1.4;
+  --type-caption-md-tracking: 0;
   --type-display-md-size: 30px;
   --type-display-md-weight: 700;
   --type-body-lg-size: 18px;
@@ -328,6 +393,7 @@
   --font-bold: 700;
   --font-regular: 400;
   --font-sans: var(--font-body);
+  --font-primary: var(--font-body);
   --font-mono: var(--font-code);
 
   /* Tracking Notion (tight display) */
@@ -351,6 +417,8 @@
 
   --color-amber: var(--color-accent-amber);
   --color-danger: var(--color-error);
+  --color-foreground: var(--color-body);
+  --color-primary-faint: var(--color-primary-tint);
   --color-error-soft: var(--color-error-tint);
   --color-border: var(--color-hairline);
   --color-focus: var(--color-primary);
@@ -369,6 +437,8 @@
     0 2.025px 7.847px rgba(0, 0, 0, 0.027);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-sm);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-md: var(--shadow-sm);
   --shadow-elevated:
     0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
     0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
@@ -376,13 +446,16 @@
     0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
     0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04),
     0 23px 52px rgba(0, 0, 0, 0.05);
+  --shadow-level-2: var(--shadow-elevated);
+  --type-caption-size: var(--type-caption-sm-size);
+  --type-heading-xs-size: var(--type-caption-sm-size);
+  --z-index-tooltip: var(--layer-tooltip);
 
   --header-height: 64px;
   --mobile-nav-height: 56px;
   --mobile-nav-content-space: calc(
     var(--mobile-nav-height) + var(--spacing-2xl)
   );
-  --transition-slow: 350ms ease;
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-theme-in: 300ms;
   --duration-theme-out: 200ms;
@@ -440,8 +513,11 @@
 
   /* Semánticos dark: legibles como texto/icono sobre canvas y surface. */
   --color-success: #4ade80;
+  --color-success-text: #86efac;
   --color-warning: #fbbf24;
+  --color-warning-text: #fde68a;
   --color-error: #fb7185;
+  --color-error-text: #fda4af;
   --color-success-rgb: 74 222 128;
   --color-warning-rgb: 251 191 36;
   --color-error-rgb: 251 113 133;
@@ -463,9 +539,12 @@
   --color-modal-scrim: rgba(0, 0, 0, 0.72);
   --color-vacancy-tint: rgba(239, 68, 68, 0.1);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
-  --color-success-tint: rgba(74, 222, 128, 0.15);
-  --color-error-tint: rgba(251, 113, 133, 0.15);
-  --color-warning-tint: rgba(251, 191, 36, 0.18);
+  --color-success-subtle: rgba(74, 222, 128, 0.15);
+  --color-error-subtle: rgba(251, 113, 133, 0.15);
+  --color-warning-subtle: rgba(251, 191, 36, 0.18);
+  --color-success-tint: var(--color-success-subtle);
+  --color-error-tint: var(--color-error-subtle);
+  --color-warning-tint: var(--color-warning-subtle);
   --color-primary-tint: rgba(246, 245, 244, 0.08);
   --color-header-glass: rgba(25, 24, 23, 0.88);
 
@@ -561,6 +640,15 @@ body {
   ::view-transition-new(root) {
     animation: none;
   }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── Headings ── */
@@ -604,9 +692,7 @@ h4 {
 a {
   color: var(--color-primary);
   text-decoration: underline;
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
+  font: inherit;
   transition: color var(--transition-fast);
 }
 
@@ -764,15 +850,58 @@ code:not(pre code) {
   letter-spacing: var(--type-button-tracking);
 }
 
+/* Roles canónicos de desing.md. Nuevas vistas deben preferirlos. */
+.type-display-1 {
+  font-family: var(--font-display);
+  font-size: var(--type-display-1-size);
+  font-weight: var(--type-display-1-weight);
+  line-height: var(--type-display-1-line);
+  letter-spacing: var(--type-display-1-tracking);
+}
+
+.type-display-2 {
+  font-family: var(--font-display);
+  font-size: var(--type-display-2-size);
+  font-weight: var(--type-display-2-weight);
+  line-height: var(--type-display-2-line);
+  letter-spacing: var(--type-display-2-tracking);
+}
+
+.type-heading-1 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
+}
+
+.type-heading-2 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-2-size);
+  font-weight: var(--type-heading-2-weight);
+  line-height: var(--type-heading-2-line);
+  letter-spacing: var(--type-heading-2-tracking);
+}
+
+.type-heading-3 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-3-size);
+  font-weight: var(--type-heading-3-weight);
+  line-height: var(--type-heading-3-line);
+  letter-spacing: var(--type-heading-3-tracking);
+}
+
+.type-title {
+  font-family: var(--font-display);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+}
+
 /* ========================================
-   PAGE HEADER — Título unificado (mobile-first)
-   ----------------------------------------------
-   Escala editorial (siguiendo desing.md · Notion):
-     · Mobile  (base)     → heading-lg  (26px / -0.024em)
-     · Tablet  (≥ 768px)  → display-lg  (32px / -0.030em)
-     · Desktop (≥ 1024px) → display-xl  (40px / -0.035em)
-   Todos los valores provienen de tokens del sistema (font, size,
-   weight, line, tracking, color, spacing). Sin hardcodes.
+   PAGE HEADER — Título fluido unificado (mobile-first)
+   Usa heading-1 canónico: 28–40px sin saltos abruptos.
    ======================================== */
 
 .page-header {
@@ -803,10 +932,10 @@ code:not(pre code) {
 
 .page-title {
   font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
   color: var(--color-ink);
   margin: 0;
 }
@@ -817,21 +946,6 @@ code:not(pre code) {
     margin-bottom: var(--spacing-lg);
   }
 
-  .page-title {
-    font-size: var(--type-display-lg-size);
-    font-weight: var(--type-display-lg-weight);
-    line-height: var(--type-display-lg-line);
-    letter-spacing: var(--type-display-lg-tracking);
-  }
-}
-
-@media (min-width: 1024px) {
-  .page-title {
-    font-size: var(--type-display-xl-size);
-    font-weight: var(--type-display-xl-weight);
-    line-height: var(--type-display-xl-line);
-    letter-spacing: var(--type-display-xl-tracking);
-  }
 }
 
 /* ========================================
@@ -839,16 +953,44 @@ code:not(pre code) {
    ======================================== */
 
 .container {
+  width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding-left: max(var(--container-padding), var(--safe-area-left));
-  padding-right: max(var(--container-padding), var(--safe-area-right));
+  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
+  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
 }
 
-@media (max-width: 640px) {
-  .container {
-    padding-left: max(var(--container-padding-mobile), var(--safe-area-left));
-    padding-right: max(var(--container-padding-mobile), var(--safe-area-right));
+.container--compact {
+  --container-max: var(--container-compact-max-inline-size);
+}
+
+.container--wide {
+  --container-max: var(--container-wide-max-inline-size);
+}
+
+.container--fluid {
+  --container-max: none;
+}
+
+.container--reading {
+  --container-max: var(--content-reading-max-inline-size);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-padding: var(--design-spacing-lg);
+  }
+}
+
+@media (min-width: 1080px) {
+  :root {
+    --container-padding: var(--design-spacing-xxl);
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --container-padding: var(--design-spacing-3xl);
   }
 }
 
@@ -875,13 +1017,13 @@ code:not(pre code) {
   color: var(--color-primary);
 }
 .text-success {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 .text-warning {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 .text-error {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 /* Section divider — hairline pura, sin sombras */
@@ -898,8 +1040,8 @@ code:not(pre code) {
 ::view-transition-group(*),
 ::view-transition-old(*),
 ::view-transition-new(*) {
-  animation-duration: 0.25s;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-duration: 250ms;
+  animation-timing-function: var(--ease-standard);
 }
 
 /* ========================================
@@ -939,7 +1081,7 @@ code:not(pre code) {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   color: var(--color-ink);
-  background: var(--color-canvas);
+  background: var(--color-surface);
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -974,14 +1116,20 @@ code:not(pre code) {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  outline: none;
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
   border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
+  box-shadow: var(--shadow-sm);
 }
 
 .form-group input:invalid:not(:placeholder-shown),
 .form-group select:invalid:not(:focus) {
   border-color: var(--color-error);
+}
+
+.form-group :is(input, select, textarea)[aria-invalid="true"] {
+  border-color: var(--color-error);
+  background: var(--color-error-subtle);
 }
 
 .form-group select:disabled,
@@ -995,7 +1143,7 @@ code:not(pre code) {
 
 .form-error {
   font-size: var(--type-caption-sm-size);
-  color: var(--color-error);
+  color: var(--color-error-text);
   margin-top: var(--spacing-xxs);
 }
 
@@ -1008,7 +1156,7 @@ code:not(pre code) {
 
 .phone-validation-icon {
   position: absolute;
-  right: 10px;
+  right: var(--spacing-sm);
   pointer-events: none;
   transition: opacity var(--transition-fast);
 }
@@ -1020,9 +1168,14 @@ code:not(pre code) {
   color: var(--color-error);
 }
 
-.input-error {
-  border-color: var(--color-error) !important;
-  box-shadow: 0 0 0 1px var(--color-error) !important;
+:is(input, select, textarea).input-error {
+  border-color: var(--color-error);
+  background: var(--color-error-subtle);
+}
+
+:is(input, select, textarea).input-success {
+  border-color: var(--color-success);
+  background: var(--color-success-subtle);
 }
 
 .form-error-text,
@@ -1033,20 +1186,27 @@ code:not(pre code) {
 }
 
 .form-error-text {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .form-warning-text {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  color: var(--color-warning);
+  color: var(--color-warning-text);
+}
+
+.form-success-text {
+  margin-top: var(--spacing-xs);
+  color: var(--color-success-text);
+  font-size: var(--type-caption-up-size);
+  line-height: var(--type-caption-up-line);
 }
 
 /* ========================================
    BUTTONS — sistema de controles
    Los botones de acción usan rounded-md.
-   Sin sombras — profundidad viene del color y borders.
+   Primaria plana; secundaria usa elevación suave.
    ======================================== */
 
 .btn-primary,
@@ -1058,6 +1218,7 @@ code:not(pre code) {
   justify-content: center;
   gap: var(--spacing-sm);
   height: var(--control-height);
+  min-height: var(--touch-target-min);
   padding: 0 var(--control-padding-x);
   font-family: var(--font-body);
   font-size: var(--type-button-size);
@@ -1071,7 +1232,8 @@ code:not(pre code) {
     background var(--transition-fast),
     border-color var(--transition-fast),
     color var(--transition-fast),
-    box-shadow var(--transition-fast);
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 /* Primary CTA — rounded rect (design.md: button-primary) */
@@ -1097,8 +1259,8 @@ code:not(pre code) {
 .btn-secondary:focus-visible,
 .btn-danger:focus-visible,
 .btn-ghost:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Primary — único CTA con color estructural sólido */
@@ -1113,19 +1275,22 @@ code:not(pre code) {
 }
 .btn-primary:active {
   background: var(--color-primary-active);
+  transform: scale(0.98);
 }
 .btn-primary:disabled {
   background: var(--color-primary-disabled);
   border-color: var(--color-primary-disabled);
-  color: var(--color-charcoal);
+  color: var(--color-ink);
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 /* Secondary — white surface + hairline */
 .btn-secondary {
-  background: var(--color-canvas);
+  background: var(--color-surface);
   color: var(--color-ink);
   border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-sm);
 }
 .btn-secondary:hover {
   background: var(--color-surface-soft);
@@ -1133,6 +1298,7 @@ code:not(pre code) {
 }
 .btn-secondary:active {
   background: var(--color-hairline);
+  transform: scale(0.98);
 }
 .btn-secondary:disabled {
   opacity: 0.5;
@@ -1150,6 +1316,7 @@ code:not(pre code) {
 }
 .btn-danger:active {
   background: color-mix(in srgb, var(--color-error) 78%, black);
+  transform: scale(0.98);
 }
 
 /* Ghost — transparente, solo texto */
@@ -1161,6 +1328,10 @@ code:not(pre code) {
 .btn-ghost:hover {
   background: var(--color-surface-soft);
   color: var(--color-ink);
+}
+
+.btn-ghost:active {
+  transform: scale(0.98);
 }
 
 /* Text link style button */
@@ -1184,8 +1355,8 @@ code:not(pre code) {
   color: var(--color-primary-active);
 }
 .btn-text:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Icon button */
@@ -1194,10 +1365,10 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--control-height);
-  height: var(--control-height);
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   border-radius: var(--rounded-md);
-  background: var(--color-canvas);
+  background: var(--color-surface);
   border: 1px solid var(--color-hairline-strong);
   color: var(--color-charcoal);
   cursor: pointer;
@@ -1212,8 +1383,8 @@ code:not(pre code) {
   background: var(--color-surface-soft);
 }
 .btn-icon:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
 }
 .btn-icon--danger:hover {
   color: var(--color-error);
@@ -1246,7 +1417,7 @@ code:not(pre code) {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-lg);
 }
 
 .card--soft {
@@ -1273,7 +1444,7 @@ code:not(pre code) {
 }
 
 /* ========================================
-   MODAL — Ollama style (NO glass)
+   MODAL — superficie elevada, sin glass
    ======================================== */
 
 .modal-overlay {
@@ -1300,6 +1471,7 @@ code:not(pre code) {
   position: relative;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-elevated);
 }
 
 .modal-content--xs {
@@ -1631,20 +1803,26 @@ code:not(pre code) {
 }
 
 /* ========================================
-   SCROLLBAR
+   SCROLLBAR — visible y discreto
    ======================================== */
 
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 0px !important;
-  height: 0px !important;
-  background: transparent !important;
-  display: none !important;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
+
 ::-webkit-scrollbar-track {
-  background: transparent !important;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: transparent !important;
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
 }
 
 /* ========================================
@@ -1665,8 +1843,16 @@ code:not(pre code) {
 
 /* Focus visible para navegación por teclado */
 :focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: var(--focus-ring-width) solid Highlight !important;
+    outline-offset: var(--focus-ring-offset) !important;
+    box-shadow: none !important;
+  }
 }
 
 /* ========================================
@@ -1674,13 +1860,13 @@ code:not(pre code) {
    ======================================== */
 
 .color-error {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 .color-success {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 .color-warning {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 .color-primary {
   color: var(--color-primary);
@@ -1756,24 +1942,24 @@ code:not(pre code) {
 .toggle-switch__slider {
   position: relative;
   display: inline-block;
-  width: 36px;
-  height: 20px;
+  width: var(--toggle-track-inline-size);
+  height: var(--toggle-track-block-size);
   background-color: var(--color-border);
   border-radius: var(--rounded-full);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--transition-fast);
   flex-shrink: 0;
 }
 
 .toggle-switch__slider::before {
   content: "";
   position: absolute;
-  height: 16px;
-  width: 16px;
-  left: 2px;
-  bottom: 2px;
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.2s ease;
+  height: var(--toggle-thumb-size);
+  width: var(--toggle-thumb-size);
+  left: var(--toggle-thumb-inset);
+  bottom: var(--toggle-thumb-inset);
+  background-color: var(--color-surface);
+  border-radius: var(--rounded-full);
+  transition: transform var(--transition-fast);
   box-shadow: var(--shadow-sm);
 }
 
@@ -1782,12 +1968,12 @@ code:not(pre code) {
 }
 
 .toggle-switch input[type="checkbox"]:focus-visible + .toggle-switch__slider {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
-  transform: translateX(16px);
+  transform: translateX(var(--toggle-thumb-travel));
 }
 
 .toggle-switch input[type="checkbox"]:disabled + .toggle-switch__slider {

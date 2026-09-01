@@ -116,7 +116,6 @@ export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateMa
                 options={areas.map((value) => ({ value, label: value }))}
                 placeholder={positionsLoading ? 'Cargando áreas…' : 'Selecciona un área'}
                 disabled={positionsLoading}
-                searchable
               />
             </div>
             <div className="form-group">
@@ -128,7 +127,6 @@ export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateMa
                 options={positionOptions.map((value) => ({ value, label: value }))}
                 placeholder="Selecciona un puesto"
                 disabled={!area}
-                searchable
               />
             </div>
           </div>

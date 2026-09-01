@@ -1,0 +1,90 @@
+.search-field {
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.search-field:hover {
+  border-color: var(--color-hairline-strong);
+}
+
+.search-field:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.search-field__icon {
+  display: inline-flex;
+  flex: 0 0 var(--touch-target-min);
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  min-inline-size: var(--touch-target-min);
+  color: var(--color-muted);
+}
+
+.search-field__clear {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.search-field__clear:hover {
+  color: var(--color-ink);
+}
+
+.search-field__clear:focus-visible {
+  outline: none;
+}
+
+.search-field .search-field__input {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-inline-size: 0;
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 0;
+  margin: 0;
+  padding: 0 var(--spacing-sm) 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  appearance: none;
+}
+
+.search-field .search-field__input:hover,
+.search-field .search-field__input:focus,
+.search-field .search-field__input:focus-visible {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.search-field .search-field__input::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+.search-field .search-field__input::-webkit-search-decoration,
+.search-field .search-field__input::-webkit-search-cancel-button,
+.search-field .search-field__input::-webkit-search-results-button {
+  display: none;
+  appearance: none;
+}

@@ -21,7 +21,6 @@ interface CustomSelectProps {
   'aria-label'?: string;
   'aria-describedby'?: string;
   customTrigger?: React.ReactNode;
-  searchable?: boolean;
 }
 
 interface DropdownPos {
@@ -47,10 +46,8 @@ export function CustomSelect({
   'aria-label': ariaLabel,
   'aria-describedby': ariaDescribedBy,
   customTrigger,
-  searchable = false,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [pos, setPos] = useState<DropdownPos | null>(null);
   
   // Nuevo estado para teclado
@@ -62,7 +59,7 @@ export function CustomSelect({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const generatedListboxId = useId();
   const listboxId = `${id ?? generatedListboxId}-listbox`;
 
@@ -73,16 +70,11 @@ export function CustomSelect({
   // para que el índice de resaltado sea consistente.
   const visibleOptions = useMemo(() => {
     let opts = options;
-    if (searchable && searchQuery) {
-      opts = opts.filter((o) =>
-        o.label.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    if (placeholder && !searchQuery && !opts.some(o => o.value === '')) {
+    if (placeholder && !opts.some(o => o.value === '')) {
       return [{ value: '', label: placeholder }, ...opts];
     }
     return opts;
-  }, [options, searchable, searchQuery, placeholder]);
+  }, [options, placeholder]);
 
   // Calcula posición fija del dropdown a partir del rect del trigger. Al ser
   // `position: fixed` en un portal, ningún `overflow` de ancestros (modales,
@@ -111,14 +103,8 @@ export function CustomSelect({
       setHighlightedIndex(index >= 0 ? index : 0);
       recompute();
       
-      // Auto-focus manual para el input de búsqueda si existe
-      setTimeout(() => {
-        if (searchable && searchInputRef.current) {
-          searchInputRef.current.focus();
-        }
-      }, 0);
+
     } else {
-      setSearchQuery('');
       setHighlightedIndex(-1);
     }
   }, [isOpen, value, visibleOptions.length, recompute]);
@@ -170,7 +156,7 @@ export function CustomSelect({
         }
       }
     }
-  }, [highlightedIndex, isOpen, searchable]);
+  }, [highlightedIndex, isOpen]);
 
   const handleSelect = (val: string) => {
     onChange(val);
@@ -206,8 +192,8 @@ export function CustomSelect({
         setIsOpen(false);
         break;
       default:
-        // Typeahead para selects no buscables
-        if (!searchable && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+        // Typeahead para navegación rápida
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
           e.preventDefault();
           typeaheadBuffer.current += e.key.toLowerCase();
           
@@ -277,31 +263,6 @@ export function CustomSelect({
               ...(pos.up ? { bottom: pos.bottom } : { top: pos.top }),
             }}
           >
-            {searchable && (
-              <div className="custom-select-search">
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar..."
-                  className="custom-select-search-input"
-                  aria-label="Buscar opciones"
-                  role="combobox"
-                  aria-autocomplete="list"
-                  aria-expanded="true"
-                  aria-controls={listboxId}
-                  aria-activedescendant={activeDescendant}
-                  onClick={(e) => e.stopPropagation()}
-                  onKeyDown={(e) => {
-                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
-                      e.preventDefault(); // Evita que el cursor se mueva en el input
-                    }
-                  }}
-                  autoFocus
-                />
-              </div>
-            )}
 
             <div
               className="custom-select-list"
@@ -311,8 +272,8 @@ export function CustomSelect({
               aria-label={ariaLabel || placeholder}
             >
 
-              {visibleOptions.length === 0 && searchable ? (
-                <div className="custom-select-no-results">No se encontraron resultados</div>
+              {visibleOptions.length === 0 ? (
+                <div className="custom-select-no-results">Sin opciones</div>
               ) : (
                 visibleOptions.map((opt, index) => (
                   <button

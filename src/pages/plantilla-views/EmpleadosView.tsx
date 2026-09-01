@@ -1,105 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CircleCheckBig, CloudOff, HeartPulse, UsersRound } from 'lucide-react';
-import { Search as SearchData, X as XIconData, ToggleLeft, ToggleRight } from 'lucide';
+import { CloudOff, UsersRound } from 'lucide-react';
 
-import { ChevronDown, ChevronUp } from 'lucide';
 import { EditEmployeeModal } from '@/components/ui/EditEmployeeModal';
-import { Badge, StarliteBadge } from '@/components/ui/Badge';
+import { StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
-import { DeleteEmployeeConfirmModal } from '@/components/ui/DeleteEmployeeConfirmModal';
-import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { SearchField } from '@/components/ui/SearchField';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { formatShortDate } from '@/lib/dates';
 import { notifyResult } from '@/lib/notify';
 import type { Employee } from '@/lib/types';
+import {
+  DesktopEmployeeDirectory,
+  MobileEmployeeDirectory,
+} from './EmployeeDirectoryGroups';
+import { groupEmployees, type DepartmentGroup } from './employeeDirectory';
 import './Empleados.css';
-
-/**
- * Compara números de empleado de forma numérica cuando ambos son numéricos;
- * cae a comparación textual (locale) en otro caso. Los datos de RH suelen
- * traer números puros, pero algunos vienen con prefijos.
- */
-function compareNumEmpleado(a: string, b: string): number {
-  const na = Number(a);
-  const nb = Number(b);
-  if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
-  return a.localeCompare(b, 'es', { numeric: true });
-}
-
-interface DepartmentGroup {
-  area: string;
-  empleados: Employee[];
-}
-
-interface EmployeeActionHandlers {
-  onEdit: (emp: Employee) => void;
-  onDelete: (emp: Employee) => void;
-  onIncapacidad: (emp: Employee) => void;
-}
-
-/** Lista de tarjetas de empleados, diseño minimalista grid-first. */
-function EmployeeCards({
-  empleados,
-  handlers,
-}: {
-  empleados: Employee[];
-  handlers: EmployeeActionHandlers;
-}) {
-  return (
-    <ul className="empleados__grid-list" role="list">
-      {empleados.map((emp) => (
-        <li
-          key={emp.id ?? emp.num_empleado}
-          className={`empleados__grid-item${
-            emp.en_incapacidad ? ' empleados__grid-item--incapacidad' : ''
-          }`}
-        >
-          <span className="empleados__cell-num">{emp.num_empleado}</span>
-          <div className="empleados__grid-info">
-            <span className="empleados__name">{emp.nombre}</span>
-            <span className="empleados__puesto">
-              {emp.puesto}
-            </span>
-            {emp.seccion && (
-              <span className="empleados__seccion">
-                {emp.seccion}
-              </span>
-            )}
-            {emp.en_incapacidad && (
-              <span
-                className="empleados__incapacidad-tag"
-                title={
-                  emp.incapacidad_hasta
-                    ? `Incapacidad hasta ${formatShortDate(emp.incapacidad_hasta)}`
-                    : 'En incapacidad médica'
-                }
-              >
-                <HeartPulse size={10} aria-hidden="true" />
-                Incapacidad
-              </span>
-            )}
-            {emp.is_starlite && (
-              <div className="empleados-table__cell-badge empleados-table__cell-badge--spaced">
-                <StarliteBadge />
-              </div>
-            )}
-          </div>
-          <EmployeeRowActions
-            employee={emp}
-            onEdit={handlers.onEdit}
-            onDelete={handlers.onDelete}
-            onIncapacidad={handlers.onIncapacidad}
-          />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-
 
 export function EmpleadosView() {
   const {
@@ -107,17 +23,15 @@ export function EmpleadosView() {
     loading,
     isConfigured,
     updateEmployee,
-    deleteEmployee,
     updateEmployeeIncapacidad,
   } = useSupabaseData();
 
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery('(min-width: 1080px)');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showOnlyStarlite, setShowOnlyStarlite] = useState(false);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [incapacidadTarget, setIncapacidadTarget] = useState<Employee | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<Employee | null>(null);
 
   // Departamento activo (master-detail en PC).
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
@@ -126,39 +40,10 @@ export function EmpleadosView() {
 
   // Agrupa por departamento (área); cada grupo ordenado por número de
   // empleado; departamentos ordenados alfabéticamente.
-  const groups = useMemo<DepartmentGroup[]>(() => {
-    const term = searchTerm.trim().toUpperCase();
-    const byArea = new Map<string, Employee[]>();
-
-    for (const emp of employees) {
-      if (showOnlyStarlite && !emp.is_starlite) {
-        continue;
-      }
-      if (
-        term &&
-        !emp.nombre.toUpperCase().includes(term) &&
-        !emp.num_empleado.toUpperCase().includes(term) &&
-        !emp.puesto.toUpperCase().includes(term) &&
-        !emp.area.toUpperCase().includes(term) &&
-        !emp.seccion.toUpperCase().includes(term)
-      ) {
-        continue;
-      }
-      const area = emp.area || 'Sin departamento';
-      const list = byArea.get(area) ?? [];
-      list.push(emp);
-      byArea.set(area, list);
-    }
-
-    return Array.from(byArea.entries())
-      .map(([area, list]) => ({
-        area,
-        empleados: [...list].sort((a, b) =>
-          compareNumEmpleado(a.num_empleado, b.num_empleado)
-        ),
-      }))
-      .sort((a, b) => a.area.localeCompare(b.area, 'es'));
-  }, [employees, searchTerm, showOnlyStarlite]);
+  const groups = useMemo<DepartmentGroup[]>(
+    () => groupEmployees(employees, searchTerm, showOnlyStarlite),
+    [employees, searchTerm, showOnlyStarlite]
+  );
 
   // Mantiene un departamento válido seleccionado en PC. Cuando hay búsqueda,
   // salta al primer grupo con coincidencias.
@@ -184,12 +69,6 @@ export function EmpleadosView() {
     }
   }, [searchTerm, groups]);
 
-  const handlers: EmployeeActionHandlers = {
-    onEdit: setEditTarget,
-    onDelete: setDeleteTarget,
-    onIncapacidad: setIncapacidadTarget,
-  };
-
   async function handleUpdateEmployee(
     num_empleado: string,
     fields: Partial<
@@ -213,13 +92,6 @@ export function EmpleadosView() {
     });
   }
 
-  async function handleDeleteEmployee(num_empleado: string) {
-    return notifyResult(deleteEmployee(num_empleado), {
-      success: 'Empleado eliminado',
-      error: 'No se pudo eliminar el empleado',
-    });
-  }
-
   function toggleArea(area: string) {
     setExpandedAreas((prev) => {
       const next = new Set(prev);
@@ -233,6 +105,15 @@ export function EmpleadosView() {
     () => groups.find((g) => g.area === selectedArea) ?? null,
     [groups, selectedArea]
   );
+  const visibleEmployeeCount = groups.reduce(
+    (total, group) => total + group.empleados.length,
+    0
+  );
+
+  function clearFilters() {
+    setSearchTerm('');
+    setShowOnlyStarlite(false);
+  }
 
   return (
     <BoneyardSkeleton
@@ -241,201 +122,109 @@ export function EmpleadosView() {
       loadingLabel="Cargando empleados…"
     >
       <section className="empleados" id="page-empleados">
-      <section className="empleados__hero">
-        <div />
-        <div className="empleados__filters">
-          <div className="empleados__search">
-            <button
-              type="button"
-              onClick={() => setSearchTerm('')}
-              disabled={!searchTerm}
-              aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
-              tabIndex={searchTerm ? 0 : -1}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                color: 'inherit',
-                cursor: searchTerm ? 'pointer' : 'default',
-              }}
-            >
-              <MorphingIcon 
-                icon={searchTerm ? XIconData : SearchData} 
-                size={16} 
-                aria-hidden="true" 
-              />
-            </button>
-            <label htmlFor="empleados-search" className="sr-only">Buscar empleados</label>
-            <input
+        <header className="empleados__hero">
+          <p className="empleados__summary">
+            {visibleEmployeeCount}{' '}
+            {visibleEmployeeCount === 1 ? 'empleado' : 'empleados'} ·{' '}
+            {groups.length}{' '}
+            {groups.length === 1 ? 'departamento' : 'departamentos'}
+          </p>
+          <div
+            className="empleados__filters"
+            role="search"
+            aria-label="Filtrar empleados"
+          >
+            <SearchField
               id="empleados-search"
-              type="text"
+              className="empleados__search"
+              label="Buscar empleados"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onClear={() => setSearchTerm('')}
               placeholder="Buscar por nombre, número, puesto o área…"
               autoComplete="off"
             />
+            <label className="toggle-switch empleados__starlite-filter">
+              <input
+                type="checkbox"
+                role="switch"
+                checked={showOnlyStarlite}
+                onChange={(event) => setShowOnlyStarlite(event.target.checked)}
+                aria-label="Solo proyecto Starlite"
+              />
+              <span className="toggle-switch__slider" aria-hidden="true" />
+              <StarliteBadge />
+            </label>
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={showOnlyStarlite}
-            onClick={() => setShowOnlyStarlite(!showOnlyStarlite)}
-            className="empleados__starlite-filter"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              fontFamily: 'inherit',
-              color: 'inherit',
-            }}
-          >
-            <MorphingIcon 
-              icon={showOnlyStarlite ? ToggleRight : ToggleLeft} 
-              size={20} 
-              className={showOnlyStarlite ? 'text-primary' : 'color-muted'} 
-            />
-            <StarliteBadge />
-          </button>
-        </div>
-      </section>
+        </header>
 
-      {!isConfigured && employees.length > 0 && (
-        <div className="empleados__banner" role="status">
-          <CloudOff size={16} aria-hidden="true" />
-          <span>
-            Almacenamiento no configurado. Los datos viven solo en este
-            navegador.
-          </span>
-        </div>
-      )}
+        {!isConfigured && employees.length > 0 && (
+          <div className="empleados__banner" role="status">
+            <CloudOff size="var(--icon-size-sm)" aria-hidden="true" />
+            <span>
+              Almacenamiento no configurado. Los datos viven solo en este
+              navegador.
+            </span>
+          </div>
+        )}
 
-      {groups.length === 0 ? (
-        <div className="empleados__empty">
-          <UsersRound size={28} aria-hidden="true" />
-          <p>
-            {employees.length === 0
-              ? 'No hay empleados registrados.'
-              : 'Ningún empleado coincide con la búsqueda.'}
-          </p>
-        </div>
-      ) : isDesktop ? (
-        /* ── PC: master-detail ── */
-        <div className="empleados__layout">
-          <nav className="empleados__rail" aria-label="Departamentos">
-            <ul className="empleados__rail-list" role="list">
-              {groups.map((group) => (
-                <li key={group.area}>
-                  <button
-                    type="button"
-                    className={`empleados__rail-item${
-                      group.area === selectedArea
-                        ? ' empleados__rail-item--active'
-                        : ''
-                    }`}
-                    onClick={() => setSelectedArea(group.area)}
-                    aria-current={group.area === selectedArea}
-                  >
-                    <span className="empleados__rail-name">{group.area}</span>
-                    <span className="empleados__rail-count">
-                      {group.empleados.length}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <section className="empleados__detail" aria-live="polite">
-            {activeGroup && (
-              <>
-                <header className="empleados__detail-head">
-                  <h2 className="empleados__detail-name">{activeGroup.area}</h2>
-                  <span className="empleados__detail-count">
-                    {activeGroup.empleados.length}{' '}
-                    {activeGroup.empleados.length === 1
-                      ? 'empleado'
-                      : 'empleados'}
-                  </span>
-                </header>
-                <div className="empleados__detail-body">
-                  <EmployeeCards
-                    empleados={activeGroup.empleados}
-                    handlers={handlers}
-                  />
-                </div>
-              </>
+        {groups.length === 0 ? (
+          <div className="empleados__empty">
+            <UsersRound size="var(--icon-size-xl)" aria-hidden="true" />
+            <p>
+              {employees.length === 0
+                ? 'No hay empleados registrados.'
+                : 'Ningún empleado coincide con la búsqueda.'}
+            </p>
+            {(searchTerm || showOnlyStarlite) && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={clearFilters}
+              >
+                Limpiar filtros
+              </button>
             )}
-          </section>
-        </div>
-      ) : (
-        /* ── Móvil: accordion ── */
-        <div className="empleados__accordion">
-          {groups.map((group) => {
-            const expanded = expandedAreas.has(group.area);
-            const panelId = `empleados-panel-${group.area}`;
-            return (
-              <section key={group.area} className="empleados__acc-item">
-                <h2 className="empleados__acc-heading">
-                  <button
-                    type="button"
-                    className="empleados__acc-trigger"
-                    onClick={() => toggleArea(group.area)}
-                    aria-expanded={expanded}
-                    aria-controls={panelId}
-                  >
-                    <span className="empleados__acc-name">{group.area}</span>
-                    <span className="empleados__acc-count">
-                      {group.empleados.length}
-                    </span>
-                    <MorphingIcon
-                      icon={expanded ? ChevronUp : ChevronDown}
-                      size={16}
-                      aria-hidden="true"
-                      className="empleados__acc-chevron"
-                    />
-                  </button>
-                </h2>
-                {expanded && (
-                  <div id={panelId} className="empleados__acc-panel">
-                    <EmployeeCards
-                      empleados={group.empleados}
-                      handlers={handlers}
-                    />
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
-      )}
+          </div>
+        ) : isDesktop ? (
+          <DesktopEmployeeDirectory
+            groups={groups}
+            activeGroup={activeGroup}
+            selectedArea={selectedArea}
+            onSelectArea={setSelectedArea}
+            onEdit={setEditTarget}
+            onIncapacidad={setIncapacidadTarget}
+          />
+        ) : (
+          <MobileEmployeeDirectory
+            groups={groups}
+            expandedAreas={expandedAreas}
+            onToggleArea={toggleArea}
+            onEdit={setEditTarget}
+            onIncapacidad={setIncapacidadTarget}
+          />
+        )}
 
-      <EditEmployeeModal
-        isOpen={editTarget !== null}
-        employee={editTarget}
-        onClose={() => setEditTarget(null)}
-        onSave={handleUpdateEmployee}
-      />
+        <EditEmployeeModal
+          isOpen={editTarget !== null}
+          employee={editTarget}
+          onClose={() => setEditTarget(null)}
+          onSave={handleUpdateEmployee}
+        />
 
-      <IncapacidadModal
-        isOpen={incapacidadTarget !== null}
-        employee={incapacidadTarget}
-        onClose={() => setIncapacidadTarget(null)}
-        onSave={(num, enIncapacidad, hasta) =>
-          notifyResult(updateEmployeeIncapacidad(num, enIncapacidad, hasta), {
-            success: enIncapacidad ? 'Incapacidad registrada' : 'Incapacidad finalizada',
-            error: 'No se pudo actualizar la incapacidad',
-          })
-        }
-      />
-
-      <DeleteEmployeeConfirmModal
-        isOpen={deleteTarget !== null}
-        employee={deleteTarget}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDeleteEmployee}
-      />
+        <IncapacidadModal
+          isOpen={incapacidadTarget !== null}
+          employee={incapacidadTarget}
+          onClose={() => setIncapacidadTarget(null)}
+          onSave={(num, enIncapacidad, hasta) =>
+            notifyResult(updateEmployeeIncapacidad(num, enIncapacidad, hasta), {
+              success: enIncapacidad
+                ? 'Incapacidad registrada'
+                : 'Incapacidad finalizada',
+              error: 'No se pudo actualizar la incapacidad',
+            })
+          }
+        />
       </section>
     </BoneyardSkeleton>
   );

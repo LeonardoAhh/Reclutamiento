@@ -145,6 +145,10 @@
   width: 100%;
 }
 
+.config-search-field {
+  inline-size: 100%;
+}
+
 .config-search__wrapper {
   position: relative;
   display: flex;
@@ -1947,10 +1951,11 @@
   color: var(--color-ink);
 }
 
-.config-tab--active {
-  color: var(--color-ink);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+.config-tab--active,
+.config-tab--active:hover {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  box-shadow: none;
 }
 
 .tabulador-results {

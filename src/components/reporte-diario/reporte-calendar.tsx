@@ -119,7 +119,7 @@ function DayCell({
                     <span className="reporte-cal__daynum">{dayNumber}</span>
                 </div>
                 <div className="reporte-cal__kpi reporte-cal__kpi--right">
-                    <span className="reporte-cal__label">INCIDENCIAS</span>
+                    <span className="sr-only">Incidencias:</span>
                     {count > 0 ? (
                         <span className="reporte-cal__count">{count}</span>
                     ) : (

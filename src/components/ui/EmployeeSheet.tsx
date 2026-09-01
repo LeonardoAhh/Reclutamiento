@@ -194,11 +194,13 @@ export function EmployeeSheet({
           id="emp-num"
           type="text"
           inputMode="numeric"
+          maxLength={4}
           required
           value={form.num_empleado}
-          onChange={(e) =>
-            setForm({ ...form, num_empleado: e.target.value.trim() })
-          }
+          onChange={(e) => {
+            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+            setForm({ ...form, num_empleado: val });
+          }}
           placeholder="Ej. 1234"
           autoComplete="off"
         />

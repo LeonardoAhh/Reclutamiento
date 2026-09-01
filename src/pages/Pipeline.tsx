@@ -4,8 +4,7 @@ import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict }
 import { es } from 'date-fns/locale';
 
 import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, CircleCheckBig, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, PenLine, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
-import { Search as SearchIconData, SlidersHorizontal as SlidersHorizontalIconData, X as XIconData } from 'lucide';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { SlidersHorizontal as SlidersHorizontalIconData } from 'lucide';
 import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -20,6 +19,7 @@ import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Modal } from '@/components/ui/Modal';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { SearchField } from '@/components/ui/SearchField';
 import {
   EMPTY_FILTERS,
   type FilterState,
@@ -470,7 +470,7 @@ export function Pipeline() {
       loadingLabel="Cargando candidatos…"
     >
       <MotionConfig reducedMotion="user">
-        <main className="pipeline container">
+        <main className="pipeline container container--wide">
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
       <section className="pipeline__hero">
@@ -523,32 +523,17 @@ export function Pipeline() {
               <SearchBanner />
 
               <div className="pipeline__search">
-                <button
-                  type="button"
-                  className="pipeline__search-clear-btn"
-                  onClick={() => setSearchTerm('')}
-                  disabled={!searchTerm}
-                  aria-label={searchTerm ? 'Limpiar búsqueda' : 'Buscar'}
-                  tabIndex={searchTerm ? 0 : -1}
-                >
-                  <MorphingIcon 
-                    icon={searchTerm ? XIconData : SearchIconData} 
-                    size={16} 
-                    className="pipeline__search-icon"
-                  />
-                </button>
-                <label htmlFor="pipeline-search-input" className="sr-only">Buscar candidato</label>
-                  <input
-                    id="pipeline-search-input"
-                    ref={searchInputRef}
-                    type="search"
-                    inputMode="search"
-                    placeholder="Buscar por nombre, puesto, teléfono... (Ctrl+K)"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pipeline__search-input"
-                    autoComplete="off"
-                  />
+                <SearchField
+                  id="pipeline-search-input"
+                  ref={searchInputRef}
+                  className="pipeline__search-field"
+                  label="Buscar candidato"
+                  placeholder="Buscar por nombre, puesto, teléfono... (Ctrl+K)"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  onClear={() => setSearchTerm('')}
+                  autoComplete="off"
+                />
 
                 {/* ── Dropdown de Resultados ── */}
                 {searchTerm.trim().length > 0 && (

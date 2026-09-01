@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import {
-  CircleArrowUp,
   CircleCheckBig,
   ChevronLeft,
   ChevronRight,
@@ -12,19 +11,17 @@ import {
   Filter,
   HeartPulse,
   Network,
-  PenLine,
-  Trash2,
   UserRoundPlus as UserPlusIcon,
   UsersRound,
 } from "lucide-react";
-import { Search as SearchData, X as XIconData } from "lucide";
+import { Search as SearchData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { SearchField } from "@/components/ui/SearchField";
+import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { CoverageBar } from "@/components/ui/CoverageBar";
 import {
   AreaStatusBadge,
   Badge,
-  IncapacidadBadge,
-  ProximoIngresoBadge,
 } from "@/components/ui/Badge";
 import { CommentModal } from "@/components/ui/CommentModal";
 import { JsonImporter } from "@/components/ui/JsonImporter";
@@ -43,8 +40,9 @@ import {
   calculatePositionCoverage,
   calculateDepartmentCoverage,
   getCoverageColor,
+  normalizeString,
 } from "@/lib/utils";
-import { localTodayIso, formatShortDate } from "@/lib/dates";
+import { formatShortDate } from "@/lib/dates";
 import {
   computeAutoVacancies,
   filterUnreservedVacancies,
@@ -152,39 +150,40 @@ export function Dashboard() {
     [positionCoverage],
   );
 
+  const normalizedSearchTerm = normalizeString(searchTerm);
+  const hasSearchQuery = normalizedSearchTerm.length >= 2;
+
   const filteredDepts = useMemo(() => {
     let result = departmentCoverage;
     if (filterArea) {
       result = result.filter((d) => d.area === filterArea);
     }
-    if (searchTerm) {
-      const term = searchTerm.toUpperCase();
+    if (hasSearchQuery) {
       result = result
         .map((dept) => ({
           ...dept,
           puestos: dept.puestos.filter(
             (p) =>
-              p.puesto.toUpperCase().includes(term) ||
-              p.seccion.toUpperCase().includes(term) ||
-              p.area.toUpperCase().includes(term),
+              normalizeString(p.puesto).includes(normalizedSearchTerm) ||
+              normalizeString(p.seccion).includes(normalizedSearchTerm) ||
+              normalizeString(p.area).includes(normalizedSearchTerm),
           ),
         }))
         .filter((dept) => dept.puestos.length > 0);
     }
     return result;
-  }, [departmentCoverage, filterArea, searchTerm]);
+  }, [departmentCoverage, filterArea, hasSearchQuery, normalizedSearchTerm]);
 
   const matchingEmployees = useMemo(() => {
-    if (!searchTerm || searchTerm.length < 2) return [];
-    const term = searchTerm.toUpperCase();
+    if (!hasSearchQuery) return [];
     return employees
       .filter(
         (e) =>
-          e.nombre.toUpperCase().includes(term) ||
-          e.num_empleado.includes(term),
-      )
-      .slice(0, 5);
-  }, [employees, searchTerm]);
+          (!filterArea || e.area === filterArea) &&
+          (normalizeString(e.nombre).includes(normalizedSearchTerm) ||
+            normalizeString(e.num_empleado).includes(normalizedSearchTerm)),
+      );
+  }, [employees, filterArea, hasSearchQuery, normalizedSearchTerm]);
 
   const areas = useMemo(
     () => departmentCoverage.map((d) => d.area),
@@ -329,18 +328,14 @@ export function Dashboard() {
     return result;
   }
 
-  const showSearchDropdown =
-    matchingEmployees.length > 0 &&
-    empModalMode === null &&
-    promoteTarget === null &&
-    editTarget === null;
+  const hasSearchResults = matchingEmployees.length > 0 || filteredDepts.length > 0;
   const primaryView = activeTab === "empleados" ? "empleados" : "general";
 
   return (
     <main className="plantilla-layout" aria-labelledby="plantilla-title">
       <header className="plantilla-header">
         <h1 id="plantilla-title" className="plantilla-header__title">
-          Plantilla
+          {primaryView === "empleados" ? "Empleados" : "Plantilla"}
         </h1>
       </header>
 
@@ -408,175 +403,23 @@ export function Dashboard() {
               >
                 <header className="dashboard__hero dashboard-sidebar__hero">
                   <div className="dashboard__hero-content dashboard-sidebar__hero-content">
-                    <div className="dashboard-sidebar__search">
+                    <div
+                      className="dashboard-sidebar__search"
+                      role="search"
+                      aria-label="Buscar en departamentos"
+                    >
                       <div className="dashboard-sidebar__search-wrapper">
-                        <label htmlFor="search-input" className="sr-only">
-                          Buscar en la plantilla
-                        </label>
-                        <button
-                          type="button"
-                          className="dashboard-sidebar__search-icon dashboard-sidebar__search-clear"
-                          onClick={() => setSearchTerm("")}
-                          disabled={!searchTerm}
-                          aria-label={
-                            searchTerm ? "Limpiar búsqueda" : "Buscar"
-                          }
-                          tabIndex={searchTerm ? 0 : -1}
-                        >
-                          <MorphingIcon
-                            icon={searchTerm ? XIconData : SearchData}
-                            size={16}
-                            className="text-muted"
-                            aria-hidden="true"
-                          />
-                        </button>
-                        <input
+                        <SearchField
                           id="search-input"
-                          type="text"
+                          className="dashboard-sidebar__search-field"
+                          label="Buscar en la plantilla"
                           placeholder="Buscar..."
                           value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="dashboard__search-input dashboard-sidebar__search-input"
+                          onChange={(event) => setSearchTerm(event.target.value)}
+                          onClear={() => setSearchTerm("")}
                           autoComplete="off"
-                          aria-haspopup="listbox"
-                          aria-expanded={showSearchDropdown}
-                          aria-label="Buscar en la plantilla"
+                          aria-controls="dashboard-departments"
                         />
-                        {showSearchDropdown && (
-                          <div
-                            className="dashboard__search-dropdown"
-                            role="listbox"
-                            aria-label="Resultados de búsqueda"
-                          >
-                            <div
-                              className="search-dropdown__head"
-                              aria-hidden="true"
-                            >
-                              Resultados de búsqueda
-                            </div>
-                            {matchingEmployees.map((emp) => (
-                              <div
-                                key={emp.num_empleado}
-                                className="search-dropdown-item"
-                                role="option"
-                                aria-selected="false"
-                              >
-                                <div className="search-dropdown-item__info">
-                                  <div
-                                    className="search-dropdown-item__avatar"
-                                    aria-hidden="true"
-                                  >
-                                    {emp.nombre
-                                      ? emp.nombre.charAt(0).toUpperCase()
-                                      : "U"}
-                                  </div>
-                                  <div className="search-dropdown-item__text">
-                                    <span className="emp-name">
-                                      {(() => {
-                                        const parts = emp.nombre
-                                          .trim()
-                                          .split(/\s+/);
-                                        let apellidos = "";
-                                        let nombres = emp.nombre;
-                                        const capitalizeWords = (str: string) =>
-                                          str
-                                            .toLowerCase()
-                                            .replace(/\b\w/g, (c) =>
-                                              c.toUpperCase(),
-                                            );
-
-                                        if (parts.length >= 3) {
-                                          apellidos = capitalizeWords(
-                                            `${parts[0]} ${parts[1]}`,
-                                          );
-                                          nombres = capitalizeWords(
-                                            parts.slice(2).join(" "),
-                                          );
-                                        } else if (parts.length === 2) {
-                                          apellidos = capitalizeWords(parts[0]);
-                                          nombres = capitalizeWords(parts[1]);
-                                        } else {
-                                          apellidos = "";
-                                          nombres = capitalizeWords(
-                                            parts[0] || "",
-                                          );
-                                        }
-                                        return (
-                                          <>
-                                            <span className="emp-name__top">
-                                              <span className="emp-name__id">
-                                                #{emp.num_empleado}
-                                              </span>
-                                              {apellidos}
-                                            </span>
-                                            <span className="emp-name__bottom">
-                                              {nombres}
-                                              {emp.en_incapacidad && (
-                                                <IncapacidadBadge iconOnly />
-                                              )}
-                                              {String(
-                                                emp.fecha_ingreso,
-                                              ).localeCompare(localTodayIso()) >
-                                                0 && (
-                                                <ProximoIngresoBadge iconOnly />
-                                              )}
-                                            </span>
-                                          </>
-                                        );
-                                      })()}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="search-dropdown-item__actions">
-                                  <button
-                                    type="button"
-                                    className="search-dropdown-item__edit"
-                                    onClick={() => openEditFor(emp)}
-                                    aria-label={`Editar a ${emp.nombre}`}
-                                    title="Editar empleado"
-                                  >
-                                    <PenLine size={14} aria-hidden="true" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="search-dropdown-item__promote"
-                                    onClick={() => openPromoteFor(emp)}
-                                    aria-label={`Promover a ${emp.nombre}`}
-                                    title="Promover a otro puesto"
-                                  >
-                                    <CircleArrowUp
-                                      size={14}
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className={`search-dropdown-item__incapacidad${emp.en_incapacidad ? " is-active" : ""}`}
-                                    onClick={() => setIncapacidadTarget(emp)}
-                                    aria-label={`Marcar incapacidad de ${emp.nombre}`}
-                                    aria-pressed={Boolean(emp.en_incapacidad)}
-                                    title={
-                                      emp.en_incapacidad
-                                        ? "Editar / quitar incapacidad"
-                                        : "Marcar en incapacidad"
-                                    }
-                                  >
-                                    <HeartPulse size={14} aria-hidden="true" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="search-dropdown-item__delete"
-                                    onClick={() => openDeleteFor(emp)}
-                                    aria-label={`Eliminar a ${emp.nombre}`}
-                                    title="Eliminar"
-                                  >
-                                    <Trash2 size={14} aria-hidden="true" />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -624,7 +467,33 @@ export function Dashboard() {
                     </div>
                   )}
 
-                  {filteredDepts.length === 0 && employees.length > 0 && (
+                  {employees.length > 0 && normalizedSearchTerm.length === 1 && (
+                    <p className="dashboard__search-hint" role="status">
+                      Escribe al menos 2 caracteres para buscar.
+                    </p>
+                  )}
+
+                  {hasSearchQuery && matchingEmployees.length > 0 && (
+                    <DepartmentSearchResults
+                      employees={matchingEmployees}
+                      onEdit={openEditFor}
+                      onPromote={openPromoteFor}
+                      onIncapacidad={setIncapacidadTarget}
+                      onDelete={openDeleteFor}
+                    />
+                  )}
+
+                  {hasSearchQuery && filteredDepts.length > 0 && (
+                    <header className="dashboard__department-match-heading">
+                      <h2>Departamentos y puestos</h2>
+                      <span>
+                        {filteredDepts.length}{' '}
+                        {filteredDepts.length === 1 ? 'coincidencia' : 'coincidencias'}
+                      </span>
+                    </header>
+                  )}
+
+                  {hasSearchQuery && !hasSearchResults && employees.length > 0 && (
                     <div className="dashboard__empty" id="dashboard-no-results">
                       <MorphingIcon
                         icon={SearchData}
@@ -633,8 +502,29 @@ export function Dashboard() {
                       />
                       <h2>Sin resultados</h2>
                       <p>No se encontraron coincidencias para tu búsqueda.</p>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => setSearchTerm("")}
+                      >
+                        Limpiar búsqueda
+                      </button>
                     </div>
                   )}
+
+                  {!hasSearchQuery &&
+                    filteredDepts.length === 0 &&
+                    employees.length > 0 && (
+                      <div className="dashboard__empty" id="dashboard-no-results">
+                        <MorphingIcon
+                          icon={SearchData}
+                          size={48}
+                          strokeWidth={2.5}
+                        />
+                        <h2>Sin resultados</h2>
+                        <p>No hay departamentos que coincidan con el filtro.</p>
+                      </div>
+                    )}
 
                   {filteredDepts.map((dept) => (
                     <DepartmentCard

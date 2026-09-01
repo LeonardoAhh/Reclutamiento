@@ -153,7 +153,6 @@ export function HireCandidateModal({
                 value={selectedEmployeeId}
                 onChange={setSelectedEmployeeId}
                 options={employees.map(e => ({ value: e.num_empleado, label: `${e.nombre} (#${e.num_empleado})` }))}
-                searchable={true}
                 placeholder="Buscar por nombre o número..."
               />
             </div>

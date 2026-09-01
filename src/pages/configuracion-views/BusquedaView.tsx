@@ -13,8 +13,9 @@ import {
   RotateCcw,
   SlidersHorizontal,
 } from 'lucide-react';
-import { Search as SearchData, X as XIconData } from 'lucide';
+import { Search as SearchData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { SearchField } from '@/components/ui/SearchField';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
@@ -286,47 +287,19 @@ export function BusquedaView() {
         role="search"
         aria-label="Buscar colaboradores"
       >
-        <div className="form-group config-search">
-          <label htmlFor="config-search-input" className="sr-only">
-            Buscar empleado
-          </label>
-          <div className="config-search__wrapper">
-            {searchTerm.length > 0 ? (
-              <button
-                type="button"
-                className="config-search__icon config-search__icon--action"
-                onClick={handleClearSearch}
-                aria-label="Limpiar búsqueda"
-              >
-                <MorphingIcon
-                  icon={XIconData}
-                  size={18}
-                  className="text-muted"
-                  aria-hidden="true"
-                />
-              </button>
-            ) : (
-              <span className="config-search__icon" aria-hidden="true">
-                <MorphingIcon
-                  icon={SearchData}
-                  size={18}
-                  className="text-muted"
-                />
-              </span>
-            )}
-            <input
-              id="config-search-input"
-              ref={searchInputRef}
-              type="text"
-              inputMode="search"
-              placeholder="Buscar empleado por nombre o número…"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              autoComplete="off"
-              aria-controls="config-search-results"
-              aria-describedby={showHelperText ? 'config-search-hint' : undefined}
-            />
-          </div>
+        <div className="config-search-field">
+          <SearchField
+            id="config-search-input"
+            ref={searchInputRef}
+            label="Buscar empleado"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            onClear={handleClearSearch}
+            placeholder="Buscar empleado por nombre o número…"
+            autoComplete="off"
+            aria-controls="config-search-results"
+            aria-describedby={showHelperText ? 'config-search-hint' : undefined}
+          />
           {showHelperText && (
             <p
               id="config-search-hint"
