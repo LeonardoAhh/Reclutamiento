@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
-import { SectionSummaryCard, type StatusTone } from "@/components/ui/SectionSummaryCard";
+import { SectionSummaryCard} from "@/components/ui/SectionSummaryCard";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ function getAreaCardProps(area: AreaStaffSummary) {
     const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
     const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
     const pct = active > 0 ? (incidence / active) * 100 : 0;
-    
+
     const isDescanso = area.is_descanso;
     const isCriticalTrend = pct > TREND_THRESHOLD;
     const isClickable = incidence > 0;
@@ -126,8 +126,8 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                     <tbody>
                         {rows.map((row) => {
                             // En México, la "categoría" suele ser la letra final (A, B, C...)
-                            const puestoLimpio = row.puesto 
-                                ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() 
+                            const puestoLimpio = row.puesto
+                                ? row.puesto.replace(/\s+[A-Z]$/i, '').trim()
                                 : "-";
                             return (
                                 <tr key={row.key}>
@@ -153,8 +153,8 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                 {rows.map((row) => {
                     const isOpen = expanded.has(row.key);
                     const detailId = `area-detail-${row.key}`;
-                    const puestoLimpio = row.puesto 
-                        ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() 
+                    const puestoLimpio = row.puesto
+                        ? row.puesto.replace(/\s+[A-Z]$/i, '').trim()
                         : "-";
                     return (
                         <li key={row.key} className="reporte-incidents__card">
@@ -229,7 +229,7 @@ export default function ReporteAreaSummary({
             // Removemos sufijos como (STARLITE) para encontrar el área padre correcta en el mapa
             const normalizedSecArea = sec.area.replace(/\s*\([^)]*\)\s*$/i, '').trim();
             const parent = sectionAreaMap.get(normalizedSecArea) ?? sec.area;
-            
+
             if (!groups.has(parent)) groups.set(parent, []);
             groups.get(parent)!.push(sec);
         }
