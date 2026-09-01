@@ -241,7 +241,7 @@
   --transition-progress: 1400ms ease-in-out;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-max: 1500px;
+  --container-max: 1600px;
   --container-padding: var(--spacing-xl);
   --container-padding-mobile: var(--spacing-lg);
   /* Medida máxima de lectura definida por design.md. */

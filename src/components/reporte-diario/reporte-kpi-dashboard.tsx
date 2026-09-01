@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { CalendarX, CircleCheckBig, MapPin, UsersRound } from 'lucide-react';
+import { CalendarX, MapPin, UsersRound } from 'lucide-react';
 import { formatMes, isIncidence } from "./helpers";
 import type { ReporteRow } from "./types";
+import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -9,16 +10,6 @@ interface ReporteKpiDashboardProps {
     selectedRows: ReporteRow[];
     dayHeaders: string[];
     currentMonth: string;
-}
-
-type KpiTone = "default" | "warning" | "destructive";
-
-interface KpiCard {
-    label: string;
-    value: string | number;
-    sub?: string;
-    icon: React.ReactNode;
-    tone: KpiTone;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -99,24 +90,6 @@ function getTone(count: number, thresholds: { warning: number; destructive: numb
     return "default";
 }
 
-// ─── Subcomponent: KpiCard ─────────────────────────────────────────────────────
-
-function KpiCardItem({ card }: { card: KpiCard }) {
-    const toneClass = card.tone !== "default" ? ` reporte-kpi__card--${card.tone}` : "";
-    return (
-        <article className={`reporte-kpi__card${toneClass}`} data-testid={`kpi-${card.tone}`}>
-            <div className="reporte-kpi__icon-box" aria-hidden="true">{card.icon}</div>
-            <div className="reporte-kpi__content">
-                <span className="reporte-kpi__label">{card.label}</span>
-                <div className="reporte-kpi__value-row">
-                    <p className="reporte-kpi__value">{card.value}</p>
-                    {card.sub && <p className="reporte-kpi__sub">{card.sub}</p>}
-                </div>
-            </div>
-        </article>
-    );
-}
-
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function ReporteKpiDashboard({
@@ -131,20 +104,20 @@ export default function ReporteKpiDashboard({
 
     if (!kpis) return null;
 
-    const cards: KpiCard[] = [
+    const cards = [
         {
             label: "Empleados",
             value: kpis.totalEmpleados,
             sub: `en ${formatMes(currentMonth)}`,
             icon: <UsersRound size={18} />,
-            tone: "default",
+            tone: "default" as KpiTone,
         },
         {
             label: "Total incidencias",
             value: kpis.totalIncidencias,
             sub: `en ${formatMes(currentMonth)}`,
             icon: <CalendarX size={18} />,
-            tone: kpis.totalIncidencias > 0 ? "warning" : "default",
+            tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
         },
         {
             label: "Día con más incidencias",
@@ -163,7 +136,7 @@ export default function ReporteKpiDashboard({
     return (
         <div className="reporte-kpi__grid">
             {cards.map((card) => (
-                <KpiCardItem key={card.label} card={card} />
+                <KpiCard key={card.label} {...card} />
             ))}
         </div>
     );

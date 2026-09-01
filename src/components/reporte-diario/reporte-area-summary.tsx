@@ -8,6 +8,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
+import { SectionSummaryCard, type StatusTone } from "@/components/ui/SectionSummaryCard";
+
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 interface ReporteAreaSummaryProps {
@@ -36,139 +38,36 @@ function getStatusTone(pct: number, hasIncidents: boolean): StatusTone {
     return "primary";
 }
 
-// ─── AreaCard ──────────────────────────────────────────────────────────────────
+// ─── AreaCard Helper (Legacy data parsing for SectionSummaryCard) ────────────
 
-interface AreaCardProps {
-    area: AreaStaffSummary;
-    isSelected: boolean;
-    onClick: () => void;
-}
-
-function AreaCard({ area, isSelected, onClick }: AreaCardProps) {
+function getAreaCardProps(area: AreaStaffSummary) {
     const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
     const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
-
     const pct = active > 0 ? (incidence / active) * 100 : 0;
-
-    // El badge de la derecha sigue siendo el total de incidencias del área o solo operadores?
-    // Mostramos solo de operadores si hay operadores.
-    const statusTone = getStatusTone(pct, incidence > 0);
-
-    const asistenciaValue = area.is_descanso ? "—" : Math.max(active - incidence, 0);
+    
+    const isDescanso = area.is_descanso;
     const isCriticalTrend = pct > TREND_THRESHOLD;
-
     const isClickable = incidence > 0;
+    const statusTone = getStatusTone(pct, incidence > 0);
+    const asistenciaValue = isDescanso ? "Descanso" : Math.max(active - incidence, 0);
 
-    let statusClass = "";
-    if (area.is_descanso) {
-        statusClass = " ras-card--descanso";
-    } else if (incidence > 0) {
-        statusClass = " ras-card--has-incidents";
-    } else {
-        statusClass = " ras-card--no-incidents";
-    }
+    const opTitle = area.operadores_autorizados > 0 ? "OP. DE MÁQUINA" : undefined;
+    const autorizado = area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado;
+    const contratados = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
 
-    const className = `ras-card${isSelected ? " ras-card--selected" : ""}${statusClass}`;
-
-    const cardContent = (
-        <>
-            {/* Header: nombre + badge de incidencias o descanso */}
-            <div className="ras-card__header">
-                <span className="ras-card__name" title={area.area}>
-                    {area.area}
-                </span>
-
-                <div className="ras-card__header-metrics">
-                    {incidence > 0 && (
-                        <span className={`ras-card__trend ras-card__trend--${isCriticalTrend ? "critical" : "stable"}`} aria-label={`${pct.toFixed(0)}% ausentismo`}>
-                            {isCriticalTrend
-                                ? <TrendingUp size="1em" aria-hidden="true" />
-                                : <TrendingDown size="1em" aria-hidden="true" />}
-                            {pct.toFixed(0)}%
-                        </span>
-                    )}
-
-                    {area.is_descanso ? (
-                        <div className="ras-card__descanso" data-testid={`area-descanso-${area.area}`}>
-                            <Moon size={11} aria-hidden="true" />
-                            <span>Descanso</span>
-                        </div>
-                    ) : (
-                        <span
-                            className={`ras-card__badge ras-card__badge--${statusTone}`}
-                            aria-label={`${incidence} incidencias`}
-                        >
-                            {incidence}
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            {/* KPIs */}
-            <footer className="ras-card__footer">
-                <div className="ras-card__kpis-group">
-                    {area.operadores_autorizados > 0 ? (
-                        <>
-                            <div className="ras-card__op-title">OP. DE MÁQUINA</div>
-                            <dl className="ras-card__kpis">
-                                <div className="ras-card__kpi">
-                                    <dt>Autorizado</dt>
-                                    <dd>{area.operadores_autorizados}</dd>
-                                </div>
-                                <div className="ras-card__kpi">
-                                    <dt>Contratados</dt>
-                                    <dd>{area.operadores_contratados}</dd>
-                                </div>
-                                <div className="ras-card__kpi">
-                                    <dt>Asistencia</dt>
-                                    <dd>{asistenciaValue}</dd>
-                                </div>
-                            </dl>
-                        </>
-                    ) : (
-                        <dl className="ras-card__kpis">
-                            <div className="ras-card__kpi">
-                                <dt>Autorizado</dt>
-                                <dd>{area.personal_autorizado}</dd>
-                            </div>
-                            <div className="ras-card__kpi">
-                                <dt>Contratados</dt>
-                                <dd>{area.personal_activo}</dd>
-                            </div>
-                            <div className="ras-card__kpi">
-                                <dt>Asistencia</dt>
-                                <dd>{asistenciaValue}</dd>
-                            </div>
-                        </dl>
-                    )}
-                </div>
-            </footer>
-        </>
-    );
-
-    if (!isClickable) {
-        return (
-            <div
-                className={className}
-                data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
-            >
-                {cardContent}
-            </div>
-        );
-    }
-
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={className}
-            aria-pressed={isSelected}
-            aria-label={`Sección ${area.area}. Autorizado: ${area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado}`}
-            data-testid={`area-card-${area.area.replace(/\s+/g, "-").toLowerCase()}`}
-        >
-            {cardContent}
-        </button>
-    );
+    return {
+        name: area.area,
+        autorizado,
+        contratados,
+        asistencia: asistenciaValue,
+        incidence,
+        pct,
+        isDescanso,
+        isCriticalTrend,
+        isClickable,
+        statusTone,
+        opTitle,
+    };
 }
 
 // ─── IncidenceBadge ────────────────────────────────────────────────────────────
@@ -385,9 +284,9 @@ export default function ReporteAreaSummary({
                         </h3>
                         <div className="ras__grid" role="group" aria-label={`Secciones de ${area}`}>
                             {sections.map((sec) => (
-                                <AreaCard
+                                <SectionSummaryCard
                                     key={sec.area}
-                                    area={sec}
+                                    {...getAreaCardProps(sec)}
                                     isSelected={selectedArea === sec.area}
                                     onClick={() => handleSelectArea(sec.area)}
                                 />
@@ -407,9 +306,9 @@ export default function ReporteAreaSummary({
                         </h3>
                         <div className="ras__grid" role="group" aria-label="Otras áreas de la plantilla">
                             {otrasAreas.map((sec) => (
-                                <AreaCard
+                                <SectionSummaryCard
                                     key={sec.area}
-                                    area={sec}
+                                    {...getAreaCardProps(sec)}
                                     isSelected={selectedArea === sec.area}
                                     onClick={() => handleSelectArea(sec.area)}
                                 />

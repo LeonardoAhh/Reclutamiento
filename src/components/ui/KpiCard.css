@@ -1,0 +1,87 @@
+.kpi-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-card);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card__icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: var(--spacing-xxs);
+}
+
+.kpi-card--warning .kpi-card__icon-box {
+  color: var(--color-warning);
+}
+
+.kpi-card--destructive .kpi-card__icon-box {
+  color: var(--color-error);
+}
+
+.kpi-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.kpi-card__label {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.kpi-card__value-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.kpi-card__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .kpi-card__value {
+    font-size: var(--type-heading-lg-size);
+    font-weight: var(--type-heading-lg-weight);
+    line-height: var(--type-heading-lg-line);
+    letter-spacing: var(--type-heading-lg-tracking);
+  }
+}
+
+.kpi-card--destructive .kpi-card__value {
+  color: var(--color-error);
+}
+
+.kpi-card__sub {
+  margin: 0;
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-muted);
+}
