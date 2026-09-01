@@ -85,6 +85,7 @@ export const VISIBLE_SECTIONS = new Set([
     'METROLOGÍA',
     'MOLDES',
     'PRODUCCIÓN 1ER. TURNO',
+    'PRODUCCIÓN 1ER. TURNO (STARLITE)',
     'PRODUCCIÓN 2o. TURNO',
     'PRODUCCIÓN 3ER. TURNO',
     'PRODUCCIÓN 4o. TURNO',

@@ -47,7 +47,7 @@ button.section-summary-card:focus-visible {
 
 .section-summary-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--spacing-xs);
 }
@@ -89,15 +89,19 @@ button.section-summary-card:focus-visible {
 
 .section-summary-card__badge--muted {
   color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-muted) 15%, transparent);
 }
 .section-summary-card__badge--error {
   color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
 }
 .section-summary-card__badge--warning {
   color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
 }
 .section-summary-card__badge--primary {
   color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .section-summary-card__descanso {
@@ -107,7 +111,7 @@ button.section-summary-card:focus-visible {
   width: 26px;
   height: 26px;
   border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
   color: var(--color-primary);
   flex-shrink: 0;
 }
@@ -131,7 +135,7 @@ button.section-summary-card:focus-visible {
 .section-summary-card__kpis {
   display: flex;
   gap: var(--spacing-sm);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin: 0;
   padding: 0;
 }
@@ -149,6 +153,7 @@ button.section-summary-card:focus-visible {
 .section-summary-card__kpi {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--spacing-xxs);
 }
 
@@ -173,15 +178,20 @@ button.section-summary-card:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2xs);
+  padding: 0 var(--spacing-xs);
+  height: 26px;
+  border-radius: var(--rounded-md);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-caption-sm-line);
+  line-height: 1;
   flex-shrink: 0;
 }
 
 .section-summary-card__trend--critical {
   color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
 }
 .section-summary-card__trend--stable {
   color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
 }

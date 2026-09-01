@@ -16,6 +16,19 @@
   box-shadow: var(--shadow-md);
 }
 
+button.kpi-card--interactive {
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+
+button.kpi-card--interactive:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
 .kpi-card__icon-box {
   display: flex;
   align-items: center;

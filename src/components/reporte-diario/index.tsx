@@ -372,7 +372,7 @@ export default function ReporteDiarioContent() {
       // Lógica de descanso para turnos de producción
       let is_descanso = false;
       if (dayOfWeek !== -1) {
-        if (sec.seccion === "PRODUCCIÓN 1ER. TURNO" && dayOfWeek === 0)
+        if ((sec.seccion === "PRODUCCIÓN 1ER. TURNO" || sec.seccion === "PRODUCCIÓN 1ER. TURNO (STARLITE)") && dayOfWeek === 0)
           is_descanso = true;
         else if (
           sec.seccion === "PRODUCCIÓN 2o. TURNO" &&

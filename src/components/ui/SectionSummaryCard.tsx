@@ -14,6 +14,7 @@ export interface SectionSummaryCardProps {
     
     isDescanso?: boolean;
     isCriticalTrend?: boolean;
+    showTrend?: boolean;
     isSelected?: boolean;
     isClickable?: boolean;
     onClick?: () => void;
@@ -32,6 +33,7 @@ export function SectionSummaryCard({
     pct,
     isDescanso = false,
     isCriticalTrend = false,
+    showTrend = true,
     isSelected = false,
     isClickable = false,
     onClick,
@@ -59,7 +61,7 @@ export function SectionSummaryCard({
                 </span>
 
                 <div className="section-summary-card__header-metrics">
-                    {incidence > 0 && (
+                    {incidence > 0 && showTrend && (
                         <span className={`section-summary-card__trend section-summary-card__trend--${isCriticalTrend ? "critical" : "stable"}`} aria-label={`${pct.toFixed(0)}% ausentismo`}>
                             {isCriticalTrend
                                 ? <TrendingUp size="1em" aria-hidden="true" />

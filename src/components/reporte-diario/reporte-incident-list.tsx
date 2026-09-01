@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import type { EmployeeRef } from "./types";
 
-const TABLE_HEADERS = ["# Empleado", "Empleado", "Área", "Puesto", "Turno"] as const;
+const TABLE_HEADERS = ["No.", "Empleado", "Área", "Puesto", "Turno"] as const;
 
 export function DataTable({ rows }: { rows: EmployeeRef[] }) {
     return (
@@ -75,7 +75,7 @@ export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
 
                         {isOpen && (
                             <div id={detailId} className="reporte-incidents__card-detail">
-                                <span className="reporte-incidents__detail-label"># Empleado</span>
+                                <span className="reporte-incidents__detail-label">No.</span>
                                 <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
                                 <span className="reporte-incidents__detail-label">Departamento</span>
                                 <span className="reporte-incidents__detail-value">{row.departamento}</span>

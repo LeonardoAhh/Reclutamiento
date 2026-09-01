@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { CalendarX, MapPin, UsersRound } from 'lucide-react';
 import { formatMes, isIncidence } from "./helpers";
 import type { ReporteRow } from "./types";
 import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
+import { Modal } from "@/components/ui/Modal";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -97,10 +98,28 @@ export default function ReporteKpiDashboard({
     dayHeaders,
     currentMonth,
 }: ReporteKpiDashboardProps) {
+    const [isWorstAreaModalOpen, setIsWorstAreaModalOpen] = useState(false);
+
     const kpis = useMemo(
         () => computeKpis(selectedRows, dayHeaders, currentMonth),
         [selectedRows, dayHeaders, currentMonth]
     );
+
+    const worstAreaEmployees = useMemo(() => {
+        if (!kpis?.worstArea || !isWorstAreaModalOpen) return [];
+        
+        const areaRows = selectedRows.filter(r => r.area === kpis.worstArea);
+        const withIncidents = areaRows.map(row => {
+            let incCount = 0;
+            for (const day of dayHeaders) {
+                if (isIncidence(row.days[day])) incCount++;
+            }
+            return { ...row, incCount };
+        }).filter(r => r.incCount > 0)
+        .sort((a, b) => b.incCount - a.incCount);
+        
+        return withIncidents;
+    }, [kpis?.worstArea, selectedRows, dayHeaders, isWorstAreaModalOpen]);
 
     if (!kpis) return null;
 
@@ -130,14 +149,72 @@ export default function ReporteKpiDashboard({
             value: kpis.worstArea || "—",
             icon: <MapPin size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
+            onClick: kpis.worstArea ? () => setIsWorstAreaModalOpen(true) : undefined,
         },
     ];
 
     return (
-        <div className="reporte-kpi__grid">
-            {cards.map((card) => (
-                <KpiCard key={card.label} {...card} />
-            ))}
-        </div>
+        <>
+            <div className="reporte-kpi__grid">
+                {cards.map((card) => (
+                    <KpiCard key={card.label} {...card} />
+                ))}
+            </div>
+
+            <Modal
+                isOpen={isWorstAreaModalOpen}
+                onClose={() => setIsWorstAreaModalOpen(false)}
+                title={`Incidencias · ${kpis.worstArea}`}
+                subtitle={`${formatMes(currentMonth)} — ${worstAreaEmployees.length} empleados`}
+                size="sm"
+                fullscreenMobile={false}
+            >
+                <div className="top-emp-modal">
+                    {worstAreaEmployees.length > 0 ? (
+                        <ol className="top-emp-list" aria-label={`Empleados con incidencias en ${kpis.worstArea}`}>
+                            {worstAreaEmployees.map((emp, idx) => {
+                                const maxTotal = worstAreaEmployees[0].incCount;
+                                const barPct = Math.round((emp.incCount / maxTotal) * 100);
+                                return (
+                                    <li key={emp.numero_empleado} className="top-emp-item">
+                                        <div className="top-emp-row" style={{ cursor: 'default' }}>
+                                            <span
+                                                className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`}
+                                                aria-label={`Posición ${idx + 1}`}
+                                            >
+                                                {idx + 1}
+                                            </span>
+                                            <span className="top-emp-row__info">
+                                                <span className="top-emp-row__name">{emp.nombre}</span>
+                                                <span className="top-emp-row__meta">
+                                                    #{emp.numero_empleado}
+                                                    {emp.puesto && (
+                                                        <>
+                                                            <span aria-hidden="true"> · </span>
+                                                            {emp.puesto}
+                                                        </>
+                                                    )}
+                                                </span>
+                                            </span>
+                                            <span className="top-emp-row__right">
+                                                <span className="top-emp-row__bar-wrap">
+                                                    <span
+                                                        className="top-emp-row__bar"
+                                                        style={{ width: `${barPct}%` }}
+                                                    />
+                                                </span>
+                                                <span className="top-emp-row__total">{emp.incCount}</span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                    ) : (
+                        <p className="top-emp-drill-empty">No hay incidencias registradas para esta área.</p>
+                    )}
+                </div>
+            </Modal>
+        </>
     );
 }

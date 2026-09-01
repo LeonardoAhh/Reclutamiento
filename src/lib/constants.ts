@@ -333,6 +333,17 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     bono_monto: 619,
     urgentes: 5,
   },
+  {
+    area: "PRODUCCIÓN",
+    seccion: "PRODUCCIÓN 1ER. TURNO (STARLITE)",
+    puesto: "OPERADOR DE MÁQUINA",
+    plantilla_autorizada: 10,
+    backup: 0,
+    notas: "BackUp:",
+    bono: true,
+    bono_monto: 619,
+    urgentes: 0,
+  },
 
   // ── PRODUCCIÓN 2o TURNO ──
   {

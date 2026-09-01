@@ -1,8 +1,8 @@
 {
-  "version": "0.3.10",
-  "fecha": "2026-08-31",
+  "version": "0.3.12",
+  "fecha": "2026-09-01",
   "nivel": "success",
   "titulo": "¡We are ready!",
-  "mensaje": "Mejoras de rendimiento y lectura de datos.",
+  "mensaje": "Mejoras de rendimiento y corrección de errores menores.",
   "notificar": true
 }

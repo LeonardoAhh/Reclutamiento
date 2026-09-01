@@ -55,18 +55,28 @@ function getAreaCardProps(area: AreaStaffSummary) {
     const autorizado = area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado;
     const contratados = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
 
+    // Solo mostramos el porcentaje de tendencia en áreas de Producción (Op. de Máquina)
+    // EXCEPTO para Starlite, ya que no aplica la misma regla visual de tendencia.
+    const isStarlite = area.area.includes("(STARLITE)");
+    const showTrend = area.operadores_autorizados > 0 && !isStarlite;
+
+    let displayName = area.area;
+    if (displayName.includes("(STARLITE)")) {
+        displayName = "STARLITE";
+    }
+
     return {
-        name: area.area,
+        name: displayName,
         autorizado,
         contratados,
         asistencia: asistenciaValue,
         incidence,
-        pct,
+        pct: showTrend ? pct : 0,
+        showTrend,
         isDescanso,
-        isCriticalTrend,
+        isCriticalTrend: showTrend ? isCriticalTrend : false,
         isClickable,
         statusTone,
-        opTitle,
     };
 }
 
@@ -216,7 +226,10 @@ export default function ReporteAreaSummary({
     const { mainGroups, otrasAreas } = useMemo(() => {
         const groups = new Map<string, AreaStaffSummary[]>();
         for (const sec of areas) {
-            const parent = sectionAreaMap.get(sec.area) ?? sec.area;
+            // Removemos sufijos como (STARLITE) para encontrar el área padre correcta en el mapa
+            const normalizedSecArea = sec.area.replace(/\s*\([^)]*\)\s*$/i, '').trim();
+            const parent = sectionAreaMap.get(normalizedSecArea) ?? sec.area;
+            
             if (!groups.has(parent)) groups.set(parent, []);
             groups.get(parent)!.push(sec);
         }

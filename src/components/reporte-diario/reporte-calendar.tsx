@@ -115,12 +115,17 @@ function DayCell({
             }}
         >
             <div className="reporte-cal__top">
-                <span className="reporte-cal__daynum">{dayNumber}</span>
-                {count > 0 ? (
-                    <span className="reporte-cal__count">{count}</span>
-                ) : (
-                    <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
-                )}
+                <div className="reporte-cal__kpi">
+                    <span className="reporte-cal__daynum">{dayNumber}</span>
+                </div>
+                <div className="reporte-cal__kpi reporte-cal__kpi--right">
+                    <span className="reporte-cal__label">INCIDENCIAS</span>
+                    {count > 0 ? (
+                        <span className="reporte-cal__count">{count}</span>
+                    ) : (
+                        <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
+                    )}
+                </div>
             </div>
 
             {holidayLabel && (
