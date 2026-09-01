@@ -2155,7 +2155,7 @@
     "nombre": "AMADOR RICO HUMBERTO JESUS",
     "seccion": "CALIDAD ADMTVO",
     "turno": "3",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "BUENAVISTA",
     "parada": "PARADA FRENTE AL BARCO DE CHILOS"
   },
@@ -2473,15 +2473,6 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
-  },
-  {
-    "numero empleado": "4317",
-    "nombre": "BARRAGAN MARQUEZ MA. INOCENCIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4318",
