@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
@@ -8,10 +14,10 @@ import {
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
 import {
+  CircleCheckBig,
   LayoutGrid,
   List,
   RotateCcw,
-  SlidersHorizontal,
 } from 'lucide-react';
 import { Search as SearchData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
@@ -191,6 +197,18 @@ export function BusquedaView() {
     if (!canUseCompactView && viewMode === 'compact') setViewMode('detail');
   }, [canUseCompactView, viewMode]);
 
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') return;
+      event.preventDefault();
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    };
+
+    window.addEventListener('keydown', focusSearch);
+    return () => window.removeEventListener('keydown', focusSearch);
+  }, []);
+
   const metrics = useMemo(() => {
     let nuevosIngresos = 0;
     let riesgoBaja = 0;
@@ -208,6 +226,12 @@ export function BusquedaView() {
   const handleClearSearch = () => {
     setSearchTerm('');
     searchInputRef.current?.focus();
+  };
+
+  const handleSearchKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Escape' || searchTerm.length === 0) return;
+    event.preventDefault();
+    handleClearSearch();
   };
 
   const handleClearFilters = () => {
@@ -231,8 +255,6 @@ export function BusquedaView() {
     });
   };
 
-  const showHelperText = searchQuery.length === 1;
-
   return (
     <BoneyardSkeleton
       name="configuracion-busqueda"
@@ -247,69 +269,72 @@ export function BusquedaView() {
         </p>
       )}
 
-      <section className="busqueda-hero" aria-label="Indicadores de riesgo">
-        <button 
-          type="button" 
-          className={`busqueda-hero__card busqueda-hero__card--new ${riskFilter === 'nuevos_ingresos' ? 'is-active' : ''}`}
-          onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
+      <div className="busqueda-overview">
+        <section
+          className="config-page__toolbar"
+          role="search"
+          aria-label="Buscar colaboradores"
         >
-          <div className="busqueda-hero__card-header">
-            <span className="busqueda-hero__card-title">Nuevos Ingresos</span>
-            <span className="busqueda-hero__card-count">{metrics.nuevosIngresos}</span>
+          <div className="config-search-field">
+            <SearchField
+              id="config-search-input"
+              ref={searchInputRef}
+              label="Buscar empleado"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              onClear={handleClearSearch}
+              placeholder="Nombre o número de empleado… (Ctrl+K)"
+              autoComplete="off"
+              enterKeyHint="search"
+              aria-keyshortcuts="Control+K Meta+K"
+              aria-controls="config-search-results"
+            />
           </div>
-        </button>
-        
-        <button 
-          type="button" 
-          className={`busqueda-hero__card busqueda-hero__card--risk ${riskFilter === 'riesgo_baja' ? 'is-active' : ''}`}
-          onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
-        >
-          <div className="busqueda-hero__card-header">
-            <span className="busqueda-hero__card-title">Riesgo No Renovación</span>
-            <span
-              className="busqueda-hero__card-count"
-              aria-busy={reportsLoading}
-              aria-live="polite"
-            >
-              {metrics.riesgoBaja}
+        </section>
+
+        <section className="busqueda-hero" aria-label="Indicadores de riesgo">
+          <button
+            type="button"
+            className="busqueda-hero__card"
+            onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
+            aria-pressed={riskFilter === 'nuevos_ingresos'}
+            aria-controls="config-search-results"
+          >
+            <span className="busqueda-hero__card-header">
+              <span className="busqueda-hero__card-title">Nuevos Ingresos</span>
+              <span className="busqueda-hero__card-count">{metrics.nuevosIngresos}</span>
+              <CircleCheckBig className="busqueda-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
             </span>
-          </div>
-        </button>
-      </section>
+          </button>
+
+          <button
+            type="button"
+            className="busqueda-hero__card busqueda-hero__card--risk"
+            onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
+            aria-pressed={riskFilter === 'riesgo_baja'}
+            aria-controls="config-search-results"
+          >
+            <span className="busqueda-hero__card-header">
+              <span className="busqueda-hero__card-title">Riesgo No Renovación</span>
+              <span
+                className="busqueda-hero__card-count"
+                aria-busy={reportsLoading}
+                aria-live="polite"
+              >
+                {metrics.riesgoBaja}
+              </span>
+              <CircleCheckBig className="busqueda-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
+            </span>
+          </button>
+        </section>
+      </div>
+
       {reportsLoading && (
         <span className="sr-only" role="status" aria-live="polite">
           Actualizando riesgo de no renovación…
         </span>
       )}
-
-      <section
-        className="config-page__toolbar"
-        role="search"
-        aria-label="Buscar colaboradores"
-      >
-        <div className="config-search-field">
-          <SearchField
-            id="config-search-input"
-            ref={searchInputRef}
-            label="Buscar empleado"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            onClear={handleClearSearch}
-            placeholder="Buscar empleado por nombre o número…"
-            autoComplete="off"
-            aria-controls="config-search-results"
-            aria-describedby={showHelperText ? 'config-search-hint' : undefined}
-          />
-          {showHelperText && (
-            <p
-              id="config-search-hint"
-              className="config-search__hint type-caption-sm text-muted-soft"
-            >
-              Escribe al menos 2 caracteres para buscar.
-            </p>
-          )}
-        </div>
-      </section>
 
       <section
         id="config-search-results"
@@ -388,12 +413,8 @@ export function BusquedaView() {
 
           {canUseCompactView && (
             <div className="config-filter-field">
-              <span
-                className="config-filter-label type-caption-sm text-transparent"
-                aria-hidden="true"
-                style={{ userSelect: 'none' }}
-              >
-                &nbsp;
+              <span className="config-filter-label type-caption-sm text-muted">
+                Vista
               </span>
               <div
                 className="config-view-switch"
@@ -445,58 +466,39 @@ export function BusquedaView() {
               className="config-results__count type-caption-sm text-muted"
               aria-live="polite"
             >
-              {hasActiveFilters
-                ? `Mostrando ${paginatedEmployees.length} de ${filteredEmployees.length} resultados filtrados (de ${textMatches.length} coincidencias)`
-                : `Mostrando ${paginatedEmployees.length} de ${textMatches.length} resultados para “${searchQuery}”`}
+              {paginatedEmployees.length} de {filteredEmployees.length}{' '}
+              {filteredEmployees.length === 1 ? 'colaborador' : 'colaboradores'}
             </p>
 
             <div
               className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
             >
-              {filteredEmployees.length > 0 ? (
-                <>
-                  {paginatedEmployees.map((employee) => {
-                    const resultId = getEmployeeResultId(employee);
+              {paginatedEmployees.map((employee) => {
+                const resultId = getEmployeeResultId(employee);
 
-                    return (
-                      <EmployeeResultCard
-                        key={resultId}
-                        employee={employee}
-                        resultId={resultId}
-                        viewMode={viewMode}
-                        isRiskFilter={riskFilter === 'riesgo_baja'}
-                        isExpanded={expandedResultIds.has(resultId)}
-                        autoExpand={isSingleResult}
-                        reports={allReports}
-                        reportsLoading={reportsLoading}
-                        onToggle={() => handleToggleCompactResult(resultId)}
-                      />
-                    );
-                  })}
-                  
-                  {filteredEmployees.length > visibleLimit && (
-                    <div className="config-results-load-more">
-                      <ButtonUtility
-                        onClick={() => setVisibleLimit((v) => v + 10)}
-                        className="button-utility--wide"
-                      >
-                        Cargar más resultados
-                      </ButtonUtility>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="config-filter-empty" role="status">
-                  <MorphingIcon icon={SearchData} aria-hidden="true" />
-                  <p className="type-body-md text-muted">
-                    No hay colaboradores que coincidan con los filtros seleccionados.
-                  </p>
+                return (
+                  <EmployeeResultCard
+                    key={resultId}
+                    employee={employee}
+                    resultId={resultId}
+                    viewMode={viewMode}
+                    isRiskFilter={riskFilter === 'riesgo_baja'}
+                    isExpanded={expandedResultIds.has(resultId)}
+                    autoExpand={isSingleResult}
+                    reports={allReports}
+                    reportsLoading={reportsLoading}
+                    onToggle={() => handleToggleCompactResult(resultId)}
+                  />
+                );
+              })}
+
+              {filteredEmployees.length > visibleLimit && (
+                <div className="config-results-load-more">
                   <ButtonUtility
-                    type="button"
-                    icon={<RotateCcw aria-hidden="true" />}
-                    onClick={handleClearFilters}
+                    onClick={() => setVisibleLimit((v) => v + 10)}
+                    className="button-utility--wide"
                   >
-                    Limpiar filtros
+                    Cargar más resultados
                   </ButtonUtility>
                 </div>
               )}
@@ -506,13 +508,24 @@ export function BusquedaView() {
           <div className="config-empty" role="status">
             <MorphingIcon
               icon={SearchData}
-              size={32}
+              size="var(--icon-size-xxl)"
               className="text-muted-soft config-empty__icon"
               aria-hidden="true"
             />
             <p className="type-body-md text-muted config-empty__copy">
-              No se encontraron resultados para “{searchQuery}”.
+              {hasActiveFilters
+                ? 'No hay colaboradores que coincidan con los filtros seleccionados.'
+                : `No se encontraron resultados para “${searchQuery}”.`}
             </p>
+            {hasActiveFilters && (
+              <ButtonUtility
+                type="button"
+                icon={<RotateCcw aria-hidden="true" />}
+                onClick={handleClearFilters}
+              >
+                Limpiar filtros
+              </ButtonUtility>
+            )}
           </div>
         )}
       </section>

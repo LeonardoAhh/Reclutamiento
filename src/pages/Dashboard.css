@@ -108,13 +108,6 @@
   overflow-y: auto;
 }
 
-.plantilla-main__back {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  margin: var(--spacing-lg) var(--spacing-lg) 0;
-}
-
 @media (min-width: 768px) {
   .plantilla-layout {
     grid-template-areas:
@@ -148,9 +141,6 @@
     justify-content: flex-start;
   }
 
-  .plantilla-main__back {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

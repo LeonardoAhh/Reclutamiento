@@ -28,6 +28,11 @@
   color: var(--color-ink);
 }
 
+.badge--neutral-solid {
+  background: var(--color-muted);
+  color: var(--color-on-primary);
+}
+
 .badge--coral {
   background: var(--color-primary-tint);
   color: var(--color-primary);
@@ -51,6 +56,11 @@
 .badge--error {
   background: var(--color-error-tint);
   color: var(--color-error);
+}
+
+.badge--error-solid {
+  background: var(--color-error);
+  color: var(--color-on-primary);
 }
 
 /* Adjustments para dark theme */

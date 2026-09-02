@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import {
   CircleCheckBig,
-  ChevronLeft,
   ChevronRight,
   ClipboardList,
   Clock,
@@ -374,18 +373,6 @@ export function Dashboard() {
         className="plantilla-main"
         aria-label="Contenido principal"
       >
-        {activeTab !== "general" && activeTab !== "empleados" && (
-          <button
-            type="button"
-            className="btn-text plantilla-main__back"
-            onClick={() => handlePrimaryViewChange("general")}
-            aria-label="Volver a Departamentos"
-          >
-            <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Volver</span>
-          </button>
-        )}
-
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

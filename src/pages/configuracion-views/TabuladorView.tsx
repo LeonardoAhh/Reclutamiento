@@ -1,20 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { CircleCheckBig, Wallet } from 'lucide-react';
-import { Search as SearchData, X as XIconData } from 'lucide';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { Search } from 'lucide-react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { normalizeSearchText } from './busqueda-helpers';
-import { HighlightText } from './HighlightText';
+import { SearchField } from '@/components/ui/SearchField';
+import { TabuladorAreaSection, type PuestoTabulador } from './components/TabuladorAreaSection';
 import '../Configuracion.css';
-
-interface PuestoTabulador {
-  ÁREA: string;
-  PUESTO: string;
-  TIPO: string;
-  SALARIO_DIARIO: string;
-  SUELDO_MENSUAL: string;
-}
 
 interface PuestoTabuladorSource {
   ÁREA?: string;
@@ -138,6 +129,7 @@ export function TabuladorView() {
       loadingLabel="Cargando tabulador de salarios…"
     >
       <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
+      <h1 id="tabulador-title" className="sr-only">Tabulador</h1>
       <header className="config-page__header tabulador-header">
         <div className="config-tabs" role="tablist" aria-label="Tipo de tabulador">
           {TAB_OPTIONS.map(({ id, label }) => {
@@ -161,51 +153,24 @@ export function TabuladorView() {
           })}
         </div>
         {!loadError && (
-          <div className="form-group config-search tabulador-search-header">
-            <label htmlFor="tabulador-search-input" className="sr-only">
-              Buscar puesto, área o tipo
-            </label>
-            <div className="config-search__wrapper">
-              <span className="config-search__icon" aria-hidden="true">
-                <MorphingIcon
-                  icon={SearchData}
-                  size={18}
-                  className="text-muted"
-                />
-              </span>
-              <input
-                id="tabulador-search-input"
-                ref={searchInputRef}
-                type="search"
-                inputMode="search"
-                placeholder="Buscar puesto, área o tipo…"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Escape' && searchTerm) {
-                    event.stopPropagation();
-                    handleClearSearch();
-                  }
-                }}
-                autoComplete="off"
-                aria-describedby="tabulador-results-status"
-              />
-              {searchTerm && (
-                <button
-                  type="button"
-                  className="config-search__clear config-search__icon--action"
-                  onClick={handleClearSearch}
-                  aria-label="Limpiar búsqueda"
-                >
-                  <MorphingIcon
-                    icon={XIconData}
-                    size={18}
-                    className="text-muted"
-                    aria-hidden="true"
-                  />
-                </button>
-              )}
-            </div>
+          <div className="tabulador-search-header">
+            <SearchField
+              id="tabulador-search-input"
+              ref={searchInputRef}
+              label="Buscar puesto, área o tipo"
+              placeholder="Buscar puesto, área o tipo…"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' && searchTerm) {
+                  event.stopPropagation();
+                  handleClearSearch();
+                }
+              }}
+              onClear={handleClearSearch}
+              autoComplete="off"
+              aria-describedby="tabulador-results-status"
+            />
           </div>
         )}
       </header>
@@ -236,9 +201,8 @@ export function TabuladorView() {
           >
             {resultCount === 0 ? (
               <div className="config-empty" role="status">
-                <MorphingIcon
-                  icon={SearchData}
-                  size={32}
+                <Search
+                  size="var(--icon-size-xxl)"
                   className="text-muted-soft config-empty__icon"
                   aria-hidden="true"
                 />
@@ -253,85 +217,14 @@ export function TabuladorView() {
                 )}
               </div>
             ) : (
-              Object.entries(groupedAndFilteredData).map(([area, puestos]) => {
-                const areaId = `tabulador-area-${area.toLocaleLowerCase('es').replace(/[^a-z0-9]+/g, '-')}`;
-                return (
-                  <section key={area} className="tabulador-area-section" aria-labelledby={areaId}>
-                    <h3 id={areaId} className="tabulador-area-title type-heading-sm text-ink">
-                      <HighlightText text={area} tokens={searchTokens} />
-                      <span className="tabulador-area-count">
-                        {puestos.length} puesto{puestos.length === 1 ? '' : 's'}
-                      </span>
-                    </h3>
-
-                    <div className="indicadores-card indicadores-table-card tabulador-desktop-table">
-                      <div className="table-responsive" tabIndex={0} role="region" aria-label={`Salarios del área ${area}`}>
-                        <table className="indicadores-table config-table">
-                          <caption className="sr-only">Salarios vigentes del área {area}</caption>
-                          <thead>
-                            <tr>
-                              <th scope="col">Puesto</th>
-                              <th scope="col">Salario diario (2026)</th>
-                              <th scope="col">Sueldo mensual (2026)</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {puestos.map((puesto) => (
-                              <tr key={`${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`}>
-                                <th scope="row">
-                                  <span className="tabulador-position-name type-body-sm font-medium text-ink">
-                                    <HighlightText text={puesto.PUESTO} tokens={searchTokens} />
-                                  </span>
-                                  <span className="type-caption-sm text-muted">
-                                    <HighlightText text={puesto.TIPO} tokens={searchTokens} />
-                                  </span>
-                                </th>
-                                <td>
-                                  <span className="indicador-value">{puesto.SALARIO_DIARIO}</span>
-                                </td>
-                                <td>
-                                  <span className="indicador-value text-primary">{puesto.SUELDO_MENSUAL}</span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    {/* Móvil: tarjetas en lugar de la tabla (sin scroll horizontal) */}
-                    <ul className="tabulador-cards" role="list" aria-label={`Salarios del área ${area}`}>
-                      {puestos.map((puesto) => (
-                        <li
-                          key={`card-${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`}
-                          className="tabulador-card"
-                        >
-                          <div className="tabulador-card__head">
-                            <span className="tabulador-card__puesto">
-                              <HighlightText text={puesto.PUESTO} tokens={searchTokens} />
-                            </span>
-                            <span className="tabulador-card__tipo">
-                              <HighlightText text={puesto.TIPO} tokens={searchTokens} />
-                            </span>
-                          </div>
-                          <dl className="tabulador-card__figures">
-                            <div className="tabulador-card__figure">
-                              <dt className="tabulador-card__label">Salario diario 2026</dt>
-                              <dd className="tabulador-card__value">{puesto.SALARIO_DIARIO}</dd>
-                            </div>
-                            <div className="tabulador-card__figure">
-                              <dt className="tabulador-card__label">Sueldo mensual 2026</dt>
-                              <dd className="tabulador-card__value tabulador-card__value--primary">
-                                {puesto.SUELDO_MENSUAL}
-                              </dd>
-                            </div>
-                          </dl>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                );
-              })
+              Object.entries(groupedAndFilteredData).map(([area, puestos]) => (
+                <TabuladorAreaSection
+                  key={area}
+                  area={area}
+                  puestos={puestos}
+                  searchTokens={searchTokens}
+                />
+              ))
             )}
           </section>
         </>

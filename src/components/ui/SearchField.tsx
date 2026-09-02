@@ -48,7 +48,24 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           {label}
         </label>
 
-        {onClear && hasValue ? (
+        <span className="search-field__icon" aria-hidden="true">
+          <MorphingIcon
+            icon={SearchIconData}
+            size="var(--icon-size-sm)"
+          />
+        </span>
+
+        <input
+          {...inputProps}
+          id={inputId}
+          ref={ref}
+          type="search"
+          inputMode={inputMode}
+          value={value}
+          className="search-field__input"
+        />
+
+        {onClear && hasValue && (
           <button
             type="button"
             className="search-field__icon search-field__clear"
@@ -61,24 +78,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               aria-hidden="true"
             />
           </button>
-        ) : (
-          <span className="search-field__icon" aria-hidden="true">
-            <MorphingIcon
-              icon={SearchIconData}
-              size="var(--icon-size-sm)"
-            />
-          </span>
         )}
-
-        <input
-          {...inputProps}
-          id={inputId}
-          ref={ref}
-          type="search"
-          inputMode={inputMode}
-          value={value}
-          className="search-field__input"
-        />
       </div>
     );
   },

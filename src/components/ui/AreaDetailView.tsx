@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CircleAlert, CircleCheckBig, HeartPulse, MessageSquare, Shield } from 'lucide-react';
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  HeartPulse,
+  MessageSquare,
+  Star,
+  UsersRound,
+} from 'lucide-react';
 import { Badge, StarliteBadge, BackupBadge, AreaStatusBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
@@ -191,7 +198,6 @@ export function AreaDetailView({
 
     return {
       id: s,
-      label: s,
       displayLabel: formatSeccionTabLabel(s),
       count: count,
       incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
@@ -283,8 +289,8 @@ export function AreaDetailView({
           <Badge variant="amber">+{pos.excedente_critico} excede</Badge>
         )}
         {pos.excedente_backup > 0 && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
-            <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+          <span className="area-detail__backup-flag">
+            <span className="area-detail__backup-count">
               +{pos.excedente_backup}
             </span>
             <BackupBadge />
@@ -304,7 +310,7 @@ export function AreaDetailView({
         title="Agregar comentario"
         aria-label={`Comentario para ${pos.puesto}`}
       >
-        <MessageSquare size={16} aria-hidden="true" />
+        <MessageSquare size="var(--icon-size-sm)" aria-hidden="true" />
         {posComments.length > 0 && (
           <span className="btn-icon__count">{posComments.length}</span>
         )}
@@ -318,8 +324,8 @@ export function AreaDetailView({
     <section className="area-detail-view">
       <header className="area-detail__header">
         {onBack && (
-          <button type="button" className="btn-icon area-detail__back-btn" onClick={onBack} aria-label="Volver al resumen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <button type="button" className="btn-icon area-detail__back-btn" onClick={onBack} aria-label="Volver a Departamentos">
+            <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
           </button>
         )}
         <h2 className="area-detail__title">{dept.area}</h2>
@@ -335,7 +341,10 @@ export function AreaDetailView({
 
         <dl className="area-detail-modal__summary-stats">
           <div className="area-detail-modal__stat">
-            <dt className="area-detail-modal__stat-label">Real / Aut.</dt>
+            <dt className="area-detail-modal__stat-label">
+              <UsersRound aria-hidden="true" />
+              Real / Aut.
+            </dt>
             <dd className="area-detail-modal__stat-value">
               {activeTotals.real}
               <span className="area-detail-modal__stat-sep">/</span>
@@ -343,19 +352,25 @@ export function AreaDetailView({
             </dd>
           </div>
           <div className="area-detail-modal__stat">
-            <dt className="area-detail-modal__stat-label">Vacantes</dt>
+            <dt className="area-detail-modal__stat-label">
+              <BriefcaseBusiness aria-hidden="true" />
+              Vacantes
+            </dt>
             <dd className="area-detail-modal__stat-value">{activeTotals.vacantes}</dd>
           </div>
           {activeTotals.urgentes > 0 && (
             <div className="area-detail-modal__stat">
-              <dt className="area-detail-modal__stat-label">Starlite</dt>
+              <dt className="area-detail-modal__stat-label">
+                <Star aria-hidden="true" />
+                Starlite
+              </dt>
               <dd className="area-detail-modal__stat-value">{activeTotals.urgentes}</dd>
             </div>
           )}
           {incapacidadAreaTotal > 0 && (
             <div className="area-detail-modal__stat area-detail-modal__stat--amber">
               <dt className="area-detail-modal__stat-label">
-                <HeartPulse size={11} aria-hidden="true" /> Incapacidad
+                <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" /> Incapacidad
               </dt>
               <dd className="area-detail-modal__stat-value">{incapacidadAreaTotal}</dd>
             </div>
@@ -380,7 +395,6 @@ export function AreaDetailView({
             <CoverageBar
               percentage={dept.porcentaje_cobertura}
               color={coverageColor}
-              height={8}
               showLabel={false}
             />
           </div>
@@ -413,14 +427,14 @@ export function AreaDetailView({
                 <span className="area-detail-modal__tab-count" aria-hidden="true">
                   {t.count}
                 </span>
-                <span className="sr-only">, {t.count}</span>
+                <span className="sr-only">, {t.count} vacantes</span>
                 {t.incapacidad > 0 && (
                   <span
                     className="area-detail-modal__tab-incapacidad"
                     aria-label={`${t.incapacidad} en incapacidad`}
                     title={`${t.incapacidad} en incapacidad`}
                   >
-                    <HeartPulse size={11} aria-hidden="true" />
+                    <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" />
                     {t.incapacidad}
                   </span>
                 )}
@@ -433,9 +447,13 @@ export function AreaDetailView({
       <section
         id="area-detail-tabpanel"
         role="tabpanel"
-        aria-labelledby={activeTabDomId}
+        aria-labelledby={tabs.length > 1 ? activeTabDomId : 'area-detail-list-title'}
         className="area-detail-modal__panel"
       >
+        <header className="area-detail-modal__panel-header">
+          <h3 id="area-detail-list-title">Puestos</h3>
+        </header>
+
         {visiblePuestos.length === 0 ? (
           <div className="area-detail-modal__empty">
             <p>No hay puestos en esta sección.</p>
@@ -472,56 +490,58 @@ export function AreaDetailView({
                 });
               }
               return rows;
-            }).map((row, index) => {
+            }).map((row) => {
               const pos = row.originalPos;
               return (
-              <li
-                key={`${pos.area}-${pos.seccion}-${pos.puesto}-${index}`}
-                className={`area-detail-modal__card${row.vacantes > 0 ? ' area-detail-modal__card--vac' : ''}`}
-              >
-                <div className="area-detail-modal__card-top">
-                  <div className="area-detail-modal__card-id">
-                    <span className="area-detail-modal__card-name">
-                      {row.displayPuesto}
-                      {row.isStarlite && (
-                        <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                          <StarliteBadge />
-                        </span>
+                <li
+                  key={`${pos.area}-${pos.seccion}-${pos.puesto}-${row.isStarlite ? 'starlite' : 'regular'}`}
+                  className="area-detail-modal__card"
+                >
+                  <div className="area-detail-modal__card-top">
+                    <div className="area-detail-modal__card-id">
+                      <span className="area-detail-modal__card-name">
+                        {row.displayPuesto}
+                        {row.isStarlite && (
+                          <span className="area-detail__starlite-badge">
+                            <StarliteBadge />
+                          </span>
+                        )}
+                      </span>
+                      {activeTab === ALL_TAB && (
+                        <span className="area-detail-modal__card-sec">{pos.seccion}</span>
                       )}
-                    </span>
-                    {activeTab === ALL_TAB && (
-                      <span className="area-detail-modal__card-sec">{pos.seccion}</span>
-                    )}
+                    </div>
                   </div>
-                </div>
-                {!row.isStarlite && renderFlags(pos)}
-                <div className="area-detail-modal__card-meta">
-                  <span className="area-detail-modal__card-metric">
-                    <span className="area-detail-modal__card-metric-value">
-                      {row.plantilla_real}
-                      <span className="area-detail-modal__stat-sep">/</span>
-                      {row.plantilla_autorizada}
+                  {!row.isStarlite && renderFlags(pos)}
+                  <div className="area-detail-modal__card-meta">
+                    <span className="area-detail-modal__card-metric">
+                      <span className="area-detail-modal__card-metric-value">
+                        {row.plantilla_real}
+                        <span className="area-detail-modal__stat-sep">/</span>
+                        {row.plantilla_autorizada}
+                      </span>
+                      <span className="area-detail-modal__card-metric-label">Real / Aut.</span>
                     </span>
-                    <span className="area-detail-modal__card-metric-label">Real / Aut.</span>
-                  </span>
-                  <span className="area-detail-modal__card-metric">
-                    <span className="area-detail-modal__card-metric-value">
-                      {row.vacantes > 0 ? (
-                        <span className="vacancy-highlight">{row.vacantes}</span>
-                      ) : (
-                        <span className="no-vacancy">—</span>
-                      )}
+                    <span className="area-detail-modal__card-metric">
+                      <span className="area-detail-modal__card-metric-value">
+                        {row.vacantes > 0 ? (
+                          <span className="vacancy-highlight">{row.vacantes}</span>
+                        ) : (
+                          <span className="no-vacancy">—</span>
+                        )}
+                      </span>
+                      <span className="area-detail-modal__card-metric-label">Vacantes</span>
                     </span>
-                    <span className="area-detail-modal__card-metric-label">Vacantes</span>
-                  </span>
-                  <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}</span>
-                </div>
-              </li>
-            )})}
+                    <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}</span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         ) : (
-          <div className="dept-card__table-wrapper area-detail-modal__table-wrapper">
-            <table className="dept-card__table">
+          <div className="area-detail-modal__table-wrapper">
+            <table className="area-detail-modal__table">
+              <caption className="sr-only">Puestos del departamento {dept.area}</caption>
               <thead>
                 <tr>
                   <th scope="col">Puesto</th>
@@ -577,7 +597,7 @@ export function AreaDetailView({
                     });
                   }
                   return rows;
-                }).map((row, index) => {
+                }).map((row) => {
                   const pos = row.originalPos;
                   const posComments = comments.filter(
                     (c) =>
@@ -587,21 +607,16 @@ export function AreaDetailView({
                   );
                   const latestComment = posComments[posComments.length - 1];
 
-                  const rowClass = [
-                    row.vacantes > 0 ? 'row--has-vacancy' : '',
-                  ].filter(Boolean).join(' ');
-
                   return (
                     <tr
-                      key={`${pos.area}-${pos.seccion}-${pos.puesto}-${index}`}
-                      className={rowClass}
+                      key={`${pos.area}-${pos.seccion}-${pos.puesto}-${row.isStarlite ? 'starlite' : 'regular'}`}
                     >
                       <td className="cell-puesto">
                         <div className="cell-puesto__inner">
                           <span className="cell-puesto__name">
                             {row.displayPuesto}
                             {row.isStarlite && (
-                              <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                              <span className="area-detail__starlite-badge">
                                 <StarliteBadge />
                               </span>
                             )}
@@ -613,8 +628,8 @@ export function AreaDetailView({
                               </Badge>
                             )}
                             {row.excedente_backup > 0 && (
-                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
-                                <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-ink)', fontSize: 'var(--type-caption-sm-size)' }}>
+                              <span className="area-detail__backup-flag">
+                                <span className="area-detail__backup-count">
                                   +{row.excedente_backup}
                                 </span>
                                 <BackupBadge />
@@ -643,7 +658,7 @@ export function AreaDetailView({
                             side="top"
                             delayMs={200}
                           >
-                            <span className="color-primary" style={{ cursor: 'help' }}>
+                            <span className="color-primary area-detail__backup-help">
                               {row.backup}
                             </span>
                           </Tooltip>

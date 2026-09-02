@@ -1,8 +1,8 @@
 {
-  "version": "0.3.16",
+  "version": "0.3.20",
   "fecha": "2026-09-02",
   "nivel": "success",
   "titulo": "¡We are ready!",
-  "mensaje": "Optimizaciones y rediseño de la interfaz de usuario.",
+  "mensaje": "Corrección de errores y mejoras de rendimiento.",
   "notificar": true
 }

@@ -1,17 +1,13 @@
 import { useState } from 'react';
-import { CircleUserRound } from 'lucide-react';
-import { ChevronDown, ChevronUp } from 'lucide';
+import { ChevronDown, ChevronUp, IdCard } from 'lucide';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
-import { addDaysToIso, formatReadableDate, localTodayIso } from '@/lib/dates';
+import { addDaysToIso, formatReadableDate } from '@/lib/dates';
 import { toTitleCase } from '@/lib/utils';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
-import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { EmployeeIncidenceCalendar } from './EmployeeIncidenceCalendar';
-import { GlobalIncidenceHistory } from './GlobalIncidenceHistory';
 import {
   displayValue,
-  getStickerTone,
   getFaltaDates,
   type EmployeeSearchResult,
   type SearchViewMode,
@@ -43,16 +39,29 @@ export function EmployeeResultCard({
   const [isLaborInfoExpanded, setIsLaborInfoExpanded] = useState(autoExpand);
   const employeeName = displayValue(employee.nombre);
   const employeeNumber = displayValue(employee.num_empleado);
-  const stickerTone = getStickerTone(employeeNumber);
   const employeeTitleId = `employee-card-title-${resultId}`;
   const laborInfoId = `employee-labor-info-${resultId}`;
   const compactDetailsId = `compact-details-${resultId}`;
+  const calendarPanelId = `employee-calendar-${resultId}`;
   const isCompact = viewMode === 'compact';
+  const showDetails = !isCompact || isExpanded;
+  const isCompactPreview = isCompact && !isExpanded;
+  const identityLabelClassName = isCompactPreview
+    ? 'sr-only'
+    : 'notion-prop__label type-body-sm text-muted';
+  const identityValueClassName = isCompactPreview
+    ? 'notion-prop__value type-body-sm text-muted'
+    : 'notion-prop__value type-body-sm-strong text-charcoal';
   const renewalDate = employee.isBaja
     ? null
     : addDaysToIso(employee.fecha_ingreso, 90);
-  const showRenewalDate = Boolean(renewalDate);
+  const importantDate = employee.isBaja ? employee.fecha_baja : renewalDate;
   const faltaDates = isRiskFilter ? getFaltaDates(employee.num_empleado, reports) : [];
+  const faltaBadge = isRiskFilter && faltaDates.length > 0 ? (
+    <Badge variant="error-solid">
+      {faltaDates.length} {faltaDates.length === 1 ? 'Falta' : 'Faltas'}
+    </Badge>
+  ) : null;
 
   return (
     <article
@@ -62,103 +71,32 @@ export function EmployeeResultCard({
       aria-labelledby={employeeTitleId}
     >
       <header className="config-card__header">
-        <div
-          className={`config-card__avatar config-card__avatar--tone-${stickerTone}`}
-          aria-hidden="true"
+        <div className="config-card__avatar" aria-hidden="true">
+          <MorphingIcon icon={IdCard} size="var(--icon-size-control)" aria-hidden="true" />
+        </div>
+        <h3
+          id={employeeTitleId}
+          className="config-card__employee-title type-body-sm-strong text-muted"
         >
-          <CircleUserRound size="1em" aria-hidden="true" />
-        </div>
-        <div className="config-card__title-group">
-          <h3
-            id={employeeTitleId}
-            className="config-card__employee-title type-heading-sm text-ink"
-          >
-            <span className="config-card__employee-number text-muted-soft">
-              #{employeeNumber}
-            </span>
-            <span>{employeeName}</span>
-            {employee.isBaja && <Badge variant="error">Baja</Badge>}
-            {employee.is_starlite && <StarliteBadge />}
-          </h3>
-        </div>
-        <div className="config-card__meta-right">
-          {!showRenewalDate ? (
-            <span className="text-muted">
-              Ingreso: {formatReadableDate(employee.fecha_ingreso)}
-            </span>
-          ) : (
-            <span className="text-warning" style={{ fontWeight: 500 }}>
-              Renovación: {formatReadableDate(renewalDate!)}
-            </span>
-          )}
-        </div>
+          No. Emp • {employeeNumber}
+        </h3>
       </header>
 
-      {isCompact && (
-        <div className="config-compact-summary">
-          <dl className="config-compact-summary__facts">
-            <div>
-              <dt>Puesto</dt>
-              <dd>{displayValue(employee.puesto)}</dd>
-            </div>
-            <div>
-              <dt>Departamento</dt>
-              <dd>{displayValue(employee.area)}</dd>
-            </div>
-            {isRiskFilter && faltaDates.length > 0 ? (
-              <div>
-                <dt>Alerta</dt>
-                <dd>
-                  <Badge variant="error">
-                    {faltaDates.length} {faltaDates.length === 1 ? 'Falta' : 'Faltas'}
-                  </Badge>
-                </dd>
-              </div>
-            ) : (
-              !employee.isBaja && (
-                <div>
-                  <dt>Turno</dt>
-                  <dd>
-                    {employee.turno
-                      ? displayValue(employee.turno)
-                      : 'Sin información'}
-                  </dd>
-                </div>
-              )
-            )}
-          </dl>
-          <button
-            type="button"
-            className="btn-text config-compact-summary__toggle-minimal"
-            onClick={onToggle}
-            aria-expanded={isExpanded}
-            aria-controls={compactDetailsId}
-          >
-            <span>{isExpanded ? 'Ocultar' : 'Detalles'}</span>
-            <MorphingIcon
-              icon={isExpanded ? ChevronUp : ChevronDown}
-              size={16}
-            />
-          </button>
-        </div>
-      )}
-
-      {(!isCompact || isExpanded) && (
-        <div
-          id={isCompact ? compactDetailsId : undefined}
-          className="config-card__body"
+      <div
+        className={`config-card__body${showDetails ? '' : ' config-card__body--preview'}`}
+      >
+        <section
+          className="config-card__details"
+          aria-labelledby={`details-${resultId}`}
         >
-          <section
-            className="config-card__details"
-            aria-labelledby={`details-${resultId}`}
-          >
-            <div className="config-card__details-heading">
-              <h4
-                id={`details-${resultId}`}
-                className="config-card__section-title type-caption-up text-muted"
-              >
-                Información laboral
-              </h4>
+          <div className="config-card__details-heading">
+            <h4
+              id={`details-${resultId}`}
+              className={`config-card__section-title type-caption-up text-muted${isCompactPreview ? ' sr-only' : ''}`}
+            >
+              Información laboral
+            </h4>
+            {!isCompact && (
               <button
                 type="button"
                 className="config-card__details-toggle"
@@ -172,29 +110,55 @@ export function EmployeeResultCard({
                 />
                 {isLaborInfoExpanded ? 'Contraer' : 'Mostrar'}
               </button>
+            )}
+          </div>
+          <dl className="config-card__properties config-card__identity-properties">
+            <div className="notion-prop notion-prop--wide">
+              <dt className={identityLabelClassName}>Nombre</dt>
+              <dd className="notion-prop__value config-card__name-value">
+                <span className="type-heading-sm text-ink">{employeeName}</span>
+                {isCompactPreview ? (
+                  <span className="config-card__name-badges">
+                    <Badge variant={employee.isBaja ? 'error-solid' : 'neutral-solid'}>
+                      {employee.isBaja ? 'Baja' : 'Activo'}
+                    </Badge>
+                    {employee.is_starlite && <StarliteBadge />}
+                    {faltaBadge}
+                  </span>
+                ) : (
+                  <>
+                    {employee.is_starlite && <StarliteBadge />}
+                    {faltaBadge}
+                  </>
+                )}
+              </dd>
             </div>
+            <div className="notion-prop">
+              <dt className={identityLabelClassName}>Puesto</dt>
+              <dd className={identityValueClassName}>{displayValue(employee.puesto)}</dd>
+            </div>
+            {!isCompactPreview && (
+              <div className="notion-prop">
+                <dt className={identityLabelClassName}>Departamento</dt>
+                <dd className={identityValueClassName}>{displayValue(employee.area)}</dd>
+              </div>
+            )}
+            {showDetails && (
+              <div className="notion-prop notion-prop--wide">
+                <dt className={identityLabelClassName}>Estado</dt>
+                <dd className={`${identityValueClassName} config-card__status`}>
+                  {employee.isBaja ? <Badge variant="error-solid">Baja</Badge> : 'Activo'}
+                </dd>
+              </div>
+            )}
+          </dl>
+          <div id={compactDetailsId} hidden={!showDetails}>
             <dl
               id={laborInfoId}
               className={`config-card__properties config-card__properties--collapsible${
-                isLaborInfoExpanded ? ' is-expanded' : ''
+                isCompact || isLaborInfoExpanded ? ' is-expanded' : ''
               }`}
             >
-              <div className="notion-prop">
-                <dt className="notion-prop__label type-body-sm text-muted">
-                  Puesto
-                </dt>
-                <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                  {displayValue(employee.puesto)}
-                </dd>
-              </div>
-              <div className="notion-prop">
-                <dt className="notion-prop__label type-body-sm text-muted">
-                  Departamento
-                </dt>
-                <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                  {displayValue(employee.area)}
-                </dd>
-              </div>
               <div className="notion-prop">
                 <dt className="notion-prop__label type-body-sm text-muted">
                   Sección
@@ -211,7 +175,7 @@ export function EmployeeResultCard({
                   {toTitleCase(formatReadableDate(employee.fecha_ingreso))}
                 </dd>
               </div>
-              {showRenewalDate && renewalDate && (
+              {!employee.isBaja && (
                 <div className="notion-prop">
                   <dt className="notion-prop__label type-body-sm text-muted">
                     Renov. contrato
@@ -233,8 +197,7 @@ export function EmployeeResultCard({
                 <div className="notion-prop">
                   <dt className="notion-prop__label type-body-sm text-muted">Motivo de baja</dt>
                   <dd
-                    className="notion-prop__value config-card__truncate type-body-sm-strong text-charcoal"
-                    title={employee.motivo_baja}
+                    className="notion-prop__value type-body-sm-strong text-charcoal"
                   >
                     {displayValue(employee.motivo_baja)}
                   </dd>
@@ -249,24 +212,60 @@ export function EmployeeResultCard({
                 </div>
               )}
             </dl>
-          </section>
+          </div>
+          {isCompact && (
+            <div className="config-compact-summary">
+              {!isExpanded && (
+                <dl className="config-compact-summary__facts">
+                  <div>
+                    <dt>Sección</dt>
+                    <dd>{displayValue(employee.seccion)}</dd>
+                  </div>
+                  {!employee.isBaja && (
+                    <div>
+                      <dt>Turno</dt>
+                      <dd>{employee.turno ? displayValue(employee.turno) : 'Sin información'}</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>{employee.isBaja ? 'Fecha de baja' : 'Renovación'}</dt>
+                    <dd>{formatReadableDate(importantDate)}</dd>
+                  </div>
+                </dl>
+              )}
+              <div className="config-compact-summary__actions">
+                <button
+                  type="button"
+                  className="btn-secondary config-compact-summary__toggle"
+                  onClick={onToggle}
+                  aria-expanded={isExpanded}
+                  aria-controls={`${compactDetailsId} ${calendarPanelId}`}
+                >
+                  <span>{isExpanded ? 'Ocultar' : 'Detalles'}</span>
+                  <MorphingIcon
+                    icon={isExpanded ? ChevronUp : ChevronDown}
+                    size="var(--icon-size-sm)"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
 
-          <EmployeeIncidenceCalendar
-            employeeName={employeeName}
-            employeeNumber={employeeNumber}
-            loading={reportsLoading}
-            reports={reports}
-            selectId={`config-month-select-${resultId}`}
-            titleId={`calendar-${resultId}`}
-          />
-
-          <GlobalIncidenceHistory
-            employeeNumber={employeeNumber}
-            allReports={reports}
-            titleId={`history-${resultId}`}
-          />
+        <div id={calendarPanelId} className="config-card__calendar" hidden={!showDetails}>
+          {showDetails && (
+            <EmployeeIncidenceCalendar
+              employeeName={employeeName}
+              employeeNumber={employeeNumber}
+              loading={reportsLoading}
+              reports={reports}
+              selectId={`config-month-select-${resultId}`}
+              titleId={`calendar-${resultId}`}
+            />
+          )}
         </div>
-      )}
+      </div>
     </article>
   );
 }

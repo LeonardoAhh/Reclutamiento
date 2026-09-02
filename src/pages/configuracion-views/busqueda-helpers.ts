@@ -3,8 +3,6 @@ import { toTitleCase } from '@/lib/utils';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
 import type { ReporteRow } from '@/components/reporte-diario/types';
 
-const STICKER_TONES = 5;
-
 export type SearchViewMode = 'detail' | 'compact';
 
 export type EmployeeSearchResult =
@@ -61,11 +59,6 @@ export function getEmployeeResultId(employee: EmployeeSearchResult) {
   const identity = employee.id || employee.num_empleado;
   const rawId = `${resultKind}-${identity}`;
   return rawId.replace(/[^a-zA-Z0-9_-]/g, '-');
-}
-
-export function getStickerTone(employeeNumber: string) {
-  const numericValue = parseInt(employeeNumber.replace(/\D/g, '') || '0', 10);
-  return numericValue % STICKER_TONES;
 }
 
 export function displayValue(value: unknown) {

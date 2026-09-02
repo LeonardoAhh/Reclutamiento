@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { INCIDENCIA_LABELS, NON_INCIDENT_CODES } from '@/components/reporte-diario/constants';
 import { daysInMonth, formatMes } from '@/components/reporte-diario/helpers';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
@@ -100,6 +101,13 @@ export function EmployeeIncidenceCalendar({
 
   const selectedEntry = availableReports.find(({ report }) => report.mes === requestedMonth) ?? availableReports[0];
   const selectedMonth = selectedEntry?.report.mes ?? '';
+  const selectedMonthIndex = availableReports.findIndex(
+    ({ report }) => report.mes === selectedMonth,
+  );
+  const previousMonth = availableReports[selectedMonthIndex + 1]?.report.mes;
+  const nextMonth = selectedMonthIndex > 0
+    ? availableReports[selectedMonthIndex - 1]?.report.mes
+    : undefined;
   const calendarDays = useMemo(
     () => selectedEntry ? buildCalendarDays(selectedEntry.report.mes, selectedEntry.row.days) : [],
     [selectedEntry],
@@ -119,26 +127,59 @@ export function EmployeeIncidenceCalendar({
             Calendario de incidencias
           </h4>
           {selectedEntry && (
-            <p className="config-calendar-summary type-caption-sm text-muted">
+            <p
+              className="config-calendar-summary type-caption-sm text-muted"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {incidentCount} {incidentCount === 1 ? 'incidencia' : 'incidencias'} en {formatMes(selectedMonth)}
             </p>
           )}
         </div>
 
         {availableReports.length > 0 && (
-          <label className="config-calendar-month-field" htmlFor={selectId}>
-            <span className="config-filter-label type-caption-sm text-muted">Mes</span>
-            <select
-              id={selectId}
-              value={selectedMonth}
-              onChange={(event) => setRequestedMonth(event.target.value)}
-              className="config-month-select"
+          <div className="config-calendar-month-field">
+            <label
+              className="config-filter-label type-caption-sm text-muted"
+              htmlFor={selectId}
             >
-              {availableReports.map(({ report }) => (
-                <option key={report.id} value={report.mes}>{formatMes(report.mes)}</option>
-              ))}
-            </select>
-          </label>
+              Mes
+            </label>
+            <div className="config-calendar-month-nav">
+              <button
+                type="button"
+                className="btn-icon config-calendar-month-nav__button"
+                onClick={() => previousMonth && setRequestedMonth(previousMonth)}
+                disabled={!previousMonth}
+                aria-label={previousMonth
+                  ? `Mes anterior: ${formatMes(previousMonth)}`
+                  : 'No hay un mes anterior'}
+              >
+                <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
+              </button>
+              <select
+                id={selectId}
+                value={selectedMonth}
+                onChange={(event) => setRequestedMonth(event.target.value)}
+                className="config-month-select"
+              >
+                {availableReports.map(({ report }) => (
+                  <option key={report.id} value={report.mes}>{formatMes(report.mes)}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn-icon config-calendar-month-nav__button"
+                onClick={() => nextMonth && setRequestedMonth(nextMonth)}
+                disabled={!nextMonth}
+                aria-label={nextMonth
+                  ? `Mes siguiente: ${formatMes(nextMonth)}`
+                  : 'No hay un mes siguiente'}
+              >
+                <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
         )}
       </header>
 

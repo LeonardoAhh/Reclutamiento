@@ -5,7 +5,7 @@ import './Badge.css';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
-  variant?: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error';
+  variant?: 'default' | 'neutral-solid' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'error-solid';
   minimal?: boolean;
   className?: string;
 }
