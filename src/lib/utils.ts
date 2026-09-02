@@ -153,6 +153,12 @@ function matchesPuesto(empPuesto: string, constPuesto: string): boolean {
   return parts.some((part) => part === target);
 }
 
+export function matchesEmployeeToPosition(employee: Employee, position: AuthorizedPosition): boolean {
+  return matchesText(employee.area, position.area) &&
+    matchesText(employee.seccion, position.seccion) &&
+    matchesPuesto(employee.puesto, position.puesto);
+}
+
 /**
  * Drop duplicate employees by `num_empleado` keeping the most recent entry.
  * Defensive guard so stale records cached from Supabase don't inflate counts.
@@ -189,10 +195,7 @@ export function calculatePositionCoverage(
 
   return positions.map((pos) => {
     const matchedEmployees = uniqueEmployees.filter(
-      (emp) =>
-        matchesText(emp.area, pos.area) &&
-        matchesText(emp.seccion, pos.seccion) &&
-        matchesPuesto(emp.puesto, pos.puesto)
+      (emp) => matchesEmployeeToPosition(emp, pos)
     );
     const real = matchedEmployees.length;
     const starliteEmpleados = matchedEmployees.filter((emp) => emp.is_starlite).length;

@@ -461,8 +461,8 @@
   --duration-theme-in: 300ms;
   --duration-theme-out: 200ms;
   --duration-skeleton: 1500ms;
-  --opacity-skeleton-rest: 0.7;
-  --opacity-skeleton-active: 1;
+  --opacity-skeleton-rest: 0.4;
+  --opacity-skeleton-active: 0.9;
   --duration-spinner: 800ms;
 
   color-scheme: light;

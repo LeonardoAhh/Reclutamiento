@@ -70,7 +70,7 @@ export function CandidatesCitedTodayModal({
       className="candidates-cited-today-modal"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
       title="Detalle entrevistas"
-      size="sm"
+      size="md"
       fullscreenMobile={false}
     >
       <div className="modal-body candidates-cited-today-modal__body">

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
 import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
@@ -563,26 +564,17 @@ export function Actividades() {
     canGoPrev: canGoPrevActividades,
   } = usePagination(unicas, 12);
 
-  /* ── Loading state ─────────────────────────────────────────────────── */
-  if (loading) {
-    return (
+  /* ── Render ─────────────────────────────────────────────────────────── */
+  return (
+    <BoneyardSkeleton
+      name="actividades-page"
+      loading={loading}
+      loadingLabel="Cargando actividades..."
+    >
       <main className="actividades-page container">
         <header className="actividades-header">
           <h1>Actividades</h1>
         </header>
-        <div className="actividades-empty" role="status" aria-live="polite">
-          <p className="actividades-empty__title">Cargando actividades...</p>
-        </div>
-      </main>
-    );
-  }
-
-  /* ── Render ─────────────────────────────────────────────────────────── */
-  return (
-    <main className="actividades-page container">
-      <header className="actividades-header">
-        <h1>Actividades</h1>
-      </header>
 
       <div className="actividades-layout">
         <VacancyAssignmentSection
@@ -815,5 +807,6 @@ export function Actividades() {
         src={lightboxSrc}
       />
     </main>
+  </BoneyardSkeleton>
   );
 }

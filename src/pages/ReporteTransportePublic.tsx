@@ -4,6 +4,7 @@ import { useIncidenciasTransporte } from "@/hooks/useIncidenciasTransporte";
 import { TransportReportForm } from "@/components/transporte/TransportReportForm";
 import { ReportePublicoFooter } from "@/components/transporte/ReportePublicoFooter";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import "./ReporteTransportePublic.css";
 
 export function ReporteTransportePublic() {
@@ -69,67 +70,73 @@ export function ReporteTransportePublic() {
   }
 
   return (
-    <main className="reporte-publico">
-      <div className="reporte-publico__container">
-        {currentStep === 0 && (
-          <>
-            <header className="reporte-publico__header">
-              <div className="reporte-publico__header-text">
-                <p className="reporte-publico__eyebrow">
-                  <MorphingIcon
-                    icon={BusFront}
-                    size="var(--icon-size-control)"
-                  />
-                  Transporte de personal
-                </p>
-                <h1
-                  id="reporte-title"
-                  ref={titleRef}
-                  className="reporte-publico__title"
-                  tabIndex={-1}
-                >
-                  Reporte de transporte
-                </h1>
-                <p
-                  className="reporte-publico__subtitle"
-                  id="reporte-description"
-                >
-                  ¿Tuviste problemas con tu ruta? Cuéntanos.
-                </p>
-              </div>
-              <img
-                src="/logo-empresa.jpg"
-                alt="ViñoPlastic Querétaro"
-                className="reporte-publico__logo"
+    <BoneyardSkeleton
+      name="reporte-transporte-page"
+      loading={false}
+      loadingLabel="Cargando reporte de transporte..."
+    >
+      <main className="reporte-publico">
+        <div className="reporte-publico__container">
+          {currentStep === 0 && (
+            <>
+              <header className="reporte-publico__header">
+                <div className="reporte-publico__header-text">
+                  <p className="reporte-publico__eyebrow">
+                    <MorphingIcon
+                      icon={BusFront}
+                      size="var(--icon-size-control)"
+                    />
+                    Transporte de personal
+                  </p>
+                  <h1
+                    id="reporte-title"
+                    ref={titleRef}
+                    className="reporte-publico__title"
+                    tabIndex={-1}
+                  >
+                    Reporte de transporte
+                  </h1>
+                  <p
+                    className="reporte-publico__subtitle"
+                    id="reporte-description"
+                  >
+                    ¿Tuviste problemas con tu ruta? Cuéntanos.
+                  </p>
+                </div>
+                <img
+                  src="/logo-empresa.jpg"
+                  alt="ViñoPlastic Querétaro"
+                  className="reporte-publico__logo"
+                />
+              </header>
+
+              <p
+                className="reporte-publico__required-note"
+                id="reporte-required-note"
+              >
+                Los campos marcados con * son obligatorios.
+              </p>
+            </>
+          )}
+
+          {errorMsg && (
+            <div className="reporte-publico__alert" role="alert">
+              <MorphingIcon
+                icon={TriangleAlert}
+                size="var(--icon-size-control)"
               />
-            </header>
+              <span>{errorMsg}</span>
+            </div>
+          )}
 
-            <p
-              className="reporte-publico__required-note"
-              id="reporte-required-note"
-            >
-              Los campos marcados con * son obligatorios.
-            </p>
-          </>
-        )}
-
-        {errorMsg && (
-          <div className="reporte-publico__alert" role="alert">
-            <MorphingIcon
-              icon={TriangleAlert}
-              size="var(--icon-size-control)"
-            />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        <TransportReportForm
-          onSubmit={enviarIncidencia}
-          onSuccess={() => setSuccess(true)}
-          onStepChange={setCurrentStep}
-        />
-      </div>
-      <ReportePublicoFooter />
-    </main>
+          <TransportReportForm
+            onSubmit={enviarIncidencia}
+            onSuccess={() => setSuccess(true)}
+            onStepChange={setCurrentStep}
+          />
+        </div>
+        <ReportePublicoFooter />
+      </main>
+    </BoneyardSkeleton>
   );
 }

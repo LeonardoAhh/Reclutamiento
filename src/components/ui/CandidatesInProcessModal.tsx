@@ -93,7 +93,7 @@ export function CandidatesInProcessModal({
       className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
       title="Procesos por cerrar"
-      size="md"
+      size="sm"
       fullscreenMobile={false}
     >
       <div className="modal-body candidates-in-process-modal__body">

@@ -82,6 +82,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .missing-positions-modal__section-title {
@@ -98,6 +100,8 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .missing-positions-modal__table-container:focus-visible {
@@ -146,6 +150,7 @@
   color: var(--color-ink);
   font-size: var(--type-body-sm-size);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .missing-positions-modal__table tbody tr:last-child td {
@@ -198,11 +203,6 @@
   line-height: 1.3;
 }
 
-.missing-positions-modal__loc-seccion {
-  font-size: var(--type-caption-md-size);
-  color: var(--color-body);
-  line-height: 1.3;
-}
 
 /* ── Nombre del puesto ── */
 
@@ -248,61 +248,14 @@
   color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
 }
 
-.missing-positions-modal__count-badge--total {
-  color: var(--color-ink);
-}
-
 .missing-positions-modal__count-empty {
   color: var(--color-muted-soft);
   font-variant-numeric: tabular-nums;
   font-size: var(--type-heading-sm-size);
 }
 
-/* ── Píldora de procesos activos ── */
-
-.missing-positions-modal__processes-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  color: color-mix(in srgb, var(--color-success) 75%, var(--color-ink));
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--font-semibold);
-  line-height: 1;
-  white-space: nowrap;
-  background: transparent !important;
-}
-
-.missing-positions-modal__processes-pill--starlite {
-  color: var(--color-accent-amber);
-}
-
 .missing-positions-modal__starlite-icon {
   fill: currentColor;
-}
-
-.missing-positions-modal__processes-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--rounded-full);
-  background: var(--color-success);
-  flex-shrink: 0;
-  /* Pulso sutil para indicar "activo en curso" */
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 45%, transparent);
-  animation: missing-positions-pulse 2s ease-out infinite;
-}
-
-@keyframes missing-positions-pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 45%, transparent); }
-  70% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-success) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 0%, transparent); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .missing-positions-modal__processes-dot {
-    animation: none;
-  }
 }
 
 /* ── Responsive ─────────────────────────────────────────────
@@ -367,6 +320,7 @@
     padding: 0;
     border: none;
     background: transparent;
+    white-space: normal;
   }
 
   /* Layout móvil por celda:
@@ -380,8 +334,7 @@
   /* Etiqueta visible solo en móvil antes de cada métrica */
   .missing-positions-modal__table tbody td:nth-child(3)::before,
   .missing-positions-modal__table tbody td:nth-child(4)::before,
-  .missing-positions-modal__table tbody td:nth-child(5)::before,
-  .missing-positions-modal__table tbody td:nth-child(6)::before {
+  .missing-positions-modal__table tbody td:nth-child(5)::before {
     display: inline-block;
     margin-right: 6px;
     font-size: var(--type-caption-up-size);
@@ -393,8 +346,7 @@
 
   .missing-positions-modal__table tbody td:nth-child(3)::before { content: 'Plantilla'; }
   .missing-positions-modal__table tbody td:nth-child(4)::before { content: 'Backup'; }
-  .missing-positions-modal__table tbody td:nth-child(5)::before { content: 'Total'; }
-  .missing-positions-modal__table tbody td:nth-child(6)::before { content: 'Procesos'; }
+  .missing-positions-modal__table tbody td:nth-child(5)::before { content: 'Starlite'; }
 
   .missing-positions-modal__num-col {
     text-align: left;

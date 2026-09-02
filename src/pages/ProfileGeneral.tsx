@@ -9,6 +9,7 @@ import { ProfileEvaluationPanel } from '@/features/profile-general/ProfileEvalua
 import { ProfileSummary } from '@/features/profile-general/ProfileSummary';
 import { ProfileTemplateManager } from '@/features/profile-general/ProfileTemplateManager';
 import { buildEligibleProfileEmployees } from '@/features/profile-general/types';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import './ProfileGeneral.css';
 
 const INITIAL_CYCLE_START = '2026-06-01';
@@ -61,54 +62,54 @@ export function ProfileGeneral() {
   const isLoading = loading || employeesLoading || bajasLoading;
 
   return (
-    <main className="profile-general container" id="page-profile-general">
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 className="page-title">Perfil General</h1>
-          <p className="profile-general__subtitle">Alineación de contrataciones con el descriptivo de puesto.</p>
-        </div>
-      </header>
+    <BoneyardSkeleton name="perfil-general-page" loading={isLoading} loadingLabel="Cargando Perfil General…">
+      <main className="profile-general container" id="page-profile-general">
+        <header className="page-header">
+          <div className="page-header__content">
+            <h1 className="page-title">Perfil General</h1>
+            <p className="profile-general__subtitle">Alineación de contrataciones con el descriptivo de puesto.</p>
+          </div>
+        </header>
 
-      {isLoading ? (
-        <div className="card profile-general__loading" role="status" aria-live="polite">Cargando Perfil General…</div>
-      ) : error ? (
-        <section className="card profile-general__notice" role="alert">
-          <h2>No pudimos cargar la información</h2>
-          <p>{error}</p>
-          <button type="button" className="btn-secondary" onClick={() => void loadData()}>Reintentar</button>
-        </section>
-      ) : !cycle ? (
-        <section className="card profile-general__notice" role="alert">
-          <h2>Falta configurar el ciclo inicial</h2>
-          <p>Aplica la migración 029 para habilitar junio–noviembre de 2026.</p>
-        </section>
-      ) : (
-        <Tabs.Root className="profile-general__tabs" defaultValue="capture">
-          <Tabs.List className="profile-general__tab-list" aria-label="Vistas de Perfil General">
-            <Tabs.Trigger className="profile-general__tab" value="capture"><ClipboardCheck size={16} aria-hidden="true" /> Captura</Tabs.Trigger>
-            <Tabs.Trigger className="profile-general__tab" value="summary"><LayoutDashboard size={16} aria-hidden="true" /> Resumen</Tabs.Trigger>
-            {isAdmin && <Tabs.Trigger className="profile-general__tab" value="templates"><Settings2 size={16} aria-hidden="true" /> Plantillas</Tabs.Trigger>}
-          </Tabs.List>
-          <Tabs.Content className="profile-general__tab-content" value="capture">
-            <ProfileEvaluationPanel
-              cycle={cycle}
-              employees={eligibleEmployees}
-              templates={data.templates}
-              evaluations={data.evaluations}
-              isAdmin={isAdmin}
-              onSaved={loadData}
-            />
-          </Tabs.Content>
-          <Tabs.Content className="profile-general__tab-content" value="summary">
-            <ProfileSummary cycle={cycle} employees={eligibleEmployees} evaluations={data.evaluations} />
-          </Tabs.Content>
-          {isAdmin && (
-            <Tabs.Content className="profile-general__tab-content" value="templates">
-              <ProfileTemplateManager templates={data.templates} onSaved={loadData} />
+        {error ? (
+          <section className="card profile-general__notice" role="alert">
+            <h2>No pudimos cargar la información</h2>
+            <p>{error}</p>
+            <button type="button" className="btn-secondary" onClick={() => void loadData()}>Reintentar</button>
+          </section>
+        ) : !cycle ? (
+          <section className="card profile-general__notice" role="alert">
+            <h2>Falta configurar el ciclo inicial</h2>
+            <p>Aplica la migración 029 para habilitar junio–noviembre de 2026.</p>
+          </section>
+        ) : (
+          <Tabs.Root className="profile-general__tabs" defaultValue="capture">
+            <Tabs.List className="profile-general__tab-list" aria-label="Vistas de Perfil General">
+              <Tabs.Trigger className="profile-general__tab" value="capture"><ClipboardCheck size={16} aria-hidden="true" /> Captura</Tabs.Trigger>
+              <Tabs.Trigger className="profile-general__tab" value="summary"><LayoutDashboard size={16} aria-hidden="true" /> Resumen</Tabs.Trigger>
+              {isAdmin && <Tabs.Trigger className="profile-general__tab" value="templates"><Settings2 size={16} aria-hidden="true" /> Plantillas</Tabs.Trigger>}
+            </Tabs.List>
+            <Tabs.Content className="profile-general__tab-content" value="capture">
+              <ProfileEvaluationPanel
+                cycle={cycle}
+                employees={eligibleEmployees}
+                templates={data.templates}
+                evaluations={data.evaluations}
+                isAdmin={isAdmin}
+                onSaved={loadData}
+              />
             </Tabs.Content>
-          )}
-        </Tabs.Root>
-      )}
-    </main>
+            <Tabs.Content className="profile-general__tab-content" value="summary">
+              <ProfileSummary cycle={cycle} employees={eligibleEmployees} evaluations={data.evaluations} />
+            </Tabs.Content>
+            {isAdmin && (
+              <Tabs.Content className="profile-general__tab-content" value="templates">
+                <ProfileTemplateManager templates={data.templates} onSaved={loadData} />
+              </Tabs.Content>
+            )}
+          </Tabs.Root>
+        )}
+      </main>
+    </BoneyardSkeleton>
   );
 }

@@ -4,7 +4,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CircleCheckBig, Eye, ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
-import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Reveal } from "@/components/ui/Reveal";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 import { KpiReveal, useKpiReveal } from "@/components/ui/KpiReveal";
@@ -15,9 +14,6 @@ import { FutureHiresModal } from "@/components/ui/FutureHiresModal";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import {
   Badge,
-  StarliteBadge,
-  PlantillaBadge,
-  BackupBadge,
 } from "@/components/ui/Badge";
 import { CandidatesInProcessModal } from "@/components/ui/CandidatesInProcessModal";
 import { CandidatesCitedTodayModal } from "@/components/ui/CandidatesCitedTodayModal";
@@ -53,10 +49,11 @@ import {
   currentYearMx,
   localTodayIso,
   addDaysToIso,
-  getNextWednesdayIso,
   formatProjectionDate,
 } from "@/lib/dates";
 import type { Employee } from "@/lib/types";
+import { calculateWorkforceProjection } from "@/lib/workforceProjection";
+import { WorkforceProjection } from "./kpis-components/WeeklyWorkforceProjection";
 import "./KpisPage.css";
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
@@ -353,116 +350,10 @@ export function KpisPage() {
 
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
 
-  const projectionTotals = useMemo(() => {
-    let vacantesPlantilla = 0;
-    let vacantesBackup = 0;
-    let vacantesStarlite = 0;
-    let realTotal = 0;
-    let objetivoGlobal = 0;
-
-    for (const pos of currentPositionCoverage) {
-      const key = `${pos.area}-${pos.seccion || "none"}-${pos.puesto}`;
-      if (dismissedKeys.has(key)) continue;
-
-      realTotal += pos.plantilla_real;
-      objetivoGlobal += pos.plantilla_objetivo;
-
-      const urgentes = pos.urgentes ?? 0;
-      const backup = pos.backup ?? 0;
-      const starliteEmpleados = pos.starlite_empleados || 0;
-
-      const vStarlite = Math.max(0, urgentes - starliteEmpleados);
-      const starliteSpillover = Math.max(0, starliteEmpleados - urgentes);
-
-      const empleadosRegulares = pos.plantilla_real - starliteEmpleados;
-      const disponiblesParaRegular = empleadosRegulares + starliteSpillover;
-
-      const vPlantilla = Math.max(
-        0,
-        pos.plantilla_autorizada - disponiblesParaRegular,
-      );
-      const vBackup = Math.max(
-        0,
-        backup - Math.max(0, disponiblesParaRegular - pos.plantilla_autorizada),
-      );
-
-      vacantesPlantilla += vPlantilla;
-      vacantesBackup += vBackup;
-      vacantesStarlite += vStarlite;
-    }
-
-    // Próximos ingresos en cualquier fecha futura
-    const upcomingHires = employees
-      .filter((e) => String(e.fecha_ingreso) > todayIso)
-      .sort((a, b) =>
-        String(a.fecha_ingreso).localeCompare(String(b.fecha_ingreso)),
-      );
-
-    const posState = new Map<
-      string,
-      { disponiblesReg: number; autorizada: number; starliteFaltantes: number }
-    >();
-    for (const p of currentPositionCoverage) {
-      const key = `${p.area}-${p.seccion || "none"}-${p.puesto}`;
-      if (dismissedKeys.has(key)) continue;
-
-      const urgentes = p.urgentes ?? 0;
-      const starliteEmpleados = p.starlite_empleados || 0;
-      const starliteFaltantes = Math.max(0, urgentes - starliteEmpleados);
-      const starliteSpill = Math.max(0, starliteEmpleados - urgentes);
-      const disponiblesReg =
-        p.plantilla_real - starliteEmpleados + starliteSpill;
-
-      posState.set(`${p.area}|${p.seccion}|${p.puesto}`, {
-        disponiblesReg,
-        autorizada: p.plantilla_autorizada,
-        starliteFaltantes,
-      });
-    }
-
-    let proximosPlantilla = 0;
-    let proximosBackup = 0;
-    let proximosStarlite = 0;
-
-    for (const e of upcomingHires) {
-      const key = `${e.area}|${e.seccion}|${e.puesto}`;
-      const pos = posState.get(key);
-      if (pos) {
-        if (e.is_starlite) {
-          proximosStarlite += 1;
-        } else {
-          // Si la cantidad de regulares es menor a la autorizada, entra a plantilla; si no, a backup
-          if (pos.disponiblesReg <= pos.autorizada) {
-            proximosPlantilla += 1;
-          } else {
-            proximosBackup += 1;
-          }
-        }
-      }
-    }
-
-    const proximosIngresos = upcomingHires.length;
-    const proyectadoReal = realTotal + proximosIngresos;
-    const coberturaProyectada =
-      objetivoGlobal > 0
-        ? Math.round((proyectadoReal / objetivoGlobal) * 100)
-        : 0;
-
-    return {
-      vacantesPlantilla,
-      vacantesBackup,
-      vacantesStarlite,
-      proximosIngresos,
-      proximosPlantilla,
-      proximosBackup,
-      proximosStarlite,
-      coberturaProyectada,
-      nextHireDate:
-        upcomingHires.length > 0
-          ? String(upcomingHires[0].fecha_ingreso)
-          : null,
-    };
-  }, [currentPositionCoverage, employees, todayIso, dismissedKeys]);
+  const projectionTotals = useMemo(
+    () => calculateWorkforceProjection(employees, positions, todayIso, dismissedKeys),
+    [employees, positions, todayIso, dismissedKeys],
+  );
 
   /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
   const heroChartData = useMemo<DailyKpiData[]>(() => {
@@ -786,155 +677,7 @@ export function KpisPage() {
             />
           </Reveal>
 
-          <section
-            className="kpis-page__projection-section"
-            aria-label="Proyección Estratégica"
-          >
-            <div className="kpis-page__projection-card">
-              <header>
-                <h2 className="projection-title">Estado Actual</h2>
-                <span className="projection-date">
-                  Hoy, {formatProjectionDate(todayIso)}
-                </span>
-              </header>
-              <div className="projection-metrics">
-                <div className="projection-metric">
-                  <span className="projection-value text-error">
-                    <AnimatedNumber
-                      value={projectionTotals.vacantesPlantilla}
-                    />
-                  </span>
-                  <span className="projection-label">Vacantes Plantilla</span>
-                </div>
-                <div className="projection-metric">
-                  <span className="projection-value text-warning">
-                    <AnimatedNumber value={projectionTotals.vacantesBackup} />
-                  </span>
-                  <span className="projection-label">Vacantes Backup</span>
-                </div>
-                <div className="projection-metric">
-                  <span className="projection-value text-starlite color-warning">
-                    <AnimatedNumber value={projectionTotals.vacantesStarlite} />
-                  </span>
-                  <span className="projection-label">Vacantes Starlite</span>
-                </div>
-                <div className="projection-metric">
-                  <span className="projection-value text-primary">
-                    <AnimatedNumber
-                      value={
-                        heroChartData.length > 0
-                          ? Math.round(
-                              heroChartData.reduce(
-                                (s, d) => s + d.cobertura,
-                                0,
-                              ) / heroChartData.length,
-                            )
-                          : 0
-                      }
-                    />
-                    %
-                  </span>
-                  <span className="projection-label">Cobertura Prom.</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="kpis-page__projection-card">
-              <header>
-                <h2 className="projection-title">Proyección</h2>
-                {projectionTotals.nextHireDate && (
-                  <span className="projection-date">
-                    Próx. Ingreso:{" "}
-                    {formatProjectionDate(projectionTotals.nextHireDate)}
-                  </span>
-                )}
-              </header>
-              <div className="projection-metrics">
-                <div className="projection-metric">
-                  <span className="projection-value text-success">
-                    <AnimatedNumber
-                      value={projectionTotals.proximosIngresos}
-                      prefix="+"
-                    />
-                  </span>
-                  <span className="projection-label">Próximos Ingresos</span>
-                  {projectionTotals.proximosIngresos > 0 && (
-                    <span className="projection-sublabel">
-                      {projectionTotals.proximosPlantilla > 0 && (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "var(--spacing-xs)",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "var(--font-bold)",
-                              color: "var(--color-ink)",
-                              fontSize: "var(--type-caption-sm-size)",
-                            }}
-                          >
-                            {projectionTotals.proximosPlantilla}
-                          </span>
-                          <PlantillaBadge />
-                        </span>
-                      )}
-                      {projectionTotals.proximosBackup > 0 && (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "var(--spacing-xs)",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "var(--font-bold)",
-                              color: "var(--color-ink)",
-                              fontSize: "var(--type-caption-sm-size)",
-                            }}
-                          >
-                            {projectionTotals.proximosBackup}
-                          </span>
-                          <BackupBadge />
-                        </span>
-                      )}
-                      {projectionTotals.proximosStarlite > 0 && (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "var(--spacing-xs)",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "var(--font-bold)",
-                              color: "var(--color-ink)",
-                              fontSize: "var(--type-caption-sm-size)",
-                            }}
-                          >
-                            {projectionTotals.proximosStarlite}
-                          </span>
-                          <StarliteBadge />
-                        </span>
-                      )}
-                    </span>
-                  )}
-                </div>
-                <div className="projection-metric">
-                  <span className="projection-value text-primary">
-                    <AnimatedNumber
-                      value={projectionTotals.coberturaProyectada}
-                      suffix="%"
-                    />
-                  </span>
-                  <span className="projection-label">Avance Proyectado</span>
-                </div>
-              </div>
-            </div>
-          </section>
+          <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
 
           <section className="kpis-page__grid" aria-label="KPIs consolidados">
             {cards.map((card, index) => {
@@ -994,6 +737,8 @@ export function KpisPage() {
         </>
       ) : (
         <>
+          <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
+
           <nav
             className="kpis-page__tabs"
             aria-label="Grupos de KPIs"
@@ -1113,10 +858,6 @@ export function KpisPage() {
         onClose={() => setMissingModalOpen(false)}
         coverage={currentPositionCoverage}
         vacancies={vacancies}
-        /* Pasamos TODOS los candidatos: el modal filtra internamente
-             por estados activos (entrevista, entrega_documentos,
-             faltan_documentos, feedback_pendiente). */
-        candidates={candidates}
       />
       </main>
     </BoneyardSkeleton>

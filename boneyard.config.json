@@ -14,11 +14,14 @@
     "/configuracion?tab=rutas&view=incidencias",
     "/configuracion?tab=tabulador",
     "/configuracion?tab=speech",
-    "/configuracion?tab=formatos"
+    "/configuracion?tab=formatos",
+    "/actividades",
+    "/reporte",
+    "/perfil-general"
   ],
   "wait": 2200,
-  "color": "var(--color-canvas-soft)",
-  "darkColor": "var(--color-surface)",
+  "color": "var(--color-hairline)",
+  "darkColor": "var(--color-hairline)",
   "animate": "solid",
   "speed": "var(--duration-skeleton)",
   "boneClass": "boneyard-skeleton__bone"

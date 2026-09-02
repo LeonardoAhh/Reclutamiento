@@ -17,7 +17,6 @@ import {
   SupabaseDataProvider,
   type SupabaseDataResource,
 } from '@/hooks/useSupabaseData';
-import { SplashTypewriter } from '@/components/ui/SplashTypewriter';
 import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
@@ -131,22 +130,9 @@ function WithSupabaseData({
 }
 
 function App() {
-  const [splashDone, setSplashDone] = useState(isBoneyardBuild);
-
-  const handleSplashDone = useCallback(() => {
-    setSplashDone(true);
-  }, []);
-
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
       <>
-      <AnimatePresence>
-        {!splashDone && (
-          <SplashTypewriter key="splash-typewriter" onDone={handleSplashDone} />
-        )}
-      </AnimatePresence>
-
-      {splashDone && (
         <>
           <PWAStatus />
           <SystemUpdateNotification />
@@ -191,7 +177,6 @@ function App() {
             </Routes>
           </Suspense>
         </>
-      )}
       </>
     </TooltipPrimitive.Provider>
   );
