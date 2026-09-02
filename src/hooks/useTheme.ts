@@ -12,30 +12,48 @@ interface ViewTransition {
 }
 type StartViewTransition = (cb: () => void | Promise<void>) => ViewTransition;
 
+function getStoredTheme(): Theme | null {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored === 'light' || stored === 'dark' ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistTheme(theme: Theme): void {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, theme);
+  } catch {
+    // El tema sigue funcionando durante la sesión aunque el storage no esté disponible.
+  }
+}
+
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'light';
-  const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-  if (stored === 'light' || stored === 'dark') return stored;
+  const stored = getStoredTheme();
+  if (stored) return stored;
   return window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
     : 'light';
 }
 
-/** Colores exactos del canvas por tema — deben coincidir con los tokens
- * `--color-canvas` de global.css. */
-const CANVAS_BY_THEME: Record<Theme, string> = {
-  light: '#f6f5f4',
-  dark: '#191817',
-};
+function syncBrowserChrome(): void {
+  const root = document.documentElement;
+  const canvas = window
+    .getComputedStyle(root)
+    .getPropertyValue('--color-canvas-soft')
+    .trim();
+  if (!canvas) return;
+
+  const meta = document.getElementById('theme-color-meta');
+  meta?.setAttribute('content', canvas);
+}
 
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
   root.setAttribute('data-theme', theme);
-  root.style.backgroundColor = CANVAS_BY_THEME[theme];
-  const meta = document.getElementById('theme-color-meta');
-  if (meta) {
-    meta.setAttribute('content', CANVAS_BY_THEME[theme]);
-  }
+  syncBrowserChrome();
 }
 
 /**
@@ -43,7 +61,7 @@ function applyTheme(theme: Theme): void {
  * defecto, y expone `theme` + `toggleTheme()` + `setTheme(t)`.
  *
  * Si el navegador soporta View Transitions API y el usuario no tiene
- * `prefers-reduced-motion`, el cambio se envuelve en un cross-fade de 200ms.
+ * `prefers-reduced-motion`, el cambio usa las duraciones definidas por tokens.
  */
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
@@ -59,14 +77,11 @@ export function useTheme() {
          sea el mismo. Solo sincronizamos si el documento quedó desalineado. */
       if (document.documentElement.getAttribute('data-theme') !== theme) {
         applyTheme(theme);
-      }
-      if (window.localStorage.getItem(STORAGE_KEY) !== theme) {
-        window.localStorage.setItem(STORAGE_KEY, theme);
+      } else {
+        syncBrowserChrome();
       }
       return;
     }
-
-    window.localStorage.setItem(STORAGE_KEY, theme);
 
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -88,7 +103,7 @@ export function useTheme() {
       return;
     }
 
-    /* Fallback: sin View Transitions, aplicar directo */
+    /* Fallback: sin View Transitions, aplicar directo. */
     applyTheme(theme);
   }, [theme]);
 
@@ -96,8 +111,7 @@ export function useTheme() {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     function onChange(e: MediaQueryListEvent) {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored !== 'light' && stored !== 'dark') {
+      if (!getStoredTheme()) {
         setThemeState(e.matches ? 'dark' : 'light');
       }
     }
@@ -106,12 +120,15 @@ export function useTheme() {
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
+    persistTheme(next);
     setThemeState(next);
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  }, []);
+    const next = theme === 'dark' ? 'light' : 'dark';
+    persistTheme(next);
+    setThemeState(next);
+  }, [theme]);
 
   return { theme, toggleTheme, setTheme };
 }

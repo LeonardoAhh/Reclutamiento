@@ -6,7 +6,7 @@
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
-     Notion-style: single blue structural accent. */
+     Notion-style: single black structural accent. */
   --color-primary: #000000;
   --color-primary-active: #31302e;
   --color-primary-disabled: #e6e6e6;
@@ -47,6 +47,7 @@
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
   --color-on-dark-soft: #b8b6b3;
+  --color-focus-on-inverted: var(--color-on-dark);
 
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #16a34a;
@@ -459,7 +460,6 @@
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-theme-in: 300ms;
   --duration-theme-out: 200ms;
-  --duration-theme-stagger: 60ms;
   --duration-skeleton: 1500ms;
   --opacity-skeleton-rest: 0.7;
   --opacity-skeleton-active: 1;
@@ -496,7 +496,7 @@
   --color-muted: #8f8a83;
   --color-muted-soft: #8d8881;
   --color-on-dark: #191817;
-  --color-on-dark-soft: #8f8a83;
+  --color-on-dark-soft: #615d59;
 
   /* Primary invertido para dark: blanco sobre oscuro (espejo del negro sobre claro) */
   --color-primary: #ffffff;
@@ -548,12 +548,8 @@
   --color-primary-tint: rgba(246, 245, 244, 0.08);
   --color-header-glass: rgba(25, 24, 23, 0.88);
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-prominent: 0 4px 12px rgba(0, 0, 0, 0.5);
+  /* Elevation inherits the restrained layered stacks from :root.
+     Dark hairlines provide the primary separation between surfaces. */
 }
 
 /* ========================================
@@ -609,11 +605,11 @@ body {
    ======================================== */
 
 ::view-transition-old(root) {
-  animation: theme-fade-out 200ms ease both;
+  animation: theme-fade-out var(--duration-theme-out) var(--ease-standard) both;
 }
 
 ::view-transition-new(root) {
-  animation: theme-fade-in 200ms ease both;
+  animation: theme-fade-in var(--duration-theme-in) var(--ease-standard) both;
 }
 
 @keyframes theme-fade-out {
@@ -1034,17 +1030,6 @@ code:not(pre code) {
 }
 
 /* ========================================
-   VIEW TRANSITIONS
-   ======================================== */
-
-::view-transition-group(*),
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation-duration: 250ms;
-  animation-timing-function: var(--ease-standard);
-}
-
-/* ========================================
    FORM SYSTEM
    ======================================== */
 
@@ -1441,6 +1426,10 @@ code:not(pre code) {
 
 .card--dark .text-muted {
   color: var(--color-on-dark-soft);
+}
+
+.card--dark :focus-visible {
+  outline-color: var(--color-focus-on-inverted);
 }
 
 /* ========================================

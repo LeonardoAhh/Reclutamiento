@@ -53,8 +53,8 @@ The remaining colours form Notion's **decorative sticker palette** — they appe
 
 ### Surface
 
-- **White** (`{colors.canvas}` / `{colors.surface}` — #ffffff): card and panel surfaces, nav bar, form fields.
-- **Warm Paper** (`{colors.canvas-soft}` — #f6f5f4): the signature page canvas and the footer band — a warm off-white that gives the whole site its document-like calm.
+- **Warm Paper** (`{colors.canvas}` / `{colors.canvas-soft}` — #f6f5f4): the signature application and page canvas, plus the footer band — a warm off-white that gives the whole site its document-like calm. `{colors.canvas}` is retained as the compatibility name used by the application shell; new page backgrounds should prefer the explicit `{colors.canvas-soft}` token.
+- **White** (`{colors.surface}` — #ffffff): card and panel surfaces, nav bar, form fields.
 - **Hairline** (`{colors.hairline}` — #e6e6e6): 1px card borders and dividers, a black-at-10%-on-white blend kept solid for token reuse.
 
 ### Text
@@ -78,6 +78,45 @@ Notion's marketing surfaces do not expose a dedicated error/success palette in t
 | `{colors.warning-subtle}` | #fffbeb | Background of warning states          |
 
 &gt; These do NOT replace `{colors.primary}`. They are for state communication, not primary actions.
+
+### Application Dark Theme
+
+Dark mode is a polarity adaptation of the application shell, not a repetition of the deep-indigo marketing hero. It preserves the same semantic hierarchy and single structural accent while reversing luminance:
+
+| Role | Light | Dark | Contract |
+| --- | --- | --- | --- |
+| Canvas | `#f6f5f4` | `#191817` | Page and application background |
+| Surface | `#ffffff` | `#232120` | Cards, panels and fields |
+| Hairline | `#e6e6e6` | `#3a3735` | Borders and dividers |
+| Ink | `#000000` | `#f6f5f4` | Headings and strongest text |
+| Body | `#31302e` | `#c9c5c0` | Reading text |
+| Muted | `#615d59` | `#8f8a83` | Supporting text; must remain AA on its actual surface |
+| Primary | `#000000` | `#ffffff` | CTA, link, active state and focus signal |
+| On primary | `#ffffff` | `#000000` | Content placed on primary |
+| Inverted surface | `#191817` | `#f6f5f4` | Polarity-opposite feature surface |
+| On inverted | `#ffffff` | `#191817` | Strong content on the inverted surface |
+| On inverted soft | `#b8b6b3` | `#615d59` | Supporting content on the inverted surface |
+
+Dark-mode visibility refinements use these exact values:
+
+| Token | Dark value |
+| --- | --- |
+| `{colors.secondary}` | `#4a5cc4` |
+| `{colors.success}` / `{colors.success-text}` | `#4ade80` / `#86efac` |
+| `{colors.warning}` / `{colors.warning-text}` | `#fbbf24` / `#fde68a` |
+| `{colors.error}` / `{colors.error-text}` | `#fb7185` / `#fda4af` |
+| `{colors.accent-sky}` | `#7dd3fc` |
+| `{colors.accent-purple}` / `{colors.accent-purple-deep}` | `#c4b5fd` / `#a78bfa` |
+| `{colors.accent-orange}` / `{colors.accent-orange-deep}` | `#fdba74` / `#fb923c` |
+| `{colors.accent-teal}` | `#5eead4` |
+| `{colors.accent-brown}` | `#d6b98c` |
+
+- Inverted surfaces reverse with the theme: dark in light mode, light in dark mode. Their `on-dark` and `on-dark-soft` tokens must reverse with them and retain WCAG 2.2 AA contrast.
+- The primary token may invert to white only in dark mode. This is the same structural accent by polarity, not a second accent colour.
+- Semantic success, warning and error colours may increase luminance in dark mode, but keep their existing meaning and remain limited to state communication.
+- Sticker colours may increase luminance for visibility, but remain decorative only.
+- Dark-mode elevation keeps the same layered, restrained shadow construction. Hairlines carry most separation; dark mode must not introduce heavy single-stop shadows.
+- Focus uses `{colors.primary}` on normal dark surfaces. On inverted light surfaces it uses the corresponding dark `on-dark` colour so the indicator remains visible.
 
 ---
 

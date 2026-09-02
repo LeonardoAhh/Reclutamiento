@@ -33,9 +33,9 @@
         <meta name="twitter:image" content="https://www.reclutamiento.lat/logo-empresa.jpg" />
 
         <!-- Color de la barra del navegador en Chrome/Edge/Android y Safari iOS 15+.
-         Debe coincidir con --color-canvas. Se actualiza dinámicamente por el
-         script de tema (ver abajo) y por el hook useTheme. -->
-        <meta name="theme-color" content="#f6f5f4" id="theme-color-meta" />
+         Se obtiene de --color-canvas-soft durante la inicialización y se mantiene
+         sincronizado mediante useTheme. -->
+        <meta name="theme-color" content="" id="theme-color-meta" />
 
         <!-- =====================================================================
          PWA / INSTALACIÓN EN PANTALLA DE INICIO
@@ -157,23 +157,20 @@
                 el parpadeo del cambio de colores al cargar la página */
                     document.documentElement.classList.add("theme-init");
 
-                    /* 6. Actualizar el meta theme-color del navegador.
-                Debe coincidir con --color-canvas para que iOS pinte la barra
-                de estado del color correcto del tema. */
-                    var CANVAS_LIGHT = "#f6f5f4"; /* warm paper — Notion */
-                    var CANVAS_DARK  = "#191817"; /* deep neutral — Notion dark */
-                    var canvas = theme === "dark" ? CANVAS_DARK : CANVAS_LIGHT;
-                    var meta = document.getElementById("theme-color-meta");
-                    if (meta) {
-                        meta.setAttribute("content", canvas);
-                    }
-                    /* También fijamos el background del <html> de inmediato
-                para que el safe-area superior en iOS no parpadee. */
-                    document.documentElement.style.backgroundColor = canvas;
-
-                    /* 7. Remover la clase de bloqueo en el siguiente frame,
-                una vez que los estilos iniciales ya se aplicaron */
+                    /* 6. Sincronizar el chrome del navegador desde el token CSS
+                cuando la hoja de estilos esté disponible. */
                     window.requestAnimationFrame(function () {
+                        var canvas = window
+                            .getComputedStyle(document.documentElement)
+                            .getPropertyValue("--color-canvas-soft")
+                            .trim();
+                        var meta = document.getElementById("theme-color-meta");
+                        if (canvas && meta) {
+                            meta.setAttribute("content", canvas);
+                        }
+
+                        /* 7. Remover el bloqueo cuando los estilos iniciales
+                    ya se aplicaron. */
                         document.documentElement.classList.remove("theme-init");
                     });
                 } catch (e) {
