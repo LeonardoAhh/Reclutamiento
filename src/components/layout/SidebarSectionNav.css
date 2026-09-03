@@ -1,0 +1,115 @@
+.sidebar-section {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.sidebar-section__link {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-section__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-xs);
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.sidebar-section__trigger--collapsed {
+  width: 100%;
+  padding-inline: 0;
+}
+
+.sidebar-section__trigger:hover,
+.sidebar-section__trigger--active,
+.sidebar-section__trigger[aria-expanded='true'] {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+
+.sidebar-section__icon {
+  flex-shrink: 0;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.sidebar-section__entry-icon {
+  flex-shrink: 0;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}
+
+.sidebar-section__options-icon {
+  flex-shrink: 0;
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+}
+
+.popover-content.sidebar-section__popover {
+  min-width: var(--menu-min-inline-size);
+  max-width: var(--radix-popover-content-available-width);
+  max-height: var(--radix-popover-content-available-height);
+  padding: var(--spacing-xs);
+  overflow-y: auto;
+}
+
+.sidebar-section__group + .sidebar-section__group {
+  margin-top: var(--spacing-sm);
+}
+
+.sidebar-section__group-title {
+  margin: 0;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  color: var(--color-muted);
+}
+
+.sidebar-section__views {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-section__view {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--touch-target-min);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  color: var(--color-body);
+  text-decoration: none;
+}
+
+.sidebar-section__view:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.sidebar-section__view[aria-current='page'] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.sidebar-section__view span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-section__popover {
+    animation: none;
+  }
+}

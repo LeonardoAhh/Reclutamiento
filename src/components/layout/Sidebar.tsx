@@ -14,6 +14,10 @@ import { useLoader } from "@/hooks/useLoader";
 
 import { NAV_GROUPS } from "./navigation";
 import { UserMenuPopover } from "./UserMenuPopover";
+import { PlantillaNavItem } from "./PlantillaNavItem";
+import { ConfiguracionNavItem } from "./ConfiguracionNavItem";
+import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
+import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -109,7 +113,21 @@ export function Sidebar({
               <div className="sidebar__group-title">{group.title}</div>
             )}
             <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
-              {group.items.map(({ to, label, icon: Icon, end }) => {
+              {group.items.map((item) => {
+                const { to, label, icon: Icon, end } = item;
+                if (to === PLANTILLA_PATH || to === CONFIGURACION_PATH) {
+                  const SectionNavItem = to === PLANTILLA_PATH ? PlantillaNavItem : ConfiguracionNavItem;
+                  return (
+                    <li key={to}>
+                      <SectionNavItem
+                        item={item}
+                        collapsed={collapsed && !mobileMenuOpen}
+                        mobile={Boolean(mobileMenuOpen)}
+                        onNavigate={onCloseMobileMenu}
+                      />
+                    </li>
+                  );
+                }
                 const isActive = end
                   ? location.pathname === to
                   : location.pathname.startsWith(to);

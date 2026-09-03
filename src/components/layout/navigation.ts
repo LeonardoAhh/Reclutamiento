@@ -9,6 +9,8 @@ import {
   UserSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
+import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 
 export type NavItem = {
   to: string;
@@ -33,7 +35,7 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
         icon: UserSearch,
         mobilePriority: true,
       },
-      { to: "/plantilla", label: "Plantilla", icon: Contact },
+      { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
       {
         to: "/resumen",
         label: "Resumen",
@@ -54,7 +56,7 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
     title: "Administración",
     items: [
       { to: "/actividades", label: "Actividades", icon: ListTodo },
-      { to: "/configuracion", label: "Configuración", icon: Settings2 },
+      { to: CONFIGURACION_PATH, label: "Configuración", icon: Settings2 },
       { to: "/perfil-general", label: "Perfil General", icon: ClipboardPenLine },
     ],
   },

@@ -1767,7 +1767,7 @@
     "numero empleado": "4115",
     "nombre": "REYES MONROY FRANCISCO ALEJANDRO",
     "seccion": "MANTENIMIENTO",
-    "turno": "4",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "OBRERA",
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
@@ -2581,6 +2581,15 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "SANTA ROSA",
     "parada": "EN EL PUENTE DE LA CRUZ "
+  },
+{
+    "numero empleado": "4337",
+    "nombre": "HERNANDEZ GUTIERREZ CRISTIAN JESUS",
+    "seccion": "MANTENIMIENTO",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "PLAZA DEL SOL",
+    "parada": "EN EL KFC"
   },
   {
     "numero empleado": "4339",

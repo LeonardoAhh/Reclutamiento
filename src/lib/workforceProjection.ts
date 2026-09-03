@@ -27,6 +27,15 @@ function category(target: number, covered: number): CoverageCategory {
   };
 }
 
+/** Cobertura operativa, sin permitir que excedentes compensen otras plazas. */
+export function summarizeOperationalCoverage(snapshot: WorkforceSnapshot): CoverageCategory {
+  const categories = [snapshot.plantilla, snapshot.backup, snapshot.starlite];
+  return category(
+    categories.reduce((total, item) => total + item.target, 0),
+    categories.reduce((total, item) => total + item.covered, 0),
+  );
+}
+
 export function summarizeWorkforceCoverage(
   positions: readonly PositionCoverage[],
   dismissedKeys: ReadonlySet<string>,
@@ -73,6 +82,7 @@ export function calculateWorkforceProjection(
   positions: AuthorizedPosition[],
   todayIso: string,
   dismissedKeys: ReadonlySet<string>,
+  area?: string,
 ) {
   // La fila histórica «(STARLITE)» repite el objetivo ya configurado por puesto.
   // No suma otra plantilla; sus empleados siguen emparejando con la sección base.
@@ -108,14 +118,20 @@ export function calculateWorkforceProjection(
       position: matches.length === 1 ? matches[0] : undefined,
       ambiguous: matches.length > 1,
     };
-  });
+  }).filter((entry) => area === undefined || entry.position?.area === area ||
+    (!entry.position && normalizeString(entry.employee.area) === normalizeString(area)));
+  // El ámbito se aplica después del emparejamiento global: filtrar antes podría
+  // convertir una coincidencia ambigua entre áreas en una asignación válida.
+  const scopedPositions = area === undefined
+    ? projectionPositions
+    : projectionPositions.filter((position) => position.area === area);
   const nextHireDate = datedEmployees.reduce<string | null>((next, entry) => {
     const date = entry.date?.slice(0, 10);
     if (!date || date <= todayIso) return next;
     return next === null || date < next ? date : next;
   }, null);
   const snapshotAt = (date: string) => summarizeWorkforceCoverage(
-    projectionPositions.flatMap((position) => calculatePositionCoverage(
+    scopedPositions.flatMap((position) => calculatePositionCoverage(
       datedEmployees.filter((entry) => entry.position === position && entry.date && entry.date.slice(0, 10) <= date)
         .map((entry) => entry.employee),
       [],

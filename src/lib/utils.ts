@@ -334,10 +334,10 @@ export function getCoverageColor(percentage: number): string {
 }
 
 /**
- * Format percentage for display
+ * Porcentaje entero de cobertura. No anuncia 100% si aún faltan puestos.
  */
 export function formatPercentage(value: number): string {
-  return `${Math.min(value, 100)}%`;
+  return `${Math.floor(Math.min(value, 100))}%`;
 }
 
 /**

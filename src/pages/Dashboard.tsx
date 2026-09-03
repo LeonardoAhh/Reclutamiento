@@ -1,15 +1,12 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   CircleCheckBig,
   ChevronRight,
   ClipboardList,
   Clock,
-  ContactRound,
   Filter,
-  HeartPulse,
-  Network,
   UserRoundPlus as UserPlusIcon,
   UsersRound,
 } from "lucide-react";
@@ -17,11 +14,7 @@ import { Search as SearchData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { SearchField } from "@/components/ui/SearchField";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
-import { CoverageBar } from "@/components/ui/CoverageBar";
-import {
-  AreaStatusBadge,
-  Badge,
-} from "@/components/ui/Badge";
+import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
 import { CommentModal } from "@/components/ui/CommentModal";
 import { JsonImporter } from "@/components/ui/JsonImporter";
 import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
@@ -38,10 +31,12 @@ import {
   transformEmployeeData,
   calculatePositionCoverage,
   calculateDepartmentCoverage,
-  getCoverageColor,
   normalizeString,
 } from "@/lib/utils";
-import { formatShortDate } from "@/lib/dates";
+import { formatShortDate, localTodayIso } from "@/lib/dates";
+import { calculateWorkforceProjection } from "@/lib/workforceProjection";
+import { useDismissedPositions } from "@/hooks/useDismissedPositions";
+import { getPlantillaView } from "@/lib/plantillaNavigation";
 import {
   computeAutoVacancies,
   filterUnreservedVacancies,
@@ -56,7 +51,6 @@ import type {
   Employee,
   EmployeeRaw,
   PositionComment,
-  DepartmentCoverage,
 } from "@/lib/types";
 import "./Dashboard.css";
 
@@ -102,28 +96,22 @@ export function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterArea, setFilterArea] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<string>(() =>
-    searchParams.get("view") === "empleados" ? "empleados" : "general",
-  );
+  const location = useLocation();
+  const primaryView = getPlantillaView(location.search);
+  const [departmentSelection, setDepartmentSelection] = useState<{
+    area: string;
+    navigationKey: string;
+  } | null>(null);
+  const activeTab = primaryView === "empleados"
+    ? "empleados"
+    : departmentSelection?.navigationKey === location.key
+      ? departmentSelection.area
+      : "general";
   const [commentTarget, setCommentTarget] = useState<{
     area: string;
     seccion: string;
     puesto: string;
   } | null>(null);
-
-  const handlePrimaryViewChange = (tab: "general" | "empleados") => {
-    setActiveTab(tab);
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        if (tab === "empleados") next.set("view", "empleados");
-        else next.delete("view");
-        return next;
-      },
-      { replace: true },
-    );
-  };
 
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<"add" | "delete" | null>(
@@ -147,6 +135,16 @@ export function Dashboard() {
   const departmentCoverage = useMemo(
     () => calculateDepartmentCoverage(positionCoverage),
     [positionCoverage],
+  );
+
+  const { dismissedKeys } = useDismissedPositions();
+  const todayIso = localTodayIso();
+  const departmentProjections = useMemo(
+    () => new Map(departmentCoverage.map(({ area }) => [
+      area,
+      calculateWorkforceProjection(employees, positions, todayIso, dismissedKeys, area),
+    ])),
+    [departmentCoverage, employees, positions, todayIso, dismissedKeys],
   );
 
   const normalizedSearchTerm = normalizeString(searchTerm);
@@ -328,46 +326,14 @@ export function Dashboard() {
   }
 
   const hasSearchResults = matchingEmployees.length > 0 || filteredDepts.length > 0;
-  const primaryView = activeTab === "empleados" ? "empleados" : "general";
 
   return (
-    <main className="plantilla-layout" aria-labelledby="plantilla-title">
+    <main className="plantilla-layout container" aria-labelledby="plantilla-title">
       <header className="plantilla-header">
         <h1 id="plantilla-title" className="plantilla-header__title">
           {primaryView === "empleados" ? "Empleados" : "Plantilla"}
         </h1>
       </header>
-
-      <nav className="plantilla-navigation" aria-label="Vista de Plantilla">
-        <div className="plantilla-navigation__tabs">
-          <button
-            type="button"
-            aria-pressed={primaryView === "general"}
-            className={`plantilla-navigation__tab${
-              primaryView === "general"
-                ? " plantilla-navigation__tab--active"
-                : ""
-            }`}
-            onClick={() => handlePrimaryViewChange("general")}
-          >
-            <Network size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Departamentos</span>
-          </button>
-          <button
-            type="button"
-            aria-pressed={primaryView === "empleados"}
-            className={`plantilla-navigation__tab${
-              primaryView === "empleados"
-                ? " plantilla-navigation__tab--active"
-                : ""
-            }`}
-            onClick={() => handlePrimaryViewChange("empleados")}
-          >
-            <ContactRound size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Empleados</span>
-          </button>
-        </div>
-      </nav>
 
       <section
         className="plantilla-main"
@@ -516,9 +482,9 @@ export function Dashboard() {
                   {filteredDepts.map((dept) => (
                     <DepartmentCard
                       key={dept.area}
-                      dept={dept}
-                      onOpen={() => setActiveTab(dept.area)}
-                      getCoverageBadge={getCoverageBadge}
+                      area={dept.area}
+                      projection={departmentProjections.get(dept.area)}
+                      onOpen={() => setDepartmentSelection({ area: dept.area, navigationKey: location.key })}
                       incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
                     />
                   ))}
@@ -534,7 +500,7 @@ export function Dashboard() {
                 onOpenComment={(area, seccion, puesto) =>
                   setCommentTarget({ area, seccion, puesto })
                 }
-                onBack={() => handlePrimaryViewChange("general")}
+                onBack={() => setDepartmentSelection(null)}
                 getCoverageBadge={getCoverageBadge}
                 incapacidadPorSeccion={
                   activeTab !== "general"
@@ -613,65 +579,5 @@ export function Dashboard() {
         />
       </section>
     </main>
-  );
-}
-
-/* ── Department Card (opens detail view on click) ── */
-
-interface DepartmentCardProps {
-  dept: DepartmentCoverage;
-  onOpen: () => void;
-  getCoverageBadge: (pct: number) => "success" | "teal" | "amber" | "error";
-  incapacidadCount: number;
-}
-
-function DepartmentCard({
-  dept,
-  onOpen,
-  getCoverageBadge,
-  incapacidadCount,
-}: DepartmentCardProps) {
-  const hasVacancies = dept.vacantes > 0;
-  const hasUrgentes = dept.urgentes > 0;
-  const hasAlert = hasVacancies || hasUrgentes;
-
-  const cardClass = ["dept-card", hasAlert ? "dept-card--alert" : ""]
-    .filter(Boolean)
-    .join(" ");
-
-  return (
-    <article className={cardClass} data-area={dept.area}>
-      <button
-        className="dept-card__button"
-        onClick={onOpen}
-        aria-label={`Ver detalle de ${dept.area}`}
-        type="button"
-      >
-        <div className="dept-card__header">
-          <div className="dept-card__header-left">
-            <h2 className="dept-card__title">{dept.area}</h2>
-            {incapacidadCount > 0 && (
-              <Badge variant="amber" title={`${incapacidadCount} incapacidades`}>
-                <HeartPulse size={12} aria-hidden="true" />
-                {incapacidadCount}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="dept-card__body">
-          <div className="dept-card__progress-label">
-            <span>Cobertura</span>
-            <span className="dept-card__progress-value">{dept.porcentaje_cobertura}%</span>
-          </div>
-          <CoverageBar
-            percentage={dept.porcentaje_cobertura}
-            color={getCoverageColor(dept.porcentaje_cobertura)}
-            height={6}
-            showLabel={false}
-          />
-        </div>
-      </button>
-    </article>
   );
 }

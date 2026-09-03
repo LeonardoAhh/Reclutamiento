@@ -15,6 +15,7 @@ import { useMemo, useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { localTodayIso } from '@/lib/dates';
+import { formatPercentage } from '@/lib/utils';
 import {
   ResponsiveContainer,
   Bar,
@@ -95,7 +96,7 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
       {payload.map((entry) => {
         const isPercent = entry.dataKey === 'cobertura';
         const valor = isPercent
-          ? `${entry.value.toFixed(1)}%`
+          ? formatPercentage(entry.value)
           : entry.value.toLocaleString('es-MX');
 
         return (
@@ -183,7 +184,7 @@ function DayCard({ data }: DayCardProps) {
 
       {/* % cobertura */}
       <p className="kpi-hero-day-card__coverage">
-        {data.cobertura.toFixed(1)}%
+        {formatPercentage(data.cobertura)}
       </p>
 
       <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
@@ -272,7 +273,7 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
                 Mín. cobertura
               </p>
               <p className="kpi-hero-critical__value">
-                {minCobertura.toFixed(1)}%
+                {formatPercentage(minCobertura)}
               </p>
             </div>
           </>

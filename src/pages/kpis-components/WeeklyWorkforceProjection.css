@@ -19,7 +19,6 @@
 }
 
 .workforce-projection__header h2,
-.workforce-projection__summary,
 .workforce-projection__note,
 .workforce-projection__breakdown,
 .workforce-projection__breakdown dd {
@@ -134,6 +133,7 @@
   align-items: baseline;
   gap: 0;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .workforce-projection__breakdown-value {

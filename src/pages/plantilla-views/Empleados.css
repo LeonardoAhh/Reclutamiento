@@ -6,15 +6,10 @@
 .empleados {
   display: flex;
   inline-size: 100%;
+  min-inline-size: 0;
   flex-direction: column;
   gap: var(--design-spacing-lg);
-  padding: 0 var(--container-padding-mobile) var(--design-spacing-xxl);
-}
-
-@media (min-width: 768px) {
-  .empleados {
-    padding-inline: 0;
-  }
+  padding-bottom: var(--design-spacing-xxl);
 }
 
 /* ══════════════════════════════════════════

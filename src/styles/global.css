@@ -346,7 +346,7 @@
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
   /* Ancho estable del panel que agrupa las acciones de la cuenta. */
-  --feature-user-menu-inline-size: 14rem;
+  --feature-user-menu-inline-size: var(--menu-min-inline-size);
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
   --modal-inline-size-sm: 30rem;

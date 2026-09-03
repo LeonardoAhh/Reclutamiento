@@ -1,5 +1,5 @@
 import type { WorkforceProjection as Projection } from '@/lib/workforceProjection';
-import { formatProjectionDate } from '@/lib/dates';
+import { formatPercentage } from '@/lib/utils';
 import './WeeklyWorkforceProjection.css';
 
 const CATEGORIES = [
@@ -17,20 +17,14 @@ function CoveragePercentage({ value }: { value: number | null }) {
   if (value === null) {
     return <span className="type-caption-sm text-muted">No aplica</span>;
   }
-  const displayValue = Number.isInteger(value) ? value.toString() : value.toFixed(1);
-  return <span>{displayValue}%</span>;
+  return <span>{formatPercentage(value)}</span>;
 }
 
-export function WorkforceProjection({ projection, todayIso }: Props) {
+export function WorkforceProjection({ projection }: Props) {
   return (
-    <section className="workforce-projection" aria-label="Cobertura actual y proyección al próximo ingreso">
+    <section className="workforce-projection" aria-label="Cobertura actual de plantilla">
       <header className="workforce-projection__header">
         <h2 className="type-body-strong text-ink">Cobertura de plantilla</h2>
-        {projection.nextHireDate && (
-          <span className="type-caption-sm text-muted">
-            Próximo ingreso: <time dateTime={projection.nextHireDate}>{formatProjectionDate(projection.nextHireDate)}</time>
-          </span>
-        )}
       </header>
 
       <div className="workforce-projection__cards" role="list">
@@ -52,22 +46,11 @@ export function WorkforceProjection({ projection, todayIso }: Props) {
                 <span className="type-heading-md text-ink">
                   <CoveragePercentage value={projection.current[key].percentage} />
                 </span>
-                {projection.nextHireDate && (
-                  <span className="type-caption-sm text-muted">
-                    Próx. ingreso: <CoveragePercentage value={projection.projected[key].percentage} />
-                  </span>
-                )}
               </div>
             </div>
           );
         })}
       </div>
-
-      <p className="workforce-projection__summary type-caption-sm text-muted">
-        {projection.scheduledHires === 0
-          ? 'Sin ingresos previstos'
-          : `+${projection.scheduledHires} ${projection.scheduledHires === 1 ? 'ingreso previsto' : 'ingresos previstos'}`}
-      </p>
 
       <details className="workforce-projection__details">
         <summary className="workforce-projection__details-summary type-caption-sm text-muted">
@@ -77,7 +60,6 @@ export function WorkforceProjection({ projection, todayIso }: Props) {
           {CATEGORIES.map(({ key, label }) => {
             const current = projection.current[key];
             const withAll = projection.withAllProximos[key];
-            const projected = projection.projected[key];
             return (
               <div key={key} className="workforce-projection__breakdown-card" role="listitem">
                 <span className="workforce-projection__breakdown-label type-caption-up text-muted">
@@ -89,7 +71,7 @@ export function WorkforceProjection({ projection, todayIso }: Props) {
                       {current.covered}
                     </span>
                     <span className="type-caption-xs text-muted">
-                      &nbsp;/ {current.target}
+                      &nbsp;de {current.target} puestos cubiertos
                     </span>
                   </span>
                   {withAll.vacancies > 0 && (
@@ -98,11 +80,6 @@ export function WorkforceProjection({ projection, todayIso }: Props) {
                     </span>
                   )}
                 </div>
-                {projection.nextHireDate && projected.covered !== current.covered && (
-                  <span className="type-caption-xs text-muted">
-                    Próx. ingreso: {projected.covered} / {projected.target}
-                  </span>
-                )}
               </div>
             );
           })}

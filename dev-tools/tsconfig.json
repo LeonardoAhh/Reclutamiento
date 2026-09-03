@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "include": ["recognition-preferences.test.ts"],
+  "include": ["recognition-preferences.test.ts", "department-coverage.test.ts", "plantilla-navigation.test.ts", "configuracion-navigation.test.ts"],
   "exclude": ["../rutas-app", "../node_modules"]
 }
