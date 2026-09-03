@@ -63,13 +63,9 @@
 }
 
 .sidebar-section__group + .sidebar-section__group {
-  margin-top: var(--spacing-sm);
-}
-
-.sidebar-section__group-title {
-  margin: 0;
-  padding: var(--spacing-xxs) var(--spacing-sm);
-  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  border-top: var(--border-width) solid var(--color-hairline-soft);
 }
 
 .sidebar-section__views {

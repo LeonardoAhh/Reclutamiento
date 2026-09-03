@@ -99,11 +99,6 @@
   color: var(--color-ink);
 }
 
-.user-menu-popover__item:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .user-menu-popover__item--danger:hover,
 .user-menu-popover__item--danger:focus-visible {
   background: var(--color-error-tint);
@@ -142,12 +137,5 @@
 @media (prefers-reduced-motion: reduce) {
   .user-menu-popover__icon.spin {
     animation: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .user-menu-popover__item:focus-visible {
-    outline: calc(var(--border-width) * 2) solid currentColor;
-    outline-offset: calc(var(--spacing-xxs) * -1);
   }
 }

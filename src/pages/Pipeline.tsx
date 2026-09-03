@@ -67,31 +67,6 @@ type RecruiterStats = {
 };
 
 
-const SEARCH_TIPS = [
-  "✨ Verifica si un teléfono ya está registrado",
-  "💡 Pega el número de teléfono del candidato",
-];
-
-function SearchBanner() {
-  const [tipIndex, setTipIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTipIndex((current) => (current + 1) % SEARCH_TIPS.length);
-    }, 4000); // Cambia cada 4 segundos
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="pipeline__search-banner">
-      <span key={tipIndex} className="pipeline__search-banner-text">
-        {SEARCH_TIPS[tipIndex]}
-      </span>
-      <div className="pipeline__search-banner-arrow"></div>
-    </div>
-  );
-}
-
 export function Pipeline() {
   const {
     candidates,
@@ -524,9 +499,6 @@ export function Pipeline() {
           {/* ── Search & Macro Filters ── */}
           <section className="pipeline__controls">
             <div className="pipeline__search-container">
-              {/* Banner flotante de nueva función rotativo */}
-              <SearchBanner />
-
               <div className="pipeline__search">
                 <SearchField
                   id="pipeline-search-input"

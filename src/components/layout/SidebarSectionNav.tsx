@@ -17,7 +17,14 @@ export interface SidebarSectionNavProps {
   groups: Array<{
     id: string;
     title?: string;
-    items: Array<{ id: string; label: string; icon: LucideIcon; href: string; isCurrent: boolean }>;
+    items: Array<{
+      id: string;
+      label: string;
+      icon: LucideIcon;
+      href: string;
+      isCurrent: boolean;
+      external?: boolean;
+    }>;
   }>;
 }
 
@@ -85,23 +92,48 @@ export function SidebarSectionNav({
           <nav aria-label={`Navegación de ${item.label}`}>
             {groups.map((group) => (
               <div key={group.id} className="sidebar-section__group">
-                {group.title && (
-                  <p className="sidebar-section__group-title type-caption-up">{group.title}</p>
-                )}
                 <ul className="sidebar-section__views" aria-label={group.title}>
-                  {group.items.map(({ id, label, icon: ViewIcon, href: viewHref, isCurrent: current }) => (
-                    <li key={id}>
-                      <Link
-                        to={viewHref}
-                        className="sidebar-section__view type-caption-sm"
-                        aria-current={isActive && current ? 'page' : undefined}
-                        onClick={handleNavigate}
-                      >
+                  {group.items.map(({
+                    id,
+                    label,
+                    icon: ViewIcon,
+                    href: viewHref,
+                    isCurrent: current,
+                    external,
+                  }) => {
+                    const content = (
+                      <>
                         <ViewIcon className="sidebar-section__icon" aria-hidden="true" />
                         <span>{label}</span>
-                      </Link>
-                    </li>
-                  ))}
+                      </>
+                    );
+
+                    return (
+                      <li key={id}>
+                        {external ? (
+                          <a
+                            href={viewHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="sidebar-section__view type-caption-sm"
+                            aria-label={`${label} (abre en una pestaña nueva)`}
+                            onClick={handleNavigate}
+                          >
+                            {content}
+                          </a>
+                        ) : (
+                          <Link
+                            to={viewHref}
+                            className="sidebar-section__view type-caption-sm"
+                            aria-current={isActive && current ? 'page' : undefined}
+                            onClick={handleNavigate}
+                          >
+                            {content}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

@@ -8,9 +8,7 @@ import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
 import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
 import { ChevronsUpDown, DoorOpen, LoaderCircle } from "lucide";
-import { Activity, BusFront, CalendarClock, Medal, ShieldAlert, UserRoundPen } from "lucide-react";
-import { Link } from "react-router-dom";
-import { INCIDENCIAS_PATH } from "@/lib/configuracionNavigation";
+import { Activity, Medal, ShieldAlert, UserRoundPen } from "lucide-react";
 import "./UserMenuPopover.css";
 
 type UserMenuModal = "avatar" | "recognition" | "maintenance" | "activity" | null;
@@ -131,27 +129,6 @@ export function UserMenuPopover({
               </button>
             )}
             
-            <Link
-              to={INCIDENCIAS_PATH}
-              className="user-menu-popover__item"
-              onClick={() => setOpen(false)}
-            >
-              <BusFront className="user-menu-popover__icon" aria-hidden="true" />
-              <span>Incidencias</span>
-            </Link>
-
-            <a
-              href="/horarios/index.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="user-menu-popover__item"
-              onClick={() => setOpen(false)}
-              aria-label="Horarios (abre en una pestaña nueva)"
-            >
-              <CalendarClock className="user-menu-popover__icon" aria-hidden="true" />
-              <span>Horarios</span>
-            </a>
-
             {isAdmin && (
               <>
                 <div className="user-menu-popover__divider" role="separator" />

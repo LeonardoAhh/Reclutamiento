@@ -1,6 +1,11 @@
-import { useState } from 'react';
-import { CircleCheckBig, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/Popover';
+import { EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
 import type { NoCitado } from '@/lib/types';
 import './NoCitadoRowActions.css';
 
@@ -15,10 +20,7 @@ export function NoCitadoRowActions({
   onEdit,
   onDelete,
 }: NoCitadoRowActionsProps) {
-  const [open, setOpen] = useState(false);
-
   function run(action: (n: NoCitado) => void) {
-    setOpen(false);
     action(noCitado);
   }
 
@@ -26,52 +28,39 @@ export function NoCitadoRowActions({
 
   return (
     <div className="no-citado-row-actions">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="no-citado-row-actions__trigger"
             aria-label={`Acciones de ${fullName}`}
             title="Acciones"
           >
-            <EllipsisVertical size={16} aria-hidden="true" />
+            <EllipsisVertical aria-hidden="true" />
           </button>
-        </PopoverTrigger>
+        </DropdownMenuTrigger>
 
-        <PopoverContent 
-          side="bottom" 
-          align="end" 
-          sideOffset={4}
-          className="no-citado-row-actions__menu"
-          style={{ padding: 'var(--spacing-xs)', border: '1px solid var(--color-hairline)' }}
-        >
-          <button
-            type="button"
-            className="no-citado-row-actions__item"
-            role="menuitem"
-            onClick={() => run(onEdit)}
-          >
-            <PenLine size={14} aria-hidden="true" />
-            <span>Editar</span>
-          </button>
+        <DropdownMenuContent side="bottom" align="end">
+          <DropdownMenuItem asChild>
+            <button type="button" onClick={() => run(onEdit)}>
+              <PenLine aria-hidden="true" />
+              <span>Editar</span>
+            </button>
+          </DropdownMenuItem>
 
           {onDelete && (
             <>
-              <div className="no-citado-row-actions__divider" role="separator" />
+              <DropdownMenuSeparator />
 
-              <button
-                type="button"
-                className="no-citado-row-actions__item no-citado-row-actions__item--danger"
-                role="menuitem"
-                onClick={() => run(onDelete)}
-              >
-                <Trash2 size={14} aria-hidden="true" />
-                <span>Eliminar</span>
-              </button>
+              <DropdownMenuItem asChild className="dropdown-menu-item--danger">
+                <button type="button" onClick={() => run(onDelete)}>
+                  <Trash2 aria-hidden="true" />
+                  <span>Eliminar</span>
+                </button>
+              </DropdownMenuItem>
             </>
           )}
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

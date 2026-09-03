@@ -1,5 +1,7 @@
 import {
   BadgeDollarSign,
+  BusFront,
+  CalendarClock,
   ChartNoAxesCombined,
   Files,
   MessagesSquare,
@@ -10,6 +12,7 @@ import {
 
 export const CONFIGURACION_PATH = '/configuracion';
 export const INCIDENCIAS_PATH = '/incidencias';
+export const HORARIOS_PATH = '/horarios/index.html';
 
 export type FeatureId =
   | "busqueda"
@@ -48,6 +51,22 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
     ],
   }
 ];
+
+export const CONFIGURACION_OPERATION_LINKS = [
+  {
+    id: 'incidencias',
+    label: 'Incidencias',
+    icon: BusFront,
+    href: INCIDENCIAS_PATH,
+  },
+  {
+    id: 'horarios',
+    label: 'Horarios',
+    icon: CalendarClock,
+    href: HORARIOS_PATH,
+    external: true,
+  },
+] as const;
 
 export const FEATURES: FeatureItem[] = FEATURE_GROUPS.flatMap(group => group.items);
 export const CONFIGURACION_ROUTES = FEATURES.map(
