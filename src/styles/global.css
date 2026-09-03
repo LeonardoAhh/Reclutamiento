@@ -294,6 +294,7 @@
   --transition-smooth: var(--transition-base);
   --transition-spinner: 1000ms linear;
   --transition-progress: 1400ms ease-in-out;
+  --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */
   --container-standard-max-inline-size: 80rem;
@@ -306,6 +307,7 @@
   --content-reading-max-inline-size: 65ch;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
+  --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
   /* Ancho legible mínimo para cards de asignación antes de reflujo automático. */
   --feature-vacancy-assignment-card-min-inline-size: 18rem;
   /* Geometría responsive de responsabilidades y sus referencias visuales. */
@@ -327,6 +329,9 @@
     --container-compact-max-inline-size
   );
   --feature-navigation-rail-inline-size: 16.25rem;
+  --feature-navigation-rail-collapsed-inline-size: calc(
+    var(--touch-target-min) + var(--design-spacing-md) + var(--design-spacing-md)
+  );
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
@@ -356,6 +361,10 @@
   --modal-max-block-size: min(85dvh, var(--modal-inline-size-lg));
   --modal-mobile-max-block-size: 92dvh;
   --system-update-progress-segment: 40%;
+  /* Capas estructurales del shell; mantienen Header, overlay y Sidebar ordenados. */
+  --layer-sticky-navigation: 800;
+  --layer-navigation-overlay: 899;
+  --layer-navigation: 900;
   --layer-maintenance: 1000;
   --layer-splash: 1000;
   --layer-floating-action: 1400;

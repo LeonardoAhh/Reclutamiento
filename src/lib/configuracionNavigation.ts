@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 export const CONFIGURACION_PATH = '/configuracion';
+export const INCIDENCIAS_PATH = '/incidencias';
 
 export type FeatureId =
   | "busqueda"
@@ -49,14 +50,18 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
 ];
 
 export const FEATURES: FeatureItem[] = FEATURE_GROUPS.flatMap(group => group.items);
+export const CONFIGURACION_ROUTES = FEATURES.map(
+  ({ id }) => `${CONFIGURACION_PATH}/${id}`,
+);
 
-export function getConfiguracionTab(search: string): FeatureId {
-  const tab = new URLSearchParams(search).get('tab');
-  return FEATURES.find(({ id }) => id === tab)?.id ?? 'busqueda';
+export function getConfiguracionTab(pathname: string): FeatureId {
+  const pathTab = pathname.startsWith(`${CONFIGURACION_PATH}/`)
+    ? pathname.slice(CONFIGURACION_PATH.length + 1).split('/')[0]
+    : null;
+  const matchedPathTab = FEATURES.find(({ id }) => id === pathTab)?.id;
+  return matchedPathTab ?? 'busqueda';
 }
 
-export function getConfiguracionHref(tab: FeatureId, search = ''): string {
-  const params = new URLSearchParams(search);
-  params.set('tab', tab);
-  return `${CONFIGURACION_PATH}?${params.toString()}`;
+export function getConfiguracionHref(tab: FeatureId): string {
+  return `${CONFIGURACION_PATH}/${tab}`;
 }

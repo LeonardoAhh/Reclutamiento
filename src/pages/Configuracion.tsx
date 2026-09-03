@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { FEATURES, getConfiguracionTab, type FeatureId } from "@/lib/configuracionNavigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BusquedaView } from "./configuracion-views/BusquedaView";
@@ -42,8 +42,8 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
 
 export function Configuracion() {
   const reduceMotion = useReducedMotion();
-  const [searchParams] = useSearchParams();
-  const activeTab = getConfiguracionTab(searchParams.toString());
+  const location = useLocation();
+  const activeTab = getConfiguracionTab(location.pathname);
 
   return (
     <div className="config-layout">

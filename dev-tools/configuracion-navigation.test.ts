@@ -17,23 +17,22 @@ test('Configuración preserves all six sections and their groups', () => {
   ]);
 });
 
-test('default, unknown and existing URLs resolve without changing the tab contract', () => {
-  assert.equal(getConfiguracionTab(''), 'busqueda');
-  assert.equal(getConfiguracionTab('?tab=unknown'), 'busqueda');
-  assert.equal(getConfiguracionTab('?tab='), 'busqueda');
+test('canonical Configuración paths resolve to their section', () => {
+  assert.equal(getConfiguracionTab('/configuracion'), 'busqueda');
+  assert.equal(getConfiguracionTab('/configuracion/unknown'), 'busqueda');
   for (const { id } of FEATURES) {
     const url = new URL(getConfiguracionHref(id), 'https://example.test');
-    assert.equal(url.pathname, '/configuracion');
-    assert.equal(getConfiguracionTab(url.search), id);
+    assert.equal(url.pathname, `/configuracion/${id}`);
+    assert.equal(getConfiguracionTab(url.pathname, url.search), id);
   }
-  assert.deepEqual(['', '?tab=formatos', '?tab=rutas', '?tab=formatos'].map(getConfiguracionTab),
+  assert.deepEqual(
+    ['busqueda', 'formatos', 'rutas', 'formatos']
+      .map((tab) => getConfiguracionTab(`/configuracion/${tab}`)),
     ['busqueda', 'formatos', 'rutas', 'formatos']);
 });
 
-test('section links preserve other query parameters and replace duplicate tabs', () => {
-  assert.equal(getConfiguracionHref('busqueda'), '/configuracion?tab=busqueda');
-  assert.equal(getConfiguracionHref('rutas', '?filter=test&tab=formatos'),
-    '/configuracion?filter=test&tab=rutas');
-  assert.equal(getConfiguracionHref('indicadores', '?tab=rutas&tab=speech&filter=test'),
-    '/configuracion?tab=indicadores&filter=test');
+test('each section link has one canonical path', () => {
+  assert.equal(getConfiguracionHref('busqueda'), '/configuracion/busqueda');
+  assert.equal(getConfiguracionHref('rutas'), '/configuracion/rutas');
+  assert.equal(getConfiguracionHref('indicadores'), '/configuracion/indicadores');
 });

@@ -21,6 +21,14 @@ import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { isBoneyardBuild } from '@/lib/boneyard';
+import {
+  EMPLEADOS_PATH,
+  PLANTILLA_PATH,
+} from '@/lib/plantillaNavigation';
+import {
+  CONFIGURACION_ROUTES,
+  INCIDENCIAS_PATH,
+} from '@/lib/configuracionNavigation';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -129,6 +137,14 @@ function WithSupabaseData({
   );
 }
 
+function PlantillaPage() {
+  return (
+    <WithSupabaseData resources={WORKFORCE_DATA}>
+      <Dashboard />
+    </WithSupabaseData>
+  );
+}
+
 function App() {
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
@@ -151,23 +167,25 @@ function App() {
               <Route path="/reporte" element={<ReporteTransportePublic />} />
               <Route element={<ProtectedShell />}>
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
-                <Route path="/plantilla" element={<WithSupabaseData resources={WORKFORCE_DATA}><Dashboard /></WithSupabaseData>} />
+                <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
-                <Route path="/toulouse" element={<Navigate to="/configuracion" replace />} />
+                <Route path="/toulouse" element={<Navigate to="/configuracion/busqueda" replace />} />
                 <Route path="/bajas" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
-                <Route path="/empleados" element={<Navigate to="/plantilla" replace />} />
-                <Route path="/transporte" element={<Navigate to="/configuracion" replace />} />
-                <Route path="/asistencia" element={<Navigate to="/configuracion" replace />} />
-                <Route path="/rutas" element={<Navigate to="/configuracion" replace />} />
+                <Route path={EMPLEADOS_PATH} element={<PlantillaPage />} />
+                <Route path="/transporte" element={<Navigate to="/configuracion/rutas" replace />} />
+                <Route path="/asistencia" element={<Navigate to="/configuracion/busqueda" replace />} />
+                <Route path="/rutas" element={<Navigate to="/configuracion/rutas" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
-                <Route path="/incidencias-transporte" element={<IncidenciasTransportePage />} />
                 <Route path="/perfil-general" element={<WithSupabaseData resources={EMPLOYEE_DATA}><ProfileGeneral /></WithSupabaseData>} />
                 <Route path="/asistente" element={<AIChatPage />} />
-                <Route path="/documentos" element={<Navigate to="/configuracion" replace />} />
-                <Route path="/configuracion" element={<Configuracion />} />
+                <Route path="/documentos" element={<Navigate to="/configuracion/formatos" replace />} />
+                <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />
+                {CONFIGURACION_ROUTES.map((path) => (
+                  <Route key={path} path={path} element={<Configuracion />} />
+                ))}
               </Route>
-              <Route path="/features" element={<Navigate to="/configuracion" replace />} />
+              <Route path="/features" element={<Navigate to="/configuracion/busqueda" replace />} />
               <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
               <Route path="/pipeline" element={<Navigate to="/candidatos" replace />} />
               <Route path="/reporte-diario" element={<Navigate to="/reportes" replace />} />

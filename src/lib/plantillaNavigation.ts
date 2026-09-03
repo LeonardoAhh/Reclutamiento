@@ -1,15 +1,17 @@
 export const PLANTILLA_PATH = '/plantilla';
+export const EMPLEADOS_PATH = '/empleados';
 
 export type PlantillaView = 'general' | 'empleados';
 
-export function getPlantillaView(search: string): PlantillaView {
-  return new URLSearchParams(search).get('view') === 'empleados' ? 'empleados' : 'general';
+export function getPlantillaView(pathname: string): PlantillaView {
+  return pathname === EMPLEADOS_PATH ? 'empleados' : 'general';
 }
 
-export function getPlantillaHref(view: PlantillaView, search = ''): string {
-  const params = new URLSearchParams(search);
-  if (view === 'empleados') params.set('view', view);
-  else params.delete('view');
-  const query = params.toString();
-  return `${PLANTILLA_PATH}${query ? `?${query}` : ''}`;
+export function isPlantillaPath(pathname: string): boolean {
+  return pathname === EMPLEADOS_PATH ||
+    pathname === PLANTILLA_PATH;
+}
+
+export function getPlantillaHref(view: PlantillaView): string {
+  return view === 'empleados' ? EMPLEADOS_PATH : PLANTILLA_PATH;
 }

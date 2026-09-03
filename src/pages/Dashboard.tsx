@@ -97,7 +97,7 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterArea, setFilterArea] = useState("");
   const location = useLocation();
-  const primaryView = getPlantillaView(location.search);
+  const primaryView = getPlantillaView(location.pathname);
   const [departmentSelection, setDepartmentSelection] = useState<{
     area: string;
     navigationKey: string;

@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Ellipsis, type LucideIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import type { NavItem } from './navigation';
@@ -12,6 +12,7 @@ export interface SidebarSectionNavProps {
   mobile: boolean;
   onNavigate?: () => void;
   href: string;
+  isActive: boolean;
   isCurrent: boolean;
   groups: Array<{
     id: string;
@@ -21,13 +22,11 @@ export interface SidebarSectionNavProps {
 }
 
 export function SidebarSectionNav({
-  item, collapsed, mobile, onNavigate, href, isCurrent, groups,
+  item, collapsed, mobile, onNavigate, href, isActive, isCurrent, groups,
 }: SidebarSectionNavProps) {
-  const location = useLocation();
   const [open, setOpen] = useState(false);
   const mobileNavigationRef = useRef(false);
   const contentId = useId();
-  const active = location.pathname === item.to;
   const Icon = item.icon;
 
   const handleNavigate = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -47,8 +46,8 @@ export function SidebarSectionNav({
       {!collapsed && (
         <Link
           to={href}
-          className={`sidebar__item sidebar-section__link${active ? ' sidebar__item--active' : ''}`}
-          aria-current={active && isCurrent ? 'page' : undefined}
+          className={`sidebar__item sidebar-section__link${isActive ? ' sidebar__item--active' : ''}`}
+          aria-current={isActive && isCurrent ? 'page' : undefined}
           onClick={handleNavigate}
           data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
         >
@@ -60,7 +59,7 @@ export function SidebarSectionNav({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className={`sidebar-section__trigger${collapsed ? ' sidebar-section__trigger--collapsed' : ''}${active ? ' sidebar-section__trigger--active' : ''}`}
+            className={`sidebar-section__trigger${collapsed ? ' sidebar-section__trigger--collapsed' : ''}${isActive ? ' sidebar-section__trigger--active' : ''}`}
             aria-label={`Vistas de ${item.label}`}
             aria-expanded={open}
             aria-controls={contentId}
@@ -95,7 +94,7 @@ export function SidebarSectionNav({
                       <Link
                         to={viewHref}
                         className="sidebar-section__view type-caption-sm"
-                        aria-current={active && current ? 'page' : undefined}
+                        aria-current={isActive && current ? 'page' : undefined}
                         onClick={handleNavigate}
                       >
                         <ViewIcon className="sidebar-section__icon" aria-hidden="true" />

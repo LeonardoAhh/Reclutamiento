@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { NAV_ITEMS } from './navigation';
+import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 
 const STORAGE_KEY = 'sidebar-collapsed';
 
@@ -28,8 +29,8 @@ import { SessionNotice } from './SessionNotice';
 
 /**
  * Shell de la app autenticada.
- *  - Desktop (>=1024px): Sidebar fijo a la izquierda + contenido desplazado.
- *  - Tablet/movil (<1024px): Header superior + Sidebar deslizable.
+ *  - Desktop (>=1080px): Sidebar fijo a la izquierda + contenido desplazado.
+ *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  * El estado de colapso del sidebar en escritorio persiste en localStorage.
  */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -39,11 +40,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const currentNavItem = NAV_ITEMS.find((item) => {
+      if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
       if (item.end) return location.pathname === item.to;
       return location.pathname.startsWith(item.to);
     });
 
-    const pageTitle = currentNavItem ? currentNavItem.label : 'App';
+    const pageTitle = location.pathname === EMPLEADOS_PATH
+      ? 'Empleados'
+      : currentNavItem?.label ?? 'App';
     document.title = pageTitle;
   }, [location.pathname]);
 

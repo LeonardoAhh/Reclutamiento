@@ -27,7 +27,7 @@ type SidebarProps = {
 };
 
 /**
- * Sidebar de escritorio (>=1024px). Fija a la izquierda, colapsable a iconos.
+ * Sidebar de escritorio (>=1080px). Fija a la izquierda, colapsable a iconos.
  * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
  * Nota: El menú de usuario se ha movido al Header.
  */

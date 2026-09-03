@@ -10,6 +10,7 @@ import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferen
 import { ChevronsUpDown, DoorOpen, LoaderCircle } from "lucide";
 import { Activity, BusFront, CalendarClock, Medal, ShieldAlert, UserRoundPen } from "lucide-react";
 import { Link } from "react-router-dom";
+import { INCIDENCIAS_PATH } from "@/lib/configuracionNavigation";
 import "./UserMenuPopover.css";
 
 type UserMenuModal = "avatar" | "recognition" | "maintenance" | "activity" | null;
@@ -131,7 +132,7 @@ export function UserMenuPopover({
             )}
             
             <Link
-              to="/incidencias-transporte"
+              to={INCIDENCIAS_PATH}
               className="user-menu-popover__item"
               onClick={() => setOpen(false)}
             >

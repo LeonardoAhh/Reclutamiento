@@ -15,16 +15,10 @@
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
-  margin-right: var(--spacing-sm);
 }
 
 .reminders-bell:hover {
   background-color: var(--color-surface-soft);
-}
-
-.reminders-bell:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reminders-badge {
@@ -66,7 +60,7 @@
 
 .reminders-header {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--color-hairline-soft);
+  border-bottom: var(--border-width) solid var(--color-hairline-soft);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -135,14 +129,8 @@
   border-bottom: none;
 }
 
-.reminder-compact-item:hover,
-.reminder-compact-item:focus-visible {
+.reminder-compact-item:hover {
   background-color: var(--color-surface-soft);
-  outline: none;
-}
-
-.reminder-compact-item:focus-visible {
-  box-shadow: var(--shadow-focus);
 }
 
 .reminder-compact-main,
