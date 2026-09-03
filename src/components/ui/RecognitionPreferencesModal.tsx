@@ -3,6 +3,7 @@ import { Medal } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import {
   isRecognitionMonthDismissed,
+  isRecognitionFrequency,
   readRecognitionPreferences,
   RECOGNITION_FREQUENCY_OPTIONS,
   setRecognitionFrequency,
@@ -24,6 +25,7 @@ export function RecognitionPreferencesModal({
   const { profile } = useAuth();
   const [frequency, setFrequency] = useState<RecognitionFrequency>('session');
   const [dismissedThisMonth, setDismissedThisMonth] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   useEffect(() => {
     if (!isOpen || !profile) return;
@@ -34,13 +36,15 @@ export function RecognitionPreferencesModal({
   if (!profile || profile.role !== 'reclutador') return null;
 
   const handleFrequencyChange = (nextFrequency: RecognitionFrequency) => {
-    setFrequency(nextFrequency);
-    setRecognitionFrequency(profile.id, nextFrequency);
+    const saved = setRecognitionFrequency(profile.id, nextFrequency);
+    setSaveError(!saved);
+    if (saved) setFrequency(nextFrequency);
   };
 
   const handleDismissedChange = (dismissed: boolean) => {
-    setDismissedThisMonth(dismissed);
-    setRecognitionMonthDismissed(profile.id, dismissed);
+    const saved = setRecognitionMonthDismissed(profile.id, dismissed);
+    setSaveError(!saved);
+    if (saved) setDismissedThisMonth(dismissed);
   };
 
   return (
@@ -68,7 +72,10 @@ export function RecognitionPreferencesModal({
           <select
             id="recognition-frequency"
             value={frequency}
-            onChange={(event) => handleFrequencyChange(event.target.value as RecognitionFrequency)}
+            aria-describedby="recognition-storage-note"
+            onChange={(event) => {
+              if (isRecognitionFrequency(event.target.value)) handleFrequencyChange(event.target.value);
+            }}
           >
             {RECOGNITION_FREQUENCY_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -78,7 +85,7 @@ export function RecognitionPreferencesModal({
           </select>
         </div>
 
-        <label className="recognition-preferences-modal__check">
+        <label className="recognition-preferences-modal__check type-body-sm">
           <input
             type="checkbox"
             checked={dismissedThisMonth}
@@ -87,8 +94,9 @@ export function RecognitionPreferencesModal({
           <span>No volver a mostrar este mes</span>
         </label>
 
-        <p className="recognition-preferences-modal__note type-caption-sm">
-          Esta preferencia se guarda en este dispositivo.
+        {saveError && <p role="alert" className="recognition-preferences-modal__intro type-body-sm">No se pudo guardar. Permite almacenamiento en el navegador e inténtalo otra vez.</p>}
+        <p id="recognition-storage-note" className="recognition-preferences-modal__note type-caption-sm">
+          Preferencias por usuario en este navegador. La frecuencia se aplica al entrar; no interrumpe tu trabajo con avisos programados.
         </p>
       </div>
     </Modal>

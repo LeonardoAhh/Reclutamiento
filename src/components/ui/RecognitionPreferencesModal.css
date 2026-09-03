@@ -23,10 +23,16 @@
 }
 
 .recognition-preferences-modal__check input {
+  flex-shrink: 0;
   width: var(--spacing-md);
   height: var(--spacing-md);
   margin: 0;
   accent-color: var(--color-primary);
+}
+
+.recognition-preferences-modal .form-group select {
+  min-height: var(--touch-target-min);
+  appearance: auto;
 }
 
 .recognition-preferences-modal__note {

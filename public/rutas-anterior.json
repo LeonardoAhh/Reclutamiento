@@ -2734,5 +2734,50 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+  },
+  {
+    "numero empleado": "4357",
+    "nombre": "MORALES OVALLE MARTIN",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA EN EL OXXO DE JUNCOS"
+  },
+  {
+    "numero empleado": "4358",
+    "nombre": "ARVIZU SANCHEZ LORENA BEATRIZ",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4359",
+    "nombre": "PADILLA ANG MARINA HIDEKEL",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "AV. DE LA LUZ",
+    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+  },
+  {
+    "numero empleado": "4360",
+    "nombre": "SANCHEZ JIMENEZ PILAR JAQUELINE",
+    "seccion": "A. CALIDAD 1ER TURNO",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "BUENAVISTA",
+    "parada": "PARADA FRENTE AL BARCO DE CHILOS"
+  },
+  {
+    "numero empleado": "4361",
+    "nombre": "ESTRADA SALINAS IVONNE",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "BUENAVISTA",
+    "parada": "PARADA DE AUTOBUSES SECUNDARIA"
   }
 ]

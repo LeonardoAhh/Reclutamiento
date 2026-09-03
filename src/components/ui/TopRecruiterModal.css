@@ -78,3 +78,62 @@
 .top-recruiter-modal .modal-footer .btn-primary {
   width: 100%;
 }
+
+.top-recruiter-modal__section-title {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.top-recruiter-modal__milestones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.top-recruiter-modal__milestone {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-body);
+}
+
+.top-recruiter-modal__milestone > svg {
+  flex-shrink: 0;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  color: var(--color-ink);
+}
+
+.top-recruiter-modal__milestone-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  overflow-wrap: anywhere;
+}
+
+.top-recruiter-modal__preferences {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-recruiter-modal__dismiss {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: var(--touch-target-min);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.top-recruiter-modal__dismiss input {
+  flex-shrink: 0;
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+}

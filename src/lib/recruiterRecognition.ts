@@ -49,8 +49,8 @@ function frequencyBucket(frequency: RecognitionFrequency, date: Date) {
   }
 }
 
-function isRecognitionFrequency(value: unknown): value is RecognitionFrequency {
-  return ['session', 'daily', 'weekly', 'monthly', 'off'].includes(String(value));
+export function isRecognitionFrequency(value: unknown): value is RecognitionFrequency {
+  return typeof value === 'string' && RECOGNITION_FREQUENCY_OPTIONS.some(option => option.value === value);
 }
 
 export function readRecognitionPreferences(userId: string): RecognitionPreferences {
@@ -76,27 +76,22 @@ export function readRecognitionPreferences(userId: string): RecognitionPreferenc
 function writeRecognitionPreferences(userId: string, preferences: RecognitionPreferences) {
   try {
     window.localStorage.setItem(storageKey(userId), JSON.stringify(preferences));
-    window.dispatchEvent(new CustomEvent('recognition-preferences-changed', {
-      detail: { userId },
-    }));
+    return true;
   } catch {
-    // Preferencias locales no deben bloquear uso de aplicación.
+    return false;
   }
 }
 
 export function setRecognitionFrequency(
   userId: string,
   frequency: RecognitionFrequency,
-  date = new Date(),
 ) {
   const current = readRecognitionPreferences(userId);
-  writeRecognitionPreferences(userId, {
+  return writeRecognitionPreferences(userId, {
     ...current,
     frequency,
     lastShownBucket:
-      frequency === 'session' || frequency === 'off'
-        ? undefined
-        : frequencyBucket(frequency, date),
+      frequency === current.frequency ? current.lastShownBucket : undefined,
   });
 }
 
@@ -110,7 +105,7 @@ export function setRecognitionMonthDismissed(
   date = new Date(),
 ) {
   const current = readRecognitionPreferences(userId);
-  writeRecognitionPreferences(userId, {
+  return writeRecognitionPreferences(userId, {
     ...current,
     dismissedMonth: dismissed ? monthKey(date) : undefined,
   });

@@ -1098,15 +1098,6 @@
     "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
-    "numero empleado": "3551",
-    "nombre": "ZARRABAL DIAZ JORGE JAVIER",
-    "seccion": "CALIDAD ADMTVO",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
-  },
-  {
     "numero empleado": "3563",
     "nombre": "PEREZ PLATON SANDRA ESTHER",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -1177,15 +1168,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "3637",
-    "nombre": "AGUILAR VICENCIO DAVID",
-    "seccion": "MANTENIMIENTO",
-    "turno": "3",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3650",
@@ -2394,15 +2376,6 @@
     "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
-    "numero empleado": "4296",
-    "nombre": "HURTADO SANCHEZ VIVIANA IVETTE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
     "numero empleado": "4299",
     "nombre": "MENDEZ MORALES MA. DE LOS ANGELES",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2628,15 +2601,6 @@
     "parada": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
   },
   {
-    "numero empleado": "4342",
-    "nombre": "SANCHEZ LEYVA JOSE ANGEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
-  },
-  {
     "numero empleado": "4343",
     "nombre": "VALENCIA GARCIA YAMILET IRAIS",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2644,15 +2608,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4345",
-    "nombre": "PAULINO PEREZ FRANCISCO JAVIER",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4346",
@@ -2754,15 +2709,6 @@
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
-    "numero empleado": "4359",
-    "nombre": "PADILLA ANG MARINA HIDEKEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
-  },
-  {
     "numero empleado": "4360",
     "nombre": "SANCHEZ JIMENEZ PILAR JAQUELINE",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2779,5 +2725,14 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "BUENAVISTA",
     "parada": "PARADA DE AUTOBUSES SECUNDARIA"
+  },
+  {
+    "numero empleado": "4362",
+    "nombre": "RAYO RAMIREZ TERESA ITZEL",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   }
 ]

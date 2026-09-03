@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["recognition-preferences.test.ts"],
+  "exclude": ["../rutas-app", "../node_modules"]
+}
