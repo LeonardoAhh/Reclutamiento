@@ -347,6 +347,10 @@
   --menu-min-inline-size: 10rem;
   --feature-chat-context-inline-size: 18rem;
   --feature-chat-conversation-max-inline-size: 48rem;
+  --pipeline-table-date-inline-size: 7.5rem;
+  --pipeline-table-actions-inline-size: 5rem;
+  --pipeline-pagination-label-min-inline-size: 5.625rem;
+  --pipeline-search-results-max-block-size: 25rem;
   --feature-chat-composer-max-block-size: 10rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
