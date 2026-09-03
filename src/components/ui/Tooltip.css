@@ -65,6 +65,12 @@
   gap: var(--spacing-xxs);
 }
 
+.trend-tooltip__title svg {
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+  flex-shrink: 0;
+}
+
 .trend-tooltip__title--success {
   color: var(--color-success);
 }

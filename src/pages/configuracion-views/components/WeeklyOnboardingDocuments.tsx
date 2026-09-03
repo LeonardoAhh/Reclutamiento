@@ -287,6 +287,9 @@ function DocumentPreviewCard({
           icon={<Printer aria-hidden="true" />}
           onClick={() => onReview(format)}
           disabled={employees.length === 0}
+          aria-describedby={
+            employees.length === 0 ? 'weekly-formats-empty' : undefined
+          }
         >
           Revisar e imprimir
         </ButtonUtility>
@@ -300,8 +303,6 @@ interface DocumentReviewModalProps {
   format: PrintFormat | null;
   employees: Employee[];
   selectedKeys: Set<string>;
-  weekLabel: string;
-  printDate: string;
   onClose: () => void;
   onToggleEmployee: (employeeKey: string) => void;
   onToggleAll: () => void;
@@ -313,8 +314,6 @@ function DocumentReviewModal({
   format,
   employees,
   selectedKeys,
-  weekLabel,
-  printDate,
   onClose,
   onToggleEmployee,
   onToggleAll,
@@ -327,7 +326,6 @@ function DocumentReviewModal({
   );
   const allSelected =
     employees.length > 0 && selectedEmployees.length === employees.length;
-  const PreviewIcon = format === 'credential' ? BadgeCheck : FileSignature;
   const title =
     format === 'credential' ? 'Entrega de credencial' : 'Entrega de contratos';
 
@@ -353,17 +351,19 @@ function DocumentReviewModal({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      icon={<PreviewIcon aria-hidden="true" />}
       className="weekly-review-modal"
       footerActions={footerActions}
-      size="xl"
-      fullscreenMobile
+      size="sm"
+      fullscreenMobile={false}
     >
       <div className="modal-body weekly-review-modal__body">
-        <aside className="weekly-review-modal__selector" aria-label="Empleados incluidos">
+        <section
+          className="weekly-review-modal__selector"
+          aria-labelledby="weekly-review-employees-title"
+        >
           <header className="weekly-review-modal__selector-header">
             <div>
-              <h3>Empleados incluidos</h3>
+              <h3 id="weekly-review-employees-title">Empleados incluidos</h3>
               <p aria-live="polite">
                 {selectedEmployees.length} de {employees.length} seleccionados
               </p>
@@ -399,23 +399,6 @@ function DocumentReviewModal({
               );
             })}
           </ul>
-        </aside>
-
-        <section className="weekly-review-modal__preview" aria-label="Vista previa completa">
-          <div className="weekly-doc-preview">
-            {format === 'credential' ? (
-              <CredentialDocument
-                employees={selectedEmployees}
-                printDate={printDate}
-              />
-            ) : (
-              <ContractDocument
-                employees={selectedEmployees}
-                weekLabel={weekLabel}
-                printDate={printDate}
-              />
-            )}
-          </div>
         </section>
       </div>
     </Modal>
@@ -539,7 +522,11 @@ export function WeeklyOnboardingDocuments({
       </div>
 
       {employees.length === 0 && (
-        <p className="weekly-formats__empty" role="status">
+        <p
+          id="weekly-formats-empty"
+          className="weekly-formats__empty"
+          role="status"
+        >
           No hay ingresos registrados en la semana seleccionada.
         </p>
       )}
@@ -549,8 +536,6 @@ export function WeeklyOnboardingDocuments({
         format={reviewFormat}
         employees={employees}
         selectedKeys={selectedKeys}
-        weekLabel={weekLabel}
-        printDate={printDate}
         onClose={() => setReviewFormat(null)}
         onToggleEmployee={handleToggleEmployee}
         onToggleAll={handleToggleAll}

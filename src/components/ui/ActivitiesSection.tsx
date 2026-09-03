@@ -208,7 +208,7 @@ export function ActivitiesSection({
                       onRecruiterFilterChange(event.target.value)
                     }
                   >
-                    <option value="">Todos los reclutadores</option>
+                    <option value="">All</option>
                     <option value="__team__">Todo el equipo</option>
                     {recruiters.map((recruiter) => (
                       <option key={recruiter.id} value={recruiter.id}>

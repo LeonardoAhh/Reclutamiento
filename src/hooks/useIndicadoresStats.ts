@@ -29,6 +29,17 @@ export function getRecruiterTone(index: number) {
   return `data-tone-${index % RECRUITER_TONES}`;
 }
 
+export function getRecruitmentGoals(selectedMonth: Date) {
+  const usesPreviousGoal =
+    selectedMonth.getFullYear() < 2026 ||
+    (selectedMonth.getFullYear() === 2026 && selectedMonth.getMonth() < 5);
+
+  return {
+    monthlyGoal: usesPreviousGoal ? 13 : 28,
+    weeklyGoal: usesPreviousGoal ? null : 7,
+  };
+}
+
 export function parseDate(dateStr: string) {
   if (!dateStr) return new Date(0);
   const parts = dateStr.split('/');
@@ -215,9 +226,8 @@ export function useIndicadoresStats(selectedMonth: Date) {
 
     formattedData.sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime());
 
-    const isBeforeJune2026 = selectedMonth.getFullYear() < 2026 || (selectedMonth.getFullYear() === 2026 && selectedMonth.getMonth() < 5);
-    const metaMensual = isBeforeJune2026 ? 13 : 28;
-    const metaSemanal = isBeforeJune2026 ? null : 7;
+    const { monthlyGoal: metaMensual, weeklyGoal: metaSemanal } =
+      getRecruitmentGoals(selectedMonth);
 
     const totalIngresos = formattedData.reduce((acc, row) => acc + row.total, 0);
     const promedio = formattedData.length ? Math.round((totalIngresos / formattedData.length) * 10) / 10 : 0;

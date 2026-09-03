@@ -3,32 +3,76 @@
 .top-recruiter-modal__body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--spacing-lg);
+  align-items: stretch;
+  gap: var(--spacing-md);
 }
 
 .top-recruiter-modal__text {
-  color: var(--color-muted);
   margin: 0;
+  color: var(--color-body);
 }
 
 .top-recruiter-modal__kpi {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   width: 100%;
-  margin-block: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-soft);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.top-recruiter-modal__progress-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-recruiter-modal__progress-heading strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.top-recruiter-modal__progress {
+  width: 100%;
+  height: var(--spacing-xs);
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.top-recruiter-modal__progress::-webkit-progress-bar {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress::-webkit-progress-value {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress::-moz-progress-bar {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress--complete::-webkit-progress-value {
+  background: var(--color-success);
+}
+
+.top-recruiter-modal__progress--complete::-moz-progress-bar {
+  background: var(--color-success);
 }
 
 .top-recruiter-modal__kpi-text {
   color: var(--color-muted);
   margin: 0;
-}
-
-.top-recruiter-modal__highlight {
-  color: var(--color-primary);
-  font-weight: var(--font-semibold);
 }
 
 .top-recruiter-modal .modal-footer .btn-primary {

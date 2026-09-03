@@ -183,46 +183,60 @@ export function FormatosView() {
       loading={loading}
       loadingLabel="Cargando formatos…"
     >
-      <section className="config-page">
-      <div className="config-page__content">
-        {employeesError && (
-          <p className="type-body-sm text-error" role="alert">
-            Hubo un problema al cargar los empleados.
-          </p>
-        )}
+      <section
+        className="config-page formatos-page"
+        aria-labelledby="formatos-page-title"
+      >
+        <header className="formatos-page__header">
+          <h1 id="formatos-page-title" className="config-page__title">
+            Formatos
+          </h1>
+        </header>
 
-        <div className="config-results-wrapper">
-          <section
-            className="config-results-controls"
-            aria-label="Seleccionar semana"
-          >
-            <div className="config-results-controls__filters recordatorios-week-controls">
-              <label className="config-filter-field recordatorios-week-field">
-                <span className="config-filter-label type-caption-sm text-muted">
-                  Semana de ingreso
-                </span>
-                <CustomSelect
-                  value={selectedWeek.value}
-                  onChange={setSelectedWeekKey}
-                  options={availableWeeks.map((week) => ({
-                    value: week.value,
-                    label: week.label,
-                  }))}
-                />
-              </label>
-            </div>
-          </section>
+        <div className="config-page__content">
+          {employeesError && (
+            <p
+              className="formatos-page__error type-body-sm text-error"
+              role="alert"
+            >
+              Hubo un problema al cargar los empleados.
+            </p>
+          )}
 
-          <WeeklyOnboardingDocuments
-            employees={weeklyEmployees}
-            weekLabel={selectedWeekLabel}
-            printDate={localTodayIso()}
-          />
+          <div className="config-results-wrapper">
+            <section
+              className="config-results-controls"
+              aria-label="Seleccionar semana"
+            >
+              <div className="config-results-controls__filters recordatorios-week-controls">
+                <label className="config-filter-field recordatorios-week-field">
+                  <span className="config-filter-label type-caption-sm text-muted">
+                    Semana de ingreso
+                  </span>
+                  <CustomSelect
+                    id="formatos-week"
+                    value={selectedWeek.value}
+                    onChange={setSelectedWeekKey}
+                    aria-label="Semana de ingreso"
+                    options={availableWeeks.map((week) => ({
+                      value: week.value,
+                      label: week.label,
+                    }))}
+                  />
+                </label>
+              </div>
+            </section>
 
-          <section
-            className="recordatorios-routes"
-            aria-labelledby="recordatorios-routes-title"
-          >
+            <WeeklyOnboardingDocuments
+              employees={weeklyEmployees}
+              weekLabel={selectedWeekLabel}
+              printDate={localTodayIso()}
+            />
+
+            <section
+              className="recordatorios-routes"
+              aria-labelledby="recordatorios-routes-title"
+            >
             <header className="recordatorios-routes__header">
               <div>
                 <h2
@@ -263,6 +277,11 @@ export function FormatosView() {
                   icon={<Copy aria-hidden="true" />}
                   onClick={handleCopyImage}
                   disabled={filteredEmployees.length === 0 || isGeneratingImage}
+                  aria-describedby={
+                    filteredEmployees.length === 0
+                      ? "recordatorios-routes-empty"
+                      : undefined
+                  }
                 >
                   {isGeneratingImage ? "Generando..." : "Copiar"}
                 </ButtonUtility>
@@ -270,7 +289,11 @@ export function FormatosView() {
             </section>
 
             {filteredEmployees.length === 0 ? (
-              <div className="config-filter-empty" role="status">
+              <div
+                id="recordatorios-routes-empty"
+                className="config-filter-empty"
+                role="status"
+              >
                 <Bus size={32} aria-hidden="true" />
                 <p className="type-body-md text-charcoal">
                   No hay ingresos aplicables al listado de rutas para la fecha
@@ -327,18 +350,30 @@ export function FormatosView() {
                       <tbody>
                         {filteredEmployees.map((emp) => (
                           <tr key={emp.id || emp.num_empleado}>
-                            <td className="type-body-sm font-medium text-ink recordatorios-table__cell--left">
+                            <td
+                              data-label="No. Emp"
+                              className="type-body-sm font-medium text-ink recordatorios-table__cell--left"
+                            >
                               {emp.num_empleado}
                             </td>
-                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                            <td
+                              data-label="Nombre"
+                              className="type-body-sm text-charcoal recordatorios-table__cell--left"
+                            >
                               {emp.nombre}
                             </td>
-                            <td className="type-body-sm text-charcoal recordatorios-table__cell--center">
+                            <td
+                              data-label="Turno"
+                              className="type-body-sm text-charcoal recordatorios-table__cell--center"
+                            >
                               {emp.turno || (
                                 <span className="text-error">Falta turno</span>
                               )}
                             </td>
-                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                            <td
+                              data-label="Nombre Ruta"
+                              className="type-body-sm text-charcoal recordatorios-table__cell--left"
+                            >
                               {emp.ruta_final ? (
                                 emp.ruta_final
                               ) : (
@@ -348,7 +383,10 @@ export function FormatosView() {
                                 </span>
                               )}
                             </td>
-                            <td className="type-body-sm text-charcoal recordatorios-table__cell--left">
+                            <td
+                              data-label="Parada"
+                              className="type-body-sm text-charcoal recordatorios-table__cell--left"
+                            >
                               {emp.parada_final ? (
                                 emp.parada_final
                               ) : (
@@ -366,9 +404,9 @@ export function FormatosView() {
                 </div>
               </div>
             )}
-          </section>
+            </section>
+          </div>
         </div>
-      </div>
       </section>
     </BoneyardSkeleton>
   );

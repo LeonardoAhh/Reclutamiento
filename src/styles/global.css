@@ -29,6 +29,8 @@
   --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
   --color-document-soft: #f6f5f4; /* Panel secundario de salidas oficiales */
   --color-document-hairline: #d5d3d1; /* Bordes de salidas oficiales */
+  --color-document-table-header: #8c8c8c; /* Encabezados de tablas imprimibles */
+  --color-document-table-row-alternate: #e5e5e5; /* Filas alternas imprimibles */
   --color-document-primary: #000000; /* Encabezado de salidas oficiales */
   --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
 

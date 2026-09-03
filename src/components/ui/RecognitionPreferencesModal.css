@@ -1,0 +1,38 @@
+.recognition-preferences-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.recognition-preferences-modal__intro,
+.recognition-preferences-modal__note {
+  margin: 0;
+}
+
+.recognition-preferences-modal__intro {
+  color: var(--color-body);
+}
+
+.recognition-preferences-modal__check {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: var(--touch-target-min);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.recognition-preferences-modal__check input {
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+.recognition-preferences-modal__note {
+  color: var(--color-muted);
+}
+
+.recognition-preferences-modal .modal-footer .btn-primary {
+  width: 100%;
+}

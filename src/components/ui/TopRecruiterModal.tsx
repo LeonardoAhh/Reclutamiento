@@ -1,67 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Star, Trophy } from 'lucide-react';
+import { Medal, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { CoverageBar } from './CoverageBar';
-import { motion } from 'framer-motion';
+import { getRecruitmentGoals } from '@/hooks/useIndicadoresStats';
 import { supabase } from '@/lib/supabase';
 import { Modal } from './Modal';
 import './TopRecruiterModal.css';
-
-const MONTHLY_GOAL = 28;
-const WEEKLY_GOAL = 7;
-
-function Confetti() {
-  const [show, setShow] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setShow(false), 2500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!show) return null;
-
-  const colors = ['var(--color-accent-teal)', 'var(--color-accent-purple)', 'var(--color-accent-orange)', 'var(--color-accent-sky)'];
-  
-  return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 10 }}>
-      {Array.from({ length: 40 }).map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ 
-            y: -20, 
-            x: '50%',
-            opacity: 1 
-          }}
-          animate={{ 
-            y: 400 + Math.random() * 200,
-            x: `${50 + (Math.random() * 120 - 60)}%`,
-            rotate: Math.random() * 360,
-            opacity: 0
-          }}
-          transition={{ 
-            duration: 1.5 + Math.random() * 1,
-            ease: "easeOut",
-            delay: Math.random() * 0.2
-          }}
-          style={{
-            position: 'absolute',
-            left: `${Math.random() * 100}%`,
-            width: Math.random() > 0.5 ? 8 : 6,
-            height: Math.random() > 0.5 ? 8 : 6,
-            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 export function TopRecruiterModal() {
   const { profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [topRecruiter, setTopRecruiter] = useState<{name: string, total: number} | null>(null);
   const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean, isTie?: boolean} | null>(null);
-  const [animatedProgress, setAnimatedProgress] = useState(0);
+  const { monthlyGoal, weeklyGoal } = getRecruitmentGoals(new Date());
 
   useEffect(() => {
     // Solo mostramos el modal una vez por sesión
@@ -158,19 +108,6 @@ export function TopRecruiterModal() {
     fetchStats().catch(console.error);
   }, [profile]);
 
-  useEffect(() => {
-    if (isOpen && currentUserStats && topRecruiter) {
-      const targetTotal = currentUserStats.isTop ? topRecruiter.total : currentUserStats.total;
-      const targetProgress = Math.round((targetTotal / MONTHLY_GOAL) * 100);
-      const timer = setTimeout(() => {
-        setAnimatedProgress(targetProgress);
-      }, 150);
-      return () => clearTimeout(timer);
-    } else {
-      setAnimatedProgress(0);
-    }
-  }, [isOpen, currentUserStats, topRecruiter]);
-
   const getContextualMessage = (progress: number, isTop: boolean) => {
     if (isTop) return "¡Gracias por tu excelente trabajo! Sigue rompiendo récords.";
     if (progress === 0) return "¡Es un nuevo mes! Anota tu primer ingreso y empieza a sumar para el equipo. ¡Vamos con todo!";
@@ -183,6 +120,10 @@ export function TopRecruiterModal() {
   if (!topRecruiter || !currentUserStats) return null;
 
   const isTop = currentUserStats.isTop;
+  const progress = Math.round((currentUserStats.total / monthlyGoal) * 100);
+  const clampedProgress = Math.min(Math.max(progress, 0), 100);
+  const remainingToGoal = Math.max(monthlyGoal - currentUserStats.total, 0);
+  const weeklyGoalCopy = weeklyGoal ? ` · Referencia semanal: ${weeklyGoal}` : '';
 
   return (
     <Modal
@@ -192,8 +133,8 @@ export function TopRecruiterModal() {
       size="xs"
       fullscreenMobile={false}
       icon={isTop
-        ? <Trophy size="var(--icon-size-lg)" aria-hidden="true" />
-        : <Star size="var(--icon-size-lg)" aria-hidden="true" />}
+        ? <Medal aria-hidden="true" />
+        : <TrendingUp aria-hidden="true" />}
       title={isTop
         ? `¡Felicidades, ${currentUserStats.name}!`
         : `¡Excelente esfuerzo, ${currentUserStats.name}!`}
@@ -203,41 +144,41 @@ export function TopRecruiterModal() {
           className="btn-primary"
           onClick={() => setIsOpen(false)}
         >
-          ¡Genial!
+          Entendido
         </button>
       }
     >
       <div className="modal-body top-recruiter-modal__body">
-        {animatedProgress >= 100 && <Confetti />}
-
         {isTop && (
           <p className="top-recruiter-modal__text type-body-md">
             {currentUserStats.isTie ? (
-              <>Estás empatado(a) en <span className="top-recruiter-modal__highlight">1er lugar</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
+              <>Compartes el <strong>primer lugar</strong> del mes con {topRecruiter.total} ingresos.</>
             ) : (
-              <>Eres el reclutador <span className="top-recruiter-modal__highlight">#1</span> del mes con <span className="top-recruiter-modal__highlight">{topRecruiter.total} ingresos</span>.</>
+              <>Lideras el mes con <strong>{topRecruiter.total} ingresos</strong>.</>
             )}
           </p>
         )}
 
         <div className="top-recruiter-modal__kpi">
-          <CoverageBar
-            percentage={animatedProgress}
-            color={isTop ? "var(--color-warning)" : "var(--color-success)"}
+          <div className="top-recruiter-modal__progress-heading">
+            <span>Progreso mensual</span>
+            <strong>{progress}%</strong>
+          </div>
+          <progress
+            className={`top-recruiter-modal__progress${clampedProgress === 100 ? ' top-recruiter-modal__progress--complete' : ''}`}
+            value={clampedProgress}
+            max="100"
+            aria-label={`${progress} por ciento de la meta mensual`}
           />
           <p className="top-recruiter-modal__kpi-text type-caption-sm">
-            {isTop
-              ? topRecruiter.total >= MONTHLY_GOAL
-                ? `¡Has superado la meta mensual de ${MONTHLY_GOAL} ingresos!`
-                : `Estás a ${MONTHLY_GOAL - topRecruiter.total} de tu meta mensual de ${MONTHLY_GOAL} (${WEEKLY_GOAL}/sem).`
-              : currentUserStats.total > 0
-                ? `Llevas ${currentUserStats.total} ingresos acumulados de ${MONTHLY_GOAL} (${WEEKLY_GOAL} por semana).`
-                : `Meta mensual: ${MONTHLY_GOAL} ingresos (${WEEKLY_GOAL} por semana).`}
+            {remainingToGoal === 0
+              ? `Meta mensual alcanzada: ${currentUserStats.total} de ${monthlyGoal} ingresos.`
+              : `${remainingToGoal} ingresos para alcanzar la meta de ${monthlyGoal}${weeklyGoalCopy}.`}
           </p>
         </div>
 
         <p className="top-recruiter-modal__text type-body-md">
-          {getContextualMessage(animatedProgress, isTop)}
+          {getContextualMessage(progress, isTop)}
         </p>
       </div>
     </Modal>

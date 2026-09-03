@@ -1,42 +1,74 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-
-
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { ChevronLeft, ChevronRight, Database, LoaderCircle } from 'lucide-react';
-import { useIndicadoresStats, getRecruiterTone } from '@/hooks/useIndicadoresStats';
-import { supabase } from '@/lib/supabase';
-import { toast } from '@/lib/notify';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  CalendarRange,
+  ChartNoAxesColumnIncreasing,
+  Target,
+  Timer,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+  UserRound,
+  UserRoundMinus,
+  UserRoundPlus,
+} from 'lucide-react';
+import { useIndicadoresStats } from '@/hooks/useIndicadoresStats';
+
+interface IndicatorCardProps {
+  icon: ReactNode;
+  label: string;
+  value: ReactNode;
+  description: string;
+  valueClassName?: string;
+}
+
+function IndicatorCard({
+  icon,
+  label,
+  value,
+  description,
+  valueClassName = '',
+}: IndicatorCardProps) {
+  return (
+    <article className="indicadores-kpi-card">
+      <div className="indicadores-kpi-card__header">
+        <span className="indicadores-kpi-card__icon" aria-hidden="true">
+          {icon}
+        </span>
+        <h3 className="indicadores-kpi-label">{label}</h3>
+      </div>
+      <p className={`indicadores-kpi-value ${valueClassName}`.trim()}>{value}</p>
+      <p className="indicadores-kpi-sub">{description}</p>
+    </article>
+  );
+}
 
 export function IndicadoresView() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [selectedMobileRecruiter, setSelectedMobileRecruiter] = useState<string | null>(null);
+  const mobileDetailBackRef = useRef<HTMLButtonElement>(null);
+  const recruiterButtonRefs = useRef(new Map<string, HTMLButtonElement>());
   
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-
-  const { chartData, recruiters, tableData, kpi, historicalGoals, loading, error } = useIndicadoresStats(selectedMonth);
-
-  const selectedRecruiterIndex = selectedMobileRecruiter
-    ? recruiters.indexOf(selectedMobileRecruiter)
-    : -1;
+  const { recruiters, tableData, kpi, historicalGoals, loading, error } = useIndicadoresStats(selectedMonth);
 
   if (error) {
     return (
-      <div className="config-empty">
-        <p className="text-error type-body-md">{error}</p>
-      </div>
+      <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
+        <h1 id="indicadores-page-title" className="config-page__title">
+          Indicadores
+        </h1>
+        <div className="config-empty" role="alert">
+          <p className="text-error type-body-md">{error}</p>
+        </div>
+      </section>
     );
   }
 
@@ -48,12 +80,33 @@ export function IndicadoresView() {
     setSelectedMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
+  const handleSelectMobileRecruiter = (recruiter: string) => {
+    setSelectedMobileRecruiter(recruiter);
+  };
+
+  const handleBackToRecruiters = () => {
+    const recruiter = selectedMobileRecruiter;
+    setSelectedMobileRecruiter(null);
+    window.requestAnimationFrame(() => {
+      if (recruiter) recruiterButtonRefs.current.get(recruiter)?.focus();
+    });
+  };
+
+  useEffect(() => {
+    if (!selectedMobileRecruiter) return;
+    const frame = window.requestAnimationFrame(() => {
+      mobileDetailBackRef.current?.focus();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedMobileRecruiter]);
+
   const isCurrentMonth = () => {
     const now = new Date();
     return selectedMonth.getMonth() === now.getMonth() && selectedMonth.getFullYear() === now.getFullYear();
   };
 
   const monthLabel = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
+  const monthValue = `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
 
   return (
     <BoneyardSkeleton
@@ -61,59 +114,107 @@ export function IndicadoresView() {
       loading={loading}
       loadingLabel="Cargando indicadores…"
     >
-      <section className="indicadores-view config-page" aria-label="Indicadores de Reclutamiento">
+      <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
+      <header className="indicadores-page-header">
+        <h1 id="indicadores-page-title" className="config-page__title">
+          Indicadores
+        </h1>
+
+        <div className="indicadores-period" aria-label="Periodo de los indicadores">
+          <CalendarRange aria-hidden="true" />
+          <div className="indicadores-month-nav">
+            <button
+              type="button"
+              className="btn-icon"
+              onClick={handlePrevMonth}
+              aria-label="Mostrar mes anterior"
+            >
+              <ArrowLeft aria-hidden="true" />
+            </button>
+            <time
+              className="indicadores-month-nav__label"
+              dateTime={monthValue}
+            >
+              {monthLabel}
+            </time>
+            <button
+              type="button"
+              className="btn-icon"
+              onClick={handleNextMonth}
+              disabled={isCurrentMonth()}
+              aria-label="Mostrar mes siguiente"
+            >
+              <ArrowRight aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </header>
 
       {/* ── KPI Cards ───────────────────────────────────────────── */}
       {kpi && (
-        <div className="indicadores-kpi-grid" role="region" aria-label="Resumen de indicadores">
-          <div className="indicadores-kpi-card">
-            <span className="indicadores-kpi-label">Total Ingresos</span>
-            <span className="indicadores-kpi-value">
-              {kpi.totalIngresos}
+        <section className="indicadores-section" aria-labelledby="indicadores-summary-title">
+          <div className="indicadores-section__heading">
+            <ChartNoAxesColumnIncreasing aria-hidden="true" />
+            <h2 id="indicadores-summary-title">Resumen mensual</h2>
+          </div>
+          <div className="indicadores-kpi-grid">
+            <IndicatorCard
+              icon={<UserRoundPlus />}
+              label="Total ingresos"
+              value={<>
+                {kpi.totalIngresos}
               {kpi.prevMonthTotalIngresos > 0 && (
-                <span 
-                  className={`type-caption-sm font-bold indicadores-section__title-icon ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'text-success' : 'text-error'}`}
-                  title={`Mes anterior: ${kpi.prevMonthTotalIngresos} ingresos`}
+                <span
+                  className={`indicadores-kpi-trend ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'text-success' : 'text-error'}`}
+                  aria-label={`${Math.abs(kpi.totalIngresos - kpi.prevMonthTotalIngresos)} ingresos ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'más' : 'menos'} que el mes anterior`}
                 >
-                  {kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? '↑ +' : '↓ -'} 
+                  {kpi.totalIngresos >= kpi.prevMonthTotalIngresos
+                    ? <TrendingUp aria-hidden="true" />
+                    : <TrendingDown aria-hidden="true" />}
+                  {kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? '+' : '−'}
                   {Math.abs(kpi.totalIngresos - kpi.prevMonthTotalIngresos)}
                 </span>
               )}
-            </span>
-            <span className="indicadores-kpi-sub">{tableData.length} semanas registradas</span>
-          </div>
-          <div className="indicadores-kpi-card">
-            <span className="indicadores-kpi-label">Promedio Semanal</span>
-            <span className="indicadores-kpi-value">{kpi.promedio}</span>
-            <span className="indicadores-kpi-sub">Ingresos por semana</span>
-          </div>
-          <div className="indicadores-kpi-card">
-            <span className="indicadores-kpi-label">Top Reclutador</span>
-            <span className="indicadores-kpi-value indicadores-kpi-value--name">
-              {kpi.topRecruiters.length > 1
+              </>}
+              description={`${tableData.length} semana${tableData.length === 1 ? '' : 's'} registrada${tableData.length === 1 ? '' : 's'}`}
+            />
+            <IndicatorCard
+              icon={<ChartNoAxesColumnIncreasing />}
+              label="Promedio semanal"
+              value={kpi.promedio}
+              description="Ingresos por semana"
+            />
+            <IndicatorCard
+              icon={<Trophy />}
+              label="Top reclutador"
+              value={kpi.topRecruiters.length > 1
                 ? kpi.topRecruiters.map((recruiter) => recruiter.name).join(' y ')
-                : kpi.topRecruiters[0]?.name}
-            </span>
-            <span className="indicadores-kpi-sub">
-              {kpi.topRecruiters.length > 1
+                : kpi.topRecruiters[0]?.name ?? 'Sin datos'}
+              valueClassName="indicadores-kpi-value--name"
+              description={kpi.topRecruiters.length > 1
                 ? `Empate con ${kpi.topRecruiters[0]?.total} ingresos cada una`
                 : `${kpi.topRecruiters[0]?.total ?? 0} ingresos`}
-            </span>
+            />
+            <IndicatorCard
+              icon={<Target />}
+              label="Meta mensual"
+              value={<>
+                {kpi.reclutadoresEnMeta}
+                <span className="indicadores-kpi-total-suffix">/ {kpi.recruiterTotals.length}</span>
+              </>}
+              description={`Reclutadores con al menos ${kpi.metaMensual} ingresos`}
+            />
           </div>
-          <div className="indicadores-kpi-card">
-            <span className="indicadores-kpi-label">Meta Mensual</span>
-            <span className="indicadores-kpi-value">
-              {kpi.reclutadoresEnMeta}
-              <span className="type-caption-sm text-muted font-normal indicadores-kpi-total-suffix">/ {kpi.recruiterTotals.length}</span>
-            </span>
-            <span className="indicadores-kpi-sub">Reclutadores con ≥ {kpi.metaMensual} ingresos</span>
-          </div>
-        </div>
+        </section>
       )}
 
       {/* ── Historial de Metas ──────────────────────────────────── */}
       {historicalGoals && historicalGoals.length > 0 && (
-        <div className="indicadores-historical-grid" role="region" aria-label="Historial de metas logradas">
+        <section className="indicadores-section indicadores-historical-grid" aria-labelledby="indicadores-goals-title">
+          <div className="indicadores-section__heading">
+            <Award aria-hidden="true" />
+            <h2 id="indicadores-goals-title">Metas acumuladas</h2>
+          </div>
           <div className="indicadores-historical-list">
             {historicalGoals.map(rec => (
               <Tooltip
@@ -140,42 +241,37 @@ export function IndicadoresView() {
                   </div>
                 }
               >
-                <div className="indicadores-historical-card">
-                  <span className={`indicadores-recruiter-dot ${rec.tone}`} aria-hidden="true" />
+                <button
+                  type="button"
+                  className="indicadores-historical-card"
+                  aria-label={`${rec.name}: ${rec.monthsCompleted} ${rec.monthsCompleted === 1 ? 'mes con meta lograda' : 'meses con meta lograda'}`}
+                >
+                  <Award aria-hidden="true" />
                   <span className="indicadores-historical-card__name">{rec.name}</span>
                   <span className="indicadores-historical-card__value">{rec.monthsCompleted} {rec.monthsCompleted === 1 ? 'mes' : 'meses'}</span>
-                </div>
+                </button>
               </Tooltip>
             ))}
           </div>
+        </section>
+      )}
+
+      {!kpi && (
+        <div className="config-empty" role="status">
+          <ChartNoAxesColumnIncreasing className="config-empty__icon" aria-hidden="true" />
+          <p className="config-empty__copy type-body-md">
+            No hay indicadores disponibles para este periodo.
+          </p>
         </div>
       )}
 
 
       {/* ── Tabla transpuesta: Reclutadores × Semanas ────────────── */}
-      <div className="indicadores-card indicadores-table-card">
+      {kpi && <section className="indicadores-card indicadores-table-card" aria-labelledby="indicadores-breakdown-title">
         <div className="indicadores-table-header">
-          <h3 className="type-heading-sm text-ink m-0">Desglose Detallado</h3>
-          
-          <div className="indicadores-month-nav">
-            <button 
-              className="btn-icon"
-              onClick={handlePrevMonth}
-              aria-label="Mes anterior"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <span className="indicadores-month-nav__label type-body-md text-ink font-medium capitalize">
-              {monthLabel}
-            </span>
-            <button 
-              className="btn-icon"
-              onClick={handleNextMonth}
-              disabled={isCurrentMonth()}
-              aria-label="Mes siguiente"
-            >
-              <ChevronRight size={16} />
-            </button>
+          <div className="indicadores-section__heading">
+            <ChartNoAxesColumnIncreasing aria-hidden="true" />
+            <h2 id="indicadores-breakdown-title">Ingresos por reclutador</h2>
           </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
@@ -190,29 +286,11 @@ export function IndicadoresView() {
                 <th scope="col" className="text-right">Total</th>
               </tr>
             </thead>
-            <motion.tbody
-              initial={prefersReducedMotion ? false : "hidden"}
-              animate={prefersReducedMotion ? false : "visible"}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { staggerChildren: 0.04 } }
-              }}
-            >
+            <tbody>
               {recruiters.map((recruiter, index) => (
-                <motion.tr
-                  key={recruiter}
-                  variants={{
-                    hidden: { opacity: 0, y: 8 },
-                    visible: { opacity: 1, y: 0 }
-                  }}
-                  whileHover={prefersReducedMotion ? undefined : { backgroundColor: 'var(--color-surface-soft)' }}
-                  transition={{ duration: 0.2 }}
-                >
+                <tr key={recruiter}>
                   <th scope="row" className="indicadores-table-row-header">
-                    <span
-                      className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
-                      aria-hidden="true"
-                    />
+                    <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                     {recruiter}
                   </th>
                   {tableData.map(row => {
@@ -252,9 +330,9 @@ export function IndicadoresView() {
                       );
                     })()}
                   </td>
-                </motion.tr>
+                </tr>
               ))}
-            </motion.tbody>
+            </tbody>
             {tableData.length > 0 && (
               <tfoot>
                 <tr>
@@ -304,21 +382,19 @@ export function IndicadoresView() {
           {selectedMobileRecruiter ? (
             <div className="indicadores-mobile-detail" aria-live="polite">
               <button
+                ref={mobileDetailBackRef}
                 type="button"
                 className="btn-text config-mobile-back"
-                onClick={() => setSelectedMobileRecruiter(null)}
+                onClick={handleBackToRecruiters}
                 aria-label="Volver a la lista de reclutadores"
               >
-                <ChevronLeft size={16} aria-hidden="true" />
+                <ArrowLeft aria-hidden="true" />
                 Volver
               </button>
               
               <div className="indicadores-mobile-detail__header">
-                <span
-                  className={`indicadores-recruiter-dot ${getRecruiterTone(selectedRecruiterIndex)}`}
-                  aria-hidden="true"
-                />
-                <h4 className="type-heading-md m-0">{selectedMobileRecruiter}</h4>
+                <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
+                <h3 className="type-heading-md m-0">{selectedMobileRecruiter}</h3>
               </div>
               
               <ul className="indicadores-mobile-detail__list">
@@ -362,22 +438,23 @@ export function IndicadoresView() {
               {recruiters.map((recruiter, index) => (
                 <li key={recruiter}>
                   <button
+                    ref={(node) => {
+                      if (node) recruiterButtonRefs.current.set(recruiter, node);
+                      else recruiterButtonRefs.current.delete(recruiter);
+                    }}
                     type="button"
                     className="indicadores-mobile-list__btn"
-                    onClick={() => setSelectedMobileRecruiter(recruiter)}
+                    onClick={() => handleSelectMobileRecruiter(recruiter)}
                   >
                     <div className="indicadores-mobile-list__info">
-                      <span
-                        className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
-                        aria-hidden="true"
-                      />
+                      <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                       <span className="type-body-sm font-medium text-ink">{recruiter}</span>
                     </div>
                     <div className="indicadores-mobile-list__right">
                       <span className="type-caption-sm text-muted">
                         {kpi?.recruiterTotals[index]?.total ?? 0} ingresos
                       </span>
-                      <ChevronRight size={16} className="text-muted-soft" aria-hidden="true" />
+                      <ArrowRight className="text-muted-soft" aria-hidden="true" />
                     </div>
                   </button>
                 </li>
@@ -385,32 +462,38 @@ export function IndicadoresView() {
             </ul>
           )}
         </div>
-      </div>
+      </section>}
 
       {/* ── Sección de Retención y Efectividad ──────────────────── */}
 
       {kpi && (
-        <>
-          <div className="indicadores-kpi-grid" role="region" aria-label="Resumen de bajas">
-            <div className="indicadores-kpi-card">
-              <span className="indicadores-kpi-label">Total Bajas</span>
-              <span className="indicadores-kpi-value text-error">
-                {kpi.totalBajasMes}
-              </span>
-              <span className="indicadores-kpi-sub">Personal inactivo</span>
-            </div>
-            <div className="indicadores-kpi-card">
-              <span className="indicadores-kpi-label">Promedio Permanencia</span>
-              <span className="indicadores-kpi-value">
-                {kpi.promedioPermanenciaGlobal}
-              </span>
-              <span className="indicadores-kpi-sub">Días antes de baja</span>
-            </div>
+        <section className="indicadores-section" aria-labelledby="indicadores-retention-title">
+          <div className="indicadores-section__heading">
+            <UserRoundMinus aria-hidden="true" />
+            <h2 id="indicadores-retention-title">Retención y efectividad</h2>
+          </div>
+          <div className="indicadores-kpi-grid indicadores-kpi-grid--compact">
+            <IndicatorCard
+              icon={<UserRoundMinus />}
+              label="Total bajas"
+              value={kpi.totalBajasMes}
+              valueClassName="text-error"
+              description="Personal inactivo"
+            />
+            <IndicatorCard
+              icon={<Timer />}
+              label="Promedio permanencia"
+              value={kpi.promedioPermanenciaGlobal}
+              description="Días antes de baja"
+            />
           </div>
 
           <div className="indicadores-card indicadores-table-card">
             <div className="indicadores-table-header">
-              <h3 className="type-heading-sm text-ink m-0">Desempeño por Reclutador</h3>
+              <div className="indicadores-section__heading">
+                <Target aria-hidden="true" />
+                <h3>Desempeño por reclutador</h3>
+              </div>
             </div>
             <div className="table-responsive indicadores-desktop-only">
               <table className="indicadores-table" aria-label="Efectividad por reclutador">
@@ -425,7 +508,7 @@ export function IndicadoresView() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recruiters.map((recruiter, index) => {
+                  {recruiters.map((recruiter) => {
                     const stats = kpi.recruiterStats[recruiter];
                     if (!stats) return null;
                     const retention = stats.totalIngresos > 0 
@@ -438,10 +521,7 @@ export function IndicadoresView() {
                     return (
                       <tr key={`retention-${recruiter}`}>
                         <th scope="row" className="indicadores-table-row-header">
-                          <span
-                            className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
-                            aria-hidden="true"
-                          />
+                          <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                           {recruiter}
                         </th>
                         <td className="text-right font-medium">{stats.totalIngresos}</td>
@@ -462,7 +542,7 @@ export function IndicadoresView() {
             {/* ── Mobile View for Retention ── */}
             <div className="indicadores-mobile-only">
               <ul className="indicadores-mobile-list" aria-label="Retención por reclutador">
-                {recruiters.map((recruiter, index) => {
+                {recruiters.map((recruiter) => {
                   const stats = kpi.recruiterStats[recruiter];
                   if (!stats) return null;
                   const retention = stats.totalIngresos > 0 
@@ -474,12 +554,9 @@ export function IndicadoresView() {
 
                   return (
                     <li key={`retention-mob-${recruiter}`}>
-                      <div className="indicadores-mobile-list__btn indicadores-mobile-list__row">
+                      <div className="indicadores-mobile-list__row">
                         <div className="indicadores-mobile-list__info">
-                          <span
-                            className={`indicadores-recruiter-dot ${getRecruiterTone(index)}`}
-                            aria-hidden="true"
-                          />
+                          <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                           <div className="indicadores-mobile-list__text">
                             <span className="type-body-sm font-medium text-ink">{recruiter}</span>
                             <span className="type-caption-sm text-muted">Ingresos: {stats.totalIngresos} &nbsp;|&nbsp; Bajas: <span className="text-error font-medium">{stats.totalBajas}</span></span>
@@ -504,7 +581,10 @@ export function IndicadoresView() {
           {kpi.bajasList.length > 0 && (
             <div className="indicadores-card indicadores-table-card indicadores-bajas-section">
               <div className="indicadores-table-header">
-                <h3 className="type-heading-sm text-ink m-0">Detalle de Personal Inactivo</h3>
+                <div className="indicadores-section__heading">
+                  <UserRoundMinus aria-hidden="true" />
+                  <h3>Detalle de personal inactivo</h3>
+                </div>
               </div>
               <div className="indicadores-bajas-grid">
                 {recruiters.map(recruiter => {
@@ -559,7 +639,7 @@ export function IndicadoresView() {
               </div>
             </div>
           )}
-        </>
+        </section>
       )}
       </section>
     </BoneyardSkeleton>

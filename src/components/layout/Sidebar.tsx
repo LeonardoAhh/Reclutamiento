@@ -158,6 +158,7 @@ export function Sidebar({
             collapsed={collapsed && !mobileMenuOpen}
             mobile={Boolean(mobileMenuOpen)}
             isAdmin={profile?.role === "admin"}
+            isRecruiter={profile?.role === "reclutador"}
             version={version}
             signingOut={signingOut}
             onSignOut={handleSignOut}

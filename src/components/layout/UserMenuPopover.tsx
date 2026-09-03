@@ -6,12 +6,13 @@ import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
+import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
 import { ChevronsUpDown, DoorOpen, LoaderCircle } from "lucide";
-import { Activity, CalendarClock, ShieldAlert, UserRoundPen, BusFront } from "lucide-react";
+import { Activity, BusFront, CalendarClock, Medal, ShieldAlert, UserRoundPen } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./UserMenuPopover.css";
 
-type UserMenuModal = "avatar" | "maintenance" | "activity" | null;
+type UserMenuModal = "avatar" | "recognition" | "maintenance" | "activity" | null;
 
 interface UserMenuPopoverProps {
   username: string;
@@ -20,6 +21,7 @@ interface UserMenuPopoverProps {
   collapsed: boolean;
   mobile: boolean;
   isAdmin: boolean;
+  isRecruiter: boolean;
   version: string | null;
   signingOut: boolean;
   onSignOut: () => void;
@@ -32,6 +34,7 @@ export function UserMenuPopover({
   collapsed,
   mobile,
   isAdmin,
+  isRecruiter,
   version,
   signingOut,
   onSignOut,
@@ -115,6 +118,17 @@ export function UserMenuPopover({
             </button>
 
             <ThemeToggle className="user-menu-popover__item" />
+
+            {isRecruiter && (
+              <button
+                type="button"
+                className="user-menu-popover__item"
+                onClick={() => handleOpenModal("recognition")}
+              >
+                <Medal className="user-menu-popover__icon" aria-hidden="true" />
+                <span>Reconocimientos</span>
+              </button>
+            )}
             
             <Link
               to="/incidencias-transporte"
@@ -196,6 +210,9 @@ export function UserMenuPopover({
         isOpen={activeModal === "avatar"}
         onClose={handleCloseModal}
       />
+      {activeModal === "recognition" && (
+        <RecognitionPreferencesModal isOpen onClose={handleCloseModal} />
+      )}
       {activeModal === "maintenance" && (
         <MaintenanceModeModal isOpen onClose={handleCloseModal} />
       )}
