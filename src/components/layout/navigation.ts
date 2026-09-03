@@ -25,6 +25,8 @@ export type NavGroup = {
   items: NavItem[];
 };
 
+export const ACTIVIDADES_PATH = "/actividades";
+
 export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Principal",
@@ -55,7 +57,7 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Administración",
     items: [
-      { to: "/actividades", label: "Actividades", icon: ListTodo },
+      { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: CONFIGURACION_PATH, label: "Configuración", icon: Settings2 },
       { to: "/perfil-general", label: "Perfil General", icon: ClipboardPenLine },
     ],

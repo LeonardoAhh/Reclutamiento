@@ -1,7 +1,7 @@
 {
   "breakpoints": {
     "375": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 343,
       "width": 343,
       "height": 781,
@@ -174,7 +174,7 @@
       ]
     },
     "600": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 568,
       "width": 568,
       "height": 735,
@@ -347,7 +347,7 @@
       ]
     },
     "768": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 720,
       "width": 720,
       "height": 518,
@@ -520,7 +520,7 @@
       ]
     },
     "1080": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 756,
       "width": 756,
       "height": 442,
@@ -693,7 +693,7 @@
       ]
     },
     "1280": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 956,
       "width": 956,
       "height": 442,
@@ -866,7 +866,7 @@
       ]
     },
     "1440": {
-      "name": "configuracion-busqueda",
+      "name": "analisis-page",
       "viewportWidth": 1084,
       "width": 1084,
       "height": 442,
@@ -1039,5 +1039,5 @@
       ]
     }
   },
-  "_hash": "52df71d9095211e98714a349a39e88f7"
+  "_hash": "b8b999f309aa02fd48c1efa8a2a191fb"
 }

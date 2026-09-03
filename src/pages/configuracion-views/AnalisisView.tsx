@@ -36,7 +36,7 @@ import {
   hasExcesoFaltas,
   type EmployeeSearchResult,
   type SearchViewMode,
-} from './busqueda-helpers';
+} from './analisis-helpers';
 import '../Configuracion.css';
 
 type SearchStatusFilter = 'all' | 'active' | 'inactive';
@@ -44,7 +44,7 @@ type RiskFilter = 'all' | 'nuevos_ingresos' | 'riesgo_baja';
 
 const ALL_FILTER_VALUE = 'all';
 
-export function BusquedaView() {
+export function AnalisisView() {
   const { loading: authLoading } = useAuth();
   const {
     employees,
@@ -257,11 +257,11 @@ export function BusquedaView() {
 
   return (
     <BoneyardSkeleton
-      name="configuracion-busqueda"
+      name="analisis-page"
       loading={authLoading || employeesLoading || bajasLoading}
       loadingLabel="Cargando colaboradores…"
     >
-      <section className="busqueda-view config-page" aria-labelledby="busqueda-title">
+      <section className="analisis-view config-page" aria-label="Análisis de plantilla">
       {employeesError && (
         <p className="config-search-error type-body-sm mt-sm" role="alert">
           No fue posible actualizar la lista de colaboradores. Se muestran los datos
@@ -269,7 +269,7 @@ export function BusquedaView() {
         </p>
       )}
 
-      <div className="busqueda-overview">
+      <div className="analisis-overview">
         <section
           className="config-page__toolbar"
           role="search"
@@ -293,38 +293,38 @@ export function BusquedaView() {
           </div>
         </section>
 
-        <section className="busqueda-hero" aria-label="Indicadores de riesgo">
+        <section className="analisis-hero" aria-label="Indicadores de riesgo">
           <button
             type="button"
-            className="busqueda-hero__card"
+            className="analisis-hero__card"
             onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
             aria-pressed={riskFilter === 'nuevos_ingresos'}
             aria-controls="config-search-results"
           >
-            <span className="busqueda-hero__card-header">
-              <span className="busqueda-hero__card-title">Nuevos Ingresos</span>
-              <span className="busqueda-hero__card-count">{metrics.nuevosIngresos}</span>
-              <CircleCheckBig className="busqueda-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
+            <span className="analisis-hero__card-header">
+              <span className="analisis-hero__card-title">Nuevos Ingresos</span>
+              <span className="analisis-hero__card-count">{metrics.nuevosIngresos}</span>
+              <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
             </span>
           </button>
 
           <button
             type="button"
-            className="busqueda-hero__card busqueda-hero__card--risk"
+            className="analisis-hero__card analisis-hero__card--risk"
             onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
             aria-pressed={riskFilter === 'riesgo_baja'}
             aria-controls="config-search-results"
           >
-            <span className="busqueda-hero__card-header">
-              <span className="busqueda-hero__card-title">Riesgo No Renovación</span>
+            <span className="analisis-hero__card-header">
+              <span className="analisis-hero__card-title">Riesgo No Renovación</span>
               <span
-                className="busqueda-hero__card-count"
+                className="analisis-hero__card-count"
                 aria-busy={reportsLoading}
                 aria-live="polite"
               >
                 {metrics.riesgoBaja}
               </span>
-              <CircleCheckBig className="busqueda-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
+              <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
             </span>
           </button>
         </section>
@@ -449,7 +449,7 @@ export function BusquedaView() {
         </section>
 
         {searchQuery.length === 0 && !hasActiveFilters ? (
-          <div className="animated-empty-state busqueda-view__empty">
+          <div className="animated-empty-state analisis-view__empty">
             <div className="animated-empty-state__icon">
               <MorphingIcon icon={SearchData} aria-hidden="true" />
             </div>

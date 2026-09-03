@@ -1552,7 +1552,7 @@
 
 /* ── Búsqueda View ────────────────────────────────────────────── */
 
-.busqueda-overview {
+.analisis-overview {
   display: grid;
   grid-template-columns: repeat(
     auto-fit,
@@ -1564,11 +1564,11 @@
   min-width: 0;
 }
 
-.busqueda-overview .config-page__toolbar {
+.analisis-overview .config-page__toolbar {
   width: min(100%, var(--feature-result-card-min));
 }
 
-.busqueda-hero {
+.analisis-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-sm);
@@ -1576,12 +1576,12 @@
 }
 
 @media (min-width: 640px) {
-  .busqueda-hero {
+  .analisis-hero {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.busqueda-hero__card {
+.analisis-hero__card {
   display: flex;
   align-items: center;
   min-width: 0;
@@ -1598,27 +1598,27 @@
     background var(--transition-fast);
 }
 
-.busqueda-hero__card[aria-pressed="false"]:hover {
+.analisis-hero__card[aria-pressed="false"]:hover {
   border-color: var(--color-hairline-strong);
   background: var(--color-surface-soft);
 }
 
-.busqueda-hero__card:focus-visible {
+.analisis-hero__card:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-primary);
   outline-offset: var(--focus-ring-offset);
 }
 
-.busqueda-hero__card[aria-pressed="true"] {
+.analisis-hero__card[aria-pressed="true"] {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
 
-.busqueda-hero__card--risk[aria-pressed="false"] .busqueda-hero__card-count {
+.analisis-hero__card--risk[aria-pressed="false"] .analisis-hero__card-count {
   color: var(--color-warning-text);
 }
 
-.busqueda-hero__card-header {
+.analisis-hero__card-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
@@ -1627,7 +1627,7 @@
   min-width: 0;
 }
 
-.busqueda-hero__card-title {
+.analisis-hero__card-title {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -1636,7 +1636,7 @@
   overflow-wrap: anywhere;
 }
 
-.busqueda-hero__card-count {
+.analisis-hero__card-count {
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
@@ -1645,21 +1645,21 @@
   font-variant-numeric: tabular-nums;
 }
 
-.busqueda-hero__card-check {
+.analisis-hero__card-check {
   visibility: hidden;
 }
 
-.busqueda-hero__card[aria-pressed="true"] .busqueda-hero__card-check {
+.analisis-hero__card[aria-pressed="true"] .analisis-hero__card-check {
   visibility: visible;
 }
 
 @media (min-width: 640px) {
-  .busqueda-hero__card {
+  .analisis-hero__card {
     padding-block: var(--spacing-sm);
   }
 }
 
-.busqueda-hero__card-count--loading {
+.analisis-hero__card-count--loading {
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
   border-radius: var(--rounded-sm);
@@ -1673,39 +1673,39 @@
   100% { opacity: 0.6; }
 }
 
-.busqueda-hero__card-desc {
+.analisis-hero__card-desc {
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   color: var(--color-muted);
   margin: 0;
 }
 
-.busqueda-view {
+.analisis-view {
   gap: var(--spacing-lg);
 }
 
-.busqueda-view .config-results-controls {
+.analisis-view .config-results-controls {
   width: 100%;
 }
 
-.busqueda-view > .config-page__header-container {
+.analisis-view > .config-page__header-container {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
 }
 
-.busqueda-view__empty {
+.analisis-view__empty {
   min-height: var(--config-panel-min-height);
   padding-inline: var(--spacing-lg);
 }
 
-.busqueda-view__empty .animated-empty-state__subtitle {
+.analisis-view__empty .animated-empty-state__subtitle {
   max-width: var(--feature-result-card-min);
   margin: 0;
 }
 
-.busqueda-view .config-initial-state,
-.busqueda-view .config-empty {
+.analisis-view .config-initial-state,
+.analisis-view .config-empty {
   padding-block: var(--spacing-2xl);
   margin-top: 0;
 }
@@ -1723,8 +1723,8 @@
 }
 
 @media (min-width: 768px) {
-  .busqueda-view .config-initial-state,
-  .busqueda-view .config-empty {
+  .analisis-view .config-initial-state,
+  .analisis-view .config-empty {
     padding-block: var(--spacing-section);
   }
 }

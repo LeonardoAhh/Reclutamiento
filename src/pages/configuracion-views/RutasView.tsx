@@ -1,14 +1,14 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import {
-  ArrowRightLeft,
+  ArrowDownRight,
+  ArrowLeftRight,
+  ArrowUpRight,
   BusFront,
   CalendarRange,
   ChevronLeft,
   Gauge,
   Minus,
   Route,
-  TrendingDown,
-  TrendingUp,
   UserRoundSearch,
 } from "lucide-react";
 // NOTE: MorphingIcon espera IconInput de 'morphicons', compatible solo con
@@ -142,13 +142,13 @@ function ShiftBars({
 
         let iconNode;
         if (added.length > 0 && removed.length > 0) {
-          iconNode = netChange > 0 ? <TrendingUp aria-hidden="true" /> :
-                     netChange < 0 ? <TrendingDown aria-hidden="true" /> :
-                     <ArrowRightLeft aria-hidden="true" />;
+          iconNode = netChange > 0 ? <ArrowUpRight aria-hidden="true" /> :
+                     netChange < 0 ? <ArrowDownRight aria-hidden="true" /> :
+                     <ArrowLeftRight aria-hidden="true" />;
         } else if (added.length > 0) {
-          iconNode = <TrendingUp aria-hidden="true" />;
+          iconNode = <ArrowUpRight aria-hidden="true" />;
         } else if (removed.length > 0) {
-          iconNode = <TrendingDown aria-hidden="true" />;
+          iconNode = <ArrowDownRight aria-hidden="true" />;
         } else {
           iconNode = <Minus aria-hidden="true" />;
         }
@@ -159,7 +159,7 @@ function ShiftBars({
               {added.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--success">
-                    <TrendingUp aria-hidden="true" /> Altas ({added.length}):
+                    <ArrowUpRight aria-hidden="true" /> Altas ({added.length}):
                   </strong>
                   <ul className="trend-tooltip__list">
                     {added.map((e) => (
@@ -173,7 +173,7 @@ function ShiftBars({
               {removed.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--danger">
-                    <TrendingDown aria-hidden="true" /> Bajas ({removed.length}):
+                    <ArrowDownRight aria-hidden="true" /> Bajas ({removed.length}):
                   </strong>
                   <ul className="trend-tooltip__list">
                     {removed.map((e) => (

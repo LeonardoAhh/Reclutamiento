@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { NAV_ITEMS } from './navigation';
 import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
+import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 
 const STORAGE_KEY = 'sidebar-collapsed';
 
@@ -45,9 +46,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       return location.pathname.startsWith(item.to);
     });
 
+    const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
     const pageTitle = location.pathname === EMPLEADOS_PATH
       ? 'Empleados'
-      : currentNavItem?.label ?? 'App';
+      : currentNavItem?.label ?? feature?.label ?? 'App';
     document.title = pageTitle;
   }, [location.pathname]);
 

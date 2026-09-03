@@ -329,6 +329,11 @@
     --container-compact-max-inline-size
   );
   --feature-navigation-rail-inline-size: 16.25rem;
+  /* Ancho útil de superficies flotantes abiertas dentro del rail móvil. */
+  --feature-navigation-popover-inline-size: calc(
+    var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) -
+      var(--design-spacing-md)
+  );
   --feature-navigation-rail-collapsed-inline-size: calc(
     var(--touch-target-min) + var(--design-spacing-md) + var(--design-spacing-md)
   );
@@ -354,8 +359,6 @@
   --feature-chat-composer-max-block-size: 10rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
-  /* Ancho estable del panel que agrupa las acciones de la cuenta. */
-  --feature-user-menu-inline-size: var(--menu-min-inline-size);
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
   --modal-inline-size-sm: 30rem;

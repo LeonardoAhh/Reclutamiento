@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { Search } from 'lucide-react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
-import { normalizeSearchText } from './busqueda-helpers';
+import { normalizeSearchText } from './analisis-helpers';
 import { SearchField } from '@/components/ui/SearchField';
 import { TabuladorAreaSection, type PuestoTabulador } from './components/TabuladorAreaSection';
 import '../Configuracion.css';

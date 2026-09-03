@@ -12,10 +12,11 @@ import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
 
-import { NAV_GROUPS } from "./navigation";
+import { ACTIVIDADES_PATH, NAV_GROUPS } from "./navigation";
 import { UserMenuPopover } from "./UserMenuPopover";
 import { PlantillaNavItem } from "./PlantillaNavItem";
 import { ConfiguracionNavItem } from "./ConfiguracionNavItem";
+import { ActividadesNavItem } from "./ActividadesNavItem";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 
@@ -115,8 +116,16 @@ export function Sidebar({
             <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
               {group.items.map((item) => {
                 const { to, label, icon: Icon, end } = item;
-                if (to === PLANTILLA_PATH || to === CONFIGURACION_PATH) {
-                  const SectionNavItem = to === PLANTILLA_PATH ? PlantillaNavItem : ConfiguracionNavItem;
+                if (
+                  to === PLANTILLA_PATH ||
+                  to === CONFIGURACION_PATH ||
+                  to === ACTIVIDADES_PATH
+                ) {
+                  const SectionNavItem = to === PLANTILLA_PATH
+                    ? PlantillaNavItem
+                    : to === CONFIGURACION_PATH
+                      ? ConfiguracionNavItem
+                      : ActividadesNavItem;
                   return (
                     <li key={to}>
                       <SectionNavItem

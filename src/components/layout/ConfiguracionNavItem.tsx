@@ -4,10 +4,16 @@ import {
   CONFIGURACION_PATH,
   FEATURE_GROUPS,
   INCIDENCIAS_PATH,
+  type FeatureId,
   getConfiguracionHref,
   getConfiguracionTab,
 } from '@/lib/configuracionNavigation';
 import { SidebarSectionNav, type SidebarSectionNavProps } from './SidebarSectionNav';
+
+const CONFIGURACION_NAV_FEATURES: ReadonlySet<FeatureId> = new Set([
+  'indicadores',
+  'tabulador',
+]);
 
 export function ConfiguracionNavItem(props: Pick<SidebarSectionNavProps, 'item' | 'collapsed' | 'mobile' | 'onNavigate'>) {
   const location = useLocation();
@@ -15,24 +21,25 @@ export function ConfiguracionNavItem(props: Pick<SidebarSectionNavProps, 'item' 
   const isConfiguracionPath = location.pathname === CONFIGURACION_PATH ||
     location.pathname.startsWith(`${CONFIGURACION_PATH}/`);
   const isIncidenciasPath = location.pathname === INCIDENCIAS_PATH;
-  const isActive = isConfiguracionPath || isIncidenciasPath;
+  const isActive = isIncidenciasPath ||
+    (isConfiguracionPath && (CONFIGURACION_NAV_FEATURES.has(tab) || tab === 'rutas'));
 
   return (
     <SidebarSectionNav
       {...props}
-      href={getConfiguracionHref('busqueda')}
       isActive={isActive}
-      isCurrent={isConfiguracionPath && tab === 'busqueda'}
       groups={[
         ...FEATURE_GROUPS.map((group) => ({
           id: group.title ?? 'principal',
           title: group.title,
-          items: group.items.map(({ id, label, icon }) => ({
-            id, label, icon,
-            href: getConfiguracionHref(id),
-            isCurrent: isConfiguracionPath && tab === id,
-          })),
-        })),
+          items: group.items
+            .filter(({ id }) => CONFIGURACION_NAV_FEATURES.has(id))
+            .map(({ id, label, icon }) => ({
+              id, label, icon,
+              href: getConfiguracionHref(id),
+              isCurrent: isConfiguracionPath && tab === id,
+            })),
+        })).filter(({ items }) => items.length > 0),
         {
           id: 'operacion',
           title: 'Operación',

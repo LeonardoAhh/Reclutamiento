@@ -11,9 +11,7 @@ export interface SidebarSectionNavProps {
   collapsed: boolean;
   mobile: boolean;
   onNavigate?: () => void;
-  href: string;
   isActive: boolean;
-  isCurrent: boolean;
   groups: Array<{
     id: string;
     title?: string;
@@ -29,7 +27,7 @@ export interface SidebarSectionNavProps {
 }
 
 export function SidebarSectionNav({
-  item, collapsed, mobile, onNavigate, href, isActive, isCurrent, groups,
+  item, collapsed, mobile, onNavigate, isActive, groups,
 }: SidebarSectionNavProps) {
   const [open, setOpen] = useState(false);
   const mobileNavigationRef = useRef(false);
@@ -50,30 +48,23 @@ export function SidebarSectionNav({
 
   return (
     <div className="sidebar-section">
-      {!collapsed && (
-        <Link
-          to={href}
-          className={`sidebar__item sidebar-section__link${isActive ? ' sidebar__item--active' : ''}`}
-          aria-current={isActive && isCurrent ? 'page' : undefined}
-          onClick={handleNavigate}
-          data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
-        >
-          <Icon className="sidebar__item-icon sidebar-section__entry-icon" aria-hidden="true" />
-          <span className="sidebar__item-label">{item.label}</span>
-        </Link>
-      )}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
             type="button"
-            className={`sidebar-section__trigger${collapsed ? ' sidebar-section__trigger--collapsed' : ''}${isActive ? ' sidebar-section__trigger--active' : ''}`}
+            className={`sidebar__item sidebar-section__trigger${isActive ? ' sidebar__item--active' : ''}`}
             aria-label={`Vistas de ${item.label}`}
             aria-expanded={open}
             aria-controls={contentId}
+            data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
           >
-            {collapsed
-              ? <Icon className="sidebar-section__entry-icon" aria-hidden="true" />
-              : <Ellipsis className="sidebar-section__options-icon" aria-hidden="true" />}
+            <Icon className="sidebar__item-icon sidebar-section__entry-icon" aria-hidden="true" />
+            {!collapsed && (
+              <>
+                <span className="sidebar__item-label">{item.label}</span>
+                <Ellipsis className="sidebar-section__options-icon" aria-hidden="true" />
+              </>
+            )}
           </button>
         </PopoverTrigger>
         <PopoverContent

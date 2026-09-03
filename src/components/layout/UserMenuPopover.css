@@ -1,7 +1,7 @@
 .user-menu-popover {
   width: min(
-    var(--feature-user-menu-inline-size),
-    calc(100vw - var(--spacing-lg) - var(--spacing-lg))
+    var(--feature-navigation-popover-inline-size),
+    var(--radix-popover-content-available-width)
   );
   max-width: calc(100vw - var(--spacing-lg) - var(--spacing-lg));
   max-height: calc(

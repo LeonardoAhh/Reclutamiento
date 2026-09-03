@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { FEATURES, getConfiguracionTab, type FeatureId } from "@/lib/configuracionNavigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { BusquedaView } from "./configuracion-views/BusquedaView";
+import { AnalisisView } from "./configuracion-views/AnalisisView";
 import { IndicadoresView } from "./configuracion-views/IndicadoresView";
 import { RutasView } from "./configuracion-views/RutasView";
 import { TabuladorView } from "./configuracion-views/TabuladorView";
@@ -20,9 +20,9 @@ const EMPLOYEE_DATA: readonly SupabaseDataResource[] = ["employees"];
 const SPEECH_DATA: readonly SupabaseDataResource[] = ["speechTemplates"];
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
-  busqueda: (
+  analisis: (
     <SupabaseDataProvider resources={EMPLOYEE_DATA}>
-      <BusquedaView />
+      <AnalisisView />
     </SupabaseDataProvider>
   ),
   indicadores: <IndicadoresView />,

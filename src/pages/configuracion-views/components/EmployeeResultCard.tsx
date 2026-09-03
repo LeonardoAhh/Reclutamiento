@@ -11,7 +11,7 @@ import {
   getFaltaDates,
   type EmployeeSearchResult,
   type SearchViewMode,
-} from '../busqueda-helpers';
+} from '../analisis-helpers';
 
 interface EmployeeResultCardProps {
   employee: EmployeeSearchResult;

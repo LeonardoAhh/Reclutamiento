@@ -6,7 +6,7 @@ import {
   Files,
   MessagesSquare,
   Route,
-  ScanSearch,
+  ChartSpline,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -15,12 +15,21 @@ export const INCIDENCIAS_PATH = '/incidencias';
 export const HORARIOS_PATH = '/horarios/index.html';
 
 export type FeatureId =
-  | "busqueda"
+  | "analisis"
   | "indicadores"
   | "rutas"
   | "tabulador"
   | "speech"
   | "formatos";
+
+const FEATURE_PATHS: Record<FeatureId, string> = {
+  analisis: '/analisis',
+  formatos: '/formatos',
+  indicadores: `${CONFIGURACION_PATH}/indicadores`,
+  rutas: `${CONFIGURACION_PATH}/rutas`,
+  speech: '/speech',
+  tabulador: `${CONFIGURACION_PATH}/tabulador`,
+};
 
 interface FeatureItem {
   id: FeatureId;
@@ -37,7 +46,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   {
     title: "Principal",
     items: [
-      { id: "busqueda", label: "Búsqueda", icon: ScanSearch },
+      { id: "analisis", label: "Análisis", icon: ChartSpline },
       { id: "formatos", label: "Formatos", icon: Files },
       { id: "rutas", label: "Rutas", icon: Route },
       { id: "speech", label: "Speech WA", icon: MessagesSquare },
@@ -54,33 +63,35 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
 
 export const CONFIGURACION_OPERATION_LINKS = [
   {
-    id: 'incidencias',
-    label: 'Incidencias',
-    icon: BusFront,
-    href: INCIDENCIAS_PATH,
-  },
-  {
     id: 'horarios',
     label: 'Horarios',
     icon: CalendarClock,
     href: HORARIOS_PATH,
     external: true,
   },
+  {
+    id: 'incidencias',
+    label: 'Incidencias',
+    icon: BusFront,
+    href: INCIDENCIAS_PATH,
+  },
+  {
+    id: 'rutas',
+    label: 'Rutas',
+    icon: Route,
+    href: `${CONFIGURACION_PATH}/rutas`,
+  },
 ] as const;
 
 export const FEATURES: FeatureItem[] = FEATURE_GROUPS.flatMap(group => group.items);
 export const CONFIGURACION_ROUTES = FEATURES.map(
-  ({ id }) => `${CONFIGURACION_PATH}/${id}`,
+  ({ id }) => FEATURE_PATHS[id],
 );
 
 export function getConfiguracionTab(pathname: string): FeatureId {
-  const pathTab = pathname.startsWith(`${CONFIGURACION_PATH}/`)
-    ? pathname.slice(CONFIGURACION_PATH.length + 1).split('/')[0]
-    : null;
-  const matchedPathTab = FEATURES.find(({ id }) => id === pathTab)?.id;
-  return matchedPathTab ?? 'busqueda';
+  return FEATURES.find(({ id }) => FEATURE_PATHS[id] === pathname)?.id ?? 'analisis';
 }
 
 export function getConfiguracionHref(tab: FeatureId): string {
-  return `${CONFIGURACION_PATH}/${tab}`;
+  return FEATURE_PATHS[tab];
 }

@@ -6,7 +6,7 @@ import { configureBoneyard } from 'boneyard-js/react'
 import _candidatos_page from './candidatos-page.bones.json'
 import _bajas_page from './bajas-page.bones.json'
 import _reportes_page from './reportes-page.bones.json'
-import _configuracion_busqueda from './configuracion-busqueda.bones.json'
+import _analisis_page from './analisis-page.bones.json'
 import _configuracion_indicadores from './configuracion-indicadores.bones.json'
 import _configuracion_rutas from './configuracion-rutas.bones.json'
 import _configuracion_incidencias from './configuracion-incidencias.bones.json'
@@ -25,7 +25,7 @@ registerBones({
   "candidatos-page": _candidatos_page,
   "bajas-page": _bajas_page,
   "reportes-page": _reportes_page,
-  "configuracion-busqueda": _configuracion_busqueda,
+  "analisis-page": _analisis_page,
   "configuracion-indicadores": _configuracion_indicadores,
   "configuracion-rutas": _configuracion_rutas,
   "configuracion-incidencias": _configuracion_incidencias,

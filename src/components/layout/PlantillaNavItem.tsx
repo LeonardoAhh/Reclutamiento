@@ -1,31 +1,53 @@
 import { useLocation } from 'react-router-dom';
-import { ContactRound, Network } from 'lucide-react';
+import { ChartSpline, ContactRound, Network } from 'lucide-react';
+import { getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { getPlantillaHref, getPlantillaView, isPlantillaPath } from '@/lib/plantillaNavigation';
 import type { PlantillaView } from '@/lib/plantillaNavigation';
 import { SidebarSectionNav, type SidebarSectionNavProps } from './SidebarSectionNav';
 
-const VIEWS = [
-  { view: 'general', label: 'Departamentos', icon: Network },
-  { view: 'empleados', label: 'Empleados', icon: ContactRound },
-] satisfies Array<{ view: PlantillaView; label: string; icon: typeof Network }>;
+const LINKS = [
+  {
+    id: 'analisis',
+    label: 'Análisis',
+    icon: ChartSpline,
+    href: getConfiguracionHref('analisis'),
+  },
+  {
+    id: 'general',
+    label: 'Departamentos',
+    icon: Network,
+    href: getPlantillaHref('general'),
+  },
+  {
+    id: 'empleados',
+    label: 'Empleados',
+    icon: ContactRound,
+    href: getPlantillaHref('empleados'),
+  },
+] satisfies Array<{
+  id: PlantillaView | 'analisis';
+  label: string;
+  icon: typeof Network;
+  href: string;
+}>;
 
 export function PlantillaNavItem(props: Pick<SidebarSectionNavProps, 'item' | 'collapsed' | 'mobile' | 'onNavigate'>) {
   const location = useLocation();
   const view = getPlantillaView(location.pathname);
-  const isActive = isPlantillaPath(location.pathname);
+  const isActive = isPlantillaPath(location.pathname) ||
+    location.pathname === getConfiguracionHref('analisis');
 
   return (
     <SidebarSectionNav
       {...props}
-      href={getPlantillaHref('general')}
       isActive={isActive}
-      isCurrent={view === 'general'}
       groups={[{
         id: 'plantilla',
-        items: VIEWS.map(({ view: targetView, label, icon }) => ({
-          id: targetView, label, icon,
-          href: getPlantillaHref(targetView),
-          isCurrent: view === targetView,
+        items: LINKS.map(({ id, label, icon, href }) => ({
+          id, label, icon, href,
+          isCurrent: id === 'analisis'
+            ? location.pathname === href
+            : isPlantillaPath(location.pathname) && view === id,
         })),
       }]}
     />
