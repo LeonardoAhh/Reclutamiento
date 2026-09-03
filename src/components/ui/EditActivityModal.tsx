@@ -61,7 +61,6 @@ export function EditActivityModal({
       onClose={onClose}
       title="Editar actividad"
       icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
-      fullscreenMobile={false}
       size="sm"
       footerActions={
         <>

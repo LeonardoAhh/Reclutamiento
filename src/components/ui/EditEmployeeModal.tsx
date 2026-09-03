@@ -136,16 +136,12 @@ export function EditEmployeeModal({
     <PenLine size={20} className="color-primary" aria-hidden="true" />
   );
   const title = 'Editar Empleado';
-  const subtitle = '';
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       icon={icon}
       title={title}
-      subtitle={subtitle}
-      fullscreenMobile={false}
       className="edit-employee-modal"
       size="lg"
       footerActions={

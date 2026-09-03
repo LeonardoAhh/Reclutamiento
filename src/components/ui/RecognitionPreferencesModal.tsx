@@ -53,7 +53,6 @@ export function RecognitionPreferencesModal({
       onClose={onClose}
       className="recognition-preferences-modal"
       size="xs"
-      fullscreenMobile={false}
       icon={<Medal aria-hidden="true" />}
       title="Reconocimientos"
       footerActions={(

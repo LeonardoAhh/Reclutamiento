@@ -100,10 +100,8 @@ export function BajaDetailSheet({
       onClose={onClose}
       icon={<ClipboardList size={20} aria-hidden="true" />}
       title={baja.nombre}
-      subtitle={`#${baja.num_empleado} · ${baja.puesto}`}
       className="baja-detail-sheet"
       footerActions={footerActions}
-      fullscreenMobile={true}
     >
       <div className="modal-body baja-detail-sheet__body">
         <div className="baja-detail-sheet__summary">

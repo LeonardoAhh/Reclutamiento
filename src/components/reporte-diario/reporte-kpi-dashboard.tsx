@@ -165,9 +165,7 @@ export default function ReporteKpiDashboard({
                 isOpen={isWorstAreaModalOpen}
                 onClose={() => setIsWorstAreaModalOpen(false)}
                 title={`Incidencias · ${kpis.worstArea}`}
-                subtitle={`${formatMes(currentMonth)} — ${worstAreaEmployees.length} empleados`}
                 size="sm"
-                fullscreenMobile={false}
             >
                 <div className="top-emp-modal">
                     {worstAreaEmployees.length > 0 ? (

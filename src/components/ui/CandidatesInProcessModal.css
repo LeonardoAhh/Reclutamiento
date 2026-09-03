@@ -2,9 +2,9 @@
    en estados activos del pipeline. Comparte la estética del WeeklyHiresModal
    pero sin la tabla de detalle. */
 
-.candidates-in-process-modal .modal-content {
-  width: min(560px, 96vw);
-  max-height: 90vh;
+.modal-content.candidates-in-process-modal {
+  max-width: var(--modal-inline-size-sm);
+  max-height: var(--modal-max-block-size);
 }
 
 .candidates-in-process-modal__body {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   CircleAlert,
   CircleCheckBig,
@@ -43,8 +43,7 @@ export function AnimatedSubmitButton({
   ...buttonProps
 }: AnimatedSubmitButtonProps) {
   const { trigger } = useFeedback();
-  const reduceMotion = useReducedMotion();
-  const state: SubmitState = isSubmitting ? 'loading' : isSuccess ? 'success' : isError ? 'error' : 'idle';
+  const state: SubmitState = isSuccess ? 'success' : isError ? 'error' : isSubmitting ? 'loading' : 'idle';
   const isDisabled = Boolean(disabled) || state !== 'idle';
   const stateText = state === 'loading' ? loadingText : state === 'success' ? successText : state === 'error' ? errorText : idleText;
   const stateIcon = state === 'loading'
@@ -81,11 +80,6 @@ export function AnimatedSubmitButton({
       aria-busy={state === 'loading' || undefined}
       aria-label={stateText}
       title={iconOnly ? stateText : undefined}
-      whileTap={reduceMotion || isDisabled ? undefined : { scale: 0.96 }}
-      layout={!reduceMotion}
-      transition={{
-        layout: { type: 'spring', bounce: 0, duration: 0.3 }
-      }}
     >
       {/* ── Hidden live region for screen readers ── */}
       <span className="sr-only" aria-live="polite" aria-atomic="true">
@@ -95,11 +89,11 @@ export function AnimatedSubmitButton({
       <span className="animated-submit-button__content" aria-hidden="true">
         <MorphingIcon
           icon={stateIcon}
-          size="1.25em"
+          size="var(--icon-size-sm)"
           className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
         />
-        {state === 'idle' && !iconOnly && (
-          <span className="animated-submit-button__text">{idleText}</span>
+        {!iconOnly && (
+          <span className="animated-submit-button__text">{stateText}</span>
         )}
       </span>
     </motion.button>

@@ -304,8 +304,6 @@ export function EmployeeSheet({
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
   const title = isAdd ? "Nuevo Empleado" : "Eliminar";
-  const subtitle = undefined;
-
   const deleteContent = (
     <div className="delete-flow">
       <div className="delete-warning">
@@ -409,7 +407,6 @@ export function EmployeeSheet({
         className="employee-sheet employee-modal"
         icon={icon}
         title={title}
-        subtitle={subtitle}
         size={isAdd ? "md" : "sm"}
         footerActions={actionButtons}
       >
@@ -434,12 +431,11 @@ export function EmployeeSheet({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className={`employee-sheet employee-modal modal-fullscreen-mobile${
+      className={`employee-sheet employee-modal${
         isAdd ? " modal-wizard-mobile" : ""
       }`}
       icon={icon}
       title={title}
-      subtitle={subtitle}
       footerActions={!isAdd ? actionButtons : undefined}
     >
       {isAdd ? (

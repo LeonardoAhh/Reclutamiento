@@ -176,7 +176,6 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
       title="Plantilla / Backup"
       className="pos-settings-modal modal-wizard-mobile"
       size="md"
-      fullscreenMobile={false}
     >
       <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
         <FormWizard

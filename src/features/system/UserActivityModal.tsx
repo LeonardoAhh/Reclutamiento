@@ -24,7 +24,6 @@ export function UserActivityModal({
       icon={<Activity aria-hidden="true" />}
       onClose={onClose}
       size="sm"
-      fullscreenMobile={false}
     >
       <div className="modal-body user-activity-modal__body">
         <UserActivityPanel />

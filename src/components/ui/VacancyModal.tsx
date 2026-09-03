@@ -280,12 +280,6 @@ export function VacancyModal({
       ? 'Editar vacante'
       : 'Nueva vacante';
 
-  const subtitle = isDelete
-    ? 'Acción irreversible'
-    : isEdit
-      ? 'Ciclo de vida y prioridad'
-      : 'Abrir solicitud de cobertura';
-
   const fieldsPosicion = (
     <>
       <div className="form-group">
@@ -558,8 +552,7 @@ export function VacancyModal({
         onClose={onClose}
         icon={icon}
         title={title}
-        subtitle={subtitle}
-        className="vacancy-modal modal-fullscreen-mobile modal-wizard-mobile"
+        className="vacancy-modal modal-wizard-mobile"
       >
         <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
           <FormWizard
@@ -643,9 +636,7 @@ export function VacancyModal({
       onClose={onClose}
       icon={icon}
       title={title}
-      subtitle={subtitle}
       className={`vacancy-modal${!isDelete ? ' vacancy-modal--wide' : ''}`}
-      fullscreenMobile={!isDelete}
       footerActions={footerActions}
       size={isDelete ? 'md' : 'xl'}
     >

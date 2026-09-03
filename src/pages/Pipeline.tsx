@@ -914,7 +914,6 @@ export function Pipeline() {
             onClose={() => setAccessCardTarget(null)}
             className="candidate-access-card-modal"
             size="xs"
-            fullscreenMobile={false}
             title="Pase de entrevista"
             icon={<BadgeCheck size={20} className="color-success" aria-hidden="true" />}
           >
@@ -1108,7 +1107,6 @@ export function Pipeline() {
         onClose={() => setQuickProfile(null)}
         title="Vista Previa"
         size="md"
-        fullscreenMobile={false}
         footerActions={
           <>
             {quickProfile?.status === 'contratado' && !quickProfile?.employee_num && (
@@ -1181,7 +1179,6 @@ export function Pipeline() {
         onClose={() => setMetricsModalOpen(false)}
         title="Métricas y KPIs"
         size="sm"
-        fullscreenMobile={false}
       >
         <div className="modal-body pipeline__metrics-menu">
           {/* Card resumen global */}

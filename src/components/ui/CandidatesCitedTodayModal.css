@@ -1,5 +1,5 @@
-.candidates-cited-today-modal .modal-content {
-  max-width: 640px;
+.modal-content.candidates-cited-today-modal {
+  max-width: var(--modal-inline-size-md);
 }
 
 .candidates-cited-today-modal__summary {

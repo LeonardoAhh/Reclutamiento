@@ -149,7 +149,6 @@ export function MissingPositionsModal({
       icon={<CircleAlertIcon size={20} aria-hidden="true" />}
       title="Vacantes y Procesos"
       size= "sm"
-      fullscreenMobile={false}
     >
       <div className="modal-body missing-positions-modal__body">
 

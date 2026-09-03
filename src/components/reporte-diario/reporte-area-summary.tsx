@@ -329,9 +329,7 @@ export default function ReporteAreaSummary({
                     onSelectArea(null);
                 }}
                 title={selectedArea || 'Detalle de sección'}
-                subtitle={`${detailRows.length} ausencia${detailRows.length !== 1 ? "s" : ""}`}
                 size="lg"
-                fullscreenMobile={false}
             >
                 <DetailList rows={detailRows} />
             </Modal>

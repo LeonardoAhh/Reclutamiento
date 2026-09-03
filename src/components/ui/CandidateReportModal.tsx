@@ -350,7 +350,6 @@ export function CandidateReportModal({
       icon={<UsersRound size={20} aria-hidden="true" />}
       title="Resumen de candidatos"
       size="xs"
-      fullscreenMobile={false}
       footerActions={
         <button
           type="button"

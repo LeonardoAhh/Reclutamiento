@@ -1,9 +1,9 @@
 /* PurgeEmployeesModal — danger zone para vaciar la tabla empleados.
    Pasos forzados en orden: respaldo → tipear BORRAR → confirmar. */
 
-.purge-employees-modal .modal-content {
-  width: min(560px, 96vw);
-  max-height: 92vh;
+.modal-content.purge-employees-modal {
+  max-width: var(--modal-inline-size-sm);
+  max-height: var(--modal-max-block-size);
 }
 
 .purge-employees-modal__body {

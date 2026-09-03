@@ -293,7 +293,6 @@ export default function ReporteInsights({
                         Asistente Operativo
                     </div>
                 }
-                fullscreenMobile={true}
             >
                 <div style={STYLES.modalContent}>
                     {insights.length === 0 ? (

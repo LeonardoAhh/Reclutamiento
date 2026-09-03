@@ -40,7 +40,6 @@ export function ConfirmModal({
       size="xs"
       className="modal-alert"
       hideCloseButton
-      fullscreenMobile={false}
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={onCancel} disabled={isLoading}>

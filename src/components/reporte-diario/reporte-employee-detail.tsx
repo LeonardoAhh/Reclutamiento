@@ -34,15 +34,6 @@ const STYLES = {
         lineHeight: "var(--type-caption-sm-line)",
         color: "var(--color-muted)",
     },
-    subtitle: {
-        display: "flex",
-        flexWrap: "wrap" as const,
-        gap: "var(--spacing-xs)",
-        marginTop: "var(--spacing-xs)",
-        fontSize: "var(--type-caption-sm-size)",
-        lineHeight: "var(--type-caption-sm-line)",
-        color: "var(--color-muted)",
-    },
     kpiGrid: {
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
@@ -396,22 +387,8 @@ export default function ReporteEmployeeDetail({
                     <span>{employee.nombre.toLowerCase()}</span>
                 </div>
             }
-            subtitle={
-                <div style={{ ...STYLES.subtitle, textTransform: 'capitalize' }}>
-                    {[
-                        employee.puesto,
-                        employee.departamento,
-                        employee.area !== employee.departamento ? employee.area : null,
-                        employee.turno ? `Turno ${employee.turno}` : null
-                    ]
-                        .filter(Boolean)
-                        .map(s => String(s).toLowerCase())
-                        .join(' • ')}
-                </div>
-            }
             size="lg"
             className="reporte-employee-detail-modal"
-            fullscreenMobile={true}
         >
             <div className="modal-body">
                 <div className="reporte-employee-detail__tabs" role="tablist" aria-label="Secciones del detalle de empleado">

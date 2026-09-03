@@ -249,12 +249,6 @@ export function VacancySheet({
       ? 'Editar vacante'
       : 'Nueva vacante';
 
-  const subtitle = isDelete
-    ? 'Acción irreversible'
-    : isEdit
-      ? 'Ciclo de vida y prioridad'
-      : 'Abrir solicitud de cobertura';
-
   /* ── Campos agrupados para componer ambos layouts ────────────────────
      PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
 
@@ -556,7 +550,6 @@ export function VacancySheet({
         onClose={onClose}
         icon={icon}
         title={title}
-        subtitle={subtitle}
         className={`vacancy-sheet${!isDelete ? ' vacancy-sheet--wide' : ''}`}
         footerActions={footerActions}
       >
@@ -607,8 +600,7 @@ export function VacancySheet({
       onClose={onClose}
       icon={icon}
       title={title}
-      subtitle={subtitle}
-      className={`vacancy-sheet modal-fullscreen-mobile${
+      className={`vacancy-sheet${
         !isDelete ? ' modal-wizard-mobile' : ''
       }`}
       footerActions={deleteFooterActions}

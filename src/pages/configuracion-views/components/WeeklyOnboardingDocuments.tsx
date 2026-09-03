@@ -354,7 +354,6 @@ function DocumentReviewModal({
       className="weekly-review-modal"
       footerActions={footerActions}
       size="sm"
-      fullscreenMobile={false}
     >
       <div className="modal-body weekly-review-modal__body">
         <section

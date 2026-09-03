@@ -8,12 +8,6 @@
   /* El componente Modal ya maneja el layout base */
 }
 
-.weekly-hires-modal__subtitle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
 .weekly-hires-modal__body {
   display: flex;
   flex-direction: column;

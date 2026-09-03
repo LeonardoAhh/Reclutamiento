@@ -143,7 +143,6 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       onClose={handleClose}
       title="Avatar"
       size="xs"
-      fullscreenMobile={false}
       footerActions={footerActions}
     >
         <div className="modal-body avatar-modal__body">

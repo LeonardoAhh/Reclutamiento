@@ -62,7 +62,6 @@ export function MaintenanceModeModal({
       icon={<ShieldAlert aria-hidden="true" />}
       onClose={handleClose}
       size="xs"
-      fullscreenMobile={false}
       footerActions={
         <>
           <button

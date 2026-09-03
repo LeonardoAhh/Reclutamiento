@@ -840,8 +840,7 @@ export default function ReporteDiarioContent() {
                 <div className="reporte-hero__panel-copy">
                   <h2 id="reporte-upload-title">Cargar reporte</h2>
                   <p id="reporte-upload-help">
-                    Selecciona un archivo JSON para validar y consultar la
-                    asistencia.
+                    Selecciona o arrastra un archivo valido.
                   </p>
                 </div>
               </header>

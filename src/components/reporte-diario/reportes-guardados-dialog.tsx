@@ -87,7 +87,6 @@ export default function ReportesGuardadosDialog({
         onClose={() => setIsOpen(false)}
         title="Reportes guardados"
         size="sm"
-        fullscreenMobile={false}
       >
         <div className="reporte-saved__body">
           {savedSummaries.length === 0 ? (

@@ -136,7 +136,6 @@ export function FutureHiresModal({
       title="Próximos ingresos"
       icon={<UsersRound size={20} />}
       size="md"
-      fullscreenMobile={false}
     >
       <div className="modal-body future-hires-modal">
         {futureHires.length > 0 ? (

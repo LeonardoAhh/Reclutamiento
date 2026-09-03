@@ -48,7 +48,6 @@ export function CreateVacancyModal({
       title="Asignar Vacante"
       icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
-      fullscreenMobile={false}
       footerActions={
         <>
           <button

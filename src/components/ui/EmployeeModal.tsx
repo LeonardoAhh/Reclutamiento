@@ -646,8 +646,6 @@ export function EmployeeModal({
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
   const title = isAdd ? "Nuevo Empleado" : "Eliminar";
-  const subtitle = undefined;
-
   const deleteContent = (
     <div className="employee-modal__delete">
       <div className="delete-warning">
@@ -802,8 +800,6 @@ export function EmployeeModal({
         className="employee-modal modal-wizard-mobile"
         icon={icon}
         title={title}
-        subtitle={subtitle}
-        fullscreenMobile={false}
       >
         <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
           <FormWizard
@@ -863,9 +859,7 @@ export function EmployeeModal({
       className="employee-modal"
       icon={icon}
       title={title}
-      subtitle={subtitle}
       size={isAdd ? "lg" : "sm"}
-      fullscreenMobile={false}
       footerActions={actionButtons}
     >
       <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>

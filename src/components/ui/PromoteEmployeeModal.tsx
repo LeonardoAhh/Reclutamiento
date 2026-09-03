@@ -268,7 +268,6 @@ export function PromoteEmployeeModal({
         />
       }
       title="Promover empleado"
-      subtitle={`#${employee.num_empleado} · ${employee.nombre}`}
       footerActions={footerActions}
     >
       <form

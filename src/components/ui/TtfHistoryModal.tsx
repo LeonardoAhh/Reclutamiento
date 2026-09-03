@@ -96,7 +96,6 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
       className="ttf-history-modal"
       labelledById="ttf-history-title"
       size="md"
-      fullscreenMobile={false}
     >
       <div className="modal-body ttf-history-modal__body">
         <div className="ttf-history-modal__content">

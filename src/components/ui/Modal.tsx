@@ -1,13 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
-import { CircleCheckBig, X, ArrowLeft } from "lucide-react";
-import { EASE_OUT } from "@/lib/motion";
+import { ArrowLeft, X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
   title: React.ReactNode;
-  subtitle?: React.ReactNode;
   icon?: React.ReactNode;
   onClose: () => void;
   onBack?: () => void;
@@ -17,10 +14,32 @@ interface ModalProps {
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
-  /** Si es true, el modal será fullscreen en móvil. Por defecto true, excepto para confirmaciones pequeñas. */
-  fullscreenMobile?: boolean;
   /** Oculta el botón X de cerrar en el encabezado */
   hideCloseButton?: boolean;
+}
+
+const openModalStack: symbol[] = [];
+let bodyScrollLockCount = 0;
+let bodyOverflowBeforeModal = "";
+
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "textarea:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter(
+    (element) =>
+      element.getAttribute("aria-hidden") !== "true" &&
+      !element.hasAttribute("hidden") &&
+      element.getClientRects().length > 0,
+  );
 }
 
 /**
@@ -33,20 +52,21 @@ interface ModalProps {
 export function Modal({
   isOpen,
   title,
-  subtitle,
   icon,
   onClose,
   onBack,
   children,
   className = "",
-  labelledById = "modal-title",
+  labelledById,
   footerActions,
   size = "md",
-  fullscreenMobile = true,
   hideCloseButton = false,
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const modalInstanceRef = useRef(Symbol("modal"));
+  const generatedTitleId = useId();
+  const titleId = labelledById ?? generatedTitleId;
 
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -56,16 +76,22 @@ export function Modal({
 
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     const { body } = document;
-    const prevOverflow = body.style.overflow;
+    const modalInstance = modalInstanceRef.current;
+    openModalStack.push(modalInstance);
+
+    if (bodyScrollLockCount === 0) {
+      bodyOverflowBeforeModal = body.style.overflow;
+    }
+    bodyScrollLockCount += 1;
     body.style.overflow = "hidden";
 
-    // Focus the first focusable element inside the modal
-    const focusable = contentRef.current?.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    );
-    focusable?.[0]?.focus();
+    const content = contentRef.current;
+    const firstFocusable = content ? getFocusableElements(content)[0] : null;
+    (firstFocusable ?? content)?.focus();
 
     function onKeyDown(e: KeyboardEvent) {
+      if (openModalStack[openModalStack.length - 1] !== modalInstance) return;
+
       if (e.key === "Escape") {
         e.stopPropagation();
         onCloseRef.current();
@@ -73,14 +99,19 @@ export function Modal({
       }
       if (e.key !== "Tab" || !contentRef.current) return;
 
-      const items = contentRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      if (items.length === 0) return;
+      const items = getFocusableElements(contentRef.current);
+      if (items.length === 0) {
+        e.preventDefault();
+        contentRef.current.focus();
+        return;
+      }
       const first = items[0];
       const last = items[items.length - 1];
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (!contentRef.current.contains(document.activeElement)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      } else if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -92,7 +123,13 @@ export function Modal({
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      body.style.overflow = prevOverflow;
+      const stackIndex = openModalStack.lastIndexOf(modalInstance);
+      if (stackIndex >= 0) openModalStack.splice(stackIndex, 1);
+
+      bodyScrollLockCount = Math.max(0, bodyScrollLockCount - 1);
+      if (bodyScrollLockCount === 0) {
+        body.style.overflow = bodyOverflowBeforeModal;
+      }
       previousFocusRef.current?.focus?.();
     };
   }, [isOpen]);
@@ -102,33 +139,27 @@ export function Modal({
   const contentClasses = [
     "modal-content",
     `modal-content--${size}`,
-    fullscreenMobile ? "modal-fullscreen-mobile" : "",
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
   return createPortal(
-    <motion.div
+    <div
       className="modal-overlay"
       role="presentation"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      onMouseDown={(e) => {
+      onPointerDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <motion.div
+      <div
         ref={contentRef}
         className={contentClasses}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={labelledById}
-        initial={{ opacity: 0, scale: 0.96, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.42, ease: EASE_OUT }}
-        onMouseDown={(e) => e.stopPropagation()}
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        onPointerDown={(e) => e.stopPropagation()}
       >
         <header className="modal-header">
           <div className="modal-title">
@@ -139,13 +170,13 @@ export function Modal({
                 onClick={onBack}
                 aria-label="Regresar"
               >
-                <ArrowLeft size={20} aria-hidden="true" />
+                <ArrowLeft aria-hidden="true" />
               </button>
             ) : (
               icon
             )}
             <div className="modal-title__text">
-              <h2 id={labelledById}>{title}</h2>
+              <h2 id={titleId}>{title}</h2>
             </div>
           </div>
           {!hideCloseButton && (
@@ -155,7 +186,7 @@ export function Modal({
               onClick={onClose}
               aria-label="Cerrar"
             >
-              <X size={18} aria-hidden="true" />
+              <X aria-hidden="true" />
             </button>
           )}
         </header>
@@ -163,8 +194,8 @@ export function Modal({
         {footerActions && (
           <footer className="modal-footer">{footerActions}</footer>
         )}
-      </motion.div>
-    </motion.div>,
+      </div>
+    </div>,
     document.body,
   );
 }

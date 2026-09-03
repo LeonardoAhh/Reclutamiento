@@ -145,10 +145,8 @@ export function RequisicionSheet({
         className="requisicion-sheet"
         icon={<FileText size={20} aria-hidden="true" />}
         title="Requisición de Personal"
-        subtitle={codigo ?? '—'}
         footerActions={footerActions}
         size="lg"
-        fullscreenMobile={true}
       >
         <div className="requisicion-sheet__body">{doc}</div>
       </Modal>

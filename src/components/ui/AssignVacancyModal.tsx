@@ -28,7 +28,6 @@ export function AssignVacancyModal({
       title="Asignar reclutador"
       icon={<UserRoundPlus size="var(--icon-size-md)" aria-hidden="true" />}
       size="xs"
-      fullscreenMobile={false}
     >
       <div className="modal-body assign-vacancy-modal__body">
         <div className="form-group">

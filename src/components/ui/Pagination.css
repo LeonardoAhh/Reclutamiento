@@ -1,14 +1,41 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Pagination.css — Mobile-first · Notion-inspired tokens
+   Established system pattern: <btn-icon> Página X de Y <btn-icon>
    ───────────────────────────────────────────────────────────────────────── */
 
 .pagination {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) 0;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
   width: 100%;
+}
+
+.pagination--compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: auto;
+  margin-inline: auto;
+}
+
+.pagination__text {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  color: var(--color-muted);
+  min-width: 90px;
+  text-align: center;
+  user-select: none;
+}
+
+/* Numbered variant (if explicitly requested) */
+.pagination--numbered {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
 .pagination__pages {
@@ -93,44 +120,11 @@
 }
 
 @media (min-width: 768px) {
-  .pagination {
-    display: flex;
-    justify-content: center;
-  }
-
-  .pagination__pages {
+  .pagination--numbered .pagination__pages {
     display: flex;
   }
 
-  .pagination__mobile-info {
+  .pagination--numbered .pagination__mobile-info {
     display: none;
-  }
-}
-
-.pagination--compact {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  width: fit-content;
-  margin-inline: auto;
-}
-
-.pagination--compact .pagination__pages {
-  display: none;
-}
-
-.pagination--compact .pagination__mobile-info {
-  display: block;
-}
-
-@media (forced-colors: active) {
-  .pagination__btn:focus-visible,
-  .pagination__btn--active:focus-visible {
-    outline-color: ButtonText;
-  }
-
-  .pagination__btn--active {
-    background: ButtonText;
-    color: ButtonFace;
-    border-color: ButtonText;
   }
 }

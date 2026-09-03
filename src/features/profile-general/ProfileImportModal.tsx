@@ -78,7 +78,6 @@ export function ProfileImportModal({ onClose, onImported }: ProfileImportModalPr
         labelledById="profile-template-import-title"
         icon={<FileUp size={20} aria-hidden="true" />}
         size="md"
-        fullscreenMobile={false}
         footerActions={(
           <>
             <button type="button" className="btn-secondary" onClick={onClose} disabled={importing}>

@@ -22,7 +22,6 @@ export function LightboxModal({
       onClose={onClose}
       title={title}
       size="lg"
-      fullscreenMobile={false}
       className="activity-lightbox"
     >
       <div className="modal-body activity-lightbox__body">

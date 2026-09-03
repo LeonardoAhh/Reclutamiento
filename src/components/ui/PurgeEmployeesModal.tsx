@@ -104,10 +104,8 @@ export function PurgeEmployeesModal({
       isOpen={isOpen}
       onClose={isPurging ? () => undefined : onClose}
       className="purge-employees-modal"
-      fullscreenMobile={false}
       icon={<AlertOctagon size={20} aria-hidden="true" />}
       title="Borrar plantilla completa"
-      subtitle="Esta acción es irreversible"
     >
       <div className="modal-body purge-employees-modal__body">
         {success ? (

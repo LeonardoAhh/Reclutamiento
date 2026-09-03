@@ -226,7 +226,6 @@ export function RecruiterStatsModal({
       }
       title={title}
       size={mode === 'global' ? 'xl' : 'sm'}
-      fullscreenMobile={false}
     >
       <div className="modal-body recruiter-stats-modal__body">
         {/* ── Vista Global: Grid de tarjetas ── */}

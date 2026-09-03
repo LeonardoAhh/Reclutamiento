@@ -86,11 +86,8 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────
-   CandidateNotesModal — ajustes específicos cuando el modal corre
-   en modo full-screen mobile (clase `modal-fullscreen-mobile`).
-   El comportamiento de pantalla completa lo aporta global.css.
-   Aquí garantizamos safe-area lateral en la lista y formulario, y
-   espacio inferior para no quedar tapados por el bottom tab bar.
+   CandidateNotesModal — safe areas del sheet móvil para que la lista
+   y el formulario no queden pegados a los bordes del dispositivo.
    ─────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
   .candidate-notes-modal .modal-comments-list,

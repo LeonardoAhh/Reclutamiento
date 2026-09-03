@@ -9,6 +9,7 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useAuth } from "@/hooks/useAuth";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "framer-motion";
 import "./Login.css";
 
@@ -17,9 +18,29 @@ type LoginError = {
   message: string;
 };
 
+const SAVED_USERNAME_KEY = "reclutamiento_saved_email";
+
+function readSavedUsername() {
+  try {
+    return localStorage.getItem(SAVED_USERNAME_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function persistSavedUsername(username: string | null) {
+  try {
+    if (username) localStorage.setItem(SAVED_USERNAME_KEY, username);
+    else localStorage.removeItem(SAVED_USERNAME_KEY);
+  } catch {
+    // Inicio de sesión sigue disponible cuando almacenamiento está bloqueado.
+  }
+}
+
 export function Login() {
   const { signIn } = useAuth();
   const reduceMotion = useReducedMotion();
+  const showDecorativeMedia = useMediaQuery("(min-width: 1080px)");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +67,7 @@ export function Login() {
   useEffect(() => {
     document.title = "Iniciar Sesión";
 
-    const saved = localStorage.getItem("reclutamiento_saved_email");
+    const saved = readSavedUsername();
     if (saved) {
       setUsername(saved);
       setRememberMe(true);
@@ -96,11 +117,7 @@ export function Login() {
         return;
       }
 
-      if (rememberMe) {
-        localStorage.setItem("reclutamiento_saved_email", u);
-      } else {
-        localStorage.removeItem("reclutamiento_saved_email");
-      }
+      persistSavedUsername(rememberMe ? u : null);
 
       setIsSuccess(true);
       // La redirección la maneja RedirectIfAuthed en cuanto la sesión se actualiza.
@@ -312,20 +329,22 @@ export function Login() {
         </div>
       </section>
 
-      <div className="login__right" aria-hidden="true">
-        <div className="login__image-wrapper">
-          <video
-            src="/login-video-claude.mp4"
-            poster="/login-bg.jpg"
-            className="login__media"
-            autoPlay={!reduceMotion}
-            loop={!reduceMotion}
-            muted
-            playsInline
-            preload="metadata"
-          />
+      {showDecorativeMedia && (
+        <div className="login__right" aria-hidden="true">
+          <div className="login__image-wrapper">
+            <video
+              src="/login-video-claude.mp4"
+              poster="/login-bg.jpg"
+              className="login__media"
+              autoPlay={!reduceMotion}
+              loop={!reduceMotion}
+              muted
+              playsInline
+              preload={reduceMotion ? "none" : "metadata"}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

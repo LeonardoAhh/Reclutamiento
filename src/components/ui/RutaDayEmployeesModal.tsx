@@ -63,10 +63,8 @@ export function RutaDayEmployeesModal({
       onClose={onClose}
       icon={<CalendarDays size={20} aria-hidden="true" />}
       title={dia}
-      subtitle={`${routeCode} · ${employees.length} empleado${employees.length !== 1 ? 's' : ''}`}
       className="ruta-day-modal"
       size="lg"
-      fullscreenMobile={false}
     >
       <div className="modal-body ruta-day-modal__body">
         {employees.length === 0 ? (

@@ -34,6 +34,10 @@ export function usePagination<T>(
   }, [items, currentPage, pageSize]);
 
   useEffect(() => {
+    setPageSizeState(initialPageSize);
+  }, [initialPageSize]);
+
+  useEffect(() => {
     setCurrentPage(1);
   }, [items.length, pageSize]);
 

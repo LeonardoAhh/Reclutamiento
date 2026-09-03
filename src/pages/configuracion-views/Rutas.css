@@ -257,6 +257,13 @@
   gap: var(--spacing-xxs);
 }
 
+.ruta-card__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
 .ruta-card__title {
   margin: 0;
   color: var(--color-ink);
@@ -266,16 +273,23 @@
 }
 
 .ruta-card__subtitle {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
   color: var(--color-muted);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ruta-card__capacity-alert {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
+  flex-shrink: 0;
+  white-space: nowrap;
   color: var(--color-error-text);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
@@ -497,16 +511,15 @@
 }
 
 .shift-bars {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  column-gap: var(--spacing-sm);
+  row-gap: var(--spacing-sm);
+  align-items: center;
 }
 
 .shift-bars__row {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
-  align-items: center;
-  gap: var(--spacing-sm);
+  display: contents;
 }
 
 .shift-bars__row--over .shift-bars__fill {
@@ -539,6 +552,12 @@
   align-items: center;
   gap: var(--spacing-xs);
   justify-content: flex-end;
+  min-width: 0;
+}
+
+.shift-bars__stats--comparison {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) var(--touch-target-min);
 }
 
 .shift-bars__count {
@@ -571,22 +590,18 @@
 
 .trend-up {
   color: var(--color-success-text);
-  background: var(--color-success-subtle);
 }
 
 .trend-down {
   color: var(--color-error-text);
-  background: var(--color-error-subtle);
 }
 
 .trend-mixed {
   color: var(--color-warning-text);
-  background: var(--color-warning-subtle);
 }
 
 .trend-flat {
   color: var(--color-charcoal);
-  background: var(--color-surface-soft);
 }
 
 .shift-bars__comparison-note {

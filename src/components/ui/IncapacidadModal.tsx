@@ -96,7 +96,6 @@ export function IncapacidadModal({
       }
       title="Marcar incapacidad"
       size="xs"
-      fullscreenMobile={false}
       footerActions={footerActions}
     >
       <form

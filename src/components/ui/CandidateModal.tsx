@@ -443,8 +443,6 @@ export function CandidateModal({
         ? 'Editar candidato'
         : 'Nuevo candidato';
 
-  const subtitle = undefined;
-
   /* ── Campos agrupados para componer ambos layouts ────────────────────
      PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
 
@@ -746,7 +744,6 @@ const fieldsPosicion = (
         successText="¡Guardado!"
         idleIcon={SaveIconData}
         className="btn-primary"
-        disabled={false}
         form={formId}
       />
     </>
@@ -758,10 +755,8 @@ const fieldsPosicion = (
       onClose={onClose}
       className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
       size={accessCard ? 'xs' : 'md'}
-      fullscreenMobile={false}
       icon={icon}
       title={title}
-      subtitle={subtitle}
       footerActions={footerActions}
     >
       {accessCard ? (

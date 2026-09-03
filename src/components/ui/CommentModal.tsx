@@ -72,7 +72,6 @@ export function CommentModal({
       onClose={onClose}
       icon={<MessageSquare size={20} className="color-primary" aria-hidden="true" />}
       title={puesto || 'Comentario'}
-      subtitle={`${area}${seccion ? ` · ${seccion}` : ''}`}
     >
       {sorted.length > 0 && (
         <div className="modal-comments-list">

@@ -57,7 +57,6 @@ export function CreateActivityModal({
       onClose={onClose}
       title="Actividad nueva"
       icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
-      fullscreenMobile={false}
       size="sm"
       footerActions={
         <>

@@ -372,6 +372,7 @@
   --layer-menu: 1470;
   --layer-tooltip: 1480;
   --layer-system-update: 1500;
+  --layer-toast: var(--layer-system-update);
   --layer-system-update-curtain: 1600;
   --tooltip-max-width: 280px;
   --scrollbar-size: var(--spacing-sm);
@@ -1494,63 +1495,37 @@ code:not(pre code) {
   max-width: var(--modal-inline-size-xl);
 }
 
-/* Mobile: fullscreen para modales grandes, excepto confirmaciones */
+/* Mobile: todos los modales conservan una superficie compacta tipo sheet. */
 @media (max-width: 767px) {
   .modal-overlay {
     padding: 0;
     align-items: flex-end;
   }
 
-  /* Por defecto en mobile: sheet desde abajo con bordes redondeados arriba */
   .modal-content {
     max-height: var(--modal-mobile-max-block-size);
     border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
     animation: slideUpMobile var(--transition-slow) forwards;
   }
 
-  /* Modales que deben ser fullscreen en mobile (no confirmaciones) */
-  .modal-content.modal-fullscreen-mobile {
-    width: 100vw;
-    max-width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    max-height: 100dvh;
-    border: none;
-    border-radius: 0;
-    animation: modalFullscreenIn var(--transition-base) forwards;
-  }
-
-  .modal-content.modal-fullscreen-mobile > .modal-header {
-    padding-top: max(var(--spacing-lg), var(--safe-area-top));
+  .modal-content > .modal-header {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
+
+  .modal-content > .modal-scroll-region > .modal-body {
+    padding-left: max(var(--spacing-lg), var(--safe-area-left));
+    padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  }
+
+  .modal-content .modal-body > * {
     flex-shrink: 0;
   }
 
-  .modal-content.modal-fullscreen-mobile
-    > .modal-scroll-region
-    > .modal-body {
-    padding-left: max(var(--spacing-lg), var(--safe-area-left));
-    padding-right: max(var(--spacing-lg), var(--safe-area-right));
-    padding-bottom: var(--spacing-lg);
-  }
-
-  /* El .modal-body es el ÚNICO contenedor de scroll en móvil. Sus hijos NO deben
-     encogerse: varios componentes usan overflow:hidden (ExpandableSection,
-     tarjetas con border-radius), lo que hace que su tamaño mínimo automático sea
-     0 y el algoritmo flexbox los APLASTE para caber en el alto del modal → el
-     contenido se recorta y el cuerpo nunca desborda → no hay scroll en iOS.
-     Con flex-shrink:0 conservan su alto natural, el cuerpo desborda y scrollea.
-     Los scrollers internos (flex:1) siguen funcionando porque mantienen grow:1. */
-  .modal-content.modal-fullscreen-mobile .modal-body > * {
-    flex-shrink: 0;
-  }
-
-  .modal-content.modal-fullscreen-mobile > .modal-footer {
+  .modal-content > .modal-footer {
     padding-left: max(var(--spacing-lg), var(--safe-area-left));
     padding-right: max(var(--spacing-lg), var(--safe-area-right));
     padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
-    margin-top: auto;
   }
 }
 
@@ -1580,10 +1555,6 @@ code:not(pre code) {
 .modal-title__text {
   min-width: 0;
   flex: 1 1 auto;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
 }
 
 .modal-title h2 {
@@ -1591,19 +1562,15 @@ code:not(pre code) {
   font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
   line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
   margin: 0;
 }
 
-.modal-title__sub {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  color: var(--color-body);
-  margin: 0;
-}
-
-.modal-close {
+.modal-close,
+.modal-back-btn {
   width: var(--touch-target-min);
   height: var(--touch-target-min);
+  flex: 0 0 var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1617,24 +1584,15 @@ code:not(pre code) {
     background var(--transition-fast);
 }
 
-@media (min-width: 768px) {
-  .modal-close {
-    width: var(--icon-size-xxl);
-    height: var(--icon-size-xxl);
-  }
+.modal-close svg,
+.modal-back-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
 }
 
-.modal-close:hover {
+.modal-close:hover,
+.modal-back-btn:hover {
   background: var(--color-surface-soft);
-}
-
-.modal-close:active {
-  transform: scale(0.9);
-}
-
-.modal-close:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .modal-body {
@@ -1668,7 +1626,7 @@ code:not(pre code) {
   background: var(--color-surface-card);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .modal-footer {
     justify-content: stretch;
   }
@@ -1708,15 +1666,6 @@ code:not(pre code) {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes modalFullscreenIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 

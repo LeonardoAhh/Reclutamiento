@@ -161,7 +161,6 @@ export function TopRecruiterModal() {
       onClose={() => setIsOpen(false)}
       className="top-recruiter-modal"
       size="xs"
-      fullscreenMobile={false}
       icon={isTop
         ? <Medal aria-hidden="true" />
         : <TrendingUp aria-hidden="true" />}

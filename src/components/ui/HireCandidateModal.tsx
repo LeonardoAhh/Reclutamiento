@@ -120,9 +120,7 @@ export function HireCandidateModal({
       className="employee-modal"
       icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`Contratar a ${candidate.nombre}`}
-      subtitle={`${candidate.puesto} · ${candidate.area}${candidate.seccion ? ` · ${candidate.seccion}` : ''}`}
       size="sm"
-      fullscreenMobile={false}
       footerActions={footerActions}
     >
       {alreadyHired ? (

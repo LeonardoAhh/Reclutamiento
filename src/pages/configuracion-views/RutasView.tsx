@@ -58,14 +58,16 @@ function RutaCard({
         <BusFront />
       </span>
       <span className="ruta-card__copy">
-        <span className="ruta-card__title">{routeCode.trim()}</span>
+        <span className="ruta-card__heading">
+          <span className="ruta-card__title">{routeCode.trim()}</span>
+          {isOverCapacity && (
+            <span className="ruta-card__capacity-alert">
+              <span className="ruta-card__alert-dot" aria-hidden="true" />
+              <span>Sobrecupo</span>
+            </span>
+          )}
+        </span>
         {routeName && <span className="ruta-card__subtitle">{routeName}</span>}
-        {isOverCapacity && (
-          <span className="ruta-card__capacity-alert">
-            <span className="ruta-card__alert-dot" aria-hidden="true" />
-            <span>Sobrecupo</span>
-          </span>
-        )}
       </span>
       {matchCount !== undefined && matchCount > 0 && (
         <span
@@ -195,7 +197,7 @@ function ShiftBars({
 
         const trendBadge = (
           <span
-            tabIndex={0}
+            tabIndex={tooltipContent ? 0 : undefined}
             className={`shift-bars__trend ${trendClass}`}
             aria-label={trendAria}
           >
@@ -232,7 +234,9 @@ function ShiftBars({
             >
               <div className="shift-bars__fill" />
             </div>
-            <div className="shift-bars__stats">
+            <div
+              className={`shift-bars__stats${hasComparison ? " shift-bars__stats--comparison" : ""}`}
+            >
               <span
                 className={`shift-bars__count type-body-sm${isOverCapacity ? " shift-bars__count--over" : ""}`}
               >

@@ -188,7 +188,6 @@ export default function ReporteComparisonDialog({
         onClose={() => setIsOpen(false)}
         title="Comparativa mensual"
         size="lg"
-        fullscreenMobile={false}
       >
         <div className="reporte-cmp__body">
           {/* Quarterly Summary Cards */}

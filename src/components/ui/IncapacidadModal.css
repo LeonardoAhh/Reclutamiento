@@ -44,27 +44,3 @@
   block-size: var(--icon-size-sm);
   flex: 0 0 auto;
 }
-
-/* ── CubrirVacanteSheet — usa los mismos estilos `.incapacidad-modal__*`
-   pero como Sheet. El form crece para que el footer quede anclado abajo;
-   el botón "Quitar cobertura" empuja a la izquierda. ── */
-.cubrir-vacante-sheet__form {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.cubrir-vacante-sheet__clear {
-  margin-right: auto;
-}
-
-.cubrir-vacante-sheet__clear > span {
-  margin-left: var(--spacing-xxs);
-}
-
-@media (max-width: 640px) {
-  .modal-header-actions .cubrir-vacante-sheet__clear > span {
-    display: none;
-  }
-}

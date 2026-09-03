@@ -71,10 +71,9 @@ export function CandidateNotesModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="candidate-notes-modal modal-fullscreen-mobile"
+      className="candidate-notes-modal"
       icon={<StickyNote size={20} className="color-primary" aria-hidden="true" />}
       title={candidate.nombre}
-      subtitle={`${candidate.puesto} · ${candidate.area}`}
     >
       <div className="modal-comments-list">
         <span className="modal-section-label">Notas</span>

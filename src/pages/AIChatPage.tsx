@@ -1099,7 +1099,6 @@ export function AIChatPage() {
             className="ai-mobile-sheet"
             labelledById="ai-setup-sheet-title"
             size="sm"
-            fullscreenMobile={false}
           >
             <div className="modal-body ai-mobile-sheet-body">
               {setupContent}
@@ -1113,7 +1112,6 @@ export function AIChatPage() {
             className="ai-mobile-sheet"
             labelledById="ai-history-sheet-title"
             size="sm"
-            fullscreenMobile={false}
           >
             <div className="modal-body ai-mobile-sheet-body">
               {historyContent}
