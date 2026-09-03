@@ -329,6 +329,19 @@ function drawLabeledValue(
   );
 }
 
+function drawDivider(
+  context: CanvasRenderingContext2D,
+  y: number,
+  tokens: CardTokens,
+): void {
+  context.strokeStyle = tokens.hairline;
+  context.lineWidth = tokens.borderWidth;
+  context.beginPath();
+  context.moveTo(tokens.spaceXl, y);
+  context.lineTo(CARD_WIDTH - tokens.spaceXl, y);
+  context.stroke();
+}
+
 function drawHeader(
   context: CanvasRenderingContext2D,
   tokens: CardTokens,
@@ -535,6 +548,10 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     preserveAcronyms: false,
   });
   const displayPosition = toNaturalCase(data.position);
+  const candidateTop = 92;
+  const positionTop = 174;
+  const detailsTop = 246;
+  const locationTop = 298;
 
   context.scale(RENDER_SCALE, RENDER_SCALE);
   context.textBaseline = "top";
@@ -556,7 +573,7 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     label: CANDIDATE_ACCESS_CARD_CONFIG.candidateLabel,
     value: displayCandidateName,
     x: tokens.spaceXl,
-    y: 92,
+    y: candidateTop,
     maxWidth: contentWidth,
     initialSize: tokens.headingMdSize,
     minimumSize: tokens.bodyStrongSize,
@@ -567,11 +584,13 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     tokens,
   });
 
+  drawDivider(context, positionTop - tokens.spaceLg, tokens);
+
   drawLabeledValue(context, {
     label: CANDIDATE_ACCESS_CARD_CONFIG.positionLabel,
     value: displayPosition,
     x: tokens.spaceXl,
-    y: 174,
+    y: positionTop,
     maxWidth: contentWidth,
     initialSize: tokens.bodyStrongSize,
     minimumSize: tokens.captionSize,
@@ -581,10 +600,11 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     tokens,
   });
 
+  drawDivider(context, detailsTop - tokens.spaceLg, tokens);
+
   const columnGap = tokens.spaceMd;
   const dateColumnWidth = (contentWidth - columnGap) / 3;
   const recruiterColumnWidth = contentWidth - columnGap - dateColumnWidth;
-  const detailsTop = 246;
   if (data.interviewDate) {
     drawLabeledValue(context, {
       label: CANDIDATE_ACCESS_CARD_CONFIG.dateLabel,
@@ -616,7 +636,8 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     tokens,
   });
 
-  drawLocation(context, 298, tokens);
+  drawDivider(context, locationTop - tokens.spaceMd, tokens);
+  drawLocation(context, locationTop, tokens);
   drawFooter(context, tokens);
   context.restore();
 
