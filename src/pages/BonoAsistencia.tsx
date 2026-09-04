@@ -369,15 +369,6 @@ export function BonoAsistencia() {
                           {employee.occurrences} registros
                         </Badge>
                       )}
-                      {employee.isBaja && (
-                        <Badge
-                          variant="error"
-                          minimal
-                          className="bono-page__baja-badge"
-                        >
-                          Baja
-                        </Badge>
-                      )}
                     </span>
                   </span>
                   <MorphingIcon
