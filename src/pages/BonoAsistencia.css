@@ -125,10 +125,19 @@
 
 .bono-page__results-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--design-spacing-md);
   margin-block-end: var(--design-spacing-sm);
+}
+
+.bono-page__results-actions {
+  display: flex;
+  min-inline-size: 0;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  margin-inline-start: auto;
 }
 
 .bono-page__results-title,
@@ -144,6 +153,19 @@
   flex: 0 0 auto;
   margin: 0;
   color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.bono-page__export-button {
+  min-block-size: var(--touch-target-min);
+}
+
+.bono-page__export-error {
+  margin: 0 0 var(--design-spacing-sm);
+  color: var(--color-error);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);

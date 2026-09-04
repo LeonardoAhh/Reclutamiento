@@ -3,6 +3,7 @@ import {
   BadgeDollarSign,
   CalendarDays,
   ChevronRight,
+  FileSpreadsheet,
   MonitorCog,
   MoonStar,
   SunMedium,
@@ -23,6 +24,7 @@ import {
   type BonoAsistenciaRecord,
 } from '@/features/bono-asistencia/data';
 import { BONO_PAGE_TITLE } from '@/features/bono-asistencia/constants';
+import { downloadBonoAsistenciaExcel } from '@/features/bono-asistencia/exportExcel';
 import { usePagination } from '@/hooks/usePagination';
 import { useTheme, type ThemePreference } from '@/hooks/useTheme';
 import './BonoAsistencia.css';
@@ -94,6 +96,8 @@ export function BonoAsistencia() {
   const [selectedDepartment, setSelectedDepartment] = useState(ALL_OPTIONS);
   const [selectedEmployee, setSelectedEmployee] =
     useState<BonoAsistenciaEmployee | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
   const { preference, setThemePreference } = useTheme();
 
   const themeLabel =
@@ -194,6 +198,43 @@ export function BonoAsistencia() {
     searchTerm !== '' ||
     selectedWeek !== ALL_OPTIONS ||
     selectedDepartment !== ALL_OPTIONS;
+
+  const handleExcelDownload = useCallback(async () => {
+    if (filteredRecords.length === 0 || isExporting) return;
+
+    setIsExporting(true);
+    setExportError(null);
+
+    try {
+      await downloadBonoAsistenciaExcel({
+        records: [...filteredRecords].sort((left, right) =>
+          compareBonoWeeksNewestFirst(left.week, right.week),
+        ),
+        employees,
+        scope: {
+          week:
+            selectedWeek === ALL_OPTIONS ? 'Todas las semanas' : selectedWeek,
+          department:
+            selectedDepartment === ALL_OPTIONS
+              ? 'Todos los departamentos'
+              : selectedDepartment,
+          searchTerm,
+        },
+      });
+    } catch (error) {
+      console.error('No fue posible generar el archivo de Excel.', error);
+      setExportError('No pudimos preparar el archivo. Intenta nuevamente.');
+    } finally {
+      setIsExporting(false);
+    }
+  }, [
+    employees,
+    filteredRecords,
+    isExporting,
+    searchTerm,
+    selectedDepartment,
+    selectedWeek,
+  ]);
 
   const clearFilters = useCallback(() => {
     setSearchTerm('');
@@ -305,15 +346,46 @@ export function BonoAsistencia() {
           <h2 id="bono-results-title" className="bono-page__results-title">
             Registros
           </h2>
-          <p
-            id="bono-results-status"
-            className="bono-page__results-count"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {employees.length} {employees.length === 1 ? 'persona' : 'personas'}
-          </p>
+          <div className="bono-page__results-actions">
+            <p
+              id="bono-results-status"
+              className="bono-page__results-count"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {employees.length}{' '}
+              {employees.length === 1 ? 'persona' : 'personas'}
+            </p>
+            <ButtonUtility
+              type="button"
+              className="bono-page__export-button"
+              icon={
+                <MorphingIcon
+                  icon={FileSpreadsheet}
+                  size="var(--icon-size-control)"
+                  aria-hidden="true"
+                />
+              }
+              onClick={handleExcelDownload}
+              disabled={filteredRecords.length === 0 || isExporting}
+              aria-label="Descargar resultados filtrados en Excel"
+              aria-busy={isExporting}
+              aria-describedby={exportError ? 'bono-export-error' : undefined}
+            >
+              {isExporting ? 'Preparando…' : 'Excel'}
+            </ButtonUtility>
+          </div>
         </div>
+
+        {exportError && (
+          <p
+            id="bono-export-error"
+            className="bono-page__export-error"
+            role="alert"
+          >
+            {exportError}
+          </p>
+        )}
 
         {loadState.status === 'loading' && loadState.records.length === 0 ? (
           <div className="bono-page__state" role="status" aria-live="polite">
