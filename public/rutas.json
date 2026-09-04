@@ -1971,15 +1971,6 @@
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
-    "numero empleado": "4184",
-    "nombre": "MARTINEZ MARTINEZ ALEJANDRA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
-  },
-  {
     "numero empleado": "4185",
     "nombre": "SANTOS ENCARNACION JUAN JOSE",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2185,15 +2176,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
-    "numero empleado": "4250",
-    "nombre": "RANGEL  KIMBERLY LUSSY",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "4251",
@@ -2743,5 +2725,41 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4363",
+    "nombre": "CASTILLO CASTRO PERLA JAZMIN",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "turno": "30",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero empleado": "4364",
+    "nombre": "MARTINEZ ROJAS DULCE GUADALUPE",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4365",
+    "nombre": "PICHARDO VARGAS MARGARITA",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4366",
+    "nombre": "VARGAS HERNANDEZ GUADALUPE",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "turno": "30",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "FRACC. MONTENEGRO",
+    "parada": "PARADA DE CAMIONES HUIZACHE"
   }
 ]
