@@ -359,6 +359,8 @@
   --feature-chat-composer-max-block-size: 10rem;
   --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
+  /* Ancho legible mínimo para tarjetas de consulta del bono de asistencia. */
+  --feature-bonus-card-min-inline-size: 16rem;
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
   --modal-inline-size-sm: 30rem;

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type Theme = 'light' | 'dark';
+export type ThemePreference = Theme | 'system';
 
 const STORAGE_KEY = 'reclutamiento_theme';
 
@@ -29,13 +30,24 @@ function persistTheme(theme: Theme): void {
   }
 }
 
-function getInitialTheme(): Theme {
+function clearStoredTheme(): void {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // El tema del sistema sigue funcionando aunque el storage no esté disponible.
+  }
+}
+
+function getSystemTheme(): Theme {
   if (typeof window === 'undefined') return 'light';
-  const stored = getStoredTheme();
-  if (stored) return stored;
   return window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
     : 'light';
+}
+
+function getInitialPreference(): ThemePreference {
+  if (typeof window === 'undefined') return 'system';
+  return getStoredTheme() ?? 'system';
 }
 
 function syncBrowserChrome(): void {
@@ -57,14 +69,17 @@ function applyTheme(theme: Theme): void {
 }
 
 /**
- * Theme controller. Persiste en localStorage, sigue preferencia del SO por
- * defecto, y expone `theme` + `toggleTheme()` + `setTheme(t)`.
+ * Theme controller. Persiste las preferencias explícitas en localStorage,
+ * sigue al sistema cuando no hay override y permite volver a esa preferencia.
  *
  * Si el navegador soporta View Transitions API y el usuario no tiene
  * `prefers-reduced-motion`, el cambio usa las duraciones definidas por tokens.
  */
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [preference, setPreferenceState] =
+    useState<ThemePreference>(getInitialPreference);
+  const [systemTheme, setSystemTheme] = useState<Theme>(getSystemTheme);
+  const theme = preference === 'system' ? systemTheme : preference;
   const firstRender = useRef(true);
 
   useEffect(() => {
@@ -111,9 +126,7 @@ export function useTheme() {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     function onChange(e: MediaQueryListEvent) {
-      if (!getStoredTheme()) {
-        setThemeState(e.matches ? 'dark' : 'light');
-      }
+      setSystemTheme(e.matches ? 'dark' : 'light');
     }
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
@@ -121,14 +134,30 @@ export function useTheme() {
 
   const setTheme = useCallback((next: Theme) => {
     persistTheme(next);
-    setThemeState(next);
+    setPreferenceState(next);
+  }, []);
+
+  const setThemePreference = useCallback((next: ThemePreference) => {
+    if (next === 'system') {
+      clearStoredTheme();
+      setSystemTheme(getSystemTheme());
+    } else {
+      persistTheme(next);
+    }
+    setPreferenceState(next);
   }, []);
 
   const toggleTheme = useCallback(() => {
     const next = theme === 'dark' ? 'light' : 'dark';
     persistTheme(next);
-    setThemeState(next);
+    setPreferenceState(next);
   }, [theme]);
 
-  return { theme, toggleTheme, setTheme };
+  return {
+    theme,
+    preference,
+    toggleTheme,
+    setTheme,
+    setThemePreference,
+  };
 }

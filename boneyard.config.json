@@ -17,7 +17,8 @@
     "/formatos",
     "/actividades",
     "/reporte",
-    "/perfil-general"
+    "/perfil-general",
+    "/bono"
   ],
   "wait": 2200,
   "color": "var(--color-hairline)",

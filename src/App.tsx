@@ -29,6 +29,7 @@ import {
   CONFIGURACION_ROUTES,
   INCIDENCIAS_PATH,
 } from '@/lib/configuracionNavigation';
+import { BONO_PATH } from '@/features/bono-asistencia/constants';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -78,6 +79,11 @@ const AIChatPage = lazy(() =>
 const IncidenciasTransportePage = lazy(() =>
   import('@/pages/IncidenciasTransportePage').then(({ IncidenciasTransportePage }) => ({
     default: IncidenciasTransportePage,
+  })),
+);
+const BonoAsistencia = lazy(() =>
+  import('@/pages/BonoAsistencia').then(({ BonoAsistencia }) => ({
+    default: BonoAsistencia,
   })),
 );
 
@@ -165,6 +171,7 @@ function App() {
                 }
               />
               <Route path="/reporte" element={<ReporteTransportePublic />} />
+              <Route path={BONO_PATH} element={<BonoAsistencia />} />
               <Route element={<ProtectedShell />}>
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />

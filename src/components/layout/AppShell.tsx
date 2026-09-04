@@ -47,9 +47,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     });
 
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
-    const pageTitle = location.pathname === EMPLEADOS_PATH
-      ? 'Empleados'
-      : currentNavItem?.label ?? feature?.label ?? 'App';
+    let pageTitle = currentNavItem?.label ?? feature?.label ?? 'App';
+    if (location.pathname === EMPLEADOS_PATH) pageTitle = 'Empleados';
     document.title = pageTitle;
   }, [location.pathname]);
 
