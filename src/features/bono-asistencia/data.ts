@@ -21,6 +21,21 @@ export interface BonoAsistenciaEmployee {
 
 const BONO_DATA_URL = '/bono-asistencia/empleados.json';
 
+const SPANISH_MONTH_INDEX: Readonly<Record<string, number>> = {
+  enero: 0,
+  febrero: 1,
+  marzo: 2,
+  abril: 3,
+  mayo: 4,
+  junio: 5,
+  julio: 6,
+  agosto: 7,
+  septiembre: 8,
+  octubre: 9,
+  noviembre: 10,
+  diciembre: 11,
+};
+
 type BonoAsistenciaJsonRecord = {
   'No.': unknown;
   Nombre: unknown;
@@ -33,6 +48,37 @@ type BonoAsistenciaJsonRecord = {
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+function getWeekEndSortValue(week: string): number | null {
+  const match = week.trim().match(/(\d{1,2})\s+([\p{L}]+)$/u);
+  if (!match) return null;
+
+  const day = Number(match[1]);
+  const monthName = match[2]
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es-MX');
+  const monthIndex = SPANISH_MONTH_INDEX[monthName];
+
+  if (!Number.isInteger(day) || day < 1 || day > 31 || monthIndex === undefined) {
+    return null;
+  }
+
+  return monthIndex * 31 + day;
+}
+
+export function compareBonoWeeksNewestFirst(
+  left: string,
+  right: string,
+): number {
+  const leftValue = getWeekEndSortValue(left);
+  const rightValue = getWeekEndSortValue(right);
+
+  if (leftValue === null && rightValue === null) return 0;
+  if (leftValue === null) return 1;
+  if (rightValue === null) return -1;
+  return rightValue - leftValue;
 }
 
 function readRequiredString(
@@ -85,8 +131,11 @@ export function groupBonoAsistenciaRecords(
   records: BonoAsistenciaRecord[],
 ): BonoAsistenciaEmployee[] {
   const employees = new Map<string, BonoAsistenciaEmployee>();
+  const recordsByRecency = [...records].sort((left, right) =>
+    compareBonoWeeksNewestFirst(left.week, right.week),
+  );
 
-  records.forEach((record) => {
+  recordsByRecency.forEach((record) => {
     const current = employees.get(record.employeeNumber);
     const isBaja = record.comments.toLocaleUpperCase('es-MX') === 'BAJA';
 

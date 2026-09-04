@@ -255,6 +255,12 @@
   line-height: var(--type-caption-xs-line);
 }
 
+.bono-page__recurrence-badge {
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  font-size: var(--type-caption-xs-size);
+  line-height: var(--type-caption-xs-line);
+}
+
 .bono-page__pagination {
   display: flex;
   justify-content: center;

@@ -16,6 +16,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Pagination } from '@/components/ui/Pagination';
 import { SearchField } from '@/components/ui/SearchField';
 import {
+  compareBonoWeeksNewestFirst,
   groupBonoAsistenciaRecords,
   loadBonoAsistenciaData,
   type BonoAsistenciaEmployee,
@@ -136,7 +137,10 @@ export function BonoAsistencia() {
   }, [reloadKey]);
 
   const weeks = useMemo(
-    () => uniqueValues(loadState.records, (record) => record.week),
+    () =>
+      uniqueValues(loadState.records, (record) => record.week).sort(
+        compareBonoWeeksNewestFirst,
+      ),
     [loadState.records],
   );
   const departments = useMemo(
@@ -308,9 +312,6 @@ export function BonoAsistencia() {
             aria-atomic="true"
           >
             {employees.length} {employees.length === 1 ? 'persona' : 'personas'}
-            {' · '}
-            {filteredRecords.length}{' '}
-            {filteredRecords.length === 1 ? 'registro' : 'registros'}
           </p>
         </div>
 
@@ -360,6 +361,14 @@ export function BonoAsistencia() {
                     </span>
                     <span className="bono-page__employee-number">
                       <span>Empleado {employee.employeeNumber}</span>
+                      {employee.occurrences > 1 && (
+                        <Badge
+                          variant="default"
+                          className="bono-page__recurrence-badge"
+                        >
+                          {employee.occurrences} registros
+                        </Badge>
+                      )}
                       {employee.isBaja && (
                         <Badge
                           variant="error"
