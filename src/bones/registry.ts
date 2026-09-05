@@ -5,6 +5,7 @@ import { configureBoneyard } from 'boneyard-js/react'
 
 import _candidatos_page from './candidatos-page.bones.json'
 import _bajas_page from './bajas-page.bones.json'
+import _resumen_page from './resumen-page.bones.json'
 import _reportes_page from './reportes-page.bones.json'
 import _analisis_page from './analisis-page.bones.json'
 import _configuracion_indicadores from './configuracion-indicadores.bones.json'
@@ -17,13 +18,13 @@ import _actividades_page from './actividades-page.bones.json'
 import _reporte_transporte_page from './reporte-transporte-page.bones.json'
 import _plantilla_empleados from './plantilla-empleados.bones.json'
 import _plantilla_page from './plantilla-page.bones.json'
-import _resumen_page from './resumen-page.bones.json'
 
 configureBoneyard({"color":"var(--color-hairline)","darkColor":"var(--color-hairline)","animate":"solid","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
 
 registerBones({
   "candidatos-page": _candidatos_page,
   "bajas-page": _bajas_page,
+  "resumen-page": _resumen_page,
   "reportes-page": _reportes_page,
   "analisis-page": _analisis_page,
   "configuracion-indicadores": _configuracion_indicadores,
@@ -36,5 +37,4 @@ registerBones({
   "reporte-transporte-page": _reporte_transporte_page,
   "plantilla-empleados": _plantilla_empleados,
   "plantilla-page": _plantilla_page,
-  "resumen-page": _resumen_page,
 })
