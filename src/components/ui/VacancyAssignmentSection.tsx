@@ -34,6 +34,13 @@ interface ActivityWithAssignee extends Activity {
   } | null;
 }
 
+interface VacancyGroup {
+  key: string;
+  label: string;
+  assigned: boolean;
+  vacancies: Activity[];
+}
+
 export function VacancyAssignmentSection({
   vacancies,
   positions,
@@ -45,6 +52,38 @@ export function VacancyAssignmentSection({
   onDelete,
 }: VacancyAssignmentSectionProps) {
   const countLabel = `${vacancies.length} ${vacancies.length === 1 ? "vacante" : "vacantes"}`;
+  const vacancyGroups = Array.from(
+    vacancies
+      .reduce<Map<string, VacancyGroup>>((groups, vacancy) => {
+        const vacancyWithAssignee = vacancy as ActivityWithAssignee;
+        const key = vacancy.asignado_a ?? "unassigned";
+        const label = vacancy.asignado_a
+          ? vacancyWithAssignee.asignado_a_profile?.display_name ||
+            vacancyWithAssignee.asignado_a_profile?.username ||
+            "Sin nombre"
+          : "Sin asignar";
+        const group = groups.get(key);
+
+        if (group) {
+          group.vacancies.push(vacancy);
+        } else {
+          groups.set(key, {
+            key,
+            label,
+            assigned: Boolean(vacancy.asignado_a),
+            vacancies: [vacancy],
+          });
+        }
+
+        return groups;
+      }, new Map())
+      .values(),
+  ).sort((first, second) => {
+    if (first.assigned !== second.assigned) return first.assigned ? -1 : 1;
+    return first.label.localeCompare(second.label, "es", {
+      sensitivity: "base",
+    });
+  });
 
   return (
     <section
@@ -95,8 +134,27 @@ export function VacancyAssignmentSection({
           </p>
         </div>
       ) : (
-        <div className="vacancy-assignment-grid" role="list">
-          {vacancies.map((vacancy) => {
+        <div className="vacancy-assignment-groups">
+          {vacancyGroups.map((group) => (
+            <section
+              key={group.key}
+              className="vacancy-assignment-group"
+              aria-label={`Vacantes de ${group.label}`}
+            >
+              <header className="vacancy-assignment-group__header">
+                <h3 className="vacancy-assignment-group__title">
+                  {group.label}
+                </h3>
+                <span
+                  className="vacancy-assignment-group__count"
+                  aria-label={`${group.vacancies.length} ${group.vacancies.length === 1 ? "vacante" : "vacantes"}`}
+                >
+                  {group.vacancies.length}
+                </span>
+              </header>
+
+              <div className="vacancy-assignment-grid" role="list">
+          {group.vacancies.map((vacancy) => {
             const vacancyWithAssignee = vacancy as ActivityWithAssignee;
             const [area, ...sectionParts] = (vacancy.descripcion || "").split(
               " - ",
@@ -117,6 +175,11 @@ export function VacancyAssignmentSection({
                 className="vacancy-assignment-card"
                 role="listitem"
               >
+                {isNew(vacancy) && (
+                  <span className="vacancy-assignment-card__status">
+                    Nueva
+                  </span>
+                )}
                 <div className="vacancy-assignment-card__body">
                   <div className="vacancy-assignment-card__icon">
                     <BriefcaseBusiness
@@ -126,14 +189,9 @@ export function VacancyAssignmentSection({
                   </div>
                   <div className="vacancy-assignment-card__content">
                     <div className="vacancy-assignment-card__title-row">
-                      <h3 className="vacancy-assignment-card__title">
+                      <h4 className="vacancy-assignment-card__title">
                         {vacancy.titulo}
-                      </h3>
-                      {isNew(vacancy) && (
-                        <span className="vacancy-assignment-card__status">
-                          Nueva
-                        </span>
-                      )}
+                      </h4>
                     </div>
                     {section && (
                       <p className="vacancy-assignment-card__section">
@@ -210,6 +268,9 @@ export function VacancyAssignmentSection({
               </article>
             );
           })}
+              </div>
+            </section>
+          ))}
         </div>
       )}
     </section>

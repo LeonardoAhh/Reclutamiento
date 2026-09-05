@@ -1,4 +1,5 @@
 .activity-card {
+  position: relative;
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
@@ -82,15 +83,8 @@
   color: var(--color-charcoal);
 }
 
-.activity-card__open:focus-visible,
-.activity-card__menu:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .activity-card__status,
 .activity-card__new {
-  flex: 0 0 auto;
   padding: var(--spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-sm);
@@ -98,6 +92,10 @@
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-xs-line);
   letter-spacing: var(--type-caption-xs-tracking);
+}
+
+.activity-card__status {
+  flex: 0 0 auto;
 }
 
 .activity-card[data-status="pendiente"] .activity-card__status {
@@ -119,6 +117,10 @@
 }
 
 .activity-card__new {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--spacing-lg);
+  transform: translateY(-50%);
   background: var(--color-surface-soft);
   color: var(--color-muted);
 }
@@ -170,11 +172,4 @@
 .activity-card__menu:hover {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-}
-
-@media (forced-colors: active) {
-  .activity-card__open:focus-visible,
-  .activity-card__menu:focus-visible {
-    outline-color: ButtonText;
-  }
 }

@@ -24,11 +24,6 @@
   z-index: 1;
 }
 
-.ui-checkbox__input:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-  border-color: var(--color-primary);
-}
 
 .ui-checkbox__input:checked {
   background: var(--color-ink);

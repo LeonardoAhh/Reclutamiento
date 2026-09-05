@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ListRestart, Plus } from "lucide-react";
+import { ListRestart, Plus } from "lucide-react";
 import type { Activity } from "@/lib/types";
 import { Pagination } from "@/components/ui/Pagination";
 import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
@@ -17,12 +17,10 @@ interface ResponsibilitiesPagination {
 interface ResponsibilitiesSectionProps {
   responsibilities: Activity[];
   pageItems: Activity[];
-  isCollapsed: boolean;
   isAdmin: boolean;
   currentUserId?: string;
   pagination: ResponsibilitiesPagination;
   isNew: (activity: Activity) => boolean;
-  onToggle: () => void;
   onCreate: () => void;
   onEdit: (activity: Activity) => void;
   onDelete: (activity: Activity) => void;
@@ -55,12 +53,10 @@ function getResponsibilityContent(activity: Activity) {
 export function ResponsibilitiesSection({
   responsibilities,
   pageItems,
-  isCollapsed,
   isAdmin,
   currentUserId,
   pagination,
   isNew,
-  onToggle,
   onCreate,
   onEdit,
   onDelete,
@@ -79,20 +75,7 @@ export function ResponsibilitiesSection({
             id="responsibilities-heading"
             className="responsibilities-section__title"
           >
-            <button
-              type="button"
-              className="responsibilities-section__toggle"
-              onClick={onToggle}
-              aria-expanded={!isCollapsed}
-              aria-controls="responsabilidades-panel"
-            >
-              {isCollapsed ? (
-                <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
-              ) : (
-                <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
-              )}
-              <span>Responsabilidades</span>
-            </button>
+            <span>Responsabilidades</span>
             <span
               className="responsibilities-section__count"
               aria-label={countLabel}
@@ -116,7 +99,6 @@ export function ResponsibilitiesSection({
       <div
         id="responsabilidades-panel"
         className="responsibilities-section__panel"
-        hidden={isCollapsed}
       >
         {responsibilities.length === 0 ? (
           <div className="responsibilities-section__empty">

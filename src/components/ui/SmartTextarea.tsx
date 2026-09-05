@@ -50,7 +50,7 @@ export function SmartTextarea({
   };
 
   return (
-    <div className="smart-textarea-wrapper">
+    <div className="smart-textarea-wrapper" data-focus-ring>
       <textarea
         ref={textareaRef}
         id={id}

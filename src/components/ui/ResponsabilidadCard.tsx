@@ -39,6 +39,9 @@ export function ResponsabilidadCard({
 }: ResponsabilidadCardProps) {
   return (
     <article className="responsibility-card" role="listitem">
+      {isNew && (
+        <span className="responsibility-card__status">Nueva</span>
+      )}
       <header className="responsibility-card__header">
         <div className="responsibility-card__icon">
           <ListRestart size="var(--icon-size-md)" aria-hidden="true" />
@@ -47,9 +50,6 @@ export function ResponsabilidadCard({
         <div className="responsibility-card__heading">
           <div className="responsibility-card__title-row">
             <h3 className="responsibility-card__title">{title}</h3>
-            {isNew && (
-              <span className="responsibility-card__status">Nueva</span>
-            )}
           </div>
         </div>
 

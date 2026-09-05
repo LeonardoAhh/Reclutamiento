@@ -251,7 +251,7 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-starlite">Etiqueta Starlite</label>
+            <label htmlFor="edit-emp-starlite">Starlite</label>
             <CustomSelect
               id="edit-emp-starlite"
               value={form.is_starlite ? 'true' : 'false'}
@@ -278,9 +278,9 @@ export function EditEmployeeModal({
               value={form.reclutador}
               onChange={(val) => setForm({ ...form, reclutador: val })}
               placeholder="Sin asignar"
-              options={RECLUTADORES_ACTIVOS.map((r) => ({ 
-                value: r.toUpperCase(), 
-                label: RECLUTADORES_INFO[r].nombre_completo 
+              options={RECLUTADORES_ACTIVOS.map((r) => ({
+                value: r.toUpperCase(),
+                label: RECLUTADORES_INFO[r].nombre_completo
               }))}
             />
           </div>

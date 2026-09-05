@@ -1,4 +1,5 @@
 .responsibility-card {
+  position: relative;
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
@@ -53,7 +54,10 @@
 }
 
 .responsibility-card__status {
-  flex: 0 0 auto;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--spacing-lg);
+  transform: translateY(-50%);
   padding: var(--spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-sm);
@@ -119,15 +123,4 @@
 .responsibility-card__menu:hover {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-}
-
-.responsibility-card__menu:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
-@media (forced-colors: active) {
-  .responsibility-card__menu:focus-visible {
-    outline-color: ButtonText;
-  }
 }

@@ -75,7 +75,7 @@ export async function createUser(
       if (resp.status === 401) {
       return {
       ok: false,
-      message: 'Tu sesión ha caducado. Vuelve a iniciar sesión para continuar.',
+      message: 'Tu sesión ha caducado. Vuelve a iniciar sesión.',
       };
       }
       try {
@@ -142,7 +142,7 @@ export async function updateProfileRole(
     return {
       ok: false,
       message:
-        'No se actualizó ningún registro. Verifica que tu cuenta tenga el rol correcto.',
+        'No tienes permisos para realizar esta acción.',
     };
   }
   return { ok: true };

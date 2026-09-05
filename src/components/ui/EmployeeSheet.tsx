@@ -55,7 +55,7 @@ function emptyForm(): FormState {
     seccion: "",
     puesto: "",
     categoria: "N/A",
-    turno: "1",
+    turno: "",
     fecha_ingreso: localTodayIso(),
     ruta: "",
     parada: "",

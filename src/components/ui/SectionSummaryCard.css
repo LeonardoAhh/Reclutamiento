@@ -25,11 +25,6 @@ button.section-summary-card:hover {
   box-shadow: 0 2px 8px color-mix(in srgb, var(--color-ink) 6%, transparent);
 }
 
-button.section-summary-card:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .section-summary-card--selected {
   border-color: var(--color-primary);
   background: var(--color-surface-soft);

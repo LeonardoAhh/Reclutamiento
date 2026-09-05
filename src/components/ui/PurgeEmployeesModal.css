@@ -155,11 +155,6 @@
   text-transform: none;
 }
 
-.purge-employees-modal__confirm-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
-}
 
 .purge-employees-modal__confirm-input:disabled {
   background: var(--color-surface-soft);

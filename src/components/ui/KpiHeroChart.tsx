@@ -37,6 +37,7 @@ export interface DailyKpiData {
   dateIso: string;
   vacantesPlantilla: number;
   vacantesBackup: number;
+  vacantesStarlite: number;
   cobertura: number;
 }
 
@@ -60,6 +61,7 @@ interface KpiHeroChartProps {
 const PALETTE = {
   red: 'var(--color-error)',
   amber: 'var(--color-accent-amber)',
+  starlite: 'var(--color-accent-purple-deep)',
   ink: 'var(--color-ink)',
   grid: 'var(--color-hairline)',
   axis: 'var(--color-muted)',
@@ -193,6 +195,9 @@ function DayCard({ data }: DayCardProps) {
       <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
         +{data.vacantesBackup}B
       </p>
+      <p className="kpi-hero-day-card__vacancies">
+        +{data.vacantesStarlite}S
+      </p>
     </div>
   );
 }
@@ -213,20 +218,33 @@ interface ChartHeaderProps {
 function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
   if (!data.length) return null;
 
-  const avgCobertura = data.reduce((s, d) => s + d.cobertura, 0) / data.length;
   const minCobertura = Math.min(...data.map((d) => d.cobertura));
   const isCriticalWeek = minCobertura < 90;
 
   return (
     <div className="kpi-hero-header">
-      {/* Título */}
-      <div>
-        <h2 className="kpi-hero-title">
-          Vacantes y Procesos
-        </h2>
+      <div className="kpi-hero-heading">
+        <h2 className="kpi-hero-title">Cobertura</h2>
+        <ul className="kpi-hero-legend" aria-label="Series del gráfico">
+          <li>
+            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--plantilla" aria-hidden="true" />
+            Plantilla
+          </li>
+          <li>
+            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--backup" aria-hidden="true" />
+            Backup
+          </li>
+          <li>
+            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--starlite" aria-hidden="true" />
+            Starlite
+          </li>
+          <li>
+            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--coverage" aria-hidden="true" />
+            Cobertura
+          </li>
+        </ul>
       </div>
 
-      {/* KPIs destacados y Navegación */}
       <div className="kpi-hero-metrics">
         <div className="kpi-hero-avg-container">
           {weekNumber && (
@@ -315,7 +333,7 @@ function ChartEmpty() {
 export function KpiHeroChart({
   data,
   height,
-  ariaLabel = 'Gráfica de vacantes plantilla, vacantes backup y cobertura por día de la semana',
+  ariaLabel = 'Gráfica de vacantes plantilla, vacantes backup, vacantes Starlite y cobertura por día de la semana',
   variant = 'default',
   onClick,
   onPrevWeek,
@@ -350,9 +368,11 @@ export function KpiHeroChart({
         return (
           typeof d.vacantesPlantilla === 'number' &&
           typeof d.vacantesBackup === 'number' &&
+          typeof d.vacantesStarlite === 'number' &&
           typeof d.cobertura === 'number' &&
           !Number.isNaN(d.vacantesPlantilla) &&
           !Number.isNaN(d.vacantesBackup) &&
+          !Number.isNaN(d.vacantesStarlite) &&
           !Number.isNaN(d.cobertura)
         );
       })
@@ -377,7 +397,7 @@ export function KpiHeroChart({
     ? 0
     : Math.min(...chartData.map((d) => d.cobertura));
   const yRightMin = Math.floor(Math.min(coberturaMin, 90) / 10) * 10;
-  const yRightMax = 110;
+  const yRightMax = 100;
 
   return (
     <figure
@@ -517,6 +537,19 @@ export function KpiHeroChart({
                   animationBegin={100}
                 />
 
+                <Bar
+                  yAxisId="left"
+                  dataKey="vacantesStarlite"
+                  name="Vacantes Starlite"
+                  fill={PALETTE.starlite}
+                  fillOpacity={0.85}
+                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
+                  isAnimationActive
+                  animationDuration={600}
+                  animationEasing="ease-out"
+                  animationBegin={200}
+                />
+
                 <Line
                   yAxisId="right"
                   type="monotone"
@@ -551,10 +584,6 @@ export function KpiHeroChart({
                         ))}
                       </div>
                     )}
-
-          <p className="kpi-hero-footer-label">
-            KPI RECLUTAMIENTO
-          </p>
         </>
       )}
     </figure>

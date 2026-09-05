@@ -193,11 +193,6 @@
   font-weight: var(--type-body-sm-strong-weight);
 }
 
-.empleados__rail-item:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .empleados__rail-name {
   flex: 1 1 0;
   min-inline-size: 0;
@@ -296,11 +291,6 @@
 .empleados__acc-trigger:hover,
 .empleados__acc-trigger[aria-expanded="true"] {
   background: var(--color-surface-soft);
-}
-
-.empleados__acc-trigger:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 .empleados__acc-name {

@@ -1,8 +1,8 @@
 {
-  "version": "0.1.8",
-  "fecha": "2026-09-04",
+  "version": "0.1.10",
+  "fecha": "2026-09-05",
   "nivel": "success",
   "titulo": "¡We are ready!",
-  "mensaje": "Mejoras de rendimiento y optimización.",
+  "mensaje": "Mejoras en la interfaz de usuario.",
   "notificar": true
 }

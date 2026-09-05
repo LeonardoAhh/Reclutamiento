@@ -110,11 +110,6 @@
   border-color: var(--color-hairline-strong);
 }
 
-.bono-page__select:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .bono-page__search-control .search-field__input {
   font-size: var(--type-body-md-size);
 }
@@ -328,11 +323,6 @@
   gap: var(--design-spacing-xxs);
 }
 
-.bono-page__employee-card:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .bono-page__employee-number {
   display: inline-flex;
   align-items: center;
@@ -475,11 +465,5 @@
   .bono-page__employee-card:hover {
     border-color: var(--color-hairline-strong);
     background: var(--color-surface-soft);
-  }
-}
-
-@media (forced-colors: active) {
-  .bono-page__select:focus-visible {
-    outline-color: Highlight;
   }
 }

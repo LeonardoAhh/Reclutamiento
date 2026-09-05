@@ -48,8 +48,3 @@
   color: var(--color-ink);
   border-color: var(--color-hairline-strong);
 }
-
-.bajas-filters__reset:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}

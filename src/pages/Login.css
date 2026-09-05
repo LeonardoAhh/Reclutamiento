@@ -290,7 +290,7 @@
 }
 
 @media (hover: hover) {
-  .login__input:not(:disabled):hover {
+  .login__input:not(:disabled):hover:not(:focus-visible) {
     border-color: var(--color-ink);
   }
 

@@ -12,14 +12,10 @@
     box-shadow var(--transition-fast);
 }
 
-.search-field:hover {
+.search-field:hover:not(:focus-within) {
   border-color: var(--color-hairline-strong);
 }
 
-.search-field:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .search-field__icon {
   display: inline-flex;
@@ -41,10 +37,6 @@
 
 .search-field__clear:hover {
   color: var(--color-ink);
-}
-
-.search-field__clear:focus-visible {
-  outline: none;
 }
 
 .search-field .search-field__input {
@@ -73,8 +65,6 @@
 .search-field .search-field__input:focus,
 .search-field .search-field__input:focus-visible {
   border: 0;
-  outline: none;
-  box-shadow: none;
 }
 
 .search-field .search-field__input::placeholder {

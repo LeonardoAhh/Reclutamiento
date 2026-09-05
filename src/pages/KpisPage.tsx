@@ -52,7 +52,10 @@ import {
   formatProjectionDate,
 } from "@/lib/dates";
 import type { Employee } from "@/lib/types";
-import { calculateWorkforceProjection } from "@/lib/workforceProjection";
+import {
+  calculateWorkforceProjection,
+  summarizeOperationalCoverage,
+} from "@/lib/workforceProjection";
 import { WorkforceProjection } from "./kpis-components/WeeklyWorkforceProjection";
 import "./KpisPage.css";
 
@@ -397,44 +400,23 @@ export function KpisPage() {
         ...realEmpleadosActuales,
         ...realBajasHistoricas,
       ];
-      const coverageForDay = calculatePositionCoverage(
+      const projectionForDay = calculateWorkforceProjection(
         mockEmployeesForDay,
-        comments,
         positions,
         currentDayIso,
+        dismissedKeys,
       );
-
-      let vacantesPlantilla = 0;
-      let vacantesBackup = 0;
-      let realTotal = 0;
-      let objetivoGlobal = 0;
-
-      for (const pos of coverageForDay) {
-        const key = `${pos.area}-${pos.seccion || "none"}-${pos.puesto}`;
-        if (dismissedKeys.has(key)) continue;
-
-        realTotal += pos.plantilla_real;
-        objetivoGlobal += pos.plantilla_objetivo;
-        if (pos.plantilla_real < pos.plantilla_autorizada) {
-          vacantesPlantilla += pos.plantilla_autorizada - pos.plantilla_real;
-          vacantesBackup += pos.backup;
-        } else {
-          vacantesBackup += Math.max(
-            0,
-            pos.plantilla_objetivo - pos.plantilla_real,
-          );
-        }
-      }
-
-      const cobertura =
-        objetivoGlobal > 0 ? Math.round((realTotal / objetivoGlobal) * 100) : 0;
+      const operationalCoverage = summarizeOperationalCoverage(
+        projectionForDay.current,
+      );
 
       days.push({
         day: dayName,
         dateIso: currentDayIso,
-        vacantesPlantilla,
-        vacantesBackup,
-        cobertura,
+        vacantesPlantilla: projectionForDay.current.plantilla.vacancies,
+        vacantesBackup: projectionForDay.current.backup.vacancies,
+        vacantesStarlite: projectionForDay.current.starlite.vacancies,
+        cobertura: operationalCoverage.percentage ?? 0,
       });
 
       // Stop projecting past today if needed, but showing flat lines for the rest of the week is standard
@@ -442,7 +424,7 @@ export function KpisPage() {
     }
 
     return days;
-  }, [currentWeek.start, employees, bajas, positions, comments]);
+  }, [currentWeek.start, employees, bajas, positions, dismissedKeys]);
 
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(

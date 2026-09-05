@@ -1,12 +1,12 @@
 import { useEffect, useId, useMemo, useState, useRef } from 'react';
-import { CircleCheckBig, PenLine, ShieldAlert, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
+import { CircleCheckBig, PenLine, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
 import { Save as SaveIconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
-import { formatDateTimeMx, formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
+import { formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { FormWizard } from './FormWizard';
@@ -20,7 +20,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
-import { Checkbox } from '@/components/ui/Checkbox';
 import {
   getRecruiterAccessCardName,
   RECLUTADORES_ACTIVOS,
@@ -143,7 +142,6 @@ export function CandidateModal({
 
   const { positions } = usePositions();
   const { employees, comments, noCitados } = useSupabaseData();
-  const [overrideDuplicate, setOverrideDuplicate] = useState(false);
 
   /**
    * Cobertura actual de cada puesto. Sirve para detectar qué puestos
@@ -220,7 +218,6 @@ export function CandidateModal({
       setErrorMsg(null);
       setIsSuccess(false);
       setSubmitting(false);
-      setOverrideDuplicate(false);
       setAccessCard(null);
       setForm(candidate ? fromCandidate(candidate) : emptyForm());
       setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: false }), {} as Record<keyof FormState, boolean>));
@@ -254,12 +251,6 @@ export function CandidateModal({
     return null;
   }, [telDigits, candidates, noCitados, candidate?.id]);
 
-  useEffect(() => {
-    if (!duplicateSource) {
-      setOverrideDuplicate(false);
-    }
-  }, [duplicateSource]);
-
   // Validations
   const isValidName = (name: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name) && name.trim().split(/\s+/).length >= 2;
   const nombreError = !form.nombre.trim()
@@ -274,7 +265,7 @@ export function CandidateModal({
       ? 'Debe tener exactamente 10 dígitos.'
       : isSequentialOrRepeated(telDigits)
         ? 'El número de teléfono parece ser falso o incorrecto.'
-        : (duplicateSource && !overrideDuplicate)
+        : duplicateSource
           ? `Teléfono duplicado en ${duplicateSource}`
           : null;
 
@@ -448,7 +439,7 @@ export function CandidateModal({
 
   const fieldsContacto = (
     <>
-      <div className="form-group form-group--span-2">
+      <div className="form-group">
         <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
         <input
           id="cand-nombre"
@@ -491,6 +482,8 @@ export function CandidateModal({
             placeholder="442 123 4567"
             autoComplete="off"
             disabled={isEdit && !isAdmin}
+            aria-invalid={touched.telefono && !!errors.telefono || undefined}
+            aria-describedby={touched.telefono && errors.telefono ? `${formId}-telefono-error` : undefined}
             className={touched.telefono && errors.telefono ? 'input-error' : ''}
           />
           {isPhoneValid && (
@@ -500,49 +493,13 @@ export function CandidateModal({
             <XCircle size={18} className="phone-validation-icon invalid" />
           )}
         </div>
-        {touched.telefono && errors.telefono && !duplicateSource && <span className="form-error-text">{errors.telefono}</span>}
-        {duplicateSource && (
-          <div className="candidate-modal__dup-warning">
-            <span className="candidate-modal__dup-text">
-              Registrado en {duplicateSource}
-            </span>
-            <label className="candidate-modal__dup-override">
-              <Checkbox
-                checked={overrideDuplicate}
-                onChange={(e) => setOverrideDuplicate(e.target.checked)}
-              />
-              <span>Ignorar</span>
-            </label>
-          </div>
+        {touched.telefono && errors.telefono && (
+          <span id={`${formId}-telefono-error`} className={duplicateSource ? 'sr-only' : 'form-error-text'}>
+            {errors.telefono}
+          </span>
         )}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="cand-email">Email</label>
-        <input
-          id="cand-email"
-          type="email"
-          value={form.email}
-          list="email-domains"
-          onChange={(e) => {
-            setForm({ ...form, email: e.target.value });
-            if (!touched.email) setTouched({ ...touched, email: true });
-          }}
-          onBlur={() => {
-            if (!touched.email) setTouched({ ...touched, email: true });
-          }}
-          placeholder="candidato@correo.com"
-          autoComplete="off"
-          disabled={isEdit && !isAdmin}
-          className={touched.email && errors.email ? 'input-error' : ''}
-        />
-        <datalist id="email-domains">
-          {form.email && !form.email.includes('@') && ['gmail.com', 'outlook.com', 'hotmail.com'].map(domain => (
-            <option key={domain} value={`${form.email}@${domain}`} />
-          ))}
-        </datalist>
-        {touched.email && errors.email && <span className="form-error-text">{errors.email}</span>}
-      </div>
     </>
   );
 
@@ -567,7 +524,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, area: true, seccion: false, puesto: false });
           }}
           options={areas.map((a) => ({ value: a, label: a }))}
-          placeholder="Seleccione área…"
+          placeholder="Seleccionar…"
           disabled={(isEdit && !isAdmin) || noOpenPositions}
           aria-invalid={touched.area && !!errors.area}
         />
@@ -584,14 +541,14 @@ const fieldsPosicion = (
             setTouched({ ...touched, seccion: true, puesto: false });
           }}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccione sección…"
+          placeholder="Seleccionar…"
           disabled={!form.area || (isEdit && !isAdmin)}
           aria-invalid={touched.seccion && !!errors.seccion}
         />
         {touched.seccion && errors.seccion && <span className="form-error-text">{errors.seccion}</span>}
       </div>
 
-      <div className="form-group form-group--span-2">
+      <div className="form-group">
         <label htmlFor="cand-puesto">Puesto <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-puesto"
@@ -601,7 +558,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, puesto: true });
           }}
           options={puestosForSection.map((p) => ({ value: p, label: p }))}
-          placeholder="Seleccione puesto…"
+          placeholder="Seleccionar…"
           disabled={!form.seccion || (isEdit && !isAdmin)}
           aria-invalid={touched.puesto && !!errors.puesto}
         />
@@ -631,7 +588,7 @@ const fieldsPosicion = (
             setForm({ ...form, reclutador: val });
             setTouched({ ...touched, reclutador: true });
           }}
-          placeholder="Quién lleva el proceso"
+          placeholder="Seleccionar..."
           options={RECLUTADORES_DISPONIBLES}
           disabled={isEdit && !isAdmin}
           aria-label="Reclutador a cargo del proceso, obligatorio"
@@ -641,7 +598,7 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-source">Fuente <span className="text-error">*</span></label>
+        <label htmlFor="cand-source">Medio de reclutamiento <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-source"
           value={form.source}
@@ -650,7 +607,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, source: true });
           }}
           options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccione fuente…"
+          placeholder="Seleccionar..."
           disabled={isEdit && !canEditCitaAndSource}
           aria-invalid={touched.source && !!errors.source}
         />
@@ -658,7 +615,7 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-starlite">Etiqueta Starlite</label>
+        <label htmlFor="cand-starlite">Starlite</label>
         <CustomSelect
           id="cand-starlite"
           value={form.is_starlite ? 'true' : 'false'}
@@ -671,21 +628,6 @@ const fieldsPosicion = (
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="cand-fecha">Fecha de contacto <span className="text-error">*</span></label>
-        <input
-          id="cand-fecha"
-          type="date"
-          value={form.fecha_aplicacion}
-          onChange={(e) => {
-            setForm({ ...form, fecha_aplicacion: e.target.value });
-            setTouched({ ...touched, fecha_aplicacion: true });
-          }}
-          disabled={isEdit && !isAdmin}
-          className={touched.fecha_aplicacion && errors.fecha_aplicacion ? 'input-error' : ''}
-        />
-        {touched.fecha_aplicacion && errors.fecha_aplicacion && <span className="form-error-text">{errors.fecha_aplicacion}</span>}
-      </div>
 
       <div className="form-group">
         <label htmlFor="cand-fecha-cita">Fecha de entrevista <span className="text-error">*</span></label>
@@ -706,22 +648,6 @@ const fieldsPosicion = (
   );
 
   const errorNotice = null;
-
-  const auditNotice = (isAdmin && isEdit && candidate) ? (
-    <div className="form-group form-group--span-2 candidate-modal__audit">
-      <h4><ShieldAlert size={16} aria-hidden="true" /> Auditoría de Sistema</h4>
-      <div className="candidate-modal__audit-grid">
-        <div>
-          <span className="candidate-modal__audit-label">Fecha de Creación:</span>
-          <span>{formatDateTimeMx(candidate.created_at)}</span>
-        </div>
-        <div>
-          <span className="candidate-modal__audit-label">Última Modificación:</span>
-          <span>{formatDateTimeMx(candidate.updated_at)}</span>
-        </div>
-      </div>
-    </div>
-  ) : null;
 
   const useWizard = !accessCard && isMobile;
   const footerActions = !accessCard && !useWizard ? (
@@ -796,7 +722,6 @@ const fieldsPosicion = (
                 isValid: !errors.reclutador && !errors.source && !errors.fecha_aplicacion && !errors.fecha_cita,
                 content: <div className="form-grid">
                   {fieldsProceso}
-                  {auditNotice}
                 </div>,
               },
             ]}
@@ -808,7 +733,6 @@ const fieldsPosicion = (
             {fieldsContacto}
             {fieldsPosicion}
             {fieldsProceso}
-            {auditNotice}
           </div>
 
           {errorNotice}

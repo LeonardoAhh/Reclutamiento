@@ -16,16 +16,16 @@
 }
 
 .popover-content[data-state='open'][data-side='top'] {
-  animation: popover-slide-up-and-fade var(--transition-base);
+  animation: popover-slide-up-and-fade var(--transition-base) both;
 }
 .popover-content[data-state='open'][data-side='right'] {
-  animation: popover-slide-right-and-fade var(--transition-base);
+  animation: popover-slide-right-and-fade var(--transition-base) both;
 }
 .popover-content[data-state='open'][data-side='bottom'] {
-  animation: popover-slide-down-and-fade var(--transition-base);
+  animation: popover-slide-down-and-fade var(--transition-base) both;
 }
 .popover-content[data-state='open'][data-side='left'] {
-  animation: popover-slide-left-and-fade var(--transition-base);
+  animation: popover-slide-left-and-fade var(--transition-base) both;
 }
 
 @keyframes popover-slide-up-and-fade {

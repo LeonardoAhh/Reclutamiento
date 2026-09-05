@@ -26,11 +26,6 @@
   box-shadow: var(--shadow-subtle);
 }
 
-.btn-utility:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .btn-utility:active {
   transform: scale(0.98);
 }

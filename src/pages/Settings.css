@@ -147,10 +147,7 @@
 }
 
 .settings__input:focus-visible {
-  outline: none;
-  border-color: var(--color-ink);
   background: var(--color-canvas);
-  box-shadow: var(--shadow-focus);
 }
 
 .settings__input:disabled {

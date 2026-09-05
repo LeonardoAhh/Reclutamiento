@@ -74,11 +74,6 @@
   border-color: var(--color-hairline-strong);
 }
 
-.pagination__btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
 .pagination__btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BadgeCheck, FileImage, EllipsisVertical, PenLine, Trash2, UserMinus } from 'lucide-react';
+import { FileImage, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,6 @@ interface CandidateRowActionsProps {
   onEdit: (c: Candidate) => void;
   onDelete?: (c: Candidate) => void;
   onAccessCard?: (c: Candidate) => void;
-  onHire?: (c: Candidate) => void;
-  onBaja?: (c: Candidate) => void;
 }
 
 export function CandidateRowActions({
@@ -25,8 +23,6 @@ export function CandidateRowActions({
   onEdit,
   onDelete,
   onAccessCard,
-  onHire,
-  onBaja,
 }: CandidateRowActionsProps) {
   const [open, setOpen] = useState(false);
 
@@ -71,34 +67,12 @@ export function CandidateRowActions({
             </DropdownMenuItem>
           )}
 
-          {onHire && (
-            <DropdownMenuItem asChild>
-              <button type="button" onClick={(e) => run(e, onHire)}>
-                <BadgeCheck aria-hidden="true" />
-                <span>Contratar</span>
-              </button>
-            </DropdownMenuItem>
-          )}
-
           <DropdownMenuItem asChild>
             <button type="button" onClick={(e) => run(e, onEdit)}>
               <PenLine aria-hidden="true" />
               <span>Editar</span>
             </button>
           </DropdownMenuItem>
-
-          {onBaja && (
-            <DropdownMenuItem asChild>
-              <button
-                type="button"
-                className="dropdown-menu-item--danger"
-                onClick={(e) => run(e, onBaja)}
-              >
-                <UserMinus aria-hidden="true" />
-                <span>Baja</span>
-              </button>
-            </DropdownMenuItem>
-          )}
 
           {onDelete && (
             <>

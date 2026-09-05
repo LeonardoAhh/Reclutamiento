@@ -23,11 +23,6 @@
   background: var(--color-surface-soft);
 }
 
-.reference-attachment:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .reference-attachment__preview {
   display: flex;
   inline-size: var(--feature-reference-attachment-thumbnail-inline-size);
@@ -76,10 +71,4 @@
 .reference-attachment__icon {
   flex-shrink: 0;
   color: var(--color-muted);
-}
-
-@media (forced-colors: active) {
-  .reference-attachment:focus-visible {
-    outline-color: ButtonText;
-  }
 }

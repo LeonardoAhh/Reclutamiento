@@ -125,87 +125,17 @@ export function MissingPositionsModal({
       );
   }, [coverage]);
 
-  // 3. Totales recalculados excluyendo filas bloureadas
-  const { totalFaltanPlantilla, totalFaltanBackup, totalStarlite } = useMemo(() => {
-    let faltanPlantilla = 0;
-    let faltanBackup = 0;
-    let starlite = 0;
-    missingPositions.forEach((r) => {
-      const key = `${r.pos.area}-${r.pos.seccion || 'none'}-${r.pos.puesto}`;
-      if (!dismissedKeys.has(key)) {
-        faltanPlantilla += r.netPlantilla;
-        faltanBackup += r.netBackup;
-        starlite += r.netStarlite;
-      }
-    });
-    return { totalFaltanPlantilla: faltanPlantilla, totalFaltanBackup: faltanBackup, totalStarlite: starlite };
-  }, [missingPositions, dismissedKeys]);
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       className="missing-positions-modal"
       icon={<CircleAlertIcon size={20} aria-hidden="true" />}
-      title="Vacantes y Procesos"
-      size= "sm"
+      title="Vacantes Pendientes"
+      size="lg"
     >
       <div className="modal-body missing-positions-modal__body">
 
-        {/* Encabezado de Totales */}
-        <header
-          className="missing-positions-modal__summary"
-          aria-label="Resumen de vacantes pendientes"
-        >
-          <div
-            className="missing-positions-modal__summary-item missing-positions-modal__summary-item--error"
-            data-testid="summary-plantilla"
-          >
-            <span className="missing-positions-modal__summary-value">
-              {totalFaltanPlantilla}
-            </span>
-            <span className="missing-positions-modal__summary-label">
-              PLANTILLA
-            </span>
-          </div>
-
-          {totalFaltanBackup > 0 && (
-            <>
-              <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
-              <div
-                className="missing-positions-modal__summary-item missing-positions-modal__summary-item--warning"
-                data-testid="summary-backup"
-              >
-                <span className="missing-positions-modal__summary-value">
-                  {totalFaltanBackup}
-                </span>
-                <span className="missing-positions-modal__summary-label">
-                  BACKUP
-                </span>
-              </div>
-            </>
-          )}
-
-          {totalStarlite > 0 && (
-            <>
-              <div className="missing-positions-modal__summary-divider" aria-hidden="true" />
-              <div
-                className="missing-positions-modal__summary-item missing-positions-modal__summary-item--starlite"
-                data-testid="summary-starlite"
-              >
-                <span className="missing-positions-modal__summary-value">
-                  {totalStarlite}
-                </span>
-                <span className="missing-positions-modal__summary-label">
-                  <Star size={12} className="missing-positions-modal__starlite-icon" style={{ display: 'inline-block', marginRight: '4px' }} aria-hidden="true" />
-                  STARLITE
-                </span>
-              </div>
-            </>
-          )}
-        </header>
-
-        {/* Contenido Principal */}
         {missingPositions.length === 0 ? (
           <p className="missing-positions-modal__empty">
             Excelente, no hay puestos con falta de cobertura.
@@ -226,7 +156,6 @@ export function MissingPositionsModal({
               <table className="missing-positions-modal__table">
                 <thead>
                   <tr>
-                    <th scope="col">Sección</th>
                     <th scope="col">Puesto</th>
                     <th
                       scope="col"
@@ -276,16 +205,14 @@ export function MissingPositionsModal({
                         aria-pressed={isDismissed}
                       >
                         <td>
-                          <div className="missing-positions-modal__loc">
-                            <span className="missing-positions-modal__loc-area">
+                          <div className="missing-positions-modal__puesto">
+                            <span className="missing-positions-modal__puesto-name">
+                              {pos.puesto}
+                            </span>
+                            <span className="missing-positions-modal__puesto-section">
                               {pos.seccion || pos.area}
                             </span>
                           </div>
-                        </td>
-                        <td>
-                          <span className="missing-positions-modal__puesto-name">
-                            {pos.puesto}
-                          </span>
                           {r.proximos > 0 && (
                             <div className="missing-positions-modal__prox-details">
                               <Tooltip content="Cubiertas (ingreso futuro)">

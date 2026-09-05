@@ -24,9 +24,6 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-lg);
   }
-  .employee-modal .form-grid.form-grid--3-cols {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
 }
 
 /* ── Wizard mobile: layout flex vertical ── */

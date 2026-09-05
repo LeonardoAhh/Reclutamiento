@@ -34,12 +34,6 @@
   color: var(--color-primary);
 }
 
-.attachment-card__preview--interactive:focus-visible,
-.attachment-card__remove:focus-visible {
-  outline: calc(var(--border-width) * 2) solid var(--color-primary);
-  outline-offset: calc(var(--border-width) * 2);
-}
-
 .attachment-card__image {
   display: block;
   width: 100%;
@@ -97,11 +91,4 @@
 .attachment-card__remove:hover {
   background: var(--color-error-tint);
   color: var(--color-error);
-}
-
-@media (forced-colors: active) {
-  .attachment-card__preview--interactive:focus-visible,
-  .attachment-card__remove:focus-visible {
-    outline-color: ButtonText;
-  }
 }

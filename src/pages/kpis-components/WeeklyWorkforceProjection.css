@@ -89,8 +89,6 @@
 }
 
 .workforce-projection__details summary:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
   border-radius: var(--rounded-xs);
 }
 

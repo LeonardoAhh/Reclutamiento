@@ -2,7 +2,6 @@
   position: relative;
   border-radius: var(--rounded-lg);
   cursor: pointer;
-  outline: none;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -14,10 +13,6 @@
 /* Always-visible cards don't act as buttons */
 .kpi-reveal--always {
   cursor: default;
-}
-
-.kpi-reveal:focus-visible {
-  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .kpi-reveal__inner {

@@ -147,9 +147,7 @@
 }
 
 .config-search__icon--action:focus-visible {
-  outline: none;
   border-radius: var(--rounded-xs);
-  box-shadow: var(--shadow-focus);
 }
 
 .config-search input {
@@ -302,12 +300,6 @@
   box-shadow: none;
 }
 
-.config-segmented-control__button:focus-visible,
-.config-view-switch__button:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .config-filter-select {
   width: 100%;
   height: var(--touch-target-min);
@@ -319,11 +311,6 @@
   border-radius: var(--rounded-xs);
 }
 
-.config-filter-select:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .config-filter-reset {
   width: 100%;
@@ -605,11 +592,6 @@
   height: var(--spacing-lg);
 }
 
-.config-card__details-toggle:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 /* ── Propiedades estilo Notion ────────────────────────────────── */
 
 .config-card__properties {
@@ -799,11 +781,6 @@
   font-size: var(--type-body-sm-size);
 }
 
-.config-month-select:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .config-calendar-layout {
   display: flex;
@@ -1603,11 +1580,6 @@
   background: var(--color-surface-soft);
 }
 
-.analisis-hero__card:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .analisis-hero__card[aria-pressed="true"] {
   border-color: var(--color-primary);
   background: var(--color-primary);
@@ -1786,11 +1758,6 @@
 
 .tabulador-search-header .search-field {
   min-block-size: calc(var(--touch-target-min) + 2 * var(--spacing-xxs) + 2 * var(--border-width));
-}
-
-.tabulador-header .config-tab:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
 }
 
 .config-tabs {

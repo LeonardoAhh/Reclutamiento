@@ -24,36 +24,6 @@
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
-.activity-tracking-section__toggle {
-  display: inline-flex;
-  min-inline-size: 0;
-  min-block-size: var(--touch-target-min);
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: 0;
-  border: 0;
-  border-radius: var(--rounded-md);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-
-.activity-tracking-section__toggle span {
-  overflow-wrap: anywhere;
-}
-
-.activity-tracking-section__toggle:hover {
-  color: var(--color-charcoal);
-}
-
-.activity-tracking-section__toggle:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .activity-tracking-section__count {
   color: var(--color-muted);
   font-family: var(--font-body);
@@ -82,10 +52,6 @@
   gap: var(--spacing-lg);
 }
 
-.activity-tracking-section__panel[hidden] {
-  display: none;
-}
-
 .activity-tracking-section__status-filters {
   display: grid;
   grid-template-columns: repeat(
@@ -103,7 +69,6 @@
   min-block-size: var(--touch-target-min);
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
   padding: 0 var(--spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -133,9 +98,10 @@
   color: var(--color-on-primary);
 }
 
-.activity-tracking-section__status-filter:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
+.activity-tracking-section__filter-content {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
 }
 
 .activity-tracking-section__filter-count {
@@ -198,13 +164,6 @@
   cursor: pointer;
 }
 
-.activity-tracking-section__search-input:focus,
-.activity-tracking-section__select:focus {
-  border-color: var(--color-primary);
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-  box-shadow: var(--shadow-focus);
-}
 
 .activity-tracking-section__grid {
   display: grid;

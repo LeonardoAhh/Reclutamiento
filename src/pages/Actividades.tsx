@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import * as Tabs from "@radix-ui/react-tabs";
 import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -106,17 +107,13 @@ export function Actividades() {
 
   /* ── Filter / Search / Sort state ────────────────────────────────────── */
   const [statusFilter, setStatusFilter] = useState<ActivityStatus | "todas">(
-    "todas",
+    "pendiente",
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest" | "status">(
     "newest",
   );
   const [recruiterFilter, setRecruiterFilter] = useState("");
-
-  /* ── Section collapse & item limits ────────────────────────────────── */
-  const [responsabilidadesCollapsed, setresponsabilidadesCollapsed] = useState(true);
-  const [actividadesCollapsed, setActividadesCollapsed] = useState(true);
 
   /* ── Edit form state ───────────────────────────────────────────────── */
   const [editTitulo, setEditTitulo] = useState("");
@@ -576,85 +573,95 @@ export function Actividades() {
           <h1>Actividades</h1>
         </header>
 
-      <div className="actividades-layout">
-        <VacancyAssignmentSection
-          vacancies={vacantesManuales}
-          positions={positions}
-          isAdmin={isAdmin}
-          currentUserId={profile?.id}
-          isNew={isNewActivity}
-          onCreate={() => setIsCreateVacanteModalOpen(true)}
-          onAssign={setAssignModalVacancy}
-          onDelete={handleDelete}
-        />
+      <Tabs.Root className="actividades-tabs" defaultValue="vacancies">
+        <Tabs.List className="actividades-tabs__list" aria-label="Secciones de actividades">
+          <Tabs.Trigger className="actividades-tabs__trigger" value="vacancies">
+            Vacantes
+          </Tabs.Trigger>
+          <Tabs.Trigger className="actividades-tabs__trigger" value="responsibilities">
+            Responsabilidades
+          </Tabs.Trigger>
+          <Tabs.Trigger className="actividades-tabs__trigger" value="activities">
+            Actividades
+          </Tabs.Trigger>
+        </Tabs.List>
 
-        <ResponsibilitiesSection
-          responsibilities={responsabilidades}
-          pageItems={responsabilidadesPaginadas}
-          isCollapsed={responsabilidadesCollapsed}
-          isAdmin={isAdmin}
-          currentUserId={profile?.id}
-          pagination={{
-            currentPage: responsabilidadesPage,
-            totalPages: responsabilidadesTotalPages,
-            onPageChange: goToresponsabilidadesPage,
-            onPrev: prevresponsabilidadesPage,
-            onNext: nextresponsabilidadesPage,
-            canGoPrev: canGoPrevResponsabilidades,
-            canGoNext: canGoNextResponsabilidades,
-          }}
-          isNew={isNewActivity}
-          onToggle={() =>
-            setresponsabilidadesCollapsed((isCollapsed) => !isCollapsed)
-          }
-          onCreate={() => setIsCreateModalOpen(true)}
-          onEdit={openEdit}
-          onDelete={handleDelete}
-          onViewReference={setLightboxSrc}
-        />
+        <Tabs.Content className="actividades-tabs__content" value="vacancies">
+          <VacancyAssignmentSection
+            vacancies={vacantesManuales}
+            positions={positions}
+            isAdmin={isAdmin}
+            currentUserId={profile?.id}
+            isNew={isNewActivity}
+            onCreate={() => setIsCreateVacanteModalOpen(true)}
+            onAssign={setAssignModalVacancy}
+            onDelete={handleDelete}
+          />
+        </Tabs.Content>
 
-        <ActivitiesSection
-          activities={allUnicas}
-          filteredActivities={unicas}
-          pageItems={actividadesPaginadas}
-          recruiters={reclutadores}
-          isCollapsed={actividadesCollapsed}
-          isAdmin={isAdmin}
-          currentUserId={profile?.id}
-          statusFilter={statusFilter}
-          searchQuery={searchQuery}
-          sortOrder={sortOrder}
-          recruiterFilter={recruiterFilter}
-          statusCounts={statusCounts}
-          pagination={{
-            currentPage: actividadesPage,
-            totalPages: actividadesTotalPages,
-            onPageChange: goToActividadesPage,
-            onPrev: prevActividadesPage,
-            onNext: nextActividadesPage,
-            canGoPrev: canGoPrevActividades,
-            canGoNext: canGoNextActividades,
-          }}
-          isNew={isNewActivity}
-          onToggle={() =>
-            setActividadesCollapsed((isCollapsed) => !isCollapsed)
-          }
-          onStatusFilterChange={setStatusFilter}
-          onSearchQueryChange={setSearchQuery}
-          onSortOrderChange={setSortOrder}
-          onRecruiterFilterChange={setRecruiterFilter}
-          onClearFilters={() => {
-            setStatusFilter("todas");
-            setSearchQuery("");
-            setRecruiterFilter("");
-            setSortOrder("newest");
-          }}
-          onOpen={openDetails}
-          onEdit={openEdit}
-          onDelete={handleDelete}
-          onViewReference={setLightboxSrc}
-        />
-      </div>
+        <Tabs.Content className="actividades-tabs__content" value="responsibilities">
+          <ResponsibilitiesSection
+            responsibilities={responsabilidades}
+            pageItems={responsabilidadesPaginadas}
+            isAdmin={isAdmin}
+            currentUserId={profile?.id}
+            pagination={{
+              currentPage: responsabilidadesPage,
+              totalPages: responsabilidadesTotalPages,
+              onPageChange: goToresponsabilidadesPage,
+              onPrev: prevresponsabilidadesPage,
+              onNext: nextresponsabilidadesPage,
+              canGoPrev: canGoPrevResponsabilidades,
+              canGoNext: canGoNextResponsabilidades,
+            }}
+            isNew={isNewActivity}
+            onCreate={() => setIsCreateModalOpen(true)}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+            onViewReference={setLightboxSrc}
+          />
+        </Tabs.Content>
+
+        <Tabs.Content className="actividades-tabs__content" value="activities">
+          <ActivitiesSection
+            activities={allUnicas}
+            filteredActivities={unicas}
+            pageItems={actividadesPaginadas}
+            recruiters={reclutadores}
+            isAdmin={isAdmin}
+            currentUserId={profile?.id}
+            statusFilter={statusFilter}
+            searchQuery={searchQuery}
+            sortOrder={sortOrder}
+            recruiterFilter={recruiterFilter}
+            statusCounts={statusCounts}
+            pagination={{
+              currentPage: actividadesPage,
+              totalPages: actividadesTotalPages,
+              onPageChange: goToActividadesPage,
+              onPrev: prevActividadesPage,
+              onNext: nextActividadesPage,
+              canGoPrev: canGoPrevActividades,
+              canGoNext: canGoNextActividades,
+            }}
+            isNew={isNewActivity}
+            onStatusFilterChange={setStatusFilter}
+            onSearchQueryChange={setSearchQuery}
+            onSortOrderChange={setSortOrder}
+            onRecruiterFilterChange={setRecruiterFilter}
+            onClearFilters={() => {
+              setStatusFilter("pendiente");
+              setSearchQuery("");
+              setRecruiterFilter("");
+              setSortOrder("newest");
+            }}
+            onOpen={openDetails}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+            onViewReference={setLightboxSrc}
+          />
+        </Tabs.Content>
+      </Tabs.Root>
 
       <CreateVacancyModal
         isOpen={isCreateVacanteModalOpen}

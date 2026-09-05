@@ -190,10 +190,3 @@
     width: auto;
   }
 }
-
-@media (forced-colors: active) {
-  .reporte-publico__success-action:focus-visible {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
-  }
-}

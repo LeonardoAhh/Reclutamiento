@@ -64,10 +64,6 @@
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
-.reporte-publico__step-title:focus {
-  outline: none;
-}
-
 .reporte-publico__label {
   color: var(--color-ink);
   font-size: var(--type-body-sm-strong-size);
@@ -161,10 +157,6 @@
   background: var(--color-primary-tint);
 }
 
-.reporte-publico__radio-label:has(input:focus-visible) {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .reporte-publico .reporte-publico__radio-label input[type="radio"] {
   width: calc(var(--spacing-lg) + var(--spacing-xs));
@@ -197,11 +189,6 @@
 
 .reporte-publico .reporte-publico__radio-label input[type="radio"]:checked::before {
   transform: scale(1);
-}
-
-.reporte-publico .reporte-publico__radio-label input[type="radio"]:focus {
-  outline: none;
-  box-shadow: none;
 }
 
 .reporte-publico__actions {
@@ -240,20 +227,7 @@
     border-color: Highlight;
   }
 
-  .reporte-publico__radio-label:has(input:focus-visible) {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
-  }
-
   .reporte-publico .reporte-publico__radio-label input[type="radio"]::before {
     background: CanvasText;
-  }
-
-  .reporte-publico .form-group input:not([type="radio"]):focus-visible,
-  .reporte-publico .form-group textarea:focus-visible,
-  .reporte-publico .custom-select-trigger:focus-visible,
-  .reporte-publico__actions button:focus-visible {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
   }
 }

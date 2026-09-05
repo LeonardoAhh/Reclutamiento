@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Inbox, Search } from "lucide-react";
+import { Inbox, Search } from "lucide-react";
 import type { Activity, ActivityStatus } from "@/lib/types";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { Pagination } from "@/components/ui/Pagination";
@@ -28,7 +28,6 @@ interface ActivitiesSectionProps {
   filteredActivities: Activity[];
   pageItems: Activity[];
   recruiters: RecruiterOption[];
-  isCollapsed: boolean;
   isAdmin: boolean;
   currentUserId?: string;
   statusFilter: ActivityStatusFilter;
@@ -38,7 +37,6 @@ interface ActivitiesSectionProps {
   statusCounts: Record<ActivityStatusFilter, number>;
   pagination: ActivitiesPagination;
   isNew: (activity: Activity) => boolean;
-  onToggle: () => void;
   onStatusFilterChange: (status: ActivityStatusFilter) => void;
   onSearchQueryChange: (query: string) => void;
   onSortOrderChange: (order: ActivitySortOrder) => void;
@@ -72,7 +70,6 @@ export function ActivitiesSection({
   filteredActivities,
   pageItems,
   recruiters,
-  isCollapsed,
   isAdmin,
   currentUserId,
   statusFilter,
@@ -82,7 +79,6 @@ export function ActivitiesSection({
   statusCounts,
   pagination,
   isNew,
-  onToggle,
   onStatusFilterChange,
   onSearchQueryChange,
   onSortOrderChange,
@@ -105,20 +101,7 @@ export function ActivitiesSection({
           id="activity-tracking-heading"
           className="activity-tracking-section__title"
         >
-          <button
-            type="button"
-            className="activity-tracking-section__toggle"
-            onClick={onToggle}
-            aria-expanded={!isCollapsed}
-            aria-controls="actividades-panel"
-          >
-            {isCollapsed ? (
-              <ChevronRight size="var(--icon-size-md)" aria-hidden="true" />
-            ) : (
-              <ChevronDown size="var(--icon-size-md)" aria-hidden="true" />
-            )}
-            <span>Actividades</span>
-          </button>
+          <span>Actividades</span>
           <span
             className="activity-tracking-section__count"
             aria-label={countLabel}
@@ -134,7 +117,6 @@ export function ActivitiesSection({
       <div
         id="actividades-panel"
         className="activity-tracking-section__panel"
-        hidden={isCollapsed}
       >
         {activities.length > 0 && (
           <div className="activity-tracking-section__toolbar">
@@ -151,9 +133,11 @@ export function ActivitiesSection({
                   className="activity-tracking-section__status-filter"
                   onClick={() => onStatusFilterChange(key)}
                 >
-                  <span>{label}</span>
-                  <span className="activity-tracking-section__filter-count">
-                    {statusCounts[key]}
+                  <span className="activity-tracking-section__filter-content">
+                    <span>{label}</span>
+                    <span className="activity-tracking-section__filter-count">
+                      {statusCounts[key]}
+                    </span>
                   </span>
                 </button>
               ))}

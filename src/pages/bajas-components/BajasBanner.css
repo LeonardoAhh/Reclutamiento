@@ -51,11 +51,6 @@
   background: var(--color-canvas-soft);
 }
 
-.bajas-banner__action:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
 .bajas-banner__action:disabled {
   opacity: 0.5;
   cursor: not-allowed;

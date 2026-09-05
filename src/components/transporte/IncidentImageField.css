@@ -53,10 +53,6 @@
   border-color: var(--color-hairline-strong);
 }
 
-.incident-image-field__picker:has(input:focus-visible) {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .incident-image-field__picker:has(input:disabled) {
   cursor: not-allowed;
@@ -73,12 +69,5 @@
 @media (prefers-reduced-motion: reduce) {
   .incident-image-field__picker {
     transition: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .incident-image-field__picker:has(input:focus-visible) {
-    outline: calc(var(--border-width) * 2) solid ButtonText;
-    outline-offset: calc(var(--border-width) * 2);
   }
 }

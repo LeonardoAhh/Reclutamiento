@@ -31,36 +31,6 @@
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
-.responsibilities-section__toggle {
-  display: inline-flex;
-  min-inline-size: 0;
-  min-block-size: var(--touch-target-min);
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: 0;
-  border: 0;
-  border-radius: var(--rounded-md);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-
-.responsibilities-section__toggle span {
-  overflow-wrap: anywhere;
-}
-
-.responsibilities-section__toggle:hover {
-  color: var(--color-charcoal);
-}
-
-.responsibilities-section__toggle:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .responsibilities-section__count {
   color: var(--color-muted);
   font-family: var(--font-body);
@@ -86,10 +56,6 @@
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--spacing-lg);
-}
-
-.responsibilities-section__panel[hidden] {
-  display: none;
 }
 
 .responsibilities-section__grid {

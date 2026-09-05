@@ -603,13 +603,6 @@
   color: var(--color-ink);
 }
 
-.ai-chat-message-actions button:focus-visible,
-.ai-chat-quick-actions button:focus-visible,
-.ai-chat-scroll-latest:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .ai-chat-message-actions button:disabled,
 .ai-chat-quick-actions button:disabled {
   color: var(--color-muted-soft);
@@ -623,9 +616,6 @@
   block-size: var(--icon-size-sm);
 }
 
-.ai-chat-input-form:focus-within {
-  border-color: var(--color-primary);
-}
 
 .ai-chat-text-input {
   field-sizing: content;
@@ -654,8 +644,6 @@
 
 .ai-chat-text-input:focus,
 .ai-chat-text-input:focus-visible {
-  outline: none;
-  box-shadow: none;
   border: none;
 }
 
@@ -982,8 +970,6 @@
 
 .ai-chat-star-question__details summary:focus-visible {
   border-radius: var(--rounded-xs);
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
 }
 
 .ai-chat-star-question__details dl {
@@ -1103,7 +1089,6 @@
 .ai-history-search:focus-within {
   color: var(--color-primary);
   background: var(--color-surface);
-  box-shadow: 0 0 0 calc(var(--border-width) * 2) var(--color-primary);
 }
 
 .ai-history-search input {
@@ -1113,15 +1098,8 @@
   border: none;
   background: transparent;
   color: var(--color-ink);
-  outline: none;
   font-family: inherit;
   font-size: var(--type-caption-sm-size);
-}
-
-.ai-history-search input:focus,
-.ai-history-search input:focus-visible {
-  outline: none;
-  box-shadow: none;
 }
 
 .ai-history-search input::placeholder {
@@ -1283,11 +1261,6 @@
   font: inherit;
 }
 
-.ai-history-rename-form input:focus-visible {
-  border-color: var(--color-primary);
-  outline: calc(var(--border-width) * 2) solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
 
 .ai-history-rename-form button:disabled {
   opacity: 0.5;
@@ -1374,12 +1347,5 @@
 
   .ai-mobile-sheet-body .ai-history-heading h2 {
     display: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .ai-chat-input-form:focus-within {
-    outline: calc(var(--border-width) * 2) solid Highlight;
-    outline-offset: var(--spacing-xxs);
   }
 }

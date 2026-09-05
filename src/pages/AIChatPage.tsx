@@ -527,7 +527,7 @@ export function AIChatPage() {
     <>
 
       {conversations.length > 0 && (
-        <div className="ai-history-search">
+        <div className="ai-history-search" data-focus-ring>
           <Search size="var(--icon-size-sm)" aria-hidden="true" />
           <input
             type="search"
@@ -1046,6 +1046,7 @@ export function AIChatPage() {
             )}
             <form
               className="ai-chat-input-form"
+              data-focus-ring
               onSubmit={handleSendMessage}
               aria-label="Enviar mensaje."
             >

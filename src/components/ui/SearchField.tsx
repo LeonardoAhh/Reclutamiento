@@ -43,7 +43,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
     };
 
     return (
-      <div className={`search-field ${className}`.trim()}>
+      <div className={`search-field ${className}`.trim()} data-focus-ring>
         <label htmlFor={inputId} className="sr-only">
           {label}
         </label>

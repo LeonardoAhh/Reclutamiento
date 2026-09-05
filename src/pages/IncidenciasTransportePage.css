@@ -48,10 +48,3 @@
 .transport-incidents-page__content {
   min-width: 0;
 }
-
-@media (forced-colors: active) {
-  .transport-incidents-page__back:focus-visible {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
-  }
-}

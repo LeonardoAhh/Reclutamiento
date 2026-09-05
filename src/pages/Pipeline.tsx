@@ -289,7 +289,6 @@ export function Pipeline() {
       // Macro filter (Segmented Control)
       if (macroStatus === 'activos' && ['contratado', 'baja', 'rechazado', 'no_asistio'].includes(c.status)) return false;
       if (macroStatus === 'contratados' && c.status !== 'contratado') return false;
-      if (macroStatus === 'bajas' && c.status !== 'baja') return false;
 
       if (filters.area && c.area !== filters.area) return false;
       if (filters.puesto && c.puesto !== filters.puesto) return false;
@@ -551,7 +550,7 @@ export function Pipeline() {
                 )}
               </div>
             </div>
-            
+
             <div className="pipeline__quick-filters">
               {profile?.role === 'reclutador' && (
                 <label className="toggle-switch pipeline__quick-toggle">
@@ -656,7 +655,7 @@ export function Pipeline() {
               <div className="pipeline__card-list-header" role="row">
                 <span role="columnheader">Candidato</span>
                 <span role="columnheader">Puesto</span>
-                <span role="columnheader">Estado</span>
+                <span role="columnheader">Proceso</span>
                 <span role="columnheader">Entrevista</span>
                 <span role="columnheader" className="text-center">Acciones</span>
               </div>
@@ -793,15 +792,9 @@ export function Pipeline() {
                         candidate={c}
                         onEdit={openEdit}
                         onDelete={isAdmin ? openDelete : undefined}
-                        onBaja={(cand) => handleStatusChange(cand, 'baja')}
                         onAccessCard={
                           c.reclutador && c.puesto
                             ? () => setAccessCardTarget(c)
-                            : undefined
-                        }
-                        onHire={
-                          c.status === 'contratado' && !c.employee_num
-                            ? () => openHire(c)
                             : undefined
                         }
                       />
@@ -810,7 +803,7 @@ export function Pipeline() {
                 );
               })}
             </section>
-            
+
             <nav className="pipeline__pagination-controls" aria-label="Paginación de candidatos">
               <button
                 type="button"

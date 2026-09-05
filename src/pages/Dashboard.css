@@ -251,10 +251,6 @@
   background: transparent;
 }
 
-.dept-card__header:focus-visible {
-  outline: none;
-}
-
 .dept-card__header-left {
   display: flex;
   align-items: center;

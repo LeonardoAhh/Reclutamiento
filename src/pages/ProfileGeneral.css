@@ -57,16 +57,6 @@
   border-color: var(--color-primary);
 }
 
-.profile-general__tab:focus-visible,
-.profile-general__details summary:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
-.profile-general__tab-content:focus-visible {
-  outline: none;
-}
-
 .profile-general__panel {
   display: flex;
   flex-direction: column;
@@ -229,12 +219,6 @@
   gap: var(--spacing-sm);
 }
 
-.profile-general__category-group > h3:focus,
-.profile-general__review > h3:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: var(--spacing-xxs);
-}
-
 .profile-general__criterion {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -319,12 +303,6 @@
 .profile-general__binary input,
 .profile-general__check-label input {
   accent-color: var(--color-primary);
-}
-
-.profile-general__binary input:focus-visible,
-.profile-general__check-label input:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
 }
 
 .profile-general__comments {
@@ -742,11 +720,6 @@
   margin-top: var(--spacing-lg);
 }
 
-.profile-general__import-content:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .profile-general__import-file h3 {
   color: var(--color-ink);
   font-size: var(--type-heading-sm-size);
@@ -943,15 +916,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding-left: 0;
     list-style-position: inside;
-  }
-}
-
-@media (forced-colors: active) {
-  .profile-general__tab:focus-visible,
-  .profile-general__details summary:focus-visible,
-  .profile-general__binary input:focus-visible,
-  .profile-general__check-label input:focus-visible {
-    outline: 2px solid CanvasText;
   }
 }
 

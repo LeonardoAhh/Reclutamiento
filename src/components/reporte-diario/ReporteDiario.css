@@ -217,12 +217,6 @@ button.reporte-card:hover,
   background: var(--color-surface-soft);
 }
 
-button.reporte-card:focus-visible,
-.reporte-card--interactive:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .reporte-card__header {
   padding: var(--spacing-md);
   display: flex;
@@ -393,11 +387,6 @@ button.reporte-card:focus-visible,
   border-color: var(--color-hairline-strong);
 }
 
-.reporte-tab-trigger:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 /* ── Primary button — uses global .btn-primary ─────────────────────────────── */
 
 .reporte-employee-detail__tabs {
@@ -434,9 +423,7 @@ button.reporte-card:focus-visible,
 }
 
 .reporte-employee-detail__tab:focus-visible {
-  outline: none;
   border-radius: var(--rounded-sm);
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-employee-detail__panel {
@@ -582,11 +569,6 @@ button.reporte-card:focus-visible,
 
 .reporte-daynav__btn:hover:not(:disabled) {
   background: var(--color-surface-soft);
-}
-
-.reporte-daynav__btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-daynav__btn:disabled {
@@ -766,11 +748,6 @@ button.reporte-card:focus-visible,
   transform: rotate(180deg);
 }
 
-.reporte-errors__details summary:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-width);
-}
-
 .reporte-errors__rows {
   max-block-size: var(--feature-validation-details-max-block-size);
   margin: 0;
@@ -799,11 +776,6 @@ button.reporte-card:focus-visible,
 
 .reporte-iconbtn:hover {
   background: var(--color-surface-soft);
-}
-
-.reporte-iconbtn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 /* ============================================================================
@@ -1056,11 +1028,6 @@ button.reporte-card:focus-visible,
   background: var(--color-surface-soft);
 }
 
-.reporte-saved__trigger:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .reporte-saved__trigger-left {
   display: flex;
   align-items: center;
@@ -1163,11 +1130,6 @@ button.reporte-card:focus-visible,
   background: var(--color-surface-soft);
 }
 
-.reporte-saved__load:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .reporte-saved__icon {
   display: inline-flex;
   align-items: center;
@@ -1252,11 +1214,6 @@ button.reporte-card:focus-visible,
 .reporte-saved__delete:hover:not(:disabled) {
   color: var(--color-error);
   background: var(--color-error-tint);
-}
-
-.reporte-saved__delete:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-saved__delete:disabled {
@@ -1364,11 +1321,6 @@ button.reporte-card:focus-visible,
 
 .reporte-incidents__tab:hover {
   background: var(--color-surface-soft);
-}
-
-.reporte-incidents__tab:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-incidents__tab[aria-selected="true"] {
@@ -1491,11 +1443,6 @@ button.reporte-card:focus-visible,
 
 .reporte-incidents__card-summary:hover {
   background: var(--color-surface-soft);
-}
-
-.reporte-incidents__card-summary:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-incidents__card-main {
@@ -1697,11 +1644,6 @@ button.reporte-card:focus-visible,
   transition:
     background-color var(--transition-fast),
     border-color var(--transition-fast);
-}
-
-.reporte-cal__cell:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 @media (min-width: 480px) {
@@ -1917,11 +1859,6 @@ button.reporte-card:focus-visible,
   color: var(--color-on-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
-}
-
-.reporte-top-emp-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 /* ── Modal: Récord de incidencias ──────────────────────────────────────── */
@@ -2175,11 +2112,6 @@ button.reporte-card:focus-visible,
   background: var(--color-surface-soft);
 }
 
-.top-emp-row:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--color-primary);
-}
-
 /* Número de rank */
 .top-emp-rank {
   display: inline-flex;
@@ -2305,11 +2237,6 @@ button.reporte-card:focus-visible,
   background: var(--color-surface-soft);
 }
 
-.top-emp-modal__month-row--btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .top-emp-month-hint {
   font-weight: var(--font-regular);
   font-size: var(--type-caption-sm-size);
@@ -2354,11 +2281,6 @@ button.reporte-card:focus-visible,
 .top-emp-drill-back:hover {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-}
-
-.top-emp-drill-back:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .top-emp-drill-header__info {
@@ -2529,11 +2451,6 @@ button.reporte-card:focus-visible,
 .ras__clear-btn:hover {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-}
-
-.ras__clear-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 /* ── Grupos de secciones (uno por área padre) ─── */
@@ -2786,13 +2703,11 @@ button.reporte-card:focus-visible,
 
 .reporte-hero__dropzone:hover,
 .reporte-hero__dropzone:focus-visible {
-  border-color: var(--color-primary);
   background: var(--color-primary-tint);
-  outline: none;
 }
 
-.reporte-hero__dropzone:focus-visible {
-  box-shadow: var(--shadow-focus);
+.reporte-hero__dropzone:hover:not(:focus-visible) {
+  border-color: var(--color-primary);
 }
 
 .reporte-hero__dropzone[data-dragging="true"] {
@@ -2877,11 +2792,6 @@ button.reporte-card:focus-visible,
 .reporte-hero__recent-item:hover {
   border-color: var(--color-primary);
   background: var(--color-surface-soft);
-}
-
-.reporte-hero__recent-item:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-hero__recent-icon {
@@ -3419,11 +3329,6 @@ button.reporte-card:focus-visible,
 .reporte-saved__trigger--labeled:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-}
-
-.reporte-saved__trigger--labeled:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .reporte-saved__trigger-label {

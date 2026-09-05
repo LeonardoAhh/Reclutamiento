@@ -56,11 +56,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-.speech-category-btn:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 2px;
-}
-
 /* ── Grupos ───────────────────────────────────────────────────────────────── */
 
 .speech-groups {
@@ -254,11 +249,6 @@
 .speech-action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.speech-action-btn:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 2px;
 }
 
 /* ── Estado vacío ────────────────────────────────────────────────────────── */
@@ -505,9 +495,12 @@
 
 .speech-image-add:hover,
 .speech-image-add:focus-within {
-  border-color: var(--color-primary);
   color: var(--color-primary);
   background: var(--color-primary-tint);
+}
+
+.speech-image-add:hover:not(:focus-within) {
+  border-color: var(--color-primary);
 }
 
 /* ── Footer del modal ────────────────────────────────────────────────────── */

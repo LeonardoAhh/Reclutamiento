@@ -70,6 +70,7 @@ export function ActivityCard({
 
   return (
     <article className="activity-card" role="listitem" data-status={status}>
+      {isNew && <span className="activity-card__new">Nueva</span>}
       <header className="activity-card__header">
         <div className="activity-card__icon">
           <Icon size="var(--icon-size-md)" aria-hidden="true" />
@@ -90,7 +91,6 @@ export function ActivityCard({
             <span className="activity-card__status">
               {STATUS_LABEL[status]}
             </span>
-            {isNew && <span className="activity-card__new">Nueva</span>}
           </div>
         </div>
 

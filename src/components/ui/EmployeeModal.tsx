@@ -5,7 +5,6 @@ import {
   Calendar,
   UserCheck,
   CircleAlert,
-  Bus,
 } from "lucide-react";
 import { Save as SaveIconData, Trash2 as Trash2IconData } from "lucide";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
@@ -19,11 +18,6 @@ import {
   RECLUTADORES_INFO,
 } from "@/lib/constants";
 import { localTodayIso } from "@/lib/dates";
-import {
-  TRANSPORTE_NA,
-  TRANSPORTE_PARADAS,
-  TRANSPORTE_RUTAS,
-} from "@/lib/transporte-routes";
 import { Tooltip } from "./Tooltip";
 import { supabase } from "@/lib/supabase";
 import { Modal } from "./Modal";
@@ -71,7 +65,7 @@ function emptyForm(): FormState {
     seccion: "",
     puesto: "",
     categoria: "N/A",
-    turno: "1",
+    turno: "",
     fecha_ingreso: localTodayIso(),
     ruta: "",
     parada: "",
@@ -112,7 +106,7 @@ export function EmployeeModal({
     motivo_baja: "",
   });
   const emptyTouchedAdd = {
-    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false, ruta: false, parada: false
+    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false
   };
   const emptyTouchedDelete = {
     fecha_baja: false, tipo_baja: false, motivo_baja: false
@@ -235,7 +229,7 @@ export function EmployeeModal({
 
   const isValidNameStr = (str: string) => str === '' || /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(str);
 
-  const isNumDuplicate = form.num_empleado.trim() !== '' && 
+  const isNumDuplicate = form.num_empleado.trim() !== '' &&
     existingEmployees.some(e => e.num_empleado === form.num_empleado.trim());
 
   const errorsAdd = {
@@ -248,11 +242,9 @@ export function EmployeeModal({
     categoria: !form.categoria || form.categoria === 'N/A' ? 'Selecciona categoría.' : null,
     turno: !form.turno ? 'Selecciona turno.' : null,
     reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
-    ruta: !form.ruta ? 'Selecciona ruta.' : null,
-    parada: !form.parada ? 'Selecciona parada.' : null,
   };
 
-  const isNameDuplicate = form.nombre.trim() !== '' && 
+  const isNameDuplicate = form.nombre.trim() !== '' &&
     existingEmployees.some(e => e.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase());
 
   const errorsDelete = {
@@ -277,7 +269,7 @@ export function EmployeeModal({
       }, 100);
       return;
     }
-    
+
     if (mode === "delete" && !isDeleteValid) {
       setTouchedDelete(Object.keys(emptyTouchedDelete).reduce((acc, k) => ({ ...acc, [k]: true }), {} as typeof touchedDelete));
       setTimeout(() => {
@@ -332,7 +324,7 @@ export function EmployeeModal({
   const fieldsIdentidad = (
     <>
       <div className="form-group">
-        <label htmlFor="emp-num">Número de Empleado <span className="text-error">*</span></label>
+        <label htmlFor="emp-num">No. de Empleado <span className="text-error">*</span></label>
         <input
           id="emp-num"
           type="text"
@@ -381,7 +373,7 @@ export function EmployeeModal({
   const starliteField = (
     <div className="form-group employee-modal__starlite-toggle">
       <label htmlFor="emp-starlite" className="starlite-label">
-        Etiqueta Starlite
+        Starlite
       </label>
       <CustomSelect
         id="emp-starlite"
@@ -429,7 +421,7 @@ export function EmployeeModal({
           />
           {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text">{errorsAdd.seccion}</span>}
         </div>
-        <div className="form-group--span-2 form-grid form-grid--3-cols">
+        <>
           <div className="form-group">
             <label htmlFor="emp-puesto">Puesto <span className="text-error">*</span></label>
             <CustomSelect
@@ -461,13 +453,13 @@ export function EmployeeModal({
                 { value: "4", label: "4" },
                 { value: "Mixto", label: "Mixto" },
               ]}
-              placeholder="Turno..."
+              placeholder="Seleccionar..."
               aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
             />
             {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
           </div>
           {starliteField}
-        </div>
+        </>
         <div className="form-group">
           <label htmlFor="emp-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
           <input
@@ -488,8 +480,8 @@ export function EmployeeModal({
   const showVacancySelector = vacancyOptions.length > 0 && mode === "add";
 
   const fieldsVacancySelector = showVacancySelector ? (
-    <div className="form-group form-group--span-2">
-      <label htmlFor="emp-vacancy">Vacante Disponible <span className="text-error">*</span></label>
+    <div className="form-group">
+      <label htmlFor="emp-vacancy">Puesto <span className="text-error">*</span></label>
       <CustomSelect
         id="emp-vacancy"
         value={selectedVacancyIndex.toString()}
@@ -518,7 +510,7 @@ export function EmployeeModal({
   // selector de vacante, `fieldsPosicion` ya incluye su propia Fecha de Ingreso.
   const fieldsFecha = showVacancySelector ? (
     <>
-      <div className="form-group--span-2 form-grid form-grid--3-cols">
+      <>
         <div className="form-group">
           <label htmlFor="emp-vac-categoria">Categoría <span className="text-error">*</span></label>
           <CustomSelect
@@ -556,7 +548,7 @@ export function EmployeeModal({
           {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
         </div>
         {starliteField}
-      </div>
+      </>
       <div className="form-group">
         <label htmlFor="emp-vac-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
         <input
@@ -574,47 +566,6 @@ export function EmployeeModal({
     </>
   ) : null;
 
-  const fieldsTransporte = (
-    <>
-      <div className="form-group">
-        <label htmlFor="emp-ruta">Ruta de Transporte <span className="text-error">*</span></label>
-        <CustomSelect
-          id="emp-ruta"
-          value={form.ruta}
-          onChange={(val) => {
-            setForm({ ...form, ruta: val });
-            setTouchedAdd(t => ({ ...t, ruta: true }));
-          }}
-          options={[
-            { value: TRANSPORTE_NA, label: "N/A (No utiliza transporte)" },
-            ...TRANSPORTE_RUTAS.map((r) => ({ value: r, label: r })),
-          ]}
-          placeholder="Seleccione ruta..."
-          aria-invalid={touchedAdd.ruta && !!errorsAdd.ruta}
-        />
-        {touchedAdd.ruta && errorsAdd.ruta && <span className="form-error-text">{errorsAdd.ruta}</span>}
-      </div>
-      <div className="form-group">
-        <label htmlFor="emp-parada">Parada de Transporte <span className="text-error">*</span></label>
-        <CustomSelect
-          id="emp-parada"
-          value={form.parada}
-          onChange={(val) => {
-            setForm({ ...form, parada: val });
-            setTouchedAdd(t => ({ ...t, parada: true }));
-          }}
-          options={TRANSPORTE_PARADAS.map((p) => ({
-            value: p,
-            label: p === TRANSPORTE_NA ? "N/A (No utiliza transporte)" : p
-          }))}
-          placeholder="Seleccione parada..."
-          aria-invalid={touchedAdd.parada && !!errorsAdd.parada}
-        />
-        {touchedAdd.parada && errorsAdd.parada && <span className="form-error-text">{errorsAdd.parada}</span>}
-      </div>
-    </>
-  );
-
   const fieldsExtra = (
     <>
       <div className="form-group">
@@ -626,7 +577,7 @@ export function EmployeeModal({
             setForm({ ...form, reclutador: val });
             setTouchedAdd(t => ({ ...t, reclutador: true }));
           }}
-          placeholder="Sin asignar"
+          placeholder="Seleccionar..."
           options={RECLUTADORES_ACTIVOS.map((r) => ({
             value: r.toUpperCase(),
             label: RECLUTADORES_INFO[r].nombre_completo,
@@ -835,16 +786,6 @@ export function EmployeeModal({
                   </div>
                 ),
               },
-              {
-                id: "transporte",
-                title: "Transporte",
-                isValid: form.ruta.length > 0 && form.parada.length > 0,
-                content: (
-                  <div className="form-grid">
-                    {fieldsTransporte}
-                  </div>
-                ),
-              },
             ]}
           />
         </form>
@@ -870,7 +811,6 @@ export function EmployeeModal({
             {fieldsFecha}
             {fieldsPosicion}
             {fieldsExtra}
-            {fieldsTransporte}
           </div>
         ) : (
           deleteContent

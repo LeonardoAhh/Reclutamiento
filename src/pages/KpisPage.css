@@ -80,11 +80,6 @@
     border-color var(--transition-fast);
 }
 
-.kpis-page__tab:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .kpis-page__tab--active {
   background: var(--color-primary);
   border-color: var(--color-primary);
@@ -177,11 +172,6 @@
   transition: background var(--transition-fast);
 }
 
-.kpis-page__chart-toggle:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .kpis-page__chart-chevron {
   color: var(--color-muted);
   transition: transform var(--transition-base);
@@ -243,11 +233,6 @@
 .kpis-page__detail-btn:hover {
   color: var(--color-ink);
   background: var(--color-surface-soft);
-}
-
-.kpis-page__detail-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 /* ── Grid de KPIs (PC) ──────────────────────────────────────────────── */

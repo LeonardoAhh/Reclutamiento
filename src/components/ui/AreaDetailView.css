@@ -185,11 +185,6 @@
   background: var(--color-surface-soft);
 }
 
-.area-detail-modal__tab:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-primary);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .area-detail-modal__tab.is-active,
 .area-detail-modal__tab.is-active:hover {
   color: var(--color-on-primary);

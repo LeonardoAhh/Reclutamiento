@@ -23,11 +23,6 @@
   border-color: var(--color-hairline-strong);
 }
 
-.incident-type-field__summary:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-}
 
 .incident-type-field__summary:disabled {
   color: var(--color-muted);
@@ -66,11 +61,4 @@
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-}
-
-@media (forced-colors: active) {
-  .incident-type-field__summary:focus-visible {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
-  }
 }

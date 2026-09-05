@@ -110,11 +110,6 @@
   border-color: var(--color-charcoal);
 }
 
-.incidencias-table__image-button:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
-}
-
 .incidencias-table__image-button:disabled {
   color: var(--color-muted);
   background: var(--color-canvas-soft);
@@ -155,11 +150,6 @@
 
 .incidencias-mobile-card__summary:hover {
   background: var(--color-surface-soft);
-}
-
-.incidencias-mobile-card__summary:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus);
 }
 
 .incidencias-mobile-card__main {
@@ -261,13 +251,5 @@
   .incidencias-table tbody tr,
   .incidencias-mobile-card__summary {
     transition: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .incidencias-table__image-button:focus-visible,
-  .incidencias-mobile-card__summary:focus-visible {
-    outline: calc(var(--border-width) + var(--border-width)) solid ButtonText;
-    outline-offset: var(--spacing-xs);
   }
 }
