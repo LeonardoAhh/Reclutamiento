@@ -7,6 +7,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatReadableDate } from '@/lib/dates';
+import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { toast } from '@/lib/notify';
 import { TRANSPORT_INCIDENTS_CONFIG } from '@/lib/constants';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
@@ -42,7 +43,7 @@ export function IncidenciasTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isExporting, setIsExporting] = useState(false);
   const isAdmin = profile?.role === 'admin';
-  const isDesktop = useMediaQuery('(min-width: 1080px)');
+  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
   useEffect(() => {
     void fetchIncidencias(currentPage);

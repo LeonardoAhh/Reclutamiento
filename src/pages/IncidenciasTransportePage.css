@@ -8,12 +8,6 @@
   gap: var(--spacing-md);
 }
 
-.transport-incidents-page__back {
-  width: var(--touch-target-min);
-  height: var(--touch-target-min);
-  flex: 0 0 auto;
-}
-
 .transport-incidents-page__copy {
   min-width: 0;
   display: flex;
@@ -35,7 +29,7 @@
 }
 
 .transport-incidents-page__subtitle {
-  max-width: 65ch;
+  max-width: var(--content-reading-max-inline-size);
   margin: 0;
   color: var(--color-muted);
   font-size: var(--type-body-sm-size);

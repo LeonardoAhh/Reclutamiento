@@ -62,18 +62,10 @@ export function TransportIncidentGroup({
             </caption>
             <thead>
               <tr>
-                <th scope="col" className="incidencias-table__employee-column">
-                  Número de empleado
-                </th>
-                <th scope="col" className="incidencias-table__route-column">
-                  Ruta
-                </th>
-                <th scope="col" className="incidencias-table__shift-column">
-                  Turno
-                </th>
-                <th scope="col" className="incidencias-table__type-column">
-                  Tipo
-                </th>
+                <th scope="col">No. Emp</th>
+                <th scope="col">Turno</th>
+                <th scope="col">Ruta</th>
+                <th scope="col">Tipo</th>
                 <th scope="col">Comentarios</th>
                 {admin && <th scope="col">Imagen</th>}
               </tr>
@@ -82,8 +74,8 @@ export function TransportIncidentGroup({
               {incidents.map((incident) => (
                 <tr key={incident.id}>
                   <td>{incident.numero_empleado}</td>
-                  <td>{incident.ruta}</td>
                   <td>{incident.turno}</td>
+                  <td>{incident.ruta}</td>
                   <td>{incident.tipo}</td>
                   <td className="incidencias-table__comments">
                     {incident.comentarios || '—'}

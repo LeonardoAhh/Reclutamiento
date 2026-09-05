@@ -56,6 +56,7 @@ export function useIncidenciasTransporte() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
   const requestIdRef = useRef(0);
+  const clearError = useCallback(() => setErrorMsg(null), []);
 
   const fetchIncidencias = useCallback(async (page = 1) => {
     const requestId = ++requestIdRef.current;
@@ -135,7 +136,7 @@ export function useIncidenciasTransporte() {
         .maybeSingle();
 
       if (empError || !emp) {
-        throw new Error('Error. No pudimos validar que trabajas en ViñoPlastic Inyección Querétaro');
+        throw new Error('No pudimos validar que trabajas en ViñoPlastic Inyección Querétaro');
       }
 
       // 2. Verificar que no haya enviado un reporte en las últimas 12 horas (Rate Limiting)
@@ -222,6 +223,7 @@ export function useIncidenciasTransporte() {
     totalCount,
     loading,
     errorMsg,
+    clearError,
     fetchIncidencias,
     fetchIncidenciasForExport,
     enviarIncidencia,

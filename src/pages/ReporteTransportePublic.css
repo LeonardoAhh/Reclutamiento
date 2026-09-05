@@ -83,35 +83,6 @@
   border-radius: var(--rounded-md);
 }
 
-.reporte-publico__required-note {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
-}
-
-.reporte-publico__alert {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
-  color: var(--color-error);
-  background: var(--color-error-tint);
-  border: var(--border-width) solid var(--color-error);
-  border-radius: var(--rounded-md);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-}
-
-.reporte-publico__alert svg {
-  flex: 0 0 auto;
-  margin-top: var(--spacing-xxs);
-}
-
 .reporte-publico__success-action {
   width: 100%;
   min-height: var(--touch-target-min);

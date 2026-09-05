@@ -31,6 +31,8 @@
 }
 
 .incidencias-pagination {
+  display: flex;
+  justify-content: center;
   padding: 0 var(--spacing-lg) var(--spacing-lg);
 }
 
@@ -53,7 +55,7 @@
 }
 
 .incidencias-state__copy {
-  max-width: 65ch;
+  max-width: var(--content-reading-max-inline-size);
 }
 
 .incidencias-state__copy h3,

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Send } from "lucide";
+import { ArrowLeft, ArrowRight, Send, TriangleAlert } from "lucide";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import {
@@ -26,7 +26,7 @@ const INITIAL_REPORT: NuevoReporte = {
   comentarios: "",
 };
 
-const STEP_TITLES = ["Datos del viaje", "Detalles de la incidencia"] as const;
+const STEP_TITLES = ["Datos generales", "Detalles de la incidencia"] as const;
 
 const FIELD_IDS: Partial<Record<keyof NuevoReporte, string>> = {
   numero_empleado: "num_emp",
@@ -40,6 +40,8 @@ interface TransportReportFormProps {
   onSubmit: (report: NuevoReporte, image: File | null) => Promise<boolean>;
   onSuccess: () => void;
   onStepChange: (step: 0 | 1) => void;
+  submissionError: string | null;
+  onClearSubmissionError: () => void;
 }
 
 function validateTripStep(data: NuevoReporte): ReportFieldErrors {
@@ -83,6 +85,8 @@ export function TransportReportForm({
   onSubmit,
   onSuccess,
   onStepChange,
+  submissionError,
+  onClearSubmissionError,
 }: TransportReportFormProps) {
   const [step, setStep] = useState<0 | 1>(0);
   const [formData, setFormData] = useState<NuevoReporte>(INITIAL_REPORT);
@@ -92,6 +96,7 @@ export function TransportReportForm({
   const stepTitleRef = useRef<HTMLHeadingElement>(null);
   const previousStepRef = useRef(step);
   const fieldFocusFrameRef = useRef<number | undefined>(undefined);
+  const submissionErrorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (previousStepRef.current === step) return;
@@ -108,6 +113,14 @@ export function TransportReportForm({
     [],
   );
 
+  useEffect(() => {
+    if (!submissionError || step !== 1) return;
+    const frame = window.requestAnimationFrame(() =>
+      submissionErrorRef.current?.focus(),
+    );
+    return () => window.cancelAnimationFrame(frame);
+  }, [step, submissionError]);
+
   const focusField = (field: keyof NuevoReporte | undefined) => {
     if (!field) return;
     const fieldId = FIELD_IDS[field];
@@ -122,6 +135,7 @@ export function TransportReportForm({
     field: K,
     value: NuevoReporte[K],
   ) => {
+    if (submissionError) onClearSubmissionError();
     setFormData((current) => ({ ...current, [field]: value }));
     setErrors((current) => {
       if (!current[field]) return current;
@@ -150,6 +164,7 @@ export function TransportReportForm({
   };
 
   const handleBack = () => {
+    onClearSubmissionError();
     setStep(0);
     onStepChange(0);
   };
@@ -189,11 +204,7 @@ export function TransportReportForm({
       className="reporte-publico__form"
       onSubmit={handleSubmit}
       noValidate
-      aria-describedby={
-        step === 0
-          ? "reporte-description reporte-required-note"
-          : undefined
-      }
+      aria-describedby={step === 0 ? "reporte-description" : undefined}
       aria-busy={isSubmitting}
     >
       <header className="reporte-publico__step-header">
@@ -231,6 +242,21 @@ export function TransportReportForm({
           onFieldChange={handleFieldChange}
           onImageChange={setImageFile}
         />
+      )}
+
+      {step === 1 && submissionError && (
+        <div
+          ref={submissionErrorRef}
+          className="reporte-publico__alert"
+          role="alert"
+          tabIndex={-1}
+        >
+          <MorphingIcon
+            icon={TriangleAlert}
+            size="var(--icon-size-control)"
+          />
+          <span>{submissionError}</span>
+        </div>
       )}
 
       <footer

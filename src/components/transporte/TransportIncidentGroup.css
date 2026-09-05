@@ -24,19 +24,9 @@
 
 .incidencias-table {
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto;
   border-collapse: collapse;
   text-align: left;
-}
-
-.incidencias-table__employee-column,
-.incidencias-table__route-column,
-.incidencias-table__type-column {
-  width: 18%;
-}
-
-.incidencias-table__shift-column {
-  width: 8%;
 }
 
 .incidencias-table th {

@@ -157,30 +157,20 @@ export function TransportIncidentStep({
           maxLength={TRANSPORT_REPORT_COMMENT_MAX_LENGTH}
           required
           disabled={disabled}
-          placeholder="Detalles sobre lo ocurrido..."
+          placeholder={
+            errors.comentarios || "Detalles sobre lo ocurrido..."
+          }
           value={data.comentarios}
           aria-invalid={Boolean(errors.comentarios) || undefined}
           aria-describedby={
-            [
-              "comentarios-counter",
-              errors.comentarios ? "comentarios-error" : null,
-            ]
-              .filter(Boolean)
-              .join(" ")
+            errors.comentarios ? "comentarios-error" : undefined
           }
           onChange={(event) =>
             onFieldChange("comentarios", event.target.value)
           }
         />
-        <span
-          id="comentarios-counter"
-          className="reporte-publico__character-count"
-        >
-          {data.comentarios.length} de {TRANSPORT_REPORT_COMMENT_MAX_LENGTH}{" "}
-          caracteres
-        </span>
         {errors.comentarios && (
-          <p id="comentarios-error" className="form-error-text">
+          <p id="comentarios-error" className="sr-only">
             {errors.comentarios}
           </p>
         )}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BadgeCheck, BusFront, TriangleAlert } from "lucide";
+import { BadgeCheck, BusFront } from "lucide";
 import { useIncidenciasTransporte } from "@/hooks/useIncidenciasTransporte";
 import { TransportReportForm } from "@/components/transporte/TransportReportForm";
 import { ReportePublicoFooter } from "@/components/transporte/ReportePublicoFooter";
@@ -8,7 +8,7 @@ import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import "./ReporteTransportePublic.css";
 
 export function ReporteTransportePublic() {
-  const { enviarIncidencia, errorMsg } = useIncidenciasTransporte();
+  const { enviarIncidencia, errorMsg, clearError } = useIncidenciasTransporte();
   const [success, setSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState<0 | 1>(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -110,29 +110,15 @@ export function ReporteTransportePublic() {
                 />
               </header>
 
-              <p
-                className="reporte-publico__required-note"
-                id="reporte-required-note"
-              >
-                Los campos marcados con * son obligatorios.
-              </p>
             </>
-          )}
-
-          {errorMsg && (
-            <div className="reporte-publico__alert" role="alert">
-              <MorphingIcon
-                icon={TriangleAlert}
-                size="var(--icon-size-control)"
-              />
-              <span>{errorMsg}</span>
-            </div>
           )}
 
           <TransportReportForm
             onSubmit={enviarIncidencia}
             onSuccess={() => setSuccess(true)}
             onStepChange={setCurrentStep}
+            submissionError={errorMsg}
+            onClearSubmissionError={clearError}
           />
         </div>
         <ReportePublicoFooter />
