@@ -7,7 +7,12 @@ import {
 import { cn } from "@/lib/utils-shadcn";
 import "./DropdownMenu.css";
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+function DropdownMenu({
+  modal = false,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>) {
+  return <DropdownMenuPrimitive.Root modal={modal} {...props} />;
+}
 
 const DropdownMenuTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
