@@ -110,7 +110,7 @@ export function EmployeeModal({
     motivo_baja: "",
   });
   const emptyTouchedAdd = {
-    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, categoria: false, turno: false, reclutador: false
+    num_empleado: false, nombre: false, area: false, seccion: false, puesto: false, fecha_ingreso: false, turno: false, reclutador: false
   };
   const emptyTouchedDelete = {
     fecha_baja: false, tipo_baja: false, motivo_baja: false
@@ -168,29 +168,10 @@ export function EmployeeModal({
   }, [openVacancies]);
 
   const vacancySelectOptions = useMemo(() => {
-    const baseLabels = vacancyOptions.map(
-      (vacancy) =>
-        `${toNaturalCase(vacancy.puesto)} · ${toNaturalCase(vacancy.seccion)}`,
-    );
-    const labelCounts = new Map<string, number>();
-
-    for (const label of baseLabels) {
-      const key = canonicalizeKeyPart(label);
-      labelCounts.set(key, (labelCounts.get(key) ?? 0) + 1);
-    }
-
-    return vacancyOptions.map((vacancy, index) => {
-      const baseLabel = baseLabels[index];
-      const isAmbiguous =
-        (labelCounts.get(canonicalizeKeyPart(baseLabel)) ?? 0) > 1;
-
-      return {
-        value: index.toString(),
-        label: isAmbiguous
-          ? `${baseLabel} · ${toNaturalCase(vacancy.area)}`
-          : baseLabel,
-      };
-    });
+    return vacancyOptions.map((vacancy, index) => ({
+      value: index.toString(),
+      label: toNaturalCase(vacancy.puesto),
+    }));
   }, [vacancyOptions]);
 
   useEffect(() => {
@@ -269,7 +250,6 @@ export function EmployeeModal({
     seccion: !form.seccion ? 'Obligatorio.' : null,
     puesto: !form.puesto ? 'Obligatorio.' : null,
     fecha_ingreso: !form.fecha_ingreso ? 'Obligatorio.' : null,
-    categoria: !form.categoria || form.categoria === 'N/A' ? 'Selecciona categoría.' : null,
     turno: !form.turno ? 'Selecciona turno.' : null,
     reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
   };
@@ -539,19 +519,14 @@ export function EmployeeModal({
     <>
       <>
         <div className="form-group">
-          <label htmlFor="emp-vac-categoria">Categoría <span className="text-error">*</span></label>
+          <label htmlFor="emp-vac-categoria">Categoría</label>
           <CustomSelect
             id="emp-vac-categoria"
             value={form.categoria}
-            onChange={(val) => {
-              setForm({ ...form, categoria: val });
-              setTouchedAdd(t => ({ ...t, categoria: true }));
-            }}
+            onChange={(val) => setForm({ ...form, categoria: val })}
             options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
-            placeholder="Categoría..."
-            aria-invalid={touchedAdd.categoria && !!errorsAdd.categoria}
+            placeholder="N/A"
           />
-          {touchedAdd.categoria && errorsAdd.categoria && <span className="form-error-text">{errorsAdd.categoria}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="emp-vac-turno">Turno <span className="text-error">*</span></label>

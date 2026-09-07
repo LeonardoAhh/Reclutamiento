@@ -156,6 +156,13 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   font-weight: var(--type-body-sm-strong-weight);
 }
 
+.custom-select-option-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .custom-select-check {
   display: inline-flex;
   color: var(--color-primary);

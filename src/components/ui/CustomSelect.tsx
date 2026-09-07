@@ -132,7 +132,9 @@ export function CustomSelect({
                     value={getItemValue(option.value)}
                     className="custom-select-option"
                   >
-                    <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                    <SelectPrimitive.ItemText className="custom-select-option-label">
+                      {option.label}
+                    </SelectPrimitive.ItemText>
                     <SelectPrimitive.ItemIndicator className="custom-select-check">
                       <CircleCheckBig aria-hidden="true" />
                     </SelectPrimitive.ItemIndicator>
