@@ -3,6 +3,8 @@
 .candidate-report-modal__body {
   display: flex;
   flex-direction: column;
+  padding: var(--spacing-xl) var(--spacing-md);
+  text-align: center;
 }
 
 .candidate-report-modal__empty {
@@ -15,4 +17,31 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
+  justify-content: center;
+}
+
+.candidate-report-modal__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.candidate-report-modal__total {
+  color: var(--color-ink);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+.candidate-report-modal__total-label {
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+}
+
+@media (max-width: 600px) {
+  .candidate-report-modal__action {
+    width: 100%;
+  }
 }

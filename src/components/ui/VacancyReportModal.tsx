@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { ClipboardList, Share2, UsersRound, CircleAlert } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { motion, type Variants } from "framer-motion";
 import { Modal } from "./Modal";
 import { MorphingIcon } from "./MorphingIcon";
-import { ExpandableSection } from "./ExpandableSection";
 import { CustomSelect } from "./CustomSelect";
-import { formatShortDate } from "@/lib/dates";
+import { formatReadableDate } from "@/lib/dates";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
+import { toast } from "@/lib/notify";
+import { toNaturalCase } from "@/lib/utils";
+import {
+  buildWhatsAppReportFromBlocks,
+  copyTextToClipboard,
+  formatWhatsAppLabel,
+} from "@/lib/whatsappReport";
 import type { PositionCoverage } from "@/lib/types";
 import "./VacancyReportModal.css";
 
@@ -103,12 +109,8 @@ function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   );
 }
 
-function toTitleCase(str: string): string {
-  return str.toLowerCase().replace(/(?:^|\s|-|\/)\w/g, (m) => m.toUpperCase());
-}
-
-function buildWhatsappMessageBlock(
-  title: string,
+function buildWhatsAppMessageBlock(
+  project: "Starlite" | undefined,
   groups: AreaGroup[],
   type: "general" | "starlite",
 ): string {
@@ -127,71 +129,11 @@ function buildWhatsappMessageBlock(
 
   if (filteredGroups.length === 0) return "";
 
-  const totalActivas = filteredGroups.reduce(
-    (sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesAutorizada, 0),
-    0,
-  );
-  const totalBackup = filteredGroups.reduce(
-    (sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesBackup, 0),
-    0,
-  );
-  const totalProximos = filteredGroups.reduce(
-    (sum, g) =>
-      sum +
-      g.rows.reduce(
-        (s, r) =>
-          s +
-          (type === "general"
-            ? r.proximosIngresos - r.starliteProximos
-            : r.starliteProximos),
-        0,
-      ),
-    0,
-  );
-  const totalStarliteUrgentes = filteredGroups.reduce(
-    (sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteUrgentes, 0),
-    0,
-  );
-  const totalStarliteEmpleados = filteredGroups.reduce(
-    (sum, g) => sum + g.rows.reduce((s, r) => s + r.starliteEmpleados, 0),
-    0,
-  );
-
-  const totalVacantes =
-    type === "general"
-      ? totalActivas + totalBackup
-      : filteredGroups.reduce(
-          (sum, g) => sum + g.rows.reduce((s, r) => s + r.vacantesStarlite, 0),
-          0,
-        );
-
-  const vacantesNetas = filteredGroups.reduce(
-    (sum, g) =>
-      sum +
-      g.rows.reduce((s, r) => {
-        const req =
-          type === "general"
-            ? r.vacantesAutorizada + r.vacantesBackup
-            : r.starliteUrgentes - r.starliteEmpleados;
-        const prox =
-          type === "general"
-            ? r.proximosIngresos - r.starliteProximos
-            : r.starliteProximos;
-        return s + Math.max(0, req - prox);
-      }, 0),
-    0,
-  );
-
-  const lines: string[] = [title, ""];
-
-  // Removed summary headers for both general and starlite
-
-  lines.push("");
+  const lines: string[] = [];
 
   for (const g of filteredGroups) {
-    if (type === "general") {
-      lines.push(`*${g.area.toUpperCase()}*`);
-    }
+    const areaTitle = toNaturalCase(g.area);
+    const groupLines: string[] = [];
 
     const puestosMap = new Map<string, typeof g.rows>();
     for (const r of g.rows) {
@@ -201,7 +143,7 @@ function buildWhatsappMessageBlock(
 
     for (const [puesto, filas] of puestosMap.entries()) {
       for (const r of filas) {
-        let puestoName = toTitleCase(puesto);
+        let puestoName = formatWhatsAppLabel(puesto);
         if (
           type !== "general" &&
           puestoName.toLowerCase().includes("operador de máquina")
@@ -209,7 +151,7 @@ function buildWhatsappMessageBlock(
           puestoName = "Operador de Starlite";
         }
 
-        let turnoLabel = r.turno ? toTitleCase(r.turno) : "";
+        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno) : "";
 
         // Filter out non-shift labels like "Admtvo", "Metrología"
         const lowerTurno = turnoLabel.toLowerCase();
@@ -222,48 +164,34 @@ function buildWhatsappMessageBlock(
           turnoLabel = "";
         }
 
-        const namePart = turnoLabel
-          ? `${puestoName} (${turnoLabel})`
-          : puestoName;
+        const namePart = [puestoName, turnoLabel].filter(Boolean).join(" · ");
 
         let ingresosDisponibles =
           type === "general"
             ? r.proximosIngresos - r.starliteProximos
             : r.starliteProximos;
 
-        let faltanTexto = "";
+        let pending = 0;
         if (type === "general") {
           const reqTotal = r.vacantesAutorizada + r.vacantesBackup;
-          if (reqTotal > 0) {
-            const faltan = Math.max(0, reqTotal - ingresosDisponibles);
-            if (faltan > 0) {
-              faltanTexto = `${faltan}`;
-            } else {
-              faltanTexto = `✔ Cubierto`;
-            }
-          } else if (ingresosDisponibles > 0) {
-            faltanTexto = `+${ingresosDisponibles} extra`;
-          }
+          pending = Math.max(0, reqTotal - ingresosDisponibles);
         } else {
-          const faltan = Math.max(
+          pending = Math.max(
             0,
             r.starliteUrgentes - r.starliteEmpleados - ingresosDisponibles,
           );
-          if (faltan > 0) {
-            faltanTexto = `${faltan}`;
-          } else if (ingresosDisponibles > 0) {
-            faltanTexto = `+${ingresosDisponibles} extra`;
-          } else {
-            faltanTexto = `✔ Cubierto`;
-          }
         }
 
-        lines.push(`• ${namePart}: ${faltanTexto}`);
+        if (pending > 0) groupLines.push(`• ${namePart}: ${pending}`);
       }
     }
 
-    if (type === "general") {
-      lines.push("");
+    if (groupLines.length > 0) {
+      lines.push(
+        `*${project ? `${project} · ${areaTitle}` : areaTitle}*`,
+        ...groupLines,
+        "",
+      );
     }
   }
 
@@ -274,12 +202,13 @@ function buildWhatsappMessageBlock(
   return lines.join("\n").trim();
 }
 
-function buildAssignedWhatsappMessage(
+function buildAssignedWhatsAppMessage(
   groups: AreaGroup[],
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
 ): string {
-  const lines: string[] = ["Actualización de Vacantes & Asignación.", ""];
+  const blocks: string[] = [];
+  let totalPending = 0;
   const recruiters = ["Alexandra", "Daniela", "Leonardo", "Pendiente"];
   const rows = groups
     .flatMap((g) => g.rows)
@@ -288,7 +217,7 @@ function buildAssignedWhatsappMessage(
   for (const rec of recruiters) {
     const recRows = rows.filter((r) => {
       const k = `${r.area}|${r.seccion}|${r.puesto}`;
-      const assignedTo = assignments[k] || "Pendiente;";
+      const assignedTo = assignments[k] || "Pendiente";
       return assignedTo === rec;
     });
 
@@ -304,10 +233,10 @@ function buildAssignedWhatsappMessage(
     const recLines: string[] = [];
 
     for (const [area, areaRows] of byArea.entries()) {
-      recLines.push(`*${toTitleCase(area)}*`);
+      recLines.push(`_${toNaturalCase(area)}_`);
 
       for (const r of areaRows) {
-        let turnoLabel = r.turno ? toTitleCase(r.turno) : "";
+        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno) : "";
         const lowerTurno = turnoLabel.toLowerCase();
         if (
           lowerTurno &&
@@ -318,7 +247,7 @@ function buildAssignedWhatsappMessage(
           turnoLabel = "";
         }
 
-        const suffix = turnoLabel ? ` (${turnoLabel})` : "";
+        const suffix = turnoLabel ? ` · ${turnoLabel}` : "";
 
         // General
         const generalReq =
@@ -328,7 +257,7 @@ function buildAssignedWhatsappMessage(
         const generalFaltan = Math.max(0, generalReq - generalIngresos);
 
         if (generalReq > 0 && generalFaltan > 0) {
-          const puestoName = toTitleCase(r.puesto);
+          const puestoName = formatWhatsAppLabel(r.puesto);
           recLines.push(`• ${puestoName}${suffix}: ${generalFaltan}`);
           totalVacantesAsignadas += generalFaltan;
         }
@@ -340,7 +269,7 @@ function buildAssignedWhatsappMessage(
         const starliteFaltan = Math.max(0, starliteReq - starliteIngresos);
 
         if (starliteFaltan > 0) {
-          let puestoName = toTitleCase(r.puesto);
+          let puestoName = formatWhatsAppLabel(r.puesto);
           if (puestoName.toLowerCase().includes("operador de máquina")) {
             puestoName = "Operador de Starlite";
           }
@@ -352,21 +281,24 @@ function buildAssignedWhatsappMessage(
     }
 
     if (totalVacantesAsignadas > 0) {
-      lines.push(`${rec}:`);
-      lines.push("");
-      lines.push(...recLines);
-      if (rec !== "Pendiente") {
-        lines.pop(); // remove last empty line from area
-        lines.push(`Total de vacantes asignadas: ${totalVacantesAsignadas}`);
-        lines.push("");
-      }
+      while (recLines[recLines.length - 1] === "") recLines.pop();
+      blocks.push(
+        `*${toNaturalCase(rec)}*\n${recLines.join("\n")}\n_Subtotal: ${totalVacantesAsignadas}_`,
+      );
+      totalPending += totalVacantesAsignadas;
     }
   }
 
-  return lines.join("\n").trim();
+  return buildWhatsAppReportFromBlocks({
+    title: "Vacantes pendientes",
+    date: formatReadableDate(new Date().toISOString()),
+    total: totalPending,
+    blocks,
+    emptyMessage: "Sin vacantes pendientes.",
+  });
 }
 
-function buildWhatsappMessage(
+function buildWhatsAppMessage(
   allGroups: AreaGroup[],
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
@@ -375,7 +307,7 @@ function buildWhatsappMessage(
     (v) => v !== "" && v !== "Pendiente",
   );
   if (hasAssignments) {
-    return buildAssignedWhatsappMessage(allGroups, dismissedKeys, assignments);
+    return buildAssignedWhatsAppMessage(allGroups, dismissedKeys, assignments);
   }
 
   const groups = allGroups
@@ -387,28 +319,46 @@ function buildWhatsappMessage(
     }))
     .filter((g) => g.rows.length > 0);
 
-  const fecha = formatShortDate(new Date().toISOString());
+  const date = formatReadableDate(new Date().toISOString());
 
   const blocks: string[] = [];
-  const generales = buildWhatsappMessageBlock(
-    `*Resumen de Vacantes* — ${fecha}`,
+  const generales = buildWhatsAppMessageBlock(
+    undefined,
     groups,
     "general",
   );
   if (generales) blocks.push(generales);
 
-  const starlite = buildWhatsappMessageBlock(
-    `*★ PROYECTO STARLITE*`,
+  const starlite = buildWhatsAppMessageBlock(
+    "Starlite",
     groups,
     "starlite",
   );
   if (starlite) blocks.push(starlite);
 
-  if (blocks.length === 0) {
-    return `*Resumen de Vacantes* — ${fecha}\n\nSin vacantes pendientes.`;
-  }
+  const totalPending = groups.reduce(
+    (total, group) =>
+      total +
+      group.rows.reduce((subtotal, row) => {
+        const generalRequired = row.vacantesAutorizada + row.vacantesBackup;
+        const generalIncoming = row.proximosIngresos - row.starliteProximos;
+        const starliteRequired = row.starliteUrgentes - row.starliteEmpleados;
+        return (
+          subtotal +
+          Math.max(0, generalRequired - generalIncoming) +
+          Math.max(0, starliteRequired - row.starliteProximos)
+        );
+      }, 0),
+    0,
+  );
 
-  return blocks.join("\n\n-----------------------------------\n\n");
+  return buildWhatsAppReportFromBlocks({
+    title: "Vacantes pendientes",
+    date,
+    total: totalPending,
+    blocks,
+    emptyMessage: "Sin vacantes pendientes.",
+  });
 }
 
 const containerVariants: Variants = {
@@ -476,7 +426,7 @@ export function VacancyReportModal({
   }, [groups, dismissedKeys]);
 
   const message = useMemo(
-    () => buildWhatsappMessage(groups, dismissedKeys, assignments),
+    () => buildWhatsAppMessage(groups, dismissedKeys, assignments),
     [groups, dismissedKeys, assignments],
   );
   const [copied, setCopied] = useState(false);
@@ -495,27 +445,11 @@ export function VacancyReportModal({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message);
+      await copyTextToClipboard(message);
       setCopied(true);
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = message;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand("copy");
-        setCopied(true);
-      } finally {
-        document.body.removeChild(ta);
-      }
+      toast.error({ title: "No se pudo copiar el reporte" });
     }
-  };
-
-  const handleShareWhatsapp = () => {
-    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const empty = groups.length === 0;
@@ -542,7 +476,7 @@ export function VacancyReportModal({
                 style={{ fontSize: "var(--type-body-sm-size)", color: "var(--color-ink)" }}
               >
                 {(() => {
-                  let turnoLabel = row.turno ? toTitleCase(row.turno) : "";
+                  let turnoLabel = row.turno ? toNaturalCase(row.turno) : "";
                   const lowerTurno = turnoLabel.toLowerCase();
                   if (
                     lowerTurno &&
@@ -553,7 +487,7 @@ export function VacancyReportModal({
                     turnoLabel = "";
                   }
 
-                  let displayPuesto = toTitleCase(row.puesto);
+                  let displayPuesto = toNaturalCase(row.puesto);
                   if (
                     displayPuesto.toLowerCase() === "operador de máquina" &&
                     (row.starliteEmpleados > 0 || row.starliteUrgentes > 0)
@@ -609,19 +543,14 @@ export function VacancyReportModal({
           className="btn-primary vacancy-report-modal__action"
           onClick={handleCopy}
           disabled={empty}
-          style={isMobile ? { width: "100%" } : undefined}
         >
           <span
             className="vacancy-report-modal__action-inner"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              justifyContent: "center",
-            }}
+            aria-live="polite"
+            aria-atomic="true"
           >
             <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "¡Copiado!" : "Copiar"}
+            {copied ? "Reporte copiado" : "Copiar reporte"}
           </span>
         </button>
       }

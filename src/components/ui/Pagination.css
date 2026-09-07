@@ -13,12 +13,8 @@
 }
 
 .pagination--compact {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  width: auto;
-  margin-inline: auto;
+  display: flex;
+  width: 100%;
 }
 
 .pagination__text {

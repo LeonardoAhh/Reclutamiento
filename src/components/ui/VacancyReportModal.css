@@ -278,6 +278,10 @@
    sin aportar valor sobre el preview, que ya contiene la información.
    ────────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
+  .vacancy-report-modal__action {
+    width: 100%;
+  }
+
   /* El preview queda como primer elemento: quitar el separador superior
      y dar más alto al área scroll del mensaje (toma el espacio que antes
      ocupaban los stats + groups). */

@@ -1,8 +1,8 @@
 {
-  "version": "0.1.10",
-  "fecha": "2026-09-05",
+  "version": "0.1.11",
+  "fecha": "2026-09-07",
   "nivel": "success",
   "titulo": "¡We are ready!",
-  "mensaje": "Mejoras en la interfaz de usuario.",
+  "mensaje": "¡Disfruta de la nueva versión de la aplicación!",
   "notificar": true
 }

@@ -1,15 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { UsersRound } from "lucide-react";
 import { Check, Copy } from "lucide";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { Modal } from "./Modal";
 import { MorphingIcon } from "./MorphingIcon";
-import { StatCard } from "./StatCard";
-import { Badge, StarliteBadge, ReclutadorBadge } from "./Badge";
-import { formatShortDate } from "@/lib/dates";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { formatReadableDate } from "@/lib/dates";
 import { RECLUTADORES_ACTIVOS } from "@/lib/constants";
-import { normalizeString } from "@/lib/utils";
+import { normalizeString, toNaturalCase } from "@/lib/utils";
+import {
+  buildWhatsAppReport,
+  copyTextToClipboard,
+  formatWhatsAppLabel,
+  formatWhatsAppSection,
+  type WhatsAppReportSection,
+} from "@/lib/whatsappReport";
+import { toast } from "@/lib/notify";
 import type { Candidate, CandidateStatus } from "@/lib/types";
 import "./CandidateReportModal.css";
 
@@ -150,150 +155,63 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
   );
 }
 
-function toTitleCase(str: string): string {
-  return str.toLowerCase().replace(/(?:^|\s|-|\/)\w/g, (m) => m.toUpperCase());
-}
-
-function buildWhatsappMessageBlock(
-  title: string,
+function buildCandidateSections(
   candidates: Candidate[],
-  includeTotals: boolean = false,
-): string {
-  if (candidates.length === 0) return "";
+  project?: string,
+): WhatsAppReportSection[] {
   const groups = buildPuestoGroups(candidates);
+  return groups.map((group) => ({
+    title: project
+      ? `${project} · ${toNaturalCase(group.area)}`
+      : toNaturalCase(group.area),
+    items: group.rows.map((row) => {
+      const cleanSection = formatWhatsAppSection(row.seccion, group.area);
 
-  const lines: string[] = [title];
-  if (includeTotals) {
-    const totalActivos = candidates.length;
-    const totalPuestos = groups.reduce((s, g) => s + g.rows.length, 0);
-    lines.push(`Total: ${totalActivos} activos en ${totalPuestos} puestos`);
-  }
-  lines.push("");
+      const sectionLabel = cleanSection || formatWhatsAppLabel(row.turno);
+      const details: string[] = [];
+      if (row.e1 > 0) details.push(`Entrevista: ${row.e1}`);
+      if (row.e2 > 0) details.push(`Documentos: ${row.e2}`);
+      if (row.fd > 0) details.push(`Faltan documentos: ${row.fd}`);
+      if (row.fp > 0) details.push(`Feedback: ${row.fp}`);
 
-  for (const g of groups) {
-    lines.push(`*${g.area.toUpperCase()} (${g.total})*`);
-    const puestosMap = new Map<string, typeof g.rows>();
-    for (const r of g.rows) {
-      if (!puestosMap.has(r.puesto)) puestosMap.set(r.puesto, []);
-      puestosMap.get(r.puesto)!.push(r);
-    }
-
-    for (const [puesto, filas] of puestosMap.entries()) {
-      for (const r of filas) {
-        let cleanSeccion = r.seccion;
-        if (cleanSeccion.toUpperCase().startsWith(g.area.toUpperCase())) {
-          cleanSeccion = cleanSeccion.substring(g.area.length).trim();
-          if (cleanSeccion.startsWith("-") || cleanSeccion.startsWith("—")) {
-            cleanSeccion = cleanSeccion.substring(1).trim();
-          }
-        }
-
-        let seccionLabel = cleanSeccion || r.turno || "";
-        if (
-          r.turno &&
-          cleanSeccion &&
-          !cleanSeccion.toUpperCase().includes(r.turno.toUpperCase())
-        ) {
-          seccionLabel = `${cleanSeccion} (${r.turno})`;
-        }
-        seccionLabel = toTitleCase(seccionLabel);
-
-        // Acortar nombres comunes para WhatsApp
-        seccionLabel = seccionLabel.replace(/Turno/i, "T.");
-        seccionLabel = seccionLabel.replace(/1er /i, "1er ");
-        seccionLabel = seccionLabel.replace(/2do /i, "2do ");
-
-        const puestoName = toTitleCase(puesto);
-        const namePart = seccionLabel
-          ? `${puestoName} - ${seccionLabel}`
-          : puestoName;
-
-        const detalle: string[] = [];
-        if (r.e1 > 0) detalle.push(`${r.e1} Entrevista`);
-        if (r.e2 > 0) detalle.push(`${r.e2} Ent docs`);
-        if (r.fd > 0) detalle.push(`${r.fd} Faltan docs`);
-        if (r.fp > 0) detalle.push(`${r.fp} Feedback`);
-
-        const detalleStr =
-          detalle.length > 0
-            ? " ```" + detalle.join(" | ") + "```"
-            : ` \`\`\`${r.total} activos\`\`\``;
-
-        lines.push(`- ${namePart}:${detalleStr}`);
+      let position = formatWhatsAppLabel(row.puesto);
+      if (project && position.toLocaleLowerCase("es-MX").includes("operador de máquina")) {
+        position = "Operador de Starlite";
       }
-    }
-    lines.push("");
-  }
 
-  while (lines.length > 0 && lines[lines.length - 1] === "") {
-    lines.pop();
-  }
-
-  return lines.join("\n").trim();
+      return {
+        label: [position, sectionLabel]
+          .filter(Boolean)
+          .join(" · "),
+        value: details.join(" · "),
+        separator: "—" as const,
+      };
+    }),
+  }));
 }
 
-function buildWhatsappMessage(active: Candidate[]): string {
-  const fecha = formatShortDate(new Date().toISOString());
-
+function buildWhatsAppMessage(active: Candidate[]): string {
   const generales = active.filter((c) => !c.is_starlite);
   const starlite = active.filter((c) => c.is_starlite);
+  const recruiters = buildRecruiterRows(active).filter((row) => row.total > 0);
+  const sections = [
+    ...buildCandidateSections(generales),
+    ...buildCandidateSections(starlite, "Starlite"),
+  ];
 
-  const blocks: string[] = [];
+  const recruiterSummary = recruiters
+    .map((row) => `${toNaturalCase(row.name)} ${row.total}`)
+    .join(" · ");
 
-  if (generales.length > 0) {
-    blocks.push(
-      buildWhatsappMessageBlock(`*RESUMEN DIARIO* — ${fecha}`, generales, true),
-    );
-  }
-
-  if (starlite.length > 0) {
-    blocks.push(
-      buildWhatsappMessageBlock(
-        `*★ PROYECTO STARLITE*`,
-        starlite,
-        !generales.length,
-      ),
-    );
-  }
-
-  if (blocks.length === 0) {
-    return `*RESUMEN DIARIO* — ${fecha}\n\nSin candidatos activos.`;
-  }
-
-  const allRecruiters = buildRecruiterRows(active);
-  const activeRecruiters = allRecruiters.filter((r) => r.total > 0);
-
-  let finalMessage = blocks.join("\n\n");
-
-  if (activeRecruiters.length > 0) {
-    const recruiterLines = ["*RECLUTADORES*"];
-    for (const r of activeRecruiters) {
-      recruiterLines.push(
-        `- *${toTitleCase(r.name)}:* \`\`\`${r.total} activos\`\`\``,
-      );
-    }
-    finalMessage += "\n\n" + recruiterLines.join("\n");
-  }
-
-  return finalMessage;
+  return buildWhatsAppReport({
+    title: "Candidatos activos",
+    date: formatReadableDate(new Date().toISOString()),
+    total: active.length,
+    sections,
+    emptyMessage: "Sin candidatos activos.",
+    footer: recruiterSummary ? `Reclutadores: ${recruiterSummary}` : undefined,
+  });
 }
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05, delayChildren: 0.08 },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 8 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
-  },
-};
 
 export function CandidateReportModal({
   isOpen,
@@ -305,9 +223,7 @@ export function CandidateReportModal({
     [candidates],
   );
   const totalActivos = active.length;
-  const message = useMemo(() => buildWhatsappMessage(active), [active]);
-
-  const isMobile = useIsMobile();
+  const message = useMemo(() => buildWhatsAppMessage(active), [active]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -322,21 +238,10 @@ export function CandidateReportModal({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message);
+      await copyTextToClipboard(message);
       setCopied(true);
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = message;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand("copy");
-        setCopied(true);
-      } finally {
-        document.body.removeChild(ta);
-      }
+      toast.error({ title: "No se pudo copiar el reporte" });
     }
   };
 
@@ -356,24 +261,19 @@ export function CandidateReportModal({
           className="btn-primary candidate-report-modal__action"
           onClick={handleCopy}
           disabled={empty}
-          style={isMobile ? { width: "100%" } : undefined}
         >
           <span
             className="candidate-report-modal__action-inner"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              justifyContent: "center",
-            }}
+            aria-live="polite"
+            aria-atomic="true"
           >
             <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "¡Copiado!" : "Copiar"}
+            {copied ? "Reporte copiado" : "Copiar reporte"}
           </span>
         </button>
       }
     >
-      <div className="modal-body candidate-report-modal__body" style={{ padding: 'var(--spacing-xl) var(--spacing-md)', textAlign: 'center' }}>
+      <div className="modal-body candidate-report-modal__body">
         {empty ? (
           <motion.p
             className="candidate-report-modal__empty"
@@ -385,15 +285,15 @@ export function CandidateReportModal({
           </motion.p>
         ) : (
           <motion.div
+            className="candidate-report-modal__summary"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)', alignItems: 'center' }}
           >
-            <span style={{ fontSize: 'var(--type-display-xl-size)', fontWeight: 'var(--type-display-xl-weight)', color: 'var(--color-ink)', lineHeight: 'var(--type-display-xl-line)', letterSpacing: 'var(--type-display-xl-tracking)' }}>
+            <span className="candidate-report-modal__total">
               {totalActivos}
             </span>
-            <span style={{ color: 'var(--color-muted)', fontSize: 'var(--type-body-md-size)' }}>
+            <span className="candidate-report-modal__total-label">
               Candidato{totalActivos === 1 ? '' : 's'} en total
             </span>
           </motion.div>

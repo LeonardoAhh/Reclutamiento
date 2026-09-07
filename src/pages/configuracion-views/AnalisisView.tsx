@@ -7,6 +7,7 @@ import {
 } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { usePagination } from '@/hooks/usePagination';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import {
   useReporteDiario,
@@ -25,6 +26,7 @@ import { SearchField } from '@/components/ui/SearchField';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
+import { Pagination } from '@/components/ui/Pagination';
 import { EmployeeResultCard } from './components/EmployeeResultCard';
 import {
   getEmployeeResultId,
@@ -34,6 +36,7 @@ import {
   uniqueFilterValues,
   isNuevoIngreso,
   hasExcesoFaltas,
+  getFaltaDates,
   type EmployeeSearchResult,
   type SearchViewMode,
 } from './analisis-helpers';
@@ -64,7 +67,6 @@ export function AnalisisView() {
   const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(
     () => new Set(),
   );
-  const [visibleLimit, setVisibleLimit] = useState(10);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
@@ -138,10 +140,27 @@ export function AnalisisView() {
     });
 
     if (riskFilter !== 'all') {
+      const absenceCounts = riskFilter === 'riesgo_baja'
+        ? new Map(
+            result.map((employee) => [
+              employee.num_empleado,
+              getFaltaDates(employee.num_empleado, allReports).length,
+            ]),
+          )
+        : null;
+
       result.sort((a, b) => {
         const dateA = a.fecha_ingreso || '';
         const dateB = b.fecha_ingreso || '';
         if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+        if (absenceCounts) {
+          const absenceDifference =
+            (absenceCounts.get(b.num_empleado) ?? 0) -
+            (absenceCounts.get(a.num_empleado) ?? 0);
+          if (absenceDifference !== 0) return absenceDifference;
+        }
+
         return a.nombre.localeCompare(b.nombre);
       });
     }
@@ -150,9 +169,24 @@ export function AnalisisView() {
   }, [textMatches, statusFilter, departmentFilter, shiftFilter, riskFilter, reportsFetched, allReports]);
 
   // 4. Paginación
-  const paginatedEmployees = useMemo(
-    () => filteredEmployees.slice(0, visibleLimit),
-    [filteredEmployees, visibleLimit]
+  const employeePagination = usePagination(filteredEmployees, 6);
+
+  useEffect(() => {
+    employeePagination.goToPage(1);
+  }, [
+    searchQuery,
+    statusFilter,
+    departmentFilter,
+    shiftFilter,
+    riskFilter,
+    employeePagination.goToPage,
+  ]);
+
+  const firstVisibleResult =
+    (employeePagination.currentPage - 1) * employeePagination.pageSize + 1;
+  const lastVisibleResult = Math.min(
+    employeePagination.currentPage * employeePagination.pageSize,
+    employeePagination.totalItems,
   );
 
   const hasActiveFilters =
@@ -466,14 +500,17 @@ export function AnalisisView() {
               className="config-results__count type-caption-sm text-muted"
               aria-live="polite"
             >
-              {paginatedEmployees.length} de {filteredEmployees.length}{' '}
-              {filteredEmployees.length === 1 ? 'colaborador' : 'colaboradores'}
+              Resultados {firstVisibleResult}–{lastVisibleResult} de{' '}
+              {employeePagination.totalItems}{' '}
+              {employeePagination.totalItems === 1
+                ? 'colaborador'
+                : 'colaboradores'}
             </p>
 
             <div
               className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
             >
-              {paginatedEmployees.map((employee) => {
+              {employeePagination.pageItems.map((employee) => {
                 const resultId = getEmployeeResultId(employee);
 
                 return (
@@ -491,18 +528,20 @@ export function AnalisisView() {
                   />
                 );
               })}
-
-              {filteredEmployees.length > visibleLimit && (
-                <div className="config-results-load-more">
-                  <ButtonUtility
-                    onClick={() => setVisibleLimit((v) => v + 10)}
-                    className="button-utility--wide"
-                  >
-                    Cargar más resultados
-                  </ButtonUtility>
-                </div>
-              )}
             </div>
+
+            <Pagination
+              currentPage={employeePagination.currentPage}
+              totalPages={employeePagination.totalPages}
+              onPageChange={employeePagination.goToPage}
+              onPrev={employeePagination.prevPage}
+              onNext={employeePagination.nextPage}
+              canGoPrev={employeePagination.canGoPrev}
+              canGoNext={employeePagination.canGoNext}
+              ariaLabel="Paginación de colaboradores"
+              variant="compact"
+              hideOnSinglePage
+            />
           </div>
         ) : (
           <div className="config-empty" role="status">

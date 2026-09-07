@@ -368,12 +368,6 @@
   width: 100%;
 }
 
-.config-results-load-more {
-  text-align: center;
-  margin-top: var(--spacing-md);
-  grid-column: 1 / -1;
-}
-
 .config-card {
   container-type: inline-size;
   container-name: config-card;
