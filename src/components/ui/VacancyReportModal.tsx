@@ -507,6 +507,7 @@ export function VacancyReportModal({
             >
               <CustomSelect
                 className="vacancy-report-modal__assign-select"
+                aria-label={`Asignar reclutador a ${toNaturalCase(row.puesto)}`}
                 value={assignments[key] || ""}
                 onChange={(val) => {
                   setAssignments((prev) => ({

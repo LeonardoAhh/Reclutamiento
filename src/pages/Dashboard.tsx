@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Clock,
   Filter,
+  SlidersHorizontal,
   UserRoundPlus as UserPlusIcon,
   UsersRound,
 } from "lucide-react";
@@ -18,6 +19,7 @@ import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
 import { CommentModal } from "@/components/ui/CommentModal";
 import { JsonImporter } from "@/components/ui/JsonImporter";
 import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
+import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
 import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
 import { AreaDetailView } from "@/components/ui/AreaDetailView";
@@ -46,6 +48,7 @@ import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useVacancyRequests } from "@/hooks/useVacancyRequests";
 import { useCandidates } from "@/hooks/useCandidates";
 import { useBajas } from "@/hooks/useBajas";
+import { useAuth } from "@/hooks/useAuth";
 import { usePositions } from "@/lib/positions";
 import type {
   Employee,
@@ -55,6 +58,8 @@ import type {
 import "./Dashboard.css";
 
 export function Dashboard() {
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === "admin";
   const {
     employees,
     comments,
@@ -126,6 +131,7 @@ export function Dashboard() {
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
+  const [positionSettingsOpen, setPositionSettingsOpen] = useState(false);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -402,6 +408,18 @@ export function Dashboard() {
                           Reporte
                         </span>
                       </button>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          className="btn-secondary dashboard__report-btn"
+                          onClick={() => setPositionSettingsOpen(true)}
+                          title="Configurar plantilla, backup y Starlite"
+                          aria-label="Configurar plantilla, backup y Starlite"
+                          aria-haspopup="dialog"
+                        >
+                          <SlidersHorizontal size={16} aria-hidden="true" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </header>
@@ -577,6 +595,13 @@ export function Dashboard() {
           onClose={() => setVacancyReportOpen(false)}
           positions={positionCoverage}
         />
+
+        {isAdmin && (
+          <PositionSettingsWizard
+            isOpen={positionSettingsOpen}
+            onClose={() => setPositionSettingsOpen(false)}
+          />
+        )}
       </section>
     </main>
   );

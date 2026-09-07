@@ -239,6 +239,7 @@
   --touch-target-min: 44px;
   --control-padding-x: 20px;
   --control-padding-y: 8px;
+  --select-content-max-block-size: 15.625rem;
   --icon-size-sm: var(--spacing-lg);
   --icon-size-md: calc(var(--spacing-lg) + var(--spacing-xs));
   --icon-size-control: var(--type-heading-sm-size);
@@ -482,6 +483,7 @@
   --duration-theme-in: 300ms;
   --duration-theme-out: 200ms;
   --duration-skeleton: 1500ms;
+  --opacity-disabled: 0.5;
   --opacity-skeleton-rest: 0.4;
   --opacity-skeleton-active: 0.9;
   --duration-spinner: 800ms;

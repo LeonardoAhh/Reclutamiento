@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
-import { CircleCheckBig, SlidersHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { SlidersHorizontal } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect, type Option } from './CustomSelect';
 import { usePositions } from '@/lib/positions';
+import { hasStarliteCompanion } from '@/lib/positionCatalog';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
 import './PositionSettingsWizard.css';
@@ -21,8 +22,9 @@ const byLabel = (a: Option, b: Option) => a.label.localeCompare(b.label, 'es');
  * Valores. Guarda en `position_settings` (override que manda sobre el código).
  */
 export function PositionSettingsWizard({ isOpen, onClose }: Props) {
-  const { positions, upsertPositionSetting } = usePositions();
+  const { configurablePositions: positions, upsertPositionSetting } = usePositions();
   const { profile, username } = useAuth();
+  const isAdmin = profile?.role === 'admin';
 
   const [area, setArea] = useState('');
   const [seccion, setSeccion] = useState('');
@@ -61,11 +63,22 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
       ) ?? null,
     [positions, area, seccion, puesto]
   );
+  const hasPairedStarlitePosition = selected
+    ? hasStarliteCompanion(positions, selected)
+    : false;
 
   function resetAll() {
     setArea('');
     setSeccion('');
     setPuesto('');
+    setPlantilla('');
+    setBackup('');
+    setUrgentes('');
+    setNotas('');
+    setError('');
+  }
+
+  function resetPositionValues() {
     setPlantilla('');
     setBackup('');
     setUrgentes('');
@@ -100,7 +113,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     }
   }
 
-  // Validación del paso 4: todos los campos numéricos deben ser >= 0.
+  // Todos los campos numéricos deben ser mayores o iguales a cero.
   const isPlantillaError = plantilla !== '' && (Number.isNaN(Number(plantilla)) || Number(plantilla) < 0);
   const isBackupError = backup !== '' && (Number.isNaN(Number(backup)) || Number(backup) < 0);
   const isUrgentesError = urgentes !== '' && (Number.isNaN(Number(urgentes)) || Number(urgentes) < 0);
@@ -150,9 +163,11 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     });
     setSubmitting(false);
     if (res.ok) {
-      toast.success({
-        title: 'Configuración guardada',
-      });
+      if (res.message) {
+        toast.warning({ title: res.message });
+      } else {
+        toast.success({ title: 'Configuración guardada' });
+      }
       resetAll();
       onClose();
     } else {
@@ -160,7 +175,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     }
   }
 
-  if (!isOpen) return null;
+  if (!isOpen || !isAdmin) return null;
 
   const errorNotice = error ? (
     <p className="form-error" role="alert" data-testid="pos-settings-error">
@@ -173,9 +188,9 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
       isOpen={isOpen}
       onClose={handleClose}
       icon={<SlidersHorizontal size={20} className="color-primary" aria-hidden="true" />}
-      title="Plantilla / Backup"
+      title="Configurar plantilla"
       className="pos-settings-modal modal-wizard-mobile"
-      size="md"
+      size="sm"
     >
       <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
         <FormWizard
@@ -191,9 +206,16 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
               title: 'Puesto',
               isValid: area.length > 0 && seccion.length > 0 && puesto.length > 0,
               content: (
-                <div data-testid="pos-settings-step-seleccion">
+                <fieldset
+                  className="pos-settings__selection"
+                  data-testid="pos-settings-step-seleccion"
+                >
+                  <legend className="sr-only">Puesto que se configurará</legend>
+                  <p className="pos-settings__intro type-body-sm text-muted">
+                    Selecciona un puesto para consultar y ajustar su distribución.
+                  </p>
                   <div className="form-group">
-                    <label htmlFor="pos-area">Área *</label>
+                    <label htmlFor="pos-area">Área</label>
                     <CustomSelect
                       id="pos-area"
                       value={area}
@@ -201,6 +223,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         setArea(v);
                         setSeccion('');
                         setPuesto('');
+                        resetPositionValues();
                       }}
                       options={areaOptions}
                       placeholder="Seleccionar área…"
@@ -208,13 +231,14 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="pos-seccion">Sección *</label>
+                    <label htmlFor="pos-seccion">Sección</label>
                     <CustomSelect
                       id="pos-seccion"
                       value={seccion}
                       onChange={(v) => {
                         setSeccion(v);
                         setPuesto('');
+                        resetPositionValues();
                       }}
                       options={seccionOptions}
                       placeholder="Seleccionar sección…"
@@ -222,7 +246,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="pos-puesto">Puesto *</label>
+                    <label htmlFor="pos-puesto">Puesto</label>
                     <CustomSelect
                       id="pos-puesto"
                       value={puesto}
@@ -232,7 +256,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                       aria-label="Puesto"
                     />
                   </div>
-                </div>
+                </fieldset>
               ),
             },
             {
@@ -240,30 +264,30 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
               title: 'Valores',
               isValid: valoresValidos,
               content: (
-                <div data-testid="pos-settings-step-valores">
-                  {/* El summary desaparece si no hay selected, pero los inputs SIEMPRE se renderizan */}
-                  {selected ? (
+                <div
+                  className="pos-settings__values"
+                  data-testid="pos-settings-step-valores"
+                >
+                  {selected && (
                     <div className="pos-settings__summary">
-                      <span className="pos-settings__summary-puesto">{selected.puesto}</span>
-                      <span className="pos-settings__summary-sub">
+                      <strong className="type-body-sm-strong text-ink">
+                        {selected.puesto}
+                      </strong>
+                      <span className="type-caption-sm text-muted">
                         {selected.area} · {selected.seccion}
                       </span>
                     </div>
-                  ) : (
-                    <div className="pos-settings__summary pos-settings__summary--empty">
-                      <span className="pos-settings__summary-puesto">—</span>
-                      <span className="pos-settings__summary-sub">
-                        Selecciona un puesto válido
-                      </span>
-                    </div>
                   )}
-                  <div className="pos-settings-metrics-grid">
+                  <div
+                    className={`pos-settings-metrics-grid${hasPairedStarlitePosition ? ' pos-settings-metrics-grid--paired' : ''}`}
+                  >
                     <div className="form-group">
-                      <label htmlFor="pos-plantilla">Plantilla autorizada *</label>
+                      <label htmlFor="pos-plantilla">Plantilla autorizada</label>
                       <input
                         id="pos-plantilla"
                         type="number"
                         min={0}
+                        inputMode="numeric"
                         value={plantilla}
                         onChange={(e) => setPlantilla(e.target.value)}
                         data-testid="pos-settings-plantilla"
@@ -273,17 +297,18 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         required
                       />
                       {isPlantillaError && (
-                        <span id="pos-plantilla-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                        <span id="pos-plantilla-error" className="form-error-text">
                           Debe ser 0 o mayor
                         </span>
                       )}
                     </div>
                     <div className="form-group">
-                      <label htmlFor="pos-backup">Backup *</label>
+                      <label htmlFor="pos-backup">Backup</label>
                       <input
                         id="pos-backup"
                         type="number"
                         min={0}
+                        inputMode="numeric"
                         value={backup}
                         onChange={(e) => setBackup(e.target.value)}
                         data-testid="pos-settings-backup"
@@ -293,34 +318,37 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                         required
                       />
                       {isBackupError && (
-                        <span id="pos-backup-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
+                        <span id="pos-backup-error" className="form-error-text">
                           Debe ser 0 o mayor
                         </span>
                       )}
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="pos-urgentes">Starlite *</label>
-                      <input
-                        id="pos-urgentes"
-                        type="number"
-                        min={0}
-                        value={urgentes}
-                        onChange={(e) => setUrgentes(e.target.value)}
-                        data-testid="pos-settings-urgentes"
-                        className={isUrgentesError ? 'input-error' : ''}
-                        aria-invalid={isUrgentesError}
-                        aria-describedby={isUrgentesError ? "pos-urgentes-error" : undefined}
-                        required
-                      />
-                      {isUrgentesError && (
-                        <span id="pos-urgentes-error" className="no-citados-subtext" style={{ color: 'var(--color-accent-orange)', display: 'block', marginTop: 'var(--spacing-xxs)' }}>
-                          Debe ser 0 o mayor
-                        </span>
-                      )}
-                    </div>
+                    {!hasPairedStarlitePosition && (
+                      <div className="form-group">
+                        <label htmlFor="pos-urgentes">Starlite</label>
+                        <input
+                          id="pos-urgentes"
+                          type="number"
+                          min={0}
+                          inputMode="numeric"
+                          value={urgentes}
+                          onChange={(e) => setUrgentes(e.target.value)}
+                          data-testid="pos-settings-urgentes"
+                          className={isUrgentesError ? 'input-error' : ''}
+                          aria-invalid={isUrgentesError}
+                          aria-describedby={isUrgentesError ? "pos-urgentes-error" : undefined}
+                          required
+                        />
+                        {isUrgentesError && (
+                          <span id="pos-urgentes-error" className="form-error-text">
+                            Debe ser 0 o mayor
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="form-group pos-settings-notas-wrap">
-                    <label htmlFor="pos-notas">Notas</label>
+                    <label htmlFor="pos-notas">Notas (opcional)</label>
                     <textarea
                       id="pos-notas"
                       rows={3}

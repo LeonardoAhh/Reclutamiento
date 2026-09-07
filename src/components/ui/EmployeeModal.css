@@ -18,10 +18,22 @@
   align-content: start;
 }
 
+.employee-modal__identity-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
 /* Desktop: 2 columnas */
 @media (min-width: 640px) {
   .employee-modal .form-grid {
     grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .employee-modal__identity-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     gap: var(--spacing-lg);
   }
 }

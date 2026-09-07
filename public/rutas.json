@@ -2151,24 +2151,6 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4242",
-    "nombre": "BAUTISTA VICENCIO MARIBEL",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
-  },
-  {
-    "numero empleado": "4246",
-    "nombre": "FABIAN SANCHEZ ALAN",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
-  },
-  {
     "numero empleado": "4249",
     "nombre": "LLAMAS VALENCIA MARCO ANTONIO",
     "seccion": "ALMACÉN 1ER TURNO ",
@@ -2394,15 +2376,6 @@
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
-    "numero empleado": "4306",
-    "nombre": "AGUSTIN RAMIREZ MARIELA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
-  },
-  {
     "numero empleado": "4308",
     "nombre": "ORTIZ HERNANDEZ MARIELA",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2437,15 +2410,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DEL MA. TERESA"
-  },
-  {
-    "numero empleado": "4319",
-    "nombre": "ARIAS MARTINEZ ERIDIA NAYELLY",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE JUNCOS"
   },
   {
     "numero empleado": "4320",
@@ -2761,5 +2725,23 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
+  },
+  {
+    "numero empleado": "4367",
+    "nombre": "ROSETE FELIPE HANIA",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero empleado": "4369",
+    "nombre": "MATA CORONA NURIAN",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "turno": "2",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   }
 ]

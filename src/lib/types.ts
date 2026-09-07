@@ -183,6 +183,10 @@ export interface PositionConfig {
    * o vacantes regulares; lo que importa es la prioridad de reclutamiento.
    */
   urgentes?: number;
+  /** Objetivo base de la sección Starlite asociada, cuando existe. */
+  starlite_autorizada?: number;
+  /** Respaldo adicional de la sección Starlite asociada. */
+  starlite_backup?: number;
   /**
    * Excedentes intencionales que se mantienen como respaldo de plantilla.
    * Si `plantilla_real - plantilla_autorizada <= backup`, el excedente se
@@ -322,6 +326,9 @@ export interface PositionCoverage {
   comentarios: PositionComment[];
   /** Flags propagados desde la PLANTILLA_AUTORIZADA. */
   urgentes: number;
+  /** Desglose del objetivo Starlite; `urgentes` conserva el objetivo total. */
+  starlite_autorizada?: number;
+  starlite_backup?: number;
   backup: number;
   notas?: string;
   /** Excedente total: real - autorizada (>= 0). */

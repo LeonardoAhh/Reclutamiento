@@ -1,7 +1,12 @@
-import { useState, useRef, useEffect, useCallback, useMemo, useId } from 'react';
-import { createPortal } from 'react-dom';
-import { CircleCheckBig } from 'lucide-react';
+import { useMemo, useState, type AriaAttributes, type ReactNode } from 'react';
+import * as SelectPrimitive from '@radix-ui/react-select';
 import { ChevronDown, ChevronUp } from 'lucide';
+import { CircleCheckBig } from 'lucide-react';
+import {
+  FLOATING_SURFACE_COLLISION_PADDING,
+  FLOATING_SURFACE_SIDE_OFFSET,
+} from '@/lib/floatingSurface';
+import { cn } from '@/lib/utils-shadcn';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './CustomSelect.css';
 
@@ -10,30 +15,32 @@ export interface Option {
   label: string;
 }
 
-interface CustomSelectProps {
+type SelectAriaProps = Pick<
+  AriaAttributes,
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-describedby'
+  | 'aria-invalid'
+  | 'aria-required'
+>;
+
+interface CustomSelectProps extends SelectAriaProps {
   id?: string;
   value: string;
   onChange: (value: string) => void;
-  options: Option[];
+  options: readonly Option[];
   placeholder?: string;
   className?: string;
   disabled?: boolean;
-  'aria-label'?: string;
-  'aria-describedby'?: string;
-  customTrigger?: React.ReactNode;
+  customTrigger?: ReactNode;
 }
 
-interface DropdownPos {
-  left: number;
-  width: number;
-  top?: number;
-  bottom?: number;
-  up: boolean;
-}
+const ITEM_VALUE_PREFIX = 'custom-select-item:';
+const EMPTY_STATE_ITEM_VALUE = 'custom-select-empty-state';
 
-// Altura máxima del dropdown (debe coincidir con el max-height del CSS).
-const DROPDOWN_MAX_HEIGHT = 250;
-const GAP = 4;
+function getItemValue(value: string) {
+  return `${ITEM_VALUE_PREFIX}${encodeURIComponent(value)}`;
+}
 
 export function CustomSelect({
   id,
@@ -41,260 +48,109 @@ export function CustomSelect({
   onChange,
   options,
   placeholder = 'Seleccionar...',
-  className = '',
+  className,
   disabled = false,
-  'aria-label': ariaLabel,
-  'aria-describedby': ariaDescribedBy,
   customTrigger,
+  ...ariaProps
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [pos, setPos] = useState<DropdownPos | null>(null);
-  
-  // Nuevo estado para teclado
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const typeaheadBuffer = useRef('');
-  const typeaheadTimeout = useRef<number | null>(null);
+  const selectedOption = options.find((option) => option.value === value);
+  const visibleOptions = useMemo(
+    () =>
+      placeholder && !options.some((option) => option.value === '')
+        ? [{ value: '', label: placeholder }, ...options]
+        : options,
+    [options, placeholder],
+  );
+  const selectedItemValue = visibleOptions.some((option) => option.value === value)
+    ? getItemValue(value)
+    : undefined;
+  const isRequired =
+    ariaProps['aria-required'] === true || ariaProps['aria-required'] === 'true';
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const handleValueChange = (itemValue: string) => {
+    const option = visibleOptions.find(
+      (candidate) => getItemValue(candidate.value) === itemValue,
+    );
 
-  const generatedListboxId = useId();
-  const listboxId = `${id ?? generatedListboxId}-listbox`;
-
-  const selectedOption = options.find((o) => o.value === value);
-  const displayValue = selectedOption ? selectedOption.label : placeholder;
-
-  // Unificamos las opciones visibles incluyendo el placeholder si aplica,
-  // para que el índice de resaltado sea consistente.
-  const visibleOptions = useMemo(() => {
-    let opts = options;
-    if (placeholder && !opts.some(o => o.value === '')) {
-      return [{ value: '', label: placeholder }, ...opts];
-    }
-    return opts;
-  }, [options, placeholder]);
-
-  // Calcula posición fija del dropdown a partir del rect del trigger. Al ser
-  // `position: fixed` en un portal, ningún `overflow` de ancestros (modales,
-  // tablas, wizards) lo recorta.
-  const recompute = useCallback(() => {
-    const trigger = triggerRef.current;
-    if (!trigger) return;
-    const rect = trigger.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
-    const up = spaceBelow < DROPDOWN_MAX_HEIGHT && spaceAbove > spaceBelow;
-    setPos({
-      left: rect.left,
-      width: rect.width,
-      up,
-      ...(up
-        ? { bottom: window.innerHeight - rect.top + GAP }
-        : { top: rect.bottom + GAP }),
-    });
-  }, []);
-
-  // Reset highlight cuando se abre o cambia la búsqueda
-  useEffect(() => {
-    if (isOpen) {
-      const index = visibleOptions.findIndex(o => o.value === value);
-      setHighlightedIndex(index >= 0 ? index : 0);
-      recompute();
-      
-
-    } else {
-      setHighlightedIndex(-1);
-    }
-  }, [isOpen, value, visibleOptions.length, recompute]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const onPointer = (e: PointerEvent) => {
-      const t = e.target as Node;
-      if (rootRef.current?.contains(t) || dropdownRef.current?.contains(t)) return;
-      setIsOpen(false);
-    };
-    
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false);
-        triggerRef.current?.focus();
-      }
-    };
-    const onReflow = () => recompute();
-
-    document.addEventListener('pointerdown', onPointer);
-    document.addEventListener('keydown', onKey);
-    window.addEventListener('resize', onReflow);
-    window.addEventListener('scroll', onReflow, true);
-    return () => {
-      document.removeEventListener('pointerdown', onPointer);
-      document.removeEventListener('keydown', onKey);
-      window.removeEventListener('resize', onReflow);
-      window.removeEventListener('scroll', onReflow, true);
-    };
-  }, [isOpen, recompute]);
-
-  // Auto-scroll del item resaltado
-  useEffect(() => {
-    if (isOpen && highlightedIndex >= 0 && listRef.current) {
-      const list = listRef.current;
-      const item = list.children[highlightedIndex] as HTMLElement;
-      if (item && item.tagName === 'BUTTON') {
-        const itemTop = item.offsetTop;
-        const itemBottom = itemTop + item.offsetHeight;
-        const listTop = list.scrollTop;
-        const listBottom = listTop + list.clientHeight;
-
-        if (itemTop < listTop) {
-          list.scrollTop = itemTop;
-        } else if (itemBottom > listBottom) {
-          list.scrollTop = itemBottom - list.clientHeight;
-        }
-      }
-    }
-  }, [highlightedIndex, isOpen]);
-
-  const handleSelect = (val: string) => {
-    onChange(val);
-    setIsOpen(false);
-    triggerRef.current?.focus();
+    if (option) onChange(option.value);
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen) {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        setIsOpen(true);
-      }
-      return;
-    }
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setHighlightedIndex((prev) => (prev < visibleOptions.length - 1 ? prev + 1 : prev));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (highlightedIndex >= 0 && highlightedIndex < visibleOptions.length) {
-          handleSelect(visibleOptions[highlightedIndex].value);
-        }
-        break;
-      case 'Tab':
-        setIsOpen(false);
-        break;
-      default:
-        // Typeahead para navegación rápida
-        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-          e.preventDefault();
-          typeaheadBuffer.current += e.key.toLowerCase();
-          
-          if (typeaheadTimeout.current) clearTimeout(typeaheadTimeout.current);
-          typeaheadTimeout.current = window.setTimeout(() => {
-            typeaheadBuffer.current = '';
-          }, 500);
-
-          const matchIndex = visibleOptions.findIndex(o => 
-            o.label.toLowerCase().startsWith(typeaheadBuffer.current)
-          );
-          
-          if (matchIndex !== -1) {
-            setHighlightedIndex(matchIndex);
-          }
-        }
-        break;
-    }
-  };
-
-  const activeDescendant =
-    isOpen && highlightedIndex >= 0 && highlightedIndex < visibleOptions.length
-      ? `${listboxId}-option-${highlightedIndex}`
-      : undefined;
 
   return (
-    <div className={`custom-select-container ${className}`} ref={rootRef} onKeyDown={handleKeyDown}>
-      <button
-        ref={triggerRef}
-        type="button"
-        id={id}
-        className={`custom-select-trigger ${customTrigger ? 'custom-select-trigger--unstyled' : ''} ${!selectedOption && !customTrigger ? 'is-placeholder' : ''}`}
-        onClick={() => setIsOpen((prev) => !prev)}
+    <div className={cn('custom-select-container', className)}>
+      <SelectPrimitive.Root
+        value={selectedItemValue}
+        onValueChange={handleValueChange}
+        onOpenChange={setIsOpen}
         disabled={disabled}
-        aria-label={ariaLabel || placeholder}
-        aria-describedby={ariaDescribedBy}
-        role="combobox"
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        aria-controls={listboxId}
-        aria-activedescendant={activeDescendant}
+        required={isRequired}
       >
-        {customTrigger ? (
-          customTrigger
-        ) : (
-          <>
-            <span className="custom-select-value">{displayValue}</span>
-            <MorphingIcon
-              icon={isOpen ? ChevronUp : ChevronDown}
-              size={16}
-              aria-hidden="true"
-              className="custom-select-icon"
+        <SelectPrimitive.Trigger
+          id={id}
+          className={cn(
+            'custom-select-trigger',
+            customTrigger && 'custom-select-trigger--unstyled',
+            !selectedOption && !customTrigger && 'is-placeholder',
+          )}
+          {...ariaProps}
+        >
+          {customTrigger ? (
+            <SelectPrimitive.Value className="custom-select-value">
+              {customTrigger}
+            </SelectPrimitive.Value>
+          ) : (
+            <SelectPrimitive.Value
+              className="custom-select-value"
+              placeholder={placeholder}
             />
-          </>
-        )}
-      </button>
+          )}
 
-      {isOpen &&
-        pos &&
-        createPortal(
-          <div
-            ref={dropdownRef}
-            className={`custom-select-dropdown custom-select-dropdown--portal${pos.up ? ' custom-select-dropdown--up' : ''}`}
-            style={{
-              left: pos.left,
-              width: pos.width,
-              ...(pos.up ? { bottom: pos.bottom } : { top: pos.top }),
-            }}
+          {!customTrigger && (
+            <SelectPrimitive.Icon asChild>
+              <MorphingIcon
+                icon={isOpen ? ChevronUp : ChevronDown}
+                aria-hidden="true"
+                className="custom-select-icon"
+              />
+            </SelectPrimitive.Icon>
+          )}
+        </SelectPrimitive.Trigger>
+
+        <SelectPrimitive.Portal>
+          <SelectPrimitive.Content
+            className="custom-select-dropdown"
+            position="popper"
+            align="start"
+            sideOffset={FLOATING_SURFACE_SIDE_OFFSET}
+            collisionPadding={FLOATING_SURFACE_COLLISION_PADDING}
           >
-
-            <div
-              className="custom-select-list"
-              ref={listRef}
-              id={listboxId}
-              role="listbox"
-              aria-label={ariaLabel || placeholder}
-            >
-
-              {visibleOptions.length === 0 ? (
-                <div className="custom-select-no-results">Sin opciones</div>
-              ) : (
-                visibleOptions.map((opt, index) => (
-                  <button
-                    key={`${opt.value}-${opt.label}`}
-                    id={`${listboxId}-option-${index}`}
-                    type="button"
-                    className={`custom-select-option ${value === opt.value ? 'is-selected' : ''} ${highlightedIndex === index ? 'is-highlighted' : ''}`}
-                    onClick={() => handleSelect(opt.value)}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                    role="option"
-                    aria-selected={value === opt.value}
+            <SelectPrimitive.Viewport className="custom-select-list">
+              {visibleOptions.length > 0 ? (
+                visibleOptions.map((option) => (
+                  <SelectPrimitive.Item
+                    key={`${option.value}-${option.label}`}
+                    value={getItemValue(option.value)}
+                    className="custom-select-option"
                   >
-                    <span className="custom-select-option-label">{opt.label}</span>
-                    {value === opt.value && <CircleCheckBig size={16} className="custom-select-check" />}
-                  </button>
+                    <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                    <SelectPrimitive.ItemIndicator className="custom-select-check">
+                      <CircleCheckBig aria-hidden="true" />
+                    </SelectPrimitive.ItemIndicator>
+                  </SelectPrimitive.Item>
                 ))
+              ) : (
+                <SelectPrimitive.Item
+                  className="custom-select-no-results"
+                  value={EMPTY_STATE_ITEM_VALUE}
+                  disabled
+                >
+                  <SelectPrimitive.ItemText>Sin opciones</SelectPrimitive.ItemText>
+                </SelectPrimitive.Item>
               )}
-            </div>
-          </div>,
-          document.body
-        )}
+            </SelectPrimitive.Viewport>
+          </SelectPrimitive.Content>
+        </SelectPrimitive.Portal>
+      </SelectPrimitive.Root>
     </div>
   );
 }

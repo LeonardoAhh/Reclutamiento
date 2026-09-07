@@ -263,6 +263,8 @@ export function calculatePositionCoverage(
       porcentaje_cobertura: porcentaje,
       comentarios: posComments,
       urgentes: Math.max(0, pos.urgentes ?? 0),
+      starlite_autorizada: pos.starlite_autorizada,
+      starlite_backup: pos.starlite_backup,
       backup,
       notas: pos.notas,
       excedente,

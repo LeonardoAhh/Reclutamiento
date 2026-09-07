@@ -463,7 +463,8 @@ export function AreaDetailView({
             {visiblePuestos.flatMap((pos) => {
               const rows = [];
               const starliteTotal = (pos.starlite_empleados || 0) + (pos.starlite_proximos || 0);
-              const starliteAut = pos.urgentes || 0;
+              const starliteAut = pos.starlite_autorizada ?? pos.urgentes ?? 0;
+              const starliteBackup = pos.starlite_backup ?? 0;
               
               const regularReal = pos.plantilla_real - (pos.starlite_empleados || 0);
               const regularProximos = pos.proximos_ingresos - (pos.starlite_proximos || 0);
@@ -478,13 +479,14 @@ export function AreaDetailView({
                 proximosIngresos: regularProximos,
               });
 
-              if (starliteAut > 0 || starliteTotal > 0) {
+              if (starliteAut > 0 || starliteBackup > 0 || starliteTotal > 0) {
                 rows.push({
                   isStarlite: true,
                   originalPos: pos,
                   displayPuesto: pos.puesto,
                   plantilla_real: pos.starlite_empleados || 0,
                   plantilla_autorizada: starliteAut,
+                  backup: starliteBackup,
                   vacantes: pos.vacantes_starlite,
                   proximosIngresos: pos.starlite_proximos || 0,
                 });
@@ -558,7 +560,8 @@ export function AreaDetailView({
                 {visiblePuestos.flatMap((pos) => {
                   const rows = [];
                   const starliteTotal = (pos.starlite_empleados || 0) + (pos.starlite_proximos || 0);
-                  const starliteAut = pos.urgentes || 0;
+                  const starliteAut = pos.starlite_autorizada ?? pos.urgentes ?? 0;
+                  const starliteBackup = pos.starlite_backup ?? 0;
                   
                   const regularReal = pos.plantilla_real - (pos.starlite_empleados || 0);
                   const regularProximos = pos.proximos_ingresos - (pos.starlite_proximos || 0);
@@ -580,8 +583,9 @@ export function AreaDetailView({
                     proximosIngresos: regularProximos,
                   });
 
-                  if (starliteAut > 0 || starliteTotal > 0) {
-                    const starliteCobertura = starliteAut > 0 ? Math.round((starliteTotal / starliteAut) * 100) : 0;
+                  if (starliteAut > 0 || starliteBackup > 0 || starliteTotal > 0) {
+                    const starliteTarget = starliteAut + starliteBackup;
+                    const starliteCobertura = starliteTarget > 0 ? Math.round((starliteTotal / starliteTarget) * 100) : 0;
                     rows.push({
                       isStarlite: true,
                       originalPos: pos,
@@ -590,7 +594,7 @@ export function AreaDetailView({
                       plantilla_autorizada: starliteAut,
                       vacantes: pos.vacantes_starlite,
                       porcentaje_cobertura: starliteCobertura,
-                      backup: 0,
+                      backup: starliteBackup,
                       excedente_critico: 0,
                       excedente_backup: 0,
                       proximosIngresos: pos.starlite_proximos || 0,

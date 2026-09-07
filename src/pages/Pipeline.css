@@ -1037,7 +1037,7 @@
   border: 0;
 }
 
-.pipeline__cell-status .custom-select {
+.pipeline__cell-status .custom-select-container {
   width: 100%;
 }
 
@@ -2109,7 +2109,7 @@
   justify-self: auto;
 }
 
-.pipeline-mobile-detail__status-cell .custom-select,
+.pipeline-mobile-detail__status-cell .custom-select-container,
 .pipeline-mobile-detail__status-cell .custom-select-trigger {
   width: 100%;
   height: 100%;

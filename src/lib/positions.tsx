@@ -11,6 +11,7 @@ import { supabase } from './supabase';
 import { formatSupabaseError } from './errors';
 import { PLANTILLA_AUTORIZADA } from './constants';
 import { normalizePuesto, normalizeString } from './utils';
+import { consolidateStarlitePositions } from './positionCatalog';
 import type {
   AuthorizedPosition,
   CustomPosition,
@@ -173,8 +174,10 @@ export interface UpsertPositionSettingInput {
 }
 
 interface PositionsContextValue {
-  /** Lista unificada (estática + custom + overrides) lista para selectores. */
+  /** Lista operativa sin duplicar las secciones históricas de Starlite. */
   positions: AuthorizedPosition[];
+  /** Catálogo completo utilizado exclusivamente para configurar cada registro. */
+  configurablePositions: AuthorizedPosition[];
   /** Solo los puestos custom (los creados desde UI). */
   customPositions: CustomPosition[];
   /** Overrides admin por puesto (backup / plantilla / urgentes / notas). */
@@ -252,9 +255,13 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
     };
   }, [configured]);
 
-  const positions = useMemo(
+  const configurablePositions = useMemo(
     () => applySettings(mergePositions(PLANTILLA_AUTORIZADA, customPositions), positionSettings),
     [customPositions, positionSettings]
+  );
+  const positions = useMemo(
+    () => consolidateStarlitePositions(configurablePositions),
+    [configurablePositions]
   );
 
   const createPosition = useCallback(
@@ -434,6 +441,7 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
   const value = useMemo<PositionsContextValue>(
     () => ({
       positions,
+      configurablePositions,
       customPositions,
       positionSettings,
       loading,
@@ -443,6 +451,7 @@ export function PositionsProvider({ children }: { children: ReactNode }) {
     }),
     [
       positions,
+      configurablePositions,
       customPositions,
       positionSettings,
       loading,

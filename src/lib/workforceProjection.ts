@@ -1,6 +1,7 @@
 import type { AuthorizedPosition, Employee, PositionCoverage } from './types';
 import { localDateToIso } from './dates';
-import { calculatePositionCoverage, matchesEmployeeToPosition, normalizePuesto, normalizeString } from './utils';
+import { calculatePositionCoverage, matchesEmployeeToPosition, normalizeString } from './utils';
+import { consolidateStarlitePositions } from './positionCatalog';
 
 export interface CoverageCategory {
   target: number;
@@ -84,19 +85,7 @@ export function calculateWorkforceProjection(
   dismissedKeys: ReadonlySet<string>,
   area?: string,
 ) {
-  // La fila histórica «(STARLITE)» repite el objetivo ya configurado por puesto.
-  // No suma otra plantilla; sus empleados siguen emparejando con la sección base.
-  // Una sección sin contraparte o con metas propias de backup/Starlite se conserva.
-  const projectionPositions = positions.filter((position) => {
-    const section = normalizeString(position.seccion);
-    const baseSection = section.replace(/\s*\(STARLITE\)$/, '');
-    if (section === baseSection || position.backup || position.urgentes) return true;
-    return !positions.some((candidate) =>
-      normalizeString(candidate.area) === normalizeString(position.area) &&
-      normalizeString(candidate.seccion) === baseSection &&
-      normalizePuesto(candidate.puesto) === normalizePuesto(position.puesto),
-    );
-  });
+  const projectionPositions = consolidateStarlitePositions(positions);
   // Conserva la política de calculatePositionCoverage: una fila por número, última gana.
   const uniqueEmployees = new Map<string, Employee>();
   for (const employee of employees) {

@@ -760,9 +760,9 @@ export function Pipeline() {
                         }))}
                         aria-label={`Cambiar estado de ${c.nombre}`}
                         customTrigger={
-                          <div className="pipeline__status-trigger">
+                          <span className="pipeline__status-trigger">
                             <CandidateStatusBadge status={c.status} showCaret />
-                          </div>
+                          </span>
                         }
                       />
                     </div>
@@ -984,14 +984,14 @@ export function Pipeline() {
                     }))}
                     aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
                     customTrigger={
-                      <div className="pipeline__status-trigger pipeline__status-trigger--full">
+                      <span className="pipeline__status-trigger pipeline__status-trigger--full">
                         <CandidateStatusBadge
                           status={selectedMobileCandidate.status}
                           showCaret
                           compact
                           className="pipeline-mobile-detail__status-badge"
                         />
-                      </div>
+                      </span>
                     }
                   />
                 </div>

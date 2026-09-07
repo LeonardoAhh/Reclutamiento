@@ -11,7 +11,11 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import type { Employee } from "@/lib/types";
 import type { AutoVacancy } from "@/lib/autoVacancies";
 import { usePositions } from "@/lib/positions";
-import { canonicalizeKeyPart, canonicalizePuesto } from "@/lib/utils";
+import {
+  canonicalizeKeyPart,
+  canonicalizePuesto,
+  toNaturalCase,
+} from "@/lib/utils";
 import {
   CATEGORIAS,
   RECLUTADORES_ACTIVOS,
@@ -162,6 +166,32 @@ export function EmployeeModal({
     }
     return list;
   }, [openVacancies]);
+
+  const vacancySelectOptions = useMemo(() => {
+    const baseLabels = vacancyOptions.map(
+      (vacancy) =>
+        `${toNaturalCase(vacancy.puesto)} · ${toNaturalCase(vacancy.seccion)}`,
+    );
+    const labelCounts = new Map<string, number>();
+
+    for (const label of baseLabels) {
+      const key = canonicalizeKeyPart(label);
+      labelCounts.set(key, (labelCounts.get(key) ?? 0) + 1);
+    }
+
+    return vacancyOptions.map((vacancy, index) => {
+      const baseLabel = baseLabels[index];
+      const isAmbiguous =
+        (labelCounts.get(canonicalizeKeyPart(baseLabel)) ?? 0) > 1;
+
+      return {
+        value: index.toString(),
+        label: isAmbiguous
+          ? `${baseLabel} · ${toNaturalCase(vacancy.area)}`
+          : baseLabel,
+      };
+    });
+  }, [vacancyOptions]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -322,7 +352,7 @@ export function EmployeeModal({
   const isAdd = mode === "add";
 
   const fieldsIdentidad = (
-    <>
+    <div className="employee-modal__identity-grid form-group--span-2">
       <div className="form-group">
         <label htmlFor="emp-num">No. de Empleado <span className="text-error">*</span></label>
         <input
@@ -367,7 +397,7 @@ export function EmployeeModal({
           </span>
         )}
       </div>
-    </>
+    </div>
   );
 
   const starliteField = (
@@ -497,10 +527,7 @@ export function EmployeeModal({
           });
           setTouchedAdd(t => ({ ...t, area: true, seccion: true, puesto: true }));
         }}
-        options={vacancyOptions.map((v, i) => ({
-          value: i.toString(),
-          label: `${v.area} - ${v.seccion} - ${v.puesto}`,
-        }))}
+        options={vacancySelectOptions}
       />
     </div>
   ) : null;
@@ -751,6 +778,7 @@ export function EmployeeModal({
         className="employee-modal modal-wizard-mobile"
         icon={icon}
         title={title}
+        size="sm"
       >
         <form onSubmit={handleSubmit} className="modal-wizard-form" noValidate>
           <FormWizard
@@ -800,7 +828,7 @@ export function EmployeeModal({
       className="employee-modal"
       icon={icon}
       title={title}
-      size={isAdd ? "lg" : "sm"}
+      size="md"
       footerActions={actionButtons}
     >
       <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>

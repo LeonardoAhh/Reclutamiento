@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { calculateWorkforceProjection, summarizeOperationalCoverage, summarizeWorkforceCoverage } from '../src/lib/workforceProjection';
 import { calculatePositionCoverage, formatPercentage } from '../src/lib/utils';
+import { consolidateStarlitePositions } from '../src/lib/positionCatalog';
 import type { AuthorizedPosition, Employee } from '../src/lib/types';
 
 const today = '2026-09-03';
@@ -25,6 +26,25 @@ function employee(number: string, overrides: Partial<Employee> = {}): Employee {
     fecha_ingreso: today, ...overrides,
   };
 }
+
+test('paired Starlite section supplies its authorized and backup targets', () => {
+  const regular = { ...position, plantilla_autorizada: 30, backup: 4, urgentes: 10 };
+  const starlite = {
+    ...position,
+    seccion: `${position.seccion} (STARLITE)`,
+    plantilla_autorizada: 5,
+    backup: 3,
+    urgentes: 0,
+  };
+  const consolidated = consolidateStarlitePositions([regular, starlite]);
+
+  assert.equal(consolidated.length, 1);
+  assert.equal(consolidated[0].plantilla_autorizada, 30);
+  assert.equal(consolidated[0].backup, 4);
+  assert.equal(consolidated[0].starlite_autorizada, 5);
+  assert.equal(consolidated[0].starlite_backup, 3);
+  assert.equal(consolidated[0].urgentes, 8);
+});
 
 test('surplus never covers vacancies in another position or category', () => {
   const vacant = { ...position, puesto: 'OTRO PUESTO', backup: 0, urgentes: 0 };
