@@ -2743,5 +2743,41 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "SANTA ROSA",
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero empleado": "4371",
+    "nombre": "SEGURA QUEBRADO MIRIAM",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
+  },
+  {
+    "numero empleado": "4372",
+    "nombre": "SANTES VAZQUEZ NATIVIDAD",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero empleado": "4373",
+    "nombre": "HERNANDEZ AGUILAR MARIA GUADALUPE",
+    "seccion": "A. CALIDAD 1ER TURNO",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
+  },
+  {
+    "numero empleado": "4374",
+    "nombre": "MUÑOZ SEFERINO AZUCENA",
+    "seccion": "A. CALIDAD 1ER TURNO",
+    "turno": "1",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   }
 ]

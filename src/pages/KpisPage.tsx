@@ -676,7 +676,7 @@ export function KpisPage() {
             />
           </Reveal>
 
-          <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
+          <WorkforceProjection projection={projectionTotals} />
 
           <section className="kpis-page__grid" aria-label="KPIs consolidados">
             {visibleCards.map((card, index) => {
@@ -736,7 +736,7 @@ export function KpisPage() {
         </>
       ) : (
         <>
-          <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
+          <WorkforceProjection projection={projectionTotals} />
 
           {visibleGroups.length > 1 && (
             <nav

@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ArrowLeft,
   BriefcaseBusiness,
   HeartPulse,
-  MessageSquare,
   Star,
   UsersRound,
 } from 'lucide-react';
-import { Badge, StarliteBadge, BackupBadge, AreaStatusBadge } from './Badge';
+import { Badge, StarliteBadge, AreaStatusBadge } from './Badge';
+import { BackButton } from './BackButton';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -16,6 +15,7 @@ import { normalizePuesto } from '@/lib/bajas';
 import { formatPercentage, getCoverageColor } from '@/lib/utils';
 import { summarizeOperationalCoverage } from '@/lib/workforceProjection';
 import type { WorkforceProjection } from '@/lib/workforceProjection';
+import { getStarlitePositionDisplayName } from '@/lib/positionCatalog';
 import type {
   Candidate,
   CandidateStatus,
@@ -47,7 +47,6 @@ interface AreaDetailViewProps {
    * sección) para mostrar el badge "EN PROCESO (N)" en el row.
    */
   candidates?: Candidate[];
-  onOpenComment: (area: string, seccion: string, puesto: string) => void;
   onBack?: () => void;
   /** Mapa sección -> # empleados en incapacidad dentro del área activa. */
   incapacidadPorSeccion?: Map<string, number> | null;
@@ -55,14 +54,11 @@ interface AreaDetailViewProps {
   incapacidadAreaTotal?: number;
 }
 
-const ALL_TAB = '__all__';
-
 export function AreaDetailView({
   dept,
   projection,
   comments,
   candidates = [],
-  onOpenComment,
   onBack,
   incapacidadPorSeccion = null,
   incapacidadAreaTotal = 0,
@@ -146,28 +142,6 @@ export function AreaDetailView({
     return map;
   }, [dept, candidates]);
 
-  const seccionTotals = useMemo(() => {
-    const map = new Map<
-      string,
-      { autorizada: number; real: number; vacantes: number; urgentes: number }
-    >();
-    if (!dept) return map;
-    for (const p of dept.puestos) {
-      const acc = map.get(p.seccion) ?? {
-        autorizada: 0,
-        real: 0,
-        vacantes: 0,
-        urgentes: 0,
-      };
-      acc.autorizada += p.plantilla_autorizada;
-      acc.real += p.plantilla_real;
-      acc.vacantes += p.vacantes;
-      acc.urgentes += p.urgentes;
-      map.set(p.seccion, acc);
-    }
-    return map;
-  }, [dept]);
-
   function onTabKeyDown(e: React.KeyboardEvent<HTMLButtonElement>, idx: number) {
     const tabs: HTMLButtonElement[] = Array.from(
       tablistRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? []
@@ -216,15 +190,13 @@ export function AreaDetailView({
     urgentes: dept.urgentes,
   };
 
-  // Vínculo accesible tab <-> panel: el panel toma su nombre del tab activo
-  // por ÍNDICE (no por el texto de la sección, que trae espacios/acentos y
-  // no es un id HTML válido). Con una sola sección no hay tabs, así que el
-  // panel se describe con su propio heading ("Puestos").
+  // Vínculo accesible tab <-> panel por índice; evita usar como id el texto
+  // dinámico de la sección, que puede contener espacios o acentos.
   const activeTabIndex = tabs.findIndex((t) => t.id === activeTab);
   const activeTabDomId =
     tabs.length > 1 && activeTabIndex >= 0
       ? `area-tab-${activeTabIndex}`
-      : 'area-detail-list-title';
+      : undefined;
 
   type Puesto = DepartmentCoverage['puestos'][number];
 
@@ -283,43 +255,6 @@ export function AreaDetailView({
     return <span className="no-vacancy">—</span>;
   };
 
-  const renderFlags = (pos: Puesto) => {
-    if (pos.excedente_critico <= 0 && pos.excedente_backup <= 0) return null;
-    return (
-      <div className="cell-puesto__flags">
-        {pos.excedente_critico > 0 && (
-          <Badge variant="amber">+{pos.excedente_critico} excede</Badge>
-        )}
-        {pos.excedente_backup > 0 && (
-          <span className="area-detail__backup-flag">
-            <span className="area-detail__backup-count">
-              +{pos.excedente_backup}
-            </span>
-            <BackupBadge />
-          </span>
-        )}
-      </div>
-    );
-  };
-
-  const commentButton = (pos: Puesto) => {
-    const posComments = commentsFor(pos);
-    return (
-      <button
-        type="button"
-        className="btn-icon"
-        onClick={() => onOpenComment(pos.area, pos.seccion, pos.puesto)}
-        title="Agregar comentario"
-        aria-label={`Comentario para ${pos.puesto}`}
-      >
-        <MessageSquare size="var(--icon-size-sm)" aria-hidden="true" />
-        {posComments.length > 0 && (
-          <span className="btn-icon__count">{posComments.length}</span>
-        )}
-      </button>
-    );
-  };
-
   const currentCoverage = projection
     ? summarizeOperationalCoverage(projection.current)
     : null;
@@ -338,9 +273,11 @@ export function AreaDetailView({
     <section className="area-detail-view">
       <header className="area-detail__header">
         {onBack && (
-          <button type="button" className="btn-icon area-detail__back-btn" onClick={onBack} aria-label="Volver a Departamentos">
-            <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-          </button>
+          <BackButton
+            className="area-detail__back-btn"
+            onClick={onBack}
+            aria-label="Volver a departamentos"
+          />
         )}
         <h2 className="area-detail__title">{dept.area}</h2>
       </header>
@@ -462,13 +399,10 @@ export function AreaDetailView({
       <section
         id="area-detail-tabpanel"
         role="tabpanel"
-        aria-labelledby={tabs.length > 1 ? activeTabDomId : 'area-detail-list-title'}
+        aria-labelledby={activeTabDomId}
+        aria-label={activeTabDomId ? undefined : 'Puestos'}
         className="area-detail-modal__panel"
       >
-        <header className="area-detail-modal__panel-header">
-          <h3 id="area-detail-list-title">Puestos</h3>
-        </header>
-
         {visiblePuestos.length === 0 ? (
           <div className="area-detail-modal__empty">
             <p>No hay puestos en esta sección.</p>
@@ -488,6 +422,7 @@ export function AreaDetailView({
                 isStarlite: false,
                 originalPos: pos,
                 displayPuesto: pos.puesto,
+                showStarliteBadge: false,
                 plantilla_real: regularReal,
                 plantilla_autorizada: pos.plantilla_autorizada,
                 vacantes: pos.vacantes_plantilla + pos.vacantes_backup,
@@ -495,10 +430,12 @@ export function AreaDetailView({
               });
 
               if (starliteAut > 0 || starliteBackup > 0 || starliteTotal > 0) {
+                const displayPuesto = getStarlitePositionDisplayName(pos.puesto);
                 rows.push({
                   isStarlite: true,
                   originalPos: pos,
-                  displayPuesto: pos.puesto,
+                  displayPuesto,
+                  showStarliteBadge: displayPuesto === pos.puesto,
                   plantilla_real: pos.starlite_empleados || 0,
                   plantilla_autorizada: starliteAut,
                   backup: starliteBackup,
@@ -518,18 +455,14 @@ export function AreaDetailView({
                     <div className="area-detail-modal__card-id">
                       <span className="area-detail-modal__card-name">
                         {row.displayPuesto}
-                        {row.isStarlite && (
+                        {row.showStarliteBadge && (
                           <span className="area-detail__starlite-badge">
                             <StarliteBadge />
                           </span>
                         )}
                       </span>
-                      {activeTab === ALL_TAB && (
-                        <span className="area-detail-modal__card-sec">{pos.seccion}</span>
-                      )}
                     </div>
                   </div>
-                  {!row.isStarlite && renderFlags(pos)}
                   <div className="area-detail-modal__card-meta">
                     <span className="area-detail-modal__card-metric">
                       <span className="area-detail-modal__card-metric-value">
@@ -562,13 +495,11 @@ export function AreaDetailView({
               <thead>
                 <tr>
                   <th scope="col">Puesto</th>
-                  {activeTab === ALL_TAB && <th scope="col" className="hide-on-mobile">Sección</th>}
                   <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
                   <th scope="col" className="text-center hide-on-mobile">Backup</th>
-                  <th scope="col" className="text-center hide-on-mobile">Real</th>
+                  <th scope="col" className="text-center hide-on-mobile">Activos</th>
                   <th scope="col" className="text-center">Vacantes</th>
                   <th scope="col" className="hide-on-mobile">Cobertura</th>
-                  <th scope="col" className="text-center">Estado</th>
                 </tr>
               </thead>
               <tbody>
@@ -588,43 +519,33 @@ export function AreaDetailView({
                     isStarlite: false,
                     originalPos: pos,
                     displayPuesto: pos.puesto,
+                    showStarliteBadge: false,
                     plantilla_real: regularReal,
                     plantilla_autorizada: pos.plantilla_autorizada,
                     vacantes: pos.vacantes_plantilla + pos.vacantes_backup,
                     porcentaje_cobertura: regularCobertura,
                     backup: pos.backup,
-                    excedente_critico: pos.excedente_critico,
-                    excedente_backup: pos.excedente_backup,
-                    proximosIngresos: regularProximos,
                   });
 
                   if (starliteAut > 0 || starliteBackup > 0 || starliteTotal > 0) {
                     const starliteTarget = starliteAut + starliteBackup;
                     const starliteCobertura = starliteTarget > 0 ? Math.round((starliteTotal / starliteTarget) * 100) : 0;
+                    const displayPuesto = getStarlitePositionDisplayName(pos.puesto);
                     rows.push({
                       isStarlite: true,
                       originalPos: pos,
-                      displayPuesto: pos.puesto,
+                      displayPuesto,
+                      showStarliteBadge: displayPuesto === pos.puesto,
                       plantilla_real: pos.starlite_empleados || 0,
                       plantilla_autorizada: starliteAut,
                       vacantes: pos.vacantes_starlite,
                       porcentaje_cobertura: starliteCobertura,
                       backup: starliteBackup,
-                      excedente_critico: 0,
-                      excedente_backup: 0,
-                      proximosIngresos: pos.starlite_proximos || 0,
                     });
                   }
                   return rows;
                 }).map((row) => {
                   const pos = row.originalPos;
-                  const posComments = comments.filter(
-                    (c) =>
-                      c.area === pos.area &&
-                      c.seccion === pos.seccion &&
-                      c.puesto === pos.puesto
-                  );
-                  const latestComment = posComments[posComments.length - 1];
 
                   return (
                     <tr
@@ -634,32 +555,14 @@ export function AreaDetailView({
                         <div className="cell-puesto__inner">
                           <span className="cell-puesto__name">
                             {row.displayPuesto}
-                            {row.isStarlite && (
+                            {row.showStarliteBadge && (
                               <span className="area-detail__starlite-badge">
                                 <StarliteBadge />
                               </span>
                             )}
                           </span>
-                          <div className="cell-puesto__flags">
-                            {row.excedente_critico > 0 && (
-                              <Badge variant="amber">
-                                +{row.excedente_critico} excede
-                              </Badge>
-                            )}
-                            {row.excedente_backup > 0 && (
-                              <span className="area-detail__backup-flag">
-                                <span className="area-detail__backup-count">
-                                  +{row.excedente_backup}
-                                </span>
-                                <BackupBadge />
-                              </span>
-                            )}
-                          </div>
                         </div>
                       </td>
-                      {activeTab === ALL_TAB && (
-                        <td className="cell-seccion hide-on-mobile">{pos.seccion}</td>
-                      )}
                       <td className="text-center hide-on-mobile font-mono">
                         {row.plantilla_autorizada}
                       </td>
@@ -695,9 +598,6 @@ export function AreaDetailView({
                       </td>
                       <td className="hide-on-mobile font-strong" style={{ color: getCoverageColor(row.porcentaje_cobertura) }}>
                         {formatPercentage(row.porcentaje_cobertura)}
-                      </td>
-                      <td className="text-center">
-                        {renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}
                       </td>
                     </tr>
                   );

@@ -10,7 +10,6 @@ const CATEGORIES = [
 
 interface Props {
   projection: Projection;
-  todayIso: string;
 }
 
 function CoveragePercentage({ value }: { value: number | null }) {
@@ -29,16 +28,15 @@ export function WorkforceProjection({ projection }: Props) {
 
       <div className="workforce-projection__cards" role="list">
         {CATEGORIES.map(({ key, label }) => {
-          const hasVacancies = projection.withAllProximos[key].vacancies > 0;
-          const target = projection.withAllProximos[key].target;
-          const vacantes = projection.withAllProximos[key].vacancies;
+          const current = projection.current[key];
+          const hasVacancies = current.vacancies > 0;
           return (
             <div key={key} className="workforce-projection__card" role="listitem">
               <header className="workforce-projection__card-header">
                 <h3 className="type-caption-up text-muted">{label}</h3>
-                {target > 0 && hasVacancies && (
+                {current.target > 0 && hasVacancies && (
                   <span className="workforce-projection__card-badge type-caption-xs text-error">
-                    {vacantes} {vacantes === 1 ? 'vacante' : 'vacantes'}
+                    {current.vacancies} {current.vacancies === 1 ? 'vacante' : 'vacantes'}
                   </span>
                 )}
               </header>
@@ -59,7 +57,6 @@ export function WorkforceProjection({ projection }: Props) {
         <div className="workforce-projection__breakdown" role="list">
           {CATEGORIES.map(({ key, label }) => {
             const current = projection.current[key];
-            const withAll = projection.withAllProximos[key];
             return (
               <div key={key} className="workforce-projection__breakdown-card" role="listitem">
                 <span className="workforce-projection__breakdown-label type-caption-up text-muted">
@@ -74,9 +71,9 @@ export function WorkforceProjection({ projection }: Props) {
                       &nbsp;de {current.target} puestos cubiertos
                     </span>
                   </span>
-                  {withAll.vacancies > 0 && (
-                    <span className="workforce-projection__breakdown-vacancy type-caption-sm text-error" aria-label={`${withAll.vacancies} vacante${withAll.vacancies === 1 ? '' : 's'}`}>
-                      −{withAll.vacancies}
+                  {current.vacancies > 0 && (
+                    <span className="workforce-projection__breakdown-vacancy type-caption-sm text-error" aria-label={`${current.vacancies} vacante${current.vacancies === 1 ? '' : 's'}`}>
+                      −{current.vacancies}
                     </span>
                   )}
                 </div>

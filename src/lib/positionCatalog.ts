@@ -2,6 +2,9 @@ import type { AuthorizedPosition } from './types';
 import { normalizePuesto, normalizeString } from './utils';
 
 const STARLITE_SECTION_SUFFIX = /\s*\(STARLITE\)$/;
+const STARLITE_POSITION_DISPLAY_NAMES = new Map<string, string>([
+  ['OPERADOR DE MAQUINA', 'OPERADOR DE STARLITE'],
+]);
 
 function getBaseSection(section: string) {
   return normalizeString(section).replace(STARLITE_SECTION_SUFFIX, '');
@@ -17,6 +20,14 @@ function getPositionKey(position: Pick<AuthorizedPosition, 'area' | 'seccion' | 
 
 export function isStarliteSection(section: string) {
   return STARLITE_SECTION_SUFFIX.test(normalizeString(section));
+}
+
+/** Nombre editorial para filas Starlite sin alterar identidad contractual. */
+export function getStarlitePositionDisplayName(positionName: string): string {
+  return (
+    STARLITE_POSITION_DISPLAY_NAMES.get(normalizePuesto(positionName)) ??
+    positionName
+  );
 }
 
 export function hasStarliteCompanion(

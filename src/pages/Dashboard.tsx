@@ -12,7 +12,6 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { SearchField } from "@/components/ui/SearchField";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
-import { CommentModal } from "@/components/ui/CommentModal";
 import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
 import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
@@ -42,11 +41,7 @@ import { useCandidates } from "@/hooks/useCandidates";
 import { useBajas } from "@/hooks/useBajas";
 import { useAuth } from "@/hooks/useAuth";
 import { usePositions } from "@/lib/positions";
-import type {
-  Employee,
-  EmployeeRaw,
-  PositionComment,
-} from "@/lib/types";
+import type { Employee, EmployeeRaw } from "@/lib/types";
 import "./Dashboard.css";
 
 export function Dashboard() {
@@ -57,7 +52,6 @@ export function Dashboard() {
     comments,
     loading,
     upsertEmployees,
-    addComment,
     addSingleEmployee,
     updateEmployee,
     deleteEmployee,
@@ -104,12 +98,6 @@ export function Dashboard() {
     : departmentSelection?.navigationKey === location.key
       ? departmentSelection.area
       : "general";
-  const [commentTarget, setCommentTarget] = useState<{
-    area: string;
-    seccion: string;
-    puesto: string;
-  } | null>(null);
-
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<"add" | "delete" | null>(
     null,
@@ -222,11 +210,6 @@ export function Dashboard() {
     for (const emp of incoming) {
       await coverVacancyForEmployee(emp, { source: "json-import" });
     }
-  }
-
-  function handleSaveComment(comment: PositionComment) {
-    addComment(comment);
-    setCommentTarget(null);
   }
 
   async function handleSaveEmployee(emp: Employee) {
@@ -501,9 +484,6 @@ export function Dashboard() {
                 projection={departmentProjections.get(activeTab)}
                 comments={comments}
                 candidates={candidates}
-                onOpenComment={(area, seccion, puesto) =>
-                  setCommentTarget({ area, seccion, puesto })
-                }
                 onBack={() => setDepartmentSelection(null)}
                 incapacidadPorSeccion={
                   activeTab !== "general"
@@ -526,23 +506,6 @@ export function Dashboard() {
           employee={incapacidadTarget}
           onClose={() => setIncapacidadTarget(null)}
           onSave={updateEmployeeIncapacidad}
-        />
-
-        {/* ── Comment Modal ── */}
-        <CommentModal
-          isOpen={commentTarget !== null}
-          area={commentTarget?.area ?? ""}
-          seccion={commentTarget?.seccion ?? ""}
-          puesto={commentTarget?.puesto ?? ""}
-          existingComments={comments.filter(
-            (c) =>
-              commentTarget !== null &&
-              c.area === commentTarget.area &&
-              c.seccion === commentTarget.seccion &&
-              c.puesto === commentTarget.puesto,
-          )}
-          onClose={() => setCommentTarget(null)}
-          onSave={handleSaveComment}
         />
 
         {/* ── Employee Modal (Add / Delete) ── */}
