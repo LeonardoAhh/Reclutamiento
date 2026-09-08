@@ -48,24 +48,26 @@ export function IdentityReviewStep({
 
       <fieldset className="data-update-review-choice">
         <legend>Resultado de la revisión</legend>
-        <label>
-          <input
-            type="radio"
-            name="identity-review"
-            checked={review === "confirmado"}
-            onChange={() => onReviewChange("confirmado")}
-          />
-          <span>Los datos son correctos</span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="identity-review"
-            checked={review === "incidencia"}
-            onChange={() => onReviewChange("incidencia")}
-          />
-          <span>Hay datos incorrectos</span>
-        </label>
+        <div className="data-update-review-choice__options">
+          <label>
+            <input
+              type="radio"
+              name="identity-review"
+              checked={review === "confirmado"}
+              onChange={() => onReviewChange("confirmado")}
+            />
+            <span>Los datos son correctos</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="identity-review"
+              checked={review === "incidencia"}
+              onChange={() => onReviewChange("incidencia")}
+            />
+            <span>Hay datos incorrectos</span>
+          </label>
+        </div>
       </fieldset>
 
       {review === "incidencia" && (

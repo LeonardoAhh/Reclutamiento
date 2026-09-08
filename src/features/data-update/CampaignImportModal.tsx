@@ -51,7 +51,6 @@ export function CampaignImportModal({
   };
 
   const toggleParticipant = (profileId: string) => {
-    if (profileId === currentUserId) return;
     setParticipants((current) => {
       const next = new Set(current);
       if (next.has(profileId)) next.delete(profileId);
@@ -97,7 +96,7 @@ export function CampaignImportModal({
       isOpen={isOpen}
       title="Nueva campaña"
       onClose={close}
-      size="md"
+      size="sm"
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={close} disabled={submitting}>
@@ -150,7 +149,6 @@ export function CampaignImportModal({
                   type="checkbox"
                   checked={participants.has(profile.id)}
                   onChange={() => toggleParticipant(profile.id)}
-                  disabled={profile.id === currentUserId}
                 />
                 <span>{profile.label}</span>
                 <span className="text-muted type-caption-sm">{profile.role}</span>
@@ -162,7 +160,7 @@ export function CampaignImportModal({
         <section className="data-update-import__section" aria-labelledby="campaign-file-title">
           <div>
             <h3 id="campaign-file-title">Archivo de colaboradores</h3>
-            <p className="type-caption-sm text-muted">El JSON se valida antes de crear y repartir la campaña.</p>
+            <p className="type-caption-sm text-muted">Se valida la información antes de crear.</p>
           </div>
           <div className="data-update-import__file">
             <label htmlFor={fileInputId} className="btn-secondary">

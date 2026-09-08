@@ -1,4 +1,5 @@
 import { EDITABLE_FIELDS, IDENTITY_FIELDS } from "./constants";
+import { downloadBlob, safeFileName } from "./download";
 import type {
   DataUpdateAuditEntry,
   DataUpdateCampaignDetail,
@@ -7,26 +8,6 @@ import type {
 
 const EXCEL_MIME_TYPE =
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-function downloadBlob(blob: Blob, fileName: string) {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
-}
-
-function safeFileName(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .toLowerCase();
-}
 
 function photoFileName(value: string | null): string {
   return value?.split("/").pop() ?? "";

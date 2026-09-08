@@ -1,30 +1,56 @@
-import { Camera, ImageUp, RefreshCw } from "lucide-react";
+import { type ChangeEvent } from "react";
+import { Camera, ImageUp, PencilLine, RefreshCw } from "lucide-react";
 import { DATA_UPDATE_PHOTO_ACCEPT, EDITABLE_FIELDS } from "./constants";
 import type { DataUpdateEditableData, DataUpdateIdentity } from "./types";
 
-interface PhotoReviewStepProps {
+interface PhotoStepProps {
   identity: DataUpdateIdentity;
-  data: DataUpdateEditableData;
   photoUrl: string | null;
   photoBusy: boolean;
+  photoStatus: string | null;
+  canRetry: boolean;
   onPhotoChange: (file: File | undefined) => void;
+  onRetry: () => void;
 }
 
-export function PhotoReviewStep({
+interface ReviewStepProps {
+  data: DataUpdateEditableData;
+  onEditStep: (step: number) => void;
+}
+
+const REVIEW_GROUPS: ReadonlyArray<{
+  title: string;
+  step: number;
+  keys: ReadonlyArray<keyof DataUpdateEditableData>;
+}> = [
+  { title: "Transporte", step: 1, keys: ["route", "stop", "location"] },
+  { title: "Contacto", step: 2, keys: ["birthState", "civilStatus", "email", "mobilePhone"] },
+  { title: "Emergencia y domicilio", step: 3, keys: ["emergencyContact", "emergencyRelationship", "emergencyPhone", "street", "municipality", "fullAddress"] },
+  { title: "Información adicional", step: 4, keys: ["educationLevel", "bloodType", "allergies", "locker"] },
+];
+
+export function PhotoStep({
   identity,
-  data,
   photoUrl,
   photoBusy,
+  photoStatus,
+  canRetry,
   onPhotoChange,
-}: PhotoReviewStepProps) {
+  onRetry,
+}: PhotoStepProps) {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onPhotoChange(event.target.files?.[0]);
+    event.target.value = "";
+  };
+
   return (
     <section className="data-update-step" aria-labelledby="photo-step-title">
       <div>
-        <h2 id="photo-step-title">Fotografía y revisión</h2>
+        <h2 id="photo-step-title">Fotografía</h2>
         <p className="text-muted">La fotografía es obligatoria para finalizar. Formatos JPEG, PNG o WebP, máximo 5 MB.</p>
       </div>
 
-      <div className="data-update-photo">
+      <div className="data-update-photo" aria-busy={photoBusy || undefined}>
         {photoUrl ? (
           <img src={photoUrl} alt={`Fotografía nueva de ${identity.name}`} />
         ) : (
@@ -33,14 +59,14 @@ export function PhotoReviewStep({
         <div className="data-update-photo__actions">
           <label className="btn-primary">
             {photoUrl ? <RefreshCw aria-hidden="true" /> : <Camera aria-hidden="true" />}
-            {photoUrl ? "Repetir fotografía" : "Usar cámara"}
+            {photoUrl ? "Volver a tomar" : "Usar cámara"}
             <input
               className="sr-only"
               type="file"
               accept={DATA_UPDATE_PHOTO_ACCEPT}
               capture="environment"
               disabled={photoBusy}
-              onChange={(event) => onPhotoChange(event.target.files?.[0])}
+              onChange={handleFileChange}
             />
           </label>
           <label className="btn-secondary">
@@ -51,23 +77,53 @@ export function PhotoReviewStep({
               type="file"
               accept={DATA_UPDATE_PHOTO_ACCEPT}
               disabled={photoBusy}
-              onChange={(event) => onPhotoChange(event.target.files?.[0])}
+              onChange={handleFileChange}
             />
           </label>
+          {canRetry && (
+            <button type="button" className="btn-secondary" onClick={onRetry} disabled={photoBusy}>
+              <RefreshCw aria-hidden="true" />
+              Reintentar carga
+            </button>
+          )}
         </div>
+        {photoStatus && <p className="data-update-photo__status" role="status">{photoStatus}</p>}
       </div>
+    </section>
+  );
+}
 
-      <section className="data-update-review" aria-labelledby="final-review-title">
-        <h3 id="final-review-title">Datos que se guardarán</h3>
-        <dl>
-          {EDITABLE_FIELDS.map((field) => (
-            <div key={field.key}>
-              <dt>{field.label}</dt>
-              <dd>{data[field.key]}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+export function ReviewStep({ data, onEditStep }: ReviewStepProps) {
+  return (
+    <section className="data-update-step data-update-review" aria-labelledby="final-review-title">
+      <div>
+        <h2 id="final-review-title">Datos que se guardarán</h2>
+        <p className="text-muted">Revisa la información antes de completar la actualización.</p>
+      </div>
+      <div className="data-update-review__groups">
+        {REVIEW_GROUPS.map((group) => (
+          <section key={group.title} className="data-update-review__group" aria-labelledby={`review-${group.step}-title`}>
+            <header>
+              <h3 id={`review-${group.step}-title`}>{group.title}</h3>
+              <button type="button" className="btn-secondary btn-sm" onClick={() => onEditStep(group.step)}>
+                <PencilLine aria-hidden="true" />
+                Editar
+                <span className="sr-only"> {group.title}</span>
+              </button>
+            </header>
+            <dl>
+              {EDITABLE_FIELDS.filter((field) => group.keys.includes(field.key)).map((field) => (
+                <div key={field.key}>
+                  <dt>{field.label}</dt>
+                  <dd className={field.key === "email" ? "data-update-value--preserve-case" : undefined}>
+                    {data[field.key]}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
+      </div>
     </section>
   );
 }

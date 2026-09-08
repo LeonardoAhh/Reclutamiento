@@ -3,10 +3,26 @@ import type { DataUpdateEditableData, DataUpdateIdentity, DataUpdateRecord } fro
 export const DATA_UPDATE_PHOTO_BUCKET = "data-update-photos";
 export const DATA_UPDATE_PHOTO_ACCEPT = "image/jpeg,image/png,image/webp";
 export const DATA_UPDATE_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+export const DATA_UPDATE_PHOTO_EXPORT_JPEG_QUALITY = 0.95;
 export const DATA_UPDATE_SIGNED_URL_SECONDS = 300;
-export const DATA_UPDATE_STEP_COUNT = 6;
+export const DATA_UPDATE_STEP_COUNT = 7;
 export const DATA_UPDATE_AUTOSAVE_DELAY_MS = 800;
 export const DATA_UPDATE_PAGE_SIZE = 12;
+export const DATA_UPDATE_OTHER_RELATIONSHIP = "OTRO";
+
+export const EMERGENCY_RELATIONSHIPS = [
+  "MADRE",
+  "PADRE",
+  "ESPOSA",
+  "ESPOSO",
+  "HIJA",
+  "HIJO",
+  "HERMANA",
+  "HERMANO",
+  "PAREJA",
+  "TUTOR",
+  DATA_UPDATE_OTHER_RELATIONSHIP,
+] as const;
 
 const dataUpdateRecordCollator = new Intl.Collator("es-MX", {
   numeric: true,
@@ -85,6 +101,7 @@ export const EDITABLE_FIELDS: ReadonlyArray<{
   { key: "email", label: "Correo" },
   { key: "mobilePhone", label: "Teléfono móvil" },
   { key: "emergencyContact", label: "Contacto de emergencia" },
+  { key: "emergencyRelationship", label: "Parentesco" },
   { key: "emergencyPhone", label: "Teléfono de emergencia" },
   { key: "street", label: "Calle" },
   { key: "fullAddress", label: "Dirección completa" },

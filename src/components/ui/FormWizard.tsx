@@ -5,9 +5,10 @@ import './FormWizard.css';
 export interface FormWizardStep {
   id: string;
   title: string;
-  /** `false` bloquea el botón "Siguiente" hasta completar el paso. */
+  /** `false` impide avanzar y permite mostrar la corrección necesaria. */
   isValid?: boolean;
-  content: React.ReactNode;
+  onInvalid?: () => void;
+  content: React.ReactNode | ((goToStep: (step: number) => void) => React.ReactNode);
 }
 
 interface FormWizardProps {
@@ -73,6 +74,14 @@ export function FormWizard({
     armTimer.current = window.setTimeout(() => setArmed(true), 450);
   }
 
+  function goForward() {
+    if (current.isValid === false) {
+      current.onInvalid?.();
+      return;
+    }
+    void goToStep(Math.min(total - 1, step + 1));
+  }
+
   useEffect(() => () => window.clearTimeout(armTimer.current), []);
 
   return (
@@ -104,7 +113,9 @@ export function FormWizard({
       </div>
 
       <div className="form-wizard__body" data-testid="form-wizard-body">
-        {current.content}
+        {typeof current.content === 'function'
+          ? current.content((next) => void goToStep(next))
+          : current.content}
         {notice}
       </div>
 
@@ -144,8 +155,8 @@ export function FormWizard({
           <button
             type="button"
             className="btn-primary"
-            onClick={() => void goToStep(Math.min(total - 1, step + 1))}
-            disabled={current.isValid === false || navigating}
+            onClick={goForward}
+            disabled={navigating}
             data-testid="form-wizard-next"
           >
             Siguiente

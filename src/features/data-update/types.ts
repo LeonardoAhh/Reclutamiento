@@ -27,6 +27,7 @@ export interface DataUpdateEditableData {
   email: string;
   mobilePhone: string;
   emergencyContact: string;
+  emergencyRelationship: string;
   emergencyPhone: string;
   street: string;
   fullAddress: string;

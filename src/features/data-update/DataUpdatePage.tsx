@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import { FilePlus2, RefreshCw, UserRoundCheck } from "lucide-react";
+import { FilePlus2, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
@@ -10,6 +11,7 @@ import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import {
   dataUpdateError,
+  deleteDataUpdateCampaign,
   getDataUpdateCampaignDetail,
   listDataUpdateCampaigns,
   listDataUpdateIncidents,
@@ -42,6 +44,12 @@ function useOnlineStatus() {
   return online;
 }
 
+function campaignOptionLabel(campaign: DataUpdateCampaign): string {
+  const name = campaign.name.trim();
+  const year = String(campaign.year);
+  return name.endsWith(year) ? name : `${name} · ${year}`;
+}
+
 export function DataUpdatePage() {
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
@@ -54,6 +62,9 @@ export function DataUpdatePage() {
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [incidents, setIncidents] = useState<DataUpdateIncident[]>([]);
   const [importOpen, setImportOpen] = useState(false);
+  const [campaignPendingDelete, setCampaignPendingDelete] = useState<DataUpdateCampaign | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +80,12 @@ export function DataUpdatePage() {
     try {
       const result = await listDataUpdateCampaigns();
       setCampaigns(result);
-      setSelectedCampaignId((current) => (preferredId ?? current) || result[0]?.id || "");
+      setSelectedCampaignId((current) => {
+        const requestedId = preferredId ?? current;
+        return result.some((campaign) => campaign.id === requestedId)
+          ? requestedId
+          : result[0]?.id ?? "";
+      });
     } catch (caught) {
       setError(dataUpdateError(caught));
     } finally {
@@ -125,6 +141,7 @@ export function DataUpdatePage() {
   }, [myRecords, searchTerm]);
   const recordPagination = usePagination(visibleMyRecords, DATA_UPDATE_PAGE_SIZE);
   const completedCount = detail?.records.filter((record) => record.status === "completado").length ?? 0;
+  const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
 
   useEffect(() => {
     recordPagination.goToPage(1);
@@ -139,6 +156,27 @@ export function DataUpdatePage() {
     } catch (caught) {
       toast.error({ title: dataUpdateError(caught) });
     } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmCampaignDeletion = async () => {
+    if (!campaignPendingDelete || deleting) return;
+    setDeleting(true);
+    setBusy(true);
+    setDeleteError(null);
+    try {
+      await deleteDataUpdateCampaign(campaignPendingDelete.id);
+      setCampaignPendingDelete(null);
+      setDetail(null);
+      setSelectedRecord(null);
+      setSearchTerm("");
+      toast.success({ title: "Campaña eliminada" });
+      await loadCampaigns();
+    } catch (caught) {
+      setDeleteError(dataUpdateError(caught));
+    } finally {
+      setDeleting(false);
       setBusy(false);
     }
   };
@@ -203,7 +241,8 @@ export function DataUpdatePage() {
               <CustomSelect
                 id="data-update-campaign"
                 value={selectedCampaignId}
-                options={campaigns.map((campaign) => ({ value: campaign.id, label: `${campaign.name} · ${campaign.year}` }))}
+                className="data-update-campaign-select"
+                options={campaigns.map((campaign) => ({ value: campaign.id, label: campaignOptionLabel(campaign) }))}
                 onChange={(campaignId) => {
                   setSelectedCampaignId(campaignId);
                   setSearchTerm("");
@@ -212,10 +251,29 @@ export function DataUpdatePage() {
                 disabled={loading || busy}
               />
             </div>
-            <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy}>
-              <RefreshCw aria-hidden="true" />
-              Actualizar
-            </button>
+            <div className={`data-update-campaign-actions${isAdmin ? " data-update-campaign-actions--admin" : ""}`}>
+              <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy}>
+                <RefreshCw aria-hidden="true" />
+                Actualizar
+              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() => {
+                    setDeleteError(null);
+                    setCampaignPendingDelete(selectedCampaign);
+                  }}
+                  disabled={!online || loading || busy || !selectedCampaign}
+                  aria-label={selectedCampaign
+                    ? `Eliminar`
+                    : "Eliminar"}
+                >
+                  <Trash2 aria-hidden="true" />
+                  Eliminar
+                </button>
+              )}
+            </div>
           </section>
 
           {!loading && detail && (
@@ -234,7 +292,7 @@ export function DataUpdatePage() {
         <section className="card data-update-empty" aria-labelledby="data-update-empty-title">
           <UserRoundCheck aria-hidden="true" />
           <h2 id="data-update-empty-title">Sin campañas disponibles</h2>
-          <p className="text-muted">{isAdmin ? "Crea una campaña e importa el JSON para comenzar." : "Aún no tienes colaboradores asignados."}</p>
+          <p className="text-muted">{isAdmin ? "Crea una campaña, importa la información" : "Aún no tienes colaboradores asignados."}</p>
         </section>
       ) : detail ? (
         <>
@@ -291,7 +349,6 @@ export function DataUpdatePage() {
                           <div>
                             <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
                             <h3>{record.identity.name}</h3>
-                            <p className="text-muted">{record.identity.area} · {record.identity.position}</p>
                           </div>
                           <div className="data-update-record-card__footer">
                             <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
@@ -327,7 +384,14 @@ export function DataUpdatePage() {
 
             {isAdmin && (
               <Tabs.Content className="data-update-tabs__content" value="admin">
-                <DataUpdateAdminPanel detail={detail} profiles={profiles} busy={busy} onBusyChange={setBusy} onRefresh={() => void loadDetail()} />
+                <DataUpdateAdminPanel
+                  detail={detail}
+                  profiles={profiles}
+                  busy={busy}
+                  onBusyChange={setBusy}
+                  onOpenRecord={(record) => void openRecord(record)}
+                  onRefresh={() => void loadDetail()}
+                />
               </Tabs.Content>
             )}
           </Tabs.Root>
@@ -345,6 +409,28 @@ export function DataUpdatePage() {
             toast.success({ title: "Campaña creada y repartida" });
             void loadCampaigns(campaignId);
           }}
+        />
+      )}
+
+      {isAdmin && (
+        <ConfirmModal
+          isOpen={campaignPendingDelete !== null}
+          title="Eliminar"
+          description={campaignPendingDelete
+            ? `Esta acción no se puede deshacer.`
+            : undefined}
+          confirmLabel="Eliminar"
+          cancelLabel="Cancelar"
+          onConfirm={() => void confirmCampaignDeletion()}
+          onCancel={() => {
+            if (deleting) return;
+            setCampaignPendingDelete(null);
+            setDeleteError(null);
+          }}
+          isDestructive
+          isLoading={deleting}
+          loadingLabel="Eliminando campaña…"
+          errorMessage={deleteError ?? undefined}
         />
       )}
     </main>

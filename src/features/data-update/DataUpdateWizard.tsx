@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { FormWizard, type FormWizardStep } from "@/components/ui/FormWizard";
 import { toast } from "@/lib/notify";
 import {
@@ -10,10 +11,15 @@ import {
   saveDataUpdateRecord,
   uploadDataUpdatePhoto,
 } from "./api";
-import { DATA_UPDATE_AUTOSAVE_DELAY_MS, DATA_UPDATE_STEP_COUNT } from "./constants";
+import {
+  DATA_UPDATE_AUTOSAVE_DELAY_MS,
+  DATA_UPDATE_OTHER_RELATIONSHIP,
+  DATA_UPDATE_STEP_COUNT,
+  EMERGENCY_RELATIONSHIPS,
+} from "./constants";
 import { AddressStep, AdditionalDataStep, ContactStep, TransportStep } from "./EditableDataSteps";
 import { IdentityReviewStep } from "./IdentityReviewStep";
-import { PhotoReviewStep } from "./PhotoReviewStep";
+import { PhotoStep, ReviewStep } from "./PhotoReviewStep";
 import type {
   DataUpdateCampaignDetail,
   DataUpdateEditableData,
@@ -23,10 +29,27 @@ import type {
   IdentityReviewStatus,
 } from "./types";
 import {
+  getEditableDataErrors,
   isDataUpdateEmailValid,
+  isDataUpdatePhoneValid,
   validateDataUpdatePhoto,
   validateEditableData,
 } from "./validation";
+
+type SaveState = "saved" | "pending" | "saving" | "error";
+
+function initialRelationshipState(value: string) {
+  const normalized = value.trim().toLocaleUpperCase("es-MX");
+  const standard = EMERGENCY_RELATIONSHIPS.find(
+    (option) => option !== DATA_UPDATE_OTHER_RELATIONSHIP && option === normalized,
+  );
+  if (standard) return { choice: standard, other: "" };
+  if (!value.trim()) return { choice: "", other: "" };
+  return {
+    choice: DATA_UPDATE_OTHER_RELATIONSHIP,
+    other: normalized === DATA_UPDATE_OTHER_RELATIONSHIP ? "" : value,
+  };
+}
 
 interface DataUpdateWizardProps {
   record: DataUpdateRecord;
@@ -49,6 +72,7 @@ export function DataUpdateWizard({
   onCancel,
   onCompleted,
 }: DataUpdateWizardProps) {
+  const initialRelationship = initialRelationshipState(initialRecord.data.emergencyRelationship);
   const [record, setRecord] = useState(initialRecord);
   const [data, setData] = useState(initialRecord.data);
   const [review, setReview] = useState<IdentityReviewStatus>(initialRecord.identityReview);
@@ -58,7 +82,14 @@ export function DataUpdateWizard({
   const [incidentNote, setIncidentNote] = useState(incidents[0]?.note ?? "");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoStatus, setPhotoStatus] = useState<string | null>(null);
+  const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null);
+  const [retryPhotoFile, setRetryPhotoFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>("saved");
+  const [revealedErrorSteps, setRevealedErrorSteps] = useState<Set<number>>(() => new Set());
+  const [relationshipChoice, setRelationshipChoice] = useState(initialRelationship.choice);
+  const [relationshipOther, setRelationshipOther] = useState(initialRelationship.other);
   const [notice, setNotice] = useState<string | null>(null);
   const objectPhotoUrlRef = useRef<string | null>(null);
   const recordRef = useRef(initialRecord);
@@ -113,11 +144,13 @@ export function DataUpdateWizard({
       dataRef.current = next;
       return next;
     });
+    setSaveState("pending");
     setNotice(null);
   };
 
   const persist = (step: number): Promise<boolean> => {
     if (!online) {
+      setSaveState("pending");
       setNotice("Necesitas conexión para guardar este registro.");
       return Promise.resolve(false);
     }
@@ -127,6 +160,7 @@ export function DataUpdateWizard({
     if (nextSignature === savedSignatureRef.current) return saveQueueRef.current;
     if (nextSignature === queuedSignatureRef.current) return saveQueueRef.current;
     queuedSignatureRef.current = nextSignature;
+    setSaveState("saving");
     saveQueueRef.current = saveQueueRef.current.then(async () => {
       try {
         const saved = await saveDataUpdateRecord({
@@ -138,9 +172,11 @@ export function DataUpdateWizard({
         });
         updateRecord(saved);
         savedSignatureRef.current = nextSignature;
+        setSaveState("saved");
         setNotice(null);
         return true;
       } catch (caught) {
+        setSaveState("error");
         setNotice(dataUpdateError(caught));
         return false;
       } finally {
@@ -165,6 +201,7 @@ export function DataUpdateWizard({
       : [];
     const nextSignature = JSON.stringify({ review, incidents: selectedIncidents });
     if (nextSignature === reviewSignatureRef.current) return true;
+    setSaveState("saving");
     try {
       const saved = await reviewDataUpdateIdentity({
         recordId: recordRef.current.id,
@@ -174,8 +211,10 @@ export function DataUpdateWizard({
       });
       updateRecord(saved);
       reviewSignatureRef.current = nextSignature;
+      setSaveState("saved");
       return true;
     } catch (caught) {
+      setSaveState("error");
       setNotice(dataUpdateError(caught));
       return false;
     }
@@ -201,6 +240,28 @@ export function DataUpdateWizard({
       else next.add(field);
       return next;
     });
+    setSaveState("pending");
+  };
+
+  const showStepErrors = (step: number, message: string) => {
+    setRevealedErrorSteps((current) => new Set(current).add(step));
+    setNotice(message);
+    window.requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>(".form-wizard__body [aria-invalid='true']")?.focus();
+    });
+  };
+
+  const changeRelationshipChoice = (value: string) => {
+    setRelationshipChoice(value);
+    changeField(
+      "emergencyRelationship",
+      value === DATA_UPDATE_OTHER_RELATIONSHIP ? relationshipOther : value,
+    );
+  };
+
+  const changeRelationshipOther = (value: string) => {
+    setRelationshipOther(value);
+    changeField("emergencyRelationship", value);
   };
 
   const handlePhoto = async (file: File | undefined) => {
@@ -215,6 +276,8 @@ export function DataUpdateWizard({
       return;
     }
     setPhotoBusy(true);
+    setPhotoStatus("Preparando fotografía…");
+    setRetryPhotoFile(null);
     setNotice(null);
     const previousPath = photoPathRef.current;
     const previousUrl = photoUrl;
@@ -224,13 +287,16 @@ export function DataUpdateWizard({
       const objectUrl = URL.createObjectURL(file);
       objectPhotoUrlRef.current = objectUrl;
       setPhotoUrl(objectUrl);
+      setPhotoStatus("Subiendo fotografía…");
       uploadedPath = await uploadDataUpdatePhoto(recordRef.current, file);
       photoPathRef.current = uploadedPath;
+      setPhotoStatus("Guardando fotografía…");
       const saved = await persist(currentStepRef.current);
       if (!saved) throw new Error("No fue posible vincular la fotografía al registro.");
       if (previousPath && previousPath !== uploadedPath) {
         await removeDataUpdatePhoto(previousPath).catch(() => undefined);
       }
+      setPhotoStatus("Fotografía guardada.");
       toast.success({ title: "Fotografía guardada" });
     } catch (caught) {
       if (uploadedPath) await removeDataUpdatePhoto(uploadedPath).catch(() => undefined);
@@ -240,10 +306,26 @@ export function DataUpdateWizard({
       }
       photoPathRef.current = previousPath;
       setPhotoUrl(previousUrl);
+      setPhotoStatus(null);
+      setRetryPhotoFile(file);
       setNotice(dataUpdateError(caught));
     } finally {
       setPhotoBusy(false);
     }
+  };
+
+  const requestPhoto = (file: File | undefined) => {
+    if (!file) return;
+    const validationError = validateDataUpdatePhoto(file);
+    if (validationError) {
+      setNotice(validationError);
+      return;
+    }
+    if (photoPathRef.current) {
+      setPendingPhotoFile(file);
+      return;
+    }
+    void handlePhoto(file);
   };
 
   const transportValid = campaign.transportOptions.some(
@@ -254,11 +336,34 @@ export function DataUpdateWizard({
   );
   const contactValid = Boolean(
     data.birthState && data.civilStatus && data.email && data.mobilePhone
-      && isDataUpdateEmailValid(data.email),
+      && isDataUpdateEmailValid(data.email) && isDataUpdatePhoneValid(data.mobilePhone),
   );
-  const addressValid = Boolean(data.emergencyContact && data.emergencyPhone && data.street && data.fullAddress && data.municipality);
+  const addressValid = Boolean(
+    data.emergencyContact && data.emergencyRelationship && data.emergencyPhone
+      && data.street && data.fullAddress && data.municipality
+      && isDataUpdatePhoneValid(data.emergencyPhone),
+  );
   const additionalValid = Boolean(data.educationLevel && data.bloodType && data.allergies && data.locker);
+  const fieldErrors = getEditableDataErrors(data);
   const allDataValid = validateEditableData(data).length === 0 && transportValid;
+  const saveLabel = !online
+    ? saveState === "pending" ? "Sin conexión · cambios pendientes" : "Sin conexión"
+    : saveState === "saving"
+      ? "Guardando…"
+      : saveState === "pending"
+        ? "Cambios pendientes"
+        : saveState === "error"
+          ? "No se pudo guardar"
+          : "Guardado";
+  const visibleErrors = (step: number) => revealedErrorSteps.has(step) ? fieldErrors : undefined;
+  const transportErrors = revealedErrorSteps.has(1)
+    ? {
+        ...fieldErrors,
+        ...(!transportValid && data.route && data.stop && data.location
+          ? { location: "Selecciona una combinación válida de ruta, parada y ubicación." }
+          : {}),
+      }
+    : undefined;
 
   const steps: FormWizardStep[] = useMemo(() => [
     {
@@ -272,18 +377,93 @@ export function DataUpdateWizard({
           selectedFields={incidentFields}
           note={incidentNote}
           existingIncidents={incidents}
-          onReviewChange={setReview}
+          onReviewChange={(value) => {
+            setReview(value);
+            setSaveState("pending");
+            setNotice(null);
+          }}
           onFieldToggle={toggleIncidentField}
-          onNoteChange={setIncidentNote}
+          onNoteChange={(value) => {
+            setIncidentNote(value);
+            setSaveState("pending");
+            setNotice(null);
+          }}
+        />
+      ),
+      onInvalid: () => {
+        setNotice("Confirma la identificación o registra los datos incorrectos para continuar.");
+        window.requestAnimationFrame(() => {
+          document.querySelector<HTMLInputElement>("input[name='identity-review']")?.focus();
+        });
+      },
+    },
+    {
+      id: "transport",
+      title: "Transporte",
+      isValid: transportValid,
+      onInvalid: () => showStepErrors(1, "Revisa la selección de transporte para continuar."),
+      content: <TransportStep data={data} transportOptions={campaign.transportOptions} onChange={changeField} errors={transportErrors} />,
+    },
+    {
+      id: "contact",
+      title: "Contacto",
+      isValid: contactValid,
+      onInvalid: () => showStepErrors(2, "Revisa los datos de contacto para continuar."),
+      content: <ContactStep data={data} civilStatuses={campaign.civilStatuses} onChange={changeField} errors={visibleErrors(2)} />,
+    },
+    {
+      id: "address",
+      title: "Domicilio",
+      isValid: addressValid,
+      onInvalid: () => showStepErrors(3, "Completa los datos de emergencia y domicilio para continuar."),
+      content: (
+        <AddressStep
+          data={data}
+          onChange={changeField}
+          errors={visibleErrors(3)}
+          relationshipChoice={relationshipChoice}
+          relationshipOther={relationshipOther}
+          onRelationshipChoiceChange={changeRelationshipChoice}
+          onRelationshipOtherChange={changeRelationshipOther}
         />
       ),
     },
-    { id: "transport", title: "Transporte", isValid: transportValid, content: <TransportStep data={data} transportOptions={campaign.transportOptions} onChange={changeField} /> },
-    { id: "contact", title: "Contacto", isValid: contactValid, content: <ContactStep data={data} civilStatuses={campaign.civilStatuses} onChange={changeField} /> },
-    { id: "address", title: "Domicilio", isValid: addressValid, content: <AddressStep data={data} onChange={changeField} /> },
-    { id: "additional", title: "Información adicional", isValid: additionalValid, content: <AdditionalDataStep data={data} onChange={changeField} /> },
-    { id: "photo", title: "Fotografía y revisión", isValid: Boolean(photoPathRef.current) && allDataValid, content: <PhotoReviewStep identity={record.identity} data={data} photoUrl={photoUrl} photoBusy={photoBusy} onPhotoChange={(file) => void handlePhoto(file)} /> },
-  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, identityValid, transportValid, contactValid, addressValid, additionalValid, allDataValid]);
+    {
+      id: "additional",
+      title: "Información adicional",
+      isValid: additionalValid,
+      onInvalid: () => showStepErrors(4, "Completa la información adicional para continuar."),
+      content: <AdditionalDataStep data={data} onChange={changeField} errors={visibleErrors(4)} />,
+    },
+    {
+      id: "photo",
+      title: "Fotografía",
+      isValid: Boolean(photoPathRef.current),
+      onInvalid: () => {
+        setNotice("Agrega una fotografía para continuar.");
+        window.requestAnimationFrame(() => {
+          document.querySelector<HTMLInputElement>(".data-update-photo input[type='file']")?.focus();
+        });
+      },
+      content: (
+        <PhotoStep
+          identity={record.identity}
+          photoUrl={photoUrl}
+          photoBusy={photoBusy}
+          photoStatus={photoStatus}
+          canRetry={Boolean(retryPhotoFile)}
+          onPhotoChange={requestPhoto}
+          onRetry={() => { if (retryPhotoFile) void handlePhoto(retryPhotoFile); }}
+        />
+      ),
+    },
+    {
+      id: "review",
+      title: "Revisión",
+      isValid: Boolean(photoPathRef.current) && allDataValid,
+      content: (goToStep) => <ReviewStep data={data} onEditStep={goToStep} />,
+    },
+  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, identityValid, transportValid, contactValid, addressValid, additionalValid, allDataValid, revealedErrorSteps, online]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -311,18 +491,39 @@ export function DataUpdateWizard({
             Empleado {record.identity.employeeNumber}
           </span>
         </div>
-        {!online && <span className="data-update-save-state" role="status">Sin conexión</span>}
+        <div className="data-update-save-actions">
+          <span className="data-update-save-state" role="status" aria-live="polite">{saveLabel}</span>
+          {online && saveState === "error" && (
+            <button type="button" className="btn-secondary btn-sm" onClick={() => void persist(currentStepRef.current)}>
+              Reintentar
+            </button>
+          )}
+        </div>
       </header>
       <FormWizard
         steps={steps}
         initialStep={currentStepRef.current}
-        submitLabel="Finalizar actualización"
-        submittingLabel="Finalizando…"
+        submitLabel="Actualizar"
+        submittingLabel="Actualizando..."
         submitting={submitting}
         submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
         onCancel={onCancel}
         onBeforeStepChange={beforeStepChange}
         notice={notice ? <p className="form-error" role="alert">{notice}</p> : null}
+      />
+      <ConfirmModal
+        isOpen={pendingPhotoFile !== null}
+        title="Reemplazar fotografía"
+        description="La fotografía nueva sustituirá la que ya está guardada."
+        confirmLabel="Reemplazar"
+        cancelLabel="Conservar actual"
+        onConfirm={() => {
+          const file = pendingPhotoFile;
+          setPendingPhotoFile(null);
+          if (file) void handlePhoto(file);
+        }}
+        onCancel={() => setPendingPhotoFile(null)}
+        isDestructive={false}
       />
     </form>
   );

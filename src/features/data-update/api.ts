@@ -1,9 +1,10 @@
 import { supabase } from "@/lib/supabase";
+import { toNaturalCase } from "@/lib/utils";
 import {
   DATA_UPDATE_PHOTO_BUCKET,
   DATA_UPDATE_SIGNED_URL_SECONDS,
 } from "./constants";
-import { getDataUpdatePhotoExtension } from "./validation";
+import { getDataUpdatePhotoExtension, splitEmergencyContact } from "./validation";
 import type {
   DataUpdateAuditEntry,
   DataUpdateCampaign,
@@ -38,6 +39,7 @@ function nullableText(value: unknown): string | null {
 
 function mapEditable(value: unknown): DataUpdateEditableData {
   const row = objectValue(value);
+  const emergency = splitEmergencyContact(textValue(row.emergencyContact));
   return {
     route: textValue(row.route),
     stop: textValue(row.stop),
@@ -46,7 +48,8 @@ function mapEditable(value: unknown): DataUpdateEditableData {
     civilStatus: textValue(row.civilStatus),
     email: textValue(row.email),
     mobilePhone: textValue(row.mobilePhone),
-    emergencyContact: textValue(row.emergencyContact),
+    emergencyContact: emergency.emergencyContact,
+    emergencyRelationship: textValue(row.emergencyRelationship) || emergency.emergencyRelationship,
     emergencyPhone: textValue(row.emergencyPhone),
     street: textValue(row.street),
     fullAddress: textValue(row.fullAddress),
@@ -196,7 +199,10 @@ export async function listEligibleDataUpdateProfiles(): Promise<DataUpdateProfil
     const row = objectValue(value);
     return {
       id: textValue(row.id),
-      label: textValue(row.display_name) || textValue(row.username),
+      label: toNaturalCase(
+        textValue(row.display_name) || textValue(row.username),
+        { preserveAcronyms: false },
+      ),
       role: textValue(row.role) as DataUpdateProfileOption["role"],
     };
   });
@@ -219,6 +225,43 @@ export async function createDataUpdateCampaign(input: {
   if (error) throw new Error(dataUpdateError(error));
   if (typeof data !== "string") throw new Error("La campaña no devolvió un identificador válido.");
   return data;
+}
+
+export async function deleteDataUpdateCampaign(campaignId: string): Promise<void> {
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (sessionError || !accessToken) {
+    throw new Error("Tu sesión ha caducado. Vuelve a iniciar sesión.");
+  }
+
+  const { data, error } = await supabase.functions.invoke("delete-data-update-campaign", {
+    body: { campaignId },
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (error) {
+    let message = error.message;
+    const context = "context" in error ? error.context : null;
+    if (context instanceof Response) {
+      try {
+        const responseBody: unknown = await context.clone().json();
+        if (typeof responseBody === "object" && responseBody !== null && "message" in responseBody) {
+          const responseMessage = responseBody.message;
+          if (typeof responseMessage === "string") message = responseMessage;
+        }
+      } catch {
+        // Conserva el mensaje normalizado del cliente cuando la respuesta no es JSON.
+      }
+      if (context.status === 401 && message === error.message) {
+        message = "No se pudo validar tu sesión en el servicio de eliminación.";
+      }
+    }
+    throw new Error(dataUpdateError(message));
+  }
+
+  const response = objectValue(data);
+  if (response.ok !== true) {
+    throw new Error(dataUpdateError(response.message));
+  }
 }
 
 export async function getDataUpdateCampaignDetail(
@@ -370,6 +413,12 @@ export async function uploadDataUpdatePhoto(record: DataUpdateRecord, file: File
 export async function removeDataUpdatePhoto(path: string): Promise<void> {
   const { error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET).remove([path]);
   if (error) throw new Error(dataUpdateError(error));
+}
+
+export async function downloadDataUpdatePhoto(path: string): Promise<Blob> {
+  const { data, error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET).download(path);
+  if (error || !data) throw new Error(dataUpdateError(error));
+  return data;
 }
 
 export async function getDataUpdatePhotoUrl(path: string): Promise<string> {

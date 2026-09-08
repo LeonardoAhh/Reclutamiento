@@ -43,6 +43,20 @@ function canonicalCivilStatus(value: string, known: Map<string, string>): string
   return clean;
 }
 
+export function splitEmergencyContact(value: string): {
+  emergencyContact: string;
+  emergencyRelationship: string;
+} {
+  const separatorIndex = value.lastIndexOf("/");
+  if (separatorIndex <= 0 || separatorIndex === value.length - 1) {
+    return { emergencyContact: value, emergencyRelationship: "" };
+  }
+  return {
+    emergencyContact: value.slice(0, separatorIndex).trim(),
+    emergencyRelationship: value.slice(separatorIndex + 1).trim(),
+  };
+}
+
 function parseRow(
   raw: RawRecord,
   civilStatuses: Map<string, string>,
@@ -52,6 +66,7 @@ function parseRow(
   );
   const route = matchRuta(originalData["Nombre Ruta"]) ?? originalData["Nombre Ruta"];
   const stop = matchParada(originalData.Parada) ?? originalData.Parada;
+  const emergency = splitEmergencyContact(originalData["Contacto Emergencia"]);
 
   return {
     identity: {
@@ -76,7 +91,8 @@ function parseRow(
       civilStatus: canonicalCivilStatus(originalData["Edo Civil"], civilStatuses),
       email: originalData.Correo,
       mobilePhone: originalData["Telefono Movil"],
-      emergencyContact: originalData["Contacto Emergencia"],
+      emergencyContact: emergency.emergencyContact,
+      emergencyRelationship: emergency.emergencyRelationship,
       emergencyPhone: originalData["Telefono Emergencia"],
       street: originalData.Calle,
       fullAddress: originalData["Direccion Completa"],
@@ -169,17 +185,34 @@ export function parseDataUpdateImport(source: unknown): DataUpdateImportResult {
 }
 
 export function validateEditableData(data: DataUpdateEditableData): string[] {
-  const errors = EDITABLE_FIELDS.filter(({ key }) => !data[key].trim()).map(
-    ({ label }) => `${label} es obligatorio.`,
-  );
+  return Object.values(getEditableDataErrors(data));
+}
+
+export function getEditableDataErrors(
+  data: DataUpdateEditableData,
+): Partial<Record<keyof DataUpdateEditableData, string>> {
+  const errors: Partial<Record<keyof DataUpdateEditableData, string>> = {};
+  EDITABLE_FIELDS.forEach(({ key, label }) => {
+    if (!data[key].trim()) errors[key] = `${label} es obligatorio.`;
+  });
   if (data.email && !isDataUpdateEmailValid(data.email)) {
-    errors.push("Correo debe tener un formato válido.");
+    errors.email = "Escribe un correo válido, por ejemplo nombre@gmail.com.";
+  }
+  if (data.mobilePhone && !isDataUpdatePhoneValid(data.mobilePhone)) {
+    errors.mobilePhone = "Escribe un teléfono móvil de 10 dígitos.";
+  }
+  if (data.emergencyPhone && !isDataUpdatePhoneValid(data.emergencyPhone)) {
+    errors.emergencyPhone = "Escribe un teléfono de emergencia de 10 dígitos.";
   }
   return errors;
 }
 
 export function isDataUpdateEmailValid(value: string): boolean {
   return isNaMarker(value) || /^\S+@\S+\.\S+$/.test(value);
+}
+
+export function isDataUpdatePhoneValid(value: string): boolean {
+  return /^\d{10}$/.test(value);
 }
 
 const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
