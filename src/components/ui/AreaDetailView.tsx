@@ -13,7 +13,9 @@ import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { normalizePuesto } from '@/lib/bajas';
-import { getCoverageColor } from '@/lib/utils';
+import { formatPercentage, getCoverageColor } from '@/lib/utils';
+import { summarizeOperationalCoverage } from '@/lib/workforceProjection';
+import type { WorkforceProjection } from '@/lib/workforceProjection';
 import type {
   Candidate,
   CandidateStatus,
@@ -37,6 +39,7 @@ const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<Candidat
 
 interface AreaDetailViewProps {
   dept: DepartmentCoverage | null;
+  projection: WorkforceProjection | undefined;
   comments: PositionComment[];
   /**
    * Pipeline completo (todas las áreas). Se filtra internamente al área
@@ -46,7 +49,6 @@ interface AreaDetailViewProps {
   candidates?: Candidate[];
   onOpenComment: (area: string, seccion: string, puesto: string) => void;
   onBack?: () => void;
-  getCoverageBadge: (pct: number) => 'success' | 'teal' | 'amber' | 'error';
   /** Mapa sección -> # empleados en incapacidad dentro del área activa. */
   incapacidadPorSeccion?: Map<string, number> | null;
   /** Total de empleados en incapacidad para el área activa. */
@@ -57,11 +59,11 @@ const ALL_TAB = '__all__';
 
 export function AreaDetailView({
   dept,
+  projection,
   comments,
   candidates = [],
   onOpenComment,
   onBack,
-  getCoverageBadge,
   incapacidadPorSeccion = null,
   incapacidadAreaTotal = 0,
 }: AreaDetailViewProps) {
@@ -318,7 +320,19 @@ export function AreaDetailView({
     );
   };
 
-  const coverageColor = getCoverageColor(dept.porcentaje_cobertura);
+  const currentCoverage = projection
+    ? summarizeOperationalCoverage(projection.current)
+    : null;
+  const coveragePercentage = currentCoverage?.percentage ?? null;
+  const coverageColor =
+    coveragePercentage === null
+      ? 'var(--color-muted)'
+      : getCoverageColor(coveragePercentage);
+  const coverageLabel = !projection
+    ? 'No disponible'
+    : coveragePercentage === null
+      ? 'No aplica'
+      : formatPercentage(coveragePercentage);
 
   return (
     <section className="area-detail-view">
@@ -386,18 +400,19 @@ export function AreaDetailView({
               className="area-detail-modal__coverage-pct"
               style={{ color: coverageColor }}
             >
-              {dept.porcentaje_cobertura}
-              <span className="area-detail-modal__coverage-pct-sign">%</span>
+              {coverageLabel}
             </span>
             <span className="area-detail-modal__coverage-label">Cobertura del área</span>
           </div>
-          <div aria-hidden="true">
-            <CoverageBar
-              percentage={dept.porcentaje_cobertura}
-              color={coverageColor}
-              showLabel={false}
-            />
-          </div>
+          {coveragePercentage !== null && (
+            <div aria-hidden="true">
+              <CoverageBar
+                percentage={coveragePercentage}
+                color={coverageColor}
+                showLabel={false}
+              />
+            </div>
+          )}
         </div>
       </section>
 
@@ -679,7 +694,7 @@ export function AreaDetailView({
                         )}
                       </td>
                       <td className="hide-on-mobile font-strong" style={{ color: getCoverageColor(row.porcentaje_cobertura) }}>
-                        {row.porcentaje_cobertura}%
+                        {formatPercentage(row.porcentaje_cobertura)}
                       </td>
                       <td className="text-center">
                         {renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}

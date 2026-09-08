@@ -636,10 +636,6 @@ export function KpisPage() {
     [visibleCards],
   );
 
-  const revealedCount = visibleCards.filter((card) =>
-    reveal.isRevealed(card.id),
-  ).length;
-
   /* ── Vista móvil: cards del grupo activo ───────────────────── */
   const mobileCards = useMemo(
     () =>
@@ -666,19 +662,6 @@ export function KpisPage() {
       <main className="kpis-page container" id="page-kpis">
       <section className="kpis-page__hero">
         <h1 className="kpis-page__title">Resumen</h1>
-        {isDesktop && (
-          <div className="kpis-page__hero-actions">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={reveal.hideAll}
-              disabled={revealedCount === 0}
-              title="Volver a ocultar todas las cards"
-            >
-              Ocultar
-            </button>
-          </div>
-        )}
       </section>
 
       {isDesktop ? (

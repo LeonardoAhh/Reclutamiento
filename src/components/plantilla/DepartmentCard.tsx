@@ -59,11 +59,6 @@ export function DepartmentCard({ area, projection, onOpen, incapacidadCount }: D
               {current.covered} de {current.target} puestos cubiertos
             </span>
           )}
-          {projection && projection.current.surplus > 0 && (
-            <span className="dept-card__coverage-note type-caption-sm">
-              {projection.current.surplus} {projection.current.surplus === 1 ? 'excedente' : 'excedentes'} fuera de cobertura
-            </span>
-          )}
           {projection && (projection.undatedEmployees > 0 || projection.ambiguousEmployees > 0) && (
             <span className="dept-card__coverage-note type-caption-sm">
               Sin incluir: {projection.undatedEmployees} sin fecha válida; {projection.ambiguousEmployees} con puesto ambiguo.

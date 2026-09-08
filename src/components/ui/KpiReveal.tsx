@@ -27,7 +27,6 @@ interface KpiRevealContext {
   isRevealed: (id: string) => boolean;
   reveal: (id: string) => void;
   hide: (id: string) => void;
-  hideAll: () => void;
 }
 
 export function useKpiReveal(): KpiRevealContext {
@@ -57,13 +56,9 @@ export function useKpiReveal(): KpiRevealContext {
     });
   }, []);
 
-  const hideAll = useCallback(() => {
-    setRevealed((prev) => (prev.size === 0 ? prev : new Set()));
-  }, []);
-
   return useMemo(
-    () => ({ isRevealed, reveal, hide, hideAll }),
-    [isRevealed, reveal, hide, hideAll]
+    () => ({ isRevealed, reveal, hide }),
+    [isRevealed, reveal, hide]
   );
 }
 

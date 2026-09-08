@@ -2,11 +2,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import {
-  CircleCheckBig,
-  ChevronRight,
   ClipboardList,
-  Clock,
-  Filter,
   SlidersHorizontal,
   UserRoundPlus as UserPlusIcon,
   UsersRound,
@@ -17,7 +13,6 @@ import { SearchField } from "@/components/ui/SearchField";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
 import { CommentModal } from "@/components/ui/CommentModal";
-import { JsonImporter } from "@/components/ui/JsonImporter";
 import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
 import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
@@ -25,9 +20,7 @@ import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
 import { AreaDetailView } from "@/components/ui/AreaDetailView";
 import { EmpleadosView } from "@/pages/plantilla-views/EmpleadosView";
 import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
-import Avatar from "boring-avatars";
 import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
-import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import {
   transformEmployeeData,
@@ -35,7 +28,7 @@ import {
   calculateDepartmentCoverage,
   normalizeString,
 } from "@/lib/utils";
-import { formatShortDate, localTodayIso } from "@/lib/dates";
+import { localTodayIso } from "@/lib/dates";
 import { calculateWorkforceProjection } from "@/lib/workforceProjection";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
 import { getPlantillaView } from "@/lib/plantillaNavigation";
@@ -43,7 +36,6 @@ import {
   computeAutoVacancies,
   filterUnreservedVacancies,
 } from "@/lib/autoVacancies";
-import { notifyResult } from "@/lib/notify";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useVacancyRequests } from "@/hooks/useVacancyRequests";
 import { useCandidates } from "@/hooks/useCandidates";
@@ -235,13 +227,6 @@ export function Dashboard() {
   function handleSaveComment(comment: PositionComment) {
     addComment(comment);
     setCommentTarget(null);
-  }
-
-  function getCoverageBadge(pct: number) {
-    if (pct >= 100) return "success" as const;
-    if (pct >= 75) return "teal" as const;
-    if (pct >= 50) return "amber" as const;
-    return "error" as const;
   }
 
   async function handleSaveEmployee(emp: Employee) {
@@ -513,13 +498,13 @@ export function Dashboard() {
             {activeTab !== "general" && activeTab !== "empleados" && (
               <AreaDetailView
                 dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
+                projection={departmentProjections.get(activeTab)}
                 comments={comments}
                 candidates={candidates}
                 onOpenComment={(area, seccion, puesto) =>
                   setCommentTarget({ area, seccion, puesto })
                 }
                 onBack={() => setDepartmentSelection(null)}
-                getCoverageBadge={getCoverageBadge}
                 incapacidadPorSeccion={
                   activeTab !== "general"
                     ? (incapacidadPorAreaSeccion.get(activeTab) ?? null)

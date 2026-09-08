@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   BusFront,
   CalendarRange,
-  ChevronLeft,
   Gauge,
   Minus,
   Route,
@@ -24,6 +23,7 @@ import {
 } from "@/hooks/useRutas";
 import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { BackButton } from "@/components/ui/BackButton";
 
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import "./Rutas.css";
@@ -737,15 +737,12 @@ export function RutasView() {
         >
           {/* Back button — mobile only, rendered via CSS display */}
           {selectedRuta && (
-            <button
-              type="button"
-              className="btn-text rutas-back-btn"
+            <BackButton
+              className="rutas-back-btn"
               onClick={handleBack}
               aria-label="Volver a la lista de rutas"
-            >
-              <ChevronLeft aria-hidden="true" />
-              Todas las rutas
-            </button>
+              label="Todas las rutas"
+            />
           )}
 
           {selectedRuta ? (

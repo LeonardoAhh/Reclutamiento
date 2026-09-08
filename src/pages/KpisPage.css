@@ -37,13 +37,6 @@
   margin: 0;
 }
 
-.kpis-page__hero-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-  flex-shrink: 0;
-}
-
 /* ── Tabs por grupo (solo móvil) ────────────────────────────────────── */
 .kpis-page__tabs {
   display: flex;

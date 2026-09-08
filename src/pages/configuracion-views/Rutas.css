@@ -84,7 +84,6 @@
   display: none;
 }
 
-.rutas-back-btn svg,
 .rutas-search-clear-btn svg,
 .ruta-card__icon svg,
 .ruta-section__title-icon,
@@ -96,7 +95,6 @@
 @media (max-width: 768px) {
   .rutas-back-btn {
     display: inline-flex;
-    min-height: var(--touch-target-min);
     margin-bottom: var(--spacing-md);
   }
 }

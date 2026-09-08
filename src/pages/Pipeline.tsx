@@ -3,12 +3,10 @@ import { MotionConfig } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, CircleCheckBig, ChevronDown, ChevronLeft, ChevronRight, ClipboardList, Info, LayoutGrid, MessageCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, PenLine, Phone, Search, SlidersHorizontal, Star, Table2, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
-import { SlidersHorizontal as SlidersHorizontalIconData } from 'lucide';
-import { Badge, StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
+import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, LayoutGrid, MessageCircle, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
+import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
-import { CandidateNotesModal } from '@/components/ui/CandidateNotesModal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, toast } from '@/lib/notify';
 import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
@@ -20,6 +18,7 @@ import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Modal } from '@/components/ui/Modal';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { SearchField } from '@/components/ui/SearchField';
+import { BackButton } from '@/components/ui/BackButton';
 import {
   EMPTY_FILTERS,
   type FilterState,
@@ -33,7 +32,7 @@ import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatReadableDate, formatShortDate, startOfDayMxMs, endOfDayMxMs, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
 import { getRecruiterAccessCardName, RECLUTADORES_ACTIVOS } from '@/lib/constants';
-import { normalizeString, formatPhoneNumber } from '@/lib/utils';
+import { normalizeString } from '@/lib/utils';
 import { splitCandidateName } from '@/lib/names';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import './Pipeline.css';
@@ -885,15 +884,11 @@ export function Pipeline() {
       {/* ── Drill-down Detail View (Mobile) ── */}
       {selectedMobileCandidate && (
         <div className="pipeline-mobile-detail-container">
-          <button
-            type="button"
-            className="btn-text config-mobile-back"
+          <BackButton
+            className="config-mobile-back"
             onClick={() => setSelectedMobileCandidate(null)}
             aria-label="Volver a Candidatos"
-          >
-            <ChevronLeft size={20} aria-hidden="true" />
-            <span>Volver</span>
-          </button>
+          />
 
           <article className="pipeline-mobile-detail__card">
             <div className="pipeline-mobile-detail__header">

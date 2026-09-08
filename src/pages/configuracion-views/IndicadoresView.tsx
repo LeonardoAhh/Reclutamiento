@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { BackButton } from '@/components/ui/BackButton';
 import {
   ArrowLeft,
   ArrowRight,
@@ -381,16 +382,12 @@ export function IndicadoresView() {
         <div className="indicadores-mobile-only">
           {selectedMobileRecruiter ? (
             <div className="indicadores-mobile-detail" aria-live="polite">
-              <button
+              <BackButton
                 ref={mobileDetailBackRef}
-                type="button"
-                className="btn-text config-mobile-back"
+                className="config-mobile-back"
                 onClick={handleBackToRecruiters}
                 aria-label="Volver a la lista de reclutadores"
-              >
-                <ArrowLeft aria-hidden="true" />
-                Volver
-              </button>
+              />
               
               <div className="indicadores-mobile-detail__header">
                 <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />

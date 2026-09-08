@@ -403,7 +403,7 @@ Every interactive component MUST define these states:
 
 ### Toasts / Notifications
 
-- Position: bottom-right on desktop, bottom-center on mobile.
+- Position: top-right on desktop, top-center on mobile.
 - Duration: 4s or until manual dismiss.
 - Maximum 3 stacked toasts.
 - Types: info (default), success, warning, error.

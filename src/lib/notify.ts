@@ -1,6 +1,6 @@
 import { TOAST_CONFIG } from '@/lib/constants';
 
-export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading' | 'default';
+export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
 export interface ToastAction {
   label: string;

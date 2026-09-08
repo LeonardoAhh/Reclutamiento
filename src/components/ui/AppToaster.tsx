@@ -21,7 +21,6 @@ const TOAST_ICONS: Record<ToastType, LucideIcon> = {
   info: Info,
   warning: TriangleAlert,
   loading: LoaderCircle,
-  default: Info,
 };
 
 function ToastItem({ toast }: { toast: ToastState }) {

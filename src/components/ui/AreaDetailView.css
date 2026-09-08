@@ -118,13 +118,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.area-detail-modal__coverage-pct-sign {
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-medium);
-  margin-left: var(--spacing-xxs);
-  color: var(--color-muted);
-}
-
 .area-detail-modal__coverage-label {
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);

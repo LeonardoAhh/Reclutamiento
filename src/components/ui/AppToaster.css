@@ -1,6 +1,6 @@
 .app-toaster {
   position: fixed;
-  inset-block-end: calc(var(--design-spacing-md) + var(--safe-area-bottom));
+  inset-block-start: calc(var(--design-spacing-md) + var(--safe-area-top));
   inset-inline-start: calc(var(--container-padding) + var(--safe-area-left));
   inset-inline-end: calc(var(--container-padding) + var(--safe-area-right));
   z-index: var(--layer-toast);
@@ -179,7 +179,7 @@
 @keyframes app-toaster-enter {
   from {
     opacity: 0;
-    transform: translateY(var(--design-spacing-sm));
+    transform: translateY(calc(-1 * var(--design-spacing-sm)));
   }
 
   to {
