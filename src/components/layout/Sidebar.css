@@ -163,6 +163,23 @@ button.sidebar__collapse-btn {
   overflow-wrap: anywhere;
 }
 
+.sidebar__item-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-inline-start: auto;
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  color: var(--color-body);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
 /* Pie de cuenta */
 .sidebar__footer {
   margin-top: auto;

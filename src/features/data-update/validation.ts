@@ -1,0 +1,197 @@
+import {
+  TRANSPORTE_NA,
+  isNaMarker,
+  matchParada,
+  matchRuta,
+  normalizeRuta,
+} from "@/lib/transporte-routes";
+import { normalizeString } from "@/lib/utils";
+import {
+  DATA_UPDATE_PHOTO_MAX_BYTES,
+  DATA_UPDATE_RAW_FIELDS,
+  EDITABLE_FIELDS,
+  MEXICO_STATES,
+} from "./constants";
+import type {
+  DataUpdateEditableData,
+  DataUpdateImportResult,
+  DataUpdateImportRow,
+  DataUpdateTransportOption,
+} from "./types";
+
+type RawRecord = Record<string, unknown>;
+
+function asText(value: unknown): string {
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value).replace(/\s+/g, " ").trim();
+  }
+  return "";
+}
+
+function matchBirthState(value: string): string {
+  const normalized = normalizeString(value);
+  return MEXICO_STATES.find((state) => normalizeString(state) === normalized) ?? "";
+}
+
+function canonicalCivilStatus(value: string, known: Map<string, string>): string {
+  const clean = asText(value);
+  if (!clean) return "";
+  const key = normalizeString(clean);
+  const existing = known.get(key);
+  if (existing) return existing;
+  known.set(key, clean);
+  return clean;
+}
+
+function parseRow(
+  raw: RawRecord,
+  civilStatuses: Map<string, string>,
+): DataUpdateImportRow {
+  const originalData = Object.fromEntries(
+    DATA_UPDATE_RAW_FIELDS.map((field) => [field, asText(raw[field])]),
+  );
+  const route = matchRuta(originalData["Nombre Ruta"]) ?? originalData["Nombre Ruta"];
+  const stop = matchParada(originalData.Parada) ?? originalData.Parada;
+
+  return {
+    identity: {
+      employeeNumber: originalData["Numero Empleado"],
+      name: originalData.Nombre,
+      area: originalData.Area,
+      section: originalData.Seccion,
+      position: originalData.Puesto,
+      shift: originalData.Turno,
+      hireDate: originalData["Fecha Ingreso"],
+      birthDate: originalData["Fecha Nacimiento"],
+      curp: originalData.CURP,
+      rfc: originalData.RFC,
+      socialSecurityNumber: originalData["Numero Seguro Social"],
+    },
+    originalData,
+    data: {
+      route,
+      stop,
+      location: originalData.Ubicacion,
+      birthState: matchBirthState(originalData["Lugar Nacimiento"]),
+      civilStatus: canonicalCivilStatus(originalData["Edo Civil"], civilStatuses),
+      email: originalData.Correo,
+      mobilePhone: originalData["Telefono Movil"],
+      emergencyContact: originalData["Contacto Emergencia"],
+      emergencyPhone: originalData["Telefono Emergencia"],
+      street: originalData.Calle,
+      fullAddress: originalData["Direccion Completa"],
+      municipality: originalData.Estado,
+      educationLevel: originalData["Ultimo Grado Estudios"],
+      bloodType: originalData["Tipo Sangre"],
+      allergies: originalData.Alergias,
+      locker: originalData.Locker,
+    },
+  };
+}
+
+export function parseDataUpdateImport(source: unknown): DataUpdateImportResult {
+  if (!Array.isArray(source)) {
+    return {
+      rows: [],
+      transportOptions: [],
+      civilStatuses: [],
+      errors: ["El archivo debe contener un arreglo JSON de colaboradores."],
+      warnings: [],
+    };
+  }
+
+  const rows: DataUpdateImportRow[] = [];
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const employeeNumbers = new Set<string>();
+  const civilStatuses = new Map<string, string>();
+  const transportOptions = new Map<string, DataUpdateTransportOption>();
+
+  source.forEach((value, index) => {
+    const rowNumber = index + 1;
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
+      errors.push(`Fila ${rowNumber}: debe ser un objeto.`);
+      return;
+    }
+    const raw = value as RawRecord;
+    const missing = DATA_UPDATE_RAW_FIELDS.filter((field) => !(field in raw));
+    if (missing.length > 0) {
+      errors.push(`Fila ${rowNumber}: faltan columnas: ${missing.join(", ")}.`);
+      return;
+    }
+
+    const row = parseRow(raw, civilStatuses);
+    const requiredIdentity = Object.values(row.identity).every(Boolean);
+    if (!requiredIdentity) {
+      errors.push(`Fila ${rowNumber}: los datos de identificación no pueden estar vacíos.`);
+      return;
+    }
+    if (employeeNumbers.has(row.identity.employeeNumber)) {
+      errors.push(`Fila ${rowNumber}: número de empleado duplicado ${row.identity.employeeNumber}.`);
+      return;
+    }
+    employeeNumbers.add(row.identity.employeeNumber);
+    rows.push(row);
+
+    const canonicalRoute = matchRuta(row.originalData["Nombre Ruta"]);
+    const canonicalStop = matchParada(row.originalData.Parada);
+    const location = row.originalData.Ubicacion;
+    if (canonicalRoute && canonicalStop && location) {
+      const option = { route: canonicalRoute, stop: canonicalStop, location };
+      transportOptions.set(
+        [normalizeRuta(option.route), normalizeRuta(option.stop), normalizeRuta(option.location)].join("\u0000"),
+        option,
+      );
+    } else {
+      warnings.push(
+        `Fila ${rowNumber}: Ruta, Parada o Ubicación no pertenece al catálogo disponible; deberá corregirse.`,
+      );
+    }
+    if (!row.data.birthState) {
+      warnings.push(`Fila ${rowNumber}: deberá seleccionar el Estado de nacimiento.`);
+    }
+  });
+
+  const naOption = { route: TRANSPORTE_NA, stop: TRANSPORTE_NA, location: TRANSPORTE_NA };
+  transportOptions.set(
+    [TRANSPORTE_NA, TRANSPORTE_NA, TRANSPORTE_NA].join("\u0000"),
+    naOption,
+  );
+  civilStatuses.set(normalizeString(TRANSPORTE_NA), TRANSPORTE_NA);
+
+  return {
+    rows,
+    transportOptions: [...transportOptions.values()],
+    civilStatuses: [...civilStatuses.values()],
+    errors,
+    warnings,
+  };
+}
+
+export function validateEditableData(data: DataUpdateEditableData): string[] {
+  const errors = EDITABLE_FIELDS.filter(({ key }) => !data[key].trim()).map(
+    ({ label }) => `${label} es obligatorio.`,
+  );
+  if (data.email && !isDataUpdateEmailValid(data.email)) {
+    errors.push("Correo debe tener un formato válido.");
+  }
+  return errors;
+}
+
+export function isDataUpdateEmailValid(value: string): boolean {
+  return isNaMarker(value) || /^\S+@\S+\.\S+$/.test(value);
+}
+
+const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+export function validateDataUpdatePhoto(file: File): string | null {
+  if (!PHOTO_TYPES.has(file.type)) return "Selecciona una imagen JPEG, PNG o WebP.";
+  if (file.size > DATA_UPDATE_PHOTO_MAX_BYTES) return "La imagen debe pesar máximo 5 MB.";
+  return null;
+}
+
+export function getDataUpdatePhotoExtension(file: File): string {
+  if (file.type === "image/png") return "png";
+  if (file.type === "image/webp") return "webp";
+  return "jpg";
+}

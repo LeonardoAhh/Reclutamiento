@@ -29,6 +29,7 @@ import {
   INCIDENCIAS_PATH,
 } from '@/lib/configuracionNavigation';
 import { BONO_PATH } from '@/features/bono-asistencia/constants';
+import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -83,6 +84,11 @@ const IncidenciasTransportePage = lazy(() =>
 const BonoAsistencia = lazy(() =>
   import('@/pages/BonoAsistencia').then(({ BonoAsistencia }) => ({
     default: BonoAsistencia,
+  })),
+);
+const DataUpdatePage = lazy(() =>
+  import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({
+    default: DataUpdatePage,
   })),
 );
 
@@ -187,6 +193,7 @@ function App() {
                 <Route path="/asistente" element={<AIChatPage />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />
+                <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}

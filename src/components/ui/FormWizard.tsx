@@ -12,12 +12,15 @@ export interface FormWizardStep {
 
 interface FormWizardProps {
   steps: FormWizardStep[];
+  initialStep?: number;
   submitLabel: string;
   submittingLabel?: string;
   submitting?: boolean;
   /** Deshabilita el submit final (validación global del formulario). */
   submitDisabled?: boolean;
   onCancel: () => void;
+  /** Permite guardar o validar antes de cambiar de paso. `false` cancela la navegación. */
+  onBeforeStepChange?: (currentStep: number, nextStep: number) => boolean | Promise<boolean>;
   /** Nota global (e.g. mensaje de error) mostrada bajo el paso activo. */
   notice?: React.ReactNode;
 }
@@ -32,17 +35,22 @@ interface FormWizardProps {
  */
 export function FormWizard({
   steps,
+  initialStep = 0,
   submitLabel,
   submittingLabel,
   submitting = false,
   submitDisabled = false,
   onCancel,
+  onBeforeStepChange,
   notice,
 }: FormWizardProps) {
-  const [step, setStep] = useState(0);
   const total = steps.length;
+  const [step, setStep] = useState(() =>
+    Math.min(Math.max(initialStep, 0), Math.max(0, total - 1)),
+  );
   const current = steps[step];
   const isLast = step === total - 1;
+  const [navigating, setNavigating] = useState(false);
 
   /* Período de gracia tras cambiar de paso: evita que un tap que avanza al
      último paso (o un "ghost click" en móvil) dispare el submit sin que el
@@ -50,7 +58,15 @@ export function FormWizard({
   const [armed, setArmed] = useState(true);
   const armTimer = useRef<number | undefined>(undefined);
 
-  function goToStep(next: number) {
+  async function goToStep(next: number) {
+    if (navigating) return;
+    setNavigating(true);
+    try {
+      const canContinue = await onBeforeStepChange?.(step, next);
+      if (canContinue === false) return;
+    } finally {
+      setNavigating(false);
+    }
     setArmed(false);
     setStep(next);
     window.clearTimeout(armTimer.current);
@@ -98,7 +114,7 @@ export function FormWizard({
             type="button"
             className="btn-secondary"
             onClick={onCancel}
-            disabled={submitting}
+            disabled={submitting || navigating}
             data-testid="form-wizard-cancel"
           >
             Cancelar
@@ -107,11 +123,11 @@ export function FormWizard({
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => goToStep(Math.max(0, step - 1))}
-            disabled={submitting}
+            onClick={() => void goToStep(Math.max(0, step - 1))}
+            disabled={submitting || navigating}
             data-testid="form-wizard-back"
           >
-            <ChevronLeft size={16} aria-hidden="true" />
+            <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
             Atrás
           </button>
         )}
@@ -119,7 +135,7 @@ export function FormWizard({
           <button
             type="submit"
             className="btn-primary"
-            disabled={submitDisabled || submitting || !armed}
+            disabled={submitDisabled || submitting || navigating || !armed}
             data-testid="form-wizard-submit"
           >
             {submitting ? submittingLabel ?? submitLabel : submitLabel}
@@ -128,8 +144,8 @@ export function FormWizard({
           <button
             type="button"
             className="btn-primary"
-            onClick={() => goToStep(Math.min(total - 1, step + 1))}
-            disabled={current.isValid === false}
+            onClick={() => void goToStep(Math.min(total - 1, step + 1))}
+            disabled={current.isValid === false || navigating}
             data-testid="form-wizard-next"
           >
             Siguiente

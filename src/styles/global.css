@@ -347,6 +347,8 @@
   --feature-image-viewer-max-block-size: 70dvh;
   --candidate-access-preview-max: 18rem;
   --candidate-access-preview-max-mobile: 15rem;
+  /* Retrato de credencial dentro del flujo de actualización de datos. */
+  --feature-data-update-photo-max-inline-size: 18rem;
   --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;

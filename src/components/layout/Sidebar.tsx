@@ -110,7 +110,10 @@ export function Sidebar({
             )}
             <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
               {group.items.map((item) => {
-                const { to, label, icon: Icon, end } = item;
+                const { to, label, icon: Icon, badge, end } = item;
+                if (item.roles && (!profile || !item.roles.some((role) => role === profile.role))) {
+                  return null;
+                }
                 if (
                   to === PLANTILLA_PATH ||
                   to === CONFIGURACION_PATH ||
@@ -141,7 +144,7 @@ export function Sidebar({
                     to={to}
                     end={end}
                     className={`sidebar__item${isActive ? " sidebar__item--active" : ""}`}
-                    aria-label={label}
+                    aria-label={badge ? `${label}, ${badge}` : label}
                     onClick={(event) => {
                       if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                         onCloseMobileMenu?.();
@@ -154,6 +157,7 @@ export function Sidebar({
                       className="sidebar__item-icon"
                     />
                     <span className="sidebar__item-label">{label}</span>
+                    {badge && <span className="sidebar__item-badge">{badge}</span>}
                   </NavLink>
                 );
 

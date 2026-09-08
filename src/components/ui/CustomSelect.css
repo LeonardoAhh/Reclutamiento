@@ -115,7 +115,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
 
 .custom-select-list {
   max-height: inherit;
-  padding-block: var(--spacing-xs);
+  padding: var(--spacing-xs);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -145,6 +145,12 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   letter-spacing: var(--type-body-sm-tracking);
   cursor: pointer;
   user-select: none;
+  border-radius: var(--rounded-xs);
+}
+
+.custom-select-option:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: calc(var(--focus-ring-width) * -1);
 }
 
 .custom-select-option[data-highlighted] {

@@ -30,6 +30,8 @@ interface CustomSelectProps extends SelectAriaProps {
   onChange: (value: string) => void;
   options: readonly Option[];
   placeholder?: string;
+  /** Mantiene el placeholder como opción para limpiar filtros no obligatorios. */
+  showPlaceholderOption?: boolean;
   className?: string;
   disabled?: boolean;
   customTrigger?: ReactNode;
@@ -48,6 +50,7 @@ export function CustomSelect({
   onChange,
   options,
   placeholder = 'Seleccionar...',
+  showPlaceholderOption = true,
   className,
   disabled = false,
   customTrigger,
@@ -57,10 +60,10 @@ export function CustomSelect({
   const selectedOption = options.find((option) => option.value === value);
   const visibleOptions = useMemo(
     () =>
-      placeholder && !options.some((option) => option.value === '')
+      showPlaceholderOption && placeholder && !options.some((option) => option.value === '')
         ? [{ value: '', label: placeholder }, ...options]
         : options,
-    [options, placeholder],
+    [options, placeholder, showPlaceholderOption],
   );
   const selectedItemValue = visibleOptions.some((option) => option.value === value)
     ? getItemValue(value)
