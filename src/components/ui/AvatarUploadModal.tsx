@@ -147,7 +147,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
     >
         <div className="modal-body avatar-modal__body">
           <div className="avatar-modal__preview">
-            <Avatar name={username} src={preview} size={96} />
+            <Avatar name={username} src={preview} />
           </div>
 
           <p className="avatar-modal__hint">

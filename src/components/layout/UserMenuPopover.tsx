@@ -86,6 +86,7 @@ export function UserMenuPopover({
           className="user-menu-popover"
           role="dialog"
           aria-label="Opciones de usuario"
+          onEscapeKeyDown={(event) => event.stopPropagation()}
           onCloseAutoFocus={(event) => {
             if (!openingModalRef.current) return;
             event.preventDefault();
@@ -128,7 +129,7 @@ export function UserMenuPopover({
                 <span>Reconocimientos</span>
               </button>
             )}
-            
+
             {isAdmin && (
               <>
                 <div className="user-menu-popover__divider" role="separator" />

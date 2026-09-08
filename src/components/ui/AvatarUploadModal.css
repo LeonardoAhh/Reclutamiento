@@ -7,6 +7,9 @@
 }
 
 .avatar-modal__preview {
+  --feature-avatar-size: var(--feature-avatar-preview-size);
+  --feature-avatar-initials-size: var(--feature-avatar-preview-initials-size);
+
   position: relative;
   display: flex;
   align-items: center;

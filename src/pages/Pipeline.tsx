@@ -98,7 +98,7 @@ export function Pipeline() {
     return 'activos';
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 9;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);

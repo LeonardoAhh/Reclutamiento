@@ -13,7 +13,7 @@ interface CandidateStatusBadgeProps {
 }
 
 const COMPACT_LABELS: Partial<Record<CandidateStatus, string>> = {
-  entrega_documentos: 'Docs entregados',
+  entrega_documentos: 'Entrega Docs',
   faltan_documentos: 'Faltan docs',
   feedback_pendiente: 'Feedback',
 };

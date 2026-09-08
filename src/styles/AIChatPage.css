@@ -648,7 +648,7 @@
 }
 
 .ai-chat-text-input::placeholder {
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .ai-chat-text-input:disabled {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import {
   ChartNoAxesCombined,
   NotebookText,
@@ -13,18 +13,17 @@ const LOADER_ICONS = [
   UserSearch,
   Route,
   NotebookText,
-] satisfies readonly IconInput[];
+] as const satisfies readonly IconInput[];
 
 /** Ritmo central de la secuencia; corresponde al token de movimiento spring. */
-export const MORPHING_SEQUENCE_INTERVAL_MS = 400;
-export const MORPHING_SEQUENCE_CYCLE_MS = MORPHING_SEQUENCE_INTERVAL_MS * LOADER_ICONS.length;
+const MORPHING_SEQUENCE_INTERVAL_MS = 400;
 
 /**
  * Provee la secuencia animada de íconos para las pantallas de carga.
  * Respeta `prefers-reduced-motion` deteniendo el intervalo automáticamente.
  */
 export function useMorphingSequence(intervalMs = MORPHING_SEQUENCE_INTERVAL_MS) {
-  const shouldReduceMotion = Boolean(useReducedMotion());
+  const shouldReduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [iconIndex, setIconIndex] = useState(0);
   const safeIntervalMs = Number.isFinite(intervalMs) && intervalMs > 0
     ? intervalMs

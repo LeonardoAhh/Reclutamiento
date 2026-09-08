@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Bell, BellDot, CircleCheckBig } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
@@ -37,6 +37,7 @@ function formatReminderDate(fecha: string | null | undefined) {
 export function RemindersPanel() {
   const { candidates, updateCandidate } = useCandidates();
   const { pathname } = useLocation();
+  const titleId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(
     null,
@@ -85,40 +86,24 @@ export function RemindersPanel() {
     }).format(new Date());
   }, [isOpen]);
 
+  const ReminderIcon = reminders.length > 0 ? BellDot : Bell;
+
   return (
     <>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <button
             type="button"
-            className={`reminders-bell ${reminders.length > 0 ? "has-reminders" : ""}`}
+            className="reminders-bell"
             aria-label={
-              isOpen ? "Cerrar procesos pendientes" : "Ver procesos pendientes"
+              `${isOpen ? "Cerrar" : "Ver"} procesos pendientes (${reminders.length})`
             }
           >
-            {reminders.length > 0 ? (
-              <>
-                <BellDot
-                  size="var(--icon-size-md)"
-                  aria-hidden="true"
-                />
-                <span className="type-body-sm font-medium reminders-bell-text">
-                  Procesos
-                </span>
-                <span className="reminders-badge">
-                  {reminders.length > 99 ? "99+" : reminders.length}
-                </span>
-              </>
-            ) : (
-              <>
-                <Bell
-                  size="var(--icon-size-md)"
-                  aria-hidden="true"
-                />
-                <span className="type-body-sm font-medium reminders-bell-text">
-                  Procesos
-                </span>
-              </>
+            <ReminderIcon size="var(--icon-size-control)" aria-hidden="true" />
+            {reminders.length > 0 && (
+              <span className="reminders-badge" aria-hidden="true">
+                {reminders.length > 99 ? "99+" : reminders.length}
+              </span>
             )}
           </button>
         </PopoverTrigger>
@@ -126,12 +111,12 @@ export function RemindersPanel() {
         <PopoverContent
           className="reminders-popover"
           align="end"
-          aria-labelledby="reminders-title"
+          aria-labelledby={titleId}
         >
-          <div className="reminders-header">
-            <h2 id="reminders-title">Procesos</h2>
+          <header className="reminders-header">
+            <h2 id={titleId}>Procesos</h2>
             <span className="text-muted reminders-timestamp">{nowStr}</span>
-          </div>
+          </header>
 
           <div className="reminders-content">
             {reminders.length === 0 ? (
@@ -156,7 +141,7 @@ export function RemindersPanel() {
                   >
                     <div className="reminder-compact-main">
                       <span
-                        className="type-body-sm font-medium truncate"
+                        className="reminder-compact-name"
                         title={c.nombre}
                       >
                         {c.nombre}
@@ -164,19 +149,19 @@ export function RemindersPanel() {
                     </div>
                     <div className="reminder-compact-sub">
                       <span
-                        className="type-caption-sm text-muted truncate"
+                        className="text-muted reminder-compact-meta"
                         title={`${c.reclutador || "General"} • ${c.fecha_cita}`}
                       >
                         {c.reclutador
                           ? c.reclutador.split(" ")[0]
                           : "General"}
                         <span
-                          className="text-faint reminder-compact-separator"
+                          className="reminder-compact-separator"
                           aria-hidden="true"
                         >
                           •
                         </span>
-                        <span className="text-faint">
+                        <span>
                           {formatReminderDate(c.fecha_cita)}
                         </span>
                       </span>

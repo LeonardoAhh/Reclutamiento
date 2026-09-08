@@ -1,34 +1,43 @@
 import { useSyncExternalStore } from 'react';
 import {
-  BadgeCheck,
-  BadgeInfo,
-  CircleDashed,
-  OctagonAlert,
+  CircleAlert,
+  CircleCheck,
+  Info,
+  LoaderCircle,
   TriangleAlert,
+  X,
+  type LucideIcon,
 } from 'lucide-react';
-import { toastStore, type ToastState } from '@/lib/notify';
+import {
+  toastStore,
+  type ToastState,
+  type ToastType,
+} from '@/lib/notify';
 import './AppToaster.css';
 
+const TOAST_ICONS: Record<ToastType, LucideIcon> = {
+  success: CircleCheck,
+  error: CircleAlert,
+  info: Info,
+  warning: TriangleAlert,
+  loading: LoaderCircle,
+  default: Info,
+};
+
 function ToastItem({ toast }: { toast: ToastState }) {
-  let IconData;
-  switch (toast.type) {
-    case 'success': IconData = BadgeCheck; break;
-    case 'error': IconData = OctagonAlert; break;
-    case 'info': IconData = BadgeInfo; break;
-    case 'warning': IconData = TriangleAlert; break;
-    case 'loading': IconData = CircleDashed; break;
-    default: IconData = BadgeInfo; break;
-  }
-  
+  const Icon = TOAST_ICONS[toast.type];
+
   return (
     <li
       className={`app-toaster__item app-toaster__item--${toast.type}`}
+      aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
+      aria-atomic="true"
       aria-busy={toast.type === 'loading'}
     >
       <div
         className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}
       >
-        <IconData aria-hidden="true" />
+        <Icon aria-hidden="true" />
       </div>
       <div className="app-toaster__content">
         <span className="app-toaster__title">{toast.title}</span>
@@ -55,6 +64,14 @@ function ToastItem({ toast }: { toast: ToastState }) {
           </div>
         )}
       </div>
+      <button
+        type="button"
+        className="app-toaster__dismiss"
+        aria-label="Cerrar notificación"
+        onClick={() => toastStore.remove(toast.id)}
+      >
+        <X aria-hidden="true" />
+      </button>
     </li>
   );
 }
@@ -73,8 +90,6 @@ export function AppToaster() {
     <ol
       className="app-toaster"
       aria-label="Notificaciones"
-      aria-live="polite"
-      aria-relevant="additions text"
     >
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} />

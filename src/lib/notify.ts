@@ -48,7 +48,9 @@ class ToastStore {
     const id = opts.id !== undefined ? String(opts.id) : crypto.randomUUID();
     const duration =
       opts.duration ??
-      (type === 'loading' ? Infinity : TOAST_CONFIG.defaultDurationMs);
+      (type === 'loading' || (opts.actions?.length ?? 0) > 0
+        ? Infinity
+        : TOAST_CONFIG.defaultDurationMs);
 
     const existingIndex = this.toasts.findIndex((t) => t.id === id);
     const newToast: ToastState = { ...opts, id, type, duration };

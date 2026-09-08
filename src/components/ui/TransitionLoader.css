@@ -1,5 +1,5 @@
 .transition-loader {
-  --loader-icon-size: calc(var(--spacing-2xl) + var(--spacing-lg));
+  --loader-icon-size: var(--design-spacing-4xl);
 
   position: fixed;
   inset: 0;
@@ -18,17 +18,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xl);
-  color: var(--color-primary);
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  color: var(--color-ink);
   animation: transition-loader-enter var(--transition-slow) both;
-}
-
-.transition-loader__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 @keyframes transition-loader-enter {
@@ -55,7 +46,6 @@
   }
 
   .transition-loader__content {
-    border-color: CanvasText;
-    box-shadow: none;
+    color: CanvasText;
   }
 }

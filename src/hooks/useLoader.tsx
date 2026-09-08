@@ -2,14 +2,17 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence } from 'framer-motion';
 import { TransitionLoader } from '@/components/ui/TransitionLoader';
+
+/** Tiempo de permanencia existente de flash; no es una duración de animación. */
+const DEFAULT_FLASH_DURATION_MS = 850;
 
 interface LoaderOptions {
   title?: string;
@@ -19,7 +22,7 @@ interface LoaderApi {
   /** Muestra el overlay hasta que se llame `hide`. Para login / logout. */
   show: (opts?: LoaderOptions) => void;
   hide: () => void;
-  /** Muestra el overlay por una duración fija y se oculta solo. Para transiciones. */
+  /** Reemplaza la carga actual y la oculta después de duration (milisegundos). */
   flash: (opts?: LoaderOptions & { duration?: number }) => void;
   visible: boolean;
 }
@@ -27,13 +30,15 @@ interface LoaderApi {
 const LoaderContext = createContext<LoaderApi | null>(null);
 
 /**
- * Provider global del splash de carga. Renderiza un único <AppLoader> vía
- * portal en <body>, con entrada/salida coordinada por AnimatePresence. Es
+ * Provider global del splash de carga. Renderiza TransitionLoader vía
+ * portal en <body>; la entrada visual se resuelve en su CSS. Es
  * independiente de Boneyard: cada vista gestiona su carga de datos y este
  * overlay cubre únicamente transiciones de sesión y navegación.
+ * Cada llamada reemplaza la anterior; no administra una cola de operaciones.
  */
 export function LoaderProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<LoaderOptions | null>(null);
+  const visible = state !== null;
   const timer = useRef<number | null>(null);
 
   const clearTimer = useCallback(() => {
@@ -42,6 +47,8 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
       timer.current = null;
     }
   }, []);
+
+  useEffect(() => clearTimer, [clearTimer]);
 
   const show = useCallback(
     (opts?: LoaderOptions) => {
@@ -58,7 +65,7 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
 
   const flash = useCallback(
     (opts?: LoaderOptions & { duration?: number }) => {
-      const { duration = 850, ...rest } = opts ?? {};
+      const { duration = DEFAULT_FLASH_DURATION_MS, ...rest } = opts ?? {};
       clearTimer();
       setState(rest);
       timer.current = window.setTimeout(() => {
@@ -69,20 +76,17 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
     [clearTimer]
   );
 
+  // Cambiar el título actualiza el portal, no la API de los consumidores.
   const api = useMemo<LoaderApi>(
-    () => ({ show, hide, flash, visible: state !== null }),
-    [show, hide, flash, state]
+    () => ({ show, hide, flash, visible }),
+    [show, hide, flash, visible]
   );
 
   return (
     <LoaderContext.Provider value={api}>
       {children}
       {createPortal(
-        <AnimatePresence>
-          {state !== null && (
-            <TransitionLoader key="transition-loader" title={state.title} />
-          )}
-        </AnimatePresence>,
+        state !== null ? <TransitionLoader title={state.title} /> : null,
         document.body
       )}
     </LoaderContext.Provider>

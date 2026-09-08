@@ -6,8 +6,6 @@ type AvatarProps = {
   name: string;
   /** URL de la imagen del avatar. */
   src?: string | null;
-  /** Tamaño del avatar en píxeles. Por defecto 32px. */
-  size?: number;
 };
 
 /**
@@ -15,11 +13,11 @@ type AvatarProps = {
  * con los tokens autorizados de la paleta "sticker" (desing.md).
  */
 const GRADIENTS = [
-  'linear-gradient(135deg, var(--color-accent-orange) 0%, var(--color-accent-amber, #f59e0b) 100%)',
-  'linear-gradient(135deg, var(--color-accent-teal) 0%, var(--color-accent-sky) 100%)',
-  'linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-sky) 100%)',
-  'linear-gradient(135deg, var(--color-accent-teal) 0%, var(--color-accent-green, #1aae39) 100%)',
-  'linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-orange) 100%)',
+  'var(--avatar-gradient-orange)',
+  'var(--avatar-gradient-teal)',
+  'var(--avatar-gradient-purple)',
+  'var(--avatar-gradient-green)',
+  'var(--avatar-gradient-warm)',
 ];
 
 /** Hash simple para elegir siempre el mismo gradiente para el mismo string. */
@@ -45,7 +43,7 @@ function getInitials(name: string) {
  * Muestra una imagen si src es proporcionado y carga correctamente.
  * Si no hay src o la imagen falla, muestra iniciales sobre un gradiente de fondo.
  */
-export function Avatar({ name, src, size = 32 }: AvatarProps) {
+export function Avatar({ name, src }: AvatarProps) {
   const initials = useMemo(() => getInitials(name), [name]);
   const background = useMemo(() => getGradientForName(name), [name]);
   const [imageError, setImageError] = useState(false);
@@ -58,10 +56,7 @@ export function Avatar({ name, src, size = 32 }: AvatarProps) {
       aria-hidden="true"
       title={name}
       style={{
-        width: size,
-        height: size,
         background: showImage ? 'var(--color-surface-soft)' : background,
-        fontSize: Math.max(10, size * 0.4),
       }}
     >
       {showImage ? (

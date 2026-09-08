@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-} from "lucide";
 import { useAuth } from "@/hooks/useAuth";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
-import { Tooltip } from "@/components/ui/Tooltip";
+import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Sidebar.css";
 import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { useFeedback } from "@/hooks/useFeedback";
@@ -19,32 +14,37 @@ import { ConfiguracionNavItem } from "./ConfiguracionNavItem";
 import { ActividadesNavItem } from "./ActividadesNavItem";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
+import { toast } from "@/lib/notify";
 
 type SidebarProps = {
   collapsed: boolean;
-  onToggleCollapse: () => void;
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
 };
 
 /**
- * Sidebar de escritorio (>=1080px). Fija a la izquierda, colapsable a iconos.
- * Construida 100% con design tokens: canvas + hairline, sin sombras pesadas.
- * Nota: El menú de usuario se ha movido al Header.
+ * Navegación compartida: deslizable en móvil y colapsable en escritorio.
+ * El pie contiene las opciones de usuario; las secciones delegan sus submenús.
  */
 export function Sidebar({
   collapsed,
-  onToggleCollapse,
-  mobileMenuOpen,
+  mobileMenuOpen = false,
   onCloseMobileMenu,
 }: SidebarProps) {
   const { username, user, profile, signOut } = useAuth();
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const signOutPendingRef = useRef(false);
   const [signingOut, setSigningOut] = useState(false);
   const loader = useLoader();
   const { version } = useSystemVersion();
   const { trigger } = useFeedback();
+  const isCollapsed = collapsed && !mobileMenuOpen;
+
+  useEffect(() => {
+    if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+  }, [mobileMenuOpen]);
 
   /* Cerrar menú móvil al navegar */
   useEffect(() => {
@@ -52,65 +52,60 @@ export function Sidebar({
     prevPathRef.current = location.pathname;
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
-  if (!username) return null;
-
   const handleSignOut = useCallback(async () => {
-    if (signingOut) return;
+    if (signOutPendingRef.current) return;
+    signOutPendingRef.current = true;
     setSigningOut(true);
     trigger("light");
-    loader.flash({
-      title: "Cerrando sesión...",
-      duration: 2500,
-    });
+    loader.show({ title: "Cerrando sesión..." });
     try {
-      trigger("success");
       await signOut();
+      trigger("success");
+    } catch {
+      toast.error({ title: "No se pudo cerrar sesión. Inténtalo de nuevo." });
     } finally {
+      loader.hide();
+      signOutPendingRef.current = false;
       setSigningOut(false);
     }
-  }, [signingOut, signOut, trigger, loader]);
+  }, [signOut, trigger, loader]);
+
+  if (!username) return null;
 
   return (
     <aside
+      ref={sidebarRef}
       className="sidebar"
-      data-collapsed={collapsed && !mobileMenuOpen}
+      data-collapsed={isCollapsed}
       data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
       id="app-sidebar"
       data-testid="app-sidebar"
     >
-      {/* Top: colapsar */}
+      {/* El cierre móvil permanece accesible dentro del panel desplegado. */}
       <div className="sidebar__top">
         <button
           type="button"
           className="sidebar__item sidebar__collapse-btn"
-          onClick={() => {
-            if (mobileMenuOpen && onCloseMobileMenu) {
-              onCloseMobileMenu();
-            } else {
-              onToggleCollapse();
-            }
-          }}
-          aria-pressed={collapsed}
-          aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-          title={collapsed ? "Expandir menú" : "Colapsar menú"}
-          data-testid="sidebar-collapse-toggle"
+          onClick={onCloseMobileMenu}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="sidebar-sections"
+          aria-label="Ocultar menú"
         >
-          <MorphingIcon
-            icon={collapsed ? PanelLeftOpen : PanelLeftClose}
+          <MorphMenuIcon
+            isOpen
             size="var(--icon-size-md)"
             className="sidebar__item-icon"
-            aria-hidden="true"
           />
-          <span className="sidebar__item-label">Colapsar</span>
+          <span className="sidebar__item-label">Ocultar menú</span>
         </button>
       </div>
 
       {/* Navegación */}
-      <nav className="sidebar__nav" aria-label="Secciones">
-        {NAV_GROUPS.map((group, groupIdx) => (
-          <div key={groupIdx} className="sidebar__group">
-            {group.title && !collapsed && (
+      <nav className="sidebar__nav" id="sidebar-sections" aria-label="Secciones">
+        {NAV_GROUPS.map((group) => (
+          <div key={group.title} className="sidebar__group">
+            {group.title && (
               <div className="sidebar__group-title">{group.title}</div>
             )}
             <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
@@ -130,7 +125,7 @@ export function Sidebar({
                     <li key={to}>
                       <SectionNavItem
                         item={item}
-                        collapsed={collapsed && !mobileMenuOpen}
+                        collapsed={false}
                         mobile={Boolean(mobileMenuOpen)}
                         onNavigate={onCloseMobileMenu}
                       />
@@ -139,7 +134,7 @@ export function Sidebar({
                 }
                 const isActive = end
                   ? location.pathname === to
-                  : location.pathname.startsWith(to);
+                  : location.pathname === to || location.pathname.startsWith(`${to}/`);
 
                 const link = (
                   <NavLink
@@ -147,10 +142,14 @@ export function Sidebar({
                     end={end}
                     className={`sidebar__item${isActive ? " sidebar__item--active" : ""}`}
                     aria-label={label}
+                    onClick={(event) => {
+                      if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                        onCloseMobileMenu?.();
+                      }
+                    }}
                     data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
                   >
                     <Icon
-                      size={20}
                       aria-hidden="true"
                       className="sidebar__item-icon"
                     />
@@ -160,13 +159,7 @@ export function Sidebar({
 
                 return (
                   <li key={to}>
-                    {collapsed ? (
-                      <Tooltip content={label} side="right" delayMs={0}>
-                        {link}
-                      </Tooltip>
-                    ) : (
-                      link
-                    )}
+                    {link}
                   </li>
                 );
               })}
@@ -175,14 +168,14 @@ export function Sidebar({
         ))}
       </nav>
 
-      {/* Footer: user avatar + menu (moved from header) */}
+      {/* Opciones de cuenta; los permisos se resuelven en el menú compartido. */}
       <div className="sidebar__footer">
         <div className="sidebar__user">
           <UserMenuPopover
             username={username}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
-            collapsed={collapsed && !mobileMenuOpen}
+            collapsed={false}
             mobile={Boolean(mobileMenuOpen)}
             isAdmin={profile?.role === "admin"}
             isRecruiter={profile?.role === "reclutador"}

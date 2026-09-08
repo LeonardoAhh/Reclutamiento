@@ -1,7 +1,6 @@
 /* ========================================
-   LOGIN — Split-screen Layout
-   Left column for form, right column for decorative media.
-   Mobile-first: media appears progressively on desktop.
+   LOGIN — Centered form
+   Mobile-first layout constrained by the shared application container.
    ======================================== */
 
 .login {
@@ -10,6 +9,8 @@
   min-block-size: 100vh;
   min-block-size: 100dvh;
   inline-size: 100%;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
   background: var(--color-canvas-soft);
 }
 
@@ -242,51 +243,6 @@
 .login__submit {
   inline-size: 100%;
   min-block-size: var(--touch-target-min);
-}
-
-/* ── Right Column (Image) ── */
-.login__right {
-  display: none;
-}
-
-@media (min-width: 1080px) {
-  .login {
-    flex-direction: row;
-    max-inline-size: var(--container-max);
-    margin-inline: auto;
-  }
-
-  .login__left {
-    padding-inline: max(var(--container-padding), var(--safe-area-left))
-      max(var(--container-padding), var(--safe-area-right));
-  }
-
-  .login__right {
-    display: flex;
-    flex: 1;
-    padding: var(--container-padding);
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login__image-wrapper {
-    inline-size: 100%;
-    block-size: calc(100dvh - (var(--container-padding) * 2));
-    margin-inline: auto;
-    border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
-    overflow: hidden;
-    position: relative;
-    box-shadow: var(--shadow-card);
-  }
-
-  .login__media {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
 }
 
 @media (hover: hover) {

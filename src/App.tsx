@@ -1,14 +1,13 @@
-import { lazy, Suspense, useState, useCallback, type ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
-import { AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { PWAStatus } from '@/components/ui/PWAStatus';
 import { SystemUpdateNotification } from '@/components/ui/SystemUpdateNotification';
 
 import { AppToaster } from '@/components/ui/AppToaster';
-import { ThemeTransitionOverlay } from '@/components/ui/ThemeTransitionOverlay';
+import { ThemeController } from '@/components/ui/ThemeController';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { MaintenanceGuard } from '@/components/auth/MaintenanceGuard';
 import { PositionsProvider } from '@/lib/positions';
@@ -157,9 +156,9 @@ function App() {
       <>
         <>
           <PWAStatus />
+          <ThemeController />
           <SystemUpdateNotification />
           <AppToaster />
-          <ThemeTransitionOverlay />
           <Suspense fallback={<TransitionLoader title="Cargando vista…" />}>
             <Routes>
               <Route

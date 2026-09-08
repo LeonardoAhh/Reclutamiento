@@ -9,8 +9,6 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useAuth } from "@/hooks/useAuth";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useReducedMotion } from "framer-motion";
 import "./Login.css";
 
 type LoginError = {
@@ -39,8 +37,6 @@ function persistSavedUsername(username: string | null) {
 
 export function Login() {
   const { signIn } = useAuth();
-  const reduceMotion = useReducedMotion();
-  const showDecorativeMedia = useMediaQuery("(min-width: 1080px)");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -328,23 +324,6 @@ export function Login() {
           </div>
         </div>
       </section>
-
-      {showDecorativeMedia && (
-        <div className="login__right" aria-hidden="true">
-          <div className="login__image-wrapper">
-            <video
-              src="/login-video-claude.mp4"
-              poster="/login-bg.jpg"
-              className="login__media"
-              autoPlay={!reduceMotion}
-              loop={!reduceMotion}
-              muted
-              playsInline
-              preload={reduceMotion ? "none" : "metadata"}
-            />
-          </div>
-        </div>
-      )}
     </main>
   );
 }

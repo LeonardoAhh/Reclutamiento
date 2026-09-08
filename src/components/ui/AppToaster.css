@@ -1,51 +1,38 @@
 .app-toaster {
   position: fixed;
-  inset-block-start: max(var(--design-spacing-lg), var(--safe-area-top));
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
+  inset-block-end: calc(var(--design-spacing-md) + var(--safe-area-bottom));
+  inset-inline-start: calc(var(--container-padding) + var(--safe-area-left));
+  inset-inline-end: calc(var(--container-padding) + var(--safe-area-right));
   z-index: var(--layer-toast);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-xs);
-  inline-size: min(
-    var(--toast-max-inline-size),
-    calc(100vw - (var(--container-padding) * 2))
+  max-block-size: calc(
+    100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
+      (var(--design-spacing-md) * 2)
   );
+  overflow-y: auto;
+  overscroll-behavior: contain;
   margin: 0;
   padding: 0;
   list-style: none;
   pointer-events: none;
 }
 
+/* Breakpoint desktop definido por desing.md; las media queries no aceptan tokens. */
 @media (min-width: 1080px) {
-  body[data-sidebar-collapsed="false"] .app-toaster,
-  body[data-sidebar-collapsed="true"] .app-toaster {
-    inset-inline: var(--feature-navigation-rail-inline-size) 0;
-    align-items: center;
-    inline-size: auto;
-    transform: none;
-  }
-
-  body[data-sidebar-collapsed="true"] .app-toaster {
-    inset-inline-start: var(--feature-navigation-rail-collapsed-inline-size);
-  }
-
-  body[data-sidebar-collapsed] .app-toaster__item {
-    inline-size: max-content;
-    max-inline-size: min(
-      var(--toast-max-inline-size),
-      calc(100% - (var(--container-padding) * 2))
-    );
+  .app-toaster {
+    align-items: flex-end;
   }
 }
 
 .app-toaster__item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--design-spacing-sm);
-  inline-size: max-content;
-  max-inline-size: 100%;
+  inline-size: fit-content;
+  max-inline-size: min(100%, var(--toast-max-inline-size));
   padding: var(--design-spacing-sm);
   overflow-wrap: break-word;
   background-color: var(--color-surface);
@@ -54,14 +41,15 @@
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-md);
   pointer-events: auto;
-  animation: app-toaster-enter var(--transition-base) both;
+  animation: app-toaster-enter var(--transition-spring) both;
 }
 
 .app-toaster__content {
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
 }
 
 .app-toaster__title {
@@ -156,6 +144,34 @@
   background: var(--color-surface-soft);
 }
 
+.app-toaster__dismiss {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.app-toaster__dismiss:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.app-toaster__dismiss svg {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+}
+
 .app-toaster__icon--spin {
   animation: app-toaster-spin var(--duration-spinner) linear infinite;
 }
@@ -163,6 +179,12 @@
 @keyframes app-toaster-enter {
   from {
     opacity: 0;
+    transform: translateY(var(--design-spacing-sm));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

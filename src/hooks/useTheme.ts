@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 
 export type Theme = 'light' | 'dark';
 export type ThemePreference = Theme | 'system';
 
 const STORAGE_KEY = 'reclutamiento_theme';
+const themeListeners = new Set<() => void>();
+let systemThemeQuery: MediaQueryList | null = null;
 
 interface ViewTransition {
   ready: Promise<void>;
@@ -38,6 +40,37 @@ function clearStoredTheme(): void {
   }
 }
 
+function notifyThemeListeners(): void {
+  themeListeners.forEach((listener) => listener());
+}
+
+function handleSystemThemeChange(): void {
+  notifyThemeListeners();
+}
+
+function handleThemeStorageChange(event: StorageEvent): void {
+  if (event.key === STORAGE_KEY) notifyThemeListeners();
+}
+
+function subscribeTheme(listener: () => void): () => void {
+  themeListeners.add(listener);
+
+  if (themeListeners.size === 1) {
+    systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    systemThemeQuery.addEventListener('change', handleSystemThemeChange);
+    window.addEventListener('storage', handleThemeStorageChange);
+  }
+
+  return () => {
+    themeListeners.delete(listener);
+    if (themeListeners.size > 0) return;
+
+    systemThemeQuery?.removeEventListener('change', handleSystemThemeChange);
+    systemThemeQuery = null;
+    window.removeEventListener('storage', handleThemeStorageChange);
+  };
+}
+
 function getSystemTheme(): Theme {
   if (typeof window === 'undefined') return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -68,28 +101,60 @@ function applyTheme(theme: Theme): void {
   syncBrowserChrome();
 }
 
-/**
- * Theme controller. Persiste las preferencias explícitas en localStorage,
- * sigue al sistema cuando no hay override y permite volver a esa preferencia.
- *
- * Si el navegador soporta View Transitions API y el usuario no tiene
- * `prefers-reduced-motion`, el cambio usa las duraciones definidas por tokens.
- */
+/** Estado y acciones compartidos para la preferencia visual de la aplicación. */
 export function useTheme() {
-  const [preference, setPreferenceState] =
-    useState<ThemePreference>(getInitialPreference);
-  const [systemTheme, setSystemTheme] = useState<Theme>(getSystemTheme);
+  const preference = useSyncExternalStore<ThemePreference>(
+    subscribeTheme,
+    getInitialPreference,
+    () => 'system',
+  );
+  const systemTheme = useSyncExternalStore<Theme>(
+    subscribeTheme,
+    getSystemTheme,
+    () => 'light',
+  );
   const theme = preference === 'system' ? systemTheme : preference;
+
+  const setTheme = useCallback((next: Theme) => {
+    persistTheme(next);
+    notifyThemeListeners();
+  }, []);
+
+  const setThemePreference = useCallback((next: ThemePreference) => {
+    if (next === 'system') {
+      clearStoredTheme();
+    } else {
+      persistTheme(next);
+    }
+    notifyThemeListeners();
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    persistTheme(next);
+    notifyThemeListeners();
+  }, [theme]);
+
+  return {
+    theme,
+    preference,
+    toggleTheme,
+    setTheme,
+    setThemePreference,
+  };
+}
+
+/** Aplica una sola vez al documento los cambios emitidos por el estado compartido. */
+export function useThemeController(): void {
+  const { theme } = useTheme();
   const firstRender = useRef(true);
 
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
 
-      /* El script de index.html aplica el tema antes del primer paint. Cuando
-         ThemeToggle se monta dentro de un popover, no debemos volver a escribir
-         el atributo raíz: hacerlo fuerza un repintado completo aunque el valor
-         sea el mismo. Solo sincronizamos si el documento quedó desalineado. */
+      /* index.html resuelve el tema antes del primer paint; aquí solo corregimos
+         una posible desalineación y sincronizamos el chrome del navegador. */
       if (document.documentElement.getAttribute('data-theme') !== theme) {
         applyTheme(theme);
       } else {
@@ -97,6 +162,8 @@ export function useTheme() {
       }
       return;
     }
+
+    if (document.documentElement.getAttribute('data-theme') === theme) return;
 
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -118,46 +185,6 @@ export function useTheme() {
       return;
     }
 
-    /* Fallback: sin View Transitions, aplicar directo. */
     applyTheme(theme);
   }, [theme]);
-
-  /* Sync con cambios del SO */
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    function onChange(e: MediaQueryListEvent) {
-      setSystemTheme(e.matches ? 'dark' : 'light');
-    }
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  const setTheme = useCallback((next: Theme) => {
-    persistTheme(next);
-    setPreferenceState(next);
-  }, []);
-
-  const setThemePreference = useCallback((next: ThemePreference) => {
-    if (next === 'system') {
-      clearStoredTheme();
-      setSystemTheme(getSystemTheme());
-    } else {
-      persistTheme(next);
-    }
-    setPreferenceState(next);
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    persistTheme(next);
-    setPreferenceState(next);
-  }, [theme]);
-
-  return {
-    theme,
-    preference,
-    toggleTheme,
-    setTheme,
-    setThemePreference,
-  };
 }
