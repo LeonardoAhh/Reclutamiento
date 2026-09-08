@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { CircleCheckBig, Eye, ChevronRight, ArrowUpRight } from "lucide-react";
+import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { staggerContainer, staggerItem } from "@/lib/motion";
@@ -11,10 +11,6 @@ import { KpiHeroChart, DailyKpiData } from "@/components/ui/KpiHeroChart";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
 import { WeeklyHiresModal } from "@/components/ui/WeeklyHiresModal";
 import { FutureHiresModal } from "@/components/ui/FutureHiresModal";
-import { ButtonUtility } from "@/components/ui/ButtonUtility";
-import {
-  Badge,
-} from "@/components/ui/Badge";
 import { CandidatesInProcessModal } from "@/components/ui/CandidatesInProcessModal";
 import { CandidatesCitedTodayModal } from "@/components/ui/CandidatesCitedTodayModal";
 import { TtfHistoryModal } from "@/components/ui/TtfHistoryModal";
@@ -73,6 +69,26 @@ const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
   "kpi-proximos-ingresos",
   "stat-pipeline-citados-hoy",
   "stat-pipeline-activo",
+]);
+
+/** KPIs conservados en el modelo, pero fuera de la presentación actual. */
+const HIDDEN_KPI_IDS: ReadonlySet<string> = new Set([
+  "stat-vac-abiertas",
+  "stat-vac-sla",
+  "stat-vac-vencidas",
+  "stat-vac-ttf",
+  "stat-vac-excluidas",
+  "stat-pipeline-total",
+  "stat-pipeline-contratado",
+  "stat-pipeline-rechazado",
+  "stat-autorizada",
+  "stat-real",
+  "stat-vacantes",
+  "stat-cobertura",
+  "kpi-cobertura",
+  "kpi-bajas",
+  "kpi-ingresos",
+  "kpi-solo-induccion",
 ]);
 
 /* ── Agrupación para la vista móvil (tabs) ──────────────────────────
@@ -607,12 +623,30 @@ export function KpisPage() {
     ],
   );
 
-  const revealedCount = cards.filter((c) => reveal.isRevealed(c.id)).length;
+  const visibleCards = useMemo(
+    () => cards.filter((card) => !HIDDEN_KPI_IDS.has(card.id)),
+    [cards],
+  );
+
+  const visibleGroups = useMemo(
+    () =>
+      KPI_GROUPS.filter((group) =>
+        visibleCards.some((card) => CARD_GROUP_BY_ID[card.id] === group.id),
+      ),
+    [visibleCards],
+  );
+
+  const revealedCount = visibleCards.filter((card) =>
+    reveal.isRevealed(card.id),
+  ).length;
 
   /* ── Vista móvil: cards del grupo activo ───────────────────── */
   const mobileCards = useMemo(
-    () => cards.filter((c) => CARD_GROUP_BY_ID[c.id] === activeGroup),
-    [cards, activeGroup],
+    () =>
+      visibleCards.filter(
+        (card) => CARD_GROUP_BY_ID[card.id] === activeGroup,
+      ),
+    [visibleCards, activeGroup],
   );
 
   function openCardModal(id: string) {
@@ -662,7 +696,7 @@ export function KpisPage() {
           <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
 
           <section className="kpis-page__grid" aria-label="KPIs consolidados">
-            {cards.map((card, index) => {
+            {visibleCards.map((card, index) => {
               const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
               const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
               const isWeeklyCard = card.id === "kpi-ingresos-semana";
@@ -721,26 +755,28 @@ export function KpisPage() {
         <>
           <WorkforceProjection projection={projectionTotals} todayIso={todayIso} />
 
-          <nav
-            className="kpis-page__tabs"
-            aria-label="Grupos de KPIs"
-            data-testid="kpis-mobile-tabs"
-          >
-            {KPI_GROUPS.map((group) => (
-              <button
-                key={group.id}
-                type="button"
-                className={`kpis-page__tab${
-                  activeGroup === group.id ? " kpis-page__tab--active" : ""
-                }`}
-                aria-pressed={activeGroup === group.id}
-                onClick={() => setActiveGroup(group.id)}
-                data-testid={`kpis-tab-${group.id}`}
-              >
-                {group.label}
-              </button>
-            ))}
-          </nav>
+          {visibleGroups.length > 1 && (
+            <nav
+              className="kpis-page__tabs"
+              aria-label="Grupos de KPIs"
+              data-testid="kpis-mobile-tabs"
+            >
+              {visibleGroups.map((group) => (
+                <button
+                  key={group.id}
+                  type="button"
+                  className={`kpis-page__tab${
+                    activeGroup === group.id ? " kpis-page__tab--active" : ""
+                  }`}
+                  aria-pressed={activeGroup === group.id}
+                  onClick={() => setActiveGroup(group.id)}
+                  data-testid={`kpis-tab-${group.id}`}
+                >
+                  {group.label}
+                </button>
+              ))}
+            </nav>
+          )}
 
           <motion.section
             key={activeGroup}
@@ -749,7 +785,8 @@ export function KpisPage() {
             initial="hidden"
             animate="show"
             aria-label={`KPIs de ${
-              KPI_GROUPS.find((g) => g.id === activeGroup)?.label ?? activeGroup
+              visibleGroups.find((group) => group.id === activeGroup)?.label ??
+              activeGroup
             }`}
             data-testid="kpis-mobile-grid"
           >
