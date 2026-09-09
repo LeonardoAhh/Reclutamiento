@@ -20,6 +20,7 @@ import {
 import { CampaignImportModal } from "./CampaignImportModal";
 import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
+import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
 import { DataUpdateWizard } from "./DataUpdateWizard";
 import type {
   DataUpdateCampaign,
@@ -297,16 +298,22 @@ export function DataUpdatePage() {
       ) : detail ? (
         <>
           <Tabs.Root className="data-update-tabs" defaultValue="work">
-            {isAdmin && (
-              <Tabs.List className="data-update-tabs__list" aria-label="Vistas de actualización de datos">
-                <Tabs.Trigger className="data-update-tabs__trigger" value="work">
-                  Mi trabajo
-                </Tabs.Trigger>
+            <Tabs.List
+              className={`data-update-tabs__list${isAdmin ? " data-update-tabs__list--admin" : ""}`}
+              aria-label="Vistas de actualización de datos"
+            >
+              <Tabs.Trigger className="data-update-tabs__trigger" value="work">
+                Mi trabajo
+              </Tabs.Trigger>
+              <Tabs.Trigger className="data-update-tabs__trigger" value="locker">
+                Locker
+              </Tabs.Trigger>
+              {isAdmin && (
                 <Tabs.Trigger className="data-update-tabs__trigger" value="admin">
                   Administración
                 </Tabs.Trigger>
-              </Tabs.List>
-            )}
+              )}
+            </Tabs.List>
 
             <Tabs.Content className="data-update-tabs__content" value="work">
               <section className="data-update-queue" aria-labelledby="data-update-queue-title">
@@ -380,6 +387,14 @@ export function DataUpdatePage() {
                   </>
                 )}
               </section>
+            </Tabs.Content>
+
+            <Tabs.Content className="data-update-tabs__content" value="locker">
+              <DataUpdateLockerPanel
+                records={detail.records}
+                canEdit={isAdmin}
+                onRefresh={() => void loadDetail()}
+              />
             </Tabs.Content>
 
             {isAdmin && (

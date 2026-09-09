@@ -164,6 +164,8 @@ export function dataUpdateError(error: unknown): string {
   if (message.includes("DATA_UPDATE_INVALID_CIVIL_STATUS")) return "Selecciona un estado civil válido para la campaña.";
   if (message.includes("DATA_UPDATE_INVALID_BIRTH_STATE")) return "Selecciona un Estado de nacimiento válido.";
   if (message.includes("DATA_UPDATE_INVALID_EMAIL")) return "Captura un correo con formato válido.";
+  if (message.includes("DATA_UPDATE_INVALID_LOCKER")) return "Captura el número de locker usando solo dígitos.";
+  if (message.includes("DATA_UPDATE_LOCKER_ASSIGNED")) return "Este locker ya está asignado a otro colaborador.";
   if (message.includes("DATA_UPDATE_COMPLETED")) return "El registro está completado. Un administrador debe reabrirlo para editarlo.";
   if (message.includes("DATA_UPDATE_REOPEN_INVALID")) return "Solo se pueden reabrir registros completados.";
   if (message.includes("duplicate key value")) return "Hay información duplicada en la campaña.";
@@ -373,6 +375,14 @@ export async function reassignDataUpdateRecord(recordId: string, profileId: stri
   });
   if (error) throw new Error(dataUpdateError(error));
   return mapRecord(data);
+}
+
+export async function assignDataUpdateLocker(recordId: string, locker: string): Promise<void> {
+  const { error } = await supabase.rpc("assign_data_update_locker", {
+    p_record_id: recordId,
+    p_locker: locker,
+  });
+  if (error) throw new Error(dataUpdateError(error));
 }
 
 export async function listDataUpdateAudit(recordIds: string[]): Promise<DataUpdateAuditEntry[]> {

@@ -37,6 +37,13 @@ export function compareDataUpdateRecords(left: DataUpdateRecord, right: DataUpda
     || dataUpdateRecordCollator.compare(left.identity.employeeNumber, right.identity.employeeNumber);
 }
 
+export function compareDataUpdateEmployeeNumbers(left: DataUpdateRecord, right: DataUpdateRecord) {
+  return dataUpdateRecordCollator.compare(
+    left.identity.employeeNumber,
+    right.identity.employeeNumber,
+  );
+}
+
 export const MEXICO_STATES = [
   "Aguascalientes",
   "Baja California",
