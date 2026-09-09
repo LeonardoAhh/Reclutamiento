@@ -86,6 +86,12 @@ const BonoAsistencia = lazy(() =>
     default: BonoAsistencia,
   })),
 );
+const DataUpdatePage = lazy(() =>
+  import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({
+    default: DataUpdatePage,
+  })),
+);
+
 function ProtectedContent() {
   return (
     <CandidatesProvider>
@@ -187,7 +193,7 @@ function App() {
                 <Route path="/asistente" element={<AIChatPage />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />
-                <Route path={DATA_UPDATE_PATH} element={<Navigate to="/resumen" replace />} />
+                <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}

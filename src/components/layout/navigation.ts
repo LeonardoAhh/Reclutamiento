@@ -6,6 +6,7 @@ import {
   ListTodo,
   NotebookText,
   Settings2,
+  UserRoundPen,
   UserSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -54,6 +55,12 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
     items: [
       { to: "/asistente", label: "Asistente", icon: BotMessageSquare, mobilePriority: true },
       { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
+      {
+        to: "/actualizacion-datos",
+        label: "Campaña",
+        icon: UserRoundPen,
+        roles: ["admin", "reclutador"],
+      },
     ],
   },
   {
