@@ -70,6 +70,7 @@ export function DataUpdatePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeView, setActiveView] = useState("work");
 
   const loadCampaigns = useCallback(async (preferredId?: string) => {
     if (!canAccess || !online) {
@@ -118,6 +119,9 @@ export function DataUpdatePage() {
       .then(setProfiles)
       .catch((caught) => setError(dataUpdateError(caught)));
   }, [isAdmin, online]);
+  useEffect(() => {
+    if (!isAdmin && activeView === "admin") setActiveView("work");
+  }, [activeView, isAdmin]);
 
   const myRecords = useMemo(
     () => detail?.records.filter((record) => record.assignedTo === user?.id) ?? [],
@@ -297,7 +301,7 @@ export function DataUpdatePage() {
         </section>
       ) : detail ? (
         <>
-          <Tabs.Root className="data-update-tabs" defaultValue="work">
+          <Tabs.Root className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
             <Tabs.List
               className={`data-update-tabs__list${isAdmin ? " data-update-tabs__list--admin" : ""}`}
               aria-label="Vistas de actualización de datos"
