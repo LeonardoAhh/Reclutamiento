@@ -632,6 +632,10 @@ export interface SpeechTemplate {
 export const ACTIVITY_STATUSES = ['pendiente', 'en_proceso', 'completada'] as const;
 export type ActivityStatus = (typeof ACTIVITY_STATUSES)[number];
 
+export const ACTIVITY_TYPES = ['unica', 'rutinaria', 'vacante', 'soporte'] as const;
+export type ActivityType = (typeof ACTIVITY_TYPES)[number];
+export type AssignableActivityType = Exclude<ActivityType, 'vacante'>;
+
 export const ACTIVITY_STATUS_LABEL: Record<ActivityStatus, string> = {
   pendiente: 'Pendiente',
   en_proceso: 'En proceso',
@@ -645,7 +649,7 @@ export interface Activity {
   asignado_a?: string | null;
   creado_por?: string | null;
   estado: ActivityStatus;
-  tipo?: 'unica' | 'rutinaria' | 'vacante';
+  tipo?: ActivityType;
   reference_image?: string | null;
   created_at?: string;
   updated_at?: string;

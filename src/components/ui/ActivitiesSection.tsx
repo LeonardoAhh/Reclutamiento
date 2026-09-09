@@ -1,4 +1,4 @@
-import { Inbox, Search } from "lucide-react";
+import { Inbox, Plus, Search } from "lucide-react";
 import type { Activity, ActivityStatus } from "@/lib/types";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { Pagination } from "@/components/ui/Pagination";
@@ -42,6 +42,7 @@ interface ActivitiesSectionProps {
   onSortOrderChange: (order: ActivitySortOrder) => void;
   onRecruiterFilterChange: (recruiterId: string) => void;
   onClearFilters: () => void;
+  onCreate: () => void;
   onOpen: (activity: Activity) => void;
   onEdit: (activity: Activity) => void;
   onDelete: (activity: Activity) => void;
@@ -84,6 +85,7 @@ export function ActivitiesSection({
   onSortOrderChange,
   onRecruiterFilterChange,
   onClearFilters,
+  onCreate,
   onOpen,
   onEdit,
   onDelete,
@@ -97,21 +99,30 @@ export function ActivitiesSection({
       aria-labelledby="activity-tracking-heading"
     >
       <header className="activity-tracking-section__header">
-        <h2
-          id="activity-tracking-heading"
-          className="activity-tracking-section__title"
-        >
-          <span>Actividades</span>
-          <span
-            className="activity-tracking-section__count"
-            aria-label={countLabel}
+        <div className="activity-tracking-section__heading">
+          <h2
+            id="activity-tracking-heading"
+            className="activity-tracking-section__title"
           >
-            {activities.length}
-          </span>
-        </h2>
-        <p className="activity-tracking-section__description">
-          Seguimiento con avance y evidencias.
-        </p>
+            <span>Actividades</span>
+            <span
+              className="activity-tracking-section__count"
+              aria-label={countLabel}
+            >
+              {activities.length}
+            </span>
+          </h2>
+          <p className="activity-tracking-section__description">
+            Seguimiento con avance y evidencias.
+          </p>
+        </div>
+
+        {isAdmin && (
+          <button type="button" className="btn-primary btn-sm" onClick={onCreate}>
+            <Plus size="var(--icon-size-sm)" aria-hidden="true" />
+            <span>Crear</span>
+          </button>
+        )}
       </header>
 
       <div

@@ -1,6 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Activity, ActivityProof, ActivityStatus } from '@/lib/types';
+import {
+  Activity,
+  ActivityProof,
+  ActivityStatus,
+  ActivityType,
+} from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
 
@@ -61,7 +66,7 @@ export function useActivities() {
     fetchActivities();
   }, [fetchActivities]);
 
-  const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: 'unica' | 'rutinaria' | 'vacante' = 'unica', reference_image: string | null = null) => {
+  const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: ActivityType = 'unica', reference_image: string | null = null) => {
     if (!profile) return null;
     try {
       const { data, error } = await supabase
@@ -202,7 +207,7 @@ export function useActivities() {
     }
   };
 
-  const updateActivity = async (id: string, fields: { titulo?: string; descripcion?: string; asignado_a?: string | null; tipo?: 'unica' | 'rutinaria' | 'vacante', reference_image?: string | null }) => {
+  const updateActivity = async (id: string, fields: { titulo?: string; descripcion?: string; asignado_a?: string | null; tipo?: ActivityType, reference_image?: string | null }) => {
     try {
       const { data, error } = await supabase.from('activities')
         .update({ ...fields, updated_at: new Date().toISOString() })

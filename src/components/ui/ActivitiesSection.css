@@ -5,8 +5,16 @@
 }
 
 .activity-tracking-section__header {
+  display: grid;
   min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--spacing-md);
   margin-block-end: var(--spacing-lg);
+}
+
+.activity-tracking-section__heading {
+  min-inline-size: 0;
 }
 
 .activity-tracking-section__title {

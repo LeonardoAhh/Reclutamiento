@@ -3,14 +3,35 @@ import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { SmartTextarea } from "./SmartTextarea";
 import { AttachmentCard } from "./AttachmentCard";
+import type { AssignableActivityType } from "@/lib/types";
+
+const EDIT_MODAL_CONTENT: Record<
+  AssignableActivityType,
+  { title: string; formId: string; fieldIdPrefix: string }
+> = {
+  unica: {
+    title: "Editar actividad",
+    formId: "edit-activity-form",
+    fieldIdPrefix: "edit-activity",
+  },
+  rutinaria: {
+    title: "Editar responsabilidad",
+    formId: "edit-responsibility-form",
+    fieldIdPrefix: "edit-responsibility",
+  },
+  soporte: {
+    title: "Editar soporte",
+    formId: "edit-support-form",
+    fieldIdPrefix: "edit-support",
+  },
+};
 
 export interface EditActivityModalProps {
   isOpen: boolean;
   onClose: () => void;
   isEditing: boolean;
 
-  tipo: "unica" | "rutinaria";
-  setTipo: (val: "unica" | "rutinaria") => void;
+  activityType: AssignableActivityType;
 
   titulo: string;
   setTitulo: (val: string) => void;
@@ -36,8 +57,7 @@ export function EditActivityModal({
   isOpen,
   onClose,
   isEditing,
-  tipo,
-  setTipo,
+  activityType,
   titulo,
   setTitulo,
   asignadoA,
@@ -53,13 +73,16 @@ export function EditActivityModal({
   setExistingReferenceImage,
   onSubmit,
 }: EditActivityModalProps) {
-  const formId = "edit-activity-form";
+  const { title, formId, fieldIdPrefix } = EDIT_MODAL_CONTENT[activityType];
+  const titleId = `${fieldIdPrefix}-titulo`;
+  const assigneeId = `${fieldIdPrefix}-asignado`;
+  const descriptionId = `${fieldIdPrefix}-descripcion`;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Editar actividad"
+      title={title}
       icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
@@ -85,42 +108,10 @@ export function EditActivityModal({
       }
     >
       <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
-        <fieldset className="form-group activity-type-fieldset">
-          <legend>Tipo</legend>
-          <div className="activity-type-selector">
-            <label
-              className={`activity-type-option ${tipo === "unica" ? "active" : ""}`}
-            >
-              <input
-                className="sr-only"
-                type="radio"
-                name="editTipo"
-                value="unica"
-                checked={tipo === "unica"}
-                onChange={() => setTipo("unica")}
-              />
-              Tarea
-            </label>
-            <label
-              className={`activity-type-option ${tipo === "rutinaria" ? "active" : ""}`}
-            >
-              <input
-                className="sr-only"
-                type="radio"
-                name="editTipo"
-                value="rutinaria"
-                checked={tipo === "rutinaria"}
-                onChange={() => setTipo("rutinaria")}
-              />
-              Rutina
-            </label>
-          </div>
-        </fieldset>
-
         <div className="form-group">
-          <label htmlFor="edit-titulo">Título</label>
+          <label htmlFor={titleId}>Título</label>
           <input
-            id="edit-titulo"
+            id={titleId}
             required
             type="text"
             value={titulo}
@@ -129,9 +120,9 @@ export function EditActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor="edit-asignado">Asignar a</label>
+          <label htmlFor={assigneeId}>Asignar a</label>
           <CustomSelect
-            id="edit-asignado"
+            id={assigneeId}
             value={asignadoA}
             onChange={setAsignadoA}
             options={recruitersOptions}
@@ -139,9 +130,9 @@ export function EditActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor="edit-descripcion">Descripción</label>
+          <label htmlFor={descriptionId}>Descripción</label>
           <SmartTextarea
-            id="edit-descripcion"
+            id={descriptionId}
             value={descripcion}
             onChange={setDescripcion}
             placeholder="Detalles de la actividad..."

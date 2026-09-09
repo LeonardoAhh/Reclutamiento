@@ -153,52 +153,6 @@
 }
 
 /* ── Modal form extras ───────────────────────────────────────────────── */
-/* Type selector (radio group) */
-.activity-type-selector {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.activity-type-option {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-card);
-  color: var(--color-charcoal);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
-}
-
-.activity-type-option:hover {
-  border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
-}
-
-.activity-type-option.active {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  border-color: var(--color-primary);
-}
-
-.activity-type-fieldset {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.activity-type-fieldset legend,
 .form-label {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-strong-weight);
@@ -312,9 +266,6 @@
     justify-content: center;
   }
 
-  .activity-type-selector {
-    flex-direction: column;
-  }
 }
 
 /* ── Smart Textarea ──────────────────────────────────────────────────── */

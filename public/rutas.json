@@ -481,7 +481,7 @@
     "nombre": "ARTEAGA PEREZ CARLOS",
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
@@ -2646,15 +2646,6 @@
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
-    "numero empleado": "4357",
-    "nombre": "MORALES OVALLE MARTIN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE JUNCOS"
-  },
-  {
     "numero empleado": "4358",
     "nombre": "ARVIZU SANCHEZ LORENA BEATRIZ",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2718,29 +2709,11 @@
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
-    "numero empleado": "4366",
-    "nombre": "VARGAS HERNANDEZ GUADALUPE",
-    "seccion": "A. CALIDAD 2DO. TURNO",
-    "turno": "30",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "FRACC. MONTENEGRO",
-    "parada": "PARADA DE CAMIONES HUIZACHE"
-  },
-  {
     "numero empleado": "4367",
     "nombre": "ROSETE FELIPE HANIA",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
-  },
-  {
-    "numero empleado": "4369",
-    "nombre": "MATA CORONA NURIAN",
-    "seccion": "A. CALIDAD 2DO. TURNO",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "SANTA ROSA",
     "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },

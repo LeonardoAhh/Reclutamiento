@@ -3,14 +3,33 @@ import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { SmartTextarea } from "./SmartTextarea";
 import { AttachmentCard } from "./AttachmentCard";
+import type { AssignableActivityType } from "@/lib/types";
+
+const CREATE_MODAL_CONTENT: Record<
+  AssignableActivityType,
+  { title: string; formId: string; fieldIdPrefix: string }
+> = {
+  unica: {
+    title: "Actividad nueva",
+    formId: "create-activity-form",
+    fieldIdPrefix: "activity",
+  },
+  rutinaria: {
+    title: "Nueva responsabilidad",
+    formId: "create-responsibility-form",
+    fieldIdPrefix: "responsibility",
+  },
+  soporte: {
+    title: "Nuevo soporte",
+    formId: "create-support-form",
+    fieldIdPrefix: "support",
+  },
+};
 
 export interface CreateActivityModalProps {
   isOpen: boolean;
   onClose: () => void;
   isCreating: boolean;
-
-  tipo: "unica" | "rutinaria";
-  setTipo: (val: "unica" | "rutinaria") => void;
 
   titulo: string;
   setTitulo: (val: string) => void;
@@ -30,12 +49,15 @@ export interface CreateActivityModalProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-export function CreateActivityModal({
+interface CreateAssignmentModalProps extends CreateActivityModalProps {
+  activityType: AssignableActivityType;
+}
+
+export function CreateAssignmentModal({
   isOpen,
   onClose,
   isCreating,
-  tipo,
-  setTipo,
+  activityType,
   titulo,
   setTitulo,
   asignadoA,
@@ -48,14 +70,17 @@ export function CreateActivityModal({
   setReferenceImageFile,
   setReferenceImagePreview,
   onSubmit,
-}: CreateActivityModalProps) {
-  const formId = "create-activity-form";
+}: CreateAssignmentModalProps) {
+  const { title, formId, fieldIdPrefix } = CREATE_MODAL_CONTENT[activityType];
+  const titleId = `${fieldIdPrefix}-titulo`;
+  const assigneeId = `${fieldIdPrefix}-asignado`;
+  const descriptionId = `${fieldIdPrefix}-descripcion`;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Actividad nueva"
+      title={title}
       icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
@@ -81,43 +106,10 @@ export function CreateActivityModal({
       }
     >
       <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
-        {/* Tipo selector */}
-        <fieldset className="form-group activity-type-fieldset">
-          <legend>Tipo</legend>
-          <div className="activity-type-selector">
-            <label
-              className={`activity-type-option ${tipo === "unica" ? "active" : ""}`}
-            >
-              <input
-                className="sr-only"
-                type="radio"
-                name="tipo"
-                value="unica"
-                checked={tipo === "unica"}
-                onChange={() => setTipo("unica")}
-              />
-              Actividad
-            </label>
-            <label
-              className={`activity-type-option ${tipo === "rutinaria" ? "active" : ""}`}
-            >
-              <input
-                className="sr-only"
-                type="radio"
-                name="tipo"
-                value="rutinaria"
-                checked={tipo === "rutinaria"}
-                onChange={() => setTipo("rutinaria")}
-              />
-              Responsabilidad
-            </label>
-          </div>
-        </fieldset>
-
         <div className="form-group">
-          <label htmlFor="activity-titulo">Título</label>
+          <label htmlFor={titleId}>Título</label>
           <input
-            id="activity-titulo"
+            id={titleId}
             required
             type="text"
             value={titulo}
@@ -127,9 +119,9 @@ export function CreateActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor="activity-asignado">Asignar a</label>
+          <label htmlFor={assigneeId}>Asignar a</label>
           <CustomSelect
-            id="activity-asignado"
+            id={assigneeId}
             value={asignadoA}
             onChange={setAsignadoA}
             options={recruitersOptions}
@@ -137,9 +129,9 @@ export function CreateActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor="activity-descripcion">Descripción</label>
+          <label htmlFor={descriptionId}>Descripción</label>
           <SmartTextarea
-            id="activity-descripcion"
+            id={descriptionId}
             value={descripcion}
             onChange={setDescripcion}
             placeholder="Detalles de la actividad..."
@@ -186,4 +178,8 @@ export function CreateActivityModal({
       </form>
     </Modal>
   );
+}
+
+export function CreateActivityModal(props: CreateActivityModalProps) {
+  return <CreateAssignmentModal {...props} activityType="unica" />;
 }

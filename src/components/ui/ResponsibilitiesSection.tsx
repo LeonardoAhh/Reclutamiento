@@ -14,7 +14,21 @@ interface ResponsibilitiesPagination {
   canGoNext: boolean;
 }
 
-interface ResponsibilitiesSectionProps {
+export interface AssignmentSectionCopy {
+  headingId: string;
+  panelId: string;
+  title: string;
+  singular: string;
+  plural: string;
+  description: string;
+  emptyTitle: string;
+  adminEmptyDescription: string;
+  assigneeEmptyDescription: string;
+  listLabel: string;
+  paginationLabel: string;
+}
+
+export interface ResponsibilitiesSectionProps {
   responsibilities: Activity[];
   pageItems: Activity[];
   isAdmin: boolean;
@@ -25,7 +39,22 @@ interface ResponsibilitiesSectionProps {
   onEdit: (activity: Activity) => void;
   onDelete: (activity: Activity) => void;
   onViewReference: (source: string) => void;
+  copy?: AssignmentSectionCopy;
 }
+
+const RESPONSIBILITIES_COPY: AssignmentSectionCopy = {
+  headingId: "responsibilities-heading",
+  panelId: "responsabilidades-panel",
+  title: "Responsabilidades",
+  singular: "responsabilidad",
+  plural: "responsabilidades",
+  description: "De manera recurrente, sin seguimiento de evidencias.",
+  emptyTitle: "Sin responsabilidades",
+  adminEmptyDescription: 'Crea una actividad tipo "Responsabilidad" para asignarla.',
+  assigneeEmptyDescription: "Aún no tienes responsabilidades asignadas.",
+  listLabel: "Responsabilidades",
+  paginationLabel: "Paginación de responsabilidades",
+};
 
 interface ActivityWithAssignee extends Activity {
   asignado_a_profile?: {
@@ -61,21 +90,22 @@ export function ResponsibilitiesSection({
   onEdit,
   onDelete,
   onViewReference,
+  copy = RESPONSIBILITIES_COPY,
 }: ResponsibilitiesSectionProps) {
-  const countLabel = `${responsibilities.length} ${responsibilities.length === 1 ? "responsabilidad" : "responsabilidades"}`;
+  const countLabel = `${responsibilities.length} ${responsibilities.length === 1 ? copy.singular : copy.plural}`;
 
   return (
     <section
       className="responsibilities-section"
-      aria-labelledby="responsibilities-heading"
+      aria-labelledby={copy.headingId}
     >
       <header className="responsibilities-section__header">
         <div className="responsibilities-section__heading">
           <h2
-            id="responsibilities-heading"
+            id={copy.headingId}
             className="responsibilities-section__title"
           >
-            <span>Responsabilidades</span>
+            <span>{copy.title}</span>
             <span
               className="responsibilities-section__count"
               aria-label={countLabel}
@@ -84,7 +114,7 @@ export function ResponsibilitiesSection({
             </span>
           </h2>
           <p className="responsibilities-section__description">
-            De manera recurrente, sin seguimiento de evidencias.
+            {copy.description}
           </p>
         </div>
 
@@ -97,7 +127,7 @@ export function ResponsibilitiesSection({
       </header>
 
       <div
-        id="responsabilidades-panel"
+        id={copy.panelId}
         className="responsibilities-section__panel"
       >
         {responsibilities.length === 0 ? (
@@ -108,12 +138,12 @@ export function ResponsibilitiesSection({
               aria-hidden="true"
             />
             <p className="responsibilities-section__empty-title">
-              Sin responsabilidades
+              {copy.emptyTitle}
             </p>
             <p className="responsibilities-section__empty-description">
               {isAdmin
-                ? 'Crea una actividad tipo "Rutina" para asignarla.'
-                : "Aún no tienes responsabilidades asignadas."}
+                ? copy.adminEmptyDescription
+                : copy.assigneeEmptyDescription}
             </p>
           </div>
         ) : (
@@ -121,7 +151,7 @@ export function ResponsibilitiesSection({
             <div
               className="responsibilities-section__grid"
               role="list"
-              aria-label="Responsabilidades"
+              aria-label={copy.listLabel}
             >
               {pageItems.map((activity) => {
                 const content = getResponsibilityContent(activity);
@@ -167,7 +197,7 @@ export function ResponsibilitiesSection({
               onNext={pagination.onNext}
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
-              ariaLabel="Paginación de responsabilidades"
+              ariaLabel={copy.paginationLabel}
             />
           </>
         )}

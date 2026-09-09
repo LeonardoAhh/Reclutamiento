@@ -7,15 +7,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
 import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
 import { ResponsibilitiesSection } from "@/components/ui/ResponsibilitiesSection";
+import { SupportSection } from "@/components/ui/SupportSection";
 import {
   Activity,
   ActivityProof,
   ActivityStatus,
   ACTIVITY_STATUS_LABEL,
+  AssignableActivityType,
 } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { AssignVacancyModal } from "@/components/ui/AssignVacancyModal";
-import { CreateActivityModal } from "@/components/ui/CreateActivityModal";
+import {
+  CreateActivityModal,
+  type CreateActivityModalProps,
+} from "@/components/ui/CreateActivityModal";
+import { CreateResponsibilityModal } from "@/components/ui/CreateResponsibilityModal";
+import { CreateSupportModal } from "@/components/ui/CreateSupportModal";
 import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
 import { EditActivityModal } from "@/components/ui/EditActivityModal";
 import { LightboxModal } from "@/components/ui/LightboxModal";
@@ -70,7 +77,8 @@ export function Actividades() {
     return new Date(act.created_at) > new Date(lastVisitRef.current);
   };
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createModalType, setCreateModalType] =
+    useState<AssignableActivityType | null>(null);
   const [isCreateVacanteModalOpen, setIsCreateVacanteModalOpen] =
     useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -87,7 +95,6 @@ export function Actividades() {
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [asignadoA, setAsignadoA] = useState("");
-  const [tipo, setTipo] = useState<"unica" | "rutinaria">("unica");
   const [isCreating, setIsCreating] = useState(false);
 
   /* ── Create vacancy form state (isolated from activities) ───────────── */
@@ -119,7 +126,6 @@ export function Actividades() {
   const [editTitulo, setEditTitulo] = useState("");
   const [editDescripcion, setEditDescripcion] = useState("");
   const [editAsignadoA, setEditAsignadoA] = useState("");
-  const [editTipo, setEditTipo] = useState<"unica" | "rutinaria">("unica");
   const [editReferenceImageFile, setEditReferenceImageFile] =
     useState<File | null>(null);
   const [editReferenceImagePreview, setEditReferenceImagePreview] = useState<
@@ -157,6 +163,17 @@ export function Actividades() {
         .then(({ data }) => setReclutadores(data || []));
     }
   }, [profile]);
+
+  const teamRecruiterOptions = useMemo(
+    () => [
+      { value: "", label: "Todo el equipo" },
+      ...reclutadores.map((reclutador) => ({
+        value: reclutador.id,
+        label: capitalize(reclutador.display_name || reclutador.username),
+      })),
+    ],
+    [reclutadores],
+  );
 
   const { positions } = usePositions();
 
@@ -276,14 +293,14 @@ export function Actividades() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     const normalizedTitle = titulo.trim();
-    if (!normalizedTitle) return;
+    if (!normalizedTitle || !createModalType) return;
 
     setIsCreating(true);
     const act = await createActivity(
       normalizedTitle,
       descripcion,
       asignadoA || null,
-      tipo,
+      createModalType,
     );
 
     if (act && referenceImageFile) {
@@ -295,11 +312,10 @@ export function Actividades() {
 
     setIsCreating(false);
     if (act) {
-      setIsCreateModalOpen(false);
+      setCreateModalType(null);
       setTitulo("");
       setDescripcion("");
       setAsignadoA("");
-      setTipo("unica");
       setReferenceImageFile(null);
       setReferenceImagePreview(null);
     }
@@ -396,7 +412,6 @@ export function Actividades() {
     setEditTitulo(activity.titulo);
     setEditDescripcion(activity.descripcion || "");
     setEditAsignadoA(activity.asignado_a || "");
-    setEditTipo(activity.tipo === "rutinaria" ? "rutinaria" : "unica");
     setEditReferenceImageFile(null);
     setEditReferenceImagePreview(null);
     setEditExistingReferenceImage(activity.reference_image || null);
@@ -425,7 +440,6 @@ export function Actividades() {
       titulo: normalizedTitle,
       descripcion: editDescripcion,
       asignado_a: editAsignadoA || null,
-      tipo: editTipo,
       reference_image: newImageUrl,
     });
     setIsEditing(false);
@@ -461,6 +475,17 @@ export function Actividades() {
   const isAdmin = profile?.role === "admin";
   const responsabilidades = useMemo(() => {
     const list = activities.filter((a) => a.tipo === "rutinaria");
+    return list.sort((a, b) => {
+      const aNew = isNewActivity(a);
+      const bNew = isNewActivity(b);
+      if (aNew && !bNew) return -1;
+      if (!aNew && bNew) return 1;
+      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
+    });
+  }, [activities]);
+
+  const soportes = useMemo(() => {
+    const list = activities.filter((a) => a.tipo === "soporte");
     return list.sort((a, b) => {
       const aNew = isNewActivity(a);
       const bNew = isNewActivity(b);
@@ -551,6 +576,17 @@ export function Actividades() {
   } = usePagination(responsabilidades, 10);
 
   const {
+    pageItems: soportesPaginados,
+    currentPage: soportesPage,
+    totalPages: soportesTotalPages,
+    goToPage: goToSoportesPage,
+    nextPage: nextSoportesPage,
+    prevPage: prevSoportesPage,
+    canGoNext: canGoNextSoportes,
+    canGoPrev: canGoPrevSoportes,
+  } = usePagination(soportes, 10);
+
+  const {
     pageItems: actividadesPaginadas,
     currentPage: actividadesPage,
     totalPages: actividadesTotalPages,
@@ -560,6 +596,28 @@ export function Actividades() {
     canGoNext: canGoNextActividades,
     canGoPrev: canGoPrevActividades,
   } = usePagination(unicas, 12);
+
+  const createAssignmentModalProps: Omit<
+    CreateActivityModalProps,
+    "isOpen"
+  > = {
+    onClose: () => {
+      if (!isCreating) setCreateModalType(null);
+    },
+    isCreating,
+    titulo,
+    setTitulo,
+    asignadoA,
+    setAsignadoA,
+    recruitersOptions: teamRecruiterOptions,
+    descripcion,
+    setDescripcion,
+    referenceImagePreview,
+    referenceImageFile,
+    setReferenceImageFile,
+    setReferenceImagePreview,
+    onSubmit: handleCreate,
+  };
 
   /* ── Render ─────────────────────────────────────────────────────────── */
   return (
@@ -580,6 +638,9 @@ export function Actividades() {
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="responsibilities">
             Responsabilidades
+          </Tabs.Trigger>
+          <Tabs.Trigger className="actividades-tabs__trigger" value="support">
+            Soporte
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="activities">
             Actividades
@@ -615,7 +676,30 @@ export function Actividades() {
               canGoNext: canGoNextResponsabilidades,
             }}
             isNew={isNewActivity}
-            onCreate={() => setIsCreateModalOpen(true)}
+            onCreate={() => setCreateModalType("rutinaria")}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+            onViewReference={setLightboxSrc}
+          />
+        </Tabs.Content>
+
+        <Tabs.Content className="actividades-tabs__content" value="support">
+          <SupportSection
+            supportItems={soportes}
+            pageItems={soportesPaginados}
+            isAdmin={isAdmin}
+            currentUserId={profile?.id}
+            pagination={{
+              currentPage: soportesPage,
+              totalPages: soportesTotalPages,
+              onPageChange: goToSoportesPage,
+              onPrev: prevSoportesPage,
+              onNext: nextSoportesPage,
+              canGoPrev: canGoPrevSoportes,
+              canGoNext: canGoNextSoportes,
+            }}
+            isNew={isNewActivity}
+            onCreate={() => setCreateModalType("soporte")}
             onEdit={openEdit}
             onDelete={handleDelete}
             onViewReference={setLightboxSrc}
@@ -655,6 +739,7 @@ export function Actividades() {
               setRecruiterFilter("");
               setSortOrder("newest");
             }}
+            onCreate={() => setCreateModalType("unica")}
             onOpen={openDetails}
             onEdit={openEdit}
             onDelete={handleDelete}
@@ -698,31 +783,18 @@ export function Actividades() {
       />
 
       <CreateActivityModal
-        isOpen={isCreateModalOpen}
-        onClose={() => {
-          if (!isCreating) setIsCreateModalOpen(false);
-        }}
-        isCreating={isCreating}
-        tipo={tipo}
-        setTipo={setTipo}
-        titulo={titulo}
-        setTitulo={setTitulo}
-        asignadoA={asignadoA}
-        setAsignadoA={setAsignadoA}
-        recruitersOptions={[
-          { value: "", label: "Todo el equipo" },
-          ...reclutadores.map((reclutador) => ({
-            value: reclutador.id,
-            label: capitalize(reclutador.display_name || reclutador.username),
-          })),
-        ]}
-        descripcion={descripcion}
-        setDescripcion={setDescripcion}
-        referenceImagePreview={referenceImagePreview}
-        referenceImageFile={referenceImageFile}
-        setReferenceImageFile={setReferenceImageFile}
-        setReferenceImagePreview={setReferenceImagePreview}
-        onSubmit={handleCreate}
+        {...createAssignmentModalProps}
+        isOpen={createModalType === "unica"}
+      />
+
+      <CreateResponsibilityModal
+        {...createAssignmentModalProps}
+        isOpen={createModalType === "rutinaria"}
+      />
+
+      <CreateSupportModal
+        {...createAssignmentModalProps}
+        isOpen={createModalType === "soporte"}
       />
 
       {/* ── Modal: Edit ──────────────────────────────────────────── */}
@@ -732,19 +804,17 @@ export function Actividades() {
           if (!isEditing) setIsEditModalOpen(false);
         }}
         isEditing={isEditing}
-        tipo={editTipo}
-        setTipo={setEditTipo}
+        activityType={
+          selectedActivity?.tipo === "rutinaria" ||
+          selectedActivity?.tipo === "soporte"
+            ? selectedActivity.tipo
+            : "unica"
+        }
         titulo={editTitulo}
         setTitulo={setEditTitulo}
         asignadoA={editAsignadoA}
         setAsignadoA={setEditAsignadoA}
-        recruitersOptions={[
-          { value: "", label: "Todo el equipo" },
-          ...reclutadores.map((reclutador) => ({
-            value: reclutador.id,
-            label: capitalize(reclutador.display_name || reclutador.username),
-          })),
-        ]}
+        recruitersOptions={teamRecruiterOptions}
         descripcion={editDescripcion}
         setDescripcion={setEditDescripcion}
         referenceImagePreview={editReferenceImagePreview}
