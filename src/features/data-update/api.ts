@@ -37,6 +37,11 @@ function nullableText(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
 }
 
+function textArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(textValue);
+}
+
 function mapEditable(value: unknown): DataUpdateEditableData {
   const row = objectValue(value);
   const emergency = splitEmergencyContact(textValue(row.emergencyContact));
@@ -47,6 +52,7 @@ function mapEditable(value: unknown): DataUpdateEditableData {
     birthState: textValue(row.birthState),
     civilStatus: textValue(row.civilStatus),
     email: textValue(row.email),
+    receivesPayrollReceipts: textValue(row.receivesPayrollReceipts),
     mobilePhone: textValue(row.mobilePhone),
     emergencyContact: emergency.emergencyContact,
     emergencyRelationship: textValue(row.emergencyRelationship) || emergency.emergencyRelationship,
@@ -58,6 +64,9 @@ function mapEditable(value: unknown): DataUpdateEditableData {
     bloodType: textValue(row.bloodType),
     allergies: textValue(row.allergies),
     locker: textValue(row.locker),
+    shirtSize: textValue(row.shirtSize),
+    shoeSize: textValue(row.shoeSize),
+    childrenBirthDates: textArray(row.childrenBirthDates),
   };
 }
 
@@ -164,6 +173,8 @@ export function dataUpdateError(error: unknown): string {
   if (message.includes("DATA_UPDATE_INVALID_CIVIL_STATUS")) return "Selecciona un estado civil válido para la campaña.";
   if (message.includes("DATA_UPDATE_INVALID_BIRTH_STATE")) return "Selecciona un Estado de nacimiento válido.";
   if (message.includes("DATA_UPDATE_INVALID_EMAIL")) return "Captura un correo con formato válido.";
+  if (message.includes("DATA_UPDATE_INVALID_PAYROLL_RECEIPTS")) return "Indica si recibes tus recibos de nómina.";
+  if (message.includes("DATA_UPDATE_INVALID_CHILD_BIRTH_DATES")) return "Captura una fecha de nacimiento válida para cada hijo.";
   if (message.includes("DATA_UPDATE_INVALID_LOCKER")) return "Captura el número de locker usando solo dígitos.";
   if (message.includes("DATA_UPDATE_LOCKER_ASSIGNED")) return "Este locker ya está asignado a otro colaborador.";
   if (message.includes("DATA_UPDATE_COMPLETED")) return "El registro está completado. Un administrador debe reabrirlo para editarlo.";

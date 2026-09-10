@@ -17,12 +17,19 @@ import {
   DATA_UPDATE_STEP_COUNT,
   EMERGENCY_RELATIONSHIPS,
 } from "./constants";
-import { AddressStep, AdditionalDataStep, ContactStep, TransportStep } from "./EditableDataSteps";
+import {
+  AddressStep,
+  AdditionalDataStep,
+  ContactStep,
+  FamilyDataStep,
+  TransportStep,
+} from "./EditableDataSteps";
 import { IdentityReviewStep } from "./IdentityReviewStep";
 import { PhotoStep, ReviewStep } from "./PhotoReviewStep";
 import type {
   DataUpdateCampaignDetail,
   DataUpdateEditableData,
+  DataUpdateEditableTextKey,
   DataUpdateIdentity,
   DataUpdateIncident,
   DataUpdateRecord,
@@ -31,6 +38,7 @@ import type {
 import {
   getEditableDataErrors,
   isDataUpdateEmailValid,
+  isDataUpdatePayrollReceiptStatusValid,
   isDataUpdatePhoneValid,
   validateDataUpdatePhoto,
   validateEditableData,
@@ -138,9 +146,19 @@ export function DataUpdateWizard({
     if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
   }, []);
 
-  const changeField = (field: keyof DataUpdateEditableData, value: string) => {
+  const changeField = (field: DataUpdateEditableTextKey, value: string) => {
     setData((current) => {
       const next = { ...current, [field]: value };
+      dataRef.current = next;
+      return next;
+    });
+    setSaveState("pending");
+    setNotice(null);
+  };
+
+  const changeChildrenBirthDates = (values: string[]) => {
+    setData((current) => {
+      const next = { ...current, childrenBirthDates: values };
       dataRef.current = next;
       return next;
     });
@@ -336,7 +354,9 @@ export function DataUpdateWizard({
   );
   const contactValid = Boolean(
     data.birthState && data.civilStatus && data.email && data.mobilePhone
-      && isDataUpdateEmailValid(data.email) && isDataUpdatePhoneValid(data.mobilePhone),
+      && isDataUpdateEmailValid(data.email)
+      && isDataUpdatePayrollReceiptStatusValid(data.receivesPayrollReceipts)
+      && isDataUpdatePhoneValid(data.mobilePhone),
   );
   const addressValid = Boolean(
     data.emergencyContact && data.emergencyRelationship && data.emergencyPhone
@@ -345,6 +365,9 @@ export function DataUpdateWizard({
   );
   const additionalValid = Boolean(data.educationLevel && data.bloodType && data.allergies && data.locker);
   const fieldErrors = getEditableDataErrors(data);
+  const familyValid = !fieldErrors.shirtSize
+    && !fieldErrors.shoeSize
+    && !fieldErrors.childrenBirthDates;
   const allDataValid = validateEditableData(data).length === 0 && transportValid;
   const saveLabel = !online
     ? saveState === "pending" ? "Sin conexión · cambios pendientes" : "Sin conexión"
@@ -436,6 +459,21 @@ export function DataUpdateWizard({
       content: <AdditionalDataStep data={data} onChange={changeField} errors={visibleErrors(4)} />,
     },
     {
+      id: "family",
+      title: "Tallas e hijos",
+      isValid: familyValid,
+      onInvalid: () => showStepErrors(5, "Completa las tallas y las fechas de nacimiento para continuar."),
+      content: (
+        <FamilyDataStep
+          data={data}
+          onChange={changeField}
+          onChildrenBirthDatesChange={changeChildrenBirthDates}
+          errors={visibleErrors(5)}
+          childrenError={revealedErrorSteps.has(5) ? fieldErrors.childrenBirthDates : undefined}
+        />
+      ),
+    },
+    {
       id: "photo",
       title: "Fotografía",
       isValid: Boolean(photoPathRef.current),
@@ -463,7 +501,7 @@ export function DataUpdateWizard({
       isValid: Boolean(photoPathRef.current) && allDataValid,
       content: (goToStep) => <ReviewStep data={data} onEditStep={goToStep} />,
     },
-  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, identityValid, transportValid, contactValid, addressValid, additionalValid, allDataValid, revealedErrorSteps, online]);
+  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();

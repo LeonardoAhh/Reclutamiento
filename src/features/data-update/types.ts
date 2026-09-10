@@ -25,6 +25,7 @@ export interface DataUpdateEditableData {
   birthState: string;
   civilStatus: string;
   email: string;
+  receivesPayrollReceipts: string;
   mobilePhone: string;
   emergencyContact: string;
   emergencyRelationship: string;
@@ -36,7 +37,15 @@ export interface DataUpdateEditableData {
   bloodType: string;
   allergies: string;
   locker: string;
+  shirtSize: string;
+  shoeSize: string;
+  childrenBirthDates: string[];
 }
+
+export type DataUpdateEditableTextKey = Exclude<
+  keyof DataUpdateEditableData,
+  "childrenBirthDates"
+>;
 
 export interface DataUpdateCampaign {
   id: string;

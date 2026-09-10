@@ -1,7 +1,12 @@
 import { type ChangeEvent } from "react";
 import { Camera, ImageUp, PencilLine, RefreshCw } from "lucide-react";
+import { formatShortDate } from "@/lib/dates";
 import { DATA_UPDATE_PHOTO_ACCEPT, EDITABLE_FIELDS } from "./constants";
-import type { DataUpdateEditableData, DataUpdateIdentity } from "./types";
+import type {
+  DataUpdateEditableData,
+  DataUpdateEditableTextKey,
+  DataUpdateIdentity,
+} from "./types";
 
 interface PhotoStepProps {
   identity: DataUpdateIdentity;
@@ -21,12 +26,14 @@ interface ReviewStepProps {
 const REVIEW_GROUPS: ReadonlyArray<{
   title: string;
   step: number;
-  keys: ReadonlyArray<keyof DataUpdateEditableData>;
+  keys: ReadonlyArray<DataUpdateEditableTextKey>;
+  includeChildren?: boolean;
 }> = [
   { title: "Transporte", step: 1, keys: ["route", "stop", "location"] },
-  { title: "Contacto", step: 2, keys: ["birthState", "civilStatus", "email", "mobilePhone"] },
+  { title: "Contacto", step: 2, keys: ["birthState", "civilStatus", "email", "receivesPayrollReceipts", "mobilePhone"] },
   { title: "Emergencia y domicilio", step: 3, keys: ["emergencyContact", "emergencyRelationship", "emergencyPhone", "street", "municipality", "fullAddress"] },
   { title: "Información adicional", step: 4, keys: ["educationLevel", "bloodType", "allergies", "locker"] },
+  { title: "Tallas e hijos", step: 5, keys: ["shirtSize", "shoeSize"], includeChildren: true },
 ];
 
 export function PhotoStep({
@@ -120,6 +127,20 @@ export function ReviewStep({ data, onEditStep }: ReviewStepProps) {
                   </dd>
                 </div>
               ))}
+              {group.includeChildren && (
+                <>
+                  <div>
+                    <dt>Cantidad de hijos</dt>
+                    <dd>{data.childrenBirthDates.length}</dd>
+                  </div>
+                  {data.childrenBirthDates.map((birthDate, index) => (
+                    <div key={`${birthDate}-${index}`}>
+                      <dt>Fecha de nacimiento del hijo {index + 1}</dt>
+                      <dd>{formatShortDate(birthDate)}</dd>
+                    </div>
+                  ))}
+                </>
+              )}
             </dl>
           </section>
         ))}

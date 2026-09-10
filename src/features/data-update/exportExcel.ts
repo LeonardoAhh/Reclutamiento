@@ -67,9 +67,19 @@ export async function exportDataUpdateCampaign(input: {
   );
 
   const dataSheet = workbook.addWorksheet("Datos finales");
+  const maximumChildren = input.detail.records.reduce(
+    (maximum, record) => Math.max(maximum, record.data.childrenBirthDates.length),
+    0,
+  );
+  const childBirthDateHeaders = Array.from(
+    { length: maximumChildren },
+    (_, index) => `Fecha de nacimiento del hijo ${index + 1}`,
+  );
   const dataHeaders = [
     ...IDENTITY_FIELDS.map((field) => field.label),
     ...EDITABLE_FIELDS.map((field) => field.label),
+    "Cantidad de hijos",
+    ...childBirthDateHeaders,
     "Responsable",
     "Estado de revisión",
     "Revisión de identificación",
@@ -80,6 +90,11 @@ export async function exportDataUpdateCampaign(input: {
   const dataRows = input.detail.records.map((record) => [
     ...IDENTITY_FIELDS.map((field) => record.identity[field.key]),
     ...EDITABLE_FIELDS.map((field) => record.data[field.key]),
+    record.data.childrenBirthDates.length,
+    ...Array.from(
+      { length: maximumChildren },
+      (_, index) => record.data.childrenBirthDates[index] ?? "",
+    ),
     record.assignedName ?? record.assignedTo,
     record.status,
     record.identityReview,
@@ -96,6 +111,7 @@ export async function exportDataUpdateCampaign(input: {
       field.key,
       field.key === "municipality" ? "Municipio (columna original: Estado)" : field.label,
     ] as const),
+    ["childrenBirthDates", "Fechas de nacimiento de hijos"],
     ["status", "Estado de revisión"],
     ["identityReview", "Revisión de identificación"],
     ["assignedTo", "Responsable"],

@@ -6,11 +6,14 @@ import {
   normalizeRuta,
 } from "@/lib/transporte-routes";
 import { normalizeString } from "@/lib/utils";
+import { localTodayIso } from "@/lib/dates";
 import {
   DATA_UPDATE_PHOTO_MAX_BYTES,
   DATA_UPDATE_RAW_FIELDS,
   EDITABLE_FIELDS,
   MEXICO_STATES,
+  PAYROLL_RECEIPT_OPTIONS,
+  SHOE_SIZE_OPTIONS,
 } from "./constants";
 import type {
   DataUpdateEditableData,
@@ -90,6 +93,7 @@ function parseRow(
       birthState: matchBirthState(originalData["Lugar Nacimiento"]),
       civilStatus: canonicalCivilStatus(originalData["Edo Civil"], civilStatuses),
       email: originalData.Correo,
+      receivesPayrollReceipts: "",
       mobilePhone: originalData["Telefono Movil"],
       emergencyContact: emergency.emergencyContact,
       emergencyRelationship: emergency.emergencyRelationship,
@@ -101,6 +105,9 @@ function parseRow(
       bloodType: originalData["Tipo Sangre"],
       allergies: originalData.Alergias,
       locker: originalData.Locker,
+      shirtSize: "",
+      shoeSize: "",
+      childrenBirthDates: [],
     },
   };
 }
@@ -195,8 +202,17 @@ export function getEditableDataErrors(
   EDITABLE_FIELDS.forEach(({ key, label }) => {
     if (!data[key].trim()) errors[key] = `${label} es obligatorio.`;
   });
+  if (data.childrenBirthDates.some((value) => !isDataUpdateBirthDateValid(value))) {
+    errors.childrenBirthDates = "Captura una fecha de nacimiento válida para cada hijo.";
+  }
   if (data.email && !isDataUpdateEmailValid(data.email)) {
     errors.email = "Escribe un correo válido, por ejemplo nombre@gmail.com.";
+  }
+  if (!isDataUpdatePayrollReceiptStatusValid(data.receivesPayrollReceipts)) {
+    errors.receivesPayrollReceipts = "Indica si recibes tus recibos de nómina.";
+  }
+  if (!SHOE_SIZE_OPTIONS.some((option) => option.value === data.shoeSize)) {
+    errors.shoeSize = "Selecciona una talla de zapatos entera entre 15 y 31 cm.";
   }
   if (data.mobilePhone && !isDataUpdatePhoneValid(data.mobilePhone)) {
     errors.mobilePhone = "Escribe un teléfono móvil de 10 dígitos.";
@@ -207,12 +223,33 @@ export function getEditableDataErrors(
   return errors;
 }
 
+export function isDataUpdateBirthDateValid(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  if (
+    parsed.getUTCFullYear() !== year
+    || parsed.getUTCMonth() !== month - 1
+    || parsed.getUTCDate() !== day
+  ) return false;
+
+  return value <= localTodayIso();
+}
+
 export function isDataUpdateEmailValid(value: string): boolean {
   return isNaMarker(value) || /^\S+@\S+\.\S+$/.test(value);
 }
 
 export function isDataUpdatePhoneValid(value: string): boolean {
   return /^\d{10}$/.test(value);
+}
+
+export function isDataUpdatePayrollReceiptStatusValid(value: string): boolean {
+  return PAYROLL_RECEIPT_OPTIONS.some((option) => option === value);
 }
 
 const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);

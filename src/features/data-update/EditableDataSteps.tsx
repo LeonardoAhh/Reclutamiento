@@ -1,12 +1,23 @@
+import { useRef } from "react";
 import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
+import { localTodayIso } from "@/lib/dates";
+import { Plus, Trash2 } from "lucide-react";
 import {
   DATA_UPDATE_OTHER_RELATIONSHIP,
   EMERGENCY_RELATIONSHIPS,
   MEXICO_STATES,
+  PAYROLL_RECEIPT_OPTIONS,
+  SHOE_SIZE_OPTIONS,
+  SHIRT_SIZE_OPTIONS,
 } from "./constants";
-import type { DataUpdateEditableData, DataUpdateTransportOption } from "./types";
+import type {
+  DataUpdateEditableData,
+  DataUpdateEditableTextKey,
+  DataUpdateTransportOption,
+} from "./types";
+import { isDataUpdateBirthDateValid } from "./validation";
 
-type EditableKey = keyof DataUpdateEditableData;
+type EditableKey = DataUpdateEditableTextKey;
 type EditableErrors = Partial<Record<EditableKey, string>>;
 
 interface EditableDataStepProps {
@@ -30,11 +41,36 @@ interface AddressStepProps extends EditableDataStepProps {
   onRelationshipOtherChange: (value: string) => void;
 }
 
+interface FamilyDataStepProps extends EditableDataStepProps {
+  onChildrenBirthDatesChange: (values: string[]) => void;
+  childrenError?: string;
+}
+
 function uppercaseOptions(values: readonly string[]): Option[] {
   return [...new Set(values)].map((value) => ({
     value,
     label: value.toLocaleUpperCase("es-MX"),
   }));
+}
+
+function optionsWithRegisteredValue(
+  options: readonly Option[],
+  currentValue: string,
+): Option[] {
+  const registeredValue = currentValue.trim();
+  const catalogOptions = [...options];
+
+  if (!registeredValue || catalogOptions.some((option) => option.value === registeredValue)) {
+    return catalogOptions;
+  }
+
+  return [
+    {
+      value: currentValue,
+      label: `${registeredValue.toLocaleUpperCase("es-MX")} — VALOR REGISTRADO`,
+    },
+    ...catalogOptions,
+  ];
 }
 
 function Field({
@@ -47,16 +83,20 @@ function Field({
   multiline = false,
   error,
   digitsOnly = false,
+  inputMode,
+  max,
 }: {
   id: string;
   label: string;
   value: string;
-  type?: "text" | "email" | "tel";
+  type?: "text" | "email" | "tel" | "date";
   autoComplete?: string;
   onChange: (value: string) => void;
   multiline?: boolean;
   error?: string;
   digitsOnly?: boolean;
+  inputMode?: "text" | "tel" | "email" | "numeric" | "decimal";
+  max?: string;
 }) {
   const errorId = `${id}-error`;
   return (
@@ -79,11 +119,12 @@ function Field({
           id={id}
           className={type === "email" ? undefined : "data-update-value--uppercase"}
           type={type}
-          inputMode={type === "email" ? "email" : digitsOnly ? "numeric" : type === "tel" ? "tel" : "text"}
+          inputMode={inputMode ?? (type === "date" ? undefined : type === "email" ? "email" : digitsOnly ? "numeric" : type === "tel" ? "tel" : "text")}
           autoCapitalize={type === "email" ? "none" : "characters"}
           enterKeyHint="next"
           spellCheck={type === "email" ? false : undefined}
           maxLength={digitsOnly ? 10 : undefined}
+          max={max}
           pattern={digitsOnly ? "[0-9]{10}" : undefined}
           value={value}
           autoComplete={autoComplete}
@@ -140,6 +181,45 @@ function SelectField({
   );
 }
 
+function PayrollReceiptField({
+  value,
+  onChange,
+  error,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+}) {
+  const errorId = "data-update-payroll-receipts-error";
+  return (
+    <fieldset
+      className="data-update-binary-field"
+      aria-invalid={Boolean(error) || undefined}
+      aria-describedby={error ? errorId : undefined}
+    >
+      <legend>¿Recibes recibos de nómina?</legend>
+      <div className="data-update-binary-field__options">
+        {PAYROLL_RECEIPT_OPTIONS.map((option) => (
+          <label key={option}>
+            <input
+              type="radio"
+              name="data-update-payroll-receipts"
+              value={option}
+              checked={value === option}
+              onChange={(event) => onChange(event.target.value)}
+              aria-invalid={Boolean(error) || undefined}
+              aria-describedby={error ? errorId : undefined}
+              required
+            />
+            <span>{option === "SI" ? "Sí" : "No"}</span>
+          </label>
+        ))}
+      </div>
+      {error && <p id={errorId} className="form-error-text">{error}</p>}
+    </fieldset>
+  );
+}
+
 export function TransportStep({ data, transportOptions, onChange, errors }: TransportStepProps) {
   const routeOptions = uppercaseOptions(transportOptions.map((option) => option.route));
   const stopOptions = uppercaseOptions(
@@ -185,11 +265,16 @@ export function ContactStep({ data, civilStatuses, onChange, errors }: ContactSt
         <h2 id="contact-step-title">Contacto y datos personales</h2>
         <p className="text-muted">Verifica los valores precargados y actualiza lo necesario.</p>
       </div>
-      <div className="form-grid data-update-contact-grid">
-        <SelectField id="data-update-birth-state" label="Estado de nacimiento" value={data.birthState} options={uppercaseOptions(MEXICO_STATES)} onChange={(value) => onChange("birthState", value)} error={errors?.birthState} />
-        <SelectField id="data-update-civil-status" label="Estado civil" value={data.civilStatus} options={uppercaseOptions(civilStatuses)} onChange={(value) => onChange("civilStatus", value)} error={errors?.civilStatus} />
-        <Field id="data-update-email" label="Correo" type="email" autoComplete="email" value={data.email} onChange={(value) => onChange("email", value)} error={errors?.email} />
-        <Field id="data-update-mobile" label="Teléfono móvil" type="tel" autoComplete="tel" value={data.mobilePhone} onChange={(value) => onChange("mobilePhone", value)} error={errors?.mobilePhone} digitsOnly />
+      <div className="data-update-contact-fields">
+        <div className="form-grid data-update-contact-identity-grid">
+          <SelectField id="data-update-birth-state" label="Estado de nacimiento" value={data.birthState} options={uppercaseOptions(MEXICO_STATES)} onChange={(value) => onChange("birthState", value)} error={errors?.birthState} />
+          <SelectField id="data-update-civil-status" label="Estado civil" value={data.civilStatus} options={uppercaseOptions(civilStatuses)} onChange={(value) => onChange("civilStatus", value)} error={errors?.civilStatus} />
+        </div>
+        <div className="form-grid data-update-contact-channels-grid">
+          <Field id="data-update-email" label="Correo" type="email" autoComplete="email" value={data.email} onChange={(value) => onChange("email", value)} error={errors?.email} />
+          <PayrollReceiptField value={data.receivesPayrollReceipts} onChange={(value) => onChange("receivesPayrollReceipts", value)} error={errors?.receivesPayrollReceipts} />
+          <Field id="data-update-mobile" label="Teléfono móvil" type="tel" autoComplete="tel" value={data.mobilePhone} onChange={(value) => onChange("mobilePhone", value)} error={errors?.mobilePhone} digitsOnly />
+        </div>
       </div>
     </section>
   );
@@ -259,6 +344,115 @@ export function AdditionalDataStep({ data, onChange, errors }: EditableDataStepP
         <Field id="data-update-allergies" label="Alergias" value={data.allergies} onChange={(value) => onChange("allergies", value)} error={errors?.allergies} />
         <Field id="data-update-locker" label="Locker" value={data.locker} onChange={(value) => onChange("locker", value)} error={errors?.locker} />
       </div>
+    </section>
+  );
+}
+
+export function FamilyDataStep({
+  data,
+  onChange,
+  errors,
+  onChildrenBirthDatesChange,
+  childrenError,
+}: FamilyDataStepProps) {
+  const addChildButtonRef = useRef<HTMLButtonElement>(null);
+  const addChild = () => {
+    const nextIndex = data.childrenBirthDates.length;
+    onChildrenBirthDatesChange([...data.childrenBirthDates, ""]);
+    window.requestAnimationFrame(() => {
+      document.getElementById(`data-update-child-birth-date-${nextIndex}`)?.focus();
+    });
+  };
+  const changeChildBirthDate = (index: number, value: string) => {
+    onChildrenBirthDatesChange(
+      data.childrenBirthDates.map((current, currentIndex) => (
+        currentIndex === index ? value : current
+      )),
+    );
+  };
+  const removeChild = (index: number) => {
+    onChildrenBirthDatesChange(
+      data.childrenBirthDates.filter((_, currentIndex) => currentIndex !== index),
+    );
+    window.requestAnimationFrame(() => addChildButtonRef.current?.focus());
+  };
+
+  return (
+    <section className="data-update-step" aria-labelledby="family-step-title">
+      <div>
+        <h2 id="family-step-title">Tallas e hijos</h2>
+        <p className="text-muted">Registra las tallas y, si aplica, la fecha de nacimiento de cada hijo.</p>
+      </div>
+
+      <div className="form-grid data-update-family-size-grid">
+        <SelectField
+          id="data-update-shirt-size"
+          label="Talla de playera"
+          value={data.shirtSize}
+          options={optionsWithRegisteredValue(SHIRT_SIZE_OPTIONS, data.shirtSize)}
+          placeholder="SELECCIONA UNA TALLA"
+          onChange={(value) => onChange("shirtSize", value)}
+          error={errors?.shirtSize}
+        />
+        <SelectField
+          id="data-update-shoe-size"
+          label="Talla de zapatos"
+          value={data.shoeSize}
+          options={optionsWithRegisteredValue(SHOE_SIZE_OPTIONS, data.shoeSize)}
+          placeholder="SELECCIONA UNA TALLA"
+          onChange={(value) => onChange("shoeSize", value)}
+          error={errors?.shoeSize}
+        />
+      </div>
+
+      <fieldset className="data-update-children">
+        <legend>Hijos</legend>
+        <div className="data-update-children__header">
+          <p>
+            Cantidad de hijos: <strong aria-live="polite">{data.childrenBirthDates.length}</strong>
+          </p>
+          <button ref={addChildButtonRef} type="button" className="btn-secondary btn-sm" onClick={addChild}>
+            <Plus aria-hidden="true" />
+            Agregar hijo
+          </button>
+        </div>
+
+        {data.childrenBirthDates.length === 0 ? (
+          <p className="text-muted">Sin hijos registrados.</p>
+        ) : (
+          <div className="data-update-children__list">
+            {data.childrenBirthDates.map((birthDate, index) => {
+              const fieldError = childrenError && !isDataUpdateBirthDateValid(birthDate)
+                ? childrenError
+                : undefined;
+              return (
+                <div className="data-update-child" key={index}>
+                  <div className="data-update-child__header">
+                    <h3>Hijo {index + 1}</h3>
+                    <button
+                      type="button"
+                      className="btn-icon"
+                      aria-label={`Quitar hijo ${index + 1}`}
+                      onClick={() => removeChild(index)}
+                    >
+                      <Trash2 aria-hidden="true" />
+                    </button>
+                  </div>
+                  <Field
+                    id={`data-update-child-birth-date-${index}`}
+                    label="Fecha de nacimiento"
+                    type="date"
+                    max={localTodayIso()}
+                    value={birthDate}
+                    onChange={(value) => changeChildBirthDate(index, value)}
+                    error={fieldError}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </fieldset>
     </section>
   );
 }

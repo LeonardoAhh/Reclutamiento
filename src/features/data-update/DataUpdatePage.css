@@ -385,11 +385,136 @@
   gap: var(--design-spacing-md);
 }
 
+.data-update-contact-fields {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+}
+
+.data-update-binary-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.data-update-binary-field legend {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.data-update-binary-field__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-xs);
+}
+
+.data-update-binary-field__options label {
+  display: flex;
+  min-width: 0;
+  min-height: var(--control-height-lg);
+  align-items: center;
+  justify-content: center;
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-sm);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline-strong);
+  border-radius: var(--rounded-xs);
+  cursor: pointer;
+}
+
+.data-update-binary-field__options label:hover {
+  border-color: var(--color-charcoal);
+}
+
+.data-update-binary-field__options label:focus-within {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.data-update-binary-field__options input {
+  accent-color: var(--color-primary);
+}
+
+.data-update-binary-field[aria-invalid="true"] .data-update-binary-field__options label {
+  background: var(--color-error-subtle);
+  border-color: var(--color-error);
+}
+
 .data-update-relationship-fields {
   display: flex;
   min-width: 0;
   flex-direction: column;
   gap: var(--design-spacing-sm);
+}
+
+.data-update-children {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+  margin: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+}
+
+.data-update-children legend {
+  padding-inline: var(--design-spacing-xs);
+  font-weight: var(--type-body-strong-weight);
+}
+
+.data-update-children__header,
+.data-update-child__header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+}
+
+.data-update-children__header {
+  flex-wrap: wrap;
+}
+
+.data-update-children__header p,
+.data-update-child__header h3 {
+  margin: 0;
+}
+
+.data-update-children__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-sm);
+}
+
+.data-update-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-xs);
+}
+
+.data-update-child__header h3 {
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .data-update-step > div:first-child {
@@ -455,6 +580,20 @@
 
 .data-update-value--uppercase {
   text-transform: uppercase;
+}
+
+.data-update-page .custom-select-trigger {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.data-update-page .custom-select-value {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .data-update-review .data-update-value--preserve-case {
@@ -793,6 +932,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .data-update-children__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .data-update-wizard__header {
     padding: var(--design-spacing-lg);
   }
@@ -821,8 +964,13 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .form-wizard .data-update-contact-grid {
+  .form-wizard .data-update-contact-identity-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-wizard .data-update-contact-channels-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
   }
 
   .form-wizard .data-update-address-grid {
@@ -834,6 +982,10 @@
   }
 
   .form-wizard .data-update-additional-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-wizard .data-update-family-size-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
