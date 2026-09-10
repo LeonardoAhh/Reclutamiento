@@ -109,12 +109,16 @@
   gap: var(--design-spacing-md);
 }
 
+.data-update-summary-card {
+  padding: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
 .data-update-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
-  padding: 0;
-  overflow: hidden;
   margin: 0;
 }
 
@@ -145,6 +149,66 @@
   font-weight: var(--type-heading-2-weight);
   line-height: var(--type-heading-2-line);
   letter-spacing: var(--type-heading-2-tracking);
+}
+
+.data-update-summary-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
+  border-top: var(--border-width) solid var(--color-hairline);
+}
+
+.data-update-summary-progress__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  color: var(--color-muted);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.data-update-summary-progress__heading strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-update-summary-progress__bar {
+  width: 100%;
+  height: var(--design-spacing-xxs);
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.data-update-summary-progress__bar::-webkit-progress-bar {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+
+.data-update-summary-progress__bar::-webkit-progress-value {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.data-update-summary-progress__bar::-moz-progress-bar {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.data-update-summary-progress p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
 }
 
 .data-update-queue,

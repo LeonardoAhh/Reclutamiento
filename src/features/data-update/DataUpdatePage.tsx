@@ -146,6 +146,10 @@ export function DataUpdatePage() {
   }, [myRecords, searchTerm]);
   const recordPagination = usePagination(visibleMyRecords, DATA_UPDATE_PAGE_SIZE);
   const completedCount = detail?.records.filter((record) => record.status === "completado").length ?? 0;
+  const totalVisibleCount = detail?.records.length ?? 0;
+  const completionPercentage = totalVisibleCount > 0
+    ? Math.round((completedCount / totalVisibleCount) * 100)
+    : 0;
   const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
 
   useEffect(() => {
@@ -282,11 +286,28 @@ export function DataUpdatePage() {
           </section>
 
           {!loading && detail && (
-            <dl className="card data-update-summary" aria-label="Resumen de campaña">
-              <div><dt>Mis asignados</dt><dd>{myRecords.length}</dd></div>
-              <div><dt>Completados</dt><dd>{isAdmin ? completedCount : myRecords.filter((record) => record.status === "completado").length}</dd></div>
-              <div><dt>Total visible</dt><dd>{detail.records.length}</dd></div>
-            </dl>
+            <section className="card data-update-summary-card" aria-label="Resumen de campaña">
+              <dl className="data-update-summary">
+                <div><dt>Mis asignados</dt><dd>{myRecords.length}</dd></div>
+                <div><dt>Completados</dt><dd>{isAdmin ? completedCount : myRecords.filter((record) => record.status === "completado").length}</dd></div>
+                <div><dt>Total visible</dt><dd>{totalVisibleCount}</dd></div>
+              </dl>
+              {isAdmin && (
+                <div className="data-update-summary-progress">
+                  <div className="data-update-summary-progress__heading">
+                    <span>Avance global</span>
+                    <strong>{completionPercentage}%</strong>
+                  </div>
+                  <progress
+                    className="data-update-summary-progress__bar"
+                    value={completedCount}
+                    max={totalVisibleCount || 1}
+                    aria-label={`${completionPercentage} por ciento de colaboradores completados`}
+                  />
+                  <p>{completedCount} de {totalVisibleCount} colaboradores completados</p>
+                </div>
+              )}
+            </section>
           )}
         </div>
       )}
