@@ -51,6 +51,42 @@ function campaignOptionLabel(campaign: DataUpdateCampaign): string {
   return name.endsWith(year) ? name : `${name} · ${year}`;
 }
 
+interface DataUpdateWorkGroup {
+  key: string;
+  area: string;
+  section: string;
+  isCompleted: boolean;
+  records: DataUpdateRecord[];
+}
+
+function workGroupKey(record: DataUpdateRecord): string {
+  const completionGroup = record.status === "completado" ? "completed" : "active";
+  return [completionGroup, record.identity.area, record.identity.section].join("\u0000");
+}
+
+function workGroupId(key: string): string {
+  return `data-update-work-group-${encodeURIComponent(key)}`;
+}
+
+function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
+  return records.reduce<DataUpdateWorkGroup[]>((groups, record) => {
+    const key = workGroupKey(record);
+    const currentGroup = groups[groups.length - 1];
+    if (currentGroup?.key === key) {
+      currentGroup.records.push(record);
+      return groups;
+    }
+    groups.push({
+      key,
+      area: record.identity.area.trim() || "Sin área",
+      section: record.identity.section.trim() || "Sin sección",
+      isCompleted: record.status === "completado",
+      records: [record],
+    });
+    return groups;
+  }, []);
+}
+
 export function DataUpdatePage() {
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
@@ -70,6 +106,8 @@ export function DataUpdatePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
+  const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("work");
 
   const loadCampaigns = useCallback(async (preferredId?: string) => {
@@ -142,9 +180,27 @@ export function DataUpdatePage() {
         ].join(" "));
         return terms.every((term) => searchableText.includes(term));
       })
-      .sort(compareDataUpdateRecords);
+      .sort((left, right) => (
+        Number(left.status === "completado") - Number(right.status === "completado")
+        || compareDataUpdateRecords(left, right)
+      ));
   }, [myRecords, searchTerm]);
   const recordPagination = usePagination(visibleMyRecords, DATA_UPDATE_PAGE_SIZE);
+  const visibleWorkGroups = useMemo(
+    () => groupWorkRecords(visibleMyRecords),
+    [visibleMyRecords],
+  );
+  const pageWorkGroups = useMemo(
+    () => groupWorkRecords(recordPagination.pageItems),
+    [recordPagination.pageItems],
+  );
+  const workGroupOptions = useMemo(
+    () => visibleWorkGroups.map((group) => ({
+      value: group.key,
+      label: `${group.isCompleted ? "COMPLETADOS · " : ""}${group.area} · ${group.section}`.toLocaleUpperCase("es-MX"),
+    })),
+    [visibleWorkGroups],
+  );
   const completedCount = detail?.records.filter((record) => record.status === "completado").length ?? 0;
   const totalVisibleCount = detail?.records.length ?? 0;
   const completionPercentage = totalVisibleCount > 0
@@ -154,7 +210,27 @@ export function DataUpdatePage() {
 
   useEffect(() => {
     recordPagination.goToPage(1);
+    setSelectedWorkGroup("");
   }, [recordPagination.goToPage, searchTerm, selectedCampaignId]);
+
+  useEffect(() => {
+    if (!pendingWorkGroupFocus) return;
+    const frame = window.requestAnimationFrame(() => {
+      const heading = document.getElementById(workGroupId(pendingWorkGroupFocus));
+      heading?.scrollIntoView({ block: "start" });
+      heading?.focus({ preventScroll: true });
+      setPendingWorkGroupFocus(null);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pendingWorkGroupFocus, recordPagination.currentPage]);
+
+  const goToWorkGroup = (groupKey: string) => {
+    setSelectedWorkGroup(groupKey);
+    const recordIndex = visibleMyRecords.findIndex((record) => workGroupKey(record) === groupKey);
+    if (recordIndex < 0) return;
+    recordPagination.goToPage(Math.floor(recordIndex / recordPagination.pageSize) + 1);
+    setPendingWorkGroupFocus(groupKey);
+  };
 
   const openRecord = async (record: DataUpdateRecord) => {
     if (!online || record.status === "completado") return;
@@ -364,6 +440,19 @@ export function DataUpdatePage() {
                     />
                   )}
                 </div>
+                {visibleMyRecords.length > 0 && (
+                  <div className="form-group data-update-work-group-navigation">
+                    <label htmlFor="data-update-work-group-navigation">Ir a Área / Sección</label>
+                    <CustomSelect
+                      id="data-update-work-group-navigation"
+                      value={selectedWorkGroup}
+                      options={workGroupOptions}
+                      placeholder="SELECCIONA UN GRUPO"
+                      showPlaceholderOption
+                      onChange={goToWorkGroup}
+                    />
+                  </div>
+                )}
                 {myRecords.length === 0 ? (
                   <p className="data-update-message">No tienes registros asignados en esta campaña.</p>
                 ) : visibleMyRecords.length === 0 ? (
@@ -375,25 +464,42 @@ export function DataUpdatePage() {
                   </div>
                 ) : (
                   <>
-                    <div id="data-update-record-list" className="data-update-record-grid">
-                      {recordPagination.pageItems.map((record) => (
-                        <article key={record.id} className="card data-update-record-card">
-                          <div>
-                            <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
-                            <h3>{record.identity.name}</h3>
+                    <div id="data-update-record-list" className="data-update-work-groups">
+                      {pageWorkGroups.map((group) => (
+                        <section
+                          key={group.key}
+                          className="data-update-work-group"
+                          aria-labelledby={workGroupId(group.key)}
+                        >
+                          <header className="data-update-work-group__heading">
+                            <span className="type-caption-up text-muted">
+                              {group.isCompleted ? "Completados" : "Área"}
+                            </span>
+                            <h3 id={workGroupId(group.key)} tabIndex={-1}>{group.area}</h3>
+                            <p className="text-muted">Sección {group.section}</p>
+                          </header>
+                          <div className="data-update-record-grid">
+                            {group.records.map((record) => (
+                              <article key={record.id} className="card data-update-record-card">
+                                <div>
+                                  <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                                  <h4>{record.identity.name}</h4>
+                                </div>
+                                <div className="data-update-record-card__footer">
+                                  <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
+                                  <button
+                                    type="button"
+                                    className={record.status === "completado" ? "btn-secondary" : "btn-primary"}
+                                    onClick={() => void openRecord(record)}
+                                    disabled={!online || busy || record.status === "completado"}
+                                  >
+                                    {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
+                                  </button>
+                                </div>
+                              </article>
+                            ))}
                           </div>
-                          <div className="data-update-record-card__footer">
-                            <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
-                            <button
-                              type="button"
-                              className={record.status === "completado" ? "btn-secondary" : "btn-primary"}
-                              onClick={() => void openRecord(record)}
-                              disabled={!online || busy || record.status === "completado"}
-                            >
-                              {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
-                            </button>
-                          </div>
-                        </article>
+                        </section>
                       ))}
                     </div>
                     {recordPagination.totalPages > 1 && (

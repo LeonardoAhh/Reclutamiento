@@ -41,7 +41,7 @@
 .data-update-wizard__header h1,
 .data-update-step h2,
 .data-update-section-heading h2,
-.data-update-record-card h3,
+.data-update-record-card h4,
 .data-update-review h3,
 .data-update-empty h2 {
   margin: 0;
@@ -107,6 +107,51 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--design-spacing-md);
+}
+
+.data-update-work-groups,
+.data-update-work-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.data-update-work-groups {
+  gap: var(--design-spacing-xl);
+}
+
+.data-update-work-group {
+  gap: var(--design-spacing-sm);
+}
+
+.data-update-work-group__heading {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+}
+
+.data-update-work-group__heading h3,
+.data-update-work-group__heading p {
+  margin: 0;
+}
+
+.data-update-work-group__heading h3 {
+  scroll-margin-block-start: var(--design-spacing-lg);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.data-update-work-group__heading h3:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.data-update-work-group-navigation {
+  width: 100%;
 }
 
 .data-update-summary-card {
@@ -327,7 +372,7 @@
   overflow-wrap: anywhere;
 }
 
-.data-update-record-card h3 {
+.data-update-record-card h4 {
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
@@ -996,6 +1041,10 @@
     max-width: var(--search-field-min-inline-size);
   }
 
+  .data-update-work-group-navigation {
+    max-width: var(--content-reading-max-inline-size);
+  }
+
   .data-update-record-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1073,7 +1122,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .data-update-record-card h3 {
+  .data-update-record-card h4 {
     font-family: var(--font-body);
     font-size: var(--type-body-sm-strong-size);
     font-weight: var(--type-body-sm-strong-weight);
