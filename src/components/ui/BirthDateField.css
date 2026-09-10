@@ -1,0 +1,42 @@
+.birth-date-field__control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.birth-date-field__control input {
+  min-width: 0;
+}
+
+.birth-date-field__calendar-trigger {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+.birth-date-field__calendar {
+  max-width: calc(100vw - var(--spacing-xxl));
+}
+
+.birth-date-field__calendar .rdp-root {
+  max-width: 100%;
+}
+
+.birth-date-field__calendar .rdp-dropdowns {
+  gap: var(--spacing-xs);
+}
+
+.birth-date-field__calendar .rdp-dropdown_root {
+  min-height: var(--touch-target-min);
+  padding-inline: var(--spacing-xs);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline-strong);
+  border-radius: var(--rounded-xs);
+}
+
+@media (max-width: 767px) {
+  .birth-date-field__calendar {
+    padding: var(--spacing-xs);
+  }
+}

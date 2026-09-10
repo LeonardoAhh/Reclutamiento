@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { BirthDateField } from "@/components/ui/BirthDateField";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { localTodayIso } from "@/lib/dates";
 import { isDataUpdateBirthDateValid } from "./validation";
 
 type PendingRemoval =
@@ -179,7 +179,6 @@ export function ChildrenDetailsField({
               ? datesError
               : undefined;
             const fieldId = `data-update-child-birth-date-${index}`;
-            const errorId = `${fieldId}-error`;
             return (
               <div className="data-update-child" key={fieldId}>
                 <div className="data-update-child__header">
@@ -193,20 +192,13 @@ export function ChildrenDetailsField({
                     <Trash2 aria-hidden="true" />
                   </button>
                 </div>
-                <div className="form-group">
-                  <label htmlFor={fieldId}>Fecha de nacimiento</label>
-                  <input
-                    id={fieldId}
-                    type="date"
-                    max={localTodayIso()}
-                    value={birthDate}
-                    aria-invalid={Boolean(fieldError) || undefined}
-                    aria-describedby={fieldError ? errorId : undefined}
-                    onChange={(event) => changeBirthDate(index, event.target.value)}
-                    required
-                  />
-                  {fieldError && <p id={errorId} className="form-error-text">{fieldError}</p>}
-                </div>
+                <BirthDateField
+                  id={fieldId}
+                  label="Fecha de nacimiento"
+                  value={birthDate}
+                  onChange={(value) => changeBirthDate(index, value)}
+                  error={fieldError}
+                />
               </div>
             );
           })}
