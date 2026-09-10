@@ -781,10 +781,10 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   availableTitle: "¡We are ready!",
   availableHint:
     "Guarda cualquier cambio pendiente antes de actualizar.",
-  actionLabel: "Actualizar ahora",
+  actionLabel: "Actualizar",
   deferLabel: "Más tarde",
   preparingLabel: "Preparando actualización",
-  errorHint: "No pudimos actualizar ahora. Intenta nuevamente.",
+  errorHint: "No pudimos actualizar. Intenta nuevamente.",
   retryLabel: "Reintentar",
   registrationErrorTitle: "Actualizaciones no disponibles",
   registrationErrorHint:
