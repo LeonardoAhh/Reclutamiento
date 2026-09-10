@@ -223,6 +223,34 @@ export async function updateDailyWorkActivity(
   if (error) throw error;
 }
 
+export async function deleteDailyWorkActivity(
+  activity: DailyWorkActivity,
+): Promise<{ attachmentCleanupFailed: boolean }> {
+  const { data, error } = await supabase
+    .from("daily_work_activities")
+    .delete()
+    .eq("id", activity.id)
+    .select("id")
+    .single();
+  if (error) throw error;
+
+  const deletedId = textValue(asRecord(data)?.id);
+  if (deletedId !== activity.id) {
+    throw new Error("No se confirmó la eliminación de la actividad.");
+  }
+
+  const storagePaths = activity.attachments.map(
+    (attachment) => attachment.storagePath,
+  );
+  if (storagePaths.length === 0) return { attachmentCleanupFailed: false };
+
+  const { error: storageError } = await supabase.storage
+    .from(DAILY_WORK_FILES_BUCKET)
+    .remove(storagePaths);
+
+  return { attachmentCleanupFailed: Boolean(storageError) };
+}
+
 interface UploadDailyWorkFilesResult {
   uploadedCount: number;
   failedFileNames: string[];

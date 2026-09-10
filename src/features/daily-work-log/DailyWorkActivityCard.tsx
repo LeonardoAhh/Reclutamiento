@@ -1,4 +1,10 @@
-import { Clock3, Paperclip, SquarePen, UserRound } from "lucide-react";
+import {
+  Clock3,
+  Paperclip,
+  SquarePen,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 import { AttachmentCard } from "@/components/ui/AttachmentCard";
 import {
   formatDailyWorkFileSize,
@@ -11,14 +17,18 @@ interface DailyWorkActivityCardProps {
   activity: DailyWorkActivity;
   showRecruiter: boolean;
   canEdit: boolean;
+  canDelete: boolean;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
 export function DailyWorkActivityCard({
   activity,
   showRecruiter,
   canEdit,
+  canDelete,
   onEdit,
+  onDelete,
 }: DailyWorkActivityCardProps) {
   const timeLabel =
     activity.startTime && activity.endTime
@@ -41,16 +51,31 @@ export function DailyWorkActivityCard({
           )}
         </div>
 
-        {canEdit && (
-          <button
-            type="button"
-            className="btn-secondary btn-sm"
-            onClick={onEdit}
-            aria-label={`Editar actividad: ${activity.description}`}
-          >
-            <SquarePen size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Editar</span>
-          </button>
+        {(canEdit || canDelete) && (
+          <div className="daily-work-card__actions">
+            {canEdit && (
+              <button
+                type="button"
+                className="btn-secondary btn-sm"
+                onClick={onEdit}
+                aria-label={`Editar actividad: ${activity.description}`}
+              >
+                <SquarePen size="var(--icon-size-sm)" aria-hidden="true" />
+                <span>Editar</span>
+              </button>
+            )}
+            {canDelete && (
+              <button
+                type="button"
+                className="btn-danger btn-sm"
+                onClick={onDelete}
+                aria-label={`Eliminar actividad de ${activity.recruiterName}`}
+              >
+                <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
+                <span>Eliminar</span>
+              </button>
+            )}
+          </div>
         )}
       </header>
 

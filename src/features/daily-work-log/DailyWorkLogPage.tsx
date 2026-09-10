@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, NotebookPen, Plus, RotateCw } from "lucide-react";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
 import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
@@ -23,6 +24,9 @@ export function DailyWorkLogPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] =
     useState<DailyWorkActivity | null>(null);
+  const [activityPendingDelete, setActivityPendingDelete] =
+    useState<DailyWorkActivity | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const isAdmin = profile?.role === "admin";
   const isRecruiter = profile?.role === "reclutador";
@@ -33,9 +37,11 @@ export function DailyWorkLogPage() {
     recruiters,
     isLoading,
     isSaving,
+    isDeleting,
     errorMessage,
     refresh,
     saveActivity,
+    deleteActivity,
   } = useDailyWorkLog({
     userId: profile?.id,
     role: profile?.role,
@@ -91,6 +97,19 @@ export function DailyWorkLogPage() {
       setSelectedDate(draft.workDate);
     }
     return saved;
+  };
+
+  const confirmActivityDeletion = async () => {
+    if (!activityPendingDelete) return;
+
+    setDeleteError(null);
+    const deleted = await deleteActivity(activityPendingDelete);
+    if (deleted) {
+      setActivityPendingDelete(null);
+      return;
+    }
+
+    setDeleteError("No pudimos eliminar la actividad. Inténtalo nuevamente.");
   };
 
   if (!profileLoading && !canAccess) {
@@ -226,7 +245,12 @@ export function DailyWorkLogPage() {
                     activity={activity}
                     showRecruiter={isAdmin}
                     canEdit={isRecruiter && activity.recruiterId === profile?.id}
+                    canDelete={isAdmin}
                     onEdit={() => openEditModal(activity)}
+                    onDelete={() => {
+                      setDeleteError(null);
+                      setActivityPendingDelete(activity);
+                    }}
                   />
                 ))}
               </div>
@@ -253,6 +277,26 @@ export function DailyWorkLogPage() {
             activity={selectedActivity}
             onClose={closeModal}
             onSubmit={handleSave}
+          />
+        )}
+
+        {isAdmin && (
+          <ConfirmModal
+            isOpen={activityPendingDelete !== null}
+            title="Eliminar actividad"
+            description="Se eliminarán permanentemente la actividad y sus archivos. Esta acción no se puede deshacer."
+            confirmLabel="Eliminar"
+            cancelLabel="Cancelar"
+            onConfirm={() => void confirmActivityDeletion()}
+            onCancel={() => {
+              if (isDeleting) return;
+              setActivityPendingDelete(null);
+              setDeleteError(null);
+            }}
+            isDestructive
+            isLoading={isDeleting}
+            loadingLabel="Eliminando…"
+            errorMessage={deleteError ?? undefined}
           />
         )}
       </main>

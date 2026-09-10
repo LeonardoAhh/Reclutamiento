@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "@/lib/notify";
 import {
   createDailyWorkActivity,
+  deleteDailyWorkActivity,
   fetchDailyWorkActivities,
   fetchDailyWorkRecruiters,
   updateDailyWorkActivity,
@@ -30,6 +31,7 @@ export function useDailyWorkLog({
   const [recruiters, setRecruiters] = useState<DailyWorkRecruiter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const requestIdRef = useRef(0);
 
@@ -141,13 +143,44 @@ export function useDailyWorkLog({
     }, [isSaving, loadActivities, role, userId, workDate],
   );
 
+  const deleteActivity = useCallback(
+    async (activity: DailyWorkActivity): Promise<boolean> => {
+      if (!userId || role !== "admin" || isDeleting) return false;
+
+      setIsDeleting(true);
+      try {
+        const { attachmentCleanupFailed } =
+          await deleteDailyWorkActivity(activity);
+        await loadActivities();
+
+        if (attachmentCleanupFailed) {
+          toast.warning({
+            title: "Actividad eliminada",
+            description:
+              "El registro se eliminó, pero algunos archivos requieren limpieza en el almacenamiento.",
+          });
+        } else {
+          toast.success({ title: "Actividad eliminada" });
+        }
+        return true;
+      } catch {
+        return false;
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [isDeleting, loadActivities, role, userId],
+  );
+
   return {
     activities,
     recruiters,
     isLoading,
     isSaving,
+    isDeleting,
     errorMessage,
     refresh: loadActivities,
     saveActivity,
+    deleteActivity,
   };
 }
