@@ -109,11 +109,10 @@
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
+  overflow: hidden;
 }
 
 .daily-work-card__header {
@@ -123,6 +122,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-md);
+  padding: var(--spacing-lg);
 }
 
 .daily-work-card__meta {
@@ -135,13 +135,19 @@
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
+  margin: 0;
 }
 
-.daily-work-card__meta span {
-  display: inline-flex;
+.daily-work-card__meta > div,
+.daily-work-card__meta dd {
   min-inline-size: 0;
+}
+
+.daily-work-card__meta dd {
+  display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
+  margin: 0;
   overflow-wrap: anywhere;
 }
 
@@ -151,28 +157,36 @@
   gap: var(--spacing-sm);
 }
 
+.daily-work-card__body {
+  flex: 1;
+  min-inline-size: 0;
+  padding: var(--spacing-lg);
+  border-block-start: var(--border-width) solid var(--color-hairline-soft);
+}
+
 .daily-work-card__description {
   margin: 0;
   color: var(--color-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 
-.daily-work-card__attachments,
 .daily-work-form__attachments {
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--spacing-sm);
-  padding-block-start: var(--spacing-md);
   border-block-start: var(--border-width) solid var(--color-hairline-soft);
 }
 
-.daily-work-card__attachments h3,
+.daily-work-form__attachments {
+  padding-block-start: var(--spacing-md);
+}
+
 .daily-work-form__attachments h3 {
   display: flex;
   align-items: center;
@@ -185,11 +199,20 @@
   letter-spacing: var(--type-body-sm-tracking);
 }
 
-.daily-work-card__file-list,
 .daily-work-form__file-list {
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.daily-work-attachment-grid {
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--feature-activity-filter-min-inline-size)), 1fr)
+  );
   gap: var(--spacing-sm);
 }
 

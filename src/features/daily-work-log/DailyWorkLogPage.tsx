@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
 import { DAILY_WORK_PAGE_SIZE } from "./constants";
 import { DailyWorkActivityCard } from "./DailyWorkActivityCard";
+import { DailyWorkAttachmentsModal } from "./DailyWorkAttachmentsModal";
 import { DailyWorkActivityModal } from "./DailyWorkActivityModal";
 import { formatDailyWorkDate, getLocalDateInputValue } from "./format";
 import type {
@@ -25,6 +26,8 @@ export function DailyWorkLogPage() {
   const [selectedActivity, setSelectedActivity] =
     useState<DailyWorkActivity | null>(null);
   const [activityPendingDelete, setActivityPendingDelete] =
+    useState<DailyWorkActivity | null>(null);
+  const [activityWithOpenAttachments, setActivityWithOpenAttachments] =
     useState<DailyWorkActivity | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -247,6 +250,9 @@ export function DailyWorkLogPage() {
                     canEdit={isRecruiter && activity.recruiterId === profile?.id}
                     canDelete={isAdmin}
                     onEdit={() => openEditModal(activity)}
+                    onOpenAttachments={() =>
+                      setActivityWithOpenAttachments(activity)
+                    }
                     onDelete={() => {
                       setDeleteError(null);
                       setActivityPendingDelete(activity);
@@ -280,11 +286,16 @@ export function DailyWorkLogPage() {
           />
         )}
 
+        <DailyWorkAttachmentsModal
+          activity={activityWithOpenAttachments}
+          onClose={() => setActivityWithOpenAttachments(null)}
+        />
+
         {isAdmin && (
           <ConfirmModal
             isOpen={activityPendingDelete !== null}
             title="Eliminar actividad"
-            description="Se eliminarán permanentemente la actividad y sus archivos. Esta acción no se puede deshacer."
+            description="Esta acción no se puede deshacer."
             confirmLabel="Eliminar"
             cancelLabel="Cancelar"
             onConfirm={() => void confirmActivityDeletion()}

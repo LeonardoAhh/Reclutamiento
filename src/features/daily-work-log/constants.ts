@@ -46,7 +46,7 @@ export const DAILY_WORK_ATTACHMENT_ACCEPT = [
 export const DAILY_WORK_ATTACHMENT_HELP =
   "Imágenes, PDF, Word, Excel, PowerPoint o texto; máximo 10 MB por archivo.";
 
-export const DAILY_WORK_PAGE_SIZE = 12;
+export const DAILY_WORK_PAGE_SIZE = 6;
 
 export function isAcceptedDailyWorkFile(file: File): boolean {
   if (

@@ -68,7 +68,7 @@ export function DailyWorkFileField({
           aria-labelledby={`${idPrefix}-saved-files`}
         >
           <h3 id={`${idPrefix}-saved-files`}>Archivos guardados</h3>
-          <div className="daily-work-form__file-list">
+          <div className="daily-work-form__file-list daily-work-attachment-grid">
             {existingAttachments.map((attachment) => (
               <AttachmentCard
                 key={attachment.id}

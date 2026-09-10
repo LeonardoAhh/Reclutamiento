@@ -2673,33 +2673,6 @@
     "parada": "PARADA DE AUTOBUSES SECUNDARIA"
   },
   {
-    "numero empleado": "4362",
-    "nombre": "RAYO RAMIREZ TERESA ITZEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "4363",
-    "nombre": "CASTILLO CASTRO PERLA JAZMIN",
-    "seccion": "A. CALIDAD 2DO. TURNO",
-    "turno": "30",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
-    "numero empleado": "4364",
-    "nombre": "MARTINEZ ROJAS DULCE GUADALUPE",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
     "numero empleado": "4365",
     "nombre": "PICHARDO VARGAS MARGARITA",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -2734,23 +2707,5 @@
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "HDA SANTA ROSA ",
     "colonia": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4373",
-    "nombre": "HERNANDEZ AGUILAR MARIA GUADALUPE",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "SAN ISIDRO",
-    "colonia": "PARADA DE CAMIONES"
-  },
-  {
-    "numero empleado": "4374",
-    "nombre": "MUÑOZ SEFERINO AZUCENA",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "SAN ISIDRO",
-    "colonia": "PARADA DE CAMIONES"
   }
 ]

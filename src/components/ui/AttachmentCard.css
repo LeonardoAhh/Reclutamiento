@@ -11,6 +11,37 @@
   background: var(--color-surface-card);
 }
 
+.attachment-card--compact {
+  gap: var(--spacing-xs);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.attachment-card--compact .attachment-card__preview {
+  background: transparent;
+}
+
+.attachment-card--interactive {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.attachment-card--interactive:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
+}
+
+.attachment-card--interactive:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .attachment-card__preview {
   display: flex;
   align-items: center;

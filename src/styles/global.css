@@ -331,6 +331,8 @@
   --container-padding-mobile: var(--design-spacing-md);
   /* Medida máxima de lectura definida por desing.md. */
   --content-reading-max-inline-size: 65ch;
+  /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
+  --content-preview-max-lines: 3;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);

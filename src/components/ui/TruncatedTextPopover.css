@@ -1,0 +1,32 @@
+.truncated-text-popover {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
+.truncated-text-popover__preview {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--content-preview-max-lines);
+}
+
+.truncated-text-popover__content {
+  inline-size: min(
+    var(--content-reading-max-inline-size),
+    var(--radix-popover-content-available-width)
+  );
+}
+
+.truncated-text-popover__content p {
+  margin: 0;
+  color: var(--color-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
