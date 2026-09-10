@@ -778,26 +778,26 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  availableTitle: "¡We are ready!",
+  availableTitle: "We are ready!",
   availableHint:
-    "Guarda cualquier cambio pendiente antes de actualizar.",
-  actionLabel: "Actualizar",
-  deferLabel: "Más tarde",
-  preparingLabel: "Preparando actualización",
-  errorHint: "No pudimos actualizar. Intenta nuevamente.",
-  retryLabel: "Reintentar",
-  registrationErrorTitle: "Actualizaciones no disponibles",
+    "Save any pending changes before updating.",
+  actionLabel: "Update",
+  deferLabel: "Later",
+  preparingLabel: "Preparing update",
+  errorHint: "We couldn't update. Please try again.",
+  retryLabel: "Retry",
+  registrationErrorTitle: "Updates unavailable",
   registrationErrorHint:
-    "La aplicación seguirá funcionando, pero no pudo comprobar nuevas versiones.",
-  appliedTitle: "¡We are ready!",
+    "The app will keep working, but it couldn't check for new versions.",
+  appliedTitle: "We are ready!",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
   serviceWorkerCheckMinGapMs: 60 * 1000,
-  offlineTitle: "Sin conexión",
-  offlineHint: "Algunas funciones requieren conexión a internet.",
-  onlineTitle: "Conexión restablecida",
-  offlineReadyTitle: "Recursos básicos disponibles sin conexión",
+  offlineTitle: "Offline",
+  offlineHint: "Some features require an internet connection.",
+  onlineTitle: "Connection restored",
+  offlineReadyTitle: "Basic resources available offline",
 } as const;
 
 export const TOAST_CONFIG = {
