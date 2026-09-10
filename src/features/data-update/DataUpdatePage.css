@@ -68,6 +68,7 @@
 .data-update-overview {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: var(--design-spacing-lg);
 }
 
@@ -131,8 +132,7 @@
   gap: var(--design-spacing-xxs);
 }
 
-.data-update-work-group__heading h3,
-.data-update-work-group__heading p {
+.data-update-work-group__heading h3 {
   margin: 0;
 }
 
@@ -152,6 +152,13 @@
 
 .data-update-work-group-navigation {
   width: 100%;
+}
+
+.data-update-work-toolbar {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-sm);
 }
 
 .data-update-summary-card {
@@ -1043,6 +1050,15 @@
 
   .data-update-work-group-navigation {
     max-width: var(--content-reading-max-inline-size);
+  }
+
+  .data-update-work-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .data-update-work-toolbar .data-update-queue__search,
+  .data-update-work-toolbar .data-update-work-group-navigation {
+    max-width: none;
   }
 
   .data-update-record-grid {

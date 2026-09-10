@@ -54,14 +54,13 @@ function campaignOptionLabel(campaign: DataUpdateCampaign): string {
 interface DataUpdateWorkGroup {
   key: string;
   area: string;
-  section: string;
   isCompleted: boolean;
   records: DataUpdateRecord[];
 }
 
 function workGroupKey(record: DataUpdateRecord): string {
   const completionGroup = record.status === "completado" ? "completed" : "active";
-  return [completionGroup, record.identity.area, record.identity.section].join("\u0000");
+  return [completionGroup, record.identity.area.trim() || "Sin área"].join("\u0000");
 }
 
 function workGroupId(key: string): string {
@@ -79,7 +78,6 @@ function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
     groups.push({
       key,
       area: record.identity.area.trim() || "Sin área",
-      section: record.identity.section.trim() || "Sin sección",
       isCompleted: record.status === "completado",
       records: [record],
     });
@@ -197,7 +195,7 @@ export function DataUpdatePage() {
   const workGroupOptions = useMemo(
     () => visibleWorkGroups.map((group) => ({
       value: group.key,
-      label: `${group.isCompleted ? "COMPLETADOS · " : ""}${group.area} · ${group.section}`.toLocaleUpperCase("es-MX"),
+      label: `${group.isCompleted ? "COMPLETADOS · " : ""}${group.area}`.toLocaleUpperCase("es-MX"),
     })),
     [visibleWorkGroups],
   );
@@ -423,7 +421,9 @@ export function DataUpdatePage() {
                     <h2 id="data-update-queue-title">Mi trabajo</h2>
                     <p className="text-muted">Los registros en proceso continúan desde el último paso guardado.</p>
                   </div>
-                  {myRecords.length > 0 && (
+                </div>
+                {myRecords.length > 0 && (
+                  <div className="data-update-work-toolbar">
                     <SearchField
                       id="data-update-record-search"
                       className="data-update-queue__search"
@@ -438,19 +438,21 @@ export function DataUpdatePage() {
                       aria-controls="data-update-record-list"
                       autoComplete="off"
                     />
-                  )}
-                </div>
-                {visibleMyRecords.length > 0 && (
-                  <div className="form-group data-update-work-group-navigation">
-                    <label htmlFor="data-update-work-group-navigation">Ir a Área / Sección</label>
-                    <CustomSelect
-                      id="data-update-work-group-navigation"
-                      value={selectedWorkGroup}
-                      options={workGroupOptions}
-                      placeholder="SELECCIONA UN GRUPO"
-                      showPlaceholderOption
-                      onChange={goToWorkGroup}
-                    />
+                    {visibleMyRecords.length > 0 && (
+                      <div className="form-group data-update-work-group-navigation">
+                        <label className="sr-only" htmlFor="data-update-work-group-navigation">
+                          Ir a área
+                        </label>
+                        <CustomSelect
+                          id="data-update-work-group-navigation"
+                          value={selectedWorkGroup}
+                          options={workGroupOptions}
+                          placeholder="IR A ÁREA"
+                          showPlaceholderOption
+                          onChange={goToWorkGroup}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
                 {myRecords.length === 0 ? (
@@ -476,7 +478,6 @@ export function DataUpdatePage() {
                               {group.isCompleted ? "Completados" : "Área"}
                             </span>
                             <h3 id={workGroupId(group.key)} tabIndex={-1}>{group.area}</h3>
-                            <p className="text-muted">Sección {group.section}</p>
                           </header>
                           <div className="data-update-record-grid">
                             {group.records.map((record) => (
