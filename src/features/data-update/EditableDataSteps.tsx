@@ -1,7 +1,4 @@
-import { useRef } from "react";
 import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
-import { localTodayIso } from "@/lib/dates";
-import { Plus, Trash2 } from "lucide-react";
 import {
   DATA_UPDATE_OTHER_RELATIONSHIP,
   EMERGENCY_RELATIONSHIPS,
@@ -15,7 +12,7 @@ import type {
   DataUpdateEditableTextKey,
   DataUpdateTransportOption,
 } from "./types";
-import { isDataUpdateBirthDateValid } from "./validation";
+import { ChildrenDetailsField } from "./ChildrenDetailsField";
 
 type EditableKey = DataUpdateEditableTextKey;
 type EditableErrors = Partial<Record<EditableKey, string>>;
@@ -43,6 +40,9 @@ interface AddressStepProps extends EditableDataStepProps {
 
 interface FamilyDataStepProps extends EditableDataStepProps {
   onChildrenBirthDatesChange: (values: string[]) => void;
+  isChildrenCountConfirmed: boolean;
+  onConfirmChildrenCount: () => void;
+  childrenCountError?: string;
   childrenError?: string;
 }
 
@@ -148,6 +148,7 @@ function SelectField({
   disabled = false,
   error,
   placeholder,
+  helpText,
   showPlaceholderOption = false,
 }: {
   id: string;
@@ -158,9 +159,14 @@ function SelectField({
   disabled?: boolean;
   error?: string;
   placeholder?: string;
+  helpText?: string;
   showPlaceholderOption?: boolean;
 }) {
   const errorId = `${id}-error`;
+  const helpId = `${id}-help`;
+  const describedBy = [helpText ? helpId : undefined, error ? errorId : undefined]
+    .filter(Boolean)
+    .join(" ") || undefined;
   return (
     <div className="form-group">
       <label htmlFor={id}>{label}</label>
@@ -174,8 +180,9 @@ function SelectField({
         disabled={disabled}
         aria-required="true"
         aria-invalid={Boolean(error) || undefined}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={describedBy}
       />
+      {helpText && <span id={helpId} className="form-help">{helpText}</span>}
       {error && <p id={errorId} className="form-error-text">{error}</p>}
     </div>
   );
@@ -353,30 +360,11 @@ export function FamilyDataStep({
   onChange,
   errors,
   onChildrenBirthDatesChange,
+  isChildrenCountConfirmed,
+  onConfirmChildrenCount,
+  childrenCountError,
   childrenError,
 }: FamilyDataStepProps) {
-  const addChildButtonRef = useRef<HTMLButtonElement>(null);
-  const addChild = () => {
-    const nextIndex = data.childrenBirthDates.length;
-    onChildrenBirthDatesChange([...data.childrenBirthDates, ""]);
-    window.requestAnimationFrame(() => {
-      document.getElementById(`data-update-child-birth-date-${nextIndex}`)?.focus();
-    });
-  };
-  const changeChildBirthDate = (index: number, value: string) => {
-    onChildrenBirthDatesChange(
-      data.childrenBirthDates.map((current, currentIndex) => (
-        currentIndex === index ? value : current
-      )),
-    );
-  };
-  const removeChild = (index: number) => {
-    onChildrenBirthDatesChange(
-      data.childrenBirthDates.filter((_, currentIndex) => currentIndex !== index),
-    );
-    window.requestAnimationFrame(() => addChildButtonRef.current?.focus());
-  };
-
   return (
     <section className="data-update-step" aria-labelledby="family-step-title">
       <div>
@@ -400,59 +388,20 @@ export function FamilyDataStep({
           value={data.shoeSize}
           options={optionsWithRegisteredValue(SHOE_SIZE_OPTIONS, data.shoeSize)}
           placeholder="SELECCIONA UNA TALLA"
+          helpText="Talla MX en centímetros; solo números enteros."
           onChange={(value) => onChange("shoeSize", value)}
           error={errors?.shoeSize}
         />
       </div>
 
-      <fieldset className="data-update-children">
-        <legend>Hijos</legend>
-        <div className="data-update-children__header">
-          <p>
-            Cantidad de hijos: <strong aria-live="polite">{data.childrenBirthDates.length}</strong>
-          </p>
-          <button ref={addChildButtonRef} type="button" className="btn-secondary btn-sm" onClick={addChild}>
-            <Plus aria-hidden="true" />
-            Agregar hijo
-          </button>
-        </div>
-
-        {data.childrenBirthDates.length === 0 ? (
-          <p className="text-muted">Sin hijos registrados.</p>
-        ) : (
-          <div className="data-update-children__list">
-            {data.childrenBirthDates.map((birthDate, index) => {
-              const fieldError = childrenError && !isDataUpdateBirthDateValid(birthDate)
-                ? childrenError
-                : undefined;
-              return (
-                <div className="data-update-child" key={index}>
-                  <div className="data-update-child__header">
-                    <h3>Hijo {index + 1}</h3>
-                    <button
-                      type="button"
-                      className="btn-icon"
-                      aria-label={`Quitar hijo ${index + 1}`}
-                      onClick={() => removeChild(index)}
-                    >
-                      <Trash2 aria-hidden="true" />
-                    </button>
-                  </div>
-                  <Field
-                    id={`data-update-child-birth-date-${index}`}
-                    label="Fecha de nacimiento"
-                    type="date"
-                    max={localTodayIso()}
-                    value={birthDate}
-                    onChange={(value) => changeChildBirthDate(index, value)}
-                    error={fieldError}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </fieldset>
+      <ChildrenDetailsField
+        values={data.childrenBirthDates}
+        isCountConfirmed={isChildrenCountConfirmed}
+        countError={childrenCountError}
+        datesError={childrenError}
+        onChange={onChildrenBirthDatesChange}
+        onConfirmCount={onConfirmChildrenCount}
+      />
     </section>
   );
 }

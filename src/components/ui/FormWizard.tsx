@@ -22,6 +22,8 @@ interface FormWizardProps {
   onCancel: () => void;
   /** Permite guardar o validar antes de cambiar de paso. `false` cancela la navegación. */
   onBeforeStepChange?: (currentStep: number, nextStep: number) => boolean | Promise<boolean>;
+  /** Mueve el foco al título del paso después de una navegación completada. */
+  focusStepOnChange?: boolean;
   /** Nota global (e.g. mensaje de error) mostrada bajo el paso activo. */
   notice?: React.ReactNode;
 }
@@ -43,6 +45,7 @@ export function FormWizard({
   submitDisabled = false,
   onCancel,
   onBeforeStepChange,
+  focusStepOnChange = false,
   notice,
 }: FormWizardProps) {
   const total = steps.length;
@@ -52,6 +55,8 @@ export function FormWizard({
   const current = steps[step];
   const isLast = step === total - 1;
   const [navigating, setNavigating] = useState(false);
+  const stepTitleRef = useRef<HTMLSpanElement>(null);
+  const previousStepRef = useRef(step);
 
   /* Período de gracia tras cambiar de paso: evita que un tap que avanza al
      último paso (o un "ghost click" en móvil) dispare el submit sin que el
@@ -84,6 +89,15 @@ export function FormWizard({
 
   useEffect(() => () => window.clearTimeout(armTimer.current), []);
 
+  useEffect(() => {
+    if (previousStepRef.current === step) return;
+    previousStepRef.current = step;
+    if (!focusStepOnChange) return;
+
+    const frame = window.requestAnimationFrame(() => stepTitleRef.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
+  }, [focusStepOnChange, step]);
+
   return (
     <div className="form-wizard" data-testid="form-wizard">
       <div className="form-wizard__progress" data-testid="form-wizard-progress">
@@ -91,7 +105,13 @@ export function FormWizard({
           <span className="form-wizard__step-count">
             Paso {step + 1} de {total}
           </span>
-          <span className="form-wizard__step-title">{current.title}</span>
+          <span
+            ref={stepTitleRef}
+            className="form-wizard__step-title"
+            tabIndex={focusStepOnChange ? -1 : undefined}
+          >
+            {current.title}
+          </span>
         </div>
         <div
           className="form-wizard__bar"

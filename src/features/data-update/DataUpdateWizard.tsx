@@ -98,6 +98,9 @@ export function DataUpdateWizard({
   const [revealedErrorSteps, setRevealedErrorSteps] = useState<Set<number>>(() => new Set());
   const [relationshipChoice, setRelationshipChoice] = useState(initialRelationship.choice);
   const [relationshipOther, setRelationshipOther] = useState(initialRelationship.other);
+  const [childrenCountConfirmed, setChildrenCountConfirmed] = useState(
+    () => initialRecord.currentStep > 5 || initialRecord.data.childrenBirthDates.length > 0,
+  );
   const [notice, setNotice] = useState<string | null>(null);
   const objectPhotoUrlRef = useRef<string | null>(null);
   const recordRef = useRef(initialRecord);
@@ -365,7 +368,8 @@ export function DataUpdateWizard({
   );
   const additionalValid = Boolean(data.educationLevel && data.bloodType && data.allergies && data.locker);
   const fieldErrors = getEditableDataErrors(data);
-  const familyValid = !fieldErrors.shirtSize
+  const familyValid = childrenCountConfirmed
+    && !fieldErrors.shirtSize
     && !fieldErrors.shoeSize
     && !fieldErrors.childrenBirthDates;
   const allDataValid = validateEditableData(data).length === 0 && transportValid;
@@ -468,7 +472,12 @@ export function DataUpdateWizard({
           data={data}
           onChange={changeField}
           onChildrenBirthDatesChange={changeChildrenBirthDates}
+          isChildrenCountConfirmed={childrenCountConfirmed}
+          onConfirmChildrenCount={() => setChildrenCountConfirmed(true)}
           errors={visibleErrors(5)}
+          childrenCountError={revealedErrorSteps.has(5) && !childrenCountConfirmed
+            ? "Confirma la cantidad de hijos, incluso si es 0."
+            : undefined}
           childrenError={revealedErrorSteps.has(5) ? fieldErrors.childrenBirthDates : undefined}
         />
       ),
@@ -501,7 +510,7 @@ export function DataUpdateWizard({
       isValid: Boolean(photoPathRef.current) && allDataValid,
       content: (goToStep) => <ReviewStep data={data} onEditStep={goToStep} />,
     },
-  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online]);
+  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, childrenCountConfirmed, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -547,6 +556,7 @@ export function DataUpdateWizard({
         submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
         onCancel={onCancel}
         onBeforeStepChange={beforeStepChange}
+        focusStepOnChange
         notice={notice ? <p className="form-error" role="alert">{notice}</p> : null}
       />
       <ConfirmModal

@@ -43,6 +43,11 @@
   color: var(--color-ink);
 }
 
+.form-wizard__step-title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .form-wizard__bar {
   display: flex;
   gap: var(--spacing-xxs);

@@ -476,7 +476,6 @@
   font-weight: var(--type-body-strong-weight);
 }
 
-.data-update-children__header,
 .data-update-child__header {
   display: flex;
   min-width: 0;
@@ -485,13 +484,23 @@
   gap: var(--design-spacing-sm);
 }
 
-.data-update-children__header {
-  flex-wrap: wrap;
+.data-update-children__count {
+  min-width: 0;
 }
 
-.data-update-children__header p,
 .data-update-child__header h3 {
   margin: 0;
+}
+
+.data-update-children__count-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+}
+
+.data-update-children__count-controls input {
+  min-width: 0;
 }
 
 .data-update-children__list {
