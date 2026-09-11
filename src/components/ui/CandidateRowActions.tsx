@@ -3,7 +3,9 @@ import { FileImage, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
@@ -26,9 +28,8 @@ export function CandidateRowActions({
 }: CandidateRowActionsProps) {
   const [open, setOpen] = useState(false);
 
-  function run(e: React.MouseEvent, action: (c: Candidate) => void) {
-    e.stopPropagation();
-    e.preventDefault();
+  function run(event: Event, action: (c: Candidate) => void) {
+    event.stopPropagation();
     setOpen(false);
     action(candidate);
   }
@@ -50,43 +51,47 @@ export function CandidateRowActions({
         <DropdownMenuContent>
           {candidate.reclutador && (
             <>
-              <div className="candidate-row-actions__info">
+              <DropdownMenuLabel className="candidate-row-actions__info">
                 <span className="candidate-row-actions__info-label">Reclutador</span>
                 <ReclutadorBadge nombre={candidate.reclutador} />
-              </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
             </>
           )}
 
-          {onAccessCard && (
-            <DropdownMenuItem asChild>
-              <button type="button" onClick={(e) => run(e, onAccessCard)}>
-                <FileImage aria-hidden="true" />
-                <span>Ver pase</span>
+          <DropdownMenuGroup>
+            {onAccessCard && (
+              <DropdownMenuItem asChild onSelect={(event) => run(event, onAccessCard)}>
+                <button type="button">
+                  <FileImage aria-hidden="true" />
+                  <span>Ver pase</span>
+                </button>
+              </DropdownMenuItem>
+            )}
+
+            <DropdownMenuItem asChild onSelect={(event) => run(event, onEdit)}>
+              <button type="button">
+                <PenLine aria-hidden="true" />
+                <span>Editar</span>
               </button>
             </DropdownMenuItem>
-          )}
-
-          <DropdownMenuItem asChild>
-            <button type="button" onClick={(e) => run(e, onEdit)}>
-              <PenLine aria-hidden="true" />
-              <span>Editar</span>
-            </button>
-          </DropdownMenuItem>
+          </DropdownMenuGroup>
 
           {onDelete && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <button
-                  type="button"
-                  className="dropdown-menu-item--danger"
-                  onClick={(e) => run(e, onDelete)}
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  asChild
+                  variant="destructive"
+                  onSelect={(event) => run(event, onDelete)}
                 >
-                  <Trash2 aria-hidden="true" />
-                  <span>Eliminar</span>
-                </button>
-              </DropdownMenuItem>
+                  <button type="button">
+                    <Trash2 aria-hidden="true" />
+                    <span>Eliminar</span>
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </>
           )}
         </DropdownMenuContent>

@@ -631,6 +631,7 @@ export function AIChatPage() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       asChild
+                                      variant="destructive"
                                       onSelect={() => {
                                         setIsHistoryOpen(false);
                                         setConversationPendingDelete({
@@ -639,10 +640,7 @@ export function AIChatPage() {
                                         });
                                       }}
                                     >
-                                      <button
-                                        type="button"
-                                        className="dropdown-menu-item--danger"
-                                      >
+                                      <button type="button">
                                         <Trash2 aria-hidden="true" />
                                         <span>Eliminar</span>
                                       </button>

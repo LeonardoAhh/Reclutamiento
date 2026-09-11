@@ -18,8 +18,9 @@
   padding-top: var(--safe-area-top);
   padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
 
-  background: var(--color-canvas);
-  border-inline-end: var(--border-width) solid var(--color-hairline);
+  color: var(--color-navigation-rail-text);
+  background: var(--color-navigation-rail);
+  border-inline-end: var(--border-width) solid var(--color-navigation-rail-elevated);
   transition: transform var(--transition-base);
   visibility: hidden;
   padding-inline: max(var(--spacing-lg), var(--safe-area-left)) max(var(--spacing-md), var(--safe-area-right));
@@ -48,7 +49,7 @@
   justify-content: flex-start;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-xl);
-  border-bottom: var(--border-width) solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-navigation-rail-elevated);
   margin-inline: calc(var(--spacing-md) * -1);
   padding-inline: var(--spacing-md);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
@@ -92,7 +93,7 @@ button.sidebar__collapse-btn {
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-navigation-rail-text);
 }
 
 .sidebar__list {
@@ -118,7 +119,7 @@ button.sidebar__collapse-btn {
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
   letter-spacing: var(--type-body-sm-tracking);
-  color: var(--color-body);
+  color: var(--color-navigation-rail-text);
   text-decoration: none;
 
   position: relative;
@@ -130,31 +131,35 @@ button.sidebar__collapse-btn {
 }
 
 .sidebar__item:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
+  color: var(--color-navigation-rail-text-strong);
+  background: var(--color-navigation-rail-elevated);
 }
 
 .sidebar__item--active,
 .sidebar__item--active:hover {
-  color: var(--color-primary);
-  background: var(--color-primary-tint);
+  color: var(--color-navigation-rail-on-active);
+  background: var(--color-navigation-rail-active);
   font-weight: var(--font-semibold);
 }
 
 .sidebar__item--active .sidebar__item-icon {
-  color: var(--color-primary);
+  color: var(--color-navigation-rail-on-active);
 }
 
 .sidebar__item-icon {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-navigation-rail-text);
   transition: color var(--transition-fast);
-  width: var(--icon-size-md);
-  height: var(--icon-size-md);
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
 }
 
 .sidebar__item:hover .sidebar__item-icon {
-  color: var(--color-ink);
+  color: var(--color-navigation-rail-text-strong);
+}
+
+.sidebar__item--active:hover .sidebar__item-icon {
+  color: var(--color-navigation-rail-on-active);
 }
 
 .sidebar__item-label {
@@ -169,9 +174,9 @@ button.sidebar__collapse-btn {
   align-items: center;
   margin-inline-start: auto;
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  color: var(--color-body);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
+  color: var(--color-navigation-rail-text-strong);
+  background: var(--color-navigation-rail-elevated);
+  border: var(--border-width) solid var(--color-navigation-rail-elevated);
   border-radius: var(--rounded-full);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -184,6 +189,7 @@ button.sidebar__collapse-btn {
 .sidebar__footer {
   margin-top: auto;
   padding-top: var(--spacing-xl);
+  border-block-start: var(--border-width) solid var(--color-navigation-rail-elevated);
   display: flex;
   align-items: center;
   position: relative;
@@ -211,15 +217,17 @@ button.sidebar__collapse-btn {
   padding: var(--spacing-xs);
   border-radius: var(--rounded-md);
 }
-.sidebar__user-trigger:hover {
-  background: var(--color-surface-soft);
+.sidebar__user-trigger.dropdown-menu-trigger:is(:hover, [data-state="open"]) {
+  border-color: transparent;
+  background: var(--color-navigation-rail-elevated);
+  color: var(--color-navigation-rail-text-strong);
 }
 
 .sidebar__user-icon {
   width: var(--icon-size-control);
   height: var(--icon-size-control);
   margin-left: auto;
-  color: var(--color-muted);
+  color: var(--color-navigation-rail-text);
 }
 
 .sidebar__user-identity {
@@ -239,7 +247,7 @@ button.sidebar__collapse-btn {
 }
 
 .sidebar__user-name {
-  color: var(--color-ink);
+  color: var(--color-navigation-rail-text-strong);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-strong-weight);
   line-height: var(--type-body-sm-line);
@@ -249,12 +257,16 @@ button.sidebar__collapse-btn {
 }
 
 .sidebar__user-email {
-  color: var(--color-muted);
+  color: var(--color-navigation-rail-text);
   font-size: var(--type-caption-xs-size);
   font-weight: var(--type-caption-xs-weight);
   line-height: var(--type-caption-xs-line);
   letter-spacing: var(--type-caption-xs-tracking);
   font-family: var(--font-body);
+}
+
+.sidebar :is(a, button):focus-visible {
+  outline-color: var(--color-focus-on-inverted);
 }
 
 /* App shell: layout sidebar + contenido.

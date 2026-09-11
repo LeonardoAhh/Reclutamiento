@@ -10,6 +10,9 @@ import { CandidateStatusBadge } from "@/components/ui/CandidateStatusBadge";
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/Popover";
 import { localTodayIso, addDaysToIso, formatReadableDate } from "@/lib/dates";
@@ -113,10 +116,12 @@ export function RemindersPanel() {
           align="end"
           aria-labelledby={titleId}
         >
-          <header className="reminders-header">
-            <h2 id={titleId}>Procesos</h2>
-            <span className="text-muted reminders-timestamp">{nowStr}</span>
-          </header>
+          <PopoverHeader className="reminders-header">
+            <PopoverTitle id={titleId}>Procesos</PopoverTitle>
+            <PopoverDescription className="reminders-timestamp">
+              {nowStr}
+            </PopoverDescription>
+          </PopoverHeader>
 
           <div className="reminders-content">
             {reminders.length === 0 ? (

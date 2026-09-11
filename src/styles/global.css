@@ -50,6 +50,12 @@
   --color-on-dark: #ffffff;
   --color-on-dark-soft: #b8b6b3;
   --color-focus-on-inverted: var(--color-on-dark);
+  --color-navigation-rail: var(--color-surface-dark);
+  --color-navigation-rail-elevated: var(--color-surface-dark-elevated);
+  --color-navigation-rail-text: var(--color-on-dark-soft);
+  --color-navigation-rail-text-strong: var(--color-on-dark);
+  --color-navigation-rail-active: var(--color-on-dark);
+  --color-navigation-rail-on-active: var(--color-surface-dark);
   --color-avatar-ink: #000000;
   --color-avatar-ring: rgba(255, 255, 255, 0.2);
 
@@ -380,6 +386,10 @@
   --feature-chat-panel-max-block-size: 37.5rem;
   --feature-chat-panel-max-block-size-desktop: 50rem;
   --menu-min-inline-size: 10rem;
+  /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
+  --feature-account-menu-inline-size: calc(
+    var(--menu-min-inline-size) + var(--design-spacing-lg)
+  );
   --feature-chat-context-inline-size: 18rem;
   --feature-chat-conversation-max-inline-size: 48rem;
   --pipeline-table-date-inline-size: 7.5rem;
@@ -513,8 +523,6 @@
     var(--mobile-nav-height) + var(--spacing-2xl)
   );
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
-  --duration-theme-in: 300ms;
-  --duration-theme-out: 200ms;
   --duration-skeleton: 1500ms;
   --opacity-disabled: 0.5;
   --opacity-primary-disabled: 0.4;
@@ -523,90 +531,6 @@
   --duration-spinner: 800ms;
 
   color-scheme: light;
-}
-
-/* ========================================
-   DARK THEME
-   [data-theme="dark"] en <html>
-   ======================================== */
-
-[data-theme="dark"] {
-  color-scheme: dark;
-
-  /* Notion-style dark: deep neutral canvas, cards a un pelo más claros */
-  --color-canvas: #191817;
-  --color-canvas-soft: #191817;
-  --color-surface: #232120;
-  --color-surface-soft: #191817;
-  --color-surface-card: #232120;
-  --color-surface-dark: #f6f5f4;
-  --color-surface-dark-elevated: #ffffff;
-
-  --color-hairline: #3a3735;
-  --color-hairline-soft: #2c2a29;
-  --color-hairline-strong: #504c48;
-
-  --color-ink: #f6f5f4;
-  --color-body-strong: #f6f5f4;
-  --color-body: #c9c5c0;
-  --color-charcoal: #c9c5c0;
-  --color-muted: #8f8a83;
-  --color-muted-soft: #8d8881;
-  --color-on-dark: #191817;
-  --color-on-dark-soft: #615d59;
-
-  /* Primary invertido para dark: blanco sobre oscuro (espejo del negro sobre claro) */
-  --color-primary: #ffffff;
-  --color-on-primary: #000000;
-  --color-primary-active: #e6e6e6;
-  --color-primary-disabled: #3a3735;
-
-  --color-primary-rgb: 255 255 255;
-  --color-ink-rgb: 246 245 244;
-  --color-canvas-rgb: 25 24 23;
-
-  --color-secondary: #4a5cc4;
-  --color-secondary-rgb: 74 92 196;
-
-  /* Semánticos dark: legibles como texto/icono sobre canvas y surface. */
-  --color-success: #4ade80;
-  --color-success-text: #86efac;
-  --color-warning: #fbbf24;
-  --color-warning-text: #fde68a;
-  --color-error: #fb7185;
-  --color-error-text: #fda4af;
-  --color-success-rgb: 74 222 128;
-  --color-warning-rgb: 251 191 36;
-  --color-error-rgb: 251 113 133;
-
-  /* Sticker palette dark: mayor luminancia para decoración; no garantiza AA como texto. */
-  --color-accent-sky: #7dd3fc;
-  --color-accent-purple: #c4b5fd;
-  --color-accent-purple-deep: #a78bfa;
-  --color-accent-orange: #fdba74;
-  --color-accent-orange-deep: #fb923c;
-  --color-accent-teal: #5eead4;
-  --color-accent-teal-rgb: 94 234 212;
-  --color-accent-green: var(--color-success);
-  --color-accent-brown: #d6b98c;
-  --color-accent-amber: var(--color-warning);
-  --color-accent-amber-rgb: var(--color-warning-rgb);
-
-  --color-focus-ring: rgba(246, 245, 244, 0.25);
-  --color-modal-scrim: rgba(0, 0, 0, 0.72);
-  --color-vacancy-tint: rgba(239, 68, 68, 0.1);
-  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.2);
-  --color-success-subtle: rgba(74, 222, 128, 0.15);
-  --color-error-subtle: rgba(251, 113, 133, 0.15);
-  --color-warning-subtle: rgba(251, 191, 36, 0.18);
-  --color-success-tint: var(--color-success-subtle);
-  --color-error-tint: var(--color-error-subtle);
-  --color-warning-tint: var(--color-warning-subtle);
-  --color-primary-tint: rgba(246, 245, 244, 0.08);
-  --color-header-glass: rgba(25, 24, 23, 0.88);
-
-  /* Elevation inherits the restrained layered stacks from :root.
-     Dark hairlines provide the primary separation between surfaces. */
 }
 
 /* ========================================
@@ -626,8 +550,7 @@ html {
   font-size: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* iOS: el safe-area (notch + barra de estado) toma su color del <html>,
-     no del <body>. Sin esto, en tema oscuro la barra superior se ve blanca. */
+  /* iOS: el safe-area toma su color del <html>, no del <body>. */
   background-color: var(--color-canvas);
   transition: background-color var(--transition-base);
   scrollbar-gutter: stable;
@@ -661,49 +584,8 @@ body {
   }
 }
 
-.theme-init * {
-  transition: none !important;
-}
-
-/* ========================================
-   THEME TRANSITION — fade suave instantáneo
-   View Transitions API (Chrome 111+, Safari 18+).
-   En navegadores sin soporte, el tema cambia sin animación.
-   ======================================== */
-
-::view-transition-old(root) {
-  animation: theme-fade-out var(--duration-theme-out) var(--ease-standard) both;
-}
-
-::view-transition-new(root) {
-  animation: theme-fade-in var(--duration-theme-in) var(--ease-standard) both;
-}
-
-@keyframes theme-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes theme-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
-
   *,
   *::before,
   *::after {

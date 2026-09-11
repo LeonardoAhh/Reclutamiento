@@ -148,6 +148,7 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
             id={calendarId}
             className="birth-date-field__calendar"
             align="end"
+            aria-label={`Calendario para ${label.toLocaleLowerCase("es-MX")}`}
           >
             <Calendar
               mode="single"

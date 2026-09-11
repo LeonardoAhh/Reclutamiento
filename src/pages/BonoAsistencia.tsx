@@ -4,9 +4,6 @@ import {
   CalendarDays,
   ChevronRight,
   FileSpreadsheet,
-  MonitorCog,
-  MoonStar,
-  SunMedium,
   UserRound,
 } from 'lucide';
 
@@ -26,7 +23,6 @@ import {
 import { BONO_PAGE_TITLE } from '@/features/bono-asistencia/constants';
 import { downloadBonoAsistenciaExcel } from '@/features/bono-asistencia/exportExcel';
 import { usePagination } from '@/hooks/usePagination';
-import { useTheme, type ThemePreference } from '@/hooks/useTheme';
 import './BonoAsistencia.css';
 
 type LoadState =
@@ -36,7 +32,6 @@ type LoadState =
 
 const ALL_OPTIONS = 'all';
 const BONO_PAGE_SIZE = 12;
-const THEME_SEQUENCE: readonly ThemePreference[] = ['system', 'light', 'dark'];
 
 function normalizeForSearch(value: string): string {
   return value
@@ -98,27 +93,6 @@ export function BonoAsistencia() {
     useState<BonoAsistenciaEmployee | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
-  const { preference, setThemePreference } = useTheme();
-
-  const themeLabel =
-    preference === 'system'
-      ? 'Sistema'
-      : preference === 'dark'
-        ? 'Oscuro'
-        : 'Claro';
-  const ThemeIcon =
-    preference === 'system'
-      ? MonitorCog
-      : preference === 'dark'
-        ? MoonStar
-        : SunMedium;
-
-  const cycleTheme = useCallback(() => {
-    const currentIndex = THEME_SEQUENCE.indexOf(preference);
-    const nextIndex = (currentIndex + 1) % THEME_SEQUENCE.length;
-    setThemePreference(THEME_SEQUENCE[nextIndex]);
-  }, [preference, setThemePreference]);
-
   useEffect(() => {
     document.title = BONO_PAGE_TITLE;
   }, []);
@@ -246,31 +220,14 @@ export function BonoAsistencia() {
     <main className="bono-page container" aria-labelledby="bono-page-title">
       <header className="page-header bono-page__header">
         <div className="page-header__content bono-page__heading">
-          <div className="bono-page__kicker-row">
-            <p className="bono-page__eyebrow">
-              <MorphingIcon
-                icon={BadgeDollarSign}
-                size="var(--icon-size-control)"
-                aria-hidden="true"
-              />
-              Asistencia
-            </p>
-            <ButtonUtility
-              type="button"
-              className="bono-page__theme-control"
-              icon={
-                <MorphingIcon
-                  icon={ThemeIcon}
-                  size="var(--icon-size-control)"
-                  aria-hidden="true"
-                />
-              }
-              onClick={cycleTheme}
-              aria-label={`Cambiar tema. Tema actual: ${themeLabel}`}
-            >
-              <span className="bono-page__theme-label">Tema: {themeLabel}</span>
-            </ButtonUtility>
-          </div>
+          <p className="bono-page__eyebrow">
+            <MorphingIcon
+              icon={BadgeDollarSign}
+              size="var(--icon-size-control)"
+              aria-hidden="true"
+            />
+            Asistencia
+          </p>
           <h1 id="bono-page-title" className="page-title">
             {BONO_PAGE_TITLE}
           </h1>

@@ -7,7 +7,6 @@ import { PWAStatus } from '@/components/ui/PWAStatus';
 import { SystemUpdateNotification } from '@/components/ui/SystemUpdateNotification';
 
 import { AppToaster } from '@/components/ui/AppToaster';
-import { ThemeController } from '@/components/ui/ThemeController';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { MaintenanceGuard } from '@/components/auth/MaintenanceGuard';
 import { PositionsProvider } from '@/lib/positions';
@@ -161,7 +160,6 @@ function App() {
       <>
         <>
           <PWAStatus />
-          <ThemeController />
           <SystemUpdateNotification />
           <AppToaster />
           <Suspense fallback={<TransitionLoader title="Cargando vista…" />}>

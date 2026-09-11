@@ -63,11 +63,6 @@
   color: var(--color-on-primary);
 }
 
-/* Adjustments para dark theme */
-[data-theme="dark"] .badge--teal {
-  color: var(--color-ink);
-}
-
 /* ── Project Badges ── */
 
 .project-badge {
@@ -97,10 +92,6 @@
 
 .project-badge__icon {
   fill: currentColor;
-}
-
-[data-theme="dark"] .badge--amber {
-  color: var(--color-ink);
 }
 
 /* ── Role Badges ── */

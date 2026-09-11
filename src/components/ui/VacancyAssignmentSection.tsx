@@ -235,28 +235,28 @@ export function VacancyAssignmentSection({
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem asChild>
-                          <button
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              onAssign(vacancy);
-                            }}
-                          >
+                        <DropdownMenuItem
+                          asChild
+                          onSelect={(event) => {
+                            event.stopPropagation();
+                            onAssign(vacancy);
+                          }}
+                        >
+                          <button type="button">
                             <UserRoundPlus aria-hidden="true" />
                             <span>Asignar a...</span>
                           </button>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <button
-                            type="button"
-                            className="dropdown-menu-item--danger"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              onDelete(vacancy);
-                            }}
-                          >
+                        <DropdownMenuItem
+                          asChild
+                          variant="destructive"
+                          onSelect={(event) => {
+                            event.stopPropagation();
+                            onDelete(vacancy);
+                          }}
+                        >
+                          <button type="button">
                             <Trash2 aria-hidden="true" />
                             <span>Eliminar</span>
                           </button>

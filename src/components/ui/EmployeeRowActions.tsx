@@ -37,31 +37,22 @@ export function EmployeeRowActions({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem asChild>
-            <button
-              type="button"
-              onClick={() => run(onEdit)}
-            >
+          <DropdownMenuItem asChild onSelect={() => run(onEdit)}>
+            <button type="button">
               <PenLine aria-hidden="true" />
               <span>Editar</span>
             </button>
           </DropdownMenuItem>
           {onPromote && (
-            <DropdownMenuItem asChild>
-              <button
-                type="button"
-                onClick={() => run(onPromote)}
-              >
+            <DropdownMenuItem asChild onSelect={() => run(onPromote)}>
+              <button type="button">
                 <CircleArrowUp aria-hidden="true" />
                 <span>Promover</span>
               </button>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild>
-            <button
-              type="button"
-              onClick={() => run(onIncapacidad)}
-            >
+          <DropdownMenuItem asChild onSelect={() => run(onIncapacidad)}>
+            <button type="button">
               <HeartPulse aria-hidden="true" />
               <span>Incapacidad</span>
             </button>
@@ -69,12 +60,12 @@ export function EmployeeRowActions({
           {onDelete && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <button
-                  type="button"
-                  className="dropdown-menu-item--danger"
-                  onClick={() => run(onDelete)}
-                >
+              <DropdownMenuItem
+                asChild
+                variant="destructive"
+                onSelect={() => run(onDelete)}
+              >
+                <button type="button">
                   <Trash2 aria-hidden="true" />
                   <span>Borrar</span>
                 </button>

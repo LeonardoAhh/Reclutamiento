@@ -57,14 +57,14 @@ export function VacanteCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {onAssign && (
-                  <DropdownMenuItem asChild>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onAssign();
-                      }}
-                    >
+                  <DropdownMenuItem
+                    asChild
+                    onSelect={(event) => {
+                      event.stopPropagation();
+                      onAssign();
+                    }}
+                  >
+                    <button type="button">
                       <UserRoundPlus aria-hidden="true" />
                       <span>Asignar a...</span>
                     </button>
@@ -73,15 +73,15 @@ export function VacanteCard({
                 {onDelete && (
                   <>
                     {onAssign && <DropdownMenuSeparator />}
-                    <DropdownMenuItem asChild>
-                      <button
-                        type="button"
-                        className="dropdown-menu-item--danger"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete();
-                        }}
-                      >
+                    <DropdownMenuItem
+                      asChild
+                      variant="destructive"
+                      onSelect={(event) => {
+                        event.stopPropagation();
+                        onDelete();
+                      }}
+                    >
+                      <button type="button">
                         <Trash2 aria-hidden="true" />
                         <span>Eliminar</span>
                       </button>

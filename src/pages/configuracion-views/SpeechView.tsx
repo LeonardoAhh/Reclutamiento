@@ -689,7 +689,7 @@ export function SpeechView() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
-                                onClick={() => handleCopy(template)}
+                                onSelect={() => handleCopy(template)}
                                 disabled={isSeedMode}
                               >
                                 {copiedId === template.id ? (
@@ -706,7 +706,7 @@ export function SpeechView() {
                               </DropdownMenuItem>
 
                               {!isSeedMode && (
-                                <DropdownMenuItem onClick={() => openEdit(template)}>
+                                <DropdownMenuItem onSelect={() => openEdit(template)}>
                                   <PenLine size={16} className="mr-2" />
                                   <span>Editar</span>
                                 </DropdownMenuItem>
@@ -716,8 +716,8 @@ export function SpeechView() {
                                 <>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem
-                                    onClick={() => requestDelete(template.id)}
-                                    className="text-error"
+                                    onSelect={() => requestDelete(template.id)}
+                                    variant="destructive"
                                   >
                                     <Trash2 size={16} className="mr-2" />
                                     <span>Eliminar</span>

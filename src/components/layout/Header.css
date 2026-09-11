@@ -95,6 +95,27 @@
     padding-inline: max(var(--spacing-md), var(--safe-area-left)) var(--spacing-md);
   }
 
+  .app-shell:not([data-collapsed="true"]) .app-header__sidebar-control {
+    align-self: stretch;
+    margin-block-end: calc(var(--border-width) * -1);
+    color: var(--color-navigation-rail-text);
+    background: var(--color-navigation-rail);
+    border-inline-end: var(--border-width) solid var(--color-navigation-rail-elevated);
+    border-block-end: var(--border-width) solid var(--color-navigation-rail-elevated);
+  }
+
+  .app-shell:not([data-collapsed="true"]) .app-header__collapse-btn {
+    color: var(--color-navigation-rail-text-strong);
+  }
+
+  .app-shell:not([data-collapsed="true"]) .app-header__collapse-btn:hover {
+    background-color: var(--color-navigation-rail-elevated);
+  }
+
+  .app-shell:not([data-collapsed="true"]) .app-header__collapse-btn:focus-visible {
+    outline-color: var(--color-focus-on-inverted);
+  }
+
   .app-shell[data-collapsed="true"] .app-header__sidebar-control {
     flex-basis: var(--feature-navigation-rail-collapsed-inline-size);
     justify-content: center;

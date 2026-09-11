@@ -54,12 +54,33 @@ const DropdownMenuContent = React.forwardRef<
 );
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 
+const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+
+const DropdownMenuLabel = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Label
+    ref={ref}
+    className={cn("dropdown-menu-label", className)}
+    {...props}
+  />
+));
+DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
+
+type DropdownMenuItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Item
+> & {
+  variant?: "default" | "destructive";
+};
+
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item>
->(({ className, ...props }, ref) => (
+  DropdownMenuItemProps
+>(({ className, variant = "default", ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
+    data-variant={variant}
     className={cn("dropdown-menu-item", className)}
     {...props}
   />
@@ -81,7 +102,9 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 export {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 };

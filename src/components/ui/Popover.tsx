@@ -39,4 +39,39 @@ const PopoverContent = React.forwardRef<
 );
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export { Popover, PopoverTrigger, PopoverContent };
+const PopoverHeader = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"div">
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("popover-header", className)} {...props} />
+));
+PopoverHeader.displayName = "PopoverHeader";
+
+const PopoverTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.ComponentPropsWithoutRef<"h2">
+>(({ className, ...props }, ref) => (
+  <h2 ref={ref} className={cn("popover-title", className)} {...props} />
+));
+PopoverTitle.displayName = "PopoverTitle";
+
+const PopoverDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<"p">
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("popover-description", className)}
+    {...props}
+  />
+));
+PopoverDescription.displayName = "PopoverDescription";
+
+export {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+};

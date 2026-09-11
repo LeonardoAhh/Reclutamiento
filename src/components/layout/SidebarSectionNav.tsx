@@ -1,8 +1,14 @@
 import { useId, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Ellipsis, type LucideIcon } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/components/ui/Popover';
 import type { NavItem } from './navigation';
 import './SidebarSectionNav.css';
 
@@ -32,7 +38,9 @@ export function SidebarSectionNav({
   const [open, setOpen] = useState(false);
   const mobileNavigationRef = useRef(false);
   const contentId = useId();
+  const titleId = useId();
   const Icon = item.icon;
+  const DisclosureIcon = mobile ? ChevronDown : ChevronRight;
 
   const handleNavigate = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -58,11 +66,11 @@ export function SidebarSectionNav({
             aria-controls={contentId}
             data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
           >
-            <Icon className="sidebar__item-icon sidebar-section__entry-icon" aria-hidden="true" />
+            <Icon className="sidebar__item-icon" aria-hidden="true" />
             {!collapsed && (
               <>
                 <span className="sidebar__item-label">{item.label}</span>
-                <Ellipsis className="sidebar-section__options-icon" aria-hidden="true" />
+                <DisclosureIcon className="sidebar-section__disclosure-icon" aria-hidden="true" />
               </>
             )}
           </button>
@@ -72,7 +80,7 @@ export function SidebarSectionNav({
           side={mobile ? 'bottom' : 'right'}
           align="start"
           className="sidebar-section__popover"
-          aria-label={`Vistas de ${item.label}`}
+          aria-labelledby={titleId}
           onEscapeKeyDown={(event) => event.stopPropagation()}
           onCloseAutoFocus={(event) => {
             if (!mobileNavigationRef.current) return;
@@ -80,9 +88,17 @@ export function SidebarSectionNav({
             mobileNavigationRef.current = false;
           }}
         >
+          <PopoverHeader className="sidebar-section__popover-header">
+            <PopoverTitle id={titleId}>{item.label}</PopoverTitle>
+          </PopoverHeader>
           <nav aria-label={`Navegación de ${item.label}`}>
             {groups.map((group) => (
               <div key={group.id} className="sidebar-section__group">
+                {group.title && (
+                  <h3 className="sidebar-section__group-title">
+                    {group.title}
+                  </h3>
+                )}
                 <ul className="sidebar-section__views" aria-label={group.title}>
                   {group.items.map(({
                     id,

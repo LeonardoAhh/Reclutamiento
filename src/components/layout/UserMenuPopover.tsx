@@ -1,14 +1,26 @@
 import { useRef, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
 import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
-import { ChevronsUpDown, DoorOpen, LoaderCircle } from "lucide";
-import { Activity, Medal, ShieldAlert, UserRoundPen } from "lucide-react";
+import { ChevronsUpDown, LoaderCircle, LogOut } from "lucide";
+import {
+  Activity,
+  Medal,
+  ShieldAlert,
+  UserRoundPen,
+} from "lucide-react";
 import "./UserMenuPopover.css";
 
 type UserMenuModal = "avatar" | "recognition" | "maintenance" | "activity" | null;
@@ -21,7 +33,6 @@ interface UserMenuPopoverProps {
   mobile: boolean;
   isAdmin: boolean;
   isRecruiter: boolean;
-  version: string | null;
   signingOut: boolean;
   onSignOut: () => void;
 }
@@ -34,7 +45,6 @@ export function UserMenuPopover({
   mobile,
   isAdmin,
   isRecruiter,
-  version,
   signingOut,
   onSignOut,
 }: UserMenuPopoverProps) {
@@ -56,8 +66,8 @@ export function UserMenuPopover({
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
           <button
             ref={triggerRef}
             type="button"
@@ -79,12 +89,11 @@ export function UserMenuPopover({
               aria-hidden="true"
             />
           </button>
-        </PopoverTrigger>
-        <PopoverContent
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
           align={mobile ? "start" : "end"}
           side={mobile ? "top" : "right"}
           className="user-menu-popover"
-          role="dialog"
           aria-label="Opciones de usuario"
           onEscapeKeyDown={(event) => event.stopPropagation()}
           onCloseAutoFocus={(event) => {
@@ -93,97 +102,109 @@ export function UserMenuPopover({
             openingModalRef.current = false;
           }}
         >
-          <header className="user-menu-popover__header">
-            <span className="user-menu-popover__name">
-              {username}
-            </span>
-            {version && (
-              <span className="user-menu-popover__version">v{version}</span>
-            )}
-            {email && (
-              <span className="user-menu-popover__email">{email}</span>
-            )}
-          </header>
-
-          <div className="user-menu-popover__divider" role="separator" />
-
-          <div className="user-menu-popover__actions">
-            <button
-              type="button"
-              className="user-menu-popover__item"
-              onClick={() => handleOpenModal("avatar")}
+          <DropdownMenuGroup className="user-menu-popover__group">
+            <DropdownMenuItem
+              asChild
+              onSelect={() => handleOpenModal("avatar")}
             >
-              <UserRoundPen className="user-menu-popover__icon" aria-hidden="true" />
-              <span>Avatar</span>
-            </button>
-
-            <ThemeToggle className="user-menu-popover__item" />
+              <button type="button" className="user-menu-popover__item">
+                <UserRoundPen
+                  className="user-menu-popover__icon"
+                  aria-hidden="true"
+                />
+                <span>Perfil</span>
+              </button>
+            </DropdownMenuItem>
 
             {isRecruiter && (
-              <button
-                type="button"
-                className="user-menu-popover__item"
-                onClick={() => handleOpenModal("recognition")}
+              <DropdownMenuItem
+                asChild
+                onSelect={() => handleOpenModal("recognition")}
               >
-                <Medal className="user-menu-popover__icon" aria-hidden="true" />
-                <span>Reconocimientos</span>
-              </button>
-            )}
-
-            {isAdmin && (
-              <>
-                <div className="user-menu-popover__divider" role="separator" />
-
-                <button
-                  type="button"
-                  className="user-menu-popover__item"
-                  onClick={() => handleOpenModal("maintenance")}
-                  aria-label="Abrir modo mantenimiento"
-                >
-                  <ShieldAlert
+                <button type="button" className="user-menu-popover__item">
+                  <Medal
                     className="user-menu-popover__icon"
                     aria-hidden="true"
                   />
-                  <span>Mantenimiento</span>
+                  <span>Reconocimientos</span>
                 </button>
-
-                <button
-                  type="button"
-                  className="user-menu-popover__item"
-                  onClick={() => handleOpenModal("activity")}
-                  aria-label="Abrir actividad de usuarios"
-                >
-                  <Activity
-                    className="user-menu-popover__icon"
-                    aria-hidden="true"
-                  />
-                  <span>Actividad</span>
-                </button>
-              </>
+              </DropdownMenuItem>
             )}
+          </DropdownMenuGroup>
 
-            <div className="user-menu-popover__divider" role="separator" />
+          {isAdmin && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="user-menu-popover__section-label">
+                Administración
+              </DropdownMenuLabel>
+              <DropdownMenuGroup className="user-menu-popover__group">
+                <DropdownMenuItem
+                  asChild
+                  onSelect={() => handleOpenModal("maintenance")}
+                >
+                  <button
+                    type="button"
+                    className="user-menu-popover__item"
+                    aria-label="Abrir modo mantenimiento"
+                  >
+                    <ShieldAlert
+                      className="user-menu-popover__icon"
+                      aria-hidden="true"
+                    />
+                    <span>Mantenimiento</span>
+                  </button>
+                </DropdownMenuItem>
 
-            <button
-              type="button"
-              className="user-menu-popover__item user-menu-popover__item--danger"
-              onClick={() => {
+                <DropdownMenuItem
+                  asChild
+                  onSelect={() => handleOpenModal("activity")}
+                >
+                  <button
+                    type="button"
+                    className="user-menu-popover__item"
+                    aria-label="Abrir actividad de usuarios"
+                  >
+                    <Activity
+                      className="user-menu-popover__icon"
+                      aria-hidden="true"
+                    />
+                    <span>Actividad</span>
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </>
+          )}
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuGroup className="user-menu-popover__group">
+            <DropdownMenuItem
+              asChild
+              variant="destructive"
+              disabled={signingOut}
+              onSelect={() => {
                 setOpen(false);
                 onSignOut();
               }}
-              disabled={signingOut}
-              aria-busy={signingOut}
             >
-              <MorphingIcon
-                icon={signingOut ? LoaderCircle : DoorOpen}
-                className={`user-menu-popover__icon${signingOut ? " spin" : ""}`}
-                aria-hidden="true"
-              />
-              <span>{signingOut ? "Cerrando..." : "Cerrar sesión"}</span>
-            </button>
-          </div>
-        </PopoverContent>
-      </Popover>
+              <button
+                type="button"
+                className="user-menu-popover__item"
+                disabled={signingOut}
+                aria-busy={signingOut}
+              >
+                <MorphingIcon
+                  icon={signingOut ? LoaderCircle : LogOut}
+                  className={`user-menu-popover__icon${signingOut ? " spin" : ""}`}
+                  aria-hidden="true"
+                />
+                <span>{signingOut ? "Cerrando..." : "Cerrar sesión"}</span>
+              </button>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <AvatarUploadModal
         isOpen={activeModal === "avatar"}

@@ -10,23 +10,6 @@
   align-items: flex-start;
 }
 
-.bono-page__kicker-row {
-  display: flex;
-  min-inline-size: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--design-spacing-md);
-}
-
-.bono-page__theme-control {
-  flex: 0 0 auto;
-  min-block-size: var(--touch-target-min);
-}
-
-.bono-page__theme-label {
-  display: none;
-}
-
 .bono-page__heading {
   gap: var(--design-spacing-xs);
 }
@@ -439,10 +422,6 @@
     grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
     align-items: end;
     gap: var(--design-spacing-md);
-  }
-
-  .bono-page__theme-label {
-    display: inline;
   }
 
   .bono-page__employee-grid {

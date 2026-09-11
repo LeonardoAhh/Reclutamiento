@@ -70,8 +70,8 @@ export function ResponsabilidadCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {onEdit && (
-                  <DropdownMenuItem asChild>
-                    <button type="button" onClick={onEdit}>
+                  <DropdownMenuItem asChild onSelect={onEdit}>
+                    <button type="button">
                       <SquarePen aria-hidden="true" />
                       <span>Editar</span>
                     </button>
@@ -80,12 +80,12 @@ export function ResponsabilidadCard({
                 {onDelete && (
                   <>
                     {onEdit && <DropdownMenuSeparator />}
-                    <DropdownMenuItem asChild>
-                      <button
-                        type="button"
-                        className="dropdown-menu-item--danger"
-                        onClick={onDelete}
-                      >
+                    <DropdownMenuItem
+                      asChild
+                      variant="destructive"
+                      onSelect={onDelete}
+                    >
+                      <button type="button">
                         <Trash2 aria-hidden="true" />
                         <span>Eliminar</span>
                       </button>

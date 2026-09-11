@@ -40,8 +40,8 @@ export function NoCitadoRowActions({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent side="bottom" align="end">
-          <DropdownMenuItem asChild>
-            <button type="button" onClick={() => run(onEdit)}>
+          <DropdownMenuItem asChild onSelect={() => run(onEdit)}>
+            <button type="button">
               <PenLine aria-hidden="true" />
               <span>Editar</span>
             </button>
@@ -51,8 +51,12 @@ export function NoCitadoRowActions({
             <>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem asChild className="dropdown-menu-item--danger">
-                <button type="button" onClick={() => run(onDelete)}>
+              <DropdownMenuItem
+                asChild
+                variant="destructive"
+                onSelect={() => run(onDelete)}
+              >
+                <button type="button">
                   <Trash2 aria-hidden="true" />
                   <span>Eliminar</span>
                 </button>

@@ -3,7 +3,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Sidebar.css";
-import { useSystemVersion } from "@/hooks/useSystemVersion";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
 
@@ -38,7 +37,6 @@ export function Sidebar({
   const signOutPendingRef = useRef(false);
   const [signingOut, setSigningOut] = useState(false);
   const loader = useLoader();
-  const { version } = useSystemVersion();
   const { trigger } = useFeedback();
   const isCollapsed = collapsed && !mobileMenuOpen;
 
@@ -183,7 +181,6 @@ export function Sidebar({
             mobile={Boolean(mobileMenuOpen)}
             isAdmin={profile?.role === "admin"}
             isRecruiter={profile?.role === "reclutador"}
-            version={version}
             signingOut={signingOut}
             onSignOut={handleSignOut}
           />

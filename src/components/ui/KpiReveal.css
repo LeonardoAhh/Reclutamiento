@@ -60,11 +60,6 @@
   opacity: 0;
 }
 
-[data-theme="dark"] .kpi-reveal__hint {
-  background: var(--color-primary);
-  color: var(--color-on-dark);
-}
-
 .kpi-reveal--revealed:hover {
   transform: translateY(-1px);
 }
