@@ -30,7 +30,6 @@ import {
 } from '@/lib/configuracionNavigation';
 import { BONO_PATH } from '@/features/bono-asistencia/constants';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { DAILY_WORK_LOG_PATH } from '@/features/daily-work-log/constants';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -92,12 +91,6 @@ const DataUpdatePage = lazy(() =>
     default: DataUpdatePage,
   })),
 );
-const DailyWorkLogPage = lazy(() =>
-  import('@/features/daily-work-log/DailyWorkLogPage').then(
-    ({ DailyWorkLogPage }) => ({ default: DailyWorkLogPage }),
-  ),
-);
-
 function ProtectedContent() {
   return (
     <CandidatesProvider>
@@ -195,7 +188,6 @@ function App() {
                 <Route path="/rutas" element={<Navigate to="/configuracion/rutas" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
-                <Route path={DAILY_WORK_LOG_PATH} element={<DailyWorkLogPage />} />
                 <Route path="/perfil-general" element={<WithSupabaseData resources={EMPLOYEE_DATA}><ProfileGeneral /></WithSupabaseData>} />
                 <Route path="/asistente" element={<AIChatPage />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
