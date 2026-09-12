@@ -388,7 +388,7 @@
   --menu-min-inline-size: 10rem;
   /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
   --feature-account-menu-inline-size: calc(
-    var(--menu-min-inline-size) + var(--design-spacing-lg)
+    var(--menu-min-inline-size) + var(--design-spacing-3xl)
   );
   --feature-chat-context-inline-size: 18rem;
   --feature-chat-conversation-max-inline-size: 48rem;

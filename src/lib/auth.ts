@@ -82,3 +82,62 @@ export async function signInWithUsername(
 export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
 }
+
+export type ChangePasswordResult =
+  | { ok: true }
+  | { ok: false; field: 'current' | 'new' | 'form'; message: string };
+
+/** Cambia únicamente la contraseña de la cuenta de la sesión activa. */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<ChangePasswordResult> {
+  try {
+    const { error } = await supabase.auth.updateUser({
+      current_password: currentPassword,
+      password: newPassword,
+    });
+
+    if (!error) return { ok: true };
+
+    if (error.code === 'invalid_credentials') {
+      return {
+        ok: false,
+        field: 'current',
+        message: 'La contraseña actual no coincide. Revísala e inténtalo de nuevo.',
+      };
+    }
+    if (error.code === 'weak_password') {
+      return {
+        ok: false,
+        field: 'new',
+        message: 'La contraseña nueva no cumple los requisitos de seguridad. Elige una más segura.',
+      };
+    }
+    if (error.code === 'same_password') {
+      return {
+        ok: false,
+        field: 'new',
+        message: 'Elige una contraseña distinta de la actual.',
+      };
+    }
+    if (error.code === 'reauthentication_needed') {
+      return {
+        ok: false,
+        field: 'form',
+        message: 'Por seguridad, cierra sesión, vuelve a entrar e inténtalo de nuevo.',
+      };
+    }
+    return {
+      ok: false,
+      field: 'form',
+      message: 'No se pudo cambiar la contraseña. Inténtalo de nuevo.',
+    };
+  } catch {
+    return {
+      ok: false,
+      field: 'form',
+      message: 'No se pudo conectar para cambiar la contraseña. Revisa tu conexión e inténtalo de nuevo.',
+    };
+  }
+}

@@ -14,16 +14,18 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
 import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
+import { ChangePasswordModal } from "@/features/account/ChangePasswordModal";
 import { ChevronsUpDown, LoaderCircle, LogOut } from "lucide";
 import {
   Activity,
+  KeyRound,
   Medal,
   ShieldAlert,
   UserRoundPen,
 } from "lucide-react";
 import "./UserMenuPopover.css";
 
-type UserMenuModal = "avatar" | "recognition" | "maintenance" | "activity" | null;
+type UserMenuModal = "avatar" | "password" | "recognition" | "maintenance" | "activity" | null;
 
 interface UserMenuPopoverProps {
   username: string;
@@ -113,6 +115,19 @@ export function UserMenuPopover({
                   aria-hidden="true"
                 />
                 <span>Perfil</span>
+              </button>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              asChild
+              onSelect={() => handleOpenModal("password")}
+            >
+              <button type="button" className="user-menu-popover__item">
+                <KeyRound
+                  className="user-menu-popover__icon"
+                  aria-hidden="true"
+                />
+                <span>Cambiar contraseña</span>
               </button>
             </DropdownMenuItem>
 
@@ -208,6 +223,10 @@ export function UserMenuPopover({
 
       <AvatarUploadModal
         isOpen={activeModal === "avatar"}
+        onClose={handleCloseModal}
+      />
+      <ChangePasswordModal
+        isOpen={activeModal === "password"}
         onClose={handleCloseModal}
       />
       {activeModal === "recognition" && (
