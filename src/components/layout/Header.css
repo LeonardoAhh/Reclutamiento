@@ -60,6 +60,7 @@
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
+  cursor: pointer;
   transition: background-color var(--transition-fast);
 }
 

@@ -1,4 +1,6 @@
 .app-toaster {
+  --app-toaster-entry-translate: calc(-1 * var(--design-spacing-sm));
+
   position: fixed;
   inset-block-start: calc(var(--design-spacing-md) + var(--safe-area-top));
   inset-inline-start: calc(var(--container-padding) + var(--safe-area-left));
@@ -23,6 +25,10 @@
 /* Breakpoint desktop definido por desing.md; las media queries no aceptan tokens. */
 @media (min-width: 1080px) {
   .app-toaster {
+    --app-toaster-entry-translate: var(--design-spacing-sm);
+
+    inset-block-start: auto;
+    inset-block-end: calc(var(--design-spacing-md) + var(--safe-area-bottom));
     align-items: flex-end;
   }
 }
@@ -179,7 +185,7 @@
 @keyframes app-toaster-enter {
   from {
     opacity: 0;
-    transform: translateY(calc(-1 * var(--design-spacing-sm)));
+    transform: translateY(var(--app-toaster-entry-translate));
   }
 
   to {

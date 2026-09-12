@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { FileArchive, FileSpreadsheet, PencilLine, RotateCcw } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
+import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
 import { toast } from "@/lib/notify";
+import { normalizeString } from "@/lib/utils";
 import {
   dataUpdateError,
   listCampaignDataUpdateIncidents,
@@ -33,17 +35,34 @@ export function DataUpdateAdminPanel({
   onOpenRecord,
   onRefresh,
 }: DataUpdateAdminPanelProps) {
+  const [searchTerm, setSearchTerm] = useState("");
   const participantProfiles = profiles.filter((profile) => detail.participantIds.includes(profile.id));
   const sortedRecords = useMemo(
     () => [...detail.records].sort(compareDataUpdateRecords),
     [detail.records],
   );
-  const pagination = usePagination(sortedRecords, DATA_UPDATE_PAGE_SIZE);
+  const visibleRecords = useMemo(() => {
+    const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return sortedRecords;
+
+    return sortedRecords.filter((record) => {
+      const searchableText = normalizeString([
+        record.identity.employeeNumber,
+        record.identity.name,
+        record.identity.area,
+        record.identity.section,
+        record.identity.position,
+        record.identity.shift,
+      ].join(" "));
+      return terms.every((term) => searchableText.includes(term));
+    });
+  }, [searchTerm, sortedRecords]);
+  const pagination = usePagination(visibleRecords, DATA_UPDATE_PAGE_SIZE);
   const [photoExportProgress, setPhotoExportProgress] = useState<DataUpdatePhotoExportProgress | null>(null);
 
   useEffect(() => {
     pagination.goToPage(1);
-  }, [detail.campaign.id, pagination.goToPage]);
+  }, [detail.campaign.id, pagination.goToPage, searchTerm]);
 
   const reassign = async (recordId: string, profileId: string) => {
     onBusyChange(true);
@@ -133,6 +152,22 @@ export function DataUpdateAdminPanel({
           <p className="text-muted">Reasigna responsables, reabre registros y exporta la campaña.</p>
         </div>
         <div className="data-update-admin__actions">
+          {detail.records.length > 0 && (
+            <SearchField
+              id="data-update-admin-search"
+              className="data-update-queue__search"
+              label="Buscar en administración"
+              placeholder="Número, nombre, área, sección, puesto o turno"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onClear={() => setSearchTerm("")}
+              onKeyDown={(event) => {
+                if (event.key === "Escape" && searchTerm) setSearchTerm("");
+              }}
+              aria-controls="data-update-admin-list"
+              autoComplete="off"
+            />
+          )}
           <button
             type="button"
             className="btn-secondary"
@@ -162,14 +197,21 @@ export function DataUpdateAdminPanel({
         </div>
       </div>
 
-      <div className="data-update-record-grid">
-        {pagination.pageItems.map((record) => (
-          <article key={record.id} className="card data-update-record-card data-update-admin-card">
-            <div className="data-update-admin-card__identity">
-              <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
-              <h3>{record.identity.name}</h3>
-            </div>
-            <div className="data-update-admin-card__assignment">
+      {detail.records.length === 0 ? (
+        <p className="data-update-message">No hay registros disponibles en esta campaña.</p>
+      ) : visibleRecords.length === 0 ? (
+        <div id="data-update-admin-list" className="data-update-search-empty" role="status">
+          <p>No hay coincidencias para “{searchTerm.trim()}”.</p>
+          <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>Limpiar búsqueda</button>
+        </div>
+      ) : (
+        <div id="data-update-admin-list" className="data-update-record-grid">
+          {pagination.pageItems.map((record) => (
+            <article key={record.id} className="card data-update-record-card data-update-admin-card">
+              <div className="data-update-admin-card__identity">
+                <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                <h3>{record.identity.name}</h3>
+              </div>
               <div className="form-group">
                 <label htmlFor={`assigned-${record.id}`}>Responsable</label>
                 <CustomSelect
@@ -181,26 +223,24 @@ export function DataUpdateAdminPanel({
                   disabled={busy}
                 />
               </div>
-              <div className="data-update-admin-card__status-slot">
+              <div className="data-update-record-card__footer">
                 <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
+                {record.status === "completado" ? (
+                  <button type="button" className="btn-secondary" onClick={() => void reopen(record.id)} disabled={busy}>
+                    <RotateCcw aria-hidden="true" />
+                    Reabrir
+                  </button>
+                ) : (
+                  <button type="button" className="btn-primary" onClick={() => onOpenRecord(record)} disabled={busy}>
+                    <PencilLine aria-hidden="true" />
+                    Actualizar
+                  </button>
+                )}
               </div>
-            </div>
-            <div className="data-update-record-card__footer">
-              {record.status === "completado" ? (
-                <button type="button" className="btn-secondary btn-sm" onClick={() => void reopen(record.id)} disabled={busy}>
-                  <RotateCcw aria-hidden="true" />
-                  Reabrir
-                </button>
-              ) : (
-                <button type="button" className="btn-primary btn-sm" onClick={() => onOpenRecord(record)} disabled={busy}>
-                  <PencilLine aria-hidden="true" />
-                  Actualizar
-                </button>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       {pagination.totalPages > 1 && (
         <Pagination

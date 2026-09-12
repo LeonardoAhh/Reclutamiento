@@ -41,7 +41,7 @@
 .data-update-wizard__header h1,
 .data-update-step h2,
 .data-update-section-heading h2,
-.data-update-record-card h4,
+.data-update-record-card :is(h3, h4),
 .data-update-review h3,
 .data-update-empty h2 {
   margin: 0;
@@ -92,8 +92,13 @@
 .data-update-admin__actions {
   display: grid;
   width: 100%;
+  min-width: 0;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--design-spacing-sm);
+}
+
+.data-update-admin .data-update-section-heading {
+  flex-wrap: wrap;
 }
 
 .data-update-campaign-actions--admin {
@@ -379,7 +384,7 @@
   overflow-wrap: anywhere;
 }
 
-.data-update-record-card h4 {
+.data-update-record-card :is(h3, h4) {
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
@@ -979,21 +984,8 @@
   min-width: 0;
 }
 
-.data-update-admin-card__assignment {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--design-spacing-sm);
-}
-
-.data-update-admin-card__status-slot {
-  display: flex;
-  min-height: var(--control-height-lg);
-  align-items: center;
-}
-
-.data-update-admin-card .data-update-record-card__footer > button {
-  width: 100%;
+.data-update-admin-card .data-update-record-card__footer {
+  flex-wrap: wrap;
 }
 
 @media (min-width: 768px) {
@@ -1019,7 +1011,16 @@
 
   .data-update-admin__actions {
     width: auto;
+    max-width: 100%;
     grid-template-columns: repeat(2, max-content);
+  }
+
+  .data-update-admin__actions:has(.data-update-queue__search) {
+    grid-template-columns: minmax(0, var(--search-field-min-inline-size)) repeat(2, max-content);
+  }
+
+  .data-update-locker-card .data-update-record-card__footer {
+    justify-content: flex-end;
   }
 
   .data-update-campaign-toolbar .form-group {
@@ -1138,7 +1139,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .data-update-record-card h4 {
+  .data-update-record-card :is(h3, h4) {
     font-family: var(--font-body);
     font-size: var(--type-body-sm-strong-size);
     font-weight: var(--type-body-sm-strong-weight);

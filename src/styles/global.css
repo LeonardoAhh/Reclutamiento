@@ -1,14 +1,14 @@
 /* ========================================
    DESIGN TOKENS — Notion-inspired system
-   Warm paper canvas · Inter · Single black accent · Sticker palette (decor only)
+   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
    Fuente: desing.md. Los nombres legados conservan su contrato durante la migración.
    ======================================== */
 
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
-     Notion-style: single black structural accent. */
-  --color-primary: #000000;
-  --color-primary-active: #31302e;
+     Notion-style: single blue structural accent. */
+  --color-primary: #0075de;
+  --color-primary-active: #005bab;
   --color-primary-disabled: #e6e6e6;
 
   /* Deep indigo "night" band background — signature single-hero moment. */
@@ -54,8 +54,8 @@
   --color-navigation-rail-elevated: var(--color-surface-dark-elevated);
   --color-navigation-rail-text: var(--color-on-dark-soft);
   --color-navigation-rail-text-strong: var(--color-on-dark);
-  --color-navigation-rail-active: var(--color-on-dark);
-  --color-navigation-rail-on-active: var(--color-surface-dark);
+  --color-navigation-rail-active: var(--color-primary);
+  --color-navigation-rail-on-active: var(--color-on-primary);
   --color-avatar-ink: #000000;
   --color-avatar-ring: rgba(255, 255, 255, 0.2);
 
@@ -103,7 +103,7 @@
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 0 0 0;
+  --color-primary-rgb: 0 117 222;
   --color-success-rgb: 22 163 74;
   --color-warning-rgb: 217 119 6;
   --color-error-rgb: 220 38 38;
@@ -111,14 +111,14 @@
   --color-canvas-rgb: 246 245 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  --color-focus-ring: rgba(0, 0, 0, 0.2);
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
   --color-modal-scrim: rgba(0, 0, 0, 0.32);
   --color-vacancy-tint: rgba(239, 68, 68, 0.05);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
   --color-success-tint: var(--color-success-subtle);
   --color-error-tint: var(--color-error-subtle);
   --color-warning-tint: var(--color-warning-subtle);
-  --color-primary-tint: rgba(0, 0, 0, 0.06);
+  --color-primary-tint: rgb(var(--color-primary-rgb) / 0.06);
   --color-header-glass: rgba(246, 245, 244, 0.92);
 
   /* ── Typography ─────────────────────────────────────────────────

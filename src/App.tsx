@@ -65,11 +65,6 @@ const Actividades = lazy(() =>
     default: Actividades,
   })),
 );
-const ProfileGeneral = lazy(() =>
-  import('@/pages/ProfileGeneral').then(({ ProfileGeneral }) => ({
-    default: ProfileGeneral,
-  })),
-);
 const AIChatPage = lazy(() =>
   import('@/pages/AIChatPage').then(({ AIChatPage }) => ({
     default: AIChatPage,
@@ -186,7 +181,6 @@ function App() {
                 <Route path="/rutas" element={<Navigate to="/configuracion/rutas" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
-                <Route path="/perfil-general" element={<WithSupabaseData resources={EMPLOYEE_DATA}><ProfileGeneral /></WithSupabaseData>} />
                 <Route path="/asistente" element={<AIChatPage />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />

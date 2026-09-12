@@ -1,7 +1,6 @@
 import {
   BotMessageSquare,
   ChartNoAxesCombined,
-  ClipboardPenLine,
   Contact,
   ListTodo,
   NotebookText,
@@ -68,7 +67,6 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
     items: [
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: CONFIGURACION_PATH, label: "Configuración", icon: Settings2 },
-      { to: "/perfil-general", label: "Perfil General", icon: ClipboardPenLine },
     ],
   },
 ];

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Notion looks like a well-organized desk in good daylight. The dominant surface is not pure white but a warm, paper-soft off-white — `{colors.canvas-soft}` (#f6f5f4) — that takes the clinical edge off the screen and makes long pages feel like a document rather than an app. Type is set in `NotionInter` (a tuned Inter) in near-black `{colors.ink}` at large, tightly-tracked weights, so headlines read as confident statements with very little letter-spacing slack at display sizes (`{typography.display-1}` pulls −2.125px of tracking at 64px). The whole system whispers in greys and blacks, then says exactly one thing: a single, dependable black, `{colors.primary}` (#000000), reserved almost entirely for the primary call-to-action and inline links.
+Notion looks like a well-organized desk in good daylight. The dominant surface is not pure white but a warm, paper-soft off-white — `{colors.canvas-soft}` (#f6f5f4) — that takes the clinical edge off the screen and makes long pages feel like a document rather than an app. Type is set in `NotionInter` (a tuned Inter) in near-black `{colors.ink}` at large, tightly-tracked weights, so headlines read as confident statements with very little letter-spacing slack at display sizes (`{typography.display-1}` pulls −2.125px of tracking at 64px). The whole system whispers in greys and blacks, then says exactly one thing in colour: a single, dependable blue, `{colors.primary}` (#0075de), reserved almost entirely for the primary call-to-action and inline links.
 
 Against that quiet chrome, Notion lets a **playful multi-colour sticker palette** carry all of the brand's personality — purple, pink, orange, teal, green and sky-blue appear as small illustrated blocks, app-icon stickers, and category dots scattered through the marketing pages. These colours never structure the layout or paint a CTA; they decorate. The discipline is deliberate: the interface stays monochrome-plus-blue so the content (and the cheerful illustrations) can breathe. The one exception to the bright daylight is the homepage hero, which inverts into a deep indigo "night" band (`{colors.secondary}`) with white type and glowing sticker constellations — a single dark island in an otherwise light document.
 
@@ -12,7 +12,7 @@ Surfaces are defined by hairlines and the faintest layered shadows rather than h
 
 - Warm paper-soft canvas `{colors.canvas-soft}` over pure white, never clinical
 - Near-black `{colors.ink}` `NotionInter` type with tight negative tracking at display sizes (`{typography.display-1}`)
-- Exactly one structural accent — Black `{colors.primary}` — reserved for CTAs and links
+- Exactly one structural accent — Notion blue `{colors.primary}` — reserved for CTAs and links
 - A decorative-only multi-colour sticker palette (`{colors.accent-purple}`, `{colors.accent-orange}`, `{colors.accent-teal}`, `{colors.accent-green}`, `{colors.accent-sky}`) that adds personality without ever painting structure
 - Primary CTAs are standard rounded (`{rounded.md}`) rather than pill-shaped.
 - Elevation by hairline + barely-there layered shadow, not heavy drop-shadows
@@ -38,8 +38,8 @@ Surfaces are defined by hairlines and the faintest layered shadows rather than h
 
 ### Brand & Accent
 
-- **Brand Black** (`{colors.primary}` — #000000): the single structural accent. Primary CTA fill ("Get Notion free"), inline link colour, active-tab and focus signal. This is the only colour that ever paints an action.
-- **Pressed Black** (`{colors.primary-active}` — #31302e): the darker press state of the primary CTA.
+- **Notion Blue** (`{colors.primary}` — #0075de): the single structural accent. Primary CTA fill ("Get Notion free"), inline link colour, active-tab and focus signal. This is the only colour that ever paints an action.
+- **Pressed Blue** (`{colors.primary-active}` — #005bab): the darker press state of the primary CTA.
 - **Deep Indigo** (`{colors.secondary}` — #213183): the dark hero "night" band background and its sticker-constellation field; a deep brand-blue used for full-bleed inverted sections.
 
 The remaining colours form Notion's **decorative sticker palette** — they appear only as illustrated blocks, app stickers and category dots, never as CTAs or structural fills:
@@ -91,7 +91,7 @@ Dark mode is a polarity adaptation of the application shell, not a repetition of
 | Ink | `#000000` | `#f6f5f4` | Headings and strongest text |
 | Body | `#31302e` | `#c9c5c0` | Reading text |
 | Muted | `#615d59` | `#8f8a83` | Supporting text; must remain AA on its actual surface |
-| Primary | `#000000` | `#ffffff` | CTA, link, active state and focus signal |
+| Primary | `#0075de` | `#ffffff` | CTA, link, active state and focus signal |
 | On primary | `#ffffff` | `#000000` | Content placed on primary |
 | Inverted surface | `#191817` | `#f6f5f4` | Polarity-opposite feature surface |
 | On inverted | `#ffffff` | `#191817` | Strong content on the inverted surface |
@@ -298,7 +298,7 @@ Product screenshots are framed in rounded `{rounded.lg}` / `{rounded.xl}` wells,
 - `{colors.ink}` on `{colors.canvas-soft}`: ~18:1 ✅
 - `{colors.ink-muted}` on `{colors.canvas-soft}`: ~5.2:1 ✅
 - `{colors.ink-faint}` ONLY for decoration or non-essential metadata. Never for functional text.
-- `{colors.primary}` on `{colors.canvas}`: 21:1 ✅
+- `{colors.primary}` on `{colors.canvas}`: ~4.6:1 ✅ (WCAG AA)
 
 ### Focus Indicators
 
@@ -403,7 +403,7 @@ Every interactive component MUST define these states:
 
 ### Toasts / Notifications
 
-- Position: top-right on desktop, top-center on mobile.
+- Position: bottom-right on desktop, top-center on mobile.
 - Duration: 4s or until manual dismiss.
 - Maximum 3 stacked toasts.
 - Types: info (default), success, warning, error.

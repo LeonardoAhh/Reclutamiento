@@ -103,6 +103,7 @@ export function RemindersPanel() {
             }
           >
             <ReminderIcon size="var(--icon-size-control)" aria-hidden="true" />
+            <span>Procesos</span>
             {reminders.length > 0 && (
               <span className="reminders-badge" aria-hidden="true">
                 {reminders.length > 99 ? "99+" : reminders.length}

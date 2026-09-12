@@ -29,7 +29,7 @@ function ToastItem({ toast }: { toast: ToastState }) {
   return (
     <li
       className={`app-toaster__item app-toaster__item--${toast.type}`}
-      aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
+      role={toast.type === 'error' ? 'alert' : 'status'}
       aria-atomic="true"
       aria-busy={toast.type === 'loading'}
     >

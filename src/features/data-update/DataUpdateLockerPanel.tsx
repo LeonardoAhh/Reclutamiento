@@ -151,10 +151,12 @@ export function DataUpdateLockerPanel({ records, canEdit, onRefresh }: DataUpdat
                   </div>
                 </dl>
                 {canEdit && (
-                  <button type="button" className="btn-secondary" onClick={() => openEditor(record)}>
-                    <PencilLine aria-hidden="true" />
-                    Editar
-                  </button>
+                  <div className="data-update-record-card__footer">
+                    <button type="button" className="btn-secondary" onClick={() => openEditor(record)}>
+                      <PencilLine aria-hidden="true" />
+                      Editar
+                    </button>
+                  </div>
                 )}
               </article>
             ))}
