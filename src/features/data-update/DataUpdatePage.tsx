@@ -241,9 +241,9 @@ export function DataUpdatePage() {
   useEffect(() => {
     if (!pendingWorkGroupFocus) return;
     const frame = window.requestAnimationFrame(() => {
-      const heading = document.getElementById(workGroupId(pendingWorkGroupFocus));
-      heading?.scrollIntoView({ block: "start" });
-      heading?.focus({ preventScroll: true });
+      const group = document.getElementById(workGroupId(pendingWorkGroupFocus));
+      group?.scrollIntoView({ block: "start" });
+      group?.focus({ preventScroll: true });
       setPendingWorkGroupFocus(null);
     });
     return () => window.cancelAnimationFrame(frame);
@@ -493,42 +493,42 @@ export function DataUpdatePage() {
                   </div>
                 ) : (
                   <>
-                    <div id="data-update-record-list" className="data-update-work-groups">
-                      {pageWorkGroups.map((group) => (
-                        <section
-                          key={group.key}
-                          className="data-update-work-group"
-                          aria-labelledby={workGroupId(group.key)}
-                        >
-                          <header className="data-update-work-group__heading">
-                            <span className="type-caption-up text-muted">
-                              {group.isCompleted ? "Completados" : "Área"}
-                            </span>
-                            <h3 id={workGroupId(group.key)} tabIndex={-1}>{group.area}</h3>
-                          </header>
-                          <div className="data-update-record-grid">
-                            {group.records.map((record) => (
-                              <article key={record.id} className="card data-update-record-card">
-                                <div>
-                                  <div className="data-update-work-card__name-row">
-                                    <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
-                                    <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
-                                  </div>
-                                  <h4>{record.identity.name}</h4>
-                                </div>
-                                <button
-                                  type="button"
-                                  className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
-                                  onClick={() => void openRecord(record)}
-                                  disabled={!online || busy || record.status === "completado"}
-                                >
-                                  {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
-                                </button>
-                              </article>
-                            ))}
-                          </div>
-                        </section>
-                      ))}
+                    <div id="data-update-record-list" className="data-update-record-grid">
+                      {pageWorkGroups.flatMap((group) =>
+                        group.records.map((record, index) => (
+                          <article
+                            key={record.id}
+                            id={index === 0 ? workGroupId(group.key) : undefined}
+                            className={`card data-update-record-card${index === 0 ? " data-update-work-card__group-start" : ""}`}
+                            aria-describedby={index === 0 ? `${workGroupId(group.key)}-label` : undefined}
+                            tabIndex={index === 0 ? -1 : undefined}
+                          >
+                            {index === 0 && (
+                              <span id={`${workGroupId(group.key)}-label`} className="sr-only">
+                                {group.isCompleted ? "Completados" : "Área"}: {group.area}
+                              </span>
+                            )}
+                            <div>
+                              <div className="data-update-work-card__name-row">
+                                <span className="data-update-work-card__identity type-caption-up text-muted">
+                                  <span>{record.identity.employeeNumber}</span>
+                                  {record.identity.shift && <span>Turno: {record.identity.shift}</span>}
+                                </span>
+                                <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
+                              </div>
+                              <h3>{record.identity.name}</h3>
+                            </div>
+                            <button
+                              type="button"
+                              className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
+                              onClick={() => void openRecord(record)}
+                              disabled={!online || busy || record.status === "completado"}
+                            >
+                              {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
+                            </button>
+                          </article>
+                        )),
+                      )}
                     </div>
                     {recordPagination.totalPages > 1 && (
                       <Pagination

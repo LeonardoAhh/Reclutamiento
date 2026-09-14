@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/Popover";
 import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
-import { formatReadableDate } from "@/lib/dates";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import { assignDataUpdateLocker, dataUpdateError } from "./api";
@@ -172,8 +171,8 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                 </div>
                 <dl className="data-update-locker-card__details">
                   <div>
-                    <dt>Fecha de ingreso</dt>
-                    <dd>{formatReadableDate(record.identity.hireDate)}</dd>
+                    <dt>Turno</dt>
+                    <dd>{record.identity.shift || "—"}</dd>
                   </div>
                   <div>
                     <dt>Locker</dt>

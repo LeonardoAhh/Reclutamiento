@@ -115,42 +115,11 @@
   gap: var(--design-spacing-md);
 }
 
-.data-update-work-groups,
-.data-update-work-group {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-}
-
-.data-update-work-groups {
-  gap: var(--design-spacing-xl);
-}
-
-.data-update-work-group {
-  gap: var(--design-spacing-sm);
-}
-
-.data-update-work-group__heading {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-}
-
-.data-update-work-group__heading h3 {
-  margin: 0;
-}
-
-.data-update-work-group__heading h3 {
+.data-update-work-card__group-start {
   scroll-margin-block-start: var(--design-spacing-lg);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
-  overflow-wrap: anywhere;
 }
 
-.data-update-work-group__heading h3:focus-visible {
+.data-update-work-card__group-start:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-primary);
   outline-offset: var(--focus-ring-offset);
 }
@@ -395,7 +364,6 @@
   align-items: stretch;
 }
 
-/* Número + badge de estado en línea (Mi trabajo) */
 .data-update-work-card__name-row {
   display: flex;
   align-items: center;
@@ -403,6 +371,21 @@
   flex-wrap: wrap;
   min-width: 0;
   margin-block-end: var(--design-spacing-xxs);
+}
+
+.data-update-work-card__identity {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xs);
+  min-width: 0;
+}
+
+.data-update-work-card__identity > span {
+  overflow-wrap: anywhere;
+}
+
+.data-update-work-card__name-row > .data-update-status {
+  margin-inline-start: auto;
 }
 
 /* Botón de acción a ancho completo */
