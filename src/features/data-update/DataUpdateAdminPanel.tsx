@@ -24,7 +24,7 @@ interface DataUpdateAdminPanelProps {
   busy: boolean;
   onBusyChange: (busy: boolean) => void;
   onOpenRecord: (record: DataUpdateRecord) => void;
-  onRefresh: () => void;
+  onRecordUpdated: (record: DataUpdateRecord) => void;
 }
 
 export function DataUpdateAdminPanel({
@@ -33,7 +33,7 @@ export function DataUpdateAdminPanel({
   busy,
   onBusyChange,
   onOpenRecord,
-  onRefresh,
+  onRecordUpdated,
 }: DataUpdateAdminPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const participantProfiles = profiles.filter((profile) => detail.participantIds.includes(profile.id));
@@ -67,9 +67,10 @@ export function DataUpdateAdminPanel({
   const reassign = async (recordId: string, profileId: string) => {
     onBusyChange(true);
     try {
-      await reassignDataUpdateRecord(recordId, profileId);
+      const updated = await reassignDataUpdateRecord(recordId, profileId);
+      const assignedName = profiles.find((profile) => profile.id === profileId)?.label;
+      onRecordUpdated({ ...updated, assignedName });
       toast.success({ title: "Responsable actualizado" });
-      onRefresh();
     } catch (caught) {
       toast.error({ title: dataUpdateError(caught) });
     } finally {
@@ -80,9 +81,9 @@ export function DataUpdateAdminPanel({
   const reopen = async (recordId: string) => {
     onBusyChange(true);
     try {
-      await reopenDataUpdateRecord(recordId);
+      const updated = await reopenDataUpdateRecord(recordId);
+      onRecordUpdated(updated);
       toast.success({ title: "Registro reabierto" });
-      onRefresh();
     } catch (caught) {
       toast.error({ title: dataUpdateError(caught) });
     } finally {

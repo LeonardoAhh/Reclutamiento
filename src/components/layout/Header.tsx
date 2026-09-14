@@ -4,32 +4,17 @@ import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Header.css";
 
 interface HeaderProps {
-  collapsed?: boolean;
-  onToggleCollapse?: () => void;
   mobileMenuButtonRef?: Ref<HTMLButtonElement>;
   onMobileMenuToggle?: () => void;
   mobileMenuOpen?: boolean;
 }
 
-export function Header({ collapsed = false, onToggleCollapse, onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef }: HeaderProps = {}) {
+export function Header({ onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef }: HeaderProps = {}) {
   return (
     <header className="app-header" id="main-header">
-      {onToggleCollapse && (
-        <div className="app-header__sidebar-control">
-          <button
-            type="button"
-            className="app-header__collapse-btn"
-            onClick={onToggleCollapse}
-            aria-expanded={!collapsed}
-            aria-controls="app-sidebar"
-            aria-label={collapsed ? "Mostrar menú" : "Ocultar menú"}
-            data-testid="sidebar-collapse-toggle"
-          >
-            <MorphMenuIcon isOpen={!collapsed} size="var(--icon-size-control)" />
-            {!collapsed && <span>Ocultar menú</span>}
-          </button>
-        </div>
-      )}
+      <div className="app-header__sidebar-control">
+        <span className="app-header__brand">ViñoPlastic</span>
+      </div>
       <div className="app-header__inner">
         <div className="app-header__left">
           {onMobileMenuToggle && (

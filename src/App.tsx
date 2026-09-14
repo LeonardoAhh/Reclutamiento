@@ -65,11 +65,6 @@ const Actividades = lazy(() =>
     default: Actividades,
   })),
 );
-const AIChatPage = lazy(() =>
-  import('@/pages/AIChatPage').then(({ AIChatPage }) => ({
-    default: AIChatPage,
-  })),
-);
 const IncidenciasTransportePage = lazy(() =>
   import('@/pages/IncidenciasTransportePage').then(({ IncidenciasTransportePage }) => ({
     default: IncidenciasTransportePage,
@@ -181,7 +176,6 @@ function App() {
                 <Route path="/rutas" element={<Navigate to="/configuracion/rutas" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
-                <Route path="/asistente" element={<AIChatPage />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />

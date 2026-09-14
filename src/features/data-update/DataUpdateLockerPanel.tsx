@@ -14,7 +14,7 @@ import type { DataUpdateRecord } from "./types";
 interface DataUpdateLockerPanelProps {
   records: DataUpdateRecord[];
   canEdit: boolean;
-  onRefresh: () => void;
+  onRecordUpdated: (record: DataUpdateRecord) => void;
 }
 
 function getLockerError(locker: string, alreadyAssigned: boolean): string | null {
@@ -24,7 +24,7 @@ function getLockerError(locker: string, alreadyAssigned: boolean): string | null
   return null;
 }
 
-export function DataUpdateLockerPanel({ records, canEdit, onRefresh }: DataUpdateLockerPanelProps) {
+export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: DataUpdateLockerPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [locker, setLocker] = useState("");
@@ -88,10 +88,10 @@ export function DataUpdateLockerPanel({ records, canEdit, onRefresh }: DataUpdat
 
     setSaving(true);
     try {
-      await assignDataUpdateLocker(selectedRecord.id, normalizedLocker);
+      const updated = await assignDataUpdateLocker(selectedRecord.id, normalizedLocker);
+      onRecordUpdated(updated);
       setSelectedRecord(null);
       toast.success({ title: "Locker asignado" });
-      onRefresh();
     } catch (caught) {
       setServerError(dataUpdateError(caught));
     } finally {

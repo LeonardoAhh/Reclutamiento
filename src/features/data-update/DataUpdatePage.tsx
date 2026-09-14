@@ -147,6 +147,23 @@ export function DataUpdatePage() {
     }
   }, [selectedCampaignId, online]);
 
+  const updateDetailRecord = useCallback((updatedRecord: DataUpdateRecord) => {
+    setDetail((current) => {
+      if (!current) return current;
+      const previous = current.records.find((record) => record.id === updatedRecord.id);
+      if (!previous) return current;
+      const merged = {
+        ...updatedRecord,
+        assignedName: updatedRecord.assignedName ?? previous.assignedName,
+        campaignName: updatedRecord.campaignName ?? previous.campaignName,
+      };
+      return {
+        ...current,
+        records: current.records.map((record) => record.id === merged.id ? merged : record),
+      };
+    });
+  }, []);
+
   useEffect(() => { void loadCampaigns(); }, [loadCampaigns]);
   useEffect(() => { void loadDetail(); }, [loadDetail]);
   useEffect(() => {
@@ -287,9 +304,9 @@ export function DataUpdatePage() {
           incidents={incidents}
           online={online}
           onCancel={() => setSelectedRecord(null)}
-          onCompleted={() => {
+          onCompleted={(updatedRecord) => {
+            updateDetailRecord(updatedRecord);
             setSelectedRecord(null);
-            void loadDetail();
           }}
         />
       </main>
@@ -525,7 +542,7 @@ export function DataUpdatePage() {
               <DataUpdateLockerPanel
                 records={detail.records}
                 canEdit={isAdmin}
-                onRefresh={() => void loadDetail()}
+                onRecordUpdated={updateDetailRecord}
               />
             </Tabs.Content>
 
@@ -537,7 +554,7 @@ export function DataUpdatePage() {
                   busy={busy}
                   onBusyChange={setBusy}
                   onOpenRecord={(record) => void openRecord(record)}
-                  onRefresh={() => void loadDetail()}
+                  onRecordUpdated={updateDetailRecord}
                 />
               </Tabs.Content>
             )}

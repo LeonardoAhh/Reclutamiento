@@ -1,4 +1,4 @@
-/* Sidebar: navegación deslizable en móvil y colapsable desde desktop.
+/* Sidebar: navegación deslizable en móvil y fija desde desktop.
    El breakpoint de 1080px corresponde a desing.md y lib/layout.ts;
    CSS no evalúa custom properties en las condiciones de media queries. */
 
@@ -46,7 +46,7 @@
 .sidebar__top {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-xl);
   border-bottom: var(--border-width) solid var(--color-navigation-rail-elevated);
@@ -56,12 +56,32 @@
   flex-shrink: 0;
 }
 
-button.sidebar__collapse-btn {
+.sidebar__brand {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-navigation-rail-text-strong);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+button.sidebar__close-btn {
   background: transparent;
   border: none;
-  width: 100%;
-  text-align: left;
-  /* El resto lo hereda de .sidebar__item */
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  align-self: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--spacing-sm);
+  padding-block: var(--spacing-xs);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  margin-top: var(--spacing-sm);
 }
 
 /* Navegación */
@@ -284,10 +304,6 @@ button.sidebar__collapse-btn {
   );
 }
 
-.app-shell[data-collapsed="true"] {
-  --_app-sidebar-w: 0;
-}
-
 @media (min-width: 1080px) {
   .sidebar {
     inset-block-start: var(--_app-header-size);
@@ -303,12 +319,12 @@ button.sidebar__collapse-btn {
     display: none;
   }
 
-  .app-shell__main {
-    margin-inline-start: var(--_app-sidebar-w);
+  .sidebar__close-btn {
+    display: none;
   }
 
-  .sidebar[data-collapsed="true"] {
-    display: none;
+  .app-shell__main {
+    margin-inline-start: var(--_app-sidebar-w);
   }
 }
 

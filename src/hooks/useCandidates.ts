@@ -76,7 +76,7 @@ function localId(): string {
 }
 
 /**
- * Hook for fetching and mutating candidates + candidate notes.
+ * Hook for fetching and mutating candidates and locally held candidate notes.
  * Mirrors useSupabaseData: tries Supabase first, falls back to localStorage.
  */
 function useCandidatesStore() {
@@ -97,24 +97,16 @@ function useCandidatesStore() {
       if (!isConfigured) return;
       try {
         if (!opts?.silent) setLoading(true);
-        const [candResult, notesResult] = await Promise.all([
-          supabase
-            .from('candidates')
-            .select('*')
-            .order('created_at', { ascending: false }),
-          supabase
-            .from('candidate_notes')
-            .select('*')
-            .order('created_at', { ascending: false }),
-        ]);
+        const candResult = await supabase
+          .from('candidates')
+          .select('*')
+          .order('created_at', { ascending: false });
 
         if (candResult.error) throw candResult.error;
-        if (notesResult.error) throw notesResult.error;
 
         const candData = ((candResult.data ?? []) as Candidate[]).map(
           normalizeCandidate
         );
-        const notesData = (notesResult.data ?? []) as CandidateNote[];
 
         // Merge fetched candidates with locally saved candidates to preserve
         // local edits that haven't synced to Supabase yet. We prefer the row
@@ -148,9 +140,7 @@ function useCandidatesStore() {
         });
 
         setCandidates(merged);
-        setNotes(notesData);
         saveLocal(STORAGE_KEYS.candidates, merged);
-        saveLocal(STORAGE_KEYS.candidateNotes, notesData);
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase candidates fetch failed, using localStorage:', msg, err);
@@ -172,7 +162,7 @@ function useCandidatesStore() {
 
   /* ── Realtime ─────────────────────────────────────────────────────────
      Una sola suscripción compartida aplica el payload de `candidates` al
-     estado local. No vuelve a descargar candidatos y notas por cada cambio. */
+     estado local. No vuelve a descargar candidatos por cada cambio. */
   useEffect(() => {
     if (!isConfigured) return;
     const channelName = `candidates-changes-${Math.random().toString(36).substring(7)}`;

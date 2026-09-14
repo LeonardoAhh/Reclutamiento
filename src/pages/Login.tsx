@@ -9,6 +9,8 @@ import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useAuth } from "@/hooks/useAuth";
+import { emailToUsername, usernameToEmail } from "@/lib/auth";
+import { DESKTOP_MEDIA_QUERY } from "@/lib/layout";
 import "./Login.css";
 
 type LoginError = {
@@ -39,6 +41,7 @@ export function Login() {
   const { signIn } = useAuth();
 
   const [username, setUsername] = useState("");
+  const [rememberedUsername, setRememberedUsername] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -59,19 +62,22 @@ export function Login() {
   const formErrorId = useId();
   const capsId = useId();
 
-  // Cargar usuario recordado (si existe) + auto-focus inteligente
   useEffect(() => {
-    document.title = "Iniciar Sesión";
+    document.title = "Iniciar sesión";
 
     const saved = readSavedUsername();
     if (saved) {
-      setUsername(saved);
+      const savedUsername = emailToUsername(usernameToEmail(saved));
+      setUsername(savedUsername);
+      setRememberedUsername(savedUsername);
       setRememberMe(true);
-      // Si ya tiene usuario guardado, focus directo a contraseña
-      requestAnimationFrame(() => passwordRef.current?.focus());
-    } else {
-      requestAnimationFrame(() => usernameRef.current?.focus());
     }
+
+    if (!window.matchMedia(DESKTOP_MEDIA_QUERY).matches) return;
+    const frame = requestAnimationFrame(() => {
+      (saved ? passwordRef : usernameRef).current?.focus();
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   // Detectar Caps Lock en el campo de contraseña
@@ -88,7 +94,7 @@ export function Login() {
     if (!u) {
       setError({
         field: "username",
-        message: "Ingresa tu usuario o correo electrónico.",
+        message: "Ingresa tu usuario.",
       });
       usernameRef.current?.focus();
       return;
@@ -106,9 +112,11 @@ export function Login() {
       if (!result.ok) {
         setError({
           field: "form",
-          message:
-            result.message ??
-            "No se pudo iniciar sesión. Revisa tus credenciales.",
+          message: result.message === "Usuario o contraseña incorrectos."
+            ? result.message
+            : result.message?.startsWith("Cuenta sin confirmar.")
+              ? "Cuenta sin confirmar. Pide ayuda a tu administrador."
+              : "No se pudo iniciar sesión. Inténtalo de nuevo.",
         });
         return;
       }
@@ -127,28 +135,34 @@ export function Login() {
     }
   };
 
+  const returningUsername = rememberMe && rememberedUsername &&
+    !rememberedUsername.includes("@") &&
+    username.trim().toLowerCase() === rememberedUsername.toLowerCase()
+      ? rememberedUsername[0].toUpperCase() + rememberedUsername.slice(1)
+      : null;
+
   return (
     <main className="login">
-      <section className="login__left" aria-labelledby={titleId}>
+      <div className="login__left">
         <div className="login__content">
-          <header className="login__header">
-            <div className="login__brand">
-              <span className="login__brand-icon" aria-hidden="true">
-                <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
-              </span>
-              <span className="login__brand-name">Reclutamiento</span>
-            </div>
-            <div className="login__heading">
+          <div className="login__brand">
+            <span className="login__brand-icon" aria-hidden="true">
+              <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
+            </span>
+            <span className="login__brand-name">Reclutamiento · ViñoPlastic Querétaro</span>
+          </div>
+
+          <section className="login__card" aria-labelledby={titleId}>
+            <header className="login__heading">
               <h1 id={titleId} className="login__title">
-                ViñoPlastic Querétaro
+                Iniciar sesión
               </h1>
               <p className="login__subtitle">
-                Ingresa tus credenciales para continuar.
+                {returningUsername
+                  ? `Bienvenido de nuevo, ${returningUsername}.`
+                  : "Usa el usuario que se te asigno."}
               </p>
-            </div>
-          </header>
-
-          <div className="login__card">
+            </header>
             <form
               className="login__form"
               onSubmit={handleSubmit}
@@ -159,10 +173,9 @@ export function Login() {
                 error?.field === "form" ? formErrorId : undefined
               }
             >
-                {/* Campo: correo */}
                 <div className="login__field">
                   <label htmlFor={usernameId} className="login__field-label">
-                    Correo interno
+                    Usuario
                   </label>
                   <input
                     ref={usernameRef}
@@ -176,7 +189,7 @@ export function Login() {
                     autoCorrect="off"
                     spellCheck={false}
                     enterKeyHint="next"
-                    placeholder="Correo interno"
+                    placeholder="Tu usuario"
                     value={username}
                     onChange={(e) => {
                       setUsername(e.target.value);
@@ -321,9 +334,9 @@ export function Login() {
                   data-testid="login-submit-button"
                 />
             </form>
-          </div>
+          </section>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

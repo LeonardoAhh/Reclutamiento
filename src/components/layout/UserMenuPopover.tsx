@@ -31,7 +31,6 @@ interface UserMenuPopoverProps {
   username: string;
   email?: string | null;
   avatarUrl?: string | null;
-  collapsed: boolean;
   mobile: boolean;
   isAdmin: boolean;
   isRecruiter: boolean;
@@ -43,7 +42,6 @@ export function UserMenuPopover({
   username,
   email,
   avatarUrl,
-  collapsed,
   mobile,
   isAdmin,
   isRecruiter,
@@ -77,14 +75,12 @@ export function UserMenuPopover({
             aria-label={`Abrir opciones de usuario de ${username}${email ? `, ${email}` : ''}`}
           >
             <Avatar name={username} src={avatarUrl} />
-            {!collapsed && (
-              <span className="sidebar__user-identity" aria-hidden="true">
-                <span className="sidebar__user-name">{username}</span>
-                {email && (
-                  <span className="sidebar__user-email">{email}</span>
-                )}
-              </span>
-            )}
+            <span className="sidebar__user-identity" aria-hidden="true">
+              <span className="sidebar__user-name">{username}</span>
+              {email && (
+                <span className="sidebar__user-email">{email}</span>
+              )}
+            </span>
             <MorphingIcon
               icon={ChevronsUpDown}
               className="sidebar__user-icon"

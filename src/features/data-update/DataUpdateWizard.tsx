@@ -65,7 +65,7 @@ interface DataUpdateWizardProps {
   incidents: DataUpdateIncident[];
   online: boolean;
   onCancel: () => void;
-  onCompleted: () => void;
+  onCompleted: (record: DataUpdateRecord) => void;
 }
 
 function signature(data: DataUpdateEditableData, step: number, photoPath: string | null) {
@@ -519,9 +519,9 @@ export function DataUpdateWizard({
     setNotice(null);
     try {
       if (!(await persist(DATA_UPDATE_STEP_COUNT - 1))) return;
-      await completeDataUpdateRecord(recordRef.current.id, recordRef.current.version);
+      const completed = await completeDataUpdateRecord(recordRef.current.id, recordRef.current.version);
       toast.success({ title: "Actualización completada" });
-      onCompleted();
+      onCompleted(completed);
     } catch (caught) {
       setNotice(dataUpdateError(caught));
     } finally {

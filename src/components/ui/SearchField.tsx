@@ -48,7 +48,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           {label}
         </label>
 
-        <span className="search-field__icon" aria-hidden="true">
+        <span
+          className="search-field__icon search-field__leading-icon"
+          aria-hidden="true"
+        >
           <MorphingIcon
             icon={SearchIconData}
             size="var(--icon-size-sm)"

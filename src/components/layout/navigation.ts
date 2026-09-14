@@ -1,5 +1,4 @@
 import {
-  BotMessageSquare,
   ChartNoAxesCombined,
   Contact,
   ListTodo,
@@ -12,6 +11,8 @@ import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 
+export type NavigationRole = "admin" | "reclutador";
+
 export type NavItem = {
   to: string;
   label: string;
@@ -19,7 +20,7 @@ export type NavItem = {
   badge?: string;
   end?: boolean;
   mobilePriority?: boolean;
-  roles?: ReadonlyArray<"admin" | "reclutador">;
+  roles?: ReadonlyArray<NavigationRole>;
 };
 
 export type NavGroup = {
@@ -52,7 +53,6 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Herramientas",
     items: [
-      { to: "/asistente", label: "Asistente", icon: BotMessageSquare, mobilePriority: true },
       { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
       {
         to: "/actualizacion-datos",

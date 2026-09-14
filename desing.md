@@ -2,11 +2,11 @@
 
 ## Overview
 
-Notion looks like a well-organized desk in good daylight. The dominant surface is not pure white but a warm, paper-soft off-white — `{colors.canvas-soft}` (#f6f5f4) — that takes the clinical edge off the screen and makes long pages feel like a document rather than an app. Type is set in `NotionInter` (a tuned Inter) in near-black `{colors.ink}` at large, tightly-tracked weights, so headlines read as confident statements with very little letter-spacing slack at display sizes (`{typography.display-1}` pulls −2.125px of tracking at 64px). The whole system whispers in greys and blacks, then says exactly one thing in colour: a single, dependable blue, `{colors.primary}` (#0075de), reserved almost entirely for the primary call-to-action and inline links.
+Notion looks like a well-organized desk in good daylight. The dominant surface is not pure white but a warm, paper-soft off-white — `{colors.canvas-soft}` (#f6f5f4) — that takes the clinical edge off the screen and makes long pages feel like a document rather than an app. Type is set in `NotionInter` (a tuned Inter) in near-black `{colors.ink}` at large, tightly-tracked weights, so headlines read as confident statements with very little letter-spacing slack at display sizes (`{typography.display-1}` pulls −2.125px of tracking at 64px). The whole system whispers in greys and blacks, then says exactly one thing in colour: a single, dependable blue, `{colors.primary}` (#0068c9), reserved almost entirely for the primary call-to-action and inline links.
 
 Against that quiet chrome, Notion lets a **playful multi-colour sticker palette** carry all of the brand's personality — purple, pink, orange, teal, green and sky-blue appear as small illustrated blocks, app-icon stickers, and category dots scattered through the marketing pages. These colours never structure the layout or paint a CTA; they decorate. The discipline is deliberate: the interface stays monochrome-plus-blue so the content (and the cheerful illustrations) can breathe. The one exception to the bright daylight is the homepage hero, which inverts into a deep indigo "night" band (`{colors.secondary}`) with white type and glowing sticker constellations — a single dark island in an otherwise light document.
 
-Surfaces are defined by hairlines and the faintest layered shadows rather than heavy elevation. Cards round at a friendly 12px (`{rounded.lg}`), the marketing CTAs are fully-pill-shaped (`{rounded.full}`), and utility buttons round at a tighter 8px (`{rounded.md}`). Nothing is loud; the brand's character comes from restraint plus one well-placed splash of joy.
+Surfaces are defined by hairlines and the faintest layered shadows rather than heavy elevation. Cards round at a friendly 12px (`{rounded.lg}`), primary CTAs and utility buttons round at 8px (`{rounded.md}`), and badges use `{rounded.full}`. Nothing is loud; the brand's character comes from restraint plus one well-placed splash of joy.
 
 **Key Characteristics:**
 
@@ -38,7 +38,7 @@ Surfaces are defined by hairlines and the faintest layered shadows rather than h
 
 ### Brand & Accent
 
-- **Notion Blue** (`{colors.primary}` — #0075de): the single structural accent. Primary CTA fill ("Get Notion free"), inline link colour, active-tab and focus signal. This is the only colour that ever paints an action.
+- **Notion Blue** (`{colors.primary}` — #0068c9): the single structural accent. Primary CTA fill ("Get Notion free"), inline link colour, active-tab and focus signal. This accessible adaptation preserves the brand hue and passes WCAG AA for normal text on both `{colors.canvas-soft}` and `{colors.surface}`.
 - **Pressed Blue** (`{colors.primary-active}` — #005bab): the darker press state of the primary CTA.
 - **Deep Indigo** (`{colors.secondary}` — #213183): the dark hero "night" band background and its sticker-constellation field; a deep brand-blue used for full-bleed inverted sections.
 
@@ -57,12 +57,14 @@ The remaining colours form Notion's **decorative sticker palette** — they appe
 - **White** (`{colors.surface}` — #ffffff): card and panel surfaces, nav bar, form fields.
 - **Hairline** (`{colors.hairline}` — #e6e6e6): 1px card borders and dividers, a black-at-10%-on-white blend kept solid for token reuse.
 
+The application has a light theme only. `{colors.secondary}` and inverted content surfaces are isolated visual treatments, not an application-wide dark mode.
+
 ### Text
 
-- **Ink** (`{colors.ink}` — #000000): primary headings and body text (rendered at ~95% alpha for a soft true-black).
+- **Ink** (`{colors.ink}` — #000000): primary headings and strongest text.
 - **Warm Charcoal** (`{colors.ink-secondary}` — #31302e): secondary body copy and footer text.
 - **Stone** (`{colors.ink-muted}` — #615d59): supporting / muted copy.
-- **Ash** (`{colors.ink-faint}` — #a39e98): captions, metadata, placeholder text.
+- **Ash** (`{colors.ink-faint}` — #a39e98): decorative details only; functional captions, metadata and placeholders use `{colors.ink-muted}`.
 
 ### Semantic
 
@@ -79,52 +81,11 @@ Notion's marketing surfaces do not expose a dedicated error/success palette in t
 
 &gt; These do NOT replace `{colors.primary}`. They are for state communication, not primary actions.
 
-### Application Dark Theme
-
-Dark mode is a polarity adaptation of the application shell, not a repetition of the deep-indigo marketing hero. It preserves the same semantic hierarchy and single structural accent while reversing luminance:
-
-| Role | Light | Dark | Contract |
-| --- | --- | --- | --- |
-| Canvas | `#f6f5f4` | `#191817` | Page and application background |
-| Surface | `#ffffff` | `#232120` | Cards, panels and fields |
-| Hairline | `#e6e6e6` | `#3a3735` | Borders and dividers |
-| Ink | `#000000` | `#f6f5f4` | Headings and strongest text |
-| Body | `#31302e` | `#c9c5c0` | Reading text |
-| Muted | `#615d59` | `#8f8a83` | Supporting text; must remain AA on its actual surface |
-| Primary | `#0075de` | `#ffffff` | CTA, link, active state and focus signal |
-| On primary | `#ffffff` | `#000000` | Content placed on primary |
-| Inverted surface | `#191817` | `#f6f5f4` | Polarity-opposite feature surface |
-| On inverted | `#ffffff` | `#191817` | Strong content on the inverted surface |
-| On inverted soft | `#b8b6b3` | `#615d59` | Supporting content on the inverted surface |
-
-Dark-mode visibility refinements use these exact values:
-
-| Token | Dark value |
-| --- | --- |
-| `{colors.secondary}` | `#4a5cc4` |
-| `{colors.success}` / `{colors.success-text}` | `#4ade80` / `#86efac` |
-| `{colors.warning}` / `{colors.warning-text}` | `#fbbf24` / `#fde68a` |
-| `{colors.error}` / `{colors.error-text}` | `#fb7185` / `#fda4af` |
-| `{colors.accent-sky}` | `#7dd3fc` |
-| `{colors.accent-purple}` / `{colors.accent-purple-deep}` | `#c4b5fd` / `#a78bfa` |
-| `{colors.accent-orange}` / `{colors.accent-orange-deep}` | `#fdba74` / `#fb923c` |
-| `{colors.accent-teal}` | `#5eead4` |
-| `{colors.accent-brown}` | `#d6b98c` |
-
-- Inverted surfaces reverse with the theme: dark in light mode, light in dark mode. Their `on-dark` and `on-dark-soft` tokens must reverse with them and retain WCAG 2.2 AA contrast.
-- The primary token may invert to white only in dark mode. This is the same structural accent by polarity, not a second accent colour.
-- Semantic success, warning and error colours may increase luminance in dark mode, but keep their existing meaning and remain limited to state communication.
-- Sticker colours may increase luminance for visibility, but remain decorative only.
-- Dark-mode elevation keeps the same layered, restrained shadow construction. Hairlines carry most separation; dark mode must not introduce heavy single-stop shadows.
-- Focus uses `{colors.primary}` on normal dark surfaces. On inverted light surfaces it uses the corresponding dark `on-dark` colour so the indicator remains visible.
-
----
-
 ## Typography
 
 ### Font Family
 
-The entire system is set in **`NotionInter`** — Notion's tuned cut of Inter — with a fallback stack of `Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial`. A single family carries everything from 64px display headlines to 12px eyebrows; there is no serif, no monospace display face. OpenType `lnum` (lining numerals) and `locl` features are enabled on body and heading roles.
+The application uses **Inter**, the authorized substitute for Notion's tuned `NotionInter`, with a fallback stack of `-apple-system, system-ui, "Segoe UI", Helvetica, Arial`. A single family carries everything from 64px display headlines to 12px eyebrows; there is no serif display face. OpenType `lnum` (lining numerals) and `locl` features are enabled on body and heading roles.
 
 ### Hierarchy
 
@@ -142,6 +103,8 @@ The entire system is set in **`NotionInter`** — Notion's tuned cut of Inter �
 | `{typography.caption}`   | 14px | 400    | 1.43        | 0              | Captions, footnotes                      |
 | `{typography.eyebrow}`   | 12px | 600    | 1.33        | +0.125px       | Pill badges, small labels                |
 
+Existing screens still consume legacy `--type-*` values in `global.css`. Migrate each consumer to the canonical role before retiring those values; do not change every legacy heading or dense-text token at once.
+
 ### Responsive Typography
 
 To ensure fluid scaling without jarring breakpoint jumps, display and heading tokens should use `clamp()` where the design tool supports it:
@@ -153,7 +116,7 @@ To ensure fluid scaling without jarring breakpoint jumps, display and heading to
 | `{typography.heading-1}` | `clamp(1.75rem, 3vw + 0.5rem, 2.5rem)`    | 700    | 1.1         | −1px     |
 | `{typography.heading-2}` | `clamp(1.375rem, 2vw + 0.5rem, 1.625rem)` | 700    | 1.23        | −0.625px |
 
-&gt; **Rule:** Never shrink body copy below 16px on mobile to prevent involuntary zoom on iOS.
+&gt; **Rule:** Body copy and text inputs use at least 16px on mobile; the 15px `{typography.body-sm}` role is reserved for denser layouts from tablet upward. Inputs must never trigger involuntary zoom on iOS.
 
 ### Principles
 
@@ -171,6 +134,7 @@ Notion's type voice is **tight, heavy, and quiet-confident**. Headlines lean on 
 
 - **Base unit**: 8px.
 - **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 28px · `{spacing.xxl}` 32px · `{spacing.xxxl}` 48px · `{spacing.xxxxl}` 64px.
+- New and migrated primitives use the matching `--design-spacing-*` tokens. The older `--spacing-*` aliases in `global.css` retain their previous values until their consumers are migrated individually.
 - Card interior padding lands around `{spacing.lg}` (24px); utility buttons use a tight 4px/14px; form fields pad at `{spacing.xxs}`-scale 6px. Section gaps stack the larger steps.
 
 ### Grid & Container
@@ -298,7 +262,7 @@ Product screenshots are framed in rounded `{rounded.lg}` / `{rounded.xl}` wells,
 - `{colors.ink}` on `{colors.canvas-soft}`: ~18:1 ✅
 - `{colors.ink-muted}` on `{colors.canvas-soft}`: ~5.2:1 ✅
 - `{colors.ink-faint}` ONLY for decoration or non-essential metadata. Never for functional text.
-- `{colors.primary}` on `{colors.canvas}`: ~4.6:1 ✅ (WCAG AA)
+- `{colors.primary}` on `{colors.canvas}`: ~5.0:1 ✅ (WCAG AA)
 
 ### Focus Indicators
 
@@ -361,7 +325,7 @@ Every interactive component MUST define these states:
 | -------- | ------------------- | ------------------------- | -------------- | ---------- |
 | Default  | `{colors.hairline}` | `{colors.surface}`        | none           | —          |
 | Hover    | darken 10%          | `{colors.surface}`        | none           | —          |
-| Focus    | `{colors.primary}`  | `{colors.surface}`        | Level-1 shadow | —          |
+| Focus    | `{colors.primary}`  | `{colors.surface}`        | Global 2px focus ring | —          |
 | Error    | `{colors.error}`    | `{colors.error-subtle}`   | none           | Error icon |
 | Success  | `{colors.success}`  | `{colors.success-subtle}` | none           | Check icon |
 | Disabled | `{colors.hairline}` | `{colors.canvas-soft}`    | none           | —          |
@@ -442,14 +406,15 @@ Define standard ratios to prevent layout shift:
 
 **`nav-bar`** — Top navigation
 
-- White surface `{colors.canvas}`, `{colors.ink}` link text at `{typography.body-sm}`, padding `{spacing.md}`. Sits as a slim sticky bar; left wordmark, centre product/solutions menu links, right "Log in" text link plus a `button-utility` "Get Notion free" CTA. Condenses to a hamburger below the tablet breakpoint.
+- White surface `{colors.surface}`, `{colors.ink}` link text at `{typography.body-sm}`, padding `{spacing.md}`. Sits as a slim sticky bar; left wordmark, centre product/solutions menu links, right "Log in" text link plus a `button-utility` "Get Notion free" CTA. Condenses to a hamburger below the tablet breakpoint.
+- En móvil y escritorio, «ViñoPlastic» se centra en la cabecera oscura de la navegación con `{colors.on-dark}` y tipografía `heading-md`. El control compacto bajo la cuenta cierra solo el menú móvil; en escritorio la sidebar permanece fija.
 
 ### Buttons
 
 **`button-primary`** — Primary CTA ("Get Notion free")
 
-- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button}`, rounded `{rounded.md}` (8px). The single black action on any page.
-- Pressed state lives in `button-primary-pressed` (background `{colors.primary-active}`); marketing buttons also apply a brief `scale(0.9)` press transform.
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button}`, rounded `{rounded.md}` (8px). The single blue structural action on any page.
+- Pressed state lives in `button-primary-pressed` (background `{colors.primary-active}`); buttons apply a brief `scale(0.98)` press transform.
 
 **`button-primary-pressed`**
 
@@ -465,7 +430,7 @@ Define standard ratios to prevent layout shift:
 
 **`button-icon-circular`** — Carousel / media control
 
-- Circular `{rounded.full}` control with a translucent `rgba(0,0,0,0.05)` fill and `{colors.on-primary}` glyph, used for slide and play/pause controls; applies a `scale(0.9)` press transform.
+- Circular `{rounded.full}` control with a subtle neutral tint and `{colors.on-primary}` glyph, used for slide and play/pause controls; applies a `scale(0.98)` press transform.
 
 ### Cards & Containers
 
@@ -489,7 +454,7 @@ Define standard ratios to prevent layout shift:
 
 **`text-input`** — Text / number field
 
-- White surface `{colors.surface}`, `{colors.ink}` text, `{typography.body-sm}`, 1px `rgb(221,221,221)` border, rounded `{rounded.xs}` (4px), padding `6px`. Square-ish corners deliberately tighter than the pill CTAs. Focus adds the soft Level-1 shadow.
+- White surface `{colors.surface}`, `{colors.ink}` text, `{typography.body-md}` on mobile and `{typography.body-sm}` from tablet, 1px `{colors.hairline-strong}` border, rounded `{rounded.xs}` (4px). Square-ish corners deliberately tighter than the controls. Focus uses the single global 2px `{colors.primary}` ring without an extra local indicator.
 
 ### Signature Components
 
@@ -513,7 +478,7 @@ Define standard ratios to prevent layout shift:
 
 - Properties: `backgroundColor`, `textColor`, `borderColor`, `rounded`, `padding`
 
-**`ex-pricing-tier-featured`** — Featured/highlighted tier — polarity-flipped surface (dark fill + light text in light mode, light fill + dark text in dark mode).
+**`ex-pricing-tier-featured`** — Featured/highlighted tier — inverted feature surface with dark fill and light text in the light application theme.
 
 - Properties: `backgroundColor`, `textColor`, `rounded`, `padding`
 
@@ -536,6 +501,10 @@ Define standard ratios to prevent layout shift:
 **`ex-auth-form-card`** — Sign-in / sign-up card. Re-uses feature-card chrome with text-input primitives inside.
 
 - Properties: `backgroundColor`, `rounded`, `padding`
+- En `/login`, mantener una columna a cualquier ancho: marca sobre la card blanca, título y ayuda dentro de la card, y ancho máximo `--auth-form-max-inline-size`.
+- El acceso muestra «Usuario» y «Contraseña»; el usuario corto oculta el dominio sintético, mientras que un correo real permanece completo. «Recordar usuario» guarda solo el identificador.
+- Si el usuario corto recordado sigue en el campo, la ayuda saluda con ese identificador; al cambiarlo o usar un correo real, muestra la ayuda general. El saludo no consulta el perfil.
+- Campos y CTA comparten `--control-min-block-size`; los campos usan texto body-md, foco global y errores vinculados. En móvil no se enfoca automáticamente ningún campo para evitar abrir el teclado; el contenido puede desplazarse verticalmente con teclado o zoom.
 
 **`ex-modal-card`** — Modal dialog surface — same chrome as feature-card with elevated shadow.
 

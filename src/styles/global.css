@@ -7,7 +7,7 @@
 :root {
   /* ── Brand & Accent ─────────────────────────────────────────────
      Notion-style: single blue structural accent. */
-  --color-primary: #0075de;
+  --color-primary: #0068c9;
   --color-primary-active: #005bab;
   --color-primary-disabled: #e6e6e6;
 
@@ -103,7 +103,7 @@
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 0 117 222;
+  --color-primary-rgb: 0 104 201;
   --color-success-rgb: 22 163 74;
   --color-warning-rgb: 217 119 6;
   --color-error-rgb: 220 38 38;
@@ -370,9 +370,6 @@
     var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) -
       var(--design-spacing-md)
   );
-  --feature-navigation-rail-collapsed-inline-size: calc(
-    var(--touch-target-min) + var(--design-spacing-md) + var(--design-spacing-md)
-  );
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
@@ -382,22 +379,15 @@
   --system-update-content-max: 22rem;
   --system-update-panel-max: 28rem;
   --toast-max-inline-size: var(--system-update-panel-max);
-  --feature-chat-panel-max-inline-size: 25rem;
-  --feature-chat-panel-max-block-size: 37.5rem;
-  --feature-chat-panel-max-block-size-desktop: 50rem;
   --menu-min-inline-size: 10rem;
   /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
   --feature-account-menu-inline-size: calc(
     var(--menu-min-inline-size) + var(--design-spacing-3xl)
   );
-  --feature-chat-context-inline-size: 18rem;
-  --feature-chat-conversation-max-inline-size: 48rem;
   --pipeline-table-date-inline-size: 7.5rem;
   --pipeline-table-actions-inline-size: 5rem;
   --pipeline-pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
-  --feature-chat-composer-max-block-size: 10rem;
-  --feature-chat-mobile-sheet-max-block-size: 85dvh;
   --feature-profile-binary-min: 18rem;
   /* Ancho legible mínimo para tarjetas de consulta del bono de asistencia. */
   --feature-bonus-card-min-inline-size: 16rem;
@@ -500,18 +490,16 @@
     0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02);
   --shadow-sm:
     0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027);
+    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-sm);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
-  --shadow-elevated:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
   --shadow-prominent:
     0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
     0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04),
     0 23px 52px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: var(--shadow-prominent);
   --shadow-level-2: var(--shadow-elevated);
   --type-caption-size: var(--type-caption-sm-size);
   --type-heading-xs-size: var(--type-caption-sm-size);
@@ -560,6 +548,7 @@ html {
 
 body {
   font-family: var(--font-body);
+  font-feature-settings: "lnum" 1, "locl" 1;
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -602,6 +591,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
+  font-feature-settings: "lnum" 1, "locl" 1;
   color: var(--color-ink);
 }
 
@@ -1056,11 +1046,6 @@ code:not(pre code) {
 .form-group select:hover:not(:focus-visible):not(:disabled),
 .form-group textarea:hover:not(:focus-visible):not(:disabled) {
   border-color: var(--color-charcoal);
-}
-
-.form-group input:invalid:not(:placeholder-shown),
-.form-group select:invalid:not(:focus) {
-  border-color: var(--color-error);
 }
 
 .form-group :is(input, select, textarea)[aria-invalid="true"] {

@@ -1,7 +1,4 @@
-/* ========================================
-   LOGIN — Centered form
-   Mobile-first layout constrained by the shared application container.
-   ======================================== */
+/* Inicio de sesión en una columna, con espacio para teclado y zoom. */
 
 .login {
   display: flex;
@@ -14,44 +11,35 @@
   background: var(--color-canvas-soft);
 }
 
-/* ── Left Column (Form) ── */
 .login__left {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   padding-block: max(var(--design-spacing-lg), var(--safe-area-top))
     max(var(--design-spacing-lg), var(--safe-area-bottom));
   padding-inline: max(var(--container-padding), var(--safe-area-left))
     max(var(--container-padding), var(--safe-area-right));
-  position: relative;
 }
 
-/* ── Content wrapper ── */
 .login__content {
+  margin-block: auto;
   inline-size: 100%;
   max-inline-size: var(--auth-form-max-inline-size);
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--design-spacing-xxl);
-}
-
-/* ── Header block ── */
-.login__header {
-  display: flex;
-  flex-direction: column;
   gap: var(--design-spacing-lg);
-  text-align: center;
-  align-items: center;
 }
 
 .login__brand {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: var(--design-spacing-xs);
   color: var(--color-ink);
+  text-align: center;
 }
 
 .login__brand-icon {
@@ -69,10 +57,10 @@
 
 .login__title {
   font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
   color: var(--color-ink);
   margin: 0;
 }
@@ -83,9 +71,11 @@
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-xxs);
+  text-align: center;
 }
 
 .login__subtitle {
+  overflow-wrap: anywhere;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -95,7 +85,6 @@
   margin: 0;
 }
 
-/* ── Auth card ── */
 .login__card {
   inline-size: 100%;
   min-inline-size: 0;
@@ -103,6 +92,9 @@
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   padding: var(--design-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxl);
 }
 
 @media (min-width: 768px) {
@@ -111,7 +103,6 @@
   }
 }
 
-/* ── Form ── */
 .login__form {
   display: flex;
   flex-direction: column;
@@ -142,7 +133,8 @@
 .login__input {
   inline-size: 100%;
   min-inline-size: 0;
-  min-block-size: var(--touch-target-min);
+  min-block-size: var(--control-min-block-size);
+  padding-block: var(--control-padding-y);
   padding-inline: var(--design-spacing-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -204,7 +196,7 @@
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-  color: var(--color-warning);
+  color: var(--color-warning-text);
   margin: 0;
 }
 
@@ -242,7 +234,7 @@
 /* ── Submit button ── */
 .login__submit {
   inline-size: 100%;
-  min-block-size: var(--touch-target-min);
+  min-block-size: var(--control-min-block-size);
 }
 
 @media (hover: hover) {

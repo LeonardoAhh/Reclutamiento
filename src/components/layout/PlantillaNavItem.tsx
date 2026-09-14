@@ -1,37 +1,10 @@
 import { useLocation } from 'react-router-dom';
-import { ChartSpline, ContactRound, Network } from 'lucide-react';
 import { getConfiguracionHref } from '@/lib/configuracionNavigation';
-import { getPlantillaHref, getPlantillaView, isPlantillaPath } from '@/lib/plantillaNavigation';
-import type { PlantillaView } from '@/lib/plantillaNavigation';
+import { getPlantillaView, isPlantillaPath } from '@/lib/plantillaNavigation';
 import { SidebarSectionNav, type SidebarSectionNavProps } from './SidebarSectionNav';
+import { PLANTILLA_NAV_GROUPS } from './navigationCatalog';
 
-const LINKS = [
-  {
-    id: 'analisis',
-    label: 'Análisis',
-    icon: ChartSpline,
-    href: getConfiguracionHref('analisis'),
-  },
-  {
-    id: 'general',
-    label: 'Departamentos',
-    icon: Network,
-    href: getPlantillaHref('general'),
-  },
-  {
-    id: 'empleados',
-    label: 'Empleados',
-    icon: ContactRound,
-    href: getPlantillaHref('empleados'),
-  },
-] satisfies Array<{
-  id: PlantillaView | 'analisis';
-  label: string;
-  icon: typeof Network;
-  href: string;
-}>;
-
-export function PlantillaNavItem(props: Pick<SidebarSectionNavProps, 'item' | 'collapsed' | 'mobile' | 'onNavigate'>) {
+export function PlantillaNavItem(props: Pick<SidebarSectionNavProps, 'item' | 'mobile' | 'onNavigate'>) {
   const location = useLocation();
   const view = getPlantillaView(location.pathname);
   const isActive = isPlantillaPath(location.pathname) ||
@@ -41,15 +14,15 @@ export function PlantillaNavItem(props: Pick<SidebarSectionNavProps, 'item' | 'c
     <SidebarSectionNav
       {...props}
       isActive={isActive}
-      groups={[{
-        id: 'plantilla',
-        items: LINKS.map(({ id, label, icon, href }) => ({
-          id, label, icon, href,
+      groups={PLANTILLA_NAV_GROUPS.map((group) => ({
+        ...group,
+        items: group.items.map(({ id, label, icon, href, external }) => ({
+          id, label, icon, href, external,
           isCurrent: id === 'analisis'
             ? location.pathname === href
             : isPlantillaPath(location.pathname) && view === id,
         })),
-      }]}
+      }))}
     />
   );
 }

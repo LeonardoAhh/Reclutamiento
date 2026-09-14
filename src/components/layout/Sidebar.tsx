@@ -16,17 +16,15 @@ import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 import { toast } from "@/lib/notify";
 
 type SidebarProps = {
-  collapsed: boolean;
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
 };
 
 /**
- * Navegación compartida: deslizable en móvil y colapsable en escritorio.
+ * Navegación compartida: deslizable en móvil y fija en escritorio.
  * El pie contiene las opciones de usuario; las secciones delegan sus submenús.
  */
 export function Sidebar({
-  collapsed,
   mobileMenuOpen = false,
   onCloseMobileMenu,
 }: SidebarProps) {
@@ -38,10 +36,8 @@ export function Sidebar({
   const [signingOut, setSigningOut] = useState(false);
   const loader = useLoader();
   const { trigger } = useFeedback();
-  const isCollapsed = collapsed && !mobileMenuOpen;
-
   useEffect(() => {
-    if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+    if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('.sidebar__close-btn')?.focus();
   }, [mobileMenuOpen]);
 
   /* Cerrar menú móvil al navegar */
@@ -74,29 +70,13 @@ export function Sidebar({
     <aside
       ref={sidebarRef}
       className="sidebar"
-      data-collapsed={isCollapsed}
       data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
       id="app-sidebar"
       data-testid="app-sidebar"
     >
-      {/* El cierre móvil permanece accesible dentro del panel desplegado. */}
       <div className="sidebar__top">
-        <button
-          type="button"
-          className="sidebar__item sidebar__collapse-btn"
-          onClick={onCloseMobileMenu}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="sidebar-sections"
-          aria-label="Ocultar menú"
-        >
-          <MorphMenuIcon
-            isOpen
-            size="var(--icon-size-md)"
-            className="sidebar__item-icon"
-          />
-          <span className="sidebar__item-label">Ocultar menú</span>
-        </button>
+        <span className="sidebar__brand">ViñoPlastic</span>
       </div>
 
       {/* Navegación */}
@@ -126,7 +106,6 @@ export function Sidebar({
                     <li key={to}>
                       <SectionNavItem
                         item={item}
-                        collapsed={false}
                         mobile={Boolean(mobileMenuOpen)}
                         onNavigate={onCloseMobileMenu}
                       />
@@ -177,7 +156,6 @@ export function Sidebar({
             username={username}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
-            collapsed={false}
             mobile={Boolean(mobileMenuOpen)}
             isAdmin={profile?.role === "admin"}
             isRecruiter={profile?.role === "reclutador"}
@@ -186,6 +164,21 @@ export function Sidebar({
           />
         </div>
       </div>
+      <button
+        type="button"
+        className="sidebar__item sidebar__close-btn"
+        onClick={onCloseMobileMenu}
+        aria-expanded={mobileMenuOpen}
+        aria-controls="app-sidebar"
+        data-testid="sidebar-close-toggle"
+      >
+        <MorphMenuIcon
+          isOpen
+          size="var(--icon-size-md)"
+          className="sidebar__item-icon"
+        />
+        <span className="sidebar__item-label">Colapsar</span>
+      </button>
     </aside>
   );
 }

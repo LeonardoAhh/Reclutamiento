@@ -805,45 +805,6 @@ export const TOAST_CONFIG = {
   defaultDurationMs: 4000,
 } as const;
 
-export const AI_CHAT_QUICK_ACTIONS = [
-  {
-    task: "interview_guide",
-    label: "Guía de entrevista",
-    prompt:
-      "Genera una guía breve de entrevista basada en las brechas y evidencias del CV. Incluye preguntas, qué validar y una señal esperada por respuesta.",
-  },
-  {
-    task: "executive_summary",
-    label: "Resumen ejecutivo",
-    prompt:
-      "Resume la evaluación en cinco puntos accionables: experiencia, fortalezas, brechas, riesgo por validar y recomendación.",
-  },
-  {
-    task: "candidate_message",
-    label: "Mensaje al candidato",
-    prompt:
-      "Redacta un mensaje breve y profesional para contactar al candidato y dar seguimiento al proceso, sin prometer contratación.",
-  },
-] as const;
-
-export const AI_CHAT_ERROR_MESSAGES = {
-  analysis: "No pudimos completar el análisis.",
-  message: "No pudimos enviar tu mensaje.",
-  unavailable: "El asistente no está disponible ahora.",
-} as const;
-
-export const AI_CHAT_CONTEXT_CONFIG = {
-  maxHistoryMessages: 8,
-  preservedInitialMessages: 2,
-  maxMemoryCharacters: 2400,
-  maxMemoryEntryCharacters: 320,
-  followScrollThreshold: 96,
-} as const;
-
-export const AI_CHAT_HISTORY_CONFIG = {
-  maxTitleLength: 80,
-} as const;
-
 export const TRANSPORT_INCIDENTS_CONFIG = {
   pageSize: 40,
   exportBatchSize: 500,

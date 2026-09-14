@@ -2385,15 +2385,6 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4311",
-    "nombre": "AGUIRRE IBARRA CAROLINA ESMERALDA",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
-  },
-  {
     "numero empleado": "4312",
     "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
     "seccion": "ALMACÉN 2DO TURNO ",
@@ -2428,15 +2419,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
-  },
-  {
-    "numero empleado": "4322",
-    "nombre": "SUAREZ ALVAREZ MARIA ELENA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4323",
@@ -2502,15 +2484,6 @@
     "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
-    "numero empleado": "4333",
-    "nombre": "ARRIAGA ALCAYA JOSE ALEJANDRO",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
-  },
-  {
     "numero empleado": "4335",
     "nombre": "FIGUEROA ESTEVES MIROSLAVA",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -2565,15 +2538,6 @@
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
-    "numero empleado": "4346",
-    "nombre": "ROBLES SUAREZ LEONOR MANUELA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "BUENAVISTA ",
-    "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
     "numero empleado": "4347",
     "nombre": "AGUILLON BALDERAS BELEN NOEMI",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2581,15 +2545,6 @@
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
-    "numero empleado": "4348",
-    "nombre": "SANCHEZ PEREZ KARINA BELEM",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero empleado": "4349",
@@ -2608,24 +2563,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4351",
-    "nombre": "HERNANDEZ BALMACEDA KAREN LIZBETH",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4352",
-    "nombre": "TORRES SANTOS ANTONIO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "SANTA CATARINA",
-    "parada": "PARADA DE CAMIONES"
   },
   {
     "numero empleado": "4353",

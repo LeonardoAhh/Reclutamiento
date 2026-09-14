@@ -14,14 +14,13 @@ import './SidebarSectionNav.css';
 
 export interface SidebarSectionNavProps {
   item: NavItem;
-  collapsed: boolean;
   mobile: boolean;
   onNavigate?: () => void;
   isActive: boolean;
-  groups: Array<{
+  groups: ReadonlyArray<{
     id: string;
     title?: string;
-    items: Array<{
+    items: ReadonlyArray<{
       id: string;
       label: string;
       icon: LucideIcon;
@@ -33,7 +32,7 @@ export interface SidebarSectionNavProps {
 }
 
 export function SidebarSectionNav({
-  item, collapsed, mobile, onNavigate, isActive, groups,
+  item, mobile, onNavigate, isActive, groups,
 }: SidebarSectionNavProps) {
   const [open, setOpen] = useState(false);
   const mobileNavigationRef = useRef(false);
@@ -67,12 +66,8 @@ export function SidebarSectionNav({
             data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
           >
             <Icon className="sidebar__item-icon" aria-hidden="true" />
-            {!collapsed && (
-              <>
-                <span className="sidebar__item-label">{item.label}</span>
-                <DisclosureIcon className="sidebar-section__disclosure-icon" aria-hidden="true" />
-              </>
-            )}
+            <span className="sidebar__item-label">{item.label}</span>
+            <DisclosureIcon className="sidebar-section__disclosure-icon" aria-hidden="true" />
           </button>
         </PopoverTrigger>
         <PopoverContent

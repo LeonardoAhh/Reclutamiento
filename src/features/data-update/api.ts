@@ -187,7 +187,30 @@ export function dataUpdateError(error: unknown): string {
 }
 
 const RECORD_SELECT = `
-  *,
+  id,
+  campaign_id,
+  employee_number,
+  employee_name,
+  area,
+  section,
+  position,
+  shift,
+  hire_date,
+  birth_date,
+  curp,
+  rfc,
+  social_security_number,
+  original_data,
+  current_data,
+  assigned_to,
+  status,
+  identity_review,
+  current_step,
+  photo_path,
+  version,
+  started_at,
+  completed_at,
+  updated_at,
   assigned_profile:profiles!data_update_records_assigned_to_fkey(display_name, username),
   campaign:data_update_campaigns!data_update_records_campaign_id_fkey(name)
 `;
@@ -388,12 +411,13 @@ export async function reassignDataUpdateRecord(recordId: string, profileId: stri
   return mapRecord(data);
 }
 
-export async function assignDataUpdateLocker(recordId: string, locker: string): Promise<void> {
-  const { error } = await supabase.rpc("assign_data_update_locker", {
+export async function assignDataUpdateLocker(recordId: string, locker: string): Promise<DataUpdateRecord> {
+  const { data, error } = await supabase.rpc("assign_data_update_locker", {
     p_record_id: recordId,
     p_locker: locker,
   });
   if (error) throw new Error(dataUpdateError(error));
+  return mapRecord(data);
 }
 
 export async function listDataUpdateAudit(recordIds: string[]): Promise<DataUpdateAuditEntry[]> {

@@ -481,7 +481,7 @@
     "nombre": "ARTEAGA PEREZ CARLOS",
     "seccion": "ALMACÉN 2DO TURNO ",
     "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
@@ -1098,15 +1098,6 @@
     "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
-    "numero empleado": "3551",
-    "nombre": "ZARRABAL DIAZ JORGE JAVIER",
-    "seccion": "CALIDAD ADMTVO",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
-  },
-  {
     "numero empleado": "3563",
     "nombre": "PEREZ PLATON SANDRA ESTHER",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -1177,15 +1168,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "3637",
-    "nombre": "AGUILAR VICENCIO DAVID",
-    "seccion": "MANTENIMIENTO",
-    "turno": "3",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "PROL. BERNARDO QUINTANA",
-    "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero empleado": "3650",
@@ -1785,7 +1767,7 @@
     "numero empleado": "4115",
     "nombre": "REYES MONROY FRANCISCO ALEJANDRO",
     "seccion": "MANTENIMIENTO",
-    "turno": "4",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "OBRERA",
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
@@ -1989,15 +1971,6 @@
     "parada": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
-    "numero empleado": "4184",
-    "nombre": "MARTINEZ MARTINEZ ALEJANDRA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
-  },
-  {
     "numero empleado": "4185",
     "nombre": "SANTOS ENCARNACION JUAN JOSE",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2178,24 +2151,6 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero empleado": "4242",
-    "nombre": "BAUTISTA VICENCIO MARIBEL",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
-  },
-  {
-    "numero empleado": "4246",
-    "nombre": "FABIAN SANCHEZ ALAN",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "turno": "2",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
-  },
-  {
     "numero empleado": "4249",
     "nombre": "LLAMAS VALENCIA MARCO ANTONIO",
     "seccion": "ALMACÉN 1ER TURNO ",
@@ -2203,15 +2158,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
-    "numero empleado": "4250",
-    "nombre": "RANGEL  KIMBERLY LUSSY",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero empleado": "4251",
@@ -2394,15 +2340,6 @@
     "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
-    "numero empleado": "4296",
-    "nombre": "HURTADO SANCHEZ VIVIANA IVETTE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PEÑAFLOR",
-    "parada": "BODEGA AURRERA, PEÑAFLOR"
-  },
-  {
     "numero empleado": "4299",
     "nombre": "MENDEZ MORALES MA. DE LOS ANGELES",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2439,15 +2376,6 @@
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
   {
-    "numero empleado": "4306",
-    "nombre": "AGUSTIN RAMIREZ MARIELA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "TLALOC ",
-    "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
-  },
-  {
     "numero empleado": "4308",
     "nombre": "ORTIZ HERNANDEZ MARIELA",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2482,15 +2410,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DEL MA. TERESA"
-  },
-  {
-    "numero empleado": "4319",
-    "nombre": "ARIAS MARTINEZ ERIDIA NAYELLY",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE JUNCOS"
   },
   {
     "numero empleado": "4320",
@@ -2609,6 +2528,15 @@
     "colonia": "SANTA ROSA",
     "parada": "EN EL PUENTE DE LA CRUZ "
   },
+{
+    "numero empleado": "4337",
+    "nombre": "HERNANDEZ GUTIERREZ CRISTIAN JESUS",
+    "seccion": "MANTENIMIENTO",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "PLAZA DEL SOL",
+    "parada": "EN EL KFC"
+  },
   {
     "numero empleado": "4339",
     "nombre": "DURANTE GOMEZ JESSICA",
@@ -2628,15 +2556,6 @@
     "parada": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
   },
   {
-    "numero empleado": "4342",
-    "nombre": "SANCHEZ LEYVA JOSE ANGEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DEL MA. TERESA"
-  },
-  {
     "numero empleado": "4343",
     "nombre": "VALENCIA GARCIA YAMILET IRAIS",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2644,15 +2563,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "AV. DE LA LUZ",
     "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
-    "numero empleado": "4345",
-    "nombre": "PAULINO PEREZ FRANCISCO JAVIER",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero empleado": "4346",
@@ -2736,15 +2646,6 @@
     "parada": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
-    "numero empleado": "4357",
-    "nombre": "MORALES OVALLE MARTIN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN EL OXXO DE JUNCOS"
-  },
-  {
     "numero empleado": "4358",
     "nombre": "ARVIZU SANCHEZ LORENA BEATRIZ",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2752,15 +2653,6 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
-    "numero empleado": "4359",
-    "nombre": "PADILLA ANG MARINA HIDEKEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "4360",
@@ -2776,8 +2668,44 @@
     "nombre": "ESTRADA SALINAS IVONNE",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
     "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA",
     "parada": "PARADA DE AUTOBUSES SECUNDARIA"
+  },
+  {
+    "numero empleado": "4365",
+    "nombre": "PICHARDO VARGAS MARGARITA",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero empleado": "4367",
+    "nombre": "ROSETE FELIPE HANIA",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero empleado": "4371",
+    "nombre": "SEGURA QUEBRADO MIRIAM",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
+  },
+  {
+    "numero empleado": "4372",
+    "nombre": "SANTES VAZQUEZ NATIVIDAD",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   }
 ]
