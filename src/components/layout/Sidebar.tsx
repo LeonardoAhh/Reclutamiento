@@ -14,6 +14,7 @@ import { ActividadesNavItem } from "./ActividadesNavItem";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 import { toast } from "@/lib/notify";
+import { toNaturalCase } from "@/lib/utils";
 
 type SidebarProps = {
   mobileMenuOpen?: boolean;
@@ -154,6 +155,9 @@ export function Sidebar({
         <div className="sidebar__user">
           <UserMenuPopover
             username={username}
+            displayName={toNaturalCase(profile?.display_name || username, {
+              preserveAcronyms: false,
+            })}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
             mobile={Boolean(mobileMenuOpen)}

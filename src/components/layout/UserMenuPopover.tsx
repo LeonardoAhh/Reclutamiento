@@ -15,6 +15,7 @@ import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityModal } from "@/features/system/UserActivityModal";
 import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
 import { ChangePasswordModal } from "@/features/account/ChangePasswordModal";
+import { LogoutConfirmModal } from "@/features/account/LogoutConfirmModal";
 import { ChevronsUpDown, LoaderCircle, LogOut } from "lucide";
 import {
   Activity,
@@ -25,10 +26,11 @@ import {
 } from "lucide-react";
 import "./UserMenuPopover.css";
 
-type UserMenuModal = "avatar" | "password" | "recognition" | "maintenance" | "activity" | null;
+type UserMenuModal = "avatar" | "password" | "recognition" | "maintenance" | "activity" | "logout" | null;
 
 interface UserMenuPopoverProps {
   username: string;
+  displayName: string;
   email?: string | null;
   avatarUrl?: string | null;
   mobile: boolean;
@@ -40,6 +42,7 @@ interface UserMenuPopoverProps {
 
 export function UserMenuPopover({
   username,
+  displayName,
   email,
   avatarUrl,
   mobile,
@@ -194,10 +197,7 @@ export function UserMenuPopover({
               asChild
               variant="destructive"
               disabled={signingOut}
-              onSelect={() => {
-                setOpen(false);
-                onSignOut();
-              }}
+              onSelect={() => handleOpenModal("logout")}
             >
               <button
                 type="button"
@@ -234,6 +234,17 @@ export function UserMenuPopover({
       {activeModal === "activity" && (
         <UserActivityModal isOpen onClose={handleCloseModal} />
       )}
+      <LogoutConfirmModal
+        isOpen={activeModal === "logout"}
+        displayName={displayName}
+        email={email}
+        avatarUrl={avatarUrl}
+        onConfirm={onSignOut}
+        onCancel={() => {
+          if (!signingOut) handleCloseModal();
+        }}
+        isLoading={signingOut}
+      />
     </>
   );
 }
