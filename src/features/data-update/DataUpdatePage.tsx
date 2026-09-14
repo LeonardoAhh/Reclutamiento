@@ -240,11 +240,6 @@ export function DataUpdatePage() {
   const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
 
   useEffect(() => {
-    recordPagination.goToPage(1);
-    setSelectedWorkGroup("");
-  }, [recordPagination.goToPage, searchTerm, selectedCampaignId]);
-
-  useEffect(() => {
     if (!pendingWorkGroupFocus) return;
     const frame = window.requestAnimationFrame(() => {
       const group = document.getElementById(workGroupId(pendingWorkGroupFocus));
@@ -360,6 +355,8 @@ export function DataUpdatePage() {
                 onChange={(campaignId) => {
                   setSelectedCampaignId(campaignId);
                   setSearchTerm("");
+                  setSelectedWorkGroup("");
+                  recordPagination.goToPage(1);
                 }}
                 showPlaceholderOption={false}
                 disabled={loading || busy}
@@ -461,10 +458,19 @@ export function DataUpdatePage() {
                       label="Buscar en mi trabajo"
                       placeholder="Número, nombre, área, sección, puesto o turno"
                       value={searchTerm}
-                      onChange={(event) => setSearchTerm(event.target.value)}
-                      onClear={() => setSearchTerm("")}
+                      onChange={(event) => {
+                        setSearchTerm(event.target.value);
+                        recordPagination.goToPage(1);
+                      }}
+                      onClear={() => {
+                        setSearchTerm("");
+                        recordPagination.goToPage(1);
+                      }}
                       onKeyDown={(event) => {
-                        if (event.key === "Escape" && searchTerm) setSearchTerm("");
+                        if (event.key === "Escape" && searchTerm) {
+                          setSearchTerm("");
+                          recordPagination.goToPage(1);
+                        }
                       }}
                       aria-controls="data-update-record-list"
                       autoComplete="off"
