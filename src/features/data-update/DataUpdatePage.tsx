@@ -210,11 +210,17 @@ export function DataUpdatePage() {
         || compareDataUpdateRecords(left, right)
       ));
   }, [myRecords, searchTerm]);
-  const recordPagination = usePagination(visibleMyRecords, DATA_UPDATE_PAGE_SIZE);
   const visibleWorkGroups = useMemo(
     () => groupWorkRecords(visibleMyRecords),
     [visibleMyRecords],
   );
+  const filteredWorkRecords = useMemo(
+    () => selectedWorkGroup
+      ? visibleMyRecords.filter((record) => workGroupKey(record) === selectedWorkGroup)
+      : visibleMyRecords,
+    [selectedWorkGroup, visibleMyRecords],
+  );
+  const recordPagination = usePagination(filteredWorkRecords, DATA_UPDATE_PAGE_SIZE);
   const pageWorkGroups = useMemo(
     () => groupWorkRecords(recordPagination.pageItems),
     [recordPagination.pageItems],
@@ -251,10 +257,8 @@ export function DataUpdatePage() {
 
   const goToWorkGroup = (groupKey: string) => {
     setSelectedWorkGroup(groupKey);
-    const recordIndex = visibleMyRecords.findIndex((record) => workGroupKey(record) === groupKey);
-    if (recordIndex < 0) return;
-    recordPagination.goToPage(Math.floor(recordIndex / recordPagination.pageSize) + 1);
-    setPendingWorkGroupFocus(groupKey);
+    recordPagination.goToPage(1);
+    setPendingWorkGroupFocus(groupKey || null);
   };
 
   const openRecord = async (record: DataUpdateRecord) => {
@@ -468,13 +472,13 @@ export function DataUpdatePage() {
                     {visibleMyRecords.length > 0 && (
                       <div className="form-group data-update-work-group-navigation">
                         <label className="sr-only" htmlFor="data-update-work-group-navigation">
-                          Ir a área
+                          Filtrar por área
                         </label>
                         <CustomSelect
                           id="data-update-work-group-navigation"
                           value={selectedWorkGroup}
                           options={workGroupOptions}
-                          placeholder="IR A ÁREA"
+                          placeholder="TODAS LAS ÁREAS"
                           showPlaceholderOption
                           onChange={goToWorkGroup}
                         />
