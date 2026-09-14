@@ -122,13 +122,6 @@ export default function ReporteDiarioContent() {
     };
   }, []);
 
-  useEffect(() => {
-    if (saveError) {
-      const timer = setTimeout(() => setSaveError(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [saveError]);
-
   // Recuperar último reporte parseado si se recarga la página por accidente
   useEffect(() => {
     try {
@@ -649,6 +642,7 @@ export default function ReporteDiarioContent() {
 
   const handleSaveToDb = useCallback(async () => {
     setSaveSuccess(false);
+    setSaveError(null);
     if (!currentMonth || rows.length === 0 || dbSaving) return;
     const monthRows = rows.filter((r) => r.mes === currentMonth);
     const dCount = daysInMonth(currentMonth);
@@ -1095,24 +1089,32 @@ export default function ReporteDiarioContent() {
           )}
 
           {hasData && (
-            <AnimatedSubmitButton
-              type="button"
-              isSubmitting={dbSaving}
-              isSuccess={saveSuccess}
-              isError={!!saveError}
-              errorText={saveError || undefined}
-              idleText={
-                savedSummaries.some((s) => s.mes === currentMonth)
-                  ? "Actualizar"
-                  : "Guardar"
-              }
-              loadingText="Guardando…"
-              successText="¡Guardado!"
-              idleIcon={SaveIconData}
-              className="btn-primary"
-              onClick={handleSaveToDb}
-              data-testid="save-report-btn"
-            />
+            <div className="reporte-head__save-action">
+              <AnimatedSubmitButton
+                type="button"
+                isSubmitting={dbSaving}
+                isSuccess={saveSuccess}
+                isError={!!saveError}
+                errorText={saveError || undefined}
+                errorMessageId="report-save-error"
+                idleText={
+                  savedSummaries.some((s) => s.mes === currentMonth)
+                    ? "Actualizar"
+                    : "Guardar"
+                }
+                loadingText="Guardando…"
+                successText="¡Guardado!"
+                idleIcon={SaveIconData}
+                className="btn-primary"
+                onClick={handleSaveToDb}
+                data-testid="save-report-btn"
+              />
+              {saveError && (
+                <p id="report-save-error" className="form-error-text" role="alert">
+                  {saveError}
+                </p>
+              )}
+            </div>
           )}
         </div>
       </header>

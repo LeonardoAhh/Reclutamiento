@@ -225,13 +225,6 @@ export function CandidateModal({
   }, [isOpen, candidate, mode]);
 
   useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => setErrorMsg(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
-
-  useEffect(() => {
     if (errorMsg) setErrorMsg(null);
   }, [form]);
 
@@ -647,7 +640,11 @@ const fieldsPosicion = (
     </>
   );
 
-  const errorNotice = null;
+  const errorNotice = errorMsg ? (
+    <p id="candidate-submit-error" className="form-error-text" role="alert">
+      {errorMsg}
+    </p>
+  ) : null;
 
   const useWizard = !accessCard && isMobile;
   const footerActions = !accessCard && !useWizard ? (
@@ -665,6 +662,7 @@ const fieldsPosicion = (
         isSuccess={isSuccess}
         isError={!!errorMsg}
         errorText={errorMsg || undefined}
+        errorMessageId="candidate-submit-error"
         idleText="Guardar"
         loadingText="Guardando..."
         successText="¡Guardado!"

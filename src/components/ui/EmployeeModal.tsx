@@ -228,13 +228,6 @@ export function EmployeeModal({
   }, [isOpen, mode, employee, vacancyOptions]);
 
   useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => setErrorMsg(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
-
-  useEffect(() => {
     if (errorMsg) setErrorMsg(null);
   }, [form, bajaForm]);
 
@@ -591,7 +584,11 @@ export function EmployeeModal({
     </>
   );
 
-  const errorNotice = null;
+  const errorNotice = errorMsg ? (
+    <p id="employee-submit-error" className="form-error-text" role="alert">
+      {errorMsg}
+    </p>
+  ) : null;
 
   const icon = isAdd ? (
     <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
@@ -702,6 +699,7 @@ export function EmployeeModal({
                 isSuccess={isSuccess}
                 isError={!!errorMsg}
                 errorText={errorMsg || undefined}
+                errorMessageId="employee-submit-error"
                 idleText="Guardar"
                 loadingText="Guardando..."
                 successText="¡Guardado!"
@@ -718,6 +716,7 @@ export function EmployeeModal({
             isSuccess={isSuccess}
             isError={!!errorMsg}
             errorText={errorMsg || undefined}
+            errorMessageId="employee-submit-error"
             idleText="Guardar"
             loadingText="Guardando..."
             successText="¡Guardado!"
@@ -733,6 +732,7 @@ export function EmployeeModal({
           isSuccess={isSuccess}
           isError={!!errorMsg}
           errorText={errorMsg || undefined}
+          errorMessageId="employee-submit-error"
           idleText="Eliminar"
           loadingText="Registrando baja..."
           successText="¡Baja registrada!"

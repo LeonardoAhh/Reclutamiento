@@ -870,6 +870,7 @@ export function SpeechView() {
               isSuccess={submitStatus === "success"}
               isError={!!errorMsg}
               errorText={errorMsg ?? undefined}
+              errorMessageId="speech-submit-error"
               idleText={editingId ? "Guardar cambios" : "Crear"}
               loadingText="Guardando…"
               successText="¡Guardado!"
@@ -1103,6 +1104,11 @@ export function SpeechView() {
                   </div>
                 </div>
               </div>
+            )}
+            {errorMsg && (
+              <p id="speech-submit-error" className="form-error-text" role="alert">
+                {errorMsg}
+              </p>
             )}
           </form>
         </div>

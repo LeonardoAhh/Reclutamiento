@@ -103,6 +103,21 @@
   flex: 0 0 auto;
 }
 
+.reporte-head__save-action {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  max-inline-size: 100%;
+}
+
+.reporte-head__save-action .form-error-text {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.reporte-head__save-action > .animated-submit-button {
+  inline-size: 100%;
+}
+
 /* Evitar que la apariencia de 'card' se aplique al header */
 .reporte-header__top .reporte-card {
   background: transparent;

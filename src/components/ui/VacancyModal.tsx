@@ -167,13 +167,6 @@ export function VacancyModal({
   }, [isOpen, vacancy, mode]);
 
   useEffect(() => {
-    if (errorMsg) {
-      const timer = setTimeout(() => setErrorMsg(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMsg]);
-
-  useEffect(() => {
     if (errorMsg) setErrorMsg(null);
   }, [form]);
 
@@ -514,7 +507,11 @@ export function VacancyModal({
       </div>
     ) : null;
 
-  const errorNotice = null;
+  const errorNotice = errorMsg ? (
+    <p id="vacancy-submit-error" className="form-error-text" role="alert">
+      {errorMsg}
+    </p>
+  ) : null;
 
   const deleteContent = (
     <div className="delete-warning">
@@ -606,6 +603,7 @@ export function VacancyModal({
         isSuccess={isSuccess}
         isError={!!errorMsg}
         errorText={errorMsg || undefined}
+        errorMessageId="vacancy-submit-error"
         idleText="Eliminar"
         loadingText="Eliminando..."
         successText="¡Eliminado!"
@@ -620,6 +618,7 @@ export function VacancyModal({
       isSuccess={isSuccess}
       isError={!!errorMsg}
       errorText={errorMsg || undefined}
+      errorMessageId="vacancy-submit-error"
       idleText={isAdd ? 'Crear' : 'Guardar'}
       loadingText="Guardando..."
       successText="¡Guardado!"

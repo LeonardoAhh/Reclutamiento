@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   CircleAlert,
@@ -21,6 +21,7 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   successText?: string;
   errorText?: string;
   isError?: boolean;
+  errorMessageId?: string;
   idleIcon?: IconInput;
   iconOnly?: boolean;
 }
@@ -35,17 +36,34 @@ export function AnimatedSubmitButton({
   loadingText = 'Guardando…',
   successText = '¡Guardado!',
   errorText = 'Error',
+  errorMessageId,
   idleIcon = Save,
   iconOnly = false,
   className = '',
   disabled = false,
   type = 'submit',
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  title,
   ...buttonProps
 }: AnimatedSubmitButtonProps) {
   const { trigger } = useFeedback();
-  const state: SubmitState = isSuccess ? 'success' : isError ? 'error' : isSubmitting ? 'loading' : 'idle';
-  const isDisabled = Boolean(disabled) || state !== 'idle';
-  const stateText = state === 'loading' ? loadingText : state === 'success' ? successText : state === 'error' ? errorText : idleText;
+  const previousState = useRef<SubmitState>('idle');
+  const state: SubmitState = isSubmitting ? 'loading' : isError ? 'error' : isSuccess ? 'success' : 'idle';
+  const isDisabled = Boolean(disabled) || state === 'loading' || state === 'success';
+  const visibleText = state === 'loading' ? loadingText : state === 'success' ? successText : idleText;
+  const accessibleLabel = ariaLabel ?? (ariaLabelledBy ? undefined : visibleText);
+  const describedBy = [ariaDescribedBy, state === 'error' ? errorMessageId : undefined]
+    .filter(Boolean)
+    .join(' ') || undefined;
+  const announcement = state === 'loading'
+    ? loadingText
+    : state === 'success'
+      ? successText
+      : state === 'error' && !errorMessageId
+        ? errorText
+        : '';
   const stateIcon = state === 'loading'
     ? LoaderCircle
     : state === 'success'
@@ -55,6 +73,9 @@ export function AnimatedSubmitButton({
         : idleIcon;
 
   useEffect(() => {
+    if (state === previousState.current) return;
+    previousState.current = state;
+
     if (state === 'success') {
       try {
         trigger('success');
@@ -71,31 +92,47 @@ export function AnimatedSubmitButton({
   }, [state, trigger]);
 
   return (
-    <motion.button
-      {...buttonProps}
-      type={type}
-      className={['animated-submit-button', className].filter(Boolean).join(' ')}
-      data-state={state}
-      disabled={isDisabled}
-      aria-busy={state === 'loading' || undefined}
-      aria-label={stateText}
-      title={iconOnly ? stateText : undefined}
-    >
-      {/* ── Hidden live region for screen readers ── */}
-      <span className="sr-only" aria-live="polite" aria-atomic="true">
-        {stateText}
+    <>
+      <motion.button
+        {...buttonProps}
+        type={type}
+        className={['animated-submit-button', className].filter(Boolean).join(' ')}
+        data-state={state}
+        data-icon-only={iconOnly || undefined}
+        disabled={isDisabled}
+        aria-busy={state === 'loading' || undefined}
+        aria-label={accessibleLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={describedBy}
+        title={title ?? (iconOnly ? accessibleLabel : undefined)}
+      >
+        <span className="animated-submit-button__content" aria-hidden="true">
+          <span className="animated-submit-button__measure">
+            <span className="animated-submit-button__measure-icon" />
+            {!iconOnly && (
+              <span className="animated-submit-button__measure-text">
+                <span>{idleText}</span>
+                <span>{loadingText}</span>
+                <span>{successText}</span>
+              </span>
+            )}
+          </span>
+          <span className="animated-submit-button__visual">
+            <MorphingIcon
+              icon={stateIcon}
+              size="var(--icon-size-sm)"
+              reducedMotion="user"
+              className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
+            />
+            {state !== 'loading' && !iconOnly && (
+              <span className="animated-submit-button__text">{visibleText}</span>
+            )}
+          </span>
+        </span>
+      </motion.button>
+      <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
       </span>
-
-      <span className="animated-submit-button__content" aria-hidden="true">
-        <MorphingIcon
-          icon={stateIcon}
-          size="var(--icon-size-sm)"
-          className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
-        />
-        {!iconOnly && (
-          <span className="animated-submit-button__text">{stateText}</span>
-        )}
-      </span>
-    </motion.button>
+    </>
   );
 }

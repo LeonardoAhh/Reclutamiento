@@ -450,15 +450,6 @@
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
-    "numero empleado": "2401",
-    "nombre": "MORENO MEJIA AMALIA BERENICE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "turno": "4",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "PUERTO CARROZA",
-    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
-  },
-  {
     "numero empleado": "2420",
     "nombre": "CABALLERO MARTINEZ ROSALIA",
     "seccion": "PRODUCCIÓN 3ER. TURNO",
@@ -2178,15 +2169,6 @@
     "parada": "PARADA DEL MA. TERESA"
   },
   {
-    "numero empleado": "4255",
-    "nombre": "MENDOZA GARCIA JOSE CARLOS",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "SANTA ROSA",
-    "parada": "EN EL PUENTE DE LA CRUZ "
-  },
-  {
     "numero empleado": "4259",
     "nombre": "BECERRA NUÑEZ SUSANA",
     "seccion": "PRODUCCIÓN 2o. TURNO",
@@ -2509,15 +2491,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PLAZA DEL SOL",
     "parada": "EN EL KFC"
-  },
-  {
-    "numero empleado": "4339",
-    "nombre": "DURANTE GOMEZ JESSICA",
-    "seccion": "CALIDAD ADMTVO",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero empleado": "4340",

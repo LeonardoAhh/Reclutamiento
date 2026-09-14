@@ -6,16 +6,9 @@
 }
 
 .animated-submit-button[data-state="success"]:disabled {
-  background: var(--color-success);
+  background: var(--color-success-subtle);
   border-color: var(--color-success);
-  color: var(--color-on-primary);
-  opacity: 1;
-}
-
-.animated-submit-button[data-state="error"]:disabled {
-  background: var(--color-error);
-  border-color: var(--color-error);
-  color: var(--color-on-primary);
+  color: var(--color-success-text);
   opacity: 1;
 }
 
@@ -36,16 +29,56 @@
 }
 
 .animated-submit-button__content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--design-spacing-xs);
+  display: grid;
+  place-items: center;
   min-inline-size: 0;
   pointer-events: none;
 }
 
-.animated-submit-button__content svg {
+.animated-submit-button__measure,
+.animated-submit-button__visual {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+}
+
+.animated-submit-button__measure {
+  visibility: hidden;
+}
+
+.animated-submit-button__measure-icon {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 var(--icon-size-sm);
+}
+
+.animated-submit-button__measure-text {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.animated-submit-button__measure-text > span {
+  grid-area: 1 / 1;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
+}
+
+.animated-submit-button__visual svg {
   flex-shrink: 0;
+}
+
+.animated-submit-button[data-state="loading"] .animated-submit-button__visual {
+  gap: 0;
+}
+
+.animated-submit-button[data-icon-only] {
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-xs);
 }
 
 .animated-submit-button__text {
