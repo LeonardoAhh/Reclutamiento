@@ -395,6 +395,21 @@
   align-items: stretch;
 }
 
+/* Número + badge de estado en línea (Mi trabajo) */
+.data-update-work-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-block-end: var(--design-spacing-xxs);
+}
+
+/* Botón de acción a ancho completo */
+.data-update-work-card__action {
+  width: 100%;
+}
+
 .data-update-status {
   align-self: flex-start;
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
@@ -980,13 +995,89 @@
   letter-spacing: var(--type-caption-sm-tracking);
 }
 
-.data-update-admin-card__identity {
+/* Header de la card: identidad a la izquierda, botón ⋯ a la derecha */
+.data-update-admin-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
   min-width: 0;
 }
 
-.data-update-admin-card .data-update-record-card__footer {
-  flex-wrap: wrap;
+.data-update-admin-card__identity {
+  min-width: 0;
+  flex: 1 1 0;
 }
+
+/* Número de empleado + badge de estado en línea */
+.data-update-admin-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-block-end: var(--design-spacing-xxs);
+}
+
+/* Popover de acciones */
+.data-update-admin-card__popover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-inline-size: 10rem;
+  padding: var(--spacing-xs);
+}
+
+/* Ítems del popover — mismo patrón que .dropdown-menu-item */
+.data-update-admin-card__action {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-block-size: var(--touch-target-min);
+  padding-inline: var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  width: 100%;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  cursor: pointer;
+  text-align: start;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.data-update-admin-card__action:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.data-update-admin-card__action--danger {
+  color: var(--color-error);
+}
+
+.data-update-admin-card__action--danger:hover:not(:disabled) {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+
+.data-update-admin-card__action svg {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  flex: 0 0 auto;
+}
+
+/* Separador entre acciones normales y destructivas */
+.data-update-admin-card__separator {
+  block-size: var(--border-width);
+  margin-block: var(--spacing-xxs);
+  border: none;
+  background: var(--color-hairline);
+}
+
+
 
 @media (min-width: 768px) {
   .data-update-page {

@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { PencilLine } from "lucide-react";
+import { EllipsisVertical, PencilLine } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Pagination } from "@/components/ui/Pagination";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
 import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
 import { formatReadableDate } from "@/lib/dates";
@@ -136,9 +141,34 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
           <div id="data-update-locker-list" className="data-update-record-grid">
             {pagination.pageItems.map((record) => (
               <article key={record.id} className="card data-update-record-card data-update-locker-card">
-                <div>
-                  <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
-                  <h3>{record.identity.name}</h3>
+                <div className="data-update-admin-card__header">
+                  <div className="data-update-admin-card__identity">
+                    <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                    <h3>{record.identity.name}</h3>
+                  </div>
+                  {canEdit && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="dropdown-menu-trigger"
+                          aria-label={`Acciones de ${record.identity.name}`}
+                        >
+                          <EllipsisVertical aria-hidden="true" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent align="end" className="data-update-admin-card__popover">
+                        <button
+                          type="button"
+                          className="data-update-admin-card__action"
+                          onClick={() => openEditor(record)}
+                        >
+                          <PencilLine aria-hidden="true" />
+                          <span>Editar</span>
+                        </button>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </div>
                 <dl className="data-update-locker-card__details">
                   <div>
@@ -150,14 +180,6 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                     <dd>{record.data.locker.trim() || "Sin asignar"}</dd>
                   </div>
                 </dl>
-                {canEdit && (
-                  <div className="data-update-record-card__footer">
-                    <button type="button" className="btn-secondary" onClick={() => openEditor(record)}>
-                      <PencilLine aria-hidden="true" />
-                      Editar
-                    </button>
-                  </div>
-                )}
               </article>
             ))}
           </div>

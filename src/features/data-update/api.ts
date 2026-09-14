@@ -402,6 +402,14 @@ export async function reopenDataUpdateRecord(recordId: string) {
   return mapRecord(data);
 }
 
+export async function deleteDataUpdateRecord(recordId: string): Promise<void> {
+  const { error } = await supabase
+    .from("data_update_records")
+    .delete()
+    .eq("id", recordId);
+  if (error) throw new Error(dataUpdateError(error));
+}
+
 export async function reassignDataUpdateRecord(recordId: string, profileId: string) {
   const { data, error } = await supabase.rpc("reassign_data_update_record", {
     p_record_id: recordId,

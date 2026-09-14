@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { FileArchive, FileSpreadsheet, PencilLine, RotateCcw } from "lucide-react";
+import { EllipsisVertical, FileArchive, FileSpreadsheet, PencilLine, RotateCcw, Trash2 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
 import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import {
   dataUpdateError,
+  deleteDataUpdateRecord,
   listCampaignDataUpdateIncidents,
   listDataUpdateAudit,
   reassignDataUpdateRecord,
@@ -25,6 +32,7 @@ interface DataUpdateAdminPanelProps {
   onBusyChange: (busy: boolean) => void;
   onOpenRecord: (record: DataUpdateRecord) => void;
   onRecordUpdated: (record: DataUpdateRecord) => void;
+  onRecordDeleted: (recordId: string) => void;
 }
 
 export function DataUpdateAdminPanel({
@@ -34,6 +42,7 @@ export function DataUpdateAdminPanel({
   onBusyChange,
   onOpenRecord,
   onRecordUpdated,
+  onRecordDeleted,
 }: DataUpdateAdminPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const participantProfiles = profiles.filter((profile) => detail.participantIds.includes(profile.id));
@@ -59,6 +68,9 @@ export function DataUpdateAdminPanel({
   }, [searchTerm, sortedRecords]);
   const pagination = usePagination(visibleRecords, DATA_UPDATE_PAGE_SIZE);
   const [photoExportProgress, setPhotoExportProgress] = useState<DataUpdatePhotoExportProgress | null>(null);
+  const [pendingDeleteRecord, setPendingDeleteRecord] = useState<DataUpdateRecord | null>(null);
+  const [deleteRecordError, setDeleteRecordError] = useState<string | null>(null);
+  const [deletingRecord, setDeletingRecord] = useState(false);
 
   useEffect(() => {
     pagination.goToPage(1);
@@ -87,6 +99,25 @@ export function DataUpdateAdminPanel({
     } catch (caught) {
       toast.error({ title: dataUpdateError(caught) });
     } finally {
+      onBusyChange(false);
+    }
+  };
+
+  const confirmRecordDeletion = async () => {
+    if (!pendingDeleteRecord || deletingRecord) return;
+    setDeletingRecord(true);
+    onBusyChange(true);
+    setDeleteRecordError(null);
+    try {
+      await deleteDataUpdateRecord(pendingDeleteRecord.id);
+      const deletedId = pendingDeleteRecord.id;
+      setPendingDeleteRecord(null);
+      onRecordDeleted(deletedId);
+      toast.success({ title: "Colaborador eliminado de la campaña" });
+    } catch (caught) {
+      setDeleteRecordError(dataUpdateError(caught));
+    } finally {
+      setDeletingRecord(false);
       onBusyChange(false);
     }
   };
@@ -209,9 +240,62 @@ export function DataUpdateAdminPanel({
         <div id="data-update-admin-list" className="data-update-record-grid">
           {pagination.pageItems.map((record) => (
             <article key={record.id} className="card data-update-record-card data-update-admin-card">
-              <div className="data-update-admin-card__identity">
-                <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
-                <h3>{record.identity.name}</h3>
+              <div className="data-update-admin-card__header">
+                <div className="data-update-admin-card__identity">
+                  <div className="data-update-admin-card__meta">
+                    <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                    <span className={`data-update-status data-update-status--${record.status}`}>
+                      {record.status.replace("_", " ")}
+                    </span>
+                  </div>
+                  <h3>{record.identity.name}</h3>
+                </div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="dropdown-menu-trigger"
+                      disabled={busy}
+                      aria-label={`Acciones de ${record.identity.name}`}
+                    >
+                      <EllipsisVertical aria-hidden="true" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="data-update-admin-card__popover">
+                    {record.status === "completado" ? (
+                      <button
+                        type="button"
+                        className="data-update-admin-card__action"
+                        onClick={() => { void reopen(record.id); }}
+                      >
+                        <RotateCcw aria-hidden="true" />
+                        <span>Reabrir</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="data-update-admin-card__action"
+                        onClick={() => onOpenRecord(record)}
+                      >
+                        <PencilLine aria-hidden="true" />
+                        <span>Actualizar</span>
+                      </button>
+                    )}
+                    <hr className="data-update-admin-card__separator" />
+                    <button
+                      type="button"
+                      className="data-update-admin-card__action data-update-admin-card__action--danger"
+                      onClick={() => {
+                        setDeleteRecordError(null);
+                        setPendingDeleteRecord(record);
+                      }}
+                      aria-label={`Eliminar a ${record.identity.name} de la campaña`}
+                    >
+                      <Trash2 aria-hidden="true" />
+                      <span>Eliminar</span>
+                    </button>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="form-group">
                 <label htmlFor={`assigned-${record.id}`}>Responsable</label>
@@ -223,20 +307,6 @@ export function DataUpdateAdminPanel({
                   showPlaceholderOption={false}
                   disabled={busy}
                 />
-              </div>
-              <div className="data-update-record-card__footer">
-                <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
-                {record.status === "completado" ? (
-                  <button type="button" className="btn-secondary" onClick={() => void reopen(record.id)} disabled={busy}>
-                    <RotateCcw aria-hidden="true" />
-                    Reabrir
-                  </button>
-                ) : (
-                  <button type="button" className="btn-primary" onClick={() => onOpenRecord(record)} disabled={busy}>
-                    <PencilLine aria-hidden="true" />
-                    Actualizar
-                  </button>
-                )}
               </div>
             </article>
           ))}
@@ -256,6 +326,26 @@ export function DataUpdateAdminPanel({
           variant="compact"
         />
       )}
+
+      <ConfirmModal
+        isOpen={pendingDeleteRecord !== null}
+        title="Eliminar colaborador"
+        description={pendingDeleteRecord
+          ? `Se eliminará a ${pendingDeleteRecord.identity.name} de la campaña. Esta acción no se puede deshacer.`
+          : undefined}
+        confirmLabel="Eliminar"
+        cancelLabel="Cancelar"
+        onConfirm={() => void confirmRecordDeletion()}
+        onCancel={() => {
+          if (deletingRecord) return;
+          setPendingDeleteRecord(null);
+          setDeleteRecordError(null);
+        }}
+        isDestructive
+        isLoading={deletingRecord}
+        loadingLabel="Eliminando…"
+        errorMessage={deleteRecordError ?? undefined}
+      />
     </section>
   );
 }

@@ -164,6 +164,16 @@ export function DataUpdatePage() {
     });
   }, []);
 
+  const removeDetailRecord = useCallback((recordId: string) => {
+    setDetail((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        records: current.records.filter((record) => record.id !== recordId),
+      };
+    });
+  }, []);
+
   useEffect(() => { void loadCampaigns(); }, [loadCampaigns]);
   useEffect(() => { void loadDetail(); }, [loadDetail]);
   useEffect(() => {
@@ -500,20 +510,20 @@ export function DataUpdatePage() {
                             {group.records.map((record) => (
                               <article key={record.id} className="card data-update-record-card">
                                 <div>
-                                  <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                                  <div className="data-update-work-card__name-row">
+                                    <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                                    <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
+                                  </div>
                                   <h4>{record.identity.name}</h4>
                                 </div>
-                                <div className="data-update-record-card__footer">
-                                  <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
-                                  <button
-                                    type="button"
-                                    className={record.status === "completado" ? "btn-secondary" : "btn-primary"}
-                                    onClick={() => void openRecord(record)}
-                                    disabled={!online || busy || record.status === "completado"}
-                                  >
-                                    {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
-                                  </button>
-                                </div>
+                                <button
+                                  type="button"
+                                  className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
+                                  onClick={() => void openRecord(record)}
+                                  disabled={!online || busy || record.status === "completado"}
+                                >
+                                  {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
+                                </button>
                               </article>
                             ))}
                           </div>
@@ -555,6 +565,7 @@ export function DataUpdatePage() {
                   onBusyChange={setBusy}
                   onOpenRecord={(record) => void openRecord(record)}
                   onRecordUpdated={updateDetailRecord}
+                  onRecordDeleted={removeDetailRecord}
                 />
               </Tabs.Content>
             )}
