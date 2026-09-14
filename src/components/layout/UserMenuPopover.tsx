@@ -67,6 +67,11 @@ export function UserMenuPopover({
     requestAnimationFrame(() => triggerRef.current?.focus());
   };
 
+  const handleConfirmSignOut = () => {
+    setActiveModal(null);
+    requestAnimationFrame(onSignOut);
+  };
+
   return (
     <>
       <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -239,7 +244,7 @@ export function UserMenuPopover({
         displayName={displayName}
         email={email}
         avatarUrl={avatarUrl}
-        onConfirm={onSignOut}
+        onConfirm={handleConfirmSignOut}
         onCancel={() => {
           if (!signingOut) handleCloseModal();
         }}
