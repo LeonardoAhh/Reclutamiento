@@ -263,15 +263,18 @@ export async function createDataUpdateCampaign(input: {
   return data;
 }
 
-export async function deleteDataUpdateCampaign(campaignId: string): Promise<void> {
+async function invokeDataUpdateDeletion(
+  functionName: "delete-data-update-campaign" | "delete-data-update-record",
+  body: Record<string, string>,
+): Promise<void> {
   const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
   const accessToken = sessionData.session?.access_token;
   if (sessionError || !accessToken) {
     throw new Error("Tu sesión ha caducado. Vuelve a iniciar sesión.");
   }
 
-  const { data, error } = await supabase.functions.invoke("delete-data-update-campaign", {
-    body: { campaignId },
+  const { data, error } = await supabase.functions.invoke(functionName, {
+    body,
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (error) {
@@ -298,6 +301,10 @@ export async function deleteDataUpdateCampaign(campaignId: string): Promise<void
   if (response.ok !== true) {
     throw new Error(dataUpdateError(response.message));
   }
+}
+
+export async function deleteDataUpdateCampaign(campaignId: string): Promise<void> {
+  await invokeDataUpdateDeletion("delete-data-update-campaign", { campaignId });
 }
 
 export async function getDataUpdateCampaignDetail(
@@ -403,11 +410,7 @@ export async function reopenDataUpdateRecord(recordId: string) {
 }
 
 export async function deleteDataUpdateRecord(recordId: string): Promise<void> {
-  const { error } = await supabase
-    .from("data_update_records")
-    .delete()
-    .eq("id", recordId);
-  if (error) throw new Error(dataUpdateError(error));
+  await invokeDataUpdateDeletion("delete-data-update-record", { recordId });
 }
 
 export async function reassignDataUpdateRecord(recordId: string, profileId: string) {

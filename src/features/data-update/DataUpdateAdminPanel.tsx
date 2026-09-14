@@ -330,9 +330,7 @@ export function DataUpdateAdminPanel({
       <ConfirmModal
         isOpen={pendingDeleteRecord !== null}
         title="Eliminar colaborador"
-        description={pendingDeleteRecord
-          ? `Se eliminará a ${pendingDeleteRecord.identity.name} de la campaña. Esta acción no se puede deshacer.`
-          : undefined}
+        description= "Esta acción no se puede deshacer."
         confirmLabel="Eliminar"
         cancelLabel="Cancelar"
         onConfirm={() => void confirmRecordDeletion()}
