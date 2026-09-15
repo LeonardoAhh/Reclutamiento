@@ -14,10 +14,8 @@ import {
   ChevronRight,
   ChartSpline,
   FileBraces,
-  FileChartColumn,
   FileUp,
   FileX2,
-  LoaderCircle,
 } from "lucide-react";
 import {
   PanelLeftClose,
@@ -56,6 +54,10 @@ import ReporteComparison from "./reporte-comparison";
 import ReporteEmployeeDetail from "./reporte-employee-detail";
 import ReportesGuardadosDialog from "./reportes-guardados-dialog";
 import { ReporteFormatErrors } from "./ReporteFormatErrors";
+import {
+  ReporteUploadPanel,
+  type ReportProcessStep,
+} from "./ReporteUploadPanel";
 
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
@@ -95,9 +97,7 @@ export default function ReporteDiarioContent() {
   const exitToRight = reduceMotion ? undefined : { opacity: 0, x: 24 };
   const exitToLeft = reduceMotion ? undefined : { opacity: 0, x: -24 };
 
-  const [processStep, setProcessStep] = useState<
-    "reading" | "validating" | null
-  >(null);
+  const [processStep, setProcessStep] = useState<ReportProcessStep>(null);
 
   const {
     saving: dbSaving,
@@ -500,52 +500,89 @@ export default function ReporteDiarioContent() {
       i < monthFirstDay ? null : String(i - monthFirstDay + 1).padStart(2, "0"),
   );
 
-  const processFile = useCallback(
-    async (file: File) => {
+  const processReportContent = useCallback(
+    async (
+      readContent: () => string | Promise<string>,
+      sourceName: string,
+      initialStep: Exclude<ReportProcessStep, null>,
+      errorTitle: string,
+    ) => {
       if (processStep) return;
-      if (file.type !== "application/json" && !file.name.endsWith(".json")) {
-        toast.error({ title: "Formato de archivo inválido" });
-        return;
-      }
 
       setErrors([]);
-      setProcessStep("reading");
+      setProcessStep(initialStep);
 
       try {
-        const text = await file.text();
-
+        const text = await readContent();
         setProcessStep("validating");
 
-        const json = JSON.parse(text);
+        const json: unknown = JSON.parse(text);
+        if (!Array.isArray(json)) {
+          setErrors([
+            "El contenido JSON debe contener una lista de registros.",
+          ]);
+          return;
+        }
         const { rows: parsed, errors: errs } = parseReporteJSON(json);
 
         if (errs.length > 0) {
-          setProcessStep(null);
           setErrors(errs);
           return;
         }
 
         setRows(parsed);
         setSelectedMes(parsed[0]?.mes ?? "");
-        setFileName(file.name);
+        setFileName(sourceName);
         try {
-          sessionStorage.setItem(
-            "reporteDiarioCache",
-            JSON.stringify(json),
-          );
+          sessionStorage.setItem("reporteDiarioCache", JSON.stringify(json));
         } catch (error) {
-          console.warn("No se pudo actualizar la caché local del reporte:", error);
+          console.warn(
+            "No se pudo actualizar la caché local del reporte:",
+            error,
+          );
         }
-        setProcessStep(null);
         toast.success({ title: "Reporte cargado" });
       } catch (err) {
-        setProcessStep(null);
-        const msg = `Error al revisar el archivo: ${err instanceof Error ? err.message : String(err)}`;
+        const msg = `Error al revisar el reporte: ${err instanceof Error ? err.message : String(err)}`;
         setErrors([msg]);
-        toast.error({ title: "Archivo corrupto" });
+        toast.error({ title: errorTitle });
+      } finally {
+        setProcessStep(null);
       }
     },
     [processStep],
+  );
+
+  const processFile = useCallback(
+    async (file: File) => {
+      if (
+        file.type !== "application/json" &&
+        !file.name.toLowerCase().endsWith(".json")
+      ) {
+        toast.error({ title: "Formato de archivo inválido" });
+        return;
+      }
+
+      await processReportContent(
+        () => file.text(),
+        file.name,
+        "reading",
+        "Archivo corrupto",
+      );
+    },
+    [processReportContent],
+  );
+
+  const processPastedJson = useCallback(
+    async (content: string) => {
+      await processReportContent(
+        () => content,
+        "Contenido pegado",
+        "validating",
+        "Contenido JSON inválido",
+      );
+    },
+    [processReportContent],
   );
 
   const handleFileChange = useCallback(
@@ -810,103 +847,21 @@ export default function ReporteDiarioContent() {
           aria-labelledby="reporte-hero-title"
         >
           <header className="reporte-hero__intro">
-            <span className="reporte-hero__eyebrow" aria-hidden="true">
-              <FileChartColumn size={14} />
-              Reporte Diario
-            </span>
             <h1 id="reporte-hero-title" className="reporte-hero__title">
               Reporte Diario
             </h1>
-            <p className="reporte-hero__subtitle">
-              Carga, consulta y compara reportes de asistencia.
-            </p>
           </header>
 
           <div className="reporte-hero__workspace">
-            <section
-              className="reporte-hero__panel reporte-hero__panel--upload"
-              aria-labelledby="reporte-upload-title"
-            >
-              <header className="reporte-hero__panel-header">
-                <span className="reporte-hero__panel-icon" aria-hidden="true">
-                  <FileUp size="1em" />
-                </span>
-                <div className="reporte-hero__panel-copy">
-                  <h2 id="reporte-upload-title">Cargar reporte</h2>
-                  <p id="reporte-upload-help">
-                    Selecciona o arrastra un archivo valido.
-                  </p>
-                </div>
-              </header>
-
-              <motion.button
-                type="button"
-                className="reporte-hero__dropzone"
-                data-dragging={isDragging}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                aria-label="Subir un archivo de reporte de asistencia"
-                aria-describedby="reporte-upload-help"
-                aria-busy={Boolean(processStep)}
-                disabled={Boolean(processStep)}
-                data-testid="upload-dropzone"
-              >
-                <AnimatePresence mode="wait">
-                  {processStep ? (
-                    <motion.span
-                      key="processing"
-                      initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
-                      className="reporte-hero__dropzone-inner reporte-hero__dropzone-inner--processing"
-                      role="status"
-                      aria-live="polite"
-                      aria-atomic="true"
-                    >
-                      <LoaderCircle
-                        size="1em"
-                        className="reporte-spinner reporte-overlay__icon-primary"
-                        aria-hidden="true"
-                      />
-                      <span className="reporte-hero__dropzone-title">
-                        {processStep === "reading" && "Leyendo archivo…"}
-                        {processStep === "validating" && "Revisando incidencias…"}
-                      </span>
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="idle"
-                      initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
-                      className="reporte-hero__dropzone-inner"
-                    >
-                      <span
-                        className="reporte-hero__dropzone-icon"
-                        aria-hidden="true"
-                      >
-                        <FileUp size="1em" />
-                      </span>
-                      <span className="reporte-hero__dropzone-title">
-                        Selecciona o arrastra tu archivo
-                      </span>
-                      <span className="reporte-hero__dropzone-hint">
-                        Detectamos automáticamente el mes y validamos el formato.
-                      </span>
-                      <span
-                        className="reporte-hero__dropzone-format"
-                        aria-hidden="true"
-                      >
-                        <FileBraces size="1em" />
-                        .json
-                      </span>
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            </section>
+            <ReporteUploadPanel
+              processStep={processStep}
+              isDragging={isDragging}
+              onSelectFile={() => fileInputRef.current?.click()}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onSubmitJson={processPastedJson}
+            />
 
             <section
               className="reporte-hero__panel reporte-hero__panel--recent"

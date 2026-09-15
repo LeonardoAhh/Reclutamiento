@@ -2569,22 +2569,6 @@ button.reporte-card:hover,
   max-width: var(--content-reading-max-inline-size);
 }
 
-.reporte-hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-}
-
 .reporte-hero__title {
   font-family: var(--font-display);
   font-size: var(--type-heading-lg-size);
@@ -2601,21 +2585,6 @@ button.reporte-card:hover,
     font-weight: var(--type-display-lg-weight);
     line-height: var(--type-display-lg-line);
     letter-spacing: var(--type-display-lg-tracking);
-  }
-}
-
-.reporte-hero__subtitle {
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  margin: 0;
-}
-
-@media (min-width: 768px) {
-  .reporte-hero__subtitle {
-    font-size: var(--type-body-md-size);
-    line-height: var(--type-body-md-line);
   }
 }
 
@@ -2758,21 +2727,6 @@ button.reporte-card:hover,
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
   margin: 0;
-}
-
-.reporte-hero__dropzone-format {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-2xs);
-  margin-top: var(--spacing-xs);
-  padding: var(--spacing-2xs) var(--spacing-sm);
-  border-radius: var(--rounded-md);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  color: var(--color-charcoal);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-body-strong-weight);
 }
 
 .reporte-hero__recent-list {
