@@ -5,9 +5,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA LUZ ",
-    "Ubicacion": "PARADA EN LA IGLESIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN LA IGLESIA"
   },
   {
     "numero_empleado": "54",
@@ -15,9 +15,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO C",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "645",
@@ -25,9 +25,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA LUZ ",
-    "Ubicacion": "PARADA EN LA IGLESIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN LA IGLESIA"
   },
   {
     "numero_empleado": "773",
@@ -35,9 +35,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SAN ISIDRO",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "1102",
@@ -45,9 +45,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "1106",
@@ -55,9 +55,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "1369",
@@ -65,9 +65,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "MONTENEGRO",
-    "Ubicacion": "LONCHERIA LILI"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero_empleado": "1444",
@@ -75,9 +75,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR SCRAP A",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "1467",
@@ -85,9 +85,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "1473",
@@ -95,9 +95,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "1496",
@@ -105,9 +105,9 @@
     "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES A",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "1526",
@@ -115,9 +115,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
   },
   {
     "numero_empleado": "1528",
@@ -125,9 +125,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "1539",
@@ -135,9 +135,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "1542",
@@ -145,9 +145,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "1671",
@@ -155,9 +155,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "1677",
@@ -165,9 +165,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "1715",
@@ -175,9 +175,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "1719",
@@ -185,9 +185,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "4",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "1731",
@@ -195,9 +195,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "1757",
@@ -205,9 +205,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "1793",
@@ -215,9 +215,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "SUPERVISOR DE ACABADOS - GP12 B",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "1877",
@@ -225,9 +225,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "1997",
@@ -235,9 +235,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "1998",
@@ -245,9 +245,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "2034",
@@ -255,9 +255,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "2038",
@@ -265,9 +265,9 @@
     "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "2043",
@@ -275,9 +275,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "2091",
@@ -285,9 +285,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "CHECK LIST A",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "2095",
@@ -295,9 +295,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "2106",
@@ -305,9 +305,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA BARRETA",
-    "Ubicacion": "TIENDA EN LA ENTRADA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero_empleado": "2154",
@@ -315,9 +315,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "2160",
@@ -325,9 +325,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "EN LA BODEGA AURRERA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero_empleado": "2201",
@@ -335,9 +335,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "2247",
@@ -345,9 +345,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "2249",
@@ -355,9 +355,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA",
-    "Ubicacion": "ENFRENTE AL WATER HOUSE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero_empleado": "2254",
@@ -365,9 +365,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN STEREN"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN STEREN"
   },
   {
     "numero_empleado": "2277",
@@ -375,9 +375,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero_empleado": "2286",
@@ -385,9 +385,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
     "numero_empleado": "2305",
@@ -395,9 +395,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "RINCON OJO DE AGUA",
-    "Ubicacion": "PARADA EN EL ENTRONQUE"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero_empleado": "2315",
@@ -405,9 +405,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "2330",
@@ -415,9 +415,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "2338",
@@ -425,9 +425,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA LUZ ",
-    "Ubicacion": "PARADA EN EL PUENTE PEATONAL"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA LUZ ",
+    "colonia": "PARADA EN EL PUENTE PEATONAL"
   },
   {
     "numero_empleado": "2341",
@@ -435,9 +435,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN B",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ PASEO DE LA CONSTITUCION FARMACIA DIAGNOSTICA"
   },
   {
     "numero_empleado": "2348",
@@ -445,9 +445,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "2350",
@@ -455,9 +455,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "2365",
@@ -465,9 +465,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA LUZ",
-    "Ubicacion": "PARADA EN LA CURVA DE LA RECICLADORA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA LUZ",
+    "colonia": "PARADA EN LA CURVA DE LA RECICLADORA"
   },
   {
     "numero_empleado": "2391",
@@ -475,9 +475,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "2393",
@@ -485,9 +485,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PIRINEOS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero_empleado": "2400",
@@ -495,9 +495,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "2420",
@@ -505,9 +505,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero_empleado": "2440",
@@ -515,9 +515,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD A",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "2461",
@@ -525,9 +525,9 @@
     "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "ALMACENISTA DE MATERIA PRIMA",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero_empleado": "2479",
@@ -535,9 +535,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO B",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "2494",
@@ -545,9 +545,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "2545",
@@ -555,9 +555,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "2617",
@@ -565,9 +565,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "2618",
@@ -575,9 +575,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "2635",
@@ -585,9 +585,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "2645",
@@ -595,9 +595,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA MONJA ",
-    "Ubicacion": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA MONJA ",
+    "colonia": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
     "numero_empleado": "2672",
@@ -605,9 +605,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "2676",
@@ -615,9 +615,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "2698",
@@ -625,9 +625,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "2706",
@@ -635,9 +635,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "2710",
@@ -645,9 +645,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "2714",
@@ -655,9 +655,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "MONTENEGRO",
-    "Ubicacion": "LONCHERIA LILI"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero_empleado": "2725",
@@ -665,9 +665,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "2734",
@@ -675,9 +675,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero_empleado": "2741",
@@ -685,9 +685,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "2777",
@@ -695,9 +695,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD B",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "2863",
@@ -705,9 +705,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "2874",
@@ -715,9 +715,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO B",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "2912",
@@ -725,9 +725,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero_empleado": "2916",
@@ -735,9 +735,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "2932",
@@ -745,9 +745,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SAN ISIDRO",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "2934",
@@ -755,9 +755,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "EN EL OXXO DE LOS PILARES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero_empleado": "2942",
@@ -765,9 +765,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "2943",
@@ -775,9 +775,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "2946",
@@ -785,9 +785,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "2949",
@@ -795,9 +795,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero_empleado": "2950",
@@ -805,9 +805,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "2951",
@@ -815,9 +815,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "2981",
@@ -825,9 +825,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "2994",
@@ -835,9 +835,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "2996",
@@ -845,9 +845,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3079",
@@ -855,9 +855,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3093",
@@ -865,9 +865,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3105",
@@ -875,9 +875,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN B",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3118",
@@ -885,9 +885,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "3144",
@@ -895,9 +895,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "PUERTO AGUIRRE",
-    "Ubicacion": "PARADA EN LA TORTILLERIA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero_empleado": "3163",
@@ -905,9 +905,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD A",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3166",
@@ -915,9 +915,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3190",
@@ -925,9 +925,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3198",
@@ -935,9 +935,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "3202",
@@ -945,9 +945,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3256",
@@ -955,9 +955,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "EN EL OXXO DE LOS PILARES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero_empleado": "3257",
@@ -965,9 +965,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "3263",
@@ -975,9 +975,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3266",
@@ -985,9 +985,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "CHECK LIST B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3276",
@@ -995,9 +995,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "RINCON OJO DE AGUA",
-    "Ubicacion": "PARADA EN EL ENTRONQUE"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero_empleado": "3289",
@@ -1005,9 +1005,9 @@
     "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN A",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LAS ROSAS"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero_empleado": "3306",
@@ -1015,9 +1015,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "3316",
@@ -1025,9 +1025,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3324",
@@ -1035,9 +1035,9 @@
     "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES D",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "3366",
@@ -1045,9 +1045,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3375",
@@ -1055,9 +1055,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "PUERTO AGUIRRE",
-    "Ubicacion": "PARADA EN LA TORTILLERIA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero_empleado": "3381",
@@ -1065,9 +1065,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero_empleado": "3389",
@@ -1075,9 +1075,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE LA ALAMEDA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE LA ALAMEDA"
   },
   {
     "numero_empleado": "3396",
@@ -1085,9 +1085,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA",
-    "Ubicacion": "ENFRENTE AL WATER HOUSE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero_empleado": "3398",
@@ -1095,9 +1095,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "3403",
@@ -1105,9 +1105,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero_empleado": "3414",
@@ -1115,9 +1115,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero_empleado": "3419",
@@ -1125,9 +1125,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "3432",
@@ -1135,9 +1135,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "CAPTURISTA RPS B",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3466",
@@ -1145,9 +1145,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA BARRETA",
-    "Ubicacion": "TIENDA EN LA ENTRADA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero_empleado": "3471",
@@ -1155,9 +1155,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "3473",
@@ -1165,9 +1165,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3520",
@@ -1175,9 +1175,9 @@
     "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero_empleado": "3531",
@@ -1185,9 +1185,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3534",
@@ -1195,9 +1195,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TECNICO DE MANTENIMIENTO DE EDIFICIOS A",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero_empleado": "3548",
@@ -1205,9 +1205,9 @@
     "sección": "MOLDES",
     "puesto": "TÉCNICO DE MOLDES B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero_empleado": "3563",
@@ -1215,9 +1215,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "3576",
@@ -1225,9 +1225,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "3582",
@@ -1235,9 +1235,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "3593",
@@ -1245,9 +1245,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "3600",
@@ -1255,9 +1255,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero_empleado": "3610",
@@ -1265,9 +1265,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "3611",
@@ -1275,9 +1275,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3624",
@@ -1285,9 +1285,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3650",
@@ -1295,9 +1295,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO B",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "3669",
@@ -1305,9 +1305,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "3671",
@@ -1315,9 +1315,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "3672",
@@ -1325,9 +1325,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero_empleado": "3680",
@@ -1335,9 +1335,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3694",
@@ -1345,9 +1345,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "3706",
@@ -1355,9 +1355,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
   },
   {
     "numero_empleado": "3734",
@@ -1365,9 +1365,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "PUERTO AGUIRRE",
-    "Ubicacion": "PARADA EN LA TORTILLERIA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "PUERTO AGUIRRE",
+    "colonia": "PARADA EN LA TORTILLERIA"
   },
   {
     "numero_empleado": "3745",
@@ -1375,9 +1375,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "3754",
@@ -1385,9 +1385,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "3764",
@@ -1395,9 +1395,9 @@
     "sección": "MOLDES",
     "puesto": "TÉCNICO DE MOLDES C",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA MONJA",
-    "Ubicacion": "SOBRE CARR EN EL PUENTE PEATONAL"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA MONJA",
+    "colonia": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
     "numero_empleado": "3772",
@@ -1405,9 +1405,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO D",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3773",
@@ -1415,9 +1415,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "TLALOC ",
-    "Ubicacion": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "TLALOC ",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
   },
   {
     "numero_empleado": "3780",
@@ -1425,9 +1425,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "3785",
@@ -1435,9 +1435,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "3790",
@@ -1445,9 +1445,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LAS ROSAS"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero_empleado": "3796",
@@ -1455,9 +1455,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "3801",
@@ -1465,9 +1465,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO A",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "3803",
@@ -1475,9 +1475,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero_empleado": "3809",
@@ -1485,9 +1485,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN D",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PLAZA DEL SOL",
-    "Ubicacion": "EN EL KFC"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PLAZA DEL SOL",
+    "colonia": "EN EL KFC"
   },
   {
     "numero_empleado": "3816",
@@ -1495,9 +1495,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO A",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PIRINEOS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero_empleado": "3818",
@@ -1505,9 +1505,9 @@
     "sección": "RECURSOS HUMANOS",
     "puesto": "ANALISTA DE RECURSOS HUMANOS",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3831",
@@ -1515,9 +1515,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "3836",
@@ -1525,9 +1525,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3870",
@@ -1535,9 +1535,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "3881",
@@ -1545,9 +1545,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "3882",
@@ -1555,9 +1555,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "3883",
@@ -1565,9 +1565,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "PARADA FRENTE AL BARCO DE CHILOS"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero_empleado": "3897",
@@ -1575,9 +1575,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "TRANSITO FRENTE AL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "TRANSITO FRENTE AL OXXO"
   },
   {
     "numero_empleado": "3899",
@@ -1585,9 +1585,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
     "numero_empleado": "3930",
@@ -1595,9 +1595,9 @@
     "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "3932",
@@ -1605,9 +1605,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "3939",
@@ -1615,9 +1615,9 @@
     "sección": "LOGISTICA",
     "puesto": "SUPERVISOR DE LOGISTICA",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA DE CAMIONES EN FRENTE DEL TALLER DE MOTOS CRIS RAYDER"
   },
   {
     "numero_empleado": "3942",
@@ -1625,9 +1625,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "3945",
@@ -1635,9 +1635,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PLAN DE SAN LUIS"
   },
   {
     "numero_empleado": "3957",
@@ -1645,9 +1645,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "CRUZ ROJA MEXICANA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "CRUZ ROJA MEXICANA"
   },
   {
     "numero_empleado": "3959",
@@ -1655,9 +1655,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "3960",
@@ -1665,9 +1665,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "2",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
   },
   {
     "numero_empleado": "3983",
@@ -1675,9 +1675,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CHECK LIST B",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
   },
   {
     "numero_empleado": "3997",
@@ -1685,9 +1685,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "3999",
@@ -1695,9 +1695,9 @@
     "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "RINCON OJO DE AGUA",
-    "Ubicacion": "PARADA EN EL ENTRONQUE"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "RINCON OJO DE AGUA",
+    "colonia": "PARADA EN EL ENTRONQUE"
   },
   {
     "numero_empleado": "4000",
@@ -1705,9 +1705,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4010",
@@ -1715,9 +1715,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "4017",
@@ -1725,9 +1725,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4028",
@@ -1735,9 +1735,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE LA ALAMEDA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE LA ALAMEDA"
   },
   {
     "numero_empleado": "4040",
@@ -1745,9 +1745,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "SUPERVISOR DE ACABADOS - GP12 C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4041",
@@ -1755,9 +1755,9 @@
     "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "4042",
@@ -1765,9 +1765,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "OJO DE AGUA",
-    "Ubicacion": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "OJO DE AGUA",
+    "colonia": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
   },
   {
     "numero_empleado": "4044",
@@ -1775,9 +1775,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4049",
@@ -1785,9 +1785,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4054",
@@ -1795,9 +1795,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "4061",
@@ -1805,9 +1805,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4063",
@@ -1815,9 +1815,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4068",
@@ -1825,9 +1825,9 @@
     "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES D",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4077",
@@ -1835,9 +1835,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "4078",
@@ -1845,9 +1845,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "4084",
@@ -1855,9 +1855,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "4092",
@@ -1865,9 +1865,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4096",
@@ -1875,9 +1875,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4097",
@@ -1885,9 +1885,9 @@
     "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "MONTENEGRO",
-    "Ubicacion": "LONCHERIA LILI"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "MONTENEGRO",
+    "colonia": "LONCHERIA LILI"
   },
   {
     "numero_empleado": "4098",
@@ -1895,9 +1895,9 @@
     "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero_empleado": "4103",
@@ -1905,9 +1905,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4106",
@@ -1915,9 +1915,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "EN LA BODEGA AURRERA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero_empleado": "4111",
@@ -1925,9 +1925,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "4112",
@@ -1935,9 +1935,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4114",
@@ -1945,9 +1945,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA BARRETA",
-    "Ubicacion": "TIENDA EN LA ENTRADA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA BARRETA",
+    "colonia": "TIENDA EN LA ENTRADA"
   },
   {
     "numero_empleado": "4115",
@@ -1955,9 +1955,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "4116",
@@ -1965,9 +1965,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "4117",
@@ -1975,9 +1975,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "4125",
@@ -1985,9 +1985,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4128",
@@ -1995,9 +1995,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "4129",
@@ -2005,9 +2005,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "AV. PEDREGAL",
-    "Ubicacion": "SEGUNDA PARADA DE CAMIONES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4137",
@@ -2015,9 +2015,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA MONJA ",
-    "Ubicacion": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA MONJA ",
+    "colonia": "EN LA TERRACERIA DE LA CURVA EN LA CASITA CON BARDA DE PIEDRA CON 2 POSTES DE LUZ"
   },
   {
     "numero_empleado": "4138",
@@ -2025,9 +2025,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "LA MONJA",
-    "Ubicacion": "SOBRE CARR EN EL PUENTE PEATONAL"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "LA MONJA",
+    "colonia": "SOBRE CARR EN EL PUENTE PEATONAL"
   },
   {
     "numero_empleado": "4142",
@@ -2035,9 +2035,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "EN EL OXXO DE LOS PILARES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "EN EL OXXO DE LOS PILARES"
   },
   {
     "numero_empleado": "4143",
@@ -2045,9 +2045,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA",
-    "Ubicacion": "ENFRENTE AL WATER HOUSE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero_empleado": "4144",
@@ -2055,9 +2055,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "EN EL CIDESI "
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN EL CIDESI "
   },
   {
     "numero_empleado": "4146",
@@ -2065,9 +2065,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA",
-    "Ubicacion": "ENFRENTE AL WATER HOUSE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA",
+    "colonia": "ENFRENTE AL WATER HOUSE"
   },
   {
     "numero_empleado": "4147",
@@ -2075,9 +2075,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "TRANSITO FRENTE AL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "TRANSITO FRENTE AL OXXO"
   },
   {
     "numero_empleado": "4154",
@@ -2085,9 +2085,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4162",
@@ -2095,9 +2095,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4165",
@@ -2105,9 +2105,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4168",
@@ -2115,9 +2115,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "4169",
@@ -2125,9 +2125,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4172",
@@ -2135,9 +2135,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4177",
@@ -2145,9 +2145,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero_empleado": "4178",
@@ -2155,9 +2155,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PIRINEOS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero_empleado": "4179",
@@ -2165,9 +2165,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "AV. PEDREGAL",
-    "Ubicacion": "SEGUNDA PARADA DE CAMIONES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4180",
@@ -2175,9 +2175,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "4185",
@@ -2185,9 +2185,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4187",
@@ -2195,9 +2195,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4188",
@@ -2205,9 +2205,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "4192",
@@ -2215,9 +2215,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "PROL. BERNARDO QUINTANA",
-    "Ubicacion": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "PROL. BERNARDO QUINTANA",
+    "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
   },
   {
     "numero_empleado": "4193",
@@ -2225,9 +2225,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "4201",
@@ -2235,9 +2235,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO C",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "4203",
@@ -2245,9 +2245,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "EN LA BODEGA AURRERA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN LA BODEGA AURRERA"
   },
   {
     "numero_empleado": "4208",
@@ -2255,9 +2255,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
   },
   {
     "numero_empleado": "4209",
@@ -2265,9 +2265,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PEÑAFLOR",
-    "Ubicacion": "BODEGA AURRERA, PEÑAFLOR"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PEÑAFLOR",
+    "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
     "numero_empleado": "4225",
@@ -2275,9 +2275,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "FRENTE AL BARCO DE CHILOS"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "BUENAVISTA",
+    "colonia": "FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero_empleado": "4226",
@@ -2285,9 +2285,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "EN EL CIDESI "
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "EN EL CIDESI "
   },
   {
     "numero_empleado": "4227",
@@ -2295,9 +2295,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4228",
@@ -2305,9 +2305,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4229",
@@ -2315,9 +2315,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SALITRE",
-    "Ubicacion": "FRENTE AL JARDIN"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SALITRE",
+    "colonia": "FRENTE AL JARDIN"
   },
   {
     "numero_empleado": "4230",
@@ -2325,9 +2325,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4231",
@@ -2335,9 +2335,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "4234",
@@ -2345,9 +2345,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4235",
@@ -2355,9 +2355,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "3",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "PARADA FRENTE AL BARCO DE CHILOS"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero_empleado": "4239",
@@ -2365,9 +2365,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "4240",
@@ -2375,9 +2375,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4249",
@@ -2385,9 +2385,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4251",
@@ -2395,9 +2395,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4253",
@@ -2405,9 +2405,9 @@
     "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4259",
@@ -2415,9 +2415,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4260",
@@ -2425,9 +2425,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "4262",
@@ -2435,9 +2435,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4265",
@@ -2445,9 +2445,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "4",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "AV. PEDREGAL",
-    "Ubicacion": "SEGUNDA PARADA DE CAMIONES"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "AV. PEDREGAL",
+    "colonia": "SEGUNDA PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4270",
@@ -2455,9 +2455,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4271",
@@ -2465,9 +2465,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4272",
@@ -2475,9 +2475,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "PARADA DE AUTOBUSES SECUNDARIA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA DE AUTOBUSES SECUNDARIA"
   },
   {
     "numero_empleado": "4274",
@@ -2485,9 +2485,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "PARADA DE CAMIONES ESQ. MAYAS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
     "numero_empleado": "4275",
@@ -2495,9 +2495,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "FRENTE DE LA CARNICERIA \"LOS PADILLAS\""
   },
   {
     "numero_empleado": "4276",
@@ -2505,9 +2505,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4280",
@@ -2515,9 +2515,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "PARADA FRENTE AL BARCO DE CHILOS"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero_empleado": "4281",
@@ -2525,9 +2525,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PASEO QUERETARO ESQ. PIRINEOS"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
     "numero_empleado": "4282",
@@ -2535,9 +2535,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4287",
@@ -2545,9 +2545,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4292",
@@ -2555,9 +2555,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4294",
@@ -2565,9 +2565,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4295",
@@ -2575,9 +2575,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "4299",
@@ -2585,9 +2585,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4300",
@@ -2595,9 +2595,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "COREA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "COREA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4303",
@@ -2605,9 +2605,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "OJO DE AGUA",
-    "Ubicacion": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "OJO DE AGUA",
+    "colonia": "PARADA ENTRADA A LA COMUNIDAD SOBRE CARRETARERA"
   },
   {
     "numero_empleado": "4304",
@@ -2615,9 +2615,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "4308",
@@ -2625,9 +2625,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SAN ISIDRO",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SAN ISIDRO",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4311",
@@ -2635,9 +2635,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   },
   {
     "numero_empleado": "4312",
@@ -2645,9 +2645,9 @@
     "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4318",
@@ -2655,9 +2655,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DEL MA. TERESA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DEL MA. TERESA"
   },
   {
     "numero_empleado": "4320",
@@ -2665,9 +2665,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4323",
@@ -2675,9 +2675,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "PUERTO CARROZA",
-    "Ubicacion": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "PUERTO CARROZA",
+    "colonia": "PARADA DE AUTOBUSES SOBRE CARRETERA"
   },
   {
     "numero_empleado": "4324",
@@ -2685,9 +2685,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4326",
@@ -2695,9 +2695,9 @@
     "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA ",
-    "Ubicacion": "FRENTE AL ELECTRA"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "FRENTE AL ELECTRA"
   },
   {
     "numero_empleado": "4327",
@@ -2705,9 +2705,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4328",
@@ -2715,9 +2715,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "4331",
@@ -2725,9 +2725,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4332",
@@ -2735,9 +2735,9 @@
     "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA EN LA ESCUELA 5 DE MAYO"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   },
   {
     "numero_empleado": "4335",
@@ -2745,9 +2745,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4336",
@@ -2755,9 +2755,9 @@
     "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "EN EL PUENTE DE LA CRUZ "
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "EN EL PUENTE DE LA CRUZ "
   },
   {
     "numero_empleado": "4337",
@@ -2765,9 +2765,9 @@
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO C",
     "turno": "4",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "OBRERA",
-    "Ubicacion": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "OBRERA",
+    "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
     "numero_empleado": "4340",
@@ -2775,9 +2775,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "Parada": "PASEOS QUERETARO",
-    "Ubicacion": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN EL OXXO DE PUERTAS DE SAN MIGUEL"
   },
   {
     "numero_empleado": "4343",
@@ -2785,9 +2785,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4347",
@@ -2795,9 +2795,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA ",
-    "Ubicacion": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA ",
+    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
     "numero_empleado": "4349",
@@ -2805,9 +2805,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4350",
@@ -2815,9 +2815,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "AV. DE LA LUZ",
-    "Ubicacion": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4354",
@@ -2825,9 +2825,9 @@
     "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "4358",
@@ -2835,9 +2835,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4360",
@@ -2845,9 +2845,9 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R3- SAN JOSE ITURBIDE 2",
-    "Parada": "BUENAVISTA",
-    "Ubicacion": "PARADA FRENTE AL BARCO DE CHILOS"
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "parada": "BUENAVISTA",
+    "colonia": "PARADA FRENTE AL BARCO DE CHILOS"
   },
   {
     "numero_empleado": "4365",
@@ -2855,9 +2855,9 @@
     "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE AUTOBUSES DE COPPEL"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
   },
   {
     "numero_empleado": "4367",
@@ -2865,9 +2865,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "SANTA ROSA",
-    "Ubicacion": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
     "numero_empleado": "4371",
@@ -2875,9 +2875,9 @@
     "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "FRACC. MONTENEGRO",
-    "Ubicacion": "PARADA DE CAMIONES HUIZACHE"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA DE CAMIONES HUIZACHE"
   },
   {
     "numero_empleado": "4372",
@@ -2885,9 +2885,9 @@
     "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
-    "Nombre Ruta": "R4-SANTA ROSA",
-    "Parada": "HDA SANTA ROSA ",
-    "Ubicacion": "FARMACIA GUADALAJARA"
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
   },
   {
     "numero_empleado": "4376",
@@ -2895,9 +2895,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
-    "Nombre Ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "Parada": "SANTA CATARINA",
-    "Ubicacion": "PARADA DE CAMIONES"
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "SANTA CATARINA",
+    "colonia": "PARADA DE CAMIONES"
   },
   {
     "numero_empleado": "4377",
@@ -2905,9 +2905,9 @@
     "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
-    "Nombre Ruta": "R2- SAN JOSE ITURBIDE",
-    "Parada": "SAN JOSE ITURBIDE",
-    "Ubicacion": "PARADA DE LA ALAMEDA"
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA DE LA ALAMEDA"
   },
   {
     "numero_empleado": "4378",
@@ -2915,8 +2915,8 @@
     "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
-    "Nombre Ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "Parada": "PIE DE LA CUESTA",
-    "Ubicacion": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
   }
 ]
