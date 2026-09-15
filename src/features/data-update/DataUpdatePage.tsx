@@ -232,6 +232,9 @@ export function DataUpdatePage() {
     })),
     [visibleWorkGroups],
   );
+  const myCompletedCount = myRecords.filter(
+    (record) => record.status === "completado",
+  ).length;
   const completedCount = detail?.records.filter((record) => record.status === "completado").length ?? 0;
   const totalVisibleCount = detail?.records.length ?? 0;
   const completionPercentage = totalVisibleCount > 0
@@ -391,7 +394,7 @@ export function DataUpdatePage() {
             <section className="card data-update-summary-card" aria-label="Resumen de campaña">
               <dl className="data-update-summary">
                 <div><dt>Mis asignados</dt><dd>{myRecords.length}</dd></div>
-                <div><dt>Completados</dt><dd>{isAdmin ? completedCount : myRecords.filter((record) => record.status === "completado").length}</dd></div>
+                <div><dt>Completados</dt><dd>{myCompletedCount}</dd></div>
                 <div><dt>Total visible</dt><dd>{totalVisibleCount}</dd></div>
               </dl>
               {isAdmin && (
