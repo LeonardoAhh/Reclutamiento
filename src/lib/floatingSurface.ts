@@ -5,3 +5,6 @@
  */
 export const FLOATING_SURFACE_SIDE_OFFSET = 4;
 export const FLOATING_SURFACE_COLLISION_PADDING = 12;
+
+/** Grace period aligned with `{motion.fast}` for crossing into portaled content. */
+export const FLOATING_SURFACE_HOVER_CLOSE_DELAY_MS = 150;
