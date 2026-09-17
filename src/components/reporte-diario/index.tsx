@@ -846,8 +846,8 @@ export default function ReporteDiarioContent() {
           }}
           aria-labelledby="reporte-hero-title"
         >
-          <header className="reporte-hero__intro">
-            <h1 id="reporte-hero-title" className="reporte-hero__title">
+          <header className="reporte-hero__intro app-page-heading--title-only">
+            <h1 id="reporte-hero-title" className="reporte-hero__title app-page-title">
               Reporte Diario
             </h1>
           </header>
@@ -998,8 +998,8 @@ export default function ReporteDiarioContent() {
         </span>
       )}
       <header className="reporte-header__top">
-        <div className="reporte-head__left">
-          <h1 className="reporte-title">Reporte Diario</h1>
+        <div className="reporte-head__left app-page-heading--title-only">
+          <h1 className="reporte-title app-page-title">Reporte Diario</h1>
         </div>
 
         <div

@@ -63,7 +63,7 @@ export function IndicadoresView() {
   if (error) {
     return (
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
-        <h1 id="indicadores-page-title" className="config-page__title">
+        <h1 id="indicadores-page-title" className="config-page__title app-page-title">
           Indicadores
         </h1>
         <div className="config-empty" role="alert">
@@ -117,7 +117,7 @@ export function IndicadoresView() {
     >
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
       <header className="indicadores-page-header">
-        <h1 id="indicadores-page-title" className="config-page__title">
+        <h1 id="indicadores-page-title" className="config-page__title app-page-title">
           Indicadores
         </h1>
 

@@ -296,6 +296,7 @@ export function AnalisisView() {
       loadingLabel="Cargando colaboradores…"
     >
       <section className="analisis-view config-page" aria-label="Análisis de plantilla">
+      <h1 className="sr-only app-page-title">Análisis</h1>
       {employeesError && (
         <p className="config-search-error type-body-sm mt-sm" role="alert">
           No fue posible actualizar la lista de colaboradores. Se muestran los datos

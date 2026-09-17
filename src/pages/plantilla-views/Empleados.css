@@ -21,15 +21,7 @@
   gap: var(--design-spacing-sm);
 }
 
-.empleados__summary {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
-  text-align: start;
-}
+
 
 .empleados__filters {
   display: grid;

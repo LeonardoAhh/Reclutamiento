@@ -22,6 +22,19 @@
     max(var(--container-padding), var(--safe-area-right));
 }
 
+@media (min-width: 1080px) {
+  .login {
+    max-inline-size: none;
+    padding: var(--design-spacing-sm);
+  }
+
+  .login__left {
+    background: var(--color-surface);
+    border-radius: var(--rounded-xl);
+    box-shadow: var(--shadow-card);
+  }
+}
+
 .login__content {
   margin-block: auto;
   inline-size: 100%;

@@ -1,13 +1,20 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { NAV_ITEMS } from './navigation';
 import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
+import { FEATURES, getConfiguracionHref, INCIDENCIAS_PATH } from '@/lib/configuracionNavigation';
+import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
+
+const PAGE_TITLES: Readonly<Record<string, string>> = {
+  '/bajas': 'Rotación',
+  [INCIDENCIAS_PATH]: 'Incidencias de transporte',
+  [DATA_UPDATE_PATH]: 'Actualización de datos',
+};
 
 /**
  * Shell de la app autenticada.
@@ -21,18 +28,20 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
   const location = useLocation();
 
-  useEffect(() => {
+  const pageTitle = useMemo(() => {
     const currentNavItem = NAV_ITEMS.find((item) => {
       if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
       if (item.end) return location.pathname === item.to;
       return location.pathname.startsWith(item.to);
     });
-
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
-    let pageTitle = currentNavItem?.label ?? feature?.label ?? 'App';
-    if (location.pathname === EMPLEADOS_PATH) pageTitle = 'Empleados';
-    document.title = pageTitle;
+    if (location.pathname === EMPLEADOS_PATH) return 'Empleados';
+    return PAGE_TITLES[location.pathname] ?? feature?.label ?? currentNavItem?.label ?? 'App';
   }, [location.pathname]);
+
+  useEffect(() => {
+    document.title = pageTitle;
+  }, [pageTitle]);
 
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuOpen) return;
@@ -64,11 +73,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
       <SessionNotice />
-      <Header
-        onMobileMenuToggle={toggleMobileMenu}
-        mobileMenuOpen={isMobileMenuOpen}
-        mobileMenuButtonRef={mobileMenuButtonRef}
-      />
       <Sidebar
         mobileMenuOpen={isMobileMenuOpen}
         onCloseMobileMenu={closeMobileMenu}
@@ -82,8 +86,15 @@ export function AppShell({ children }: { children: ReactNode }) {
         />
       )}
 
-      <div className="app-shell__main">
-        {children}
+      <div className="app-shell__workspace">
+        <Header
+          onMobileMenuToggle={toggleMobileMenu}
+          mobileMenuOpen={isMobileMenuOpen}
+          mobileMenuButtonRef={mobileMenuButtonRef}
+        />
+        <div className="app-shell__main">
+          {children}
+        </div>
       </div>
     </div>
   );

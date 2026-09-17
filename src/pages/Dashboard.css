@@ -17,7 +17,7 @@
     "main";
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
-  background: var(--color-canvas);
+  background: var(--color-surface);
 }
 
 .plantilla-header {
@@ -44,7 +44,6 @@
   padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
   overflow-x: hidden;
   overflow-y: auto;
-  scrollbar-gutter: stable;
 }
 
 @media (min-width: 768px) {

@@ -28,8 +28,8 @@ export function BajasHero({
   showActions = false,
 }: BajasHeroProps) {
   return (
-    <header className="bajas-hero">
-      <h1 className="bajas-hero__title">Rotación</h1>
+    <header className={`bajas-hero${showActions ? '' : ' app-page-heading--title-only'}`}>
+      <h1 className="bajas-hero__title app-page-title">Rotación</h1>
       {showActions && (
         <div className="bajas-hero__actions">
           <BajasImporter

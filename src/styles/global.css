@@ -50,12 +50,12 @@
   --color-on-dark: #ffffff;
   --color-on-dark-soft: #b8b6b3;
   --color-focus-on-inverted: var(--color-on-dark);
-  --color-navigation-rail: var(--color-surface-dark);
-  --color-navigation-rail-elevated: var(--color-surface-dark-elevated);
-  --color-navigation-rail-text: var(--color-on-dark-soft);
-  --color-navigation-rail-text-strong: var(--color-on-dark);
-  --color-navigation-rail-active: var(--color-primary);
-  --color-navigation-rail-on-active: var(--color-on-primary);
+  --color-navigation-rail: var(--color-canvas-soft);
+  --color-navigation-rail-elevated: var(--color-hairline);
+  --color-navigation-rail-text: var(--color-muted);
+  --color-navigation-rail-text-strong: var(--color-ink);
+  --color-navigation-rail-active: var(--color-primary-tint);
+  --color-navigation-rail-on-active: var(--color-primary);
   --color-avatar-ink: #000000;
   --color-avatar-ring: rgba(255, 255, 255, 0.2);
 
@@ -364,7 +364,7 @@
   --feature-report-onboarding-max-inline-size: var(
     --container-compact-max-inline-size
   );
-  --feature-navigation-rail-inline-size: 16.25rem;
+  --feature-navigation-rail-inline-size: 15rem;
   /* Ancho útil de superficies flotantes abiertas dentro del rail móvil. */
   --feature-navigation-popover-inline-size: calc(
     var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) -
@@ -548,7 +548,6 @@ html {
   /* iOS: el safe-area toma su color del <html>, no del <body>. */
   background-color: var(--color-canvas);
   transition: background-color var(--transition-base);
-  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: var(--color-hairline-strong) transparent;
 }

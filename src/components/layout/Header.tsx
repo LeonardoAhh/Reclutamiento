@@ -9,12 +9,9 @@ interface HeaderProps {
   mobileMenuOpen?: boolean;
 }
 
-export function Header({ onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef }: HeaderProps = {}) {
+export function Header({ onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef }: HeaderProps) {
   return (
     <header className="app-header" id="main-header">
-      <div className="app-header__sidebar-control">
-        <span className="app-header__brand">ViñoPlastic</span>
-      </div>
       <div className="app-header__inner">
         <div className="app-header__left">
           {onMobileMenuToggle && (

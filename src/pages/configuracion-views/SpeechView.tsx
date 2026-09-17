@@ -572,6 +572,7 @@ export function SpeechView() {
       loadingLabel="Cargando plantillas…"
     >
       <section className="speech-view config-page" aria-labelledby="speech-title">
+      <h1 id="speech-title" className="sr-only app-page-title">Speech WA</h1>
       {/* ── Banner de modo semilla ─────────────────────────────────────────── */}
       {isSeedMode && (
         <div className="speech-seed-banner" role="status">

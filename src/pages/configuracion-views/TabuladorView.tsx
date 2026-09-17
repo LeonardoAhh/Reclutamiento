@@ -129,7 +129,7 @@ export function TabuladorView() {
       loadingLabel="Cargando tabulador de salarios…"
     >
       <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
-      <h1 id="tabulador-title" className="sr-only">Tabulador</h1>
+      <h1 id="tabulador-title" className="sr-only app-page-title">Tabulador</h1>
       <header className="config-page__header tabulador-header">
         <div className="config-tabs" role="tablist" aria-label="Tipo de tabulador">
           {TAB_OPTIONS.map(({ id, label }) => {

@@ -123,12 +123,7 @@ export function EmpleadosView() {
     >
       <section className="empleados" id="page-empleados">
         <header className="empleados__hero">
-          <p className="empleados__summary">
-            {visibleEmployeeCount}{' '}
-            {visibleEmployeeCount === 1 ? 'empleado' : 'empleados'} ·{' '}
-            {groups.length}{' '}
-            {groups.length === 1 ? 'departamento' : 'departamentos'}
-          </p>
+
           <div
             className="empleados__filters"
             role="search"

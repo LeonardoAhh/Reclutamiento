@@ -407,7 +407,7 @@ Define standard ratios to prevent layout shift:
 **`nav-bar`** — Top navigation
 
 - White surface `{colors.surface}`, `{colors.ink}` link text at `{typography.body-sm}`, padding `{spacing.md}`. Sits as a slim sticky bar; left wordmark, centre product/solutions menu links, right "Log in" text link plus a `button-utility` "Get Notion free" CTA. Condenses to a hamburger below the tablet breakpoint.
-- En móvil y escritorio, «ViñoPlastic» se centra en la cabecera oscura de la navegación con `{colors.on-dark}` y tipografía `heading-md`. El control compacto bajo la cuenta cierra solo el menú móvil; en escritorio la sidebar permanece fija.
+- En móvil y escritorio, «ViñoPlastic» se centra en la cabecera clara de la navegación con `{colors.ink}` y tipografía `heading-md`. La sidebar utiliza `{colors.canvas-soft}`, hairlines sutiles y `{colors.primary}` para selección y foco. El workspace autenticado mantiene `{colors.surface}` de forma continua entre header y página; cards y tablas se distinguen mediante hairlines y elevación. El control compacto bajo la cuenta cierra solo el menú móvil; en escritorio la sidebar permanece fija.
 
 ### Buttons
 
@@ -501,7 +501,7 @@ Define standard ratios to prevent layout shift:
 **`ex-auth-form-card`** — Sign-in / sign-up card. Re-uses feature-card chrome with text-input primitives inside.
 
 - Properties: `backgroundColor`, `rounded`, `padding`
-- En `/login`, mantener una columna a cualquier ancho: marca sobre la card blanca, título y ayuda dentro de la card, y ancho máximo `--auth-form-max-inline-size`.
+- En `/login`, mantener una columna a cualquier ancho: marca sobre la card blanca, título y ayuda dentro de la card, y ancho máximo `--auth-form-max-inline-size`. En escritorio, el flujo vive dentro de un workspace `{colors.surface}` con `{rounded.xl}` y elevación sutil sobre el lienzo `{colors.canvas-soft}`; en móvil se conserva el flujo continuo sin contenedor adicional.
 - El acceso muestra «Usuario» y «Contraseña»; el usuario corto oculta el dominio sintético, mientras que un correo real permanece completo. «Recordar usuario» guarda solo el identificador.
 - Si el usuario corto recordado sigue en el campo, la ayuda saluda con ese identificador; al cambiarlo o usar un correo real, muestra la ayuda general. El saludo no consulta el perfil.
 - Campos y CTA comparten `--control-min-block-size`; los campos usan texto body-md, foco global y errores vinculados. En móvil no se enfoca automáticamente ningún campo para evitar abrir el teclado; el contenido puede desplazarse verticalmente con teclado o zoom.

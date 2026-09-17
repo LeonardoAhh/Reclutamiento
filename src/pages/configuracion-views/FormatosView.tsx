@@ -187,8 +187,8 @@ export function FormatosView() {
         className="config-page formatos-page"
         aria-labelledby="formatos-page-title"
       >
-        <header className="formatos-page__header">
-          <h1 id="formatos-page-title" className="config-page__title">
+        <header className="formatos-page__header app-page-heading--title-only">
+          <h1 id="formatos-page-title" className="config-page__title app-page-title">
             Formatos
           </h1>
         </header>

@@ -997,7 +997,7 @@
   height: 100%;
   width: 100%;
   flex: 1;
-  background-color: var(--color-canvas);
+  background-color: var(--color-surface);
 }
 
 /* Main Content Area */

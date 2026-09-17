@@ -627,8 +627,8 @@ export function Actividades() {
       loadingLabel="Cargando actividades..."
     >
       <main className="actividades-page container">
-        <header className="actividades-header">
-          <h1>Actividades</h1>
+        <header className="actividades-header app-page-heading--title-only">
+          <h1 className="app-page-title">Actividades</h1>
         </header>
 
       <Tabs.Root className="actividades-tabs" defaultValue="vacancies">

@@ -13,7 +13,7 @@
   min-block-size: var(--_app-header-size);
   padding-block-start: var(--safe-area-top);
 
-  background: var(--color-canvas);
+  background: var(--color-surface);
   border-block-end: var(--border-width) solid var(--color-hairline);
 }
 

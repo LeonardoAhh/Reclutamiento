@@ -298,7 +298,7 @@ export function DataUpdatePage() {
       <main className="data-update-page container" aria-labelledby="data-update-title">
         <header className="page-header">
           <div className="page-header__content">
-            <h1 id="data-update-title" className="page-title">Actualización de datos</h1>
+            <h1 id="data-update-title" className="page-title app-page-title">Actualización de datos</h1>
             <p>No tienes acceso a este módulo.</p>
           </div>
         </header>
@@ -329,8 +329,8 @@ export function DataUpdatePage() {
     <main className="data-update-page container" aria-labelledby="data-update-title">
       <header className="page-header data-update-page__header">
         <div className="page-header__content">
-          <h1 id="data-update-title" className="page-title">Actualización de datos</h1>
-          <p>Revisa la información asignada y conserva el avance en cada paso.</p>
+          <h1 id="data-update-title" className="page-title app-page-title">Actualización de datos</h1>
+
         </div>
         {isAdmin && (
           <div className="page-header__actions">

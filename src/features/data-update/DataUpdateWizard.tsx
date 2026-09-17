@@ -534,7 +534,7 @@ export function DataUpdateWizard({
     <form className="data-update-wizard" onSubmit={submit} onBlur={() => void persist(currentStepRef.current)} noValidate>
       <header className="data-update-wizard__header">
         <div className="data-update-wizard__context">
-          <h1>{record.identity.name}</h1>
+          <h1 className="app-page-title">{record.identity.name}</h1>
           <span className="type-caption-up text-muted">
             Empleado {record.identity.employeeNumber}
           </span>

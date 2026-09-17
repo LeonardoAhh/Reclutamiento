@@ -16,7 +16,7 @@ export function IncidenciasTransportePage() {
               />
               Transporte
             </p>
-            <h1 className="page-title">Incidencias de transporte</h1>
+            <h1 className="page-title app-page-title">Incidencias de transporte</h1>
             <p className="transport-incidents-page__subtitle">
               Gestión y reporte de incidencias en rutas
             </p>

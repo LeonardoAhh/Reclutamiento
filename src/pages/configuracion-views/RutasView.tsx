@@ -577,8 +577,8 @@ export function RutasView() {
       aria-labelledby="rutas-page-title"
     >
       <header className="rutas-header">
-        <div className="rutas-header__copy">
-          <h1 id="rutas-page-title" className="config-page__title">
+        <div className="rutas-header__copy app-page-heading--title-only">
+          <h1 id="rutas-page-title" className="config-page__title app-page-title">
             Rutas
           </h1>
         </div>

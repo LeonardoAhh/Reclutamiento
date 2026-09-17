@@ -303,8 +303,8 @@ export function Dashboard() {
 
   return (
     <main className="plantilla-layout container" aria-labelledby="plantilla-title">
-      <header className="plantilla-header">
-        <h1 id="plantilla-title" className="plantilla-header__title">
+      <header className="plantilla-header app-page-heading--title-only">
+        <h1 id="plantilla-title" className="plantilla-header__title app-page-title">
           {primaryView === "empleados" ? "Empleados" : "Plantilla"}
         </h1>
       </header>

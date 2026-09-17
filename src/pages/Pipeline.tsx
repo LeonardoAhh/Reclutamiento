@@ -454,8 +454,8 @@ export function Pipeline() {
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
       <header className="page-header">
-        <div className="page-header__content">
-          <h1 className="page-title">Candidatos</h1>
+        <div className="page-header__content app-page-heading--title-only">
+          <h1 className="page-title app-page-title">Candidatos</h1>
         </div>
         <div className="page-header__actions pipeline__hero-actions">
           <button

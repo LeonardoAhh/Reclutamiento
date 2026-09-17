@@ -20,7 +20,6 @@
 
   color: var(--color-navigation-rail-text);
   background: var(--color-navigation-rail);
-  border-inline-end: var(--border-width) solid var(--color-navigation-rail-elevated);
   transition: transform var(--transition-base);
   visibility: hidden;
   padding-inline: max(var(--spacing-lg), var(--safe-area-left)) max(var(--spacing-md), var(--safe-area-right));
@@ -48,8 +47,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xl);
-  border-bottom: var(--border-width) solid var(--color-navigation-rail-elevated);
+  margin-bottom: var(--spacing-md);
   margin-inline: calc(var(--spacing-md) * -1);
   padding-inline: var(--spacing-md);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
@@ -97,7 +95,7 @@ button.sidebar__close-btn {
 }
 
 .sidebar__group {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .sidebar__group:last-child {
@@ -105,14 +103,13 @@ button.sidebar__close-btn {
 }
 
 .sidebar__group-title {
-  margin-bottom: var(--spacing-xs);
-  padding-inline: var(--spacing-md);
+  margin-bottom: var(--spacing-xxs);
+  padding-inline: var(--spacing-sm);
   font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
   color: var(--color-navigation-rail-text);
 }
 
@@ -128,10 +125,10 @@ button.sidebar__close-btn {
 .sidebar__item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 
   min-height: var(--touch-target-min);
-  padding: var(--design-spacing-sm) var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-md);
 
   font-family: var(--font-body);
@@ -208,7 +205,7 @@ button.sidebar__close-btn {
 /* Pie de cuenta */
 .sidebar__footer {
   margin-top: auto;
-  padding-top: var(--spacing-xl);
+  padding-top: var(--spacing-md);
   border-block-start: var(--border-width) solid var(--color-navigation-rail-elevated);
   display: flex;
   align-items: center;
@@ -230,11 +227,11 @@ button.sidebar__close-btn {
   min-height: var(--touch-target-min);
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: var(--spacing-xs);
+  padding: var(--spacing-xxs);
   border-radius: var(--rounded-md);
 }
 .sidebar__user-trigger.dropdown-menu-trigger:is(:hover, [data-state="open"]) {
@@ -286,7 +283,7 @@ button.sidebar__close-btn {
 }
 
 .sidebar :is(a, button):focus-visible {
-  outline-color: var(--color-focus-on-inverted);
+  outline-color: var(--color-primary);
 }
 
 /* App shell: layout sidebar + contenido.
@@ -302,29 +299,53 @@ button.sidebar__close-btn {
   --_app-header-size: calc(
     var(--_app-header-row-size) + var(--safe-area-top) + var(--border-width)
   );
+  min-block-size: 100dvh;
+}
+
+.app-shell__workspace,
+.app-shell__main {
+  min-inline-size: 0;
 }
 
 @media (min-width: 1080px) {
+  .app-shell {
+    block-size: 100dvh;
+    overflow: hidden;
+    background: var(--color-navigation-rail);
+  }
+
   .sidebar {
-    inset-block-start: var(--_app-header-size);
+    inset-block-start: 0;
     transform: none;
     visibility: visible;
     width: var(--_app-sidebar-w);
     box-shadow: none;
-    padding-inline: max(var(--spacing-md), var(--safe-area-left)) var(--spacing-md);
-    padding-top: var(--spacing-xl);
+    padding-inline: max(var(--spacing-sm), var(--safe-area-left)) var(--spacing-sm);
+    padding-block-start: var(--safe-area-top);
   }
 
   .sidebar__top {
-    display: none;
+    min-block-size: var(--_app-header-size);
+    margin-block-end: var(--spacing-md);
   }
 
   .sidebar__close-btn {
     display: none;
   }
 
-  .app-shell__main {
+  .app-shell__workspace {
+    block-size: 100%;
+    min-block-size: 0;
     margin-inline-start: var(--_app-sidebar-w);
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    background: var(--color-surface);
+    border-block: var(--border-width) solid var(--color-hairline);
+    border-start-start-radius: var(--rounded-xl);
+    border-end-start-radius: var(--rounded-xl);
+    box-shadow: var(--shadow-card);
   }
 }
 

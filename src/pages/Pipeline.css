@@ -455,6 +455,27 @@
   align-items: center;
 }
 
+@media (min-width: 1080px) {
+  .pipeline__hero-actions {
+    flex-wrap: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .pipeline__quick-filters {
+    flex: 0 0 auto;
+  }
+
+  .pipeline__search-container {
+    flex: 1 1 0;
+  }
+
+  .pipeline__hero-actions :is(.btn-primary, .btn-secondary) {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+}
+
 .pipeline__quick-toggle.toggle-switch {
   flex-direction: column-reverse;
   align-items: center;

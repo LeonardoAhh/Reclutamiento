@@ -1,8 +1,8 @@
 {
-  "version": "0.1.60",
+  "version": "0.1.61",
   "fecha": "2026-09-17",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "UI improvements and minor bug fixes.",
+  "mensaje": "Se mejora la experiencia de usuario.",
   "notificar": true
 }
