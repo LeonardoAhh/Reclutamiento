@@ -97,9 +97,22 @@ export async function changePassword(
   newPassword: string
 ): Promise<ChangePasswordResult> {
   try {
-    const { data, error } = await supabase.functions.invoke<unknown>('change-password', {
+    const { data, error, response } = await supabase.functions.invoke<unknown>('change-password', {
       body: { currentPassword, newPassword },
     });
+    if (error) {
+      let message = 'El servicio de cambio de contraseña no está disponible. Intenta más tarde.';
+      if (response?.status === 401 || response?.status === 403) {
+        message = 'El servicio rechazó la sesión. Vuelve a iniciar sesión; si persiste, contacta al administrador.';
+      } else if (response?.status === 404) {
+        message = 'El servicio de cambio de contraseña no está publicado. Contacta al administrador.';
+      } else if (response?.status === 429) {
+        message = 'Se hicieron demasiados intentos. Espera unos minutos antes de volver a intentar.';
+      } else if (!response) {
+        message = 'No se pudo conectar con el servicio. Revisa tu conexión e intenta de nuevo.';
+      }
+      return { ok: false, field: 'form', message };
+    }
     if (!error && typeof data === 'object' && data !== null && 'ok' in data) {
       if (data.ok === true) return { ok: true };
       if (data.ok === false && 'field' in data && 'message' in data &&

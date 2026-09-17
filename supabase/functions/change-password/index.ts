@@ -50,7 +50,10 @@ runtime.serve(async (request) => {
     });
     if (!updated.ok) {
       const error: unknown = await updated.json();
-      const code = isRecord(error) ? error.code ?? error.error_code : undefined;
+      const code = isRecord(error)
+        ? typeof error.code === 'string' ? error.code
+          : typeof error.error_code === 'string' ? error.error_code : undefined
+        : undefined;
       if (code === 'invalid_credentials' || code === 'current_password_mismatch' || code === 'current_password_required') {
         return failure('La contraseña actual no coincide. Revísala e inténtalo de nuevo.', 'current');
       }
