@@ -1,6 +1,7 @@
 import type {
   DataUpdateEditableTextKey,
   DataUpdateIdentity,
+  DataUpdateLockerArea,
   DataUpdateRecord,
 } from "./types";
 
@@ -14,6 +15,17 @@ export const DATA_UPDATE_AUTOSAVE_DELAY_MS = 800;
 export const DATA_UPDATE_PAGE_SIZE = 12;
 export const DATA_UPDATE_OTHER_RELATIONSHIP = "OTRO";
 export const PAYROLL_RECEIPT_OPTIONS = ["SI", "NO"] as const;
+export const DATA_UPDATE_LOCKER_AREAS = [
+  "Producción",
+  "Almacén",
+  "Taller de Moldes",
+  "Mantenimiento",
+  "Calidad",
+] as const satisfies readonly DataUpdateLockerArea[];
+
+export function isDataUpdateLockerArea(value: string): value is DataUpdateLockerArea {
+  return (DATA_UPDATE_LOCKER_AREAS as readonly string[]).includes(value);
+}
 
 export const SHIRT_SIZE_OPTIONS = [
   { value: "XS", label: "XS — EXTRA CHICA" },

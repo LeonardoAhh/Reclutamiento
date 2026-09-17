@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { toNaturalCase } from "@/lib/utils";
 import {
+  isDataUpdateLockerArea,
   DATA_UPDATE_PHOTO_BUCKET,
   DATA_UPDATE_SIGNED_URL_SECONDS,
 } from "./constants";
@@ -81,6 +82,7 @@ function mapRecord(value: unknown): DataUpdateRecord {
       ? objectValue(row.campaign)
       : null;
   const original = objectValue(row.original_data);
+  const lockerArea = textValue(row.locker_area);
 
   return {
     id: textValue(row.id),
@@ -103,6 +105,7 @@ function mapRecord(value: unknown): DataUpdateRecord {
       Object.entries(original).map(([key, item]) => [key, textValue(item)]),
     ),
     data: mapEditable(row.current_data),
+    lockerArea: isDataUpdateLockerArea(lockerArea) ? lockerArea : "",
     assignedTo: textValue(row.assigned_to),
     assignedName: assignedProfile
       ? textValue(assignedProfile.display_name) || textValue(assignedProfile.username)
@@ -175,8 +178,9 @@ export function dataUpdateError(error: unknown): string {
   if (message.includes("DATA_UPDATE_INVALID_EMAIL")) return "Captura un correo con formato válido.";
   if (message.includes("DATA_UPDATE_INVALID_PAYROLL_RECEIPTS")) return "Indica si recibes tus recibos de nómina.";
   if (message.includes("DATA_UPDATE_INVALID_CHILD_BIRTH_DATES")) return "Captura una fecha de nacimiento válida para cada hijo.";
+  if (message.includes("DATA_UPDATE_INVALID_LOCKER_AREA")) return "Selecciona un área de locker válida.";
   if (message.includes("DATA_UPDATE_INVALID_LOCKER")) return "Captura el número de locker usando solo dígitos.";
-  if (message.includes("DATA_UPDATE_LOCKER_ASSIGNED")) return "Este locker ya está asignado a otro colaborador.";
+  if (message.includes("DATA_UPDATE_LOCKER_ASSIGNED")) return "Este locker ya está asignado a otro colaborador en esta área.";
   if (message.includes("DATA_UPDATE_COMPLETED")) return "El registro está completado. Un administrador debe reabrirlo para editarlo.";
   if (message.includes("DATA_UPDATE_REOPEN_INVALID")) return "Solo se pueden reabrir registros completados.";
   if (message.includes("duplicate key value")) return "Hay información duplicada en la campaña.";
@@ -202,6 +206,7 @@ const RECORD_SELECT = `
   social_security_number,
   original_data,
   current_data,
+  locker_area,
   assigned_to,
   status,
   identity_review,
@@ -422,9 +427,14 @@ export async function reassignDataUpdateRecord(recordId: string, profileId: stri
   return mapRecord(data);
 }
 
-export async function assignDataUpdateLocker(recordId: string, locker: string): Promise<DataUpdateRecord> {
+export async function assignDataUpdateLocker(
+  recordId: string,
+  lockerArea: DataUpdateRecord["lockerArea"],
+  locker: string,
+): Promise<DataUpdateRecord> {
   const { data, error } = await supabase.rpc("assign_data_update_locker", {
     p_record_id: recordId,
+    p_locker_area: lockerArea,
     p_locker: locker,
   });
   if (error) throw new Error(dataUpdateError(error));

@@ -3,6 +3,12 @@ export const DATA_UPDATE_PATH = "/actualizacion-datos";
 export type DataUpdateRecordStatus = "pendiente" | "en_proceso" | "completado";
 export type DataUpdateCampaignStatus = "activa" | "completada" | "archivada";
 export type IdentityReviewStatus = "pendiente" | "confirmado" | "incidencia";
+export type DataUpdateLockerArea =
+  | "Producción"
+  | "Almacén"
+  | "Taller de Moldes"
+  | "Mantenimiento"
+  | "Calidad";
 
 export interface DataUpdateIdentity {
   employeeNumber: string;
@@ -63,6 +69,7 @@ export interface DataUpdateRecord {
   identity: DataUpdateIdentity;
   originalData: Record<string, string>;
   data: DataUpdateEditableData;
+  lockerArea: DataUpdateLockerArea | "";
   assignedTo: string;
   assignedName?: string;
   status: DataUpdateRecordStatus;
