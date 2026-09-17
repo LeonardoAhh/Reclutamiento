@@ -1,51 +1,54 @@
 /* ========================================
-   DESIGN TOKENS — Notion-inspired system
-   Warm paper canvas · Inter · Single blue accent · Sticker palette (decor only)
-   Fuente: desing.md. Los nombres legados conservan su contrato durante la migración.
+   DESIGN TOKENS — Geist Precision UI
+   Near-white canvas · near-black action ink · accessible blue focus/link.
+   Fuente: desing.md. Alias legados preservan compatibilidad.
    ======================================== */
 
 :root {
-  /* ── Brand & Accent ─────────────────────────────────────────────
-     Notion-style: single blue structural accent. */
-  --color-primary: #0068c9;
-  --color-primary-active: #005bab;
-  --color-primary-disabled: #e6e6e6;
+  /* ── Brand & Accent ───────────────────────────────────────────── */
+  --color-primary: #171717;
+  --color-primary-active: #000000;
+  --color-primary-disabled: #ebebeb;
+  --color-link: #0066cc;
+  --color-link-deep: #004f9f;
+  --color-link-soft: #e6f0ff;
 
-  /* Deep indigo "night" band background — signature single-hero moment. */
-  --color-secondary: #213183;
-  --color-secondary-rgb: 33 49 131;
+  --color-secondary: #171717;
+  --color-secondary-rgb: 23 23 23;
 
-  /* ── Surface ────────────────────────────────────────────────────
-     Warm paper canvas over pure white. Cards on pure white to lift from canvas. */
-  --color-canvas: #f6f5f4; /* Warm off-white (paper) — page background */
-  --color-canvas-soft: #f6f5f4; /* Alias explícito Notion */
-  --color-surface: #ffffff; /* Cards, panels, form fields */
-  --color-surface-soft: #f6f5f4; /* Nav pills, dividers suaves */
-  --color-surface-card: #ffffff; /* Cards de feature/testimonial */
-  --color-surface-dark: #191817; /* Superficies oscuras (login panel, footer) */
-  --color-surface-dark-elevated: #232120; /* Cards anidadas sobre superficie oscura */
+  /* ── Surface ──────────────────────────────────────────────────── */
+  --color-canvas: #fafafa;
+  --color-canvas-soft: #fafafa;
+  --color-canvas-elevated: #ffffff;
+  --color-surface: var(--color-canvas-elevated);
+  --color-surface-soft: #f2f2f2;
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #262626;
   --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
   --color-document-ink: #000000; /* Texto de salidas oficiales */
   --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
-  --color-document-soft: #f6f5f4; /* Panel secundario de salidas oficiales */
-  --color-document-hairline: #d5d3d1; /* Bordes de salidas oficiales */
+  --color-document-soft: #f2f2f2; /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d9d9d9; /* Bordes de salidas oficiales */
   --color-document-table-header: #8c8c8c; /* Encabezados de tablas imprimibles */
   --color-document-table-row-alternate: #e5e5e5; /* Filas alternas imprimibles */
   --color-document-primary: #000000; /* Encabezado de salidas oficiales */
   --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #e6e6e6;
-  --color-hairline-soft: #f0efee;
-  --color-hairline-strong: #d5d3d1;
+  --color-hairline: #ebebeb;
+  --color-hairline-soft: #f2f2f2;
+  --color-hairline-strong: #d9d9d9;
 
   /* ── Text ───────────────────────────────────────────────────── */
-  --color-ink: #000000; /* Notion true-black (soft via alpha en usos) */
-  --color-body-strong: #000000;
-  --color-body: #31302e; /* Warm charcoal — body copy */
-  --color-charcoal: #31302e;
-  --color-muted: #615d59; /* Stone — supporting copy */
-  --color-muted-soft: #a39e98; /* Solo decoración; no texto funcional ni placeholders. */
+  --color-ink: #171717;
+  --color-body-strong: #171717;
+  --color-body: #4d4d4d;
+  --color-charcoal: #4d4d4d;
+  --color-mute: #666666;
+  --color-faint: #707070;
+  --color-muted: var(--color-mute);
+  --color-muted-soft: var(--color-faint);
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
   --color-on-dark-soft: #b8b6b3;
@@ -54,9 +57,9 @@
   --color-navigation-rail-elevated: var(--color-hairline);
   --color-navigation-rail-text: var(--color-muted);
   --color-navigation-rail-text-strong: var(--color-ink);
-  --color-navigation-rail-active: var(--color-primary-tint);
-  --color-navigation-rail-on-active: var(--color-primary);
-  --color-avatar-ink: #000000;
+  --color-navigation-rail-active: var(--color-hairline-soft);
+  --color-navigation-rail-on-active: var(--color-ink);
+  --color-avatar-ink: var(--color-ink);
   --color-avatar-ring: rgba(255, 255, 255, 0.2);
 
   /* Variantes deterministas del avatar; la paleta se adapta mediante sus tokens. */
@@ -67,26 +70,35 @@
   --avatar-gradient-warm: linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-orange) 100%);
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: #16a34a;
-  --color-success-text: #15803d;
-  --color-success-subtle: #f0fdf4;
-  --color-warning: #d97706;
-  --color-warning-text: #92400e;
-  --color-warning-subtle: #fffbeb;
-  --color-error: #dc2626;
-  --color-error-text: #b91c1c;
+  --color-success: var(--color-link);
+  --color-success-text: var(--color-link);
+  --color-success-subtle: var(--color-link-soft);
+  --color-warning: #f5a623;
+  --color-warning-text: #8a5700;
+  --color-warning-subtle: #fff5df;
+  --color-error: #d60000;
+  --color-error-text: #a80000;
   --color-error-subtle: #fef2f2;
 
-  /* ── Sticker palette (DECORATIVE ONLY — never CTAs or structural fills)
-     Small colourful illustration blocks, app-icon tiles, category dots. */
-  --color-accent-sky: #62aef0;
-  --color-accent-purple: #d6b6f6;
-  --color-accent-purple-deep: #391c57;
+  /* Ilustración/gradiente solamente; nunca chrome funcional. */
+  --color-violet: #7928ca;
+  --color-cyan: #50e3c2;
+  --color-pink: #ff0080;
+  --color-magenta: #eb367f;
+  --color-gradient-develop-start: #007cf0;
+  --color-gradient-develop-end: #00dfd8;
+  --color-gradient-preview-start: #7928ca;
+  --color-gradient-preview-end: #ff0080;
+  --color-gradient-ship-start: #ff4d4d;
+  --color-gradient-ship-end: #f9cb28;
+  --color-accent-sky: var(--color-link);
+  --color-accent-purple: var(--color-violet);
+  --color-accent-purple-deep: #4c1680;
 
-  --color-accent-orange: #dd5b00;
+  --color-accent-orange: #c75000;
   --color-accent-orange-deep: #793400;
-  --color-accent-teal: #2a9d99;
-  --color-accent-green: #1aae39;
+  --color-accent-teal: #087f7a;
+  --color-accent-green: #167d2b;
   --color-accent-brown: #523410;
 
   /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
@@ -103,93 +115,91 @@
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 0 104 201;
-  --color-success-rgb: 22 163 74;
-  --color-warning-rgb: 217 119 6;
-  --color-error-rgb: 220 38 38;
-  --color-ink-rgb: 0 0 0;
-  --color-canvas-rgb: 246 245 244;
+  --color-primary-rgb: 23 23 23;
+  --color-link-rgb: 0 102 204;
+  --color-success-rgb: var(--color-link-rgb);
+  --color-warning-rgb: 245 166 35;
+  --color-error-rgb: 214 0 0;
+  --color-ink-rgb: 23 23 23;
+  --color-canvas-rgb: 250 250 250;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
+  --color-focus-ring: rgb(var(--color-link-rgb) / 0.2);
   --color-modal-scrim: rgba(0, 0, 0, 0.32);
   --color-vacancy-tint: rgba(239, 68, 68, 0.05);
   --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
   --color-success-tint: var(--color-success-subtle);
   --color-error-tint: var(--color-error-subtle);
   --color-warning-tint: var(--color-warning-subtle);
-  --color-primary-tint: rgb(var(--color-primary-rgb) / 0.06);
-  --color-header-glass: rgba(246, 245, 244, 0.92);
+  --color-primary-tint: var(--color-hairline-soft);
+  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
 
-  /* ── Typography ─────────────────────────────────────────────────
-     Notion sets everything in tuned Inter. Weight 700 for display,
-     weight 400 for body — the primary expressive lever. */
+  /* Geist preferida; Inter es sustituto autorizado sin descarga runtime. */
   --font-display: var(--font-body);
   --font-body:
-    "Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
-  /* Compatibilidad con las vistas de código existentes; no usar en títulos. */
+    "Geist Sans", "Inter", -apple-system, system-ui, "Segoe UI", Helvetica,
+    Arial, sans-serif;
   --font-code:
-    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas,
-    monospace;
+    "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco,
+    Consolas, monospace;
 
-  /* display-xl legado — 40px; el hero canónico usa display-1 (40–64px). */
-  --type-display-xl-size: 2.5rem;
-  --type-display-xl-weight: 700;
-  --type-display-xl-line: 1.05;
-  --type-display-xl-tracking: -0.035em;
+  --type-display-xl-size: 3rem;
+  --type-display-xl-weight: 600;
+  --type-display-xl-line: 1;
+  --type-display-xl-tracking: -0.05em;
 
   /* display-lg — large section headlines */
   --type-display-lg-size: 2rem;
-  --type-display-lg-weight: 700;
-  --type-display-lg-line: 1.08;
-  --type-display-lg-tracking: -0.03em;
+  --type-display-lg-weight: 600;
+  --type-display-lg-line: 1.25;
+  --type-display-lg-tracking: -0.04em;
 
   /* heading-lg — section headlines */
-  --type-heading-lg-size: 1.625rem;
-  --type-heading-lg-weight: 700;
-  --type-heading-lg-line: 1.15;
-  --type-heading-lg-tracking: -0.024em;
+  --type-heading-lg-size: 2rem;
+  --type-heading-lg-weight: 600;
+  --type-heading-lg-line: 1.25;
+  --type-heading-lg-tracking: -0.04em;
 
   /* Las tallas de heading-md/sm, body-sm/strong y caption-xs se conservan en px:
      candidateAccessCard.ts las lee como números para dibujar la salida en canvas. */
   /* heading-md — sub-section headings */
-  --type-heading-md-size: 22px;
-  --type-heading-md-weight: 700;
-  --type-heading-md-line: 1.23;
-  --type-heading-md-tracking: -0.018em;
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 600;
+  --type-heading-md-line: 1.4;
+  --type-heading-md-tracking: -0.02em;
 
   /* heading-sm — card titles */
-  --type-heading-sm-size: 18px;
-  --type-heading-sm-weight: 700;
-  --type-heading-sm-line: 1.3;
-  --type-heading-sm-tracking: -0.012em;
+  --type-heading-sm-size: 16px;
+  --type-heading-sm-weight: 600;
+  --type-heading-sm-line: 1.5;
+  --type-heading-sm-tracking: -0.01em;
 
   /* body-md — texto corrido, 400 weight (readability first) */
-  --type-body-md-size: 1rem;
+  --type-body-md-size: 0.875rem;
   --type-body-md-weight: 400;
-  --type-body-md-line: 1.5;
+  --type-body-md-line: 1.43;
   --type-body-md-tracking: 0;
 
   /* body-sm — dense body, table rows, nav */
-  --type-body-sm-size: 15px;
+  --type-body-sm-size: 12px;
   --type-body-sm-weight: 400;
-  --type-body-sm-line: 1.4;
+  --type-body-sm-line: 1.33;
   --type-body-sm-tracking: 0;
 
   /* body-strong — feature titles / callouts (Notion title) */
-  --type-body-strong-size: 16px;
+  --type-body-strong-size: 14px;
   --type-body-strong-weight: 600;
   --type-body-strong-line: 1.4;
   --type-body-strong-tracking: -0.006em;
 
   /* body-sm-strong — button labels, dense strong copy */
-  --type-body-sm-strong-size: 0.9375rem;
-  --type-body-sm-strong-weight: 600;
+  --type-body-sm-strong-size: 0.875rem;
+  --type-body-sm-strong-weight: 500;
   --type-body-sm-strong-line: 1.4;
   --type-body-sm-strong-tracking: 0;
 
   /* caption-sm — captions, footnotes */
-  --type-caption-sm-size: 0.875rem;
+  --type-caption-sm-size: 0.75rem;
   --type-caption-sm-weight: 400;
   --type-caption-sm-line: 1.43;
   --type-caption-sm-tracking: 0;
@@ -207,9 +217,9 @@
   --type-caption-up-tracking: 0.06em;
 
   /* button — Notion: 16 / 500 (desing.md {typography.button}) */
-  --type-button-size: 1rem;
+  --type-button-size: 0.875rem;
   --type-button-weight: 500;
-  --type-button-line: 1.5;
+  --type-button-line: 1.43;
   --type-button-tracking: 0;
 
   /* code */
@@ -224,26 +234,26 @@
 
   /* Escala canónica de desing.md. Tokens anteriores siguen disponibles
      durante la migración para no alterar páginas todavía no convertidas. */
-  --type-display-1-size: clamp(2.5rem, calc(5vw + 1rem), 4rem);
-  --type-display-1-weight: 700;
+  --type-display-1-size: clamp(2.5rem, calc(3vw + 1rem), 3rem);
+  --type-display-1-weight: 600;
   --type-display-1-line: 1;
-  --type-display-1-tracking: -0.0332em;
-  --type-display-2-size: clamp(2.25rem, calc(4vw + 0.75rem), 3.375rem);
-  --type-display-2-weight: 700;
-  --type-display-2-line: 1.04;
-  --type-display-2-tracking: -0.0347em;
-  --type-heading-1-size: clamp(1.75rem, calc(3vw + 0.5rem), 2.5rem);
-  --type-heading-1-weight: 700;
-  --type-heading-1-line: 1.1;
-  --type-heading-1-tracking: -0.025em;
-  --type-heading-2-size: clamp(1.375rem, calc(2vw + 0.5rem), 1.625rem);
-  --type-heading-2-weight: 700;
-  --type-heading-2-line: 1.23;
-  --type-heading-2-tracking: -0.024em;
-  --type-heading-3-size: 1.375rem;
-  --type-heading-3-weight: 700;
-  --type-heading-3-line: 1.27;
-  --type-heading-3-tracking: -0.0114em;
+  --type-display-1-tracking: -0.05em;
+  --type-display-2-size: clamp(2rem, calc(2vw + 0.75rem), 2.5rem);
+  --type-display-2-weight: 600;
+  --type-display-2-line: 1.1;
+  --type-display-2-tracking: -0.04em;
+  --type-heading-1-size: clamp(1.75rem, calc(2vw + 0.5rem), 2rem);
+  --type-heading-1-weight: 600;
+  --type-heading-1-line: 1.25;
+  --type-heading-1-tracking: -0.04em;
+  --type-heading-2-size: 1.25rem;
+  --type-heading-2-weight: 600;
+  --type-heading-2-line: 1.4;
+  --type-heading-2-tracking: -0.02em;
+  --type-heading-3-size: 1rem;
+  --type-heading-3-weight: 600;
+  --type-heading-3-line: 1.5;
+  --type-heading-3-tracking: -0.01em;
   --type-title-size: 1.25rem;
   --type-title-weight: 600;
   --type-title-line: 1.4;
@@ -254,8 +264,8 @@
   --control-height-sm: var(--spacing-xxl);
   --control-height-lg: 44px;
   --touch-target-min: 44px;
-  --control-padding-x: 20px;
-  --control-padding-y: var(--design-spacing-sm);
+  --control-padding-x: var(--design-spacing-sm);
+  --control-padding-y: var(--design-spacing-xs);
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
   --control-min-block-size: max(
     var(--touch-target-min),
@@ -263,12 +273,12 @@
   );
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --select-content-max-block-size: 15.625rem;
-  --icon-size-sm: var(--spacing-lg);
-  --icon-size-md: calc(var(--spacing-lg) + var(--spacing-xs));
-  --icon-size-control: var(--type-heading-sm-size);
-  --icon-size-lg: var(--spacing-xl);
-  --icon-size-xl: calc(var(--spacing-xl) + var(--spacing-xs));
-  --icon-size-xxl: var(--spacing-xxl);
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.25rem;
+  --icon-size-control: 1rem;
+  --icon-size-lg: 1.5rem;
+  --icon-size-xl: 2rem;
+  --icon-size-xxl: 2.5rem;
   --feature-avatar-size: var(--icon-size-xxl);
   --feature-avatar-preview-size: 6rem;
   --feature-avatar-initials-size: var(--type-caption-md-size);
@@ -291,22 +301,25 @@
   --design-spacing-sm: 0.75rem;
   --design-spacing-md: 1rem;
   --design-spacing-lg: 1.5rem;
-  --design-spacing-xl: 1.75rem;
-  --design-spacing-xxl: 2rem;
-  --design-spacing-3xl: 3rem;
-  --design-spacing-4xl: 4rem;
+  --design-spacing-xl: 2rem;
+  --design-spacing-xxl: 2.5rem;
+  --design-spacing-3xl: 4rem;
+  --design-spacing-4xl: 6rem;
+  --design-spacing-section: 8rem;
 
-  /* ── Border radius (Notion: xs4 · sm5 · md8 · lg12 · xl16 · full) ── */
+  /* ── Border radius — app controls 6 · cards 12 · features 16 ── */
   --rounded-none: 0;
-  --rounded-xs: 4px;
-  --rounded-sm: 5px;
-  --rounded-md: 8px;
-  --rounded-lg: 12px;
+  --rounded-xs: 6px;
+  --rounded-sm: 6px;
+  --rounded-md: 12px;
+  --rounded-lg: 16px;
   --rounded-xl: 16px;
+  --rounded-pill-category: 64px;
+  --rounded-pill: 100px;
   --rounded-full: 9999px;
 
-  /* ── Shadows — Notion "barely-there" layered stack ─────────────── */
-  --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-primary);
+  /* ── Shadows — hairline first, restrained elevation ───────────── */
+  --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 
@@ -329,7 +342,7 @@
   --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-standard-max-inline-size: 80rem;
+  --container-standard-max-inline-size: 75rem;
   --container-compact-max-inline-size: 64rem;
   --container-wide-max-inline-size: 100rem;
   --container-max: var(--container-standard-max-inline-size);
@@ -458,7 +471,7 @@
   --tracking-wide: 0.02em;
   --tracking-wider: 0.04em;
 
-  --rounded-pill: var(--rounded-full);
+  --rounded-pill: 100px;
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
   --border-width: 1px;
@@ -484,30 +497,34 @@
   --color-primary-faint: var(--color-primary-tint);
   --color-error-soft: var(--color-error-tint);
   --color-border: var(--color-hairline);
-  --color-focus: var(--color-primary);
+  --color-focus: var(--color-link);
   --color-surface-contrast: var(--color-ink);
   --color-surface-sunken: var(--color-surface-soft);
   --color-surface-cream-strong: var(--color-surface-soft);
   --color-text-primary: var(--color-ink);
   --color-text-tertiary: var(--color-muted);
 
-  /* Shadows — Notion barely-there layered stack.
-     Level 0 = flat (hairline only). Level 1 = soft. Level 2 = elevated. */
-  --shadow-xs:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02);
+  /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
+  --shadow-xs: 0 1px 1px rgb(var(--color-ink-rgb) / 0.04);
   --shadow-sm:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04);
+    0 2px 2px rgb(var(--color-ink-rgb) / 0.04),
+    0 8px 16px -4px rgb(var(--color-ink-rgb) / 0.08);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-sm);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
   --shadow-prominent:
-    0 0.175px 1.041px rgba(0, 0, 0, 0.01), 0 0.8px 2.925px rgba(0, 0, 0, 0.02),
-    0 2.025px 7.847px rgba(0, 0, 0, 0.027), 0 4px 18px rgba(0, 0, 0, 0.04),
-    0 23px 52px rgba(0, 0, 0, 0.05);
+    0 2px 2px rgb(var(--color-ink-rgb) / 0.04),
+    0 8px 16px -4px rgb(var(--color-ink-rgb) / 0.08);
   --shadow-elevated: var(--shadow-prominent);
   --shadow-level-2: var(--shadow-elevated);
+  /* Contrato estable del workspace; evita que una migración de primitivas
+     desarme la superficie continua del shell y del login. */
+  --workspace-canvas: var(--color-canvas);
+  --workspace-surface: var(--color-canvas-elevated);
+  --workspace-border-color: var(--color-hairline);
+  --workspace-radius: var(--rounded-lg);
+  --workspace-shadow: var(--shadow-level-2);
   --type-caption-size: var(--type-caption-sm-size);
   --type-heading-xs-size: var(--type-caption-sm-size);
   --z-index-tooltip: var(--layer-tooltip);
@@ -630,14 +647,14 @@ h4 {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-link);
   text-decoration: underline;
   font: inherit;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-primary-active);
+  color: var(--color-link-deep);
 }
 
 button {
@@ -1137,8 +1154,8 @@ code:not(pre code) {
 
 /* ========================================
    BUTTONS — sistema de controles
-   Los botones de acción usan rounded-md.
-   Primaria plana; secundaria usa elevación suave.
+   Los botones de aplicación usan radio de 6px y altura táctil de 44px.
+   Primaria negra; secundaria plana con hairline.
    ======================================== */
 
 .btn-primary,
@@ -1159,7 +1176,7 @@ code:not(pre code) {
   line-height: var(--type-button-line);
   letter-spacing: var(--type-button-tracking);
   border: var(--border-width) solid transparent;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   cursor: pointer;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -1207,8 +1224,8 @@ code:not(pre code) {
 .btn-secondary {
   background: var(--color-surface);
   color: var(--color-ink);
-  border-color: var(--color-hairline-strong);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--color-hairline);
+  box-shadow: none;
 }
 .btn-secondary:hover:not(:disabled) {
   background: var(--color-surface-soft);
@@ -1269,7 +1286,7 @@ code:not(pre code) {
   gap: var(--spacing-xs);
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-link);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -1280,7 +1297,7 @@ code:not(pre code) {
   text-decoration: underline;
 }
 .btn-text:hover:not(:disabled) {
-  color: var(--color-primary-active);
+  color: var(--color-link-deep);
 }
 
 /* Icon button */
@@ -1291,7 +1308,7 @@ code:not(pre code) {
   justify-content: center;
   width: var(--touch-target-min);
   height: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline-strong);
   color: var(--color-charcoal);
@@ -1332,13 +1349,13 @@ code:not(pre code) {
 
 /* ========================================
    CARDS
-   Border 1px + rounded-lg. Sin sombra.
+   Border 1px + rounded-md. Sin sombra.
    ======================================== */
 
 .card {
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--rounded-md);
   padding: var(--design-spacing-lg);
 }
 

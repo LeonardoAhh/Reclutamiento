@@ -92,8 +92,9 @@
 }
 
 .sidebar-section__view[aria-current='page'] {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--color-navigation-rail-active);
+  color: var(--color-navigation-rail-on-active);
+  font-weight: var(--font-semibold);
 }
 
 .sidebar-section__view span {

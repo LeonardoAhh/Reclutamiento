@@ -19,7 +19,7 @@
   padding-bottom: calc(var(--spacing-lg) + var(--safe-area-bottom));
 
   color: var(--color-navigation-rail-text);
-  background: var(--color-navigation-rail);
+  background: var(--workspace-canvas);
   transition: transform var(--transition-base);
   visibility: hidden;
   padding-inline: max(var(--spacing-lg), var(--safe-area-left)) max(var(--spacing-md), var(--safe-area-right));
@@ -283,7 +283,7 @@ button.sidebar__close-btn {
 }
 
 .sidebar :is(a, button):focus-visible {
-  outline-color: var(--color-primary);
+  outline-color: var(--color-focus);
 }
 
 /* App shell: layout sidebar + contenido.
@@ -311,7 +311,7 @@ button.sidebar__close-btn {
   .app-shell {
     block-size: 100dvh;
     overflow: hidden;
-    background: var(--color-navigation-rail);
+    background: var(--workspace-canvas);
   }
 
   .sidebar {
@@ -341,11 +341,11 @@ button.sidebar__close-btn {
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
-    background: var(--color-surface);
-    border-block: var(--border-width) solid var(--color-hairline);
-    border-start-start-radius: var(--rounded-xl);
-    border-end-start-radius: var(--rounded-xl);
-    box-shadow: var(--shadow-card);
+    background: var(--workspace-surface);
+    border-block: var(--border-width) solid var(--workspace-border-color);
+    border-start-start-radius: var(--workspace-radius);
+    border-end-start-radius: var(--workspace-radius);
+    box-shadow: var(--workspace-shadow);
   }
 }
 
