@@ -50,6 +50,14 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
     if (status === 'required') headingRef.current?.focus();
   }, [status]);
 
+  const markReady = useCallback(() => {
+    // El cambio exitoso ya fue confirmado por la función de servidor.
+    // Invalida verificaciones anteriores para que una respuesta obsoleta
+    // no vuelva a mostrar temporalmente el formulario obligatorio.
+    requestId.current += 1;
+    setCheck({ userId, status: 'ready' });
+  }, [userId]);
+
   const leave = async () => {
     setSignOutError(false);
     try { await signOut(); } catch { setSignOutError(true); }
@@ -57,14 +65,24 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
 
   if (status === 'ready') return <>{children}</>;
 
+  const title = status === 'required'
+    ? 'Actualiza tu contraseña'
+    : status === 'error'
+      ? 'Acceso no verificado'
+      : 'Verificando acceso';
+
   return (
-    <main className="password-change-page" aria-labelledby="password-change-title">
+    <main
+      className="password-change-page"
+      aria-labelledby="password-change-title"
+      aria-busy={status === 'loading' || undefined}
+    >
       <section className="password-change-card">
         <header className="password-change-card__header">
-          <h1 ref={headingRef} tabIndex={-1} id="password-change-title" className="type-heading-md">Actualiza tu contraseña</h1>
+          <h1 ref={headingRef} tabIndex={-1} id="password-change-title" className="type-heading-md">{title}</h1>
           {status === 'required' && <p className="type-body-sm text-muted">Reemplaza la contraseña inicial por una que solo tú conozcas.</p>}
         </header>
-        {status === 'loading' && <p role="status">Verificando acceso…</p>}
+        {status === 'loading' && <p role="status">Comprobando la seguridad de tu cuenta…</p>}
         {status === 'error' && (
           <>
             <p className="form-error" role="alert">No se pudo verificar el acceso. Intenta de nuevo.</p>
@@ -72,7 +90,7 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
           </>
         )}
         {status === 'required' ? (
-          <PasswordChangeForm onCancel={() => void leave()} onChanged={verify} submitLabel="Guardar y continuar" cancelLabel="Cerrar sesión" />
+          <PasswordChangeForm onCancel={() => void leave()} onChanged={markReady} submitLabel="Guardar y continuar" cancelLabel="Cerrar sesión" />
         ) : (
           <button type="button" className="btn-secondary" onClick={() => void leave()}>Cerrar sesión</button>
         )}

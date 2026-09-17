@@ -90,7 +90,7 @@ Geist Sans and Geist Mono are freely available (open-source, via Vercel / Google
 - **Button sizing**: every interactive control has `min-height: 44px`. Marketing pills use `0 14px`; in-app controls use `0 12px`. Height is never inferred from 20px line-height alone.
 
 ### Grid & Container
-- Centered max-width container (~1200px) with comfortable gutters; the hero and CTA bands center their content.
+- Centered max-width container (1280px) with comfortable gutters; the hero and CTA bands center their content.
 - Feature sections use 2-up, 3-up, and 4-up hairline-card grids that collapse toward 1-up on narrow widths.
 - The pricing page uses a multi-column tier grid; the customers page a logo / case-study grid.
 

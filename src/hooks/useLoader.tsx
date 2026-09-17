@@ -9,13 +9,18 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { TransitionLoader } from '@/components/ui/TransitionLoader';
+import {
+  TransitionLoader,
+  type TransitionLoaderVariant,
+} from '@/components/ui/TransitionLoader';
 
 /** Tiempo de permanencia existente de flash; no es una duración de animación. */
 const DEFAULT_FLASH_DURATION_MS = 850;
+const WORKSPACE_ENTRY_FLASH_DURATION_MS = 2400;
 
 interface LoaderOptions {
   title?: string;
+  variant?: TransitionLoaderVariant;
 }
 
 interface LoaderApi {
@@ -65,13 +70,16 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
 
   const flash = useCallback(
     (opts?: LoaderOptions & { duration?: number }) => {
-      const { duration = DEFAULT_FLASH_DURATION_MS, ...rest } = opts ?? {};
+      const { duration, ...rest } = opts ?? {};
+      const resolvedDuration = duration ?? (rest.variant === 'workspace-entry'
+        ? WORKSPACE_ENTRY_FLASH_DURATION_MS
+        : DEFAULT_FLASH_DURATION_MS);
       clearTimer();
       setState(rest);
       timer.current = window.setTimeout(() => {
         setState(null);
         timer.current = null;
-      }, duration);
+      }, resolvedDuration);
     },
     [clearTimer]
   );
@@ -86,7 +94,9 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
     <LoaderContext.Provider value={api}>
       {children}
       {createPortal(
-        state !== null ? <TransitionLoader title={state.title} /> : null,
+        state !== null ? (
+          <TransitionLoader title={state.title} variant={state.variant} />
+        ) : null,
         document.body
       )}
     </LoaderContext.Provider>

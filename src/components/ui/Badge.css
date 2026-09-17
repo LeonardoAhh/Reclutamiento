@@ -3,24 +3,24 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-sm, 4px);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-sm);
+  border-radius: var(--rounded-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-strong-weight);
   white-space: nowrap;
-  line-height: 1;
+  line-height: var(--type-body-sm-line);
 }
 
 .badge svg {
   flex-shrink: 0;
 }
 
-.badge--minimal {
-  background: transparent !important;
+.badge.badge--minimal {
+  background: transparent;
   padding: 0;
-  gap: 4px;
+  gap: var(--design-spacing-xxs);
 }
 
 .badge--default {
@@ -40,7 +40,7 @@
 
 .badge--teal {
   background: color-mix(in srgb, var(--color-accent-teal) 15%, transparent);
-  color: color-mix(in srgb, var(--color-accent-teal) 80%, black);
+  color: var(--color-accent-teal);
 }
 
 .badge--amber {
@@ -50,7 +50,7 @@
 
 .badge--success {
   background: var(--color-success-tint);
-  color: color-mix(in srgb, var(--color-success) 80%, black);
+  color: var(--color-success-text);
 }
 
 .badge--error {
@@ -69,19 +69,20 @@
   display: inline-flex;
   align-items: center;
   height: var(--icon-size-lg);
-  padding: 0 8px;
+  padding-inline: var(--design-spacing-xs);
   border-radius: var(--rounded-md);
-  font-size: var(--type-caption-up-size);
-  font-weight: 600;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-body-sm-line);
   background: var(--color-surface);
   color: var(--color-ink);
-  border: 1px solid var(--color-hairline-soft);
+  border: var(--border-width) solid var(--color-hairline-soft);
   white-space: nowrap;
 }
 
 .project-badge--compact {
-  padding: 0 4px;
-  width: 20px;
+  padding-inline: var(--design-spacing-xxs);
+  width: var(--icon-size-md);
   justify-content: center;
   gap: 0;
 }
@@ -99,9 +100,9 @@
 .role-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  min-height: var(--spacing-xl);
-  padding-inline: var(--spacing-sm);
+  gap: var(--design-spacing-xxs);
+  min-height: var(--design-spacing-lg);
+  padding-inline: var(--design-spacing-xs);
   background: var(--color-surface-soft);
   border-radius: var(--rounded-full);
   font-size: var(--type-caption-sm-size);
@@ -112,8 +113,8 @@
 
 .role-badge::before {
   content: '';
-  width: var(--spacing-sm);
-  height: var(--spacing-sm);
+  width: var(--design-spacing-xs);
+  height: var(--design-spacing-xs);
   flex-shrink: 0;
   border-radius: var(--rounded-full);
   background: var(--color-muted-soft);
@@ -129,13 +130,13 @@
 .reclutador-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: 2px 6px; /* Ajuste para coincidir con badges cuadrados */
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   border-radius: var(--rounded-sm);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
-  line-height: 1.33;
+  line-height: var(--type-caption-up-line);
   white-space: nowrap;
   background: var(--color-surface-soft);
   color: var(--color-ink);
@@ -143,7 +144,7 @@
 }
 
 .reclutador-badge--sm {
-  padding: 2px 6px;
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   font-size: var(--type-caption-up-size);
 }
 
@@ -157,8 +158,8 @@
 }
 
 .reclutador-badge--icon-only.reclutador-badge--sm {
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
 }
 
 .reclutador-badge--icon-only .reclutador-badge__dot {
@@ -167,8 +168,8 @@
 
 /* Punto de color decorativo (sticker dot) - Regla AGENTS.md: color sólo localizado */
 .reclutador-badge__dot {
-  width: 6px;
-  height: 6px;
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
   flex-shrink: 0;
 }
@@ -179,18 +180,17 @@
 }
 
 .reclutador-badge__name {
-  letter-spacing: -0.01em;
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .reclutador-badge__role-tag {
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.8;
-  margin-left: 2px;
-  padding-left: 6px;
-  border-left: 1px solid var(--color-hairline);
+  letter-spacing: var(--tracking-wider);
+  margin-inline-start: var(--design-spacing-xxs);
+  padding-inline-start: var(--design-spacing-xs);
+  border-inline-start: var(--border-width) solid var(--color-hairline);
 }
 
 /* Colores por persona/rol (sólo aplicado al punto y excepcionalmente al ícono si no hay punto) */
@@ -208,13 +208,13 @@
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: 2px 6px;
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
-  line-height: 1.33;
+  line-height: var(--type-caption-up-line);
   white-space: nowrap;
   background: var(--color-surface-soft);
   color: var(--color-ink);
@@ -255,8 +255,8 @@
 
 /* ── AreaStatusBadge dots ── */
 .status-badge__dot {
-  width: 6px;
-  height: 6px;
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
   flex-shrink: 0;
   background: var(--color-muted);

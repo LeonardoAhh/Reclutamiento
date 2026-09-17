@@ -77,7 +77,8 @@
   --color-warning-text: #8a5700;
   --color-warning-subtle: #fff5df;
   --color-error: #d60000;
-  --color-error-text: #a80000;
+  --color-error-deep: #a80000;
+  --color-error-text: var(--color-error-deep);
   --color-error-subtle: #fef2f2;
 
   /* Ilustración/gradiente solamente; nunca chrome funcional. */
@@ -198,6 +199,12 @@
   --type-body-sm-strong-line: 1.4;
   --type-body-sm-strong-tracking: 0;
 
+  /* label-sm — strong labels and navigation emphasis */
+  --type-label-sm-size: 0.875rem;
+  --type-label-sm-weight: 500;
+  --type-label-sm-line: 1.43;
+  --type-label-sm-tracking: -0.02em;
+
   /* caption-sm — captions, footnotes */
   --type-caption-sm-size: 0.75rem;
   --type-caption-sm-weight: 400;
@@ -216,11 +223,27 @@
   --type-caption-up-line: 1.33;
   --type-caption-up-tracking: 0.06em;
 
+  /* mono-eyebrow — uppercase technical section labels */
+  --type-mono-eyebrow-size: 0.75rem;
+  --type-mono-eyebrow-weight: 500;
+  --type-mono-eyebrow-line: 1.33;
+  --type-mono-eyebrow-tracking: 0;
+
   /* button — Notion: 16 / 500 (desing.md {typography.button}) */
   --type-button-size: 0.875rem;
   --type-button-weight: 500;
   --type-button-line: 1.43;
   --type-button-tracking: 0;
+
+  /* Canonical button roles: marketing and app/navigation. */
+  --type-button-lg-size: 1rem;
+  --type-button-lg-weight: 500;
+  --type-button-lg-line: 1.25;
+  --type-button-lg-tracking: 0;
+  --type-button-md-size: var(--type-button-size);
+  --type-button-md-weight: var(--type-button-weight);
+  --type-button-md-line: var(--type-button-line);
+  --type-button-md-tracking: var(--type-button-tracking);
 
   /* code */
   --type-code-md-size: 0.875rem;
@@ -260,7 +283,7 @@
   --type-title-tracking: -0.00625em;
 
   /* ── Control sizing ─────────────────────────────────────────── */
-  --control-height: 40px;
+  --control-height: 44px;
   --control-height-sm: var(--spacing-xxl);
   --control-height-lg: 44px;
   --touch-target-min: 44px;
@@ -342,7 +365,7 @@
   --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-standard-max-inline-size: 75rem;
+  --container-standard-max-inline-size: 80rem;
   --container-compact-max-inline-size: 64rem;
   --container-wide-max-inline-size: 100rem;
   --container-max: var(--container-standard-max-inline-size);
@@ -522,7 +545,7 @@
      desarme la superficie continua del shell y del login. */
   --workspace-canvas: var(--color-canvas);
   --workspace-surface: var(--color-canvas-elevated);
-  --workspace-border-color: var(--color-hairline);
+  --workspace-border-color: var(--color-hairline-strong);
   --workspace-radius: var(--rounded-lg);
   --workspace-shadow: var(--shadow-level-2);
   --type-caption-size: var(--type-caption-sm-size);
@@ -785,6 +808,14 @@ code:not(pre code) {
   letter-spacing: var(--type-body-sm-strong-tracking);
 }
 
+.type-label-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
+}
+
 .type-caption-sm {
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
@@ -802,12 +833,37 @@ code:not(pre code) {
   text-transform: uppercase;
 }
 
+.type-mono-eyebrow {
+  font-family: var(--font-code);
+  font-size: var(--type-mono-eyebrow-size);
+  font-weight: var(--type-mono-eyebrow-weight);
+  line-height: var(--type-mono-eyebrow-line);
+  letter-spacing: var(--type-mono-eyebrow-tracking);
+  text-transform: uppercase;
+}
+
 .type-button {
   font-family: var(--font-body);
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
   line-height: var(--type-button-line);
   letter-spacing: var(--type-button-tracking);
+}
+
+.type-button-lg {
+  font-family: var(--font-body);
+  font-size: var(--type-button-lg-size);
+  font-weight: var(--type-button-lg-weight);
+  line-height: var(--type-button-lg-line);
+  letter-spacing: var(--type-button-lg-tracking);
+}
+
+.type-button-md {
+  font-family: var(--font-body);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
 }
 
 /* Roles canónicos de desing.md. Nuevas vistas deben preferirlos. */

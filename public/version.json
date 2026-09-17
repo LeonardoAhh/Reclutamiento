@@ -1,8 +1,8 @@
 {
-  "version": "0.1.64",
+  "version": "0.1.65",
   "fecha": "2026-09-17",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "Corrección en locker",
+  "mensaje": "UI / UX  new design.",
   "notificar": true
 }

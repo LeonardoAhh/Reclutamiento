@@ -342,7 +342,7 @@ button.sidebar__close-btn {
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
     background: var(--workspace-surface);
-    border-block: var(--border-width) solid var(--workspace-border-color);
+    border: var(--border-width) solid var(--workspace-border-color);
     border-start-start-radius: var(--workspace-radius);
     border-end-start-radius: var(--workspace-radius);
     box-shadow: var(--workspace-shadow);

@@ -57,7 +57,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
         // Si no es la carga inicial, significa que el usuario acaba de iniciar sesión.
         // Damos gracia para que la animación del botón verde se complete.
         const timer = setTimeout(() => {
-          loader.flash({ duration: 3000 }); // Launch transition loader
+          loader.flash({ variant: 'workspace-entry' });
           // Wait briefly for the loader to fade in and cover the screen before redirecting
           setTimeout(() => setShouldRedirect(true), 300);
         }, 800);

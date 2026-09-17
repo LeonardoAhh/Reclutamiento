@@ -52,7 +52,7 @@ export function Sidebar({
     signOutPendingRef.current = true;
     setSigningOut(true);
     trigger("light");
-    loader.show({ title: "Cerrando sesión..." });
+    loader.show({ title: "Cerrando sesión…", variant: "workspace-exit" });
     try {
       await signOut();
       trigger("success");
