@@ -45,11 +45,11 @@
 .sidebar__top {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
-  margin-inline: calc(var(--spacing-md) * -1);
-  padding-inline: var(--spacing-md);
+  margin-inline: 0;
+  padding-inline: calc(var(--spacing-xs) + var(--spacing-sm));
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
   flex-shrink: 0;
 }
@@ -57,7 +57,7 @@
 .sidebar__brand {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: var(--color-navigation-rail-text-strong);
+  color: var(--color-primary);
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
