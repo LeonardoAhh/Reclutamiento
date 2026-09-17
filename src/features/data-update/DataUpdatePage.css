@@ -875,12 +875,20 @@
 }
 
 .data-update-photo__status {
-  color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  display: grid;
+  gap: var(--design-spacing-xs);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   text-align: center;
+}
+
+.data-update-photo__actions label[aria-disabled="true"] {
+  opacity: var(--opacity-disabled);
+  pointer-events: none;
 }
 
 .data-update-review {

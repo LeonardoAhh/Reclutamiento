@@ -1,3 +1,5 @@
+import { requirePasswordChangeComplete } from '../_shared/password-change-access.ts';
+
 type EdgeRuntime = {
   env: {
     get(name: string): string | undefined;
@@ -224,6 +226,11 @@ edgeRuntime.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+
+  const denied = await requirePasswordChangeComplete(
+    req, edgeRuntime.env.get('SUPABASE_URL'), edgeRuntime.env.get('SUPABASE_ANON_KEY'), corsHeaders,
+  );
+  if (denied) return denied;
 
   try {
     const body = await req.json();

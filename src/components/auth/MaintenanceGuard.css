@@ -28,7 +28,7 @@
 .maintenance-icon-wrap {
   display: grid;
   place-items: center;
-  color: var(--color-primary);
+  color: var(--color-muted);
 }
 
 .maintenance-icon {
@@ -75,56 +75,9 @@
   gap: var(--design-spacing-xs);
 }
 
-/* ── Dots loader ────────────────────────────────── */
-.maintenance-dots {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-}
-
-.maintenance-dots__label {
-  margin-inline-start: var(--design-spacing-xxs);
-}
-
-.maintenance-dot {
-  inline-size: var(--design-spacing-xxs);
-  block-size: var(--design-spacing-xxs);
-  border-radius: var(--rounded-full);
-  background: currentColor;
-  animation: maintenance-bounce var(--duration-spinner) var(--ease-standard) infinite;
-}
-
-.maintenance-dot:nth-child(2) {
-  animation-delay: calc(0ms - var(--duration-loader-stagger-step));
-}
-
-.maintenance-dot:nth-child(3) {
-  animation-delay: calc(
-    0ms - var(--duration-loader-stagger-step) - var(--duration-loader-stagger-step)
-  );
-}
-
-@keyframes maintenance-bounce {
-  0%, 100% {
-    transform: translateY(0);
-    opacity: var(--opacity-skeleton-rest);
-  }
-  50% {
-    transform: translateY(calc(var(--design-spacing-xxs) * -1));
-    opacity: 1;
-  }
-}
-
 @media (min-width: 768px) {
   .maintenance-actions {
     flex-direction: row;
     justify-content: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .maintenance-dot {
-    animation: none;
-    opacity: 1;
   }
 }

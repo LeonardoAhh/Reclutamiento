@@ -242,6 +242,7 @@ export function DataUpdateWizard({
   };
 
   const beforeStepChange = async (currentStep: number, nextStep: number) => {
+    if (photoBusy) return false;
     if (!online) {
       setNotice("Necesitas conexión para continuar.");
       return false;
@@ -286,7 +287,7 @@ export function DataUpdateWizard({
   };
 
   const handlePhoto = async (file: File | undefined) => {
-    if (!file) return;
+    if (!file || photoBusy) return;
     const validationError = validateDataUpdatePhoto(file);
     if (validationError) {
       setNotice(validationError);
@@ -485,7 +486,7 @@ export function DataUpdateWizard({
     {
       id: "photo",
       title: "Fotografía",
-      isValid: Boolean(photoPathRef.current),
+      isValid: !photoBusy && Boolean(photoPathRef.current),
       onInvalid: () => {
         setNotice("Agrega una fotografía para continuar.");
         window.requestAnimationFrame(() => {
@@ -514,7 +515,7 @@ export function DataUpdateWizard({
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!online || !photoPathRef.current || !allDataValid) return;
+    if (!online || photoBusy || !photoPathRef.current || !allDataValid) return;
     setSubmitting(true);
     setNotice(null);
     try {
@@ -554,6 +555,7 @@ export function DataUpdateWizard({
         submittingLabel="Actualizando..."
         submitting={submitting}
         submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
+        navigationPending={photoBusy}
         onCancel={onCancel}
         onBeforeStepChange={beforeStepChange}
         focusStepOnChange

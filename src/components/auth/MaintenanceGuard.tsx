@@ -1,41 +1,39 @@
 import { type ReactNode, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
-import { LogOut, ShieldCheck, X } from 'lucide-react';
+import { LogOut, ShieldCheck } from 'lucide-react';
 import './MaintenanceGuard.css';
-
-const MINIMUM_CHECK_DURATION_MS = 900;
-const RESULT_VISIBILITY_DURATION_MS = 2000;
 
 export function MaintenanceGuard({ children }: { children: ReactNode }) {
   const { profile, profileLoading, loading: authLoading, signOut } = useAuth();
   const {
     enabled: isMaintenance,
     loading: maintenanceLoading,
+    error: maintenanceError,
+    hasConfirmedState,
     refresh: refreshMaintenance,
   } = useMaintenanceMode();
   const isAdmin = profile?.role === 'admin';
   const [isChecking, setIsChecking] = useState(false);
-  const [checkResult, setCheckResult] = useState<'idle' | 'unavailable'>('idle');
+  const [hasChecked, setHasChecked] = useState(false);
 
   const handleCheck = async () => {
+    if (isChecking) return;
     setIsChecking(true);
-    setCheckResult('idle');
-    await Promise.all([
-      refreshMaintenance({ silent: true }),
-      new Promise(resolve => setTimeout(resolve, MINIMUM_CHECK_DURATION_MS)),
-    ]);
-    setIsChecking(false);
-    // Si el componente sigue montado, el mantenimiento continúa activo
-    setCheckResult('unavailable');
-    setTimeout(() => setCheckResult('idle'), RESULT_VISIBILITY_DURATION_MS);
+    setHasChecked(false);
+    try {
+      await refreshMaintenance({ silent: true });
+      setHasChecked(true);
+    } finally {
+      setIsChecking(false);
+    }
   };
 
-  if (authLoading || maintenanceLoading || (isMaintenance && profileLoading)) {
+  if (authLoading || maintenanceLoading || ((!hasConfirmedState || isMaintenance) && profileLoading)) {
     return null;
   }
 
-  if (!isMaintenance || isAdmin) {
+  if ((hasConfirmedState && !isMaintenance) || isAdmin) {
     return <>{children}</>;
   }
 
@@ -48,10 +46,10 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
 
         <div className="maintenance-content">
           <h1 id="maintenance-title" className="maintenance-title type-heading-lg">
-            Volvemos en breve
+            {hasConfirmedState ? 'Sistema en mantenimiento' : 'No se pudo verificar el acceso'}
           </h1>
           <p className="type-body-md maintenance-text">
-            Sistema en mantenimiento. Regresamos pronto.
+            Puedes comprobar si ya está disponible.
           </p>
         </div>
 
@@ -60,23 +58,11 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
             onClick={handleCheck}
             className="btn-primary maintenance-button"
             type="button"
-            disabled={isChecking || checkResult === 'unavailable'}
+            disabled={isChecking}
+            aria-busy={isChecking}
+            aria-describedby="maintenance-status"
           >
-            {isChecking ? (
-              <span className="maintenance-dots" aria-label="Comprobando">
-                <span className="maintenance-dot" />
-                <span className="maintenance-dot" />
-                <span className="maintenance-dot" />
-                <span className="maintenance-dots__label">Comprobando</span>
-              </span>
-            ) : checkResult === 'unavailable' ? (
-              <>
-                <X size="var(--icon-size-sm)" aria-hidden="true" />
-                Aún no disponible
-              </>
-            ) : (
-              'Comprobar disponibilidad'
-            )}
+            {isChecking ? 'Comprobando…' : 'Comprobar disponibilidad'}
           </button>
           <button
             onClick={signOut}
@@ -88,6 +74,15 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
             Cerrar sesión
           </button>
         </div>
+        <p id="maintenance-status" className="type-body-sm maintenance-text" role="status" aria-atomic="true">
+          {isChecking
+            ? 'Comprobando disponibilidad…'
+            : maintenanceError
+              ? 'No se pudo consultar el estado. Intenta de nuevo.'
+              : hasChecked && isMaintenance
+                ? 'El mantenimiento continúa activo.'
+                : ''}
+        </p>
       </section>
     </main>
   );

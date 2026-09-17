@@ -42,6 +42,7 @@
 // @ts-nocheck — entorno Deno; lint de TS-node se queja, pero es código que
 // corre en Supabase Edge Runtime, no en el bundle del frontend.
 
+import { requirePasswordChangeComplete } from '../_shared/password-change-access.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 const AUTH_EMAIL_DOMAIN = 'reclutamiento.local';
@@ -126,6 +127,9 @@ Deno.serve(async (req: Request) => {
       401
     );
   }
+
+  const denied = await requirePasswordChangeComplete(req, supabaseUrl, anonKey, CORS_HEADERS);
+  if (denied) return denied;
 
   // Cliente admin (service_role) para todo lo que sigue.
   const admin = createClient(supabaseUrl, serviceKey, {

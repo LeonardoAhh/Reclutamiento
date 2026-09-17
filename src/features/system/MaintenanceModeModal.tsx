@@ -96,14 +96,14 @@ export function MaintenanceModeModal({
         <div className="maintenance-mode-modal__status">
           <span className="type-body-sm">Estado actual</span>
           <Badge variant={isMaintenance ? "amber" : "default"}>
-            {loading ? "Consultando…" : isMaintenance ? "Activo" : "Inactivo"}
+            {loading ? "Consultando…" : configurationUnavailable ? "No disponible" : isMaintenance ? "Activo" : "Inactivo"}
           </Badge>
         </div>
 
         <p className="maintenance-mode-modal__copy type-body-sm text-muted">
           {isMaintenance
             ? "Se restaurará el acceso normal al sistema."
-            : "Solo para administradores."}
+            : "Durante el mantenimiento, solo podrán acceder administradores."}
         </p>
 
         {maintenanceError && (

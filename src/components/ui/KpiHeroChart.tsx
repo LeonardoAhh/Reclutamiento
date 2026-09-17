@@ -1,10 +1,10 @@
 
 /**
  * KpiHeroChart.tsx
- * Gráfica compuesta (Barras Agrupadas + Línea) para el dashboard de KPIs de Reclutamiento.
+ * Gráfica de líneas 2D para el dashboard de KPIs de Reclutamiento.
  * Rediseño ejecutivo — modo claro/blanco, legible en proyector y Teams.
  *
- * Muestra vacantes plantilla, vacantes backup y cobertura % por día de la semana.
+ * Muestra vacantes de plantilla, backup y Starlite por día de la semana.
  * Incluye zona crítica visual (<90%), tarjetas de resumen por día y KPIs destacados.
  *
  * Dependencias: recharts
@@ -18,13 +18,12 @@ import { localTodayIso } from '@/lib/dates';
 import { formatPercentage } from '@/lib/utils';
 import {
   ResponsiveContainer,
-  Bar,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
   Line,
-  ComposedChart,
+  LineChart,
   type TooltipProps,
 } from 'recharts';
 
@@ -62,12 +61,27 @@ const PALETTE = {
   red: 'var(--color-error)',
   amber: 'var(--color-accent-amber)',
   starlite: 'var(--color-accent-purple-deep)',
-  ink: 'var(--color-ink)',
   grid: 'var(--color-hairline)',
   axis: 'var(--color-muted)',
   surfaceCard: 'var(--color-surface-card)',
-  surfaceSoft: 'var(--color-surface-soft)',
 };
+
+const SERIES = [
+  { key: 'vacantesPlantilla', label: 'Plantilla', name: 'Vacantes Plantilla', axis: 'left', color: PALETTE.red, dash: 'var(--chart-dash-long)' },
+  { key: 'vacantesBackup', label: 'Backup', name: 'Vacantes Backup', axis: 'left', color: PALETTE.amber, dash: 'var(--chart-dash-short)' },
+  { key: 'vacantesStarlite', label: 'Starlite', name: 'Vacantes Starlite', axis: 'left', color: PALETTE.starlite, dash: 'var(--chart-dash-dotted)' },
+] as const;
+
+function SeriesMarker({ seriesKey }: { seriesKey: string }) {
+  const series = SERIES.find((item) => item.key === seriesKey);
+  if (!series) return null;
+  return (
+    <svg className={`kpi-hero-legend-marker kpi-hero-legend-marker--${series.key}`} aria-hidden="true">
+      <line x1="0" x2="100%" y1="50%" y2="50%" strokeDasharray={series.dash} />
+      <circle cx="50%" cy="50%" />
+    </svg>
+  );
+}
 
 // ─────────────────────────────────────────────
 // Tooltip personalizado
@@ -96,21 +110,14 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
         {label}
       </p>
       {payload.map((entry) => {
-        const isPercent = entry.dataKey === 'cobertura';
-        const valor = isPercent
-          ? formatPercentage(entry.value)
-          : entry.value.toLocaleString('es-MX');
+        const valor = entry.value.toLocaleString('es-MX');
 
         return (
           <p
             key={entry.dataKey}
             className="kpi-hero-tooltip__row"
           >
-            <span
-              aria-hidden="true"
-              className={`kpi-hero-series-marker${isPercent ? ' kpi-hero-series-marker--line' : ''}`}
-              style={{ backgroundColor: entry.color }}
-            />
+            <SeriesMarker seriesKey={entry.dataKey} />
             <span>{entry.name}:</span>{' '}
             <strong>{valor}</strong>
           </p>
@@ -126,10 +133,6 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
 
 function formatYLeft(value: number): string {
   return Number.isInteger(value) ? value.toString() : '';
-}
-
-function formatYRight(value: number): string {
-  return `${value}%`;
 }
 
 /* Guard para los dots de la línea: recharts puede pasar cx/cy undefined
@@ -154,14 +157,13 @@ interface SafeDotProps {
 function SafeLineDot({
   cx,
   cy,
-  r,
   fill,
   stroke,
-  strokeWidth,
-}: SafeDotProps & { r: number; fill: string; stroke?: string; strokeWidth?: number }) {
+  active = false,
+}: SafeDotProps & { fill: string; stroke?: string; active?: boolean }) {
   if (!isFinitePair(cx, cy) || typeof cy !== 'number') return <g />;
   return (
-    <circle cx={cx} cy={cy} r={r} fill={fill} stroke={stroke} strokeWidth={strokeWidth} />
+    <circle className={`kpi-hero-line-dot${active ? ' kpi-hero-line-dot--active' : ''}`} cx={cx} cy={cy} fill={fill} stroke={stroke} />
   );
 }
 
@@ -209,13 +211,14 @@ function DayCard({ data }: DayCardProps) {
 interface ChartHeaderProps {
   data: DailyKpiData[];
   presentation: boolean;
+  onClick?: () => void;
   onPrevWeek?: () => void;
   onNextWeek?: () => void;
   disableNextWeek?: boolean;
   weekNumber?: number;
 }
 
-function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
+function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
   if (!data.length) return null;
 
   const minCobertura = Math.min(...data.map((d) => d.cobertura));
@@ -224,25 +227,18 @@ function ChartHeader({ data, presentation, onPrevWeek, onNextWeek, disableNextWe
   return (
     <div className="kpi-hero-header">
       <div className="kpi-hero-heading">
-        <h2 className="kpi-hero-title">Cobertura</h2>
-        <ul className="kpi-hero-legend" aria-label="Series del gráfico">
-          <li>
-            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--plantilla" aria-hidden="true" />
-            Plantilla
-          </li>
-          <li>
-            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--backup" aria-hidden="true" />
-            Backup
-          </li>
-          <li>
-            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--starlite" aria-hidden="true" />
-            Starlite
-          </li>
-          <li>
-            <span className="kpi-hero-legend-marker kpi-hero-legend-marker--coverage" aria-hidden="true" />
-            Cobertura
-          </li>
-        </ul>
+        <h2 className="kpi-hero-title">
+          {onClick ? (
+            <button
+              type="button"
+              className="kpi-hero-title-action"
+              aria-label="Cobertura: ver detalle de vacantes"
+              onClick={(event) => { event.stopPropagation(); onClick(); }}
+            >
+              Cobertura
+            </button>
+          ) : 'Cobertura'}
+        </h2>
       </div>
 
       <div className="kpi-hero-metrics">
@@ -333,7 +329,7 @@ function ChartEmpty() {
 export function KpiHeroChart({
   data,
   height,
-  ariaLabel = 'Gráfica de vacantes plantilla, vacantes backup, vacantes Starlite y cobertura por día de la semana',
+  ariaLabel = 'Gráfica de vacantes de plantilla, backup y Starlite por día de la semana',
   variant = 'default',
   onClick,
   onPrevWeek,
@@ -349,12 +345,7 @@ export function KpiHeroChart({
   // ── Tamaños según variante ──────────────────
   const chartHeight = height ?? (presentation ? 420 : 280);
   const TICK_FONT_SIZE = presentation ? 15 : 13;
-  const Y_LEFT_WIDTH = presentation ? 48 : 32;
-  const Y_RIGHT_WIDTH = presentation ? 58 : 40;
-  const DOT_ACTIVE_RADIUS = presentation ? 10 : 6;
-  const DOT_REST_RADIUS = presentation ? 6 : 3;
-  const LINE_STROKE_WIDTH = presentation ? 4 : 2.5;
-  const BAR_RADIUS = presentation ? 6 : 4;
+  const Y_AXIS_WIDTH = presentation ? 58 : 40;
   const MARGIN = {
     top: presentation ? 24 : 16,
     right: presentation ? 20 : 8,
@@ -393,30 +384,12 @@ export function KpiHeroChart({
     return todayCard ? [todayCard] : [chartData[chartData.length - 1]];
   }, [chartData, isMobile, presentation]);
 
-  const coberturaMin = isEmpty
-    ? 0
-    : Math.min(...chartData.map((d) => d.cobertura));
-  const yRightMin = Math.floor(Math.min(coberturaMin, 90) / 10) * 10;
-  const yRightMax = 100;
-
   return (
     <figure
       aria-label={ariaLabel}
       aria-describedby={descId}
       className={`kpi-hero-chart${presentation ? ' kpi-hero-chart--presentation' : ''}${onClick ? ' kpi-hero-chart--interactive' : ''}`}
       onClick={onClick}
-      role={onClick ? 'button' : 'img'}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={
-        onClick
-          ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onClick();
-              }
-            }
-          : undefined
-      }
     >
       <figcaption
         id={descId}
@@ -437,143 +410,96 @@ export function KpiHeroChart({
           <ChartHeader
             data={chartData}
             presentation={presentation}
+            onClick={onClick}
             onPrevWeek={onPrevWeek}
             onNextWeek={onNextWeek}
             disableNextWeek={disableNextWeek}
             weekNumber={weekNumber}
           />
 
-          <div className={`kpi-hero-plot${presentation ? ' kpi-hero-plot--presentation' : ''}`}>
-            <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
-              <ComposedChart
-                data={chartData}
-                margin={MARGIN}
-                role="img"
-                aria-label={ariaLabel}
-                barCategoryGap="28%"
-                barGap={presentation ? 6 : 3}
+              <section
+                className={`kpi-hero-plot${presentation ? ' kpi-hero-plot--presentation' : ''}`}
+                aria-labelledby={`${descId}-vacancies`}
               >
-                <CartesianGrid
-                  strokeDasharray="4 4"
-                  vertical={false}
-                  stroke={PALETTE.grid}
-                  strokeOpacity={1}
-                />
-
-                <XAxis
-                  dataKey="day"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fill: PALETTE.axis,
-                    fontSize: TICK_FONT_SIZE,
-                    fontWeight: 400,
-                    fontFamily: 'inherit',
-                  }}
-                  dy={presentation ? 12 : 8}
-                />
-
-                <YAxis
-                  yAxisId="left"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fill: PALETTE.axis,
-                    fontSize: TICK_FONT_SIZE,
-                    fontWeight: 400,
-                    fontFamily: 'inherit',
-                  }}
-                  tickFormatter={formatYLeft}
-                  width={Y_LEFT_WIDTH}
-                  allowDecimals={false}
-                />
-
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fill: PALETTE.ink,
-                    fontSize: TICK_FONT_SIZE,
-                    fontWeight: 500,
-                    fontFamily: 'inherit',
-                  }}
-                  tickFormatter={formatYRight}
-                  width={Y_RIGHT_WIDTH}
-                  domain={[yRightMin, yRightMax]}
-                />
-
-                <Tooltip
-                  content={<CustomTooltip presentation={presentation} />}
-                  cursor={{
-                    fill: PALETTE.surfaceSoft,
-                    radius: 6,
-                  }}
-                />
-
-                <Bar
-                  yAxisId="left"
-                  dataKey="vacantesPlantilla"
-                  name="Vacantes Plantilla"
-                  fill={PALETTE.red}
-                  fillOpacity={0.85}
-                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
-                  isAnimationActive
-                  animationDuration={600}
-                  animationEasing="ease-out"
-                />
-
-                <Bar
-                  yAxisId="left"
-                  dataKey="vacantesBackup"
-                  name="Vacantes Backup"
-                  fill={PALETTE.amber}
-                  fillOpacity={0.85}
-                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
-                  isAnimationActive
-                  animationDuration={600}
-                  animationEasing="ease-out"
-                  animationBegin={100}
-                />
-
-                <Bar
-                  yAxisId="left"
-                  dataKey="vacantesStarlite"
-                  name="Vacantes Starlite"
-                  fill={PALETTE.starlite}
-                  fillOpacity={0.85}
-                  radius={[BAR_RADIUS, BAR_RADIUS, 0, 0]}
-                  isAnimationActive
-                  animationDuration={600}
-                  animationEasing="ease-out"
-                  animationBegin={200}
-                />
-
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="cobertura"
-                  name="Cobertura %"
-                  stroke={PALETTE.ink}
-                  strokeWidth={LINE_STROKE_WIDTH}
-                  dot={
-                    <SafeLineDot
-                      r={DOT_REST_RADIUS}
-                      fill={PALETTE.surfaceCard}
-                      stroke={PALETTE.ink}
-                      strokeWidth={presentation ? 2.5 : 2}
+                <header className="kpi-hero-panel-header">
+                  <h3 id={`${descId}-vacancies`} className="kpi-hero-panel-title">Vacantes</h3>
+                  <ul className="kpi-hero-legend" aria-label="Series de vacantes">
+                    {SERIES.map((series) => (
+                      <li key={series.key}>
+                        <SeriesMarker seriesKey={series.key} />
+                        {series.label}
+                      </li>
+                    ))}
+                  </ul>
+                </header>
+                <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
+                  <LineChart
+                    data={chartData}
+                    margin={MARGIN}
+                    aria-label={ariaLabel}
+                    accessibilityLayer
+                  >
+                    <CartesianGrid
+                      strokeDasharray="var(--chart-dash-short)"
+                      vertical={false}
+                      stroke={PALETTE.grid}
+                      strokeOpacity={1}
                     />
-                  }
-                  activeDot={<SafeLineDot r={DOT_ACTIVE_RADIUS} fill={PALETTE.ink} />}
-                  isAnimationActive
-                  animationDuration={800}
-                  animationEasing="ease-out"
-                  animationBegin={200}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
+
+                    <XAxis
+                      dataKey="day"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{
+                        fill: PALETTE.axis,
+                        fontSize: TICK_FONT_SIZE,
+                        fontWeight: 400,
+                        fontFamily: 'inherit',
+                      }}
+                      dy={presentation ? 12 : 8}
+                    />
+
+                    <YAxis
+                      yAxisId="left"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{
+                        fill: PALETTE.axis,
+                        fontSize: TICK_FONT_SIZE,
+                        fontWeight: 400,
+                        fontFamily: 'inherit',
+                      }}
+                      tickFormatter={formatYLeft}
+                      width={Y_AXIS_WIDTH}
+                      allowDecimals={false}
+                    />
+
+                    <Tooltip
+                      content={<CustomTooltip presentation={presentation} />}
+                      cursor={{
+                        stroke: PALETTE.axis,
+                        strokeDasharray: 'var(--chart-dash-short)',
+                      }}
+                    />
+                    {SERIES.map((series) => (
+                      <Line
+                        key={series.key}
+                        yAxisId={series.axis}
+                        type="linear"
+                        dataKey={series.key}
+                        name={series.name}
+                        stroke={series.color}
+                        strokeWidth="var(--chart-line-width)"
+                        strokeDasharray={series.dash}
+                        strokeLinecap="round"
+                        dot={<SafeLineDot fill={PALETTE.surfaceCard} stroke={series.color} />}
+                        activeDot={<SafeLineDot active fill={series.color} stroke={PALETTE.surfaceCard} />}
+                        isAnimationActive={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </section>
           {presentation && (
                       <div className="kpi-hero-day-grid">
                         {visibleCards.map((d) => (

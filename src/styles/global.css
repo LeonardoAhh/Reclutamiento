@@ -462,6 +462,13 @@
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
   --border-width: 1px;
+  /* Trazos y puntos compartidos de gráficas; patrones distinguibles sin color. */
+  --chart-line-width: 2px;
+  --chart-point-radius: 3px;
+  --chart-active-point-radius: 6px;
+  --chart-dash-long: 12px 4px;
+  --chart-dash-short: 4px 4px;
+  --chart-dash-dotted: 1px 4px;
 
   --spacing-2xs: 3px;
   --space-xxs: var(--spacing-xxs);

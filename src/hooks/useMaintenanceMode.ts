@@ -6,6 +6,7 @@ interface MaintenanceSnapshot {
   enabled: boolean;
   loading: boolean;
   error: string | null;
+  hasConfirmedState: boolean;
 }
 
 interface MaintenanceRow {
@@ -18,6 +19,7 @@ let snapshot: MaintenanceSnapshot = {
   enabled: false,
   loading: true,
   error: null,
+  hasConfirmedState: false,
 };
 let channel: RealtimeChannel | null = null;
 let consumers = 0;
@@ -46,7 +48,6 @@ function getSnapshot() {
 export async function refreshMaintenanceMode(options: { silent?: boolean } = {}) {
   if (loadPromise) return loadPromise;
 
-  const previous = snapshot;
   if (!options.silent) emit({ ...snapshot, loading: true, error: null });
   else emit({ ...snapshot, error: null });
   loadPromise = (async () => {
@@ -62,15 +63,12 @@ export async function refreshMaintenanceMode(options: { silent?: boolean } = {})
         throw new Error('No existe la configuración principal de mantenimiento.');
       }
 
-      emit({ enabled: data.maintenance_mode, loading: false, error: null });
-    } catch (error) {
-      const message = error instanceof Error
-        ? error.message
-        : 'No fue posible consultar el modo mantenimiento.';
+      emit({ enabled: data.maintenance_mode, loading: false, error: null, hasConfirmedState: true });
+    } catch {
       emit({
-        enabled: options.silent ? previous.enabled : false,
+        ...snapshot,
         loading: false,
-        error: message,
+        error: 'No fue posible consultar el modo mantenimiento. Intenta de nuevo.',
       });
     } finally {
       loadPromise = null;
@@ -81,8 +79,8 @@ export async function refreshMaintenanceMode(options: { silent?: boolean } = {})
 }
 
 export async function updateMaintenanceMode(enabled: boolean) {
-  const previous = snapshot;
-  emit({ enabled, loading: false, error: null });
+  // Mantener el estado confirmado hasta que el servidor acepte el cambio.
+  emit({ ...snapshot, error: null });
 
   try {
     const { data, error } = await supabase
@@ -97,13 +95,11 @@ export async function updateMaintenanceMode(enabled: boolean) {
       throw new Error('Supabase no confirmó el cambio de mantenimiento.');
     }
 
-    emit({ enabled: data.maintenance_mode, loading: false, error: null });
+    emit({ enabled: data.maintenance_mode, loading: false, error: null, hasConfirmedState: true });
     return { ok: true as const };
-  } catch (error) {
-    const message = error instanceof Error
-      ? error.message
-      : 'No fue posible cambiar el modo mantenimiento.';
-    emit({ ...previous, loading: false, error: message });
+  } catch {
+    const message = 'No fue posible cambiar el modo mantenimiento. Intenta de nuevo.';
+    emit({ ...snapshot, loading: false, error: message });
     return { ok: false as const, message };
   }
 }
@@ -124,7 +120,7 @@ function startStore() {
       { event: 'UPDATE', schema: 'public', table: 'config', filter: 'id=eq.main' },
       (payload) => {
         if (!isMaintenanceRow(payload.new)) return;
-        emit({ enabled: payload.new.maintenance_mode, loading: false, error: null });
+        emit({ enabled: payload.new.maintenance_mode, loading: false, error: null, hasConfirmedState: true });
       },
     )
     .subscribe((status) => {

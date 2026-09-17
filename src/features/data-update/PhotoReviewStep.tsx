@@ -57,14 +57,18 @@ export function PhotoStep({
         <p className="text-muted">La fotografía es obligatoria para finalizar. Formatos JPEG, PNG o WebP, máximo 5 MB.</p>
       </div>
 
-      <div className="data-update-photo" aria-busy={photoBusy || undefined}>
+      <div className="data-update-photo">
         {photoUrl ? (
-          <img src={photoUrl} alt={`Fotografía nueva de ${identity.name}`} />
+          <img src={photoUrl} alt={photoBusy ? `Vista previa de ${identity.name}, pendiente de guardar` : `Fotografía de ${identity.name}`} />
         ) : (
           <div className="data-update-photo__empty" aria-hidden="true"><Camera /></div>
         )}
-        <div className="data-update-photo__actions">
-          <label className="btn-primary">
+        <p className="data-update-photo__status" role="status" aria-atomic="true">
+          {photoStatus}
+          {photoBusy && <span>Espera para continuar. La vista previa todavía no confirma el guardado.</span>}
+        </p>
+        <div className="data-update-photo__actions" aria-busy={photoBusy || undefined}>
+          <label className="btn-primary" aria-disabled={photoBusy || undefined}>
             {photoUrl ? <RefreshCw aria-hidden="true" /> : <Camera aria-hidden="true" />}
             {photoUrl ? "Volver a tomar" : "Usar cámara"}
             <input
@@ -76,7 +80,7 @@ export function PhotoStep({
               onChange={handleFileChange}
             />
           </label>
-          <label className="btn-secondary">
+          <label className="btn-secondary" aria-disabled={photoBusy || undefined}>
             <ImageUp aria-hidden="true" />
             Elegir archivo
             <input
@@ -94,7 +98,6 @@ export function PhotoStep({
             </button>
           )}
         </div>
-        {photoStatus && <p className="data-update-photo__status" role="status">{photoStatus}</p>}
       </div>
     </section>
   );

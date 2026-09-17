@@ -67,12 +67,15 @@ export async function signInWithUsername(
     return { ok: false, message: error.message };
   }
 
-  // Si el login fue exitoso, actualizamos last_login_at
+  // Las cuentas pendientes todavía no pueden escribir en profiles.
   if (data?.session?.user) {
-    await supabase
-      .from('profiles')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('id', data.session.user.id);
+    const { data: passwordRequired, error: passwordStatusError } = await supabase.rpc('password_change_required');
+    if (!passwordStatusError && passwordRequired === false) {
+      await supabase
+        .from('profiles')
+        .update({ last_login_at: new Date().toISOString() })
+        .eq('id', data.session.user.id);
+    }
   }
 
   return { ok: true };
@@ -80,7 +83,8 @@ export async function signInWithUsername(
 
 /** Cierra la sesión activa. */
 export async function signOut(): Promise<void> {
-  await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
 }
 
 export type ChangePasswordResult =
@@ -93,51 +97,23 @@ export async function changePassword(
   newPassword: string
 ): Promise<ChangePasswordResult> {
   try {
-    const { error } = await supabase.auth.updateUser({
-      current_password: currentPassword,
-      password: newPassword,
+    const { data, error } = await supabase.functions.invoke<unknown>('change-password', {
+      body: { currentPassword, newPassword },
     });
-
-    if (!error) return { ok: true };
-
-    if (error.code === 'invalid_credentials') {
-      return {
-        ok: false,
-        field: 'current',
-        message: 'La contraseña actual no coincide. Revísala e inténtalo de nuevo.',
-      };
+    if (!error && typeof data === 'object' && data !== null && 'ok' in data) {
+      if (data.ok === true) return { ok: true };
+      if (data.ok === false && 'field' in data && 'message' in data &&
+          (data.field === 'current' || data.field === 'new' || data.field === 'form') &&
+          typeof data.message === 'string') {
+        return { ok: false, field: data.field, message: data.message };
+      }
     }
-    if (error.code === 'weak_password') {
-      return {
-        ok: false,
-        field: 'new',
-        message: 'La contraseña nueva no cumple los requisitos de seguridad. Elige una más segura.',
-      };
-    }
-    if (error.code === 'same_password') {
-      return {
-        ok: false,
-        field: 'new',
-        message: 'Elige una contraseña distinta de la actual.',
-      };
-    }
-    if (error.code === 'reauthentication_needed') {
-      return {
-        ok: false,
-        field: 'form',
-        message: 'Por seguridad, cierra sesión, vuelve a entrar e inténtalo de nuevo.',
-      };
-    }
-    return {
-      ok: false,
-      field: 'form',
-      message: 'No se pudo cambiar la contraseña. Inténtalo de nuevo.',
-    };
+    return { ok: false, field: 'form', message: 'No se pudo cambiar la contraseña. Intenta de nuevo.' };
   } catch {
     return {
       ok: false,
       field: 'form',
-      message: 'No se pudo conectar para cambiar la contraseña. Revisa tu conexión e inténtalo de nuevo.',
+      message: 'No se pudo conectar para cambiar la contraseña. Revisa tu conexión e intenta de nuevo.',
     };
   }
 }

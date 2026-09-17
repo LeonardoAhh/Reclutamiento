@@ -19,6 +19,8 @@ interface FormWizardProps {
   submitting?: boolean;
   /** Deshabilita el submit final (validación global del formulario). */
   submitDisabled?: boolean;
+  /** Bloquea la navegación mientras termina una operación del paso. */
+  navigationPending?: boolean;
   onCancel: () => void;
   /** Permite guardar o validar antes de cambiar de paso. `false` cancela la navegación. */
   onBeforeStepChange?: (currentStep: number, nextStep: number) => boolean | Promise<boolean>;
@@ -43,6 +45,7 @@ export function FormWizard({
   submittingLabel,
   submitting = false,
   submitDisabled = false,
+  navigationPending = false,
   onCancel,
   onBeforeStepChange,
   focusStepOnChange = false,
@@ -65,7 +68,7 @@ export function FormWizard({
   const armTimer = useRef<number | undefined>(undefined);
 
   async function goToStep(next: number) {
-    if (navigating) return;
+    if (navigating || navigationPending) return;
     setNavigating(true);
     try {
       const canContinue = await onBeforeStepChange?.(step, next);
@@ -80,6 +83,7 @@ export function FormWizard({
   }
 
   function goForward() {
+    if (navigationPending) return;
     if (current.isValid === false) {
       current.onInvalid?.();
       return;
@@ -145,7 +149,7 @@ export function FormWizard({
             type="button"
             className="btn-secondary"
             onClick={onCancel}
-            disabled={submitting || navigating}
+            disabled={submitting || navigating || navigationPending}
             data-testid="form-wizard-cancel"
           >
             Cancelar
@@ -155,7 +159,7 @@ export function FormWizard({
             type="button"
             className="btn-secondary"
             onClick={() => void goToStep(Math.max(0, step - 1))}
-            disabled={submitting || navigating}
+            disabled={submitting || navigating || navigationPending}
             data-testid="form-wizard-back"
           >
             <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
@@ -166,7 +170,7 @@ export function FormWizard({
           <button
             type="submit"
             className="btn-primary"
-            disabled={submitDisabled || submitting || navigating || !armed}
+            disabled={submitDisabled || submitting || navigating || navigationPending || !armed}
             data-testid="form-wizard-submit"
           >
             {submitting ? submittingLabel ?? submitLabel : submitLabel}
@@ -176,10 +180,11 @@ export function FormWizard({
             type="button"
             className="btn-primary"
             onClick={goForward}
-            disabled={navigating}
+            disabled={navigating || navigationPending}
+            aria-busy={navigationPending || undefined}
             data-testid="form-wizard-next"
           >
-            Siguiente
+            {navigationPending ? 'Espera…' : 'Siguiente'}
           </button>
         )}
       </footer>

@@ -2,6 +2,7 @@
 // contra Supabase Auth y después exige el rol admin antes de usar service_role.
 // @ts-nocheck — entorno Deno; este archivo no forma parte del bundle del frontend.
 
+import { requirePasswordChangeComplete } from '../_shared/password-change-access.ts';
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
 const PHOTO_BUCKET = "data-update-photos";
@@ -54,6 +55,9 @@ Deno.serve(async (request: Request) => {
   if (userError || !user) {
     return jsonResponse({ ok: false, message: "Sesión inválida o expirada." }, 401);
   }
+
+  const denied = await requirePasswordChangeComplete(request, supabaseUrl, anonKey, CORS_HEADERS);
+  if (denied) return denied;
 
   const admin = createClient(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
