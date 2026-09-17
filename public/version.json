@@ -1,8 +1,8 @@
 {
-  "version": "0.1.61",
+  "version": "0.1.64",
   "fecha": "2026-09-17",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "Se mejora la experiencia de usuario.",
+  "mensaje": "Corrección en locker",
   "notificar": true
 }
