@@ -564,7 +564,7 @@ export function DataUpdatePage() {
             <Tabs.Content className="data-update-tabs__content" value="locker">
               <DataUpdateLockerPanel
                 records={detail.records}
-                canEdit={isAdmin}
+                canEdit={canAccess}
                 onRecordUpdated={updateDetailRecord}
               />
             </Tabs.Content>
