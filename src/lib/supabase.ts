@@ -12,7 +12,6 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
  * Así los guardados/mutaciones ya no fallan en silencio con "sesión zombie".
  */
 export const AUTH_JWT_EXPIRED_EVENT = 'auth:jwt-expired';
-export const PASSWORD_CHANGE_REQUIRED_EVENT = 'auth:password-change-required';
 
 /**
  * `fetch` que envuelve al del navegador y, sin alterar la respuesta, la
@@ -34,11 +33,6 @@ async function authAwareFetch(
     const clone = res.clone();
     const text = await clone.text();
     const lower = text.toLowerCase();
-    if (lower.includes('password_change_required') && typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent(PASSWORD_CHANGE_REQUIRED_EVENT));
-      return res;
-    }
-
     // Login con credenciales incorrectas: NO es sesión expirada.
     if (lower.includes('invalid_grant') || lower.includes('invalid login credentials')) {
       return res;

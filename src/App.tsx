@@ -9,7 +9,6 @@ import { SystemUpdateNotification } from '@/components/ui/SystemUpdateNotificati
 import { AppToaster } from '@/components/ui/AppToaster';
 import { AuthGuard, RedirectIfAuthed } from '@/components/auth/AuthGuard';
 import { MaintenanceGuard } from '@/components/auth/MaintenanceGuard';
-import { PasswordChangeGuard } from '@/features/account/PasswordChangeGuard';
 import { PositionsProvider } from '@/lib/positions';
 import { CandidatesProvider } from '@/hooks/useCandidates';
 import {
@@ -110,9 +109,7 @@ function ProtectedShell() {
 
   return (
     <AuthGuard>
-      <PasswordChangeGuard>
-        <ProtectedContent />
-      </PasswordChangeGuard>
+      <ProtectedContent />
     </AuthGuard>
   );
 }

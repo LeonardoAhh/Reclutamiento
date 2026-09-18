@@ -67,15 +67,11 @@ export async function signInWithUsername(
     return { ok: false, message: error.message };
   }
 
-  // Las cuentas pendientes todavía no pueden escribir en profiles.
   if (data?.session?.user) {
-    const { data: passwordRequired, error: passwordStatusError } = await supabase.rpc('password_change_required');
-    if (!passwordStatusError && passwordRequired === false) {
-      await supabase
-        .from('profiles')
-        .update({ last_login_at: new Date().toISOString() })
-        .eq('id', data.session.user.id);
-    }
+    await supabase
+      .from('profiles')
+      .update({ last_login_at: new Date().toISOString() })
+      .eq('id', data.session.user.id);
   }
 
   return { ok: true };

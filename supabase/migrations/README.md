@@ -42,6 +42,7 @@ supabase db push
 | `033_transport_incident_comment_guard.sql` | Exige comentarios de 1 a 500 caracteres en nuevas incidencias sin invalidar datos históricos. | Transporte |
 | `046_data_update_locker_recruiter_access.sql` | Permite administrar lockers a todos los participantes de la campaña, conservando validación, unicidad y auditoría. | Actualización de datos |
 | `047_data_update_offline_sync.sql` | Añade recibos idempotentes y una RPC versionada para sincronizar capturas offline de Actualización de datos sin duplicar auditoría ni sobrescribir conflictos. | Actualización de datos |
+| `048_pause_required_password_change.sql` | Desactiva la campaña temporal de cambio obligatorio de contraseña sin borrar su historial ni retirar el cambio voluntario del menú. | Seguridad |
 
 ## RLS
 
