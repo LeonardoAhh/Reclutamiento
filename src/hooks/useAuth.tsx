@@ -8,13 +8,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import {
-  isAuthRetryableFetchError,
-  type RealtimeChannel,
-  type Session,
-  type User,
-} from '@supabase/supabase-js';
-import { setOfflineAccount } from '@/features/data-update/offline/storage';
+import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
 import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
 import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
 import { toast } from '@/lib/notify';
@@ -74,7 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (loggingInRef.current) return; // Ignorar expiraciones si el usuario está activamente iniciando sesión
 
     expiryHandlingRef.current = true;
-    await setOfflineAccount(null);
 
     // Cortamos la sesión en memoria primero para que AuthGuard redirija a
     // /login inmediatamente, sin esperar a que Supabase termine signOut.
@@ -164,13 +157,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const delay = Math.max(0, expMs - nowMs - leadMs);
 
     const timer = window.setTimeout(async () => {
-      if (!navigator.onLine) return;
       try {
         const { data, error } = await supabase.auth.refreshSession();
         if (error || !data.session) throw error ?? new Error('refresh failed');
         setSession(data.session);
-      } catch (error) {
-        if (!navigator.onLine || isAuthRetryableFetchError(error)) return;
+      } catch {
         await expireSession();
       }
     }, delay);
@@ -191,7 +182,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const revalidate = async () => {
       if (running) return;
-      if (!navigator.onLine) return;
       if (document.visibilityState === 'hidden') return;
       running = true;
       try {
@@ -202,7 +192,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (sess && expired) {
           const { data: refreshed, error } = await supabase.auth.refreshSession();
-          if (!navigator.onLine || isAuthRetryableFetchError(error)) return;
           sess = error ? null : refreshed.session;
           if (!sess) {
             await expireSession();
@@ -305,7 +294,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (username: string, password: string) => {
       loggingInRef.current = true;
       try {
-        await setOfflineAccount(null);
         return await signInLib(username, password);
       } finally {
         // Damos gracia de unos segundos para que React Router haga la redirección
@@ -320,7 +308,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    await setOfflineAccount(null);
     await signOutLib();
     setProfile(null);
   }, []);

@@ -3,10 +3,14 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { FormWizard, type FormWizardStep } from "@/components/ui/FormWizard";
 import { toast } from "@/lib/notify";
 import {
+  completeDataUpdateRecord,
   dataUpdateError,
+  getDataUpdatePhotoUrl,
+  removeDataUpdatePhoto,
+  reviewDataUpdateIdentity,
+  saveDataUpdateRecord,
+  uploadDataUpdatePhoto,
 } from "./api";
-import type { OfflineClient } from "./offline/client";
-import type { LocalForm } from "./offline/model";
 import {
   DATA_UPDATE_AUTOSAVE_DELAY_MS,
   DATA_UPDATE_OTHER_RELATIONSHIP,
@@ -60,8 +64,6 @@ interface DataUpdateWizardProps {
   campaign: DataUpdateCampaignDetail;
   incidents: DataUpdateIncident[];
   online: boolean;
-  client: OfflineClient;
-  initialForm?: LocalForm;
   onCancel: () => void;
   onCompleted: (record: DataUpdateRecord) => void;
 }
@@ -75,20 +77,17 @@ export function DataUpdateWizard({
   campaign,
   incidents,
   online,
-  client,
-  initialForm,
   onCancel,
   onCompleted,
 }: DataUpdateWizardProps) {
-  const initialData = initialForm?.data ?? initialRecord.data;
-  const initialRelationship = initialRelationshipState(initialData.emergencyRelationship);
+  const initialRelationship = initialRelationshipState(initialRecord.data.emergencyRelationship);
   const [record, setRecord] = useState(initialRecord);
-  const [data, setData] = useState(initialData);
-  const [review, setReview] = useState<IdentityReviewStatus>(initialForm?.review ?? initialRecord.identityReview);
+  const [data, setData] = useState(initialRecord.data);
+  const [review, setReview] = useState<IdentityReviewStatus>(initialRecord.identityReview);
   const [incidentFields, setIncidentFields] = useState<Set<keyof DataUpdateIdentity>>(
-    () => new Set(initialForm?.incidentFields ?? incidents.map((incident) => incident.fieldName)),
+    () => new Set(incidents.map((incident) => incident.fieldName)),
   );
-  const [incidentNote, setIncidentNote] = useState(initialForm?.incidentNote ?? incidents[0]?.note ?? "");
+  const [incidentNote, setIncidentNote] = useState(incidents[0]?.note ?? "");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoStatus, setPhotoStatus] = useState<string | null>(null);
@@ -100,21 +99,21 @@ export function DataUpdateWizard({
   const [relationshipChoice, setRelationshipChoice] = useState(initialRelationship.choice);
   const [relationshipOther, setRelationshipOther] = useState(initialRelationship.other);
   const [childrenCountConfirmed, setChildrenCountConfirmed] = useState(
-    () => initialForm?.childrenCountConfirmed ?? (initialRecord.currentStep > 5 || initialData.childrenBirthDates.length > 0),
+    () => initialRecord.currentStep > 5 || initialRecord.data.childrenBirthDates.length > 0,
   );
   const [notice, setNotice] = useState<string | null>(null);
   const objectPhotoUrlRef = useRef<string | null>(null);
   const recordRef = useRef(initialRecord);
-  const dataRef = useRef(initialData);
+  const dataRef = useRef(initialRecord.data);
   const photoPathRef = useRef(initialRecord.photoPath);
-  const currentStepRef = useRef(Math.min(initialForm?.step ?? initialRecord.currentStep, DATA_UPDATE_STEP_COUNT - 1));
+  const currentStepRef = useRef(Math.min(initialRecord.currentStep, DATA_UPDATE_STEP_COUNT - 1));
   const saveQueueRef = useRef<Promise<boolean>>(Promise.resolve(true));
   const queuedSignatureRef = useRef("");
   const savedSignatureRef = useRef(
-    initialForm ? "" : signature(initialData, currentStepRef.current, initialRecord.photoPath),
+    signature(initialRecord.data, currentStepRef.current, initialRecord.photoPath),
   );
   const reviewSignatureRef = useRef(
-    initialForm ? "" : JSON.stringify({ review: initialRecord.identityReview, incidents: incidents.map(({ fieldName, note }) => ({ fieldName, note })) }),
+    JSON.stringify({ review: initialRecord.identityReview, incidents: incidents.map(({ fieldName, note }) => ({ fieldName, note })) }),
   );
 
   const updateRecord = (next: DataUpdateRecord) => {
@@ -133,43 +132,22 @@ export function DataUpdateWizard({
       setPhotoUrl(null);
       return () => { active = false; };
     }
-    void client.photoBlob(record.photoPath, online)
-      .then((blob) => {
+    void getDataUpdatePhotoUrl(record.photoPath)
+      .then((url) => {
         if (!active) return;
         if (objectPhotoUrlRef.current) {
           URL.revokeObjectURL(objectPhotoUrlRef.current);
           objectPhotoUrlRef.current = null;
         }
-        const url = URL.createObjectURL(blob);
-        objectPhotoUrlRef.current = url;
         setPhotoUrl(url);
       })
       .catch(() => { if (active) setNotice("No fue posible cargar la vista previa de la fotografía."); });
     return () => { active = false; };
-  }, [client, online, record.photoPath]);
+  }, [record.photoPath]);
 
   useEffect(() => () => {
     if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
   }, []);
-
-  const saveLocalForm = (step: number) => client.saveForm(recordRef.current.id, {
-    data: dataRef.current,
-    step,
-    review,
-    incidentFields: [...incidentFields],
-    incidentNote,
-    childrenCountConfirmed,
-  });
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void saveLocalForm(currentStepRef.current).catch((caught) => {
-        setSaveState("error");
-        setNotice(dataUpdateError(caught));
-      });
-    }, DATA_UPDATE_AUTOSAVE_DELAY_MS);
-    return () => window.clearTimeout(timer);
-  }, [childrenCountConfirmed, client, data, incidentFields, incidentNote, review]);
 
   const changeField = (field: DataUpdateEditableTextKey, value: string) => {
     setData((current) => {
@@ -192,6 +170,11 @@ export function DataUpdateWizard({
   };
 
   const persist = (step: number): Promise<boolean> => {
+    if (!online) {
+      setSaveState("pending");
+      setNotice("Necesitas conexión para guardar este registro.");
+      return Promise.resolve(false);
+    }
     const dataSnapshot = dataRef.current;
     const photoSnapshot = photoPathRef.current;
     const nextSignature = signature(dataSnapshot, step, photoSnapshot);
@@ -201,7 +184,7 @@ export function DataUpdateWizard({
     setSaveState("saving");
     saveQueueRef.current = saveQueueRef.current.then(async () => {
       try {
-        const saved = await client.save({
+        const saved = await saveDataUpdateRecord({
           recordId: recordRef.current.id,
           version: recordRef.current.version,
           data: dataSnapshot,
@@ -225,11 +208,12 @@ export function DataUpdateWizard({
   };
 
   useEffect(() => {
+    if (!online) return;
     const timer = window.setTimeout(() => {
       void persist(currentStepRef.current);
     }, DATA_UPDATE_AUTOSAVE_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, [data]);
+  }, [data, online]);
 
   const saveIdentityReview = async (): Promise<boolean> => {
     if (review !== "confirmado" && review !== "incidencia") return false;
@@ -240,7 +224,7 @@ export function DataUpdateWizard({
     if (nextSignature === reviewSignatureRef.current) return true;
     setSaveState("saving");
     try {
-      const saved = await client.review({
+      const saved = await reviewDataUpdateIdentity({
         recordId: recordRef.current.id,
         version: recordRef.current.version,
         status: review,
@@ -259,14 +243,15 @@ export function DataUpdateWizard({
 
   const beforeStepChange = async (currentStep: number, nextStep: number) => {
     if (photoBusy) return false;
+    if (!online) {
+      setNotice("Necesitas conexión para continuar.");
+      return false;
+    }
     const queued = await saveQueueRef.current;
     if (!queued) return false;
     if (currentStep === 0 && !(await saveIdentityReview())) return false;
     const saved = await persist(nextStep);
-    if (saved) {
-      currentStepRef.current = nextStep;
-      await saveLocalForm(nextStep);
-    }
+    if (saved) currentStepRef.current = nextStep;
     return saved;
   };
 
@@ -308,32 +293,39 @@ export function DataUpdateWizard({
       setNotice(validationError);
       return;
     }
+    if (!online) {
+      setNotice("Necesitas conexión para cargar la fotografía.");
+      return;
+    }
     setPhotoBusy(true);
     setPhotoStatus("Preparando fotografía…");
     setRetryPhotoFile(null);
     setNotice(null);
     const previousPath = photoPathRef.current;
     const previousUrl = photoUrl;
-    const previousObjectUrl = objectPhotoUrlRef.current;
     let uploadedPath: string | null = null;
     try {
+      if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
       const objectUrl = URL.createObjectURL(file);
       objectPhotoUrlRef.current = objectUrl;
       setPhotoUrl(objectUrl);
-      setPhotoStatus("Guardando fotografía en el dispositivo…");
-      uploadedPath = await client.photo(recordRef.current, file, currentStepRef.current);
+      setPhotoStatus("Subiendo fotografía…");
+      uploadedPath = await uploadDataUpdatePhoto(recordRef.current, file);
       photoPathRef.current = uploadedPath;
       setPhotoStatus("Guardando fotografía…");
       const saved = await persist(currentStepRef.current);
       if (!saved) throw new Error("No fue posible vincular la fotografía al registro.");
-      if (previousObjectUrl) URL.revokeObjectURL(previousObjectUrl);
-      setPhotoStatus("Fotografía pendiente de sincronizar.");
-      toast.success({ title: online ? "Fotografía pendiente de sincronizar" : "Fotografía guardada en este dispositivo" });
+      if (previousPath && previousPath !== uploadedPath) {
+        await removeDataUpdatePhoto(previousPath).catch(() => undefined);
+      }
+      setPhotoStatus("Fotografía guardada.");
+      toast.success({ title: "Fotografía guardada" });
     } catch (caught) {
+      if (uploadedPath) await removeDataUpdatePhoto(uploadedPath).catch(() => undefined);
       if (objectPhotoUrlRef.current) {
         URL.revokeObjectURL(objectPhotoUrlRef.current);
+        objectPhotoUrlRef.current = null;
       }
-      objectPhotoUrlRef.current = previousObjectUrl;
       photoPathRef.current = previousPath;
       setPhotoUrl(previousUrl);
       setPhotoStatus(null);
@@ -382,13 +374,15 @@ export function DataUpdateWizard({
     && !fieldErrors.shoeSize
     && !fieldErrors.childrenBirthDates;
   const allDataValid = validateEditableData(data).length === 0 && transportValid;
-  const saveLabel = saveState === "saving"
+  const saveLabel = !online
+    ? saveState === "pending" ? "Sin conexión · cambios pendientes" : "Sin conexión"
+    : saveState === "saving"
       ? "Guardando…"
       : saveState === "pending"
         ? "Cambios pendientes"
         : saveState === "error"
           ? "No se pudo guardar"
-          : online ? "Guardado en dispositivo · pendiente de sincronizar" : "Guardado en este dispositivo";
+          : "Guardado";
   const visibleErrors = (step: number) => revealedErrorSteps.has(step) ? fieldErrors : undefined;
   const transportErrors = revealedErrorSteps.has(1)
     ? {
@@ -521,13 +515,13 @@ export function DataUpdateWizard({
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (photoBusy || !photoPathRef.current || !allDataValid) return;
+    if (!online || photoBusy || !photoPathRef.current || !allDataValid) return;
     setSubmitting(true);
     setNotice(null);
     try {
       if (!(await persist(DATA_UPDATE_STEP_COUNT - 1))) return;
-      const completed = await client.complete(recordRef.current.id);
-      toast.success({ title: online ? "Actualización pendiente de sincronizar" : "Actualización guardada en este dispositivo" });
+      const completed = await completeDataUpdateRecord(recordRef.current.id, recordRef.current.version);
+      toast.success({ title: "Actualización completada" });
       onCompleted(completed);
     } catch (caught) {
       setNotice(dataUpdateError(caught));
@@ -547,7 +541,7 @@ export function DataUpdateWizard({
         </div>
         <div className="data-update-save-actions">
           <span className="data-update-save-state" role="status" aria-live="polite">{saveLabel}</span>
-          {saveState === "error" && (
+          {online && saveState === "error" && (
             <button type="button" className="btn-secondary btn-sm" onClick={() => void persist(currentStepRef.current)}>
               Reintentar
             </button>
@@ -560,12 +554,9 @@ export function DataUpdateWizard({
         submitLabel="Actualizar"
         submittingLabel="Actualizando..."
         submitting={submitting}
-        submitDisabled={photoBusy || !photoPathRef.current || !allDataValid}
+        submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
         navigationPending={photoBusy}
-        onCancel={() => {
-          void saveLocalForm(currentStepRef.current);
-          onCancel();
-        }}
+        onCancel={onCancel}
         onBeforeStepChange={beforeStepChange}
         focusStepOnChange
         notice={notice ? <p className="form-error" role="alert">{notice}</p> : null}

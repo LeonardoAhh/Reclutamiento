@@ -12,8 +12,7 @@ import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
-import { dataUpdateError } from "./api";
-import type { OfflineClient } from "./offline/client";
+import { assignDataUpdateLocker, dataUpdateError } from "./api";
 import {
   compareDataUpdateEmployeeNumbers,
   DATA_UPDATE_LOCKER_AREAS,
@@ -25,8 +24,6 @@ import type { DataUpdateLockerArea, DataUpdateRecord } from "./types";
 interface DataUpdateLockerPanelProps {
   records: DataUpdateRecord[];
   canEdit: boolean;
-  client: OfflineClient;
-  online: boolean;
   onRecordUpdated: (record: DataUpdateRecord) => void;
 }
 
@@ -42,7 +39,7 @@ function getLockerError(locker: string, alreadyAssigned: boolean): string | null
   return null;
 }
 
-export function DataUpdateLockerPanel({ records, canEdit, client, online, onRecordUpdated }: DataUpdateLockerPanelProps) {
+export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: DataUpdateLockerPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [lockerArea, setLockerArea] = useState<DataUpdateLockerArea | "">("");
@@ -115,10 +112,10 @@ export function DataUpdateLockerPanel({ records, canEdit, client, online, onReco
 
     setSaving(true);
     try {
-      const updated = await client.locker(selectedRecord.id, lockerArea, normalizedLocker);
+      const updated = await assignDataUpdateLocker(selectedRecord.id, lockerArea, normalizedLocker);
       onRecordUpdated(updated);
       setSelectedRecord(null);
-      toast.success({ title: online ? "Locker pendiente de sincronizar" : "Locker guardado en este dispositivo" });
+      toast.success({ title: "Locker asignado" });
     } catch (caught) {
       setServerError(dataUpdateError(caught));
     } finally {
