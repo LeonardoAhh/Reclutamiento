@@ -67,7 +67,7 @@ export const ALLOWED_PUESTOS = new Set([
     "SUPERVISOR DE ACABADOS - GP12 B",
     "SUPERVISOR DE ACABADOS - GP12 C",
     "SUPERVISOR DE ACABADOS - GP12 D",
-    "INSPECTOR RECIBO",
+    "INGENIERO DE CALIDAD PROCESOS A",
 ])
 
 export const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"])
@@ -112,7 +112,7 @@ export const SECTION_CONFIGS: SectionConfig[] = (() => {
     for (const pos of PLANTILLA_AUTORIZADA) {
         const existing = map.get(pos.seccion)
         const isOperador = pos.puesto === 'OPERADOR DE MÁQUINA'
-        
+
         if (existing) {
             existing.personal_autorizado += pos.plantilla_autorizada
             if (isOperador) {

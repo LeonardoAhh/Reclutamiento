@@ -6,6 +6,7 @@ import { StarliteBadge } from '@/components/ui/Badge';
 import { IncapacidadModal } from '@/components/ui/IncapacidadModal';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { SearchField } from '@/components/ui/SearchField';
+import { EmployeeBulkUpdateModal } from '@/features/employee-bulk-update/EmployeeBulkUpdateModal';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { notifyResult } from '@/lib/notify';
@@ -23,6 +24,7 @@ export function EmpleadosView() {
     loading,
     isConfigured,
     updateEmployee,
+    bulkUpdateEmployeeAssignments,
     updateEmployeeIncapacidad,
   } = useSupabaseData();
 
@@ -139,17 +141,23 @@ export function EmpleadosView() {
               placeholder="Buscar por nombre, número, puesto o área…"
               autoComplete="off"
             />
-            <label className="toggle-switch empleados__starlite-filter">
-              <input
-                type="checkbox"
-                role="switch"
-                checked={showOnlyStarlite}
-                onChange={(event) => setShowOnlyStarlite(event.target.checked)}
-                aria-label="Solo proyecto Starlite"
+            <div className="empleados__filter-actions">
+              <label className="toggle-switch empleados__starlite-filter">
+                <input
+                  type="checkbox"
+                  role="switch"
+                  checked={showOnlyStarlite}
+                  onChange={(event) => setShowOnlyStarlite(event.target.checked)}
+                  aria-label="Solo proyecto Starlite"
+                />
+                <span className="toggle-switch__slider" aria-hidden="true" />
+                <StarliteBadge />
+              </label>
+              <EmployeeBulkUpdateModal
+                employees={employees}
+                onApply={bulkUpdateEmployeeAssignments}
               />
-              <span className="toggle-switch__slider" aria-hidden="true" />
-              <StarliteBadge />
-            </label>
+            </div>
           </div>
         </header>
 

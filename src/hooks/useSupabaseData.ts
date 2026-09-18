@@ -14,6 +14,7 @@ import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
 import type {
   Baja,
   Employee,
+  EmployeeAssignmentUpdate,
   PositionComment,
   TransporteAssignment,
   TurnoAssignment,
@@ -336,6 +337,68 @@ function useSupabaseDataStore(
       }
     },
     [employees, isConfigured]
+  );
+
+  /** Actualiza puesto, categoría y turno en una sola operación confirmada. */
+  const bulkUpdateEmployeeAssignments = useCallback(
+    async (
+      updates: EmployeeAssignmentUpdate[],
+    ): Promise<{ ok: boolean; updated: number; message?: string }> => {
+      if (updates.length === 0) return { ok: true, updated: 0 };
+
+      const applyLocal = (employeeNumbers: Set<string>) => {
+        const updatesByNumber = new Map(updates.map(update => [update.num_empleado, update]));
+        setEmployees(current => {
+          const next = current.map(employee => {
+            if (!employeeNumbers.has(employee.num_empleado)) return employee;
+            const update = updatesByNumber.get(employee.num_empleado);
+            return update ? { ...employee, ...update } : employee;
+          });
+          saveLocal(STORAGE_KEYS.employees, next);
+          return next;
+        });
+      };
+
+      if (!isConfigured) {
+        const employeeNumbers = new Set(updates.map(update => update.num_empleado));
+        applyLocal(employeeNumbers);
+        flashSaved();
+        return { ok: true, updated: employeeNumbers.size };
+      }
+
+      try {
+        setSaveStatus('saving');
+        const { data, error: rpcError } = await supabase.rpc('bulk_update_employee_assignments', {
+          p_updates: updates,
+        });
+        if (rpcError) throw rpcError;
+        if (!data || typeof data !== 'object' || Array.isArray(data)) {
+          throw new Error('La actualización masiva no devolvió una respuesta válida.');
+        }
+
+        const response = data as Record<string, unknown>;
+        const updatedNumbers = Array.isArray(response.updated_employee_numbers)
+          ? response.updated_employee_numbers.filter((value): value is string => typeof value === 'string')
+          : [];
+        const updated = typeof response.updated === 'number' ? response.updated : updatedNumbers.length;
+        if (updated !== updatedNumbers.length) {
+          throw new Error('La actualización masiva devolvió un conteo inconsistente.');
+        }
+
+        applyLocal(new Set(updatedNumbers));
+        flashSaved();
+        return { ok: true, updated };
+      } catch (caught) {
+        const rawMessage = formatSupabaseError(caught);
+        const message = rawMessage.includes('bulk_update_employee_assignments')
+          || rawMessage.includes('PGRST202')
+          ? 'Falta aplicar la migración 049 en Supabase.'
+          : rawMessage;
+        setSaveStatus('error');
+        return { ok: false, updated: 0, message: `No se pudo actualizar la plantilla: ${message}` };
+      }
+    },
+    [isConfigured],
   );
 
   /** Remove an employee by num_empleado. */
@@ -1241,6 +1304,7 @@ function useSupabaseDataStore(
     upsertEmployees,
     addSingleEmployee,
     updateEmployee,
+    bulkUpdateEmployeeAssignments,
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,

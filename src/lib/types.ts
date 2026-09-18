@@ -117,6 +117,14 @@ export interface EmployeeRaw {
   "Fecha Ingreso": string;
 }
 
+/** Campos permitidos para actualizar asignaciones laborales en lote. */
+export interface EmployeeAssignmentUpdate {
+  num_empleado: string;
+  puesto: string;
+  categoria: string;
+  turno: string;
+}
+
 /**
  * Forma cruda del JSON de asignaciones de transporte. El usuario sube un
  * array con un objeto por empleado; cada objeto trae el número de empleado

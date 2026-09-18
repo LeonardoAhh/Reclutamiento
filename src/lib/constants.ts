@@ -54,12 +54,12 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: "JEFE DE ALMACÉN",
     plantilla_autorizada: 1,
   },
-  {
+  /*{
     area: "ALMACÉN",
     seccion: "ALMACÉN",
     puesto: "CHOFER",
     plantilla_autorizada: 1,
-  },
+  },*/
   {
     area: "ALMACÉN",
     seccion: "ALMACÉN",
@@ -141,8 +141,14 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   {
     area: "CALIDAD",
     seccion: "CALIDAD ADMTVO",
-    puesto: "INSPECTOR RECIBO",
+    puesto: "INGENIERO DE CALIDAD PROCESOS A",
     plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
+    puesto: "TÉCNICO DE TAMPOGRAFIA",
+    plantilla_autorizada: 2,
   },
   {
     area: "CALIDAD",
@@ -778,26 +784,26 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  availableTitle: "We are ready!",
+  availableTitle: "¡Listo!",
   availableHint:
-    "Save any pending changes before updating.",
-  actionLabel: "Update",
-  deferLabel: "Later",
-  preparingLabel: "Preparing update",
-  errorHint: "We couldn't update. Please try again.",
-  retryLabel: "Retry",
-  registrationErrorTitle: "Updates unavailable",
+    "Guardá los cambios pendientes antes de actualizar.",
+  actionLabel: "Actualizar",
+  deferLabel: "Después",
+  preparingLabel: "Preparando actualización",
+  errorHint: "No se pudo actualizar. Probá de nuevo.",
+  retryLabel: "Reintentar",
+  registrationErrorTitle: "Actualizaciones no disponibles",
   registrationErrorHint:
-    "The app will keep working, but it couldn't check for new versions.",
-  appliedTitle: "We are ready!",
+    "La app sigue funcionando, pero no se pudo buscar nuevas versiones.",
+  appliedTitle: "¡Listo!",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
   serviceWorkerCheckMinGapMs: 60 * 1000,
-  offlineTitle: "Offline",
-  offlineHint: "Some features require an internet connection.",
-  onlineTitle: "Connection restored",
-  offlineReadyTitle: "Basic resources available offline",
+  offlineTitle: "Sin conexión",
+  offlineHint: "Algunas funciones necesitan internet.",
+  onlineTitle: "Conexión restaurada",
+  offlineReadyTitle: "Recursos básicos disponibles sin conexión",
 } as const;
 
 export const TOAST_CONFIG = {
