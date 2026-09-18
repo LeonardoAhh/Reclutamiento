@@ -48,7 +48,7 @@ export default function RouteTable({ ruta, paradas, targetStopNo }) {
             <th
               scope="col"
               colSpan={3}
-              className="border border-hairline px-3 py-1.5 text-left text-caption-md uppercase"
+              className="border border-hairline px-3 py-1.5 text-left text-eyebrow font-mono uppercase text-mute"
             >
               Parada
             </th>
@@ -68,8 +68,8 @@ export default function RouteTable({ ruta, paradas, targetStopNo }) {
             <tr
               key={p.no}
               id={`fila-${ruta.id}-${p.no}`}
-              className={`transition-colors hover:bg-primary/5 ${idx % 2 === 0 ? 'bg-surface' : 'bg-surface-soft'} ${
-                pulse === p.no ? 'ring-2 ring-inset ring-primary' : ''
+              className={`transition-colors hover:bg-surface-card ${
+                pulse === p.no ? 'ring-2 ring-inset ring-primary' : 'bg-surface'
               }`}
             >
               <th

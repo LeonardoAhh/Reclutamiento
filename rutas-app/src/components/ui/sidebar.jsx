@@ -79,7 +79,7 @@ export const SidebarProvider = React.forwardRef(
               '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
               ...style,
             }}
-            className={cn('group/sidebar-wrapper flex min-h-screen w-full', className)}
+            className={cn('group/sidebar-wrapper flex min-h-screen w-full bg-canvas', className)}
             {...props}
           >
             {children}
@@ -180,7 +180,11 @@ SidebarRail.displayName = 'SidebarRail';
 export const SidebarInset = React.forwardRef(({ className, ...props }, ref) => (
   <main
     ref={ref}
-    className={cn('relative flex min-h-svh flex-1 flex-col bg-canvas', className)}
+    className={cn(
+      'relative flex min-h-svh flex-1 flex-col bg-canvas',
+      'md:bg-surface md:border md:border-hairline md:rounded-l-xl md:shadow-soft md:overflow-clip md:my-3 md:mr-3 md:min-h-[calc(100svh-24px)]',
+      className
+    )}
     {...props}
   />
 ));
@@ -281,7 +285,7 @@ export const SidebarMenuButton = React.forwardRef(
           'group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0',
           '[&>svg]:size-5 [&>svg]:shrink-0',
           isActive
-            ? 'bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary'
+            ? 'bg-primary text-on-primary hover:bg-primary hover:text-on-primary'
             : 'text-sidebar-foreground',
           className
         )}

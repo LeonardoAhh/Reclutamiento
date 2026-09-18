@@ -12,9 +12,6 @@ import { normalizeString } from "@/lib/utils";
 import {
   dataUpdateError,
   deleteDataUpdateCampaign,
-  getDataUpdateCampaignDetail,
-  listDataUpdateCampaigns,
-  listDataUpdateIncidents,
   listEligibleDataUpdateProfiles,
 } from "./api";
 import { CampaignImportModal } from "./CampaignImportModal";
@@ -22,6 +19,9 @@ import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
 import { DataUpdateWizard } from "./DataUpdateWizard";
+import { createOfflineClient } from "./offline/client";
+import { useOfflineAccess, useOfflineWorkspace, useOnlineStatus } from "./offline/hooks";
+import type { LocalForm, OfflineAccount } from "./offline/model";
 import type {
   DataUpdateCampaign,
   DataUpdateCampaignDetail,
@@ -30,20 +30,6 @@ import type {
   DataUpdateRecord,
 } from "./types";
 import "./DataUpdatePage.css";
-
-function useOnlineStatus() {
-  const [online, setOnline] = useState(() => navigator.onLine);
-  useEffect(() => {
-    const update = () => setOnline(navigator.onLine);
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-    return () => {
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-    };
-  }, []);
-  return online;
-}
 
 function campaignOptionLabel(campaign: DataUpdateCampaign): string {
   const name = campaign.name.trim();
@@ -88,18 +74,27 @@ function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
 export function DataUpdatePage() {
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
-  const isAdmin = profile?.role === "admin";
-  const canAccess = isAdmin || profile?.role === "reclutador";
+  const offlineAccess = useOfflineAccess(user?.id);
+  const account = useMemo<OfflineAccount | null>(() => profile && user
+    && (profile.role === "admin" || profile.role === "reclutador")
+    ? { id: user.id, role: profile.role, username: profile.username }
+    : offlineAccess.account, [offlineAccess.account, profile, user]);
+  const client = useMemo(() => account ? createOfflineClient(account) : null, [account]);
+  const isAdmin = account?.role === "admin";
+  const canAccess = account?.role === "admin" || account?.role === "reclutador";
   const [campaigns, setCampaigns] = useState<DataUpdateCampaign[]>([]);
   const [selectedCampaignId, setSelectedCampaignId] = useState("");
   const [detail, setDetail] = useState<DataUpdateCampaignDetail | null>(null);
   const [profiles, setProfiles] = useState<DataUpdateProfileOption[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [incidents, setIncidents] = useState<DataUpdateIncident[]>([]);
+  const [localForm, setLocalForm] = useState<LocalForm | undefined>();
   const [importOpen, setImportOpen] = useState(false);
   const [campaignPendingDelete, setCampaignPendingDelete] = useState<DataUpdateCampaign | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [discardConflictRecordId, setDiscardConflictRecordId] = useState<string | null>(null);
+  const [discardingConflict, setDiscardingConflict] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -107,16 +102,26 @@ export function DataUpdatePage() {
   const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
   const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("work");
+  const offlineState = useOfflineWorkspace(account?.id ?? "", online, selectedRecord !== null);
+  const pendingRecordIds = useMemo(
+    () => new Set(offlineState.workspace.queue.map(item => item.recordId)),
+    [offlineState.workspace.queue],
+  );
+  const conflictedOperation = offlineState.workspace.queue.find(item => item.error?.includes("Cambió en otro dispositivo"));
+  const conflictedRecord = conflictedOperation
+    ? Object.values(offlineState.workspace.details).flatMap(value => value.records)
+      .find(record => record.id === conflictedOperation.recordId)
+    : undefined;
 
   const loadCampaigns = useCallback(async (preferredId?: string) => {
-    if (!canAccess || !online) {
+    if (!canAccess || !client) {
       setLoading(false);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const result = await listDataUpdateCampaigns();
+      const result = await client.campaigns(online);
       setCampaigns(result);
       setSelectedCampaignId((current) => {
         const requestedId = preferredId ?? current;
@@ -129,23 +134,23 @@ export function DataUpdatePage() {
     } finally {
       setLoading(false);
     }
-  }, [canAccess, online]);
+  }, [canAccess, client, online]);
 
   const loadDetail = useCallback(async () => {
-    if (!selectedCampaignId || !online) {
+    if (!selectedCampaignId || !client) {
       setDetail(null);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      setDetail(await getDataUpdateCampaignDetail(selectedCampaignId));
+      setDetail(await client.detail(selectedCampaignId, online));
     } catch (caught) {
       setError(dataUpdateError(caught));
     } finally {
       setLoading(false);
     }
-  }, [selectedCampaignId, online]);
+  }, [client, online, selectedCampaignId]);
 
   const updateDetailRecord = useCallback((updatedRecord: DataUpdateRecord) => {
     setDetail((current) => {
@@ -177,18 +182,23 @@ export function DataUpdatePage() {
   useEffect(() => { void loadCampaigns(); }, [loadCampaigns]);
   useEffect(() => { void loadDetail(); }, [loadDetail]);
   useEffect(() => {
+    if (!selectedRecord && online && !offlineState.busy && offlineState.workspace.queue.length === 0) {
+      void loadDetail();
+    }
+  }, [loadDetail, offlineState.busy, offlineState.workspace.queue.length, online, selectedRecord]);
+  useEffect(() => {
     if (!isAdmin || !online) return;
     void listEligibleDataUpdateProfiles()
       .then(setProfiles)
       .catch((caught) => setError(dataUpdateError(caught)));
   }, [isAdmin, online]);
   useEffect(() => {
-    if (!isAdmin && activeView === "admin") setActiveView("work");
-  }, [activeView, isAdmin]);
+    if ((!isAdmin || !online) && activeView === "admin") setActiveView("work");
+  }, [activeView, isAdmin, online]);
 
   const myRecords = useMemo(
-    () => detail?.records.filter((record) => record.assignedTo === user?.id) ?? [],
-    [detail, user?.id],
+    () => detail?.records.filter((record) => record.assignedTo === account?.id) ?? [],
+    [account?.id, detail],
   );
   const visibleMyRecords = useMemo(() => {
     const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
@@ -260,10 +270,15 @@ export function DataUpdatePage() {
   };
 
   const openRecord = async (record: DataUpdateRecord) => {
-    if (!online || record.status === "completado") return;
+    if (!client || record.status === "completado") return;
     setBusy(true);
     try {
-      setIncidents(await listDataUpdateIncidents(record.id));
+      const [nextIncidents, nextForm] = await Promise.all([
+        client.incidents(record.id),
+        client.form(record.id),
+      ]);
+      setIncidents(nextIncidents);
+      setLocalForm(nextForm);
       setSelectedRecord(record);
     } catch (caught) {
       toast.error({ title: dataUpdateError(caught) });
@@ -306,7 +321,7 @@ export function DataUpdatePage() {
     );
   }
 
-  if (selectedRecord && detail) {
+  if (selectedRecord && detail && client) {
     return (
       <main className="data-update-page container">
         <DataUpdateWizard
@@ -315,6 +330,8 @@ export function DataUpdatePage() {
           campaign={detail}
           incidents={incidents}
           online={online}
+          client={client}
+          initialForm={localForm}
           onCancel={() => setSelectedRecord(null)}
           onCompleted={(updatedRecord) => {
             updateDetailRecord(updatedRecord);
@@ -342,7 +359,28 @@ export function DataUpdatePage() {
         )}
       </header>
 
-      {!online && <p className="data-update-offline" role="alert">Este módulo necesita conexión. Reconéctate para consultar o guardar información.</p>}
+      {!online && <p className="data-update-offline" role="status">Sin conexión. Puedes continuar; los cambios se guardarán en este dispositivo.</p>}
+      {offlineState.workspace.queue.length > 0 && (
+        <div className="data-update-offline" role="status" aria-live="polite">
+          <span>{offlineState.workspace.queue.length} cambio{offlineState.workspace.queue.length === 1 ? "" : "s"} pendiente{offlineState.workspace.queue.length === 1 ? "" : "s"} de sincronizar.</span>
+          {online && (
+            <button type="button" className="btn-secondary" onClick={() => void offlineState.sync(true)} disabled={offlineState.busy || selectedRecord !== null}>
+              <RefreshCw aria-hidden="true" />
+              {offlineState.busy ? "Sincronizando…" : "Sincronizar"}
+            </button>
+          )}
+        </div>
+      )}
+      {(offlineState.error || offlineState.workspace.queue.some(item => item.error)) && (
+        <div className="data-update-offline" role="alert">
+          <span>{offlineState.error ?? offlineState.workspace.queue.find(item => item.error)?.error}</span>
+          {conflictedOperation && (
+            <button type="button" className="btn-secondary" onClick={() => setDiscardConflictRecordId(conflictedOperation.recordId)}>
+              Descartar cambios en conflicto
+            </button>
+          )}
+        </div>
+      )}
       {error && <p className="form-error" role="alert">{error}</p>}
 
       {campaigns.length > 0 && (
@@ -370,7 +408,7 @@ export function DataUpdatePage() {
                 <RefreshCw aria-hidden="true" />
                 Actualizar
               </button>
-              {isAdmin && (
+              {isAdmin && online && (
                 <button
                   type="button"
                   className="btn-danger"
@@ -527,7 +565,9 @@ export function DataUpdatePage() {
                                   <span>{record.identity.employeeNumber}</span>
                                   {record.identity.shift && <span>Turno: {record.identity.shift}</span>}
                                 </span>
-                                <span className={`data-update-status data-update-status--${record.status}`}>{record.status.replace("_", " ")}</span>
+                                <span className={`data-update-status data-update-status--${record.status}`}>
+                                  {pendingRecordIds.has(record.id) ? "pendiente de sincronizar" : record.status.replace("_", " ")}
+                                </span>
                               </div>
                               <h3>{record.identity.name}</h3>
                             </div>
@@ -535,7 +575,7 @@ export function DataUpdatePage() {
                               type="button"
                               className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
                               onClick={() => void openRecord(record)}
-                              disabled={!online || busy || record.status === "completado"}
+                              disabled={busy || record.status === "completado"}
                             >
                               {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
                             </button>
@@ -561,15 +601,17 @@ export function DataUpdatePage() {
               </section>
             </Tabs.Content>
 
-            <Tabs.Content className="data-update-tabs__content" value="locker">
+            {client && <Tabs.Content className="data-update-tabs__content" value="locker">
               <DataUpdateLockerPanel
                 records={detail.records}
                 canEdit={canAccess}
+                client={client}
+                online={online}
                 onRecordUpdated={updateDetailRecord}
               />
-            </Tabs.Content>
+            </Tabs.Content>}
 
-            {isAdmin && (
+            {isAdmin && online && (
               <Tabs.Content className="data-update-tabs__content" value="admin">
                 <DataUpdateAdminPanel
                   detail={detail}
@@ -621,6 +663,26 @@ export function DataUpdatePage() {
           errorMessage={deleteError ?? undefined}
         />
       )}
+      <ConfirmModal
+        isOpen={discardConflictRecordId !== null}
+        title="Descartar cambios sin sincronizar"
+        description={`Se eliminarán únicamente los cambios guardados en este dispositivo${conflictedRecord ? ` para ${conflictedRecord.identity.name}` : ""}. Después se cargará la versión confirmada por el servidor.`}
+        confirmLabel="Descartar cambios"
+        cancelLabel="Conservar"
+        onConfirm={() => {
+          if (!discardConflictRecordId || !client || discardingConflict) return;
+          setDiscardingConflict(true);
+          void client.discard(discardConflictRecordId)
+            .then(() => loadDetail())
+            .then(() => setDiscardConflictRecordId(null))
+            .catch(caught => setError(dataUpdateError(caught)))
+            .finally(() => setDiscardingConflict(false));
+        }}
+        onCancel={() => { if (!discardingConflict) setDiscardConflictRecordId(null); }}
+        isDestructive
+        isLoading={discardingConflict}
+        loadingLabel="Descartando…"
+      />
     </main>
   );
 }

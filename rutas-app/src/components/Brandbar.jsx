@@ -8,7 +8,7 @@ export default function Brandbar() {
         className="text-2xl font-bold tracking-tight text-ink sm:text-3xl"
         aria-label="VIÑOPLASTIC"
       >
-        VIÑO<span className="text-brand">PLASTIC</span>
+        VIÑO<span className="text-primary">PLASTIC</span>
       </p>
       <p
         className="text-xl font-extrabold italic leading-none text-ink sm:text-2xl"

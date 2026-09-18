@@ -3,9 +3,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { LogOut, ShieldCheck } from 'lucide-react';
 import './MaintenanceGuard.css';
+import { useOfflineAccess } from '@/features/data-update/offline/hooks';
 
 export function MaintenanceGuard({ children }: { children: ReactNode }) {
-  const { profile, profileLoading, loading: authLoading, signOut } = useAuth();
+  const { profile, profileLoading, loading: authLoading, signOut, user } = useAuth();
+  const offline = useOfflineAccess(user?.id);
   const {
     enabled: isMaintenance,
     loading: maintenanceLoading,
@@ -28,6 +30,8 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
       setIsChecking(false);
     }
   };
+
+  if (offline.account) return <>{children}</>;
 
   if (authLoading || maintenanceLoading || ((!hasConfirmedState || isMaintenance) && profileLoading)) {
     return null;

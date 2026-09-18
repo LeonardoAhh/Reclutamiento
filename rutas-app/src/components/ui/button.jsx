@@ -4,14 +4,11 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 /**
- * Button component — aligned with desing.md Notion-style system.
+ * Button component — aligned with desing.md Geist Precision UI.
  *
  * Rules per desing.md:
- * - Primary CTA: pill-shaped (rounded-full), Notion blue fill.
- * - Secondary: pill-shaped, white surface + hairline border.
- * - Outline / ghost: 8px radius (rounded-md) utility buttons.
- *
- * Elevation: barely-there layered shadow on surface variants,
+ * - App controls: 6px radius (rounded-sm)
+ * - Elevation: whisper shadow on surface variants.
  * never heavy drop-shadows.
  */
 const buttonVariants = cva(
@@ -20,31 +17,31 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary — Notion blue pill · only structural CTA
+        // Primary — Geist ink · solid
         default:
-          'rounded-full bg-primary text-on-primary hover:bg-primary-active active:scale-95',
+          'rounded-sm bg-primary text-on-primary hover:bg-primary-active active:scale-95',
 
-        // Secondary — white pill + hairline · secondary actions
+        // Secondary — white + hairline
         secondary:
-          'rounded-full bg-surface text-ink border border-hairline shadow-soft hover:bg-surface-card active:scale-95',
+          'rounded-sm bg-surface text-ink border border-hairline shadow-soft hover:bg-surface-card active:scale-95',
 
-        // Outline — 8px radius · utility actions per desing.md
+        // Outline — utility actions
         outline:
-          'rounded-md border border-hairline bg-surface text-ink shadow-soft hover:bg-surface-card',
+          'rounded-sm border border-hairline bg-surface text-ink shadow-soft hover:bg-surface-card',
 
-        // Ghost — 8px radius · low-emphasis
+        // Ghost — low-emphasis
         ghost:
-          'rounded-md text-ink hover:bg-surface-card',
+          'rounded-sm text-ink hover:bg-surface-card',
 
         // Destructive
         destructive:
-          'rounded-full bg-error text-white hover:bg-error/90 active:scale-95',
+          'rounded-sm bg-error text-white hover:bg-error/90 active:scale-95',
       },
       size: {
-        default: 'h-9 px-5 py-1 text-button-md',
+        default: 'h-9 px-4 py-2 text-button-md',
         sm:      'h-8 px-3 text-caption-md',
         lg:      'h-11 px-6 text-body-md',
-        icon:    'h-9 w-9',
+        icon:    'size-9',
       },
     },
     defaultVariants: {

@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { useOfflineAccess } from '@/features/data-update/offline/hooks';
 
 /**
  * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
@@ -14,6 +15,10 @@ import { useLoader } from '@/hooks/useLoader';
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { session, loading, profileLoading } = useAuth();
   const location = useLocation();
+  const offline = useOfflineAccess(session?.user.id);
+
+  if (offline.loading) return null;
+  if (offline.account) return <>{children}</>;
 
   if (loading || (session && profileLoading)) {
     return null;

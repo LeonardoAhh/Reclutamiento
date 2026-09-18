@@ -30,6 +30,7 @@ import {
 } from '@/lib/configuracionNavigation';
 import { BONO_PATH } from '@/features/bono-asistencia/constants';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
+import { DataUpdateSyncAgent } from '@/features/data-update/offline/DataUpdateSyncAgent';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -83,14 +84,16 @@ const DataUpdatePage = lazy(() =>
 );
 function ProtectedContent() {
   return (
-    <CandidatesProvider>
-      <PositionsProvider>
-        <MaintenanceGuard>
-          <AppShell><Outlet /></AppShell>
-          <TopRecruiterModal />
-        </MaintenanceGuard>
-      </PositionsProvider>
-    </CandidatesProvider>
+    <DataUpdateSyncAgent>
+      <CandidatesProvider>
+        <PositionsProvider>
+          <MaintenanceGuard>
+            <AppShell><Outlet /></AppShell>
+            <TopRecruiterModal />
+          </MaintenanceGuard>
+        </PositionsProvider>
+      </CandidatesProvider>
+    </DataUpdateSyncAgent>
   );
 }
 

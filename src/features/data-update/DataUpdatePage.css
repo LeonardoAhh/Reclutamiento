@@ -58,6 +58,14 @@
   border-radius: var(--rounded-lg);
 }
 
+.data-update-offline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  flex-wrap: wrap;
+}
+
 .data-update-campaign-toolbar {
   padding: var(--design-spacing-md);
   background: var(--color-surface-card);

@@ -40,6 +40,8 @@ supabase db push
 | `031_profiles_activity_security.sql` | Restringe la actividad completa del equipo a administradores y conserva la lectura del perfil propio. | Seguridad |
 | `032_transport_incident_image.sql` | Añade evidencia visual opcional a reportes de transporte mediante bucket privado, límite de 5 MB y lectura exclusiva para administradores. | Transporte |
 | `033_transport_incident_comment_guard.sql` | Exige comentarios de 1 a 500 caracteres en nuevas incidencias sin invalidar datos históricos. | Transporte |
+| `046_data_update_locker_recruiter_access.sql` | Permite administrar lockers a todos los participantes de la campaña, conservando validación, unicidad y auditoría. | Actualización de datos |
+| `047_data_update_offline_sync.sql` | Añade recibos idempotentes y una RPC versionada para sincronizar capturas offline de Actualización de datos sin duplicar auditoría ni sobrescribir conflictos. | Actualización de datos |
 
 ## RLS
 

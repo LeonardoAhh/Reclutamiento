@@ -71,7 +71,7 @@ function mapEditable(value: unknown): DataUpdateEditableData {
   };
 }
 
-function mapRecord(value: unknown): DataUpdateRecord {
+export function mapDataUpdateRecord(value: unknown): DataUpdateRecord {
   const row = objectValue(Array.isArray(value) ? value[0] : value);
   const assignedProfile =
     typeof row.assigned_profile === "object" && row.assigned_profile !== null
@@ -121,6 +121,8 @@ function mapRecord(value: unknown): DataUpdateRecord {
   };
 }
 
+const mapRecord = mapDataUpdateRecord;
+
 function mapCampaign(value: unknown): DataUpdateCampaign {
   const row = objectValue(value);
   return {
@@ -156,6 +158,9 @@ export function dataUpdateError(error: unknown): string {
       : "";
   if (message.includes("DATA_UPDATE_CONFLICT")) {
     return "Este registro cambió en otro dispositivo. Recarga antes de continuar.";
+  }
+  if (message.includes("DATA_UPDATE_OPERATION_MISMATCH")) {
+    return "La operación pendiente no coincide con la captura de este dispositivo. Los datos locales se conservaron.";
   }
   if (message.includes("DATA_UPDATE_NOT_FOUND")) return "El registro ya no está disponible.";
   if (message.includes("DATA_UPDATE_FORBIDDEN")) return "No tienes permiso para realizar esta acción.";

@@ -38,7 +38,7 @@ export default function RouteSidebar({ rutas, rutaActivaId, onSeleccionar, loadi
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Rutas disponibles</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-eyebrow font-mono uppercase text-mute">Rutas disponibles</SidebarGroupLabel>
           <SidebarMenu>
             {loading
               ? Array.from({ length: rutas.length || 6 }).map((_, i) => (
@@ -66,10 +66,10 @@ export default function RouteSidebar({ rutas, rutaActivaId, onSeleccionar, loadi
                         <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center text-body-strong font-bold tabular-nums">
                           {ruta.id}
                         </span>
-                        <span className="truncate text-caption-md text-mute group-data-[active=true]:text-primary group-data-[collapsible=icon]:hidden">
+                        <span className="truncate text-caption-md text-mute group-data-[active=true]:text-on-primary group-data-[collapsible=icon]:hidden">
                           {titulo}
                         </span>
-                        <span className="ml-auto shrink-0 text-caption-md tabular-nums text-ash group-data-[collapsible=icon]:hidden">
+                        <span className="ml-auto shrink-0 text-caption-md tabular-nums text-ash group-data-[active=true]:text-on-primary group-data-[collapsible=icon]:hidden">
                           {ruta.paradas.length}
                         </span>
                       </SidebarMenuButton>

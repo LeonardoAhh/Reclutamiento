@@ -2,25 +2,30 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useAuth } from '@/hooks/useAuth';
 import { supabase, PASSWORD_CHANGE_REQUIRED_EVENT } from '@/lib/supabase';
 import { PasswordChangeForm } from './PasswordChangeForm';
+import { useOfflineAccess } from '@/features/data-update/offline/hooks';
+import { setOfflineAccount } from '@/features/data-update/offline/storage';
 
 type Check = { userId: string; status: 'loading' | 'required' | 'ready' | 'error' };
 
 export function PasswordChangeGuard({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const userId = user?.id ?? '';
+  const offline = useOfflineAccess(userId);
   const [check, setCheck] = useState<Check>({ userId: '', status: 'loading' });
   const [signOutError, setSignOutError] = useState(false);
   const requestId = useRef(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const status = check.userId === userId ? check.status : 'loading';
+  const offlineUnavailable = !navigator.onLine && !offline.account;
 
   const verify = useCallback(async () => {
-    if (!userId) return;
+    if (!userId || !navigator.onLine) return;
     const currentRequest = ++requestId.current;
     try {
       const { data, error } = await supabase.rpc('password_change_required');
       if (currentRequest !== requestId.current) return;
       if (error || typeof data !== 'boolean') throw new Error('Password status unavailable');
+      if (data) await setOfflineAccount(null);
       setCheck({ userId, status: data ? 'required' : 'ready' });
     } catch {
       if (currentRequest === requestId.current) setCheck({ userId, status: 'error' });
@@ -30,19 +35,19 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
   useEffect(() => {
     void verify();
     window.addEventListener(PASSWORD_CHANGE_REQUIRED_EVENT, verify);
+    window.addEventListener('online', verify);
     return () => {
       requestId.current += 1;
       window.removeEventListener(PASSWORD_CHANGE_REQUIRED_EVENT, verify);
+      window.removeEventListener('online', verify);
     };
   }, [verify]);
 
   useEffect(() => {
     if (status !== 'ready' && status !== 'error') return;
     window.addEventListener('focus', verify);
-    window.addEventListener('online', verify);
     return () => {
       window.removeEventListener('focus', verify);
-      window.removeEventListener('online', verify);
     };
   }, [status, verify]);
 
@@ -63,9 +68,11 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
     try { await signOut(); } catch { setSignOutError(true); }
   };
 
-  if (status === 'ready') return <>{children}</>;
+  if (offline.account || status === 'ready') return <>{children}</>;
 
-  const title = status === 'required'
+  const title = offlineUnavailable
+    ? 'Dispositivo no preparado'
+    : status === 'required'
     ? 'Actualiza tu contraseña'
     : status === 'error'
       ? 'Acceso no verificado'
@@ -75,18 +82,22 @@ export function PasswordChangeGuard({ children }: { children: ReactNode }) {
     <main
       className="password-change-page"
       aria-labelledby="password-change-title"
-      aria-busy={status === 'loading' || undefined}
+      aria-busy={(status === 'loading' && !offlineUnavailable) || undefined}
     >
       <section className="password-change-card">
         <header className="password-change-card__header">
           <h1 ref={headingRef} tabIndex={-1} id="password-change-title" className="type-heading-md">{title}</h1>
           {status === 'required' && <p className="type-body-sm text-muted">Reemplaza la contraseña inicial por una que solo tú conozcas.</p>}
         </header>
-        {status === 'loading' && <p role="status">Comprobando la seguridad de tu cuenta…</p>}
-        {status === 'error' && (
+        {status === 'loading' && !offlineUnavailable && <p role="status">Comprobando la seguridad de tu cuenta…</p>}
+        {(status === 'error' || offlineUnavailable) && (
           <>
-            <p className="form-error" role="alert">No se pudo verificar el acceso. Intenta de nuevo.</p>
-            <button type="button" className="btn-primary" onClick={() => { setCheck({ userId, status: 'loading' }); void verify(); }}>Reintentar</button>
+            <p className="form-error" role="alert">
+              {offlineUnavailable
+                ? 'Conecta este dispositivo y abre Actualización de datos una vez para prepararlo.'
+                : 'No se pudo verificar el acceso. Intenta de nuevo.'}
+            </p>
+            {!offlineUnavailable && <button type="button" className="btn-primary" onClick={() => { setCheck({ userId, status: 'loading' }); void verify(); }}>Reintentar</button>}
           </>
         )}
         {status === 'required' ? (

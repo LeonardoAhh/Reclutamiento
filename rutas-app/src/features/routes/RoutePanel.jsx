@@ -13,7 +13,7 @@ export default function RoutePanel({ ruta, targetStopNo }) {
       id={`panel-${ruta.id}`}
       role="tabpanel"
       aria-labelledby={`tab-${ruta.id}`}
-      className="animate-fade-in-up rounded-xl border border-hairline bg-surface p-5 shadow-soft sm:p-8 lg:p-10"
+      className="animate-fade-in-up rounded-lg border border-hairline bg-surface p-5 shadow-soft sm:p-8 lg:p-10"
       data-testid="route-panel"
     >
       <Brandbar />
