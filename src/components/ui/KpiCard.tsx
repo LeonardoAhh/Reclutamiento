@@ -9,6 +9,7 @@ export interface KpiCardProps {
     sub?: string;
     icon: React.ReactNode;
     tone?: KpiTone;
+    valueSize?: "default" | "compact";
     onClick?: () => void;
 }
 
@@ -18,9 +19,11 @@ export function KpiCard({
     sub,
     icon,
     tone = "default",
+    valueSize = "default",
     onClick
 }: KpiCardProps) {
     const toneClass = tone !== "default" ? ` kpi-card--${tone}` : "";
+    const valueClass = `kpi-card__value${valueSize === "compact" ? " kpi-card__value--compact" : ""}`;
     
     if (onClick) {
         return (
@@ -34,7 +37,7 @@ export function KpiCard({
                 <div className="kpi-card__content">
                     <span className="kpi-card__label">{label}</span>
                     <div className="kpi-card__value-row">
-                        <p className="kpi-card__value" title={String(value)}>{value}</p>
+                        <p className={valueClass} title={String(value)}>{value}</p>
                         {sub && <p className="kpi-card__sub">{sub}</p>}
                     </div>
                 </div>
@@ -48,7 +51,7 @@ export function KpiCard({
             <div className="kpi-card__content">
                 <span className="kpi-card__label">{label}</span>
                 <div className="kpi-card__value-row">
-                    <p className="kpi-card__value" title={String(value)}>{value}</p>
+                    <p className={valueClass} title={String(value)}>{value}</p>
                     {sub && <p className="kpi-card__sub">{sub}</p>}
                 </div>
             </div>

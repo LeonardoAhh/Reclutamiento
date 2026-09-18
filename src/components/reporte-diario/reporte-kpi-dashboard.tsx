@@ -147,6 +147,7 @@ export default function ReporteKpiDashboard({
         {
             label: "Área con más incidencias",
             value: kpis.worstArea || "—",
+            valueSize: "compact" as const,
             icon: <Building2 size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
             onClick: kpis.worstArea ? () => setIsWorstAreaModalOpen(true) : undefined,

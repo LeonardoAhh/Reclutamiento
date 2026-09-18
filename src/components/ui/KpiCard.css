@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  min-inline-size: 0;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   background: var(--color-surface-card);
@@ -19,7 +20,6 @@
 button.kpi-card--interactive {
   text-align: left;
   cursor: pointer;
-  width: 100%;
   font-family: inherit;
 }
 
@@ -44,6 +44,7 @@ button.kpi-card--interactive {
 .kpi-card__content {
   display: flex;
   flex-direction: column;
+  min-inline-size: 0;
   gap: var(--spacing-xxs);
 }
 
@@ -71,7 +72,7 @@ button.kpi-card--interactive {
   line-height: var(--type-heading-sm-line);
   letter-spacing: var(--type-heading-sm-tracking);
   color: var(--color-ink);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 768px) {
@@ -80,6 +81,13 @@ button.kpi-card--interactive {
     font-weight: var(--type-heading-lg-weight);
     line-height: var(--type-heading-lg-line);
     letter-spacing: var(--type-heading-lg-tracking);
+  }
+
+  .kpi-card__value--compact {
+    font-size: var(--type-heading-md-size);
+    font-weight: var(--type-heading-md-weight);
+    line-height: var(--type-heading-md-line);
+    letter-spacing: var(--type-heading-md-tracking);
   }
 }
 
