@@ -19,8 +19,10 @@ async function sendOperation(owner: string, operation: PendingOperation) {
   if (operation.command.kind === 'photo') {
     const file = await readOfflinePhoto(owner, operation.command.path);
     if (!file) throw new Error('La fotografía local no está disponible. No se finalizó el registro.');
+    if (file.size === 0) throw new Error('La fotografía guardada está vacía. Vuelve a tomarla antes de sincronizar.');
+    const content = await file.arrayBuffer();
     const { error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET)
-      .upload(operation.command.path, file, { contentType: file.type, upsert: false });
+      .upload(operation.command.path, content, { contentType: file.type, upsert: false });
     if (error) {
       // The deterministic path can already exist after a lost response. Verify bytes,
       // not merely existence, before attaching it; never overwrite an existing object.
@@ -79,6 +81,8 @@ export async function synchronize(owner: string) {
           ? 'Cambió en otro dispositivo. Tus cambios siguen guardados; revisa el conflicto antes de reenviar.'
           : raw.includes('sync_data_update_operation') || raw.includes('PGRST202')
             ? 'Falta habilitar la sincronización en el servidor (migración 047). Tus cambios siguen en este dispositivo.'
+            : raw.includes('No content provided')
+              ? 'No se pudo leer la fotografía pendiente. Tus cambios siguen guardados; vuelve a intentar la sincronización.'
             : dataUpdateError(error);
         await changeWorkspace(owner, workspace => {
           const item = workspace.queue.find(entry => entry.id === id);

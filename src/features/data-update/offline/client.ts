@@ -3,7 +3,23 @@ import { getDataUpdatePhotoExtension, validateDataUpdatePhoto } from '../validat
 import type { DataUpdateRecord } from '../types';
 import { findRecord, projectRecord, type Command, type LocalForm, type OfflineAccount } from './model';
 import { changeWorkspace, deleteOfflinePhoto, readWorkspace, readOfflinePhoto, saveOfflinePhoto, setOfflineAccount } from './storage';
-import { synchronize } from './sync';
+
+const photoPreparations = new Map<string, Promise<void>>();
+
+function prepareOfflinePhotos(owner: string, campaignId: string, records: DataUpdateRecord[]) {
+  const key = `${owner}:${campaignId}`;
+  if (photoPreparations.has(key)) return;
+  const preparation = (async () => {
+    try { await navigator.storage?.persist?.(); } catch { /* Storage persistence is best effort. */ }
+    for (const record of records) {
+      if (!record.photoPath || await readOfflinePhoto(owner, record.photoPath)) continue;
+      try {
+        await saveOfflinePhoto(owner, record.photoPath, await api.downloadDataUpdatePhoto(record.photoPath));
+      } catch { /* A photo can be fetched on demand without blocking the campaign. */ }
+    }
+  })().finally(() => photoPreparations.delete(key));
+  photoPreparations.set(key, preparation);
+}
 
 export function createOfflineClient(account: OfflineAccount) {
   const owner = account.id;
@@ -55,12 +71,7 @@ export function createOfflineClient(account: OfflineAccount) {
           }
         });
         await setOfflineAccount(account);
-        await Promise.allSettled(detail.records.map(async record => {
-          if (!record.photoPath || await readOfflinePhoto(owner, record.photoPath)) return;
-          await saveOfflinePhoto(owner, record.photoPath, await api.downloadDataUpdatePhoto(record.photoPath));
-        }));
-        if (navigator.storage?.persist) await navigator.storage.persist();
-        await synchronize(owner);
+        prepareOfflinePhotos(owner, campaignId, detail.records);
       }
       const workspace = await readWorkspace(owner);
       const detail = workspace.details[campaignId];

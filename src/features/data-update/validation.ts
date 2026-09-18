@@ -256,6 +256,7 @@ const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export function validateDataUpdatePhoto(file: File): string | null {
   if (!PHOTO_TYPES.has(file.type)) return "Selecciona una imagen JPEG, PNG o WebP.";
+  if (file.size === 0) return "La imagen está vacía. Vuelve a tomarla o selecciona otra.";
   if (file.size > DATA_UPDATE_PHOTO_MAX_BYTES) return "La imagen debe pesar máximo 5 MB.";
   return null;
 }
