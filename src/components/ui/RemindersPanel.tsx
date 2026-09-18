@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell, BellDot, CircleCheckBig } from "lucide-react";
+import { Bell, BellDot, ChevronRight, CircleCheckBig } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
 import {
   SupabaseDataProvider,
@@ -102,7 +102,7 @@ export function RemindersPanel() {
               `${isOpen ? "Cerrar" : "Ver"} procesos pendientes (${reminders.length})`
             }
           >
-            <ReminderIcon size="var(--icon-size-control)" aria-hidden="true" />
+            <ReminderIcon size="var(--icon-size-md)" aria-hidden="true" />
             <span>Procesos</span>
             {reminders.length > 0 && (
               <span className="reminders-badge" aria-hidden="true">
@@ -134,11 +134,11 @@ export function RemindersPanel() {
                 <p>Sin procesos</p>
               </div>
             ) : (
-              <div className="reminders-list">
+              <ul className="reminders-list" aria-label="Procesos pendientes">
                 {reminders.map((c) => (
+                  <li key={c.id}>
                   <button
                     type="button"
-                    key={c.id}
                     className="reminder-compact-item"
                     onClick={() => {
                       setIsOpen(false);
@@ -152,6 +152,7 @@ export function RemindersPanel() {
                       >
                         {c.nombre}
                       </span>
+                      <ChevronRight className="reminder-compact-chevron" aria-hidden="true" />
                     </div>
                     <div className="reminder-compact-sub">
                       <span
@@ -171,11 +172,12 @@ export function RemindersPanel() {
                           {formatReminderDate(c.fecha_cita)}
                         </span>
                       </span>
-                      <CandidateStatusBadge status={c.status} compact />
+                      <CandidateStatusBadge status={c.status} compact className="reminder-compact-status" />
                     </div>
                   </button>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         </PopoverContent>

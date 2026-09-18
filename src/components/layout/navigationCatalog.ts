@@ -85,7 +85,6 @@ export const ACTIVIDADES_NAV_GROUPS: ReadonlyArray<NavigationChildGroup> = [
 export const CONFIGURACION_NAV_GROUPS: ReadonlyArray<NavigationChildGroup> = [
   {
     id: 'administracion',
-    title: 'Administración',
     items: [
       {
         id: 'indicadores',
@@ -103,7 +102,6 @@ export const CONFIGURACION_NAV_GROUPS: ReadonlyArray<NavigationChildGroup> = [
   },
   {
     id: 'operacion',
-    title: 'Operación',
     items: CONFIGURACION_OPERATION_LINKS.map((item) => ({ ...item })),
   },
 ];

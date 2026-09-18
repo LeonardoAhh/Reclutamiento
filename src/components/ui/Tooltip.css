@@ -1,37 +1,39 @@
 /* ================================================================
-   Tooltip — Notion-style inverted surface tooltip.
+   Tooltip — Geist inverted surface.
    Radix UI portal: rendered outside the DOM tree.
    Tokens: colors, spacing, type, rounded, shadow, z-index, motion.
    ================================================================ */
 
 .tooltip-content {
-  background-color: var(--color-ink);
-  color: var(--color-canvas);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-md);
-  font-size: var(--type-caption-md-size);
-  line-height: var(--type-caption-md-line);
-  font-weight: var(--type-caption-md-weight);
-  box-shadow: var(--shadow-elevated);
+  background-color: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-surface-dark-elevated);
+  border-radius: var(--rounded-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+  box-shadow: var(--shadow-level-2);
   z-index: var(--layer-tooltip);
-  animation: tooltipFadeIn var(--transition-base);
+  animation: tooltipFadeIn var(--transition-fast);
   white-space: normal;
-  max-width: var(--tooltip-max-width);
-  word-wrap: break-word;
+  max-width: min(var(--tooltip-max-width), var(--radix-tooltip-content-available-width));
+  overflow-wrap: anywhere;
+  text-align: start;
 }
 
 .tooltip-arrow {
-  fill: var(--color-ink);
+  fill: var(--color-surface-dark);
 }
 
 @keyframes tooltipFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -48,31 +50,32 @@
 .trend-tooltip {
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-xs);
-  min-width: 150px;
-  gap: var(--spacing-sm);
+  min-width: 0;
+  gap: var(--design-spacing-sm);
 }
 
 .trend-tooltip__section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .trend-tooltip__title {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
+  font-weight: var(--type-label-sm-weight);
+  letter-spacing: var(--type-label-sm-tracking);
 }
 
 .trend-tooltip__title svg {
-  width: var(--spacing-md);
-  height: var(--spacing-md);
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
   flex-shrink: 0;
 }
 
 .trend-tooltip__title--success {
-  color: var(--color-success);
+  color: var(--color-on-dark);
 }
 
 .trend-tooltip__title--danger {
@@ -83,21 +86,24 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: var(--type-caption-sm-size);
-  color: var(--color-canvas);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  color: var(--color-on-dark);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .trend-tooltip__list li {
   position: relative;
-  padding-left: var(--spacing-sm);
+  padding-inline-start: var(--design-spacing-sm);
 }
 
 .trend-tooltip__list li::before {
   content: "•";
   position: absolute;
-  left: 0;
-  color: var(--color-muted-soft);
+  inset-inline-start: 0;
+  color: var(--color-on-dark-soft);
 }

@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import type { MouseEvent, PointerEvent } from 'react';
+import { useId, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
 import {
@@ -9,7 +9,6 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/Popover';
-import { FLOATING_SURFACE_HOVER_CLOSE_DELAY_MS } from '@/lib/floatingSurface';
 import type { NavItem } from './navigation';
 import './SidebarSectionNav.css';
 
@@ -37,44 +36,10 @@ export function SidebarSectionNav({
 }: SidebarSectionNavProps) {
   const [open, setOpen] = useState(false);
   const mobileNavigationRef = useRef(false);
-  const openedByHoverRef = useRef(false);
-  const hoverCloseTimerRef = useRef<number | null>(null);
   const contentId = useId();
   const titleId = useId();
   const Icon = item.icon;
   const DisclosureIcon = mobile ? ChevronDown : ChevronRight;
-
-  const clearHoverCloseTimer = () => {
-    if (hoverCloseTimerRef.current === null) return;
-    window.clearTimeout(hoverCloseTimerRef.current);
-    hoverCloseTimerRef.current = null;
-  };
-
-  useEffect(() => clearHoverCloseTimer, []);
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    clearHoverCloseTimer();
-    openedByHoverRef.current = false;
-    setOpen(nextOpen);
-  };
-
-  const handlePointerEnter = (event: PointerEvent<HTMLElement>) => {
-    if (mobile || event.pointerType !== 'mouse') return;
-    clearHoverCloseTimer();
-    if (open) return;
-    openedByHoverRef.current = true;
-    setOpen(true);
-  };
-
-  const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
-    if (mobile || event.pointerType !== 'mouse' || !openedByHoverRef.current) return;
-    clearHoverCloseTimer();
-    hoverCloseTimerRef.current = window.setTimeout(() => {
-      openedByHoverRef.current = false;
-      setOpen(false);
-      hoverCloseTimerRef.current = null;
-    }, FLOATING_SURFACE_HOVER_CLOSE_DELAY_MS);
-  };
 
   const handleNavigate = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -90,7 +55,7 @@ export function SidebarSectionNav({
 
   return (
     <div className="sidebar-section">
-      <Popover open={open} onOpenChange={handleOpenChange}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -99,14 +64,6 @@ export function SidebarSectionNav({
             aria-expanded={open}
             aria-controls={contentId}
             data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
-            onClick={(event) => {
-              if (!openedByHoverRef.current) return;
-              event.preventDefault();
-              clearHoverCloseTimer();
-              openedByHoverRef.current = false;
-            }}
           >
             <Icon className="sidebar__item-icon" aria-hidden="true" />
             <span className="sidebar__item-label">{item.label}</span>
@@ -119,8 +76,6 @@ export function SidebarSectionNav({
           align="start"
           className="sidebar-section__popover"
           aria-labelledby={titleId}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
           onEscapeKeyDown={(event) => event.stopPropagation()}
           onCloseAutoFocus={(event) => {
             if (!mobileNavigationRef.current) return;
@@ -129,7 +84,7 @@ export function SidebarSectionNav({
           }}
         >
           <PopoverHeader className="sidebar-section__popover-header">
-            <PopoverTitle id={titleId}>{item.label}</PopoverTitle>
+            <PopoverTitle id={titleId} className="sidebar-section__popover-title">{item.label}</PopoverTitle>
           </PopoverHeader>
           <nav aria-label={`Navegación de ${item.label}`}>
             {groups.map((group) => (
@@ -162,7 +117,7 @@ export function SidebarSectionNav({
                             href={viewHref}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="sidebar-section__view type-caption-sm"
+                            className="sidebar-section__view"
                             aria-label={`${label} (abre en una pestaña nueva)`}
                             onClick={handleNavigate}
                           >
@@ -171,7 +126,7 @@ export function SidebarSectionNav({
                         ) : (
                           <Link
                             to={viewHref}
-                            className="sidebar-section__view type-caption-sm"
+                            className="sidebar-section__view"
                             aria-current={isActive && current ? 'page' : undefined}
                             onClick={handleNavigate}
                           >

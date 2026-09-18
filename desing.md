@@ -162,8 +162,9 @@ Cards are rectangles at 12–16px radius; marketing buttons and category tabs ar
 
 **`app-workspace`** — authenticated application shell
 - On desktop, the sidebar remains fixed on `{colors.canvas}` and the workspace is one continuous `{colors.canvas-elevated}` surface shared by header and page content.
-- The workspace uses a 1px `{colors.hairline}` boundary, `{rounded.lg}` on its leading corners, and the Level-2 floating shadow. It owns vertical scrolling so the sidebar remains stationary.
-- Sidebar selection uses a neutral `{colors.surface-soft}` fill with `{colors.ink}` text. `{colors.link}` is reserved for links and visible focus, not for filling the active navigation row.
+- The workspace uses a 1px strong neutral hairline (`--workspace-border-color`), `{rounded.lg}` on all corners, and the Level-2 floating shadow. A `{spacing.sm}` inset on the top, bottom and trailing edge separates the white surface from the canvas. It owns vertical scrolling so the sidebar remains stationary.
+- Sidebar selection uses a solid `{colors.primary}` fill with `{colors.on-primary}` text and icons, without a leading border or inset indicator. The same treatment applies to the current submenu entry. `{colors.link}` is reserved for links and visible focus, not for filling the active navigation row.
+- Sidebar links use `{typography.body-md}`, with `{typography.label-sm}` for the current section. Group labels use `{typography.mono-eyebrow}` and `{spacing.lg}` separates groups. Navigation and account controls use `{rounded.sm}` and retain a 44px minimum target; the account trigger sits on a white hairline surface.
 - Below the desktop breakpoint the sidebar becomes an overlay and the workspace returns to a continuous, unframed page surface. The mobile bar must not cover content or safe areas.
 
 ### Buttons

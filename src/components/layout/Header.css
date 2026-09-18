@@ -65,7 +65,7 @@
   border: none;
   color: var(--color-ink);
   cursor: pointer;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   transition: background-color var(--transition-fast);
 }
 
