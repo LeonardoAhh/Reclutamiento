@@ -7,6 +7,7 @@ import RouteSidebar from './features/routes/RouteSidebar';
 import RouteTabs from './features/routes/RouteTabs';
 import RoutePanel from './features/routes/RoutePanel';
 import GlobalSearch from './features/routes/GlobalSearch';
+import { RECRUITMENT_ROUTES_PATH } from './lib/navigation';
 
 async function downloadExcel() {
   const { downloadRutasExcel } = await import('./lib/excelExport');
@@ -75,7 +76,7 @@ function App() {
       <SidebarInset>
         {/* Top bar with global search */}
         <header className="sticky top-0 z-30 flex min-h-14 pt-[env(safe-area-inset-top)] items-center gap-3 border-b border-hairline bg-surface/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-surface/80 sm:px-6">
-          <a href="/" className="md:hidden flex items-center justify-center size-8 rounded-sm hover:bg-surface-card transition-colors" aria-label="Regresar">
+          <a href={RECRUITMENT_ROUTES_PATH} className="md:hidden flex items-center justify-center size-8 rounded-sm hover:bg-surface-card transition-colors" aria-label="Regresar a rutas">
             <ArrowLeft size={18} />
           </a>
           <span className="text-body-strong font-bold text-ink flex-1">

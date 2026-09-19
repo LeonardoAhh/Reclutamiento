@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import './Avatar.css';
 
 type AvatarProps = {
@@ -8,31 +8,9 @@ type AvatarProps = {
   src?: string | null;
 };
 
-/**
- * Paleta de gradientes deterministas construida EXCLUSIVAMENTE 
- * con los tokens autorizados de la paleta "sticker" (desing.md).
- */
-const GRADIENTS = [
-  'var(--avatar-gradient-orange)',
-  'var(--avatar-gradient-teal)',
-  'var(--avatar-gradient-purple)',
-  'var(--avatar-gradient-green)',
-  'var(--avatar-gradient-warm)',
-];
-
-/** Hash simple para elegir siempre el mismo gradiente para el mismo string. */
-function getGradientForName(name: string) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % GRADIENTS.length;
-  return GRADIENTS[index];
-}
-
 /** Extrae hasta 2 iniciales (ej. leonardo@mail.com -> LE, Juan Perez -> JP). */
 function getInitials(name: string) {
-  const base = name.split('@')[0] ?? '';
+  const base = (name.split('@')[0] ?? '').trim();
   const parts = base.split(/[._\-\s]+/).filter(Boolean);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return base.slice(0, 2).toUpperCase();
@@ -40,35 +18,26 @@ function getInitials(name: string) {
 
 /**
  * Avatar UI
- * Muestra una imagen si src es proporcionado y carga correctamente.
- * Si no hay src o la imagen falla, muestra iniciales sobre un gradiente de fondo.
+ * Muestra una imagen si src carga correctamente. Radix gestiona el fallback
+ * accesible; sin imagen, las iniciales usan la superficie neutral del sistema.
  */
 export function Avatar({ name, src }: AvatarProps) {
-  const initials = useMemo(() => getInitials(name), [name]);
-  const background = useMemo(() => getGradientForName(name), [name]);
-  const [imageError, setImageError] = useState(false);
-
-  const showImage = src && !imageError;
-
   return (
-    <span
+    <AvatarPrimitive.Root
       className="ui-avatar"
       aria-hidden="true"
       title={name}
-      style={{
-        background: showImage ? 'var(--color-surface-soft)' : background,
-      }}
     >
-      {showImage ? (
-        <img 
-          src={src} 
-          alt={name}
+      {src && (
+        <AvatarPrimitive.Image
+          src={src}
+          alt=""
           className="ui-avatar__img"
-          onError={() => setImageError(true)}
         />
-      ) : (
-        initials || 'U'
       )}
-    </span>
+      <AvatarPrimitive.Fallback className="ui-avatar__fallback">
+        {getInitials(name) || 'U'}
+      </AvatarPrimitive.Fallback>
+    </AvatarPrimitive.Root>
   );
 }

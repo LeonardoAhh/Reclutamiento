@@ -30,11 +30,6 @@
   accent-color: var(--color-primary);
 }
 
-.recognition-preferences-modal .form-group select {
-  min-height: var(--touch-target-min);
-  appearance: auto;
-}
-
 .recognition-preferences-modal__note {
   color: var(--color-muted);
 }

@@ -63,8 +63,6 @@ export function RoleBadge({ role = 'default', label }: RoleBadgeProps) {
     variant = 'coral';
   } else if (roleLower === 'reclutador' || roleLower === 'reclutadora') {
     variant = 'teal';
-  } else if (roleLower === 'gerente') {
-    variant = 'amber';
   }
 
   return <Badge variant={variant}>{displayLabel}</Badge>;

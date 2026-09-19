@@ -122,8 +122,6 @@
 
 .role-badge--admin::before { background: var(--color-accent-purple); }
 .role-badge--reclutador::before { background: var(--color-accent-teal); }
-.role-badge--gerente::before { background: var(--color-accent-orange); }
-.role-badge--auditor::before { background: var(--color-accent-sky); }
 
 /* ── Reclutador Badges (RECLUTADORES_ACTIVOS) ── */
 

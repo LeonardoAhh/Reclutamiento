@@ -50,7 +50,7 @@ export function Configuracion() {
       <main
         id="feature-content"
         className="config-main container"
-        aria-label={`Configuración: ${FEATURES.find(({ id }) => id === activeTab)?.label}`}
+        aria-label={`Administración: ${FEATURES.find(({ id }) => id === activeTab)?.label}`}
         tabIndex={-1}
       >
         <AnimatePresence mode="wait" initial={false}>

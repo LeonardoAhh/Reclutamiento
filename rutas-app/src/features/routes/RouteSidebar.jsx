@@ -13,6 +13,7 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { RECRUITMENT_ROUTES_PATH } from '@/lib/navigation';
 
 export default function RouteSidebar({ rutas, rutaActivaId, onSeleccionar, loading }) {
   const { state } = useSidebar();
@@ -22,8 +23,9 @@ export default function RouteSidebar({ rutas, rutaActivaId, onSeleccionar, loadi
     <Sidebar>
       <SidebarHeader>
         <a
-          href="/"
+          href={RECRUITMENT_ROUTES_PATH}
           className="flex min-w-0 items-center gap-2 px-1 py-1 rounded-md text-ink hover:bg-surface-card transition-colors"
+          aria-label="Regresar a rutas"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-surface-card">
             <ArrowLeft className="size-4" />

@@ -12,7 +12,7 @@ import { PlantillaNavItem } from "./PlantillaNavItem";
 import { ConfiguracionNavItem } from "./ConfiguracionNavItem";
 import { ActividadesNavItem } from "./ActividadesNavItem";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
-import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
+import { ADMINISTRATION_PATH } from "@/lib/configuracionNavigation";
 import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
 import clsx from "clsx";
@@ -106,12 +106,12 @@ export function Sidebar({
                 }
                 if (
                   to === PLANTILLA_PATH ||
-                  to === CONFIGURACION_PATH ||
+                  to === ADMINISTRATION_PATH ||
                   to === ACTIVIDADES_PATH
                 ) {
                   const SectionNavItem = to === PLANTILLA_PATH
                     ? PlantillaNavItem
-                    : to === CONFIGURACION_PATH
+                    : to === ADMINISTRATION_PATH
                       ? ConfiguracionNavItem
                       : ActividadesNavItem;
                   return (
@@ -160,16 +160,15 @@ export function Sidebar({
       <div className="sidebar__footer">
         <div className="sidebar__user">
           <UserMenuPopover
-            username={username}
             displayName={toNaturalCase(profile?.display_name || username, {
               preserveAcronyms: false,
             })}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
+            role={profile?.role}
             mobile={Boolean(mobileMenuOpen)}
-            isAdmin={profile?.role === "admin"}
-            isRecruiter={profile?.role === "reclutador"}
             signingOut={signingOut}
+            onNavigate={onCloseMobileMenu}
             onSignOut={handleSignOut}
           />
         </div>

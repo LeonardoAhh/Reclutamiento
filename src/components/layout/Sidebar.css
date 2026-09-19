@@ -248,6 +248,7 @@ button.sidebar__close-btn {
 .sidebar__user-icon {
   width: var(--icon-size-control);
   height: var(--icon-size-control);
+  flex: 0 0 auto;
   margin-left: auto;
   color: var(--color-navigation-rail-text);
 }
@@ -260,30 +261,15 @@ button.sidebar__close-btn {
   align-items: flex-start;
 }
 
-.sidebar__user-name,
-.sidebar__user-email {
+.sidebar__user-role {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sidebar__user-name {
-  color: var(--color-navigation-rail-text-strong);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  text-transform: capitalize;
-  letter-spacing: var(--type-label-sm-tracking);
-  font-family: var(--font-body);
-}
-
-.sidebar__user-email {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
   color: var(--color-navigation-rail-text);
-  font-size: var(--type-caption-xs-size);
-  font-weight: var(--type-caption-xs-weight);
-  line-height: var(--type-caption-xs-line);
-  letter-spacing: var(--type-caption-xs-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   font-family: var(--font-body);
 }
 

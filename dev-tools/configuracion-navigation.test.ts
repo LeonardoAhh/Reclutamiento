@@ -7,7 +7,7 @@ import {
   getConfiguracionTab,
 } from '../src/lib/configuracionNavigation.ts';
 
-test('Configuración preserves all six sections and their groups', () => {
+test('Administración preserves all six sections and their groups', () => {
   assert.deepEqual(FEATURE_GROUPS.map(({ title, items }) => ({
     title,
     ids: items.map(({ id }) => id),
@@ -17,23 +17,22 @@ test('Configuración preserves all six sections and their groups', () => {
   ]);
 });
 
-test('canonical Configuración paths resolve to their section', () => {
-  assert.equal(getConfiguracionTab('/configuracion'), 'analisis');
-  assert.equal(getConfiguracionTab('/configuracion/unknown'), 'analisis');
+test('canonical administration paths resolve to their section', () => {
   for (const { id } of FEATURES) {
     const url = new URL(getConfiguracionHref(id), 'https://example.test');
     assert.equal(getConfiguracionTab(url.pathname), id);
   }
   assert.deepEqual(
-    ['/analisis', '/formatos', '/configuracion/rutas', '/speech']
+    ['/analisis', '/formatos', '/rutas', '/speech']
       .map((path) => getConfiguracionTab(path)),
     ['analisis', 'formatos', 'rutas', 'speech']);
 });
 
 test('each section link has one canonical path', () => {
   assert.equal(getConfiguracionHref('analisis'), '/analisis');
-  assert.equal(getConfiguracionHref('rutas'), '/configuracion/rutas');
-  assert.equal(getConfiguracionHref('indicadores'), '/configuracion/indicadores');
+  assert.equal(getConfiguracionHref('rutas'), '/rutas');
+  assert.equal(getConfiguracionHref('indicadores'), '/indicadores');
+  assert.equal(getConfiguracionHref('tabulador'), '/tabulador');
   assert.equal(getConfiguracionHref('formatos'), '/formatos');
   assert.equal(getConfiguracionHref('speech'), '/speech');
 });

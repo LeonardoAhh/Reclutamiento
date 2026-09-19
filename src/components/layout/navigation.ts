@@ -1,6 +1,7 @@
 import {
   ChartNoAxesCombined,
   Contact,
+  House,
   ListTodo,
   NotebookText,
   Settings2,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
-import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
+import { ADMINISTRATION_PATH } from "@/lib/configuracionNavigation";
 
 export type NavigationRole = "admin" | "reclutador";
 
@@ -29,11 +30,19 @@ export type NavGroup = {
 };
 
 export const ACTIVIDADES_PATH = "/actividades";
+export const ACCOUNT_PATH = "/cuenta";
+export const HOME_PATH = "/inicio";
 
 export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Principal",
     items: [
+      {
+        to: HOME_PATH,
+        label: "Inicio",
+        icon: House,
+        end: true,
+      },
       {
         to: "/candidatos",
         label: "Candidatos",
@@ -66,7 +75,7 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
     title: "Administración",
     items: [
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
-      { to: CONFIGURACION_PATH, label: "Configuración", icon: Settings2 },
+      { to: ADMINISTRATION_PATH, label: "Administración", icon: Settings2 },
     ],
   },
 ];

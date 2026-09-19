@@ -60,14 +60,6 @@
   --color-navigation-rail-active: var(--color-primary);
   --color-navigation-rail-on-active: var(--color-on-primary);
   --color-avatar-ink: var(--color-ink);
-  --color-avatar-ring: rgba(255, 255, 255, 0.2);
-
-  /* Variantes deterministas del avatar; la paleta se adapta mediante sus tokens. */
-  --avatar-gradient-orange: linear-gradient(135deg, var(--color-accent-orange) 0%, var(--color-accent-amber) 100%);
-  --avatar-gradient-teal: linear-gradient(135deg, var(--color-accent-teal) 0%, var(--color-accent-sky) 100%);
-  --avatar-gradient-purple: linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-sky) 100%);
-  --avatar-gradient-green: linear-gradient(135deg, var(--color-accent-teal) 0%, var(--color-accent-green) 100%);
-  --avatar-gradient-warm: linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-orange) 100%);
 
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #167d2b;

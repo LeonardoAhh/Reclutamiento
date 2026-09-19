@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Medal } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   isRecognitionMonthDismissed,
   isRecognitionFrequency,
@@ -63,25 +64,21 @@ export function RecognitionPreferencesModal({
     >
       <div className="modal-body recognition-preferences-modal__body">
         <p className="recognition-preferences-modal__intro type-body-md">
-          Elige cuándo quieres ver tus avances y logros de reclutamiento.
+          Elige cuándo mostrar tu progreso.
         </p>
 
         <div className="form-group">
           <label htmlFor="recognition-frequency">Frecuencia</label>
-          <select
+          <CustomSelect
             id="recognition-frequency"
             value={frequency}
+            options={RECOGNITION_FREQUENCY_OPTIONS}
+            showPlaceholderOption={false}
             aria-describedby="recognition-storage-note"
-            onChange={(event) => {
-              if (isRecognitionFrequency(event.target.value)) handleFrequencyChange(event.target.value);
+            onChange={(nextFrequency) => {
+              if (isRecognitionFrequency(nextFrequency)) handleFrequencyChange(nextFrequency);
             }}
-          >
-            {RECOGNITION_FREQUENCY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <label className="recognition-preferences-modal__check type-body-sm">
@@ -90,12 +87,12 @@ export function RecognitionPreferencesModal({
             checked={dismissedThisMonth}
             onChange={(event) => handleDismissedChange(event.target.checked)}
           />
-          <span>No volver a mostrar este mes</span>
+          <span>Ocultar este mes</span>
         </label>
 
-        {saveError && <p role="alert" className="recognition-preferences-modal__intro type-body-sm">No se pudo guardar. Permite almacenamiento en el navegador e inténtalo otra vez.</p>}
+        {saveError && <p role="alert" className="recognition-preferences-modal__intro type-body-sm">No se pudo guardar. Intenta de nuevo.</p>}
         <p id="recognition-storage-note" className="recognition-preferences-modal__note type-caption-sm">
-          Preferencias por usuario en este navegador. La frecuencia se aplica al entrar; no interrumpe tu trabajo con avisos programados.
+          Se guarda en este navegador.
         </p>
       </div>
     </Modal>

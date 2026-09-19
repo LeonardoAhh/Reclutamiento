@@ -9,7 +9,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-export const CONFIGURACION_PATH = '/configuracion';
 export const HORARIOS_PATH = '/horarios/index.html';
 
 export type FeatureId =
@@ -23,11 +22,13 @@ export type FeatureId =
 const FEATURE_PATHS: Record<FeatureId, string> = {
   analisis: '/analisis',
   formatos: '/formatos',
-  indicadores: `${CONFIGURACION_PATH}/indicadores`,
-  rutas: `${CONFIGURACION_PATH}/rutas`,
+  indicadores: '/indicadores',
+  rutas: '/rutas',
   speech: '/speech',
-  tabulador: `${CONFIGURACION_PATH}/tabulador`,
+  tabulador: '/tabulador',
 };
+
+export const ADMINISTRATION_PATH = FEATURE_PATHS.indicadores;
 
 interface FeatureItem {
   id: FeatureId;
@@ -71,7 +72,7 @@ export const CONFIGURACION_OPERATION_LINKS = [
     id: 'rutas',
     label: 'Rutas',
     icon: Route,
-    href: `${CONFIGURACION_PATH}/rutas`,
+    href: FEATURE_PATHS.rutas,
   },
 ] as const;
 

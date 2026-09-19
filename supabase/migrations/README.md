@@ -44,6 +44,7 @@ supabase db push
 | `047_data_update_offline_sync.sql` | Añade recibos idempotentes y una RPC versionada para sincronizar capturas offline de Actualización de datos sin duplicar auditoría ni sobrescribir conflictos. | Actualización de datos |
 | `048_pause_required_password_change.sql` | Desactiva la campaña temporal de cambio obligatorio de contraseña sin borrar su historial ni retirar el cambio voluntario del menú. | Seguridad |
 | `049_employee_bulk_assignment_update.sql` | Actualiza puesto, categoría y turno de empleados existentes mediante una operación masiva atómica. | Plantilla |
+| `050_profiles_supported_roles.sql` | Restringe los perfiles a los roles vigentes `admin` y `reclutador` sin modificar datos existentes. | Seguridad |
 
 ## RLS
 

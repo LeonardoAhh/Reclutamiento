@@ -23,7 +23,7 @@ export interface Profile {
   id: string;
   username: string;
   display_name: string | null;
-  role: 'admin' | 'reclutador' | 'gerente' | 'auditor';
+  role: 'admin' | 'reclutador';
   created_at?: string;
   last_login_at?: string | null;
   avatar_url?: string | null;

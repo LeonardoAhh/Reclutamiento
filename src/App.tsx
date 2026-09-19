@@ -25,6 +25,7 @@ import {
 } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
+import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -59,6 +60,16 @@ const Actividades = lazy(() =>
 const DataUpdatePage = lazy(() =>
   import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({
     default: DataUpdatePage,
+  })),
+);
+const AccountPage = lazy(() =>
+  import('@/pages/AccountPage').then(({ AccountPage }) => ({
+    default: AccountPage,
+  })),
+);
+const HomePage = lazy(() =>
+  import('@/pages/HomePage').then(({ HomePage }) => ({
+    default: HomePage,
   })),
 );
 function ProtectedContent() {
@@ -144,19 +155,20 @@ function App() {
                 }
               />
               <Route element={<ProtectedShell />}>
+                <Route path={HOME_PATH} element={<HomePage />} />
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/toulouse" element={<Navigate to="/analisis" replace />} />
                 <Route path="/bajas" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={EMPLEADOS_PATH} element={<PlantillaPage />} />
-                <Route path="/transporte" element={<Navigate to="/configuracion/rutas" replace />} />
+                <Route path="/transporte" element={<Navigate to="/rutas" replace />} />
                 <Route path="/asistencia" element={<Navigate to="/analisis" replace />} />
-                <Route path="/rutas" element={<Navigate to="/configuracion/rutas" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
+                <Route path={ACCOUNT_PATH} element={<AccountPage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}
@@ -166,7 +178,7 @@ function App() {
               <Route path="/pipeline" element={<Navigate to="/candidatos" replace />} />
               <Route path="/reporte-diario" element={<Navigate to="/reportes" replace />} />
               <Route path="/kpis" element={<Navigate to="/resumen" replace />} />
-              <Route path="/" element={<Navigate to="/resumen" replace />} />
+              <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
               <Route path="*" element={<Navigate to="/resumen" replace />} />
             </Routes>
           </Suspense>

@@ -9,66 +9,56 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
-import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
-import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
-import { UserActivityModal } from "@/features/system/UserActivityModal";
-import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
-import { ChangePasswordModal } from "@/features/account/ChangePasswordModal";
 import { LogoutConfirmModal } from "@/features/account/LogoutConfirmModal";
+import type { Profile } from "@/hooks/useAuth";
+import { getUserTitle } from "@/lib/userIdentity";
+import { ACCOUNT_PATH } from "./navigation";
 import { ChevronsUpDown, LoaderCircle, LogOut } from "lucide";
-import {
-  Activity,
-  KeyRound,
-  Medal,
-  ShieldAlert,
-  UserRoundPen,
-} from "lucide-react";
+import { UserRound } from "lucide-react";
+import { Link } from "react-router-dom";
 import "./UserMenuPopover.css";
 
-type UserMenuModal = "avatar" | "password" | "recognition" | "maintenance" | "activity" | "logout" | null;
-
 interface UserMenuPopoverProps {
-  username: string;
   displayName: string;
   email?: string | null;
   avatarUrl?: string | null;
+  role?: Profile["role"];
   mobile: boolean;
-  isAdmin: boolean;
-  isRecruiter: boolean;
   signingOut: boolean;
+  onNavigate?: () => void;
   onSignOut: () => void;
 }
 
 export function UserMenuPopover({
-  username,
   displayName,
   email,
   avatarUrl,
+  role,
   mobile,
-  isAdmin,
-  isRecruiter,
   signingOut,
+  onNavigate,
   onSignOut,
 }: UserMenuPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<UserMenuModal>(null);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const openingModalRef = useRef(false);
+  const roleLabel = getUserTitle(role, email);
 
-  const handleOpenModal = (modal: Exclude<UserMenuModal, null>) => {
+  const handleOpenLogout = () => {
     openingModalRef.current = true;
     setOpen(false);
-    setActiveModal(modal);
+    setLogoutOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setActiveModal(null);
+  const handleCloseLogout = () => {
+    setLogoutOpen(false);
     requestAnimationFrame(() => triggerRef.current?.focus());
   };
 
   const handleConfirmSignOut = () => {
-    setActiveModal(null);
+    setLogoutOpen(false);
     requestAnimationFrame(onSignOut);
   };
 
@@ -80,14 +70,11 @@ export function UserMenuPopover({
             ref={triggerRef}
             type="button"
             className="sidebar__user-trigger"
-            aria-label={`Abrir opciones de usuario de ${username}${email ? `, ${email}` : ''}`}
+            aria-label={`Abrir opciones de ${displayName}, ${roleLabel}`}
           >
-            <Avatar name={username} src={avatarUrl} />
+            <Avatar name={displayName} src={avatarUrl} />
             <span className="sidebar__user-identity" aria-hidden="true">
-              <span className="sidebar__user-name">{username}</span>
-              {email && (
-                <span className="sidebar__user-email">{email}</span>
-              )}
+              <span className="sidebar__user-role">{roleLabel}</span>
             </span>
             <MorphingIcon
               icon={ChevronsUpDown}
@@ -108,92 +95,34 @@ export function UserMenuPopover({
             openingModalRef.current = false;
           }}
         >
+          <DropdownMenuLabel className="user-menu-popover__identity">
+            <span className="user-menu-popover__identity-copy">
+              <span className="user-menu-popover__identity-name">{displayName}</span>
+              {email && (
+                <span className="user-menu-popover__identity-email">{email}</span>
+              )}
+            </span>
+          </DropdownMenuLabel>
+
+          <DropdownMenuSeparator />
+
           <DropdownMenuGroup className="user-menu-popover__group">
             <DropdownMenuItem
               asChild
-              onSelect={() => handleOpenModal("avatar")}
+              onSelect={() => {
+                setOpen(false);
+                onNavigate?.();
+              }}
             >
-              <button type="button" className="user-menu-popover__item">
-                <UserRoundPen
+              <Link to={ACCOUNT_PATH} className="user-menu-popover__item">
+                <UserRound
                   className="user-menu-popover__icon"
                   aria-hidden="true"
                 />
-                <span>Perfil</span>
-              </button>
+                <span>Cuenta</span>
+              </Link>
             </DropdownMenuItem>
-
-            <DropdownMenuItem
-              asChild
-              onSelect={() => handleOpenModal("password")}
-            >
-              <button type="button" className="user-menu-popover__item">
-                <KeyRound
-                  className="user-menu-popover__icon"
-                  aria-hidden="true"
-                />
-                <span>Cambiar contraseña</span>
-              </button>
-            </DropdownMenuItem>
-
-            {isRecruiter && (
-              <DropdownMenuItem
-                asChild
-                onSelect={() => handleOpenModal("recognition")}
-              >
-                <button type="button" className="user-menu-popover__item">
-                  <Medal
-                    className="user-menu-popover__icon"
-                    aria-hidden="true"
-                  />
-                  <span>Reconocimientos</span>
-                </button>
-              </DropdownMenuItem>
-            )}
           </DropdownMenuGroup>
-
-          {isAdmin && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="user-menu-popover__section-label">
-                Administración
-              </DropdownMenuLabel>
-              <DropdownMenuGroup className="user-menu-popover__group">
-                <DropdownMenuItem
-                  asChild
-                  onSelect={() => handleOpenModal("maintenance")}
-                >
-                  <button
-                    type="button"
-                    className="user-menu-popover__item"
-                    aria-label="Abrir modo mantenimiento"
-                  >
-                    <ShieldAlert
-                      className="user-menu-popover__icon"
-                      aria-hidden="true"
-                    />
-                    <span>Mantenimiento</span>
-                  </button>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  asChild
-                  onSelect={() => handleOpenModal("activity")}
-                >
-                  <button
-                    type="button"
-                    className="user-menu-popover__item"
-                    aria-label="Abrir actividad de usuarios"
-                  >
-                    <Activity
-                      className="user-menu-popover__icon"
-                      aria-hidden="true"
-                    />
-                    <span>Actividad</span>
-                  </button>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </>
-          )}
 
           <DropdownMenuSeparator />
 
@@ -202,7 +131,7 @@ export function UserMenuPopover({
               asChild
               variant="destructive"
               disabled={signingOut}
-              onSelect={() => handleOpenModal("logout")}
+              onSelect={handleOpenLogout}
             >
               <button
                 type="button"
@@ -222,31 +151,14 @@ export function UserMenuPopover({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AvatarUploadModal
-        isOpen={activeModal === "avatar"}
-        onClose={handleCloseModal}
-      />
-      <ChangePasswordModal
-        isOpen={activeModal === "password"}
-        onClose={handleCloseModal}
-      />
-      {activeModal === "recognition" && (
-        <RecognitionPreferencesModal isOpen onClose={handleCloseModal} />
-      )}
-      {activeModal === "maintenance" && (
-        <MaintenanceModeModal isOpen onClose={handleCloseModal} />
-      )}
-      {activeModal === "activity" && (
-        <UserActivityModal isOpen onClose={handleCloseModal} />
-      )}
       <LogoutConfirmModal
-        isOpen={activeModal === "logout"}
+        isOpen={logoutOpen}
         displayName={displayName}
         email={email}
         avatarUrl={avatarUrl}
         onConfirm={handleConfirmSignOut}
         onCancel={() => {
-          if (!signingOut) handleCloseModal();
+          if (!signingOut) handleCloseLogout();
         }}
         isLoading={signingOut}
       />

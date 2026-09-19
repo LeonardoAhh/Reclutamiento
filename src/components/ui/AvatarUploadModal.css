@@ -1,9 +1,8 @@
 .avatar-modal__body {
-  padding: var(--spacing-xl) var(--spacing-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-md);
 }
 
 .avatar-modal__preview {
@@ -19,28 +18,49 @@
 .avatar-modal__hint {
   text-align: center;
   margin: 0;
-  font-size: var(--type-caption-size, 14px);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
   color: var(--color-muted);
-  line-height: 1.4;
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
 .avatar-modal__input-hidden {
   display: none;
 }
 
-.avatar-modal__select-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
+.avatar-modal__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-xs);
   width: 100%;
-  margin-top: var(--spacing-sm);
+}
+
+.avatar-modal__actions > button:only-child {
+  grid-column: 1 / -1;
+}
+
+.avatar-modal__delete-btn {
+  color: var(--color-error-text);
+  border-color: var(--color-error);
+}
+
+.avatar-modal__delete-btn:hover:not(:disabled) {
+  color: var(--color-error-text);
+  border-color: var(--color-error-text);
+  background: var(--color-error-subtle);
 }
 
 .avatar-modal__spin {
-  animation: avatar-modal-spin 1s linear infinite;
+  animation: avatar-modal-spin var(--duration-spinner) linear infinite;
 }
 
 @keyframes avatar-modal-spin {
-  to { transform: rotate(360deg); }
+  to { transform: rotate(1turn); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-modal__spin {
+    animation: none;
+  }
 }

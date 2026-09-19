@@ -3,6 +3,7 @@ import { CalendarCheck2, Medal, Target, TrendingUp } from 'lucide-react';
 import { differenceInCalendarWeeks, parseISO, startOfISOWeek } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 import { getRecruitmentGoals } from '@/hooks/useIndicadoresStats';
+import { useLoader } from '@/hooks/useLoader';
 import { supabase } from '@/lib/supabase';
 import { markRecognitionShown, setRecognitionMonthDismissed, shouldShowRecognition } from '@/lib/recruiterRecognition';
 import { Modal } from './Modal';
@@ -18,6 +19,7 @@ function recruiterName(value: string | null) {
 
 export function TopRecruiterModal() {
   const { profile } = useAuth();
+  const { visible: transitionVisible } = useLoader();
   const [isOpen, setIsOpen] = useState(false);
   const [topRecruiter, setTopRecruiter] = useState<{name: string, total: number} | null>(null);
   const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean, isTie?: boolean, previousTotal: number, consistent: boolean} | null>(null);
@@ -26,6 +28,7 @@ export function TopRecruiterModal() {
   const { monthlyGoal, weeklyGoal } = getRecruitmentGoals(new Date());
 
   useEffect(() => {
+    if (transitionVisible) return;
     if (!profile || profile.role !== 'reclutador') return;
     if (!shouldShowRecognition(profile.id)) return;
     let cancelled = false;
@@ -130,15 +133,15 @@ export function TopRecruiterModal() {
 
     fetchStats().catch(console.error);
     return () => { cancelled = true; };
-  }, [profile, weeklyGoal]);
+  }, [profile, transitionVisible, weeklyGoal]);
 
   const getContextualMessage = (progress: number, isTop: boolean) => {
-    if (isTop) return "¡Gracias por tu excelente trabajo! Sigue rompiendo récords.";
-    if (progress === 0) return "¡Es un nuevo mes! Anota tu primer ingreso y empieza a sumar para el equipo. ¡Vamos con todo!";
-    if (progress < 25) return "¡El mes acaba de empezar! Cada ingreso cuenta para alcanzar nuestras metas.";
-    if (progress <= 50) return "Vas a buen ritmo. Mantén la constancia y sigue sumando logros.";
-    if (progress < 100) return "¡Estás muy cerca de la meta! Tu esfuerzo es fundamental para el equipo. ¡Vamos por más!";
-    return "¡Meta mensual alcanzada! Excelente trabajo y dedicación.";
+    if (isTop) return "Sigue así.";
+    if (progress === 0) return "Registra tu primer ingreso del mes.";
+    if (progress < 25) return "Buen inicio. Cada ingreso cuenta.";
+    if (progress <= 50) return "Vas avanzando. Mantén el ritmo.";
+    if (progress < 100) return "Estás cerca. Sigue avanzando.";
+    return "Meta alcanzada.";
   };
 
   if (!topRecruiter || !currentUserStats) return null;
@@ -147,12 +150,12 @@ export function TopRecruiterModal() {
   const progress = Math.round((currentUserStats.total / monthlyGoal) * 100);
   const clampedProgress = Math.min(Math.max(progress, 0), 100);
   const remainingToGoal = Math.max(monthlyGoal - currentUserStats.total, 0);
-  const weeklyGoalCopy = weeklyGoal ? ` · Referencia semanal: ${weeklyGoal}` : '';
+  const weeklyGoalCopy = weeklyGoal ? ` · Semana: ${weeklyGoal}` : '';
   const improvement = currentUserStats.total - currentUserStats.previousTotal;
   const milestones = [
-    ...(remainingToGoal === 0 ? [{ id: 'goal', Icon: Target, title: 'Meta alcanzada', detail: `${currentUserStats.total} de ${monthlyGoal} ingresos este mes.` }] : []),
-    ...(currentUserStats.consistent ? [{ id: 'consistency', Icon: CalendarCheck2, title: 'Constancia semanal', detail: 'Meta semanal cumplida en dos semanas consecutivas de este mes.' }] : []),
-    ...(improvement > 0 ? [{ id: 'improvement', Icon: TrendingUp, title: 'Mejora mensual', detail: `${improvement} ${improvement === 1 ? 'ingreso más' : 'ingresos más'} que el total del mes anterior.` }] : []),
+    ...(remainingToGoal === 0 ? [{ id: 'goal', Icon: Target, title: 'Meta alcanzada', detail: `${currentUserStats.total} de ${monthlyGoal} ingresos.` }] : []),
+    ...(currentUserStats.consistent ? [{ id: 'consistency', Icon: CalendarCheck2, title: 'Constancia semanal', detail: 'Meta semanal en dos semanas seguidas.' }] : []),
+    ...(improvement > 0 ? [{ id: 'improvement', Icon: TrendingUp, title: 'Mejora mensual', detail: `${improvement} ${improvement === 1 ? 'ingreso más' : 'ingresos más'} que el mes anterior.` }] : []),
   ];
 
   return (
@@ -164,16 +167,14 @@ export function TopRecruiterModal() {
       icon={isTop
         ? <Medal aria-hidden="true" />
         : <TrendingUp aria-hidden="true" />}
-      title={milestones.length > 0 || isTop
-        ? `¡Felicidades, ${currentUserStats.name}!`
-        : `¡Excelente esfuerzo, ${currentUserStats.name}!`}
+      title="Progreso mensual"
       footerActions={
         <button
           type="button"
           className="btn-primary"
           onClick={() => setIsOpen(false)}
         >
-          Entendido
+          Listo
         </button>
       }
     >
@@ -181,16 +182,16 @@ export function TopRecruiterModal() {
         {isTop && (
           <p className="top-recruiter-modal__text type-body-md">
             {currentUserStats.isTie ? (
-              <>Compartes el <strong>primer lugar</strong> del mes con {topRecruiter.total} ingresos.</>
+              <>Empate en primer lugar: <strong>{topRecruiter.total} ingresos</strong>.</>
             ) : (
-              <>Lideras el mes con <strong>{topRecruiter.total} ingresos</strong>.</>
+              <>Primer lugar: <strong>{topRecruiter.total} ingresos</strong>.</>
             )}
           </p>
         )}
 
         <div className="top-recruiter-modal__kpi">
           <div className="top-recruiter-modal__progress-heading">
-            <span>Progreso mensual</span>
+            <span>Meta del mes</span>
             <strong>{progress}%</strong>
           </div>
           <progress
@@ -201,8 +202,8 @@ export function TopRecruiterModal() {
           />
           <p className="top-recruiter-modal__kpi-text type-caption-sm">
             {remainingToGoal === 0
-              ? `Meta mensual alcanzada: ${currentUserStats.total} de ${monthlyGoal} ingresos.`
-              : `${remainingToGoal} ingresos para alcanzar la meta de ${monthlyGoal}${weeklyGoalCopy}.`}
+              ? `${currentUserStats.total} de ${monthlyGoal} ingresos. Meta alcanzada.`
+              : `Faltan ${remainingToGoal}. Meta: ${monthlyGoal}${weeklyGoalCopy}.`}
           </p>
         </div>
 
@@ -239,10 +240,10 @@ export function TopRecruiterModal() {
                 if (saved) setDismissedThisMonth(next);
               }}
             />
-            <span>No volver a mostrar este mes</span>
+            <span>Ocultar este mes</span>
           </label>
-          {preferenceError && <p role="alert" className="top-recruiter-modal__text type-body-sm">No se pudo guardar. Permite almacenamiento en el navegador e inténtalo otra vez.</p>}
-          <p className="top-recruiter-modal__kpi-text type-caption-sm">Configura la frecuencia en tu menú de usuario, en Reconocimientos.</p>
+          {preferenceError && <p role="alert" className="top-recruiter-modal__text type-body-sm">No se pudo guardar. Intenta de nuevo.</p>}
+          <p className="top-recruiter-modal__kpi-text type-caption-sm">Ajusta estos avisos en Cuenta.</p>
         </div>
       </div>
     </Modal>

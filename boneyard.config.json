@@ -2,6 +2,7 @@
   "breakpoints": [375, 600, 768, 1080, 1280, 1440],
   "out": "./src/bones",
   "routes": [
+    "/inicio",
     "/plantilla",
     "/empleados",
     "/candidatos",
@@ -9,12 +10,13 @@
     "/resumen",
     "/reportes",
     "/analisis",
-    "/configuracion/indicadores",
-    "/configuracion/rutas",
-    "/configuracion/tabulador",
+    "/indicadores",
+    "/rutas",
+    "/tabulador",
     "/speech",
     "/formatos",
-    "/actividades"
+    "/actividades",
+    "/cuenta"
   ],
   "wait": 2200,
   "color": "var(--color-hairline)",

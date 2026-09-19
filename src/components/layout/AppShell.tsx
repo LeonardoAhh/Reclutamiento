@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { NAV_ITEMS } from './navigation';
+import { ACCOUNT_PATH, HOME_PATH, NAV_ITEMS } from './navigation';
 import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -11,8 +11,10 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
+  [HOME_PATH]: 'Inicio',
   '/bajas': 'Rotación',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
+  [ACCOUNT_PATH]: 'Cuenta',
 };
 
 /**

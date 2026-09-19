@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
+import { HOME_PATH } from '@/components/layout/navigation';
 
 /**
  * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
@@ -66,7 +67,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
     }
   }, [session, loading, isInitialLoad, loader]);
 
-  const from = (location.state as { from?: string } | null)?.from ?? '/reporte-diario';
+  const from = (location.state as { from?: string } | null)?.from ?? HOME_PATH;
 
   if (shouldRedirect) {
     return <Navigate to={from} replace />;
