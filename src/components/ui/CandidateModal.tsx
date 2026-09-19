@@ -129,10 +129,7 @@ export function CandidateModal({
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [accessCard, setAccessCard] = useState<{
-    data: CandidateAccessCardData;
-    phone: string;
-  } | null>(null);
+  const [accessCard, setAccessCard] = useState<CandidateAccessCardData | null>(null);
 
   // UX State
   const [touched, setTouched] = useState<Record<keyof FormState, boolean>>({
@@ -372,15 +369,12 @@ export function CandidateModal({
           const recruiterName =
             getRecruiterAccessCardName(form.reclutador) ?? form.reclutador;
           setAccessCard({
-            data: {
-              candidateName: payload.nombre,
-              recruiterName,
-              position: payload.puesto,
-              interviewDate: payload.fecha_cita
-                ? formatReadableDate(payload.fecha_cita)
-                : null,
-            },
-            phone: form.telefono,
+            candidateName: payload.nombre,
+            recruiterName,
+            position: payload.puesto,
+            interviewDate: payload.fecha_cita
+              ? formatReadableDate(payload.fecha_cita)
+              : null,
           });
           setSubmitting(false);
           return;
@@ -685,7 +679,7 @@ const fieldsPosicion = (
     >
       {accessCard ? (
         <CandidateAccessCard
-          data={accessCard.data}
+          data={accessCard}
         />
       ) : useWizard ? (
         /* ── Móvil: registro por pasos ── */

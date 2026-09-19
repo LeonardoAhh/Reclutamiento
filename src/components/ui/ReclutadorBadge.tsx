@@ -1,16 +1,16 @@
-import React from 'react';
-import { CircleCheckBig, ChevronDown, Crown, UserRound } from 'lucide-react';
+import { ChevronDown, Crown, UserRound } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import {
   RECLUTADORES_INFO,
   type ReclutadorNombre,
   type ReclutadorRol,
 } from '@/lib/constants';
+import './Badge.css';
 
 export interface ReclutadorBadgeProps {
   /** Nombre del reclutador o coordinador (ej. 'ALEXANDRA', 'DANIELA', 'LEONARDO' o minúsculas/TitleCase) */
   nombre: string;
-  /** Variante de visualización: 'default' (ícono + texto) o 'icon-only' (solo ícono minimalista) */
+  /** Variante de visualización: badge o solo ícono. */
   variant?: 'default' | 'icon-only';
   /** Acceso rápido para la variante solo ícono */
   iconOnly?: boolean;
@@ -61,12 +61,11 @@ export function getReclutadorMeta(nombre: string): {
  * de RECLUTADORES_ACTIVOS ('ALEXANDRA', 'DANIELA', 'LEONARDO').
  *
  * Versiones:
- * 1. Ícono + Texto (default): Muestra el punto decorativo, ícono, nombre y opcionalmente el rol.
+ * 1. Ícono + Texto (default): Muestra el ícono, nombre y opcionalmente el rol.
  * 2. Solo Ícono (`iconOnly` o `variant="icon-only"`): Versión minimalista de tamaño compacto solo con el ícono y tooltip.
  *
- * Diferencia visualmente:
- * - Reclutadoras (Alexandra, Daniela): Tono Teal (`var(--color-accent-teal)`) e ícono `UserRound`.
- * - Coordinador (Leonardo): Tono Purple (`var(--color-accent-purple)`) e ícono `Crown`.
+ * El color se limita al ícono para conservar la superficie neutral y el
+ * borde hairline del sistema visual.
  */
 export function ReclutadorBadge({
   nombre,
@@ -122,7 +121,7 @@ export function ReclutadorBadge({
         <span className="reclutador-badge__role-tag">{labelRol}</span>
       )}
       {showCaret && (
-        <ChevronDown size={14} className="reclutador-badge__caret" aria-hidden="true" style={{ opacity: 0.6, marginLeft: 2 }} />
+        <ChevronDown className="reclutador-badge__caret" aria-hidden="true" />
       )}
     </span>
   );

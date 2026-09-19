@@ -11,13 +11,10 @@
     "/analisis",
     "/configuracion/indicadores",
     "/configuracion/rutas",
-    "/incidencias",
     "/configuracion/tabulador",
     "/speech",
     "/formatos",
-    "/actividades",
-    "/reporte",
-    "/bono"
+    "/actividades"
   ],
   "wait": 2200,
   "color": "var(--color-hairline)",

@@ -15,16 +15,13 @@ import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { CONFIGURACION_PATH } from "@/lib/configuracionNavigation";
 import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
+import clsx from "clsx";
 
 type SidebarProps = {
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
 };
 
-/**
- * Navegación compartida: deslizable en móvil y fija en escritorio.
- * El pie contiene las opciones de usuario; las secciones delegan sus submenús.
- */
 export function Sidebar({
   mobileMenuOpen = false,
   onCloseMobileMenu,
@@ -37,16 +34,17 @@ export function Sidebar({
   const [signingOut, setSigningOut] = useState(false);
   const loader = useLoader();
   const { trigger } = useFeedback();
+
   useEffect(() => {
     if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('.sidebar__close-btn')?.focus();
   }, [mobileMenuOpen]);
 
-  /* Cerrar menú móvil al navegar */
   useEffect(() => {
     if (prevPathRef.current === location.pathname) return;
     prevPathRef.current = location.pathname;
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
+
   const handleSignOut = useCallback(async () => {
     if (signOutPendingRef.current) return;
     signOutPendingRef.current = true;
@@ -78,9 +76,22 @@ export function Sidebar({
     >
       <div className="sidebar__top">
         <span className="sidebar__brand">ViñoPlastic</span>
+        <button
+          type="button"
+          className="sidebar__close-btn"
+          onClick={onCloseMobileMenu}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="app-sidebar"
+          data-testid="sidebar-close-toggle"
+          aria-label="Colapsar"
+        >
+          <MorphMenuIcon
+            isOpen
+            size="var(--icon-size-md)"
+          />
+        </button>
       </div>
 
-      {/* Navegación */}
       <nav className="sidebar__nav" id="sidebar-sections" aria-label="Secciones">
         {NAV_GROUPS.map((group) => (
           <div key={group.title} className="sidebar__group">
@@ -117,31 +128,27 @@ export function Sidebar({
                   ? location.pathname === to
                   : location.pathname === to || location.pathname.startsWith(`${to}/`);
 
-                const link = (
-                  <NavLink
-                    to={to}
-                    end={end}
-                    className={`sidebar__item${isActive ? " sidebar__item--active" : ""}`}
-                    aria-label={badge ? `${label}, ${badge}` : label}
-                    onClick={(event) => {
-                      if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                        onCloseMobileMenu?.();
-                      }
-                    }}
-                    data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
-                  >
-                    <Icon
-                      aria-hidden="true"
-                      className="sidebar__item-icon"
-                    />
-                    <span className="sidebar__item-label">{label}</span>
-                    {badge && <span className="sidebar__item-badge">{badge}</span>}
-                  </NavLink>
-                );
-
                 return (
                   <li key={to}>
-                    {link}
+                    <NavLink
+                      to={to}
+                      end={end}
+                      className={clsx("sidebar__item", isActive && "sidebar__item--active")}
+                      aria-label={badge ? `${label}, ${badge}` : label}
+                      onClick={(event) => {
+                        if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                          onCloseMobileMenu?.();
+                        }
+                      }}
+                      data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
+                    >
+                      <Icon
+                        aria-hidden="true"
+                        className="sidebar__item-icon"
+                      />
+                      <span className="sidebar__item-label">{label}</span>
+                      {badge && <span className="sidebar__item-badge">{badge}</span>}
+                    </NavLink>
                   </li>
                 );
               })}
@@ -150,7 +157,6 @@ export function Sidebar({
         ))}
       </nav>
 
-      {/* Opciones de cuenta; los permisos se resuelven en el menú compartido. */}
       <div className="sidebar__footer">
         <div className="sidebar__user">
           <UserMenuPopover
@@ -168,21 +174,6 @@ export function Sidebar({
           />
         </div>
       </div>
-      <button
-        type="button"
-        className="sidebar__item sidebar__close-btn"
-        onClick={onCloseMobileMenu}
-        aria-expanded={mobileMenuOpen}
-        aria-controls="app-sidebar"
-        data-testid="sidebar-close-toggle"
-      >
-        <MorphMenuIcon
-          isOpen
-          size="var(--icon-size-md)"
-          className="sidebar__item-icon"
-        />
-        <span className="sidebar__item-label">Colapsar</span>
-      </button>
     </aside>
   );
 }

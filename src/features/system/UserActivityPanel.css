@@ -17,18 +17,16 @@
   align-content: start;
   gap: var(--spacing-xs);
   min-width: 0;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-card);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
 }
 
 .user-activity-panel__name {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
   text-transform: capitalize;
-  white-space: nowrap;
 }
 
 .user-activity-panel__status {
@@ -36,14 +34,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   color: var(--color-muted);
   white-space: normal;
 }
 
 .user-activity-panel__online-dot {
-  width: var(--spacing-xs);
-  height: var(--spacing-xs);
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
   flex-shrink: 0;
   border-radius: var(--rounded-full);
   background: var(--color-success);

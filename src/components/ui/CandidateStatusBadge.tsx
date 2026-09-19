@@ -1,6 +1,6 @@
 import type { CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUS_LABEL } from '@/lib/types';
-import { CircleCheckBig, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import './CandidateStatusBadge.css';
 
@@ -23,9 +23,10 @@ export function CandidateStatusBadge({ status, count, showCaret, className = '',
 
   return (
     <span className={`candidate-status-badge ${className}`.trim()} data-status={status}>
+      <span className="candidate-status-badge__dot" aria-hidden="true" />
       {label}
       {count !== undefined && count > 0 && ` (${count})`}
-      {showCaret && <ChevronDown size={12} className="candidate-status-caret" aria-hidden="true" />}
+      {showCaret && <ChevronDown className="candidate-status-caret" aria-hidden="true" />}
     </span>
   );
 }

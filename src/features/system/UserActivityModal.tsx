@@ -1,4 +1,3 @@
-import { Activity } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { useAuth } from "@/hooks/useAuth";
 import { UserActivityPanel } from "./UserActivityPanel";
@@ -21,7 +20,6 @@ export function UserActivityModal({
     <Modal
       isOpen={isOpen}
       title="Actividad de usuarios"
-      icon={<Activity aria-hidden="true" />}
       onClose={onClose}
       size="sm"
     >

@@ -10,12 +10,10 @@ import _reportes_page from './reportes-page.bones.json'
 import _analisis_page from './analisis-page.bones.json'
 import _configuracion_indicadores from './configuracion-indicadores.bones.json'
 import _configuracion_rutas from './configuracion-rutas.bones.json'
-import _configuracion_incidencias from './configuracion-incidencias.bones.json'
 import _configuracion_tabulador from './configuracion-tabulador.bones.json'
 import _configuracion_speech from './configuracion-speech.bones.json'
 import _configuracion_formatos from './configuracion-formatos.bones.json'
 import _actividades_page from './actividades-page.bones.json'
-import _reporte_transporte_page from './reporte-transporte-page.bones.json'
 import _plantilla_empleados from './plantilla-empleados.bones.json'
 import _plantilla_page from './plantilla-page.bones.json'
 
@@ -29,12 +27,10 @@ registerBones({
   "analisis-page": _analisis_page,
   "configuracion-indicadores": _configuracion_indicadores,
   "configuracion-rutas": _configuracion_rutas,
-  "configuracion-incidencias": _configuracion_incidencias,
   "configuracion-tabulador": _configuracion_tabulador,
   "configuracion-speech": _configuracion_speech,
   "configuracion-formatos": _configuracion_formatos,
   "actividades-page": _actividades_page,
-  "reporte-transporte-page": _reporte_transporte_page,
   "plantilla-empleados": _plantilla_empleados,
   "plantilla-page": _plantilla_page,
 })

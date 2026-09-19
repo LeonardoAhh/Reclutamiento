@@ -1,6 +1,5 @@
 import {
   BadgeDollarSign,
-  BusFront,
   CalendarClock,
   ChartNoAxesCombined,
   Files,
@@ -11,7 +10,6 @@ import {
 } from 'lucide-react';
 
 export const CONFIGURACION_PATH = '/configuracion';
-export const INCIDENCIAS_PATH = '/incidencias';
 export const HORARIOS_PATH = '/horarios/index.html';
 
 export type FeatureId =
@@ -68,12 +66,6 @@ export const CONFIGURACION_OPERATION_LINKS = [
     icon: CalendarClock,
     href: HORARIOS_PATH,
     external: true,
-  },
-  {
-    id: 'incidencias',
-    label: 'Incidencias',
-    icon: BusFront,
-    href: INCIDENCIAS_PATH,
   },
   {
     id: 'rutas',

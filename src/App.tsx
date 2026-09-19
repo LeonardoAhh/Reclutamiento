@@ -23,11 +23,7 @@ import {
   EMPLEADOS_PATH,
   PLANTILLA_PATH,
 } from '@/lib/plantillaNavigation';
-import {
-  CONFIGURACION_ROUTES,
-  INCIDENCIAS_PATH,
-} from '@/lib/configuracionNavigation';
-import { BONO_PATH } from '@/features/bono-asistencia/constants';
+import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 
 const Dashboard = lazy(() =>
@@ -55,24 +51,9 @@ const Configuracion = lazy(() =>
     default: Configuracion,
   })),
 );
-const ReporteTransportePublic = lazy(() =>
-  import('@/pages/ReporteTransportePublic').then(
-    ({ ReporteTransportePublic }) => ({ default: ReporteTransportePublic }),
-  ),
-);
 const Actividades = lazy(() =>
   import('@/pages/Actividades').then(({ Actividades }) => ({
     default: Actividades,
-  })),
-);
-const IncidenciasTransportePage = lazy(() =>
-  import('@/pages/IncidenciasTransportePage').then(({ IncidenciasTransportePage }) => ({
-    default: IncidenciasTransportePage,
-  })),
-);
-const BonoAsistencia = lazy(() =>
-  import('@/pages/BonoAsistencia').then(({ BonoAsistencia }) => ({
-    default: BonoAsistencia,
   })),
 );
 const DataUpdatePage = lazy(() =>
@@ -162,8 +143,6 @@ function App() {
                   </RedirectIfAuthed>
                 }
               />
-              <Route path="/reporte" element={<ReporteTransportePublic />} />
-              <Route path={BONO_PATH} element={<BonoAsistencia />} />
               <Route element={<ProtectedShell />}>
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
@@ -177,7 +156,6 @@ function App() {
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/actividades" element={<Actividades />} />
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
-                <Route path={INCIDENCIAS_PATH} element={<IncidenciasTransportePage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />

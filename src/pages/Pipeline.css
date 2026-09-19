@@ -1167,6 +1167,7 @@
 .pipeline__ccard-puesto-col,
 .pipeline__ccard-contact-col,
 .pipeline__ccard-status-col,
+.pipeline__ccard-recruiter-col,
 .pipeline__cell-actions,
 .pipeline__recruiter {
   display: none;
@@ -1228,76 +1229,12 @@
   font-weight: var(--font-semibold, 600);
   color: var(--color-ink);
   padding: var(--spacing-xxs) var(--spacing-sm);
-  background: var(--color-surface-soft);
   border-radius: var(--rounded-sm);
 }
 
 .pipeline__ccard:hover {
   background: var(--color-surface-soft);
   box-shadow: var(--shadow-card);
-}
-
-/* ── Dot indicador de estado/proceso (reemplaza border-left) ── */
-.pipeline__status-dot {
-  display: inline-block;
-  width: var(--spacing-sm);
-  height: var(--spacing-sm);
-  border-radius: var(--rounded-full);
-  flex-shrink: 0;
-  background: var(--color-muted);
-  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 0%, transparent);
-  transition: box-shadow var(--transition-fast);
-}
-
-.pipeline__status-dot[data-status="entrevista"] {
-  background: var(--color-accent-amber);
-}
-.pipeline__status-dot[data-status="entrega_documentos"] {
-  background: var(--color-accent-teal);
-}
-.pipeline__status-dot[data-status="feedback_pendiente"] {
-  background: var(--color-primary);
-}
-.pipeline__status-dot[data-status="contratado"] {
-  background: var(--color-success);
-  /* Halo sutil para destacar el "ganador" del proceso. */
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--color-success) 22%, transparent);
-}
-.pipeline__status-dot[data-status="rechazado"] {
-  background: var(--color-error);
-}
-.pipeline__status-dot[data-status="no_asistio"] {
-  background: color-mix(in srgb, var(--color-muted) 70%, transparent);
-}
-
-.pipeline__ccard-avatar {
-  position: relative;
-  width: var(--icon-size-xxl);
-  height: var(--icon-size-xxl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.pipeline__ccard-avatar-badge,
-.pipeline__ccard-avatar-placeholder {
-  width: 100%;
-  height: 100%;
-}
-
-.pipeline__ccard-avatar-placeholder {
-  border-radius: var(--rounded-sm);
-  background: color-mix(in srgb, var(--color-ink) 5%, transparent);
-}
-
-.pipeline__status-dot--avatar {
-  position: absolute;
-  bottom: calc(var(--spacing-xs) * -1);
-  right: calc(var(--spacing-xs) * -1);
-  box-shadow: 0 0 0 2px var(--color-surface-card);
-  margin: 0;
 }
 
 .pipeline__ccard-name-col {
@@ -1337,36 +1274,6 @@
   color: var(--color-ink);
   line-height: 1.2;
 }
-
-.pipeline__whatsapp-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  height: var(--control-height-sm);
-  padding: 0 var(--spacing-sm);
-  border-radius: var(--rounded-md);
-  background: color-mix(in srgb, var(--color-brand-whatsapp) 12%, transparent);
-  color: color-mix(in srgb, var(--color-brand-whatsapp) 60%, var(--color-ink));
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--font-semibold);
-  text-decoration: none;
-  border: 1px solid
-    color-mix(in srgb, var(--color-brand-whatsapp) 30%, transparent);
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.pipeline__whatsapp-link:hover {
-  background: color-mix(in srgb, var(--color-brand-whatsapp) 20%, transparent);
-  color: color-mix(in srgb, var(--color-brand-whatsapp) 80%, var(--color-ink));
-  border-color: color-mix(
-    in srgb,
-    var(--color-brand-whatsapp) 50%,
-    transparent
-  );
-}
-
-
 
 .pipeline__contact-item--notes {
   display: inline-flex;
@@ -1800,22 +1707,6 @@
   padding-bottom: var(--spacing-md);
 }
 
-.pipeline-mobile-detail__avatar-wrapper {
-  position: relative;
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-}
-
-.pipeline-mobile-detail__status-dot {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  border: 2px solid var(--color-surface-card);
-  width: 16px;
-  height: 16px;
-}
-
 .pipeline-mobile-detail__title {
   display: flex;
   flex-direction: column;
@@ -1864,10 +1755,6 @@
   gap: var(--spacing-sm);
 }
 
-.pipeline-mobile-detail__info-item--wide {
-  grid-column: 1 / -1;
-}
-
 .pipeline-mobile-detail__info-icon {
   color: var(--color-muted-soft);
   margin-top: var(--spacing-xxs);
@@ -1875,8 +1762,10 @@
 
 .pipeline-mobile-detail__info-content {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--spacing-xxs);
+  min-width: 0;
 }
 
 .pipeline-mobile-detail__info-label {
@@ -1910,24 +1799,9 @@
   padding-top: var(--spacing-md);
 }
 
-.pipeline-mobile-detail__whatsapp {
-  width: 100%;
-  justify-content: center;
-  padding: var(--spacing-md);
-  font-size: var(--type-body-md-size);
-}
-
-.pipeline-mobile-detail__no-whatsapp {
-  text-align: center;
-  padding: var(--spacing-sm);
-  background: var(--color-surface-soft);
-  border-radius: var(--rounded-md);
-  color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-}
-
 .pipeline-mobile-detail__status-select {
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: var(--spacing-xs);
 }
@@ -1936,19 +1810,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-}
-
-.pipeline-mobile-detail__row-actions .pipeline__row-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  justify-content: flex-start;
-}
-
-.pipeline-mobile-detail__row-actions .pipeline__row-actions button {
-  flex: 1;
-  min-width: 80px;
-  justify-content: center;
 }
 
 .quick-profile__footer-action {
@@ -1972,8 +1833,8 @@
 /* ── Desktop Overrides ── */
 @media (min-width: 1080px) {
   .pipeline__card-list {
-    --pipeline-table-columns: minmax(0, 1.4fr) minmax(0, 1.1fr)
-      minmax(0, 1.2fr) var(--pipeline-table-date-inline-size)
+    --pipeline-table-columns: minmax(0, 1.3fr) minmax(0, 1.15fr)
+      minmax(0, 0.85fr) minmax(0, 0.8fr) var(--pipeline-table-date-inline-size)
       var(--pipeline-table-actions-inline-size);
   }
 
@@ -1981,7 +1842,7 @@
     display: grid;
     grid-template-columns: var(--pipeline-table-columns);
     align-items: center;
-    gap: var(--spacing-md);
+    column-gap: var(--design-spacing-md);
     padding: 0 var(--spacing-md);
     margin-bottom: var(--spacing-xxs);
     font-size: var(--type-caption-up-size);
@@ -1997,7 +1858,7 @@
     display: grid;
     grid-template-columns: var(--pipeline-table-columns);
     align-items: center;
-    gap: var(--spacing-md);
+    column-gap: var(--design-spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
     cursor: default;
     text-align: left;
@@ -2020,6 +1881,7 @@
   .pipeline__ccard-puesto-col,
   .pipeline__ccard-contact-col,
   .pipeline__ccard-status-col,
+  .pipeline__ccard-recruiter-col,
   .pipeline__ccard-dates-col,
   .pipeline__recruiter {
     display: flex;
@@ -2104,25 +1966,6 @@
    (solo móvil; el contenedor se oculta en desktop)
    ======================================== */
 
-/* Fila rápida: WhatsApp + Estado en una sola línea horizontal */
-.pipeline-mobile-detail__quick-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-sm);
-  align-items: stretch;
-}
-
-.pipeline-mobile-detail__quick-row .pipeline-mobile-detail__whatsapp {
-  width: 100%;
-  height: 100%;
-  min-height: var(--touch-target-min);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
-  justify-content: center;
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-}
-
 .pipeline-mobile-detail__status-cell {
   width: 100%;
   max-width: none;
@@ -2136,38 +1979,25 @@
   height: 100%;
 }
 
-.pipeline-mobile-detail__status-tag {
-  width: 100%;
-  height: 100%;
-  min-height: var(--touch-target-min);
-  justify-content: center;
-  border-radius: var(--rounded-md);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  text-transform: capitalize;
-  letter-spacing: normal;
-}
-
-/* Grid de acciones: 2 arriba (Editar · Notas) + 1 abajo full-width (Eliminar) */
 .pipeline-mobile-detail__actions-label {
   display: block;
   margin-bottom: var(--spacing-xs);
 }
 
-.pipeline-mobile-detail__actions-grid {
+.pipeline-mobile-detail__action-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-xs);
+}
+
+.pipeline-mobile-detail__action-buttons > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .pipeline-mobile-detail__action-btn {
   justify-content: center;
   min-height: var(--touch-target-min);
   padding: var(--spacing-sm);
-}
-
-.pipeline-mobile-detail__action-btn--full {
-  grid-column: 1 / -1;
 }
 
 .pipeline-mobile-detail__action-btn--danger {

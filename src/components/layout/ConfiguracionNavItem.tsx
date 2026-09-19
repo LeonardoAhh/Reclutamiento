@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import {
   CONFIGURACION_PATH,
-  INCIDENCIAS_PATH,
   getConfiguracionTab,
 } from '@/lib/configuracionNavigation';
 import { SidebarSectionNav, type SidebarSectionNavProps } from './SidebarSectionNav';
@@ -12,11 +11,9 @@ export function ConfiguracionNavItem(props: Pick<SidebarSectionNavProps, 'item' 
   const tab = getConfiguracionTab(location.pathname);
   const isConfiguracionPath = location.pathname === CONFIGURACION_PATH ||
     location.pathname.startsWith(`${CONFIGURACION_PATH}/`);
-  const isIncidenciasPath = location.pathname === INCIDENCIAS_PATH;
-  const isActive = isIncidenciasPath ||
-    (isConfiguracionPath && CONFIGURACION_NAV_GROUPS.some((group) =>
-      group.items.some(({ href }) => href === location.pathname),
-    ));
+  const isActive = isConfiguracionPath && CONFIGURACION_NAV_GROUPS.some((group) =>
+    group.items.some(({ href }) => href === location.pathname),
+  );
 
   return (
     <SidebarSectionNav

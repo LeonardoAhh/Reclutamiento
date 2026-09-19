@@ -11,6 +11,10 @@
   gap: var(--spacing-md);
 }
 
+.maintenance-mode-modal__status .badge--amber {
+  color: var(--color-warning-text);
+}
+
 .maintenance-mode-modal__copy,
 .maintenance-mode-modal__error {
   margin: 0;

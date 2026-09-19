@@ -5,12 +5,10 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import type { Candidate } from '@/lib/types';
-import { ReclutadorBadge } from '@/components/ui/Badge';
 import './CandidateRowActions.css';
 
 interface CandidateRowActionsProps {
@@ -48,17 +46,7 @@ export function CandidateRowActions({
           </button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent>
-          {candidate.reclutador && (
-            <>
-              <DropdownMenuLabel className="candidate-row-actions__info">
-                <span className="candidate-row-actions__info-label">Reclutador</span>
-                <ReclutadorBadge nombre={candidate.reclutador} />
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-            </>
-          )}
-
+        <DropdownMenuContent className="candidate-row-actions__menu">
           <DropdownMenuGroup>
             {onAccessCard && (
               <DropdownMenuItem asChild onSelect={(event) => run(event, onAccessCard)}>

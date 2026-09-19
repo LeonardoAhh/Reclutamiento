@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { LoaderCircle, Share2 } from "lucide-react";
 import { Check, Copy } from "lucide";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
@@ -8,7 +8,6 @@ import {
   getCandidateAccessCardFilename,
   type CandidateAccessCardData,
 } from "@/lib/candidateAccessCard";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import "./CandidateAccessCard.css";
 
 interface CandidateAccessCardProps {
@@ -52,7 +51,7 @@ export function CandidateAccessCard({
   const [isGenerating, setIsGenerating] = useState(true);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [copied, setCopied] = useState(false);
-  const isMobile = useIsMobile();
+  const headingId = useId();
 
   const filename = useMemo(
     () => getCandidateAccessCardFilename(data.candidateName),
@@ -64,6 +63,8 @@ export function CandidateAccessCard({
     let objectUrl: string | null = null;
 
     setIsGenerating(true);
+    setImageBlob(null);
+    setPreviewUrl(null);
     setFeedback(null);
     createCandidateAccessCardBlob(data)
       .then((blob) => {
@@ -172,33 +173,31 @@ export function CandidateAccessCard({
   return (
     <section
       className="candidate-access-card"
-      aria-labelledby="candidate-access-card-heading"
+      aria-labelledby={headingId}
     >
       <div className="candidate-access-card__intro">
-        <h3 id="candidate-access-card-heading">{heading}</h3>
+        <h3 id={headingId}>{heading}</h3>
         <p>
           Comparte esta imagen para que la presente en caseta de vigilancia.
         </p>
       </div>
 
-      {!isMobile && (
-        <div className="candidate-access-card__preview" aria-busy={isGenerating}>
-          {previewUrl ? (
-            <img src={previewUrl} alt={previewAlt} />
-          ) : (
-            <div className="candidate-access-card__placeholder" role="status">
-              {isGenerating && (
-                <LoaderCircle
-                  className="candidate-access-card__spinner"
-                  size="var(--icon-size-lg)"
-                  aria-hidden="true"
-                />
-              )}
-              <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
-            </div>
-          )}
-        </div>
-      )}
+      <div className="candidate-access-card__preview" aria-busy={isGenerating}>
+        {previewUrl ? (
+          <img src={previewUrl} alt={previewAlt} />
+        ) : (
+          <div className="candidate-access-card__placeholder" role="status">
+            {isGenerating && (
+              <LoaderCircle
+                className="candidate-access-card__spinner"
+                size="var(--icon-size-lg)"
+                aria-hidden="true"
+              />
+            )}
+            <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
+          </div>
+        )}
+      </div>
 
       {feedback && (
         <p

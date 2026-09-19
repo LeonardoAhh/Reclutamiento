@@ -70,9 +70,9 @@
   --avatar-gradient-warm: linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-orange) 100%);
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: var(--color-link);
-  --color-success-text: var(--color-link);
-  --color-success-subtle: var(--color-link-soft);
+  --color-success: #167d2b;
+  --color-success-text: #125924;
+  --color-success-subtle: #edf7ee;
   --color-warning: #f5a623;
   --color-warning-text: #8a5700;
   --color-warning-subtle: #fff5df;
@@ -118,7 +118,7 @@
   /* ── Channel values ─────────────────────────────────────────── */
   --color-primary-rgb: 23 23 23;
   --color-link-rgb: 0 102 204;
-  --color-success-rgb: var(--color-link-rgb);
+  --color-success-rgb: 22 125 43;
   --color-warning-rgb: 245 166 35;
   --color-error-rgb: 214 0 0;
   --color-ink-rgb: 23 23 23;
@@ -425,8 +425,6 @@
   --pipeline-pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
   --feature-profile-binary-min: 18rem;
-  /* Ancho legible mínimo para tarjetas de consulta del bono de asistencia. */
-  --feature-bonus-card-min-inline-size: 16rem;
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
   --modal-inline-size-sm: 30rem;
@@ -1709,17 +1707,19 @@ code:not(pre code) {
 
 /* ── Alert variants ──────────────────────────────────────────────────── */
 .modal-alert .modal-header {
-  border-bottom: var(--border-width) solid var(--color-hairline);
-  padding: var(--modal-content-padding);
+  border-bottom: 0;
+  padding-top: var(--modal-content-padding);
+  padding-bottom: var(--design-spacing-xs);
 }
 
 .modal-alert .modal-body {
-  padding: var(--design-spacing-md) var(--modal-content-padding) 0;
+  padding-top: var(--design-spacing-xs);
+  padding-bottom: 0;
 }
 
 .modal-alert .modal-footer {
   border-top: none;
-  padding: var(--modal-content-padding);
+  padding-top: var(--design-spacing-md);
 }
 
 .modal-alert .modal-title__text h2 {
@@ -1727,6 +1727,12 @@ code:not(pre code) {
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
   letter-spacing: var(--type-heading-md-tracking);
+}
+
+@media (min-width: 768px) {
+  .modal-alert {
+    border-radius: var(--rounded-md);
+  }
 }
 
 /* ========================================

@@ -5,17 +5,6 @@
   display: inline-flex;
 }
 
-.candidate-row-actions__info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
-}
-
-.candidate-row-actions__info-label {
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  color: var(--color-muted);
+.dropdown-menu-content.candidate-row-actions__menu {
+  min-inline-size: max-content;
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ShieldAlert } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { Badge } from "@/components/ui/Badge";
@@ -59,7 +58,6 @@ export function MaintenanceModeModal({
     <Modal
       isOpen={isOpen}
       title="Modo mantenimiento"
-      icon={<ShieldAlert aria-hidden="true" />}
       onClose={handleClose}
       size="xs"
       footerActions={
@@ -74,7 +72,7 @@ export function MaintenanceModeModal({
           </button>
           <button
             type="button"
-            className={isMaintenance ? "btn-secondary" : "btn-primary"}
+            className="btn-primary"
             onClick={() => void handleConfirm()}
             disabled={saving || loading || configurationUnavailable}
             aria-busy={saving}
@@ -94,13 +92,13 @@ export function MaintenanceModeModal({
     >
       <div className="modal-body maintenance-mode-modal__body">
         <div className="maintenance-mode-modal__status">
-          <span className="type-body-sm">Estado actual</span>
-          <Badge variant={isMaintenance ? "amber" : "default"}>
+          <span className="type-label-sm">Estado actual</span>
+          <Badge variant={isMaintenance ? "amber" : "default"} aria-live="polite">
             {loading ? "Consultando…" : configurationUnavailable ? "No disponible" : isMaintenance ? "Activo" : "Inactivo"}
           </Badge>
         </div>
 
-        <p className="maintenance-mode-modal__copy type-body-sm text-muted">
+        <p className="maintenance-mode-modal__copy type-body-md text-muted">
           {isMaintenance
             ? "Se restaurará el acceso normal al sistema."
             : "Durante el mantenimiento, solo podrán acceder administradores."}

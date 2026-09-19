@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { NAV_ITEMS } from './navigation';
 import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { FEATURES, getConfiguracionHref, INCIDENCIAS_PATH } from '@/lib/configuracionNavigation';
+import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -12,7 +12,6 @@ import { SessionNotice } from './SessionNotice';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   '/bajas': 'Rotación',
-  [INCIDENCIAS_PATH]: 'Incidencias de transporte',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
 };
 

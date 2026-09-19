@@ -3,7 +3,7 @@ import { MotionConfig } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, LayoutGrid, MessageCircle, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
+import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -655,6 +655,7 @@ export function Pipeline() {
                 <span role="columnheader">Candidato</span>
                 <span role="columnheader">Puesto</span>
                 <span role="columnheader">Proceso</span>
+                <span role="columnheader">Reclutador</span>
                 <span role="columnheader">Entrevista</span>
                 <span role="columnheader" className="text-center">Acciones</span>
               </div>
@@ -766,6 +767,16 @@ export function Pipeline() {
                       />
                     </div>
                     <div
+                      className="pipeline__ccard-recruiter-col pipeline__cell-recruiter"
+                      role={isDesktop ? "cell" : undefined}
+                    >
+                      {c.reclutador ? (
+                        <ReclutadorBadge nombre={c.reclutador} size="sm" />
+                      ) : (
+                        <span className="pipeline__muted">—</span>
+                      )}
+                    </div>
+                    <div
                       className="pipeline__ccard-dates-col pipeline__cell-dates"
                       role={isDesktop ? "cell" : undefined}
                     >
@@ -783,21 +794,23 @@ export function Pipeline() {
                         <span className="pipeline__muted">—</span>
                       )}
                     </div>
-                    <div
-                      className="pipeline__cell-actions pipeline__ccard-actions-col"
-                      role={isDesktop ? "cell" : undefined}
-                    >
-                      <CandidateRowActions
-                        candidate={c}
-                        onEdit={openEdit}
-                        onDelete={isAdmin ? openDelete : undefined}
-                        onAccessCard={
-                          c.reclutador && c.puesto
-                            ? () => setAccessCardTarget(c)
-                            : undefined
-                        }
-                      />
-                    </div>
+                    {isDesktop && (
+                      <div
+                        className="pipeline__cell-actions pipeline__ccard-actions-col"
+                        role="cell"
+                      >
+                        <CandidateRowActions
+                          candidate={c}
+                          onEdit={openEdit}
+                          onDelete={isAdmin ? openDelete : undefined}
+                          onAccessCard={
+                            c.reclutador && c.puesto
+                              ? () => setAccessCardTarget(c)
+                              : undefined
+                          }
+                        />
+                      </div>
+                    )}
                   </article>
                 );
               })}
@@ -892,13 +905,6 @@ export function Pipeline() {
 
           <article className="pipeline-mobile-detail__card">
             <div className="pipeline-mobile-detail__header">
-              <div className="pipeline-mobile-detail__avatar-wrapper">
-                {selectedMobileCandidate.reclutador ? (
-                  <ReclutadorBadge nombre={selectedMobileCandidate.reclutador} variant="icon-only" className="pipeline__ccard-avatar-badge" />
-                ) : (
-                  <div className="pipeline__ccard-avatar-placeholder" />
-                )}
-              </div>
               <div className="pipeline-mobile-detail__title">
                 {(() => {
                   const { apellidos, nombres } = splitCandidateName(selectedMobileCandidate.nombre);
@@ -935,7 +941,7 @@ export function Pipeline() {
                 </div>
               </div>
 
-              <div className="pipeline-mobile-detail__info-item pipeline-mobile-detail__info-item--wide">
+              <div className="pipeline-mobile-detail__info-item">
                 <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
                   <span className="pipeline-mobile-detail__info-label">Proyecto</span>
@@ -944,92 +950,89 @@ export function Pipeline() {
                   </span>
                 </div>
               </div>
+
+              <div className="pipeline-mobile-detail__info-item">
+                <ClipboardList size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
+                <div className="pipeline-mobile-detail__info-content">
+                  <span className="pipeline-mobile-detail__info-label">Proceso</span>
+                  <div className="pipeline-mobile-detail__status-select">
+                    <div className="pipeline__cell-status pipeline-mobile-detail__status-cell" data-status={selectedMobileCandidate.status}>
+                      <CustomSelect
+                        id={`mobile-status-${selectedMobileCandidate.id}`}
+                        value={selectedMobileCandidate.status}
+                        placeholder=""
+                        onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
+                        options={CANDIDATE_STATUSES.map((s) => ({
+                          value: s,
+                          label: CANDIDATE_STATUS_LABEL[s],
+                        }))}
+                        aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
+                        customTrigger={
+                          <span className="pipeline__status-trigger pipeline__status-trigger--full">
+                            <CandidateStatusBadge
+                              status={selectedMobileCandidate.status}
+                              showCaret
+                              compact
+                              className="pipeline-mobile-detail__status-badge"
+                            />
+                          </span>
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="pipeline-mobile-detail__actions">
-              <div className="pipeline-mobile-detail__quick-row">
-              {selectedMobileCandidate.telefono ? (
-                <a
-                  href={`https://wa.me/52${selectedMobileCandidate.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, te escribo de Reclutamiento Querétaro para darle seguimiento a tu proceso para la vacante de ${selectedMobileCandidate.puesto}. ¿Cómo vas? ¿Tienes alguna duda? ¿Algo en lo que se te pueda ayudar?`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pipeline__whatsapp-link pipeline-mobile-detail__whatsapp"
-                  title="Contactar por WhatsApp"
-                  aria-label="Contactar por WhatsApp"
-                >
-                  <MessageCircle size={18} aria-hidden="true" />
-                  <span>WhatsApp</span>
-                </a>
-              ) : (
-                <div className="pipeline-mobile-detail__no-whatsapp">
-                  Sin número
-                </div>
-              )}
-
-              <div className="pipeline-mobile-detail__status-select">
-                <div className="pipeline__cell-status pipeline-mobile-detail__status-cell" data-status={selectedMobileCandidate.status}>
-                  <CustomSelect
-                    id={`mobile-status-${selectedMobileCandidate.id}`}
-                    value={selectedMobileCandidate.status}
-                    placeholder=""
-                    onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
-                    options={CANDIDATE_STATUSES.map((s) => ({
-                      value: s,
-                      label: CANDIDATE_STATUS_LABEL[s],
-                    }))}
-                    aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
-                    customTrigger={
-                      <span className="pipeline__status-trigger pipeline__status-trigger--full">
-                        <CandidateStatusBadge
-                          status={selectedMobileCandidate.status}
-                          showCaret
-                          compact
-                          className="pipeline-mobile-detail__status-badge"
-                        />
-                      </span>
-                    }
-                  />
-                </div>
-              </div>
-              </div>
-
               <div className="pipeline-mobile-detail__row-actions">
                 <span className="pipeline-mobile-detail__info-label pipeline-mobile-detail__actions-label">Acciones</span>
-                <div className="pipeline-mobile-detail__actions-grid">
-                  <button
-                    type="button"
-                    className="btn-secondary pipeline-mobile-detail__action-btn"
-                    title="Editar candidato"
-                    onClick={() => openEdit(selectedMobileCandidate)}
-                  >
-                    <PenLine size={16} aria-hidden="true" />
-                    <span>Editar</span>
-                  </button>
-                  {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
+                <div className="pipeline-mobile-detail__action-buttons">
+                    {selectedMobileCandidate.reclutador && selectedMobileCandidate.puesto && (
+                      <button
+                        type="button"
+                        className="btn-secondary pipeline-mobile-detail__action-btn"
+                        title="Ver pase"
+                        onClick={() => setAccessCardTarget(selectedMobileCandidate)}
+                      >
+                        <FileImage size={16} aria-hidden="true" />
+                        <span>Ver pase</span>
+                      </button>
+                    )}
                     <button
                       type="button"
-                      className="btn-primary pipeline-mobile-detail__action-btn"
-                      title="Contratar"
-                      onClick={() => openHire(selectedMobileCandidate)}
+                      className="btn-secondary pipeline-mobile-detail__action-btn"
+                      title="Editar candidato"
+                      onClick={() => openEdit(selectedMobileCandidate)}
                     >
-                      <BadgeCheck size={16} aria-hidden="true" />
-                      <span>Contratar</span>
+                      <PenLine size={16} aria-hidden="true" />
+                      <span>Editar</span>
                     </button>
-                  )}
-                  {isAdmin && (
-                    <button
-                      type="button"
-                      className="btn-secondary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--danger"
-                      title="Eliminar candidato"
-                      onClick={() => {
-                        openDelete(selectedMobileCandidate);
-                        setSelectedMobileCandidate(null);
-                      }}
-                    >
-                      <Trash2 size={16} aria-hidden="true" />
-                      <span>Eliminar</span>
-                    </button>
-                  )}
+                    {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
+                      <button
+                        type="button"
+                        className="btn-primary pipeline-mobile-detail__action-btn"
+                        title="Contratar"
+                        onClick={() => openHire(selectedMobileCandidate)}
+                      >
+                        <BadgeCheck size={16} aria-hidden="true" />
+                        <span>Contratar</span>
+                      </button>
+                    )}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        className="btn-secondary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--danger"
+                        title="Eliminar candidato"
+                        onClick={() => {
+                          openDelete(selectedMobileCandidate);
+                          setSelectedMobileCandidate(null);
+                        }}
+                      >
+                        <Trash2 size={16} aria-hidden="true" />
+                        <span>Eliminar</span>
+                      </button>
+                    )}
                 </div>
               </div>
             </div>

@@ -132,7 +132,7 @@ export function UserActivityPanel() {
 
           return (
             <li key={profile.id} className="user-activity-panel__card">
-              <span className="user-activity-panel__name type-body-md-bold">
+              <span className="user-activity-panel__name type-label-sm">
                 {profile.display_name || profile.username}
               </span>
               <span

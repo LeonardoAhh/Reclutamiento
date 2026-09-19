@@ -1,5 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
-import { mapClaveHorarioToTurno } from '@/lib/transporte-routes';
+import {
+  normalizeEmpleadoRuta,
+  type EmpleadoRuta,
+} from '@/lib/rutas-data';
+
+export type { EmpleadoRuta } from '@/lib/rutas-data';
 
 /** Calendario estándar por turno (días que se trabajan). */
 const DEFAULT_SCHEDULE: Record<string, string[]> = {
@@ -58,16 +63,6 @@ const ROUTE_CAPACITIES = [
 ];
 
 /* ─── Normalised internal types ─── */
-export interface EmpleadoRuta {
-  numeroEmpleado: string;
-  nombre: string;
-  turno: string;
-  nombreRuta: string;
-  colonia: string;
-  parada: string;
-  seccion?: string;
-}
-
 export interface RutaAgrupada {
   nombreRuta: string;
   empleados: EmpleadoRuta[];
@@ -207,36 +202,20 @@ export function useRutas() {
             throw new Error(`El servidor devolvió HTML (posible SPA fallback) en lugar de JSON.`);
           }
 
-          const data = await res.json();
+          const data: unknown = await res.json();
           const currentMapped = (Array.isArray(data) ? data : [])
-            .map((emp: any) => ({
-              numeroEmpleado: String(emp['numero empleado'] || emp.numeroEmpleado || emp.num_empleado || ''),
-              nombre: String(emp.nombre || ''),
-              turno: mapClaveHorarioToTurno(String(emp.turno || '')),
-              nombreRuta: String(emp['nombre ruta'] || emp.nombreRuta || emp.ruta || ''),
-              colonia: String(emp.colonia || ''),
-              parada: String(emp.parada || ''),
-              seccion: typeof emp.seccion === 'string' ? emp.seccion.trim() : undefined,
-            }))
-            .filter((emp: EmpleadoRuta) => emp.nombreRuta.trim() !== '');
+            .map(normalizeEmpleadoRuta)
+            .filter((emp): emp is EmpleadoRuta => emp !== null);
           setRawData(currentMapped);
         } else {
           throw new Error(`No se pudo cargar rutas.json (status: ${res ? res.status : 'network error'})`);
         }
 
         if (resPrev && resPrev.ok) {
-          const prevData = await resPrev.json();
+          const prevData: unknown = await resPrev.json();
           const prevMapped = (Array.isArray(prevData) ? prevData : [])
-            .map((emp: any) => ({
-              numeroEmpleado: String(emp['numero empleado'] || emp.numeroEmpleado || emp.num_empleado || ''),
-              nombre: String(emp.nombre || ''),
-              turno: mapClaveHorarioToTurno(String(emp.turno || '')),
-              nombreRuta: String(emp['nombre ruta'] || emp.nombreRuta || emp.ruta || ''),
-              colonia: String(emp.colonia || ''),
-              parada: String(emp.parada || ''),
-              seccion: typeof emp.seccion === 'string' ? emp.seccion.trim() : undefined,
-            }))
-            .filter((emp: EmpleadoRuta) => emp.nombreRuta.trim() !== '');
+            .map(normalizeEmpleadoRuta)
+            .filter((emp): emp is EmpleadoRuta => emp !== null);
           setRawPrevData(prevMapped);
           setHasComparison(true);
         }

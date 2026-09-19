@@ -868,12 +868,6 @@ export const CANDIDATE_ACCESS_CARD_CONFIG = {
   address: "Av. La Montaña 98,Santa Rosa Jáuregui, Qro.",
   filePrefix: "pase-entrevista",
   shareTitle: "Pase de entrevista",
-  whatsappCountryCode: "52",
-  whatsappBaseUrl: "https://wa.me",
-  whatsappPasteMessage:
-    "Te comparto tu pase de entrevista. Pega la imagen copiada en este chat y preséntala al llegar a caseta de vigilancia.",
-  whatsappAttachMessage:
-    "Te comparto tu pase de entrevista. Adjunta la imagen descargada en este chat y preséntala al llegar a caseta de vigilancia.",
 } as const;
 
 export const HABILIDADES_PUESTOS: PuestoHabilidades[] = [

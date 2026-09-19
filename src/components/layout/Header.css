@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   App Header — Visible en todas las resoluciones.
+   App Header — Visible en móvil, oculto en PC.
    Lienzo plano (canvas) + hairline inferior de 1px.
 ───────────────────────────────────────────── */
 
@@ -39,21 +39,6 @@
   flex: 0 0 auto;
 }
 
-.app-header__sidebar-control {
-  display: none;
-}
-
-.app-header__brand {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  color: var(--color-navigation-rail-text-strong);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
-}
-
 .app-header__mobile-menu-btn {
   display: inline-flex;
   align-items: center;
@@ -75,28 +60,6 @@
   }
 }
 
-@media (min-width: 1080px) {
-  .app-header__sidebar-control {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 var(--_app-sidebar-w);
-    min-inline-size: 0;
-    min-block-size: var(--_app-header-row-size);
-    padding-inline: max(var(--spacing-md), var(--safe-area-left)) var(--spacing-md);
-    align-self: stretch;
-    margin-block-end: calc(var(--border-width) * -1);
-    color: var(--color-navigation-rail-text);
-    background: var(--color-navigation-rail);
-    border-inline-end: var(--border-width) solid var(--color-navigation-rail-elevated);
-    border-block-end: var(--border-width) solid var(--color-navigation-rail-elevated);
-  }
-
-  .app-header__mobile-menu-btn {
-    display: none;
-  }
-}
-
 .app-header__actions {
   position: relative;
   display: flex;
@@ -104,4 +67,10 @@
   justify-content: flex-end;
   flex: 0 0 auto;
   margin-inline-start: auto;
+}
+
+@media (min-width: 1080px) {
+  .app-header {
+    display: none;
+  }
 }

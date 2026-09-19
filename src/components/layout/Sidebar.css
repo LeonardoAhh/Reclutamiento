@@ -45,7 +45,7 @@
 .sidebar__top {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: var(--spacing-sm);
   margin-bottom: var(--design-spacing-lg);
   margin-inline: 0;
@@ -68,18 +68,20 @@
 button.sidebar__close-btn {
   background: transparent;
   border: none;
-  inline-size: fit-content;
-  max-inline-size: 100%;
-  align-self: center;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  text-align: center;
-  gap: var(--spacing-sm);
-  padding-block: var(--spacing-xs);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
-  margin-top: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  color: var(--color-ink);
+  cursor: pointer;
+  border-radius: var(--rounded-sm);
+  transition: background-color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  button.sidebar__close-btn:hover {
+    background-color: var(--color-surface-soft);
+  }
 }
 
 /* Navegación */
@@ -334,7 +336,7 @@ button.sidebar__close-btn {
     margin-block-end: var(--design-spacing-lg);
   }
 
-  .sidebar__close-btn {
+  button.sidebar__close-btn {
     display: none;
   }
 

@@ -43,7 +43,7 @@ Surfaces barely lift. Cards are white (`{colors.canvas-elevated}`) on the #fafaf
 ### Semantic
 - **Error** (`{colors.error}` — #d60000): validation / destructive text and controls, with deep press tier `{colors.error-deep}` (#a80000).
 - **Warning** uses `{colors.warning}` (#f5a623) for decorative indicators and `{colors.warning-text}` (#8a5700) for text.
-- **Success** uses `{colors.success}` (#0066cc). Status must never rely on color alone.
+- **Success** uses `{colors.success}` (#167d2b) for indicators, borders, and icons; `{colors.success-text}` (#125924) for text on light backgrounds; `{colors.success-subtle}` (#edf7ee) for tinted fills. Status must never rely on color alone.
 
 ### Brand Gradient
 Three named two-stop gradients form the legacy Vercel gradient identity, surviving as illustration and accent washes:
