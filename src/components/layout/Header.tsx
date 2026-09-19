@@ -1,5 +1,4 @@
 import type { Ref } from "react";
-import { RemindersPanel } from "@/components/ui/RemindersPanel";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Header.css";
 
@@ -33,7 +32,6 @@ export function Header({ onMobileMenuToggle, mobileMenuOpen = false, mobileMenuB
         </div>
 
         <div className="app-header__actions">
-          <RemindersPanel />
         </div>
       </div>
     </header>
