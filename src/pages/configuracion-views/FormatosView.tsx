@@ -16,6 +16,7 @@ import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { toast } from "@/lib/notify";
+import { isRouteAssignmentEligibleShift } from "./formatos-helpers";
 import "./FormatosView.css";
 
 interface AvailableWeek {
@@ -118,11 +119,8 @@ export function FormatosView() {
   const filteredEmployees = useMemo(() => {
     return employees
       .filter((employee) => employee.fecha_ingreso === selectedRouteDate)
-      .filter(
-        (employee) =>
-          String(employee.turno ?? "")
-            .trim()
-            .toLocaleLowerCase("es") !== "mixto",
+      .filter((employee) =>
+        isRouteAssignmentEligibleShift(employee.turno),
       )
       .map((employee) => {
         const numKey = String(employee.num_empleado).trim().replace(/^0+/, "");
