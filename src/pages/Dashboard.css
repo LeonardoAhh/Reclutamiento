@@ -1,0 +1,678 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Dashboard — main page layout and department cards.
+
+   Mobile-first:
+     base (320px+)  → hero + controls stack vertical, departments en 1 col
+     768px+         → hero/controls en row
+     1024px+        → departments en 2 col grid
+   ───────────────────────────────────────────────────────────────────────── */
+
+.plantilla-layout {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "main";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--color-surface);
+}
+
+.plantilla-header {
+  grid-area: header;
+  min-width: 0;
+  padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+  padding-top: var(--spacing-lg);
+}
+
+.plantilla-main {
+  grid-area: main;
+  min-width: 0;
+  min-height: 0;
+  padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .plantilla-header {
+    padding-top: var(--spacing-xxl);
+  }
+}
+
+/* ── Hero Band ── */
+.dashboard__hero {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-lg);
+  margin: 0 0 var(--spacing-md);
+}
+
+.dashboard__hero-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.dashboard__hero-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.dashboard {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.dashboard.container {
+  max-width: none;
+  margin: 0 auto;
+  padding-left: clamp(1rem, 3vw, 3rem);
+  padding-right: clamp(1rem, 3vw, 3rem);
+}
+
+/* ── Botón "Resumen de vacantes" (abre VacancyReportModal) ───────────── */
+.dashboard__report-btn {
+  gap: var(--spacing-xs);
+}
+
+.dashboard__report-btn-label {
+  font-weight: 500;
+}
+
+.dashboard__hero-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.dashboard__hero-actions > *,
+.dashboard__hero-actions .json-importer {
+  flex: 1 1 auto;
+}
+
+/* ── Search & Filter Controls ── */
+.dashboard__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.dashboard__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-muted);
+  width: 100%;
+}
+
+/* Wrapper que envuelve al CustomSelect. NO debe pintar borde/fondo/radius
+   propios: el trigger interno de CustomSelect ya trae su propio chrome
+   (pill con border, background y focus ring). Aquí solo controlamos el
+   layout (ancho y min-width). Duplicar estilos crea el efecto "rectángulo
+   detrás + pill delante". */
+.dashboard__filter-select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── Empty State ── */
+.dashboard__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.dashboard__empty h3 {
+  font-family: var(--font-display);
+  color: var(--color-muted);
+}
+
+.dashboard__empty p {
+  color: var(--color-muted);
+  max-width: 360px;
+}
+
+/* ── Department Cards (grid) ── */
+.dashboard__departments {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-md);
+  align-items: stretch;
+  padding-bottom: var(--spacing-xxl);
+}
+
+.dashboard__search-hint,
+.dashboard__department-match-heading,
+.dashboard__empty {
+  grid-column: 1 / -1;
+}
+
+.dashboard__search-hint {
+  margin: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+}
+
+.dashboard__department-match-heading {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+}
+
+.dashboard__department-match-heading h2 {
+  margin: 0;
+  font-size: var(--type-heading-3-size);
+  font-weight: var(--type-heading-3-weight);
+  line-height: var(--type-heading-3-line);
+  letter-spacing: var(--type-heading-3-tracking);
+}
+
+.dashboard__department-match-heading span {
+  flex: 0 0 auto;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+}
+
+.dept-card {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.dept-card:hover,
+.dept-card:focus-within {
+  background: var(--color-surface-soft);
+}
+
+.dept-card__header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md, 16px) var(--spacing-md, 16px) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-ink);
+  min-height: auto;
+}
+
+.dept-card__header:hover {
+  background: transparent;
+}
+
+.dept-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 8px);
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.dept-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-xs-size, 14px);
+  font-weight: 600;
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-ink);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.dept-card__meta {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.dept-card__header-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dept-card__vacancy-badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  color: var(--color-body);
+  white-space: nowrap;
+}
+
+.dept-card__hero {
+  display: none;
+}
+
+.dept-card__hero-img {
+  display: none;
+}
+
+.dept-card__hero-overlay {
+  display: none;
+}
+
+.dept-card__hero-copy {
+  display: none;
+}
+
+.dept-card__hero-top {
+  display: none;
+}
+
+.dept-card__hero-badges {
+  display: none;
+}
+
+.dept-card__button {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.dept-card__body {
+  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.dept-card__coverage {
+  width: 100%;
+  min-width: 0;
+  gap: var(--spacing-xs);
+}
+
+.dept-card__coverage-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  color: var(--color-body);
+}
+
+.dept-card__coverage-heading strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dept-card__coverage-note {
+  color: var(--color-body);
+  overflow-wrap: anywhere;
+}
+
+.dept-card__status-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.dept-card__coverage-bar {
+  width: 100%;
+  height: var(--spacing-xs);
+  appearance: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline);
+  color: var(--color-primary);
+}
+
+.dept-card__coverage-bar::-webkit-progress-bar {
+  background: var(--color-hairline);
+}
+
+.dept-card__coverage-bar::-webkit-progress-value {
+  background: var(--color-primary);
+}
+
+.dept-card__coverage-bar::-moz-progress-bar {
+  background: var(--color-primary);
+}
+
+.dept-card__coverage-bar--complete::-webkit-progress-value {
+  background: var(--color-success);
+}
+
+.dept-card__coverage-bar--complete::-moz-progress-bar {
+  background: var(--color-success);
+}
+
+.dept-card__headcount {
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size, 16px);
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.dept-card__bottom {
+  display: none;
+}
+
+/* Alert state: cuando el depto tiene vacantes o urgentes pendientes,
+   el border-left se oscurece para indicar urgencia */
+.dept-card--alert {
+  background: var(--color-canvas);
+}
+
+.dept-card--alert:hover {
+  background: var(--color-surface-soft);
+}
+
+/* ── Department Table (compartido con AreaDetailModal) ── */
+.dept-card__table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dept-card__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+}
+
+.dept-card__table thead {
+  background: var(--color-surface-card);
+}
+
+.dept-card__table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-muted);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.dept-card__table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-body);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  vertical-align: middle;
+}
+
+.dept-card__table tr:last-child td {
+  border-bottom: none;
+}
+
+.dept-card__table tr.row--has-vacancy {
+  background: var(--color-vacancy-tint);
+}
+
+.dept-card__table tr.row--urgent {
+  box-shadow: inset 3px 0 0 0 var(--color-error);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-strong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.cell-puesto {
+  font-weight: 500;
+  color: var(--color-body-strong);
+  min-width: 140px;
+}
+
+.cell-puesto__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.cell-puesto__name {
+  line-height: 1.3;
+}
+
+.cell-puesto__flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxs);
+}
+
+.cell-puesto__flags .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+}
+
+.cell-backup-hint {
+  color: var(--color-accent-teal);
+  font-weight: 600;
+  font-size: var(--type-caption-md-size);
+  cursor: help;
+}
+
+.cell-seccion {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+}
+
+.vacancy-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  border-radius: var(--rounded-xs);
+  background: var(--color-vacancy-chip-bg);
+  color: var(--color-error);
+  font-weight: 600;
+  font-size: var(--type-caption-md-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.no-vacancy {
+  color: var(--color-muted-soft);
+}
+
+/* ── Mobile L / phone landscape (≥ 480px) ───────────────────────────── */
+@media (min-width: 480px) {
+  .dashboard__report-btn-label {
+    /* En pantalla más amplia el label vuelve a mostrarse. */
+    display: inline;
+  }
+}
+
+/* ── Tablet portrait (≥ 768px) ──────────────────────────────────────── */
+@media (min-width: 768px) {
+  .dashboard__hero {
+    padding-block: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .dashboard__hero-actions {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .dashboard__hero-actions > *,
+  .dashboard__hero-actions .json-importer {
+    flex: 0 0 auto;
+  }
+
+  .dashboard__controls {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dashboard__filter,
+  .dashboard__filter-select {
+    width: auto;
+  }
+
+  .dept-card__header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .dept-card__header-right {
+    width: auto;
+    min-width: auto;
+  }
+
+  .dept-card__table th,
+  .dept-card__table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .dashboard__departments {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ── Tablet landscape / Desktop (≥ 1024px) ──────────────────────────── */
+@media (min-width: 1024px) {
+  .dashboard__hero,
+  .dashboard__controls {
+    width: 100%;
+  }
+
+  .dashboard__departments {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+    justify-items: stretch;
+  }
+
+  .dept-card {
+    min-width: 0;
+  }
+
+  .cell-puesto {
+    min-width: 200px;
+  }
+}
+
+/* ── Mobile-only header tweak (PWA bottom-bar leaves space) ─────────── */
+@media (max-width: 480px) {
+  .dashboard__report-btn-label {
+    display: none;
+  }
+}
+
+/* ── Refactored classes from Dashboard.tsx inline styles ── */
+.dashboard-sidebar__header {
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-sidebar__header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.dashboard-sidebar__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.dashboard__hero-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.dashboard-sidebar__search {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 400px;
+}
+
+.dashboard-sidebar__search-wrapper {
+  position: relative;
+  min-width: 0;
+}
+
+.dashboard-sidebar__search-field {
+  inline-size: 100%;
+}
+
+.dashboard__content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  padding-block: var(--spacing-lg);
+}
+
+/* ── Sidebar Internal Overrides ───────────────────────────────── */
+
+.dashboard-sidebar__hero {
+  padding-block: 0;
+}
+
+.dashboard-sidebar__hero-content {
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .dashboard__content-area {
+    padding-block: var(--spacing-xxl);
+  }
+
+  .dashboard-sidebar__hero-content {
+    flex-direction: row;
+    align-items: center;
+  }
+}

@@ -1,0 +1,109 @@
+/* ================================================================
+   Tooltip — Geist inverted surface.
+   Radix UI portal: rendered outside the DOM tree.
+   Tokens: colors, spacing, type, rounded, shadow, z-index, motion.
+   ================================================================ */
+
+.tooltip-content {
+  background-color: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-surface-dark-elevated);
+  border-radius: var(--rounded-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+  box-shadow: var(--shadow-level-2);
+  z-index: var(--layer-tooltip);
+  animation: tooltipFadeIn var(--transition-fast);
+  white-space: normal;
+  max-width: min(var(--tooltip-max-width), var(--radix-tooltip-content-available-width));
+  overflow-wrap: anywhere;
+  text-align: start;
+}
+
+.tooltip-arrow {
+  fill: var(--color-surface-dark);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-content {
+    animation: none;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOOLTIP LIST COMPONENT (e.g. for Trends or History)
+────────────────────────────────────────────────────────── */
+
+.trend-tooltip {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--design-spacing-sm);
+}
+
+.trend-tooltip__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+}
+
+.trend-tooltip__title {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  font-weight: var(--type-label-sm-weight);
+  letter-spacing: var(--type-label-sm-tracking);
+}
+
+.trend-tooltip__title svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  flex-shrink: 0;
+}
+
+.trend-tooltip__title--success {
+  color: var(--color-on-dark);
+}
+
+.trend-tooltip__title--danger {
+  color: var(--color-warning);
+}
+
+.trend-tooltip__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  color: var(--color-on-dark);
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+}
+
+.trend-tooltip__list li {
+  position: relative;
+  padding-inline-start: var(--design-spacing-sm);
+}
+
+.trend-tooltip__list li::before {
+  content: "•";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--color-on-dark-soft);
+}

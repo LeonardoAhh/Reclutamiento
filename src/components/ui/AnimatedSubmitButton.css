@@ -1,0 +1,112 @@
+.animated-submit-button {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.animated-submit-button[data-state="success"]:disabled {
+  background: var(--color-success-subtle);
+  border-color: var(--color-success);
+  color: var(--color-success-text);
+  opacity: 1;
+}
+
+.animated-submit-button[data-state="loading"]:disabled {
+  opacity: 1;
+}
+
+.btn-primary.animated-submit-button[data-state="loading"]:disabled {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn-danger.animated-submit-button[data-state="loading"]:disabled {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: var(--color-on-primary);
+}
+
+.animated-submit-button__content {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  min-inline-size: 0;
+  pointer-events: none;
+}
+
+.animated-submit-button__measure,
+.animated-submit-button__visual {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-inline-size: 0;
+}
+
+.animated-submit-button__measure {
+  visibility: hidden;
+}
+
+.animated-submit-button__visual {
+  inline-size: 100%;
+}
+
+.animated-submit-button__measure-icon {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 var(--icon-size-sm);
+}
+
+.animated-submit-button__measure-text {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.animated-submit-button__measure-text > span {
+  grid-area: 1 / 1;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
+}
+
+.animated-submit-button__visual svg {
+  flex-shrink: 0;
+}
+
+.animated-submit-button[data-state="loading"] .animated-submit-button__visual {
+  gap: 0;
+}
+
+.animated-submit-button[data-icon-only] {
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-xs);
+}
+
+.animated-submit-button__text {
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
+}
+
+.animated-submit-button__spinner {
+  animation: animated-submit-spin var(--duration-spinner) linear infinite;
+}
+
+@keyframes animated-submit-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-submit-button__spinner {
+    animation: none;
+  }
+}

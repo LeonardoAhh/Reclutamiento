@@ -1,0 +1,1987 @@
+/* ========================================
+   DESIGN TOKENS — Geist Precision UI
+   Near-white canvas · near-black action ink · muted focus and blue links.
+   Fuente: desing.md. Alias legados preservan compatibilidad.
+   ======================================== */
+
+:root {
+  /* ── Brand & Accent ───────────────────────────────────────────── */
+  --color-primary: #111111;
+  --color-primary-active: #242424;
+  --color-primary-disabled: var(--color-hairline);
+  --color-link: #0066cc;
+  --color-link-deep: #004f9f;
+  --color-link-soft: #e6f0ff;
+
+  --color-secondary: #111111;
+  --color-secondary-rgb: 17 17 17;
+
+  /* ── Surface ──────────────────────────────────────────────────── */
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #f8f9fa;
+  --color-canvas-elevated: #ffffff;
+  --color-surface: var(--color-canvas-elevated);
+  --color-surface-soft: #f8f9fa;
+  --color-surface-card: var(--color-surface);
+  --color-surface-strong: #e5e7eb;
+  --color-surface-dark: #101010;
+  --color-surface-dark-elevated: #1a1a1a;
+  --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
+  --color-document-ink: #000000; /* Texto de salidas oficiales */
+  --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
+  --color-document-soft: #f2f2f2; /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d9d9d9; /* Bordes de salidas oficiales */
+  --color-document-table-header: #8c8c8c; /* Encabezados de tablas imprimibles */
+  --color-document-table-row-alternate: #e5e5e5; /* Filas alternas imprimibles */
+  --color-document-primary: #000000; /* Encabezado de salidas oficiales */
+  --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
+
+  /* ── Hairlines ──────────────────────────────────────────────── */
+  --color-hairline: #e5e7eb;
+  --color-hairline-soft: #f3f4f6;
+  --color-hairline-strong: #d1d5db;
+  --color-control-border: #6b7280;
+
+  /* ── Text ───────────────────────────────────────────────────── */
+  --color-ink: #111111;
+  --color-body-strong: #111111;
+  --color-body: #374151;
+  --color-charcoal: #374151;
+  --color-mute: #6b7280;
+  --color-faint: #767676;
+  --color-muted: var(--color-mute);
+  --color-muted-soft: var(--color-faint);
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #a1a1aa;
+  --color-focus-on-inverted: var(--color-on-dark);
+  --color-navigation-rail: var(--color-canvas-soft);
+  --color-navigation-rail-elevated: var(--color-hairline);
+  --color-navigation-rail-text: var(--color-muted);
+  --color-navigation-rail-text-strong: var(--color-ink);
+  --color-navigation-rail-active: var(--color-primary);
+  --color-navigation-rail-on-active: var(--color-on-primary);
+  --color-avatar-ink: var(--color-ink);
+
+  /* ── Semantic ───────────────────────────────────────────────── */
+  --color-success: #10b981;
+  --color-success-text: #047857;
+  --color-success-subtle: #ecfdf5;
+  --color-warning: #f59e0b;
+  --color-warning-text: #92400e;
+  --color-warning-subtle: #fffbeb;
+  --color-error: #ef4444;
+  --color-error-deep: #b91c1c;
+  --color-error-text: var(--color-error-deep);
+  --color-error-subtle: #fef2f2;
+
+  /* Ilustración/gradiente solamente; nunca chrome funcional. */
+  --color-violet: #7928ca;
+  --color-cyan: #50e3c2;
+  --color-pink: #ff0080;
+  --color-magenta: #eb367f;
+  --color-gradient-develop-start: #007cf0;
+  --color-gradient-develop-end: #00dfd8;
+  --color-gradient-preview-start: #7928ca;
+  --color-gradient-preview-end: #ff0080;
+  --color-gradient-ship-start: #ff4d4d;
+  --color-gradient-ship-end: #f9cb28;
+  --color-accent-sky: var(--color-link);
+  --color-accent-purple: var(--color-violet);
+  --color-accent-purple-deep: #4c1680;
+
+  --color-accent-orange: #c75000;
+  --color-accent-orange-deep: #793400;
+  --color-accent-teal: #087f7a;
+  --color-accent-green: #167d2b;
+  --color-accent-brown: #523410;
+
+  /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  --color-brand-whatsapp: #25d366;
+  --color-brand-accent: var(--color-primary);
+  --color-badge-orange: var(--color-accent-orange);
+
+  --color-badge-violet: var(--color-accent-purple);
+  --color-badge-emerald: var(--color-accent-green);
+
+  /* Accent RGB channels (usados por gradientes/tintes en la app) */
+  --color-accent-teal-rgb: 42 157 153;
+  --color-accent-amber: var(--color-warning);
+  --color-accent-amber-rgb: var(--color-warning-rgb);
+
+  /* ── Channel values ─────────────────────────────────────────── */
+  --color-primary-rgb: 17 17 17;
+  --color-link-rgb: 0 102 204;
+  --color-success-rgb: 16 185 129;
+  --color-warning-rgb: 245 158 11;
+  --color-error-rgb: 239 68 68;
+  --color-ink-rgb: 17 17 17;
+  --color-canvas-rgb: 255 255 255;
+
+  /* ── Derived overlays ───────────────────────────────────────── */
+  --color-focus-ring: rgb(var(--color-link-rgb) / 0.2);
+  --color-modal-scrim: rgba(0, 0, 0, 0.32);
+  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
+  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  --color-success-tint: var(--color-success-subtle);
+  --color-error-tint: var(--color-error-subtle);
+  --color-warning-tint: var(--color-warning-subtle);
+  --color-primary-tint: var(--color-hairline-soft);
+  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
+
+  /* Cal Sans no se distribuye con la app; Inter 600 es el sustituto autorizado. */
+  --font-display:
+    "Inter", "Geist Sans", -apple-system, system-ui, "Segoe UI", Helvetica,
+    Arial, sans-serif;
+  --font-body:
+    "Inter", "Geist Sans", -apple-system, system-ui, "Segoe UI", Helvetica,
+    Arial, sans-serif;
+  --font-code:
+    "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco,
+    Consolas, monospace;
+
+  --type-display-xl-size: 3rem;
+  --type-display-xl-weight: 600;
+  --type-display-xl-line: 1;
+  --type-display-xl-tracking: -0.05em;
+
+  /* display-lg — large section headlines */
+  --type-display-lg-size: 2rem;
+  --type-display-lg-weight: 600;
+  --type-display-lg-line: 1.25;
+  --type-display-lg-tracking: -0.04em;
+
+  /* heading-lg — section headlines */
+  --type-heading-lg-size: 2rem;
+  --type-heading-lg-weight: 600;
+  --type-heading-lg-line: 1.25;
+  --type-heading-lg-tracking: -0.04em;
+
+  /* Las tallas de heading-md/sm, body-sm/strong y caption-xs se conservan en px:
+     candidateAccessCard.ts las lee como números para dibujar la salida en canvas. */
+  /* heading-md — sub-section headings */
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 600;
+  --type-heading-md-line: 1.4;
+  --type-heading-md-tracking: -0.02em;
+
+  /* heading-sm — card titles */
+  --type-heading-sm-size: 16px;
+  --type-heading-sm-weight: 600;
+  --type-heading-sm-line: 1.5;
+  --type-heading-sm-tracking: -0.01em;
+
+  /* body-md — texto corrido, 400 weight (readability first) */
+  --type-body-md-size: 0.875rem;
+  --type-body-md-weight: 400;
+  --type-body-md-line: 1.43;
+  --type-body-md-tracking: 0;
+
+  /* body-sm — dense body, table rows, nav */
+  --type-body-sm-size: 12px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 1.33;
+  --type-body-sm-tracking: 0;
+
+  /* body-strong — feature titles and callouts */
+  --type-body-strong-size: 14px;
+  --type-body-strong-weight: 600;
+  --type-body-strong-line: 1.4;
+  --type-body-strong-tracking: -0.006em;
+
+  /* body-sm-strong — button labels, dense strong copy */
+  --type-body-sm-strong-size: 0.875rem;
+  --type-body-sm-strong-weight: 500;
+  --type-body-sm-strong-line: 1.4;
+  --type-body-sm-strong-tracking: 0;
+
+  /* label-sm — strong labels and navigation emphasis */
+  --type-label-sm-size: 0.875rem;
+  --type-label-sm-weight: 500;
+  --type-label-sm-line: 1.43;
+  --type-label-sm-tracking: -0.02em;
+
+  /* caption-sm — captions, footnotes */
+  --type-caption-sm-size: 0.75rem;
+  --type-caption-sm-weight: 400;
+  --type-caption-sm-line: 1.43;
+  --type-caption-sm-tracking: 0;
+
+  /* caption-xs — metadatos secundarios compactos, como correos de cuenta */
+  --type-caption-xs-size: 12px;
+  --type-caption-xs-weight: 400;
+  --type-caption-xs-line: 1.33;
+  --type-caption-xs-tracking: 0;
+
+  /* caption-uppercase — eyebrows / section labels */
+  --type-caption-up-size: 0.75rem;
+  --type-caption-up-weight: 600;
+  --type-caption-up-line: 1.33;
+  --type-caption-up-tracking: 0.06em;
+
+  /* mono-eyebrow — uppercase technical section labels */
+  --type-mono-eyebrow-size: 0.75rem;
+  --type-mono-eyebrow-weight: 500;
+  --type-mono-eyebrow-line: 1.33;
+  --type-mono-eyebrow-tracking: 0;
+
+  /* button — shared application action (desing.md {typography.button}) */
+  --type-button-size: 0.875rem;
+  --type-button-weight: 600;
+  --type-button-line: 1.43;
+  --type-button-tracking: 0;
+
+  /* Canonical button roles: marketing and app/navigation. */
+  --type-button-lg-size: 1rem;
+  --type-button-lg-weight: 600;
+  --type-button-lg-line: 1.25;
+  --type-button-lg-tracking: 0;
+  --type-button-md-size: var(--type-button-size);
+  --type-button-md-weight: var(--type-button-weight);
+  --type-button-md-line: var(--type-button-line);
+  --type-button-md-tracking: var(--type-button-tracking);
+
+  /* code */
+  --type-code-md-size: 0.875rem;
+  --type-code-md-weight: 400;
+  --type-code-md-line: 1.5;
+  --type-code-md-tracking: 0;
+  --type-code-sm-size: 0.875rem;
+  --type-code-sm-weight: 400;
+  --type-code-sm-line: 1.43;
+  --type-code-sm-tracking: 0;
+
+  /* Escala canónica de desing.md. Tokens anteriores siguen disponibles
+     durante la migración para no alterar páginas todavía no convertidas. */
+  --type-display-1-size: clamp(2.5rem, calc(3vw + 1rem), 3rem);
+  --type-display-1-weight: 600;
+  --type-display-1-line: 1;
+  --type-display-1-tracking: -0.05em;
+  --type-display-2-size: clamp(2rem, calc(2vw + 0.75rem), 2.5rem);
+  --type-display-2-weight: 600;
+  --type-display-2-line: 1.1;
+  --type-display-2-tracking: -0.04em;
+  --type-heading-1-size: clamp(1.75rem, calc(2vw + 0.5rem), 2rem);
+  --type-heading-1-weight: 600;
+  --type-heading-1-line: 1.25;
+  --type-heading-1-tracking: -0.04em;
+  --type-heading-2-size: 1.25rem;
+  --type-heading-2-weight: 600;
+  --type-heading-2-line: 1.4;
+  --type-heading-2-tracking: -0.02em;
+  --type-heading-3-size: 1rem;
+  --type-heading-3-weight: 600;
+  --type-heading-3-line: 1.5;
+  --type-heading-3-tracking: -0.01em;
+  --type-title-size: 1.25rem;
+  --type-title-weight: 600;
+  --type-title-line: 1.4;
+  --type-title-tracking: -0.00625em;
+
+  /* ── Control sizing ─────────────────────────────────────────── */
+  --control-height: 44px;
+  --control-height-sm: var(--spacing-xxl);
+  --control-height-lg: 44px;
+  --touch-target-min: 44px;
+  --control-padding-x: var(--design-spacing-sm);
+  --control-padding-y: var(--design-spacing-xs);
+  /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
+  --control-min-block-size: max(
+    var(--touch-target-min),
+    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
+  );
+  --textarea-min-block-size: calc(var(--touch-target-min) * 2);
+  --select-content-max-block-size: 15.625rem;
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.25rem;
+  --icon-size-control: 1rem;
+  --icon-size-lg: 1.5rem;
+  --icon-size-xl: 2rem;
+  --icon-size-xxl: 2.5rem;
+  --feature-avatar-size: var(--icon-size-xxl);
+  --feature-avatar-preview-size: 6rem;
+  --feature-avatar-initials-size: var(--type-caption-md-size);
+  --feature-avatar-preview-initials-size: var(--type-heading-1-size);
+
+  /* ── Spacing legado — se conserva durante migración ───────── */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-section: 96px;
+
+  /* Escala canónica de desing.md para primitivas nuevas/migradas. */
+  --design-spacing-xxs: 0.25rem;
+  --design-spacing-xs: 0.5rem;
+  --design-spacing-sm: 0.75rem;
+  --design-spacing-md: 1rem;
+  --design-spacing-lg: 1.5rem;
+  --design-spacing-xl: 2rem;
+  --design-spacing-xxl: 2.5rem;
+  --design-spacing-3xl: 4rem;
+  --design-spacing-4xl: 6rem;
+  --design-spacing-section: 8rem;
+
+  /* ── Border radius — accents 4 · controls 8 · cards 12 · marquee 16 ── */
+  --rounded-none: 0;
+  --rounded-xs: 4px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-xl: 16px;
+  --rounded-pill-category: 64px;
+  --rounded-pill: 100px;
+  --rounded-full: 9999px;
+
+  /* ── Shadows — hairline first, restrained elevation ───────────── */
+  --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 0;
+
+  /* ── Transitions ─────────────────────────────────────────────── */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-instant: 0ms;
+  --transition-fast: 150ms var(--ease-standard);
+  --transition-base: 250ms var(--ease-standard);
+  --transition-slow: 350ms var(--ease-standard);
+  --transition-spring: 400ms var(--ease-spring);
+  --transition-normal: var(--transition-base);
+  --transition-smooth: var(--transition-base);
+  --transition-spinner: 1000ms linear;
+  /* Ciclo decorativo existente de los estados vacíos; no es feedback de acción. */
+  --transition-decorative-float: 3000ms ease-in-out;
+  --motion-float-distance: var(--design-spacing-xs);
+  --scale-pressed: 0.98;
+  --transition-progress: 1400ms ease-in-out;
+  --duration-loader-stagger-step: 150ms;
+
+  /* ── Container ───────────────────────────────────────────────── */
+  --container-standard-max-inline-size: 80rem;
+  --container-compact-max-inline-size: 64rem;
+  --container-wide-max-inline-size: 100rem;
+  --container-max: var(--container-standard-max-inline-size);
+  --container-padding: var(--design-spacing-md);
+  --container-padding-mobile: var(--design-spacing-md);
+  /* Medida máxima de lectura definida por desing.md. */
+  --content-reading-max-inline-size: 65ch;
+  /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
+  --content-preview-max-lines: 3;
+  --auth-form-max-inline-size: 28rem;
+  --feature-result-card-min: 34rem;
+  --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
+  /* Ancho legible mínimo para cards de asignación antes de reflujo automático. */
+  --feature-vacancy-assignment-card-min-inline-size: 18rem;
+  /* Geometría responsive de responsabilidades y sus referencias visuales. */
+  --feature-responsibility-card-min-inline-size: 28rem;
+  --feature-activity-card-min-inline-size: 24rem;
+  --feature-activity-filter-min-inline-size: 8.5rem;
+  --search-field-min-inline-size: 18rem;
+  /* Ancho máximo de búsquedas compactas en encabezados de página. */
+  --search-field-compact-max-inline-size: 24rem;
+  --feature-activity-search-min-inline-size: var(--search-field-min-inline-size);
+  --feature-reference-attachment-thumbnail-inline-size: 7.5rem;
+  --feature-reference-attachment-thumbnail-block-size: 4.5rem;
+  --feature-image-viewer-max-block-size: 70dvh;
+  --candidate-access-preview-max: 18rem;
+  --candidate-access-preview-max-mobile: 15rem;
+  /* Retrato de credencial dentro del flujo de actualización de datos. */
+  --feature-data-update-photo-max-inline-size: 18rem;
+  --feature-calendar-column-min: 10rem;
+  --feature-calendar-column-max: 13rem;
+  --feature-calendar-surface-max: 22rem;
+  /* Ancho compacto del selector de semana junto al título de una página. */
+  --week-filter-inline-size: 20rem;
+  /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
+  --feature-report-onboarding-max-inline-size: var(
+    --container-compact-max-inline-size
+  );
+  --feature-navigation-rail-inline-size: 15rem;
+  /* Ancho útil de superficies flotantes abiertas dentro del rail móvil. */
+  --feature-navigation-popover-inline-size: calc(
+    var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) -
+      var(--design-spacing-md)
+  );
+  --feature-reminders-panel-max-inline-size: 20rem;
+  --feature-reminders-panel-max-block-size: 30rem;
+  /* Altura legible para detalles extensos de validación antes de scroll interno. */
+  --feature-validation-details-max-block-size: 12rem;
+  --document-preview-max: 48rem;
+  --recordatorios-route-table-min: 64rem;
+  --system-update-content-max: 22rem;
+  --system-update-panel-max: 28rem;
+  --toast-max-inline-size: var(--system-update-panel-max);
+  --menu-min-inline-size: 10rem;
+  /* Ancho medio para menús de filtros con opciones cortas. */
+  --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
+  /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
+  --feature-account-menu-inline-size: calc(
+    var(--menu-min-inline-size) + var(--design-spacing-3xl)
+  );
+  --pipeline-table-date-inline-size: 7.5rem;
+  --pipeline-table-actions-inline-size: 5rem;
+  --pipeline-pagination-label-min-inline-size: 5.625rem;
+  --pipeline-search-results-max-block-size: 25rem;
+  --feature-profile-binary-min: 18rem;
+  /* Anchos semánticos del diálogo compartido. */
+  --modal-inline-size-xs: 25rem;
+  --modal-inline-size-sm: 30rem;
+  --modal-inline-size-md: 40rem;
+  --modal-inline-size-lg: 47.5rem;
+  --modal-inline-size-xl: 65rem;
+  --modal-max-block-size: min(85dvh, var(--modal-inline-size-lg));
+  --modal-mobile-max-block-size: 92dvh;
+  /* Interior compartido de header, cuerpo y acciones; crece en tablet. */
+  --modal-content-padding: var(--design-spacing-md);
+  --system-update-progress-segment: 40%;
+  /* Capas estructurales del shell; mantienen Header, overlay y Sidebar ordenados. */
+  --layer-sticky-navigation: 800;
+  --layer-navigation-overlay: 899;
+  --layer-navigation: 900;
+  --layer-maintenance: 1000;
+  --layer-splash: 1000;
+  --layer-floating-action: 1400;
+  --layer-modal: 1450;
+  --layer-menu: 1470;
+  --layer-tooltip: 1480;
+  --layer-system-update: 1500;
+  --layer-toast: var(--layer-system-update);
+  --layer-system-update-curtain: 1600;
+  --tooltip-max-width: 280px;
+  --scrollbar-size: var(--spacing-sm);
+  --toggle-track-inline-size: 2.25rem;
+  --toggle-track-block-size: 1.25rem;
+  --toggle-thumb-size: 1rem;
+  --toggle-thumb-inset: 0.125rem;
+  --toggle-thumb-travel: 1rem;
+  /* Contador superpuesto de acciones: tamaño y solape independientes del texto. */
+  --action-count-size: 1.125rem;
+  --action-count-offset: calc(-1 * var(--design-spacing-xxs));
+  --empty-state-description-max-inline-size: 18.75rem;
+  --config-panel-min-height: calc(var(--spacing-section) + var(--spacing-2xl));
+
+  /* ── PWA / safe-area ─────────────────────────────────────────── */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --tab-bar-height: 0px;
+
+  /* ── Tokens extra / alias ────────────────────────────────────── */
+  --type-caption-md-size: 0.8125rem;
+  --type-caption-md-weight: 500;
+  --type-caption-md-line: 1.4;
+  --type-caption-md-tracking: 0;
+  --type-display-md-size: 1.875rem;
+  --type-display-md-weight: 700;
+  --type-body-lg-size: 1.125rem;
+  --text-xs: 12px;
+  --text-sm: 14px;
+
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-regular: 400;
+  --font-sans: var(--font-body);
+  --font-primary: var(--font-body);
+  --font-mono: var(--font-code);
+
+  /* Tight display tracking */
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.018em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+
+  --rounded-pill: 100px;
+  --radius-sm: var(--rounded-sm);
+  --radius-md: var(--rounded-md);
+  --border-width: 1px;
+  /* Trazos y puntos compartidos de gráficas; patrones distinguibles sin color. */
+  --chart-line-width: 2px;
+  --chart-point-radius: 3px;
+  --chart-active-point-radius: 6px;
+  /* Altura media reutilizable para gráficas de indicadores en paneles. */
+  --chart-height-md: 18rem;
+  --chart-dash-long: 12px 4px;
+  --chart-dash-short: 4px 4px;
+  --chart-dash-dotted: 1px 4px;
+
+  --spacing-2xs: 3px;
+  --space-xxs: var(--spacing-xxs);
+  --space-xs: var(--spacing-xs);
+  --space-sm: var(--spacing-sm);
+  --space-md: var(--spacing-md);
+  --space-lg: var(--spacing-lg);
+  --space-xl: var(--spacing-xl);
+
+  --color-amber: var(--color-accent-amber);
+  --color-danger: var(--color-error);
+  --color-foreground: var(--color-body);
+  --color-primary-faint: var(--color-primary-tint);
+  --color-error-soft: var(--color-error-tint);
+  --color-border: var(--color-hairline);
+  --color-focus: var(--color-muted);
+  --color-surface-contrast: var(--color-ink);
+  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-cream-strong: var(--color-surface-soft);
+  --color-text-primary: var(--color-ink);
+  --color-text-tertiary: var(--color-muted);
+
+  /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
+  --shadow-xs: 0 1px 1px rgb(var(--color-ink-rgb) / 0.04);
+  --shadow-sm:
+    0 1px 2px rgb(var(--color-ink-rgb) / 0.05),
+    0 4px 12px rgb(var(--color-ink-rgb) / 0.08);
+  --shadow-subtle: var(--shadow-sm);
+  --shadow-card: var(--shadow-sm);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-md: var(--shadow-sm);
+  --shadow-prominent:
+    0 1px 2px rgb(var(--color-ink-rgb) / 0.05),
+    0 4px 12px rgb(var(--color-ink-rgb) / 0.08);
+  --shadow-elevated: var(--shadow-prominent);
+  --shadow-level-2: var(--shadow-elevated);
+  /* Contrato estable del workspace; evita que una migración de primitivas
+     desarme la superficie continua del shell y del login. */
+  --workspace-canvas: var(--color-canvas);
+  --workspace-surface: var(--color-canvas);
+  --workspace-border-color: var(--color-hairline);
+  --workspace-radius: var(--rounded-lg);
+  --workspace-shadow: var(--shadow-xs);
+  --type-caption-size: var(--type-caption-sm-size);
+  --type-heading-xs-size: var(--type-caption-sm-size);
+  --z-index-tooltip: var(--layer-tooltip);
+
+  --header-height: 64px;
+  --mobile-nav-height: 56px;
+  --mobile-nav-content-space: calc(
+    var(--mobile-nav-height) + var(--spacing-2xl)
+  );
+  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-skeleton: 1500ms;
+  --opacity-disabled: 0.5;
+  --opacity-primary-disabled: 0.4;
+  --opacity-skeleton-rest: 0.4;
+  --opacity-skeleton-active: 0.9;
+  --duration-spinner: 800ms;
+
+  color-scheme: light;
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* Respeta el tamaño de texto configurado en el navegador. */
+  font-size: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS: el safe-area toma su color del <html>, no del <body>. */
+  background-color: var(--color-canvas);
+  transition: background-color var(--transition-base);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  font-feature-settings: "lnum" 1, "locl" 1;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-body);
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+  padding-bottom: var(--safe-area-bottom);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+/* Breakpoints de desing.md. Las variables CSS no se evalúan en media queries. */
+@media (min-width: 768px) {
+  :root {
+    --control-padding-y: var(--design-spacing-xs);
+  }
+
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--transition-instant) !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--transition-instant) !important;
+  }
+}
+
+/* ── Headings ── */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-feature-settings: "lnum" 1, "locl" 1;
+  color: var(--color-ink);
+}
+
+h1 {
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+h2 {
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+h3 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+h4 {
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  font: inherit;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-link-deep);
+}
+
+button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+strong,
+b {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-body-strong);
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+  font-size: var(--type-code-sm-size);
+  font-weight: var(--type-code-sm-weight);
+  line-height: var(--type-code-sm-line);
+  letter-spacing: var(--type-code-sm-tracking);
+}
+
+pre {
+  background: var(--color-surface-soft);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  padding: var(--spacing-xxs) calc(var(--spacing-xxs) + var(--spacing-xs));
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-code-sm-size);
+}
+
+/* ========================================
+   TYPE UTILITY CLASSES
+   ======================================== */
+
+.type-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+}
+
+.type-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+}
+
+.type-heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.type-heading-md {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.type-heading-sm {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.type-body-md {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.type-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.type-body-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.type-body-sm-strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.type-label-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
+}
+
+.type-caption-sm {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.type-caption-up {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.type-mono-eyebrow {
+  font-family: var(--font-code);
+  font-size: var(--type-mono-eyebrow-size);
+  font-weight: var(--type-mono-eyebrow-weight);
+  line-height: var(--type-mono-eyebrow-line);
+  letter-spacing: var(--type-mono-eyebrow-tracking);
+  text-transform: uppercase;
+}
+
+.type-button {
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+.type-button-lg {
+  font-family: var(--font-body);
+  font-size: var(--type-button-lg-size);
+  font-weight: var(--type-button-lg-weight);
+  line-height: var(--type-button-lg-line);
+  letter-spacing: var(--type-button-lg-tracking);
+}
+
+.type-button-md {
+  font-family: var(--font-body);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
+}
+
+/* Roles canónicos de desing.md. Nuevas vistas deben preferirlos. */
+.type-display-1 {
+  font-family: var(--font-display);
+  font-size: var(--type-display-1-size);
+  font-weight: var(--type-display-1-weight);
+  line-height: var(--type-display-1-line);
+  letter-spacing: var(--type-display-1-tracking);
+}
+
+.type-display-2 {
+  font-family: var(--font-display);
+  font-size: var(--type-display-2-size);
+  font-weight: var(--type-display-2-weight);
+  line-height: var(--type-display-2-line);
+  letter-spacing: var(--type-display-2-tracking);
+}
+
+.type-heading-1 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
+}
+
+.type-heading-2 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-2-size);
+  font-weight: var(--type-heading-2-weight);
+  line-height: var(--type-heading-2-line);
+  letter-spacing: var(--type-heading-2-tracking);
+}
+
+.type-heading-3 {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-3-size);
+  font-weight: var(--type-heading-3-weight);
+  line-height: var(--type-heading-3-line);
+  letter-spacing: var(--type-heading-3-tracking);
+}
+
+.type-title {
+  font-family: var(--font-display);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+}
+
+/* ========================================
+   PAGE HEADER — Título fluido unificado (mobile-first)
+   Usa heading-1 canónico: 28–40px sin saltos abruptos.
+   ======================================== */
+
+.page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-lg);
+  margin: 0 0 var(--spacing-md);
+}
+
+.page-header__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.page-title,
+.app-page-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
+  color: var(--color-ink);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    padding-block: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+  }
+
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
+  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
+}
+
+.container--compact {
+  --container-max: var(--container-compact-max-inline-size);
+}
+
+.container--wide {
+  --container-max: var(--container-wide-max-inline-size);
+}
+
+.container--fluid {
+  --container-max: none;
+}
+
+.container--reading {
+  --container-max: var(--content-reading-max-inline-size);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-padding: var(--design-spacing-lg);
+  }
+}
+
+@media (min-width: 1080px) {
+  :root {
+    --container-padding: var(--design-spacing-xxl);
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --container-padding: var(--design-spacing-3xl);
+  }
+}
+
+/* Color text helpers */
+.text-ink {
+  color: var(--color-ink);
+}
+.text-body {
+  color: var(--color-body);
+}
+.text-body-strong {
+  color: var(--color-body-strong);
+}
+.text-charcoal {
+  color: var(--color-charcoal);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-muted-soft {
+  color: var(--color-muted-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-success {
+  color: var(--color-success-text);
+}
+.text-warning {
+  color: var(--color-warning-text);
+}
+.text-error {
+  color: var(--color-error-text);
+}
+
+/* Section divider — hairline pura, sin sombras */
+.section-divider {
+  border: none;
+  border-top: var(--border-width) solid var(--color-hairline);
+  margin: 0;
+}
+
+/* ========================================
+   FORM SYSTEM
+   ======================================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group label {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+  color: var(--color-ink);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+.form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
+.form-group select {
+  height: auto;
+  min-height: var(--control-min-block-size);
+  padding: var(--control-padding-y) var(--spacing-sm);
+}
+
+/* Conserva el indicador nativo de apertura; no necesita un icono inventado. */
+.form-group select {
+  appearance: auto;
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: var(--textarea-min-block-size);
+  padding: var(--control-padding-y) var(--spacing-sm);
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.form-group input:hover:not(:focus-visible):not(:disabled),
+.form-group select:hover:not(:focus-visible):not(:disabled),
+.form-group textarea:hover:not(:focus-visible):not(:disabled) {
+  border-color: var(--color-charcoal);
+}
+
+.form-group :is(input, select, textarea)[aria-invalid="true"] {
+  border-color: var(--color-error);
+  background: var(--color-error-subtle);
+}
+
+.form-group select:disabled,
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+}
+
+.form-error {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  color: var(--color-error-text);
+  margin-top: var(--spacing-xxs);
+}
+
+/* ── Teléfono: wrapper + iconos de validación ──────────────── */
+.phone-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.phone-validation-icon {
+  position: absolute;
+  right: var(--spacing-sm);
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.phone-validation-icon.valid {
+  color: var(--color-success);
+}
+.phone-validation-icon.invalid {
+  color: var(--color-error);
+}
+
+:is(input, select, textarea).input-error {
+  border-color: var(--color-error);
+  background: var(--color-error-subtle);
+}
+
+:is(input, select, textarea).input-success {
+  border-color: var(--color-success);
+  background: var(--color-success-subtle);
+}
+
+.form-error-text,
+.form-warning-text,
+.form-success-text {
+  margin-top: var(--spacing-xs);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.form-error-text {
+  color: var(--color-error-text);
+}
+
+.form-warning-text {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-warning-text);
+}
+
+.form-success-text {
+  color: var(--color-success-text);
+}
+
+/* ========================================
+   BUTTONS — sistema de controles
+   Los botones de aplicación usan radio de 6px y altura táctil de 44px.
+   Primaria negra; secundaria plana con hairline.
+   ======================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--control-min-block-size);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  font-family: var(--font-body);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.btn-sm {
+  min-height: var(--touch-target-min);
+  padding-inline: var(--spacing-md);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+/* Primary — único CTA con color estructural sólido */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn-primary:active:not(:disabled) {
+  background: var(--color-primary-active);
+  transform: scale(var(--scale-pressed));
+}
+.btn-primary:disabled {
+  background: var(--color-primary-disabled);
+  border-color: var(--color-primary-disabled);
+  color: var(--color-ink);
+  opacity: var(--opacity-primary-disabled);
+  cursor: not-allowed;
+}
+
+/* Secondary — white surface + hairline */
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border-color: var(--color-control-border);
+  box-shadow: none;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  border-color: var(--color-charcoal);
+}
+.btn-secondary:active:not(:disabled) {
+  background: var(--color-hairline);
+  transform: scale(var(--scale-pressed));
+}
+.btn-secondary:disabled,
+.btn-danger:disabled,
+.btn-ghost:disabled,
+.btn-text:disabled,
+.btn-icon:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+  border-color: var(--color-error);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--color-error-text);
+}
+.btn-danger:active:not(:disabled) {
+  background: var(--color-error-text);
+  transform: scale(var(--scale-pressed));
+}
+
+/* Ghost — transparente, solo texto */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-charcoal);
+  border-color: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.btn-ghost:active:not(:disabled) {
+  transform: scale(var(--scale-pressed));
+}
+
+/* Text link style button */
+.btn-text {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: none;
+  color: var(--color-link);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  padding: var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-decoration: underline;
+}
+.btn-text:hover:not(:disabled) {
+  color: var(--color-link-deep);
+}
+
+/* Icon button */
+.btn-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: none;
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+.btn-icon:hover:not(:disabled) {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+}
+.btn-icon--danger:hover:not(:disabled) {
+  color: var(--color-error);
+}
+
+.btn-icon__count {
+  position: absolute;
+  top: var(--action-count-offset);
+  right: var(--action-count-offset);
+  min-width: var(--action-count-size);
+  min-height: var(--action-count-size);
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   CARDS
+   Border 1px + rounded-md. Sin sombra.
+   ======================================== */
+
+.card {
+  background: var(--color-surface-card);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--design-spacing-lg);
+}
+
+.card--soft {
+  background: var(--color-surface-soft);
+  border-color: var(--color-hairline-soft);
+}
+
+/* Card inverted — isla oscura (KPI hero, featured) */
+.card--dark {
+  background: var(--color-surface-dark);
+  border-color: transparent;
+  color: var(--color-on-dark);
+  --color-focus: var(--color-focus-on-inverted);
+}
+
+.card--dark h1,
+.card--dark h2,
+.card--dark h3,
+.card--dark h4 {
+  color: var(--color-on-dark);
+}
+
+.card--dark .text-muted {
+  color: var(--color-on-dark-soft);
+}
+
+/* ========================================
+   MODAL — superficie elevada, sin glass
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-modal);
+  background: var(--color-modal-scrim);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  animation: fadeIn var(--transition-base) forwards;
+}
+
+.modal-content {
+  background: var(--color-surface);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--modal-inline-size-md);
+  max-height: var(--modal-mobile-max-block-size);
+  overflow: hidden;
+  animation: slideUpMobile var(--transition-slow) forwards;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-level-2);
+}
+
+.modal-content--xs {
+  max-width: var(--modal-inline-size-xs);
+}
+
+.modal-content--sm {
+  max-width: var(--modal-inline-size-sm);
+}
+
+.modal-content--md {
+  max-width: var(--modal-inline-size-md);
+}
+
+.modal-content--lg {
+  max-width: var(--modal-inline-size-lg);
+}
+
+.modal-content--xl {
+  max-width: var(--modal-inline-size-xl);
+}
+
+/* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
+
+.modal-content > .modal-header {
+  padding-left: max(var(--modal-content-padding), var(--safe-area-left));
+  padding-right: max(var(--modal-content-padding), var(--safe-area-right));
+}
+
+.modal-content > .modal-scroll-region > .modal-body {
+  padding-left: max(var(--modal-content-padding), var(--safe-area-left));
+  padding-right: max(var(--modal-content-padding), var(--safe-area-right));
+}
+
+.modal-content .modal-body > * {
+  flex-shrink: 0;
+}
+
+.modal-content > .modal-footer {
+  padding-left: max(var(--modal-content-padding), var(--safe-area-left));
+  padding-right: max(var(--modal-content-padding), var(--safe-area-right));
+  padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
+}
+
+@media (min-width: 768px) {
+  .modal-overlay {
+    padding: var(--design-spacing-lg);
+    align-items: center;
+  }
+
+  .modal-content {
+    --modal-content-padding: var(--design-spacing-lg);
+    max-height: var(--modal-max-block-size);
+    border-radius: var(--rounded-lg);
+    animation: slideUpModal var(--transition-slow) forwards;
+  }
+
+  .modal-content .modal-body > * {
+    flex-shrink: 1;
+  }
+
+  .modal-content > .modal-footer {
+    padding-block: var(--design-spacing-sm);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm) var(--modal-content-padding);
+  border-bottom: var(--border-width) solid var(--color-hairline);
+  flex: 0 0 auto;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title > svg,
+.modal-title > [data-icon] {
+  flex-shrink: 0;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}
+
+.modal-title__text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.modal-title h2 {
+  font-family: var(--font-body);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  color: var(--color-ink);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.modal-close,
+.modal-back-btn {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  flex: 0 0 var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-full);
+  color: var(--color-ink);
+  border: var(--border-width) solid var(--color-hairline);
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.modal-close svg,
+.modal-back-btn svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}
+
+.modal-close:is(:hover, :focus-visible),
+.modal-back-btn:is(:hover, :focus-visible) {
+  background: var(--color-surface-soft);
+}
+
+.modal-body {
+  padding: var(--modal-content-padding);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+}
+
+/* Único plano desplazable del diálogo. El wrapper garantiza el mismo contrato
+   aunque una feature utilice un form o contenedor especializado como cuerpo. */
+.modal-scroll-region {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  padding: var(--modal-content-padding);
+  border-top: var(--border-width) solid var(--color-hairline);
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  background: var(--color-surface);
+}
+
+.modal-footer > .btn-primary,
+.modal-footer > .btn-secondary,
+.modal-footer > .btn-danger {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 768px) {
+  .modal-footer {
+    justify-content: flex-end;
+  }
+
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
+    flex: 0 1 auto;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-lg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-xxl));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content,
+  .modal-overlay {
+    animation: none;
+  }
+
+  .modal-close,
+  .modal-back-btn {
+    transition: none;
+  }
+}
+
+/* ── Alert variants ──────────────────────────────────────────────────── */
+.modal-alert .modal-header {
+  border-bottom: 0;
+  padding-top: var(--modal-content-padding);
+  padding-bottom: var(--design-spacing-xs);
+}
+
+.modal-alert .modal-body {
+  padding-top: var(--design-spacing-xs);
+  padding-bottom: 0;
+}
+
+.modal-alert .modal-footer {
+  border-top: none;
+  padding-top: var(--design-spacing-md);
+}
+
+.modal-alert .modal-title__text h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+@media (min-width: 768px) {
+  .modal-alert {
+    border-radius: var(--rounded-md);
+  }
+}
+
+/* ========================================
+   GLOBAL EMPTY STATE ANIMADO
+   ======================================== */
+.animated-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  color: var(--color-muted);
+  animation: fadeIn var(--transition-base);
+}
+
+.animated-empty-state__icon {
+  position: relative;
+  width: var(--design-spacing-4xl);
+  height: var(--design-spacing-4xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-hairline-strong);
+}
+
+.animated-empty-state__icon svg {
+  width: 100%;
+  height: 100%;
+  animation: floatEmpty var(--transition-decorative-float) infinite;
+}
+
+.animated-empty-state__title {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-button-weight);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+  font-family: var(--font-body);
+}
+
+.animated-empty-state__subtitle {
+  font-size: var(--type-body-sm-size);
+  color: var(--color-muted);
+  max-width: min(100%, var(--empty-state-description-max-inline-size));
+  overflow-wrap: anywhere;
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  font-family: var(--font-body);
+}
+
+@keyframes floatEmpty {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-1 * var(--motion-float-distance)));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   SCROLLBAR — visible y discreto
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-full);
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Recorte accesible de 1px: excepción técnica, no una dimensión visual. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Un único indicador. Los campos compuestos lo delegan al contenedor solo
+   mientras su input tiene foco; sus botones mantienen un indicador propio. */
+:focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
+[data-focus-ring]:has(> :is(input, textarea):focus-visible),
+label:has(> input.sr-only:focus-visible),
+.toggle-switch input:focus-visible + .toggle-switch__slider,
+.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* El input conserva el foco real; su superficie visible dibuja el anillo.
+   Se mantiene también en forced-colors para evitar un segundo indicador. */
+[data-focus-ring] > :is(input, textarea):focus-visible,
+label > input.sr-only:focus-visible,
+.toggle-switch input:focus-visible,
+.ui-checkbox__input:focus-visible {
+  outline: none;
+}
+
+/* ========================================
+   COLOR ALIASES (retrocompatibilidad)
+   ======================================== */
+
+.color-error {
+  color: var(--color-error-text);
+}
+.color-success {
+  color: var(--color-success-text);
+}
+.color-warning {
+  color: var(--color-warning-text);
+}
+.color-primary {
+  color: var(--color-primary);
+}
+
+/* --- TOGGLE SWITCH --- */
+.toggle-switch {
+  position: relative;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  color: var(--color-foreground);
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch__slider {
+  position: relative;
+  display: inline-block;
+  width: var(--toggle-track-inline-size);
+  height: var(--toggle-track-block-size);
+  background-color: var(--color-border);
+  border-radius: var(--rounded-full);
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toggle-switch__slider::before {
+  content: "";
+  position: absolute;
+  height: var(--toggle-thumb-size);
+  width: var(--toggle-thumb-size);
+  left: var(--toggle-thumb-inset);
+  bottom: var(--toggle-thumb-inset);
+  background-color: var(--color-surface);
+  border-radius: var(--rounded-full);
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+  transform: translateX(var(--toggle-thumb-travel));
+}
+
+.toggle-switch input[type="checkbox"]:disabled + .toggle-switch__slider {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.toggle-switch__label {
+  overflow-wrap: anywhere;
+}
+
+.toggle-switch:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+/* La clase solo dibuja el spinner; el consumidor anuncia el estado de carga. */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin var(--transition-spinner) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
+  [data-focus-ring]:has(> :is(input, textarea):focus-visible),
+  label:has(> input.sr-only:focus-visible),
+  .toggle-switch input:focus-visible + .toggle-switch__slider,
+  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+    outline: var(--focus-ring-width) solid Highlight !important;
+    outline-offset: var(--focus-ring-offset) !important;
+    box-shadow: none !important;
+  }
+  /* Los colores del sistema conservan la posición y el contraste del switch. */
+  .toggle-switch__slider {
+    forced-color-adjust: none;
+    color: ButtonText;
+    background: Canvas;
+    border: var(--border-width) solid ButtonText;
+  }
+  .toggle-switch__slider::before {
+    background: ButtonText;
+  }
+  .toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+    background: Highlight;
+  }
+  .toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+    background: HighlightText;
+  }
+}

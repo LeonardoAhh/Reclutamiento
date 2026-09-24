@@ -1,0 +1,106 @@
+.popover-content {
+  z-index: var(--layer-menu);
+  inline-size: auto;
+  max-inline-size: var(--radix-popover-content-available-width);
+  max-block-size: var(--radix-popover-content-available-height);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--rounded-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  background-color: var(--color-surface);
+  padding: var(--spacing-md);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-elevated);
+  transform-origin: var(--radix-popover-content-transform-origin);
+  will-change: transform, opacity;
+}
+
+.popover-header {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.popover-title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+}
+
+.popover-description {
+  margin: 0;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+}
+
+.popover-content[data-state='open'][data-side='top'] {
+  animation: popover-slide-up-and-fade var(--transition-base) both;
+}
+.popover-content[data-state='open'][data-side='right'] {
+  animation: popover-slide-right-and-fade var(--transition-base) both;
+}
+.popover-content[data-state='open'][data-side='bottom'] {
+  animation: popover-slide-down-and-fade var(--transition-base) both;
+}
+.popover-content[data-state='open'][data-side='left'] {
+  animation: popover-slide-left-and-fade var(--transition-base) both;
+}
+
+@keyframes popover-slide-up-and-fade {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-xxs));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popover-slide-right-and-fade {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--spacing-xxs) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes popover-slide-down-and-fade {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--spacing-xxs) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popover-slide-left-and-fade {
+  from {
+    opacity: 0;
+    transform: translateX(var(--spacing-xxs));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popover-content[data-state='open'] {
+    animation: none;
+  }
+}

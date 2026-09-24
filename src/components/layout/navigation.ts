@@ -1,0 +1,83 @@
+import {
+  ChartNoAxesCombined,
+  Contact,
+  House,
+  ListTodo,
+  NotebookText,
+  Settings2,
+  UserRoundPen,
+  UserSearch,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
+import { ADMINISTRATION_PATH } from "@/lib/configuracionNavigation";
+
+export type NavigationRole = "admin" | "reclutador";
+
+export type NavItem = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  badge?: string;
+  end?: boolean;
+  mobilePriority?: boolean;
+  roles?: ReadonlyArray<NavigationRole>;
+};
+
+export type NavGroup = {
+  title?: string;
+  items: NavItem[];
+};
+
+export const ACTIVIDADES_PATH = "/actividades";
+export const ACCOUNT_PATH = "/cuenta";
+export const HOME_PATH = "/inicio";
+
+export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
+  {
+    title: "Principal",
+    items: [
+      {
+        to: HOME_PATH,
+        label: "Inicio",
+        icon: House,
+        end: true,
+      },
+      {
+        to: "/candidatos",
+        label: "Candidatos",
+        icon: UserSearch,
+        mobilePriority: true,
+      },
+      { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
+      {
+        to: "/resumen",
+        label: "Resumen",
+        icon: ChartNoAxesCombined,
+        end: false,
+        mobilePriority: true,
+      },
+    ],
+  },
+  {
+    title: "Herramientas",
+    items: [
+      { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
+      {
+        to: "/actualizacion-datos",
+        label: "Campaña",
+        icon: UserRoundPen,
+        roles: ["admin", "reclutador"],
+      },
+    ],
+  },
+  {
+    title: "Administración",
+    items: [
+      { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
+      { to: ADMINISTRATION_PATH, label: "Administración", icon: Settings2 },
+    ],
+  },
+];
+
+export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_GROUPS.flatMap(group => group.items);

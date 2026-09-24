@@ -1,0 +1,10 @@
+.ui-toolbar {
+  display: grid;
+  min-inline-size: 0;
+  align-content: start;
+  gap: var(--design-spacing-md);
+}
+
+.ui-toolbar__group {
+  min-inline-size: 0;
+}

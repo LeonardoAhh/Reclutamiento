@@ -1,0 +1,736 @@
+import { useEffect, useId, useMemo, useState, useRef } from 'react';
+import { CircleCheckBig, PenLine, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
+import { Save as SaveIconData } from 'lucide';
+import type { Candidate, CandidateStatus } from '@/lib/types';
+import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
+import { usePositions } from '@/lib/positions';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
+import { formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
+import { Modal } from './Modal';
+import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { FormWizard } from './FormWizard';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { Tooltip } from './Tooltip';
+import { toast } from '@/lib/notify';
+import './CandidateModal.css';
+import { CustomSelect } from './CustomSelect';
+import { CANDIDATE_SOURCES } from '@/lib/types';
+import { useAuth } from '@/hooks/useAuth';
+import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
+import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
+import {
+  getRecruiterAccessCardName,
+  RECLUTADORES_ACTIVOS,
+  RECLUTADORES_INFO,
+} from '@/lib/constants';
+
+/**
+ * Reclutadoras activas que pueden ser asignadas a un proceso.
+ *
+ * El `value` se guarda en MAYÚSCULAS para mantener consistencia con el
+ * histórico (las normalizaciones en KPIs/Pipeline ya pasan por
+ * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
+ * El `label` se muestra en formato amigable en el select.
+ */
+const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> =
+  RECLUTADORES_ACTIVOS.map((r) => ({
+    value: r.toUpperCase(),
+    label: RECLUTADORES_INFO[r].nombre_corto,
+  }));
+
+type Mode = 'add' | 'edit' | 'delete';
+
+interface CandidateModalProps {
+  isOpen: boolean;
+  mode: Mode;
+  candidate?: Candidate | null;
+  candidates?: Candidate[];
+  onClose: () => void;
+  onSave?: (
+    payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'>,
+    id?: string
+  ) => Promise<{ ok: boolean; message?: string }> | void;
+  onDelete?: (id: string) => Promise<{ ok: boolean; message?: string }> | void;
+}
+
+interface FormState {
+  nombre: string;
+  telefono: string;
+  email: string;
+  puesto: string;
+  area: string;
+  seccion: string;
+  status: CandidateStatus;
+  reclutador: string;
+  source: string;
+  cv_url: string;
+  fecha_aplicacion: string;
+  fecha_cita: string;
+  is_starlite: boolean;
+}
+
+function emptyForm(): FormState {
+  return {
+    nombre: '',
+    telefono: '',
+    email: '',
+    puesto: '',
+    area: '',
+    seccion: '',
+    status: 'entrevista',
+    reclutador: '',
+    source: '',
+    cv_url: '',
+    fecha_aplicacion: localTodayIso(),
+    fecha_cita: '',
+    is_starlite: false,
+  };
+}
+
+function fromCandidate(c: Candidate): FormState {
+  return {
+    nombre: c.nombre ?? '',
+    telefono: c.telefono ?? '',
+    email: c.email ?? '',
+    puesto: c.puesto ?? '',
+    area: c.area ?? '',
+    seccion: c.seccion ?? '',
+    status: c.status,
+    reclutador: c.reclutador ?? '',
+    source: c.source ?? '',
+    cv_url: c.cv_url ?? '',
+    fecha_aplicacion: c.fecha_aplicacion
+      ? isoToLocalDateString(c.fecha_aplicacion)
+      : localTodayIso(),
+    fecha_cita: c.fecha_cita ? isoToLocalDateString(c.fecha_cita) : '',
+    is_starlite: c.is_starlite ?? false,
+  };
+}
+
+export function CandidateModal({
+  isOpen,
+  mode,
+  candidate,
+  candidates = [],
+  onClose,
+  onSave,
+  onDelete,
+}: CandidateModalProps) {
+  const formId = useId();
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === 'admin';
+  // En edición, `source` y `fecha_cita` pueden ser modificados tanto por
+  // admin como por reclutador. El resto de campos sigue bloqueado en
+  // edición (estado/proceso se edita desde la fila directamente).
+  const canEditCitaAndSource = isAdmin || profile?.role === 'reclutador';
+  const [form, setForm] = useState<FormState>(() => emptyForm());
+  const [submitting, setSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [accessCard, setAccessCard] = useState<CandidateAccessCardData | null>(null);
+
+  // UX State
+  const [touched, setTouched] = useState<Record<keyof FormState, boolean>>({
+    nombre: false, telefono: false, email: false, puesto: false, area: false, seccion: false, status: false, reclutador: false, source: false, cv_url: false, fecha_aplicacion: false, fecha_cita: false, is_starlite: false
+  });
+  const isMobile = useIsMobile();
+
+  const { positions } = usePositions();
+  const { employees, comments, noCitados } = useSupabaseData();
+
+  /**
+   * Cobertura actual de cada puesto. Sirve para detectar qué puestos
+   * realmente tienen vacante abierta (plantilla autorizada o backup
+   * sin cubrir) y limitar la captura a esos.
+   */
+  const positionCoverage = useMemo(
+    () => calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions]
+  );
+
+  /**
+   * Set de puestos con vacante abierta (`vacantes > 0`). Usamos
+   * área|sección|puesto como clave estricta para que un mismo puesto
+   * en distintos turnos se traten por separado.
+   */
+  const openPositionsKeySet = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of positionCoverage) {
+      if (p.vacantes > 0) {
+        s.add(`${p.area}||${p.seccion ?? ''}||${p.puesto}`);
+      }
+    }
+    return s;
+  }, [positionCoverage]);
+
+  /**
+   * Solo en modo "Agregar" restringimos a posiciones con vacante.
+   * Al editar un candidato existente respetamos los valores capturados
+   * aunque el puesto ya esté cubierto.
+   */
+  const restrictToOpen = mode === 'add';
+  const openPositions = useMemo(
+    () =>
+      restrictToOpen
+        ? positions.filter((p) =>
+            openPositionsKeySet.has(`${p.area}||${p.seccion ?? ''}||${p.puesto}`)
+          )
+        : positions,
+    [positions, openPositionsKeySet, restrictToOpen]
+  );
+
+  const areas = useMemo(
+    () => Array.from(new Set(openPositions.map((p) => p.area))).sort(),
+    [openPositions]
+  );
+  const sectionsForArea = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          openPositions
+            .filter((p) => p.area === form.area)
+            .map((p) => p.seccion)
+        )
+      ).sort(),
+    [openPositions, form.area]
+  );
+  const puestosForSection = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          openPositions
+            .filter(
+              (p) => p.area === form.area && p.seccion === form.seccion
+            )
+            .map((p) => p.puesto)
+        )
+      ).sort(),
+    [openPositions, form.area, form.seccion]
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      setErrorMsg(null);
+      setIsSuccess(false);
+      setSubmitting(false);
+      setAccessCard(null);
+      setForm(candidate ? fromCandidate(candidate) : emptyForm());
+      setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: false }), {} as Record<keyof FormState, boolean>));
+    }
+  }, [isOpen, candidate, mode]);
+
+  useEffect(() => {
+    if (errorMsg) setErrorMsg(null);
+  }, [form]);
+
+  const telDigits = form.telefono.replace(/\D/g, '');
+  const isSequentialOrRepeated = (tel: string) => {
+    if (tel.length !== 10) return false;
+    if (/^(\d)\1+$/.test(tel)) return true; // ej. 0000000000
+    if (/^1234567890$|^0987654321$/.test(tel)) return true;
+    return false;
+  };
+  const isPhoneValid = telDigits.length === 10 && !isSequentialOrRepeated(telDigits);
+
+  const duplicateSource = useMemo(() => {
+    if (telDigits.length !== 10) return null;
+    if (candidates.some(c => c.id !== candidate?.id && c.telefono?.replace(/\D/g, '') === telDigits)) return 'Candidatos';
+    if (noCitados.some(nc => nc.telefono?.replace(/\D/g, '') === telDigits)) return 'No Citados';
+    return null;
+  }, [telDigits, candidates, noCitados, candidate?.id]);
+
+  // Validations
+  const isValidName = (name: string) => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name) && name.trim().split(/\s+/).length >= 2;
+  const nombreError = !form.nombre.trim()
+    ? 'El nombre completo es obligatorio.'
+    : !isValidName(form.nombre)
+      ? 'Debe contener al menos nombre y apellido (solo letras).'
+      : null;
+
+  const telefonoError = telDigits.length === 0
+    ? 'El teléfono es obligatorio.'
+    : telDigits.length !== 10
+      ? 'Debe tener exactamente 10 dígitos.'
+      : isSequentialOrRepeated(telDigits)
+        ? 'El número de teléfono parece ser falso o incorrecto.'
+        : duplicateSource
+          ? `Teléfono duplicado en ${duplicateSource}`
+          : null;
+
+  const isValidEmail = (email: string) => email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailError = !isValidEmail(form.email) ? 'El formato del correo electrónico no es válido.' : null;
+
+  const errors = {
+    nombre: nombreError,
+    telefono: telefonoError,
+    email: emailError,
+    area: !form.area ? 'Selecciona un área.' : null,
+    seccion: !form.seccion ? 'Selecciona una sección.' : null,
+    puesto: !form.puesto ? 'Selecciona un puesto.' : null,
+    reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
+    source: !form.source ? 'Selecciona la fuente del candidato.' : null,
+    fecha_aplicacion: !form.fecha_aplicacion ? 'La fecha de contacto es obligatoria.' : form.fecha_aplicacion > localTodayIso() ? 'La fecha de contacto no puede ser futura.' : null,
+    fecha_cita: !form.fecha_cita ? 'La fecha de entrevista es obligatoria.' : null,
+  };
+
+  const isFormValid = !Object.values(errors).some(Boolean);
+
+  async function handleDeleteConfirm() {
+    if (submitting || !onDelete || !candidate?.id) return;
+    setErrorMsg(null);
+
+    try {
+      setSubmitting(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const result = await onDelete(candidate.id);
+      if (result && result.ok === false) {
+        setErrorMsg(result.message ?? 'No se pudo eliminar.');
+        setSubmitting(false);
+        return;
+      }
+
+      setIsSuccess(true);
+      setTimeout(() => onClose(), 1500);
+    } catch {
+      setErrorMsg('Ocurrió un error inesperado.');
+      setSubmitting(false);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+
+    if (!isFormValid && mode !== 'delete') {
+      setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: true }), {} as Record<keyof FormState, boolean>));
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('.input-error, .form-error-text');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return;
+    }
+
+    setErrorMsg(null);
+
+    try {
+      setSubmitting(true);
+
+      if (mode === 'add' || mode === 'edit') {
+        // Validation now handled by inline checks. We just check email dupes here.
+        if (form.email.trim()) {
+            const isDupEmail = candidates.some(c =>
+              c.id !== candidate?.id &&
+              c.email &&
+              c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
+            );
+            if (isDupEmail) {
+              setErrorMsg('Este correo electrónico ya está registrado en otro candidato.');
+              setSubmitting(false);
+              return;
+            }
+          }
+      }
+
+      if ((mode === 'add' || mode === 'edit') && onSave) {
+        const payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'> = {
+          nombre: form.nombre.trim(),
+          telefono: form.telefono.trim() || null,
+          email: form.email.trim() || null,
+          puesto: form.puesto,
+          area: form.area,
+          seccion: form.seccion || null,
+          status: form.status,
+          reclutador: form.reclutador.trim() || null,
+          source: form.source.trim() || null,
+          cv_url: form.cv_url.trim() || null,
+          fecha_aplicacion:
+            localDateToIso(form.fecha_aplicacion) ?? new Date().toISOString(),
+          // `fecha_cita` se guarda como date (YYYY-MM-DD) — el <input type="date">
+          // ya entrega ese formato. Vacío = sin cita programada (null).
+          fecha_cita: form.fecha_cita ? form.fecha_cita : null,
+          is_starlite: form.is_starlite,
+        };
+
+        // Retraso artificial para que se note la animación de "pensando"
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const result = await onSave(payload, candidate?.id);
+        if (result && result.ok === false) {
+          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setSubmitting(false);
+          return;
+        }
+
+        setIsSuccess(true);
+        if (mode === 'add') {
+          const recruiterName =
+            getRecruiterAccessCardName(form.reclutador) ?? form.reclutador;
+          setAccessCard({
+            candidateName: payload.nombre,
+            recruiterName,
+            position: payload.puesto,
+            interviewDate: payload.fecha_cita
+              ? formatReadableDate(payload.fecha_cita)
+              : null,
+          });
+          setSubmitting(false);
+          return;
+        }
+
+        setTimeout(() => onClose(), 1500);
+      }
+    } catch (err) {
+      setErrorMsg('Ocurrió un error inesperado.');
+      setSubmitting(false);
+    }
+  }
+
+  const isAdd = mode === 'add';
+  const isEdit = mode === 'edit';
+  const isDelete = mode === 'delete';
+
+  if (isDelete) {
+    return (
+      <DeleteConfirmModal
+        isOpen={isOpen}
+        title="Eliminar candidato"
+        onConfirm={() => void handleDeleteConfirm()}
+        onCancel={onClose}
+        isLoading={submitting || isSuccess}
+        errorMessage={errorMsg ?? undefined}
+      />
+    );
+  }
+
+
+
+  const icon = accessCard ? (
+    <CircleCheckBig size={20} className="color-success" aria-hidden="true" />
+  ) : isEdit ? (
+    <PenLine size={20} className="color-primary" aria-hidden="true" />
+  ) : (
+    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
+  );
+
+  const title = accessCard
+    ? 'Pase de entrevista'
+    : isEdit
+        ? 'Editar candidato'
+        : 'Nuevo candidato';
+
+  /* ── Campos agrupados para componer ambos layouts ────────────────────
+     PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
+
+  const fieldsContacto = (
+    <>
+      <div className="form-group">
+        <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
+        <input
+          id="cand-nombre"
+          type="text"
+          value={form.nombre}
+          onChange={(e) => {
+            setForm({ ...form, nombre: e.target.value.toUpperCase() });
+            if (!touched.nombre) setTouched({ ...touched, nombre: true });
+          }}
+          onBlur={() => {
+            setForm({ ...form, nombre: form.nombre.trim().replace(/\s+/g, ' ') });
+            if (!touched.nombre) setTouched({ ...touched, nombre: true });
+          }}
+          placeholder="APELLIDOS NOMBRE"
+          autoComplete="off"
+          disabled={isEdit && !isAdmin}
+          className={touched.nombre && errors.nombre ? 'input-error' : ''}
+        />
+        {touched.nombre && errors.nombre && <span className="form-error-text">{errors.nombre}</span>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-telefono">Teléfono <span className="text-error">*</span></label>
+        <div className="phone-input-wrapper">
+          <input
+            id="cand-telefono"
+            type="tel"
+            inputMode="tel"
+            value={form.telefono}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, '');
+              if (onlyNums.length > 10) return;
+              setForm({ ...form, telefono: onlyNums });
+              if (!touched.telefono) setTouched({ ...touched, telefono: true });
+            }}
+            onBlur={() => {
+              setForm({ ...form, telefono: formatPhoneNumber(form.telefono) });
+              if (!touched.telefono) setTouched({ ...touched, telefono: true });
+            }}
+            placeholder="442 123 4567"
+            autoComplete="off"
+            disabled={isEdit && !isAdmin}
+            aria-invalid={touched.telefono && !!errors.telefono || undefined}
+            aria-describedby={touched.telefono && errors.telefono ? `${formId}-telefono-error` : undefined}
+            className={touched.telefono && errors.telefono ? 'input-error' : ''}
+          />
+          {isPhoneValid && (
+            <CircleCheckBig size={18} className="phone-validation-icon valid" />
+          )}
+          {touched.telefono && errors.telefono && (
+            <XCircle size={18} className="phone-validation-icon invalid" />
+          )}
+        </div>
+        {touched.telefono && errors.telefono && (
+          <span id={`${formId}-telefono-error`} className={duplicateSource ? 'sr-only' : 'form-error-text'}>
+            {errors.telefono}
+          </span>
+        )}
+      </div>
+
+    </>
+  );
+
+  const noOpenPositions = restrictToOpen && areas.length === 0;
+
+const fieldsPosicion = (
+    <>
+      <div className="form-group">
+        <label htmlFor="cand-area">
+          Área <span className="text-error">*</span>
+          {restrictToOpen && noOpenPositions && (
+            <span className="candidate-modal__hint" role="note">
+              <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
+            </span>
+          )}
+        </label>
+        <CustomSelect
+          id="cand-area"
+          value={form.area}
+          onChange={(val) => {
+            setForm({ ...form, area: val, seccion: '', puesto: '' });
+            setTouched({ ...touched, area: true, seccion: false, puesto: false });
+          }}
+          options={areas.map((a) => ({ value: a, label: a }))}
+          placeholder="Seleccionar…"
+          disabled={(isEdit && !isAdmin) || noOpenPositions}
+          aria-invalid={touched.area && !!errors.area}
+        />
+        {touched.area && errors.area && <span className="form-error-text">{errors.area}</span>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-seccion">Sección <span className="text-error">*</span></label>
+        <CustomSelect
+          id="cand-seccion"
+          value={form.seccion}
+          onChange={(val) => {
+            setForm({ ...form, seccion: val, puesto: '' });
+            setTouched({ ...touched, seccion: true, puesto: false });
+          }}
+          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccionar…"
+          disabled={!form.area || (isEdit && !isAdmin)}
+          aria-invalid={touched.seccion && !!errors.seccion}
+        />
+        {touched.seccion && errors.seccion && <span className="form-error-text">{errors.seccion}</span>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-puesto">Puesto <span className="text-error">*</span></label>
+        <CustomSelect
+          id="cand-puesto"
+          value={form.puesto}
+          onChange={(val) => {
+            setForm({ ...form, puesto: val });
+            setTouched({ ...touched, puesto: true });
+          }}
+          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          placeholder="Seleccionar…"
+          disabled={!form.seccion || (isEdit && !isAdmin)}
+          aria-invalid={touched.puesto && !!errors.puesto}
+        />
+        {touched.puesto && errors.puesto && <span className="form-error-text">{errors.puesto}</span>}
+      </div>
+    </>
+  );
+
+  const fieldsProceso = (
+    <>
+      <div className="form-group">
+        <label htmlFor="cand-status">Proceso</label>
+        <CustomSelect
+          id="cand-status"
+          value={form.status}
+          onChange={(val) => setForm({ ...form, status: val as CandidateStatus })}
+          options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: CANDIDATE_STATUS_LABEL[s] }))}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-reclutador">Reclutador <span className="text-error">*</span></label>
+        <CustomSelect
+          id="cand-reclutador"
+          value={form.reclutador}
+          onChange={(val) => {
+            setForm({ ...form, reclutador: val });
+            setTouched({ ...touched, reclutador: true });
+          }}
+          placeholder="Seleccionar..."
+          options={RECLUTADORES_DISPONIBLES}
+          disabled={isEdit && !isAdmin}
+          aria-label="Reclutador a cargo del proceso, obligatorio"
+          aria-invalid={touched.reclutador && !!errors.reclutador}
+        />
+        {touched.reclutador && errors.reclutador && <span className="form-error-text">{errors.reclutador}</span>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-source">Medio de reclutamiento <span className="text-error">*</span></label>
+        <CustomSelect
+          id="cand-source"
+          value={form.source}
+          onChange={(val) => {
+            setForm({ ...form, source: val });
+            setTouched({ ...touched, source: true });
+          }}
+          options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: s }))}
+          placeholder="Seleccionar..."
+          disabled={isEdit && !canEditCitaAndSource}
+          aria-invalid={touched.source && !!errors.source}
+        />
+        {touched.source && errors.source && <span className="form-error-text">{errors.source}</span>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cand-starlite">Starlite</label>
+        <CustomSelect
+          id="cand-starlite"
+          value={form.is_starlite ? 'true' : 'false'}
+          onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+          options={[
+            { value: 'false', label: 'No' },
+            { value: 'true', label: 'Sí' }
+          ]}
+          disabled={isEdit && !isAdmin}
+        />
+      </div>
+
+
+      <div className="form-group">
+        <label htmlFor="cand-fecha-cita">Fecha de entrevista <span className="text-error">*</span></label>
+        <input
+          id="cand-fecha-cita"
+          type="date"
+          value={form.fecha_cita}
+          onChange={(e) => {
+            setForm({ ...form, fecha_cita: e.target.value });
+            setTouched({ ...touched, fecha_cita: true });
+          }}
+          disabled={isEdit && !canEditCitaAndSource}
+          className={touched.fecha_cita && errors.fecha_cita ? 'input-error' : ''}
+        />
+        {touched.fecha_cita && errors.fecha_cita && <span className="form-error-text">{errors.fecha_cita}</span>}
+      </div>
+    </>
+  );
+
+  const errorNotice = errorMsg ? (
+    <p id="candidate-submit-error" className="form-error-text" role="alert">
+      {errorMsg}
+    </p>
+  ) : null;
+
+  const useWizard = !accessCard && isMobile;
+  const footerActions = !accessCard && !useWizard ? (
+    <>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={onClose}
+        disabled={submitting || isSuccess}
+      >
+        Cancelar
+      </button>
+      <AnimatedSubmitButton
+        isSubmitting={submitting}
+        isSuccess={isSuccess}
+        isError={!!errorMsg}
+        errorText={errorMsg || undefined}
+        errorMessageId="candidate-submit-error"
+        idleText="Guardar"
+        loadingText="Guardando..."
+        successText="¡Guardado!"
+        idleIcon={SaveIconData}
+        className="btn-primary"
+        form={formId}
+      />
+    </>
+  ) : undefined;
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
+      size={accessCard ? 'xs' : 'md'}
+      icon={icon}
+      title={title}
+      footerActions={footerActions}
+    >
+      {accessCard ? (
+        <CandidateAccessCard
+          data={accessCard}
+        />
+      ) : useWizard ? (
+        /* ── Móvil: registro por pasos ── */
+        <form
+          onSubmit={handleSubmit}
+          className="modal-wizard-form"
+          noValidate
+        >
+          <FormWizard
+            onCancel={onClose}
+            submitting={submitting}
+            submitDisabled={!isFormValid}
+            submitLabel="Guardar"
+            submittingLabel="Guardando…"
+            notice={errorMsg ? errorNotice : null}
+            steps={[
+              {
+                id: 'contacto',
+                title: 'Contacto',
+                isValid: !errors.nombre && !errors.telefono && !errors.email,
+                content: <div className="form-grid">{fieldsContacto}</div>,
+              },
+              {
+                id: 'posicion',
+                title: 'Posición',
+                isValid: !errors.area && !errors.seccion && !errors.puesto,
+                content: <div className="form-grid">{fieldsPosicion}</div>,
+              },
+              {
+                id: 'proceso',
+                title: 'Proceso',
+                isValid: !errors.reclutador && !errors.source && !errors.fecha_aplicacion && !errors.fecha_cita,
+                content: <div className="form-grid">
+                  {fieldsProceso}
+                </div>,
+              },
+            ]}
+          />
+        </form>
+      ) : (
+        <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>
+          <div className="form-grid">
+            {fieldsContacto}
+            {fieldsPosicion}
+            {fieldsProceso}
+          </div>
+
+          {errorNotice}
+
+        </form>
+      )}
+    </Modal>
+  );
+}

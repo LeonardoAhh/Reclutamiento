@@ -1,0 +1,24 @@
+.candidate-filter-select {
+  width: auto;
+}
+
+.candidate-filter-select .custom-select-trigger {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+.candidate-filter-select__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .candidate-filter-select__icon,
+  .candidate-filter-select__chevron {
+    display: none;
+  }
+}

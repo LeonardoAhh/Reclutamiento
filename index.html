@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    <head>
+        <meta charset="UTF-8" />
+
+        <!-- =====================================================================
+         METADATOS BÁSICOS
+         ===================================================================== -->
+
+        <!-- Viewport: viewport-fit=cover cubre el "notch" en iPhones modernos -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+
+        <!-- Descripción visible en motores de búsqueda y previsualizaciones -->
+        <meta
+            name="description"
+            content="Portal interno de servicios y atención a colaboradores de ViñoPlastic Querétaro."
+        />
+        
+        <!-- Open Graph / Redes Sociales (WhatsApp, Facebook, LinkedIn) -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.reclutamiento.lat/" />
+        <meta property="og:title" content="Portal del Empleado | ViñoPlastic" />
+        <meta property="og:description" content="Portal interno de servicios y atención a colaboradores de ViñoPlastic Querétaro." />
+        <meta property="og:image" content="https://www.reclutamiento.lat/logo-empresa.jpg" />
+
+        <!-- Twitter / X Cards -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Portal del Empleado | ViñoPlastic" />
+        <meta name="twitter:description" content="Portal interno de servicios y atención a colaboradores de ViñoPlastic Querétaro." />
+        <meta name="twitter:image" content="https://www.reclutamiento.lat/logo-empresa.jpg" />
+
+        <!-- Color del tema claro para la barra del navegador y la PWA. -->
+        <meta name="theme-color" content="#f6f5f4" />
+
+        <!-- =====================================================================
+         PWA / INSTALACIÓN EN PANTALLA DE INICIO
+         ===================================================================== -->
+
+        <!-- Habilita el modo standalone en iOS (oculta barra de Safari) -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+        <!-- "black-translucent" hace que el contenido se extienda por debajo
+         de la barra de estado, permitiendo que el color del <html> (canvas)
+         sea visible en esa zona. Combinado con viewport-fit=cover y el
+         background del <html>, la barra superior adopta el color del tema. -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        <!-- Nombre que aparece bajo el ícono al guardar en pantalla de inicio -->
+        <meta name="apple-mobile-web-app-title" content="Reclutamiento" />
+
+        <!-- Equivalente de la etiqueta anterior para Android/Chrome -->
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <!-- =====================================================================
+         FAVICONS
+         Orden recomendado: SVG (moderno) → PNG 32×32 → PNG 16×16 → Apple touch
+         El navegador toma el primer formato que soporte.
+         ===================================================================== -->
+        <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+        />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+        />
+
+        <!-- =====================================================================
+         TÍTULO
+         Formato recomendado: "Sección — Nombre de la app"
+         ===================================================================== -->
+        <title>Portal del Empleado | ViñoPlastic</title>
+
+        <!-- =====================================================================
+         TIPOGRAFÍA
+         Berkeley Mono es una fuente propietaria; si tienes licencia, coloca
+         los archivos .woff2 en /public/fonts/ y agrega un bloque @font-face
+         aquí para que carguen de forma local (sin petición de red externa).
+
+         Ejemplo:
+           <style>
+             @font-face {
+               font-family: 'Berkeley Mono';
+               src: url('/fonts/BerkeleyMono-Regular.woff2') format('woff2');
+               font-weight: 400;
+               font-style: normal;
+               font-display: swap;   ← muestra fallback mientras carga
+             }
+           </style>
+
+         Sin los archivos, el navegador usará el monospace nativo del sistema
+         (Menlo en macOS, Consolas en Windows, etc.) gracias al stack de
+         fallback definido en el CSS de la app.
+         ===================================================================== -->
+
+        <!-- Fuentes Cal.com look: Inter (display+body) + JetBrains Mono (code) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
+            rel="stylesheet"
+        />
+
+    </head>
+
+    <body>
+        <!-- Punto de montaje de la aplicación React.
+         Vite inyecta el bundle en main.tsx, que llama a ReactDOM.createRoot('#root'). -->
+        <div id="root"></div>
+
+        <!-- Punto de entrada de la aplicación.
+         type="module" habilita ES Modules nativos; Vite lo reemplaza
+         por el bundle optimizado al hacer `vite build`. -->
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

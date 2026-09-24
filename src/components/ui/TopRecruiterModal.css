@@ -1,0 +1,139 @@
+/* TopRecruiterModal.css - Mobile First & Design.md semantics */
+
+.top-recruiter-modal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-md);
+}
+
+.top-recruiter-modal__text {
+  margin: 0;
+  color: var(--color-body);
+}
+
+.top-recruiter-modal__kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.top-recruiter-modal__progress-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+.top-recruiter-modal__progress-heading strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.top-recruiter-modal__progress {
+  width: 100%;
+  height: var(--spacing-xs);
+  overflow: hidden;
+  appearance: none;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+}
+
+.top-recruiter-modal__progress::-webkit-progress-bar {
+  background: var(--color-surface);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress::-webkit-progress-value {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress::-moz-progress-bar {
+  background: var(--color-primary);
+  border-radius: var(--rounded-full);
+}
+
+.top-recruiter-modal__progress--complete::-webkit-progress-value {
+  background: var(--color-success);
+}
+
+.top-recruiter-modal__progress--complete::-moz-progress-bar {
+  background: var(--color-success);
+}
+
+.top-recruiter-modal__kpi-text {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.top-recruiter-modal .modal-footer .btn-primary {
+  width: 100%;
+}
+
+.top-recruiter-modal__section-title {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.top-recruiter-modal__milestones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.top-recruiter-modal__milestone {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-body);
+}
+
+.top-recruiter-modal__milestone > svg {
+  flex-shrink: 0;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  color: var(--color-ink);
+}
+
+.top-recruiter-modal__milestone-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  overflow-wrap: anywhere;
+}
+
+.top-recruiter-modal__preferences {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-recruiter-modal__dismiss {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: var(--touch-target-min);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.top-recruiter-modal__dismiss input {
+  flex-shrink: 0;
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+}

@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recibo de Nómina</title>
+    <style>
+      :root {
+        --color-bar: #1f3b70; /* barra "RECIBO DE NÓMINA" */
+        --color-band: #2e5c99; /* banda "PERCEPCIONES / DEDUCCIONES" */
+        --color-cfdi: #173b6c; /* barra "Comprobante Fiscal Digital" */
+        --color-border: #c9ccd1;
+        --color-text: #1a1a1a;
+        --color-muted: #8a8f98;
+        --font-base: Arial, Helvetica, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f2f2f4;
+        font-family: var(--font-base);
+        font-size: 13px;
+        line-height: 1.35;
+        color: var(--color-text);
+      }
+
+      main.recibo {
+        max-width: 900px;
+        margin: 1rem auto;
+        background: #fff;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      /* Encabezado */
+      .encabezado {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+      .encabezado h1 {
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0 0 0.5rem;
+      }
+      .encabezado p {
+        margin: 0.15rem 0;
+        text-transform: uppercase;
+      }
+      .encabezado .dirección {
+        text-transform: uppercase;
+      }
+      .encabezado .razon-social {
+        font-weight: 600;
+      }
+
+      .titulo-recibo {
+        align-self: start;
+        background: var(--color-bar);
+        color: #fff;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 1rem 1.5rem;
+        width: 16rem;
+      }
+
+      /* Datos del trabajador */
+      .datos-trabajador {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.5rem;
+        padding: 0 1.5rem 1rem;
+      }
+      .datos-trabajador dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 0.5rem;
+        row-gap: 0.15rem;
+        margin: 0;
+      }
+      .datos-trabajador dt {
+        font-weight: 600;
+      }
+      .datos-trabajador dd {
+        margin: 0;
+      }
+
+      /* Percepciones / Deducciones */
+      .conceptos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 0 1.5rem;
+      }
+      .conceptos h2 {
+        background: var(--color-band);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        margin: 0;
+        padding: 0.35rem 0;
+      }
+      table.tabla-conceptos {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.25rem;
+      }
+      table.tabla-conceptos td {
+        padding: 0.15rem 0;
+        border-bottom: 1px solid var(--color-border);
+        vertical-align: top;
+      }
+      table.tabla-conceptos td.clave {
+        padding-right: 0.5rem;
+        white-space: nowrap;
+      }
+      table.tabla-conceptos td.concepto {
+        width: 100%;
+      }
+      table.tabla-conceptos td.importe {
+        padding-left: 0.5rem;
+        text-align: right;
+        white-space: nowrap;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Totales y firma */
+      .totales-firma {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem 1.5rem 1.5rem;
+        margin-top: 0.5rem;
+      }
+      .totales-firma dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 0.5rem;
+        row-gap: 0.15rem;
+        margin: 0;
+        max-width: 18rem;
+      }
+      .totales-firma dd {
+        margin: 0;
+        text-align: right;
+      }
+      .total-deducciones {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 0.5rem;
+        max-width: 18rem;
+      }
+      .total-deducciones .valor {
+        text-align: right;
+        font-weight: 600;
+      }
+      .firma {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 2rem;
+      }
+      .firma .linea {
+        display: inline-block;
+        width: 14rem;
+        border-bottom: 1px solid #777;
+        margin-left: 0.35rem;
+      }
+
+      /* CFDI */
+      .cfdi {
+        border-top: 1px solid var(--color-border);
+      }
+      .cfdi h2 {
+        background: var(--color-cfdi);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+        padding: 0.35rem 1.5rem;
+      }
+      .cfdi-datos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.5rem;
+        padding: 0.75rem 1.5rem;
+      }
+      .cfdi-datos dl {
+        margin: 0;
+      }
+      .cfdi-datos div {
+        margin: 0.1rem 0;
+      }
+      .cfdi-datos dt {
+        display: inline;
+        font-weight: 600;
+      }
+      .cfdi-datos dd {
+        display: inline;
+        margin: 0;
+        word-break: break-all;
+      }
+
+      .cfdi-qr-totales {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.5rem;
+        padding: 0 1.5rem 1.5rem;
+        align-items: start;
+      }
+      .qr-placeholder {
+        width: 8rem;
+        height: 8rem;
+        border: 1px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 11px;
+        color: var(--color-muted);
+        flex-shrink: 0;
+      }
+      .cfdi-totales {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        column-gap: 0.5rem;
+        max-width: 26rem;
+        margin-left: auto;
+      }
+      .cfdi-totales dd {
+        margin: 0;
+        text-align: right;
+      }
+      .cfdi-totales .sub {
+        grid-column: 1 / -1;
+        padding-left: 1rem;
+        font-size: 12px;
+      }
+      .cfdi-totales .total-final {
+        border-top: 1px solid var(--color-border);
+        padding-top: 0.35rem;
+        margin-top: 0.35rem;
+        font-weight: 600;
+      }
+
+      /* Responsive: apilar en móvil */
+      @media (max-width: 640px) {
+        .encabezado,
+        .datos-trabajador,
+        .conceptos,
+        .totales-firma,
+        .cfdi-datos,
+        .cfdi-qr-totales {
+          grid-template-columns: 1fr;
+        }
+        .titulo-recibo {
+          width: 100%;
+          justify-self: start;
+        }
+        .firma {
+          justify-content: flex-start;
+        }
+        .cfdi-totales {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="recibo" aria-label="Recibo de nómina">
+      <!-- ENCABEZADO -->
+      <header class="encabezado">
+        <div>
+          <h1>VIÑOPLASTIC INYECCION</h1>
+          <p class="dirección">
+            AV SAN LORENZO No. 899 Int. BODEGA 2, Col. SAN NICOLAS TOLENTINO,
+            CIUDAD DE MEXICO, MEXICO, C.P. 09850
+          </p>
+          <p><strong>RFC:</strong> VIN060718N90</p>
+          <p class="razon-social">General de Ley Personas Morales</p>
+        </div>
+        <div class="titulo-recibo">Recibo de Nómina</div>
+      </header>
+
+      <!-- DATOS DEL TRABAJADOR -->
+      <section class="datos-trabajador" aria-label="Datos del trabajador">
+        <dl>
+          <dt>No. Trab.:</dt>
+          <dd>0001</dd>
+          <dt>Nombre:</dt>
+          <dd>HARRY PAUL RUIZ RODRIGUEZ</dd>
+          <dt>CURP:</dt>
+          <dd>RURH961121HQTZDR09</dd>
+          <dt>RFC:</dt>
+          <dd>RURH9602114MA</dd>
+          <dt>R. IMSS:</dt>
+          <dd>562038290180</dd>
+          <dt>Régimen Trabajador:</dt>
+          <dd>Sueldos</dd>
+        </dl>
+        <dl>
+          <dt>Depto.:</dt>
+          <dd>Producción</dd>
+          <dt>Puesto:</dt>
+          <dd>OPERADOR DE MÁQUINA</dd>
+          <dt>No. Nómina:</dt>
+          <dd>1</dd>
+          <dt>Periodo del:</dt>
+          <dd>06/ago./2026 al 12/ago./2026</dd>
+          <dt>Días trabajados:</dt>
+          <dd>7</dd>
+          <dt>Faltas:</dt>
+          <dd>0</dd>
+        </dl>
+      </section>
+
+      <!-- PERCEPCIONES / DEDUCCIONES -->
+      <section class="conceptos" aria-label="Percepciones y deducciones">
+        <div>
+          <h2>Percepciones</h2>
+          <table class="tabla-conceptos">
+            <caption class="sr-only">
+              Percepciones del periodo
+            </caption>
+            <thead class="sr-only">
+              <tr>
+                <th scope="col">Clave</th>
+                <th scope="col">Concepto</th>
+                <th scope="col">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="clave">P001</td>
+                <td class="concepto">SUELDO</td>
+                <td class="importe">2,219.00</td>
+              </tr>
+              <tr>
+                <td class="clave">P006</td>
+                <td class="concepto">FONDO DE AHORRO PATRON</td>
+                <td class="importe">88.76</td>
+              </tr>
+              <tr>
+                <td class="clave">P014</td>
+                <td class="concepto">VALES DE DESPENSA</td>
+                <td class="importe">66.57</td>
+              </tr>
+              <tr>
+                <td class="clave">P023</td>
+                <td class="concepto">PREMIO DE ASISTENCIA PERFECTA</td>
+                <td class="importe">619.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h2>Deducciones</h2>
+          <table class="tabla-conceptos">
+            <caption class="sr-only">
+              Deducciones del periodo
+            </caption>
+            <thead class="sr-only">
+              <tr>
+                <th scope="col">Clave</th>
+                <th scope="col">Concepto</th>
+                <th scope="col">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="clave">D001</td>
+                <td class="concepto">ISR</td>
+                <td class="importe">226.11</td>
+              </tr>
+              <tr>
+                <td class="clave">D002</td>
+                <td class="concepto">IMSS</td>
+                <td class="importe">55.82</td>
+              </tr>
+              <tr>
+                <td class="clave">D005</td>
+                <td class="concepto">FONDO DE AHORRO</td>
+                <td class="importe">88.76</td>
+              </tr>
+              <tr>
+                <td class="clave">D009</td>
+                <td class="concepto">FONDO DE AHORRO EMPLEADO</td>
+                <td class="importe">88.76</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TOTALES Y FIRMA -->
+      <section class="totales-firma" aria-label="Totales y firma">
+        <dl>
+          <dt>Total Percepciones</dt>
+          <dd>2,993.33</dd>
+          <dt>Neto Pagado</dt>
+          <dd>2,533.88</dd>
+          <dt>Total en Efectivo</dt>
+          <dd>2,467.31</dd>
+        </dl>
+        <div class="total-deducciones">
+          <span>Total Deducciones</span><span class="valor">459.45</span>
+        </div>
+        <div class="firma">
+          <p>FIRMA:<span class="linea">&nbsp;</span></p>
+        </div>
+      </section>
+
+      <!-- COMPROBANTE FISCAL DIGITAL -->
+      <section
+        class="cfdi"
+        aria-label="Comprobante fiscal digital por internet"
+      >
+        <h2>Comprobante Fiscal Digital por Internet</h2>
+
+        <div class="cfdi-datos">
+          <dl>
+            <div>
+              <dt>Folio Fiscal:</dt>
+              <dd>87741699-A2A-448-B164-C958B56EDE</dd>
+            </div>
+            <div>
+              <dt>Fecha y hora de certificación:</dt>
+              <dd>2026-08-14T18:21:46</dd>
+            </div>
+            <div>
+              <dt>No. de Serie del CSD del SAT:</dt>
+              <dd>000010007021858</dd>
+            </div>
+            <div>
+              <dt>Forma de pago:</dt>
+              <dd>Por definir</dd>
+            </div>
+          </dl>
+          <dl>
+            <div>
+              <dt>Lugar de emisión:</dt>
+              <dd>050</dd>
+            </div>
+            <div>
+              <dt>Fecha y hora de emisión:</dt>
+              <dd>2026-08-14T18:20:48</dd>
+            </div>
+            <div>
+              <dt>No. de serie del CSD del emisor:</dt>
+              <dd>0000100012420887</dd>
+            </div>
+            <div>
+              <dt>Serie y Folio interno:</dt>
+              <dd>NOM379</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="cfdi-qr-totales">
+          <!-- Placeholder de código QR: reemplazar con la imagen/generación real del QR del CFDI -->
+          <div
+            class="qr-placeholder"
+            role="img"
+            aria-label="Código QR del comprobante fiscal digital"
+          >
+            Recibo de Nómina para fines de prueba.
+          </div>
+
+          <dl class="cfdi-totales">
+            <dt>Total percepciones:</dt>
+            <dd>2,993.33</dd>
+
+            <dt>Total otros pagos:</dt>
+            <dd>0.00 +</dd>
+            <dd class="sub">Otros pagos: 0.00</dd>
+            <dd class="sub">Subsidio efectivamente entregado al trabajador</dd>
+
+            <dt>Total deducciones sin ISR:</dt>
+            <dd>233.34 -</dd>
+            <dt>ISR retenido:</dt>
+            <dd>226.11 -</dd>
+
+            <dt class="total-final">Total:</dt>
+            <dd class="total-final">2,533.88 =</dd>
+          </dl>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

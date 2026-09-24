@@ -1,0 +1,23 @@
+/* ==========================================================================
+   Bajas — Layout principal y contenedor de página
+   Alineado con desing.md (tokens semánticos, espaciados y jerarquía)
+   ========================================================================== */
+
+.bajas {
+  padding-bottom: var(--spacing-xxl);
+}
+
+.bajas__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .bajas__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--spacing-lg);
+    align-items: stretch;
+  }
+}

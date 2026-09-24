@@ -1,0 +1,19 @@
+/* ── Calendar.css ───────────────────────────────────────────
+   Overrides for react-day-picker aligned with the design system
+──────────────────────────────────────────────────────────────── */
+
+.rdp-root {
+  --rdp-day-height: var(--control-height);
+  --rdp-day-width: var(--control-height);
+  --rdp-day_button-height: var(--control-height);
+  --rdp-day_button-width: var(--control-height);
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-primary-tint);
+  --rdp-day_button-border-radius: var(--rounded-md);
+  --rdp-selected-border: var(--focus-ring-width) solid var(--color-primary);
+  margin: 0;
+}
+
+.rdp-selected {
+  font-weight: var(--type-body-strong-weight);
+}

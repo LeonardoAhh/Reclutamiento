@@ -1,0 +1,86 @@
+.user-activity-panel {
+  min-width: 0;
+}
+
+.user-activity-panel__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-activity-panel__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  padding: var(--spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+}
+
+.user-activity-panel__name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-transform: capitalize;
+}
+
+.user-activity-panel__status {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--design-spacing-xxs);
+  color: var(--color-muted);
+  white-space: normal;
+}
+
+.user-activity-panel__online-dot {
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-success);
+}
+
+.user-activity-panel__status--online {
+  color: var(--color-success);
+}
+
+.user-activity-panel__status-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  flex-shrink: 0;
+}
+
+.user-activity-panel__state,
+.user-activity-panel__warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-soft);
+  text-align: center;
+}
+
+.user-activity-panel__warning {
+  margin-bottom: var(--spacing-md);
+}
+
+.user-activity-panel__state p,
+.user-activity-panel__warning p {
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  .user-activity-panel__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

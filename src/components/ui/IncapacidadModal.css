@@ -1,0 +1,46 @@
+/* IncapacidadModal — toggle + fecha opcional de regreso */
+
+.incapacidad-modal__icon {
+  color: var(--color-accent-amber);
+}
+
+.incapacidad-modal .incapacidad-modal__icon {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  color: currentColor;
+}
+
+.incapacidad-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.incapacidad-modal__toggle {
+  display: flex;
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.incapacidad-modal__toggle-label {
+  color: var(--color-ink);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+}
+
+.incapacidad-modal__error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: 0;
+}
+
+.incapacidad-modal__error svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
+}

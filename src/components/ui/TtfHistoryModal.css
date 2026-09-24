@@ -1,0 +1,129 @@
+/* TtfHistoryModal — Histórico mensual de TTF (días hábiles). */
+
+/* ── Body ──────────────────────────────────────────────────────────── */
+.ttf-history-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ── Lista de meses ─────────────────────────────────────────────────── */
+.ttf-history-modal__content {
+  /* Scroll handled by Modal component */
+}
+
+.ttf-history-modal__empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-xl) 0;
+}
+
+.ttf-history-modal__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+/* ── Cada mes como <details> ────────────────────────────────────────── */
+.ttf-history-modal__month {
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-card);
+}
+
+.ttf-history-modal__month-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.ttf-history-modal__month-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.ttf-history-modal__month-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.ttf-history-modal__month-count {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
+  letter-spacing: var(--type-caption-md-tracking);
+  color: var(--color-muted);
+}
+
+.ttf-history-modal__month-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.ttf-history-modal__month-avg {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-ink);
+}
+
+/* Badges de tendencia */
+.ttf-history-modal__month-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
+}
+
+.ttf-history-modal__month-trend--up {
+  color: var(--color-error);
+  background: var(--color-error-tint);
+}
+
+.ttf-history-modal__month-trend--down {
+  color: var(--color-success);
+  background: var(--color-success-tint);
+}
+
+.ttf-history-modal__month-trend--neutral {
+  color: var(--color-muted);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .ttf-history-modal__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .ttf-history-modal__month-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .ttf-history-modal__month-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

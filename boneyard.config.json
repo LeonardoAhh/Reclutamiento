@@ -1,0 +1,27 @@
+{
+  "breakpoints": [375, 600, 768, 1080, 1280, 1440],
+  "out": "./src/bones",
+  "routes": [
+    "/inicio",
+    "/plantilla",
+    "/empleados",
+    "/candidatos",
+    "/bajas",
+    "/resumen",
+    "/reportes",
+    "/analisis",
+    "/indicadores",
+    "/rutas",
+    "/tabulador",
+    "/speech",
+    "/formatos",
+    "/actividades",
+    "/cuenta"
+  ],
+  "wait": 2200,
+  "color": "var(--color-hairline)",
+  "darkColor": "var(--color-hairline)",
+  "animate": "solid",
+  "speed": "var(--duration-skeleton)",
+  "boneClass": "boneyard-skeleton__bone"
+}

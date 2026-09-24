@@ -1,0 +1,10 @@
+/* CandidateRowActions — menú kebab por fila */
+
+.candidate-row-actions {
+  position: relative;
+  display: inline-flex;
+}
+
+.dropdown-menu-content.candidate-row-actions__menu {
+  min-inline-size: max-content;
+}

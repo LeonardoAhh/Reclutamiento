@@ -1,0 +1,68 @@
+# Supabase migrations
+
+Migraciones SQL versionadas para el schema del proyecto.
+
+## Cómo aplicar una migración
+
+### Opción A — SQL Editor (manual, sin CLI)
+
+1. Abre tu proyecto en https://app.supabase.com
+2. Ve a **SQL Editor** → **New query**
+3. Copia el contenido completo del archivo `.sql` (en orden numérico) y pega
+4. Click **Run** (o `Ctrl+Enter`)
+5. Verifica que aparezca **Success. No rows returned**
+
+### Opción B — Supabase CLI
+
+```bash
+# Una sola vez: vincular el proyecto local con el remoto
+supabase link --project-ref <tu-project-ref>
+
+# Aplicar todas las migraciones nuevas
+supabase db push
+```
+
+## Orden de las migraciones
+
+| Archivo | Qué crea | PR asociado |
+|---|---|---|
+| `001_pipeline_schema.sql` | Tablas `candidates`, `candidate_notes`, `vacancy_requests`, `vacancy_status_history` + triggers de auditoría y `updated_at`. | PR B |
+| `002_candidates_employee_link.sql` | Columna `employee_num` en `candidates` para linkear al empleado generado tras "Contratar". | PR F |
+| `003_vacancy_sla.sql` | Columnas `dias_sla`, `excluida_indicador`, `motivo_exclusion` en `vacancy_requests` para tracking de SLA y exclusión de KPI. | PR G |
+| `004_vacancy_audit_app_managed.sql` | Reduce el trigger `vacancy_requests_log_status` a sólo `INSERT` para que la app maneje los `UPDATE` con contexto (`changed_by`, `reason`). | PR H |
+| `005_auth_profiles.sql` | Tabla `profiles` (1:1 con `auth.users`), trigger `on_auth_user_created`, y endurecimiento de RLS en todas las tablas existentes (`anon` → `authenticated`). Auth login con usuario+password vía email sintético `${usuario}@reclutamiento.local`. | PR I |
+| `015_candidates_status_v2.sql` | Reemplaza el CHECK legacy de `candidates.status` por los 5 status vigentes (`entrevista`, `entrega_documentos`, `faltan_documentos`, `contratado`, `rechazado`) + backfill de filas viejas + cambio de DEFAULT a `entrevista`. Sin esto, los INSERT/UPDATE del pipeline fallaban en silencio y los KPIs divergían entre devices. | — |
+| `019_reportes_diarios.sql` | Tabla `reportes_diarios` (1 registro por `mes`, UNIQUE) para guardar e historizar el **Reporte Diario** de asistencia: `data` jsonb con las filas crudas + columnas resumen (`total_empleados`, `total_incidencias`, `tasa_asistencia`, `dias_disponibles`, `total_ausentismo`, `pct_ausentismo`) + `uploaded_by`, `created_at`, `updated_at` (trigger). RLS permisiva para `authenticated`. Consumido por `useReporteDiario.ts`. | Reporte Diario |
+| `022_system_maintenance.sql` | Tabla/configuración global `config.main`, lectura para usuarios autenticados, actualización exclusiva por rol `admin` y publicación Realtime para propagar mantenimiento a sesiones abiertas. | Sistema |
+| `028_ai_chat_sessions.sql` | Historial personal del Asistente: mensajes, contexto textual del CV y vacante, con RLS por usuario y respaldo local en cliente. | Asistente |
+| `029_profile_general.sql` | Ciclos, plantillas versionadas, criterios ponderados, evaluaciones y auditoría de Perfil General. Incluye transacciones RPC y permisos para Administrador/Reclutador. | Perfil General |
+| `030_profile_general_area_position_scope.sql` | Unifica las plantillas por Área + Puesto, conserva la sección en el histórico del empleado y evita duplicados entre turnos. | Perfil General |
+| `031_profiles_activity_security.sql` | Restringe la actividad completa del equipo a administradores y conserva la lectura del perfil propio. | Seguridad |
+| `032_transport_incident_image.sql` | Añade evidencia visual opcional a reportes de transporte mediante bucket privado, límite de 5 MB y lectura exclusiva para administradores. | Transporte |
+| `033_transport_incident_comment_guard.sql` | Exige comentarios de 1 a 500 caracteres en nuevas incidencias sin invalidar datos históricos. | Transporte |
+| `046_data_update_locker_recruiter_access.sql` | Permite administrar lockers a todos los participantes de la campaña, conservando validación, unicidad y auditoría. | Actualización de datos |
+| `047_data_update_offline_sync.sql` | Añade recibos idempotentes y una RPC versionada para sincronizar capturas offline de Actualización de datos sin duplicar auditoría ni sobrescribir conflictos. | Actualización de datos |
+| `048_pause_required_password_change.sql` | Desactiva la campaña temporal de cambio obligatorio de contraseña sin borrar su historial ni retirar el cambio voluntario del menú. | Seguridad |
+| `049_employee_bulk_assignment_update.sql` | Actualiza puesto, categoría y turno de empleados existentes mediante una operación masiva atómica. | Plantilla |
+| `050_profiles_supported_roles.sql` | Restringe los perfiles a los roles vigentes `admin` y `reclutador` sin modificar datos existentes. | Seguridad |
+| `051_data_update_bulk_shifts.sql` | Permite a administradores actualizar turnos de la campaña seleccionada con validación atómica, control de versión y auditoría. | Actualización de datos |
+| `053_bajas_motivo_estandarizado.sql` | Añade la categoría de motivo sin modificar la descripción histórica de las bajas. | Motivos de baja |
+| `054_motivos_baja_indicador.sql` | Guarda fecha, tipo, motivo y detalle exclusivamente para el indicador de motivos, sin alterar `bajas` ni otros reportes. | Motivos de baja |
+
+## RLS
+
+La mayoría de tablas históricas conservan políticas permisivas para `authenticated` por compatibilidad. Las configuraciones sensibles deben aplicar políticas por rol; por ejemplo, `022_system_maintenance.sql` permite leer el estado a usuarios autenticados pero solo perfiles `admin` pueden actualizarlo.
+
+Patrón de referencia para endurecer otras tablas por rol:
+
+```sql
+drop policy "candidates_all" on public.candidates;
+
+create policy "candidates_select_authenticated"
+  on public.candidates for select to authenticated using (true);
+
+create policy "candidates_modify_recruiter"
+  on public.candidates for all to authenticated
+  using ((auth.jwt() ->> 'role') in ('admin', 'reclutador'))
+  with check ((auth.jwt() ->> 'role') in ('admin', 'reclutador'));
+```

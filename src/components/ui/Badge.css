@@ -1,0 +1,273 @@
+/* Badge — pill labels from the shared white theme. */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-sm);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  white-space: nowrap;
+  line-height: var(--type-body-sm-line);
+}
+
+.badge svg {
+  flex-shrink: 0;
+}
+
+.badge.badge--minimal {
+  background: transparent;
+  padding: 0;
+  gap: var(--design-spacing-xxs);
+}
+
+.badge--default {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.badge--neutral-solid {
+  background: var(--color-muted);
+  color: var(--color-on-primary);
+}
+
+.badge--coral {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.badge--teal {
+  background: color-mix(in srgb, var(--color-accent-teal) 15%, transparent);
+  color: var(--color-accent-teal);
+}
+
+.badge--amber {
+  background: var(--color-warning-tint);
+  color: var(--color-warning);
+}
+
+.badge--success {
+  background: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.badge--error {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+
+.badge--error-solid {
+  background: var(--color-error);
+  color: var(--color-on-primary);
+}
+
+/* ── Project Badges ── */
+
+.project-badge {
+  display: inline-flex;
+  align-items: center;
+  height: var(--icon-size-lg);
+  padding-inline: var(--design-spacing-xs);
+  border-radius: var(--rounded-md);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-body-sm-line);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: var(--border-width) solid var(--color-hairline-soft);
+  white-space: nowrap;
+}
+
+.project-badge--compact {
+  padding-inline: var(--design-spacing-xxs);
+  width: var(--icon-size-md);
+  justify-content: center;
+  gap: 0;
+}
+
+.project-badge--vinoplastic {
+  color: var(--color-primary);
+}
+
+.project-badge__icon {
+  fill: currentColor;
+}
+
+/* ── Role Badges ── */
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  min-height: var(--design-spacing-lg);
+  padding-inline: var(--design-spacing-xs);
+  background: var(--color-surface-soft);
+  border-radius: var(--rounded-full);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  color: var(--color-ink);
+  font-weight: var(--font-semibold);
+}
+
+.role-badge::before {
+  content: '';
+  width: var(--design-spacing-xs);
+  height: var(--design-spacing-xs);
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-muted-soft);
+}
+
+.role-badge--admin::before { background: var(--color-accent-purple); }
+.role-badge--reclutador::before { background: var(--color-accent-teal); }
+
+/* ── Reclutador Badges (RECLUTADORES_ACTIVOS) ── */
+
+.reclutador-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  min-height: var(--icon-size-lg);
+  padding-inline: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.reclutador-badge--sm {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+/* Versión minimalista solo ícono */
+.reclutador-badge--icon-only {
+  padding: 0;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  justify-content: center;
+  border-radius: var(--rounded-full);
+}
+
+.reclutador-badge--icon-only.reclutador-badge--sm {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  min-height: var(--icon-size-md);
+}
+
+.reclutador-badge__icon {
+  flex-shrink: 0;
+  color: var(--color-accent-teal);
+}
+
+.reclutador-badge__name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reclutador-badge__role-tag {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin-inline-start: var(--design-spacing-xxs);
+  padding-inline-start: var(--design-spacing-xs);
+  border-inline-start: var(--border-width) solid var(--color-hairline);
+}
+
+.reclutador-badge--coordinador .reclutador-badge__icon {
+  color: var(--color-accent-purple);
+}
+
+.reclutador-badge--person-daniela .reclutador-badge__icon {
+  color: var(--color-accent-orange);
+}
+
+.reclutador-badge__caret {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+/* ── Status Badges (Plantilla, Backup) ── */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  line-height: var(--type-caption-up-line);
+  white-space: nowrap;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  user-select: none;
+}
+
+.status-badge--icon-only {
+  padding: 0;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  justify-content: center;
+}
+
+.status-badge__icon {
+  flex-shrink: 0;
+}
+
+/* Colores semánticos usando sticker palette para el icono */
+.status-badge--plantilla .status-badge__icon {
+  color: var(--color-accent-teal);
+}
+
+.status-badge--backup .status-badge__icon {
+  color: var(--color-accent-orange);
+}
+
+.status-badge--starlite .status-badge__icon {
+  color: var(--color-warning);
+}
+
+.status-badge--incapacidad .status-badge__icon {
+  color: var(--color-warning);
+}
+
+.status-badge--proximo-ingreso .status-badge__icon {
+  color: var(--color-primary);
+}
+
+/* ── AreaStatusBadge dots ── */
+.status-badge__dot {
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
+.status-badge--proceso .status-badge__dot {
+  background: var(--color-accent-teal);
+}
+
+.status-badge--ingreso .status-badge__dot {
+  background: var(--color-accent-orange);
+}
+
+.status-badge--sin_proceso .status-badge__dot {
+  background: var(--color-error);
+}

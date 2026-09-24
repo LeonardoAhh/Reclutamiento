@@ -1,0 +1,65 @@
+.candidate-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  min-height: var(--icon-size-lg);
+  padding-inline: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  white-space: nowrap;
+}
+
+.candidate-status-badge__dot {
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  background: var(--color-muted);
+}
+
+.candidate-status-badge[data-status="entrevista"] .candidate-status-badge__dot {
+  background: var(--color-accent-amber);
+}
+
+.candidate-status-badge[data-status="entrega_documentos"] .candidate-status-badge__dot {
+  background: var(--color-accent-teal);
+}
+
+.candidate-status-badge[data-status="faltan_documentos"] .candidate-status-badge__dot {
+  background: var(--color-accent-orange);
+}
+
+.candidate-status-badge[data-status="feedback_pendiente"] .candidate-status-badge__dot {
+  background: var(--color-link);
+}
+
+.candidate-status-badge[data-status="contratado"] .candidate-status-badge__dot {
+  background: var(--color-accent-green);
+}
+
+.candidate-status-badge[data-status="rechazado"] .candidate-status-badge__dot {
+  background: var(--color-error);
+}
+
+.candidate-status-badge[data-status="no_asistio"] .candidate-status-badge__dot {
+  background: var(--color-accent-brown);
+}
+
+.candidate-status-caret {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform var(--transition-fast);
+}
+
+[aria-expanded="true"] .candidate-status-caret {
+  transform: rotate(180deg);
+}

@@ -1,0 +1,205 @@
+.account-page {
+  padding-block-end: var(--design-spacing-xxl);
+}
+
+.account-page__header {
+  padding-block: var(--design-spacing-xl) var(--design-spacing-lg);
+  border-bottom: var(--border-width) solid var(--color-hairline);
+}
+
+.account-page__content,
+.account-page__section {
+  display: grid;
+  min-width: 0;
+}
+
+.account-page__content {
+  gap: var(--design-spacing-xl);
+  padding-block-start: var(--design-spacing-lg);
+}
+
+.account-page__section {
+  gap: var(--design-spacing-md);
+}
+
+.account-page__section-title,
+.account-page__row-copy h3,
+.account-page__row-copy p,
+.account-page__activity h3 {
+  margin: 0;
+}
+
+.account-page__section-title {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.account-page__identity,
+.account-page__panel,
+.account-page__activity {
+  min-width: 0;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.account-page__identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-md);
+  background: var(--color-surface-card);
+}
+
+.account-page__panel,
+.account-page__activity {
+  background: var(--color-canvas-elevated);
+}
+
+.account-page__row {
+  display: grid;
+  min-width: 0;
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-md);
+}
+
+.account-page__identity-copy,
+.account-page__row-copy,
+.account-page__row-actions {
+  min-width: 0;
+}
+
+.account-page__identity-copy {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+}
+
+.account-page__name {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  overflow-wrap: anywhere;
+}
+
+.account-page__email,
+.account-page__row-copy p {
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  overflow-wrap: anywhere;
+}
+
+.account-page__identity > button {
+  grid-column: 1 / -1;
+}
+
+.account-page__row + .account-page__row {
+  border-top: var(--border-width) solid var(--color-hairline);
+}
+
+.account-page__row-copy {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+}
+
+.account-page__row-copy h3,
+.account-page__activity h3 {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.account-page__row-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-sm);
+}
+
+.account-page__status.badge--amber {
+  color: var(--color-warning-text);
+}
+
+.account-page__activity {
+  display: grid;
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-md);
+}
+
+.account-page__activity .user-activity-panel__list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.account-page__activity .user-activity-panel__card {
+  padding: var(--design-spacing-sm) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.account-page__activity .user-activity-panel__card + .user-activity-panel__card {
+  border-top: var(--border-width) solid var(--color-hairline);
+}
+
+@media (min-width: 768px) {
+  .account-page__header {
+    padding-block: var(--design-spacing-xl);
+  }
+
+  .account-page__content {
+    gap: var(--design-spacing-xxl);
+    padding-block-start: var(--design-spacing-xl);
+  }
+
+  .account-page__section {
+    gap: var(--design-spacing-lg);
+  }
+
+  .account-page__identity {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .account-page__avatar {
+    --feature-avatar-size: var(--feature-avatar-preview-size);
+    --feature-avatar-initials-size: var(--feature-avatar-preview-initials-size);
+  }
+
+  .account-page__identity,
+  .account-page__row,
+  .account-page__activity {
+    padding: var(--design-spacing-lg);
+  }
+
+  .account-page__identity > button {
+    grid-column: auto;
+  }
+
+  .account-page__row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .account-page__row-actions {
+    justify-content: flex-end;
+  }
+
+  .account-page__activity .user-activity-panel__card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}

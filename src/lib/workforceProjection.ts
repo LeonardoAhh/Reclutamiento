@@ -1,0 +1,153 @@
+import type { AuthorizedPosition, Employee, PositionCoverage } from './types';
+import { localDateToIso } from './dates';
+import { calculatePositionCoverage, matchesEmployeeToPosition, normalizeString } from './utils';
+import { consolidateStarlitePositions } from './positionCatalog';
+
+export interface CoverageCategory {
+  target: number;
+  covered: number;
+  vacancies: number;
+  percentage: number | null;
+}
+
+export interface WorkforceSnapshot {
+  plantilla: CoverageCategory;
+  backup: CoverageCategory;
+  starlite: CoverageCategory;
+  surplus: number;
+  real: number;
+}
+
+function category(target: number, covered: number): CoverageCategory {
+  return {
+    target,
+    covered,
+    vacancies: target - covered,
+    // Evita anunciar 100% por redondeo mientras aún existan plazas pendientes.
+    percentage: target > 0 ? Math.floor((covered * 1000) / target) / 10 : null,
+  };
+}
+
+/** Cobertura operativa, sin permitir que excedentes compensen otras plazas. */
+export function summarizeOperationalCoverage(snapshot: WorkforceSnapshot): CoverageCategory {
+  const categories = [snapshot.plantilla, snapshot.backup, snapshot.starlite];
+  return category(
+    categories.reduce((total, item) => total + item.target, 0),
+    categories.reduce((total, item) => total + item.covered, 0),
+  );
+}
+
+export function summarizeWorkforceCoverage(
+  positions: readonly PositionCoverage[],
+  dismissedKeys: ReadonlySet<string>,
+): WorkforceSnapshot {
+  const totals = {
+    plantilla: { target: 0, covered: 0 },
+    backup: { target: 0, covered: 0 },
+    starlite: { target: 0, covered: 0 },
+    surplus: 0,
+    real: 0,
+  };
+  for (const position of positions) {
+    const key = `${position.area}-${position.seccion || 'none'}-${position.puesto}`;
+    if (dismissedKeys.has(key)) continue;
+    // Starlite es independiente: su excedente no cubre plantilla ni backup.
+    // Solo el excedente regular del mismo puesto puede ocupar su backup.
+    const starlite = position.starlite_empleados;
+    const regular = Math.max(0, position.plantilla_real - starlite);
+    const regularSurplus = Math.max(0, regular - position.plantilla_autorizada);
+    const categories = [
+      [totals.plantilla, position.plantilla_autorizada, regular],
+      [totals.backup, position.backup, regularSurplus],
+      [totals.starlite, position.urgentes, starlite],
+    ] as const;
+    for (const [total, target, available] of categories) {
+      total.target += target;
+      total.covered += Math.max(0, Math.min(target, available));
+    }
+    totals.surplus += Math.max(0, regularSurplus - position.backup) +
+      Math.max(0, starlite - position.urgentes);
+    totals.real += position.plantilla_real;
+  }
+  return {
+    plantilla: category(totals.plantilla.target, totals.plantilla.covered),
+    backup: category(totals.backup.target, totals.backup.covered),
+    starlite: category(totals.starlite.target, totals.starlite.covered),
+    surplus: totals.surplus,
+    real: totals.real,
+  };
+}
+
+export function calculateWorkforceProjection(
+  employees: readonly Employee[],
+  positions: AuthorizedPosition[],
+  todayIso: string,
+  dismissedKeys: ReadonlySet<string>,
+  area?: string,
+) {
+  const projectionPositions = consolidateStarlitePositions(positions);
+  // Conserva la política de calculatePositionCoverage: una fila por número, última gana.
+  const uniqueEmployees = new Map<string, Employee>();
+  for (const employee of employees) {
+    const number = employee.num_empleado?.trim();
+    if (number) uniqueEmployees.set(number, employee);
+  }
+  const datedEmployees = Array.from(uniqueEmployees.values()).map((employee) => {
+    const candidates = projectionPositions.filter((position) => matchesEmployeeToPosition(employee, position));
+    const exact = candidates.filter((position) =>
+      normalizeString(employee.area) === normalizeString(position.area) &&
+      normalizeString(employee.seccion) === normalizeString(position.seccion),
+    );
+    // Una sección no ocupa también otra que contiene su nombre (p. ej., Starlite).
+    // Se conserva la coincidencia flexible solo cuando identifica un único puesto.
+    const matches = exact.length > 0 ? exact : candidates;
+    return {
+      employee,
+      date: localDateToIso(employee.fecha_ingreso),
+      position: matches.length === 1 ? matches[0] : undefined,
+      ambiguous: matches.length > 1,
+    };
+  }).filter((entry) => area === undefined || entry.position?.area === area ||
+    (!entry.position && normalizeString(entry.employee.area) === normalizeString(area)));
+  // El ámbito se aplica después del emparejamiento global: filtrar antes podría
+  // convertir una coincidencia ambigua entre áreas en una asignación válida.
+  const scopedPositions = area === undefined
+    ? projectionPositions
+    : projectionPositions.filter((position) => position.area === area);
+  const nextHireDate = datedEmployees.reduce<string | null>((next, entry) => {
+    const date = entry.date?.slice(0, 10);
+    if (!date || date <= todayIso) return next;
+    return next === null || date < next ? date : next;
+  }, null);
+  const snapshotAt = (date: string) => summarizeWorkforceCoverage(
+    scopedPositions.flatMap((position) => calculatePositionCoverage(
+      datedEmployees.filter((entry) => entry.position === position && entry.date && entry.date.slice(0, 10) <= date)
+        .map((entry) => entry.employee),
+      [],
+      [position],
+      date,
+    )),
+    dismissedKeys,
+  );
+  const current = snapshotAt(todayIso);
+  const projected = nextHireDate ? snapshotAt(nextHireDate) : current;
+  // Snapshot que incluye todos los próximos ingresos registrados, para
+  // reflejar las vacantes reales descontando los ingresos futuros confirmados.
+  const withAllProximos = snapshotAt('9999-12-31');
+  return {
+    current,
+    projected,
+    withAllProximos,
+    nextHireDate,
+    scheduledHires: datedEmployees.filter((entry) => entry.position && entry.date &&
+      entry.date.slice(0, 10) === nextHireDate &&
+      !dismissedKeys.has(`${entry.position.area}-${entry.position.seccion || 'none'}-${entry.position.puesto}`),
+    ).length,
+    undatedEmployees: datedEmployees.filter((entry) => !entry.date).length,
+    ambiguousEmployees: datedEmployees.filter((entry) => entry.ambiguous && entry.date &&
+      entry.date.slice(0, 10) <= (nextHireDate ?? todayIso),
+    ).length,
+  };
+}
+
+export type WorkforceProjection = ReturnType<typeof calculateWorkforceProjection>;

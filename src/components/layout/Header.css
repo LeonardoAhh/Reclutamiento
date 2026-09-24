@@ -1,0 +1,76 @@
+/* ─────────────────────────────────────────────
+   App Header — Visible en móvil, oculto en PC.
+   Lienzo plano (canvas) + hairline inferior de 1px.
+───────────────────────────────────────────── */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--layer-sticky-navigation);
+
+  min-block-size: var(--_app-header-size);
+  padding-block-start: var(--safe-area-top);
+
+  background: var(--color-surface);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.app-header__inner {
+  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  min-block-size: var(--_app-header-row-size);
+  margin-inline: auto;
+  gap: var(--spacing-lg);
+  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
+  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
+  min-inline-size: 0;
+}
+
+.app-header__left {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.app-header__mobile-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-ink);
+  cursor: pointer;
+  border-radius: var(--rounded-md);
+  transition: background-color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .app-header__mobile-menu-btn:hover {
+    background-color: var(--color-surface-soft);
+  }
+}
+
+.app-header__actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}
+
+@media (min-width: 1080px) {
+  .app-header {
+    display: none;
+  }
+}

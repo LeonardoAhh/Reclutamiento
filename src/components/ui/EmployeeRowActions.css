@@ -1,0 +1,6 @@
+/* EmployeeRowActions — menú kebab por fila */
+
+.employee-row-actions {
+  position: relative;
+  display: inline-flex;
+}

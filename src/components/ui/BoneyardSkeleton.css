@@ -1,0 +1,34 @@
+/*
+ * `visibility` se hereda, pero un descendiente puede reactivarla con
+ * `visibility: visible` (por ejemplo, las tarjetas reveladas de Resumen).
+ * Mientras Boneyard oculta el contenido real, forzamos que toda la rama
+ * conserve el estado heredado para que solo se vea el overlay generado.
+ */
+.boneyard-skeleton
+  [data-boneyard-content="true"][style*="visibility: hidden"]
+  * {
+  visibility: inherit;
+}
+
+.boneyard-skeleton__bone {
+  opacity: var(--opacity-skeleton-rest);
+  animation: skeleton-fade var(--duration-skeleton) ease-in-out infinite;
+}
+
+@keyframes skeleton-fade {
+  0%,
+  100% {
+    opacity: var(--opacity-skeleton-rest);
+  }
+
+  50% {
+    opacity: var(--opacity-skeleton-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boneyard-skeleton__bone {
+    animation: none;
+    opacity: var(--opacity-skeleton-rest);
+  }
+}

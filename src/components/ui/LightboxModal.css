@@ -1,0 +1,14 @@
+.activity-lightbox__body {
+  inline-size: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-lightbox__image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: var(--feature-image-viewer-max-block-size);
+  border-radius: var(--rounded-md);
+  object-fit: contain;
+}

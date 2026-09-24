@@ -1,0 +1,28 @@
+/* JsonImporter — file upload button + status indicator */
+
+.json-importer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.json-importer__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  font-size: var(--type-caption-md-size);
+  font-weight: 500;
+  padding: var(--spacing-xxs) var(--spacing-md);
+  border-radius: var(--rounded-pill);
+}
+
+.json-importer__status--success {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.json-importer__status--error {
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}

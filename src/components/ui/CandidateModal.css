@@ -1,0 +1,39 @@
+/* ========================================
+   CANDIDATE MODAL
+   Sin hardcoding - solo tokens CSS
+   ======================================== */
+
+.candidate-modal {
+  /* El componente Modal ya maneja el layout base */
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 640px) {
+  .candidate-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Hint: aviso de "solo vacantes abiertas" en modo Agregar ── */
+.candidate-modal__hint {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-xs);
+  font-size: var(--type-caption-md-size);
+  font-weight: var(--font-regular);
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.candidate-modal__hint::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--color-muted);
+}
+
+.candidate-modal__hint--warning {
+  color: var(--color-error);
+  font-weight: var(--font-semibold);
+}

@@ -1,0 +1,70 @@
+import { type ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useLoader } from '@/hooks/useLoader';
+import { HOME_PATH } from '@/components/layout/navigation';
+
+/**
+ * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
+ * `/login`. Después de autenticar, el flujo siempre comienza en `/inicio`.
+ *
+ * Mientras `loading` (primera carga de la session desde Supabase) muestra un
+ * splash mínimo para evitar el "flash" de login → contenido.
+ */
+export function AuthGuard({ children }: { children: ReactNode }) {
+  const { session, loading, profileLoading } = useAuth();
+
+  if (loading || (session && profileLoading)) {
+    return null;
+  }
+
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+import { useState, useEffect } from 'react';
+
+/**
+ * Espejo de AuthGuard para la ruta de login: si ya hay session, redirige al
+ * inicio. Evita que un usuario logueado vea el form de login.
+ */
+export function RedirectIfAuthed({ children }: { children: ReactNode }) {
+  const { session, loading } = useAuth();
+  const loader = useLoader();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    if (!loading) {
+      // Damos un pequeño ciclo para marcar que la carga inicial terminó
+      requestAnimationFrame(() => setIsInitialLoad(false));
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (session) {
+      if (isInitialLoad) {
+        setShouldRedirect(true);
+      } else {
+        // Si no es la carga inicial, significa que el usuario acaba de iniciar sesión.
+        // Damos gracia para que la animación del botón verde se complete.
+        const timer = setTimeout(() => {
+          loader.flash({ variant: 'workspace-entry' });
+          // Wait briefly for the loader to fade in and cover the screen before redirecting
+          setTimeout(() => setShouldRedirect(true), 300);
+        }, 800);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [session, loading, isInitialLoad, loader]);
+
+  if (shouldRedirect) {
+    return <Navigate to={HOME_PATH} replace />;
+  }
+
+  return <>{children}</>;
+}

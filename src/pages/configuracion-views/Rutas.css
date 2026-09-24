@@ -1,0 +1,739 @@
+/* ═══════════════════════════════════════════════════════════
+   RUTAS – Design tokens
+   All values reference the shared design system — nothing hardcoded.
+═══════════════════════════════════════════════════════════ */
+
+.rutas-page {
+  gap: var(--spacing-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE STRUCTURE
+═══════════════════════════════════════════════════════════ */
+
+.rutas-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-sm);
+}
+
+.rutas-toolbar {
+  margin-bottom: 0;
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-lg);
+}
+
+.rutas-toolbar .config-search input {
+  height: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+.rutas-header__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+/* ── Mobile-first: stacked, single column ── */
+.rutas-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-xl);
+  align-items: stretch;
+  min-width: 0;
+}
+
+@media (min-width: 1080px) {
+  .rutas-layout {
+    grid-template-columns:
+      minmax(0, var(--feature-navigation-rail-inline-size))
+      minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE NAVIGATION STATE
+   On small screens, list and detail are mutually exclusive views.
+   The active panel is shown; the inactive one is hidden via
+   data-mobile-view on the layout wrapper.
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .rutas-layout[data-mobile-view="detail"] .rutas-list-panel {
+    display: none;
+  }
+
+  .rutas-layout[data-mobile-view="list"] .rutas-detail-pane {
+    display: none;
+  }
+
+  /* Al ver el detalle de una ruta ocultamos la cabecera y la búsqueda.
+     El botón "Todas las rutas" se conserva. */
+  .rutas-page[data-mobile-view="detail"] .rutas-header,
+  .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
+    display: none;
+  }
+}
+
+/* ── Back button (mobile only) ── */
+.rutas-back-btn {
+  display: none;
+}
+
+.rutas-search-clear-btn svg,
+.ruta-card__icon svg,
+.ruta-section__title-icon,
+.shift-bars__trend svg {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .rutas-back-btn {
+    display: inline-flex;
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT COLUMN – Route list
+═══════════════════════════════════════════════════════════ */
+
+.rutas-list-panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.rutas-list-panel__header {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.rutas-list-panel__header h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.rutas-list-panel__count {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.rutas-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-sm);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rutas-list__item {
+  min-width: 0;
+}
+
+@media (min-width: 600px) {
+  .rutas-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .rutas-list-panel {
+    position: sticky;
+    top: var(--spacing-lg);
+  }
+
+  .rutas-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.rutas-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: var(--spacing-lg);
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.rutas-empty p {
+  margin: 0;
+}
+
+.rutas-error {
+  grid-column: 1 / -1;
+  padding: var(--spacing-md);
+  color: var(--color-error-text);
+  border-radius: var(--rounded-md);
+  border: var(--border-width) solid var(--color-error);
+  background: var(--color-error-tint);
+}
+
+.rutas-error p {
+  margin: 0;
+}
+
+.rutas-error p + p {
+  margin-top: var(--spacing-xs);
+}
+
+/* ─── Route card ─── */
+
+.ruta-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-sm);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--touch-target-min);
+  box-sizing: border-box;
+  padding: var(--spacing-md);
+  border-radius: var(--rounded-md);
+  border: var(--border-width) solid var(--color-hairline);
+  background: var(--color-surface-card);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ruta-card:hover {
+  background: var(--color-surface-soft);
+}
+
+.ruta-card--active {
+  background: var(--color-surface-soft);
+  border-color: var(--color-primary);
+}
+
+.ruta-card__icon {
+  width: var(--spacing-xxl);
+  height: var(--spacing-xxl);
+  border-radius: var(--rounded-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.ruta-card--active .ruta-card__icon {
+  color: var(--color-primary);
+}
+
+.ruta-card__copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.ruta-card__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.ruta-card__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+}
+
+.ruta-card__subtitle {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ruta-card__capacity-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--color-error-text);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.ruta-card__alert-dot {
+  width: var(--spacing-xs);
+  height: var(--spacing-xs);
+  flex-shrink: 0;
+  background: var(--color-error);
+  border-radius: var(--rounded-full);
+}
+
+/* ─── Match badge (search active) ─── */
+
+.ruta-card__match-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-soft);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ruta-card--has-match {
+  border-color: var(--color-hairline-strong);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT COLUMN – Detail pane
+═══════════════════════════════════════════════════════════ */
+
+.rutas-detail-pane {
+  min-width: 0;
+  min-height: var(--config-panel-min-height);
+}
+
+/* ─── Placeholder ─── */
+
+.rutas-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+  border: var(--border-width) dashed var(--color-hairline-strong);
+  border-radius: var(--rounded-lg);
+  min-height: var(--config-panel-min-height);
+}
+
+.rutas-placeholder__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.rutas-placeholder__icon svg {
+  width: var(--spacing-xl);
+  height: var(--spacing-xl);
+}
+
+.rutas-placeholder h2,
+.rutas-placeholder p {
+  margin: 0;
+}
+
+.ruta-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ─── Section wrapper ─── */
+
+.ruta-section,
+.ruta-search-results {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+/* Reduce section padding on mobile */
+@media (max-width: 768px) {
+  .ruta-section,
+  .ruta-search-results {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+.ruta-detail__grids {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1440px) {
+  .ruta-detail__grids {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ─── Employee matches ─── */
+
+.ruta-search-results__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.ruta-search-results__header .ruta-section__title {
+  margin: 0;
+}
+
+.ruta-search-results__count {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.ruta-search-results__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ruta-search-result {
+  min-width: 0;
+  padding: var(--spacing-md);
+  border: var(--border-width) solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+}
+
+.ruta-search-result__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  min-width: 0;
+}
+
+.ruta-search-result__identity strong {
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+}
+
+.ruta-search-result__identity span {
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.ruta-search-result__details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-sm);
+  margin: var(--spacing-md) 0 0;
+}
+
+.ruta-search-result__details div {
+  min-width: 0;
+}
+
+.ruta-search-result__details dt {
+  color: var(--color-muted);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.ruta-search-result__details dd {
+  margin: var(--spacing-xxs) 0 0;
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+}
+
+@media (min-width: 600px) {
+  .ruta-search-results__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ruta-search-result__details {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ruta-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-md);
+}
+
+.shift-bars {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  column-gap: var(--spacing-sm);
+  row-gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.shift-bars__row {
+  display: contents;
+}
+
+.shift-bars__row--over .shift-bars__fill {
+  background: var(--color-error);
+}
+
+.shift-bars__label {
+  white-space: nowrap;
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+}
+
+.shift-bars__track {
+  min-width: 0;
+  height: var(--spacing-xs);
+  background: var(--color-hairline-strong);
+  border-radius: var(--rounded-pill);
+  overflow: hidden;
+}
+
+.shift-bars__fill {
+  height: 100%;
+  border-radius: var(--rounded-pill);
+  background: var(--color-primary);
+  width: var(--bar-pct, 0%);
+}
+
+.shift-bars__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.shift-bars__stats--comparison {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) var(--touch-target-min);
+}
+
+.shift-bars__count {
+  white-space: nowrap;
+  text-align: right;
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.shift-bars__count--over {
+  color: var(--color-error-text);
+  font-weight: var(--font-semibold);
+}
+
+.shift-bars__trend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxs);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding-inline: var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--font-medium);
+  line-height: var(--type-caption-sm-line);
+  flex-shrink: 0;
+}
+
+.trend-up {
+  color: var(--color-success-text);
+}
+
+.trend-down {
+  color: var(--color-error-text);
+}
+
+.trend-mixed {
+  color: var(--color-warning-text);
+}
+
+.trend-flat {
+  color: var(--color-charcoal);
+}
+
+.shift-bars__comparison-note {
+  margin-top: var(--spacing-sm);
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   DAILY CAPACITY LIST
+═══════════════════════════════════════════════════════════ */
+
+/* ── Daily capacity cards ── */
+.daily-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.daily-cards__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-sm);
+  border: var(--border-width) solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.daily-cards__card:hover {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-canvas);
+}
+
+.daily-cards__card:active {
+  transform: scale(0.98);
+}
+
+.daily-cards__day {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-bold);
+  color: var(--color-ink);
+}
+
+.daily-cards__stats {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.daily-cards__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.daily-cards__label {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.daily-cards__value {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+@media (min-width: 600px) {
+  .daily-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RUTA SECTION TITLE WITH ICON
+═══════════════════════════════════════════════════════════ */
+
+.ruta-section__title-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ruta-section__title-icon {
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES FOR RUTASVIEW
+═══════════════════════════════════════════════════════════ */
+
+.rutas-toolbar-flex {
+  width: 100%;
+}
+
+.rutas-search-container {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.rutas-search-clear-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  z-index: 1;
+}
+
+.rutas-search-clear-btn--active {
+  cursor: pointer;
+}
+
+.rutas-search-clear-btn--inactive {
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruta-card,
+  .ruta-card__icon,
+  .daily-cards__card {
+    transition: none;
+  }
+}

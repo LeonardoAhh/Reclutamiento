@@ -1,0 +1,47 @@
+.assignment-meta {
+  min-inline-size: 0;
+  margin: 0;
+}
+
+.assignment-meta__row,
+.assignment-meta__value {
+  min-inline-size: 0;
+}
+
+.assignment-meta__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+}
+
+.assignment-meta__value .reclutador-badge,
+.assignment-meta__badge {
+  max-inline-size: 100%;
+  white-space: normal;
+}
+
+.assignment-meta__value .reclutador-badge__name,
+.assignment-meta__badge span {
+  overflow-wrap: anywhere;
+}
+
+.assignment-meta__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.assignment-meta__badge svg {
+  flex: 0 0 auto;
+  color: var(--color-muted);
+}
