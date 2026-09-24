@@ -146,9 +146,15 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   },
   {
     area: "CALIDAD",
-    seccion: "CALIDAD ADMTVO",
+    seccion: "A. CALIDAD 1ER TURNO",
     puesto: "TÉCNICO DE TAMPOGRAFIA",
-    plantilla_autorizada: 2,
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "A. CALIDAD 2DO. TURNO",
+    puesto: "TÉCNICO DE TAMPOGRAFIA",
+    plantilla_autorizada: 1,
   },
   {
     area: "CALIDAD",
