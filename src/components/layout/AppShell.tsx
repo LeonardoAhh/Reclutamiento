@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { ACCOUNT_PATH, HOME_PATH, NAV_ITEMS } from './navigation';
+import { ACCOUNT_PATH, AREA_PROGRESS_PATH, HOME_PATH, NAV_ITEMS } from './navigation';
 import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -16,6 +16,7 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
   '/motivos-baja': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
   [ACCOUNT_PATH]: 'Cuenta',
+  [AREA_PROGRESS_PATH]: 'Avances de Reclutamiento',
 };
 
 /**

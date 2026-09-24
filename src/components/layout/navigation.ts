@@ -35,6 +35,7 @@ export type NavGroup = {
 
 export const ACTIVIDADES_PATH = "/actividades";
 export const ACCOUNT_PATH = "/cuenta";
+export const AREA_PROGRESS_PATH = "/pendientes-reclutamiento";
 export const HOME_PATH = "/inicio";
 
 export const NAV_GROUPS: ReadonlyArray<NavGroup> = [

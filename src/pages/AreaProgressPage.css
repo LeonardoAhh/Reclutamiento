@@ -1,0 +1,138 @@
+.area-progress-page {
+  display: grid;
+  align-content: start;
+  gap: var(--design-spacing-lg);
+  padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
+}
+
+.area-progress-page__header {
+  display: grid;
+  gap: var(--design-spacing-xs);
+}
+
+.area-progress-page__header h1,
+.area-progress-page__header p,
+.area-progress-page__feedback p,
+.area-progress-page__section-title,
+.area-progress-page__card h3 {
+  margin: 0;
+}
+
+.area-progress-page__header p,
+.area-progress-page__details dt {
+  color: var(--color-muted);
+}
+
+.area-progress-page__section {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  min-width: 0;
+}
+
+.area-progress-page__list {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.area-progress-page__card,
+.area-progress-page__feedback {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.area-progress-page__card h3 {
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.area-progress-page__card {
+  grid-template-rows: 1fr auto auto;
+}
+
+.area-progress-page__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-md) var(--design-spacing-xl);
+  margin: 0;
+  padding-block-start: var(--design-spacing-md);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.area-progress-page__details div {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  min-width: 0;
+}
+
+.area-progress-page__details dt,
+.area-progress-page__details dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.area-progress-page__details dd {
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.area-progress-page__badge[data-progress-state="in-progress"] {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}
+
+.area-progress-page__progress {
+  padding-block-start: var(--design-spacing-md);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.area-progress-page__progress progress,
+.area-progress-page__progress-track {
+  width: 100%;
+  height: var(--design-spacing-xxs);
+  appearance: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.area-progress-page__progress progress::-webkit-progress-bar {
+  background: var(--color-hairline-strong);
+}
+
+.area-progress-page__progress progress::-webkit-progress-value {
+  background: var(--color-primary);
+}
+
+.area-progress-page__progress progress::-moz-progress-bar {
+  background: var(--color-primary);
+}
+
+.area-progress-page__feedback .btn-secondary {
+  justify-self: start;
+}
+
+@media (min-width: 768px) {
+  .area-progress-page__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

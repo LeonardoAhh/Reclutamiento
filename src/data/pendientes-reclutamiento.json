@@ -1,0 +1,59 @@
+{
+  "area": "Reclutamiento",
+  "pendientes": [
+    {
+      "id": "cobertura-almacen",
+      "titulo": "Cobertura de vacantes en Almacén.",
+      "estatus": "Pendiente",
+      "progreso": 50
+    },
+    {
+      "id": "cobertura-auxiliar-administrativo-moldes",
+      "titulo": "Cobertura de vacante de Aux. Administrativo de Moldes.",
+      "estatus": "Pendiente",
+      "progreso": 0
+    },
+    {
+      "id": "cobertura-montador",
+      "titulo": "Cobertura de vacante de montador.",
+      "estatus": "Pendiente",
+      "progreso": 25
+    },
+    {
+      "id": "cobertura-tampografia",
+      "titulo": "Cobertura de vacante para el área de tampografía.",
+      "estatus": "Pendiente",
+      "progreso": 50
+    },
+    {
+      "id": "validacion-conocimientos-martinez-padron",
+      "titulo": "Validación de conocimientos de 4327 inspector de calidad para el área de tampografía.",
+      "estatus": "Pendiente",
+      "progreso": 50
+    },
+    {
+      "id": "actualizacion-datos-personal-activo",
+      "titulo": "Actualización de datos de personal activo",
+      "estatus": "Pendiente",
+      "progreso": 75
+    },
+    {
+      "id": "actualizacion-objetivos-smart",
+      "titulo": "Actualización de objetivos Smart para evaluaciones de desempeño",
+      "estatus": "Pendiente",
+      "progreso": 50
+    },
+    {
+      "id": "capacitacion-operativa-analista",
+      "titulo": "Capacitación operativa analista de reclutamiento",
+      "estatus": "Pendiente",
+      "progreso": 0
+    },
+    {
+      "id": "indicador-perfil-requerido",
+      "titulo": "Enviar el indicador junio a la fecha del cumplimiento del 70% del perfil requerido por el puesto de las personas contratadas por mes",
+      "estatus": "Pendiente",
+      "progreso": 0
+    }
+  ]
+}

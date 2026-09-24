@@ -13,9 +13,9 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { LogoutConfirmModal } from "@/features/account/LogoutConfirmModal";
 import type { Profile } from "@/hooks/useAuth";
 import { getUserTitle } from "@/lib/userIdentity";
-import { ACCOUNT_PATH } from "./navigation";
+import { ACCOUNT_PATH, AREA_PROGRESS_PATH } from "./navigation";
 import { ChevronsUpDown, LoaderCircle, LogOut } from "lucide";
-import { UserRound } from "lucide-react";
+import { ClipboardList, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./UserMenuPopover.css";
 
@@ -120,6 +120,18 @@ export function UserMenuPopover({
                   aria-hidden="true"
                 />
                 <span>Cuenta</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              asChild
+              onSelect={() => {
+                setOpen(false);
+                onNavigate?.();
+              }}
+            >
+              <Link to={AREA_PROGRESS_PATH} className="user-menu-popover__item">
+                <ClipboardList className="user-menu-popover__icon" aria-hidden="true" />
+                <span>Pendientes</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>

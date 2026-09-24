@@ -25,7 +25,7 @@ import {
 } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
+import { ACCOUNT_PATH, AREA_PROGRESS_PATH, HOME_PATH } from '@/components/layout/navigation';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -70,6 +70,11 @@ const DataUpdatePage = lazy(() =>
 const AccountPage = lazy(() =>
   import('@/pages/AccountPage').then(({ AccountPage }) => ({
     default: AccountPage,
+  })),
+);
+const AreaProgressPage = lazy(() =>
+  import('@/pages/AreaProgressPage').then(({ AreaProgressPage }) => ({
+    default: AreaProgressPage,
   })),
 );
 const HomePage = lazy(() =>
@@ -176,6 +181,7 @@ function App() {
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
+                <Route path={AREA_PROGRESS_PATH} element={<AreaProgressPage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}
