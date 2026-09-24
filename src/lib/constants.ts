@@ -796,26 +796,24 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  availableTitle: "¡Listo!",
-  availableHint:
-    "Guardá los cambios pendientes antes de actualizar.",
+  availableTitle: "Listo",
+  availableHint: "Guardá antes de actualizar.",
   actionLabel: "Actualizar",
   deferLabel: "Después",
-  preparingLabel: "Preparando actualización",
+  preparingLabel: "Preparando…",
   errorHint: "No se pudo actualizar. Probá de nuevo.",
   retryLabel: "Reintentar",
-  registrationErrorTitle: "Actualizaciones no disponibles",
-  registrationErrorHint:
-    "La app sigue funcionando, pero no se pudo buscar nuevas versiones.",
-  appliedTitle: "¡Listo!",
+  registrationErrorTitle: "Sin actualizaciones",
+  registrationErrorHint: "La app funciona, pero no se pudo buscar versiones.",
+  appliedTitle: "Listo",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
   serviceWorkerCheckMinGapMs: 60 * 1000,
   offlineTitle: "Sin conexión",
   offlineHint: "Algunas funciones necesitan internet.",
-  onlineTitle: "Conexión restaurada",
-  offlineReadyTitle: "Recursos básicos disponibles sin conexión",
+  onlineTitle: "Conectado",
+  offlineReadyTitle: "Modo sin conexión disponible",
 } as const;
 
 export const TOAST_CONFIG = {
