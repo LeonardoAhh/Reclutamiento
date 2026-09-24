@@ -165,6 +165,12 @@
   --type-heading-md-line: 1.4;
   --type-heading-md-tracking: -0.02em;
 
+  /* Marca de la navegación: jerarquía propia dentro del ancho del rail. */
+  --type-brand-size: 24px;
+  --type-brand-weight: var(--type-heading-md-weight);
+  --type-brand-line: var(--type-heading-md-line);
+  --type-brand-tracking: var(--type-heading-md-tracking);
+
   /* heading-sm — card titles */
   --type-heading-sm-size: 16px;
   --type-heading-sm-weight: 600;
@@ -358,6 +364,8 @@
   --motion-float-distance: var(--design-spacing-xs);
   --scale-pressed: 0.98;
   --transition-progress: 1400ms ease-in-out;
+  --duration-brand-reveal: 1500ms;
+  --duration-brand-cycle: calc(var(--duration-brand-reveal) + var(--duration-brand-reveal));
   --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */

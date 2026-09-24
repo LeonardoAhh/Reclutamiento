@@ -6,7 +6,6 @@ import { AnalisisView } from "./configuracion-views/AnalisisView";
 import { IndicadoresView } from "./configuracion-views/IndicadoresView";
 import { RutasView } from "./configuracion-views/RutasView";
 import { TabuladorView } from "./configuracion-views/TabuladorView";
-import { SpeechView } from "./configuracion-views/SpeechView";
 import { FormatosView } from "./configuracion-views/FormatosView";
 import {
   SupabaseDataProvider,
@@ -17,7 +16,6 @@ import "./Configuracion.css";
 export { FEATURES, FEATURE_GROUPS, type FeatureGroup } from "@/lib/configuracionNavigation";
 
 const EMPLOYEE_DATA: readonly SupabaseDataResource[] = ["employees"];
-const SPEECH_DATA: readonly SupabaseDataResource[] = ["speechTemplates"];
 
 const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   analisis: (
@@ -28,11 +26,6 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
   indicadores: <IndicadoresView />,
   rutas: <RutasView />,
   tabulador: <TabuladorView />,
-  speech: (
-    <SupabaseDataProvider resources={SPEECH_DATA}>
-      <SpeechView />
-    </SupabaseDataProvider>
-  ),
   formatos: (
     <SupabaseDataProvider resources={EMPLOYEE_DATA}>
       <FormatosView />

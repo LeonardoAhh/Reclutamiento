@@ -1,16 +1,20 @@
 import {
+  BadgeDollarSign,
   ChartNoAxesCombined,
+  ChartSpline,
   Contact,
+  ContactRound,
+  Files,
   House,
   ListTodo,
   NotebookText,
-  Settings2,
+  Route,
   UserRoundPen,
   UserSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
-import { ADMINISTRATION_PATH } from "@/lib/configuracionNavigation";
+import { EMPLEADOS_PATH, PLANTILLA_PATH } from "@/lib/plantillaNavigation";
+import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
 
 export type NavigationRole = "admin" | "reclutador";
 
@@ -43,12 +47,14 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
         icon: House,
         end: true,
       },
+      { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
       {
         to: "/candidatos",
         label: "Candidatos",
         icon: UserSearch,
         mobilePriority: true,
       },
+      { to: EMPLEADOS_PATH, label: "Empleados", icon: ContactRound },
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
       {
         to: "/resumen",
@@ -62,20 +68,23 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
     title: "Herramientas",
     items: [
-      { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
       {
         to: "/actualizacion-datos",
         label: "Campaña",
         icon: UserRoundPen,
         roles: ["admin", "reclutador"],
       },
+      { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
     ],
   },
   {
     title: "Administración",
     items: [
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
-      { to: ADMINISTRATION_PATH, label: "Administración", icon: Settings2 },
+      { to: getConfiguracionHref("formatos"), label: "Formatos", icon: Files },
+      { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined },
+      { to: getConfiguracionHref("rutas"), label: "Rutas", icon: Route },
+      { to: getConfiguracionHref("tabulador"), label: "Tabulador", icon: BadgeDollarSign },
     ],
   },
 ];

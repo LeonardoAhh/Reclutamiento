@@ -11,7 +11,6 @@ import _analisis_page from './analisis-page.bones.json'
 import _configuracion_indicadores from './configuracion-indicadores.bones.json'
 import _configuracion_rutas from './configuracion-rutas.bones.json'
 import _configuracion_tabulador from './configuracion-tabulador.bones.json'
-import _configuracion_speech from './configuracion-speech.bones.json'
 import _configuracion_formatos from './configuracion-formatos.bones.json'
 import _actividades_page from './actividades-page.bones.json'
 import _plantilla_empleados from './plantilla-empleados.bones.json'
@@ -28,7 +27,6 @@ registerBones({
   "configuracion-indicadores": _configuracion_indicadores,
   "configuracion-rutas": _configuracion_rutas,
   "configuracion-tabulador": _configuracion_tabulador,
-  "configuracion-speech": _configuracion_speech,
   "configuracion-formatos": _configuracion_formatos,
   "actividades-page": _actividades_page,
   "plantilla-empleados": _plantilla_empleados,

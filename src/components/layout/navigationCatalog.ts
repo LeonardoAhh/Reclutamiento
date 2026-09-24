@@ -5,7 +5,6 @@ import {
   ContactRound,
   Files,
   ListTodo,
-  MessagesSquare,
   Network,
   type LucideIcon,
 } from 'lucide-react';
@@ -71,12 +70,6 @@ export const ACTIVIDADES_NAV_GROUPS: ReadonlyArray<NavigationChildGroup> = [
         label: 'Formatos',
         icon: Files,
         href: getConfiguracionHref('formatos'),
-      },
-      {
-        id: 'speech',
-        label: 'Speech WA',
-        icon: MessagesSquare,
-        href: getConfiguracionHref('speech'),
       },
     ],
   },

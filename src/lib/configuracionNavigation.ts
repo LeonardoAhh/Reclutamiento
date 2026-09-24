@@ -2,7 +2,6 @@ import {
   BadgeDollarSign,
   ChartNoAxesCombined,
   Files,
-  MessagesSquare,
   Route,
   ChartSpline,
   type LucideIcon,
@@ -13,7 +12,6 @@ export type FeatureId =
   | "indicadores"
   | "rutas"
   | "tabulador"
-  | "speech"
   | "formatos";
 
 const FEATURE_PATHS: Record<FeatureId, string> = {
@@ -21,7 +19,6 @@ const FEATURE_PATHS: Record<FeatureId, string> = {
   formatos: '/formatos',
   indicadores: '/indicadores',
   rutas: '/rutas',
-  speech: '/speech',
   tabulador: '/tabulador',
 };
 
@@ -45,7 +42,6 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
       { id: "analisis", label: "Análisis", icon: ChartSpline },
       { id: "formatos", label: "Formatos", icon: Files },
       { id: "rutas", label: "Rutas", icon: Route },
-      { id: "speech", label: "Speech WA", icon: MessagesSquare },
     ],
   },
   {

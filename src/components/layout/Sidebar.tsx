@@ -6,13 +6,8 @@ import "./Sidebar.css";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
 
-import { ACTIVIDADES_PATH, NAV_GROUPS } from "./navigation";
+import { NAV_GROUPS } from "./navigation";
 import { UserMenuPopover } from "./UserMenuPopover";
-import { PlantillaNavItem } from "./PlantillaNavItem";
-import { ConfiguracionNavItem } from "./ConfiguracionNavItem";
-import { ActividadesNavItem } from "./ActividadesNavItem";
-import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
-import { ADMINISTRATION_PATH } from "@/lib/configuracionNavigation";
 import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
 import clsx from "clsx";
@@ -103,26 +98,6 @@ export function Sidebar({
                 const { to, label, icon: Icon, badge, end } = item;
                 if (item.roles && (!profile || !item.roles.some((role) => role === profile.role))) {
                   return null;
-                }
-                if (
-                  to === PLANTILLA_PATH ||
-                  to === ADMINISTRATION_PATH ||
-                  to === ACTIVIDADES_PATH
-                ) {
-                  const SectionNavItem = to === PLANTILLA_PATH
-                    ? PlantillaNavItem
-                    : to === ADMINISTRATION_PATH
-                      ? ConfiguracionNavItem
-                      : ActividadesNavItem;
-                  return (
-                    <li key={to}>
-                      <SectionNavItem
-                        item={item}
-                        mobile={Boolean(mobileMenuOpen)}
-                        onNavigate={onCloseMobileMenu}
-                      />
-                    </li>
-                  );
                 }
                 const isActive = end
                   ? location.pathname === to
