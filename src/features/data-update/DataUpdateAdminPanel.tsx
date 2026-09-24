@@ -232,6 +232,7 @@ export function DataUpdateAdminPanel({
             options={shiftOptions}
             placeholder="Todos"
             onChange={setSelectedShift}
+            triggerAppearance="control"
             disabled={shiftOptions.length === 0}
             aria-label={`Filtrar por turno: ${selectedShift || "Todos"}`}
             customTrigger={

@@ -519,6 +519,7 @@ export function EmployeeModal({
             onChange={(val) => setForm({ ...form, categoria: val })}
             options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
             placeholder="N/A"
+            showPlaceholderOption={false}
           />
         </div>
         <div className="form-group">

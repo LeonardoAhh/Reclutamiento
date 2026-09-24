@@ -35,6 +35,7 @@ interface CustomSelectProps extends SelectAriaProps {
   className?: string;
   disabled?: boolean;
   customTrigger?: ReactNode;
+  triggerAppearance?: 'control' | 'plain';
 }
 
 const ITEM_VALUE_PREFIX = 'custom-select-item:';
@@ -54,6 +55,7 @@ export function CustomSelect({
   className,
   disabled = false,
   customTrigger,
+  triggerAppearance = 'plain',
   ...ariaProps
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -92,7 +94,7 @@ export function CustomSelect({
           id={id}
           className={cn(
             'custom-select-trigger',
-            customTrigger && 'custom-select-trigger--unstyled',
+            customTrigger && triggerAppearance === 'plain' && 'custom-select-trigger--unstyled',
             !selectedOption && !customTrigger && 'is-placeholder',
           )}
           {...ariaProps}
