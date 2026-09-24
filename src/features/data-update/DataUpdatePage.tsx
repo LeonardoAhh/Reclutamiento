@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import { FilePlus2, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
+import { Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
@@ -18,7 +18,7 @@ import {
   listEligibleDataUpdateProfiles,
 } from "./api";
 import { CampaignImportModal } from "./CampaignImportModal";
-import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
+import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE, DATA_UPDATE_PHONE_COUNTRY_CODE } from "./constants";
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
@@ -31,6 +31,30 @@ import type {
   DataUpdateRecord,
 } from "./types";
 import "./DataUpdatePage.css";
+
+function downloadContact(record: DataUpdateRecord, phone: string) {
+  const name = (record.identity.name.trim() || record.identity.employeeNumber)
+    .replace(/\\/g, "\\\\")
+    .replace(/\r\n|\r|\n/g, "\\n")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,");
+  const contact = [
+    "BEGIN:VCARD",
+    "VERSION:4.0",
+    `FN:${name}`,
+    `TEL;TYPE=cell;VALUE=uri:tel:+${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`,
+    "END:VCARD",
+    "",
+  ].join("\r\n");
+  const url = URL.createObjectURL(new Blob([contact], { type: "text/vcard;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `contacto-${record.identity.employeeNumber.replace(/[^a-zA-Z0-9_-]/g, "") || record.id}.vcf`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(() => navigator.onLine);
@@ -105,6 +129,7 @@ export function DataUpdatePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [completedSearchTerm, setCompletedSearchTerm] = useState("");
   const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
   const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("work");
@@ -236,7 +261,25 @@ export function DataUpdatePage() {
   const myCompletedCount = myRecords.filter(
     (record) => record.status === "completado",
   ).length;
-  const completedCount = detail?.records.filter((record) => record.status === "completado").length ?? 0;
+  const completedRecords = useMemo(
+    () => detail?.records.filter((record) => record.status === "completado") ?? [],
+    [detail],
+  );
+  const completedCount = completedRecords.length;
+  const visibleCompletedRecords = useMemo(() => {
+    const terms = normalizeString(completedSearchTerm).split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return completedRecords;
+    return completedRecords.filter((record) => {
+      const searchableText = normalizeString([
+        record.identity.employeeNumber,
+        record.identity.name,
+        record.identity.area,
+        record.identity.shift,
+      ].join(" "));
+      return terms.every((term) => searchableText.includes(term));
+    });
+  }, [completedRecords, completedSearchTerm]);
+  const completedPagination = usePagination(visibleCompletedRecords, DATA_UPDATE_PAGE_SIZE);
   const totalVisibleCount = detail?.records.length ?? 0;
   const completionPercentage = totalVisibleCount > 0
     ? Math.round((completedCount / totalVisibleCount) * 100)
@@ -359,8 +402,10 @@ export function DataUpdatePage() {
                 onChange={(campaignId) => {
                   setSelectedCampaignId(campaignId);
                   setSearchTerm("");
+                  setCompletedSearchTerm("");
                   setSelectedWorkGroup("");
                   recordPagination.goToPage(1);
+                  completedPagination.goToPage(1);
                 }}
                 showPlaceholderOption={false}
                 disabled={loading || busy}
@@ -438,6 +483,9 @@ export function DataUpdatePage() {
               </Tabs.Trigger>
               <Tabs.Trigger className="data-update-tabs__trigger" value="locker">
                 Locker
+              </Tabs.Trigger>
+              <Tabs.Trigger className="data-update-tabs__trigger" value="completed">
+                Completados
               </Tabs.Trigger>
               {isAdmin && (
                 <Tabs.Trigger className="data-update-tabs__trigger" value="admin">
@@ -568,6 +616,105 @@ export function DataUpdatePage() {
                 canEdit={canAccess}
                 onRecordUpdated={updateDetailRecord}
               />
+            </Tabs.Content>
+
+            <Tabs.Content className="data-update-tabs__content" value="completed">
+              <section className="data-update-queue" aria-labelledby="data-update-completed-title">
+                <div className="data-update-section-heading">
+                  <h2 id="data-update-completed-title">Completados</h2>
+                  {completedRecords.length > 0 && (
+                    <SearchField
+                      id="data-update-completed-search"
+                      className="data-update-queue__search"
+                      label="Buscar completados"
+                      placeholder="Número, nombre, departamento o turno"
+                      value={completedSearchTerm}
+                      onChange={(event) => {
+                        setCompletedSearchTerm(event.target.value);
+                        completedPagination.goToPage(1);
+                      }}
+                      onClear={() => setCompletedSearchTerm("")}
+                      aria-controls="data-update-completed-list"
+                      autoComplete="off"
+                    />
+                  )}
+                </div>
+                {completedRecords.length === 0 ? (
+                  <p className="data-update-message">Aún no hay registros completados en esta campaña.</p>
+                ) : (
+                  <>
+                    {visibleCompletedRecords.length === 0 ? (
+                      <div id="data-update-completed-list" className="data-update-search-empty" role="status">
+                        <p>No hay coincidencias para “{completedSearchTerm.trim()}”.</p>
+                        <button type="button" className="btn-secondary" onClick={() => setCompletedSearchTerm("")}>
+                          Limpiar búsqueda
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div id="data-update-completed-list" className="data-update-record-grid">
+                          {completedPagination.pageItems.map((record) => {
+                            const phone = record.data.mobilePhone.trim();
+                            const hasPhone = /^\d{10}$/.test(phone);
+                            return (
+                              <article key={record.id} className="card data-update-record-card data-update-completed-card">
+                                <div>
+                                  <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                                  <h3>{record.identity.name}</h3>
+                                </div>
+                                <dl className="data-update-completed-card__details">
+                                  <div><dt>Departamento</dt><dd>{record.identity.area || "Sin departamento"}</dd></div>
+                                  <div><dt>Turno</dt><dd>{record.identity.shift || "Sin turno"}</dd></div>
+                                </dl>
+                                <div className="data-update-completed-card__actions">
+                                  {hasPhone ? (
+                                    <>
+                                      <a
+                                        className="btn-secondary data-update-completed-card__icon-action"
+                                        href={`https://wa.me/${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`Abrir WhatsApp de ${record.identity.name} en una pestaña nueva`}
+                                        title="Abrir WhatsApp"
+                                      >
+                                        <MessageCircle aria-hidden="true" />
+                                      </a>
+                                      <button
+                                        type="button"
+                                        className="btn-secondary data-update-completed-card__icon-action"
+                                        onClick={() => downloadContact(record, phone)}
+                                        aria-label={`Descargar contacto de ${record.identity.name}`}
+                                        title="Descargar contacto"
+                                      >
+                                        <Download aria-hidden="true" />
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <span className="text-muted">Sin teléfono válido</span>
+                                  )}
+                                </div>
+                              </article>
+                            );
+                          })}
+                        </div>
+                        {completedPagination.totalPages > 1 && (
+                          <Pagination
+                            currentPage={completedPagination.currentPage}
+                            totalPages={completedPagination.totalPages}
+                            onPageChange={completedPagination.goToPage}
+                            onPrev={completedPagination.prevPage}
+                            onNext={completedPagination.nextPage}
+                            canGoPrev={completedPagination.canGoPrev}
+                            canGoNext={completedPagination.canGoNext}
+                            ariaLabel="Paginación de registros completados"
+                            variant="compact"
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </section>
             </Tabs.Content>
 
             {isAdmin && (

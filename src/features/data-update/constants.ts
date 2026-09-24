@@ -13,6 +13,7 @@ export const DATA_UPDATE_SIGNED_URL_SECONDS = 300;
 export const DATA_UPDATE_STEP_COUNT = 8;
 export const DATA_UPDATE_AUTOSAVE_DELAY_MS = 800;
 export const DATA_UPDATE_PAGE_SIZE = 6;
+export const DATA_UPDATE_PHONE_COUNTRY_CODE = "52";
 export const DATA_UPDATE_OTHER_RELATIONSHIP = "OTRO";
 export const PAYROLL_RECEIPT_OPTIONS = ["SI", "NO"] as const;
 export const DATA_UPDATE_LOCKER_AREAS = [
