@@ -436,7 +436,7 @@ export function Settings() {
                         {p.last_login_at && (
                           <>
                             {' · '}
-                            <Tooltip content="Último ingreso">
+                            <Tooltip content="Última conexión">
                               <span>
                                 {formatShortDate(p.last_login_at)}
                               </span>

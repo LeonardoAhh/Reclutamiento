@@ -9,12 +9,11 @@ import { supabase } from "@/lib/supabase";
 import { listProfiles } from "@/lib/users";
 import "./UserActivityPanel.css";
 
-function formatLastAccess(value: string | null | undefined) {
+function formatLastAccess(value: string | null | undefined, now: number) {
   if (!value) return "Sin acceso";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Desconocido";
 
-  const now = Date.now();
   const safeDate = date.getTime() > now ? new Date(now) : date;
   const distance = formatDistanceToNow(safeDate, {
     addSuffix: true,
@@ -30,6 +29,12 @@ export function UserActivityPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -154,7 +159,7 @@ export function UserActivityPanel() {
                       className="user-activity-panel__status-icon"
                       aria-hidden="true"
                     />
-                    {formatLastAccess(profile.last_login_at)}
+                    {formatLastAccess(profile.last_login_at, now)}
                   </>
                 )}
               </span>

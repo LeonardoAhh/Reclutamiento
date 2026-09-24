@@ -15,6 +15,7 @@ import { toast } from '@/lib/notify';
 import {
   signInWithUsername as signInLib,
   signOut as signOutLib,
+  recordLastActivity,
   emailToUsername,
   type SignInResult,
 } from '@/lib/auth';
@@ -25,6 +26,7 @@ export interface Profile {
   display_name: string | null;
   role: 'admin' | 'reclutador';
   created_at?: string;
+  /** Nombre legado de la columna; registra la última conexión visible. */
   last_login_at?: string | null;
   avatar_url?: string | null;
   hire_date?: string | null;
@@ -44,6 +46,7 @@ export interface AuthState {
 }
 
 const AuthContext = createContext<AuthState | null>(null);
+const ACTIVITY_WRITE_INTERVAL_MS = 5 * 60_000;
 
 /**
  * Provider único de auth. Debe montarse una sola vez, lo más arriba posible
@@ -227,6 +230,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfileLoading(true);
     let cancelled = false;
     let presenceChannel: RealtimeChannel | null = null;
+    let profileReady = false;
+    let lastActivityAttemptAt = 0;
+    let activityWriteInFlight = false;
+
+    const markActivity = async () => {
+      if (cancelled || !profileReady || document.visibilityState !== 'visible' || !navigator.onLine) return;
+      const now = Date.now();
+      if (activityWriteInFlight || now - lastActivityAttemptAt < ACTIVITY_WRITE_INTERVAL_MS) return;
+      lastActivityAttemptAt = now;
+      activityWriteInFlight = true;
+      try {
+        await recordLastActivity(userId);
+      } finally {
+        activityWriteInFlight = false;
+      }
+    };
+    const onActivity = () => { void markActivity(); };
+    window.addEventListener('focus', onActivity);
+    window.addEventListener('online', onActivity);
+    document.addEventListener('visibilitychange', onActivity);
+    const activityTimer = window.setInterval(onActivity, ACTIVITY_WRITE_INTERVAL_MS);
 
     async function fetchProfile() {
       try {
@@ -280,6 +304,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         setProfile(data);
+        profileReady = true;
+        const lastAccessAt = data.last_login_at ? Date.parse(data.last_login_at) : Number.NaN;
+        if (Number.isFinite(lastAccessAt) && Date.now() - lastAccessAt < ACTIVITY_WRITE_INTERVAL_MS) {
+          lastActivityAttemptAt = Date.now();
+        }
+        onActivity();
 
         // Iniciar presencia
         presenceChannel = supabase.channel('online-users');
@@ -296,6 +326,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: data.role,
                 online_at: new Date().toISOString()
               });
+              onActivity();
             }
           });
 
@@ -309,6 +340,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchProfile();
     return () => {
       cancelled = true;
+      window.removeEventListener('focus', onActivity);
+      window.removeEventListener('online', onActivity);
+      document.removeEventListener('visibilitychange', onActivity);
+      window.clearInterval(activityTimer);
       if (presenceChannel) {
         supabase.removeChannel(presenceChannel);
       }

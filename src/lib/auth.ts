@@ -41,6 +41,25 @@ export interface SignInResult {
   message?: string;
 }
 
+/** Registra la última actividad visible; no bloquea el acceso si falla. */
+export async function recordLastActivity(userId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ last_login_at: new Date().toISOString() })
+      .eq('id', userId)
+      .select('id');
+    if (error || !data?.length) {
+      console.warn('No se pudo registrar la actividad del usuario:', error?.message ?? 'Perfil no disponible.');
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.warn('No se pudo registrar la actividad del usuario:', error);
+    return false;
+  }
+}
+
 /**
  * Inicia sesión con usuario + password. Internamente arma el email sintético
  * y se lo pasa a Supabase Auth.
@@ -68,10 +87,7 @@ export async function signInWithUsername(
   }
 
   if (data?.session?.user) {
-    await supabase
-      .from('profiles')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('id', data.session.user.id);
+    await recordLastActivity(data.session.user.id);
   }
 
   return { ok: true };
