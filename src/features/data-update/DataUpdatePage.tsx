@@ -7,6 +7,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
+import { splitCandidateName } from "@/lib/names";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import {
@@ -33,16 +34,30 @@ import type {
 import "./DataUpdatePage.css";
 
 function downloadContact(record: DataUpdateRecord, phone: string) {
-  const name = (record.identity.name.trim() || record.identity.employeeNumber)
+  const fullName = record.identity.name.trim();
+  const nameParts = fullName.split(/\s+/);
+  // El separador compartido agrupa partículas iniciales; este apellido compuesto lleva la partícula en medio.
+  const compoundSurnameIndex = nameParts.findIndex((part, index) =>
+    index < 2 && part.toUpperCase() === "MONTES"
+      && nameParts[index + 1]?.toUpperCase() === "DE"
+      && nameParts[index + 2]?.toUpperCase() === "OCA",
+  );
+  const givenNames = compoundSurnameIndex >= 0
+    ? nameParts.slice(4).join(" ")
+    : splitCandidateName(fullName).nombres;
+  const name = [record.identity.employeeNumber.trim(), givenNames || fullName]
+    .filter(Boolean)
+    .join(" ")
     .replace(/\\/g, "\\\\")
     .replace(/\r\n|\r|\n/g, "\\n")
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,");
   const contact = [
     "BEGIN:VCARD",
-    "VERSION:4.0",
+    "VERSION:3.0",
+    `N:;${name};;;`,
     `FN:${name}`,
-    `TEL;TYPE=cell;VALUE=uri:tel:+${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`,
+    `TEL;TYPE=CELL:+${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`,
     "END:VCARD",
     "",
   ].join("\r\n");
