@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import { Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
+import { ChartNoAxesCombined, Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
@@ -23,6 +23,7 @@ import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE, DATA_UPDATE_PHONE_COUN
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
+import { DataUpdateProgressModal } from "./DataUpdateProgressModal";
 import { DataUpdateWizard } from "./DataUpdateWizard";
 import type {
   DataUpdateCampaign,
@@ -137,6 +138,7 @@ export function DataUpdatePage() {
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [incidents, setIncidents] = useState<DataUpdateIncident[]>([]);
   const [importOpen, setImportOpen] = useState(false);
+  const [progressOpen, setProgressOpen] = useState(false);
   const [campaignPendingDelete, setCampaignPendingDelete] = useState<DataUpdateCampaign | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -280,7 +282,6 @@ export function DataUpdatePage() {
     () => detail?.records.filter((record) => record.status === "completado") ?? [],
     [detail],
   );
-  const completedCount = completedRecords.length;
   const visibleCompletedRecords = useMemo(() => {
     const terms = normalizeString(completedSearchTerm).split(/\s+/).filter(Boolean);
     if (terms.length === 0) return completedRecords;
@@ -296,9 +297,6 @@ export function DataUpdatePage() {
   }, [completedRecords, completedSearchTerm]);
   const completedPagination = usePagination(visibleCompletedRecords, DATA_UPDATE_PAGE_SIZE);
   const totalVisibleCount = detail?.records.length ?? 0;
-  const completionPercentage = totalVisibleCount > 0
-    ? Math.round((completedCount / totalVisibleCount) * 100)
-    : 0;
   const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
 
   useEffect(() => {
@@ -415,6 +413,7 @@ export function DataUpdatePage() {
                 className="data-update-campaign-select"
                 options={campaigns.map((campaign) => ({ value: campaign.id, label: campaignOptionLabel(campaign) }))}
                 onChange={(campaignId) => {
+                  setProgressOpen(false);
                   setSelectedCampaignId(campaignId);
                   setSearchTerm("");
                   setCompletedSearchTerm("");
@@ -448,31 +447,26 @@ export function DataUpdatePage() {
                   Eliminar
                 </button>
               )}
+              {isAdmin && !loading && detail && (
+                <button
+                  type="button"
+                  className="btn-secondary data-update-progress-trigger"
+                  onClick={() => setProgressOpen(true)}
+                >
+                  <ChartNoAxesCombined aria-hidden="true" />
+                  Ver avance
+                </button>
+              )}
             </div>
           </section>
 
-          {!loading && detail && (
+          {!isAdmin && !loading && detail && (
             <section className="card data-update-summary-card" aria-label="Resumen de campaña">
               <dl className="data-update-summary">
                 <div><dt>Mis asignados</dt><dd>{myRecords.length}</dd></div>
                 <div><dt>Completados</dt><dd>{myCompletedCount}</dd></div>
                 <div><dt>Total visible</dt><dd>{totalVisibleCount}</dd></div>
               </dl>
-              {isAdmin && (
-                <div className="data-update-summary-progress">
-                  <div className="data-update-summary-progress__heading">
-                    <span>Avance global</span>
-                    <strong>{completionPercentage}%</strong>
-                  </div>
-                  <progress
-                    className="data-update-summary-progress__bar"
-                    value={completedCount}
-                    max={totalVisibleCount || 1}
-                    aria-label={`${completionPercentage} por ciento de colaboradores completados`}
-                  />
-                  <p>{completedCount} de {totalVisibleCount} colaboradores completados</p>
-                </div>
-              )}
             </section>
           )}
         </div>
@@ -750,6 +744,17 @@ export function DataUpdatePage() {
           </Tabs.Root>
         </>
       ) : null}
+
+      {isAdmin && detail && (
+        <DataUpdateProgressModal
+          key={detail.campaign.id}
+          isOpen={progressOpen}
+          onClose={() => setProgressOpen(false)}
+          detail={detail}
+          profiles={profiles}
+          currentUserId={user?.id ?? ""}
+        />
+      )}
 
       {isAdmin && profile && (
         <CampaignImportModal
