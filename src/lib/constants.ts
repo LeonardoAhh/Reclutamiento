@@ -264,7 +264,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   {
     area: "TALLER DE MOLDES",
     seccion: "MOLDES",
-    puesto: "Coordinador de Taller de Moldes",
+    puesto: "COORDINADOR DE TALLER DE MOLDES",
     plantilla_autorizada: 1,
   },
   {
