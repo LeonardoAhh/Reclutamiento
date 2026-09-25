@@ -796,7 +796,7 @@ export function getRecruiterAccessCardName(
 }
 
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
-  availableTitle: "Listo",
+  availableTitle: "Actualización disponible",
   availableHint: "Guardá antes de actualizar.",
   actionLabel: "Actualizar",
   deferLabel: "Después",
@@ -805,7 +805,7 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   retryLabel: "Reintentar",
   registrationErrorTitle: "Sin actualizaciones",
   registrationErrorHint: "La app funciona, pero no se pudo buscar versiones.",
-  appliedTitle: "Listo",
+  appliedTitle: "Actualización aplicada",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
