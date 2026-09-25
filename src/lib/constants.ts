@@ -813,12 +813,14 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   offlineTitle: "Sin conexión",
   offlineHint: "Algunas funciones necesitan internet.",
   onlineTitle: "Conectado",
-  offlineReadyTitle: "Modo sin conexión disponible",
+  offlineReadyTitle: "Interfaz disponible sin conexión",
+  offlineReadyHint: "Los datos y cambios requieren internet.",
 } as const;
 
 export const TOAST_CONFIG = {
   maxVisible: 3,
   defaultDurationMs: 4000,
+  typewriterIntervalMs: 30,
 } as const;
 
 export const TRANSPORT_INCIDENTS_CONFIG = {

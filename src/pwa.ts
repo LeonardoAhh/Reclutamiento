@@ -24,7 +24,7 @@ let snapshot: PWAUpdateSnapshot = {
 let registration: ServiceWorkerRegistration | undefined;
 let serviceWorkerUrl: string | undefined;
 let activateUpdate: (() => Promise<void>) | undefined;
-let updateDeferred = false;
+let deferredWorker: ServiceWorker | undefined;
 let updateCheckInFlight = false;
 let lastUpdateCheckAt = 0;
 const listeners = new Set<Listener>();
@@ -97,7 +97,7 @@ export async function applyPWAUpdate(): Promise<void> {
 }
 
 export function deferPWAUpdate(): void {
-  updateDeferred = true;
+  deferredWorker = registration?.waiting ?? undefined;
   publish({ status: 'idle' });
 }
 
@@ -114,7 +114,9 @@ export function registerServiceWorker(): void {
     },
     onNeedRefresh: () => {
       activateUpdate = () => updateSW(true);
-      if (!updateDeferred) publish({ status: 'available' });
+      if (registration?.waiting !== deferredWorker || !deferredWorker) {
+        publish({ status: 'available' });
+      }
     },
     onOfflineReady: () => {
       publish({ offlineReadyRevision: snapshot.offlineReadyRevision + 1 });

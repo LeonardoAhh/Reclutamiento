@@ -1,4 +1,5 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { wave } from 'robot-toast/robots';
 import {
   CircleAlert,
   CircleCheck,
@@ -13,6 +14,8 @@ import {
   type ToastState,
   type ToastType,
 } from '@/lib/notify';
+import { TOAST_CONFIG } from '@/lib/constants';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import './AppToaster.css';
 
 const TOAST_ICONS: Record<ToastType, LucideIcon> = {
@@ -26,6 +29,31 @@ const TOAST_ICONS: Record<ToastType, LucideIcon> = {
 function ToastItem({ toast }: { toast: ToastState }) {
   const Icon = TOAST_ICONS[toast.type];
   const compact = !toast.description && !toast.actions?.length;
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const [typing, setTyping] = useState({ title: toast.title, count: 0 });
+  const characters = Array.from(toast.title);
+  const shouldType = toast.type !== 'loading' && !reducedMotion;
+  const duration = toast.duration ?? TOAST_CONFIG.defaultDurationMs;
+  const interval = Number.isFinite(duration)
+    ? Math.max(1, Math.min(TOAST_CONFIG.typewriterIntervalMs, Math.floor(duration / (characters.length * 2))))
+    : TOAST_CONFIG.typewriterIntervalMs;
+
+  useEffect(() => {
+    if (!shouldType || characters.length === 0) return;
+
+    let count = 0;
+    const timer = window.setInterval(() => {
+      count += 1;
+      setTyping({ title: toast.title, count });
+      if (count >= characters.length) window.clearInterval(timer);
+    }, interval);
+
+    return () => window.clearInterval(timer);
+  }, [toast.title, shouldType, characters.length, interval]);
+
+  const visibleTitle = shouldType
+    ? characters.slice(0, typing.title === toast.title ? typing.count : 0).join('')
+    : toast.title;
 
   return (
     <li
@@ -34,13 +62,18 @@ function ToastItem({ toast }: { toast: ToastState }) {
       aria-atomic="true"
       aria-busy={toast.type === 'loading'}
     >
-      <div
-        className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}
-      >
-        <Icon aria-hidden="true" />
+      <div className="app-toaster__avatar" aria-hidden="true">
+        <img className="app-toaster__robot" src={wave} alt="" />
+        <span className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}>
+          <Icon />
+        </span>
       </div>
       <div className="app-toaster__content">
-        <span className="app-toaster__title">{toast.title}</span>
+        <span className="app-toaster__title">
+          <span className="app-toaster__title-measure" aria-hidden="true">{toast.title}</span>
+          <span className="app-toaster__title-visible" aria-hidden="true">{visibleTitle}</span>
+          <span className="sr-only">{toast.title}</span>
+        </span>
         {toast.description && (
           <span className="app-toaster__hint">{toast.description}</span>
         )}

@@ -52,6 +52,7 @@ export function PWAStatus() {
     toast.success({
       id: OFFLINE_READY_NOTICE_ID,
       title: SYSTEM_UPDATE_BANNER_CONFIG.offlineReadyTitle,
+      description: SYSTEM_UPDATE_BANNER_CONFIG.offlineReadyHint,
     });
   }, [offline, offlineReadyRevision]);
 
