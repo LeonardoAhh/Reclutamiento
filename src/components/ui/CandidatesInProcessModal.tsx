@@ -93,18 +93,9 @@ export function CandidatesInProcessModal({
       className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
       title="Procesos por cerrar"
-      size="sm"
+      size="md"
     >
       <div className="modal-body candidates-in-process-modal__body">
-        <header className="candidates-in-process-modal__summary">
-          <div className="candidates-in-process-modal__big-number">
-            {candidates.length}
-          </div>
-          <p className="candidates-in-process-modal__big-label">
-            {candidates.length === 1 ? 'Proceso' : 'Procesos'}
-          </p>
-        </header>
-
         {candidates.length === 0 ? (
           <p className="candidates-in-process-modal__empty">
             No hay candidatos en proceso.

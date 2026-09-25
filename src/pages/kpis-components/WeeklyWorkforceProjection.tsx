@@ -50,38 +50,6 @@ export function WorkforceProjection({ projection }: Props) {
         })}
       </div>
 
-      <details className="workforce-projection__details">
-        <summary className="workforce-projection__details-summary type-caption-sm text-muted">
-          Ver desglose
-        </summary>
-        <div className="workforce-projection__breakdown" role="list">
-          {CATEGORIES.map(({ key, label }) => {
-            const current = projection.current[key];
-            return (
-              <div key={key} className="workforce-projection__breakdown-card" role="listitem">
-                <span className="workforce-projection__breakdown-label type-caption-up text-muted">
-                  {label === 'Plantilla' ? 'Plantilla autorizada' : label}
-                </span>
-                <div className="workforce-projection__breakdown-row">
-                  <span className="workforce-projection__breakdown-stat">
-                    <span className="workforce-projection__breakdown-value type-body-strong text-ink">
-                      {current.covered}
-                    </span>
-                    <span className="type-caption-xs text-muted">
-                      &nbsp;de {current.target} puestos cubiertos
-                    </span>
-                  </span>
-                  {current.vacancies > 0 && (
-                    <span className="workforce-projection__breakdown-vacancy type-caption-sm text-error" aria-label={`${current.vacancies} vacante${current.vacancies === 1 ? '' : 's'}`}>
-                      −{current.vacancies}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </details>
       {projection.undatedEmployees > 0 && (
         <p className="workforce-projection__note type-caption-sm text-error">
           {projection.undatedEmployees} registros sin fecha válida de ingreso no están incluidos.

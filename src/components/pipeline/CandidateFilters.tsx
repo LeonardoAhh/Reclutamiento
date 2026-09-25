@@ -22,6 +22,7 @@ export function CandidateFilters({ value, onChange }: CandidateFiltersProps) {
   return (
     <CustomSelect
       className="candidate-filter-select"
+      triggerAppearance="control"
       value={value}
       onChange={(nextValue) => {
         const selected = GROUP_OPTIONS.find((option) => option.value === nextValue);

@@ -73,15 +73,6 @@ export function CandidatesCitedTodayModal({
       size="md"
     >
       <div className="modal-body candidates-cited-today-modal__body">
-        <header className="candidates-cited-today-modal__summary">
-          <div className="candidates-cited-today-modal__big-number">
-            {candidates.length}
-          </div>
-          <p className="candidates-cited-today-modal__big-label">
-            {candidates.length === 1 ? 'Candidato' : 'Candidatos'}
-          </p>
-        </header>
-
         {candidates.length === 0 ? (
           <p className="candidates-cited-today-modal__empty">
             No hay candidatos citados hoy.

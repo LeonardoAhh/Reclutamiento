@@ -1023,7 +1023,7 @@ export function Pipeline() {
         isOpen={metricsModalOpen}
         onClose={() => setMetricsModalOpen(false)}
         title="Métricas y KPIs"
-        size="sm"
+        size="md"
       >
         <div className="modal-body pipeline__metrics-menu">
           {/* Card resumen global */}

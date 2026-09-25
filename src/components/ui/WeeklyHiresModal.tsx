@@ -266,7 +266,6 @@ export function WeeklyHiresModal({
           {/* Semana Actual */}
           <ExpandableSection
             title={`Semana ${range.week}`}
-            variant="card"
           >
           <div className="weekly-hires-modal__week-content">
             <div className="weekly-hires-modal__week-stats">
@@ -315,7 +314,6 @@ export function WeeklyHiresModal({
         {/* Semana Anterior */}
         <ExpandableSection
           title={`Semana ${previousRange.week}`}
-          variant="card"
         >
           <div className="weekly-hires-modal__week-content">
             <div className="weekly-hires-modal__week-stats">

@@ -273,8 +273,8 @@ export function CandidateReportModal({
         </button>
       }
     >
-      <div className="modal-body candidate-report-modal__body">
-        {empty ? (
+      {empty && (
+        <div className="modal-body candidate-report-modal__body">
           <motion.p
             className="candidate-report-modal__empty"
             initial={{ opacity: 0 }}
@@ -283,22 +283,8 @@ export function CandidateReportModal({
           >
             No hay candidatos activos en proceso.
           </motion.p>
-        ) : (
-          <motion.div
-            className="candidate-report-modal__summary"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <span className="candidate-report-modal__total">
-              {totalActivos}
-            </span>
-            <span className="candidate-report-modal__total-label">
-              Candidato{totalActivos === 1 ? '' : 's'} en total
-            </span>
-          </motion.div>
-        )}
-      </div>
+        </div>
+      )}
     </Modal>
   );
 }
