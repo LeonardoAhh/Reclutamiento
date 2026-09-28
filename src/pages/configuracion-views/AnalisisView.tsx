@@ -175,7 +175,7 @@ export function AnalisisView() {
   }, [textMatches, statusFilter, departmentFilter, shiftFilter, riskFilter, reportsFetched, allReports]);
 
   // 4. Paginación
-  const employeePagination = usePagination(filteredEmployees, 6);
+  const employeePagination = usePagination(filteredEmployees, 12);
 
   useEffect(() => {
     employeePagination.goToPage(1);

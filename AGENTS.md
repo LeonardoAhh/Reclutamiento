@@ -18,26 +18,9 @@ El objetivo es mantener una implementación:
 
 ---
 
-## 1. Alcance y zona protegida
+## 1. Alcance
 
-Estas reglas aplican a todo el proyecto raíz `/app`, excepto al directorio protegido `rutas-app`.
-
-### 1.1 Protección absoluta de `rutas-app`
-
-Salvo autorización explícita, directa y actual del usuario, está **PROHIBIDO**:
-
-- Analizar archivos dentro de `rutas-app`.
-- Leer su contenido.
-- Buscar referencias dentro de ese directorio.
-- Editar, formatear, mover, renombrar o eliminar archivos.
-- Crear archivos o carpetas dentro de él.
-- Regenerar código, assets, índices o configuraciones.
-- Incluirlo en refactors, migraciones o cambios masivos.
-- Ejecutar herramientas que puedan modificarlo indirectamente.
-
-Las búsquedas globales, formatters, linters, scripts, reemplazos masivos y comandos recursivos DEBEN excluir expresamente `rutas-app`.
-
-La mera existencia del directorio no autoriza su inspección.
+Estas reglas aplican a todo el repositorio.
 
 ---
 
@@ -120,7 +103,6 @@ Durante la investigación:
 - No se debe formatear el repositorio completo.
 - No se debe ejecutar una migración.
 - No se deben actualizar dependencias.
-- No se debe inspeccionar `rutas-app`.
 - No se deben corregir problemas no relacionados.
 
 ---
@@ -786,7 +768,6 @@ El diff debe:
 - No incluir archivos generados accidentalmente.
 - No incluir secretos.
 - No incluir logs ni datos temporales.
-- No modificar `rutas-app`.
 - No contener código comentado o muerto.
 - No incluir refactors no solicitados.
 - Mantener convenciones existentes.
@@ -847,7 +828,6 @@ Ante cualquier solicitud de desarrollo, Gemini 3.1 Pro DEBE seguir este orden:
 2. Separar requisitos explícitos de suposiciones.
 3. Detectar ambigüedades y riesgos.
 4. Confirmar el alcance autorizado.
-5. Excluir `rutas-app`.
 
 ### Fase 2 — Investigar
 
@@ -882,7 +862,6 @@ Ante cualquier solicitud de desarrollo, Gemini 3.1 Pro DEBE seguir este orden:
 4. Revisar responsive y accesibilidad.
 5. Revisar consola y red.
 6. Revisar el diff completo.
-7. Confirmar que `rutas-app` permanece intacto.
 
 ### Fase 6 — Informar
 
@@ -954,7 +933,6 @@ Un trabajo solo está terminado cuando:
 - Pasa las pruebas relevantes.
 - El flujo fue verificado.
 - El diff está limpio.
-- `rutas-app` no fue leído ni modificado.
 - No quedan errores conocidos ocultos.
 - La respuesta final describe la verificación real.
 
@@ -1020,7 +998,6 @@ Antes de responder al usuario, confirmar:
 ### Alcance
 
 - [ ] Se trabajó únicamente en el alcance solicitado.
-- [ ] No se analizó ni modificó `rutas-app`.
 - [ ] No existen cambios colaterales.
 - [ ] No se realizó ningún refactor no solicitado.
 

@@ -1,5 +1,7 @@
 # Design System — White Precision UI
 
+This visual system applies to product interfaces throughout the repository.
+
 ## Overview
 
 The product uses a clean white canvas (`{colors.canvas}` — #ffffff), near-black ink (`{colors.ink}` — #111111), and restrained gray grouping surfaces. Primary actions stay black; blue is reserved for links, while visible focus uses muted gray. Structure comes from whitespace, surface changes, and thin borders instead of decorative color.
