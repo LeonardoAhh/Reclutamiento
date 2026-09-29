@@ -1,14 +1,67 @@
-.activity-lightbox__body {
+.lightbox-modal__body {
   inline-size: 100%;
   align-items: center;
-  justify-content: center;
 }
 
-.activity-lightbox__image {
+.lightbox-modal__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: var(--icon-size-xxl);
+}
+
+.lightbox-modal__indicator {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  transition: opacity var(--transition-base);
+}
+
+.lightbox-modal__indicator[data-loaded="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lightbox-modal__spinner {
+  animation: lightbox-modal-spin var(--duration-spinner) linear infinite;
+}
+
+.modal-content .lightbox-modal__image {
   display: block;
+  flex-shrink: 0;
   inline-size: 100%;
   block-size: auto;
   max-block-size: var(--feature-image-viewer-max-block-size);
   border-radius: var(--rounded-md);
   object-fit: contain;
+}
+
+.lightbox-modal__image:not([data-loaded="true"]) {
+  visibility: hidden;
+}
+
+.lightbox-modal__message {
+  margin: 0;
+  color: var(--color-body);
+  text-align: center;
+}
+
+@keyframes lightbox-modal-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-modal__indicator {
+    transition: none;
+  }
+
+  .lightbox-modal__spinner {
+    animation: none;
+  }
 }

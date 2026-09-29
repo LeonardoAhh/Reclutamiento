@@ -1,0 +1,7 @@
+.data-update-photo-modal__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  text-align: center;
+}

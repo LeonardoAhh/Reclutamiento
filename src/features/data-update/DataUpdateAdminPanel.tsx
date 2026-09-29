@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, EllipsisVertical, FileArchive, FileJson2, FileSpreadsheet, PencilLine, RotateCcw, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDown, EllipsisVertical, FileArchive, FileJson2, FileSpreadsheet, Image as ImageIcon, PencilLine, RotateCcw, Trash2 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
@@ -25,6 +25,7 @@ import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
 import { exportDataUpdateCampaign } from "./exportExcel";
 import { exportDataUpdatePhotos, type DataUpdatePhotoExportProgress } from "./exportPhotos";
 import { DataUpdateShiftImportModal } from "./DataUpdateShiftImportModal";
+import { DataUpdatePhotoModal } from "./DataUpdatePhotoModal";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
 
@@ -86,6 +87,9 @@ export function DataUpdateAdminPanel({
   const [deleteRecordError, setDeleteRecordError] = useState<string | null>(null);
   const [deletingRecord, setDeletingRecord] = useState(false);
   const [shiftImportOpen, setShiftImportOpen] = useState(false);
+  const [photoToView, setPhotoToView] = useState<{ name: string; path: string } | null>(null);
+  const [openActionsRecordId, setOpenActionsRecordId] = useState<string | null>(null);
+  const photoReturnFocusRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     setSelectedShift("");
@@ -347,18 +351,43 @@ export function DataUpdateAdminPanel({
                     <DataUpdateStatus status={record.status} />
                   </div>
                 </div>
-                <Popover>
+                <Popover
+                  open={openActionsRecordId === record.id}
+                  onOpenChange={(open) => setOpenActionsRecordId(open ? record.id : null)}
+                >
                   <PopoverTrigger asChild>
                     <button
                       type="button"
                       className="dropdown-menu-trigger"
                       disabled={busy}
                       aria-label={`Acciones de ${record.identity.name}`}
+                      onClick={(event) => { photoReturnFocusRef.current = event.currentTarget; }}
                     >
                       <EllipsisVertical aria-hidden="true" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" className="data-update-admin-card__popover">
+                  <PopoverContent
+                    align="end"
+                    className="data-update-admin-card__popover"
+                    onCloseAutoFocus={(event) => {
+                      if (photoToView) event.preventDefault();
+                    }}
+                  >
+                    {record.photoPath && (
+                      <button
+                        type="button"
+                        className="data-update-admin-card__action"
+                        onClick={() => {
+                          if (record.photoPath) {
+                            setOpenActionsRecordId(null);
+                            setPhotoToView({ name: record.identity.name, path: record.photoPath });
+                          }
+                        }}
+                      >
+                        <ImageIcon aria-hidden="true" />
+                        <span>Ver foto</span>
+                      </button>
+                    )}
                     {record.status === "completado" ? (
                       <button
                         type="button"
@@ -441,6 +470,17 @@ export function DataUpdateAdminPanel({
         loadingLabel="Eliminando…"
         errorMessage={deleteRecordError ?? undefined}
       />
+      {photoToView && (
+        <DataUpdatePhotoModal
+          name={photoToView.name}
+          path={photoToView.path}
+          onClose={() => {
+            const trigger = photoReturnFocusRef.current;
+            setPhotoToView(null);
+            requestAnimationFrame(() => trigger?.focus());
+          }}
+        />
+      )}
     </section>
   );
 }

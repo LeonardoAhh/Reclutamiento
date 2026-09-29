@@ -14,15 +14,14 @@
 
   /* Ancho compartido con .app-shell (fuente única de verdad, ver abajo). */
   width: min(var(--feature-navigation-rail-inline-size), 100%);
-  padding: var(--design-spacing-md) var(--design-spacing-sm);
-  padding-top: var(--safe-area-top);
-  padding-bottom: calc(var(--design-spacing-sm) + var(--safe-area-bottom));
+  padding-block-start: var(--safe-area-top);
+  padding-block-end: calc(var(--design-spacing-sm) + var(--safe-area-bottom));
+  padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) max(var(--design-spacing-sm), var(--safe-area-right));
 
   color: var(--color-navigation-rail-text);
   background: var(--workspace-canvas);
   transition: transform var(--transition-base);
   visibility: hidden;
-  padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) max(var(--design-spacing-sm), var(--safe-area-right));
   box-shadow: var(--shadow-elevated);
 }
 
@@ -46,9 +45,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--design-spacing-sm);
-  margin-inline: 0;
+  gap: var(--design-spacing-xs);
+  margin-block-end: var(--design-spacing-sm);
   padding-inline: var(--design-spacing-md);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
   flex-shrink: 0;
@@ -96,7 +94,7 @@ button.sidebar__close-btn {
   justify-content: center;
   min-inline-size: var(--touch-target-min);
   min-block-size: var(--touch-target-min);
-  padding: var(--spacing-xs);
+  padding: var(--design-spacing-xxs);
   color: var(--color-ink);
   cursor: pointer;
   border-radius: var(--rounded-md);
@@ -112,6 +110,7 @@ button.sidebar__close-btn {
 /* Navegación */
 .sidebar__nav {
   flex: 1;
+  min-inline-size: 0;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -132,6 +131,7 @@ button.sidebar__close-btn {
 .sidebar__group-title {
   margin-bottom: var(--design-spacing-xxs);
   padding-inline: var(--design-spacing-sm);
+  overflow-wrap: anywhere;
   font-family: var(--font-code);
   font-size: var(--type-mono-eyebrow-size);
   font-weight: var(--type-mono-eyebrow-weight);
@@ -247,7 +247,6 @@ button.sidebar__close-btn {
   width: 100%;
   min-width: 0;
   align-items: center;
-  gap: var(--spacing-sm);
 }
 .sidebar__user-trigger.dropdown-menu-trigger {
   display: inline-flex;
@@ -272,7 +271,7 @@ button.sidebar__close-btn {
   width: var(--icon-size-control);
   height: var(--icon-size-control);
   flex: 0 0 auto;
-  margin-left: auto;
+  margin-inline-start: auto;
   color: var(--color-navigation-rail-text);
 }
 

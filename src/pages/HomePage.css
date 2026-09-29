@@ -46,10 +46,10 @@
   gap: var(--design-spacing-xs);
   overflow-wrap: anywhere;
   color: var(--color-ink);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
 }
 
 .home-page__title-text {
@@ -59,8 +59,8 @@
 .home-page__robot {
   display: block;
   flex: 0 0 auto;
-  inline-size: var(--icon-size-xxl);
-  block-size: var(--icon-size-xxl);
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
   object-fit: contain;
   animation: floatEmpty var(--transition-decorative-float) infinite;
 }
@@ -103,10 +103,10 @@
   min-width: 0;
   color: var(--color-body);
   overflow-wrap: anywhere;
-  font-size: var(--type-body-lg-size);
-  font-weight: var(--type-body-lg-weight);
-  line-height: var(--type-body-lg-line);
-  letter-spacing: var(--type-body-lg-tracking);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
 .home-page__learning,
@@ -198,19 +198,19 @@
 .home-page__section-title {
   color: var(--color-ink);
   overflow-wrap: anywhere;
-  font-size: var(--type-heading-1-size);
-  font-weight: var(--type-heading-1-weight);
-  line-height: var(--type-heading-1-line);
-  letter-spacing: var(--type-heading-1-tracking);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .home-page__lesson-title {
   color: var(--color-ink);
   overflow-wrap: anywhere;
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .home-page__section-intro,
@@ -219,17 +219,10 @@
 .home-page__context {
   color: var(--color-body);
   overflow-wrap: anywhere;
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.home-page__section-intro {
-  font-size: var(--type-body-lg-size);
-  font-weight: var(--type-body-lg-weight);
-  line-height: var(--type-body-lg-line);
-  letter-spacing: var(--type-body-lg-tracking);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
 .home-page__context {
@@ -352,10 +345,15 @@
   }
 
   .home-page__title {
-    font-size: var(--type-display-xl-size);
-    font-weight: var(--type-display-xl-weight);
-    line-height: var(--type-display-xl-line);
-    letter-spacing: var(--type-display-xl-tracking);
+    font-size: var(--type-heading-lg-size);
+    font-weight: var(--type-heading-lg-weight);
+    line-height: var(--type-heading-lg-line);
+    letter-spacing: var(--type-heading-lg-tracking);
+  }
+
+  .home-page__robot {
+    inline-size: var(--icon-size-xl);
+    block-size: var(--icon-size-xl);
   }
 
   .home-page__hero-footer {

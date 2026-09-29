@@ -160,7 +160,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 > No hover states are documented. Each spec covers Default and (where extracted) pressed/active states. Variants live as separate `components:` entries.
 
 **`app-toast`** — global notification
-- The toast stack sits at the top center on mobile, tablet, desktop, and wide screens. It respects safe areas and the shared container gutters; multiple notifications stay centered in the stack.
+- The toast stack sits at the top center on mobile and tablet, and at the top right from the desktop breakpoint. It respects safe areas and the shared container gutters; multiple notifications share the same alignment within the stack.
 - The surface uses `{colors.surface-dark}`, high-contrast text, the existing hairline and floating shadow, and the `wave` robot with a semantic status icon. Width is capped by the shared toast token and shrinks to fit narrow viewports.
 - The title reveals progressively while its full space remains reserved to avoid layout shifts. Assistive technology receives the complete message immediately; reduced-motion preference shows the complete title without typing.
 

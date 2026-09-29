@@ -25,11 +25,11 @@
 
   display: flex;
   align-items: flex-start;
-  gap: var(--design-spacing-sm);
+  gap: var(--design-spacing-xs);
   inline-size: fit-content;
   max-inline-size: min(100%, var(--toast-max-inline-size));
-  padding: var(--design-spacing-sm) var(--design-spacing-md);
-  overflow-wrap: break-word;
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  overflow-wrap: anywhere;
   background-color: var(--color-surface-dark);
   color: var(--color-on-dark);
   border: var(--border-width) solid var(--color-surface-dark-elevated);
@@ -41,7 +41,6 @@
 
 .app-toaster__item--compact {
   align-items: center;
-  padding-block: var(--design-spacing-xs);
 }
 
 .app-toaster__content {
@@ -76,10 +75,10 @@
 
 .app-toaster__hint {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-on-dark-soft);
 }
 
@@ -89,8 +88,8 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  inline-size: var(--icon-size-xxl);
-  block-size: var(--icon-size-xxl);
+  inline-size: var(--icon-size-xl);
+  block-size: var(--icon-size-xl);
 }
 
 .app-toaster__robot {
@@ -140,11 +139,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--design-spacing-xs);
-  margin-block-start: var(--design-spacing-xs);
+  margin-block-start: var(--design-spacing-xxs);
 }
 
 .app-toaster__action {
   min-block-size: var(--touch-target-min);
+  max-inline-size: 100%;
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   font-family: var(--font-body);
   font-size: var(--type-button-md-size);
@@ -153,6 +153,7 @@
   letter-spacing: var(--type-button-md-tracking);
   border: var(--border-width) solid var(--color-on-dark-soft);
   border-radius: var(--rounded-md);
+  overflow-wrap: anywhere;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -172,11 +173,12 @@
 }
 
 .app-toaster__action--secondary {
-  background: var(--color-surface-dark-elevated);
+  background: transparent;
   color: var(--color-on-dark);
 }
 
 .app-toaster__action--secondary:hover {
+  background: var(--color-surface-dark-elevated);
   border-color: var(--color-on-dark);
 }
 
@@ -210,6 +212,12 @@
 
 .app-toaster__icon--spin {
   animation: app-toaster-spin var(--duration-spinner) linear infinite;
+}
+
+@media (min-width: 1080px) {
+  .app-toaster {
+    align-items: flex-end;
+  }
 }
 
 @keyframes app-toaster-enter {

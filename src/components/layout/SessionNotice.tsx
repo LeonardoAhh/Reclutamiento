@@ -1,16 +1,28 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/lib/notify";
+import { ACTIVIDADES_PATH } from "./navigation";
 
 const SESSION_NOTICE_ID = "pending-activities";
 
 export function SessionNotice() {
   const { profile } = useAuth();
+  const { pathname } = useLocation();
+  const viewingActivities = pathname === ACTIVIDADES_PATH;
   const [taskCount, setTaskCount] = useState(0);
 
   useEffect(() => {
     if (!profile) return;
+    if (viewingActivities) {
+      setTaskCount(0);
+      toast.dismiss(SESSION_NOTICE_ID);
+      sessionStorage.setItem("notified_activities", "true");
+      return;
+    }
+
+    let active = true;
 
     // 1. Carga inicial (solo 1 vez por sesión)
     if (!sessionStorage.getItem("notified_activities")) {
@@ -31,6 +43,7 @@ export function SessionNotice() {
         }
 
         const { count } = await query;
+        if (!active) return;
 
         if (count && count > 0) {
           setTaskCount(count);
@@ -49,6 +62,7 @@ export function SessionNotice() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "activities" },
         (payload) => {
+          if (!active) return;
           const newAct = payload.new as any;
 
           if (profile.role === "reclutador") {
@@ -69,12 +83,13 @@ export function SessionNotice() {
       .subscribe();
 
     return () => {
+      active = false;
       supabase.removeChannel(channel);
     };
-  }, [profile]);
+  }, [profile, viewingActivities]);
 
   useEffect(() => {
-    if (taskCount <= 0) return;
+    if (viewingActivities || taskCount <= 0) return;
 
     toast.info({
       id: SESSION_NOTICE_ID,
@@ -83,7 +98,7 @@ export function SessionNotice() {
       }`,
     });
     sessionStorage.setItem("notified_activities", "true");
-  }, [taskCount]);
+  }, [taskCount, viewingActivities]);
 
   return null;
 }
