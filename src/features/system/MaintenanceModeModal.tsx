@@ -101,7 +101,7 @@ export function MaintenanceModeModal({
         <p className="maintenance-mode-modal__copy type-body-md text-muted">
           {isMaintenance
             ? "Se restaurará el acceso normal al sistema."
-            : "Durante el mantenimiento, solo podrán acceder administradores."}
+            : "Acceso solo para administradores."}
         </p>
 
         {maintenanceError && (

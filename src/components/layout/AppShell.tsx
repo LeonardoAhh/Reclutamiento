@@ -26,6 +26,7 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreMenuFocusRef = useRef(false);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
   const location = useLocation();
@@ -47,8 +48,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuOpen) return;
+    restoreMenuFocusRef.current = !isDesktop;
     setMobileMenuOpen(false);
-    if (!isDesktop) mobileMenuButtonRef.current?.focus();
   }, [mobileMenuOpen, isDesktop]);
   const toggleMobileMenu = useCallback(() => {
     if (mobileMenuOpen) closeMobileMenu();
@@ -60,11 +61,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (isDesktop) setMobileMenuOpen(false);
   }, [isDesktop]);
 
+  useEffect(() => {
+    if (isMobileMenuOpen || !restoreMenuFocusRef.current) return;
+    restoreMenuFocusRef.current = false;
+    mobileMenuButtonRef.current?.focus();
+  }, [isMobileMenuOpen]);
+
   // Cerrar menú móvil con Escape
   useEffect(() => {
     if (!isMobileMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key !== 'Escape' || !(e.target instanceof Node)) return;
+      if (document.getElementById('app-sidebar')?.contains(e.target)) {
         closeMobileMenu();
       }
     };
@@ -85,10 +93,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           className="sidebar-mobile-overlay"
           onClick={closeMobileMenu}
           aria-label="Cerrar menú"
+          tabIndex={-1}
         />
       )}
 
-      <div className="app-shell__workspace">
+      <div className="app-shell__workspace" inert={isMobileMenuOpen}>
         <Header
           onMobileMenuToggle={toggleMobileMenu}
           mobileMenuOpen={isMobileMenuOpen}

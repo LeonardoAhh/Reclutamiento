@@ -29,10 +29,14 @@
   }
 
   .login__left {
-    background: var(--workspace-surface);
+    background: var(--color-canvas-soft);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
     box-shadow: var(--workspace-shadow);
+  }
+
+  .login__card {
+    box-shadow: var(--shadow-xs);
   }
 }
 
@@ -156,9 +160,9 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   color: var(--color-ink);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline-strong);
-  border-radius: var(--rounded-xs);
+  background: var(--color-canvas-elevated);
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--rounded-md);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 

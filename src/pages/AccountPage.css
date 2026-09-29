@@ -2,11 +2,6 @@
   padding-block-end: var(--design-spacing-xxl);
 }
 
-.account-page__header {
-  padding-block: var(--design-spacing-xl) var(--design-spacing-lg);
-  border-bottom: var(--border-width) solid var(--color-hairline);
-}
-
 .account-page__content,
 .account-page__section {
   display: grid;
@@ -23,8 +18,6 @@
 }
 
 .account-page__section-title,
-.account-page__row-copy h3,
-.account-page__row-copy p,
 .account-page__activity h3 {
   margin: 0;
 }
@@ -47,6 +40,16 @@
   box-shadow: var(--shadow-xs);
 }
 
+.account-page__identity,
+.account-page__row {
+  appearance: none;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .account-page__identity {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -61,11 +64,21 @@
   background: var(--color-canvas-elevated);
 }
 
+.account-page__panel {
+  display: grid;
+}
+
 .account-page__row {
   display: grid;
   min-width: 0;
   gap: var(--design-spacing-md);
   padding: var(--design-spacing-md);
+  border: 0;
+  background: transparent;
+}
+
+.account-page__row:disabled {
+  cursor: not-allowed;
 }
 
 .account-page__identity-copy,
@@ -90,7 +103,7 @@
 }
 
 .account-page__email,
-.account-page__row-copy p {
+.account-page__row-description {
   color: var(--color-body);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -100,20 +113,34 @@
   overflow-wrap: anywhere;
 }
 
-.account-page__identity > button {
-  grid-column: 1 / -1;
-}
-
 .account-page__row + .account-page__row {
   border-top: var(--border-width) solid var(--color-hairline);
 }
 
 .account-page__row-copy {
   display: grid;
+  align-content: center;
   gap: var(--design-spacing-xxs);
 }
 
-.account-page__row-copy h3,
+.account-page__row--status {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--design-spacing-md);
+  row-gap: var(--design-spacing-xxs);
+}
+
+.account-page__row--status .account-page__row-title {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.account-page__row--status .account-page__row-description {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.account-page__row-title,
 .account-page__activity h3 {
   color: var(--color-ink);
   font-family: var(--font-display);
@@ -123,11 +150,11 @@
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
-.account-page__row-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-sm);
+.account-page__status {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: start;
 }
 
 .account-page__status.badge--amber {
@@ -141,8 +168,13 @@
 }
 
 .account-page__activity .user-activity-panel__list {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--design-spacing-md);
+  row-gap: 0;
+}
+
+.account-page__activity .user-activity-panel__state {
+  grid-column: 1 / -1;
 }
 
 .account-page__activity .user-activity-panel__card {
@@ -156,9 +188,13 @@
   border-top: var(--border-width) solid var(--color-hairline);
 }
 
+.account-page__activity .user-activity-panel__card:nth-child(2) {
+  border-top: 0;
+}
+
 @media (min-width: 768px) {
-  .account-page__header {
-    padding-block: var(--design-spacing-xl);
+  .account-page__activity .user-activity-panel__list {
+    column-gap: var(--design-spacing-lg);
   }
 
   .account-page__content {
@@ -170,8 +206,12 @@
     gap: var(--design-spacing-lg);
   }
 
-  .account-page__identity {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+  .account-page__section--profile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .account-page__section--profile > .account-page__section-title {
+    grid-column: 1 / -1;
   }
 
   .account-page__avatar {
@@ -185,17 +225,13 @@
     padding: var(--design-spacing-lg);
   }
 
-  .account-page__identity > button {
-    grid-column: auto;
+  .account-page__row--status .account-page__row-description {
+    grid-column: 1;
   }
 
-  .account-page__row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-  }
-
-  .account-page__row-actions {
-    justify-content: flex-end;
+  .account-page__row--status .account-page__status {
+    grid-row: 1 / span 2;
+    align-self: center;
   }
 
   .account-page__activity .user-activity-panel__card {

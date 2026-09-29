@@ -36,48 +36,53 @@ export function AccountPage() {
   const closeDialog = () => setDialog(null);
 
   return (
-    <main className="account-page container container--compact" aria-labelledby="account-page-title">
-      <header className="account-page__header">
-        <h1 id="account-page-title" className="app-page-title">Cuenta</h1>
-      </header>
-
+    <main className="account-page container container--compact" aria-labelledby="account-profile-title">
       <div className="account-page__content">
-        <section className="account-page__section" aria-labelledby="account-profile-title">
-          <h2 id="account-profile-title" className="account-page__section-title">Mi cuenta</h2>
-          <div className="account-page__identity">
-            <div className="account-page__avatar">
+        <section className="account-page__section account-page__section--profile" aria-labelledby="account-profile-title">
+          <h1 id="account-profile-title" className="account-page__section-title">Mi cuenta</h1>
+          <button
+            type="button"
+            className="account-page__identity"
+            aria-label={`Cambiar foto de perfil de ${displayName}`}
+            aria-describedby={user?.email ? "account-profile-email" : undefined}
+            onClick={() => setDialog("avatar")}
+          >
+            <span className="account-page__avatar">
               <Avatar name={displayName} src={profile.avatar_url} />
-            </div>
-            <div className="account-page__identity-copy">
+            </span>
+            <span className="account-page__identity-copy">
               <strong className="account-page__name">{displayName}</strong>
-              {user?.email && <span className="account-page__email">{user.email}</span>}
-            </div>
-            <button type="button" className="btn-secondary" onClick={() => setDialog("avatar")}>
-              Cambiar foto
-            </button>
-          </div>
+              {user?.email && <span id="account-profile-email" className="account-page__email">{user.email}</span>}
+            </span>
+          </button>
 
           <div className="account-page__panel">
-            <div className="account-page__row">
-              <div className="account-page__row-copy">
-                <h3>Contraseña</h3>
-                <p>Actualiza la contraseña de acceso a tu cuenta.</p>
-              </div>
-              <button type="button" className="btn-secondary" onClick={() => setDialog("password")}>
-                Cambiar contraseña
-              </button>
-            </div>
+            <button
+              type="button"
+              className="account-page__row"
+              aria-label="Cambiar contraseña"
+              aria-describedby="account-password-description"
+              onClick={() => setDialog("password")}
+            >
+              <span className="account-page__row-copy">
+                <span className="account-page__row-title">Contraseña</span>
+                <span id="account-password-description" className="account-page__row-description">Actualiza la contraseña de acceso a tu cuenta.</span>
+              </span>
+            </button>
 
             {isRecruiter && (
-              <div className="account-page__row">
-                <div className="account-page__row-copy">
-                  <h3>Reconocimientos</h3>
-                  <p>Configura cuándo quieres ver tus avances y logros.</p>
-                </div>
-                <button type="button" className="btn-secondary" onClick={() => setDialog("recognition")}>
-                  Configurar
-                </button>
-              </div>
+              <button
+                type="button"
+                className="account-page__row"
+                aria-label="Configurar reconocimientos"
+                aria-describedby="account-recognition-description"
+                onClick={() => setDialog("recognition")}
+              >
+                <span className="account-page__row-copy">
+                  <span className="account-page__row-title">Reconocimientos</span>
+                  <span id="account-recognition-description" className="account-page__row-description">Configura cuándo quieres ver tus avances y logros.</span>
+                </span>
+              </button>
             )}
           </div>
         </section>
@@ -86,25 +91,20 @@ export function AccountPage() {
           <section className="account-page__section" aria-labelledby="account-admin-title">
             <h2 id="account-admin-title" className="account-page__section-title">Administración</h2>
             <div className="account-page__panel">
-              <div className="account-page__row">
-                <div className="account-page__row-copy">
-                  <h3>Modo mantenimiento</h3>
-                  <p>Controla el acceso general al sistema.</p>
-                </div>
-                <div className="account-page__row-actions">
-                  <Badge className="account-page__status" variant={maintenance.enabled ? "amber" : "default"} aria-live="polite">
-                    {maintenanceLabel}
-                  </Badge>
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={() => setDialog("maintenance")}
-                    disabled={maintenance.loading}
-                  >
-                    Administrar
-                  </button>
-                </div>
-              </div>
+              <button
+                type="button"
+                className="account-page__row account-page__row--status"
+                aria-label="Administrar modo mantenimiento"
+                aria-describedby="account-maintenance-description account-maintenance-status"
+                onClick={() => setDialog("maintenance")}
+                disabled={maintenance.loading}
+              >
+                <span className="account-page__row-title">Modo mantenimiento</span>
+                <Badge id="account-maintenance-status" className="account-page__status" variant={maintenance.enabled ? "amber" : "default"} aria-live="polite">
+                  {maintenanceLabel}
+                </Badge>
+                <span id="account-maintenance-description" className="account-page__row-description">Controla el acceso general al sistema.</span>
+              </button>
             </div>
             <div className="account-page__activity">
               <h3>Actividad de usuarios</h3>

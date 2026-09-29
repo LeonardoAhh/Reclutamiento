@@ -94,6 +94,8 @@ button.sidebar__close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
   padding: var(--spacing-xs);
   color: var(--color-ink);
   cursor: pointer;
@@ -253,13 +255,13 @@ button.sidebar__close-btn {
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
   align-items: center;
-  justify-content: flex-start;
   gap: var(--design-spacing-xs);
   background: transparent;
   border: 0;
   cursor: pointer;
   padding: var(--design-spacing-xs);
   border-radius: var(--rounded-md);
+  text-align: left;
 }
 .sidebar__user-trigger.dropdown-menu-trigger:is(:hover, [data-state="open"]) {
   background: var(--color-surface-soft);
@@ -279,19 +281,34 @@ button.sidebar__close-btn {
   min-width: 0;
   flex: 1 1 auto;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
-.sidebar__user-role {
+.sidebar__user-name,
+.sidebar__user-email {
+  min-width: 0;
   max-width: 100%;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
-  color: var(--color-navigation-rail-text);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
   font-family: var(--font-body);
+}
+
+.sidebar__user-name {
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
+}
+
+.sidebar__user-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-muted);
+  font-size: var(--type-caption-xs-size);
+  font-weight: var(--type-caption-xs-weight);
+  line-height: var(--type-caption-xs-line);
+  letter-spacing: var(--type-caption-xs-tracking);
 }
 
 /* App shell: layout sidebar + contenido.

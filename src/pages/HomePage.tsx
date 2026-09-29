@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRight, Brain, Check, ChevronLeft, ChevronRight, Scale, ShieldCheck, UsersRound } from "lucide-react";
-import { Avatar } from "@/components/ui/Avatar";
+import { wave } from "robot-toast/robots";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { useAuth } from "@/hooks/useAuth";
 import { formatEmploymentTenure, formatReadableDate } from "@/lib/dates";
@@ -221,17 +221,13 @@ export function HomePage() {
   return (
     <main className="home-page container" aria-labelledby="home-page-title">
       <section className="home-page__hero">
-        <div className="home-page__avatar-frame" aria-hidden="true">
-          <div className="home-page__avatar">
-            <Avatar name={displayName} src={profile.avatar_url} />
-          </div>
-        </div>
         <div className="home-page__identity">
           <span className="home-page__eyebrow" aria-hidden="true">
             {userTitle}
           </span>
           <h1 id="home-page-title" className="home-page__title">
-            Hola, {firstName}.
+            <span className="home-page__title-text">Hola, {firstName}.</span>
+            <img className="home-page__robot" src={wave} alt="" aria-hidden="true" />
           </h1>
         </div>
         {hireDate && tenure ? (

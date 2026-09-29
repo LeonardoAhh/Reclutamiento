@@ -23,6 +23,17 @@ function formatLastAccess(value: string | null | undefined, now: number) {
   return distance.charAt(0).toUpperCase() + distance.slice(1);
 }
 
+function formatCompactLastAccess(lastAccess: string) {
+  if (!lastAccess.startsWith("Hace ")) return lastAccess;
+
+  return lastAccess
+    .slice(5)
+    .replace("menos de un minuto", "<1 min")
+    .replace(/ minutos?$/, " min")
+    .replace(/ horas?$/, " h")
+    .replace(/ días?$/, " d");
+}
+
 export function UserActivityPanel() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(() => new Set());
@@ -134,6 +145,7 @@ export function UserActivityPanel() {
 
         {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
+          const lastAccess = formatLastAccess(profile.last_login_at, now);
 
           return (
             <li key={profile.id} className="user-activity-panel__card">
@@ -159,7 +171,8 @@ export function UserActivityPanel() {
                       className="user-activity-panel__status-icon"
                       aria-hidden="true"
                     />
-                    {formatLastAccess(profile.last_login_at, now)}
+                    <span aria-hidden="true">{formatCompactLastAccess(lastAccess)}</span>
+                    <span className="sr-only">{lastAccess}</span>
                   </>
                 )}
               </span>

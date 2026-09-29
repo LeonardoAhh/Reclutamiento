@@ -1,5 +1,5 @@
 /* ========================================
-   DESIGN TOKENS — Geist Precision UI
+   DESIGN TOKENS — White Precision UI
    Near-white canvas · near-black action ink · muted focus and blue links.
    Fuente: desing.md. Alias legados preservan compatibilidad.
    ======================================== */
@@ -131,10 +131,10 @@
 
   /* Cal Sans no se distribuye con la app; Inter 600 es el sustituto autorizado. */
   --font-display:
-    "Inter", "Geist Sans", -apple-system, system-ui, "Segoe UI", Helvetica,
+    "Inter", -apple-system, system-ui, "Segoe UI", Helvetica,
     Arial, sans-serif;
   --font-body:
-    "Inter", "Geist Sans", -apple-system, system-ui, "Segoe UI", Helvetica,
+    "Inter", -apple-system, system-ui, "Segoe UI", Helvetica,
     Arial, sans-serif;
   --font-code:
     "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco,
@@ -250,7 +250,7 @@
   /* code */
   --type-code-md-size: 0.875rem;
   --type-code-md-weight: 400;
-  --type-code-md-line: 1.5;
+  --type-code-md-line: 1.43;
   --type-code-md-tracking: 0;
   --type-code-sm-size: 0.875rem;
   --type-code-sm-weight: 400;
@@ -485,8 +485,11 @@
   --type-caption-md-line: 1.4;
   --type-caption-md-tracking: 0;
   --type-display-md-size: 1.875rem;
-  --type-display-md-weight: 700;
-  --type-body-lg-size: 1.125rem;
+  --type-display-md-weight: 600;
+  --type-body-lg-size: 1rem;
+  --type-body-lg-weight: 400;
+  --type-body-lg-line: 1.5;
+  --type-body-lg-tracking: 0;
   --text-xs: 12px;
   --text-sm: 14px;
 
@@ -504,7 +507,6 @@
   --tracking-wide: 0.02em;
   --tracking-wider: 0.04em;
 
-  --rounded-pill: 100px;
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
   --border-width: 1px;
@@ -545,7 +547,7 @@
     0 1px 2px rgb(var(--color-ink-rgb) / 0.05),
     0 4px 12px rgb(var(--color-ink-rgb) / 0.08);
   --shadow-subtle: var(--shadow-sm);
-  --shadow-card: var(--shadow-sm);
+  --shadow-card: var(--shadow-xs);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
   --shadow-prominent:
@@ -729,10 +731,10 @@ pre {
 }
 
 pre {
-  background: var(--color-surface-soft);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
+  border-radius: var(--rounded-md);
+  padding: var(--design-spacing-md);
   overflow-x: auto;
 }
 
@@ -1088,14 +1090,14 @@ code:not(pre code) {
 
 .form-group label {
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
   color: var(--color-ink);
 }
 
-.form-group input,
+.form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -1115,7 +1117,7 @@ code:not(pre code) {
 .form-group select {
   height: auto;
   min-height: var(--control-min-block-size);
-  padding: var(--control-padding-y) var(--spacing-sm);
+  padding: var(--control-padding-y) var(--control-padding-x);
 }
 
 /* Conserva el indicador nativo de apertura; no necesita un icono inventado. */
@@ -1126,13 +1128,13 @@ code:not(pre code) {
 .form-group textarea {
   height: auto;
   min-height: var(--textarea-min-block-size);
-  padding: var(--control-padding-y) var(--spacing-sm);
+  padding: var(--control-padding-y) var(--control-padding-x);
   resize: vertical;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--color-muted);
+  color: var(--color-faint);
 }
 
 .form-group input:hover:not(:focus-visible):not(:disabled),
@@ -1224,7 +1226,7 @@ code:not(pre code) {
 
 /* ========================================
    BUTTONS — sistema de controles
-   Los botones de aplicación usan radio de 6px y altura táctil de 44px.
+   Los botones de aplicación usan radio de 8px y altura táctil de 44px.
    Primaria negra; secundaria plana con hairline.
    ======================================== */
 
@@ -1262,10 +1264,10 @@ code:not(pre code) {
 .btn-sm {
   min-height: var(--touch-target-min);
   padding-inline: var(--spacing-md);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
 }
 
 /* Primary — único CTA con color estructural sólido */
@@ -1316,12 +1318,12 @@ code:not(pre code) {
 
 /* Danger */
 .btn-danger {
-  background: var(--color-error);
+  background: var(--color-error-deep);
   color: var(--color-on-primary);
-  border-color: var(--color-error);
+  border-color: var(--color-error-deep);
 }
 .btn-danger:hover:not(:disabled) {
-  background: var(--color-error-text);
+  box-shadow: var(--shadow-xs);
 }
 .btn-danger:active:not(:disabled) {
   background: var(--color-error-text);
@@ -1380,8 +1382,8 @@ code:not(pre code) {
   height: var(--touch-target-min);
   border-radius: var(--rounded-full);
   background: var(--color-surface);
-  border: none;
-  color: var(--color-charcoal);
+  border: var(--border-width) solid var(--color-control-border);
+  color: var(--color-ink);
   cursor: pointer;
   transition:
     color var(--transition-fast),
@@ -1416,7 +1418,7 @@ code:not(pre code) {
 
 /* ========================================
    CARDS
-   Border 1px + rounded-md. Sin sombra.
+   Border 1px + rounded-lg. Sin sombra.
    ======================================== */
 
 .card {
@@ -1603,7 +1605,7 @@ code:not(pre code) {
   justify-content: center;
   border-radius: var(--rounded-full);
   color: var(--color-ink);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   padding: 0;
   background: transparent;
   cursor: pointer;
@@ -1735,12 +1737,6 @@ code:not(pre code) {
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
   letter-spacing: var(--type-heading-md-tracking);
-}
-
-@media (min-width: 768px) {
-  .modal-alert {
-    border-radius: var(--rounded-md);
-  }
 }
 
 /* ========================================

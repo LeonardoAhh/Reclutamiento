@@ -35,6 +35,32 @@ export function Sidebar({
   }, [mobileMenuOpen]);
 
   useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!mobileMenuOpen || !sidebar) return;
+
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(
+        sidebar.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+      ).filter((element) => element.getClientRects().length > 0);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    sidebar.addEventListener("keydown", handleTab);
+    return () => sidebar.removeEventListener("keydown", handleTab);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
     if (prevPathRef.current === location.pathname) return;
     prevPathRef.current = location.pathname;
     onCloseMobileMenu?.();
@@ -66,6 +92,8 @@ export function Sidebar({
       className="sidebar"
       data-mobile-open={mobileMenuOpen}
       aria-label="Navegación principal"
+      aria-modal={mobileMenuOpen || undefined}
+      role={mobileMenuOpen ? "dialog" : undefined}
       id="app-sidebar"
       data-testid="app-sidebar"
     >
@@ -140,7 +168,6 @@ export function Sidebar({
             })}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
-            role={profile?.role}
             mobile={Boolean(mobileMenuOpen)}
             signingOut={signingOut}
             onNavigate={onCloseMobileMenu}

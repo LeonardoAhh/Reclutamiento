@@ -24,40 +24,6 @@
   gap: var(--design-spacing-xxs);
 }
 
-.dropdown-menu-label.user-menu-popover__identity {
-  min-width: 0;
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  color: var(--color-body);
-}
-
-.user-menu-popover__identity-copy {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-.user-menu-popover__identity-name,
-.user-menu-popover__identity-email {
-  overflow-wrap: anywhere;
-}
-
-.user-menu-popover__identity-name {
-  color: var(--color-ink);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
-}
-
-.user-menu-popover__identity-email {
-  color: var(--color-muted);
-  font-size: var(--type-caption-xs-size);
-  font-weight: var(--type-caption-xs-weight);
-  line-height: var(--type-caption-xs-line);
-  letter-spacing: var(--type-caption-xs-tracking);
-}
-
 .dropdown-menu-item.user-menu-popover__item {
   display: flex;
   width: 100%;
