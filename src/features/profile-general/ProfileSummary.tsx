@@ -180,7 +180,6 @@ export function ProfileSummary({ cycle, employees, evaluations }: ProfileSummary
               canGoPrev={employeePagination.canGoPrev}
               canGoNext={employeePagination.canGoNext}
               ariaLabel="Paginación del detalle por empleado"
-              variant="compact"
             />
           </div>
         )}

@@ -4,7 +4,6 @@
   "routes": [
     "/inicio",
     "/plantilla",
-    "/empleados",
     "/candidatos",
     "/bajas",
     "/resumen",

@@ -146,6 +146,7 @@ export function DataUpdatePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyPendingWork, setShowOnlyPendingWork] = useState(false);
   const [completedSearchTerm, setCompletedSearchTerm] = useState("");
   const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
   const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
@@ -237,6 +238,7 @@ export function DataUpdatePage() {
     const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
     return myRecords
       .filter((record) => {
+        if (showOnlyPendingWork && record.status === "completado") return false;
         if (terms.length === 0) return true;
         const searchableText = normalizeString([
           record.identity.employeeNumber,
@@ -252,7 +254,7 @@ export function DataUpdatePage() {
         Number(left.status === "completado") - Number(right.status === "completado")
         || compareDataUpdateRecords(left, right)
       ));
-  }, [myRecords, searchTerm]);
+  }, [myRecords, searchTerm, showOnlyPendingWork]);
   const visibleWorkGroups = useMemo(
     () => groupWorkRecords(visibleMyRecords),
     [visibleMyRecords],
@@ -551,15 +553,36 @@ export function DataUpdatePage() {
                         />
                       </div>
                     )}
+                    <label className="toggle-switch data-update-pending-filter">
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        checked={showOnlyPendingWork}
+                        onChange={(event) => {
+                          setShowOnlyPendingWork(event.target.checked);
+                          setSelectedWorkGroup("");
+                          recordPagination.goToPage(1);
+                        }}
+                      />
+                      <span className="toggle-switch__slider" aria-hidden="true" />
+                      <span className="toggle-switch__label">Pendientes</span>
+                    </label>
                   </div>
                 )}
                 {myRecords.length === 0 ? (
                   <p className="data-update-message">No tienes registros asignados en esta campaña.</p>
                 ) : visibleMyRecords.length === 0 ? (
                   <div id="data-update-record-list" className="data-update-search-empty" role="status">
-                    <p>No hay coincidencias para “{searchTerm.trim()}”.</p>
-                    <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>
-                      Limpiar búsqueda
+                    <p>{searchTerm.trim()
+                      ? `No hay coincidencias para “${searchTerm.trim()}”.`
+                      : "No hay registros pendientes o en proceso."}</p>
+                    <button type="button" className="btn-secondary" onClick={() => {
+                      setSearchTerm("");
+                      setShowOnlyPendingWork(false);
+                      setSelectedWorkGroup("");
+                      recordPagination.goToPage(1);
+                    }}>
+                      Limpiar filtros
                     </button>
                   </div>
                 ) : (
@@ -611,7 +634,6 @@ export function DataUpdatePage() {
                         canGoPrev={recordPagination.canGoPrev}
                         canGoNext={recordPagination.canGoNext}
                         ariaLabel="Paginación de registros asignados"
-                        variant="compact"
                       />
                     )}
                   </>
@@ -716,7 +738,6 @@ export function DataUpdatePage() {
                             canGoPrev={completedPagination.canGoPrev}
                             canGoNext={completedPagination.canGoNext}
                             ariaLabel="Paginación de registros completados"
-                            variant="compact"
                           />
                         )}
                       </>

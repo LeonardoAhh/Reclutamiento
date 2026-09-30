@@ -432,7 +432,7 @@
   );
   --pipeline-table-date-inline-size: 7.5rem;
   --pipeline-table-actions-inline-size: 5rem;
-  --pipeline-pagination-label-min-inline-size: 5.625rem;
+  --pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
   --feature-profile-binary-min: 18rem;
   /* Anchos semánticos del diálogo compartido. */
@@ -1397,6 +1397,42 @@ code:not(pre code) {
   color: var(--color-error);
 }
 
+.step-nav-control {
+  display: inline-flex;
+  flex: 0 0 var(--touch-target-min);
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.step-nav-control svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+.step-nav-control:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+}
+
+.step-nav-control:disabled {
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-nav-control {
+    transition: none;
+  }
+}
+
 .btn-icon__count {
   position: absolute;
   top: var(--action-count-offset);
@@ -1605,11 +1641,15 @@ code:not(pre code) {
   justify-content: center;
   border-radius: var(--rounded-full);
   color: var(--color-ink);
-  border: var(--border-width) solid var(--color-control-border);
+  border: 0;
   padding: 0;
   background: transparent;
   cursor: pointer;
   transition: background var(--transition-fast);
+}
+
+.modal-back-btn {
+  border: var(--border-width) solid var(--color-control-border);
 }
 
 .modal-close svg,

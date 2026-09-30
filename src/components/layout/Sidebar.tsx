@@ -1,14 +1,11 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Sidebar.css";
-import { useFeedback } from "@/hooks/useFeedback";
-import { useLoader } from "@/hooks/useLoader";
 
-import { NAV_GROUPS } from "./navigation";
+import { APP_BRAND_NAME, NAV_GROUPS } from "./navigation";
 import { UserMenuPopover } from "./UserMenuPopover";
-import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
 import clsx from "clsx";
 
@@ -21,14 +18,10 @@ export function Sidebar({
   mobileMenuOpen = false,
   onCloseMobileMenu,
 }: SidebarProps) {
-  const { username, user, profile, signOut } = useAuth();
+  const { username, user, profile } = useAuth();
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
   const sidebarRef = useRef<HTMLElement>(null);
-  const signOutPendingRef = useRef(false);
-  const [signingOut, setSigningOut] = useState(false);
-  const loader = useLoader();
-  const { trigger } = useFeedback();
 
   useEffect(() => {
     if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('.sidebar__close-btn')?.focus();
@@ -66,24 +59,6 @@ export function Sidebar({
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
 
-  const handleSignOut = useCallback(async () => {
-    if (signOutPendingRef.current) return;
-    signOutPendingRef.current = true;
-    setSigningOut(true);
-    trigger("light");
-    loader.show({ title: "Cerrando sesión…", variant: "workspace-exit" });
-    try {
-      await signOut();
-      trigger("success");
-    } catch {
-      toast.error({ title: "No se pudo cerrar sesión. Inténtalo de nuevo." });
-    } finally {
-      loader.hide();
-      signOutPendingRef.current = false;
-      setSigningOut(false);
-    }
-  }, [signOut, trigger, loader]);
-
   if (!username) return null;
 
   return (
@@ -98,7 +73,7 @@ export function Sidebar({
       data-testid="app-sidebar"
     >
       <div className="sidebar__top">
-        <span className="sidebar__brand">ViñoPlastic</span>
+        <span className="sidebar__brand">{APP_BRAND_NAME}</span>
         <button
           type="button"
           className="sidebar__close-btn"
@@ -169,9 +144,7 @@ export function Sidebar({
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? undefined}
             mobile={Boolean(mobileMenuOpen)}
-            signingOut={signingOut}
             onNavigate={onCloseMobileMenu}
-            onSignOut={handleSignOut}
           />
         </div>
       </div>

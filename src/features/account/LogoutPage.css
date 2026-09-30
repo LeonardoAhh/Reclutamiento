@@ -1,0 +1,101 @@
+.logout-page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+  background: var(--workspace-canvas);
+}
+
+.logout-page__header {
+  padding-block: max(var(--design-spacing-lg), var(--safe-area-top));
+}
+
+.logout-page__brand {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.logout-page__main {
+  display: grid;
+  min-inline-size: 0;
+  place-items: center;
+  padding-block: var(--design-spacing-lg)
+    max(var(--design-spacing-lg), var(--safe-area-bottom));
+}
+
+.logout-page__content {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-inline-size: var(--auth-form-max-inline-size);
+  min-inline-size: 0;
+  gap: var(--design-spacing-lg);
+}
+
+.logout-page__content h1 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.logout-page__identity {
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface);
+}
+
+.logout-page__identity .ui-avatar {
+  flex: 0 0 var(--touch-target-min);
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+}
+
+.logout-page__identity-copy {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xxs);
+}
+
+.logout-page__identity-copy strong {
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-strong-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-strong-line);
+  letter-spacing: var(--type-body-sm-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.logout-page__identity-copy span {
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.logout-page__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-sm);
+}
+
+.logout-page__actions > button {
+  inline-size: 100%;
+}

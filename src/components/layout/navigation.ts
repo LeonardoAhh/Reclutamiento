@@ -3,7 +3,6 @@ import {
   ChartNoAxesCombined,
   ChartSpline,
   Contact,
-  ContactRound,
   Files,
   House,
   ListTodo,
@@ -13,7 +12,7 @@ import {
   UserSearch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { EMPLEADOS_PATH, PLANTILLA_PATH } from "@/lib/plantillaNavigation";
+import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
 
 export type NavigationRole = "admin" | "reclutador";
@@ -35,7 +34,9 @@ export type NavGroup = {
 
 export const ACTIVIDADES_PATH = "/actividades";
 export const ACCOUNT_PATH = "/cuenta";
+export const LOGOUT_PATH = "/cerrar-sesion";
 export const HOME_PATH = "/inicio";
+export const APP_BRAND_NAME = "ViñoPlastic";
 
 export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   {
@@ -54,7 +55,6 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
         icon: UserSearch,
         mobilePriority: true,
       },
-      { to: EMPLEADOS_PATH, label: "Empleados", icon: ContactRound },
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
       {
         to: "/resumen",

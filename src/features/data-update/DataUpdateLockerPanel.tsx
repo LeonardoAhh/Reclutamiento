@@ -216,7 +216,6 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
               ariaLabel="Paginación de lockers"
-              variant="compact"
             />
           )}
         </>

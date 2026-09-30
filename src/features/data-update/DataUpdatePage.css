@@ -160,6 +160,10 @@
   gap: var(--design-spacing-sm);
 }
 
+.data-update-pending-filter {
+  justify-self: start;
+}
+
 .data-update-campaign-actions > .data-update-progress-trigger {
   flex-basis: 100%;
 }
@@ -1285,7 +1289,6 @@
     width: auto;
     max-width: 100%;
     grid-template-columns: repeat(3, max-content);
-    grid-column: 1 / -1;
     justify-self: end;
   }
 
@@ -1393,17 +1396,10 @@
 }
 
 @media (min-width: 1080px) {
-  .data-update-admin__toolbar {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  .data-update-work-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) max-content;
   }
 
-  .data-update-admin__toolbar--empty {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .data-update-admin__actions {
-    grid-column: auto;
-  }
   .form-wizard .data-update-transport-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1467,6 +1463,10 @@
 }
 
 @media (min-width: 1440px) {
+  .data-update-admin__toolbar:not(.data-update-admin__toolbar--empty) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) max-content max-content;
+  }
+
   .data-update-completed-card {
     grid-template-areas:
       "identity identity"

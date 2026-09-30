@@ -13,7 +13,6 @@ import _configuracion_rutas from './configuracion-rutas.bones.json'
 import _configuracion_tabulador from './configuracion-tabulador.bones.json'
 import _configuracion_formatos from './configuracion-formatos.bones.json'
 import _actividades_page from './actividades-page.bones.json'
-import _plantilla_empleados from './plantilla-empleados.bones.json'
 import _resumen_page from './resumen-page.bones.json'
 
 configureBoneyard({"color":"var(--color-hairline)","darkColor":"var(--color-hairline)","animate":"solid","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
@@ -29,6 +28,5 @@ registerBones({
   "configuracion-tabulador": _configuracion_tabulador,
   "configuracion-formatos": _configuracion_formatos,
   "actividades-page": _actividades_page,
-  "plantilla-empleados": _plantilla_empleados,
   "resumen-page": _resumen_page,
 })

@@ -54,6 +54,7 @@ export function DataUpdateAdminPanel({
 }: DataUpdateAdminPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShift, setSelectedShift] = useState("");
+  const [showOnlyPending, setShowOnlyPending] = useState(false);
   const participantProfiles = profiles.filter((profile) => detail.participantIds.includes(profile.id));
   const sortedRecords = useMemo(
     () => [...detail.records].sort(compareDataUpdateRecords),
@@ -68,6 +69,7 @@ export function DataUpdateAdminPanel({
   const visibleRecords = useMemo(() => {
     const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
     return sortedRecords.filter((record) => {
+      if (showOnlyPending && record.status === "completado") return false;
       if (selectedShift && record.identity.shift.trim() !== selectedShift) return false;
       if (terms.length === 0) return true;
       const searchableText = normalizeString([
@@ -80,7 +82,7 @@ export function DataUpdateAdminPanel({
       ].join(" "));
       return terms.every((term) => searchableText.includes(term));
     });
-  }, [searchTerm, selectedShift, sortedRecords]);
+  }, [searchTerm, selectedShift, showOnlyPending, sortedRecords]);
   const pagination = usePagination(visibleRecords, DATA_UPDATE_PAGE_SIZE);
   const [photoExportProgress, setPhotoExportProgress] = useState<DataUpdatePhotoExportProgress | null>(null);
   const [pendingDeleteRecord, setPendingDeleteRecord] = useState<DataUpdateRecord | null>(null);
@@ -97,7 +99,7 @@ export function DataUpdateAdminPanel({
 
   useEffect(() => {
     pagination.goToPage(1);
-  }, [detail.campaign.id, pagination.goToPage, searchTerm, selectedShift]);
+  }, [detail.campaign.id, pagination.goToPage, searchTerm, selectedShift, showOnlyPending]);
 
   const reassign = async (recordId: string, profileId: string) => {
     onBusyChange(true);
@@ -248,6 +250,18 @@ export function DataUpdateAdminPanel({
             }
           />
         </ToolbarGroup>
+        {detail.records.length > 0 && (
+          <label className="toggle-switch data-update-pending-filter">
+            <input
+              type="checkbox"
+              role="switch"
+              checked={showOnlyPending}
+              onChange={(event) => setShowOnlyPending(event.target.checked)}
+            />
+            <span className="toggle-switch__slider" aria-hidden="true" />
+            <span className="toggle-switch__label">Pendientes</span>
+          </label>
+        )}
         <ToolbarGroup label="Acciones de administración" className="data-update-admin__actions">
           <button
             type="button"
@@ -310,16 +324,21 @@ export function DataUpdateAdminPanel({
             ? selectedShift
               ? `No hay coincidencias para “${searchTerm.trim()}” en el turno ${selectedShift}.`
               : `No hay coincidencias para “${searchTerm.trim()}”.`
-            : `No hay registros del turno ${selectedShift}.`}</p>
+            : selectedShift
+              ? showOnlyPending
+                ? `No hay registros pendientes o en proceso para el turno ${selectedShift}.`
+                : `No hay registros del turno ${selectedShift}.`
+              : "No hay registros pendientes o en proceso."}</p>
           <button
             type="button"
             className="btn-secondary"
             onClick={() => {
               setSearchTerm("");
               setSelectedShift("");
+              setShowOnlyPending(false);
             }}
           >
-            {selectedShift ? "Limpiar filtros" : "Limpiar búsqueda"}
+            Limpiar filtros
           </button>
         </div>
       ) : (
@@ -449,7 +468,6 @@ export function DataUpdateAdminPanel({
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
           ariaLabel="Paginación de administración de registros"
-          variant="compact"
         />
       )}
 

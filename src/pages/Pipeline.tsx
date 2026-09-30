@@ -3,7 +3,7 @@ import { MotionConfig } from 'framer-motion';
 import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
+import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -20,6 +20,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { SearchField } from '@/components/ui/SearchField';
 import { Toolbar, ToolbarGroup } from '@/components/ui/Toolbar';
 import { BackButton } from '@/components/ui/BackButton';
+import { Pagination } from '@/components/ui/Pagination';
 import {
   CandidateFilters,
   type CandidateGroup,
@@ -724,31 +725,14 @@ export function Pipeline() {
               })}
             </section>
 
-            <nav className="pipeline__pagination-controls" aria-label="Paginación de candidatos">
-              <button
-                type="button"
-                className="btn-icon"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
-                aria-label="Página anterior"
-                title="Página anterior"
-              >
-                <ChevronLeft size={16} aria-hidden="true" />
-              </button>
-              <span className="pipeline__pagination-text">
-                Página {currentPage} de {totalPages}
-              </span>
-              <button
-                type="button"
-                className="btn-icon"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
-                aria-label="Página siguiente"
-                title="Página siguiente"
-              >
-                <ChevronRight size={16} aria-hidden="true" />
-              </button>
-            </nav>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              canGoPrev={currentPage > 1}
+              canGoNext={currentPage < totalPages}
+              ariaLabel="Paginación de candidatos"
+            />
             </>
           )}
 

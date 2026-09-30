@@ -2,7 +2,6 @@ import {
   BadgeDollarSign,
   ChartNoAxesCombined,
   ChartSpline,
-  ContactRound,
   Files,
   ListTodo,
   Network,
@@ -12,7 +11,7 @@ import {
   CONFIGURACION_OPERATION_LINKS,
   getConfiguracionHref,
 } from '@/lib/configuracionNavigation';
-import { getPlantillaHref } from '@/lib/plantillaNavigation';
+import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { ACTIVIDADES_PATH } from './navigation';
 
 export type NavigationChild = {
@@ -43,13 +42,7 @@ export const PLANTILLA_NAV_GROUPS: ReadonlyArray<NavigationChildGroup> = [
         id: 'general',
         label: 'Departamentos',
         icon: Network,
-        href: getPlantillaHref('general'),
-      },
-      {
-        id: 'empleados',
-        label: 'Empleados',
-        icon: ContactRound,
-        href: getPlantillaHref('empleados'),
+        href: PLANTILLA_PATH,
       },
     ],
   },

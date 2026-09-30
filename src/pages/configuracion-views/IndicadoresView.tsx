@@ -124,7 +124,7 @@ export function IndicadoresView() {
           <div className="indicadores-month-nav">
             <button
               type="button"
-              className="btn-icon"
+              className="step-nav-control"
               onClick={handlePrevMonth}
               aria-label="Mostrar mes anterior"
             >
@@ -138,7 +138,7 @@ export function IndicadoresView() {
             </time>
             <button
               type="button"
-              className="btn-icon"
+              className="step-nav-control"
               onClick={handleNextMonth}
               disabled={isCurrentMonth()}
               aria-label="Mostrar mes siguiente"

@@ -25,7 +25,8 @@ import {
 } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
+import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH } from '@/components/layout/navigation';
+import { LogoutPage } from '@/features/account/LogoutPage';
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -159,6 +160,7 @@ function App() {
                   </RedirectIfAuthed>
                 }
               />
+              <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
@@ -166,7 +168,7 @@ function App() {
                 <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/toulouse" element={<Navigate to="/analisis" replace />} />
                 <Route path="/bajas" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
-                <Route path={EMPLEADOS_PATH} element={<PlantillaPage />} />
+                <Route path={EMPLEADOS_PATH} element={<Navigate to={PLANTILLA_PATH} replace />} />
                 <Route path="/transporte" element={<Navigate to="/rutas" replace />} />
                 <Route path="/asistencia" element={<Navigate to="/analisis" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { ACCOUNT_PATH, HOME_PATH, NAV_ITEMS } from './navigation';
-import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
+import { isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
@@ -38,7 +38,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       return location.pathname.startsWith(item.to);
     });
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
-    if (location.pathname === EMPLEADOS_PATH) return 'Empleados';
     return PAGE_TITLES[location.pathname] ?? feature?.label ?? currentNavItem?.label ?? 'App';
   }, [location.pathname]);
 

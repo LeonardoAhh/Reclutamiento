@@ -573,7 +573,6 @@ export function AnalisisView() {
               canGoPrev={employeePagination.canGoPrev}
               canGoNext={employeePagination.canGoNext}
               ariaLabel="Paginación de colaboradores"
-              variant="compact"
               hideOnSinglePage
             />
           </div>

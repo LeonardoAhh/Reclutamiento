@@ -10,6 +10,7 @@ import {
 import { Search as SearchData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { SearchField } from "@/components/ui/SearchField";
+import { StarliteBadge } from "@/components/ui/Badge";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
 import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
@@ -17,7 +18,6 @@ import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
 import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
 import { AreaDetailView } from "@/components/ui/AreaDetailView";
-import { EmpleadosView } from "@/pages/plantilla-views/EmpleadosView";
 import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
 import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -30,7 +30,6 @@ import {
 import { localTodayIso } from "@/lib/dates";
 import { calculateWorkforceProjection } from "@/lib/workforceProjection";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
-import { getPlantillaView } from "@/lib/plantillaNavigation";
 import {
   computeAutoVacancies,
   filterUnreservedVacancies,
@@ -86,18 +85,16 @@ export function Dashboard() {
   );
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyStarlite, setShowOnlyStarlite] = useState(false);
   const [filterArea, setFilterArea] = useState("");
   const location = useLocation();
-  const primaryView = getPlantillaView(location.pathname);
   const [departmentSelection, setDepartmentSelection] = useState<{
     area: string;
     navigationKey: string;
   } | null>(null);
-  const activeTab = primaryView === "empleados"
-    ? "empleados"
-    : departmentSelection?.navigationKey === location.key
-      ? departmentSelection.area
-      : "general";
+  const activeTab = departmentSelection?.navigationKey === location.key
+    ? departmentSelection.area
+    : "general";
   // Employee Modal State
   const [empModalMode, setEmpModalMode] = useState<"add" | "delete" | null>(
     null,
@@ -137,6 +134,7 @@ export function Dashboard() {
   const hasSearchQuery = normalizedSearchTerm.length >= 2;
 
   const filteredDepts = useMemo(() => {
+    if (showOnlyStarlite) return [];
     let result = departmentCoverage;
     if (filterArea) {
       result = result.filter((d) => d.area === filterArea);
@@ -155,18 +153,25 @@ export function Dashboard() {
         .filter((dept) => dept.puestos.length > 0);
     }
     return result;
-  }, [departmentCoverage, filterArea, hasSearchQuery, normalizedSearchTerm]);
+  }, [departmentCoverage, filterArea, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
 
   const matchingEmployees = useMemo(() => {
-    if (!hasSearchQuery) return [];
+    if (!hasSearchQuery && !showOnlyStarlite) return [];
     return employees
       .filter(
         (e) =>
           (!filterArea || e.area === filterArea) &&
-          (normalizeString(e.nombre).includes(normalizedSearchTerm) ||
-            normalizeString(e.num_empleado).includes(normalizedSearchTerm)),
+          (!showOnlyStarlite || e.is_starlite) &&
+          (!hasSearchQuery ||
+            normalizeString(e.nombre).includes(normalizedSearchTerm) ||
+            normalizeString(e.num_empleado).includes(normalizedSearchTerm) ||
+            (showOnlyStarlite && (
+              normalizeString(e.puesto).includes(normalizedSearchTerm) ||
+              normalizeString(e.area).includes(normalizedSearchTerm) ||
+              normalizeString(e.seccion).includes(normalizedSearchTerm)
+            ))),
       );
-  }, [employees, filterArea, hasSearchQuery, normalizedSearchTerm]);
+  }, [employees, filterArea, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
 
   const areas = useMemo(
     () => departmentCoverage.map((d) => d.area),
@@ -305,7 +310,7 @@ export function Dashboard() {
     <main className="plantilla-layout container" aria-labelledby="plantilla-title">
       <header className="plantilla-header">
         <h1 id="plantilla-title" className="app-page-title">
-          {primaryView === "empleados" ? "Empleados" : "Plantilla"}
+          Plantilla
         </h1>
       </header>
 
@@ -333,7 +338,7 @@ export function Dashboard() {
                     <div
                       className="dashboard-sidebar__search"
                       role="search"
-                      aria-label="Buscar en departamentos"
+                      aria-label="Buscar en la plantilla"
                     >
                       <div className="dashboard-sidebar__search-wrapper">
                         <SearchField
@@ -349,45 +354,57 @@ export function Dashboard() {
                         />
                       </div>
                     </div>
-
-                    <div className="dashboard__hero-actions">
-                      <button
-                        type="button"
-                        className="btn-primary"
-                        onClick={() => {
-                          setSelectedEmployee(null);
-                          setEmpModalMode("add");
-                        }}
-                        title="Nuevo empleado"
-                      >
-                        <UserPlusIcon size={16} aria-hidden="true" />
-                        <span className="dashboard__report-btn-label">
-                          Nuevo
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-secondary dashboard__report-btn"
-                        onClick={() => setVacancyReportOpen(true)}
-                        title="Resumen de vacantes"
-                      >
-                        <ClipboardList size={16} aria-hidden="true" />
-                        <span className="dashboard__report-btn-label">
-                          Reporte
-                        </span>
-                      </button>
-                      {isAdmin && (
+                    <div className="dashboard-sidebar__utilities">
+                      <label className="toggle-switch dashboard-sidebar__starlite-filter">
+                        <input
+                          type="checkbox"
+                          role="switch"
+                          checked={showOnlyStarlite}
+                          onChange={(event) => setShowOnlyStarlite(event.target.checked)}
+                          aria-label="Solo proyecto Starlite"
+                        />
+                        <span className="toggle-switch__slider" aria-hidden="true" />
+                        <StarliteBadge />
+                      </label>
+                      <div className="dashboard__hero-actions">
+                        <button
+                          type="button"
+                          className="btn-primary"
+                          onClick={() => {
+                            setSelectedEmployee(null);
+                            setEmpModalMode("add");
+                          }}
+                          aria-label="Nuevo empleado"
+                        >
+                          <UserPlusIcon size={16} aria-hidden="true" />
+                          <span className="dashboard__report-btn-label">
+                            Nuevo
+                          </span>
+                        </button>
                         <button
                           type="button"
                           className="btn-secondary dashboard__report-btn"
-                          onClick={() => setPositionSettingsOpen(true)}
-                          title="Configurar plantilla, backup y Starlite"
-                          aria-label="Configurar plantilla, backup y Starlite"
-                          aria-haspopup="dialog"
+                          onClick={() => setVacancyReportOpen(true)}
+                          aria-label="Resumen de vacantes"
                         >
-                          <SlidersHorizontal size={16} aria-hidden="true" />
+                          <ClipboardList size={16} aria-hidden="true" />
+                          <span className="dashboard__report-btn-label">
+                            Reporte
+                          </span>
                         </button>
-                      )}
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            className="btn-secondary dashboard__report-btn"
+                            onClick={() => setPositionSettingsOpen(true)}
+                            title="Configurar plantilla, backup y Starlite"
+                            aria-label="Configurar plantilla, backup y Starlite"
+                            aria-haspopup="dialog"
+                          >
+                            <SlidersHorizontal size={16} aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </header>
@@ -412,7 +429,7 @@ export function Dashboard() {
                     </p>
                   )}
 
-                  {hasSearchQuery && matchingEmployees.length > 0 && (
+                  {(hasSearchQuery || showOnlyStarlite) && matchingEmployees.length > 0 && (
                     <DepartmentSearchResults
                       employees={matchingEmployees}
                       onEdit={openEditFor}
@@ -422,7 +439,7 @@ export function Dashboard() {
                     />
                   )}
 
-                  {hasSearchQuery && filteredDepts.length > 0 && (
+                  {hasSearchQuery && !showOnlyStarlite && filteredDepts.length > 0 && (
                     <header className="dashboard__department-match-heading">
                       <h2>Departamentos y puestos</h2>
                       <span>
@@ -432,7 +449,7 @@ export function Dashboard() {
                     </header>
                   )}
 
-                  {hasSearchQuery && !hasSearchResults && employees.length > 0 && (
+                  {(hasSearchQuery || showOnlyStarlite) && !hasSearchResults && employees.length > 0 && (
                     <div className="dashboard__empty" id="dashboard-no-results">
                       <MorphingIcon
                         icon={SearchData}
@@ -440,18 +457,23 @@ export function Dashboard() {
                         strokeWidth={2.5}
                       />
                       <h2>Sin resultados</h2>
-                      <p>No se encontraron coincidencias para tu búsqueda.</p>
+                      <p>{showOnlyStarlite && !hasSearchQuery
+                        ? "No hay empleados del proyecto Starlite."
+                        : "No se encontraron coincidencias para tu búsqueda."}</p>
                       <button
                         type="button"
                         className="btn-secondary"
-                        onClick={() => setSearchTerm("")}
+                        onClick={() => {
+                          setSearchTerm("");
+                          setShowOnlyStarlite(false);
+                        }}
                       >
-                        Limpiar búsqueda
+                        {showOnlyStarlite ? "Limpiar filtros" : "Limpiar búsqueda"}
                       </button>
                     </div>
                   )}
 
-                  {!hasSearchQuery &&
+                  {!hasSearchQuery && !showOnlyStarlite &&
                     filteredDepts.length === 0 &&
                     employees.length > 0 && (
                       <div className="dashboard__empty" id="dashboard-no-results">
@@ -477,8 +499,7 @@ export function Dashboard() {
                 </section>
               </BoneyardSkeleton>
             )}
-            {activeTab === "empleados" && <EmpleadosView />}
-            {activeTab !== "general" && activeTab !== "empleados" && (
+            {activeTab !== "general" && (
               <AreaDetailView
                 dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
                 projection={departmentProjections.get(activeTab)}
@@ -486,14 +507,10 @@ export function Dashboard() {
                 candidates={candidates}
                 onBack={() => setDepartmentSelection(null)}
                 incapacidadPorSeccion={
-                  activeTab !== "general"
-                    ? (incapacidadPorAreaSeccion.get(activeTab) ?? null)
-                    : null
+                  incapacidadPorAreaSeccion.get(activeTab) ?? null
                 }
                 incapacidadAreaTotal={
-                  activeTab !== "general"
-                    ? (incapacidadPorArea.get(activeTab) ?? 0)
-                    : 0
+                  incapacidadPorArea.get(activeTab) ?? 0
                 }
               />
             )}

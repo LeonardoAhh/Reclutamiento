@@ -1,17 +1,10 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { getPlantillaHref, getPlantillaView } from '../src/lib/plantillaNavigation.ts';
+import { EMPLEADOS_PATH, isPlantillaPath, PLANTILLA_PATH } from '../src/lib/plantillaNavigation.ts';
 
-test('Plantilla and Empleados resolve only from their canonical paths', () => {
-  assert.equal(getPlantillaView('/plantilla'), 'general');
-  assert.equal(getPlantillaView('/empleados'), 'empleados');
-  assert.deepEqual(
-    ['/plantilla', '/empleados', '/plantilla', '/empleados']
-      .map((pathname) => getPlantillaView(pathname)),
-    ['general', 'empleados', 'general', 'empleados']);
-});
-
-test('each view has one canonical path', () => {
-  assert.equal(getPlantillaHref('general'), '/plantilla');
-  assert.equal(getPlantillaHref('empleados'), '/empleados');
+test('Plantilla has one canonical path and Empleados remains a legacy path', () => {
+  assert.equal(PLANTILLA_PATH, '/plantilla');
+  assert.equal(EMPLEADOS_PATH, '/empleados');
+  assert.equal(isPlantillaPath(PLANTILLA_PATH), true);
+  assert.equal(isPlantillaPath(EMPLEADOS_PATH), false);
 });
