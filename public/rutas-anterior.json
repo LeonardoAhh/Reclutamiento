@@ -2210,6 +2210,16 @@
     "colonia": "BODEGA AURRERA, PEÑAFLOR"
   },
   {
+    "numero_empleado": "4189",
+    "nombre": "LUNA SANDOVAL ISRAEL",
+    "sección": "PRODUCCIÓN ADMTVO",
+    "puesto": "SUPERVISOR DE PRODUCCIÓN D",
+    "turno": "1",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA",
+    "colonia": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
+  },
+  {
     "numero_empleado": "4192",
     "nombre": "BALDERAS HERNANDEZ RENE",
     "sección": "MANTENIMIENTO",
@@ -2378,16 +2388,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "parada": "COREA",
     "colonia": "PARADA DE CAMIONES"
-  },
-  {
-    "numero_empleado": "4249",
-    "nombre": "LLAMAS VALENCIA MARCO ANTONIO",
-    "sección": "ALMACÉN 1ER TURNO ",
-    "puesto": "AUXILIAR DE ALMACÉN C",
-    "turno": "1",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "parada": "PASEOS QUERETARO",
-    "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4251",
@@ -2918,5 +2918,25 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA",
     "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero_empleado": "4379",
+    "nombre": "HERNANDEZ CRUZ FERNANDO ANGEL",
+    "sección": "MANTENIMIENTO",
+    "puesto": "AUXILIAR DE MANTENIMIENTO A",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero_empleado": "4380",
+    "nombre": "ORTIZ ROSALES MARIA GUADALUPE",
+    "sección": "PRODUCCIÓN 4o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "4",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   }
 ]
