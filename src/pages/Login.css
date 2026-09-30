@@ -1,4 +1,4 @@
-/* Inicio de sesión en una columna, con espacio para teclado y zoom. */
+/* El formulario ocupa una columna en móvil; la historia visual aparece en escritorio. */
 
 .login {
   display: flex;
@@ -11,11 +11,12 @@
   background: var(--workspace-canvas);
 }
 
-.login__left {
+.login__form-panel {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-inline-size: 0;
   padding-block: max(var(--design-spacing-lg), var(--safe-area-top))
     max(var(--design-spacing-lg), var(--safe-area-bottom));
   padding-inline: max(var(--container-padding), var(--safe-area-left))
@@ -24,19 +25,113 @@
 
 @media (min-width: 1080px) {
   .login {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--design-spacing-sm);
     max-inline-size: none;
     padding: var(--design-spacing-sm);
   }
 
-  .login__left {
-    background: var(--color-canvas-soft);
-    border: var(--border-width) solid var(--workspace-border-color);
-    border-radius: var(--workspace-radius);
-    box-shadow: var(--workspace-shadow);
+  .login__form-panel {
+    grid-column: 2;
+    grid-row: 1;
+    background: var(--color-canvas);
   }
 
   .login__card {
     box-shadow: var(--shadow-xs);
+  }
+
+  .login-story {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+.login-story {
+  display: none;
+  min-inline-size: 0;
+}
+
+.login-story__animation {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  max-inline-size: var(--content-reading-max-inline-size);
+  margin-inline: auto;
+}
+
+.login-story__scene {
+  display: grid;
+  grid-area: 1 / 1;
+  align-self: start;
+  justify-items: center;
+  gap: var(--design-spacing-lg);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.login-story__visual {
+  display: grid;
+  place-items: center;
+  inline-size: min(100%, calc(var(--design-spacing-section) + var(--design-spacing-section)));
+  aspect-ratio: 1;
+}
+
+.login-story__brand-image,
+.login-story__robot-image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.login-story__robot-image {
+  inline-size: 50%;
+}
+
+.login-story__robot {
+  opacity: 0;
+}
+
+.login-story__copy {
+  display: grid;
+  gap: var(--design-spacing-md);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.login-story__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  text-wrap: balance;
+}
+
+.login-story__description {
+  margin: 0;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-body-lg-weight);
+  line-height: var(--type-body-lg-line);
+  letter-spacing: var(--type-body-lg-tracking);
+  text-wrap: pretty;
+}
+
+@media (min-width: 1080px) {
+  .login-story {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--design-spacing-xxl);
+    padding: var(--design-spacing-3xl);
+    border: var(--border-width) solid var(--workspace-border-color);
+    border-radius: var(--workspace-radius);
+    background: var(--color-canvas-soft);
   }
 }
 
@@ -54,18 +149,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
   gap: var(--design-spacing-xs);
   color: var(--color-ink);
   text-align: center;
 }
 
 .login__brand-icon {
-  color: var(--color-ink);
-  display: inline-flex;
+  flex: 0 0 var(--design-spacing-3xl);
+  inline-size: var(--design-spacing-3xl);
+  block-size: var(--design-spacing-3xl);
 }
 
 .login__brand-name {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
   font-family: var(--font-display);
   font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-sm-weight);

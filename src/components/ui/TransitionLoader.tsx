@@ -1,5 +1,4 @@
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { useMorphingSequence } from '@/hooks/useMorphingSequence';
+import { motion, useReducedMotion } from 'framer-motion';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -13,54 +12,43 @@ export function TransitionLoader({
   title,
   variant = 'default',
 }: TransitionLoaderProps) {
-  const isWorkspaceEntry = variant === 'workspace-entry';
-  const isWorkspaceExit = variant === 'workspace-exit';
-  const isWorkspaceTransition = isWorkspaceEntry || isWorkspaceExit;
-  const accessibleTitle = title ?? (isWorkspaceEntry
-    ? 'Acceso confirmado. Preparando tu sesión…'
-    : isWorkspaceExit
+  const reduceMotion = useReducedMotion();
+  const message = title ?? (variant === 'workspace-entry'
+    ? 'Preparando tu sesión…'
+    : variant === 'workspace-exit'
       ? 'Cerrando sesión…'
       : 'Sincronizando…');
-  const eyebrow = isWorkspaceEntry ? 'Acceso confirmado' : 'Sesión segura';
-  const visibleTitle = isWorkspaceEntry ? 'Preparando tu sesión…' : 'Cerrando sesión…';
-  const { icon } = useMorphingSequence(variant);
+  const accessibleMessage = variant === 'workspace-entry' && !title
+    ? `Acceso confirmado. ${message}`
+    : message;
 
   return (
-    <div
-      className={`transition-loader transition-loader--${variant}`}
-      role="status"
-      aria-atomic="true"
-    >
-      <span className="sr-only">{accessibleTitle}</span>
-      {isWorkspaceTransition ? (
-        <div className="transition-loader__workspace-shell" aria-hidden="true">
-          <aside className="transition-loader__rail">
-            <span className="transition-loader__rail-mark" />
-            <span className="transition-loader__rail-line transition-loader__rail-line--strong" />
-            <span className="transition-loader__rail-line" />
-            <span className="transition-loader__rail-line" />
-          </aside>
-          <div className="transition-loader__workspace">
-            <div className="transition-loader__entry-status">
-              <span className="transition-loader__icon-frame">
-                <MorphingIcon
-                  icon={icon}
-                  size="var(--loader-icon-size)"
-                />
-              </span>
-              <span className="transition-loader__eyebrow">{eyebrow}</span>
-              <span className="transition-loader__title">{visibleTitle}</span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="transition-loader__content" aria-hidden="true">
-          <MorphingIcon
-            icon={icon}
-            size="var(--loader-icon-size)"
+    <div className="transition-loader" role="status" aria-atomic="true">
+      <span className="sr-only">{accessibleMessage}</span>
+      <motion.div
+        className="transition-loader__content"
+        aria-hidden="true"
+        initial={reduceMotion ? false : { opacity: 0, y: 'var(--design-spacing-md)' }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <motion.img
+          className="transition-loader__mark"
+          src="/icon.svg"
+          alt=""
+          initial={reduceMotion ? false : { scale: 0 }}
+          animate={{ scale: 1 }}
+        />
+        <span className="transition-loader__brand">ViñoPlastic</span>
+        <span className="transition-loader__message">{message}</span>
+        <span className="transition-loader__track">
+          <motion.span
+            className="transition-loader__indicator"
+            initial={reduceMotion ? false : { scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={reduceMotion ? undefined : { type: 'spring', repeat: Infinity, repeatType: 'reverse' }}
           />
-        </div>
-      )}
+        </span>
+      </motion.div>
     </div>
   );
 }

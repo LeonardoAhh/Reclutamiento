@@ -25,7 +25,6 @@ export function LogoutPage() {
   const navigate = useNavigate();
   const loader = useLoader();
   const { trigger } = useFeedback();
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const pendingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const displayName = toNaturalCase(profile?.display_name || username, {
@@ -34,7 +33,6 @@ export function LogoutPage() {
 
   useEffect(() => {
     document.title = "Cerrar sesión";
-    titleRef.current?.focus();
   }, []);
 
   async function handleSignOut() {
@@ -58,12 +56,16 @@ export function LogoutPage() {
   return (
     <div className="logout-page">
       <header className="logout-page__header container">
-        <span className="logout-page__brand">{APP_BRAND_NAME}</span>
+        <span className="logout-page__brand">
+          <img className="logout-page__brand-icon" src="/icon.svg" alt="" />
+        </span>
       </header>
 
       <main className="logout-page__main container">
         <div className="logout-page__content">
-          <h1 ref={titleRef} tabIndex={-1}>¿Cerrar sesión de la aplicación?</h1>
+        <h1>
+        ¿Salir de tu cuenta?
+        </h1>
           <div className="logout-page__identity">
             <Avatar name={displayName} src={profile?.avatar_url} />
             <div className="logout-page__identity-copy">

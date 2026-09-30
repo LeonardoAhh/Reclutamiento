@@ -11,12 +11,20 @@
 }
 
 .logout-page__brand {
+  display: inline-flex;
+  align-items: center;
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-sm-weight);
   line-height: var(--type-heading-sm-line);
   letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.logout-page__brand-icon {
+  flex: 0 0 var(--design-spacing-3xl);
+  inline-size: var(--design-spacing-3xl);
+  block-size: var(--design-spacing-3xl);
 }
 
 .logout-page__main {

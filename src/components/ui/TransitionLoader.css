@@ -1,156 +1,68 @@
 .transition-loader {
-  --loader-icon-size: var(--design-spacing-4xl);
-
   position: fixed;
   inset: 0;
   z-index: var(--layer-splash);
   display: grid;
   place-items: center;
-  padding-block: max(var(--spacing-xl), var(--safe-area-top))
-    max(var(--spacing-xl), var(--safe-area-bottom));
-  padding-inline: max(var(--spacing-xl), var(--safe-area-left))
-    max(var(--spacing-xl), var(--safe-area-right));
+  padding-block: max(var(--design-spacing-lg), var(--safe-area-top))
+    max(var(--design-spacing-lg), var(--safe-area-bottom));
+  padding-inline: max(var(--design-spacing-lg), var(--safe-area-left))
+    max(var(--design-spacing-lg), var(--safe-area-right));
   background: var(--color-canvas);
 }
 
 .transition-loader__content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xl);
-  color: var(--color-ink);
-  animation: transition-loader-enter var(--transition-slow) both;
-}
-
-.transition-loader--workspace-entry,
-.transition-loader--workspace-exit {
-  --loader-icon-size: var(--icon-size-xxl);
-
-  background: var(--workspace-surface);
-}
-
-.transition-loader__workspace-shell {
-  width: 100%;
-  max-width: var(--container-compact-max-inline-size);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  animation: transition-loader-enter var(--transition-slow) both;
-}
-
-.transition-loader__rail {
-  display: none;
-}
-
-.transition-loader__workspace {
-  min-width: 0;
-  min-height: calc(var(--design-spacing-section) + var(--design-spacing-4xl));
-  display: grid;
-  place-items: center;
-  padding: var(--design-spacing-xl);
-  background: var(--workspace-surface);
-}
-
-.transition-loader__entry-status {
-  display: flex;
-  max-width: var(--content-reading-max-inline-size);
+  min-inline-size: 0;
+  max-inline-size: var(--content-reading-max-inline-size);
   flex-direction: column;
   align-items: center;
-  gap: var(--design-spacing-xs);
-  color: var(--color-ink);
+  gap: var(--design-spacing-sm);
   text-align: center;
 }
 
-.transition-loader__icon-frame {
-  width: var(--loader-icon-size);
-  height: var(--loader-icon-size);
-  display: grid;
-  place-items: center;
-  margin-block-end: var(--design-spacing-xs);
+.transition-loader__mark {
+  display: block;
+  inline-size: var(--design-spacing-section);
+  block-size: var(--design-spacing-section);
 }
 
-.transition-loader__eyebrow {
-  font-family: var(--font-code);
-  font-size: var(--type-mono-eyebrow-size);
-  font-weight: var(--type-mono-eyebrow-weight);
-  line-height: var(--type-mono-eyebrow-line);
-  letter-spacing: var(--type-mono-eyebrow-tracking);
-  text-transform: uppercase;
-}
-
-.transition-loader__title {
+.transition-loader__brand {
   font-family: var(--font-body);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
-  color: var(--color-body);
+  font-size: var(--type-brand-size);
+  font-weight: var(--type-brand-weight);
+  line-height: var(--type-brand-line);
+  letter-spacing: var(--type-brand-tracking);
+  color: var(--color-ink);
 }
 
-@media (min-width: 1080px) {
-  .transition-loader--workspace-entry,
-  .transition-loader--workspace-exit {
-    background: var(--workspace-canvas);
-  }
-
-  .transition-loader__workspace-shell {
-    grid-template-columns: var(--feature-navigation-rail-inline-size) minmax(0, 1fr);
-  }
-
-  .transition-loader__rail {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--design-spacing-md);
-    padding: var(--design-spacing-xl) var(--design-spacing-md);
-    background: var(--workspace-canvas);
-  }
-
-  .transition-loader__rail-mark {
-    width: var(--icon-size-xl);
-    height: var(--icon-size-xl);
-    border: var(--border-width) solid var(--color-hairline-strong);
-    border-radius: var(--rounded-sm);
-    background: var(--workspace-surface);
-  }
-
-  .transition-loader__rail-line {
-    width: 50%;
-    height: var(--design-spacing-xxs);
-    border-radius: var(--rounded-full);
-    background: var(--color-hairline);
-  }
-
-  .transition-loader__rail-line--strong {
-    width: 75%;
-    background: var(--color-hairline-strong);
-  }
-
-  .transition-loader__workspace {
-    border: var(--border-width) solid var(--workspace-border-color);
-    border-start-start-radius: var(--workspace-radius);
-    border-end-start-radius: var(--workspace-radius);
-    box-shadow: var(--workspace-shadow);
-  }
+.transition-loader__message {
+  overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-muted);
 }
 
-@keyframes transition-loader-enter {
-  from {
-    opacity: 0;
-    transform: translateY(var(--spacing-md));
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.transition-loader__track {
+  display: block;
+  overflow: hidden;
+  inline-size: var(--design-spacing-4xl);
+  block-size: var(--design-spacing-xxs);
+  margin-block-start: var(--design-spacing-md);
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .transition-loader__content,
-  .transition-loader__workspace-shell {
-    animation: none;
-  }
+.transition-loader__indicator {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: var(--color-ink);
 }
 
 @media (forced-colors: active) {
@@ -158,17 +70,17 @@
     background: Canvas;
   }
 
-  .transition-loader__content {
+  .transition-loader__brand,
+  .transition-loader__message {
     color: CanvasText;
   }
 
-  .transition-loader__workspace,
-  .transition-loader__rail-mark {
-    border-color: CanvasText;
+  .transition-loader__track {
+    border: var(--border-width) solid CanvasText;
+    background: Canvas;
   }
 
-  .transition-loader__entry-status,
-  .transition-loader__title {
-    color: CanvasText;
+  .transition-loader__indicator {
+    background: CanvasText;
   }
 }

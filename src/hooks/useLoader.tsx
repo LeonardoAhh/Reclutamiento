@@ -36,7 +36,7 @@ const LoaderContext = createContext<LoaderApi | null>(null);
 
 /**
  * Provider global del splash de carga. Renderiza TransitionLoader vía
- * portal en <body>; la entrada visual se resuelve en su CSS. Es
+ * portal en <body>; la entrada visual se anima con Motion. Es
  * independiente de Boneyard: cada vista gestiona su carga de datos y este
  * overlay cubre únicamente transiciones de sesión y navegación.
  * Cada llamada reemplaza la anterior; no administra una cola de operaciones.

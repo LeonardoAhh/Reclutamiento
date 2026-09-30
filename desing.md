@@ -206,8 +206,8 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.body-md}`, rounded `{rounded.md}`, padding `{spacing.xs} {spacing.sm}`, min-height `44px`.
 
 **`auth-workspace`** — sign-in workspace
-- `/login` stays single-column at every width: centered brand above a white form card, with title and supporting copy inside the card and `--auth-form-max-inline-size` as its reading width.
-- On desktop the flow sits in a white `{rounded.lg}` card with a hairline and Level-1 shadow over `{colors.canvas-soft}`.
+- `/login` keeps the sign-in form in a single column on mobile and tablet. At the desktop breakpoint, a quiet `{colors.canvas-soft}` panel on the left presents a decorative Motion sequence between the brand SVG and the existing Wave robot, while the centered brand and form remain on the right. The sequence plays once and settles on Wave with its greeting visible. The brand fades out completely before Wave fades in; each fade uses half of `{duration.brand-reveal}`. Reduced-motion preference shows only the static brand.
+- On desktop the form sits in a white `{rounded.lg}` card with a hairline and Level-1 shadow within the white workspace.
 - On mobile the outer workspace frame is removed so the flow remains continuous and can scroll with the software keyboard or increased text zoom.
 - Fields and CTA share the 44px minimum control height; the page must not autofocus a field on mobile.
 

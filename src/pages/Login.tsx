@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import {
-  Fingerprint,
   Eye,
   EyeOff,
   LogIn,
@@ -11,6 +10,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { useAuth } from "@/hooks/useAuth";
 import { emailToUsername, usernameToEmail } from "@/lib/auth";
 import { DESKTOP_MEDIA_QUERY } from "@/lib/layout";
+import { LoginStory } from "./login-components/LoginStory";
 import "./Login.css";
 
 type LoginError = {
@@ -143,13 +143,11 @@ export function Login() {
 
   return (
     <main className="login">
-      <div className="login__left">
+      <div className="login__form-panel">
         <div className="login__content">
           <div className="login__brand">
-            <span className="login__brand-icon" aria-hidden="true">
-              <MorphingIcon icon={Fingerprint} size="var(--icon-size-xxl)" />
-            </span>
-            <span className="login__brand-name">Reclutamiento · ViñoPlastic Querétaro</span>
+            <img className="login__brand-icon" src="/icon.svg" alt="" />
+            <span className="login__brand-name">ViñoPlastic</span>
           </div>
 
           <section className="login__card" aria-labelledby={titleId}>
@@ -337,6 +335,7 @@ export function Login() {
           </section>
         </div>
       </div>
+      <LoginStory />
     </main>
   );
 }
