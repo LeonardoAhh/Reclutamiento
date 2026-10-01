@@ -54,7 +54,7 @@ Surfaces barely lift. The workspace and page floor are white. `{colors.canvas-so
 - **Success** uses `{colors.success}` (#10b981) for indicators and `{colors.success-text}` (#047857) for text on light backgrounds. Status must never rely on color alone.
 
 ### Decorative Compatibility
-Legacy gradient tokens remain available only to avoid breaking existing illustrations. New application UI must use the white, ink, gray, link, and semantic tokens above. The sidebar wordmark reveal is a decorative exception: it samples existing contrast-safe violet, teal, orange, and blue tokens during the sweep, then returns to ink; these colors do not define navigation state.
+Legacy gradient tokens remain available only to avoid breaking existing illustrations. New application UI must use the white, ink, gray, link, and semantic tokens above.
 
 ## Typography
 
@@ -68,7 +68,7 @@ The system uses **Inter** for body, controls, and headings. Headings use Inter 6
 | `{typography.display-xl}` | 48px | 600 | 48px | -2.4px | Editorial hero headline |
 | `{typography.heading-lg}` | 32px | 600 | 40px | -1.28px | Major page and section headings |
 | `{typography.heading-md}` | 20px | 600 | 28px | -0.4px | Sub-section / card headings |
-| `{typography.brand}` | 24px | 600 | 34px | -0.48px | Desktop sidebar wordmark |
+| `{typography.brand}` | 24px | 600 | 34px | -0.48px | Brand wordmark |
 | `{typography.label-sm}` | 14px | 500 | 20px | -0.28px | Strong labels, nav emphasis |
 | `{typography.mono-eyebrow}` | 12px | 500 | 16px | 0 | Uppercase monospace section eyebrows |
 | `{typography.body-lg}` | 16px | 400 | 24px | 0 | Lead paragraphs, large body |
@@ -166,6 +166,11 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 ### Navigation
 
+**`home-workspace`** — internal team start page
+- The greeting uses the shared `app-page-title` style. Topic headings use `{typography.heading-md}`, lesson headings use `{typography.heading-sm}`, and reading content uses `{typography.body-md}`. Employment metadata keeps `{typography.body-sm}`.
+- Content starts in one column. At the desktop breakpoint the greeting and employment details share a top-aligned row with flexible columns. At the wide breakpoint lessons use two equal columns; context paragraphs span both. Nested reading lists stay in one column inside these narrower cards.
+- Existing topic selection, keyboard focus, content, profile data, and role-specific messages are preserved.
+
 **`nav-bar`** — top navigation
 - Background `{colors.canvas}`, bottom hairline `{colors.hairline}`, text `{colors.body}`, type `{typography.body-md}`, and tokenized padding. It contains the product identity, navigation links, and existing account actions.
 
@@ -175,9 +180,9 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 **`app-workspace`** — authenticated application shell
 - On desktop, the sidebar remains fixed on `{colors.canvas}` and the workspace is one continuous white surface shared by header and page content.
 - The workspace uses a 1px `{colors.hairline}` border, `{rounded.lg}` corners, and a Level-1 shadow. A `{spacing.sm}` inset separates it from the white page floor without creating a gray frame. It owns vertical scrolling so the sidebar remains stationary.
-- Sidebar selection uses a solid `{colors.primary}` fill with `{colors.on-primary}` text and icons, without a leading border or inset indicator. Every page link is shown directly in its group, with no nested navigation. `{colors.link}` is reserved for links, not for filling the active navigation row.
-- Sidebar links use `{typography.body-md}`, with `{typography.label-sm}` for the current section. Adjacent links have no extra gap; their 44px minimum targets set the row rhythm. Group labels use `{typography.mono-eyebrow}` with `{spacing.xxs}` before the first link. `{spacing.sm}` separates groups and the brand from navigation. Navigation and account controls use `{rounded.md}` and retain a 44px minimum target.
-- The sidebar wordmark displays in uppercase for stronger hierarchy: `{typography.heading-sm}` on mobile beside the close control and `{typography.brand}` on desktop. Its accessible name keeps the original brand spelling. A repeating horizontal color-band reveal uses `{duration.brand-cycle}` (3s): `{duration.brand-reveal}` (1.5s) for the sweep, then the same time resting in ink. It uses existing contrast-safe decorative colors and remains readable throughout; reduced-motion mode shows static `{colors.primary}` text, and forced-colors mode uses the system text color.
+- Sidebar selection uses a solid `{colors.primary}` fill with `{colors.on-primary}` text and icons, without a leading border or inset indicator. Every page link is shown directly in a single flat list, with no nested navigation; section labels remain available to assistive technology as visually-hidden headings. `{colors.link}` is reserved for links, not for filling the active navigation row.
+- Sidebar links use `{typography.body-md}`, with `{typography.label-sm}` for the current section. Adjacent links have no extra gap; their 44px minimum targets set the row rhythm. `{spacing.xs}` separates the brand from navigation. Navigation and account controls use `{rounded.md}` and retain a 44px minimum target.
+- The sidebar brand is a centered SVG symbol (the product mark, in `{colors.primary}` ink) revealed once with the system `fadeUp` motion. Its accessible name keeps the original brand spelling. Reduced-motion mode shows the static mark; forced-colors mode inherits the system text color via `currentColor`.
 - Below the desktop breakpoint the sidebar becomes an overlay and the workspace returns to a continuous, unframed page surface. The mobile bar must not cover content or safe areas.
 
 ### Buttons

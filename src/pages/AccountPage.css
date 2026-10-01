@@ -210,7 +210,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .account-page__section--profile > .account-page__section-title {
+  .account-page__section--profile > .app-page-title {
     grid-column: 1 / -1;
   }
 

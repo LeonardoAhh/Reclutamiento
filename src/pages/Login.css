@@ -209,7 +209,7 @@
   padding: var(--design-spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--design-spacing-xxl);
+  gap: var(--design-spacing-xl);
 }
 
 @media (min-width: 768px) {

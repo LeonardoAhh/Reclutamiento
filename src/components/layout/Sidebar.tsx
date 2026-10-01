@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import "./Sidebar.css";
 
-import { APP_BRAND_NAME, NAV_GROUPS } from "./navigation";
+import { APP_BRAND_NAME, NAV_SECTIONS } from "./navigation";
+import { SidebarBrand } from "./SidebarBrand";
 import { UserMenuPopover } from "./UserMenuPopover";
 import { toNaturalCase } from "@/lib/utils";
 import clsx from "clsx";
@@ -73,7 +74,7 @@ export function Sidebar({
       data-testid="app-sidebar"
     >
       <div className="sidebar__top">
-        <span className="sidebar__brand">{APP_BRAND_NAME}</span>
+        <SidebarBrand name={APP_BRAND_NAME} />
         <button
           type="button"
           className="sidebar__close-btn"
@@ -91,48 +92,51 @@ export function Sidebar({
       </div>
 
       <nav className="sidebar__nav" id="sidebar-sections" aria-label="Secciones">
-        {NAV_GROUPS.map((group) => (
-          <div key={group.title} className="sidebar__group">
-            {group.title && (
-              <div className="sidebar__group-title">{group.title}</div>
-            )}
-            <ul className="sidebar__list" role="list" aria-label={group.title || "Principal"}>
-              {group.items.map((item) => {
-                const { to, label, icon: Icon, badge, end } = item;
-                if (item.roles && (!profile || !item.roles.some((role) => role === profile.role))) {
-                  return null;
-                }
-                const isActive = end
-                  ? location.pathname === to
-                  : location.pathname === to || location.pathname.startsWith(`${to}/`);
+        {NAV_SECTIONS.map((section) => {
+          const sectionTitleId = `sidebar-section-${section.label.toLowerCase()}`;
+          return (
+            <Fragment key={section.label}>
+              <h2 id={sectionTitleId} className="sr-only">
+                {section.label}
+              </h2>
+              <ul className="sidebar__list" role="list" aria-labelledby={sectionTitleId}>
+                {section.items.map((item) => {
+                  const { to, label, icon: Icon, badge, end } = item;
+                  if (item.roles && (!profile || !item.roles.some((role) => role === profile.role))) {
+                    return null;
+                  }
+                  const isActive = end
+                    ? location.pathname === to
+                    : location.pathname === to || location.pathname.startsWith(`${to}/`);
 
-                return (
-                  <li key={to}>
-                    <NavLink
-                      to={to}
-                      end={end}
-                      className={clsx("sidebar__item", isActive && "sidebar__item--active")}
-                      aria-label={badge ? `${label}, ${badge}` : label}
-                      onClick={(event) => {
-                        if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                          onCloseMobileMenu?.();
-                        }
-                      }}
-                      data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
-                    >
-                      <Icon
-                        aria-hidden="true"
-                        className="sidebar__item-icon"
-                      />
-                      <span className="sidebar__item-label">{label}</span>
-                      {badge && <span className="sidebar__item-badge">{badge}</span>}
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                  return (
+                    <li key={to}>
+                      <NavLink
+                        to={to}
+                        end={end}
+                        className={clsx("sidebar__item", isActive && "sidebar__item--active")}
+                        aria-label={badge ? `${label}, ${badge}` : label}
+                        onClick={(event) => {
+                          if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                            onCloseMobileMenu?.();
+                          }
+                        }}
+                        data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
+                      >
+                        <Icon
+                          aria-hidden="true"
+                          className="sidebar__item-icon"
+                        />
+                        <span className="sidebar__item-label">{label}</span>
+                        {badge && <span className="sidebar__item-badge">{badge}</span>}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Fragment>
+          );
+        })}
       </nav>
 
       <div className="sidebar__footer">

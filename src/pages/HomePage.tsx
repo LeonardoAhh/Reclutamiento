@@ -225,7 +225,7 @@ export function HomePage() {
           <span className="home-page__eyebrow" aria-hidden="true">
             {userTitle}
           </span>
-          <h1 id="home-page-title" className="home-page__title">
+          <h1 id="home-page-title" className="home-page__title app-page-title">
             <span className="home-page__title-text">Hola, {firstName}.</span>
             <img className="home-page__robot" src={wave} alt="" aria-hidden="true" />
           </h1>

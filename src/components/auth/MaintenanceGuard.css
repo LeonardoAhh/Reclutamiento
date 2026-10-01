@@ -1,3 +1,4 @@
+/* ── Overlay ─────────────────────────────────────────────────────────────── */
 .maintenance-overlay {
   position: fixed;
   inset: 0;
@@ -5,60 +6,85 @@
   display: grid;
   place-items: center;
   min-block-size: 100dvh;
-  padding-block: max(var(--container-padding), var(--safe-area-top))
-    max(var(--container-padding), var(--safe-area-bottom));
+  padding-block: max(var(--design-spacing-xl), var(--safe-area-top))
+    max(var(--design-spacing-xl), var(--safe-area-bottom));
   padding-inline: max(var(--container-padding), var(--safe-area-left))
     max(var(--container-padding), var(--safe-area-right));
-  text-align: center;
   background: var(--color-canvas-soft);
 }
 
+/* ── Card ────────────────────────────────────────────────────────────────── */
 .maintenance-card {
   inline-size: min(100%, var(--feature-maintenance-card-max-inline-size));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--design-spacing-lg);
-  padding: var(--design-spacing-lg);
+  gap: var(--design-spacing-xl);
+  padding: var(--design-spacing-xl);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+  text-align: center;
+  box-shadow: var(--shadow-xs);
 }
 
-.maintenance-icon-wrap {
+@media (min-width: 768px) {
+  .maintenance-card {
+    padding: var(--design-spacing-xxl);
+  }
+}
+
+/* ── Visual: engrane + robot ─────────────────────────────────────────────── */
+.maintenance-visual {
+  position: relative;
   display: grid;
   place-items: center;
-  color: var(--color-muted);
+  inline-size: var(--design-spacing-section);
+  aspect-ratio: 1;
 }
 
-.maintenance-icon {
-  inline-size: var(--design-spacing-xxl);
-  block-size: var(--design-spacing-xxl);
+.maintenance-gear-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-hairline);
 }
 
+.maintenance-gear {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.maintenance-robot {
+  position: relative;
+  display: block;
+  inline-size: 52%;
+  block-size: auto;
+}
+
+/* ── Texto ───────────────────────────────────────────────────────────────── */
 .maintenance-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-xs);
+  min-inline-size: 0;
 }
 
-.maintenance-title,
-.maintenance-text {
+.maintenance-body {
   margin: 0;
-}
-
-.maintenance-text {
   max-inline-size: var(--content-reading-max-inline-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-muted);
+  text-wrap: pretty;
 }
 
-.maintenance-button svg {
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
-  flex-shrink: 0;
-}
-
+/* ── Acciones ────────────────────────────────────────────────────────────── */
 .maintenance-actions {
   display: flex;
   flex-direction: column;
@@ -67,17 +93,28 @@
   inline-size: 100%;
 }
 
-.maintenance-button {
-  min-block-size: var(--touch-target-min);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--design-spacing-xs);
-}
-
-@media (min-width: 768px) {
+@media (min-width: 480px) {
   .maintenance-actions {
     flex-direction: row;
     justify-content: center;
+  }
+}
+
+/* ── Estado de comprobación (sr + visual) ────────────────────────────────── */
+.maintenance-status {
+  margin: 0;
+  min-block-size: 1lh;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  color: var(--color-muted);
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .maintenance-gear-wrap {
+    animation: none;
   }
 }

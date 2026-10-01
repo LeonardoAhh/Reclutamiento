@@ -365,7 +365,6 @@
   --scale-pressed: 0.98;
   --transition-progress: 1400ms ease-in-out;
   --duration-brand-reveal: 1500ms;
-  --duration-brand-cycle: calc(var(--duration-brand-reveal) + var(--duration-brand-reveal));
   --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */

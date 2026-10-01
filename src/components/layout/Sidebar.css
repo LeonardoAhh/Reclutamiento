@@ -42,51 +42,29 @@
 }
 
 .sidebar__top {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--design-spacing-xs);
-  margin-block-end: var(--design-spacing-sm);
+  justify-content: center;
+  margin-block-end: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-md);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
   flex-shrink: 0;
 }
 
-.sidebar__brand {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  color: transparent;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
-  background-image: linear-gradient(
-    90deg,
-    var(--color-primary) 34%,
-    var(--color-violet) 40%,
-    var(--color-accent-teal) 47%,
-    var(--color-accent-orange) 54%,
-    var(--color-link-deep) 61%,
-    var(--color-primary) 66%
-  );
-  background-size: 300% 100%;
-  background-clip: text;
-  animation: sidebar-brand-reveal var(--duration-brand-cycle) var(--ease-standard) infinite both;
-  animation-play-state: paused;
-}
-
-.sidebar[data-mobile-open="true"] .sidebar__brand {
-  animation-play-state: running;
-}
-
-@keyframes sidebar-brand-reveal {
-  0% { background-position: 100% 0; }
-  50%, 100% { background-position: 0 0; }
+/* Marca centrada; el símbolo hereda la tinta de la app. */
+.sidebar__brand-mark {
+  display: block;
+  width: var(--icon-size-xl);
+  height: var(--icon-size-xl);
+  color: var(--color-primary);
 }
 
 button.sidebar__close-btn {
+  position: absolute;
+  inset-inline-end: var(--design-spacing-md);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
   background: transparent;
   border: none;
   display: inline-flex;
@@ -120,27 +98,6 @@ button.sidebar__close-btn {
   overscroll-behavior: contain;
 }
 
-.sidebar__group {
-  margin-bottom: var(--design-spacing-sm);
-}
-
-.sidebar__group:last-child {
-  margin-bottom: 0;
-}
-
-.sidebar__group-title {
-  margin-bottom: var(--design-spacing-xxs);
-  padding-inline: var(--design-spacing-sm);
-  overflow-wrap: anywhere;
-  font-family: var(--font-code);
-  font-size: var(--type-mono-eyebrow-size);
-  font-weight: var(--type-mono-eyebrow-weight);
-  line-height: var(--type-mono-eyebrow-line);
-  letter-spacing: var(--type-mono-eyebrow-tracking);
-  text-transform: uppercase;
-  color: var(--color-navigation-rail-text);
-}
-
 .sidebar__list {
   display: flex;
   flex-direction: column;
@@ -152,7 +109,7 @@ button.sidebar__close-btn {
 .sidebar__item {
   display: flex;
   align-items: center;
-  gap: var(--design-spacing-sm);
+  gap: var(--design-spacing-xs);
 
   min-height: var(--touch-target-min);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
@@ -187,6 +144,17 @@ button.sidebar__close-btn {
   font-weight: var(--type-label-sm-weight);
   line-height: var(--type-label-sm-line);
   letter-spacing: var(--type-label-sm-tracking);
+}
+
+/* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
+.sidebar__item:active:not(.sidebar__item--active) {
+  color: var(--color-navigation-rail-text-strong);
+  background: var(--color-surface-strong);
+}
+
+.sidebar__item--active:active {
+  color: var(--color-navigation-rail-on-active);
+  background: var(--color-primary-active);
 }
 
 .sidebar__item--active .sidebar__item-icon {
@@ -355,14 +323,6 @@ button.sidebar__close-btn {
     margin-block-end: var(--design-spacing-sm);
   }
 
-  .sidebar__brand {
-    font-size: var(--type-brand-size);
-    font-weight: var(--type-brand-weight);
-    line-height: var(--type-brand-line);
-    letter-spacing: var(--type-brand-tracking);
-    animation-play-state: running;
-  }
-
   button.sidebar__close-btn {
     display: none;
   }
@@ -391,12 +351,6 @@ button.sidebar__close-btn {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sidebar__brand,
-  .sidebar[data-mobile-open="true"] .sidebar__brand {
-    color: var(--color-primary);
-    background: none;
-    animation: none;
-  }
   .sidebar,
   .sidebar__item,
   .sidebar__item-icon,
@@ -404,15 +358,6 @@ button.sidebar__close-btn {
     transition: none;
   }
   .sidebar-mobile-overlay {
-    animation: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .sidebar__brand,
-  .sidebar[data-mobile-open="true"] .sidebar__brand {
-    color: CanvasText;
-    background: none;
     animation: none;
   }
 }

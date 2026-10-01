@@ -44,12 +44,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--design-spacing-xs);
-  overflow-wrap: anywhere;
-  color: var(--color-ink);
-  font-size: var(--type-heading-1-size);
-  font-weight: var(--type-heading-1-weight);
-  line-height: var(--type-heading-1-line);
-  letter-spacing: var(--type-heading-1-tracking);
 }
 
 .home-page__title-text {
@@ -90,6 +84,7 @@
 
 .home-page__employment-tenure {
   flex: 0 1 auto;
+  flex-wrap: wrap;
 }
 
 .home-page__hero-footer {
@@ -103,10 +98,11 @@
   min-width: 0;
   color: var(--color-body);
   overflow-wrap: anywhere;
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .home-page__learning,
@@ -126,6 +122,7 @@
 
 .home-page__lessons {
   grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-lg);
 }
 
 .home-page__topics {
@@ -196,6 +193,7 @@
 }
 
 .home-page__section-title {
+  font-family: var(--font-display);
   color: var(--color-ink);
   overflow-wrap: anywhere;
   font-size: var(--type-heading-md-size);
@@ -205,6 +203,7 @@
 }
 
 .home-page__lesson-title {
+  font-family: var(--font-display);
   color: var(--color-ink);
   overflow-wrap: anywhere;
   font-size: var(--type-heading-sm-size);
@@ -219,17 +218,25 @@
 .home-page__context {
   color: var(--color-body);
   overflow-wrap: anywhere;
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .home-page__context {
   padding-block: var(--design-spacing-sm);
 }
 
+.home-page__context,
+.home-page__lessons > .home-page__section-intro {
+  grid-column: 1 / -1;
+}
+
 .home-page__lesson {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
@@ -255,6 +262,8 @@
 }
 
 .home-page__lesson-content {
+  flex: 1;
+  align-content: start;
   display: grid;
   min-width: 0;
   gap: var(--design-spacing-sm);
@@ -344,13 +353,6 @@
     padding: var(--design-spacing-xl);
   }
 
-  .home-page__title {
-    font-size: var(--type-heading-lg-size);
-    font-weight: var(--type-heading-lg-weight);
-    line-height: var(--type-heading-lg-line);
-    letter-spacing: var(--type-heading-lg-tracking);
-  }
-
   .home-page__robot {
     inline-size: var(--icon-size-xl);
     block-size: var(--icon-size-xl);
@@ -394,7 +396,8 @@
 
 @media (min-width: 1080px) {
   .home-page__hero {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
   }
 
   .home-page__employment-meta {
@@ -425,9 +428,14 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
+  .home-page__lessons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .home-page__lesson-content .home-page__labor-list,
-  .home-page__lesson-content ol {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .home-page__lesson-content ol,
+  .home-page__contrast-columns {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

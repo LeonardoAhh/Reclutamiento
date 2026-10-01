@@ -39,7 +39,7 @@ export function AccountPage() {
     <main className="account-page container container--compact" aria-labelledby="account-profile-title">
       <div className="account-page__content">
         <section className="account-page__section account-page__section--profile" aria-labelledby="account-profile-title">
-          <h1 id="account-profile-title" className="account-page__section-title">Mi cuenta</h1>
+          <h1 id="account-profile-title" className="app-page-title">Mi cuenta</h1>
           <button
             type="button"
             className="account-page__identity"

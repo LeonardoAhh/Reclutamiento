@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useAnimate, useReducedMotion } from "framer-motion";
 import { wave } from "robot-toast/robots";
 
-export function LoginStory() {
+interface LoginStoryProps {
+  username?: string | null;
+}
+
+export function LoginStory({ username }: LoginStoryProps) {
   const [scope, animate] = useAnimate();
   const reduceMotion = useReducedMotion();
 
@@ -21,12 +25,16 @@ export function LoginStory() {
     return () => playback.cancel();
   }, [animate, reduceMotion]);
 
+  const greeting = username
+    ? `Hola, ${username[0].toUpperCase() + username.slice(1)}.`
+    : "Hola, soy Wave.";
+
   return (
     <section className="login-story" aria-labelledby="login-story-title">
       <h2 id="login-story-title" className="sr-only">Tu espacio de trabajo.</h2>
       <p className="sr-only">
         Retoma los pendientes de reclutamiento y personal.
-        Hola, soy Wave. Qué gusto verte de nuevo por aquí.
+        {greeting} Qué gusto verte de nuevo por aquí.
       </p>
       <div className="login-story__animation" ref={scope} aria-hidden="true">
         <div className="login-story__scene login-story__mark">
@@ -44,7 +52,7 @@ export function LoginStory() {
               <img className="login-story__robot-image" src={wave} alt="" />
             </div>
             <div className="login-story__copy">
-              <p className="login-story__title">Hola, soy Wave.</p>
+              <p className="login-story__title">{greeting}</p>
               <p className="login-story__description">Qué gusto verte de nuevo por aquí.</p>
             </div>
           </div>

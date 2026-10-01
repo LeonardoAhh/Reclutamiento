@@ -27,8 +27,8 @@ export type NavItem = {
   roles?: ReadonlyArray<NavigationRole>;
 };
 
-export type NavGroup = {
-  title?: string;
+export type NavSection = {
+  label: string;
   items: NavItem[];
 };
 
@@ -38,47 +38,26 @@ export const LOGOUT_PATH = "/cerrar-sesion";
 export const HOME_PATH = "/inicio";
 export const APP_BRAND_NAME = "ViñoPlastic";
 
-export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
+export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
   {
-    title: "Principal",
+    label: "Principal",
     items: [
-      {
-        to: HOME_PATH,
-        label: "Inicio",
-        icon: House,
-        end: true,
-      },
+      { to: HOME_PATH, label: "Inicio", icon: House, end: true },
       { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
-      {
-        to: "/candidatos",
-        label: "Candidatos",
-        icon: UserSearch,
-        mobilePriority: true,
-      },
+      { to: "/candidatos", label: "Candidatos", icon: UserSearch, mobilePriority: true },
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
-      {
-        to: "/resumen",
-        label: "Resumen",
-        icon: ChartNoAxesCombined,
-        end: false,
-        mobilePriority: true,
-      },
+      { to: "/resumen", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
     ],
   },
   {
-    title: "Herramientas",
+    label: "Herramientas",
     items: [
-      {
-        to: "/actualizacion-datos",
-        label: "Campaña",
-        icon: UserRoundPen,
-        roles: ["admin", "reclutador"],
-      },
+      { to: "/actualizacion-datos", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
       { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
     ],
   },
   {
-    title: "Administración",
+    label: "Administración",
     items: [
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: getConfiguracionHref("formatos"), label: "Formatos", icon: Files },
@@ -89,4 +68,4 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
   },
 ];
 
-export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_GROUPS.flatMap(group => group.items);
+export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_SECTIONS.flatMap((section) => section.items);

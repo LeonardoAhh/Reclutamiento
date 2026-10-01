@@ -135,12 +135,6 @@ export function Login() {
     }
   };
 
-  const returningUsername = rememberMe && rememberedUsername &&
-    !rememberedUsername.includes("@") &&
-    username.trim().toLowerCase() === rememberedUsername.toLowerCase()
-      ? rememberedUsername[0].toUpperCase() + rememberedUsername.slice(1)
-      : null;
-
   return (
     <main className="login">
       <div className="login__form-panel">
@@ -155,11 +149,6 @@ export function Login() {
               <h1 id={titleId} className="login__title">
                 Iniciar sesión
               </h1>
-              <p className="login__subtitle">
-                {returningUsername
-                  ? `Bienvenido de nuevo, ${returningUsername}.`
-                  : "Usa el usuario que se te asigno."}
-              </p>
             </header>
             <form
               className="login__form"
@@ -335,7 +324,7 @@ export function Login() {
           </section>
         </div>
       </div>
-      <LoginStory />
+      <LoginStory username={rememberedUsername} />
     </main>
   );
 }
