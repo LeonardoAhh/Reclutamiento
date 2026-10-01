@@ -32,11 +32,6 @@ import { toast } from "@/lib/notify";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import "./Actividades.css";
 
-/** Capitaliza la primera letra de cada palabra. */
-function capitalize(str: string) {
-  return str.replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
 function isImage(filename: string): boolean {
   if (!filename) return false;
   const extension = filename.split(".").pop()?.toLowerCase() || "";
@@ -163,7 +158,7 @@ export function Actividades() {
       { value: "", label: "Todo el equipo" },
       ...reclutadores.map((reclutador) => ({
         value: reclutador.id,
-        label: capitalize(reclutador.display_name || reclutador.username),
+        label: reclutador.username,
       })),
     ],
     [reclutadores],
@@ -770,7 +765,7 @@ export function Actividades() {
           { value: "", label: "Sin asignar" },
           ...reclutadores.map((reclutador) => ({
             value: reclutador.id,
-            label: capitalize(reclutador.display_name || reclutador.username),
+            label: reclutador.username,
           })),
         ]}
         onSubmit={handleCreateVacante}
@@ -854,7 +849,7 @@ export function Actividades() {
           { value: "", label: "Sin asignar" },
           ...reclutadores.map((reclutador) => ({
             value: reclutador.id,
-            label: capitalize(reclutador.display_name || reclutador.username),
+            label: reclutador.username,
           })),
         ]}
         onAssign={(vacancyId, assigneeId) => {
