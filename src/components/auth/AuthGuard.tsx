@@ -1,70 +1,46 @@
-import { type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
 import { HOME_PATH } from '@/components/layout/navigation';
+import { CAREER_PATH } from '@/features/career/types';
+import { hasCompletedCareerJourney } from '@/features/career/completion';
 
-/**
- * Bloquea el acceso a rutas protegidas. Si no hay session activa, redirige a
- * `/login`. Después de autenticar, el flujo siempre comienza en `/inicio`.
- *
- * Mientras `loading` (primera carga de la session desde Supabase) muestra un
- * splash mínimo para evitar el "flash" de login → contenido.
- */
+/** Conserva el acceso protegido y la espera del perfil después de autenticar. */
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { session, loading, profileLoading } = useAuth();
-
-  if (loading || (session && profileLoading)) {
-    return null;
-  }
-
-  if (!session) {
-    return <Navigate to="/login" replace />;
-  }
-
+  if (loading || (session && profileLoading)) return null;
+  if (!session) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
 
-import { useState, useEffect } from 'react';
-
-/**
- * Espejo de AuthGuard para la ruta de login: si ya hay session, redirige al
- * inicio. Evita que un usuario logueado vea el form de login.
- */
+/** Un ingreso con credenciales abre el recorrido pendiente; las sesiones restauradas conservan Inicio. */
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
-  const loader = useLoader();
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  useEffect(() => {
-    if (!loading) {
-      // Damos un pequeño ciclo para marcar que la carga inicial terminó
-      requestAnimationFrame(() => setIsInitialLoad(false));
-    }
-  }, [loading]);
+  const { flash } = useLoader();
+  const sawSignedOut = useRef(false);
+  const [destination, setDestination] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
-    if (session) {
-      if (isInitialLoad) {
-        setShouldRedirect(true);
-      } else {
-        // Si no es la carga inicial, significa que el usuario acaba de iniciar sesión.
-        // Damos gracia para que la animación del botón verde se complete.
-        const timer = setTimeout(() => {
-          loader.flash({ variant: 'workspace-entry' });
-          // Wait briefly for the loader to fade in and cover the screen before redirecting
-          setTimeout(() => setShouldRedirect(true), 300);
-        }, 800);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [session, loading, isInitialLoad, loader]);
+    if (!session) { sawSignedOut.current = true; return; }
+    if (!sawSignedOut.current) { setDestination(HOME_PATH); return; }
 
-  if (shouldRedirect) {
-    return <Navigate to={HOME_PATH} replace />;
-  }
+    let redirectTimer: ReturnType<typeof setTimeout> | undefined;
+    // Conserva la espera existente del botón de éxito y de la transición del workspace.
+    const successTimer = setTimeout(() => {
+      flash({ variant: 'workspace-entry' });
+      redirectTimer = setTimeout(() => setDestination(
+        hasCompletedCareerJourney(session.user.user_metadata) ? HOME_PATH : CAREER_PATH,
+      ), 300);
+    }, 800);
+    return () => {
+      clearTimeout(successTimer);
+      if (redirectTimer !== undefined) clearTimeout(redirectTimer);
+    };
+  }, [session, loading, flash]);
 
+  if (destination) return <Navigate to={destination} replace />;
   return <>{children}</>;
 }

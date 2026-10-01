@@ -169,7 +169,7 @@ export function EmployeeModal({
   const vacancySelectOptions = useMemo(() => {
     return vacancyOptions.map((vacancy, index) => ({
       value: index.toString(),
-      label: toNaturalCase(vacancy.puesto),
+      label: [toNaturalCase(vacancy.puesto), vacancy.area, vacancy.seccion].filter(Boolean).join(' · '),
     }));
   }, [vacancyOptions]);
 

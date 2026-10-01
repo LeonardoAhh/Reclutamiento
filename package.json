@@ -60,6 +60,7 @@
     "remark-gfm": "^4.0.1",
     "robot-toast": "^2.2.0",
     "tailwind-merge": "^3.7.0",
+    "three": "^0.186.1",
     "typescript": "^7.0.2",
     "vaul": "^1.1.2",
     "vite": "^8.3.0",
@@ -67,6 +68,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.2",
+    "@types/three": "^0.186.0",
     "tsx": "^4.23.15"
   },
   "allowScripts": {

@@ -9,9 +9,11 @@ import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
+import { CAREER_PATH } from '@/features/career/types';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
+  [CAREER_PATH]: 'Tu camino profesional',
   '/bajas': 'Rotación',
   '/motivos-baja': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',

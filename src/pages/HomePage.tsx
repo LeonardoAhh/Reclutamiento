@@ -1,7 +1,9 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRight, Brain, Check, ChevronLeft, ChevronRight, Scale, ShieldCheck, UsersRound } from "lucide-react";
 import { wave } from "robot-toast/robots";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { Modal } from "@/components/ui/Modal";
 import { useAuth } from "@/hooks/useAuth";
 import { formatEmploymentTenure, formatReadableDate } from "@/lib/dates";
 import { getUserTitle } from "@/lib/userIdentity";
@@ -186,6 +188,13 @@ function TopicLessons({ topicId, leadershipCue }: {
 }
 
 export function HomePage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const navigationState: unknown = location.state;
+  const showCareerMotivation = navigationState !== null
+    && typeof navigationState === 'object'
+    && 'careerMotivation' in navigationState
+    && navigationState.careerMotivation === true;
   const { members } = useTeamDirectory();
   const { profile, user, username } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -204,6 +213,11 @@ export function HomePage() {
     if (index === activeIndex || index < 0 || index >= HOME_TOPICS.length) return;
     moveFocus.current = true;
     setActiveIndex(index);
+  }
+
+  function closeCareerMotivation() {
+    navigate({ pathname: location.pathname, search: location.search, hash: location.hash },
+      { replace: true, state: null });
   }
 
   if (!profile) return null;
@@ -319,6 +333,15 @@ export function HomePage() {
           </nav>
         </section>
       </div>
+      <Modal isOpen={showCareerMotivation} title="Tu día, tu enfoque"
+      onClose={closeCareerMotivation} size="sm"
+      footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>Hacer que cuente</button>}>
+      <div className="modal-body">
+        <p className="type-body-md">
+      Cada mañana es una nueva oportunidad para avanzar. Tómate un minuto, prioriza y haz que hoy cuente.
+    </p>
+  </div>
+</Modal>
     </main>
   );
 }

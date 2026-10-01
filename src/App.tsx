@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { AppShell } from '@/components/layout/AppShell';
@@ -28,6 +28,9 @@ import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
+import { CAREER_PATH } from '@/features/career/types';
+
+const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
 
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
@@ -81,11 +84,14 @@ const HomePage = lazy(() =>
   })),
 );
 function ProtectedContent() {
+  const { pathname } = useLocation();
   return (
     <CandidatesProvider>
       <PositionsProvider>
         <MaintenanceGuard>
-          <TeamProvider><AppShell><Outlet /></AppShell><TopRecruiterModal /></TeamProvider>
+          <TeamProvider>{pathname === CAREER_PATH
+            ? <Outlet />
+            : <><AppShell><Outlet /></AppShell><TopRecruiterModal /></>}</TeamProvider>
         </MaintenanceGuard>
       </PositionsProvider>
     </CandidatesProvider>
@@ -93,11 +99,12 @@ function ProtectedContent() {
 }
 
 function ProtectedShell() {
+  const { pathname } = useLocation();
   if (isBoneyardBuild()) {
     return (
       <CandidatesProvider>
         <PositionsProvider>
-          <TeamProvider><AppShell><Outlet /></AppShell></TeamProvider>
+          <TeamProvider>{pathname === CAREER_PATH ? <Outlet /> : <AppShell><Outlet /></AppShell>}</TeamProvider>
         </PositionsProvider>
       </CandidatesProvider>
     );
@@ -164,6 +171,7 @@ function App() {
               <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
+                <Route path={CAREER_PATH} element={<CareerPage />} />
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
