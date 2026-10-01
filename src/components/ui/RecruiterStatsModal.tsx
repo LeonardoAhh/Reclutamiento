@@ -33,11 +33,11 @@ interface RecruiterStatsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onBack?: () => void;
-  mode: 'global' | 'pauta' | 'alexandra' | 'daniela' | null;
+  mode: 'global' | 'pauta' | 'recruiter' | null;
   recruiterStats: RecruiterStats[];
   pautaStats: WeekStat[];
-  alexandraStats: WeekStat[];
-  danielaStats: WeekStat[];
+  individualStats: WeekStat[];
+  recruiterName: string;
 }
 
 function groupWeeksByMonth(stats: WeekStat[]) {
@@ -64,8 +64,8 @@ export function RecruiterStatsModal({
   mode,
   recruiterStats,
   pautaStats,
-  alexandraStats,
-  danielaStats,
+  individualStats,
+  recruiterName,
 }: RecruiterStatsModalProps) {
   const isMobile = useIsMobile();
   const [copiedKey, setCopiedKey] = useState<number | null>(null);
@@ -80,20 +80,12 @@ export function RecruiterStatsModal({
       ? 'Resumen de Reclutadores'
       : mode === 'pauta'
         ? 'Detalle Pauta'
-        : mode === 'alexandra'
-          ? 'Detalle Alexandra'
-          : mode === 'daniela'
-            ? 'Detalle Daniela'
-            : '';
+        : mode === 'recruiter' ? `Detalle ${recruiterName}` : '';
 
   const stats =
     mode === 'pauta'
       ? pautaStats
-      : mode === 'alexandra'
-        ? alexandraStats
-        : mode === 'daniela'
-          ? danielaStats
-          : [];
+      : mode === 'recruiter' ? individualStats : [];
 
   const handleCopyRow = async (stat: WeekStat, weekNum: number) => {
     // Formato TSV (tab-separado) listo para pegar en Excel: CITADOS \t CONTRATADOS \t EFECTIVIDAD

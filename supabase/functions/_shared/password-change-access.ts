@@ -12,6 +12,15 @@ export async function requirePasswordChangeComplete(
   const authorization = request.headers.get('Authorization') ?? '';
   if (!/^Bearer\s+\S+$/i.test(authorization)) return reject('Sesión inválida o expirada.', 401);
   try {
+    const accessResponse = await fetch(`${url}/rest/v1/rpc/app_access_enabled`, {
+      method: 'POST', headers: { apikey: anonKey, Authorization: authorization, 'Content-Type': 'application/json' },
+      body: '{}', signal: AbortSignal.timeout(10_000),
+    });
+    if (!accessResponse.ok) return reject('No se pudo verificar el acceso.', accessResponse.status === 401 ? 401 : 503);
+    const access: unknown = await accessResponse.json();
+    if (access === false) return new Response(JSON.stringify({ ok: false, message: 'Cuenta inactiva.', code: 'ACCOUNT_INACTIVE' }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    if (access !== true) return reject('No se pudo verificar el acceso.', 503);
     const response = await fetch(`${url}/rest/v1/rpc/password_change_required`, {
       method: 'POST',
       headers: { apikey: anonKey, Authorization: authorization, 'Content-Type': 'application/json' },

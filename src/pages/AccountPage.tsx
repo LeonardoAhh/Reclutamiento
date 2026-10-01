@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom';
+import { TEAM_PATH } from '@/components/layout/navigation';
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { Badge } from "@/components/ui/Badge";
@@ -91,6 +93,12 @@ export function AccountPage() {
           <section className="account-page__section" aria-labelledby="account-admin-title">
             <h2 id="account-admin-title" className="account-page__section-title">Administración</h2>
             <div className="account-page__panel">
+              <Link to={TEAM_PATH} className="account-page__row account-page__row-link">
+                <span className="account-page__row-copy">
+                  <span className="account-page__row-title">Equipo</span>
+                  <span className="account-page__row-description">Administra integrantes, nombres y bajas de acceso.</span>
+                </span>
+              </Link>
               <button
                 type="button"
                 className="account-page__row account-page__row--status"

@@ -1,5 +1,4 @@
 import { Briefcase, CalendarClock, CircleCheckBig, HeartPulse, LifeBuoy, Star, UserRound, UsersRound } from 'lucide-react';
-import type { RECLUTADORES_INFO } from '@/lib/constants';
 import { Tooltip } from './Tooltip';
 import './Badge.css';
 

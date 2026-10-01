@@ -34,6 +34,7 @@ export type NavSection = {
 
 export const ACTIVIDADES_PATH = "/actividades";
 export const ACCOUNT_PATH = "/cuenta";
+export const TEAM_PATH = "/equipo";
 export const LOGOUT_PATH = "/cerrar-sesion";
 export const HOME_PATH = "/inicio";
 export const APP_BRAND_NAME = "ViñoPlastic";

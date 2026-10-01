@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { CalendarCheck2, Medal, Target, TrendingUp } from 'lucide-react';
 import { differenceInCalendarWeeks, parseISO, startOfISOWeek } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { findTeamMember, type TeamMember } from '@/features/team/types';
 import { getRecruitmentGoals } from '@/hooks/useIndicadoresStats';
 import { useLoader } from '@/hooks/useLoader';
 import { supabase } from '@/lib/supabase';
@@ -9,15 +11,16 @@ import { markRecognitionShown, setRecognitionMonthDismissed, shouldShowRecogniti
 import { Modal } from './Modal';
 import './TopRecruiterModal.css';
 
-function recruiterName(value: string | null) {
+function recruiterName(value: string | null, members: readonly TeamMember[]) {
   const raw = value?.replace(/\s+/g, ' ').trim();
   if (!raw || raw === 'Sin Reclutador') return null;
   const first = raw.split(' ')[0];
   const name = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
-  return name === 'Nayeli' ? 'Alexandra' : name;
+  return findTeamMember(members, value)?.short_name ?? name;
 }
 
 export function TopRecruiterModal() {
+  const { members } = useTeamDirectory();
   const { profile } = useAuth();
   const { visible: transitionVisible } = useLoader();
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +36,8 @@ export function TopRecruiterModal() {
     if (!shouldShowRecognition(profile.id)) return;
     let cancelled = false;
 
-    const currentUserNameLower = (profile.display_name || profile.username || '').toLowerCase();
+    const currentMember = members.find(member => member.profile_id === profile.id && member.active);
+    if (!currentMember) return;
 
     const fetchStats = async () => {
       const currentMonth = new Date().getMonth(); // 0-11
@@ -60,7 +64,7 @@ export function TopRecruiterModal() {
 
       const recruiterTotals: Record<string, number> = {};
       allRecords.forEach(record => {
-        const recruiter = recruiterName(record.reclutador);
+        const recruiter = recruiterName(record.reclutador, members);
         if (recruiter) {
           recruiterTotals[recruiter] = (recruiterTotals[recruiter] || 0) + 1;
         }
@@ -81,12 +85,7 @@ export function TopRecruiterModal() {
       let currentUserName = '';
 
       for (const r of totalsArray) {
-        const recNameLower = r.name.toLowerCase();
-        if (
-          currentUserNameLower && (currentUserNameLower === recNameLower ||
-          currentUserNameLower.includes(recNameLower) ||
-          recNameLower.includes(currentUserNameLower))
-        ) {
+        if (r.name === currentMember.short_name) {
           currentUserTotal = r.total;
           currentUserName = r.name;
           break;
@@ -94,7 +93,7 @@ export function TopRecruiterModal() {
       }
 
       if (!currentUserName) {
-         currentUserName = profile.display_name || profile.username || 'Reclutador';
+         currentUserName = currentMember.short_name;
       }
 
       // El usuario actual es top recruiter si su total es igual al máximo y es > 0
@@ -110,10 +109,10 @@ export function TopRecruiterModal() {
         }
       }
 
-      const previousTotal = previousRecords.filter(record => recruiterName(record.reclutador) === currentUserName).length;
+      const previousTotal = previousRecords.filter(record => recruiterName(record.reclutador, members) === currentUserName).length;
       const weeklyTotals = new Map<number, number>();
       allRecords.forEach(record => {
-        if (recruiterName(record.reclutador) !== currentUserName || !record.fecha_ingreso) return;
+        if (recruiterName(record.reclutador, members) !== currentUserName || !record.fecha_ingreso) return;
         const weekStart = startOfISOWeek(parseISO(record.fecha_ingreso)).getTime();
         weeklyTotals.set(weekStart, (weeklyTotals.get(weekStart) ?? 0) + 1);
       });
@@ -133,7 +132,7 @@ export function TopRecruiterModal() {
 
     fetchStats().catch(console.error);
     return () => { cancelled = true; };
-  }, [profile, transitionVisible, weeklyGoal]);
+  }, [profile, transitionVisible, weeklyGoal, members]);
 
   const getContextualMessage = (progress: number, isTop: boolean) => {
     if (isTop) return "Sigue así.";

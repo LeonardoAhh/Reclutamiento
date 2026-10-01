@@ -36,6 +36,13 @@ runtime.serve(async (request) => {
   const headers = { apikey: anonKey, Authorization: authorization, 'Content-Type': 'application/json' };
   let passwordChanged = false;
   try {
+    const accessResponse = await fetch(`${url}/rest/v1/rpc/app_access_enabled`, {
+      method: 'POST', headers, body: '{}', signal: AbortSignal.timeout(10_000),
+    });
+    if (!accessResponse.ok) return failure('No se pudo verificar el acceso. Intenta de nuevo.');
+    const access: unknown = await accessResponse.json();
+    if (access === false) return json({ ok: false, field: 'form', message: 'Cuenta inactiva. Contacta al administrador.', code: 'ACCOUNT_INACTIVE' }, 403);
+    if (access !== true) return failure('No se pudo verificar el acceso. Intenta de nuevo.');
     const identityResponse = await fetch(`${url}/auth/v1/user`, { headers, signal: AbortSignal.timeout(10_000) });
     const identity: unknown = await identityResponse.json();
     if (!identityResponse.ok || !isRecord(identity) || typeof identity.id !== 'string') {

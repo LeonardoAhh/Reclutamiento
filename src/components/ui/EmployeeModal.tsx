@@ -16,11 +16,9 @@ import {
   canonicalizePuesto,
   toNaturalCase,
 } from "@/lib/utils";
-import {
-  CATEGORIAS,
-  RECLUTADORES_ACTIVOS,
-  RECLUTADORES_INFO,
-} from "@/lib/constants";
+import { CATEGORIAS } from "@/lib/constants";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { recruiterOptions } from '@/features/team/types';
 import { localTodayIso } from "@/lib/dates";
 import { Tooltip } from "./Tooltip";
 import { supabase } from "@/lib/supabase";
@@ -99,6 +97,7 @@ export function EmployeeModal({
   openVacancies = [],
   existingEmployees = [],
 }: EmployeeModalProps) {
+  const { members } = useTeamDirectory();
   const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
@@ -574,10 +573,7 @@ export function EmployeeModal({
             setTouchedAdd(t => ({ ...t, reclutador: true }));
           }}
           placeholder="Seleccionar..."
-          options={RECLUTADORES_ACTIVOS.map((r) => ({
-            value: r.toUpperCase(),
-            label: RECLUTADORES_INFO[r].nombre_completo,
-          }))}
+          options={recruiterOptions(members, employee?.reclutador, true)}
           aria-invalid={touchedAdd.reclutador && !!errorsAdd.reclutador}
         />
         {touchedAdd.reclutador && errorsAdd.reclutador && <span className="form-error-text">{errorsAdd.reclutador}</span>}

@@ -1,4 +1,6 @@
 import { useEffect, useId, useMemo, useState } from 'react';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
 import { CircleAlert, ArrowRight, CircleCheckBig, ClipboardList, History, PenLine, Trash2 } from 'lucide-react';
 import type {
@@ -115,6 +117,7 @@ export function VacancySheet({
   onSave,
   onDelete,
 }: VacancySheetProps) {
+  const { members } = useTeamDirectory();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -313,15 +316,12 @@ export function VacancySheet({
       </div>
       <div className="form-group">
         <label htmlFor="vac-reclutador">Reclutador asignado</label>
-        <input
+        <CustomSelect
           id="vac-reclutador"
-          type="text"
           value={form.reclutador_asignado}
-          onChange={(e) =>
-            setForm({ ...form, reclutador_asignado: e.target.value })
-          }
-          placeholder="Quién la lleva"
-          autoComplete="off"
+          onChange={value => setForm({ ...form, reclutador_asignado: value })}
+          options={recruiterOptions(members, vacancy?.reclutador_asignado)}
+          placeholder="Sin asignar"
         />
       </div>
       <div className="form-group">

@@ -5,6 +5,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { useAuth } from "@/hooks/useAuth";
 import { formatEmploymentTenure, formatReadableDate } from "@/lib/dates";
 import { getUserTitle } from "@/lib/userIdentity";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { toNaturalCase } from "@/lib/utils";
 import {
   MOTIVATION_BY_TITLE, DEFAULT_MOTIVATION, LEADERSHIP_CUE_BY_TITLE,
@@ -185,6 +186,7 @@ function TopicLessons({ topicId, leadershipCue }: {
 }
 
 export function HomePage() {
+  const { members } = useTeamDirectory();
   const { profile, user, username } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -210,7 +212,7 @@ export function HomePage() {
     preserveAcronyms: false,
   });
   const firstName = displayName.split(/\s+/)[0] || displayName;
-  const userTitle = getUserTitle(profile.role, user?.email);
+  const userTitle = getUserTitle(profile.role, members.find(member => member.profile_id === profile.id)?.job_title);
   const motivation = MOTIVATION_BY_TITLE[userTitle] ?? DEFAULT_MOTIVATION;
   const leadershipCue =
     LEADERSHIP_CUE_BY_TITLE[userTitle] ?? DEFAULT_LEADERSHIP_CUE;

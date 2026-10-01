@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { Modal } from "./Modal";
 import { MorphingIcon } from "./MorphingIcon";
 import { formatReadableDate } from "@/lib/dates";
-import { RECLUTADORES_ACTIVOS } from "@/lib/constants";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { findTeamMember, type TeamMember } from '@/features/team/types';
 import { normalizeString, toNaturalCase } from "@/lib/utils";
 import {
   buildWhatsAppReport,
@@ -124,7 +125,7 @@ function buildPuestoGroups(active: Candidate[]): AreaGroup[] {
   );
 }
 
-function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
+function buildRecruiterRows(active: Candidate[], members: TeamMember[]): RecruiterRow[] {
   const empty = (name: string): RecruiterRow => ({
     name,
     e1: 0,
@@ -135,11 +136,11 @@ function buildRecruiterRows(active: Candidate[]): RecruiterRow[] {
     starlite: 0,
   });
   const acc = new Map<string, RecruiterRow>();
-  for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
+  for (const member of members.filter(member => member.selectable)) acc.set(member.canonical_name, empty(member.short_name));
   acc.set(SIN_ASIGNAR, empty(SIN_ASIGNAR));
 
   for (const c of active) {
-    const norm = normalizeString(c.reclutador ?? "");
+    const norm = findTeamMember(members, c.reclutador)?.canonical_name ?? normalizeString(c.reclutador ?? "");
     const key = acc.has(norm) ? norm : SIN_ASIGNAR;
     const bucket = acc.get(key)!;
     if (c.status === "entrevista") bucket.e1 += 1;
@@ -190,10 +191,10 @@ function buildCandidateSections(
   }));
 }
 
-function buildWhatsAppMessage(active: Candidate[]): string {
+function buildWhatsAppMessage(active: Candidate[], members: TeamMember[]): string {
   const generales = active.filter((c) => !c.is_starlite);
   const starlite = active.filter((c) => c.is_starlite);
-  const recruiters = buildRecruiterRows(active).filter((row) => row.total > 0);
+  const recruiters = buildRecruiterRows(active, members).filter((row) => row.total > 0);
   const sections = [
     ...buildCandidateSections(generales),
     ...buildCandidateSections(starlite, "Starlite"),
@@ -218,12 +219,13 @@ export function CandidateReportModal({
   onClose,
   candidates,
 }: CandidateReportModalProps) {
+  const { members } = useTeamDirectory();
   const active = useMemo(
     () => candidates.filter((c) => ACTIVE_STATUSES.has(c.status)),
     [candidates],
   );
   const totalActivos = active.length;
-  const message = useMemo(() => buildWhatsAppMessage(active), [active]);
+  const message = useMemo(() => buildWhatsAppMessage(active, members), [active, members]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {

@@ -73,6 +73,7 @@ export async function signInWithUsername(
   if (error) {
     // Mapea los errores comunes de Supabase a mensajes en español más claros.
     const msg = error.message.toLowerCase();
+    if (msg.includes('banned')) return { ok: false, message: 'Tu cuenta está inactiva. Contacta al administrador.' };
     if (msg.includes('invalid login credentials') || msg.includes('invalid')) {
       return { ok: false, message: 'Usuario o contraseña incorrectos.' };
     }
@@ -87,6 +88,11 @@ export async function signInWithUsername(
   }
 
   if (data?.session?.user) {
+    const access = await supabase.rpc('app_access_enabled');
+    if (access.error || access.data !== true) {
+      await supabase.auth.signOut({ scope: 'local' });
+      return { ok: false, message: access.error ? 'No se pudo verificar el acceso. Intenta de nuevo.' : 'Tu cuenta está inactiva. Contacta al administrador.' };
+    }
     await recordLastActivity(data.session.user.id);
   }
 

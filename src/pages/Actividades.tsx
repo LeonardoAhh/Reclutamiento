@@ -15,7 +15,7 @@ import {
   ACTIVITY_STATUS_LABEL,
   AssignableActivityType,
 } from "@/lib/types";
-import { supabase } from "@/lib/supabase";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { AssignVacancyModal } from "@/components/ui/AssignVacancyModal";
 import {
   CreateActivityModal,
@@ -44,6 +44,7 @@ function isImage(filename: string): boolean {
 }
 
 export function Actividades() {
+  const { members } = useTeamDirectory();
   const { profile } = useAuth();
 
   const lastVisitRef = useRef<string | null>(null);
@@ -104,7 +105,10 @@ export function Actividades() {
   const [vacanteAsignadoA, setVacanteAsignadoA] = useState("");
   const [isCreatingVacancy, setIsCreatingVacancy] = useState(false);
 
-  const [reclutadores, setReclutadores] = useState<any[]>([]);
+  const reclutadores = useMemo(() => members.flatMap(member => member.active && member.selectable && member.profile_id && member.profile_role === 'reclutador'
+    ? [{ id: member.profile_id, display_name: member.full_name, username: member.short_name }] : []), [members]);
+  const historicRecruiters = useMemo(() => members.flatMap(member => member.profile_id && member.profile_role === 'reclutador'
+    ? [{ id: member.profile_id, display_name: member.full_name, username: member.short_name }] : []), [members]);
   const [referenceImageFile, setReferenceImageFile] = useState<File | null>(
     null,
   );
@@ -153,16 +157,6 @@ export function Actividades() {
     isLoading: false,
     onConfirm: () => {},
   });
-
-  useEffect(() => {
-    if (profile?.role === "admin") {
-      supabase
-        .from("profiles")
-        .select("id, display_name, username")
-        .eq("role", "reclutador")
-        .then(({ data }) => setReclutadores(data || []));
-    }
-  }, [profile]);
 
   const teamRecruiterOptions = useMemo(
     () => [
@@ -711,7 +705,7 @@ export function Actividades() {
             activities={allUnicas}
             filteredActivities={unicas}
             pageItems={actividadesPaginadas}
-            recruiters={reclutadores}
+            recruiters={historicRecruiters}
             isAdmin={isAdmin}
             currentUserId={profile?.id}
             statusFilter={statusFilter}
@@ -814,7 +808,9 @@ export function Actividades() {
         setTitulo={setEditTitulo}
         asignadoA={editAsignadoA}
         setAsignadoA={setEditAsignadoA}
-        recruitersOptions={teamRecruiterOptions}
+        recruitersOptions={teamRecruiterOptions.some(option => option.value === selectedActivity?.asignado_a)
+          ? teamRecruiterOptions : [...teamRecruiterOptions, { value: selectedActivity?.asignado_a ?? '',
+            label: `${members.find(member => member.profile_id === selectedActivity?.asignado_a)?.full_name ?? 'Asignación actual'} (inactivo)` }]}
         descripcion={editDescripcion}
         setDescripcion={setEditDescripcion}
         referenceImagePreview={editReferenceImagePreview}

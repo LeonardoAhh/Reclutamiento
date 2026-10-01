@@ -33,7 +33,8 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatReadableDate, formatShortDate, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
-import { getRecruiterAccessCardName, RECLUTADORES_ACTIVOS } from '@/lib/constants';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { accessCardRecruiterName } from '@/features/team/types';
 import { normalizeString } from '@/lib/utils';
 import { splitCandidateName } from '@/lib/names';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
@@ -104,7 +105,9 @@ export function Pipeline() {
   const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
-  const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'alexandra' | 'daniela' | null>(null);
+  const { members, resolve } = useTeamDirectory();
+  const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'recruiter' | null>(null);
+  const [metricRecruiterId, setMetricRecruiterId] = useState('');
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
@@ -135,7 +138,7 @@ export function Pipeline() {
 
   const accessCardData = useMemo(() => {
     if (!accessCardTarget?.reclutador || !accessCardTarget.puesto) return null;
-    const recruiterName = getRecruiterAccessCardName(accessCardTarget.reclutador);
+    const recruiterName = accessCardRecruiterName(members, accessCardTarget.reclutador);
     if (!recruiterName) return null;
 
     return {
@@ -146,9 +149,9 @@ export function Pipeline() {
         ? formatReadableDate(accessCardTarget.fecha_cita)
         : null,
     };
-  }, [accessCardTarget]);
+  }, [accessCardTarget, members]);
 
-  const { pautaStats, alexandraStats, danielaStats } = useMemo(() => {
+  const { pautaStats, individualStats } = useMemo(() => {
     const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
       const groups = new Map<number, {
         startWed: Date;
@@ -204,10 +207,9 @@ export function Pipeline() {
     return {
       // Pauta tiene un objetivo de 30/14. Reclutadoras tienen 20/7 por semana.
       pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA'), 30, 14),
-      alexandraStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'ALEXANDRA'), 20, 7),
-      danielaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && normalizeString(c.reclutador ?? '') === 'DANIELA'), 20, 7),
+      individualStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && resolve(c.reclutador)?.id === metricRecruiterId), 20, 7),
     };
-  }, [candidates]);
+  }, [candidates, resolve, metricRecruiterId]);
 
   function resetFilters() {
     setMacroStatus('todos');
@@ -215,9 +217,10 @@ export function Pipeline() {
   }
 
   /**
-   * KPIs por reclutador activo. Cuenta candidatos cuyo `reclutador`
+   * KPIs por integrante del catálogo, incluyendo cuentas dadas de baja.
+   * Cuenta candidatos cuyo `reclutador`
    * normalizado (mayusculas + sin acentos) coincide con uno de los
-   * nombres canonicos en RECLUTADORES_ACTIVOS. Otros nombres se
+   * nombres canónicos o variantes del catálogo. Otros nombres se
    * descartan tanto del numerador como del denominador.
    */
   const recruiterStats = useMemo<RecruiterStats[]>(() => {
@@ -230,9 +233,9 @@ export function Pipeline() {
       no_asistio: 0,
     });
     const acc = new Map<string, RecruiterStats>();
-    for (const name of RECLUTADORES_ACTIVOS) acc.set(name, empty(name));
+    for (const member of members.filter(member => member.selectable)) acc.set(member.canonical_name, empty(member.canonical_name));
     for (const c of candidates) {
-      const norm = normalizeString(c.reclutador ?? '');
+      const norm = resolve(c.reclutador)?.canonical_name ?? normalizeString(c.reclutador ?? '');
       const bucket = acc.get(norm);
       if (!bucket) continue;
       bucket.total += 1;
@@ -242,7 +245,7 @@ export function Pipeline() {
       else if (CITADO_STATUSES.has(c.status)) bucket.citados += 1;
     }
     return Array.from(acc.values());
-  }, [candidates]);
+  }, [candidates, members, resolve]);
 
   const filtered = useMemo(() => {
     return candidates.filter((c) => {
@@ -1006,8 +1009,8 @@ export function Pipeline() {
         mode={kpiModalOpen}
         recruiterStats={recruiterStats}
         pautaStats={pautaStats}
-        alexandraStats={alexandraStats}
-        danielaStats={danielaStats}
+        individualStats={individualStats}
+        recruiterName={members.find(member => member.id === metricRecruiterId)?.short_name ?? ''}
       />
       {/* ── Modal de Menú de Métricas ── */}
       <Modal
@@ -1061,39 +1064,23 @@ export function Pipeline() {
                 </div>
               </button>
 
-              <button
+              {members.filter(member => member.include_in_metrics).map(member => <button
+                key={member.id}
                 type="button"
                 className="pipeline__kpi-row"
                 onClick={() => {
                   setMetricsModalOpen(false);
-                  setKpiModalOpen('alexandra');
+                  setMetricRecruiterId(member.id);
+                  setKpiModalOpen('recruiter');
                 }}
               >
                 <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--alexandra" />
-                  <span className="pipeline__kpi-row__name">Alexandra</span>
+                  <span className="pipeline__kpi-row__name">{member.short_name}{!member.active && ' (inactivo)'}</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
                   <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
                 </div>
-              </button>
-
-              <button
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => {
-                  setMetricsModalOpen(false);
-                  setKpiModalOpen('daniela');
-                }}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--daniela" />
-                  <span className="pipeline__kpi-row__name">Daniela</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-                </div>
-              </button>
+              </button>)}
             </div>
           </div>
         </div>

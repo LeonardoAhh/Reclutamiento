@@ -3,7 +3,8 @@ import { CircleAlert, CircleCheckBig, SquarePen, PenLine } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { localTodayIso } from '@/lib/dates';
-import { RECLUTADORES_ACTIVOS, RECLUTADORES_INFO } from '@/lib/constants';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
@@ -35,6 +36,7 @@ export function EditEmployeeModal({
   onClose,
   onSave,
 }: EditEmployeeModalProps) {
+  const { members } = useTeamDirectory();
   const [form, setForm] = useState<FormState>({
     nombre: '',
     area: '',
@@ -278,10 +280,7 @@ export function EditEmployeeModal({
               value={form.reclutador}
               onChange={(val) => setForm({ ...form, reclutador: val })}
               placeholder="Sin asignar"
-              options={RECLUTADORES_ACTIVOS.map((r) => ({
-                value: r.toUpperCase(),
-                label: RECLUTADORES_INFO[r].nombre_completo
-              }))}
+              options={recruiterOptions(members, employee?.reclutador, true)}
             />
           </div>
         </div>

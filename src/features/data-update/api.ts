@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { listTeamMembers } from '@/features/team/api';
+import type { TeamMember } from '@/features/team/types';
 import { toNaturalCase } from "@/lib/utils";
 import {
   isDataUpdateLockerArea,
@@ -235,7 +237,8 @@ export async function listDataUpdateCampaigns(): Promise<DataUpdateCampaign[]> {
   return (data ?? []).map(mapCampaign);
 }
 
-export async function listEligibleDataUpdateProfiles(): Promise<DataUpdateProfileOption[]> {
+export async function listEligibleDataUpdateProfiles(directory?: readonly TeamMember[]): Promise<DataUpdateProfileOption[]> {
+  const members = directory ?? await listTeamMembers();
   const { data, error } = await supabase
     .from("profiles")
     .select("id, display_name, username, role")
@@ -251,6 +254,7 @@ export async function listEligibleDataUpdateProfiles(): Promise<DataUpdateProfil
         { preserveAcronyms: false },
       ),
       role: textValue(row.role) as DataUpdateProfileOption["role"],
+      active: !members.some(member => member.profile_id === textValue(row.id) && !member.active),
     };
   });
 }

@@ -20,25 +20,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
-import {
-  getRecruiterAccessCardName,
-  RECLUTADORES_ACTIVOS,
-  RECLUTADORES_INFO,
-} from '@/lib/constants';
-
-/**
- * Reclutadoras activas que pueden ser asignadas a un proceso.
- *
- * El `value` se guarda en MAYÚSCULAS para mantener consistencia con el
- * histórico (las normalizaciones en KPIs/Pipeline ya pasan por
- * `toUpperCase()`, pero almacenar uniforme evita mezcla en la base).
- * El `label` se muestra en formato amigable en el select.
- */
-const RECLUTADORES_DISPONIBLES: Array<{ value: string; label: string }> =
-  RECLUTADORES_ACTIVOS.map((r) => ({
-    value: r.toUpperCase(),
-    label: RECLUTADORES_INFO[r].nombre_corto,
-  }));
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { recruiterOptions, accessCardRecruiterName } from '@/features/team/types';
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -118,6 +101,7 @@ export function CandidateModal({
   onSave,
   onDelete,
 }: CandidateModalProps) {
+  const { members } = useTeamDirectory();
   const formId = useId();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
@@ -367,7 +351,7 @@ export function CandidateModal({
         setIsSuccess(true);
         if (mode === 'add') {
           const recruiterName =
-            getRecruiterAccessCardName(form.reclutador) ?? form.reclutador;
+            accessCardRecruiterName(members, form.reclutador) ?? form.reclutador;
           setAccessCard({
             candidateName: payload.nombre,
             recruiterName,
@@ -576,7 +560,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, reclutador: true });
           }}
           placeholder="Seleccionar..."
-          options={RECLUTADORES_DISPONIBLES}
+          options={recruiterOptions(members, mode === 'edit' ? candidate?.reclutador : null)}
           disabled={isEdit && !isAdmin}
           aria-label="Reclutador a cargo del proceso, obligatorio"
           aria-invalid={touched.reclutador && !!errors.reclutador}

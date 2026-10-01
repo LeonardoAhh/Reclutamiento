@@ -51,6 +51,12 @@ supabase db push
 
 ## RLS
 
+El catálogo administrable del equipo se incorpora en `055_recruiter_directory.sql`; los ajustes posteriores se aplican mediante `056_recruiter_directory_access.sql` sin volver a ejecutar 055. Su orden de despliegue, controles de acceso y reversión compatible están documentados en [recruiter-directory.md](../operations/recruiter-directory.md).
+
+`057_archive_recruiter_members.sql` añade el retiro de integrantes inactivos sin cuenta vinculada. Se aplica después de 056 y conserva los registros, alias y auditoría.
+
+`058_archive_linked_recruiter_members.sql` permite retirar también integrantes inactivos con cuenta vinculada; conserva la cuenta bloqueada y todo el historial.
+
 La mayoría de tablas históricas conservan políticas permisivas para `authenticated` por compatibilidad. Las configuraciones sensibles deben aplicar políticas por rol; por ejemplo, `022_system_maintenance.sql` permite leer el estado a usuarios autenticados pero solo perfiles `admin` pueden actualizarlo.
 
 Patrón de referencia para endurecer otras tablas por rol:

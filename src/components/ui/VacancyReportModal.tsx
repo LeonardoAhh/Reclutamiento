@@ -16,6 +16,8 @@ import {
   formatWhatsAppLabel,
 } from "@/lib/whatsappReport";
 import type { PositionCoverage } from "@/lib/types";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { recruiterOptions, findTeamMember, type TeamMember } from '@/features/team/types';
 import "./VacancyReportModal.css";
 
 interface VacancyReportModalProps {
@@ -206,10 +208,12 @@ function buildAssignedWhatsAppMessage(
   groups: AreaGroup[],
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
+  members: TeamMember[],
 ): string {
   const blocks: string[] = [];
   let totalPending = 0;
-  const recruiters = ["Alexandra", "Daniela", "Leonardo", "Pendiente"];
+  const assignedName = (value: string) => findTeamMember(members, value)?.short_name ?? (value || 'Pendiente');
+  const recruiters = [...new Set([...Object.values(assignments).map(assignedName), 'Pendiente'])];
   const rows = groups
     .flatMap((g) => g.rows)
     .filter((r) => !dismissedKeys.has(`${r.area}|${r.seccion}|${r.puesto}`));
@@ -217,7 +221,7 @@ function buildAssignedWhatsAppMessage(
   for (const rec of recruiters) {
     const recRows = rows.filter((r) => {
       const k = `${r.area}|${r.seccion}|${r.puesto}`;
-      const assignedTo = assignments[k] || "Pendiente";
+      const assignedTo = assignedName(assignments[k] || '');
       return assignedTo === rec;
     });
 
@@ -302,12 +306,13 @@ function buildWhatsAppMessage(
   allGroups: AreaGroup[],
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
+  members: TeamMember[],
 ): string {
   const hasAssignments = Object.values(assignments).some(
     (v) => v !== "" && v !== "Pendiente",
   );
   if (hasAssignments) {
-    return buildAssignedWhatsAppMessage(allGroups, dismissedKeys, assignments);
+    return buildAssignedWhatsAppMessage(allGroups, dismissedKeys, assignments, members);
   }
 
   const groups = allGroups
@@ -383,6 +388,7 @@ export function VacancyReportModal({
   onClose,
   positions,
 }: VacancyReportModalProps) {
+  const { members } = useTeamDirectory();
   const isMobile = useIsMobile();
   const groups = useMemo(() => buildGroups(positions), [positions]);
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
@@ -426,8 +432,8 @@ export function VacancyReportModal({
   }, [groups, dismissedKeys]);
 
   const message = useMemo(
-    () => buildWhatsAppMessage(groups, dismissedKeys, assignments),
-    [groups, dismissedKeys, assignments],
+    () => buildWhatsAppMessage(groups, dismissedKeys, assignments, members),
+    [groups, dismissedKeys, assignments, members],
   );
   const [copied, setCopied] = useState(false);
 
@@ -517,9 +523,7 @@ export function VacancyReportModal({
                 }}
                 options={[
                   { value: "", label: "Pendiente" },
-                  { value: "Alexandra", label: "Alexandra" },
-                  { value: "Daniela", label: "Daniela" },
-                  { value: "Leonardo", label: "Leonardo" },
+                  ...recruiterOptions(members, assignments[key]),
                 ]}
                 placeholder="Pendiente"
               />

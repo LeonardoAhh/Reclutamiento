@@ -18,6 +18,7 @@ import {
 import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
+import { TeamProvider } from '@/features/team/TeamProvider';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import {
   EMPLEADOS_PATH,
@@ -25,7 +26,7 @@ import {
 } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH } from '@/components/layout/navigation';
+import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
 
 const Dashboard = lazy(() =>
@@ -73,6 +74,7 @@ const AccountPage = lazy(() =>
     default: AccountPage,
   })),
 );
+const TeamPage = lazy(() => import('@/features/team/TeamPage').then(({ TeamPage }) => ({ default: TeamPage })));
 const HomePage = lazy(() =>
   import('@/pages/HomePage').then(({ HomePage }) => ({
     default: HomePage,
@@ -83,8 +85,7 @@ function ProtectedContent() {
     <CandidatesProvider>
       <PositionsProvider>
         <MaintenanceGuard>
-          <AppShell><Outlet /></AppShell>
-          <TopRecruiterModal />
+          <TeamProvider><AppShell><Outlet /></AppShell><TopRecruiterModal /></TeamProvider>
         </MaintenanceGuard>
       </PositionsProvider>
     </CandidatesProvider>
@@ -96,7 +97,7 @@ function ProtectedShell() {
     return (
       <CandidatesProvider>
         <PositionsProvider>
-          <AppShell><Outlet /></AppShell>
+          <TeamProvider><AppShell><Outlet /></AppShell></TeamProvider>
         </PositionsProvider>
       </CandidatesProvider>
     );
@@ -178,6 +179,7 @@ function App() {
                 <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
+                <Route path={TEAM_PATH} element={<TeamPage />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}

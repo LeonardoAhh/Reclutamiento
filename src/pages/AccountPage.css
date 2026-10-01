@@ -81,6 +81,8 @@
   cursor: not-allowed;
 }
 
+.account-page__row-link { text-decoration: none; }
+
 .account-page__identity-copy,
 .account-page__row-copy,
 .account-page__row-actions {

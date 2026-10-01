@@ -6,6 +6,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 import { useAuth } from "@/hooks/useAuth";
+import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { usePagination } from "@/hooks/usePagination";
 import { splitCandidateName } from "@/lib/names";
 import { toast } from "@/lib/notify";
@@ -127,6 +128,7 @@ function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
 }
 
 export function DataUpdatePage() {
+  const { members } = useTeamDirectory();
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
   const isAdmin = profile?.role === "admin";
@@ -222,10 +224,12 @@ export function DataUpdatePage() {
   useEffect(() => { void loadDetail(); }, [loadDetail]);
   useEffect(() => {
     if (!isAdmin || !online) return;
-    void listEligibleDataUpdateProfiles()
-      .then(setProfiles)
-      .catch((caught) => setError(dataUpdateError(caught)));
-  }, [isAdmin, online]);
+    let current = true;
+    void listEligibleDataUpdateProfiles(members)
+      .then(rows => { if (current) setProfiles(rows); })
+      .catch(caught => { if (current) setError(dataUpdateError(caught)); });
+    return () => { current = false; };
+  }, [isAdmin, online, members]);
   useEffect(() => {
     if (!isAdmin && activeView === "admin") setActiveView("work");
   }, [activeView, isAdmin]);
@@ -780,7 +784,7 @@ export function DataUpdatePage() {
       {isAdmin && profile && (
         <CampaignImportModal
           isOpen={importOpen}
-          profiles={profiles}
+          profiles={profiles.filter(profile => profile.active)}
           currentUserId={profile.id}
           onClose={() => setImportOpen(false)}
           onCreated={(campaignId) => {

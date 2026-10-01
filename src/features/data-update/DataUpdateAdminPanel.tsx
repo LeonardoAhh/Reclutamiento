@@ -447,7 +447,8 @@ export function DataUpdateAdminPanel({
                 <CustomSelect
                   id={`assigned-${record.id}`}
                   value={record.assignedTo}
-                  options={participantProfiles.map((profile) => ({ value: profile.id, label: profile.label }))}
+                  options={participantProfiles.filter(profile => profile.active || profile.id === record.assignedTo)
+                    .map(profile => ({ value: profile.id, label: `${profile.label}${profile.active ? '' : ' (inactivo)'}` }))}
                   onChange={(profileId) => void reassign(record.id, profileId)}
                   showPlaceholderOption={false}
                   disabled={busy}

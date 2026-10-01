@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
-import { supabase, AUTH_JWT_EXPIRED_EVENT } from '@/lib/supabase';
+import { supabase, AUTH_JWT_EXPIRED_EVENT, AUTH_ACCOUNT_INACTIVE_EVENT } from '@/lib/supabase';
 import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
 import { toast } from '@/lib/notify';
 import {
@@ -67,9 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Evita que un fetch viejo (o refresh) interrumpa y borre un inicio de sesión en progreso.
   const loggingInRef = useRef(false);
 
-  const expireSession = useCallback(async () => {
+  const expireSession = useCallback(async (inactive = false) => {
     if (expiryHandlingRef.current) return;
-    if (loggingInRef.current) return; // Ignorar expiraciones si el usuario está activamente iniciando sesión
+    if (loggingInRef.current && !inactive) return; // El bloqueo de cuenta también aplica durante el inicio de sesión.
 
     expiryHandlingRef.current = true;
 
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!expiredNotifiedRef.current && window.location.pathname !== '/login') {
       expiredNotifiedRef.current = true;
       toast.error({
-        title: 'Sesión expirada. Vuelve a iniciar sesión.',
+        title: inactive ? 'Tu cuenta está inactiva. Contacta al administrador.' : 'Sesión expirada. Vuelve a iniciar sesión.',
       });
     }
 
@@ -142,8 +142,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!sessionRef.current) return;
       void expireSession();
     };
+    const inactiveHandler = () => { if (sessionRef.current) void expireSession(true); };
     window.addEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
-    return () => window.removeEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
+    window.addEventListener(AUTH_ACCOUNT_INACTIVE_EVENT, inactiveHandler);
+    return () => {
+      window.removeEventListener(AUTH_JWT_EXPIRED_EVENT, handler);
+      window.removeEventListener(AUTH_ACCOUNT_INACTIVE_EVENT, inactiveHandler);
+    };
   }, [expireSession]);
 
   /* ── Refresh proactivo del JWT ────────────────────────────────────────
@@ -201,6 +206,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             await expireSession();
             return;
           }
+        }
+        if (sess) {
+          const access = await supabase.rpc('app_access_enabled');
+          if (!access.error && access.data === false) { await expireSession(true); return; }
         }
         setSession(sess);
       } finally {

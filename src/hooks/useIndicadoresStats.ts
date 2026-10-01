@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { getISOWeek } from 'date-fns';
 import { supabase } from '@/lib/supabase';
 
@@ -57,6 +58,7 @@ export function parseDate(dateStr: string) {
 }
 
 export function useIndicadoresStats(selectedMonth: Date) {
+  const { resolve } = useTeamDirectory();
   const [data, setData] = useState<IndicadorRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -170,12 +172,11 @@ export function useIndicadoresStats(selectedMonth: Date) {
 
       if (recruiter !== 'Sin Reclutador') {
         recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
-        if (recruiter === 'Nayeli') {
-          recruiter = 'Alexandra';
-        }
       }
 
-      if (recruiter === 'Thalia' || recruiter === 'Leonardo') {
+      const member = resolve(rawRecruiter);
+      recruiter = member?.short_name ?? recruiter;
+      if (member?.include_in_metrics === false) {
         return;
       }
 
@@ -280,7 +281,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
         metaSemanal
       }
     };
-  }, [data, selectedMonth]);
+  }, [data, selectedMonth, resolve]);
 
   const historicalGoals = useMemo(() => {
     const statsByMonthRecruiter: Record<string, Record<string, number>> = {};
@@ -301,12 +302,11 @@ export function useIndicadoresStats(selectedMonth: Date) {
       
       if (recruiter !== 'Sin Reclutador') {
         recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
-        if (recruiter === 'Nayeli') {
-          recruiter = 'Alexandra';
-        }
       }
       
-      if (recruiter === 'Sin Reclutador' || recruiter === 'Thalia' || recruiter === 'Leonardo') return;
+      const member = resolve(rawRecruiter);
+      recruiter = member?.short_name ?? recruiter;
+      if (recruiter === 'Sin Reclutador' || member?.include_in_metrics === false) return;
       
       recruiterSet.add(recruiter);
       
@@ -351,7 +351,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
       monthsCompleted: recruiterMonthsCompleted[name].total,
       details: recruiterMonthsCompleted[name].details
     })).sort((a, b) => b.monthsCompleted - a.monthsCompleted);
-  }, [data]);
+  }, [data, resolve]);
 
   return { data, loading, error, chartData, recruiters, tableData, kpi, historicalGoals };
 }

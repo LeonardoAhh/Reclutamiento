@@ -113,6 +113,7 @@ export interface DataUpdateProfileOption {
   id: string;
   label: string;
   role: "admin" | "reclutador";
+  active: boolean;
 }
 
 export interface DataUpdateImportRow {

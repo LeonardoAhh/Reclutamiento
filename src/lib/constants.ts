@@ -724,93 +724,16 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
  * Si un puesto no aparece aquí, la requisición deja el bloque en blanco
  * para captura manual.
  */
-/**
- * RECLUTADORES_ACTIVOS — Nombres canonicos de las personas del area de
- * reclutamiento cuyos KPIs se muestran en el hero de la pagina de
- * candidatos.
- *
- * El campo `reclutador` de un candidato es texto libre; cualquier nombre
- * fuera de esta lista se ignora en el conteo del hero (no se grafica y
- * no se cuenta en el denominador). Para agregar / quitar gente, edita
- * esta lista. El match es case-insensitive y tolerante a acentos
- * (via normalizeString).
- */
-export const RECLUTADORES_ACTIVOS = [
-  "ALEXANDRA",
-  "DANIELA",
-  "LEONARDO",
-] as const;
-
-export type ReclutadorNombre = (typeof RECLUTADORES_ACTIVOS)[number];
-
-export type ReclutadorRol = "reclutadora" | "coordinador";
-
-/**
- * RECLUTADORES_INFO — Rol de cada persona del equipo de reclutamiento.
- * Usado por ReclutadorBadge para diferenciar visualmente reclutadoras
- * de coordinadores. Mantener sincronizado con RECLUTADORES_ACTIVOS.
- */
-export const RECLUTADORES_INFO: Record<
-  ReclutadorNombre,
-  {
-    rol: ReclutadorRol;
-    nombre_completo: string;
-    nombre_pase: string;
-    nombre_corto: string;
-  }
-> = {
-  ALEXANDRA: {
-    rol: "reclutadora",
-    nombre_completo: "Nayeli Alexandra Hernández Hernández",
-    nombre_pase: "Lic. Alexandra Hernández",
-    nombre_corto: "Alexandra",
-  },
-  DANIELA: {
-    rol: "reclutadora",
-    nombre_completo: "Daniela De Santiago Ramírez",
-    nombre_pase: "Lic. Daniela De Santiago",
-    nombre_corto: "Daniela",
-  },
-  LEONARDO: {
-    rol: "coordinador",
-    nombre_completo: "Leonardo Ahmed Hernández Herrera",
-    nombre_pase: "Lic. Leonardo Hernández",
-    nombre_corto: "Leonardo",
-  },
-};
-
-/**
- * Devuelve el nombre breve y formal que se imprime en el pase. Los valores
- * canónicos usan una variante explícita para respetar apellidos compuestos;
- * el fallback solo cubre registros legados de texto libre.
- */
-export function getRecruiterAccessCardName(
-  value: string | null | undefined,
-): string | null {
-  const trimmed = value?.trim();
-  if (!trimmed) return null;
-
-  const canonicalName = RECLUTADORES_ACTIVOS.find(
-    (name) => name === trimmed.toUpperCase(),
-  );
-  if (canonicalName) return RECLUTADORES_INFO[canonicalName].nombre_pase;
-
-  const nameParts = trimmed.split(/\s+/);
-  const firstName = nameParts[0];
-  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
-  return `Lic. ${firstName}${lastName ? ` ${lastName}` : ""}`;
-}
-
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
   availableTitle: "Actualización disponible",
   availableHint: "Guardá antes de actualizar.",
   actionLabel: "Actualizar",
   deferLabel: "Después",
   preparingLabel: "Preparando…",
-  errorHint: "No se pudo actualizar. Probá de nuevo.",
+  errorHint: "No se pudo actualizar. Prueba de nuevo.",
   retryLabel: "Reintentar",
   registrationErrorTitle: "Sin actualizaciones",
-  registrationErrorHint: "La app funciona, pero no se pudo buscar versiones.",
+  registrationErrorHint: "La app funciona, pero no se pudo buscar actualizaciones.",
   appliedTitle: "Actualización aplicada",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,

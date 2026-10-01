@@ -1,14 +1,11 @@
 import { ChevronDown, Crown, UserRound } from 'lucide-react';
 import { Tooltip } from './Tooltip';
-import {
-  RECLUTADORES_INFO,
-  type ReclutadorNombre,
-  type ReclutadorRol,
-} from '@/lib/constants';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { findTeamMember, type TeamMember, type RecruiterRole } from '@/features/team/types';
 import './Badge.css';
 
 export interface ReclutadorBadgeProps {
-  /** Nombre del reclutador o coordinador (ej. 'ALEXANDRA', 'DANIELA', 'LEONARDO' o minúsculas/TitleCase) */
+  /** Nombre o variante del integrante, conservado en los registros. */
   nombre: string;
   /** Variante de visualización: badge o solo ícono. */
   variant?: 'default' | 'icon-only';
@@ -26,22 +23,18 @@ export interface ReclutadorBadgeProps {
   showCaret?: boolean;
 }
 
-export function getReclutadorMeta(nombre: string): {
+export function getReclutadorMeta(nombre: string, members: readonly TeamMember[] = []): {
   key: string;
   nombreFormateado: string;
-  rol: ReclutadorRol;
+  rol: RecruiterRole;
   labelRol: string;
 } {
-  const key = nombre.trim().toUpperCase();
-  const info = RECLUTADORES_INFO[key as ReclutadorNombre];
+  const info = findTeamMember(members, nombre);
+  const key = info?.canonical_name ?? nombre.trim().toUpperCase();
 
-  const rol: ReclutadorRol = info
-    ? info.rol
-    : key === 'LEONARDO'
-    ? 'coordinador'
-    : 'reclutadora';
+  const rol: RecruiterRole = info?.badge_role ?? 'reclutadora';
 
-  const nombreFormateado = nombre
+  const nombreFormateado = info?.short_name ?? nombre
     .trim()
     .toLowerCase()
     .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
@@ -58,7 +51,7 @@ export function getReclutadorMeta(nombre: string): {
 
 /**
  * ReclutadorBadge — Componente reutilizable para visualizar reclutadoras y coordinadores
- * de RECLUTADORES_ACTIVOS ('ALEXANDRA', 'DANIELA', 'LEONARDO').
+ * del catálogo administrable del equipo.
  *
  * Versiones:
  * 1. Ícono + Texto (default): Muestra el ícono, nombre y opcionalmente el rol.
@@ -77,11 +70,12 @@ export function ReclutadorBadge({
   showCaret = false,
   className = '',
 }: ReclutadorBadgeProps) {
+  const { members } = useTeamDirectory();
   if (!nombre) return null;
 
   const isIconOnly = iconOnly || variant === 'icon-only';
 
-  const { key, nombreFormateado, rol, labelRol } = getReclutadorMeta(nombre);
+  const { key, nombreFormateado, rol, labelRol } = getReclutadorMeta(nombre, members);
   const isCoordinador = rol === 'coordinador';
 
   const IconComponent = isCoordinador ? Crown : UserRound;
