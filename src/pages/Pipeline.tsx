@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { MotionConfig } from 'framer-motion';
-import { parseISO, isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
+import { isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
@@ -572,7 +572,14 @@ export function Pipeline() {
                 const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
                 const getRelativeDateInfo = (isoString: string | null) => {
                   if (!isoString) return null;
-                  const date = parseISO(isoString);
+                  // Para fechas puras YYYY-MM-DD, parseISO las trata como UTC midnight
+                  // lo que en UTC-6 las retrocede al día anterior a partir de las 18:00.
+                  // Se ancla al mediodía MX (mismo patrón que dates.ts) para que
+                  // isToday/isTomorrow/isYesterday comparen el día calendario correcto.
+                  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(isoString)
+                    ? isoString
+                    : isoString.slice(0, 10);
+                  const date = new Date(`${dateOnly}T12:00:00-06:00`);
                   if (isNaN(date.getTime())) return null;
 
                   let relative = '';
