@@ -1,19 +1,27 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight, Info, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { HOME_PATH } from '@/components/layout/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { formatDateTimeMx, formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
 import { toNaturalCase } from '@/lib/utils';
 import {
-  canReviewLeaveRequests, canDeleteLeaveRequest, deleteLeaveRequest, leaveTypeLabel, listLeaveRequests, LEAVE_PAGE_SIZE,
+  approveLeaveRequest, canApproveLeaveRequest, canReviewLeaveRequests, canDeleteLeaveRequest,
+  deleteLeaveRequest, leaveStatusLabel, leaveTypeLabel, listLeaveRequests, LEAVE_PAGE_SIZE,
   type LeaveRequest,
 } from '@/features/leave/requests';
 import './LeaveRequestsPage.css';
+
+function noticeLabel(request: LeaveRequest) {
+  return request.status === 'approved'
+    ? 'Excepción de anticipación autorizada'
+    : 'Requiere excepción de anticipación';
+}
 
 export function LeaveRequestsPage() {
   const { profile } = useAuth();
@@ -26,10 +34,10 @@ export function LeaveRequestsPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [removing, setRemoving] = useState<LeaveRequest | null>(null);
-  const [deleteError, setDeleteError] = useState('');
-  const [deleting, setDeleting] = useState(false);
-  const deleteBusyRef = useRef(false);
+  const [reviewAction, setReviewAction] = useState<{ kind: 'approve' | 'delete'; request: LeaveRequest } | null>(null);
+  const [actionError, setActionError] = useState('');
+  const [actionBusy, setActionBusy] = useState(false);
+  const actionBusyRef = useRef(false);
 
   useEffect(() => {
     if (!canReview) return;
@@ -50,21 +58,22 @@ export function LeaveRequestsPage() {
     return () => { live = false; };
   }, [canReview, page, revision]);
 
-  async function removeRequest() {
-    if (!removing || deleteBusyRef.current) return;
-    deleteBusyRef.current = true;
-    setDeleting(true);
-    setDeleteError('');
+  async function completeReviewAction() {
+    if (!reviewAction || actionBusyRef.current) return;
+    actionBusyRef.current = true;
+    setActionBusy(true);
+    setActionError('');
     try {
-      await deleteLeaveRequest(removing.id);
-      setRemoving(null);
-      toast.success({ title: 'Solicitud eliminada' });
+      if (reviewAction.kind === 'approve') await approveLeaveRequest(reviewAction.request.id);
+      else await deleteLeaveRequest(reviewAction.request.id);
+      toast.success({ title: reviewAction.kind === 'approve' ? 'Solicitud autorizada' : 'Solicitud eliminada' });
+      setReviewAction(null);
       setRevision(value => value + 1);
     } catch (cause) {
-      setDeleteError(cause instanceof Error ? cause.message : 'No se pudo eliminar la solicitud.');
+      setActionError(cause instanceof Error ? cause.message : 'No se pudo actualizar la solicitud.');
     } finally {
-      deleteBusyRef.current = false;
-      setDeleting(false);
+      actionBusyRef.current = false;
+      setActionBusy(false);
     }
   }
 
@@ -80,7 +89,7 @@ export function LeaveRequestsPage() {
         </div>
 
       </header>
-      <section aria-label="Solicitudes del equipo" aria-busy={loading}>
+      <section className="leave-requests-page__content" aria-label="Solicitudes del equipo" aria-busy={loading}>
         {loading ? <p role="status">Cargando solicitudes…</p>
           : error ? <div className="leave-requests-page__error">
             <p className="form-error-text" role="alert">{error}</p>
@@ -93,11 +102,11 @@ export function LeaveRequestsPage() {
           </div>
           : <><div className="leave-requests-page__table-scroll" role="region" aria-label="Tabla de solicitudes" tabIndex={0}>
             <table className="leave-requests-page__table">
-              <caption className="sr-only">Solicitudes de vacaciones y permisos pendientes de validación</caption>
+              <caption className="sr-only">Solicitudes de vacaciones y permisos del equipo</caption>
               <thead><tr>
                 <th scope="col">Solicitante</th><th scope="col">Tipo</th><th scope="col">Fechas</th>
                 <th scope="col">Solicitada el</th><th scope="col">Estado</th>
-                <th scope="col"><span className="sr-only">Acciones</span></th>
+                <th scope="col">Acciones</th>
               </tr></thead>
               <tbody>{rows.map(row => <tr key={row.id}>
                 <th scope="row">{toNaturalCase(row.requesterName, { preserveAcronyms: false })}</th>
@@ -106,16 +115,31 @@ export function LeaveRequestsPage() {
                   {' – '}<time dateTime={row.endDate}>{formatReadableDate(row.endDate)}</time></td>
                 <td><time dateTime={row.requestedAt}>{formatDateTimeMx(row.requestedAt)}</time></td>
                 <td><div className="leave-requests-page__status">
-                  <Badge>Pendiente de validación</Badge>
-                  {row.requiresNoticeException && <span className="type-body-sm">Requiere excepción de anticipación</span>}
+                  <Badge minimal variant={row.status === 'approved' ? 'success' : 'default'}>{leaveStatusLabel(row.status)}</Badge>
+                  {row.requiresNoticeException && <Tooltip content={noticeLabel(row)}>
+                    <button type="button" className="btn-icon leave-requests-page__notice"
+                      aria-label={noticeLabel(row)}>
+                      <Info aria-hidden="true" />
+                    </button>
+                  </Tooltip>}
                 </div></td>
                 <td className="leave-requests-page__row-actions">
-                  {canDeleteLeaveRequest(profile, row) && <button
-                    type="button" className="btn-icon btn-icon--danger" disabled={deleting}
-                    aria-label={`Eliminar solicitud de ${toNaturalCase(row.requesterName, { preserveAcronyms: false })} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
-                    title="Eliminar solicitud"
-                    onClick={() => { setDeleteError(''); setRemoving(row); }}
-                  ><Trash2 aria-hidden="true" /></button>}
+                  <div className="leave-requests-page__actions">
+                    {canApproveLeaveRequest(profile, row) && <button type="button"
+                      className="btn-icon leave-requests-page__action-approve" disabled={actionBusy}
+                      aria-label={`Autorizar solicitud de ${toNaturalCase(row.requesterName, { preserveAcronyms: false })} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
+                      title="Autorizar solicitud"
+                      onClick={() => { setActionError(''); setReviewAction({ kind: 'approve', request: row }); }}>
+                      <Check aria-hidden="true" />
+                    </button>}
+                    {canDeleteLeaveRequest(profile, row) && <button type="button"
+                      className="btn-icon btn-icon--danger leave-requests-page__action-delete" disabled={actionBusy}
+                      aria-label={`Eliminar solicitud de ${toNaturalCase(row.requesterName, { preserveAcronyms: false })} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
+                      title="Eliminar solicitud"
+                      onClick={() => { setActionError(''); setReviewAction({ kind: 'delete', request: row }); }}>
+                      <Trash2 aria-hidden="true" />
+                    </button>}
+                  </div>
                 </td>
               </tr>)}</tbody>
             </table>
@@ -126,7 +150,15 @@ export function LeaveRequestsPage() {
               return <li key={row.id} className="leave-requests-page__card">
                 <article aria-labelledby={`${id}-request-${row.id}`}>
                   <header className="leave-requests-page__card-header">
-                    <h2 id={`${id}-request-${row.id}`}>{requester}</h2>
+                    <div className="leave-requests-page__card-requester">
+                      <h2 id={`${id}-request-${row.id}`}>{requester}</h2>
+                      {row.requiresNoticeException && <Tooltip content={noticeLabel(row)}>
+                        <button type="button" className="btn-icon leave-requests-page__notice"
+                          aria-label={noticeLabel(row)}>
+                          <Info aria-hidden="true" />
+                        </button>
+                      </Tooltip>}
+                    </div>
                     <span className="leave-requests-page__card-type">{leaveTypeLabel(row.type)}</span>
                   </header>
                   <div className="leave-requests-page__card-period">
@@ -141,21 +173,30 @@ export function LeaveRequestsPage() {
                   </div>
                   <div className="leave-requests-page__card-details">
                     <div className="leave-requests-page__card-state">
-                      <Badge minimal>Pendiente de validación</Badge>
-                      {row.requiresNoticeException && <span className="leave-requests-page__card-exception">Requiere excepción de anticipación</span>}
+                      <Badge minimal variant={row.status === 'approved' ? 'success' : 'default'}>{leaveStatusLabel(row.status)}</Badge>
                     </div>
                     <div className="leave-requests-page__card-requested">
                       <span className="leave-requests-page__card-label">Solicitada el</span>
                       <time dateTime={row.requestedAt}>{formatDateTimeMx(row.requestedAt)}</time>
                     </div>
                   </div>
-                  {canDeleteLeaveRequest(profile, row) && <footer className="leave-requests-page__card-footer">
-                    <button type="button" className="btn-text leave-requests-page__card-delete" disabled={deleting}
-                      aria-label={`Eliminar solicitud de ${requester} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
-                      onClick={() => { setDeleteError(''); setRemoving(row); }}>
-                      <Trash2 aria-hidden="true" /> Eliminar
-                    </button>
-                  </footer>}
+                  {(canApproveLeaveRequest(profile, row) || canDeleteLeaveRequest(profile, row)) &&
+                    <footer className="leave-requests-page__card-footer">
+                      {canApproveLeaveRequest(profile, row) && <button type="button"
+                        className="btn-secondary leave-requests-page__card-action leave-requests-page__action-approve" disabled={actionBusy}
+                        aria-label={`Autorizar solicitud de ${requester} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
+                        title="Autorizar solicitud"
+                        onClick={() => { setActionError(''); setReviewAction({ kind: 'approve', request: row }); }}>
+                        <Check aria-hidden="true" /> Autorizar
+                      </button>}
+                      {canDeleteLeaveRequest(profile, row) && <button type="button"
+                        className="btn-secondary leave-requests-page__card-action leave-requests-page__action-delete" disabled={actionBusy}
+                        aria-label={`Eliminar solicitud de ${requester} del ${formatReadableDate(row.startDate)} al ${formatReadableDate(row.endDate)}`}
+                        title="Eliminar solicitud"
+                        onClick={() => { setActionError(''); setReviewAction({ kind: 'delete', request: row }); }}>
+                        <Trash2 aria-hidden="true" /> Eliminar
+                      </button>}
+                    </footer>}
                 </article>
               </li>;
             })}
@@ -169,15 +210,18 @@ export function LeaveRequestsPage() {
         <button type="button" className="btn-secondary" disabled={(page + 1) * LEAVE_PAGE_SIZE >= total}
           onClick={() => setPage(value => value + 1)}>Siguiente <ChevronRight aria-hidden="true" /></button>
       </nav>}
-      {removing && <ConfirmModal
-        isOpen title="Eliminar solicitud" confirmLabel="Eliminar" isDestructive
+      {reviewAction && <ConfirmModal
+        isOpen title={reviewAction.kind === 'approve' ? 'Autorizar solicitud' : 'Denegar solicitud'}
+        confirmLabel={reviewAction.kind === 'approve' ? 'Autorizar' : 'Denegar'}
+        isDestructive={reviewAction.kind === 'delete'}
         description={<p className="type-body-md">
-          {toNaturalCase(removing.requesterName, { preserveAcronyms: false })} · {leaveTypeLabel(removing.type)}: {formatReadableDate(removing.startDate)} al {formatReadableDate(removing.endDate)}.
-          {' '}Se eliminará de forma definitiva.
+          {toNaturalCase(reviewAction.request.requesterName, { preserveAcronyms: false })} · {leaveTypeLabel(reviewAction.request.type)}: {formatReadableDate(reviewAction.request.startDate)} al {formatReadableDate(reviewAction.request.endDate)}.
+          {' '}
         </p>}
-        isLoading={deleting} loadingLabel="Eliminando…" errorMessage={deleteError}
-        onConfirm={() => void removeRequest()}
-        onCancel={() => { if (!deleteBusyRef.current) { setRemoving(null); setDeleteError(''); } }}
+        isLoading={actionBusy} loadingLabel={reviewAction.kind === 'approve' ? 'Autorizando…' : 'Denegando…'}
+        errorMessage={actionError}
+        onConfirm={() => void completeReviewAction()}
+        onCancel={() => { if (!actionBusyRef.current) { setReviewAction(null); setActionError(''); } }}
       />}
     </main>
   );

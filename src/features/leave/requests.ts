@@ -22,7 +22,7 @@ export interface LeaveRequest extends LeaveDraft {
   requesterName: string;
   requestedAt: string;
   requiresNoticeException: boolean;
-  status: 'pending';
+  status: 'pending' | 'approved';
 }
 export function canReviewLeaveRequests(profile: Profile | null, members: readonly TeamMember[]) {
   return Boolean(profile && (profile.role === 'admin' || members.some(member =>
@@ -31,6 +31,9 @@ export function canReviewLeaveRequests(profile: Profile | null, members: readonl
 }
 export function leaveTypeLabel(type: LeaveType) {
   return LEAVE_TYPE_OPTIONS.find(option => option.value === type)?.label ?? '';
+}
+export function leaveStatusLabel(status: LeaveRequest['status']) {
+  return status === 'approved' ? 'Autorizada' : 'Pendiente de validación';
 }
 function validDate(value: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && addDaysToIso(value, 0) === value;
@@ -64,7 +67,7 @@ function requestFromRow(value: unknown): LeaveRequest {
   if (!value || typeof value !== 'object') throw new Error('No se pudieron leer las solicitudes.');
   const row = value as Record<string, unknown>;
   const strings = ['id', 'requester_id', 'requester_name', 'start_date', 'end_date', 'requested_at'] as const;
-  if (strings.some(key => typeof row[key] !== 'string') || row.status !== 'pending'
+  if (strings.some(key => typeof row[key] !== 'string') || (row.status !== 'pending' && row.status !== 'approved')
     || typeof row.requires_notice_exception !== 'boolean'
     || (row.leave_type !== 'vacation' && row.leave_type !== 'permission')) {
     throw new Error('No se pudieron leer las solicitudes.');
@@ -89,6 +92,20 @@ export async function listLeaveRequests(page: number) {
 export function canDeleteLeaveRequest(profile: Profile | null, request: LeaveRequest) {
   return Boolean(profile && request.status === 'pending'
     && (profile.role === 'admin' || request.requesterId === profile.id));
+}
+
+export function canApproveLeaveRequest(profile: Profile | null, request: LeaveRequest) {
+  return Boolean(profile?.role === 'admin' && request.status === 'pending'
+    && request.requesterId !== profile.id);
+}
+
+export async function approveLeaveRequest(id: string) {
+  const { data, error } = await supabase.rpc('approve_leave_request', { p_id: id });
+  if (error) {
+    if (error.code === '42501' || error.code === '22023') throw new Error(error.message);
+    throw new Error('No se pudo autorizar. Revisa tu conexión y vuelve a intentar.');
+  }
+  if (data !== id) throw new Error('No se pudo confirmar la autorización. Vuelve a intentar.');
 }
 
 export async function deleteLeaveRequest(id: string) {

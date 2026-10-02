@@ -32,6 +32,11 @@
   flex-shrink: 0;
 }
 
+.leave-requests-page__content {
+  min-inline-size: 0;
+  container: leave-requests / inline-size;
+}
+
 .leave-requests-page__table-scroll {
   overflow-x: auto;
   border: var(--border-width) solid var(--color-hairline);
@@ -63,6 +68,11 @@
   font-weight: var(--font-semibold);
 }
 
+.leave-requests-page__table tbody th,
+.leave-requests-page__table tbody td {
+  vertical-align: middle;
+}
+
 .leave-requests-page__table thead {
   background: var(--color-surface-soft);
 }
@@ -71,12 +81,29 @@
   border-block-end: 0;
 }
 
-.leave-requests-page__status,
+.leave-requests-page__status {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+
 .leave-requests-page__error {
   display: grid;
   gap: var(--design-spacing-xs);
 }
 
+.leave-requests-page__notice {
+  flex: 0 0 var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+}
+
+.leave-requests-page__notice:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
 
 .leave-requests-page__empty {
   border: var(--border-width) solid var(--color-hairline);
@@ -109,13 +136,30 @@
 }
 
 .leave-requests-page__table .leave-requests-page__row-actions {
-  text-align: end;
-  inline-size: calc(var(--touch-target-min) + var(--design-spacing-sm) + var(--design-spacing-sm));
+  inline-size: calc(2 * var(--touch-target-min) + var(--design-spacing-xxs) + 2 * var(--design-spacing-sm));
+  min-inline-size: calc(2 * var(--touch-target-min) + var(--design-spacing-xxs) + 2 * var(--design-spacing-sm));
 }
 
-.leave-requests-page__row-actions .btn-icon {
+.leave-requests-page__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--design-spacing-xxs);
+}
+
+.leave-requests-page__actions .btn-icon {
+  flex: 0 0 var(--touch-target-min);
+  padding: 0;
   border: 0;
   background: transparent;
+}
+
+.leave-requests-page__action-approve {
+  color: var(--color-success-text);
+}
+
+.leave-requests-page__action-approve:hover:not(:disabled) {
+  color: var(--color-success-text);
+  background: var(--color-success-tint);
 }
 
 .leave-requests-page__cards {
@@ -134,7 +178,9 @@
     line-height: var(--type-heading-md-line);
     letter-spacing: var(--type-heading-md-tracking);
   }
+}
 
+@container leave-requests (max-width: 64rem) {
   .leave-requests-page__table-scroll {
     display: none;
   }
@@ -178,6 +224,16 @@
     overflow-wrap: anywhere;
   }
 
+  .leave-requests-page__card-requester {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+  }
+
+  .leave-requests-page__card-requester .leave-requests-page__notice {
+    flex: 0 0 var(--touch-target-min);
+  }
+
   .leave-requests-page__card-type,
   .leave-requests-page__card-label,
   .leave-requests-page__card-requested {
@@ -194,12 +250,17 @@
   }
 
   .leave-requests-page__card-period > div,
-  .leave-requests-page__card-requested,
-  .leave-requests-page__card-state {
+  .leave-requests-page__card-requested {
     display: grid;
     justify-items: start;
     gap: var(--design-spacing-xxs);
     min-inline-size: 0;
+  }
+
+  .leave-requests-page__card-state {
+    display: flex;
+    align-items: center;
+    gap: var(--design-spacing-xxs);
   }
 
   .leave-requests-page__card-period time {
@@ -211,30 +272,43 @@
 
   .leave-requests-page__card-details {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
     gap: var(--design-spacing-sm);
     padding-block-start: var(--design-spacing-sm);
     border-block-start: var(--border-width) solid var(--color-hairline);
   }
 
-  .leave-requests-page__card-exception {
-    color: var(--color-muted);
-    font-size: var(--type-body-sm-size);
-    line-height: var(--type-body-sm-line);
-  }
-
   .leave-requests-page__card-footer {
-    display: flex;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--design-spacing-xxs);
     margin-block-start: var(--design-spacing-xs);
   }
 
-  .leave-requests-page__card-delete {
-    color: var(--color-error-text);
-    text-decoration: none;
+  .leave-requests-page__card-action {
+    min-inline-size: 0;
   }
 
-  .leave-requests-page__card-delete:hover:not(:disabled) {
-    color: var(--color-error-deep);
-    text-decoration: underline;
+  .leave-requests-page__card-action:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .leave-requests-page__card-action.leave-requests-page__action-approve {
+    color: var(--color-ink);
+  }
+
+  .leave-requests-page__card-action.leave-requests-page__action-approve svg {
+    color: var(--color-success-text);
+  }
+
+  .leave-requests-page__card-action.leave-requests-page__action-delete svg {
+    color: var(--color-error-text);
+  }
+}
+
+@container leave-requests (min-width: 48rem) and (max-width: 64rem) {
+  .leave-requests-page__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
