@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLoader } from '@/hooks/useLoader';
 import { HOME_PATH } from '@/components/layout/navigation';
-import { CAREER_PATH } from '@/features/career/types';
+import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { hasCompletedCareerJourney } from '@/features/career/completion';
 
 /** Conserva el acceso protegido y la espera del perfil después de autenticar. */
@@ -15,7 +15,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-/** Un ingreso con credenciales abre el recorrido pendiente; las sesiones restauradas conservan Inicio. */
+/** Un ingreso con credenciales abre el recorrido pendiente cuando está habilitado. */
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
   const { flash } = useLoader();
@@ -32,7 +32,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
     const successTimer = setTimeout(() => {
       flash({ variant: 'workspace-entry' });
       redirectTimer = setTimeout(() => setDestination(
-        hasCompletedCareerJourney(session.user.user_metadata) ? HOME_PATH : CAREER_PATH,
+        CAREER_JOURNEY_ENABLED && !hasCompletedCareerJourney(session.user.user_metadata) ? CAREER_PATH : HOME_PATH,
       ), 300);
     }, 800);
     return () => {

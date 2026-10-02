@@ -1,5 +1,7 @@
 /** Ruta proporcionada por el usuario; no representa otras áreas de la empresa. */
 export const CAREER_PATH = '/mi-camino';
+/** Recorrido y diálogo pendientes de publicación; conservar su implementación. */
+export const CAREER_JOURNEY_ENABLED = false;
 export const CAREER_ROLES = [
   { id: 'analyst-b', title: 'Analista de Reclutamiento y Selección B' },
   { id: 'analyst-a', title: 'Analista de Reclutamiento y Selección A' },

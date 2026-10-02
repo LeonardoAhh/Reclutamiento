@@ -28,7 +28,7 @@ import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
-import { CAREER_PATH } from '@/features/career/types';
+import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 
 const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
 
@@ -89,7 +89,7 @@ function ProtectedContent() {
     <CandidatesProvider>
       <PositionsProvider>
         <MaintenanceGuard>
-          <TeamProvider>{pathname === CAREER_PATH
+          <TeamProvider>{CAREER_JOURNEY_ENABLED && pathname === CAREER_PATH
             ? <Outlet />
             : <><AppShell><Outlet /></AppShell><TopRecruiterModal /></>}</TeamProvider>
         </MaintenanceGuard>
@@ -104,7 +104,7 @@ function ProtectedShell() {
     return (
       <CandidatesProvider>
         <PositionsProvider>
-          <TeamProvider>{pathname === CAREER_PATH ? <Outlet /> : <AppShell><Outlet /></AppShell>}</TeamProvider>
+          <TeamProvider>{CAREER_JOURNEY_ENABLED && pathname === CAREER_PATH ? <Outlet /> : <AppShell><Outlet /></AppShell>}</TeamProvider>
         </PositionsProvider>
       </CandidatesProvider>
     );
@@ -171,7 +171,8 @@ function App() {
               <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
-                <Route path={CAREER_PATH} element={<CareerPage />} />
+                <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
+                  ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />

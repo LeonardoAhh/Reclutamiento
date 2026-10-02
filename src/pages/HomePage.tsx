@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { formatEmploymentTenure, formatReadableDate } from "@/lib/dates";
 import { getUserTitle } from "@/lib/userIdentity";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
 import { toNaturalCase } from "@/lib/utils";
 import {
   MOTIVATION_BY_TITLE, DEFAULT_MOTIVATION, LEADERSHIP_CUE_BY_TITLE,
@@ -191,7 +192,7 @@ export function HomePage() {
   const location = useLocation();
   const navigate = useNavigate();
   const navigationState: unknown = location.state;
-  const showCareerMotivation = navigationState !== null
+  const showCareerMotivation = CAREER_JOURNEY_ENABLED && navigationState !== null
     && typeof navigationState === 'object'
     && 'careerMotivation' in navigationState
     && navigationState.careerMotivation === true;
@@ -333,7 +334,7 @@ export function HomePage() {
           </nav>
         </section>
       </div>
-      <Modal isOpen={showCareerMotivation} title="Tu día, tu enfoque"
+      {CAREER_JOURNEY_ENABLED && <Modal isOpen={showCareerMotivation} title="Tu día, tu enfoque"
       onClose={closeCareerMotivation} size="sm"
       footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>Hacer que cuente</button>}>
       <div className="modal-body">
@@ -341,7 +342,7 @@ export function HomePage() {
       Cada mañana es una nueva oportunidad para avanzar. Tómate un minuto, prioriza y haz que hoy cuente.
     </p>
   </div>
-</Modal>
+</Modal>}
     </main>
   );
 }
